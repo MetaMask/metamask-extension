@@ -103,7 +103,7 @@ TxListItem.prototype.getSendEtherTotal = function () {
   const totalInFiat = conversionUtil(transactionAmount, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromCurrency: 'ETH',
+    fromCurrency: 'AKA',
     toCurrency: currentCurrency,
     fromDenomination: 'WEI',
     numberOfDecimals: 2,
@@ -112,15 +112,15 @@ TxListItem.prototype.getSendEtherTotal = function () {
   const totalInETH = conversionUtil(transactionAmount, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromCurrency: 'ETH',
-    toCurrency: 'ETH',
+    fromCurrency: 'AKA',
+    toCurrency: 'AKA',
     fromDenomination: 'WEI',
     conversionRate,
     numberOfDecimals: 6,
   })
 
   return {
-    total: `${totalInETH} ETH`,
+    total: `${totalInETH} AKA`,
     fiatTotal: `${totalInFiat} ${currentCurrency.toUpperCase()}`,
   }
 }

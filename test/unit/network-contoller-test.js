@@ -58,7 +58,7 @@ describe('# Network Controller', function () {
     describe('#getRpcAddressForType', function () {
       it('should return the right rpc address', function () {
         const rpcTarget = networkController.getRpcAddressForType('mainnet')
-        assert.equal(rpcTarget, 'https://mainnet.infura.io/metamask', 'returns the right rpcAddress')
+        assert.equal(rpcTarget, 'https://rpc.akroma.io', 'returns the right rpcAddress')
       })
     })
     describe('#setProviderType', function () {
@@ -75,7 +75,7 @@ describe('# Network Controller', function () {
       it('should set the right rpcTarget', function () {
         networkController.setProviderType('mainnet')
         const rpcTarget = networkController.getProviderConfig().rpcTarget
-        assert.equal(rpcTarget, 'https://mainnet.infura.io/metamask', 'returns the right rpcAddress')
+        assert.equal(rpcTarget, 'https://rpc.akroma.io', 'returns the right rpcAddress')
       })
     })
   })

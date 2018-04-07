@@ -36,8 +36,16 @@ UnlockScreen.prototype.render = function () {
   return (
     h('.unlock-screen', [
 
-      h(Mascot, {
-        animationEventEmitter: this.animationEventEmitter,
+      // h(Mascot, {
+      //   animationEventEmitter: this.animationEventEmitter,
+      // }),
+
+      h('img', {
+        style: {
+          width: '225',
+          height: '225',
+        },
+        src: 'images/icon-512.png',
       }),
 
       h('h1', {

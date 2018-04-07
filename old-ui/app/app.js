@@ -268,61 +268,61 @@ App.prototype.renderNetworkDropdown = function () {
       },
       [
         h('.menu-icon.diamond'),
-        'Main Ethereum Network',
+        'Akroma Network',
         providerType === 'mainnet' ? h('.check', '✓') : null,
       ]
     ),
 
-    h(
-      DropdownMenuItem,
-      {
-        key: 'ropsten',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('ropsten')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.red-dot'),
-        'Ropsten Test Network',
-        providerType === 'ropsten' ? h('.check', '✓') : null,
-      ]
-    ),
+    // h(
+    //   DropdownMenuItem,
+    //   {
+    //     key: 'ropsten',
+    //     closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+    //     onClick: () => props.dispatch(actions.setProviderType('ropsten')),
+    //     style: {
+    //       fontSize: '18px',
+    //     },
+    //   },
+    //   [
+    //     h('.menu-icon.red-dot'),
+    //     'Ropsten Test Network',
+    //     providerType === 'ropsten' ? h('.check', '✓') : null,
+    //   ]
+    // ),
 
-    h(
-      DropdownMenuItem,
-      {
-        key: 'kovan',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('kovan')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.hollow-diamond'),
-        'Kovan Test Network',
-        providerType === 'kovan' ? h('.check', '✓') : null,
-      ]
-    ),
+    // h(
+    //   DropdownMenuItem,
+    //   {
+    //     key: 'kovan',
+    //     closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+    //     onClick: () => props.dispatch(actions.setProviderType('kovan')),
+    //     style: {
+    //       fontSize: '18px',
+    //     },
+    //   },
+    //   [
+    //     h('.menu-icon.hollow-diamond'),
+    //     'Kovan Test Network',
+    //     providerType === 'kovan' ? h('.check', '✓') : null,
+    //   ]
+    // ),
 
-    h(
-      DropdownMenuItem,
-      {
-        key: 'rinkeby',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.golden-square'),
-        'Rinkeby Test Network',
-        providerType === 'rinkeby' ? h('.check', '✓') : null,
-      ]
-    ),
+    // h(
+    //   DropdownMenuItem,
+    //   {
+    //     key: 'rinkeby',
+    //     closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+    //     onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
+    //     style: {
+    //       fontSize: '18px',
+    //     },
+    //   },
+    //   [
+    //     h('.menu-icon.golden-square'),
+    //     'Rinkeby Test Network',
+    //     providerType === 'rinkeby' ? h('.check', '✓') : null,
+    //   ]
+    // ),
 
     h(
       DropdownMenuItem,
@@ -666,13 +666,13 @@ App.prototype.getNetworkName = function () {
   let name
 
   if (providerName === 'mainnet') {
-    name = 'Main Ethereum Network'
-  } else if (providerName === 'ropsten') {
-    name = 'Ropsten Test Network'
-  } else if (providerName === 'kovan') {
-    name = 'Kovan Test Network'
-  } else if (providerName === 'rinkeby') {
-    name = 'Rinkeby Test Network'
+    name = 'Main Akroma Network'
+  // } else if (providerName === 'ropsten') {
+  //   name = 'Ropsten Test Network'
+  // } else if (providerName === 'kovan') {
+  //   name = 'Kovan Test Network'
+  // } else if (providerName === 'rinkeby') {
+  //   name = 'Rinkeby Test Network'
   } else {
     name = 'Unknown Private Network'
   }

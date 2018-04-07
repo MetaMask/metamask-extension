@@ -30,11 +30,11 @@
     "message": "Amount + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "Akroma Browser Extension",
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Akroma",
     "description": "The name of the application"
   },
   "approved": {
@@ -187,7 +187,7 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "The default network for AKA transactions is Main Net."
   },
   "denExplainer": {
     "message": "Your DEN is your password-encrypted storage within MetaMask."
@@ -203,10 +203,10 @@
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "Deposit Eth"
+    "message": "Deposit AKA"
   },
   "depositEther": {
-    "message": "Deposit Ether"
+    "message": "Deposit AKA"
   },
   "depositFiat": {
     "message": "Deposit with Fiat"
@@ -227,10 +227,10 @@
     "message": "Direct Deposit"
   },
   "directDepositEther": {
-    "message": "Directly Deposit Ether"
+    "message": "Directly Deposit AKA"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "If you already have some AKA, the quickest way to get AKA in your new wallet by direct deposit."
   },
   "done": {
     "message": "Done"
@@ -266,7 +266,7 @@
     "message": "Passwords Don't Match"
   },
   "etherscanView": {
-    "message": "View account on Etherscan"
+    "message": "View account on explorer"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
@@ -332,7 +332,7 @@
     "message": "Gas Price Required"
   },
   "getEther": {
-    "message": "Get Ether"
+    "message": "Get AKA"
   },
   "getEtherFromFaucet": {
     "message": "Get Ether from a faucet for the $1",
@@ -359,10 +359,10 @@
     "message": "Hide Token?"
   },
   "howToDeposit": {
-    "message": "How would you like to deposit Ether?"
+    "message": "How would you like to deposit AKA?"
   },
   "holdEther": {
-    "message": "It allows you to hold ether & tokens, and serves as your bridge to decentralized applications."
+    "message": "It allows you to hold AKA & tokens, and serves as your bridge to decentralized applications."
   },
   "import": {
     "message": "Import",
@@ -468,13 +468,13 @@
     "message": "seed words only have lowercase characters"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Akroma Network"
   },
   "message": {
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "MetaMask is a secure identity vault for Ethereum."
+    "message": "Akroma wallet and identity vault."
   },
   "min": {
     "message": "Minimum"
@@ -486,7 +486,7 @@
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+    "message": "To interact with decentralized applications using Akroma Browser Extension, you’ll need AKA in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -497,7 +497,7 @@
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
+    "message": "Can not send negative amounts of AKA."
   },
   "networks": {
     "message": "Networks"
@@ -650,7 +650,7 @@
     "message": "Current RPC"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main Ethereum Network"
+    "message": "Connecting to Main Akomra Network"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -712,19 +712,19 @@
     "message": "Send"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "Send AKA"
   },
   "sendTokens": {
     "message": "Send Tokens"
   },
   "onlySendToEtherAddress": {
-    "message": "Only send ETH to an Ethereum address."
+    "message": "Only send AKA to an Akroma address."
   },
   "searchTokens": {
     "message": "Search Tokens"
   },
   "sendTokensAnywhere": {
-    "message": "Send Tokens to anyone with an Ethereum account"
+    "message": "Send Tokens to anyone with an Akroma account"
   },
   "settings": {
     "message": "Settings"

@@ -33,10 +33,18 @@ UnlockScreen.prototype.render = function () {
     }, [
       h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
-        h(Mascot, {
-          animationEventEmitter: this.animationEventEmitter,
-        }),
+        // h(Mascot, {
+        //   animationEventEmitter: this.animationEventEmitter,
+        // }),
 
+        h('img', {
+          style: {
+            width: '225',
+            height: '225',
+          },
+          src: 'images/icon-512.png',
+        }),
+        
         h('h1', {
           style: {
             fontSize: '1.4em',

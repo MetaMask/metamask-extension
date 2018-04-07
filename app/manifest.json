@@ -3,15 +3,15 @@
   "short_name": "__MSG_appName__",
   "version": "4.5.3",
   "manifest_version": 2,
-  "author": "https://metamask.io",
+  "author": "https://akroma.io",
   "description": "__MSG_appDescription__",
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "windows": "Alt+Shift+M",
-        "mac": "Alt+Shift+M",
-        "chromeos": "Alt+Shift+M",
-        "linux": "Alt+Shift+M"
+        "windows": "Alt+Shift+A",
+        "mac": "Alt+Shift+A",
+        "chromeos": "Alt+Shift+A",
+        "linux": "Alt+Shift+A"
       }
     }
   },
@@ -21,7 +21,7 @@
   },
   "applications": {
     "gecko": {
-      "id": "webextension@metamask.io"
+      "id": "team+extension@akroma.io"
     }
   },
   "default_locale": "en",
@@ -37,7 +37,7 @@
       "19": "images/icon-19.png",
       "38": "images/icon-38.png"
     },
-    "default_title": "MetaMask",
+    "default_title": "Akroma",
     "default_popup": "popup.html"
   },
   "content_scripts": [
@@ -59,14 +59,14 @@
     "unlimitedStorage",
     "clipboardWrite",
     "http://localhost:8545/",
-    "https://*.infura.io/"
+    "https://rpc.akroma.io/"
   ],
   "web_accessible_resources": [
     "inpage.js"
   ],
   "externally_connectable": {
     "matches": [
-      "https://metamask.io/*"
+      "https://akroma.io/*"
     ]
   }
 }

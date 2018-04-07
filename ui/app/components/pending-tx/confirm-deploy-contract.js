@@ -108,7 +108,7 @@ class ConfirmDeployContract extends Component {
     const FIAT = conversionUtil(txParams.value, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
-      fromCurrency: 'ETH',
+      fromCurrency: 'AKA',
       toCurrency: currentCurrency,
       numberOfDecimals: 2,
       fromDenomination: 'WEI',
@@ -117,8 +117,8 @@ class ConfirmDeployContract extends Component {
     const ETH = conversionUtil(txParams.value, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
-      fromCurrency: 'ETH',
-      toCurrency: 'ETH',
+      fromCurrency: 'AKA',
+      toCurrency: 'AKA',
       fromDenomination: 'WEI',
       conversionRate,
       numberOfDecimals: 6,
@@ -150,7 +150,7 @@ class ConfirmDeployContract extends Component {
       fromNumericBase: 'BN',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
-      fromCurrency: 'ETH',
+      fromCurrency: 'AKA',
       toCurrency: currentCurrency,
       numberOfDecimals: 2,
       conversionRate,
@@ -159,8 +159,8 @@ class ConfirmDeployContract extends Component {
       fromNumericBase: 'BN',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
-      fromCurrency: 'ETH',
-      toCurrency: 'ETH',
+      fromCurrency: 'AKA',
+      toCurrency: 'AKA',
       numberOfDecimals: 6,
       conversionRate,
     })
@@ -222,7 +222,7 @@ class ConfirmDeployContract extends Component {
 
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `${fiatAmount + fiatGas} ${currentCurrency.toUpperCase()}`),
-          h('div.confirm-screen-row-detail', `${tokenAmount + ethGas} ETH`),
+          h('div.confirm-screen-row-detail', `${tokenAmount + ethGas} AKA`),
         ]),
       ])
     )

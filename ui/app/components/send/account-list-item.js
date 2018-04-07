@@ -59,7 +59,7 @@ AccountListItem.prototype.render = function () {
     displayAddress && name && h('div.account-list-item__account-address', address),
 
     displayBalance && h(CurrencyDisplay, {
-      primaryCurrency: 'ETH',
+      primaryCurrency: 'AKA',
       convertedCurrency: currentCurrency,
       value: balance,
       conversionRate,

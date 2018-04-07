@@ -142,23 +142,23 @@ class Settings extends Component {
         color = '#038789'
         break
 
-      case 'ropsten':
-        title = this.context.t('currentNetwork')
-        value = this.context.t('ropsten')
-        color = '#e91550'
-        break
+      // case 'ropsten':
+      //   title = this.context.t('currentNetwork')
+      //   value = this.context.t('ropsten')
+      //   color = '#e91550'
+      //   break
 
-      case 'kovan':
-        title = this.context.t('currentNetwork')
-        value = this.context.t('kovan')
-        color = '#690496'
-        break
+      // case 'kovan':
+      //   title = this.context.t('currentNetwork')
+      //   value = this.context.t('kovan')
+      //   color = '#690496'
+      //   break
 
-      case 'rinkeby':
-        title = this.context.t('currentNetwork')
-        value = this.context.t('rinkeby')
-        color = '#ebb33f'
-        break
+      // case 'rinkeby':
+      //   title = this.context.t('currentNetwork')
+      //   value = this.context.t('rinkeby')
+      //   color = '#ebb33f'
+      //   break
 
       default:
         title = this.context.t('currentRpc')

@@ -392,7 +392,7 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
 SendTransactionScreen.prototype.renderAmountRow = function () {
   const {
     selectedToken,
-    primaryCurrency = 'ETH',
+    primaryCurrency = 'AKA',
     convertedCurrency,
     amountConversionRate,
     errors,

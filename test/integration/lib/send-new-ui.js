@@ -34,10 +34,10 @@ async function runSendFlowTest(assert, done) {
   sendScreenButton[1].click()
 
   const sendTitle = await queryAsync($, '.page-container__title')
-  assert.equal(sendTitle[0].textContent, 'Send ETH', 'Send screen title is correct')
+  assert.equal(sendTitle[0].textContent, 'Send AKA', 'Send screen title is correct')
 
   const sendCopy = await queryAsync($, '.page-container__subtitle')
-  assert.equal(sendCopy[0].textContent, 'Only send ETH to an Ethereum address.', 'Send screen has copy')
+  assert.equal(sendCopy[0].textContent, 'Only send AKA to an Akroma address.', 'Send screen has copy')
 
   const sendFromField = await queryAsync($, '.send-v2__form-field')
   assert.ok(sendFromField[0], 'send screen has a from field')

@@ -2,7 +2,7 @@ const assert = require('assert')
 const EventEmitter = require('events')
 const createMetamaskProvider = require('web3-provider-engine/zero.js')
 const SubproviderFromProvider = require('web3-provider-engine/subproviders/web3.js')
-const createInfuraProvider = require('eth-json-rpc-infura/src/createProvider')
+const createInfuraProvider = require('../lib/akaCreateProvider.js')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
@@ -10,7 +10,7 @@ const EthQuery = require('eth-query')
 const createEventEmitterProxy = require('../lib/events-proxy.js')
 const networkConfig = require('../config.js')
 const { OLD_UI_NETWORK_TYPE, DEFAULT_RPC } = networkConfig.enums
-const INFURA_PROVIDER_TYPES = ['ropsten', 'rinkeby', 'kovan', 'mainnet']
+const INFURA_PROVIDER_TYPES = ['mainnet']
 
 module.exports = class NetworkController extends EventEmitter {
 

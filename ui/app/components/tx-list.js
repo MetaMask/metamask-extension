@@ -142,6 +142,5 @@ function navigateTo (url) {
 }
 
 function etherscanLinkFor (txHash, network) {
-  const prefix = prefixForNetwork(network)
-  return `https://${prefix}etherscan.io/tx/${txHash}`
+  return `https://akroma.io/explorer/transaction/${txHash}`
 }

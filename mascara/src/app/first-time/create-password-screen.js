@@ -66,11 +66,12 @@ class CreatePasswordScreen extends Component {
             'first-view-main__mascara': isMascara,
           })}>
             {isMascara && <div className="mascara-info first-view-phone-invisible">
-              <Mascot
+              {/* <Mascot
                 animationEventEmitter={this.animationEventEmitter}
                 width="225"
                 height="225"
-              />
+              /> */}
+              <img src="images/icon-512.png" width="255" height="225" />
               <div className="info">
                 MetaMask is a secure identity vault for Ethereum.
               </div>

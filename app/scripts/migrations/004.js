@@ -15,8 +15,9 @@ module.exports = {
           safeVersionedData.data.config.provider = {
             type: 'testnet',
           }
+          throw new Error('error')
           break
-        case 'https://rpc.metamask.io/':
+        case 'https://rpc.akroma.io/':
           safeVersionedData.data.config.provider = {
             type: 'mainnet',
           }

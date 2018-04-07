@@ -163,7 +163,7 @@ ConfirmSendEther.prototype.getAmount = function () {
   const FIAT = conversionUtil(txParams.value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromCurrency: 'ETH',
+    fromCurrency: 'AKA',
     toCurrency: currentCurrency,
     numberOfDecimals: 2,
     fromDenomination: 'WEI',
@@ -172,8 +172,8 @@ ConfirmSendEther.prototype.getAmount = function () {
   const ETH = conversionUtil(txParams.value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromCurrency: 'ETH',
-    toCurrency: 'ETH',
+    fromCurrency: 'AKA',
+    toCurrency: 'AKA',
     fromDenomination: 'WEI',
     conversionRate,
     numberOfDecimals: 6,
@@ -211,7 +211,7 @@ ConfirmSendEther.prototype.getGasFee = function () {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
-    fromCurrency: 'ETH',
+    fromCurrency: 'AKA',
     toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
@@ -220,8 +220,8 @@ ConfirmSendEther.prototype.getGasFee = function () {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
-    fromCurrency: 'ETH',
-    toCurrency: 'ETH',
+    fromCurrency: 'AKA',
+    toCurrency: 'AKA',
     numberOfDecimals: 6,
     conversionRate,
   })
@@ -403,7 +403,7 @@ ConfirmSendEther.prototype.render = function () {
 
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', `${totalInFIAT} ${currentCurrency.toUpperCase()}`),
-              h('div.confirm-screen-row-detail', `${totalInETH} ETH`),
+              h('div.confirm-screen-row-detail', `${totalInETH} AKA`),
             ]),
 
             this.renderErrorMessage('insufficientFunds'),

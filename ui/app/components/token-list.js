@@ -66,7 +66,7 @@ TokenList.prototype.render = function () {
         },
         onClick: () => {
           global.platform.openWindow({
-          url: `https://ethplorer.io/address/${userAddress}`,
+          url: `https://akroma.io/explorer/address/${userAddress}`,
         })
         },
       }, this.context.t('here')),

@@ -294,7 +294,7 @@ App.prototype.renderAppBar = function () {
             h('img.metafox-icon', {
               height: 42,
               width: 42,
-              src: './images/metamask-fox.svg',
+              src: './images/icon-64.png',
             }),
 
             // metamask name
@@ -563,12 +563,12 @@ App.prototype.getConnectingLabel = function () {
 
   if (providerName === 'mainnet') {
     name = this.context.t('connectingToMainnet')
-  } else if (providerName === 'ropsten') {
-    name = this.context.t('connectingToRopsten')
-  } else if (providerName === 'kovan') {
-    name = this.context.t('connectingToRopsten')
-  } else if (providerName === 'rinkeby') {
-    name = this.context.t('connectingToRinkeby')
+  // } else if (providerName === 'ropsten') {
+  //   name = this.context.t('connectingToRopsten')
+  // } else if (providerName === 'kovan') {
+  //   name = this.context.t('connectingToRopsten')
+  // } else if (providerName === 'rinkeby') {
+  //   name = this.context.t('connectingToRinkeby')
   } else {
     name = this.context.t('connectingToUnknown')
   }
@@ -584,12 +584,12 @@ App.prototype.getNetworkName = function () {
 
   if (providerName === 'mainnet') {
     name = this.context.t('mainnet')
-  } else if (providerName === 'ropsten') {
-    name = this.context.t('ropsten')
-  } else if (providerName === 'kovan') {
-    name = this.context.t('kovan')
-  } else if (providerName === 'rinkeby') {
-    name = this.context.t('rinkeby')
+  // } else if (providerName === 'ropsten') {
+  //   name = this.context.t('ropsten')
+  // } else if (providerName === 'kovan') {
+  //   name = this.context.t('kovan')
+  // } else if (providerName === 'rinkeby') {
+  //   name = this.context.t('rinkeby')
   } else {
     name = this.context.t('unknownNetwork')
   }
