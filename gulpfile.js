@@ -32,7 +32,7 @@ const pify = require('pify')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 
-function gulpParallel (...args) {
+function gulpParallel(...args) {
   return function spawnGulpChildProcess(cb) {
     return gulpMultiProcess(args, cb, true)
   }
@@ -53,7 +53,7 @@ const commonPlatforms = [
 
 // browser reload
 
-gulp.task('dev:reload', function() {
+gulp.task('dev:reload', function () {
   livereload.listen({
     port: 35729,
   })
@@ -119,7 +119,7 @@ function createCopyTasks(label, opts) {
   copyDevTaskNames.push(copyDevTaskName)
 }
 
-function copyTask(taskName, opts){
+function copyTask(taskName, opts) {
   const source = opts.source
   const destination = opts.destination
   const destinations = opts.destinations || [destination]
@@ -142,7 +142,7 @@ function copyTask(taskName, opts){
     let stream = gulp.src(source + pattern, { base: source })
 
     // copy to destinations
-    destinations.forEach(function(destination) {
+    destinations.forEach(function (destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
 
@@ -152,47 +152,47 @@ function copyTask(taskName, opts){
 
 // manifest tinkering
 
-gulp.task('manifest:chrome', function() {
+gulp.task('manifest:chrome', function () {
   return gulp.src('./dist/chrome/manifest.json')
-  .pipe(jsoneditor(function(json) {
-    delete json.applications
-    return json
-  }))
-  .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
+    .pipe(jsoneditor(function (json) {
+      delete json.applications
+      return json
+    }))
+    .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
-gulp.task('manifest:opera', function() {
+gulp.task('manifest:opera', function () {
   return gulp.src('./dist/opera/manifest.json')
-  .pipe(jsoneditor(function(json) {
-    json.permissions = [
-      "storage",
-      "tabs",
-      "clipboardWrite",
-      "clipboardRead",
-      "http://localhost:8545/"
-    ]
-    return json
-  }))
-  .pipe(gulp.dest('./dist/opera', { overwrite: true }))
+    .pipe(jsoneditor(function (json) {
+      json.permissions = [
+        "storage",
+        "tabs",
+        "clipboardWrite",
+        "clipboardRead",
+        "http://localhost:8545/"
+      ]
+      return json
+    }))
+    .pipe(gulp.dest('./dist/opera', { overwrite: true }))
 })
 
-gulp.task('manifest:production', function() {
+gulp.task('manifest:production', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
     './dist/edge/manifest.json',
     './dist/opera/manifest.json',
-  ],{base: './dist/'})
+  ], { base: './dist/' })
 
-  // Exclude chromereload script in production:
-  .pipe(jsoneditor(function(json) {
-    json.background.scripts = json.background.scripts.filter((script) => {
-      return !script.includes('chromereload')
-    })
-    return json
-  }))
+    // Exclude chromereload script in production:
+    .pipe(jsoneditor(function (json) {
+      json.background.scripts = json.background.scripts.filter((script) => {
+        return !script.includes('chromereload')
+      })
+      return json
+    }))
 
-  .pipe(gulp.dest('./dist/', { overwrite: true }))
+    .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
 gulp.task('copy',
@@ -230,7 +230,7 @@ gulp.task('lint', function () {
 
 gulp.task('lint:fix', function () {
   return gulp.src(lintTargets)
-    .pipe(eslint(Object.assign(fs.readFileSync(path.join(__dirname, '.eslintrc')), {fix: true})))
+    .pipe(eslint(Object.assign(fs.readFileSync(path.join(__dirname, '.eslintrc')), { fix: true })))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError())
 });
@@ -272,7 +272,7 @@ function createScssBuildTask({ src, dest, devMode, pattern }) {
   }
 }
 
-gulp.task('lint-scss', function() {
+gulp.task('lint-scss', function () {
   return gulp
     .src('ui/app/css/itcss/**/*.scss')
     .pipe(gulpStylelint({
@@ -300,7 +300,7 @@ const buildJsFiles = [
 
 // bundle tasks
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
-createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js'  })
+createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
 createTasksForBuildJsMascara({ taskPrefix: 'build:mascara:js' })
 createTasksForBuildJsMascara({ taskPrefix: 'dev:mascara:js', devMode: true })
 
@@ -463,8 +463,8 @@ gulp.task('dist',
 function zipTask(target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
-    .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
-    .pipe(gulp.dest('builds'))
+      .pipe(zip(`akroma-${target}-${manifest.version}.zip`))
+      .pipe(gulp.dest('builds'))
   }
 }
 
@@ -489,7 +489,7 @@ function generateBundler(opts, performBundle) {
     bundler.transform('uglifyify', {
       global: true,
       mangle: {
-        reserved: [ 'MetamaskInpageProvider' ]
+        reserved: ['MetamaskInpageProvider']
       },
     })
   }
@@ -518,7 +518,7 @@ function discTask(opts) {
 
   return performBundle
 
-  function performBundle(){
+  function performBundle() {
     // start "disc" build
     const discDir = path.join(__dirname, 'disc')
     mkdirp.sync(discDir)
@@ -526,8 +526,8 @@ function discTask(opts) {
 
     return (
       bundler.bundle()
-      .pipe(disc())
-      .pipe(fs.createWriteStream(discPath))
+        .pipe(disc())
+        .pipe(fs.createWriteStream(discPath))
     )
   }
 }
@@ -540,7 +540,7 @@ function bundleTask(opts) {
 
   return performBundle
 
-  function performBundle(){
+  function performBundle() {
     let buildStream = bundler.bundle()
 
     // handle errors
@@ -583,6 +583,6 @@ function bundleTask(opts) {
   }
 }
 
-function beep () {
+function beep() {
   process.stdout.write('\x07')
 }
