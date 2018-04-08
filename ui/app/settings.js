@@ -241,7 +241,7 @@ class Settings extends Component {
                   if (err) {
                     this.state.dispatch(actions.displayWarning(this.context.t('stateLogError')))
                   } else {
-                    exportAsFile('MetaMask State Logs.json', result)
+                    exportAsFile('Logs.json', result)
                   }
                 })
               },
@@ -322,7 +322,7 @@ class Settings extends Component {
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
-        !isMascara && this.renderOldUI(),
+        // !isMascara && this.renderOldUI(),
         this.renderResetAccount(),
         this.renderBlockieOptIn(),
       ])
@@ -343,7 +343,7 @@ class Settings extends Component {
         h('div.settings__info-link-header', this.context.t('links')),
         h('div.settings__info-link-item', [
           h('a', {
-            href: 'https://metamask.io/privacy.html',
+            href: 'https://github.com/akroma-project/akroma.io/wiki/privacy-policy',
             target: '_blank',
           }, [
             h('span.settings__info-link', this.context.t('privacyMsg')),
@@ -351,32 +351,32 @@ class Settings extends Component {
         ]),
         h('div.settings__info-link-item', [
           h('a', {
-            href: 'https://metamask.io/terms.html',
+            href: 'https://github.com/akroma-project/akroma.io/wiki/terms-of-service',
             target: '_blank',
           }, [
             h('span.settings__info-link', this.context.t('terms')),
           ]),
         ]),
+        // h('div.settings__info-link-item', [
+        //   h('a', {
+        //     href: 'https://metamask.io/attributions.html',
+        //     target: '_blank',
+        //   }, [
+        //     h('span.settings__info-link', this.context.t('attributions')),
+        //   ]),
+        // ]),
+        // h('hr.settings__info-separator'),
+        // h('div.settings__info-link-item', [
+        //   h('a', {
+        //     href: 'https://support.metamask.io',
+        //     target: '_blank',
+        //   }, [
+        //     h('span.settings__info-link', this.context.t('supportCenter')),
+        //   ]),
+        // ]),
         h('div.settings__info-link-item', [
           h('a', {
-            href: 'https://metamask.io/attributions.html',
-            target: '_blank',
-          }, [
-            h('span.settings__info-link', this.context.t('attributions')),
-          ]),
-        ]),
-        h('hr.settings__info-separator'),
-        h('div.settings__info-link-item', [
-          h('a', {
-            href: 'https://support.metamask.io',
-            target: '_blank',
-          }, [
-            h('span.settings__info-link', this.context.t('supportCenter')),
-          ]),
-        ]),
-        h('div.settings__info-link-item', [
-          h('a', {
-            href: 'https://metamask.io/',
+            href: 'https://akroma.io/',
             target: '_blank',
           }, [
             h('span.settings__info-link', this.context.t('visitWebSite')),
@@ -385,7 +385,7 @@ class Settings extends Component {
         h('div.settings__info-link-item', [
           h('a', {
             target: '_blank',
-            href: 'mailto:help@metamask.io?subject=Feedback',
+            href: 'mailto:team+extension@akroma.io?subject=Feedback',
           }, [
             h('span.settings__info-link', this.context.t('emailUs')),
           ]),
@@ -403,15 +403,15 @@ class Settings extends Component {
           h('div.settings__content-item.settings__content-item--without-height', [
             this.renderLogo(),
             h('div.settings__info-item', [
-              h('div.settings__info-version-header', 'MetaMask Version'),
+              h('div.settings__info-version-header', 'Version'),
               h('div.settings__info-version-number', `${version}`),
             ]),
-            h('div.settings__info-item', [
-              h(
-                'div.settings__info-about',
-                this.context.t('builtInCalifornia')
-              ),
-            ]),
+            // h('div.settings__info-item', [
+            //   h(
+            //     'div.settings__info-about',
+            //     this.context.t('builtInCalifornia')
+            //   ),
+            // ]),
           ]),
           this.renderInfoLinks(),
         ]),

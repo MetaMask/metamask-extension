@@ -39,11 +39,11 @@ class WelcomeScreen extends Component {
             src: 'images/icon-512.png',
           }),
 
-          h('div.welcome-screen__info__header', 'Welcome to Akroma Browser Extension Beta'),
+          h('div.welcome-screen__info__header', 'Welcome to Akroma'),
 
-          h('div.welcome-screen__info__copy', 'Akroma Browser Extension is a wallet and identity vault.'),
+          h('p.welcome-screen__info__copy', 'Akroma is a wallet and identity vault.'),
 
-          h('div.welcome-screen__info__copy', `It allows you to hold AKA & tokens, and serves as your bridge to decentralized applications.`),
+          h('p.welcome-screen__info__copy', `It allows you to hold AKA & tokens, and serves as your bridge to decentralized applications.`),
 
           h('button.welcome-screen__button', {
             onClick: this.initiateAccountCreation,

@@ -30,7 +30,7 @@
     "message": "Amount + Gas"
   },
   "appDescription": {
-    "message": "Akroma Browser Extension",
+    "message": "Akroma Web Extension",
     "description": "The description of the application"
   },
   "appName": {
@@ -468,13 +468,13 @@
     "message": "seed words only have lowercase characters"
   },
   "mainnet": {
-    "message": "Main Akroma Network"
+    "message": "Akroma Network"
   },
   "message": {
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "Akroma wallet and identity vault."
+    "message": "Akroma wallet and identity."
   },
   "min": {
     "message": "Minimum"
@@ -486,7 +486,7 @@
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using Akroma Browser Extension, you’ll need AKA in your wallet."
+    "message": "To interact with decentralized applications using Akroma Web Extension, you’ll need AKA in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -843,7 +843,7 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
-    "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
+    "message": "These 12 words are the only way to restore your accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
     "message": "Type Your Password"

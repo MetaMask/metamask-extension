@@ -213,7 +213,7 @@
   .import-account__secret-phrase {
     width: initial !important;
     height: initial !important;
-    min-height: 190px;
+    min-height: 150px;
   }
 
   .backup-phrase__confirm-seed-options {
@@ -232,8 +232,8 @@
 .import-account__title,
 .buy-ether__title {
   color: #1B344D;
-  font-size: 40px;
-  line-height: 51px;
+  font-size: 30px;
+  line-height: 41px;
   margin-bottom: 24px;
 }
 

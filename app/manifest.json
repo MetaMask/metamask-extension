@@ -1,7 +1,7 @@
 {
   "name": "__MSG_appName__",
   "short_name": "__MSG_appName__",
-  "version": "4.5.5",
+  "version": "4.5.8",
   "manifest_version": 2,
   "author": "https://akroma.io",
   "description": "__MSG_appDescription__",

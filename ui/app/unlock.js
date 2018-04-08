@@ -96,18 +96,18 @@ UnlockScreen.prototype.render = function () {
         },
       }, this.context.t('restoreFromSeed')),
 
-      h('p.pointer', {
-        onClick: () => {
-          this.props.dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
-            .then(() => this.props.dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
-        },
-        style: {
-          fontSize: '0.8em',
-          color: '#aeaeae',
-          textDecoration: 'underline',
-          marginTop: '32px',
-        },
-      }, this.context.t('classicInterface')),
+      // h('p.pointer', {
+      //   onClick: () => {
+      //     this.props.dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+      //       .then(() => this.props.dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
+      //   },
+      //   style: {
+      //     fontSize: '0.8em',
+      //     color: '#aeaeae',
+      //     textDecoration: 'underline',
+      //     marginTop: '32px',
+      //   },
+      // }, this.context.t('classicInterface')),
     ])
   )
 }
