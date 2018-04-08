@@ -30,7 +30,7 @@
     "message": "Importo + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "Akroma Browser Extension",
     "description": "La descrizione dell'applicazione"
   },
   "appName": {
@@ -81,7 +81,7 @@
     "message": "Compra su Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase è il servizio più popolare al mondo per comprare e vendere bitcoin, ethereum e litecoin."
+    "message": "Coinbase è il servizio più popolare al mondo per comprare e vendere bitcoin, Akroma e litecoin."
   },
   "cancel": {
     "message": "Cancella"
@@ -175,7 +175,7 @@
     "message": "Precisione Decimali"
   }, 
   "defaultNetwork": {
-    "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
+    "message": "La rete predefinita per transazioni in Akroma è la Rete Akroma Principale."
   },
   "denExplainer": {
     "message": "Il DEN è il tuo archivio crittato con password dentro Akroma."
@@ -206,7 +206,7 @@
     "message": "Deposita con ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Se possiedi altre criptomonete, puoi scambiare e depositare Ether direttamente nel tuo portafoglio Akroma. Nessun account richiesto."
+    "message": "Se possiedi altre criptomonete, puoi scambiare e depositare Akroma direttamente nel tuo portafoglio Akroma. Nessun account richiesto."
   },
   "details": {
     "message": "Dettagli"
@@ -218,7 +218,7 @@
     "message": "Deposita Direttamente Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."    
+    "message": "Se possiedi già degli Akroma, questa è la via più veloce per aggiungere Akroma al tuo portafoglio con un deposito diretto."    
   },
   "done": {
     "message": "Finito"
@@ -314,7 +314,7 @@
     "message": "Ottieni Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Ottieni Get Ether da un faucet per $1",
+    "message": "Ottieni Get Akroma da un faucet per $1",
     "description": "Visualizza il nome della rete per il faucet Ether"
   },
   "greaterThanMin": {
@@ -341,7 +341,7 @@
     "message": "Come vuoi depositare Ether?"
   },
   "holdEther": {
-    "message": "Ti permette di tenere ether & token, e serve da ponte per le applicazioni decentralizzate."    
+    "message": "Ti permette di tenere Akroma & token, e serve da ponte per le applicazioni decentralizzate."    
   },
   "import": {
     "message": "Importa",
@@ -435,13 +435,13 @@
     "message": "le frasi seed hanno solo lettere minuscole"
   },
   "mainnet": {
-    "message": "Rete Ethereum Principale"
+    "message": "Rete Akroma Principale"
   },
   "message": {
     "message": "Messaggio"
   },
-  "AkromaDescription": {
-    "message": "Akroma è una cassaforte sicura per identità su Ethereum."
+  "metamaskDescription": {
+    "message": "Akroma è una cassaforte sicura per identità su Akroma."
   },
   "min": {
     "message": "Minimo"
@@ -453,7 +453,7 @@
     "message": "Devi selezionare almeno un token."
   },
   "needEtherInWallet": {
-    "message": "Per interagire con applicazioni decentralizzate con Akroma, devi possedere Ether nel tuo portafoglio."
+    "message": "Per interagire con applicazioni decentralizzate con Akroma, devi possedere Akroma nel tuo portafoglio."
   },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
@@ -649,7 +649,7 @@
     "message": "Invia Tokens"
   },
   "sendTokensAnywhere": {
-    "message": "Invia Tokens a chiunque abbia un account Ethereum"
+    "message": "Invia Tokens a chiunque abbia un account Akroma"
   },
   "settings": {
     "message": "Impostazioni"

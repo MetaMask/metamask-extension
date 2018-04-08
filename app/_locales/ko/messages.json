@@ -258,7 +258,7 @@
   },
   "getEtherFromFaucet": {
     "message": "faucet에서 $1에 달하는 이더를 얻으세요.",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for Akroma faucet"
   },
   "greaterThanMin": {
     "message": "$1 이상이어야 합니다.",

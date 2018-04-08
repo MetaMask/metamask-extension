@@ -30,7 +30,7 @@
     "message": "Сумма + газ"
   },
   "appDescription": {
-    "message": "Расширение браузера для Ethereum",
+    "message": "Расширение браузера для Akroma",
     "description": "The description of the application"
   },
   "appName": {
@@ -84,7 +84,7 @@
     "message": "Купить на Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Биржа Coinbase – это наиболее популярный способ купить или продать bitcoin, ethereum и litecoin."
+    "message": "Биржа Coinbase – это наиболее популярный способ купить или продать bitcoin, Akroma и litecoin."
   },
   "ok": {
     "message": "ОК"
@@ -187,7 +187,7 @@
     "message": "Количество десятичных разрядов"
   },
   "defaultNetwork": {
-    "message": "Основная сеть Ethereum – это сеть по умолчанию для Ether транзакций."
+    "message": "Основная сеть Akroma – это сеть по умолчанию для Akroma транзакций."
   },
   "denExplainer": {
     "message": "DEN – это зашифрованное паролем хранилище внутри Akroma."
@@ -218,7 +218,7 @@
     "message": "Пополнить через ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Если у вас есть другие криптовалюты, вы можете торговать и пополнять Ether напрямую в ваш Akroma кошелек. Нет необходимости в счете."
+    "message": "Если у вас есть другие криптовалюты, вы можете торговать и пополнять Akroma напрямую в ваш Akroma кошелек. Нет необходимости в счете."
   },
   "details": {
     "message": "Детали"
@@ -230,7 +230,7 @@
     "message": "Прямое пополнение Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "Если у вас уже есть Ether, то самый быстрый способ получить Ether в ваш новый кошелек – это прямое пополнение."
+    "message": "Если у вас уже есть Akroma, то самый быстрый способ получить Akroma в ваш новый кошелек – это прямое пополнение."
   },
   "done": {
     "message": "Готово"
@@ -329,8 +329,8 @@
     "message": "Получить Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Получить Ether из крана для $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Получить Akroma из крана для $1",
+    "description": "Displays network name for Akroma faucet"
   },
   "greaterThanMin": {
     "message": "должно быть больше или равно $1.",
@@ -356,7 +356,7 @@
     "message": "Как бы вы хотели пополнить Ether?"
   },
   "holdEther": {
-    "message": "Позволяет вам хранить ether и токены и служит в качестве моста в децентрализированные приложения."
+    "message": "Позволяет вам хранить Akroma и токены и служит в качестве моста в децентрализированные приложения."
   },
   "import": {
     "message": "Импортировать",
@@ -462,13 +462,13 @@
     "message": "ключевая фраза может содержать только символы нижнего регистра"
   },
   "mainnet": {
-    "message": "Основная сеть Ethereum"
+    "message": "Основная сеть Akroma"
   },
   "message": {
     "message": "Сообщение"
   },
-  "AkromaDescription": {
-    "message": "Akroma – безопасный кошелек для Ethereum."
+  "metamaskDescription": {
+    "message": "Akroma – безопасный кошелек для Akroma."
   },
   "min": {
     "message": "Минимум"
@@ -480,7 +480,7 @@
     "message": "Необходимо выбрать как минимум 1 токен."
   },
   "needEtherInWallet": {
-    "message": "Для взаимодействия с децентрализованными приложениями с помощью Akroma нужен Ether в вашем кошельке."
+    "message": "Для взаимодействия с децентрализованными приложениями с помощью Akroma нужен Akroma в вашем кошельке."
   },
   "needImportFile": {
     "message": "Вы должны выбрать файл для импорта.",
@@ -644,7 +644,7 @@
     "message": "Current RPC"
   },
   "connectingToMainnet": {
-    "message": "Соединение с основной сетью Ethereum"
+    "message": "Соединение с основной сетью Akroma"
   },
   "connectingToRopsten": {
     "message": "Соединение с тестовой сетью Ropsten"
@@ -706,13 +706,13 @@
     "message": "Отправить токены"
   },
   "onlySendToEtherAddress": {
-    "message": "Отправляйте ETH только на Ethereum адреса."
+    "message": "Отправляйте ETH только на Akroma адреса."
   },
   "searchTokens": {
     "message": "Поиск токенов"
   },
   "sendTokensAnywhere": {
-    "message": "Отправить токены любому, у кого есть счет Ethereum"
+    "message": "Отправить токены любому, у кого есть счет Akroma"
   },
   "settings": {
     "message": "Настройки"

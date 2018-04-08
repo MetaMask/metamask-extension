@@ -30,7 +30,7 @@
     "message": "Znesek + Gas"
   },
   "appDescription": {
-    "message": "Denarnica za Ethereum v brskalniku",
+    "message": "Denarnica za Akroma v brskalniku",
     "description": "The description of the application"
   },
   "appName": {
@@ -81,7 +81,7 @@
     "message": "Kupi na Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase je najpopularnejši načun za kupovanje in prodajo bitcoinov, ethereuma, in litecoina."
+    "message": "Coinbase je najpopularnejši načun za kupovanje in prodajo bitcoinov, Akromaa, in litecoina."
   },
   "cancel": {
     "message": "Prekliči"
@@ -206,7 +206,7 @@
     "message": "Vplačilo z ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Če imate druge kriptovalute, lahko vpačate ether neposredno v Akroma. Brez računov."
+    "message": "Če imate druge kriptovalute, lahko vpačate Akroma neposredno v Akroma. Brez računov."
   },
   "details": {
     "message": "Podrobnosti"
@@ -218,7 +218,7 @@
     "message": "Direktno vplačilo ehera"
   },
   "directDepositEtherExplainer": {
-    "message": "Če že imate ether, ga lahko najhitreje dobite v Akroma z direktnim vplačilom."
+    "message": "Če že imate Akroma, ga lahko najhitreje dobite v Akroma z direktnim vplačilom."
   },
   "done": {
     "message": "Končano"
@@ -314,8 +314,8 @@
     "message": "Pridobite ether"
   },
   "getEtherFromFaucet": {
-    "message": "Pridobite ether iz fauceta za $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Pridobite Akroma iz fauceta za $1",
+    "description": "Displays network name for Akroma faucet"
   },
   "greaterThanMin": {
     "message": "mora biti višji ali enak $1.",
@@ -440,8 +440,8 @@
   "message": {
     "message": "Sporočilo"
   },
-  "AkromaDescription": {
-    "message": "Akroma je varen identitetni sklad za Ethereum."
+  "metamaskDescription": {
+    "message": "Akroma je varen identitetni sklad za Akroma."
   },
   "min": {
     "message": "Najmanj"
@@ -649,7 +649,7 @@
     "message": "Pošlji žetone"
   },
   "sendTokensAnywhere": {
-    "message": "Pošljite žetone vsem, ki imajo Ethereum račun"
+    "message": "Pošljite žetone vsem, ki imajo Akroma račun"
   },
   "settings": {
     "message": "Nastavitve"

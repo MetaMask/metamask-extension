@@ -167,7 +167,7 @@
     "message": "从 ShapeShift 存入"
   },
   "depositShapeShiftExplainer": {
-    "message": "如果你拥有其他加密货币，你可以直接交易并存入 Ether 到你的 Akroma 钱包。 不需要帐户。"
+    "message": "如果你拥有其他加密货币，你可以直接交易并存入 Akroma 到你的 Akroma 钱包。 不需要帐户。"
   },
   "details": {
     "message": "详情"
@@ -179,7 +179,7 @@
     "message": "直接存入 Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "如果你已经有了一些 Ether，通过直接转入是你的新钱包获取 Ether 的最快捷方式。"
+    "message": "如果你已经有了一些 Ether，通过直接转入是你的新钱包获取 Akroma 的最快捷方式。"
   },
   "done": {
     "message": "完成"
@@ -258,7 +258,7 @@
   },
   "getEtherFromFaucet": {
     "message": "从水管获取$1网络的 Ether",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for Akroma faucet"
   },
   "greaterThanMin": {
     "message": "必须要大于等于 $1。",

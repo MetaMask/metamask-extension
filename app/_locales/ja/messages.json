@@ -27,7 +27,7 @@
     "message": "金額 + ガス"
   },
   "appDescription": {
-    "message": "Ethereumのブラウザ・エクステンション",
+    "message": "Akromaのブラウザ・エクステンション",
     "description": "The description of the application"
   },
   "appName": {
@@ -66,7 +66,7 @@
     "message": "Coinbaseで購入"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbaseは、世界的なBitcoin、Ethereum、そしてLitecoinの取引所です。"
+    "message": "Coinbaseは、世界的なBitcoin、Akroma、そしてLitecoinの取引所です。"
   },
   "cancel": {
     "message": "キャンセル"
@@ -270,7 +270,7 @@
   },
   "getEtherFromFaucet": {
     "message": "フォーセットで $1のEtherを得ることができます。",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for Akroma faucet"
   },
   "greaterThanMin": {
     "message": " $1以上にして下さい。",
@@ -360,7 +360,7 @@
     "message": "外部秘密鍵"
   },
   "mainnet": {
-    "message": "Ethereumメインネットワーク"
+    "message": "Akromaメインネットワーク"
   },
   "message": {
     "message": "メッセージ"

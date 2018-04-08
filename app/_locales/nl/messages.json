@@ -30,7 +30,7 @@
     "message": "Bedrag + gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser-extensie",
+    "message": "Akroma Browser-extensie",
     "description": "De beschrijving van de applicatie"
   },
   "appName": {
@@ -81,7 +81,7 @@
     "message": "Koop op Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase is 's werelds populairste manier om bitcoin, ethereum en litecoin te kopen en verkopen."
+    "message": "Coinbase is 's werelds populairste manier om bitcoin, Akroma en litecoin te kopen en verkopen."
   },
   "cancel": {
     "message": "Annuleer"
@@ -206,7 +206,7 @@
     "message": "Stort met ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Als u andere cryptocurrencies bezit, kunt u Ether direct in uw Akroma-portemonnee ruilen en storten. Geen account nodig."
+    "message": "Als u andere cryptocurrencies bezit, kunt u Akroma direct in uw Akroma-portemonnee ruilen en storten. Geen account nodig."
   },
   "details": {
     "message": "Details"
@@ -215,10 +215,10 @@
     "message": "Directe storting"
   },
   "directDepositEther": {
-    "message": "Directe Ether storten"
+    "message": "Directe Akroma storten"
   },
   "directDepositEtherExplainer": {
-    "message": "Als je al wat Ether hebt, de snelste manier om Ether in je nieuwe portemonnee te krijgen door een directe storting."
+    "message": "Als je al wat Akroma hebt, de snelste manier om Akroma in je nieuwe portemonnee te krijgen door een directe storting."
   },
   "done": {
     "message": "Gedaan"
@@ -314,7 +314,7 @@
     "message": "Krijg Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Haal Ether uit een kraan voor de $1",
+    "message": "Haal Akroma uit een kraan voor de $1",
     "description": "Geeft de netwerknaam voor Ether-kraan weer"
   },
   "greaterThanMin": {
@@ -338,10 +338,10 @@
     "message": "Token verbergen?"
   },
   "howToDeposit": {
-    "message": "Hoe zou je Ether willen deponeren?"
+    "message": "Hoe zou je Akroma willen deponeren?"
   },
   "holdEther": {
-    "message": "Hiermee kunt u ether & tokens bewaren en dient u als brug naar gedecentraliseerde applicaties."
+    "message": "Hiermee kunt u Akroma & tokens bewaren en dient u als brug naar gedecentraliseerde applicaties."
   },
   "import": {
     "message": "Importeren",
@@ -435,13 +435,13 @@
     "message": "back-up woorden hebben alleen kleine letters"
   },
   "mainnet": {
-    "message": "belangrijkste ethereum-netwerk"
+    "message": "belangrijkste Akroma-netwerk"
   },
   "message": {
     "message": "Bericht"
   },
-  "AkromaDescription": {
-    "message": "Akroma is een veilige identiteitskluis voor Ethereum."
+  "metamaskDescription": {
+    "message": "Akroma is een veilige identiteitskluis voor Akroma."
   },
   "min": {
     "message": "Minimum"
@@ -453,7 +453,7 @@
     "message": "Moet ten minste één token selecteren."
   },
   "needEtherInWallet": {
-    "message": "Om te communiceren met gedecentraliseerde applicaties met Akroma, heb je Ether nodig in je portemonnee."
+    "message": "Om te communiceren met gedecentraliseerde applicaties met Akroma, heb je Akroma nodig in je portemonnee."
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
@@ -649,7 +649,7 @@
     "message": "Stuur tokens"
   },
   "sendTokensAnywhere": {
-    "message": "Stuur tokens naar iedereen met een Ethereum-account"
+    "message": "Stuur tokens naar iedereen met een Akroma-account"
   },
   "settings": {
     "message": "instellingen"

@@ -25,7 +25,7 @@
   },
   "appDescription": {
     "description": "Mô tả phần mềm",
-    "message": "Tính năng Ethereum cho trình duyệt"
+    "message": "Tính năng Akroma cho trình duyệt"
   },
   "appName": {
     "description": "Tên phần mềm",
@@ -63,7 +63,7 @@
     "message": "Mua trên Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase là dịch vụ ví điện tử thông dụng nhất thế giới để mua bán Bitcoin, Ethereum, và Litecoin"
+    "message": "Coinbase là dịch vụ ví điện tử thông dụng nhất thế giới để mua bán Bitcoin, Akroma, và Litecoin"
   },
   "cancel": {
     "message": "Hủy"
@@ -136,7 +136,7 @@
     "message": "Tùy chỉnh"
   },
   "defaultNetwork": {
-    "message": "Mạng lưới mặc định dùng cho các giao dịch Ether là Main Net (tiền ETH thật)."
+    "message": "Mạng lưới mặc định dùng cho các giao dịch Akroma là Main Net (tiền ETH thật)."
   },
   "denExplainer": {
     "message": "Số DEN của bạn là mật khẩu đã được mã hóa và lưu trữ trong Akroma"
@@ -167,7 +167,7 @@
     "message": "Ký gửi với ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Nếu bạn sở hữu các đồng tiền điện tử khác, bạn có thể giao dịch và ký gửi Ether trực tiếp vào ví Akroma của bạn. Không cần tạo thêm tài khoản."
+    "message": "Nếu bạn sở hữu các đồng tiền điện tử khác, bạn có thể giao dịch và ký gửi Akroma trực tiếp vào ví Akroma của bạn. Không cần tạo thêm tài khoản."
   },
   "details": {
     "message": "Chi tiết"
@@ -176,10 +176,10 @@
     "message": "Ký gửi trực tiếp"
   },
   "directDepositEther": {
-    "message": "Ký gửi Ether trực tiếp"
+    "message": "Ký gửi Akroma trực tiếp"
   },
   "directDepositEtherExplainer": {
-    "message": "Nếu bạn đã có sẵn vài Ether, cách nhanh nhất để thêm Ether vào ví tiền mới của bạn là bằng ký gửi trực tiếp."
+    "message": "Nếu bạn đã có sẵn vài Akroma, cách nhanh nhất để thêm Akroma vào ví tiền mới của bạn là bằng ký gửi trực tiếp."
   },
   "done": {
     "message": "Hoàn tất"
@@ -258,7 +258,7 @@
   },
   "getEtherFromFaucet": {
     "description": "Hiển thị tên mạng cho vòi Ether",
-    "message": "Lấy Ether từ vòi với giá $1"
+    "message": "Lấy Akroma từ vòi với giá $1"
   },
   "greaterThanMin": {
     "description": "trợ giúp để nhập hex dưới dạng số thập phân",
@@ -278,7 +278,7 @@
     "message": "Ẩn mã token?"
   },
   "howToDeposit": {
-    "message": "Bạn muốn ký gửi Ether bằng cách nào?"
+    "message": "Bạn muốn ký gửi Akroma bằng cách nào?"
   },
   "import": {
     "description": "Nút để nhập tài khoản từ một tập tin đã chọn",
@@ -342,7 +342,7 @@
     "message": "Nới lỏng"
   },
   "mainnet": {
-    "message": "Mạng Ethereum MainNet (tiền ETH thật)"
+    "message": "Mạng Akroma MainNet (tiền ETH thật)"
   },
   "message": {
     "message": "Tin nhắn"
@@ -354,7 +354,7 @@
     "message": "Tài khoản của tôi"
   },
   "needEtherInWallet": {
-    "message": "Để tương tác với các ứng dụng phân tán bằng Akroma, bạn sẽ phải cần có Ether trong ví của bạn."
+    "message": "Để tương tác với các ứng dụng phân tán bằng Akroma, bạn sẽ phải cần có Akroma trong ví của bạn."
   },
   "needImportFile": {
     "description": "Người dùng đang nhập một tài khoản và cần thêm tập tin để tiếp tục",
@@ -496,7 +496,7 @@
     "message": "Gửi mã token"
   },
   "sendTokensAnywhere": {
-    "message": "Gửi mã token đến bất kỳ ai có tài khoản Ethereum"
+    "message": "Gửi mã token đến bất kỳ ai có tài khoản Akroma"
   },
   "settings": {
     "message": "Cài đặt"

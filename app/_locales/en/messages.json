@@ -84,7 +84,7 @@
     "message": "Buy on Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
+    "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, Akroma, and litecoin."
   },
   "ok": {
     "message": "Ok"
@@ -218,7 +218,7 @@
     "message": "Deposit with ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your Akroma wallet. No Account Needed."
+    "message": "If you own other cryptocurrencies, you can trade and deposit Akroma directly into your Akroma wallet. No Account Needed."
   },
   "details": {
     "message": "Details"
@@ -335,8 +335,8 @@
     "message": "Get AKA"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Get Akroma from a faucet for the $1",
+    "description": "Displays network name for Akroma faucet"
   },
   "greaterThanMin": {
     "message": "must be greater than or equal to $1.",
@@ -473,7 +473,7 @@
   "message": {
     "message": "Message"
   },
-  "AkromaDescription": {
+  "metamaskDescription": {
     "message": "Akroma wallet and identity."
   },
   "min": {

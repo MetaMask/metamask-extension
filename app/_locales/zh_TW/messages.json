@@ -187,7 +187,7 @@
     "message": "小數點精度"
   },
   "defaultNetwork": {
-    "message": "預設 Ether 交易網路為主網路（Main Net）。"
+    "message": "預設 Akroma 交易網路為主網路（Main Net）。"
   },
   "denExplainer": {
     "message": "你的 DEN 是在你的 Akroma 中的加密密碼儲存庫。"
@@ -218,7 +218,7 @@
     "message": "從 ShapeShift 存入"
   },
   "depositShapeShiftExplainer": {
-    "message": "如果你擁有其他加密貨幣，你可以直接交易並存入 Ether 到你的 Akroma 錢包。不需要開帳戶。"
+    "message": "如果你擁有其他加密貨幣，你可以直接交易並存入 Akroma 到你的 Akroma 錢包。不需要開帳戶。"
   },
   "details": {
     "message": "詳情"
@@ -230,7 +230,7 @@
     "message": "直接存入 Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "如果你已經擁有了一些 Ether，使用直接存入功能是讓你的新錢包最快取得 Ether 的方式。"
+    "message": "如果你已經擁有了一些 Ether，使用直接存入功能是讓你的新錢包最快取得 Akroma 的方式。"
   },
   "done": {
     "message": "完成"
@@ -336,7 +336,7 @@
   },
   "getEtherFromFaucet": {
     "message": "從水管取得$1 Ether",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for Akroma faucet"
   },
   "greaterThanMin": {
     "message": "必須要大於等於 $1。",
@@ -362,7 +362,7 @@
     "message": "你想怎麼存入 Ether？"
   },
   "holdEther": {
-    "message": "Akroma 讓您能保存 ether 和代幣, 並成為您接觸分散式應用程式的途徑."
+    "message": "Akroma 讓您能保存 Akroma 和代幣, 並成為您接觸分散式應用程式的途徑."
   },
   "import": {
     "message": "導入",
@@ -473,8 +473,8 @@
   "message": {
     "message": "訊息"
   },
-  "AkromaDescription": {
-    "message": "Akroma 是Ethereum的安全身份識別金庫."
+  "metamaskDescription": {
+    "message": "Akroma 是Akroma的安全身份識別金庫."
   },
   "min": {
     "message": "最小"
@@ -650,7 +650,7 @@
     "message": "當前的 RPC"
   },
   "connectingToMainnet": {
-    "message": "連線到主 Ethereum 網路"
+    "message": "連線到主 Akroma 網路"
   },
   "connectingToRopsten": {
     "message": "連線到 Ropsten 測試網路"

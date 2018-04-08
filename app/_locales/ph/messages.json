@@ -24,7 +24,7 @@
     "message": "Halaga + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "Akroma Browser Extension",
     "description": "Ang deskripsyon ng application"
   },
   "appName": {
@@ -63,7 +63,7 @@
     "message": "Bumili sa Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Ang Coinbase ang pinakasikat na paraan upang bumili at magbenta ng bitcoin, ethereum, at litecoin sa buong mundo."
+    "message": "Ang Coinbase ang pinakasikat na paraan upang bumili at magbenta ng bitcoin, Akroma, at litecoin sa buong mundo."
   },
   "cancel": {
     "message": "Kanselahin"
@@ -136,7 +136,7 @@
     "message": "Custom RPC"
   },
   "defaultNetwork": {
-    "message": "Ang default network para sa Ether transactions ay ang Main Net."
+    "message": "Ang default network para sa Akroma transactions ay ang Main Net."
   },
   "denExplainer": {
     "message": "Ang iyong DEN ang nagsisilbing password-encrypted storage mo sa loob ng Akroma."
@@ -167,7 +167,7 @@
     "message": "I-deposito gamit ang ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Kung ikaw ay nagmamay-ari ng iba pang cryptocurrencies, pwede kang mag-trade at mag-deposito ng Ether diretso sa iyong Akroma wallet. Hindi mo na kailangan ng account."
+    "message": "Kung ikaw ay nagmamay-ari ng iba pang cryptocurrencies, pwede kang mag-trade at mag-deposito ng Akroma diretso sa iyong Akroma wallet. Hindi mo na kailangan ng account."
   },
   "details": {
     "message": "Detalye"
@@ -179,7 +179,7 @@
     "message": "Direktang I-deposito ang Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "Kung ika ay mayroon nang Ether, ang pinakamabilis na paraan upang makuha ang Ether sa iyong bagong wallet ay sa pamamagitan ng direktang deposito."
+    "message": "Kung ika ay mayroon nang Akroma, ang pinakamabilis na paraan upang makuha ang Akroma sa iyong bagong wallet ay sa pamamagitan ng direktang deposito."
   },
   "done": {
     "message": "Tapos na"
@@ -257,8 +257,8 @@
     "message": "Kumuha ng Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Kumuha ng Ether mula sa faucet para sa $1",
-    "description": "Ipinapakita ang pangalan ng network para sa Ether faucet"
+    "message": "Kumuha ng Akroma mula sa faucet para sa $1",
+    "description": "Ipinapakita ang pangalan ng network para sa Akroma faucet"
   },
   "greaterThanMin": {
     "message": "dapat mas malaki o katumbas ng $1.",
@@ -342,7 +342,7 @@
     "message": "Loose"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Akroma Network"
   },
   "message": {
     "message": "Mensahe"
@@ -354,7 +354,7 @@
     "message": "Aking mga Account"
   },
   "needEtherInWallet": {
-    "message": "Upang makipag-ugnayan sa decentralized applications gamit ang Akroma, kakailanganin mo ng Ether sa iyong wallet."
+    "message": "Upang makipag-ugnayan sa decentralized applications gamit ang Akroma, kakailanganin mo ng Akroma sa iyong wallet."
   },
   "needImportFile": {
     "message": "Dapat kang pumili ng file para i-import.",
@@ -496,7 +496,7 @@
     "message": "Magpadala ng Tokens"
   },
   "sendTokensAnywhere": {
-    "message": "Magpadala ng Tokens sa sinumang may Ethereum account"
+    "message": "Magpadala ng Tokens sa sinumang may Akroma account"
   },
   "settings": {
     "message": "Mga Setting"

@@ -315,7 +315,7 @@
   },
   "getEtherFromFaucet": {
     "message": "รับอีเธอร์ที่ปล่อยจาก $1",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for Akroma faucet"
   },
   "greaterThanMin": {
     "message": "ต้องมากกว่าหรือเท่ากับ $1.",
@@ -440,7 +440,7 @@
   "message": {
     "message": "ข้อความ"
   },
-  "AkromaDescription": {
+  "metamaskDescription": {
     "message": "Akroma คือที่เก็บตัวตนนิรภัยสำหรับอีเธอเรียม"
   },
   "min": {
