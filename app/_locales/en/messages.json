@@ -75,7 +75,7 @@
     "message": "Borrow With Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "MetaMask is designed and built in California."
+    "message": "Akroma is designed and built in California."
   },
   "buy": {
     "message": "Buy"
@@ -190,7 +190,7 @@
     "message": "The default network for AKA transactions is Main Net."
   },
   "denExplainer": {
-    "message": "Your DEN is your password-encrypted storage within MetaMask."
+    "message": "Your DEN is your password-encrypted storage within Akroma."
   },
   "deposit": {
     "message": "Deposit"
@@ -218,7 +218,7 @@
     "message": "Deposit with ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your Akroma wallet. No Account Needed."
   },
   "details": {
     "message": "Details"
@@ -372,7 +372,7 @@
     "message": "Import Account"
   },
   "importAccountMsg": {
-    "message":" Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
+    "message":" Imported accounts will not be associated with your originally created Akroma account seedphrase. Learn more about imported accounts "
   },
   "importAnAccount": {
     "message": "Import an account"
@@ -419,7 +419,7 @@
     "description": "format for importing an account"
   },
   "keepTrackTokens": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account."
+    "message": "Keep track of the tokens you’ve bought with your Akroma account."
   },
   "kovan": {
     "message": "Kovan Test Network"
@@ -473,7 +473,7 @@
   "message": {
     "message": "Message"
   },
-  "metamaskDescription": {
+  "AkromaDescription": {
     "message": "Akroma wallet and identity."
   },
   "min": {
@@ -818,7 +818,7 @@
     "message": "Token Symbol"
   },
   "tokenWarning1": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account. If you bought tokens using a different account, those tokens will not appear here."
+    "message": "Keep track of the tokens you’ve bought with your Akroma account. If you bought tokens using a different account, those tokens will not appear here."
   },
   "total": {
     "message": "Total"
@@ -852,7 +852,7 @@
     "message": "Welcome to the New UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+    "message": "You are now using the new Akroma UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
   },
   "unapproved": {
     "message": "Unapproved"
@@ -898,7 +898,7 @@
     "message": "Warning"
   },
   "welcomeBeta": {
-    "message": "Welcome to MetaMask Beta"
+    "message": "Welcome to Akroma Beta"
   },
   "whatsThis": {
     "message": "What's this?"

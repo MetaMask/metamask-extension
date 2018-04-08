@@ -28,7 +28,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Akroma",
     "description": "The name of the application"
   },
   "attemptingConnect": {
@@ -139,7 +139,7 @@
     "message": "默认以太坊交易网络为主网。"
   },
   "denExplainer": {
-    "message": "你的 DEN 是存储在 MetaMask 中的已加密密码。"
+    "message": "你的 DEN 是存储在 Akroma 中的已加密密码。"
   },
   "deposit": {
     "message": "存入"
@@ -167,7 +167,7 @@
     "message": "从 ShapeShift 存入"
   },
   "depositShapeShiftExplainer": {
-    "message": "如果你拥有其他加密货币，你可以直接交易并存入 Ether 到你的 MetaMask 钱包。 不需要帐户。"
+    "message": "如果你拥有其他加密货币，你可以直接交易并存入 Ether 到你的 Akroma 钱包。 不需要帐户。"
   },
   "details": {
     "message": "详情"
@@ -354,7 +354,7 @@
     "message": "我的账户"
   },
   "needEtherInWallet": {
-    "message": "使用 MetaMask 与 DAPP 交互，需要你的钱包里有 Ether。"
+    "message": "使用 Akroma 与 DAPP 交互，需要你的钱包里有 Ether。"
   },
   "needImportFile": {
     "message": "必须选择导入一个文件。",
@@ -570,7 +570,7 @@
     "message": "欢迎使用新版界面 （Beta）"
   },
   "uiWelcomeMessage": {
-    "message": "你现在正在使用新的 Metamask 界面。 尝试发送代币等新功能，有任何问题请告知我们。"
+    "message": "你现在正在使用新的 Akroma 界面。 尝试发送代币等新功能，有任何问题请告知我们。"
   },
   "unavailable": {
     "message": "不可用"

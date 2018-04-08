@@ -28,7 +28,7 @@
     "description": "Ang deskripsyon ng application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Akroma",
     "description": "Ang pangalan ng application"
   },
   "attemptingConnect": {
@@ -139,7 +139,7 @@
     "message": "Ang default network para sa Ether transactions ay ang Main Net."
   },
   "denExplainer": {
-    "message": "Ang iyong DEN ang nagsisilbing password-encrypted storage mo sa loob ng MetaMask."
+    "message": "Ang iyong DEN ang nagsisilbing password-encrypted storage mo sa loob ng Akroma."
   },
   "deposit": {
     "message": "Deposito"
@@ -167,7 +167,7 @@
     "message": "I-deposito gamit ang ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Kung ikaw ay nagmamay-ari ng iba pang cryptocurrencies, pwede kang mag-trade at mag-deposito ng Ether diretso sa iyong MetaMask wallet. Hindi mo na kailangan ng account."
+    "message": "Kung ikaw ay nagmamay-ari ng iba pang cryptocurrencies, pwede kang mag-trade at mag-deposito ng Ether diretso sa iyong Akroma wallet. Hindi mo na kailangan ng account."
   },
   "details": {
     "message": "Detalye"
@@ -354,7 +354,7 @@
     "message": "Aking mga Account"
   },
   "needEtherInWallet": {
-    "message": "Upang makipag-ugnayan sa decentralized applications gamit ang MetaMask, kakailanganin mo ng Ether sa iyong wallet."
+    "message": "Upang makipag-ugnayan sa decentralized applications gamit ang Akroma, kakailanganin mo ng Ether sa iyong wallet."
   },
   "needImportFile": {
     "message": "Dapat kang pumili ng file para i-import.",
@@ -570,7 +570,7 @@
     "message": "Maligayang pagdating sa Bagong UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Ginagamit mo na ngayon ang bagong MetaMask UI. I-explore at subukan ang mga bagong features tulad ng pagpapadala ng mga token, at ipaalam sa amin kung mayroon kang anumang mga isyu."
+    "message": "Ginagamit mo na ngayon ang bagong Akroma UI. I-explore at subukan ang mga bagong features tulad ng pagpapadala ng mga token, at ipaalam sa amin kung mayroon kang anumang mga isyu."
   },
   "unavailable": {
     "message": "Hindi Magagamit"
