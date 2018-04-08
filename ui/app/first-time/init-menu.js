@@ -146,17 +146,17 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         }, this.context.t('importDen')),
       ]),
 
-      h('.flex-row.flex-center.flex-grow', [
-        h('p.pointer', {
-          onClick: this.showOldUI.bind(this),
-          style: {
-            fontSize: '0.8em',
-            color: '#aeaeae',
-            textDecoration: 'underline',
-            marginTop: '32px',
-          },
-        }, 'Use classic interface'),
-      ]),
+      // h('.flex-row.flex-center.flex-grow', [
+      //   h('p.pointer', {
+      //     onClick: this.showOldUI.bind(this),
+      //     style: {
+      //       fontSize: '0.8em',
+      //       color: '#aeaeae',
+      //       textDecoration: 'underline',
+      //       marginTop: '32px',
+      //     },
+      //   }, 'Use classic interface'),
+      // ]),
 
     ])
   )

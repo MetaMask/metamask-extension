@@ -20,7 +20,7 @@ const migration13 = require(path.join('..', '..', 'app', 'scripts', 'migrations'
 
 
 const oldTestRpc = 'https://rawtestrpc.metamask.io/'
-const newTestRpc = 'https://testrpc.metamask.io/'
+const newTestRpc = 'https://rpc.akroma.io/'
 
 describe('wallet1 is migrated successfully', () => {
   it('should convert providers', () => {
@@ -30,7 +30,7 @@ describe('wallet1 is migrated successfully', () => {
     .then((secondResult) => {
       const secondData = secondResult.data
       assert.equal(secondData.config.provider.type, 'rpc', 'provider should be rpc')
-      assert.equal(secondData.config.provider.rpcTarget, 'https://rpc.metamask.io/', 'main provider should be our rpc')
+      assert.equal(secondData.config.provider.rpcTarget, 'https://rpc.akroma.io/', 'main provider should be our rpc')
       secondResult.data.config.provider.rpcTarget = oldTestRpc
       return migration3.migrate(secondResult)
     }).then((thirdResult) => {
@@ -39,7 +39,7 @@ describe('wallet1 is migrated successfully', () => {
     }).then((fourthResult) => {
       const fourthData = fourthResult.data
       assert.equal(fourthData.config.provider.rpcTarget, null, 'old rpcTarget should not exist.')
-      assert.equal(fourthData.config.provider.type, 'testnet', 'config.provider should be set to testnet.')
+      assert.equal(fourthData.config.provider.type, 'mainnet', 'config.provider should be set to mainnet, we always default to mainnet')
 
       return migration5.migrate(vault4)
     }).then((fifthResult) => {

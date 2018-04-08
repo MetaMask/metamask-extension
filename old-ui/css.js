@@ -14,7 +14,7 @@ var cssFiles = {
   'react-css': fs.readFileSync(path.join(__dirname, '..', 'node_modules', 'react-select', 'dist', 'react-select.css'), 'utf8'),
 }
 
-function bundleCss () {
+function bundleCss() {
   var cssBundle = Object.keys(cssFiles).reduce(function (bundle, fileName) {
     var fileContent = cssFiles[fileName]
     var output = String()
