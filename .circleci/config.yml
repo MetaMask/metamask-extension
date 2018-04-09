@@ -19,15 +19,6 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
-      - job-screens:
-          requires:
-            - prep-deps-npm
-            - prep-build
-      - job-publish:
-          requires:
-            - prep-deps-npm
-            - prep-build
-            - job-screens
       - test-unit:
           requires:
             - prep-deps-npm
@@ -54,11 +45,21 @@ workflows:
             - test-lint
             - test-unit
             - test-e2e
-            - job-screens
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
             - test-integration-flat-firefox
+      - job-screens:
+          requires:
+            - prep-deps-npm
+            - prep-build
+            - all-tests-pass
+      - job-publish:
+          requires:
+            - prep-deps-npm
+            - prep-build
+            - job-screens
+            - all-tests-pass
 
 jobs:
   prep-deps-npm:
