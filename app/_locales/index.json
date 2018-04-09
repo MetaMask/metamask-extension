@@ -1,4 +1,5 @@
 [
+  { "code": "cs", "name": "Czech" },
   { "code": "de", "name": "German" },
   { "code": "en", "name": "English" },
   { "code": "es", "name": "Spanish" },
