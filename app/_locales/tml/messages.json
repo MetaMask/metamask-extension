@@ -41,28 +41,28 @@
     "message": "அங்கீகரிக்கப்பட்ட"
   },
   "attemptingConnect": {
-    "message": "Attempting to connect to blockchain."
+    "message": "Attempting to connect to ப்ளாக்சைன்"
   },
   "attributions": {
-    "message": "Attributions"
+    "message": "பண்புகளும்"
   },
   "available": {
-    "message": "Available"
+    "message": "கிடைக்கும்"
   },
   "back": {
-    "message": "Back"
+    "message": "மீண்டும்"
   },
   "balance": {
-    "message": "Balance:"
+    "message": "இருப்பு:"
   },
   "balances": {
-    "message": "Your balances"
+    "message": "உங்கள் இருப்பு"
   },
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
   },
   "beta": {
-    "message": "BETA"
+    "message": "பீட்டா"
   },
   "betweenMinAndMax": {
     "message": "must be greater than or equal to $1 and less than or equal to $2.",
