@@ -5,7 +5,7 @@ const inherits = require('util').inherits
 const TokenBalance = require('./token-balance')
 const Identicon = require('./identicon')
 const currencyFormatter = require('currency-formatter')
-const currencies = require('currency-formatter/currencies');
+const currencies = require('currency-formatter/currencies')
 
 const { formatBalance, generateBalanceObject } = require('../util')
 

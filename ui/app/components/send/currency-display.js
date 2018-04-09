@@ -4,7 +4,7 @@ const inherits = require('util').inherits
 const CurrencyInput = require('../currency-input')
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 const currencyFormatter = require('currency-formatter')
-const currencies = require('currency-formatter/currencies');
+const currencies = require('currency-formatter/currencies')
 
 module.exports = CurrencyDisplay
 
