@@ -1,15 +1,21 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
-const actions = require('../../actions')
+const actions = require('../../../../actions')
+const { DEFAULT_ROUTE } = require('../../../../routes')
 
 PrivateKeyImportView.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(PrivateKeyImportView)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(PrivateKeyImportView)
 
 
 function mapStateToProps (state) {
@@ -20,9 +26,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(actions.goHome()),
     importNewAccount: (strategy, [ privateKey ]) => {
-      dispatch(actions.importNewAccount(strategy, [ privateKey ]))
+      return dispatch(actions.importNewAccount(strategy, [ privateKey ]))
     },
     displayWarning: () => dispatch(actions.displayWarning(null)),
   }
@@ -30,11 +35,12 @@ function mapDispatchToProps (dispatch) {
 
 inherits(PrivateKeyImportView, Component)
 function PrivateKeyImportView () {
+  this.createKeyringOnEnter = this.createKeyringOnEnter.bind(this)
   Component.call(this)
 }
 
 PrivateKeyImportView.prototype.render = function () {
-  const { error, goHome } = this.props
+  const { error } = this.props
 
   return (
     h('div.new-account-import-form__private-key', [
@@ -46,7 +52,7 @@ PrivateKeyImportView.prototype.render = function () {
         h('input.new-account-import-form__input-password', {
           type: 'password',
           id: 'private-key-box',
-          onKeyPress: () => this.createKeyringOnEnter(),
+          onKeyPress: e => this.createKeyringOnEnter(e),
         }),
 
       ]),
@@ -54,7 +60,7 @@ PrivateKeyImportView.prototype.render = function () {
       h('div.new-account-import-form__buttons', {}, [
 
         h('button.btn-secondary--lg.new-account-create-form__button', {
-          onClick: () => goHome(),
+          onClick: () => this.props.history.push(DEFAULT_ROUTE),
         }, [
           this.context.t('cancel'),
         ]),
@@ -82,6 +88,8 @@ PrivateKeyImportView.prototype.createKeyringOnEnter = function (event) {
 PrivateKeyImportView.prototype.createNewKeychain = function () {
   const input = document.getElementById('private-key-box')
   const privateKey = input.value
+  const { importNewAccount, history } = this.props
 
-  this.props.importNewAccount('Private Key', [ privateKey ])
+  importNewAccount('Private Key', [ privateKey ])
+    .then(() => history.push(DEFAULT_ROUTE))
 }

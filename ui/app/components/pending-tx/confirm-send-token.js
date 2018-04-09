@@ -1,4 +1,6 @@
 const Component = require('react').Component
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
@@ -35,12 +37,16 @@ const {
   getSelectedAddress,
   getSelectedTokenContract,
 } = require('../../selectors')
+const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 
 ConfirmSendToken.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendToken)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(ConfirmSendToken)
 
 
 function mapStateToProps (state, ownProps) {
@@ -147,6 +153,12 @@ function ConfirmSendToken () {
   Component.call(this)
   this.state = {}
   this.onSubmit = this.onSubmit.bind(this)
+}
+
+ConfirmSendToken.prototype.editTransaction = function (txMeta) {
+  const { editTransaction, history } = this.props
+  editTransaction(txMeta)
+  history.push(SEND_ROUTE)
 }
 
 ConfirmSendToken.prototype.updateComponentSendErrors = function (prevProps) {
@@ -423,7 +435,6 @@ ConfirmSendToken.prototype.convertToRenderableCurrency = function (value, curren
 }
 
 ConfirmSendToken.prototype.render = function () {
-  const { editTransaction } = this.props
   const txMeta = this.gatherTxMeta()
   const {
     from: {
@@ -450,7 +461,7 @@ ConfirmSendToken.prototype.render = function () {
       h('div.page-container', [
         h('div.page-container__header', [
           !txMeta.lastGasPrice && h('button.confirm-screen-back-button', {
-            onClick: () => editTransaction(txMeta),
+            onClick: () => this.editTransaction(txMeta),
           }, this.context.t('edit')),
           h('div.page-container__title', title),
           h('div.page-container__subtitle', subtitle),
@@ -530,7 +541,9 @@ ConfirmSendToken.prototype.render = function () {
             }, this.context.t('cancel')),
 
             // Accept Button
-            h('button.btn-confirm.page-container__footer-button.allcaps', [this.context.t('confirm')]),
+            h('button.btn-confirm.page-container__footer-button.allcaps', {
+              onClick: event => this.onSubmit(event),
+            }, [this.context.t('confirm')]),
           ]),
         ]),
       ]),
@@ -583,6 +596,7 @@ ConfirmSendToken.prototype.cancel = function (event, txMeta) {
   const { cancelTransaction } = this.props
 
   cancelTransaction(txMeta)
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 ConfirmSendToken.prototype.checkValidity = function () {

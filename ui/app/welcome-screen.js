@@ -3,21 +3,35 @@ import h from 'react-hyperscript'
 import { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
 import {closeWelcomeScreen} from './actions'
 import Mascot from './components/mascot'
+import { INITIALIZE_CREATE_PASSWORD_ROUTE } from './routes'
 
 class WelcomeScreen extends Component {
   static propTypes = {
     closeWelcomeScreen: PropTypes.func.isRequired,
+    welcomeScreenSeen: PropTypes.bool,
+    history: PropTypes.object,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.animationEventEmitter = new EventEmitter()
   }
 
+  componentWillMount () {
+    const { history, welcomeScreenSeen } = this.props
+
+    if (welcomeScreenSeen) {
+      history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+    }
+  }
+
   initiateAccountCreation = () => {
     this.props.closeWelcomeScreen()
+    this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
   }
 
   render () {
@@ -48,9 +62,18 @@ class WelcomeScreen extends Component {
   }
 }
 
-export default connect(
-  null,
-  dispatch => ({
-    closeWelcomeScreen: () => dispatch(closeWelcomeScreen()),
-  })
+const mapStateToProps = ({ metamask: { welcomeScreenSeen } }) => {
+  return {
+    welcomeScreenSeen,
+  }
+}
+
+export default compose(
+  withRouter,
+  connect(
+    mapStateToProps,
+    dispatch => ({
+      closeWelcomeScreen: () => dispatch(closeWelcomeScreen()),
+    })
+  )
 )(WelcomeScreen)

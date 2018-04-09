@@ -185,9 +185,10 @@ module.exports = class TransactionController extends EventEmitter {
 
   async addUnapprovedTransaction (txParams) {
     // validate
-    await this.txGasUtil.validateTxParams(txParams)
+    const normalizedTxParams = this._normalizeTxParams(txParams)
+    this._validateTxParams(normalizedTxParams)
     // construct txMeta
-    let txMeta = this.txStateManager.generateTxMeta({txParams})
+    let txMeta = this.txStateManager.generateTxMeta({ txParams: normalizedTxParams })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
@@ -215,7 +216,6 @@ module.exports = class TransactionController extends EventEmitter {
     }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     txParams.value = txParams.value || '0x0'
-    if (txParams.to === null) delete txParams.to
     // set gasLimit
     return await this.txGasUtil.analyzeGasUsage(txMeta)
   }
@@ -313,6 +313,60 @@ module.exports = class TransactionController extends EventEmitter {
 //
 //           PRIVATE METHODS
 //
+
+  _normalizeTxParams (txParams) {
+    // functions that handle normalizing of that key in txParams
+    const whiteList = {
+      from: from => ethUtil.addHexPrefix(from).toLowerCase(),
+      to: to => ethUtil.addHexPrefix(txParams.to).toLowerCase(),
+      nonce: nonce => ethUtil.addHexPrefix(nonce),
+      value: value => ethUtil.addHexPrefix(value),
+      data: data => ethUtil.addHexPrefix(data),
+      gas: gas => ethUtil.addHexPrefix(gas),
+      gasPrice: gasPrice => ethUtil.addHexPrefix(gasPrice),
+    }
+
+    // apply only keys in the whiteList
+    const normalizedTxParams = {}
+    Object.keys(whiteList).forEach((key) => {
+      if (txParams[key]) normalizedTxParams[key] = whiteList[key](txParams[key])
+    })
+
+    return normalizedTxParams
+  }
+
+  _validateTxParams (txParams) {
+    this._validateFrom(txParams)
+    this._validateRecipient(txParams)
+    if ('value' in txParams) {
+      const value = txParams.value.toString()
+      if (value.includes('-')) {
+        throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
+      }
+
+      if (value.includes('.')) {
+        throw new Error(`Invalid transaction value of ${txParams.value} number must be in wei`)
+      }
+    }
+  }
+
+  _validateFrom (txParams) {
+    if ( !(typeof txParams.from === 'string') ) throw new Error(`Invalid from address ${txParams.from} not a string`)
+    if (!ethUtil.isValidAddress(txParams.from)) throw new Error('Invalid from address')
+  }
+
+  _validateRecipient (txParams) {
+    if (txParams.to === '0x' || txParams.to === null ) {
+      if (txParams.data) {
+        delete txParams.to
+      } else {
+        throw new Error('Invalid recipient address')
+      }
+    } else if ( txParams.to !== undefined && !ethUtil.isValidAddress(txParams.to) ) {
+      throw new Error('Invalid recipient address')
+    }
+    return txParams
+  }
 
   _markNonceDuplicatesDropped (txId) {
     this.txStateManager.setTxStatusConfirmed(txId)

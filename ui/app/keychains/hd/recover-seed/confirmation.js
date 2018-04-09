@@ -4,12 +4,21 @@ const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../actions')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
+const {
+  DEFAULT_ROUTE,
+  INITIALIZE_BACKUP_PHRASE_ROUTE,
+} = require('../../../routes')
 
 RevealSeedConfirmation.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps)(RevealSeedConfirmation)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps)
+)(RevealSeedConfirmation)
 
 
 inherits(RevealSeedConfirmation, Component)
@@ -109,6 +118,8 @@ RevealSeedConfirmation.prototype.componentDidMount = function () {
 
 RevealSeedConfirmation.prototype.goHome = function () {
   this.props.dispatch(actions.showConfigPage(false))
+  this.props.dispatch(actions.confirmSeedWords())
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 // create vault
@@ -123,4 +134,5 @@ RevealSeedConfirmation.prototype.checkConfirmation = function (event) {
 RevealSeedConfirmation.prototype.revealSeedWords = function () {
   var password = document.getElementById('password-box').value
   this.props.dispatch(actions.requestRevealSeed(password))
+    .then(() => this.props.history.push(INITIALIZE_BACKUP_PHRASE_ROUTE))
 }
