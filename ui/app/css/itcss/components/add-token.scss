@@ -8,6 +8,7 @@
   font-family: 'Roboto';
   background: white;
   border-radius: 8px;
+  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
 
   &__wrapper {
     background-color: $white;
@@ -20,7 +21,7 @@
   &__header {
     display: flex;
     flex-flow: column nowrap;
-    padding: 16px 16px 0px;
+    padding: 20px 20px 0px;
     border-bottom: 1px solid $geyser;
     flex: 0 0 auto;
 
@@ -31,7 +32,8 @@
 
       span {
         font-family: Roboto;
-        font-size: 16px; 
+        font-size: 16px;
+        font-weight: 400;
         line-height: 21px;
         margin-left: 8px;
       }
@@ -44,8 +46,13 @@
       margin-top: 4px;
     }
 
+    &__subtitle {
+      font-weight: 400;
+      margin-top: 15px;
+      margin-bottom: 21px;
+    }
+
     &__tabs {
-      margin-left: 22px;
       display: flex;
 
       &__tab {
@@ -54,6 +61,7 @@
         color: $dusty-gray;
         font-family: Roboto;
         font-size: 18px;
+        font-weight: 400;
         line-height: 24px;
         text-align: center;
       }
@@ -65,6 +73,7 @@
       &__unselected:hover {
         color: $black;
         border-bottom: none;
+        cursor: pointer;
       }
 
       &__selected {
@@ -76,7 +85,7 @@
 
   &__info-box {
     height: 96px;
-    margin: 20px 24px 0px;
+    margin: 20px 20px 0px;
     border-radius: 4px;
     background-color: $alabaster;
     position: relative;
@@ -98,6 +107,7 @@
       color: $mid-gray;
       font-family: Roboto;
       font-size: 14px;
+      font-weight: 400;
       margin-top: 15px;
       margin-bottom: 9px;
     }
@@ -107,6 +117,7 @@
       color: $mid-gray;
       font-family: Roboto;
       font-size: 12px;
+      font-weight: 400;
       line-height: 18px;
     }
 
@@ -124,7 +135,8 @@
   }
 
   &__confirmation-description {
-    margin: 12px 0;
+    font-weight: 400;
+    margin: 20px 0 40px 0;
   }
 
   &__content-container {
@@ -151,7 +163,7 @@
   &__input,
   &__add-custom-input {
     height: 54px;
-    padding: 21px 6px;
+    padding: 0px 20px;
     border: 1px solid $geyser;
     border-radius: 4px;
     margin: 22px 24px;
@@ -232,6 +244,7 @@
 
   &__add-custom-label {
     font-size: 16px;
+    font-weight: 400;
     line-height: 21px;
     margin-left: 22px;
     color: $scorpion;
@@ -274,9 +287,11 @@
     color: #5B5D67;
     font-family: Roboto;
     font-size: 18px;
+    font-weight: 400;
     line-height: 24px;
     margin-left: 24px;
     margin-top: 8px;
+    margin-bottom: 20px;
   }
 
   &__token-icons-container {
@@ -317,6 +332,7 @@
   }
 
   &__token-name {
+    font-weight: 400;
     font-size: 14px;
     line-height: 19px;
   }
@@ -368,6 +384,7 @@
       &__symbol {
         color: $scorpion;
         font-size: 16px;
+        font-weight: 400;
         line-height: 24px;
       }
     }

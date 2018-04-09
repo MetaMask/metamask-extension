@@ -11,13 +11,18 @@ const { formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 const classnames = require('classnames')
 const { tokenInfoGetter } = require('../token-util')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
+const { CONFIRM_TRANSACTION_ROUTE } = require('../routes')
+
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(TxList)
 
 TxList.contextTypes = {
   t: PropTypes.func,
 }
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
-
 
 function mapStateToProps (state) {
   return {
@@ -96,7 +101,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionNetworkId,
     transactionSubmittedTime,
   } = props
-  const { showConfTxPage } = this.props
+  const { history } = this.props
 
   const opts = {
     key: transactionId || transactionHash,
@@ -116,7 +121,10 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   const isUnapproved = transactionStatus === 'unapproved'
 
   if (isUnapproved) {
-    opts.onClick = () => showConfTxPage({ id: transactionId })
+    opts.onClick = () => {
+      this.props.showConfTxPage({ id: transactionId })
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    }
     opts.transactionStatus = this.context.t('notStarted')
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)

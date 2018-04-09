@@ -20,6 +20,7 @@ const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
+const getObjStructure = require('./lib/getObjStructure')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -77,6 +78,38 @@ async function loadStateFromPersistence () {
                   diskStore.getState() ||
                   migrator.generateInitialState(firstTimeState)
 
+  // check if somehow state is empty
+  // this should never happen but new error reporting suggests that it has
+  // for a small number of users
+  // https://github.com/metamask/metamask-extension/issues/3919
+  if (versionedData && !versionedData.data) {
+    // try to recover from diskStore incase only localStore is bad
+    const diskStoreState = diskStore.getState()
+    if (diskStoreState && diskStoreState.data) {
+      // we were able to recover (though it might be old)
+      versionedData = diskStoreState
+      const vaultStructure = getObjStructure(versionedData)
+      raven.captureMessage('MetaMask - Empty vault found - recovered from diskStore', {
+        // "extra" key is required by Sentry
+        extra: { vaultStructure },
+      })
+    } else {
+      // unable to recover, clear state
+      versionedData = migrator.generateInitialState(firstTimeState)
+      raven.captureMessage('MetaMask - Empty vault found - unable to recover')
+    }
+  }
+
+  // report migration errors to sentry
+  migrator.on('error', (err) => {
+    // get vault structure without secrets
+    const vaultStructure = getObjStructure(versionedData)
+    raven.captureException(err, {
+      // "extra" key is required by Sentry
+      extra: { vaultStructure },
+    })
+  })
+
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
   if (!versionedData) {
@@ -84,7 +117,14 @@ async function loadStateFromPersistence () {
   }
 
   // write to disk
-  if (localStore.isSupported) localStore.set(versionedData)
+  if (localStore.isSupported) {
+    localStore.set(versionedData)
+  } else {
+    // throw in setTimeout so as to not block boot
+    setTimeout(() => {
+      throw new Error('MetaMask - Localstore not supported')
+    })
+  }
 
   // return just the data
   return versionedData.data
@@ -122,9 +162,9 @@ function setupController (initState, initLangCode) {
     asStream(controller.store),
     debounce(1000),
     storeTransform(versionifyData),
-    storeTransform(syncDataWithExtension),
+    storeTransform(persistData),
     (error) => {
-      log.error('pump hit error', error)
+      log.error('MetaMask - Persistence pipeline failed', error)
     }
   )
 
@@ -133,7 +173,13 @@ function setupController (initState, initLangCode) {
     return versionedData
   }
 
-  function syncDataWithExtension(state) {
+  function persistData(state) {
+    if (!state) {
+      throw new Error('MetaMask - updated state is missing', state)
+    }
+    if (!state.data) {
+      throw new Error('MetaMask - updated state does not have data', state)
+    }
     if (localStore.isSupported) {
       localStore.set(state)
       .catch((err) => {
