@@ -25,6 +25,8 @@ const {
   calcTokenAmount,
 } = require('../../token-util')
 const classnames = require('classnames')
+const currencyFormatter = require('currency-formatter')
+const currencies = require('currency-formatter/currencies')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
@@ -310,10 +312,12 @@ ConfirmSendToken.prototype.renderHeroAmount = function () {
   const txParams = txMeta.txParams || {}
   const { memo = '' } = txParams
 
+  const convertedAmountInFiat = this.convertToRenderableCurrency(fiatAmount, currentCurrency)
+
   return fiatAmount
     ? (
       h('div.confirm-send-token__hero-amount-wrapper', [
-        h('h3.flex-center.confirm-screen-send-amount', `${fiatAmount}`),
+        h('h3.flex-center.confirm-screen-send-amount', `${convertedAmountInFiat}`),
         h('h3.flex-center.confirm-screen-send-amount-currency', currentCurrency),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
@@ -361,6 +365,9 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
   const { fiat: fiatAmount, token: tokenAmount } = this.getAmount()
   const { fiat: fiatGas, token: tokenGas } = this.getGasFee()
 
+  const totalInFIAT = fiatAmount && fiatGas && addCurrencies(fiatAmount, fiatGas)
+  const convertedTotalInFiat = this.convertToRenderableCurrency(totalInFIAT, currentCurrency)
+
   return fiatAmount && fiatGas
     ? (
       h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
@@ -370,7 +377,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
         ]),
 
         h('div.confirm-screen-section-column', [
-          h('div.confirm-screen-row-info', `${addCurrencies(fiatAmount, fiatGas)} ${currentCurrency}`),
+          h('div.confirm-screen-row-info', `${convertedTotalInFiat} ${currentCurrency}`),
           h('div.confirm-screen-row-detail', `${addCurrencies(tokenAmount, tokenGas || '0')} ${symbol}`),
         ]),
       ])
@@ -403,6 +410,16 @@ ConfirmSendToken.prototype.renderErrorMessage = function (message) {
   return errors[message]
     ? h('div.confirm-screen-error', [ errors[message] ])
     : null
+}
+
+ConfirmSendToken.prototype.convertToRenderableCurrency = function (value, currencyCode) {
+  const upperCaseCurrencyCode = currencyCode.toUpperCase()
+
+  return currencies.find(currency => currency.code === upperCaseCurrencyCode)
+    ? currencyFormatter.format(Number(value), {
+      code: upperCaseCurrencyCode,
+    })
+    : value
 }
 
 ConfirmSendToken.prototype.render = function () {
