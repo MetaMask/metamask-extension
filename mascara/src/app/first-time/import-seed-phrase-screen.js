@@ -8,16 +8,16 @@ import {
   displayWarning,
   unMarkPasswordForgotten,
 } from '../../../../ui/app/actions'
+import { DEFAULT_ROUTE, INITIALIZE_NOTICE_ROUTE } from '../../../../ui/app/routes'
 
 class ImportSeedPhraseScreen extends Component {
   static propTypes = {
     warning: PropTypes.string,
-    back: PropTypes.func.isRequired,
-    next: PropTypes.func.isRequired,
     createNewVaultAndRestore: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
     displayWarning: PropTypes.func,
     leaveImportSeedScreenState: PropTypes.func,
+    history: PropTypes.object,
   };
 
   state = {
@@ -64,14 +64,14 @@ class ImportSeedPhraseScreen extends Component {
     const { password, seedPhrase } = this.state
     const {
       createNewVaultAndRestore,
-      next,
       displayWarning,
       leaveImportSeedScreenState,
+      history,
     } = this.props
 
     leaveImportSeedScreenState()
     createNewVaultAndRestore(password, this.parseSeedPhrase(seedPhrase))
-      .then(next)
+      .then(() => history.push(INITIALIZE_NOTICE_ROUTE))
   }
 
   render () {
@@ -86,7 +86,7 @@ class ImportSeedPhraseScreen extends Component {
               className="import-account__back-button"
               onClick={e => {
                 e.preventDefault()
-                this.props.back()
+                this.props.history.goBack()
               }}
               href="#"
             >

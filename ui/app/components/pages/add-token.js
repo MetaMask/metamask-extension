@@ -7,8 +7,8 @@ const connect = require('react-redux').connect
 const R = require('ramda')
 const Fuse = require('fuse.js')
 const contractMap = require('eth-contract-metadata')
-const TokenBalance = require('./components/token-balance')
-const Identicon = require('./components/identicon')
+const TokenBalance = require('../../components/token-balance')
+const Identicon = require('../../components/identicon')
 const contractList = Object.entries(contractMap)
   .map(([ _, tokenData]) => tokenData)
   .filter(tokenData => Boolean(tokenData.erc20))
@@ -24,9 +24,10 @@ const fuse = new Fuse(contractList, {
       { name: 'symbol', weight: 0.5 },
     ],
 })
-const actions = require('./actions')
+const actions = require('../../actions')
 const ethUtil = require('ethereumjs-util')
-const { tokenInfoGetter } = require('./token-util')
+const { tokenInfoGetter } = require('../../token-util')
+const { DEFAULT_ROUTE } = require('../../routes')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
@@ -47,7 +48,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(actions.goHome()),
     addTokens: tokens => dispatch(actions.addTokens(tokens)),
   }
 }
@@ -296,7 +296,7 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     selectedTokens,
   } = this.state
 
-  const { addTokens, goHome } = this.props
+  const { addTokens, history } = this.props
 
   const customToken = {
     address,
@@ -333,7 +333,7 @@ AddTokenScreen.prototype.renderConfirmation = function () {
           onClick: () => this.setState({ isShowingConfirmation: false }),
         }, this.context.t('back')),
         h('button.btn-primary--lg', {
-          onClick: () => addTokens(tokens).then(goHome),
+          onClick: () => addTokens(tokens).then(() => history.push(DEFAULT_ROUTE)),
         }, this.context.t('addTokens')),
       ]),
     ])
@@ -382,12 +382,12 @@ AddTokenScreen.prototype.render = function () {
     isShowingConfirmation,
     displayedTab,
   } = this.state
-  const { goHome } = this.props
+  const { history } = this.props
 
   return h('div.add-token', [
     h('div.add-token__header', [
       h('div.add-token__header__cancel', {
-        onClick: () => goHome(),
+        onClick: () => history.push(DEFAULT_ROUTE),
       }, [
         h('i.fa.fa-angle-left.fa-lg'),
         h('span', this.context.t('cancel')),
@@ -414,14 +414,14 @@ AddTokenScreen.prototype.render = function () {
 
       ]),
     ]),
-//
+
     isShowingConfirmation
       ? this.renderConfirmation()
       : this.renderTabs(),
 
     !isShowingConfirmation && h('div.add-token__buttons', [
       h('button.btn-secondary--lg.add-token__cancel-button', {
-        onClick: goHome,
+        onClick: () => history.push(DEFAULT_ROUTE),
       }, this.context.t('cancel')),
       h('button.btn-primary--lg.add-token__confirm-button', {
         onClick: this.onNext,

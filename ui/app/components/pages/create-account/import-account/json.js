@@ -1,11 +1,12 @@
 const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const connect = require('react-redux').connect
-const actions = require('../../actions')
+const actions = require('../../../../actions')
 const FileInput = require('react-simple-file-input').default
-
-
+const { DEFAULT_ROUTE } = require('../../../../routes')
 const HELP_LINK = 'https://support.metamask.io/kb/article/7-importing-accounts'
 
 class JsonImportSubview extends Component {
@@ -51,7 +52,7 @@ class JsonImportSubview extends Component {
         h('div.new-account-create-form__buttons', {}, [
 
           h('button.btn-secondary.new-account-create-form__button', {
-            onClick: () => this.props.goHome(),
+            onClick: () => this.props.history.push(DEFAULT_ROUTE),
           }, [
             this.context.t('cancel'),
           ]),
@@ -112,6 +113,7 @@ JsonImportSubview.propTypes = {
   goHome: PropTypes.func,
   displayWarning: PropTypes.func,
   importNewJsonAccount: PropTypes.func,
+  history: PropTypes.object,
   t: PropTypes.func,
 }
 
@@ -133,5 +135,7 @@ JsonImportSubview.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(JsonImportSubview)
-
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(JsonImportSubview)
