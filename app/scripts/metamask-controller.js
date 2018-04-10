@@ -304,9 +304,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Object} status
    */
   getState () {
-    const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
-    const isInitialized = (!!wallet || !!vault)
+    const isInitialized = !!vault
 
     return extend(
       {
@@ -351,7 +350,6 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
-      markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
 
@@ -814,12 +812,6 @@ module.exports = class MetamaskController extends EventEmitter {
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
     }
-  }
-
-  markAccountsFound (cb) {
-    this.configManager.setLostAccounts([])
-    this.sendUpdate()
-    cb(null, this.getState())
   }
 
   markPasswordForgotten(cb) {

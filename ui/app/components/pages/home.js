@@ -94,7 +94,6 @@ class Home extends Component {
     //   return h(NoticeScreen, {
     //     notice: generateLostAccountsNotice(props.lostAccounts),
     //     key: 'LostAccountsNotice',
-    //     onConfirm: () => props.dispatch(actions.markAccountsFound()),
     //   })
     // }
 

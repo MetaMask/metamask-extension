@@ -41,7 +41,6 @@ var actions = {
   showNotice: showNotice,
   CLEAR_NOTICES: 'CLEAR_NOTICES',
   clearNotices: clearNotices,
-  markAccountsFound,
   // intialize screen
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
   SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
@@ -1346,11 +1345,6 @@ function clearNotices () {
   return {
     type: actions.CLEAR_NOTICES,
   }
-}
-
-function markAccountsFound () {
-  log.debug(`background.markAccountsFound`)
-  return callBackgroundThenUpdate(background.markAccountsFound)
 }
 
 function retryTransaction (txId) {
