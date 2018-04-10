@@ -181,10 +181,10 @@
     "message": "விருப்ப RPC ஐ"
   },
   "decimalsMustZerotoTen": {
-    "message": "Decimals must be at least 0, and not over 36."
+    "message": "தசமங்கள் குறைந்தபட்சம் 0, மற்றும் 36 க்கு மேல் இருக்க வேண்டும்."
   },
   "decimal": {
-    "message": "Decimals of Precision"
+    "message": "துல்லியத்தின் முடிவு"
   },
   "defaultNetwork": {
     "message": "The default network for Ether transactions is Main Net."
@@ -196,11 +196,11 @@
     "message": "வைப்புத்தொகை"
   },
   "depositBTC": {
-    "message": "Deposit your BTC to the address below:"
+    "message": "கீழே உங்கள் முகவரிக்கு உங்கள் BTC வைப்போம்:"
   },
   "depositCoin": {
-    "message": "Deposit your $1 to the address below",
-    "description": "Tells the user what coin they have selected to deposit with shapeshift"
+    "message": "உங்கள் முகவரிக்கு $ 1 ஐ கீழே உள்ளிடவும்",
+    "description": "சேபஷிபிட் உடன் வைப்புக்குத் தேர்ந்தெடுக்கப்பட்ட நாணயத்தை பயனரிடம் கூறுகிறார்"
   },
   "depositEth": {
     "message": "வைப்புத்தொகை எது "
@@ -209,76 +209,76 @@
     "message": "வைப்புத்தொகை எதிர் "
   },
   "depositFiat": {
-    "message": "Deposit with Fiat"
+    "message": "ஃபியட் உடன் வைப்பு"
   },
   "depositFromAccount": {
-    "message": "Deposit from another account"
+    "message": "மற்றொரு கணக்கிலிருந்து வைப்பு"
   },
   "depositShapeShift": {
-    "message": "Deposit with ShapeShift"
+    "message": "ShapeShift உடன் வைப்பு"
   },
   "depositShapeShiftExplainer": {
-    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+    "message": "நீங்கள் மற்ற கிரிப்டோகிராரன்கள் சொந்தமாக வைத்திருந்தால், உங்கள் மெட்டாமாஸ்க் பணப்பையில் நேரடியாக ஈதரை வர்த்தகம் செய்யலாம் மற்றும் வைப்பு செய்யலாம். கணக்கு தேவையில்லை."
   },
   "details": {
-    "message": "Details"
+    "message": "விவரங்கள்"
   },
   "directDeposit": {
-    "message": "Direct Deposit"
+    "message": "நேரடி வைப்பு"
   },
   "directDepositEther": {
-    "message": "Directly Deposit Ether"
+    "message": "நேரடியாக வைப்புத்தொகை"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "நீங்கள் ஏற்கனவே ஏதெர் இருந்தால், நேரடி வைப்பு மூலம் உங்கள் புதிய பணப்பையில் ஈத்தர் பெற விரைவான வழி."
   },
   "done": {
-    "message": "Done"
+    "message": "முடிந்தது"
   },
   "downloadStateLogs": {
-    "message": "Download State Logs"
+    "message": "மாநில பதிவுகள் பதிவிறக்க"
   },
   "dropped": {
-    "message": "Dropped"
+    "message": "நீக்கப்பட்டார்"
   },
   "edit": {
-    "message": "Edit"
+    "message": "தொகு"
   },
   "editAccountName": {
-    "message": "Edit Account Name"
+    "message": "கணக்கு பெயரை மாற்றுக"
   },
   "emailUs": {
-    "message": "Email us!"
+    "message": "எங்களுக்கு மின்னஞ்சல்!"
   },
   "encryptNewDen": {
-    "message": "Encrypt your new DEN"
+    "message": "உங்கள் புதிய DEN ஐ குறியாக்குக"
   },
   "enterPassword": {
-    "message": "Enter password"
+    "message": "கடவுச்சொல்லை உள்ளிடவும்"
   },
   "enterPasswordConfirm": {
-    "message": "Enter your password to confirm"
+    "message": "உறுதிப்படுத்த உங்கள் கடவுச்சொல்லை உள்ளிடவும்"
   },
   "passwordNotLongEnough": {
-    "message": "Password not long enough"
+    "message": "கடவுச்சொல் போதாது"
   },
   "passwordsDontMatch": {
-    "message": "Passwords Don't Match"
+    "message": "கடவுச்சொற்கள் பொருந்தாதே"
   },
   "etherscanView": {
-    "message": "View account on Etherscan"
+    "message": "Etherscan கணக்கைப் பார்க்கவும்"
   },
   "exchangeRate": {
-    "message": "Exchange Rate"
+    "message": "மாற்று விகிதம்"
   },
   "exportPrivateKey": {
-    "message": "Export Private Key"
+    "message": "தனியார் விசை ஐ ஏற்றுமதி செய்க"
   },
   "exportPrivateKeyWarning": {
-    "message": "Export private keys at your own risk."
+    "message": "தனிப்பட்ட விசைகளை உங்கள் சொந்த ஆபத்தில் ஏற்றுமதி செய்யுங்கள்."
   },
   "failed": {
-    "message": "Failed"
+    "message": "தோல்வி"
   },
   "fiat": {
     "message": "FIAT",
