@@ -31,10 +31,10 @@ const {
 } = require('./components/send/send-utils')
 const { isValidAddress } = require('./util')
 
-import PageContainer from './components/page-container/page-container.component'
-import SendHeader from './components/send_/send-header/send-header.container'
-import PageContainerContent from './components/page-container/page-container-content.component'
-import PageContainerFooter from './components/page-container/page-container-footer.component'
+import PageContainer from './components/page-container'
+// import SendHeader from './components/send_/send-header/send-header.container'
+// import PageContainerContent from './components/page-container/page-container-content.component'
+// import PageContainerFooter from './components/page-container/page-container-footer.component'
 
 SendTransactionScreen.contextTypes = {
   t: PropTypes.func,
@@ -500,16 +500,44 @@ SendTransactionScreen.prototype.renderFooter = function () {
 }
 
 SendTransactionScreen.prototype.render = function () {
+  const {
+    isToken,
+    clearSend,
+    goHome,
+    gasTotal,
+    tokenBalance,
+    selectedToken,
+    errors: { amount: amountError, to: toError },
+  } = this.props
+
+  const missingTokenBalance = selectedToken && !tokenBalance
+  const noErrors = !amountError && toError === null
+
   return (
 
-    h(PageContainer, [
+    h(PageContainer, {
+      title: isToken ? this.context.t('sendTokens') : this.context.t('sendETH'),
+      subtitle: this.context.t('onlySendToEtherAddress'),
+      onClose: () => {
+        clearSend()
+        goHome()
+      },
+      ContentComponent: this.renderForm,
+      onCancel: () => {
+        clearSend()
+        goHome()
+      },
+      onSubmit: e => this.onSubmit(e),
+      disabled: !noErrors || !gasTotal || missingTokenBalance,
+    })
+    // , [
 
-      h(SendHeader),
+    //   h(SendHeader),
 
-      this.renderForm(),
+    //   this.renderForm(),
 
-      this.renderFooter(),
-    ])
+    //   this.renderFooter(),
+    // ])
 
   )
 }
