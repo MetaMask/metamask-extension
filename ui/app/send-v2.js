@@ -30,6 +30,7 @@ const {
   getGasTotal,
 } = require('./components/send/send-utils')
 const { isValidAddress } = require('./util')
+const { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } = require('./routes')
 
 import PageContainer from './components/page-container/page-container.component'
 import SendHeader from './components/send_/send-header/send-header.container'
@@ -184,6 +185,25 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
       this.updateGas()
     }
   }
+}
+
+SendTransactionScreen.prototype.renderHeader = function () {
+  const { selectedToken, clearSend, history } = this.props
+
+  return h('div.page-container__header', [
+
+    h('div.page-container__title', selectedToken ? this.context.t('sendTokens') : this.context.t('sendETH')),
+
+    h('div.page-container__subtitle', this.context.t('onlySendToEtherAddress')),
+
+    h('div.page-container__header-close', {
+      onClick: () => {
+        clearSend()
+        history.push(DEFAULT_ROUTE)
+      },
+    }),
+
+  ])
 }
 
 SendTransactionScreen.prototype.renderErrorMessage = function (errorType) {
@@ -478,12 +498,12 @@ SendTransactionScreen.prototype.renderForm = function () {
 
 SendTransactionScreen.prototype.renderFooter = function () {
   const {
-    goHome,
     clearSend,
     gasTotal,
     tokenBalance,
     selectedToken,
     errors: { amount: amountError, to: toError },
+    history,
   } = this.props
 
   const missingTokenBalance = selectedToken && !tokenBalance
@@ -492,7 +512,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
   return h(PageContainerFooter, {
     onCancel: () => {
       clearSend()
-      goHome()
+      history.push(DEFAULT_ROUTE)
     },
     onSubmit: e => this.onSubmit(e),
     disabled: !noErrors || !gasTotal || missingTokenBalance,
@@ -600,7 +620,6 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
 
   if (editingTransactionId) {
     const editedTx = this.getEditedTx()
-
     updateTx(editedTx)
   } else {
 
@@ -624,4 +643,6 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
       ? signTokenTx(selectedToken.address, to, amount, txParams)
       : signTx(txParams)
   }
+
+  this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
 }

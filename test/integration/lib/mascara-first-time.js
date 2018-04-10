@@ -13,6 +13,9 @@ async function runFirstTimeUsageTest (assert, done) {
 
   await skipNotices(app)
 
+  const welcomeButton = (await findAsync(app, '.welcome-screen__button'))[0]
+  welcomeButton.click()
+
   // Scroll through terms
   const title = (await findAsync(app, '.create-password__title')).text()
   assert.equal(title, 'Create Password', 'create password screen')

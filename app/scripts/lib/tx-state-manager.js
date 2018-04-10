@@ -92,8 +92,10 @@ module.exports = class TransactionStateManager extends EventEmitter {
     // or rejected tx's.
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
-      const index = transactions.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
-      transactions.splice(index, 1)
+      let index = transactions.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
+      if (index !== -1) {
+        transactions.splice(index, 1)
+      }
     }
     transactions.push(txMeta)
     this._saveTxList(transactions)
