@@ -474,7 +474,7 @@
     "message": "Zpráva"
   },
   "metamaskDescription": {
-    "message": "MetaMask je bezpečná osobní peněženka pro Ethereum."
+    "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
   },
   "min": {
     "message": "Minimum"
@@ -620,7 +620,7 @@
     "message": "Obnovit z seed fráze"
   },
   "restoreVault": {
-    "message": "Obnovit schránku"
+    "message": "Obnovit trezor"
   },
   "required": {
     "message": "Povinné"
@@ -688,7 +688,7 @@
     "message": "Hledat"
   },
   "secretPhrase": {
-    "message": "Zadejte svých 12 slov tajné fráze k obnovení peněženky."
+    "message": "Zadejte svých 12 slov tajné fráze k obnovení trezoru."
   },
   "newPassword8Chars": {
     "message": "Nové heslo (min 8 znaků)"
@@ -886,7 +886,7 @@
     "message": "Musíte vybrat validní soubor k importu."
   },
   "vaultCreated": {
-    "message": "Peněženka vytvořena"
+    "message": "Trezor vytvořen"
   },
   "viewAccount": {
     "message": "Zobrazit účet"
