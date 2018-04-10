@@ -3,6 +3,8 @@
 ## Current Master
 
 - Correctly format currency conversion for locally selected preferred currency.
+- Improved performance of 3D fox logo.
+
 ## 4.5.5 Fri Apr 06 2018
 
 - Graceful handling of unknown keys in txParams
