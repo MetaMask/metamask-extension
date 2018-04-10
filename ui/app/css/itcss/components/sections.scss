@@ -17,6 +17,12 @@ textarea.twelve-word-phrase {
   resize: none;
 }
 
+.initialize-screen {
+  width: 100%;
+  z-index: $main-container-z-index;
+  background: #f7f7f7;
+}
+
 .initialize-screen hr {
   width: 60px;
   margin: 12px;

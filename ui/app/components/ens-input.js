@@ -32,9 +32,9 @@ EnsInput.prototype.render = function () {
       const network = this.props.network
       const networkHasEnsSupport = getNetworkEnsSupport(network)
 
-      if (!networkHasEnsSupport) return
-
       props.onChange(recipient)
+
+      if (!networkHasEnsSupport) return
 
       if (recipient.match(ensRE) === null) {
         return this.setState({

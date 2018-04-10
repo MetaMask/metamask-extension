@@ -7,8 +7,8 @@ const connect = require('react-redux').connect
 const R = require('ramda')
 const Fuse = require('fuse.js')
 const contractMap = require('eth-contract-metadata')
-const TokenBalance = require('./components/token-balance')
-const Identicon = require('./components/identicon')
+const TokenBalance = require('../../components/token-balance')
+const Identicon = require('../../components/identicon')
 const contractList = Object.entries(contractMap)
   .map(([ _, tokenData]) => tokenData)
   .filter(tokenData => Boolean(tokenData.erc20))
@@ -24,9 +24,10 @@ const fuse = new Fuse(contractList, {
       { name: 'symbol', weight: 0.5 },
     ],
 })
-const actions = require('./actions')
+const actions = require('../../actions')
 const ethUtil = require('ethereumjs-util')
-const { tokenInfoGetter } = require('./token-util')
+const { tokenInfoGetter } = require('../../token-util')
+const { DEFAULT_ROUTE } = require('../../routes')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
@@ -47,7 +48,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(actions.goHome()),
     addTokens: tokens => dispatch(actions.addTokens(tokens)),
   }
 }
@@ -56,6 +56,7 @@ inherits(AddTokenScreen, Component)
 function AddTokenScreen () {
   this.state = {
     isShowingConfirmation: false,
+    isShowingInfoBox: true,
     customAddress: '',
     customSymbol: '',
     customDecimals: '',
@@ -295,7 +296,7 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     selectedTokens,
   } = this.state
 
-  const { addTokens, goHome } = this.props
+  const { addTokens, history } = this.props
 
   const customToken = {
     address,
@@ -310,9 +311,6 @@ AddTokenScreen.prototype.renderConfirmation = function () {
   return (
     h('div.add-token', [
       h('div.add-token__wrapper', [
-        h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__description', this.context.t('likeToAddTokens')),
-        ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
           h('div.add-token__description.add-token__confirmation-description', this.context.t('balances')),
           h('div.add-token__confirmation-token-list',
@@ -335,7 +333,7 @@ AddTokenScreen.prototype.renderConfirmation = function () {
           onClick: () => this.setState({ isShowingConfirmation: false }),
         }, this.context.t('back')),
         h('button.btn-primary--lg', {
-          onClick: () => addTokens(tokens).then(goHome),
+          onClick: () => addTokens(tokens).then(() => history.push(DEFAULT_ROUTE)),
         }, this.context.t('addTokens')),
       ]),
     ])
@@ -347,18 +345,23 @@ AddTokenScreen.prototype.displayTab = function (selectedTab) {
 }
 
 AddTokenScreen.prototype.renderTabs = function () {
-  const { displayedTab, errors } = this.state
+  const { isShowingInfoBox, displayedTab, errors } = this.state
 
   return displayedTab === 'CUSTOM_TOKEN'
     ? this.renderCustomForm()
     : h('div', [
     h('div.add-token__wrapper', [
       h('div.add-token__content-container', [
-        h('div.add-token__info-box', [
-          h('div.add-token__info-box__close'),
+        isShowingInfoBox && h('div.add-token__info-box', [
+          h('div.add-token__info-box__close', {
+            onClick: () => this.setState({ isShowingInfoBox: false }),
+          }),
           h('div.add-token__info-box__title', this.context.t('whatsThis')),
           h('div.add-token__info-box__copy', this.context.t('keepTrackTokens')),
-          h('div.add-token__info-box__copy--blue', this.context.t('learnMore')),
+          h('a.add-token__info-box__copy--blue', {
+            href: 'http://metamask.helpscoutdocs.com/article/16-managing-erc20-tokens',
+            target: '_blank',
+          }, this.context.t('learnMore')),
         ]),
         h('div.add-token__input-container', [
           h('input.add-token__input', {
@@ -379,23 +382,24 @@ AddTokenScreen.prototype.render = function () {
     isShowingConfirmation,
     displayedTab,
   } = this.state
-  const { goHome } = this.props
+  const { history } = this.props
 
   return h('div.add-token', [
     h('div.add-token__header', [
       h('div.add-token__header__cancel', {
-        onClick: () => goHome(),
+        onClick: () => history.push(DEFAULT_ROUTE),
       }, [
         h('i.fa.fa-angle-left.fa-lg'),
         h('span', this.context.t('cancel')),
       ]),
       h('div.add-token__header__title', this.context.t('addTokens')),
+      isShowingConfirmation && h('div.add-token__header__subtitle', this.context.t('likeToAddTokens')),
       !isShowingConfirmation && h('div.add-token__header__tabs', [
 
         h('div.add-token__header__tabs__tab', {
           className: classnames('add-token__header__tabs__tab', {
             'add-token__header__tabs__selected': displayedTab === 'SEARCH',
-            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'SEARCH',
+            'add-token__header__tabs__unselected': displayedTab !== 'SEARCH',
           }),
           onClick: () => this.displayTab('SEARCH'),
         }, this.context.t('search')),
@@ -403,21 +407,21 @@ AddTokenScreen.prototype.render = function () {
         h('div.add-token__header__tabs__tab', {
           className: classnames('add-token__header__tabs__tab', {
             'add-token__header__tabs__selected': displayedTab === 'CUSTOM_TOKEN',
-            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'CUSTOM_TOKEN',
+            'add-token__header__tabs__unselected': displayedTab !== 'CUSTOM_TOKEN',
           }),
           onClick: () => this.displayTab('CUSTOM_TOKEN'),
         }, this.context.t('customToken')),
 
       ]),
     ]),
-//
+
     isShowingConfirmation
       ? this.renderConfirmation()
       : this.renderTabs(),
 
     !isShowingConfirmation && h('div.add-token__buttons', [
       h('button.btn-secondary--lg.add-token__cancel-button', {
-        onClick: goHome,
+        onClick: () => history.push(DEFAULT_ROUTE),
       }, this.context.t('cancel')),
       h('button.btn-primary--lg.add-token__confirm-button', {
         onClick: this.onNext,

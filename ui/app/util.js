@@ -271,6 +271,7 @@ function exportAsFile (filename, data) {
     window.navigator.msSaveBlob(blob, filename)
   } else {
     const elem = window.document.createElement('a')
+    elem.target = '_blank'
     elem.href = window.URL.createObjectURL(blob)
     elem.download = filename
     document.body.appendChild(elem)

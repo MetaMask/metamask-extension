@@ -56,7 +56,7 @@
     "message": "Balance:"
   },
   "balances": {
-    "message": "Your balances"
+    "message": "Token balance(s)"
   },
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"

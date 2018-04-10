@@ -1,5 +1,6 @@
 const watchify = require('watchify')
 const browserify = require('browserify')
+const envify = require('envify/custom')
 const disc = require('disc')
 const gulp = require('gulp')
 const source = require('vinyl-source-stream')
@@ -377,12 +378,6 @@ gulp.task('zip:edge', zipTask('edge'))
 gulp.task('zip:opera', zipTask('opera'))
 gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
 
-// set env for production
-gulp.task('apply-prod-environment', function(done) {
-  process.env.NODE_ENV = 'production'
-  done()
-});
-
 // high level tasks
 
 gulp.task('dev',
@@ -458,7 +453,6 @@ gulp.task('build:mascara',
 
 gulp.task('dist',
   gulp.series(
-    'apply-prod-environment',
     'build',
     'zip'
   )
@@ -483,6 +477,12 @@ function generateBundler(opts, performBundle) {
   })
 
   let bundler = browserify(browserifyOpts)
+
+  // inject variables into bundle
+  bundler.transform(envify({
+    METAMASK_DEBUG: opts.devMode,
+    NODE_ENV: opts.devMode ? 'development' : 'production',
+  }))
 
   // Minification
   if (opts.minifyBuild) {
@@ -557,8 +557,6 @@ function bundleTask(opts) {
     buildStream = buildStream
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
-      // inject variables into bundle
-      .pipe(replace('\'GULP_METAMASK_DEBUG\'', opts.devMode))
       // buffer file contents (?)
       .pipe(buffer())
 
