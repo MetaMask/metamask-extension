@@ -553,244 +553,244 @@
     "message": "தயவுசெய்து உங்கள் கடவுச்சொல் சரியானதா என உறுதிப்படுத்தவும்."
   },
   "passwordMismatch": {
-    "message": "passwords don't match",
-    "description": "in password creation process, the two new password fields did not match"
+    "message": "கடவுச்சொற்கள் பொருந்தவில்லை",
+    "description": "கடவுச்சொல் உருவாக்கத்தில், இரண்டு புதிய கடவுச்சொல் புலங்கள் பொருந்தவில்லை"
   },
   "passwordShort": {
-    "message": "password not long enough",
-    "description": "in password creation process, the password is not long enough to be secure"
+    "message": "கடவுச்சொல் நீண்ட காலமாக இல்லை",
+    "description": "கடவுச்சொல் உருவாக்கத்தில், பாதுகாப்பானதாக இருக்கும் கடவுச்சொல் போதும்"
   },
   "pastePrivateKey": {
-    "message": "Paste your private key string here:",
-    "description": "For importing an account from a private key"
+    "message": "இங்கே உங்கள் தனிப்பட்ட விசை சரத்தை ஒட்டுக:",
+    "description": "ஒரு தனிப்பட்ட விசை ஒரு கணக்கை இறக்குமதி செய்ய"
   },
   "pasteSeed": {
-    "message": "Paste your seed phrase here!"
+    "message": "இங்கே உங்கள் விதை சொற்றொடரை ஒட்டவும்!"
   },
   "personalAddressDetected": {
-    "message": "Personal address detected. Input the token contract address."
+    "message": "தனிப்பட்ட முகவரி கண்டறியப்பட்டது. டோக்கன் ஒப்பந்த முகவரியை உள்ளிடவும்."
   },
   "pleaseReviewTransaction": {
-    "message": "Please review your transaction."
+    "message": "உங்கள் பரிவர்த்தனை மதிப்பாய்வு செய்யவும்."
   },
   "popularTokens": {
-    "message": "Popular Tokens"
+    "message": "பிரபலமான டோக்கன்கள்"
   },
   "privacyMsg": {
-    "message": "Privacy Policy"
+    "message": "தனியுரிமை கொள்கை"
   },
   "privateKey": {
-    "message": "Private Key",
-    "description": "select this type of file to use to import an account"
+    "message": "தனிப்பட்ட விசை",
+    "description": "ஒரு கணக்கை இறக்குமதி செய்ய பயன்படுத்த இந்த வகை கோப்பை தேர்ந்தெடுக்கவும்"
   },
   "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+    "message": "எச்சரிக்கை: இந்த விசையை எப்போதும் வெளியிட வேண்டாம். உங்கள் தனிப்பட்ட விசைகளைக் கொண்ட எவரும் உங்கள் கணக்கில் உள்ள எந்த சொத்துக்களையும் திருடலாம்."
   },
   "privateNetwork": {
-    "message": "Private Network"
+    "message": "தனியார் நெட்வொர்க்"
   },
   "qrCode": {
-    "message": "Show QR Code"
+    "message": "QR குறியீட்டைக் காட்டு"
   },
   "readdToken": {
-    "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
+    "message": "உங்கள் கணக்கு விருப்பங்கள் மெனுவில் \"டோக்கனைச் சேர்\" என்பதன் மூலம் நீங்கள் எதிர்காலத்தில் இந்த டோக்கனை மீண்டும் சேர்க்கலாம்."
   },
   "readMore": {
-    "message": "Read more here."
+    "message": "மேலும் வாசிக்க இங்கே."
   },
   "readMore2": {
-    "message": "Read more."
+    "message": "மேலும் வாசிக்க."
   },
   "receive": {
-    "message": "Receive"
+    "message": "பெறுக"
   },
   "recipientAddress": {
-    "message": "Recipient Address"
+    "message": "பெறுநர் முகவரி"
   },
   "refundAddress": {
-    "message": "Your Refund Address"
+    "message": "உங்கள் பணத்தை திருப்பி அனுப்பும் முகவரி"
   },
   "rejected": {
-    "message": "Rejected"
+    "message": "நிராகரிக்கப்பட்டது"
   },
   "resetAccount": {
-    "message": "Reset Account"
+    "message": "கணக்கை மீட்டமை"
   },
   "restoreFromSeed": {
-    "message": "Restore from seed phrase"
+    "message": "விதை வாக்கியத்திலிருந்து மீட்கவும்"
   },
   "restoreVault": {
-    "message": "Restore Vault"
+    "message": "வால்ட் மீட்கவும்"
   },
   "required": {
-    "message": "Required"
+    "message": "தேவையான"
   },
   "retryWithMoreGas": {
-    "message": "Retry with a higher gas price here"
+    "message": "இங்கே அதிக எரிவாயு விலை மீண்டும் முயற்சிக்கவும்"
   },
   "walletSeed": {
-    "message": "Wallet Seed"
+    "message": "வால்ட் விதை"
   },
   "revealSeedWords": {
-    "message": "Reveal Seed Words"
+    "message": "விதை வார்த்தைகள் வெளிப்படுத்த"
   },
   "revealSeedWordsWarning": {
-    "message": "Do not recover your seed words in a public place! These words can be used to steal all your accounts."
+    "message": "உங்கள் விதை வார்த்தைகள் ஒரு பொது இடத்தில் மீட்க வேண்டாம்! உங்கள் எல்லா கணக்குகளையும் திருட இந்த வார்த்தைகள் பயன்படுத்தப்படலாம்."
   },
   "revert": {
-    "message": "Revert"
+    "message": "மாற்றியமை"
   },
   "rinkeby": {
-    "message": "Rinkeby Test Network"
+    "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்"
   },
   "ropsten": {
-    "message": "Ropsten Test Network"
+    "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்"
   },
   "currentRpc": {
-    "message": "Current RPC"
+    "message": "தற்போதைய RPC"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main எதெரியும்  Network"
+    "message": "முக்கிய எதெரியும் நெட்வொர்க் இணைக்கும்"
   },
   "connectingToRopsten": {
-    "message": "Connecting to Ropsten Test Network"
+    "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
   },
   "connectingToKovan": {
-    "message": "Connecting to Kovan Test Network"
+    "message": "கோவன் டெஸ்ட் நெட்வொர்க்குடன் இணைத்தல்"
   },
   "connectingToRinkeby": {
-    "message": "Connecting to Rinkeby Test Network"
+    "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
   },
   "connectingToUnknown": {
-    "message": "Connecting to Unknown Network"
+    "message": "தெரியாத நெட்வொர்க்குடன் இணைக்கிறது"
   },
   "sampleAccountName": {
-    "message": "E.g. My new account",
-    "description": "Help user understand concept of adding a human-readable name to their account"
+    "message": "உதாரணமாக எனது புதிய கணக்கு",
+    "description": "தங்கள் கணக்கில் மனிதர் படிக்கக்கூடிய பெயரைச் சேர்க்கும் கருத்தை பயனர் புரிந்து கொள்ள உதவுங்கள்"
   },
   "save": {
-    "message": "Save"
+    "message": "சேமி"
   },
   "reprice_title": {
-    "message": "Reprice Transaction"
+    "message": "ரெப்ரிஸ் பரிவர்த்தனை"
   },
   "reprice_subtitle": {
-    "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
+    "message": "உங்கள் பரிவர்த்தனைகளை மேலெழுதும் முயற்சியை அதிகரிக்க உங்கள் எரிவாயு விலையை அதிகரிக்கவும்"
   },
   "saveAsFile": {
-    "message": "Save as File",
-    "description": "Account export process"
+    "message": "கோப்பாக சேமிக்கவும்",
+    "description": "கணக்கு ஏற்றுமதி செயல்முறை"
   },
   "saveSeedAsFile": {
-    "message": "Save Seed Words As File"
+    "message": "கோப்பு என விதை வார்த்தைகள் சேமிக்கவும்"
   },
   "search": {
-    "message": "Search"
+    "message": "தேடல்"
   },
   "secretPhrase": {
-    "message": "Enter your secret twelve word phrase here to restore your vault."
+    "message": "உங்கள் பெட்டகத்தை மீட்டெடுப்பதற்காக இங்கே உங்கள் ரகசிய பன்னிரண்டு வார்த்தை சொற்றொடரை உள்ளிடவும்."
   },
   "newPassword8Chars": {
-    "message": "New Password (min 8 chars)"
+    "message": "புதிய கடவுச்சொல் (குறைந்தபட்சம் 8 எழுத்துகள்)"
   },
   "seedPhraseReq": {
-    "message": "seed phrases are 12 words long"
+    "message": "விதை வாக்கியங்கள் 12 வார்த்தைகள் நீண்டவை"
   },
   "select": {
-    "message": "Select"
+    "message": "தேர்வு"
   },
   "selectCurrency": {
-    "message": "Select Currency"
+    "message": "நாணயத்தைத் தேர்ந்தெடு"
   },
   "selectService": {
-    "message": "Select Service"
+    "message": "சேவை தேர்ந்தெடுக்கவும்"
   },
   "selectType": {
-    "message": "Select Type"
+    "message": "வகை தேர்ந்தெடு"
   },
   "send": {
-    "message": "Send"
+    "message": "அனுப்பு"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "ETH ஐ அனுப்பு"
   },
   "sendTokens": {
     "message": "Send Tokens"
   },
   "onlySendToEtherAddress": {
-    "message": "Only send ETH to an எதெரியும்  address."
+    "message": "ETH ஐ ஒரு எதரியும் முகவரிக்கு மட்டும் அனுப்பவும்."
   },
   "searchTokens": {
-    "message": "Search Tokens"
+    "message": "தேடல் டோக்கன்ஸ்"
   },
   "sendTokensAnywhere": {
-    "message": "Send Tokens to anyone with an எதெரியும்  account"
+    "message": "யாருடனும் டோக்கன்களை அனுப்பவும் எதெரியும் கணக்கு"
   },
   "settings": {
-    "message": "Settings"
+    "message": "அமைப்புகள்"
   },
   "info": {
-  "message": "Info"
+  "message": "தகவல்"
   },
   "shapeshiftBuy": {
-    "message": "Buy with Shapeshift"
+    "message": "Shapeshift உடன் வாங்கவும்"
   },
   "showPrivateKeys": {
-    "message": "Show Private Keys"
+    "message": "தனிப்பட்ட விசைகளைக் காண்பி"
   },
   "showQRCode": {
-    "message": "Show QR Code"
+    "message": "QR குறியீட்டைக் காட்டு"
   },
   "sign": {
-    "message": "Sign"
+    "message": "உள்நுழை"
   },
   "signed": {
-    "message": "Signed"
+    "message": "கையொப்பமிடப்பட்ட"
   },
   "signMessage": {
-    "message": "Sign Message"
+    "message": "செய்தியை பதிவு செய்க"
   },
   "signNotice": {
-    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+    "message": "இந்த செய்தியில் கையொப்பமிடலாம் \nஆபத்தான பக்க விளைவுகள் இருக்கலாம். \n உங்கள் மொத்த கணக்கில் முழுமையாக நம்பக்கூடிய தளங்களில் செய்திகளை மட்டுமே கையொப்பமிடுங்கள். \n இந்த ஆபத்தான முறை எதிர்கால பதிப்பில் அகற்றப்படும்."
   },
   "sigRequest": {
-    "message": "Signature Request"
+    "message": "கையொப்பம் கோரிக்கை"
   },
   "sigRequested": {
-    "message": "Signature Requested"
+    "message": "கையொப்பம் கோரப்பட்டது"
   },
   "spaceBetween": {
-    "message": "there can only be a space between words"
+    "message": "வார்த்தைகள் இடையே இடைவெளி மட்டுமே இருக்க முடியும்"
   },
   "status": {
-    "message": "Status"
+    "message": "நிலைமை"
   },
   "stateLogs": {
-    "message": "State Logs"
+    "message": "மாநில பதிவுகள்"
   },
   "stateLogsDescription": {
-    "message": "State logs contain your public account addresses and sent transactions."
+    "message": "மாநில பதிவுகள் உங்கள் பொது கணக்கு முகவரிகள் மற்றும் பரிமாற்றங்களை அனுப்பியுள்ளன."
   },
   "stateLogError": {
-    "message": "Error in retrieving state logs."
+    "message": "மாநில பதிவுகளை மீட்டெடுப்பதில் பிழை."
   },
   "submit": {
-    "message": "Submit"
+    "message": "சமர்ப்பி"
   },
   "submitted": {
-    "message": "Submitted"
+    "message": "சமர்ப்பிக்கப்பட்டது"
   },
   "supportCenter": {
-    "message": "Visit our Support Center"
+    "message": "எங்கள் ஆதரவு மையத்தைப் பார்வையிடவும்"
   },
   "symbolBetweenZeroTen": {
-    "message": "Symbol must be between 0 and 10 characters."
+    "message": "குறியீடு 0 மற்றும் 10 எழுத்துகளுக்கு இடையில் இருக்க வேண்டும்."
   },
   "takesTooLong": {
-    "message": "Taking too long?"
+    "message": "நீண்ட நேரம் எடுத்துக்கொள்கிறது?"
   },
   "terms": {
-    "message": "Terms of Use"
+    "message": "பயன்பாட்டு விதிமுறைகளை"
   },
   "testFaucet": {
     "message": "Test Faucet"
