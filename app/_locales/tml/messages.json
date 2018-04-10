@@ -41,7 +41,7 @@
     "message": "அங்கீகரிக்கப்பட்ட"
   },
   "attemptingConnect": {
-    "message": "Attempting to connect to ப்ளாக்சைன்"
+    "message": "இணைக்க முயற்சி செய்க ப்ளாக்சைன்"
   },
   "attributions": {
     "message": "பண்புகளும்"
@@ -59,7 +59,7 @@
     "message": "உங்கள் இருப்பு"
   },
   "balanceIsInsufficientGas": {
-    "message": "Insufficient balance for current gas total"
+    "message": "நடப்பு வாயு மொத்தம் போதுமான சமநிலை"
   },
   "beta": {
     "message": "பீட்டா"
@@ -69,116 +69,116 @@
     "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
-    "message": "Use Blockies Identicon"
+    "message": "ப்ளாக்கிஸ் ஐடென்டிகோன் பயன்பாட்டு"
   },
   "borrowDharma": {
-    "message": "Borrow With Dharma (Beta)"
+    "message": "தர்மத்துடன் கடன் வாங்குங்கள் (பீட்டா)"
   },
   "builtInCalifornia": {
-    "message": "MetaMask is designed and built in California."
+    "message": "மேடமஸ்க் வடிவமைக்கப்பட்டு கலிபோர்னியாவில் கட்டப்பட்டுள்ளது."
   },
   "buy": {
-    "message": "Buy"
+    "message": "வாங்க"
   },
   "buyCoinbase": {
-    "message": "Buy on Coinbase"
+    "message": "கோஇன்பசே வாங்கவும்"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, எதெரியும் , and litecoin."
+    "message": "கோஇன்பசே பிறகாய்ன் , எதெரியும் மற்றும் ளிட்டசோன் வாங்க மற்றும் விற்க உலகின் மிகவும் பிரபலமான வழி"
   },
   "ok": {
-    "message": "Ok"
+    "message": "சரி"
   },
   "cancel": {
-    "message": "Cancel"
+    "message": "ரத்து"
   },
   "classicInterface": {
-    "message": "Use classic interface"
+    "message": "கிளாசிக் இடைமுகத்தைப் பயன்படுத்தவும்"
   },
   "clickCopy": {
-    "message": "Click to Copy"
+    "message": "நகலெடுக்க கிளிக் செய்யவும்"
   },
   "confirm": {
-    "message": "Confirm"
+    "message": "உறுதிப்படுத்தவும்"
   },
   "confirmed": {
-    "message": "Confirmed"
+    "message": "உறுதி"
   },
   "confirmContract": {
-    "message": "Confirm Contract"
+    "message": "ஒப்பந்தத்தை உறுதிப்படுத்துக"
   },
   "confirmPassword": {
-    "message": "Confirm Password"
+    "message": "கடவுச்சொல்லை உறுதிப்படுத்துக"
   },
   "confirmTransaction": {
-    "message": "Confirm Transaction"
+    "message": "பரிவர்த்தனை உறுதிபடுத்தவும்"
   },
   "continue": {
-    "message": "Continue"
+    "message": "தொடர்ந்து"
   },
   "continueToCoinbase": {
-    "message": "Continue to Coinbase"
+    "message": "கோஇன்பசே ஐத் தொடரவும்"
   },
   "contractDeployment": {
-    "message": "Contract Deployment"
+    "message": "ஒப்பந்த வரிசைப்படுத்தல்"
   },
   "conversionProgress": {
-    "message": "Conversion in progress"
+    "message": "மாற்றம் முன்னேற்றம்"
   },
   "copiedButton": {
-    "message": "Copied"
+    "message": "நகலெடுக்கப்பட்டன"
   },
   "copiedClipboard": {
-    "message": "Copied to Clipboard"
+    "message": "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது"
   },
   "copiedExclamation": {
-    "message": "Copied!"
+    "message": "நகலெடுக்கப்பட்டன!"
   },
   "copiedSafe": {
-    "message": "I've copied it somewhere safe"
+    "message": "நான் எங்காவது பாதுகாப்பாக நகலெடுத்திருக்கிறேன்"
   },
   "copy": {
-    "message": "Copy"
+    "message": "நகல்"
   },
   "copyToClipboard": {
-    "message": "Copy to clipboard"
+    "message": "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது"
   },
   "copyButton": {
-    "message": " Copy "
+    "message": " நகல் "
   },
   "copyPrivateKey": {
-    "message": "This is your private key (click to copy)"
+    "message": "இது உங்கள் தனிப்பட்ட விசை (நகலெடுக்க கிளிக் செய்யவும்)"
   },
   "create": {
-    "message": "Create"
+    "message": "உருவாக்கவும்"
   },
   "createAccount": {
-    "message": "Create Account"
+    "message": "உங்கள் கணக்கை துவங்குங்கள்"
   },
   "createDen": {
-    "message": "Create"
+    "message": "உருவாக்கவும்"
   },
   "crypto": {
-    "message": "Crypto",
-    "description": "Exchange type (cryptocurrencies)"
+    "message": "கிரிப்டோ",
+    "description": "பரிமாற்ற வகை (கிரிப்டோசுர்ரென்சிஸ்)"
   },
   "currentConversion": {
-    "message": "Current Conversion"
+    "message": "தற்போதைய மாற்றம்"
   },
   "currentNetwork": {
-    "message": "Current Network"
+    "message": "தற்போதைய நெட்வொர்க்"
   },
   "customGas": {
-    "message": "Customize Gas"
+    "message": "எரிவாயுவைத் தனிப்பயனாக்குங்கள்"
   },
   "customToken": {
-    "message": "Custom Token"
+    "message": "தனிப்பயன் டோக்கன்"
   },
   "customize": {
-    "message": "Customize"
+    "message": "தனிப்பயனாக்கலாம்"
   },
   "customRPC": {
-    "message": "Custom RPC"
+    "message": "விருப்ப RPC ஐ"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
@@ -193,7 +193,7 @@
     "message": "Your DEN is your password-encrypted storage within MetaMask."
   },
   "deposit": {
-    "message": "Deposit"
+    "message": "வைப்புத்தொகை"
   },
   "depositBTC": {
     "message": "Deposit your BTC to the address below:"
@@ -203,10 +203,10 @@
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "Deposit Eth"
+    "message": "வைப்புத்தொகை எது "
   },
   "depositEther": {
-    "message": "Deposit Ether"
+    "message": "வைப்புத்தொகை எதிர் "
   },
   "depositFiat": {
     "message": "Deposit with Fiat"
@@ -880,33 +880,33 @@
     "message": "Used by a variety of different clients"
   },
   "useOldUI": {
-    "message": "Use old UI"
+    "message": "உஸ் ஓல்ட் உய் "
   },
   "validFileImport": {
     "message": "You must select a valid file to import."
   },
   "vaultCreated": {
-    "message": "Vault Created"
+    "message": "வால்ட் உருவாக்கப்பட்டது"
   },
   "viewAccount": {
-    "message": "View Account"
+    "message": "கணக்கைக் காட்டு"
   },
   "visitWebSite": {
-    "message": "Visit our web site"
+    "message": "எங்கள் வலைத்தளத்தைப் பார்வையிடவும்"
   },
   "warning": {
-    "message": "Warning"
+    "message": "எச்சரிக்கை"
   },
   "welcomeBeta": {
-    "message": "Welcome to MetaMask Beta"
+    "message": "மெட்டாமாஸ்க் பீட்டாவுக்கு வருக"
   },
   "whatsThis": {
-    "message": "What's this?"
+    "message": "இது என்ன?"
   },
   "yourSigRequested": {
-    "message": "Your signature is being requested"
+    "message": "உங்கள் கையொப்பம் கோரப்படுகிறது"
   },
   "youSign": {
-    "message": "You are signing"
+    "message": "நீங்கள் கையெழுத்திடுகிறீர்கள்"
   }
 }
