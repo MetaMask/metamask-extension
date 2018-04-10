@@ -1,11 +1,17 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const t = require('../../i18n')
+const connect = require('react-redux').connect
 
 const AccountPanel = require('./account-panel')
 
-module.exports = PendingMsgDetails
+PendingMsgDetails.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(PendingMsgDetails)
+
 
 inherits(PendingMsgDetails, Component)
 function PendingMsgDetails () {
@@ -40,7 +46,7 @@ PendingMsgDetails.prototype.render = function () {
       // message data
       h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-column.flex-space-between', [
-          h('label.font-small.allcaps', t('message')),
+          h('label.font-small.allcaps', this.context.t('message')),
           h('span.font-small', msgParams.data),
         ]),
       ]),

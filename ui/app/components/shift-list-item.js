@@ -1,19 +1,24 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const vreme = new (require('vreme'))()
 const explorerLink = require('etherscan-link').createExplorerLink
 const actions = require('../actions')
 const addressSummary = require('../util').addressSummary
-const t = require('../../i18n')
 
 const CopyButton = require('./copyButton')
 const EthBalance = require('./eth-balance')
 const Tooltip = require('./tooltip')
 
 
+ShiftListItem.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(ShiftListItem)
+
 
 function mapStateToProps (state) {
   return {
@@ -76,7 +81,7 @@ ShiftListItem.prototype.renderUtilComponents = function () {
           value: this.props.depositAddress,
         }),
         h(Tooltip, {
-          title: t('qrCode'),
+          title: this.context.t('qrCode'),
         }, [
           h('i.fa.fa-qrcode.pointer.pop-hover', {
             onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType)),
@@ -136,8 +141,8 @@ ShiftListItem.prototype.renderInfo = function () {
             color: '#ABA9AA',
             width: '100%',
           },
-        }, t('toETHviaShapeShift', [props.depositType])),
-        h('div', t('noDeposits')),
+        }, this.context.t('toETHviaShapeShift', [props.depositType])),
+        h('div', this.context.t('noDeposits')),
         h('div', {
           style: {
             fontSize: 'x-small',
@@ -159,8 +164,8 @@ ShiftListItem.prototype.renderInfo = function () {
             color: '#ABA9AA',
             width: '100%',
           },
-        }, t('toETHviaShapeShift', [props.depositType])),
-        h('div', t('conversionProgress')),
+        }, this.context.t('toETHviaShapeShift', [props.depositType])),
+        h('div', this.context.t('conversionProgress')),
         h('div', {
           style: {
             fontSize: 'x-small',
@@ -185,7 +190,7 @@ ShiftListItem.prototype.renderInfo = function () {
             color: '#ABA9AA',
             width: '100%',
           },
-        }, t('fromShapeShift')),
+        }, this.context.t('fromShapeShift')),
         h('div', formatDate(props.time)),
         h('div', {
           style: {
@@ -197,7 +202,7 @@ ShiftListItem.prototype.renderInfo = function () {
       ])
 
     case 'failed':
-      return h('span.error', '(' + t('failed') + ')')
+      return h('span.error', '(' + this.context.t('failed') + ')')
     default:
       return ''
   }

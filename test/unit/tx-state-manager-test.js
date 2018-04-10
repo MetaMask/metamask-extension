@@ -240,12 +240,12 @@ describe('TransactionStateManager', function () {
   })
 
   describe('#wipeTransactions', function () {
-    
+
     const specificAddress = '0xaa'
     const otherAddress = '0xbb'
 
     it('should remove only the transactions from a specific address', function () {
-      
+
       const txMetas = [
         { id: 0, status: 'unapproved', txParams: { from: specificAddress, to: otherAddress }, metamaskNetworkId: currentNetworkId },
         { id: 1, status: 'confirmed', txParams: { from: otherAddress, to: specificAddress }, metamaskNetworkId: currentNetworkId },
@@ -268,7 +268,7 @@ describe('TransactionStateManager', function () {
         { id: 1, status: 'confirmed', txParams: { from: specificAddress, to: otherAddress }, metamaskNetworkId: otherNetworkId },
         { id: 2, status: 'confirmed', txParams: { from: specificAddress, to: otherAddress }, metamaskNetworkId: otherNetworkId },
       ]
-      
+
       txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop))
 
       txStateManager.wipeTransactions(specificAddress)

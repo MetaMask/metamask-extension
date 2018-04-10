@@ -30,15 +30,19 @@ global.addEventListener('activate', function (event) {
 
 log.debug('inside:open')
 
-
-// // state persistence
+// state persistence
 const dbController = new DbController({
   key: STORAGE_KEY,
 })
-loadStateFromPersistence()
-.then((initState) => setupController(initState))
-.then(() => log.debug('MetaMask initialization complete.'))
-.catch((err) => console.error('WHILE SETTING UP:', err))
+
+start().catch(log.error)
+
+async function start() {
+  log.debug('MetaMask initializing...')
+  const initState = await loadStateFromPersistence()
+  await setupController(initState)
+  log.debug('MetaMask initialization complete.')
+}
 
 //
 // State and Persistence

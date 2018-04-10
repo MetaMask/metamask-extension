@@ -28,12 +28,15 @@ module.exports = {
 
 function transformState (state) {
   const newState = state
-  const transactions = newState.TransactionController.transactions
+  const { TransactionController } = newState
+  if (TransactionController && TransactionController.transactions) {
+    const transactions = newState.TransactionController.transactions
 
-  newState.TransactionController.transactions = transactions.map((txMeta) => {
-    if (txMeta.status !== 'submitted' || txMeta.submittedTime) return txMeta
-    txMeta.submittedTime = (new Date()).getTime()
-    return txMeta
-  })
+    newState.TransactionController.transactions = transactions.map((txMeta) => {
+      if (txMeta.status !== 'submitted' || txMeta.submittedTime) return txMeta
+      txMeta.submittedTime = (new Date()).getTime()
+      return txMeta
+    })
+  }
   return newState
 }

@@ -38,11 +38,6 @@ module.exports = class TransactionStateManager extends EventEmitter {
     }, opts)
   }
 
-  // Returns the number of txs for the current network.
-  getTxCount () {
-    return this.getTxList().length
-  }
-
   getTxList () {
     const network = this.getNetwork()
     const fullTxList = this.getFullTxList()
@@ -88,7 +83,7 @@ module.exports = class TransactionStateManager extends EventEmitter {
     txMeta.history.push(snapshot)
 
     const transactions = this.getFullTxList()
-    const txCount = this.getTxCount()
+    const txCount = transactions.length
     const txHistoryLimit = this.txHistoryLimit
 
     // checks if the length of the tx history is
@@ -111,12 +106,13 @@ module.exports = class TransactionStateManager extends EventEmitter {
   }
 
   updateTx (txMeta, note) {
+    // validate txParams
     if (txMeta.txParams) {
-      Object.keys(txMeta.txParams).forEach((key) => {
-        const value = txMeta.txParams[key]
-        if (typeof value !== 'string') console.error(`${key}: ${value} in txParams is not a string`)
-        if (!ethUtil.isHexPrefixed(value)) console.error('is not hex prefixed, anything on txParams must be hex prefixed')
-      })
+      if (typeof txMeta.txParams.data === 'undefined') {
+        delete txMeta.txParams.data
+      }
+
+      this.validateTxParams(txMeta.txParams)
     }
 
     // create txMeta snapshot for history
@@ -142,6 +138,23 @@ module.exports = class TransactionStateManager extends EventEmitter {
     const txMeta = this.getTx(txId)
     txMeta.txParams = extend(txMeta.txParams, txParams)
     this.updateTx(txMeta, `txStateManager#updateTxParams`)
+  }
+
+  // validates txParams members by type
+  validateTxParams(txParams) {
+    Object.keys(txParams).forEach((key) => {
+      const value = txParams[key]
+      // validate types
+      switch (key) {
+        case 'chainId':
+          if (typeof value !== 'number' && typeof value !== 'string') throw new Error(`${key} in txParams is not a Number or hex string. got: (${value})`)
+          break
+        default:
+          if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
+          if (!ethUtil.isHexPrefixed(value)) throw new Error(`${key} in txParams is not hex prefixed. got: (${value})`)
+          break
+      }
+    })
   }
 
 /*

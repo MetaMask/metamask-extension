@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('./identicon')
@@ -9,7 +10,6 @@ const classnames = require('classnames')
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 
 const actions = require('../actions')
-const t = require('../../i18n')
 const { conversionUtil } = require('../conversion-util')
 
 const {
@@ -38,7 +38,12 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
+SignatureRequest.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SignatureRequest)
+
 
 inherits(SignatureRequest, Component)
 function SignatureRequest (props) {
@@ -55,7 +60,7 @@ SignatureRequest.prototype.renderHeader = function () {
 
     h('div.request-signature__header-background'),
 
-    h('div.request-signature__header__text', t('sigRequest')),
+    h('div.request-signature__header__text', this.context.t('sigRequest')),
 
     h('div.request-signature__header__tip-container', [
       h('div.request-signature__header__tip'),
@@ -76,7 +81,7 @@ SignatureRequest.prototype.renderAccountDropdown = function () {
 
   return h('div.request-signature__account', [
 
-    h('div.request-signature__account-text', [t('account') + ':']),
+    h('div.request-signature__account-text', [this.context.t('account') + ':']),
 
     h(AccountDropdownMini, {
       selectedAccount,
@@ -103,7 +108,7 @@ SignatureRequest.prototype.renderBalance = function () {
 
   return h('div.request-signature__balance', [
 
-    h('div.request-signature__balance-text', [t('balance')]),
+    h('div.request-signature__balance-text', [this.context.t('balance')]),
 
     h('div.request-signature__balance-value', `${balanceInEther} ETH`),
 
@@ -137,7 +142,7 @@ SignatureRequest.prototype.renderRequestInfo = function () {
   return h('div.request-signature__request-info', [
 
     h('div.request-signature__headline', [
-      t('yourSigRequested'),
+      this.context.t('yourSigRequested'),
     ]),
 
   ])
@@ -155,18 +160,18 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
 
 SignatureRequest.prototype.renderBody = function () {
   let rows
-  let notice = t('youSign') + ':'
+  let notice = this.context.t('youSign') + ':'
 
   const { txData } = this.props
   const { type, msgParams: { data } } = txData
 
   if (type === 'personal_sign') {
-    rows = [{ name: t('message'), value: this.msgHexToText(data) }]
+    rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
   } else if (type === 'eth_signTypedData') {
     rows = data
   } else if (type === 'eth_sign') {
-    rows = [{ name: t('message'), value: data }]
-    notice = t('signNotice')
+    rows = [{ name: this.context.t('message'), value: data }]
+    notice = this.context.t('signNotice')
   }
 
   return h('div.request-signature__body', {}, [
@@ -225,10 +230,10 @@ SignatureRequest.prototype.renderFooter = function () {
   return h('div.request-signature__footer', [
     h('button.btn-secondary--lg.request-signature__footer__cancel-button', {
       onClick: cancel,
-    }, t('cancel')),
+    }, this.context.t('cancel')),
     h('button.btn-primary--lg', {
       onClick: sign,
-    }, t('sign')),
+    }, this.context.t('sign')),
   ])
 }
 

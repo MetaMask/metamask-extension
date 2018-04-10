@@ -1,10 +1,15 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
-const t = require('../../../i18n')
+
+SeedImportSubview.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect(mapStateToProps)(SeedImportSubview)
+
 
 function mapStateToProps (state) {
   return {}
@@ -21,10 +26,10 @@ SeedImportSubview.prototype.render = function () {
       style: {
       },
     }, [
-      t('pasteSeed'),
+      this.context.t('pasteSeed'),
       h('textarea'),
       h('br'),
-      h('button', t('submit')),
+      h('button', this.context.t('submit')),
     ])
   )
 }

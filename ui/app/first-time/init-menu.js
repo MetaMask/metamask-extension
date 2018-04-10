@@ -1,19 +1,24 @@
 const inherits = require('util').inherits
 const EventEmitter = require('events').EventEmitter
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const Mascot = require('../components/mascot')
 const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
-const t = require('../../i18n')
 const getCaretCoordinates = require('textarea-caret')
 const environmentType = require('../../../app/scripts/lib/environment-type')
 const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
 
 let isSubmitting = false
 
+InitializeMenuScreen.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(InitializeMenuScreen)
+
 
 inherits(InitializeMenuScreen, Component)
 function InitializeMenuScreen () {
@@ -60,7 +65,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
           color: '#7F8082',
           marginBottom: 10,
         },
-      }, t('appName')),
+      }, this.context.t('appName')),
 
 
       h('div', [
@@ -70,10 +75,10 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
             color: '#7F8082',
             display: 'inline',
           },
-        }, t('encryptNewDen')),
+        }, this.context.t('encryptNewDen')),
 
         h(Tooltip, {
-          title: t('denExplainer'),
+          title: this.context.t('denExplainer'),
         }, [
           h('i.fa.fa-question-circle.pointer', {
             style: {
@@ -93,7 +98,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
       h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box',
-        placeholder: t('newPassword'),
+        placeholder: this.context.t('newPassword'),
         onInput: this.inputChanged.bind(this),
         style: {
           width: 260,
@@ -105,7 +110,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
       h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box-confirm',
-        placeholder: t('confirmPassword'),
+        placeholder: this.context.t('confirmPassword'),
         onKeyPress: this.createVaultOnEnter.bind(this),
         onInput: this.inputChanged.bind(this),
         style: {
@@ -120,7 +125,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         style: {
           margin: 12,
         },
-      }, t('createDen')),
+      }, this.context.t('createDen')),
 
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
@@ -130,7 +135,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
             color: 'rgb(247, 134, 28)',
             textDecoration: 'underline',
           },
-        }, t('importDen')),
+        }, this.context.t('importDen')),
       ]),
 
       h('.flex-row.flex-center.flex-grow', [
@@ -179,12 +184,12 @@ InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
   var passwordConfirm = passwordConfirmBox.value
 
   if (password.length < 8) {
-    this.warning = t('passwordShort')
+    this.warning = this.context.t('passwordShort')
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
   if (password !== passwordConfirm) {
-    this.warning = t('passwordMismatch')
+    this.warning = this.context.t('passwordMismatch')
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }

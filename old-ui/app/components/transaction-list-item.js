@@ -30,7 +30,12 @@ function TransactionListItem () {
 
 TransactionListItem.prototype.showRetryButton = function () {
   const { transaction = {}, transactions } = this.props
-  const { status, submittedTime, txParams } = transaction
+  const { submittedTime, txParams } = transaction
+
+  if (!txParams) {
+    return false
+  }
+
   const currentNonce = txParams.nonce
   const currentNonceTxs = transactions.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')

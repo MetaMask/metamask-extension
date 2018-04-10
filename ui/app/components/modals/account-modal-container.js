@@ -1,11 +1,11 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const { getSelectedIdentity } = require('../../selectors')
 const Identicon = require('../identicon')
-const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -26,7 +26,12 @@ function AccountModalContainer () {
   Component.call(this)
 }
 
+AccountModalContainer.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountModalContainer)
+
 
 AccountModalContainer.prototype.render = function () {
   const {
@@ -60,7 +65,7 @@ AccountModalContainer.prototype.render = function () {
 
         h('i.fa.fa-angle-left.fa-lg'),
 
-        h('span.account-modal-back__text', ' ' + t('back')),
+        h('span.account-modal-back__text', ' ' + this.context.t('back')),
 
       ]),
 

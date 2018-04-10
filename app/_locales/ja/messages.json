@@ -49,6 +49,9 @@
   "balance": {
     "message": "残高:"
   },
+  "balances": {
+    "message": "トークン残高"
+  },
   "balanceIsInsufficientGas": {
     "message": "現在のガス総量に対して残高が不足しています"
   },
@@ -160,20 +163,20 @@
     "message": "DENとは、あなたのパスワードが暗号化されたMetaMask内のストレージです。"
   },
   "deposit": {
-    "message": "お振込み"
+    "message": "振込"
   },
   "depositBTC": {
     "message": "BTCを下記のアドレスへ振込んでください:"
   },
   "depositCoin": {
-    "message": "あなたの $1を下記のアドレスへ振込んでください",
+    "message": "$1を下記のアドレスへ振込んでください",
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
     "message": "ETHを入金"
   },
   "depositEther": {
-    "message": "Etherを入金"
+    "message": "Etherを振込"
   },
   "depositFiat": {
     "message": "法定通貨でデポジット"
@@ -215,7 +218,7 @@
     "message": "パスワードを入力"
   },
   "etherscanView": {
-    "message": "Etherscanでアカウントを参照"
+    "message": "Etherscanでアカウントを確認"
   },
   "exchangeRate": {
     "message": "交換レート"
@@ -293,7 +296,7 @@
     "message": "トークンを隠す"
   },
   "hideTokenPrompt": {
-    "message": "トークンを隠しますか？?"
+    "message": "トークンを隠しますか?"
   },
   "howToDeposit": {
     "message": "どのようにEtherをデポジットしますか?"
@@ -306,7 +309,7 @@
     "message": "アカウントのインポート"
   },
   "importAccountMsg": {
-    "message":"追加したアカウントはMetaMaskのアカウントシードフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
+    "message":"追加したアカウントはMetaMaskのアカウントパスフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
   },
   "importAnAccount": {
     "message": "アカウントをインポート"
@@ -341,7 +344,7 @@
     "description": "format for importing an account"
   },
   "keepTrackTokens": {
-    "message": "MetaMaskアカウントで入手したトークンを追跡でできます。"
+    "message": "MetaMaskアカウントで入手したトークンを検索できます。"
   },
   "kovan": {
     "message": "Kovanテストネットワーク"
@@ -386,6 +389,9 @@
   "myAccounts": {
     "message": "マイアカウント"
   },
+  "mustSelectOne": {
+    "message": "一つ以上のトークンを選択してください。"
+  },
   "needEtherInWallet": {
     "message": "MetaMaskで分散型アプリケーションを使用するためには、このウォレットにEtherが必要です。"
   },
@@ -426,7 +432,7 @@
     "message": "この名前にはアドレスが設定されていません。"
   },
   "noDeposits": {
-    "message": "お振込みがありません。"
+    "message": "振込みがありません。"
   },
   "noTransactionHistory": {
     "message": "トランザクション履歴がありません。"
@@ -460,10 +466,13 @@
     "description": "For importing an account from a private key"
   },
   "pasteSeed": {
-    "message": "シードをここにペーストして下さい!"
+    "message": "パスフレーズをここにペーストして下さい!"
   },
   "pleaseReviewTransaction": {
     "message": "トランザクションを確認して下さい。"
+  },
+  "popularTokens": {
+    "message": "人気のトークン"
   },
   "privateKey": {
     "message": "秘密鍵",
@@ -485,13 +494,13 @@
     "message": "もっと読む"
   },
   "receive": {
-    "message": "お受取り"
+    "message": "受取"
   },
   "recipientAddress": {
     "message": "受取人アドレス"
   },
   "refundAddress": {
-    "message": "お受取りアドレス"
+    "message": "受取アドレス"
   },
   "rejected": {
     "message": "拒否されました"
@@ -502,11 +511,17 @@
   "restoreFromSeed": {
     "message": "パスフレーズから復元する"
   },
+  "restoreVault": {
+    "message": "ウォレットを復元する"
+  },
   "required": {
     "message": "必要です。"
   },
   "retryWithMoreGas": {
     "message": "より高いガスプライスで再度試して下さい。"
+  },
+  "walletSeed": {
+    "message": "ウォレットのパスフレーズ"
   },
   "revealSeedWords": {
     "message": "パスフレーズを表示"
@@ -534,6 +549,9 @@
   "selectService": {
     "message": "サービスを選択"
   },
+  "selectType": {
+    "message": "キーの種類"
+  },
   "send": {
     "message": "送信"
   },
@@ -555,8 +573,11 @@
   "settings": {
     "message": "設定"
   },
+  "info": {
+    "message": "情報"
+    },
   "shapeshiftBuy": {
-    "message": "Shapeshiftで取引"
+    "message": "Shapeshiftで交換"
   },
   "showPrivateKeys": {
     "message": "秘密鍵を表示"
@@ -615,6 +636,9 @@
   },
   "total": {
     "message": "合計"
+  },
+  "transactions": {
+    "message": "トランザクション"
   },
   "transactionMemo": {
     "message": "トランザクションメモ (オプション)"

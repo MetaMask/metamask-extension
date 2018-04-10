@@ -1,11 +1,16 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const t = require('../../../i18n')
+
+PrivateKeyImportView.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(PrivateKeyImportView)
+
 
 function mapStateToProps (state) {
   return {
@@ -25,6 +30,7 @@ function mapDispatchToProps (dispatch) {
 
 inherits(PrivateKeyImportView, Component)
 function PrivateKeyImportView () {
+  this.createKeyringOnEnter = this.createKeyringOnEnter.bind(this)
   Component.call(this)
 }
 
@@ -34,14 +40,14 @@ PrivateKeyImportView.prototype.render = function () {
   return (
     h('div.new-account-import-form__private-key', [
 
-      h('span.new-account-create-form__instruction', t('pastePrivateKey')),
+      h('span.new-account-create-form__instruction', this.context.t('pastePrivateKey')),
 
       h('div.new-account-import-form__private-key-password-container', [
 
         h('input.new-account-import-form__input-password', {
           type: 'password',
           id: 'private-key-box',
-          onKeyPress: () => this.createKeyringOnEnter(),
+          onKeyPress: e => this.createKeyringOnEnter(e),
         }),
 
       ]),
@@ -51,13 +57,13 @@ PrivateKeyImportView.prototype.render = function () {
         h('button.btn-secondary--lg.new-account-create-form__button', {
           onClick: () => goHome(),
         }, [
-          t('cancel'),
+          this.context.t('cancel'),
         ]),
 
         h('button.btn-primary--lg.new-account-create-form__button', {
           onClick: () => this.createNewKeychain(),
         }, [
-          t('import'),
+          this.context.t('import'),
         ]),
 
       ]),

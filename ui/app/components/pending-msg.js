@@ -1,10 +1,16 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-msg-details')
-const t = require('../../i18n')
+const connect = require('react-redux').connect
 
-module.exports = PendingMsg
+PendingMsg.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(PendingMsg)
+
 
 inherits(PendingMsg, Component)
 function PendingMsg () {
@@ -30,14 +36,14 @@ PendingMsg.prototype.render = function () {
           fontWeight: 'bold',
           textAlign: 'center',
         },
-      }, t('signMessage')),
+      }, this.context.t('signMessage')),
 
       h('.error', {
         style: {
           margin: '10px',
         },
       }, [
-        t('signNotice'),
+        this.context.t('signNotice'),
         h('a', {
           href: 'https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527',
           style: { color: 'rgb(247, 134, 28)' },
@@ -46,7 +52,7 @@ PendingMsg.prototype.render = function () {
             const url = 'https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527'
             global.platform.openWindow({ url })
           },
-        }, t('readMore')),
+        }, this.context.t('readMore')),
       ]),
 
       // message details
@@ -56,10 +62,10 @@ PendingMsg.prototype.render = function () {
       h('.flex-row.flex-space-around', [
         h('button', {
           onClick: state.cancelMessage,
-        }, t('cancel')),
+        }, this.context.t('cancel')),
         h('button', {
           onClick: state.signMessage,
-        }, t('sign')),
+        }, this.context.t('sign')),
       ]),
     ])
 

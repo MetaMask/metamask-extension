@@ -161,9 +161,11 @@ module.exports = class TransactionController extends EventEmitter {
     this.emit(`${txMeta.id}:unapproved`, txMeta)
   }
 
-  async newUnapprovedTransaction (txParams) {
+  async newUnapprovedTransaction (txParams, opts = {}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const initialTxMeta = await this.addUnapprovedTransaction(txParams)
+    initialTxMeta.origin = opts.origin
+    this.txStateManager.updateTx(initialTxMeta, '#newUnapprovedTransaction - adding the origin')
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
@@ -183,14 +185,15 @@ module.exports = class TransactionController extends EventEmitter {
 
   async addUnapprovedTransaction (txParams) {
     // validate
-    await this.txGasUtil.validateTxParams(txParams)
+    const normalizedTxParams = this._normalizeTxParams(txParams)
+    this._validateTxParams(normalizedTxParams)
     // construct txMeta
-    const txMeta = this.txStateManager.generateTxMeta({txParams})
+    let txMeta = this.txStateManager.generateTxMeta({ txParams: normalizedTxParams })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
     try {
-      await this.addTxDefaults(txMeta)
+      txMeta = await this.addTxDefaults(txMeta)
     } catch (error) {
       console.log(error)
       this.txStateManager.setTxStatusFailed(txMeta.id, error)
@@ -250,7 +253,7 @@ module.exports = class TransactionController extends EventEmitter {
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
-      // if txMeta has lastGasPrice then it is a retry at same nonce with higher 
+      // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
       const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
       txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
@@ -273,12 +276,14 @@ module.exports = class TransactionController extends EventEmitter {
 
   async signTransaction (txId) {
     const txMeta = this.txStateManager.getTx(txId)
-    const txParams = txMeta.txParams
-    const fromAddress = txParams.from
     // add network/chain id
-    txParams.chainId = ethUtil.addHexPrefix(this.getChainId().toString(16))
+    const chainId = this.getChainId()
+    const txParams = Object.assign({}, txMeta.txParams, { chainId })
+    // sign tx
+    const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
     await this.signEthTx(ethTx, fromAddress)
+    // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id)
     const rawTx = ethUtil.bufferToHex(ethTx.serialize())
     return rawTx
@@ -308,6 +313,60 @@ module.exports = class TransactionController extends EventEmitter {
 //
 //           PRIVATE METHODS
 //
+
+  _normalizeTxParams (txParams) {
+    // functions that handle normalizing of that key in txParams
+    const whiteList = {
+      from: from => ethUtil.addHexPrefix(from).toLowerCase(),
+      to: to => ethUtil.addHexPrefix(txParams.to).toLowerCase(),
+      nonce: nonce => ethUtil.addHexPrefix(nonce),
+      value: value => ethUtil.addHexPrefix(value),
+      data: data => ethUtil.addHexPrefix(data),
+      gas: gas => ethUtil.addHexPrefix(gas),
+      gasPrice: gasPrice => ethUtil.addHexPrefix(gasPrice),
+    }
+
+    // apply only keys in the whiteList
+    const normalizedTxParams = {}
+    Object.keys(whiteList).forEach((key) => {
+      if (txParams[key]) normalizedTxParams[key] = whiteList[key](txParams[key])
+    })
+
+    return normalizedTxParams
+  }
+
+  _validateTxParams (txParams) {
+    this._validateFrom(txParams)
+    this._validateRecipient(txParams)
+    if ('value' in txParams) {
+      const value = txParams.value.toString()
+      if (value.includes('-')) {
+        throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
+      }
+
+      if (value.includes('.')) {
+        throw new Error(`Invalid transaction value of ${txParams.value} number must be in wei`)
+      }
+    }
+  }
+
+  _validateFrom (txParams) {
+    if ( !(typeof txParams.from === 'string') ) throw new Error(`Invalid from address ${txParams.from} not a string`)
+    if (!ethUtil.isValidAddress(txParams.from)) throw new Error('Invalid from address')
+  }
+
+  _validateRecipient (txParams) {
+    if (txParams.to === '0x' || txParams.to === null ) {
+      if (txParams.data) {
+        delete txParams.to
+      } else {
+        throw new Error('Invalid recipient address')
+      }
+    } else if ( txParams.to !== undefined && !ethUtil.isValidAddress(txParams.to) ) {
+      throw new Error('Invalid recipient address')
+    }
+    return txParams
+  }
 
   _markNonceDuplicatesDropped (txId) {
     this.txStateManager.setTxStatusConfirmed(txId)

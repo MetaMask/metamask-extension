@@ -4,7 +4,7 @@ const {
   BnMultiplyByFraction,
   bnToHex,
 } = require('./util')
-const { addHexPrefix, isValidAddress } = require('ethereumjs-util')
+const { addHexPrefix } = require('ethereumjs-util')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 /*
@@ -52,7 +52,9 @@ module.exports = class TxGasUtil {
     // if recipient has no code, gas is 21k max:
     const recipient = txParams.to
     const hasRecipient = Boolean(recipient)
-    const code = await this.query.getCode(recipient)
+    let code
+    if (recipient) code = await this.query.getCode(recipient)
+
     if (hasRecipient && (!code || code === '0x')) {
       txParams.gas = SIMPLE_GAS_COST
       txMeta.simpleSend = true // Prevents buffer addition
@@ -97,31 +99,5 @@ module.exports = class TxGasUtil {
     if (bufferedGasLimitBn.lt(upperGasLimitBn)) return bnToHex(bufferedGasLimitBn)
     // otherwise use blockGasLimit
     return bnToHex(upperGasLimitBn)
-  }
-
-  async validateTxParams (txParams) {
-    this.validateRecipient(txParams)
-    if ('value' in txParams) {
-      const value = txParams.value.toString()
-      if (value.includes('-')) {
-        throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
-      }
-
-      if (value.includes('.')) {
-        throw new Error(`Invalid transaction value of ${txParams.value} number must be in wei`)
-      }
-    }
-  }
-  validateRecipient (txParams) {
-    if (txParams.to === '0x' || txParams.to === null ) {
-      if (txParams.data) {
-        delete txParams.to
-      } else {
-        throw new Error('Invalid recipient address')
-      }
-    } else if ( txParams.to !== undefined && !isValidAddress(txParams.to) ) {
-      throw new Error('Invalid recipient address')
-    }
-    return txParams
   }
 }

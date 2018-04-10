@@ -1,10 +1,16 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const CurrencyDisplay = require('./currency-display')
-const t = require('../../../i18n')
+const connect = require('react-redux').connect
 
-module.exports = GasFeeDisplay
+GasFeeDisplay.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(GasFeeDisplay)
+
 
 inherits(GasFeeDisplay, Component)
 function GasFeeDisplay () {
@@ -33,8 +39,8 @@ GasFeeDisplay.prototype.render = function () {
         readOnly: true,
       })
       : gasLoadingError
-        ? h('div..currency-display.currency-display--message', 'Set with the gas price customizer.')
-        : h('div.currency-display', t('loading')),
+        ? h('div.currency-display.currency-display--message', this.context.t('setGasPrice'))
+        : h('div.currency-display', this.context.t('loading')),
 
     h('button.sliders-icon-container', {
       onClick,

@@ -223,7 +223,7 @@
   "done": {
     "message": "Končano"
   },
-  "downloadStatelogs": {
+  "downloadStateLogs": {
     "message": "Prenesi state dnevnike"
   },
   "edit": {

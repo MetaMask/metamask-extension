@@ -1,14 +1,19 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
-const t = require('../../../i18n')
+
+AccountMenu.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountMenu)
+
 
 inherits(AccountMenu, Component)
 function AccountMenu () { Component.call(this) }
@@ -71,10 +76,10 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       className: 'account-menu__header',
     }, [
-      t('myAccounts'),
+      this.context.t('myAccounts'),
       h('button.account-menu__logout-button', {
         onClick: lockMetamask,
-      }, t('logout')),
+      }, this.context.t('logout')),
     ]),
     h(Divider),
     h('div.account-menu__accounts', this.renderAccounts()),
@@ -82,23 +87,23 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       onClick: () => showNewAccountPage('CREATE'),
       icon: h('img.account-menu__item-icon', { src: 'images/plus-btn-white.svg' }),
-      text: t('createAccount'),
+      text: this.context.t('createAccount'),
     }),
     h(Item, {
       onClick: () => showNewAccountPage('IMPORT'),
       icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
-      text: t('importAccount'),
+      text: this.context.t('importAccount'),
     }),
     h(Divider),
     h(Item, {
       onClick: showInfoPage,
       icon: h('img', { src: 'images/mm-info-icon.svg' }),
-      text: t('infoHelp'),
+      text: this.context.t('infoHelp'),
     }),
     h(Item, {
       onClick: showConfigPage,
       icon: h('img.account-menu__item-icon', { src: 'images/settings.svg' }),
-      text: t('settings'),
+      text: this.context.t('settings'),
     }),
   ])
 }
@@ -156,6 +161,6 @@ AccountMenu.prototype.indicateIfLoose = function (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
     const isLoose = type !== 'HD Key Tree'
-    return isLoose ? h('.keyring-label.allcaps', t('imported')) : null
+    return isLoose ? h('.keyring-label.allcaps', this.context.t('imported')) : null
   } catch (e) { return }
 }

@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
@@ -9,9 +10,13 @@ const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
 const networkNames = require('../../../app/scripts/config.js').networkNames
-const t = require('../../i18n')
+
+BuyButtonSubview.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
+
 
 function mapStateToProps (state) {
   return {
@@ -77,7 +82,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, t('depositEth')),
+        }, this.context.t('depositEth')),
       ]),
 
       // loading indication
@@ -119,7 +124,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, t('selectService')),
+        }, this.context.t('selectService')),
       ]),
 
     ])
@@ -144,7 +149,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '4':
     case '42':
       const networkName = networkNames[network]
-      const label = `${networkName} ${t('testFaucet')}`
+      const label = `${networkName} ${this.context.t('testFaucet')}`
       return (
         h('div.flex-column', {
           style: {
@@ -165,14 +170,14 @@ BuyButtonSubview.prototype.primarySubview = function () {
               style: {
                 marginTop: '15px',
               },
-            }, t('borrowDharma'))
+            }, this.context.t('borrowDharma'))
           ) : null,
       ])
     )
 
     default:
       return (
-        h('h2.error', t('unknownNetworkId'))
+        h('h2.error', this.context.t('unknownNetworkId'))
       )
 
   }
@@ -204,8 +209,8 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
             'ShapeShift',
           ],
           subtext: {
-            'Coinbase': `${t('crypto')}/${t('fiat')} (${t('usaOnly')})`,
-            'ShapeShift': t('crypto'),
+            'Coinbase': `${this.context.t('crypto')}/${this.context.t('fiat')} (${this.context.t('usaOnly')})`,
+            'ShapeShift': this.context.t('crypto'),
           },
           onClick: this.radioHandler.bind(this),
         }),

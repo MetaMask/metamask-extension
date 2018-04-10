@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
@@ -8,7 +9,6 @@ const { getSelectedIdentity } = require('../../selectors')
 const genAccountLink = require('../../../lib/account-link.js')
 const QrView = require('../qr-code')
 const EditableLabel = require('../editable-label')
-const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -34,7 +34,12 @@ function AccountDetailsModal () {
   Component.call(this)
 }
 
+AccountDetailsModal.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModal)
+
 
 // Not yet pixel perfect todos:
   // fonts of qr-header
@@ -65,12 +70,12 @@ AccountDetailsModal.prototype.render = function () {
 
       h('button.btn-primary.account-modal__button', {
         onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
-      }, t('etherscanView')),
+      }, this.context.t('etherscanView')),
 
       // Holding on redesign for Export Private Key functionality
       h('button.btn-primary.account-modal__button', {
         onClick: () => showExportPrivateKeyModal(),
-      }, t('exportPrivateKey')),
+      }, this.context.t('exportPrivateKey')),
 
   ])
 }
