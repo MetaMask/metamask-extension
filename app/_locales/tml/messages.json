@@ -65,8 +65,8 @@
     "message": "பீட்டா"
   },
   "betweenMinAndMax": {
-    "message": "must be greater than or equal to $1 and less than or equal to $2.",
-    "description": "helper for inputting hex as decimal input"
+    "message": "$ 1 க்கும் அதிகமாகவும் அல்லது $ 2 க்கு சமமாகவும் இருக்க வேண்டும்.",
+    "description": "ஹெக்ஸ் உள்ளீடு தசம உள்ளீடு என உதவி"
   },
   "blockiesIdenticon": {
     "message": "ப்ளாக்கிஸ் ஐடென்டிகோன் பயன்பாட்டு"
@@ -187,10 +187,10 @@
     "message": "துல்லியத்தின் முடிவு"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "எதிர் பரிவர்த்தனைகளுக்கான முன்னிருப்பு வலையமைப்பு முதன்மை நிகரமாகும்."
   },
   "denExplainer": {
-    "message": "Your DEN is your password-encrypted storage within MetaMask."
+    "message": "உங்கள் DEN என்பது உங்கள் கடவுச்சொல்-மறைகுறியாக்கப்பட்ட சேமிப்பகம் மெட்டாமாஸ்க்கிற்குள்."
   },
   "deposit": {
     "message": "வைப்புத்தொகை"
@@ -715,7 +715,7 @@
     "message": "ETH ஐ அனுப்பு"
   },
   "sendTokens": {
-    "message": "Send Tokens"
+    "message": "டோக்கன்களை அனுப்பவும்"
   },
   "onlySendToEtherAddress": {
     "message": "ETH ஐ ஒரு எதரியும் முகவரிக்கு மட்டும் அனுப்பவும்."
@@ -793,97 +793,97 @@
     "message": "பயன்பாட்டு விதிமுறைகளை"
   },
   "testFaucet": {
-    "message": "Test Faucet"
+    "message": "சோதனை குழாய்"
   },
   "to": {
-    "message": "To: "
+    "message": "பெறுநர்: "
   },
   "toETHviaShapeShift": {
-    "message": "$1 to ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
+    "message": "$ 1 முதல் ETH வரை வடிவம்",
+    "description": "செய்தி தொடக்கத்தில் வைப்பு வகைகளில் நிரப்பப்படும்"
   },
   "tokenAddress": {
-    "message": "Token Address"
+    "message": "டோக்கன் முகவரி"
   },
   "tokenAlreadyAdded": {
-    "message": "Token has already been added."
+    "message": "டோக்கன் ஏற்கனவே சேர்க்கப்பட்டது."
   },
   "tokenBalance": {
-    "message": "Your Token Balance is:"
+    "message": "உங்கள் டோக்கன் இருப்பு:"
   },
   "tokenSelection": {
-    "message": "Search for tokens or select from our list of popular tokens."
+    "message": "டோக்கன்களைத் தேடு அல்லது பிரபல டோக்கன்களின் பட்டியலிலிருந்து தேர்ந்தெடுக்கவும்."
   },
   "tokenSymbol": {
-    "message": "Token Symbol"
+    "message": "டோக்கன் சின்னம்"
   },
   "tokenWarning1": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account. If you bought tokens using a different account, those tokens will not appear here."
+    "message": "உங்கள் மேடமஸ்க் கணக்குடன் நீங்கள் வாங்கிய டோக்கன்களை கண்காணியுங்கள். வேறு கணக்கைப் பயன்படுத்தி டோக்கன்களை வாங்கிவிட்டால், அந்த டோக்கன்கள் இங்கே தோன்றாது."
   },
   "total": {
-    "message": "Total"
+    "message": "மொத்த"
   },
   "transactions": {
-    "message": "transactions"
+    "message": "பரிவர்த்தனைகள்"
   },
   "transactionError": {
-    "message": "Transaction Error. Exception thrown in contract code."
+    "message": "பரிவர்த்தனை பிழை. விதிமுறை ஒப்பந்தத்தில் விதிவிலக்கு."
   },
   "transactionMemo": {
-    "message": "Transaction memo (optional)"
+    "message": "பரிவர்த்தனை குறிப்பு (விருப்பம்)"
   },
   "transactionNumber": {
-    "message": "Transaction Number"
+    "message": "பரிவர்த்தனை எண்"
   },
   "transfers": {
-    "message": "Transfers"
+    "message": "இடமாற்றங்கள்"
   },
   "troubleTokenBalances": {
-    "message": "We had trouble loading your token balances. You can view them ",
-    "description": "Followed by a link (here) to view token balances"
+    "message": "உங்கள் டோக்கன் நிலுவைகளை ஏற்றுவதில் சிக்கல் ஏற்பட்டது. நீங்கள் அவர்களை பார்க்க முடியும்.",
+    "description": "டோக்கன் நிலுவைகளை காண ஒரு இணைப்பு (இங்கே) தொடர்ந்து"
   },
   "twelveWords": {
-    "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
+    "message": "இந்த 12 வார்த்தைகள் உங்கள் மெட்டாமாஸ்க் கணக்கை மீட்க ஒரே வழி. \n அவற்றை எங்காவது பாதுகாப்பாகவும் ரகசியமாகவும் சேமிக்கவும்."
   },
   "typePassword": {
-    "message": "Type Your Password"
+    "message": "உங்கள் கடவுச்சொல்லை தட்டச்சு செய்யவும்"
   },
   "uiWelcome": {
-    "message": "Welcome to the New UI (Beta)"
+    "message": "புதிய UI (பீட்டா) க்கு வரவேற்கிறோம்"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+    "message": "இப்போது நீங்கள் புதிய மெட்டாமாஸ்க்கு UI ஐ பயன்படுத்துகிறீர்கள். சுற்றி பாருங்கள், டோக்கன்களை அனுப்பும் புதிய அம்சங்களை முயற்சிக்கவும், உங்களிடம் ஏதேனும் சிக்கல் இருந்தால் எங்களுக்குத் தெரியப்படுத்தவும்."
   },
   "unapproved": {
-    "message": "Unapproved"
+    "message": "அங்கீகரிக்கப்படாத"
   },
   "unavailable": {
-    "message": "Unavailable"
+    "message": "கிடைக்கவில்லை"
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "தெரியாத"
   },
   "unknownNetwork": {
-    "message": "Unknown Private Network"
+    "message": "அறியப்படாத தனியார் நெட்வொர்க்"
   },
   "unknownNetworkId": {
-    "message": "Unknown network ID"
+    "message": "தெரியாத நெட்வொர்க் ஐடி"
   },
   "uriErrorMsg": {
-    "message": "URIs require the appropriate HTTP/HTTPS prefix."
+    "message": "URI கள் சரியான HTTP / HTTPS முன்னொட்டு தேவை."
   },
   "usaOnly": {
-    "message": "USA only",
-    "description": "Using this exchange is limited to people inside the USA"
+    "message": "அமெரிக்கா மட்டும்",
+    "description": "இந்த பரிமாற்றத்தைப் பயன்படுத்தி அமெரிக்காவில் உள்ளவர்களுக்கு மட்டுமே இது வரையறுக்கப்படுகிறது"
   },
   "usedByClients": {
-    "message": "Used by a variety of different clients"
+    "message": "பல்வேறு வாடிக்கையாளர்கள் பல்வேறு பயன்படுத்திய"
   },
   "useOldUI": {
     "message": "உஸ் ஓல்ட் உய் "
   },
   "validFileImport": {
-    "message": "You must select a valid file to import."
+    "message": "இறக்குமதி செய்ய சரியான கோப்பு தேர்ந்தெடுக்க வேண்டும்."
   },
   "vaultCreated": {
     "message": "வால்ட் உருவாக்கப்பட்டது"
