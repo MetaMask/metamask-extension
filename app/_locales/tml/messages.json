@@ -350,101 +350,101 @@
     "message": "இங்கே ஒரு பட்டியல் !!!!"
   },
   "hide": {
-    "message": "Hide"
+    "message": "மறை"
   },
   "hideToken": {
-    "message": "Hide Token"
+    "message": "டோக்கனை மறை"
   },
   "hideTokenPrompt": {
-    "message": "Hide Token?"
+    "message": "டோக்கனை மறை?"
   },
   "howToDeposit": {
-    "message": "How would you like to deposit Ether?"
+    "message": "எப்படி ஈத்தர் வைப்பது?"
   },
   "holdEther": {
-    "message": "It allows you to hold ether & tokens, and serves as your bridge to decentralized applications."
+    "message": "இது நீங்கள் ஈத்தர் மற்றும் டோக்கன்களை வைத்திருக்க உதவுகிறது, மற்றும் பரவலாக்கப்பட்ட பயன்பாடுகளுக்கு உங்கள் பாலமாக செயல்படுகிறது."
   },
   "import": {
-    "message": "Import",
-    "description": "Button to import an account from a selected file"
+    "message": "இறக்குமதி",
+    "description": "தேர்ந்தெடுக்கப்பட்ட கோப்பிலிருந்து ஒரு கணக்கை இறக்குமதி செய்ய பொத்தானை அழுத்தவும்"
   },
   "importAccount": {
-    "message": "Import Account"
+    "message": "கணக்கை இறக்குமதி செய்க"
   },
   "importAccountMsg": {
-    "message":" Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
+    "message":" இறக்குமதி செய்யப்பட்ட கணக்கு உங்கள் முதலில் உருவாக்கப்பட்ட மெட்டாமாஸ்க் கணக்கு விதை மூலம் தொடர்புடையதாக இருக்காது. இறக்குமதி செய்யப்பட்ட கணக்குகள் பற்றி மேலும் அறிக "
   },
   "importAnAccount": {
-    "message": "Import an account"
+    "message": "ஒரு கணக்கை இறக்குமதி செய்க"
   },
   "importDen": {
-    "message": "Import Existing DEN"
+    "message": "இறக்குமதி DEN இறக்குமதி"
   },
   "imported": {
-    "message": "Imported",
-    "description": "status showing that an account has been fully loaded into the keyring"
+    "message": "இறக்குமதி",
+    "description": "ஒரு கணக்கு முழுமையாக விசைப்பலகையில் ஏற்றப்பட்டதைக் காட்டுகிறது"
   },
   "infoHelp": {
-    "message": "Info & Help"
+    "message": "தகவல் மற்றும் உதவி"
   },
   "insufficientFunds": {
-    "message": "Insufficient funds."
+    "message": "போதுமான பணம் இல்லை."
   },
   "insufficientTokens": {
-    "message": "Insufficient tokens."
+    "message": "போதுமான டோக்கன்கள்."
   },
   "invalidAddress": {
-    "message": "Invalid address"
+    "message": "தவறான முகவரி"
   },
   "invalidAddressRecipient": {
-    "message": "Recipient address is invalid"
+    "message": "பெறுநர் முகவரி தவறானது"
   },
   "invalidGasParams": {
-    "message": "Invalid Gas Parameters"
+    "message": "தவறான எரிவாயு அளவுருக்கள்"
   },
   "invalidInput": {
-    "message": "Invalid input."
+    "message": "தவறான உள்ளீடு.."
   },
   "invalidRequest": {
-    "message": "Invalid Request"
+    "message": "தவறான கோரிக்கை"
   },
   "invalidRPC": {
-    "message": "Invalid RPC URI"
+    "message": "தவறான RPC URI"
   },
   "jsonFail": {
-    "message": "Something went wrong. Please make sure your JSON file is properly formatted."
+    "message": "ஏதோ தவறு நடந்துவிட்டது. உங்கள் JSON கோப்பு ஒழுங்காக வடிவமைக்கப்பட்டுள்ளது என்பதை உறுதிப்படுத்தவும்"
   },
   "jsonFile": {
-    "message": "JSON File",
-    "description": "format for importing an account"
+    "message": "JSON கோப்பு",
+    "description": "ஒரு கணக்கை இறக்குமதி செய்ய வடிவமைக்கப்பட்டுள்ளது"
   },
   "keepTrackTokens": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account."
+    "message": "உங்கள் மேடமஸ்க் கணக்குடன் நீங்கள் வாங்கிய டோக்கன்களை கண்காணியுங்கள்."
   },
   "kovan": {
-    "message": "Kovan Test Network"
+    "message": "கோவன் டெஸ்ட் நெட்வொர்க்"
   },
   "knowledgeDataBase": {
-    "message": "Visit our Knowledge Base"
+    "message": "எங்கள் அறிவுத் தளத்தைப் பார்வையிடவும்"
   },
   "max": {
-    "message": "Max"
+    "message": "மேக்ஸ்"
   },
   "learnMore": {
-    "message": "Learn more."
+    "message": "மேலும் அறிக"
   },
   "lessThanMax": {
-    "message": "must be less than or equal to $1.",
-    "description": "helper for inputting hex as decimal input"
+    "message": "$ 1 க்கும் குறைவாகவோ அல்லது சமமாகவோ இருக்க வேண்டும்.",
+    "description": "ஹெக்ஸ் உள்ளீடு தசம உள்ளீடு என உதவி"
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
   },
   "links": {
-    "message": "Links"
+    "message": "இணைப்புகள்"
   },
   "limit": {
-    "message": "Limit"
+    "message": "அளவு"
   },
   "loading": {
     "message": "Loading..."
