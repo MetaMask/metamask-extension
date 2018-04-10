@@ -282,72 +282,72 @@
   },
   "fiat": {
     "message": "FIAT",
-    "description": "Exchange type"
+    "description": "பரிமாற்ற வகை"
   },
   "fileImportFail": {
-    "message": "File import not working? Click here!",
-    "description": "Helps user import their account from a JSON file"
+    "message": "கோப்பு இறக்குமதி வேலை செய்யவில்லையா? இங்கே கிளிக் செய்யவும்!",
+    "description": "JSON கோப்பில் பயனர் கணக்கை தங்கள் கணக்கை இறக்குமதி செய்ய உதவுகிறது"
   },
   "followTwitter": {
-    "message": "Follow us on Twitter"
+    "message": "Twitter இல் எங்களைப் பின்தொடரவும்"
   },
   "from": {
-    "message": "From"
+    "message": "இருந்து"
   },
   "fromToSame": {
-    "message": "From and To address cannot be the same"
+    "message": "இருந்து மற்றும் முகவரி அதே இருக்க முடியாது"
   },
   "fromShapeShift": {
-    "message": "From ShapeShift"
+    "message": "ShapeShift இலிருந்து"
   },
   "gas": {
-    "message": "Gas",
-    "description": "Short indication of gas cost"
+    "message": "எரிவாயு",
+    "description": "எரிவாயு விலை குறையும்"
   },
   "gasFee": {
-    "message": "Gas Fee"
+    "message": "எரிவாயு கட்டணம்"
   },
   "gasLimit": {
-    "message": "Gas Limit"
+    "message": "எரிவாயு வரம்பு"
   },
   "gasLimitCalculation": {
-    "message": "We calculate the suggested gas limit based on network success rates."
+    "message": "நெட்வொர்க் வெற்றி விகிதங்களின் அடிப்படையில் பரிந்துரைக்கப்பட்ட எரிவாயு வரம்பை நாங்கள் கணக்கிடுகிறோம்."
   },
   "gasLimitRequired": {
-    "message": "Gas Limit Required"
+    "message": "எரிவாயு வரம்பு தேவை"
   },
   "gasLimitTooLow": {
-    "message": "Gas limit must be at least 21000"
+    "message": "எரிவாயு வரம்பு குறைந்தது 21000 ஆக இருக்க வேண்டும்"
   },
   "generatingSeed": {
-    "message": "Generating Seed..."
+    "message": "விதை உருவாக்குகிறது ..."
   },
   "gasPrice": {
-    "message": "Gas Price (GWEI)"
+    "message": "எரிவாயு விலை (GWEI)"
   },
   "gasPriceCalculation": {
-    "message": "We calculate the suggested gas prices based on network success rates."
+    "message": "நெட்வொர்க் வெற்றி விகிதங்களின் அடிப்படையில் பரிந்துரைக்கப்பட்ட எரிவாயு விலைகளை நாங்கள் கணக்கிடுகிறோம்."
   },
   "gasPriceRequired": {
-    "message": "Gas Price Required"
+    "message": "எரிவாயு விலை தேவைப்படுகிறது"
   },
   "getEther": {
-    "message": "Get Ether"
+    "message": "ஈத்தர் கிடைக்கும்"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "$ 1 க்கு ஒரு குழாய் இருந்து ஈதர் கிடைக்கும்$1",
+    "description": "ஈத்தர் குழாய் ஐந்து பிணைய பெயர் காட்டுகிறது"
   },
   "greaterThanMin": {
-    "message": "must be greater than or equal to $1.",
-    "description": "helper for inputting hex as decimal input"
+    "message": "$ 1 க்கும் அதிகமாகவோ அல்லது சமமாகவோ இருக்க வேண்டும்",
+    "description": "ஹெக்ஸ் உள்ளீடு தசம உள்ளீடு என உதவி"
   },
   "here": {
-    "message": "here",
-    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+    "message": "இங்கே",
+    "description": "இங்கே-கிளிக் செய்யவும்- மேலும் தகவலுக்கு (troubleTokenBalances செல்கிறது)"
   },
   "hereList": {
-    "message": "Here's a list!!!!"
+    "message": "இங்கே ஒரு பட்டியல் !!!!"
   },
   "hide": {
     "message": "Hide"
