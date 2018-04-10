@@ -26,29 +26,38 @@ Make sure you get a `:thumbsup`, `:+1`, or `LGTM` from another collaborator befo
 
 Make sure the relevant code has been reviewed and merged.
 
-### Developing inside a node_modules folder
+### Work on Multiple Packages / Repositories
 
-First make sure you are comfortable with [how require works](https://github.com/maxogden/art-of-node#how-require-works) in node.
+A very simple approach:
 
-We recommend creating a folder somewhere manually called `node_modules`. For example in `~/code/node_modules`. Clone all of your git copies of modules that you want to work on into here, so for example:
+Create a folder somewhere manually called `node_modules`. For example in `~/node_modules`. Clone all of your git copies of modules that you want to work on into here, so for example:
 
-- `~/code/node_modules/dat`
-- `~/code/node_modules/hyperdrive`
+```sh
+mkdir node_modules
+cd node_modules
+git clone https://github.com/MetaMask/metamask-extension metamask
+git clone https://github.com/MetaMask/provider-engine
+# clone more modules you want to work on
+# ensure to run "npm install" in each module
+cd provider-engine
+npm install
+cd ../metamask-extension
+npm install
+```
 
-When you run `npm install` inside of `~/code/node_modules/dat`, dat will get its own copy of `hyperdrive` (one if its dependencies) inside `~/code/node_modules/dat/node_modules`. However, if you encounter a bug in hyperdrive that you need to fix, but you want to test your fix in dat, you want dat to use your git copy of hyperdrive at `~/code/node_modules/hyperdrive` and not the npm copy of hyperdrive at `~/code/node_modules/dat/node_modules/hyperdrive`.
-
-How do you get dat to use the git copy of hyperdrive? Just delete the npm copy!
+In order to make metamask use the cloned `provider-engine` (on which you plan to work on), just delete the npm copy:
 
 ```
-rm -rf ~/code/node_modules/dat/node_modules/hyperdrive
+rm -rf ~/node_modules/metamask/node_modules/provider-engine
+#WIN: rmdir node_modules/metamask/node_modules/provider-engine /S /Q
 ```
 
-Now when you run dat, and it tries to `require('hyperdrive')` it first looks in its own `node_modules` folder at `~/code/node_modules/dat/node_modules` but doesnt find hyperdrive. So it goes up to `~/code/node_modules` and finds `hyperdrive` there and uses that one, your git copy.
+Any `require('provider-engine')` will traverse the directory-tree up, until it finds a `node_modules` folder which contains `provider-engine`.
 
-If you want to switch back to an npm copy, just run `npm install` inside `~/code/node_modules/dat/` and npm will download any missing modules into `~/code/node_modules/dat/node_modules` but wont touch anything in `~/code/node_modules`.
+If you change something within `~/node_modules/provider-engine`, then metamask will pick it up (you still have to use the usual `gulp dist` or `gulp dev` / refresh cycles).
 
-This might seem a bit complicated at first, but is simple once you get the hang of it. Here are some rules to help you get started:
+Switching back to an npm copy of `provider-engine` is as easy as an `npm install provider-engine` inside `~/node_modules/metamask/`.
 
-- Never make any meaningful edits to code inside an "npm-managed" node_modules folder (such as `~/code/node_modules/dat/node_modules`), because when you run `npm install` inside those folders it could inadvertently delete all of your edits when installing an updated copy of a module. This has happened to me many times, so I just always use my git copy and delete the npm copy (as described above) to make edits to a module.
-- You should never need to run any npm commands in terminal when at your "manually managed"" node_modules folder at `~/code/node_modules`. Never running npm commands at that folder also prevents npm from accidentally erasing your git copies of modules
-- The location of your "manually managed" node_modules folder should be somewhere isolated from your normal require path. E.g. if you put it at `~/node_modules`, then when you run `npm install dat` at `~/Desktop` npm might decide to erase your git copy of dat at `~/node_modules/dat` and replace it with a copy from npm, which could make you lose work. Putting your manually managed `node_modules` folder in a sub-folder like `~/code` gets it "out of the way" and prevents accidents like that from happening.
+#### Further Information
+
+[How "require" works](https://github.com/maxogden/art-of-node#how-require-works) in node.
