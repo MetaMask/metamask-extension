@@ -92,7 +92,7 @@ module.exports = class TransactionStateManager extends EventEmitter {
     // or rejected tx's.
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
-      let index = transactions.findIndex((metaTx) => {
+      const index = transactions.findIndex((metaTx) => {
         return this.getFinalStates().includes(metaTx.status)
       })
       if (index !== -1) {
@@ -145,7 +145,7 @@ module.exports = class TransactionStateManager extends EventEmitter {
   }
 
   // validates txParams members by type
-  validateTxParams(txParams) {
+  validateTxParams (txParams) {
     Object.keys(txParams).forEach((key) => {
       const value = txParams[key]
       // validate types
@@ -263,10 +263,10 @@ module.exports = class TransactionStateManager extends EventEmitter {
   // returns an array of states that can be considered final
   getFinalStates () {
     return [
-      'rejected',  // the user has responded no!
-      'confirmed',  // the tx has been included in a block.
-      'failed',  // the tx failed for some reason, included on tx data.
-      'dropped',  // the tx nonce was already used
+      'rejected', // the user has responded no!
+      'confirmed', // the tx has been included in a block.
+      'failed', // the tx failed for some reason, included on tx data.
+      'dropped', // the tx nonce was already used
     ]
   }
 

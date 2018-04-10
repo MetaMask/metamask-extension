@@ -7,7 +7,7 @@ module.exports = {
   normalizeTxParams,
   validateTxParams,
   validateFrom,
-  validateRecipient
+  validateRecipient,
 }
 
 
@@ -48,18 +48,18 @@ function validateTxParams (txParams) {
 }
 
 function validateFrom (txParams) {
-  if ( !(typeof txParams.from === 'string') ) throw new Error(`Invalid from address ${txParams.from} not a string`)
+  if (!(typeof txParams.from === 'string')) throw new Error(`Invalid from address ${txParams.from} not a string`)
   if (!isValidAddress(txParams.from)) throw new Error('Invalid from address')
 }
 
 function validateRecipient (txParams) {
-  if (txParams.to === '0x' || txParams.to === null ) {
+  if (txParams.to === '0x' || txParams.to === null) {
     if (txParams.data) {
       delete txParams.to
     } else {
       throw new Error('Invalid recipient address')
     }
-  } else if ( txParams.to !== undefined && !isValidAddress(txParams.to) ) {
+  } else if (txParams.to !== undefined && !isValidAddress(txParams.to)) {
     throw new Error('Invalid recipient address')
   }
   return txParams
