@@ -80,17 +80,6 @@ ConfigManager.prototype.setKeychains = function (keychains) {
   this.setData(data)
 }
 
-ConfigManager.prototype.getSelectedAccount = function () {
-  var config = this.getConfig()
-  return config.selectedAccount
-}
-
-ConfigManager.prototype.setSelectedAccount = function (address) {
-  var config = this.getConfig()
-  config.selectedAccount = ethUtil.addHexPrefix(address)
-  this.setConfig(config)
-}
-
 ConfigManager.prototype.getWallet = function () {
   return this.getData().wallet
 }

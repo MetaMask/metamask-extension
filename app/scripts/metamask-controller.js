@@ -329,11 +329,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // config manager
       this.configManager.getConfig(),
       this.shapeshiftController.store.getState(),
-      {
-        lostAccounts: this.configManager.getLostAccounts(),
-        seedWords: this.configManager.getSeedWords(),
-        forgottenPassword: this.configManager.getPasswordForgotten(),
-      }
     )
   }
 
@@ -720,36 +715,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const { serialized } = migratorOutput
     return this.keyringController.restoreKeyring(serialized)
     .then(() => migratorOutput)
-  }
-
-  /**
-   * ?
-   *
-   * @param  {} migratorOutput
-   */
-  restoreOldLostAccounts (migratorOutput) {
-    const { lostAccounts } = migratorOutput
-    if (lostAccounts) {
-      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
-      return this.importLostAccounts(migratorOutput)
-    }
-    return Promise.resolve(migratorOutput)
-  }
-
-  /**
-   * Import (lost) Accounts
-   *
-   * @param  {Object} {lostAccounts} @Array accounts <{ address, privateKey }>
-   *
-   * Uses the array's private keys to create a new Simple Key Pair keychain
-   * and add it to the keyring controller.
-   */
-  importLostAccounts ({ lostAccounts }) {
-    const privKeys = lostAccounts.map(acct => acct.privateKey)
-    return this.keyringController.restoreKeyring({
-      type: 'Simple Key Pair',
-      data: privKeys,
-    })
   }
 
 //=============================================================================
