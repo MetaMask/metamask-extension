@@ -438,7 +438,7 @@
     "description": "ஹெக்ஸ் உள்ளீடு தசம உள்ளீடு என உதவி"
   },
   "likeToAddTokens": {
-    "message": "Would you like to add these tokens?"
+    "message": "இந்த டோக்கன்களைச் சேர்க்க விரும்புகிறீர்களா?"
   },
   "links": {
     "message": "இணைப்புகள்"
@@ -447,110 +447,110 @@
     "message": "அளவு"
   },
   "loading": {
-    "message": "Loading..."
+    "message": "ஏற்றுதல் ..."
   },
   "loadingTokens": {
-    "message": "Loading Tokens..."
+    "message": "டோக்கன்களை ஏற்றுகிறது ..."
   },
   "localhost": {
-    "message": "Localhost 8545"
+    "message": "லோக்கல் ஹோஸ்ட் 8545"
   },
   "login": {
-    "message": "Log In"
+    "message": "உள் நுழை"
   },
   "logout": {
-    "message": "Log out"
+    "message": "வெளியேறு"
   },
   "loose": {
-    "message": "Loose"
+    "message": "லூஸ்"
   },
   "loweCaseWords": {
-    "message": "seed words only have lowercase characters"
+    "message": "விதை வார்த்தைகள் ஸ்மால் எழுத்துகள் மட்டுமே"
   },
   "mainnet": {
-    "message": "Main எதெரியும்  Network"
+    "message": "முதன்மை எதெரியும் நெட்வொர்க்"
   },
   "message": {
-    "message": "Message"
+    "message": "செய்தி"
   },
   "metamaskDescription": {
-    "message": "MetaMask is a secure identity vault for எதெரியும் ."
+    "message": "மேடமஸ்க் என்பது ஒரு பாதுகாப்பான அடையாள வால்ட் எதெரியும்"
   },
   "min": {
-    "message": "Minimum"
+    "message": "குறைந்தபட்ச"
   },
   "myAccounts": {
-    "message": "My Accounts"
+    "message": "எனது கணக்குகள்"
   },
   "mustSelectOne": {
-    "message": "Must select at least 1 token."
+    "message": "குறைந்தது 1 டோக்கனை தேர்ந்தெடுக்க வேண்டும்."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+    "message": "மேடமஸ்க் ஐ பயன்படுத்தி பரவலாக்கப்பட்ட பயன்பாடுகளுடன் தொடர்பு கொள்ள, உங்கள் பணப்பரிமாற்றத்தில் ஈதர் தேவை."
   },
   "needImportFile": {
-    "message": "You must select a file to import.",
-    "description": "User is important an account and needs to add a file to continue"
+    "message": "இறக்குமதி செய்ய ஒரு கோப்பை நீங்கள் தேர்ந்தெடுக்க வேண்டும்.",
+    "description": "பயனர் ஒரு கணக்கு முக்கியம் மற்றும் தொடர ஒரு கோப்பு சேர்க்க வேண்டும்"
   },
   "needImportPassword": {
-    "message": "You must enter a password for the selected file.",
-    "description": "Password and file needed to import an account"
+    "message": "நீங்கள் தேர்ந்தெடுத்த கோப்புக்கு ஒரு கடவுச்சொல்லை உள்ளிட வேண்டும்.",
+    "description": "ஒரு கணக்கை இறக்குமதி செய்ய கடவுச்சொல் மற்றும் கோப்பு தேவை"
   },
   "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
+    "message": "ETH எதிர்மறை அளவுகளை அனுப்ப முடியாது."
   },
   "networks": {
-    "message": "Networks"
+    "message": "நெட்வொர்க்ஸ்"
   },
   "newAccount": {
-    "message": "New Account"
+    "message": "புதிய கணக்கு"
   },
   "newAccountNumberName": {
-    "message": "Account $1",
-    "description": "Default name of next account to be created on create account screen"
+    "message": "கணக்கு $ 1",
+    "description": "கணக்கு கணக்கை உருவாக்குவதற்கு அடுத்த கணக்கின் இயல்புநிலை பெயர் உருவாக்கப்படும்"
   },
   "newContract": {
-    "message": "New Contract"
+    "message": "புதிய ஒப்பந்தம்"
   },
   "newPassword": {
-    "message": "New Password (min 8 chars)"
+    "message": "புதிய கடவுச்சொல் (min 8 எழுத்துகள்)"
   },
   "newRecipient": {
-    "message": "New Recipient"
+    "message": "புதிய பெறுநர்"
   },
   "newRPC": {
-    "message": "New RPC URL"
+    "message": "புதிய RPC URL"
   },
   "next": {
-    "message": "Next"
+    "message": "அடுத்த"
   },
   "noAddressForName": {
-    "message": "No address has been set for this name."
+    "message": "இந்த பெயருக்கான முகவரி அமைக்கப்படவில்லை."
   },
   "noDeposits": {
-    "message": "No deposits received"
+    "message": "எந்த வைப்புகளும் கிடைக்கவில்லை"
   },
   "noTransactionHistory": {
-    "message": "No transaction history."
+    "message": "பரிவர்த்தனை வரலாறு இல்லை."
   },
   "noTransactions": {
-    "message": "No Transactions"
+    "message": "பரிவர்த்தனைகள் இல்லை"
   },
   "notStarted": {
-    "message": "Not Started"
+    "message": "துவங்கவில்லை"
   },
   "oldUI": {
-    "message": "Old UI"
+    "message": "பழைய UI"
   },
   "oldUIMessage": {
-    "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
+    "message": "நீங்கள் பழைய UI க்கு திரும்பியுள்ளீர்கள். மேல் வலது கீழ்தோன்றும் மெனுவில் உள்ள விருப்பத்தின் மூலம் புதிய UI ஐ மீண்டும் மாறலாம்."
   },
   "or": {
-    "message": "or",
-    "description": "choice between creating or importing a new account"
+    "message": "அல்லது",
+    "description": "ஒரு புதிய கணக்கை உருவாக்க அல்லது இறக்குமதி செய்வதற்கு இடையே தேர்வு"
   },
   "passwordCorrect": {
-    "message": "Please make sure your password is correct."
+    "message": "தயவுசெய்து உங்கள் கடவுச்சொல் சரியானதா என உறுதிப்படுத்தவும்."
   },
   "passwordMismatch": {
     "message": "passwords don't match",
