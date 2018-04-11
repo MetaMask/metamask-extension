@@ -197,6 +197,7 @@ function setupController (initState, initLangCode) {
   // connect to other contexts
   //
   extension.runtime.onConnect.addListener(connectRemote)
+  extension.runtime.onConnectExternal.addListener(connectExternal)
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
@@ -211,9 +212,9 @@ function setupController (initState, initLangCode) {
   function connectRemote (remotePort) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
-    const portStream = new PortStream(remotePort)
 
     if (isMetaMaskInternalProcess) {
+      const portStream = new PortStream(remotePort)
       // communication with popup
       controller.isClientOpen = true
       controller.setupTrustedCommunication(portStream, 'MetaMask')
@@ -246,10 +247,15 @@ function setupController (initState, initLangCode) {
         })
       }
     } else {
-      // communication with page
-      const originDomain = urlUtil.parse(remotePort.sender.url).hostname
-      controller.setupUntrustedCommunication(portStream, originDomain)
+      connectExternal(remotePort)
     }
+  }
+
+  // communication with page or other extension
+  function connectExternal(remotePort) {
+    const originDomain = urlUtil.parse(remotePort.sender.url).hostname
+    const portStream = new PortStream(remotePort)
+    controller.setupUntrustedCommunication(portStream, originDomain)
   }
 
   //
