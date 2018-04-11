@@ -1,4 +1,6 @@
 const Component = require('react').Component
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
@@ -33,12 +35,16 @@ const {
   getSelectedAddress,
   getSelectedTokenContract,
 } = require('../../selectors')
+const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 
 ConfirmSendToken.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendToken)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(ConfirmSendToken)
 
 
 function mapStateToProps (state, ownProps) {
@@ -147,21 +153,62 @@ function ConfirmSendToken () {
   this.onSubmit = this.onSubmit.bind(this)
 }
 
-ConfirmSendToken.prototype.componentWillMount = function () {
-  const { tokenContract, selectedAddress, updateSendErrors} = this.props
+ConfirmSendToken.prototype.editTransaction = function (txMeta) {
+  const { editTransaction, history } = this.props
+  editTransaction(txMeta)
+  history.push(SEND_ROUTE)
+}
+
+ConfirmSendToken.prototype.updateComponentSendErrors = function (prevProps) {
+  const {
+    balance: oldBalance,
+    conversionRate: oldConversionRate,
+  } = prevProps
+  const {
+    updateSendErrors,
+    balance,
+    conversionRate,
+    send: {
+      errors: {
+        simulationFails,
+      },
+    },
+  } = this.props
   const txMeta = this.gatherTxMeta()
-  const balanceIsSufficient = this.isBalanceSufficient(txMeta)
+
+  const shouldUpdateBalanceSendErrors = balance && [
+    balance !== oldBalance,
+    conversionRate !== oldConversionRate,
+  ].some(x => Boolean(x))
+
+  if (shouldUpdateBalanceSendErrors) {
+    const balanceIsSufficient = this.isBalanceSufficient(txMeta)
+    updateSendErrors({
+      insufficientFunds: balanceIsSufficient ? false : this.context.t('insufficientFunds'),
+    })
+  }
+
+  const shouldUpdateSimulationSendError = Boolean(txMeta.simulationFails) !== Boolean(simulationFails)
+
+  if (shouldUpdateSimulationSendError) {
+    updateSendErrors({
+      simulationFails: !txMeta.simulationFails ? false : this.context.t('transactionError'),
+    })
+  }
+}
+
+ConfirmSendToken.prototype.componentWillMount = function () {
+  const { tokenContract, selectedAddress } = this.props
   tokenContract && tokenContract
     .balanceOf(selectedAddress)
     .then(usersToken => {
     })
   this.props.updateTokenExchangeRate()
+  this.updateComponentSendErrors({})
+}
 
-  updateSendErrors({
-    insufficientFunds: balanceIsSufficient
-      ? false
-      : this.context.t('insufficientFunds'),
-  })
+ConfirmSendToken.prototype.componentDidUpdate = function (prevProps) {
+  this.updateComponentSendErrors(prevProps)
 }
 
 ConfirmSendToken.prototype.getAmount = function () {
@@ -371,7 +418,6 @@ ConfirmSendToken.prototype.renderErrorMessage = function (message) {
 }
 
 ConfirmSendToken.prototype.render = function () {
-  const { editTransaction } = this.props
   const txMeta = this.gatherTxMeta()
   const {
     from: {
@@ -398,7 +444,7 @@ ConfirmSendToken.prototype.render = function () {
       h('div.page-container', [
         h('div.page-container__header', [
           !txMeta.lastGasPrice && h('button.confirm-screen-back-button', {
-            onClick: () => editTransaction(txMeta),
+            onClick: () => this.editTransaction(txMeta),
           }, this.context.t('edit')),
           h('div.page-container__title', title),
           h('div.page-container__subtitle', subtitle),
@@ -467,8 +513,10 @@ ConfirmSendToken.prototype.render = function () {
         ]),
 
         h('form#pending-tx-form', {
+          className: 'confirm-screen-form',
           onSubmit: this.onSubmit,
         }, [
+          this.renderErrorMessage('simulationFails'),
           h('.page-container__footer', [
             // Cancel Button
             h('button.btn-cancel.page-container__footer-button.allcaps', {
@@ -476,7 +524,9 @@ ConfirmSendToken.prototype.render = function () {
             }, this.context.t('cancel')),
 
             // Accept Button
-            h('button.btn-confirm.page-container__footer-button.allcaps', [this.context.t('confirm')]),
+            h('button.btn-confirm.page-container__footer-button.allcaps', {
+              onClick: event => this.onSubmit(event),
+            }, [this.context.t('confirm')]),
           ]),
         ]),
       ]),
@@ -529,6 +579,7 @@ ConfirmSendToken.prototype.cancel = function (event, txMeta) {
   const { cancelTransaction } = this.props
 
   cancelTransaction(txMeta)
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 ConfirmSendToken.prototype.checkValidity = function () {

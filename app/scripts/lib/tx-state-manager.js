@@ -92,8 +92,10 @@ module.exports = class TransactionStateManager extends EventEmitter {
     // or rejected tx's.
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
-      const index = transactions.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
-      transactions.splice(index, 1)
+      let index = transactions.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
+      if (index !== -1) {
+        transactions.splice(index, 1)
+      }
     }
     transactions.push(txMeta)
     this._saveTxList(transactions)
@@ -108,6 +110,10 @@ module.exports = class TransactionStateManager extends EventEmitter {
   updateTx (txMeta, note) {
     // validate txParams
     if (txMeta.txParams) {
+      if (typeof txMeta.txParams.data === 'undefined') {
+        delete txMeta.txParams.data
+      }
+
       this.validateTxParams(txMeta.txParams)
     }
 
@@ -140,8 +146,16 @@ module.exports = class TransactionStateManager extends EventEmitter {
   validateTxParams(txParams) {
     Object.keys(txParams).forEach((key) => {
       const value = txParams[key]
-      if (typeof value !== 'string') throw new Error(`${key}: ${value} in txParams is not a string`)
-      if (!ethUtil.isHexPrefixed(value)) throw new Error('is not hex prefixed, everything on txParams must be hex prefixed')
+      // validate types
+      switch (key) {
+        case 'chainId':
+          if (typeof value !== 'number' && typeof value !== 'string') throw new Error(`${key} in txParams is not a Number or hex string. got: (${value})`)
+          break
+        default:
+          if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
+          if (!ethUtil.isHexPrefixed(value)) throw new Error(`${key} in txParams is not hex prefixed. got: (${value})`)
+          break
+      }
     })
   }
 

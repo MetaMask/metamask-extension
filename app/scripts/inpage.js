@@ -9,7 +9,7 @@ const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
 
-const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 window.log = log
 log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
 

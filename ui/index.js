@@ -69,6 +69,16 @@ async function startApp (metamaskState, accountManager, opts) {
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
 
+  // global metamask api - used by tooling
+  global.metamask = {
+    updateCurrentLocale: (code) => {
+      store.dispatch(actions.updateCurrentLocale(code))
+    },
+    setProviderType: (type) => {
+      store.dispatch(actions.setProviderType(type))
+    },
+  }
+
   // start app
   render(
     h(Root, {

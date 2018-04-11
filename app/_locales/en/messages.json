@@ -56,7 +56,7 @@
     "message": "Balance:"
   },
   "balances": {
-    "message": "Your balances"
+    "message": "Token balance(s)"
   },
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
@@ -825,6 +825,9 @@
   },
   "transactions": {
     "message": "transactions"
+  },
+  "transactionError": {
+    "message": "Transaction Error. Exception thrown in contract code."
   },
   "transactionMemo": {
     "message": "Transaction memo (optional)"
