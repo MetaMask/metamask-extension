@@ -36,7 +36,7 @@ describe('MetaMaskController', function () {
       encryptor: {
         encrypt: function (password, object) {
           this.object = object
-          return Promise.resolve()g
+          return Promise.resolve()
         },
         decrypt: function () {
           return Promise.resolve(this.object)
@@ -213,6 +213,7 @@ describe('MetaMaskController', function () {
 
   describe('#createShapeshifttx', function () {
     let depositAddress, depositType, shapeShiftTxList
+
     beforeEach(function () {
       nock('https://shapeshift.io')
         .get('/txStat/3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc')
@@ -223,10 +224,11 @@ describe('MetaMaskController', function () {
       shapeShiftTxList = metamaskController.shapeshiftController.store.getState().shapeShiftTxList
     })
 
-    it('creates', async function () {
+    it('creates a shapeshift tx', async function () {
       metamaskController.createShapeShiftTx(depositAddress, depositType)
       assert.equal(shapeShiftTxList[0].depositAddress, depositAddress)
     })
+
   })
 
   describe('#addNewAccount', function () {
@@ -245,4 +247,55 @@ describe('MetaMaskController', function () {
       }
     })
   })
+
+  describe('#verifyseedPhrase', function () {
+    let seedPhrase, getConfigSeed
+
+    it('errors when no keying is provided', async function () {
+      try {
+        await metamaskController.verifySeedPhrase()
+      } catch (error) {
+        assert.equal(error.message, 'MetamaskController - No HD Key Tree found')
+      }
+    })
+
+    beforeEach(async function () {
+      await metamaskController.createNewVaultAndKeychain('password')
+      seedPhrase = await metamaskController.verifySeedPhrase()
+    })
+
+    it('#placeSeedWords should match the initially created vault seed', function () {
+
+      metamaskController.placeSeedWords((err, result) => {
+        if (err) {
+         console.log(err)
+        } else {
+          getConfigSeed = metamaskController.configManager.getSeedWords()
+          assert.equal(result, seedPhrase)
+          assert.equal(result, getConfigSeed)
+        }
+      })
+      assert.equal(getConfigSeed, undefined)
+    })
+  })
+
+  describe('#clearSeedWordCache', function () {
+
+    it('should have set seed words', function () {
+      metamaskController.configManager.setSeedWords('test words')
+      const getConfigSeed = metamaskController.configManager.getSeedWords()
+      assert.equal(getConfigSeed, 'test words')
+    })
+
+    it('should clear config seed phrase', function () {
+      metamaskController.configManager.setSeedWords('test words')
+      metamaskController.clearSeedWordCache((err, result) => {
+        if (err) console.log(err)
+      })
+      const getConfigSeed = metamaskController.configManager.getSeedWords()
+      assert.equal(getConfigSeed, null)
+    })
+
+  })
+
 })
