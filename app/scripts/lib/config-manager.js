@@ -37,22 +37,6 @@ ConfigManager.prototype.setPasswordForgotten = function (passwordForgottenState)
   this.setData(data)
 }
 
-ConfigManager.prototype.getPasswordForgotten = function (passwordForgottenState) {
-  const data = this.getData()
-  return data.forgottenPassword
-}
-
-ConfigManager.prototype.setVault = function (encryptedString) {
-  var data = this.getData()
-  data.vault = encryptedString
-  this.setData(data)
-}
-
-ConfigManager.prototype.getVault = function () {
-  var data = this.getData()
-  return data.vault
-}
-
 ConfigManager.prototype.setSeedWords = function (words) {
   var data = this.getData()
   data.seedWords = words
