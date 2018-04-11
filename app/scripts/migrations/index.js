@@ -36,4 +36,5 @@ module.exports = [
   require('./023'),
   require('./024'),
   require('./025'),
+  require('./026'),
 ]

@@ -4,7 +4,6 @@ const { connect } = require('react-redux')
 const PropTypes = require('prop-types')
 const ReactMarkdown = require('react-markdown')
 const linker = require('extension-link-enabler')
-const generateLostAccountsNotice = require('../../../lib/lost-accounts-notice')
 const findDOMNode = require('react-dom').findDOMNode
 const actions = require('../../actions')
 const { DEFAULT_ROUTE } = require('../../routes')
@@ -154,12 +153,11 @@ class Notice extends Component {
 
 const mapStateToProps = state => {
   const { metamask } = state
-  const { noActiveNotices, lastUnreadNotice, lostAccounts } = metamask
+  const { noActiveNotices, lastUnreadNotice } = metamask
 
   return {
     noActiveNotices,
     lastUnreadNotice,
-    lostAccounts,
   }
 }
 
@@ -172,13 +170,12 @@ Notice.propTypes = {
 const mapDispatchToProps = dispatch => {
   return {
     markNoticeRead: lastUnreadNotice => dispatch(actions.markNoticeRead(lastUnreadNotice)),
-    markAccountsFound: () => dispatch(actions.markAccountsFound()),
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { noActiveNotices, lastUnreadNotice, lostAccounts } = stateProps
-  const { markNoticeRead, markAccountsFound } = dispatchProps
+  const { noActiveNotices, lastUnreadNotice } = stateProps
+  const { markNoticeRead } = dispatchProps
 
   let notice
   let onConfirm
@@ -186,9 +183,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   if (!noActiveNotices) {
     notice = lastUnreadNotice
     onConfirm = () => markNoticeRead(lastUnreadNotice)
-  } else if (lostAccounts && lostAccounts.length > 0) {
-    notice = generateLostAccountsNotice(lostAccounts)
-    onConfirm = () => markAccountsFound()
   }
 
   return {

@@ -17,7 +17,6 @@ const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
-const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
 const AddTokenScreen = require('./add-token')
@@ -483,13 +482,6 @@ App.prototype.renderPrimary = function () {
       ]),
 
     ])
-  } else if (props.lostAccounts && props.lostAccounts.length > 0) {
-    log.debug('rendering notice screen for lost accounts view.')
-    return h(NoticeScreen, {
-      notice: generateLostAccountsNotice(props.lostAccounts),
-      key: 'LostAccountsNotice',
-      onConfirm: () => props.dispatch(actions.markAccountsFound()),
-    })
   }
 
   // show initialize screen

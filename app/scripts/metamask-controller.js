@@ -34,7 +34,7 @@ const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
-const ConfigManager = require('./lib/config-manager')
+const ConfigController = require('./controllers/config')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -73,9 +73,9 @@ module.exports = class MetamaskController extends EventEmitter {
     // network store
     this.networkController = new NetworkController(initState.NetworkController)
 
-    // config manager
-    this.configManager = new ConfigManager({
-      store: this.store,
+    // assorted config
+    this.configController = new ConfigController({
+      initState: initState.Config,
     })
 
     // preferences controller
@@ -187,6 +187,9 @@ module.exports = class MetamaskController extends EventEmitter {
     // manual disk state subscriptions
     this.txController.store.subscribe((state) => {
       this.store.updateState({ TransactionController: state })
+    })
+    this.configController.store.subscribe((state) => {
+      this.store.updateState({ Config: state })
     })
     this.keyringController.store.subscribe((state) => {
       this.store.updateState({ KeyringController: state })
@@ -304,9 +307,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Object} status
    */
   getState () {
-    const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
-    const isInitialized = (!!wallet || !!vault)
+    const isInitialized = !!vault
 
     return extend(
       {
@@ -327,13 +329,8 @@ module.exports = class MetamaskController extends EventEmitter {
       this.infuraController.store.getState(),
       this.recentBlocksController.store.getState(),
       // config manager
-      this.configManager.getConfig(),
+      this.configController.getConfig(),
       this.shapeshiftController.store.getState(),
-      {
-        lostAccounts: this.configManager.getLostAccounts(),
-        seedWords: this.configManager.getSeedWords(),
-        forgottenPassword: this.configManager.getPasswordForgotten(),
-      }
     )
   }
 
@@ -356,7 +353,6 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
-      markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
 
@@ -535,7 +531,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.verifySeedPhrase()
       .then((seedWords) => {
-        this.configManager.setSeedWords(seedWords)
+        this.configController.setSeedWords(seedWords)
         return cb(null, seedWords)
       })
       .catch((err) => {
@@ -581,7 +577,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    */
   clearSeedWordCache (cb) {
-    this.configManager.setSeedWords(null)
+    this.configController.setSeedWords(null)
     cb(null, this.preferencesController.getSelectedAddress())
   }
 
@@ -722,36 +718,6 @@ module.exports = class MetamaskController extends EventEmitter {
     .then(() => migratorOutput)
   }
 
-  /**
-   * ?
-   *
-   * @param  {} migratorOutput
-   */
-  restoreOldLostAccounts (migratorOutput) {
-    const { lostAccounts } = migratorOutput
-    if (lostAccounts) {
-      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
-      return this.importLostAccounts(migratorOutput)
-    }
-    return Promise.resolve(migratorOutput)
-  }
-
-  /**
-   * Import (lost) Accounts
-   *
-   * @param  {Object} {lostAccounts} @Array accounts <{ address, privateKey }>
-   *
-   * Uses the array's private keys to create a new Simple Key Pair keychain
-   * and add it to the keyring controller.
-   */
-  importLostAccounts ({ lostAccounts }) {
-    const privKeys = lostAccounts.map(acct => acct.privateKey)
-    return this.keyringController.restoreKeyring({
-      type: 'Simple Key Pair',
-      data: privKeys,
-    })
-  }
-
 //=============================================================================
 // END (VAULT / KEYRING RELATED METHODS)
 //=============================================================================
@@ -851,20 +817,14 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  markAccountsFound (cb) {
-    this.configManager.setLostAccounts([])
-    this.sendUpdate()
-    cb(null, this.getState())
-  }
-
   markPasswordForgotten(cb) {
-    this.configManager.setPasswordForgotten(true)
+    this.configController.setPasswordForgotten(true)
     this.sendUpdate()
     cb()
   }
 
   unMarkPasswordForgotten(cb) {
-    this.configManager.setPasswordForgotten(false)
+    this.configController.setPasswordForgotten(false)
     this.sendUpdate()
     cb()
   }
