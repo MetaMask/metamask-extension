@@ -34,7 +34,7 @@ const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
-const ConfigManager = require('./lib/config-manager')
+const ConfigController = require('./controllers/config')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -73,9 +73,9 @@ module.exports = class MetamaskController extends EventEmitter {
     // network store
     this.networkController = new NetworkController(initState.NetworkController)
 
-    // config manager
-    this.configManager = new ConfigManager({
-      store: this.store,
+    // assorted config
+    this.configController = new ConfigController({
+      initState,
     })
 
     // preferences controller
@@ -187,6 +187,9 @@ module.exports = class MetamaskController extends EventEmitter {
     // manual disk state subscriptions
     this.txController.store.subscribe((state) => {
       this.store.updateState({ TransactionController: state })
+    })
+    this.configController.store.subscribe((state) => {
+      this.store.updateState({ Config: state })
     })
     this.keyringController.store.subscribe((state) => {
       this.store.updateState({ KeyringController: state })
@@ -326,7 +329,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.infuraController.store.getState(),
       this.recentBlocksController.store.getState(),
       // config manager
-      this.configManager.getConfig(),
+      this.configController.getConfig(),
       this.shapeshiftController.store.getState(),
     )
   }
@@ -528,7 +531,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.verifySeedPhrase()
       .then((seedWords) => {
-        this.configManager.setSeedWords(seedWords)
+        this.configController.setSeedWords(seedWords)
         return cb(null, seedWords)
       })
       .catch((err) => {
@@ -574,7 +577,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    */
   clearSeedWordCache (cb) {
-    this.configManager.setSeedWords(null)
+    this.configController.setSeedWords(null)
     cb(null, this.preferencesController.getSelectedAddress())
   }
 
@@ -815,13 +818,13 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   markPasswordForgotten(cb) {
-    this.configManager.setPasswordForgotten(true)
+    this.configController.setPasswordForgotten(true)
     this.sendUpdate()
     cb()
   }
 
   unMarkPasswordForgotten(cb) {
-    this.configManager.setPasswordForgotten(false)
+    this.configController.setPasswordForgotten(false)
     this.sendUpdate()
     cb()
   }
