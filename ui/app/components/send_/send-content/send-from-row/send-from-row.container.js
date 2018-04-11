@@ -1,6 +1,6 @@
 import {
     getSendFrom,
-    conversionRateSelector,
+    getConversionRate,
     getSelectedTokenContract,
     getCurrentAccountWithSendEtherInfo,
     accountsWithSendEtherInfoSelector,
@@ -23,7 +23,7 @@ function mapStateToProps (state) {
   return {
     from: getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state),
     fromAccounts: accountsWithSendEtherInfoSelector(state),
-    conversionRate: conversionRateSelector(state),
+    conversionRate: getConversionRate(state),
     fromDropdownOpen: getFromDropdownOpen(state),
     tokenContract: getSelectedTokenContract(state),
   }

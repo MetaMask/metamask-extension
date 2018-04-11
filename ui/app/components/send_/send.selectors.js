@@ -5,31 +5,33 @@ import {
 } from './conversion-util'
 
 const selectors = {
+  accountsWithSendEtherInfoSelector,
+  autoAddToBetaUI,
+  getConversionRate,
+  getAddressBook,
+  getConversionRate,
+  getCurrentAccountWithSendEtherInfo,
+  getCurrentCurrency,
+  getCurrentNetwork,
+  getCurrentViewContext,
+  getForceGasMin,
+  getGasLimit,
+  getGasPrice,
+  getSelectedAccount,
   getSelectedAddress,
   getSelectedIdentity,
-  getSelectedAccount,
   getSelectedToken,
-  getSelectedTokenExchangeRate,
-  getTokenExchangeRate,
-  conversionRateSelector,
-  transactionsSelector,
-  accountsWithSendEtherInfoSelector,
-  getCurrentAccountWithSendEtherInfo,
-  getGasPrice,
-  getGasLimit,
-  getForceGasMin,
-  getAddressBook,
-  getSendFrom,
-  getCurrentCurrency,
-  getSendAmount,
-  getSelectedTokenToFiatRate,
   getSelectedTokenContract,
-  autoAddToBetaUI,
-  getSendMaxModeState,
-  getCurrentViewContext,
+  getSelectedTokenExchangeRate,
+  getSelectedTokenToFiatRate,
+  getSendAmount,
   getSendErrors,
+  getSendFrom,
+  getSendFromBalance,
+  getSendMaxModeState,
   getSendTo,
-  getCurrentNetwork,
+  getTokenExchangeRate,
+  transactionsSelector,
 }
 
 module.exports = selectors
@@ -82,7 +84,7 @@ function getTokenExchangeRate (state, tokenSymbol) {
   return tokenExchangeRate
 }
 
-function conversionRateSelector (state) {
+function getConversionRate (state) {
   return state.metamask.conversionRate
 }
 
@@ -142,6 +144,11 @@ function getSendFrom (state) {
   return state.metamask.send.from
 }
 
+function getSendFromBalance (state) {
+  const from = state.metamask.send.from || {}
+  return from.balance
+}
+
 function getSendAmount (state) {
   return state.metamask.send.amount
 }
@@ -156,7 +163,7 @@ function getCurrentCurrency (state) {
 
 function getSelectedTokenToFiatRate (state) {
   const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
-  const conversionRate = conversionRateSelector(state)
+  const conversionRate = getConversionRate(state)
 
   const tokenToFiatRate = multiplyCurrencies(
     conversionRate,

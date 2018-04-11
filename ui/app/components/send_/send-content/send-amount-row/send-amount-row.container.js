@@ -7,42 +7,43 @@ import {
   getGasTotal,
   getSelectedBalance,
   getTokenBalance,
+  getSendFromBalance,
 } from '../../send.selectors.js'
 import {
   getMaxModeOn,
-  getSendAmountError,
+  sendAmountIsInError,
 } from './send-amount-row.selectors.js'
-import { getAmountErrorObject } from './send-to-row.utils.js'
+import { getAmountErrorObject } from './send-amount-row.utils.js'
 import {
-  updateSendErrors,
-  updateSendTo,
+  updateSendAmount,
+  setMaxModeTo,
 } from '../../../actions'
-import {
-  openToDropdown,
-  closeToDropdown,
-} from '../../../ducks/send'
-import SendToRow from './send-to-row.component'
+import SendAmountRow from './send-amount-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendToRow)
 
 function mapStateToProps (state) {
 updateSendTo
 return {
-  to: getSendTo(state),
-  toAccounts: getSendToAccounts(state),
-  toDropdownOpen: getToDropdownOpen(state),
-  inError: sendToIsInError(state),
-  network: getCurrentNetwork(state),
+  selectedToken: getSelectedToken(state),
+  primaryCurrency: getPrimaryCurrency(state),
+  convertedCurrency: getConvertedCurrency(state),
+  amountConversionRate: getAmountConversionRate(state),
+  inError: sendAmountIsInError(state),
+  amount: getSendAmount(state),
+  maxModeOn: getMaxModeOn(state),
+  gasTotal: getGasTotal(state),
+  tokenBalance: getTokenBalance(state),
+  balance: getSendFromBalance(state),
 }
 }
 
 function mapDispatchToProps (dispatch) {
-return {
-  updateSendToError: (to) => {
-      dispatch(updateSendErrors(getToErrorObject(to)))
-  },
-  updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
-  openToDropdown: () => dispatch(()),
-  closeToDropdown: () => dispatch(()),
-}
+  return {
+    updateSendAmountError: (amountDataObject) => {
+        dispatch(updateSendErrors(getAmountErrorObject(amountDataObject)))
+    },
+    updateSendAmount: newAmount => dispatch(updateSendAmount(newAmount)),
+    setMaxModeTo: bool => dispatch(setMaxModeTo(bool)),
+  }
 }

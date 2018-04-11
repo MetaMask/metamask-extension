@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import SendRowWrapper from '../../../send/from-dropdown'
+import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component'
 import ToDropdown from '../../../ens-input'
 
 export default class SendToRow extends Component {
@@ -37,7 +37,11 @@ export default class SendToRow extends Component {
     } = this.props
 
     return (
-      <SendRowWrapper label={`${this.context.t('to')}:`}>
+      <SendRowWrapper
+        label={`${this.context.t('to')}:`}
+        showError={inError}
+        errorType={'to'}
+      >
         <EnsInput
           name={'address'}
           placeholder={this.context.t('recipient Address')}
