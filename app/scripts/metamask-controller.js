@@ -75,7 +75,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // assorted config
     this.configController = new ConfigController({
-      initState,
+      // This data should be migrated instead of just preferred:
+      initState: initState.Config || initState,
     })
 
     // preferences controller
