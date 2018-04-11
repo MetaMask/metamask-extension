@@ -6,16 +6,7 @@ const ObservableStore = require('obs-store')
 
 module.exports = ConfigController
 function ConfigController (opts) {
-  // ConfigController is observable and will emit updates
-  this._subs = []
   this.store = new ObservableStore(opts.initState)
-}
-
-ConfigController.prototype.setConfig = function (config) {
-  var data = this.getData()
-  data.config = config
-  this.setData(data)
-  this._emitUpdates(config)
 }
 
 ConfigController.prototype.getConfig = function () {
