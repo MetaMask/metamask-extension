@@ -4,7 +4,6 @@ const { connect } = require('react-redux')
 const PropTypes = require('prop-types')
 const ReactMarkdown = require('react-markdown')
 const linker = require('extension-link-enabler')
-const generateLostAccountsNotice = require('../../../lib/lost-accounts-notice')
 const findDOMNode = require('react-dom').findDOMNode
 const actions = require('../../actions')
 const { DEFAULT_ROUTE } = require('../../routes')
@@ -154,12 +153,11 @@ class Notice extends Component {
 
 const mapStateToProps = state => {
   const { metamask } = state
-  const { noActiveNotices, lastUnreadNotice, lostAccounts } = metamask
+  const { noActiveNotices, lastUnreadNotice } = metamask
 
   return {
     noActiveNotices,
     lastUnreadNotice,
-    lostAccounts,
   }
 }
 
@@ -176,7 +174,7 @@ const mapDispatchToProps = dispatch => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { noActiveNotices, lastUnreadNotice, lostAccounts } = stateProps
+  const { noActiveNotices, lastUnreadNotice } = stateProps
   const { markNoticeRead } = dispatchProps
 
   let notice
