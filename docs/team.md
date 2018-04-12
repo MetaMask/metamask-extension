@@ -55,6 +55,17 @@ Software Engineer
 
 The newest member of the team! Paul is currently being onboarded, and finding his niche within the team.
 
+## Laboratry Team Members
+
+These team members are working on projects that will benefit MetaMask, but are not directly working on the product itself.
+
+### Herman Junge
+
+@hermanjunge
+Software Engineer
+
+Herman is currently leading the Mustekala project, a JavaScript, IPFS-based Ethereum light client.
+
 ## Kyokan Team Members
 
 [Kyokan](http://kyokan.io/) is a consulting firm that has been working closely with the MetaMask team on the latest version of our user interface. Their team members are not members of ConsenSys LLC, but they contribute a lot to the project.
