@@ -50,6 +50,13 @@ User Experience Designer
 
 Christian is the lead of MetaMask's user experience. He is continuously designing prototypes, testing them with users, and refining them with our developers for production.
 
+### Paul Bouchon
+
+@bitpshr
+Software Engineer
+
+The newest member of the team! Paul is currently being onboarded, and finding his niche within the team.
+
 ## Kyokan Team Members
 
 [Kyokan](http://kyokan.io/) is a consulting firm that has been working closely with the MetaMask team on the latest version of our user interface. Their team members are not members of ConsenSys LLC, but they contribute a lot to the project.
