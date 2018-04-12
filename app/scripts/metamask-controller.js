@@ -286,9 +286,9 @@ module.exports = class MetamaskController extends EventEmitter {
       if (memState.isUnlocked && !this.blockTracker._isRunning) {
         this.recentBlocksController.resetState()
         this.recentBlocksController.backfill()
-        this.blockTracker.start();
+        this.blockTracker.start()
       } else if (!memState.isUnlocked && this.blockTracker._isRunning) {
-        this.blockTracker.stop();
+        this.blockTracker.stop()
       }
 
       const publicState = selectPublicState(memState)
