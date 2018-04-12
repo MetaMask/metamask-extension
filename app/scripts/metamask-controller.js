@@ -103,6 +103,10 @@ module.exports = class MetamaskController extends EventEmitter {
     // rpc provider
     this.provider = this.initializeProvider()
     this.blockTracker = this.provider._blockTracker
+    if (this.blockTracker._isRunning) {
+      // ensure the block tracker is not running on extension init
+      this.blockTracker.stop()
+    }
 
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
@@ -279,6 +283,14 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // memStore -> transform -> publicConfigStore
     this.on('update', (memState) => {
+      if (memState.isUnlocked && !this.blockTracker._isRunning) {
+        this.recentBlocksController.resetState()
+        this.recentBlocksController.backfill()
+        this.blockTracker.start();
+      } else if (!memState.isUnlocked && this.blockTracker._isRunning) {
+        this.blockTracker.stop();
+      }
+
       const publicState = selectPublicState(memState)
       publicConfigStore.putState(publicState)
     })

@@ -17,7 +17,6 @@ class RecentBlocksController {
     this.store = new ObservableStore(initState)
 
     this.blockTracker.on('block', this.processBlock.bind(this))
-    this.backfill()
   }
 
   resetState () {
