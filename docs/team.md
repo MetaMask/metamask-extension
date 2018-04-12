@@ -2,8 +2,6 @@
 
 Here is an overview of the current MetaMask team, and their primary roles and responsibilities, in the order they joined the team.
 
-This section will describe
-
 ## Core Team Members
 
 The core team maintains aspects of the main product (the extension) and the core libraries (the MetaMask Controller, provider-engine, etc).
