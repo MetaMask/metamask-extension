@@ -7,6 +7,7 @@ const NetworkIndicator = require('./components/network')
 const LoadingIndicator = require('./components/loading')
 const txHelper = require('../lib/tx-helper')
 const isPopupOrNotification = require('../../app/scripts/lib/is-popup-or-notification')
+const log = require('loglevel')
 
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
