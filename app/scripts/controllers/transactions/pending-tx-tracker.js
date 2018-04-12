@@ -171,8 +171,8 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     try {
       await Promise.all(signedTxList.map((txMeta) => this._checkPendingTx(txMeta)))
     } catch (err) {
-      console.error('PendingTransactionWatcher - Error updating pending transactions')
-      console.error(err)
+      log.error('PendingTransactionWatcher - Error updating pending transactions')
+      log.error(err)
     }
     nonceGlobalLock.releaseLock()
   }

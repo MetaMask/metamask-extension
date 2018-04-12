@@ -43,39 +43,13 @@ module.exports = class TransactionController extends EventEmitter {
       getNetwork: this.getNetwork.bind(this),
     })
 
-    this.txStateManager.getFilteredTxList({
-      status: 'unapproved',
-      loadingDefaults: true,
-    }).forEach((tx) => {
-      this.addTxDefaults(tx)
-      .then((txMeta) => {
-        txMeta.loadingDefaults = false
-        this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
-      }).catch((error) => {
-        this.txStateManager.setTxStatusFailed(tx.id, error)
-      })
-    })
-
-    this.txStateManager.getFilteredTxList({
-      status: 'approved',
-    }).forEach((txMeta) => {
-      const txSignError = new Error('Transaction found as "approved" during boot - possibly stuck during signing')
-      this.txStateManager.setTxStatusFailed(txMeta.id, txSignError)
-    })
-
+    this._onBootCleanUp()
 
     this.store = this.txStateManager.store
-    this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
-      getConfirmedTransactions: (address) => {
-        return this.txStateManager.getFilteredTxList({
-          from: address,
-          status: 'confirmed',
-          err: undefined,
-        })
-      },
+      getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     })
 
     this.pendingTxTracker = new PendingTransactionTracker({
@@ -87,29 +61,7 @@ module.exports = class TransactionController extends EventEmitter {
     })
 
     this.txStateManager.store.subscribe(() => this.emit('update:badge'))
-
-    this.pendingTxTracker.on('tx:warning', (txMeta) => {
-      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
-    })
-    this.pendingTxTracker.on('tx:confirmed', (txId) => this._markNonceDuplicatesDropped(txId))
-    this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
-    this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
-      if (!txMeta.firstRetryBlockNumber) {
-        txMeta.firstRetryBlockNumber = latestBlockNumber
-        this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:block-update')
-      }
-    })
-    this.pendingTxTracker.on('tx:retry', (txMeta) => {
-      if (!('retryCount' in txMeta)) txMeta.retryCount = 0
-      txMeta.retryCount++
-      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
-    })
-
-    this.blockTracker.on('block', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
-    // this is a little messy but until ethstore has been either
-    // removed or redone this is to guard against the race condition
-    this.blockTracker.on('latest', this.pendingTxTracker.resubmitPendingTxs.bind(this.pendingTxTracker))
-    this.blockTracker.on('sync', this.pendingTxTracker.queryPendingTxs.bind(this.pendingTxTracker))
+    this._setupListners()
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.txStateManager.store.subscribe(() => this._updateMemstore())
@@ -151,14 +103,14 @@ module.exports = class TransactionController extends EventEmitter {
     }
   }
 
-  wipeTransactions (address) {
-    this.txStateManager.wipeTransactions(address)
-  }
-
-  // Adds a tx to the txlist
+// Adds a tx to the txlist
   addTx (txMeta) {
     this.txStateManager.addTx(txMeta)
     this.emit(`${txMeta.id}:unapproved`, txMeta)
+  }
+
+  wipeTransactions (address) {
+    this.txStateManager.wipeTransactions(address)
   }
 
   async newUnapprovedTransaction (txParams, opts = {}) {
@@ -313,6 +265,55 @@ module.exports = class TransactionController extends EventEmitter {
 //
 //           PRIVATE METHODS
 //
+
+  _onBootCleanUp () {
+    this.txStateManager.getFilteredTxList({
+      status: 'unapproved',
+      loadingDefaults: true,
+    }).forEach((tx) => {
+      this.addTxDefaults(tx)
+      .then((txMeta) => {
+        txMeta.loadingDefaults = false
+        this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
+      }).catch((error) => {
+        this.txStateManager.setTxStatusFailed(tx.id, error)
+      })
+    })
+
+    this.txStateManager.getFilteredTxList({
+      status: 'approved',
+    }).forEach((txMeta) => {
+      const txSignError = new Error('Transaction found as "approved" during boot - possibly stuck during signing')
+      this.txStateManager.setTxStatusFailed(txMeta.id, txSignError)
+    })
+  }
+
+  _setupListners () {
+    this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
+    this.pendingTxTracker.on('tx:warning', (txMeta) => {
+      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
+    })
+    this.pendingTxTracker.on('tx:confirmed', (txId) => this._markNonceDuplicatesDropped(txId))
+    this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
+    this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
+      if (!txMeta.firstRetryBlockNumber) {
+        txMeta.firstRetryBlockNumber = latestBlockNumber
+        this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:block-update')
+      }
+    })
+    this.pendingTxTracker.on('tx:retry', (txMeta) => {
+      if (!('retryCount' in txMeta)) txMeta.retryCount = 0
+      txMeta.retryCount++
+      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
+    })
+
+    this.blockTracker.on('block', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
+    // this is a little messy but until ethstore has been either
+    // removed or redone this is to guard against the race condition
+    this.blockTracker.on('latest', this.pendingTxTracker.resubmitPendingTxs.bind(this.pendingTxTracker))
+    this.blockTracker.on('sync', this.pendingTxTracker.queryPendingTxs.bind(this.pendingTxTracker))
+
+  }
 
   _markNonceDuplicatesDropped (txId) {
     this.txStateManager.setTxStatusConfirmed(txId)
