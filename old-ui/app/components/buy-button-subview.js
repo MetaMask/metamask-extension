@@ -8,7 +8,7 @@ const ShapeshiftForm = require('./shapeshift-form')
 const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
-const networkNames = require('../../../app/scripts/config.js').networkNames
+const { getNetworkDisplayName } = require('../../../app/scripts/controllers/network/util')
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -142,7 +142,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '3':
     case '4':
     case '42':
-      const networkName = networkNames[network]
+      const networkName = getNetworkDisplayName(network)
       const label = `${networkName} Test Faucet`
       return (
         h('div.flex-column', {

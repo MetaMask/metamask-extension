@@ -10,7 +10,7 @@ const getCaretCoordinates = require('textarea-caret')
 const { RESTORE_VAULT_ROUTE, DEFAULT_ROUTE } = require('../routes')
 const { getEnvironmentType } = require('../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../app/scripts/lib/enums')
-const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
+const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/controllers/network/enums')
 
 class InitializeMenuScreen extends Component {
   constructor (props) {

@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const networkNames = require('../../../../app/scripts/config.js').networkNames
+const { getNetworkDisplayName } = require('../../../../app/scripts/controllers/network/util')
 
 function mapStateToProps (state) {
   return {
@@ -52,7 +52,7 @@ BuyOptions.prototype.renderModalContentOption = function (title, header, onClick
 BuyOptions.prototype.render = function () {
   const { network, toCoinbase, address, toFaucet } = this.props
   const isTestNetwork = ['3', '4', '42'].find(n => n === network)
-  const networkName = networkNames[network]
+  const networkName = getNetworkDisplayName(network)
 
   return h('div', {}, [
     h('div.buy-modal-content.transfers-subview', {
