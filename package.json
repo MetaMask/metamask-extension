@@ -8,7 +8,7 @@
     "mascara": "gulp dev:mascara & node ./mascara/example/server",
     "dist": "gulp dist",
     "test": "npm run test:unit && npm run test:integration && npm run lint",
-    "test:unit": "cross-env METAMASK_ENV=test mocha --exit --require babel-core/register --require test/helper.js --recursive \"test/unit/**/*.js\"",
+    "test:unit": "cross-env METAMASK_ENV=test mocha --exit --require test/setup.js --recursive \"test/unit/**/*.js\"",
     "test:single": "cross-env METAMASK_ENV=test mocha --require test/helper.js",
     "test:integration": "npm run test:integration:build && npm run test:flat && npm run test:mascara",
     "test:integration:build": "gulp build:scss",

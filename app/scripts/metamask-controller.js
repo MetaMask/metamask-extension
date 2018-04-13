@@ -5,10 +5,10 @@
  */
 
 const EventEmitter = require('events')
-const extend = require('xtend')
 const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
+const ComposableObservableStore = require('./lib/ComposableObservableStore')
 const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
 const RpcEngine = require('json-rpc-engine')
@@ -65,7 +65,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.platform = opts.platform
 
     // observable state store
-    this.store = new ObservableStore(initState)
+    this.store = new ComposableObservableStore(initState)
 
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex()
@@ -184,53 +184,36 @@ module.exports = class MetamaskController extends EventEmitter {
     this.typedMessageManager = new TypedMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
-    // manual disk state subscriptions
-    this.txController.store.subscribe((state) => {
-      this.store.updateState({ TransactionController: state })
-    })
-    this.keyringController.store.subscribe((state) => {
-      this.store.updateState({ KeyringController: state })
-    })
-    this.preferencesController.store.subscribe((state) => {
-      this.store.updateState({ PreferencesController: state })
-    })
-    this.addressBookController.store.subscribe((state) => {
-      this.store.updateState({ AddressBookController: state })
-    })
-    this.currencyController.store.subscribe((state) => {
-      this.store.updateState({ CurrencyController: state })
-    })
-    this.noticeController.store.subscribe((state) => {
-      this.store.updateState({ NoticeController: state })
-    })
-    this.shapeshiftController.store.subscribe((state) => {
-      this.store.updateState({ ShapeShiftController: state })
-    })
-    this.networkController.store.subscribe((state) => {
-      this.store.updateState({ NetworkController: state })
+    this.store.updateStructure({
+      TransactionController: this.txController.store,
+      KeyringController: this.keyringController.store,
+      PreferencesController: this.preferencesController.store,
+      AddressBookController: this.addressBookController.store,
+      CurrencyController: this.currencyController.store,
+      NoticeController: this.noticeController.store,
+      ShapeShiftController: this.shapeshiftController.store,
+      NetworkController: this.networkController.store,
+      InfuraController: this.infuraController.store,
     })
 
-    this.infuraController.store.subscribe((state) => {
-      this.store.updateState({ InfuraController: state })
+    this.memStore = new ComposableObservableStore(null, {
+      NetworkController: this.networkController.store,
+      AccountTracker: this.accountTracker.store,
+      TxController: this.txController.memStore,
+      BalancesController: this.balancesController.store,
+      MessageManager: this.messageManager.memStore,
+      PersonalMessageManager: this.personalMessageManager.memStore,
+      TypesMessageManager: this.typedMessageManager.memStore,
+      KeyringController: this.keyringController.memStore,
+      PreferencesController: this.preferencesController.store,
+      RecentBlocksController: this.recentBlocksController.store,
+      AddressBookController: this.addressBookController.store,
+      CurrencyController: this.currencyController.store,
+      NoticeController: this.noticeController.memStore,
+      ShapeshiftController: this.shapeshiftController.store,
+      InfuraController: this.infuraController.store,
     })
-
-    // manual mem state subscriptions
-    const sendUpdate = this.sendUpdate.bind(this)
-    this.networkController.store.subscribe(sendUpdate)
-    this.accountTracker.store.subscribe(sendUpdate)
-    this.txController.memStore.subscribe(sendUpdate)
-    this.balancesController.store.subscribe(sendUpdate)
-    this.messageManager.memStore.subscribe(sendUpdate)
-    this.personalMessageManager.memStore.subscribe(sendUpdate)
-    this.typedMessageManager.memStore.subscribe(sendUpdate)
-    this.keyringController.memStore.subscribe(sendUpdate)
-    this.preferencesController.store.subscribe(sendUpdate)
-    this.recentBlocksController.store.subscribe(sendUpdate)
-    this.addressBookController.store.subscribe(sendUpdate)
-    this.currencyController.store.subscribe(sendUpdate)
-    this.noticeController.memStore.subscribe(sendUpdate)
-    this.shapeshiftController.store.subscribe(sendUpdate)
-    this.infuraController.store.subscribe(sendUpdate)
+    this.memStore.subscribe(this.sendUpdate.bind(this))
   }
 
   /**
@@ -308,33 +291,16 @@ module.exports = class MetamaskController extends EventEmitter {
     const vault = this.keyringController.store.getState().vault
     const isInitialized = (!!wallet || !!vault)
 
-    return extend(
-      {
-        isInitialized,
-      },
-      this.networkController.store.getState(),
-      this.accountTracker.store.getState(),
-      this.txController.memStore.getState(),
-      this.messageManager.memStore.getState(),
-      this.personalMessageManager.memStore.getState(),
-      this.typedMessageManager.memStore.getState(),
-      this.keyringController.memStore.getState(),
-      this.balancesController.store.getState(),
-      this.preferencesController.store.getState(),
-      this.addressBookController.store.getState(),
-      this.currencyController.store.getState(),
-      this.noticeController.memStore.getState(),
-      this.infuraController.store.getState(),
-      this.recentBlocksController.store.getState(),
-      // config manager
-      this.configManager.getConfig(),
-      this.shapeshiftController.store.getState(),
-      {
+    return {
+      ...{ isInitialized },
+      ...this.memStore.getFlatState(),
+      ...this.configManager.getConfig(),
+      ...{
         lostAccounts: this.configManager.getLostAccounts(),
         seedWords: this.configManager.getSeedWords(),
         forgottenPassword: this.configManager.getPasswordForgotten(),
-      }
-    )
+      },
+    }
   }
 
   /**
