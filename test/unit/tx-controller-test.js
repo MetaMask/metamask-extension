@@ -188,7 +188,7 @@ describe('Transaction Controller', function () {
 
   })
 
-  describe('#addTxDefaults', function () {
+  describe('#addTxGasDefaults', function () {
     it('should add the tx defaults if their are none', function (done) {
       const txMeta = {
         'txParams': {
@@ -199,7 +199,7 @@ describe('Transaction Controller', function () {
         providerResultStub.eth_gasPrice = '4a817c800'
         providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' }
         providerResultStub.eth_estimateGas = '5209'
-      txController.addTxDefaults(txMeta)
+      txController.addTxGasDefaults(txMeta)
       .then((txMetaWithDefaults) => {
         assert(txMetaWithDefaults.txParams.value, '0x0', 'should have added 0x0 as the value')
         assert(txMetaWithDefaults.txParams.gasPrice, 'should have added the gas price')
