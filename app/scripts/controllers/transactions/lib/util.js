@@ -11,24 +11,24 @@ module.exports = {
 }
 
 
+// functions that handle normalizing of that key in txParams
+const normalizers = {
+  from: from => addHexPrefix(from).toLowerCase(),
+  to: to => addHexPrefix(to).toLowerCase(),
+  nonce: nonce => addHexPrefix(nonce),
+  value: value =>  value ? addHexPrefix(value) : '0x0',
+  data: data => addHexPrefix(data),
+  gas: gas => addHexPrefix(gas),
+  gasPrice: gasPrice => addHexPrefix(gasPrice),
+}
+ /**
+ */
 function normalizeTxParams (txParams) {
-  // functions that handle normalizing of that key in txParams
-  const whiteList = {
-    from: from => addHexPrefix(from).toLowerCase(),
-    to: to => addHexPrefix(txParams.to).toLowerCase(),
-    nonce: nonce => addHexPrefix(nonce),
-    value: value => addHexPrefix(value),
-    data: data => addHexPrefix(data),
-    gas: gas => addHexPrefix(gas),
-    gasPrice: gasPrice => addHexPrefix(gasPrice),
-  }
-
-  // apply only keys in the whiteList
+  // apply only keys in the normalizers
   const normalizedTxParams = {}
-  Object.keys(whiteList).forEach((key) => {
-    if (txParams[key]) normalizedTxParams[key] = whiteList[key](txParams[key])
-  })
-
+  for (let key in normalizers) {
+    if (txParams[key]) normalizedTxParams[key] = normalizers[key](txParams[key])
+  }
   return normalizedTxParams
 }
 

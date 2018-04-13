@@ -1,23 +1,23 @@
 const EventEmitter = require('events')
 const EthQuery = require('ethjs-query')
-/*
+/**
 
-  Utility class for tracking the transactions as they
-  go from a pending state to a confirmed (mined in a block) state
-
+  Event emitter utility class for tracking the transactions as they<br>
+  go from a pending state to a confirmed (mined in a block) state<br>
+<br>
   As well as continues broadcast while in the pending state
+<br>
+@param config {object} - non optional configuration object consists of:
+    <br>provider
+    <br>nonceTracker: see nonce tracker
+    <br>getPendingTransactions: a function for getting an array of transactions,
+    <br>publishTransaction: a async function for publishing raw transactions,
 
-                ~config is not optional~
-  requires a: {
-    provider: //,
-    nonceTracker: //see nonce tracker,
-    getPendingTransactions: //() a function for getting an array of transactions,
-    publishTransaction: //(rawTx) a async function for publishing raw transactions,
-  }
 
+@class
 */
 
-module.exports = class PendingTransactionTracker extends EventEmitter {
+class PendingTransactionTracker extends EventEmitter {
   constructor (config) {
     super()
     this.query = new EthQuery(config.provider)
@@ -29,8 +29,13 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     this._checkPendingTxs()
   }
 
-  //  checks if a signed tx is in a block and
-  // if included sets the tx status as 'confirmed'
+  /**
+    checks if a signed tx is in a block and
+    if it is included emits tx status as 'confirmed'
+    @param block {object}, a full block
+    @emits tx:confirmed
+    @emits tx:failed
+  */
   checkForTxInBlock (block) {
     const signedTxList = this.getPendingTransactions()
     if (!signedTxList.length) return
@@ -52,6 +57,11 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     })
   }
 
+  /**
+    asks the network for the transaction to see if a block number is included on it
+    if we have skipped/missed blocks
+    @param object - oldBlock newBlock
+  */
   queryPendingTxs ({ oldBlock, newBlock }) {
     // check pending transactions on start
     if (!oldBlock) {
@@ -63,7 +73,11 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     if (diff > 1) this._checkPendingTxs()
   }
 
-
+  /**
+    Will resubmit any transactions who have not been confirmed in a block
+    @param block {object} - a block object
+    @emits tx:warning
+  */
   resubmitPendingTxs (block) {
     const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
@@ -100,6 +114,13 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     }))
   }
 
+  /**
+    resubmits the individual txMeta used in resubmitPendingTxs
+    @param txMeta {object} - txMeta object
+    @param latestBlockNumber {string} - hex string for the latest block number
+    @emits tx:retry
+    @returns txHash {string}
+  */
   async _resubmitTx (txMeta, latestBlockNumber) {
     if (!txMeta.firstRetryBlockNumber) {
       this.emit('tx:block-update', txMeta, latestBlockNumber)
@@ -123,7 +144,13 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     this.emit('tx:retry', txMeta)
     return txHash
   }
-
+  /**
+    Ask the network for the transaction to see if it has been include in a block
+    @param txMeta {object} - the txMeta object
+    @emits tx:failed
+    @emits tx:confirmed
+    @emits tx:warning
+  */
   async _checkPendingTx (txMeta) {
     const txHash = txMeta.hash
     const txId = txMeta.id
@@ -162,8 +189,9 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     }
   }
 
-  // checks the network for signed txs and
-  // if confirmed sets the tx status as 'confirmed'
+  /**
+    checks the network for signed txs and releases the nonce global lock if it is
+  */
   async _checkPendingTxs () {
     const signedTxList = this.getPendingTransactions()
     // in order to keep the nonceTracker accurate we block it while updating pending transactions
@@ -177,6 +205,11 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     nonceGlobalLock.releaseLock()
   }
 
+  /**
+    checks to see if a confirmed txMeta has the same nonce
+    @param txMeta {object} - txMeta object
+    @returns {boolean}
+  */
   async _checkIfNonceIsTaken (txMeta) {
     const address = txMeta.txParams.from
     const completed = this.getCompletedTransactions(address)
@@ -185,5 +218,6 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     })
     return sameNonce.length > 0
   }
-
 }
+
+module.exports = PendingTransactionTracker

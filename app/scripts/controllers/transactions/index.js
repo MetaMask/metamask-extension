@@ -9,8 +9,6 @@ const PendingTransactionTracker = require('./pending-tx-tracker')
 const NonceTracker = require('./nonce-tracker')
 const txUtils = require('./lib/util')
 
-module.exports = TransactionController
-
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
   composing them in a way to be exposed to the metamask controller
@@ -356,6 +354,11 @@ add a new unapproved transaction to the pipeline
     })
   }
 
+  /**
+    is called in constructor applies the listeners for pendingTxTracker txStateManager
+    and blockTracker
+    <br>
+  */
   _setupListners () {
     this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
     this.pendingTxTracker.on('tx:warning', (txMeta) => {
@@ -408,3 +411,5 @@ add a new unapproved transaction to the pipeline
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
   }
 }
+
+module.exports = TransactionController
