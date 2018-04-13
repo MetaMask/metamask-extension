@@ -11,24 +11,24 @@ class ComposableObservableStore extends ObservableStore {
    * @param {Object} [initState] - The initial store state
    * @param {Object} [config] - Map of internal state keys to child stores
    */
-	constructor (initState, config) {
-		super()
-		this.updateStructure(config)
-	}
+  constructor (initState, config) {
+    super(initState)
+    this.updateStructure(config)
+  }
 
   /**
    * Composes a new internal store subscription structure
    *
    * @param {Object} [config] - Map of internal state keys to child stores
    */
-	updateStructure (config) {
+  updateStructure (config) {
     this.config = config
-		this.removeAllListeners()
-		for (const key in config) {
-			config[key].subscribe((state) => {
-				this.updateState({ [key]: state })
-			})
-		}
+    this.removeAllListeners()
+    for (const key in config) {
+      config[key].subscribe((state) => {
+        this.updateState({ [key]: state })
+      })
+    }
   }
 
   /**
