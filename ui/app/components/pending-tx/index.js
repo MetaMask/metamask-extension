@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const clone = require('clone')
 const abi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
@@ -11,6 +12,7 @@ const util = require('../../util')
 const ConfirmSendEther = require('./confirm-send-ether')
 const ConfirmSendToken = require('./confirm-send-token')
 const ConfirmDeployContract = require('./confirm-deploy-contract')
+const Loading = require('../loading')
 
 const TX_TYPES = {
   DEPLOY_CONTRACT: 'deploy_contract',
@@ -53,9 +55,23 @@ function PendingTx () {
   }
 }
 
-PendingTx.prototype.componentWillMount = async function () {
+PendingTx.prototype.componentDidMount = function () {
+  this.setTokenData()
+}
+
+PendingTx.prototype.componentDidUpdate = function (prevProps, prevState) {
+  if (prevState.isFetching) {
+    this.setTokenData()
+  }
+}
+
+PendingTx.prototype.setTokenData = async function () {
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
+
+  if (txMeta.loadingDefaults) {
+    return
+  }
 
   if (!txParams.to) {
     return this.setState({
@@ -125,7 +141,9 @@ PendingTx.prototype.render = function () {
   const { sendTransaction } = this.props
 
   if (isFetching) {
-    return h('noscript')
+    return h(Loading, {
+      loadingMessage: this.context.t('estimatingTransaction'),
+    })
   }
 
   switch (transactionType) {
@@ -150,6 +168,10 @@ PendingTx.prototype.render = function () {
         sendTransaction,
       })
     default:
-      return h('noscript')
+      return h(Loading)
   }
+}
+
+PendingTx.contextTypes = {
+  t: PropTypes.func,
 }
