@@ -3,6 +3,7 @@ const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
+const log = require('loglevel')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,

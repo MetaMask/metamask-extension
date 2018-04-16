@@ -6,6 +6,7 @@ const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
+const log = require('loglevel')
 
 const PendingTx = require('./components/pending-tx')
 const SignatureRequest = require('./components/signature-request')

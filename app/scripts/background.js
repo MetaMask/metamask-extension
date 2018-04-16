@@ -25,8 +25,7 @@ const getObjStructure = require('./lib/getObjStructure')
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
-window.log = log
-log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 const platform = new ExtensionPlatform()
 const notificationManager = new NotificationManager()

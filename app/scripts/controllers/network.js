@@ -9,6 +9,7 @@ const extend = require('xtend')
 const EthQuery = require('eth-query')
 const createEventEmitterProxy = require('../lib/events-proxy.js')
 const networkConfig = require('../config.js')
+const log = require('loglevel')
 const { OLD_UI_NETWORK_TYPE, DEFAULT_RPC } = networkConfig.enums
 const INFURA_PROVIDER_TYPES = ['ropsten', 'rinkeby', 'kovan', 'mainnet']
 

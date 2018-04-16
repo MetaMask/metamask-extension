@@ -7,6 +7,7 @@ const TransactionStateManager = require('../lib/tx-state-manager')
 const TxGasUtil = require('../lib/tx-gas-utils')
 const PendingTransactionTracker = require('../lib/pending-tx-tracker')
 const NonceTracker = require('../lib/nonce-tracker')
+const log = require('loglevel')
 
 /*
   Transaction Controller is an aggregate of sub-controllers and trackers

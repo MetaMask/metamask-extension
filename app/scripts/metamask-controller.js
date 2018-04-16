@@ -44,6 +44,7 @@ const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
+const log = require('loglevel')
 
 module.exports = class MetamaskController extends EventEmitter {
 
