@@ -48,7 +48,7 @@ module.exports = compose(
 
 
 function mapStateToProps (state, ownProps) {
-  const { token: { symbol }, txData } = ownProps
+  const { token: { address }, txData } = ownProps
   const { txParams } = txData || {}
   const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data)
 
@@ -59,7 +59,7 @@ function mapStateToProps (state, ownProps) {
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = getSelectedAddress(state)
-  const tokenExchangeRate = getTokenExchangeRate(state, symbol)
+  const tokenExchangeRate = getTokenExchangeRate(state, address)
   const { balance } = accounts[selectedAddress]
   return {
     conversionRate,
@@ -75,12 +75,9 @@ function mapStateToProps (state, ownProps) {
 }
 
 function mapDispatchToProps (dispatch, ownProps) {
-  const { token: { symbol } } = ownProps
-
   return {
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
-    updateTokenExchangeRate: () => dispatch(actions.updateTokenExchangeRate(symbol)),
     editTransaction: txMeta => {
       const { token: { address } } = ownProps
       const { txParams = {}, id } = txMeta
@@ -203,7 +200,6 @@ ConfirmSendToken.prototype.componentWillMount = function () {
     .balanceOf(selectedAddress)
     .then(usersToken => {
     })
-  this.props.updateTokenExchangeRate()
   this.updateComponentSendErrors({})
 }
 

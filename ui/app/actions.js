@@ -220,8 +220,10 @@ var actions = {
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
   shapeShiftSubview: shapeShiftSubview,
-  UPDATE_TOKEN_EXCHANGE_RATE: 'UPDATE_TOKEN_EXCHANGE_RATE',
-  updateTokenExchangeRate,
+  UPDATE_CONTRACT_EXCHANGE_RATES: 'UPDATE_CONTRACT_EXCHANGE_RATES',
+  UPDATE_CONTRACT_EXCHANGE_RATE: 'UPDATE_CONTRACT_EXCHANGE_RATE',
+  updateContractExchangeRates,
+  updateContractExchangeRate,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
   coinShiftRquest: coinShiftRquest,
@@ -1080,9 +1082,12 @@ function unlockMetamask (account) {
 }
 
 function updateMetamaskState (newState) {
-  return {
-    type: actions.UPDATE_METAMASK_STATE,
-    value: newState,
+  return async dispatch => {
+    await dispatch({
+      type: actions.UPDATE_METAMASK_STATE,
+      value: newState,
+    })
+    dispatch(updateContractExchangeRates())
   }
 }
 
@@ -1295,9 +1300,12 @@ function addTokens (tokens) {
 }
 
 function updateTokens (newTokens) {
-  return {
-    type: actions.UPDATE_TOKENS,
-    newTokens,
+  return async dispatch => {
+    await dispatch({
+      type: actions.UPDATE_TOKENS,
+      newTokens,
+    })
+    dispatch(updateContractExchangeRates())
   }
 }
 
@@ -1751,24 +1759,38 @@ function shapeShiftRequest (query, options, cb) {
   }
 }
 
-function updateTokenExchangeRate (token = '') {
-  const pair = `${token.toLowerCase()}_eth`
+async function fetchContractRate (address) {
+  try {
+    const response = await fetch(`https://exchanges.balanc3.net/prices?from=${address}&to=ETH&autoConversion=false&summaryOnly=true`)
+    const json = await response.json()
+    const rate = json && json.length ? json[0].averagePrice : 0
+    return { address, rate }
+  } catch (error) { }
+}
 
-  return dispatch => {
-    if (!token) {
-      return
+function updateContractExchangeRates () {
+  return async (dispatch, getState) => {
+    const { metamask: { tokens = [] } } = getState()
+    const newExchangeRates = {}
+
+    for (const i in tokens) {
+      const address = tokens[i].address
+      newExchangeRates[address] = (await fetchContractRate(address)).rate
     }
 
-    shapeShiftRequest('marketinfo', { pair }, marketinfo => {
-      if (!marketinfo.error) {
-        dispatch({
-          type: actions.UPDATE_TOKEN_EXCHANGE_RATE,
-          payload: {
-            pair,
-            marketinfo,
-          },
-        })
-      }
+    dispatch({
+      type: actions.UPDATE_CONTRACT_EXCHANGE_RATES,
+      payload: { newExchangeRates },
+    })
+  }
+}
+
+function updateContractExchangeRate (address) {
+  return async dispatch => {
+    const { address, rate } = await fetchContractRate(address)
+    dispatch({
+      type: actions.UPDATE_CONTRACT_EXCHANGE_RATE,
+      payload: { address, rate },
     })
   }
 }
