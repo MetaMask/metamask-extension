@@ -117,7 +117,7 @@ class ShapeshiftController {
 	 * Saves an updated to a ShapeShiftTx in the shapeShiftTxList. If the passed ShapeShiftTx is not in the
    * shapeShiftTxList, nothing happens.
 	 *
-	 * @params {ShapeShiftTx} tx The updated tx to save, if it exists in the current shapeShiftTxList
+	 * @param {ShapeShiftTx} tx The updated tx to save, if it exists in the current shapeShiftTxList
 	 *
 	 */
   saveTx (tx) {
@@ -132,7 +132,7 @@ class ShapeshiftController {
 	/**
 	 * Removes a ShapeShiftTx from the shapeShiftTxList
 	 *
-	 * @params {ShapeShiftTx} tx The tx to remove
+	 * @param {ShapeShiftTx} tx The tx to remove
 	 *
 	 */
   removeShapeShiftTx (tx) {

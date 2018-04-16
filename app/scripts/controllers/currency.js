@@ -1,4 +1,4 @@
-const ObservableStore = require('obs-store')
+  const ObservableStore = require('obs-store')
 const extend = require('xtend')
 
 // every ten minutes
@@ -48,7 +48,7 @@ class CurrencyController {
 	/**
 	 * A setter for the currentCurrency property
 	 *
-	 * @params {string} currentCurrency The new currency to set as the currentCurrency in the store
+	 * @param {string} currentCurrency The new currency to set as the currentCurrency in the store
 	 *
 	 */
   setCurrentCurrency (currentCurrency) {
@@ -68,7 +68,7 @@ class CurrencyController {
   /**
    * A setter for the conversionRate property
    *
-   * @params {number} conversionRate The new rate to set as the conversionRate in the store
+   * @param {number} conversionRate The new rate to set as the conversionRate in the store
    *
    */
   setConversionRate (conversionRate) {
@@ -89,7 +89,7 @@ class CurrencyController {
   /**
    * A setter for the conversionDate property
    *
-   * @params {number} conversionDate The date, expressed in milliseconds since midnight of January 1, 1970, that the
+   * @param {number} conversionDate The date, expressed in milliseconds since midnight of January 1, 1970, that the
    * conversionRate was set
    *
    */
