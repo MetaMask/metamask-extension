@@ -73,6 +73,10 @@ function getSelectedTokenExchangeRate (state) {
 }
 
 function getTokenExchangeRate (state, tokenSymbol) {
+  if (!tokenSymbol) {
+    return 0
+  }
+
   const pair = `${tokenSymbol.toLowerCase()}_eth`
   const tokenExchangeRates = state.metamask.tokenExchangeRates
   const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
