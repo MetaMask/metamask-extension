@@ -1,11 +1,13 @@
-// We should not rely on local storage in an extension!
-// We should use this instead!
-// https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/storage/local
-
 const extension = require('extensionizer')
 const log = require('loglevel')
 
+/**
+ * A wrapper around the extension's storage local API
+ */
 module.exports = class ExtensionStore {
+  /**
+   * @constructor
+   */
   constructor() {
     this.isSupported = !!(extension.storage.local)
     if (!this.isSupported) {
@@ -13,6 +15,10 @@ module.exports = class ExtensionStore {
     }
   }
 
+  /**
+   * Returns all of the keys currently saved
+   * @return {Promise<*>}
+   */
   async get() {
     if (!this.isSupported) return undefined
     const result = await this._get()
@@ -25,14 +31,24 @@ module.exports = class ExtensionStore {
     }
   }
 
+  /**
+   * Sets the key in local state
+   * @param {object} state - The state to set
+   * @return {Promise<void>}
+   */
   async set(state) {
     return this._set(state)
   }
 
+  /**
+   * Returns all of the keys currently saved
+   * @private
+   * @return {object} the key-value map from local storage
+   */
   _get() {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
-      local.get(null, (result) => {
+      local.get(null, (/** @type {any} */ result) => {
         const err = extension.runtime.lastError
         if (err) {
           reject(err)
@@ -43,6 +59,12 @@ module.exports = class ExtensionStore {
     })
   }
 
+  /**
+   * Sets the key in local state
+   * @param {object} obj - The key to set
+   * @return {Promise<void>}
+   * @private
+   */
   _set(obj) {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
@@ -58,6 +80,11 @@ module.exports = class ExtensionStore {
   }
 }
 
+/**
+ * Returns whether or not the given object contains no keys
+ * @param {object} obj - The object to check
+ * @returns {boolean}
+ */
 function isEmpty(obj) {
   return Object.keys(obj).length === 0
 }

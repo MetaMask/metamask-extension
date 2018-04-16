@@ -1,18 +1,23 @@
-
 class WindowPlatform {
-
-  //
-  // Public
-  //
-
+  /**
+   * Reload the platform
+   */
   reload () {
-    global.location.reload()
+    /** @type {any} */ (global).location.reload()
   }
 
-  openWindow ({ url }) {
-    global.open(url, '_blank')
+  /**
+   * Opens a window
+   * @param {{url: string}} opts - The window options
+   */
+  openWindow (opts) {
+    /** @type {any} */ (global).open(opts.url, '_blank')
   }
 
+  /**
+   * Returns the platform version
+   * @returns {string}
+   */
   getVersion () {
     return '<unable to read version>'
   }
