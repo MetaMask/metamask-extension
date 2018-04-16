@@ -6,6 +6,7 @@ const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
+const log = require('loglevel')
 
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default

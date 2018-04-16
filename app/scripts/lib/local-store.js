@@ -3,6 +3,7 @@
 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/storage/local
 
 const extension = require('extensionizer')
+const log = require('loglevel')
 
 module.exports = class ExtensionStore {
   constructor() {

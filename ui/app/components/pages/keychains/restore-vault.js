@@ -6,6 +6,7 @@ const connect = require('../../../metamask-connect')
 const h = require('react-hyperscript')
 const { createNewVaultAndRestore, unMarkPasswordForgotten } = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../routes')
+const log = require('loglevel')
 
 class RestoreVaultPage extends PersistentForm {
   constructor (props) {

@@ -1,3 +1,5 @@
+const log = require('loglevel')
+
 // log rpc activity
 module.exports = createLoggerMiddleware
 
