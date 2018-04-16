@@ -13,7 +13,7 @@ class AddressBookController {
    * @param {object} opts Overides the defaults for the initial state of this.store
    * @property {array} opts.initState  initializes the the state of the AddressBookController. Can contain an
    * addressBook property to initialize the addressBook array
-   * @param {KeyringController} keyringController (Soon to be depracated) The keyringController used in the current
+   * @param {KeyringController} keyringController (Soon to be deprecated) The keyringController used in the current
    * MetamaskController. Contains the identities used in this AddressBookController.
    * @property {object} store The the store of the current users address book
    * @property {array} store.addressBook An array of addresses and nicknames. These are set by the user when sending
@@ -100,7 +100,7 @@ class AddressBookController {
    * Retrieves identities from the keyring controller in order to avoid
    * duplication
    *
-   * @depricated
+   * @deprecated
    * @returns {array} Returns the identies array from the keyringContoller's state
    *
    */
