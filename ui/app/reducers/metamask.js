@@ -358,7 +358,7 @@ function reduceMetamask (state, action) {
         welcomeScreenSeen: true,
       })
 
-    case action.SET_CURRENT_LOCALE:
+    case actions.SET_CURRENT_LOCALE:
       return extend(metamaskState, {
         currentLocale: action.value,
       })
