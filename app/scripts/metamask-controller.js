@@ -269,6 +269,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // memStore -> transform -> publicConfigStore
     this.on('update', (memState) => {
+      this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
       const publicState = selectPublicState(memState)
       publicConfigStore.putState(publicState)
     })
@@ -1030,4 +1031,12 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  set isClientOpen (open) {
+    this._isClientOpen = open
+    this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+  }
+
+  set isClientOpenAndUnlocked (active) {
+    this.tokenRatesController.isActive = active
+  }
 }

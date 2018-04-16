@@ -20,6 +20,7 @@ describe('TokenRatesController', () => {
 
   it('should fetch each token rate based on address', async () => {
     const controller = new TokenRatesController()
+    controller.isActive = true
     controller.fetchExchangeRate = address => address
     controller.tokens = [{ address: 'foo' }, { address: 'bar' }]
     await controller.updateExchangeRates()

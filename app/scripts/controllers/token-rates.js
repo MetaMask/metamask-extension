@@ -23,6 +23,7 @@ class TokenRatesController {
    * Updates exchange rates for all tokens
    */
   async updateExchangeRates () {
+    if (!this.isActive) { return }
     const contractExchangeRates = {}
     for (const i in this._tokens) {
       const address = this._tokens[i].address

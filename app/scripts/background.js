@@ -200,6 +200,7 @@ function setupController (initState, initLangCode) {
     if (isMetaMaskInternalProcess) {
       // communication with popup
       popupIsOpen = popupIsOpen || (remotePort.name === 'popup')
+      controller.isClientOpen = true
       controller.setupTrustedCommunication(portStream, 'MetaMask')
       // record popup as closed
       if (remotePort.sender.url.match(/home.html$/)) {
@@ -211,6 +212,8 @@ function setupController (initState, initLangCode) {
           if (remotePort.sender.url.match(/home.html$/)) {
             openMetamaskTabsIDs[remotePort.sender.tab.id] = false
           }
+          controller.isClientOpen = popupIsOpen ||
+            Object.keys(openMetamaskTabsIDs).some(key => openMetamaskTabsIDs[key])
         })
       }
       if (remotePort.name === 'notification') {
