@@ -55,7 +55,7 @@ Software Engineer
 
 The newest member of the team! Paul is currently being onboarded, and finding his niche within the team.
 
-## Laboratry Team Members
+## Laboratory Team Members
 
 These team members are working on projects that will benefit MetaMask, but are not directly working on the product itself.
 
