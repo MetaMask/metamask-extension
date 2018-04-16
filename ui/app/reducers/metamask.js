@@ -24,6 +24,7 @@ function reduceMetamask (state, action) {
     frequentRpcList: [],
     addressBook: [],
     selectedTokenAddress: null,
+    contractExchangeRates: {},
     tokenExchangeRates: {},
     tokens: [],
     send: {
@@ -174,15 +175,6 @@ function reduceMetamask (state, action) {
         currentCurrency: action.value.currentCurrency,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
-      })
-
-    case actions.UPDATE_TOKEN_EXCHANGE_RATE:
-      const { payload: { pair, marketinfo } } = action
-      return extend(metamaskState, {
-        tokenExchangeRates: {
-          ...metamaskState.tokenExchangeRates,
-          [pair]: marketinfo,
-        },
       })
 
     case actions.UPDATE_TOKENS:

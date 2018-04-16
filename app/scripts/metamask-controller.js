@@ -34,6 +34,7 @@ const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
+const TokenRatesController = require('./controllers/token-rates')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -104,6 +105,11 @@ module.exports = class MetamaskController extends EventEmitter {
     // rpc provider
     this.provider = this.initializeProvider()
     this.blockTracker = this.provider._blockTracker
+
+    // token exchange rate tracker
+    this.tokenRatesController = new TokenRatesController({
+      preferences: this.preferencesController.store,
+    })
 
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
@@ -202,6 +208,7 @@ module.exports = class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       BalancesController: this.balancesController.store,
+      TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
       TypesMessageManager: this.typedMessageManager.memStore,
@@ -263,6 +270,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // memStore -> transform -> publicConfigStore
     this.on('update', (memState) => {
+      this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
       const publicState = selectPublicState(memState)
       publicConfigStore.putState(publicState)
     })
@@ -1024,4 +1032,12 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  set isClientOpen (open) {
+    this._isClientOpen = open
+    this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+  }
+
+  set isClientOpenAndUnlocked (active) {
+    this.tokenRatesController.isActive = active
+  }
 }
