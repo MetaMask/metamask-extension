@@ -11,7 +11,7 @@ class ShapeshiftController {
      * that queries a shapeshift.io API for updates to any pending shapeshift transactions
      *
      * @typedef {Object} ShapeshiftController
-     * @param {object} opts Overides the defaults for the initial state of this.store
+     * @param {object} opts Overrides the defaults for the initial state of this.store
      * @property {array} opts.initState  initializes the the state of the ShapeshiftController. Can contain an
      * shapeShiftTxList array.
      * @property {array} shapeShiftTxList An array of ShapeShiftTx objects

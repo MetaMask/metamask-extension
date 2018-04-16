@@ -7,7 +7,7 @@ class PreferencesController {
 	/**
 	 *
    * @typedef {Object} PreferencesController
-	 * @param {object} opts Overides the defaults for the initial state of this.store
+	 * @param {object} opts Overrides the defaults for the initial state of this.store
    * @property {object} store The an object containing a users preferences, stored in local storage
 	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui

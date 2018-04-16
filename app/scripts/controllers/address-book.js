@@ -10,7 +10,7 @@ class AddressBookController {
    * addresses and all currently owned addresses.
    *
    * @typedef {Object} AddressBookController
-   * @param {object} opts Overides the defaults for the initial state of this.store
+   * @param {object} opts Overrides the defaults for the initial state of this.store
    * @property {array} opts.initState  initializes the the state of the AddressBookController. Can contain an
    * addressBook property to initialize the addressBook array
    * @param {KeyringController} keyringController (Soon to be deprecated) The keyringController used in the current

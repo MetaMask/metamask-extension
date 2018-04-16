@@ -10,7 +10,7 @@ class CurrencyController {
 	 * Controller responsible for managing data associated with the currently selected currency.
 	 *
    * @typedef {Object} CurrencyController
-	 * @param {object} opts Overides the defaults for the initial state of this.store
+	 * @param {object} opts Overrides the defaults for the initial state of this.store
 	 * @property {array} opts.initState  initializes the the state of the CurrencyController. Can contain an
    * currentCurrency, conversionRate and conversionDate properties
    * @property {string} currentCurrency A 2-4 character shorthand that describes a specific currency, currently

@@ -3,7 +3,7 @@ const noop = function () {}
 
 /**
  * A generator that returns a function which, when passed a promise, can treat that promise as a node style callback.
- * The primse advantage being that callbacks are better for error handling.
+ * The prime advantage being that callbacks are better for error handling.
  *
  * @param {Function} fn The function to handle as a callback
  * @param {Object} context The context in which the fn is to be called, most often a this reference
