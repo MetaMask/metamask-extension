@@ -68,6 +68,7 @@ To write tests that will be run in the browser using QUnit, add your test files 
 - [How to develop a live-reloading UI](./docs/ui-dev-mode.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
+- [The MetaMask Team](./docs/team.md)
 - [How to develop an in-browser mocked UI](./docs/ui-mock-mode.md)
 - [How to live reload on local dependency changes](./docs/developing-on-deps.md)
 - [How to add new networks to the Provider Menu](./docs/adding-new-networks.md)
