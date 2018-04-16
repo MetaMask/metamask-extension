@@ -66,7 +66,6 @@ function mapDispatchToProps (dispatch) {
     showCustomizeGasModal: () => dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' })),
     estimateGas: params => dispatch(actions.estimateGas(params)),
     getGasPrice: () => dispatch(actions.getGasPrice()),
-    updateContractExchangeRate: address => dispatch(actions.updateContractExchangeRate(address)),
     signTokenTx: (tokenAddress, toAddress, amount, txData) => (
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),

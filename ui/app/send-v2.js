@@ -88,17 +88,6 @@ SendTransactionScreen.prototype.updateSendTokenBalance = function (usersToken) {
 }
 
 SendTransactionScreen.prototype.componentWillMount = function () {
-  const {
-    updateContractExchangeRate,
-    selectedToken = {},
-  } = this.props
-
-  const { address } = selectedToken || {}
-
-  if (address) {
-    updateContractExchangeRate(address)
-  }
-
   this.updateGas()
 }
 

@@ -177,23 +177,6 @@ function reduceMetamask (state, action) {
         conversionDate: action.value.conversionDate,
       })
 
-    case actions.UPDATE_CONTRACT_EXCHANGE_RATES:
-      const { payload: { newExchangeRates } } = action
-      return {
-        ...metamaskState,
-        contractExchangeRates: newExchangeRates,
-      }
-
-    case actions.UPDATE_CONTRACT_EXCHANGE_RATE:
-      const { payload: { address, rate } } = action
-      return {
-        ...metamaskState,
-        contractExchangeRates: {
-          ...metamaskState.contractExchangeRates,
-          [address]: rate,
-        },
-      }
-
     case actions.UPDATE_TOKENS:
       return extend(metamaskState, {
         tokens: action.newTokens,

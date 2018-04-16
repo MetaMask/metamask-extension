@@ -220,10 +220,6 @@ var actions = {
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
   shapeShiftSubview: shapeShiftSubview,
-  UPDATE_CONTRACT_EXCHANGE_RATES: 'UPDATE_CONTRACT_EXCHANGE_RATES',
-  UPDATE_CONTRACT_EXCHANGE_RATE: 'UPDATE_CONTRACT_EXCHANGE_RATE',
-  updateContractExchangeRates,
-  updateContractExchangeRate,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
   coinShiftRquest: coinShiftRquest,
@@ -1082,12 +1078,9 @@ function unlockMetamask (account) {
 }
 
 function updateMetamaskState (newState) {
-  return async dispatch => {
-    await dispatch({
-      type: actions.UPDATE_METAMASK_STATE,
-      value: newState,
-    })
-    dispatch(updateContractExchangeRates())
+  return {
+    type: actions.UPDATE_METAMASK_STATE,
+    value: newState,
   }
 }
 
@@ -1300,12 +1293,9 @@ function addTokens (tokens) {
 }
 
 function updateTokens (newTokens) {
-  return async dispatch => {
-    await dispatch({
-      type: actions.UPDATE_TOKENS,
-      newTokens,
-    })
-    dispatch(updateContractExchangeRates())
+  return {
+    type: actions.UPDATE_TOKENS,
+    newTokens,
   }
 }
 
@@ -1756,42 +1746,6 @@ function shapeShiftRequest (query, options, cb) {
     return shapShiftReq.send(jsonObj)
   } else {
     return shapShiftReq.send()
-  }
-}
-
-async function fetchContractRate (address) {
-  try {
-    const response = await fetch(`https://exchanges.balanc3.net/prices?from=${address}&to=ETH&autoConversion=false&summaryOnly=true`)
-    const json = await response.json()
-    const rate = json && json.length ? json[0].averagePrice : 0
-    return { address, rate }
-  } catch (error) { }
-}
-
-function updateContractExchangeRates () {
-  return async (dispatch, getState) => {
-    const { metamask: { tokens = [] } } = getState()
-    const newExchangeRates = {}
-
-    for (const i in tokens) {
-      const address = tokens[i].address
-      newExchangeRates[address] = (await fetchContractRate(address)).rate
-    }
-
-    dispatch({
-      type: actions.UPDATE_CONTRACT_EXCHANGE_RATES,
-      payload: { newExchangeRates },
-    })
-  }
-}
-
-function updateContractExchangeRate (address) {
-  return async dispatch => {
-    const { address, rate } = await fetchContractRate(address)
-    dispatch({
-      type: actions.UPDATE_CONTRACT_EXCHANGE_RATE,
-      payload: { address, rate },
-    })
   }
 }
 
