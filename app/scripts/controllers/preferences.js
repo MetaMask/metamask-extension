@@ -66,7 +66,7 @@ class PreferencesController {
 	 * Setter for the `selectedAddress` property
 	 *
 	 * @param {string} _address A new hex address for an account
-	 * @returns {Promise<undefined>} Promises an undefined return value
+	 * @returns {Promise<void>} Promise resolves with undefined
 	 *
 	 */
   setSelectedAddress (_address) {
@@ -159,7 +159,7 @@ class PreferencesController {
 	 * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
 	 *
 	 * @param {string} _url The the new rpc url to add to the updated list
-	 * @returns {Promise<undefined>} Promises an undefined value.
+	 * @returns {Promise<void>} Promise resolves with undefined
 	 *
 	 */
   updateFrequentRpcList (_url) {
@@ -174,7 +174,7 @@ class PreferencesController {
 	 * Setter for the `currentAccountTab` property 
 	 *
 	 * @param {string} currentAccountTab Specifies the new tab to be marked as current
-	 * @returns {Promise<undefined>} Promises an undefined value.
+	 * @returns {Promise<void>} Promise resolves with undefined
 	 *
 	 */
   setCurrentAccountTab (currentAccountTab) {

@@ -37,7 +37,7 @@ class AddressBookController {
    *
    * @param {string} address A hex address of a new account that the user is sending to.
    * @param {string} name The name the user wishes to associate with the new account
-   * @returns {Promise<undefined>} Promises an undefined
+   * @returns {Promise<void>} Promise resolves with undefined
    *
    */
   setAddressBook (address, name) {
