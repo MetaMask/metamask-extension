@@ -1,18 +1,25 @@
 const ethUtil = require('ethereumjs-util')
 const assert = require('assert')
 const BN = require('bn.js')
-
-module.exports = {
-  getStack,
-  sufficientBalance,
-  hexToBn,
-  bnToHex,
-  BnMultiplyByFraction,
-}
+const {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+} = require('./enums')
 
 function getStack () {
   const stack = new Error('Stack trace generator - not an error').stack
   return stack
+}
+
+const getEnvironmentType = (url = window.location.href) => {
+  if (url.match(/popup.html(?:\?.+)*$/)) {
+    return ENVIRONMENT_TYPE_POPUP
+  } else if (url.match(/home.html(?:\?.+)*$/) || url.match(/home.html(?:#.*)*$/)) {
+    return ENVIRONMENT_TYPE_FULLSCREEN
+  } else {
+    return ENVIRONMENT_TYPE_NOTIFICATION
+  }
 }
 
 function sufficientBalance (txParams, hexBalance) {
@@ -41,4 +48,13 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
   const numBN = new BN(numerator)
   const denomBN = new BN(denominator)
   return targetBN.mul(numBN).div(denomBN)
+}
+
+module.exports = {
+  getStack,
+  getEnvironmentType,
+  sufficientBalance,
+  hexToBn,
+  bnToHex,
+  BnMultiplyByFraction,
 }
