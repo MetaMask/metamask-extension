@@ -4,6 +4,8 @@
 
 - Correctly format currency conversion for locally selected preferred currency.
 - Improved performance of 3D fox logo.
+- Fetch token prices based on contract address, not symbol
+- Fix bug that prevents setting language locale in settings.
 
 ## 4.5.5 Fri Apr 06 2018
 

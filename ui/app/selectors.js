@@ -62,22 +62,15 @@ function getSelectedToken (state) {
 }
 
 function getSelectedTokenExchangeRate (state) {
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
+  const contractExchangeRates = state.metamask.contractExchangeRates
   const selectedToken = getSelectedToken(state) || {}
-  const { symbol = '' } = selectedToken
-
-  const pair = `${symbol.toLowerCase()}_eth`
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
-
-  return tokenExchangeRate
+  const { address } = selectedToken
+  return contractExchangeRates[address] || 0
 }
 
-function getTokenExchangeRate (state, tokenSymbol) {
-  const pair = `${tokenSymbol.toLowerCase()}_eth`
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
-
-  return tokenExchangeRate
+function getTokenExchangeRate (state, address) {
+  const contractExchangeRates = state.metamask.contractExchangeRates
+  return contractExchangeRates[address] || 0
 }
 
 function conversionRateSelector (state) {

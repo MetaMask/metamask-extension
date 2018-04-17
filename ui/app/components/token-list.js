@@ -6,6 +6,7 @@ const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
+const log = require('loglevel')
 
 function mapStateToProps (state) {
   return {

@@ -1,5 +1,6 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
+const log = require('loglevel')
 
 // every three seconds when an incomplete tx is waiting
 const POLLING_INTERVAL = 3000
