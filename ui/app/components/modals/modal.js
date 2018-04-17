@@ -5,7 +5,8 @@ const connect = require('react-redux').connect
 const FadeModal = require('boron').FadeModal
 const actions = require('../../actions')
 const isMobileView = require('../../../lib/is-mobile-view')
-const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-notification')
+const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
 
 // Modal Components
 const BuyOptions = require('./buy-options-modal')
@@ -162,7 +163,7 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '95%',
-      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -179,7 +180,7 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '95%',
-      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -196,7 +197,7 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '95%',
-      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -208,7 +209,7 @@ const MODALS = {
     contents: h(ConfirmResetAccount),
     mobileModalStyle: {
       width: '95%',
-      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '473px',

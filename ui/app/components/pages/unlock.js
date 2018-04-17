@@ -11,7 +11,8 @@ const {
   setNetworkEndpoints,
   setFeatureFlag,
 } = require('../../actions')
-const environmentType = require('../../../../app/scripts/lib/environment-type')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
+const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
 const Mascot = require('../mascot')
@@ -131,7 +132,7 @@ class UnlockScreen extends Component {
             this.props.markPasswordForgotten()
             this.props.history.push(RESTORE_VAULT_ROUTE)
 
-            if (environmentType() === 'popup') {
+            if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
               global.platform.openExtensionInBrowser()
             }
           },
