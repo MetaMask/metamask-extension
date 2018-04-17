@@ -49,8 +49,8 @@ function sufficientBalance (txParams, hexBalance) {
 /**
  * Converts a BN object to a hex string with a '0x' prefix
  *
- * @param {BN} inputBn Description
- * @returns {string} A hex string
+ * @param {BN} inputBn The BN to convert to a hex string
+ * @returns {string} A '0x' prefixed hex string
  *
  */
 function bnToHex (inputBn) {
@@ -72,8 +72,8 @@ function hexToBn (inputHex) {
  * Used to multiply a BN by a fraction
  *
  * @param {BN} targetBN The number to multiply by a fraction
- * @param {number|string} numerator
- * @param {number|string} denominator
+ * @param {number|string} numerator The numerator of the fraction multiplier
+ * @param {number|string} denominator The denominator of the fraction multiplier
  * @returns {BN} The product of the multiplication
  *
  */
