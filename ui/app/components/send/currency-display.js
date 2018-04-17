@@ -3,6 +3,8 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const CurrencyInput = require('../currency-input')
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
+const currencyFormatter = require('currency-formatter')
+const currencies = require('currency-formatter/currencies')
 
 module.exports = CurrencyDisplay
 
@@ -53,12 +55,32 @@ CurrencyDisplay.prototype.getValueToRender = function () {
     })
 }
 
+CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValue) {
+  const { primaryCurrency, convertedCurrency, conversionRate } = this.props
+
+  let convertedValue = conversionUtil(nonFormattedValue, {
+    fromNumericBase: 'dec',
+    fromCurrency: primaryCurrency,
+    toCurrency: convertedCurrency,
+    numberOfDecimals: 2,
+    conversionRate,
+  })
+  convertedValue = Number(convertedValue).toFixed(2)
+
+  const upperCaseCurrencyCode = convertedCurrency.toUpperCase()
+
+  return currencies.find(currency => currency.code === upperCaseCurrencyCode)
+    ? currencyFormatter.format(Number(convertedValue), {
+      code: upperCaseCurrencyCode,
+    })
+    : convertedValue
+}
+
 CurrencyDisplay.prototype.render = function () {
   const {
     className = 'currency-display',
     primaryBalanceClassName = 'currency-display__input',
     convertedBalanceClassName = 'currency-display__converted-value',
-    conversionRate,
     primaryCurrency,
     convertedCurrency,
     readOnly = false,
@@ -68,14 +90,7 @@ CurrencyDisplay.prototype.render = function () {
 
   const valueToRender = this.getValueToRender()
 
-  let convertedValue = conversionUtil(valueToRender, {
-    fromNumericBase: 'dec',
-    fromCurrency: primaryCurrency,
-    toCurrency: convertedCurrency,
-    numberOfDecimals: 2,
-    conversionRate,
-  })
-  convertedValue = Number(convertedValue).toFixed(2)
+  const convertedValueToRender = this.getConvertedValueToRender(valueToRender)
 
   return h('div', {
     className,
@@ -108,7 +123,7 @@ CurrencyDisplay.prototype.render = function () {
 
     h('div', {
       className: convertedBalanceClassName,
-    }, `${convertedValue} ${convertedCurrency.toUpperCase()}`),
+    }, `${convertedValueToRender} ${convertedCurrency.toUpperCase()}`),
 
   ])
 
