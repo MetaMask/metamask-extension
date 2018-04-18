@@ -31,7 +31,7 @@ class ShapeshiftController {
    * @property {string} depositAddress - An address at which to send a crypto deposit, so that eth can be sent to the
    * user's Metamask account
    * @property {string} depositType - An abbreviation of the type of crypto currency to be deposited.
-   * @constant {string} key - The 'shapeshift' key differentiates this from other types of txs in Metamask
+   * @property {string} key - The 'shapeshift' key differentiates this from other types of txs in Metamask
    * @property {number} time - The time at which the tx was created
    * @property {object} response - Initiated as an empty object, which will be replaced by a Response object. @see {@link
    * https://developer.mozilla.org/en-US/docs/Web/API/Response}
