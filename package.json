@@ -103,7 +103,7 @@
     "ethereumjs-wallet": "^0.6.0",
     "etherscan-link": "^1.0.2",
     "ethjs": "^0.3.4",
-    "ethjs-contract": "^0.1.9",
+    "ethjs-contract": "^0.2.0",
     "ethjs-ens": "^2.0.0",
     "ethjs-query": "^0.3.4",
     "express": "^4.15.5",
