@@ -1,15 +1,21 @@
-const pump = require('pump')
-const RpcEngine = require('json-rpc-engine')
+const asStream = require('obs-store/lib/asStream')
 const createIdRemapMiddleware = require('json-rpc-engine/src/idRemapMiddleware')
 const createStreamMiddleware = require('json-rpc-middleware-stream')
+const EventEmitter = require('events')
+const { inherits } = require('util')
 const LocalStorageStore = require('obs-store')
-const asStream = require('obs-store/lib/asStream')
 const ObjectMultiplex = require('obj-multiplex')
+const pump = require('pump')
+const RpcEngine = require('json-rpc-engine')
+const { noop, override } = require('./util')
 
 module.exports = MetamaskInpageProvider
 
+inherits(MetamaskInpageProvider, EventEmitter)
+
 function MetamaskInpageProvider (connectionStream) {
   const self = this
+  EventEmitter.call(self)
 
   // setup connectionStream multiplexing
   const mux = self.mux = new ObjectMultiplex()
@@ -34,6 +40,22 @@ function MetamaskInpageProvider (connectionStream) {
 
   // connect to async provider
   const streamMiddleware = createStreamMiddleware()
+  override(streamMiddleware.stream, 'write', function (original) {
+    return function (res, encoding, cb) {
+      // eth_subscription's do not have an id, therfore cannot be remapped
+      // responses should be emitted onto the web3 current provider
+      if (res.method === 'eth_subscription') {
+        // if has subscription registered on inpage provider, emit subscription
+        // data onto the current provider
+        if (self.subscriptions.indexOf(res.params.subscription) > -1) {
+          self.emit('data', res)
+        }
+      } else {
+        // call original funtion
+        original.apply(this, arguments)
+      }
+    }
+  })
   pump(
     streamMiddleware.stream,
     mux.createStream('provider'),
@@ -46,15 +68,40 @@ function MetamaskInpageProvider (connectionStream) {
   rpcEngine.push(createIdRemapMiddleware())
   rpcEngine.push(streamMiddleware)
   self.rpcEngine = rpcEngine
+
+  // subscription ids
+  self.subscriptions = []
+}
+
+MetamaskInpageProvider.prototype._handleSubscriptionRequest = function (payload, cb) {
+  const self = this
+  self.rpcEngine.handle(payload, (error, response) => {
+    if (error) {
+      cb(error, null)
+    } else {
+      payload.method === 'eth_subscribe' ?
+        self.subscriptions.push(response.result) :
+        payload.params.forEach(p => {
+          self.subscriptions = self.subscriptions.filter(s => s !== p)
+        })
+      cb(null, response)
+    }
+  })
+}
+
+MetamaskInpageProvider.prototype._handleRequest = function (payload, cb) {
+  const self = this
+  isSubscriptionRequest(payload) ?
+    self._handleSubscriptionRequest(payload, cb) :
+    self.rpcEngine.handle(payload, cb)
 }
 
 // handle sendAsync requests via asyncProvider
 // also remap ids inbound and outbound
 MetamaskInpageProvider.prototype.sendAsync = function (payload, cb) {
   const self = this
-  self.rpcEngine.handle(payload, cb)
+  self._handleRequest(payload, cb)
 }
-
 
 MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
@@ -115,4 +162,4 @@ function logStreamDisconnectWarning (remoteLabel, err) {
   console.warn(warningMsg)
 }
 
-function noop () {}
+function isSubscriptionRequest (request) { return request.method === 'eth_subscribe' || request.method === 'eth_unsubscribe' }

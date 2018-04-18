@@ -47,6 +47,20 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
 })
 
+// clear subscriptions
+function clearSubscriptions () {
+  if (inpageProvider.subscriptions) {
+    inpageProvider.sendAsync({
+      jsonrpc: '2.0',
+      method: 'eth_unsubscribe',
+      params: inpageProvider.subscriptions,
+    }, () => {
+      console.log('cleared subscriptions')
+    })
+  }
+}
+window.onbeforeunload = clearSubscriptions
+
 //
 // util
 //
