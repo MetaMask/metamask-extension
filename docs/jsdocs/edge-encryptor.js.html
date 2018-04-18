@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="google" content="notranslate">
     <meta http-equiv="Content-Language" content="en">
-    <title>Home - Documentation</title>
+    <title>edge-encryptor.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -37,125 +37,116 @@
 
 <div id="main">
     
-
-    
-
-
-
-    
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>
-        metamask-controller.js
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1">line 1</a>
-    </li></ul></dd>
+    <h1 class="page-title">edge-encryptor.js</h1>
     
 
     
 
-    
 
-    
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const asmcrypto = require('asmcrypto.js')
+const Unibabel = require('browserify-unibabel')
 
-    
+/**
+ * A Microsoft Edge-specific encryption class that exposes
+ * the interface expected by eth-keykeyring-controller
+ */
+class EdgeEncryptor {
+  /**
+   * Encrypts an arbitrary JavaScript object to cypher text
+   *
+   * @param {string} password Password used to unlock a cryptographic key
+   * @param {Object} dataObject Data to encrypt
+   * @returns {Object} Object containing cypher text, generation vectors, and salt
+   */
+  encrypt (password, dataObject) {
+      var salt = this._generateSalt()
+      return this._keyFromPassword(password, salt)
+          .then(function (key) {
+              var data = JSON.stringify(dataObject)
+              var dataBuffer = Unibabel.utf8ToBuffer(data)
+              var vector = global.crypto.getRandomValues(new Uint8Array(16))
+              var resultbuffer = asmcrypto.AES_GCM.encrypt(dataBuffer, key, vector)
 
-    
+              var buffer = new Uint8Array(resultbuffer)
+              var vectorStr = Unibabel.bufferToBase64(vector)
+              var vaultStr = Unibabel.bufferToBase64(buffer)
+              return JSON.stringify({
+                  data: vaultStr,
+                  iv: vectorStr,
+                  salt: salt,
+              })
+          })
+  }
 
-    
+  /**
+   * Decrypts an arbitrary JavaScript object from cypher text
+   *
+   * @param {string} password Password used to unlock a cryptographic key
+   * @param {string} text Cypher text of an encrypted JavaScript object
+   * @returns {Promise&lt;Object>} Promise resolving to copy of decrypted JavaScript object
+   */
+  decrypt (password, text) {
+      const payload = JSON.parse(text)
+      const salt = payload.salt
+      return this._keyFromPassword(password, salt)
+          .then(function (key) {
+              const encryptedData = Unibabel.base64ToBuffer(payload.data)
+              const vector = Unibabel.base64ToBuffer(payload.iv)
+              return new Promise((resolve, reject) => {
+                  var result
+                  try {
+                      result = asmcrypto.AES_GCM.decrypt(encryptedData, key, vector)
+                  } catch (err) {
+                      return reject(new Error('Incorrect password'))
+                  }
+                  const decryptedData = new Uint8Array(result)
+                  const decryptedStr = Unibabel.bufferToUtf8(decryptedData)
+                  const decryptedObj = JSON.parse(decryptedStr)
+                  resolve(decryptedObj)
+              })
+          })
+  }
 
-    
+  /**
+   * Retrieves a cryptographic key using a password
+   *
+   * @private
+   * @param {string} password Password used to unlock a cryptographic key
+   * @param {string} salt Random base-64 data
+   * @returns {Promise&lt;Object>} Promise resolving to a derived key
+   */
+  _keyFromPassword (password, salt) {
 
-    
+      var passBuffer = Unibabel.utf8ToBuffer(password)
+      var saltBuffer = Unibabel.base64ToBuffer(salt)
+      return new Promise((resolve) => {
+          var key = asmcrypto.PBKDF2_HMAC_SHA256.bytes(passBuffer, saltBuffer, 10000)
+          resolve(key)
+      })
+  }
 
-    
-    <dt class="tag-copyright">Copyright:</dt>
-    <dd class="tag-copyright"><ul class="dummy"><li>Copyright (c) 2018 MetaMask</li></ul></dd>
-    
+  /**
+   * Generates random base-64 encoded data
+   *
+   * @private
+   * @returns {string} Randomized base-64 encoded data
+   */
+  _generateSalt (byteCount = 32) {
+      var view = new Uint8Array(byteCount)
+      global.crypto.getRandomValues(view)
+      var b64encoded = btoa(String.fromCharCode.apply(null, view))
+      return b64encoded
+  }
+}
 
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-        
-            <div class="description"><p>The central metamask controller. Aggregates other controllers and exports an api.</p></div>
-        
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+module.exports = EdgeEncryptor
+</code></pre>
+        </article>
+    </section>
 
 
 

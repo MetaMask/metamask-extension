@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="google" content="notranslate">
     <meta http-equiv="Content-Language" content="en">
-    <title>Home - Documentation</title>
+    <title>inpage.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -37,125 +37,94 @@
 
 <div id="main">
     
-
-    
-
-
-
-    
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>
-        metamask-controller.js
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1">line 1</a>
-    </li></ul></dd>
+    <h1 class="page-title">inpage.js</h1>
     
 
     
 
-    
 
-    
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*global Web3*/
+cleanContextForImports()
+require('web3/dist/web3.min.js')
+const log = require('loglevel')
+const LocalMessageDuplexStream = require('post-message-stream')
+const setupDappAutoReload = require('./lib/auto-reload.js')
+const MetamaskInpageProvider = require('./lib/inpage-provider.js')
+restoreContextAfterImports()
 
-    
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
-    
+//
+// setup plugin communication
+//
 
-    
+// setup background connection
+var metamaskStream = new LocalMessageDuplexStream({
+  name: 'inpage',
+  target: 'contentscript',
+})
 
-    
+// compose the inpage provider
+var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
-    
+//
+// setup web3
+//
 
-    
-    <dt class="tag-copyright">Copyright:</dt>
-    <dd class="tag-copyright"><ul class="dummy"><li>Copyright (c) 2018 MetaMask</li></ul></dd>
-    
+if (typeof window.web3 !== 'undefined') {
+  throw new Error(`MetaMask detected another web3.
+     MetaMask will not work reliably with another web3 extension.
+     This usually happens if you have two MetaMasks installed,
+     or MetaMask and another web3 extension. Please remove one
+     and try again.`)
+}
+var web3 = new Web3(inpageProvider)
+web3.setProvider = function () {
+  log.debug('MetaMask - overrode web3.setProvider')
+}
+log.debug('MetaMask - injected web3')
+// export global web3, with usage-detection
+setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
-    
+// set web3 defaultAccount
+inpageProvider.publicConfigStore.subscribe(function (state) {
+  web3.eth.defaultAccount = state.selectedAddress
+})
 
-    
+// need to make sure we aren't affected by overlapping namespaces
+// and that we dont affect the app with our namespace
+// mostly a fix for web3's BigNumber if AMD's "define" is defined...
+var __define
 
-    
+/**
+ * Caches reference to global define object and deletes it
+ */
+function cleanContextForImports () {
+  __define = global.define
+  try {
+    global.define = undefined
+  } catch (_) {
+    console.warn('MetaMask - global.define could not be deleted.')
+  }
+}
 
-    
-
-    
-</dl>
-
-
-
-
-        
-            <div class="description"><p>The central metamask controller. Aggregates other controllers and exports an api.</p></div>
-        
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+/**
+ * Restores global define object from cached reference
+ */
+function restoreContextAfterImports () {
+  try {
+    global.define = __define
+  } catch (_) {
+    console.warn('MetaMask - global.define could not be overwritten.')
+  }
+}
+</code></pre>
+        </article>
+    </section>
 
 
 

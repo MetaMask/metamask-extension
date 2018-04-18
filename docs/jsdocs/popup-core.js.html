@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="google" content="notranslate">
     <meta http-equiv="Content-Language" content="en">
-    <title>Home - Documentation</title>
+    <title>popup-core.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -37,125 +37,96 @@
 
 <div id="main">
     
-
-    
-
-
-
-    
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>
-        metamask-controller.js
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1">line 1</a>
-    </li></ul></dd>
+    <h1 class="page-title">popup-core.js</h1>
     
 
     
 
-    
 
-    
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const EventEmitter = require('events').EventEmitter
+const async = require('async')
+const Dnode = require('dnode')
+const Eth = require('ethjs')
+const EthQuery = require('eth-query')
+const launchMetamaskUi = require('../../ui')
+const StreamProvider = require('web3-stream-provider')
+const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 
-    
+module.exports = initializePopup
 
-    
+/**
+ * Asynchronously initializes the MetaMask popup UI
+ *
+ * @param {{ container: Element, connectionStream: any }} config Popup configuration object 
+ * @param {Function} cb Called when initialization is comlete
+ */
+function initializePopup ({ container, connectionStream }, cb) {
+  // setup app
+  async.waterfall([
+    (cb) => connectToAccountManager(connectionStream, cb),
+    (accountManager, cb) => launchMetamaskUi({ container, accountManager }, cb),
+  ], cb)
+}
 
-    
+/**
+ * Establishes streamed connections to background scripts and a Web3 provider
+ *
+ * @param {any} connectionStream PortStream instance establishing a background connection
+ * @param {Function} cb Called when controller connection is established
+ */
+function connectToAccountManager (connectionStream, cb) {
+  // setup communication with background
+  // setup multiplexing
+  var mx = setupMultiplex(connectionStream)
+  // connect features
+  setupControllerConnection(mx.createStream('controller'), cb)
+  setupWeb3Connection(mx.createStream('provider'))
+}
 
-    
+/**
+ * Establishes a streamed connection to a Web3 provider
+ *
+ * @param {any} connectionStream PortStream instance establishing a background connection
+ */
+function setupWeb3Connection (connectionStream) {
+  var providerStream = new StreamProvider()
+  providerStream.pipe(connectionStream).pipe(providerStream)
+  connectionStream.on('error', console.error.bind(console))
+  providerStream.on('error', console.error.bind(console))
+  global.ethereumProvider = providerStream
+  global.ethQuery = new EthQuery(providerStream)
+  global.eth = new Eth(providerStream)
+}
 
-    
-
-    
-    <dt class="tag-copyright">Copyright:</dt>
-    <dd class="tag-copyright"><ul class="dummy"><li>Copyright (c) 2018 MetaMask</li></ul></dd>
-    
-
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-        
-            <div class="description"><p>The central metamask controller. Aggregates other controllers and exports an api.</p></div>
-        
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+/**
+ * Establishes a streamed connection to the background account manager
+ *
+ * @param {any} connectionStream PortStream instance establishing a background connection
+ * @param {Function} cb Called when the remote account manager connection is established
+ */
+function setupControllerConnection (connectionStream, cb) {
+  // this is a really sneaky way of adding EventEmitter api
+  // to a bi-directional dnode instance
+  var eventEmitter = new EventEmitter()
+  var accountManagerDnode = Dnode({
+    sendUpdate: function (state) {
+      eventEmitter.emit('update', state)
+    },
+  })
+  connectionStream.pipe(accountManagerDnode).pipe(connectionStream)
+  accountManagerDnode.once('remote', function (accountManager) {
+    // setup push events
+    accountManager.on = eventEmitter.on.bind(eventEmitter)
+    cb(null, accountManager)
+  })
+}
+</code></pre>
+        </article>
+    </section>
 
 
 

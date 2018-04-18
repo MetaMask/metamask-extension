@@ -47,7 +47,7 @@ global.METAMASK_DEBUG = process.env.METAMASK_DEBUG
  */
 
 /**
- * @type {Config} Application configuration object
+ * @type {Config}
  **/
 const config = {
   network: {

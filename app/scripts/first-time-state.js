@@ -9,7 +9,7 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG
  */
 
 /**
- * @type {FirstTimeState} The default state of MetaMask
+ * @type {FirstTimeState}
  */
 const initialState = {
   config: {},

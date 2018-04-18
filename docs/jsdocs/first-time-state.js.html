@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="google" content="notranslate">
     <meta http-equiv="Content-Language" content="en">
-    <title>Home - Documentation</title>
+    <title>first-time-state.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -37,125 +37,42 @@
 
 <div id="main">
     
-
-    
-
-
-
-    
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>
-        metamask-controller.js
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1">line 1</a>
-    </li></ul></dd>
+    <h1 class="page-title">first-time-state.js</h1>
     
 
     
 
-    
 
-    
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// test and development environment variables
+const env = process.env.METAMASK_ENV
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
-    
+/**
+ * @typedef {Object} FirstTimeState
+ * @property {Object} config Initial configuration parameters
+ * @property {Object} NetworkController Network controller state
+ */
 
-    
+/**
+ * @type {FirstTimeState}
+ */
+const initialState = {
+  config: {},
+  NetworkController: {
+    provider: {
+      type: (METAMASK_DEBUG || env === 'test') ? 'rinkeby' : 'mainnet',
+    },
+  },
+}
 
-    
-
-    
-
-    
-
-    
-    <dt class="tag-copyright">Copyright:</dt>
-    <dd class="tag-copyright"><ul class="dummy"><li>Copyright (c) 2018 MetaMask</li></ul></dd>
-    
-
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-        
-            <div class="description"><p>The central metamask controller. Aggregates other controllers and exports an api.</p></div>
-        
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+module.exports = initialState
+</code></pre>
+        </article>
+    </section>
 
 
 

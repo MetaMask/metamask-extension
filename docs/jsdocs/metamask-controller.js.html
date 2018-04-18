@@ -32,7 +32,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="inverted dropdown icon"></i><a href="module.exports_module.exports.html">exports</a></div></div></div></li></div></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="ComposableObservableStore.html">ComposableObservableStore</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="ComposableObservableStore.html#getFlatState">getFlatState</a></li><li data-type='method'><a href="ComposableObservableStore.html#updateStructure">updateStructure</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="EdgeEncryptor.html">EdgeEncryptor</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="EdgeEncryptor.html#decrypt">decrypt</a></li><li data-type='method'><a href="EdgeEncryptor.html#encrypt">encrypt</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TokenRatesController.html">TokenRatesController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TokenRatesController.html#fetchExchangeRate">fetchExchangeRate</a></li><li data-type='method'><a href="TokenRatesController.html#updateExchangeRates">updateExchangeRates</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="inverted dropdown icon"></i><a href="module.exports_module.exports.html">exports</a></div></div></div></li></div></ul><h3>Global</h3><ul><li><a href="global.html#blacklistedDomainCheck">blacklistedDomainCheck</a></li><li><a href="global.html#cleanContextForImports">cleanContextForImports</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#connectToAccountManager">connectToAccountManager</a></li><li><a href="global.html#doctypeCheck">doctypeCheck</a></li><li><a href="global.html#documentElementCheck">documentElementCheck</a></li><li><a href="global.html#initializePopup">initializePopup</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#logStreamDisconnectWarning">logStreamDisconnectWarning</a></li><li><a href="global.html#redirectToPhishingWarning">redirectToPhishingWarning</a></li><li><a href="global.html#restoreContextAfterImports">restoreContextAfterImports</a></li><li><a href="global.html#setupControllerConnection">setupControllerConnection</a></li><li><a href="global.html#setupInjection">setupInjection</a></li><li><a href="global.html#setupStreams">setupStreams</a></li><li><a href="global.html#setupWeb3Connection">setupWeb3Connection</a></li><li><a href="global.html#shouldInjectWeb3">shouldInjectWeb3</a></li><li><a href="global.html#suffixCheck">suffixCheck</a></li></ul>
 </nav>
 
 <div id="main">
@@ -54,10 +54,10 @@
  */
 
 const EventEmitter = require('events')
-const extend = require('xtend')
 const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
+const ComposableObservableStore = require('./lib/ComposableObservableStore')
 const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
 const RpcEngine = require('json-rpc-engine')
@@ -83,6 +83,7 @@ const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
+const TokenRatesController = require('./controllers/token-rates')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -93,11 +94,7 @@ const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
-
-/**
- * @typedef {object} MetaMaskOptions
- * @property {Platform} platform - An object including platform-specific functions.
- */
+const log = require('loglevel')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -108,7 +105,6 @@ module.exports = class MetamaskController extends EventEmitter {
    constructor (opts) {
     super()
 
-    // Avoids warnings when we use lots of emitters.
     this.defaultMaxListeners = 20
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
@@ -120,7 +116,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.platform = opts.platform
 
     // observable state store
-    this.store = new ObservableStore(initState)
+    this.store = new ComposableObservableStore(initState)
 
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex()
@@ -158,6 +154,11 @@ module.exports = class MetamaskController extends EventEmitter {
     // rpc provider
     this.provider = this.initializeProvider()
     this.blockTracker = this.provider._blockTracker
+
+    // token exchange rate tracker
+    this.tokenRatesController = new TokenRatesController({
+      preferences: this.preferencesController.store,
+    })
 
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
@@ -239,53 +240,37 @@ module.exports = class MetamaskController extends EventEmitter {
     this.typedMessageManager = new TypedMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
-    // manual disk state subscriptions
-    this.txController.store.subscribe((state) => {
-      this.store.updateState({ TransactionController: state })
-    })
-    this.keyringController.store.subscribe((state) => {
-      this.store.updateState({ KeyringController: state })
-    })
-    this.preferencesController.store.subscribe((state) => {
-      this.store.updateState({ PreferencesController: state })
-    })
-    this.addressBookController.store.subscribe((state) => {
-      this.store.updateState({ AddressBookController: state })
-    })
-    this.currencyController.store.subscribe((state) => {
-      this.store.updateState({ CurrencyController: state })
-    })
-    this.noticeController.store.subscribe((state) => {
-      this.store.updateState({ NoticeController: state })
-    })
-    this.shapeshiftController.store.subscribe((state) => {
-      this.store.updateState({ ShapeShiftController: state })
-    })
-    this.networkController.store.subscribe((state) => {
-      this.store.updateState({ NetworkController: state })
+    this.store.updateStructure({
+      TransactionController: this.txController.store,
+      KeyringController: this.keyringController.store,
+      PreferencesController: this.preferencesController.store,
+      AddressBookController: this.addressBookController.store,
+      CurrencyController: this.currencyController.store,
+      NoticeController: this.noticeController.store,
+      ShapeShiftController: this.shapeshiftController.store,
+      NetworkController: this.networkController.store,
+      InfuraController: this.infuraController.store,
     })
 
-    this.infuraController.store.subscribe((state) => {
-      this.store.updateState({ InfuraController: state })
+    this.memStore = new ComposableObservableStore(null, {
+      NetworkController: this.networkController.store,
+      AccountTracker: this.accountTracker.store,
+      TxController: this.txController.memStore,
+      BalancesController: this.balancesController.store,
+      TokenRatesController: this.tokenRatesController.store,
+      MessageManager: this.messageManager.memStore,
+      PersonalMessageManager: this.personalMessageManager.memStore,
+      TypesMessageManager: this.typedMessageManager.memStore,
+      KeyringController: this.keyringController.memStore,
+      PreferencesController: this.preferencesController.store,
+      RecentBlocksController: this.recentBlocksController.store,
+      AddressBookController: this.addressBookController.store,
+      CurrencyController: this.currencyController.store,
+      NoticeController: this.noticeController.memStore,
+      ShapeshiftController: this.shapeshiftController.store,
+      InfuraController: this.infuraController.store,
     })
-
-    // manual mem state subscriptions
-    const sendUpdate = this.sendUpdate.bind(this)
-    this.networkController.store.subscribe(sendUpdate)
-    this.accountTracker.store.subscribe(sendUpdate)
-    this.txController.memStore.subscribe(sendUpdate)
-    this.balancesController.store.subscribe(sendUpdate)
-    this.messageManager.memStore.subscribe(sendUpdate)
-    this.personalMessageManager.memStore.subscribe(sendUpdate)
-    this.typedMessageManager.memStore.subscribe(sendUpdate)
-    this.keyringController.memStore.subscribe(sendUpdate)
-    this.preferencesController.store.subscribe(sendUpdate)
-    this.recentBlocksController.store.subscribe(sendUpdate)
-    this.addressBookController.store.subscribe(sendUpdate)
-    this.currencyController.store.subscribe(sendUpdate)
-    this.noticeController.memStore.subscribe(sendUpdate)
-    this.shapeshiftController.store.subscribe(sendUpdate)
-    this.infuraController.store.subscribe(sendUpdate)
+    this.memStore.subscribe(this.sendUpdate.bind(this))
   }
 
   /**
@@ -334,6 +319,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // memStore -> transform -> publicConfigStore
     this.on('update', (memState) => {
+      this.isClientOpenAndUnlocked = memState.isUnlocked &amp;&amp; this._isClientOpen
       const publicState = selectPublicState(memState)
       publicConfigStore.putState(publicState)
     })
@@ -363,33 +349,16 @@ module.exports = class MetamaskController extends EventEmitter {
     const vault = this.keyringController.store.getState().vault
     const isInitialized = (!!wallet || !!vault)
 
-    return extend(
-      {
-        isInitialized,
-      },
-      this.networkController.store.getState(),
-      this.accountTracker.store.getState(),
-      this.txController.memStore.getState(),
-      this.messageManager.memStore.getState(),
-      this.personalMessageManager.memStore.getState(),
-      this.typedMessageManager.memStore.getState(),
-      this.keyringController.memStore.getState(),
-      this.balancesController.store.getState(),
-      this.preferencesController.store.getState(),
-      this.addressBookController.store.getState(),
-      this.currencyController.store.getState(),
-      this.noticeController.memStore.getState(),
-      this.infuraController.store.getState(),
-      this.recentBlocksController.store.getState(),
-      // config manager
-      this.configManager.getConfig(),
-      this.shapeshiftController.store.getState(),
-      {
+    return {
+      ...{ isInitialized },
+      ...this.memStore.getFlatState(),
+      ...this.configManager.getConfig(),
+      ...{
         lostAccounts: this.configManager.getLostAccounts(),
         seedWords: this.configManager.getSeedWords(),
         forgottenPassword: this.configManager.getPasswordForgotten(),
-      }
-    )
+      },
+    }
   }
 
   /**
@@ -1103,15 +1072,6 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  /**
-   * Records the MetaMask version and time of first installation,
-   * mutating the initState param.
-   *
-   * @private
-   *
-   * @param {object} initState The initial state passed to the controller,
-   * which may be new.
-   */
   recordFirstTimeInfo (initState) {
     if (!('firstTimeInfo' in initState)) {
       initState.firstTimeInfo = {
@@ -1121,6 +1081,14 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  set isClientOpen (open) {
+    this._isClientOpen = open
+    this.isClientOpenAndUnlocked = this.getState().isUnlocked &amp;&amp; open
+  }
+
+  set isClientOpenAndUnlocked (active) {
+    this.tokenRatesController.isActive = active
+  }
 }
 </code></pre>
         </article>
@@ -1134,7 +1102,7 @@ module.exports = class MetamaskController extends EventEmitter {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 12 2018 14:37:39 GMT-0700 (PDT) using the radgrad jsdoc theme. Derived from docdash.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Apr 18 2018 17:21:38 GMT-0400 (EDT) using the radgrad jsdoc theme. Derived from docdash.
 </footer>
 
 <script>prettyPrint();</script>
