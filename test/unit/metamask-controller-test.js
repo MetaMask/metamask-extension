@@ -33,6 +33,7 @@ describe('MetaMaskController', function () {
 
     metamaskController = new MetaMaskController({
       showUnapprovedTx: noop,
+      showUnconfirmedMessage: noop,
       encryptor: {
         encrypt: function (password, object) {
           this.object = object
@@ -296,6 +297,107 @@ describe('MetaMaskController', function () {
       assert.equal(getConfigSeed, null)
     })
 
+  })
+
+  describe('#setCurrentLocale', function () {
+
+    it('checks the default currentLocale', function () {
+      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState().currentLocale
+      assert.equal(preferenceCurrentLocale, undefined)
+    })
+
+    it('sets current locale in preferences controller', function () {
+      metamaskController.setCurrentLocale('ja', noop)
+      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState().currentLocale
+      assert.equal(preferenceCurrentLocale, 'ja')
+    })
+
+  })
+
+  describe('#newUnsignedMessage', function () {
+
+    let msgParams, metamaskMsgs, messages, msgId
+
+    const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+    const data = '0x43727970746f6b697474696573'
+
+    beforeEach(function () {
+
+      msgParams = {
+        'from': address,
+        'data': data,
+      }
+
+      metamaskController.newUnsignedMessage(msgParams, noop)
+      metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
+      messages = metamaskController.messageManager.messages
+      msgId = Object.keys(metamaskMsgs)[0]
+    })
+
+    it('persists address from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.from, address)
+    })
+
+    it('persists data from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.data, data)
+    })
+
+    it('sets the status to unapproved', function () {
+      assert.equal(metamaskMsgs[msgId].status, 'unapproved')
+    })
+
+    it('sets the type to eth_sign', function () {
+      assert.equal(metamaskMsgs[msgId].type, 'eth_sign')
+    })
+
+    it('rejects the message', function () {
+      const msgIdInt = parseInt(msgId)
+      metamaskController.cancelMessage(msgIdInt, noop)
+      assert.equal(messages[0].status, 'rejected')
+    })
+  })
+
+  describe('#newUnsignedPersonalMessage', function () {
+
+    let msgParams, metamaskMsgs, messages, msgId
+
+    const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+    const data = '0x43727970746f6b697474696573'
+
+    beforeEach(function () {
+
+      msgParams = {
+        'from': address,
+        'data': data,
+      }
+
+      metamaskController.newUnsignedPersonalMessage(msgParams, noop)
+      metamaskMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
+      messages = metamaskController.personalMessageManager.messages
+      msgId = Object.keys(metamaskMsgs)[0]
+    })
+
+    it('persists address from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.from, address)
+    })
+
+    it('persists data from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.data, data)
+    })
+
+    it('sets the status to unapproved', function () {
+      assert.equal(metamaskMsgs[msgId].status, 'unapproved')
+    })
+
+    it('sets the type to personal_sign', function () {
+      assert.equal(metamaskMsgs[msgId].type, 'personal_sign')
+    })
+
+    it('rejects the message', function () {
+      const msgIdInt = parseInt(msgId)
+      metamaskController.cancelPersonalMessage(msgIdInt, noop)
+      assert.equal(messages[0].status, 'rejected')
+    })
   })
 
 })
