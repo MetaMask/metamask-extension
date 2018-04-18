@@ -14,6 +14,7 @@
   { "code": "ru", "name": "Russian" },
   { "code": "sl", "name": "Slovenian" },
   { "code": "th", "name": "Thai" },
+  { "code": "tml", "name": "Tamil" },
   { "code": "tr", "name": "Turkish" },  
   { "code": "vi", "name": "Vietnamese" },
   { "code": "zh_CN", "name": "Mandarin" },
