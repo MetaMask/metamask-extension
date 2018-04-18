@@ -41,38 +41,38 @@ class ShapeshiftController {
   // PUBLIC METHODS
   //
 
-	/**
-	 * A getter for the shapeShiftTxList property
-	 *
-	 * @returns {array<ShapeShiftTx>}
-	 *
-	 */
+  /**
+   * A getter for the shapeShiftTxList property
+   *
+   * @returns {array<ShapeShiftTx>}
+   *
+   */
   getShapeShiftTxList () {
     const shapeShiftTxList = this.store.getState().shapeShiftTxList
     return shapeShiftTxList
   }
 
-	/**
-	 * A getter for all ShapeShiftTx in the shapeShiftTxList that have not successfully completed a deposit.
-	 *
-	 * @returns {array<ShapeShiftTx>} Only includes ShapeShiftTx which has a response property with a status !== complete
-	 *
-	 */
+  /**
+   * A getter for all ShapeShiftTx in the shapeShiftTxList that have not successfully completed a deposit.
+   *
+   * @returns {array<ShapeShiftTx>} Only includes ShapeShiftTx which has a response property with a status !== complete
+   *
+   */
   getPendingTxs () {
     const txs = this.getShapeShiftTxList()
     const pending = txs.filter(tx => tx.response && tx.response.status !== 'complete')
     return pending
   }
 
-	/**
-	 * A poll that exists as long as there are pending transactions. Each call attempts to update the data of any
+  /**
+   * A poll that exists as long as there are pending transactions. Each call attempts to update the data of any
    * pendingTxs, and then calls itself again. If there are no pending txs, the recursive call is not made and
    * the polling stops.
    *
    * this.updateTx is used to attempt the update to the pendingTxs in the ShapeShiftTxList, and that updated data
    * is saved with saveTx.
-	 *
-	 */
+   *
+   */
   pollForUpdates () {
     const pendingTxs = this.getPendingTxs()
 
@@ -113,13 +113,13 @@ class ShapeshiftController {
     }
   }
 
-	/**
-	 * Saves an updated to a ShapeShiftTx in the shapeShiftTxList. If the passed ShapeShiftTx is not in the
+  /**
+   * Saves an updated to a ShapeShiftTx in the shapeShiftTxList. If the passed ShapeShiftTx is not in the
    * shapeShiftTxList, nothing happens.
-	 *
-	 * @param {ShapeShiftTx} tx The updated tx to save, if it exists in the current shapeShiftTxList
-	 *
-	 */
+   *
+   * @param {ShapeShiftTx} tx The updated tx to save, if it exists in the current shapeShiftTxList
+   *
+   */
   saveTx (tx) {
     const { shapeShiftTxList } = this.store.getState()
     const index = shapeShiftTxList.indexOf(tx)
@@ -129,12 +129,12 @@ class ShapeshiftController {
     }
   }
 
-	/**
-	 * Removes a ShapeShiftTx from the shapeShiftTxList
-	 *
-	 * @param {ShapeShiftTx} tx The tx to remove
-	 *
-	 */
+  /**
+   * Removes a ShapeShiftTx from the shapeShiftTxList
+   *
+   * @param {ShapeShiftTx} tx The tx to remove
+   *
+   */
   removeShapeShiftTx (tx) {
     const { shapeShiftTxList } = this.store.getState()
     const index = shapeShiftTxList.indexOf(index)
@@ -144,14 +144,14 @@ class ShapeshiftController {
     this.updateState({ shapeShiftTxList })
   }
 
-	/**
-	 * Creates a new ShapeShiftTx, adds it to the shapeShiftTxList, and initiates a new poll for updates of pending txs
-	 *
+  /**
+   * Creates a new ShapeShiftTx, adds it to the shapeShiftTxList, and initiates a new poll for updates of pending txs
+   *
    * @param {string} depositAddress - An address at which to send a crypto deposit, so that eth can be sent to the
    * user's Metamask account
    * @param {string} depositType - An abbreviation of the type of crypto currency to be deposited.
-	 *
-	 */
+   *
+   */
   createShapeShiftTx (depositAddress, depositType) {
     const state = this.store.getState()
     let { shapeShiftTxList } = state

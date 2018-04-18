@@ -4,12 +4,12 @@ const extend = require('xtend')
 
 class PreferencesController {
 
-	/**
-	 *
+  /**
+   *
    * @typedef {Object} PreferencesController
-	 * @param {object} opts Overrides the defaults for the initial state of this.store
+   * @param {object} opts Overrides the defaults for the initial state of this.store
    * @property {object} store The an object containing a users preferences, stored in local storage
-	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
+   * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
@@ -18,7 +18,7 @@ class PreferencesController {
    * @property {string} store.currentLocale The preferred language locale key
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    *
-	 */
+   */
   constructor (opts = {}) {
     const initState = extend({
       frequentRpcList: [],
@@ -32,43 +32,43 @@ class PreferencesController {
   }
 // PUBLIC METHODS
 
-	/**
-	 * Setter for the `useBlockie` property
-	 *
-	 * @param {boolean} val Whether or not the user prefers blockie indicators
-	 *
-	 */
+  /**
+   * Setter for the `useBlockie` property
+   *
+   * @param {boolean} val Whether or not the user prefers blockie indicators
+   *
+   */
   setUseBlockie (val) {
     this.store.updateState({ useBlockie: val })
   }
 
-	/**
-	 * Getter for the `useBlockie` property
-	 *
-	 * @returns {boolean} this.store.useBlockie
-	 *
-	 */
+  /**
+   * Getter for the `useBlockie` property
+   *
+   * @returns {boolean} this.store.useBlockie
+   *
+   */
   getUseBlockie () {
     return this.store.getState().useBlockie
   }
 
-	/**
-	 * Setter for the `currentLocale` property
+  /**
+   * Setter for the `currentLocale` property
    *
    * @param {string} key he preferred language locale key
-	 *
-	 */
+   *
+   */
   setCurrentLocale (key) {
     this.store.updateState({ currentLocale: key })
   }
 
-	/**
-	 * Setter for the `selectedAddress` property
-	 *
-	 * @param {string} _address A new hex address for an account
-	 * @returns {Promise<void>} Promise resolves with undefined
-	 *
-	 */
+  /**
+   * Setter for the `selectedAddress` property
+   *
+   * @param {string} _address A new hex address for an account
+   * @returns {Promise<void>} Promise resolves with undefined
+   *
+   */
   setSelectedAddress (_address) {
     return new Promise((resolve, reject) => {
       const address = normalizeAddress(_address)
@@ -129,13 +129,13 @@ class PreferencesController {
     return Promise.resolve(tokens)
   }
 
-	/**
-	 * Removes a specified token from the tokens array.
-	 *
-	 * @param {string} rawAddress Hex address of the token contract to remove.
-	 * @returns {Promise<array> The new array of AddedToken objects
-	 *
-	 */
+  /**
+   * Removes a specified token from the tokens array.
+   *
+   * @param {string} rawAddress Hex address of the token contract to remove.
+   * @returns {Promise<array> The new array of AddedToken objects
+   *
+   */
   removeToken (rawAddress) {
     const tokens = this.store.getState().tokens
 
@@ -145,23 +145,23 @@ class PreferencesController {
     return Promise.resolve(updatedTokens)
   }
 
-	/**
-	 * A getter for the `tokens` property
-	 *
-	 * @returns {array} The current array of AddedToken objects
-	 *
-	 */
+  /**
+   * A getter for the `tokens` property
+   *
+   * @returns {array} The current array of AddedToken objects
+   *
+   */
   getTokens () {
     return this.store.getState().tokens
   }
 
-	/**
-	 * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
-	 *
-	 * @param {string} _url The the new rpc url to add to the updated list
-	 * @returns {Promise<void>} Promise resolves with undefined
-	 *
-	 */
+  /**
+   * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
+   *
+   * @param {string} _url The the new rpc url to add to the updated list
+   * @returns {Promise<void>} Promise resolves with undefined
+   *
+   */
   updateFrequentRpcList (_url) {
     return this.addToFrequentRpcList(_url)
       .then((rpcList) => {
@@ -170,13 +170,13 @@ class PreferencesController {
       })
   }
 
-	/**
-	 * Setter for the `currentAccountTab` property 
-	 *
-	 * @param {string} currentAccountTab Specifies the new tab to be marked as current
-	 * @returns {Promise<void>} Promise resolves with undefined
-	 *
-	 */
+  /**
+   * Setter for the `currentAccountTab` property 
+   *
+   * @param {string} currentAccountTab Specifies the new tab to be marked as current
+   * @returns {Promise<void>} Promise resolves with undefined
+   *
+   */
   setCurrentAccountTab (currentAccountTab) {
     return new Promise((resolve, reject) => {
       this.store.updateState({ currentAccountTab })
@@ -184,15 +184,15 @@ class PreferencesController {
     })
   }
 
-	/**
-	 * Returns an updated rpcList based on the passed url and the current list.
+  /**
+   * Returns an updated rpcList based on the passed url and the current list.
    * The returned list will have a max length of 2. If the _url currently exists it the list, it will be moved to the
    * end of the list. The current list is modified and returned as a promise.
-	 *
-	 * @param {string} _url The rpc url to add to the frequentRpcList.
-	 * @returns {Promise<array>} The updated frequentRpcList. 
-	 *
-	 */
+   *
+   * @param {string} _url The rpc url to add to the frequentRpcList.
+   * @returns {Promise<array>} The updated frequentRpcList. 
+   *
+   */
   addToFrequentRpcList (_url) {
     const rpcList = this.getFrequentRpcList()
     const index = rpcList.findIndex((element) => { return element === _url })
@@ -208,24 +208,24 @@ class PreferencesController {
     return Promise.resolve(rpcList)
   }
 
-	/**
-	 * Getter for the `frequentRpcList` property.
-	 *
-	 * @returns {array<string>} An array of one or two rpc urls.
-	 *
-	 */
+  /**
+   * Getter for the `frequentRpcList` property.
+   *
+   * @returns {array<string>} An array of one or two rpc urls.
+   *
+   */
   getFrequentRpcList () {
     return this.store.getState().frequentRpcList
   }
 
-	/**
-	 * Updates the `featureFlags` property, which is an object. One property within that object will be set to a boolean.
-	 *
-	 * @param {string} feature A key that corresponds to a UI feature.
+  /**
+   * Updates the `featureFlags` property, which is an object. One property within that object will be set to a boolean.
+   *
+   * @param {string} feature A key that corresponds to a UI feature.
    * @param {boolean} activated Indicates whether or not the UI feature should be displayed
-	 * @returns {Promise<object>} Promises a new object; the updated featureFlags object.
-	 *
-	 */
+   * @returns {Promise<object>} Promises a new object; the updated featureFlags object.
+   *
+   */
   setFeatureFlag (feature, activated) {
     const currentFeatureFlags = this.store.getState().featureFlags
     const updatedFeatureFlags = {
@@ -238,13 +238,13 @@ class PreferencesController {
     return Promise.resolve(updatedFeatureFlags)
   }
 
-	/**
-	 * A getter for the `featureFlags` property
-	 *
-	 * @returns {object} A key-boolean map, where keys refer to features and booleans to whether the
+  /**
+   * A getter for the `featureFlags` property
+   *
+   * @returns {object} A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
-	 *
-	 */
+   *
+   */
   getFeatureFlags () {
     return this.store.getState().featureFlags
   }
