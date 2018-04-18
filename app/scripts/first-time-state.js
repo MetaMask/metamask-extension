@@ -2,10 +2,16 @@
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
-//
-// The default state of MetaMask
-//
-module.exports = {
+/**
+ * @typedef {Object} FirstTimeState
+ * @property {Object} config Initial configuration parameters
+ * @property {Object} NetworkController Network controller state
+ */
+
+/**
+ * @type {FirstTimeState} The default state of MetaMask
+ */
+const initialState = {
   config: {},
   NetworkController: {
     provider: {
@@ -13,3 +19,5 @@ module.exports = {
     },
   },
 }
+
+module.exports = initialState
