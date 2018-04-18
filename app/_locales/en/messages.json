@@ -909,7 +909,7 @@
   "youSign": {
     "message": "You are signing"
   },
-  "estimatingTransaction": {
-    "message": "Estimating transaction cost…"
+  "generatingTransaction": {
+    "message": "Generating transaction"
   }
 }

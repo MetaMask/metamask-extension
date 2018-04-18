@@ -137,8 +137,6 @@ class App extends Component {
           loadingMessage: loadMessage,
         }),
 
-        // this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
-
         // content
         this.renderRoutes(),
       ])
@@ -300,17 +298,6 @@ class App extends Component {
 
       ])
     )
-  }
-
-  renderLoadingIndicator ({ isLoading, isLoadingNetwork, loadMessage }) {
-    const { isMascara } = this.props
-
-    return isMascara
-      ? null
-      : h(Loading, {
-        isLoading: isLoading || isLoadingNetwork,
-        loadingMessage: loadMessage,
-      })
   }
 
   toggleMetamaskActive () {
