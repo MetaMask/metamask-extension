@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../../../ui/app/actions')
 const clone = require('clone')
+const log = require('loglevel')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN

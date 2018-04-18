@@ -27,7 +27,7 @@ function mapStateToProps (state) {
   return {
     tokens: state.metamask.tokens,
     currentCurrency: getCurrentCurrency(state),
-    tokenExchangeRates: state.metamask.tokenExchangeRates,
+    contractExchangeRates: state.metamask.contractExchangeRates,
     selectedAddressTxList: state.metamask.selectedAddressTxList,
   }
 }
@@ -142,31 +142,29 @@ TxListItem.prototype.getTokenInfo = async function () {
     ({ decimals, symbol } = await tokenInfoGetter(toAddress))
   }
 
-  return { decimals, symbol }
+  return { decimals, symbol, address: toAddress }
 }
 
 TxListItem.prototype.getSendTokenTotal = async function () {
   const {
     txParams = {},
     conversionRate,
-    tokenExchangeRates,
+    contractExchangeRates,
     currentCurrency,
   } = this.props
 
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   const { params = [] } = decodedData || {}
   const { value } = params[1] || {}
-  const { decimals, symbol } = await this.getTokenInfo()
+  const { decimals, symbol, address } = await this.getTokenInfo()
   const total = calcTokenAmount(value, decimals)
-
-  const pair = symbol && `${symbol.toLowerCase()}_eth`
 
   let tokenToFiatRate
   let totalInFiat
 
-  if (tokenExchangeRates[pair]) {
+  if (contractExchangeRates[address]) {
     tokenToFiatRate = multiplyCurrencies(
-      tokenExchangeRates[pair].rate,
+      contractExchangeRates[address],
       conversionRate
     )
 
@@ -220,7 +218,6 @@ TxListItem.prototype.resubmit = function () {
 TxListItem.prototype.render = function () {
   const {
     transactionStatus,
-    transactionAmount,
     onClick,
     transactionId,
     dateString,
@@ -229,7 +226,6 @@ TxListItem.prototype.render = function () {
     txParams,
   } = this.props
   const { total, fiatTotal, isTokenTx } = this.state
-  const showFiatTotal = transactionAmount !== '0x0' && fiatTotal
 
   return h(`div${className || ''}`, {
     key: transactionId,
@@ -288,7 +284,7 @@ TxListItem.prototype.render = function () {
 
           h('span.tx-list-value', total),
 
-          showFiatTotal && h('span.tx-list-fiat-value', fiatTotal),
+          fiatTotal && h('span.tx-list-fiat-value', fiatTotal),
 
         ]),
       ]),

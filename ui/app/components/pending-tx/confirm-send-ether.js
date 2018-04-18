@@ -23,6 +23,8 @@ const {
 const GasFeeDisplay = require('../send/gas-fee-display-v2')
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
+const currencyFormatter = require('currency-formatter')
+const currencies = require('currency-formatter/currencies')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
@@ -275,6 +277,16 @@ ConfirmSendEther.prototype.getData = function () {
   }
 }
 
+ConfirmSendEther.prototype.convertToRenderableCurrency = function (value, currencyCode) {
+  const upperCaseCurrencyCode = currencyCode.toUpperCase()
+
+  return currencies.find(currency => currency.code === upperCaseCurrencyCode)
+    ? currencyFormatter.format(Number(value), {
+      code: upperCaseCurrencyCode,
+    })
+    : value
+}
+
 ConfirmSendEther.prototype.editTransaction = function (txMeta) {
   const { editTransaction, history } = this.props
   editTransaction(txMeta)
@@ -318,6 +330,9 @@ ConfirmSendEther.prototype.render = function () {
   const subtitle = txMeta.lastGasPrice
     ? 'Increase your gas fee to attempt to overwrite and speed up your transaction'
     : 'Please review your transaction.'
+
+  const convertedAmountInFiat = this.convertToRenderableCurrency(amountInFIAT, currentCurrency)
+  const convertedTotalInFiat = this.convertToRenderableCurrency(totalInFIAT, currentCurrency)
 
   // This is from the latest master
   // It handles some of the errors that we are not currently handling
@@ -365,7 +380,7 @@ ConfirmSendEther.prototype.render = function () {
         //   `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
         // ]),
 
-        h('h3.flex-center.confirm-screen-send-amount', [`${amountInFIAT}`]),
+        h('h3.flex-center.confirm-screen-send-amount', [`${convertedAmountInFiat}`]),
         h('h3.flex-center.confirm-screen-send-amount-currency', [ currentCurrency.toUpperCase() ]),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
@@ -412,7 +427,7 @@ ConfirmSendEther.prototype.render = function () {
             ]),
 
             h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', `${totalInFIAT} ${currentCurrency.toUpperCase()}`),
+              h('div.confirm-screen-row-info', `${convertedTotalInFiat} ${currentCurrency.toUpperCase()}`),
               h('div.confirm-screen-row-detail', `${totalInETH} ETH`),
             ]),
 
