@@ -308,6 +308,7 @@ module.exports = class MetamaskController extends EventEmitter {
         lostAccounts: this.configManager.getLostAccounts(),
         seedWords: this.configManager.getSeedWords(),
         forgottenPassword: this.configManager.getPasswordForgotten(),
+        isRevealingSeedWords: Boolean(this.configManager.getIsRevealingSeedWords()),
       },
     }
   }
@@ -347,6 +348,7 @@ module.exports = class MetamaskController extends EventEmitter {
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: nodeify(this.resetAccount, this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      setIsRevealingSeedWords: this.configManager.setIsRevealingSeedWords.bind(this.configManager),
 
       // vault management
       submitPassword: nodeify(keyringController.submitPassword, keyringController),

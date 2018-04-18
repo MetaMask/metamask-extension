@@ -8,6 +8,7 @@ import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
 import LoadingScreen from './loading-screen'
 import { DEFAULT_ROUTE, INITIALIZE_CONFIRM_SEED_ROUTE } from '../../../../ui/app/routes'
+import { confirmSeedWords } from '../../../../ui/app/actions'
 
 const LockIcon = props => (
   <svg
@@ -44,6 +45,8 @@ class BackupPhraseScreen extends Component {
     address: PropTypes.string.isRequired,
     seedWords: PropTypes.string,
     history: PropTypes.object,
+    isRevealingSeedWords: PropTypes.bool,
+    clearSeedWords: PropTypes.func,
   };
 
   static defaultProps = {
@@ -58,6 +61,14 @@ class BackupPhraseScreen extends Component {
   }
 
   componentWillMount () {
+    this.checkSeedWords()
+  }
+
+  componentDidUpdate () {
+    this.checkSeedWords()
+  }
+
+  checkSeedWords () {
     const { seedWords, history } = this.props
 
     if (!seedWords) {
@@ -92,9 +103,29 @@ class BackupPhraseScreen extends Component {
     )
   }
 
-  renderSecretScreen () {
+  renderSubmitButton () {
+    const { isRevealingSeedWords, clearSeedWords, history } = this.props
     const { isShowingSecret } = this.state
-    const { history } = this.props
+
+    return isRevealingSeedWords
+      ? <button
+        className="first-time-flow__button"
+        onClick={() => clearSeedWords().then(() => history.push(DEFAULT_ROUTE))}
+        disabled={!isShowingSecret}
+      >
+        Done
+      </button>
+      : <button
+        className="first-time-flow__button"
+        onClick={() => isShowingSecret && history.push(INITIALIZE_CONFIRM_SEED_ROUTE)}
+        disabled={!isShowingSecret}
+      >
+        Next
+      </button>
+  }
+
+  renderSecretScreen () {
+    const { isRevealingSeedWords } = this.props
 
     return (
       <div className="backup-phrase__content-wrapper">
@@ -121,14 +152,8 @@ class BackupPhraseScreen extends Component {
           </div>
         </div>
         <div className="backup-phrase__next-button">
-          <button
-            className="first-time-flow__button"
-            onClick={() => isShowingSecret && history.push(INITIALIZE_CONFIRM_SEED_ROUTE)}
-            disabled={!isShowingSecret}
-          >
-            Next
-          </button>
-          <Breadcrumbs total={3} currentIndex={1} />
+          { this.renderSubmitButton() }
+          { !isRevealingSeedWords && <Breadcrumbs total={3} currentIndex={1} />}
         </div>
       </div>
     )
@@ -150,13 +175,25 @@ class BackupPhraseScreen extends Component {
   }
 }
 
+const mapStateToProps = ({ metamask, appState }) => {
+  const { selectedAddress, seedWords, isRevealingSeedWords } = metamask
+  const { isLoading } = appState
+
+  return {
+    seedWords,
+    isRevealingSeedWords,
+    isLoading,
+    address: selectedAddress,
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    clearSeedWords: () => dispatch(confirmSeedWords()),
+  }
+}
+
 export default compose(
   withRouter,
-  connect(
-    ({ metamask: { selectedAddress, seedWords }, appState: { isLoading } }) => ({
-      seedWords,
-      isLoading,
-      address: selectedAddress,
-    })
-  )
+  connect(mapStateToProps, mapDispatchToProps),
 )(BackupPhraseScreen)
