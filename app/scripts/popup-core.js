@@ -1,11 +1,11 @@
-const EventEmitter = require('events').EventEmitter
+const EventEmitter = require('events')
 const async = require('async')
 const Dnode = require('dnode')
 const Eth = require('ethjs')
 const EthQuery = require('eth-query')
 const launchMetamaskUi = require('../../ui')
 const StreamProvider = require('web3-stream-provider')
-const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const setupMultiplex = require('./lib/stream-utils').setupMultiplex
 
 
 module.exports = initializePopup

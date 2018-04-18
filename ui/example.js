@@ -1,6 +1,6 @@
 const injectCss = require('inject-css')
-const MetaMaskUi = require('./index.js')
-const MetaMaskUiCss = require('./css.js')
+const MetaMaskUi = require('./index')
+const MetaMaskUiCss = require('./css')
 const EventEmitter = require('events').EventEmitter
 
 // account management

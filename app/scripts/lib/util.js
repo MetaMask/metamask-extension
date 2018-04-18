@@ -50,6 +50,12 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
   return targetBN.mul(numBN).div(denomBN)
 }
 
+function override (object, methodName, callback) {
+  object[methodName] = callback(object[methodName])
+}
+
+function noop () {}
+
 module.exports = {
   getStack,
   getEnvironmentType,
@@ -57,4 +63,6 @@ module.exports = {
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
+  override,
+  noop,
 }

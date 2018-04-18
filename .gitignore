@@ -1,7 +1,7 @@
 npm-debug.log
 node_modules
 yarn.lock
-
+yarn-error.log
 app/bower_components
 test/bower_components
 package

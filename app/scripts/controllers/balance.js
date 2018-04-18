@@ -59,12 +59,11 @@ class BalanceController {
   }
 
   async _getPendingTransactions () {
-    const pending = this.txController.getFilteredTxList({
+    return this.txController.getFilteredTxList({
       from: this.address,
       status: 'submitted',
       err: undefined,
     })
-    return pending
   }
 
   _validateParams (opts) {

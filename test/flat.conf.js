@@ -1,4 +1,4 @@
-const getBaseConfig = require('./base.conf.js')
+const getBaseConfig = require('./base.conf')
 
 module.exports = function(config) {
   const settings = getBaseConfig(config)
