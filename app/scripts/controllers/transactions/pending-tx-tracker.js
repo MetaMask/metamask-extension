@@ -1,4 +1,5 @@
 const EventEmitter = require('events')
+const log = require('loglevel')
 const EthQuery = require('ethjs-query')
 /**
 

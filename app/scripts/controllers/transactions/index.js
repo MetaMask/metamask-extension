@@ -177,7 +177,7 @@ add a new unapproved transaction to the pipeline
   async addTxGasDefaults (txMeta) {
     const txParams = txMeta.txParams
     // ensure value
-    txParams.value = txParams.value ? ethUtil.addHexPrefix(value) : '0x0',
+    txParams.value = txParams.value ? ethUtil.addHexPrefix(txParams.value) : '0x0'
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     let gasPrice = txParams.gasPrice
     if (!gasPrice) {
