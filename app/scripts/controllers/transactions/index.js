@@ -25,14 +25,15 @@ const txUtils = require('./lib/util')
 
 
 @param {object} opts -
-  - initState, initial transaction list default is an empty array<br>
-  - networkStore, an observable store for network number<br>
-  - blockTracker,<br>
-  - provider,<br>
-  - signTransaction, function the signs an ethereumjs-tx<br>
-  - getGasPrice, optional gas price calculator<br>
-  - txHistoryLimit, number *optional* for limiting how many transactions are in state <br>
-  - preferencesStore,
+  @property  {object} opts.initState initial transaction list default is an empty array
+  @property  {Object} opts.networkStore an observable store for network number
+  @property  {Object} opts.blockTracker
+  @property  {Object} opts.provider
+  @property  {Object} opts.signTransaction function the signs an ethereumjs-tx
+  @property  {function} opts.getGasPrice optional gas price calculator
+  @property  {function} opts.signTransaction ethTx signer that returns a rawTx
+  @property  {number} opts.txHistoryLimit number *optional* for limiting how many transactions are in state
+  @property  {Object} opts.preferencesStore
 @class
 */
 
@@ -50,12 +51,12 @@ class TransactionController extends EventEmitter {
     this.query = new EthQuery(this.provider)
     this.txGasUtil = new TxGasUtil(this.provider)
 
+    this._mapMethods()
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
       getNetwork: this.getNetwork.bind(this),
     })
-    this._mapMethods()
     this._onBootCleanUp()
 
     this.store = this.txStateManager.store
@@ -92,7 +93,10 @@ class TransactionController extends EventEmitter {
     }
   }
 
-/** Adds a tx to the txlist */
+/**
+  Adds a tx to the txlist
+  @emits ${txMeta.id}:unapproved
+*/
   addTx (txMeta) {
     this.txStateManager.addTx(txMeta)
     this.emit(`${txMeta.id}:unapproved`, txMeta)
@@ -172,6 +176,7 @@ add a new unapproved transaction to the pipeline
   async addTxGasDefaults (txMeta) {
     const txParams = txMeta.txParams
     // ensure value
+    txParams.value = txParams.value ? ethUtil.addHexPrefix(value) : '0x0',
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     let gasPrice = txParams.gasPrice
     if (!gasPrice) {

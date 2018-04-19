@@ -1,7 +1,15 @@
 const EthQuery = require('ethjs-query')
 const assert = require('assert')
 const Mutex = require('await-semaphore').Mutex
-
+/**
+  @param opts {object} -
+    @property {Object} opts.provider a ethereum provider
+    @property {function} opts.getPendingTransactions a function that returns an array of txMeta
+    whos status is `submitted`
+    @property {function} opts.getConfirmedTransactions a function that returns an array of txMeta
+    whos status is `confirmed`
+  @class
+*/
 class NonceTracker {
 
   constructor ({ provider, getPendingTransactions, getConfirmedTransactions }) {
@@ -12,6 +20,9 @@ class NonceTracker {
     this.lockMap = {}
   }
 
+  /**
+    @returns {object} with the key releaseLock (the gloabl mutex)
+  */
   async getGlobalLock () {
     const globalMutex = this._lookupMutex('global')
     // await global mutex free
@@ -19,8 +30,19 @@ class NonceTracker {
     return { releaseLock }
   }
 
-  // releaseLock must be called
-  // releaseLock must be called after adding signed tx to pending transactions (or discarding)
+  /**
+  this will return an object with the `nextNonce` `nonceDetails` which is an
+  object with:
+      highestLocallyConfirmed (nonce),
+      highestSuggested (either the network nonce or the highestLocallyConfirmed nonce),
+      nextNetworkNonce (the nonce suggested by the network),
+  and the releaseLock
+  <br>note: releaseLock must be called after adding signed tx to pending transactions
+  (or discarding)<br>
+
+  @param address {string} the hex string for the address whos nonce we are calculating
+  @returns {object}
+  */
   async getNonceLock (address) {
     // await global mutex free
     await this._globalMutexFree()

@@ -8,10 +8,10 @@ const EthQuery = require('ethjs-query')
   As well as continues broadcast while in the pending state
 <br>
 @param config {object} - non optional configuration object consists of:
-    <br>provider
-    <br>nonceTracker: see nonce tracker
-    <br>getPendingTransactions: a function for getting an array of transactions,
-    <br>publishTransaction: a async function for publishing raw transactions,
+    @property {Object} config.provider
+    @property {Object} config.nonceTracker see nonce tracker
+    @property {function} config.getPendingTransactions a function for getting an array of transactions,
+    @property {function} config.publishTransaction a async function for publishing raw transactions,
 
 
 @class

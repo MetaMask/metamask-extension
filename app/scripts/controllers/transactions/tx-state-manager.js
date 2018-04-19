@@ -1,22 +1,33 @@
 const extend = require('xtend')
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
-const createId = require('../../lib/random-id')
 const ethUtil = require('ethereumjs-util')
 const txStateHistoryHelper = require('./lib/tx-state-history-helper')
-
-// STATUS METHODS
-  // statuses:
-  //    - `'unapproved'` the user has not responded
-  //    - `'rejected'` the user has responded no!
-  //    - `'approved'` the user has approved the tx
-  //    - `'signed'` the tx is signed
-  //    - `'submitted'` the tx is sent to a server
-  //    - `'confirmed'` the tx has been included in a block.
-  //    - `'failed'` the tx failed for some reason, included on tx data.
-  //    - `'dropped'` the tx nonce was already used
-
-module.exports = class TransactionStateManager extends EventEmitter {
+const createId = require('../../lib/random-id')
+const { getFinalStates } = require('./lib/util')
+/**
+  TransactionStateManager is responsible for the state of a transaction and
+  storing the transaction
+  it also has some convenience methods for finding subsets of transactions
+  *
+  *STATUS METHODS
+  <br>statuses:
+  <br>   - `'unapproved'` the user has not responded
+  <br>   - `'rejected'` the user has responded no!
+  <br>   - `'approved'` the user has approved the tx
+  <br>   - `'signed'` the tx is signed
+  <br>   - `'submitted'` the tx is sent to a server
+  <br>   - `'confirmed'` the tx has been included in a block.
+  <br>   - `'failed'` the tx failed for some reason, included on tx data.
+  <br>   - `'dropped'` the tx nonce was already used
+  @param opts {object} -
+  @property {object} opts.initState with the key transaction {array}
+  @property {number} opts.txHistoryLimit limit for how many finished
+  transactions can hang around in state
+  @property {function} opts.getNetwork return network number
+  @class
+*/
+class TransactionStateManager extends EventEmitter {
   constructor ({ initState, txHistoryLimit, getNetwork }) {
     super()
 
@@ -28,6 +39,10 @@ module.exports = class TransactionStateManager extends EventEmitter {
     this.getNetwork = getNetwork
   }
 
+  /**
+    @param opts {object} - the object to use when overwriting defaults
+    @returns {txMeta} the default txMeta object
+  */
   generateTxMeta (opts) {
     return extend({
       id: createId(),
@@ -38,17 +53,25 @@ module.exports = class TransactionStateManager extends EventEmitter {
     }, opts)
   }
 
+  /**
+    @returns {array} of txMetas that have been filtered for only the current network
+  */
   getTxList () {
     const network = this.getNetwork()
     const fullTxList = this.getFullTxList()
     return fullTxList.filter((txMeta) => txMeta.metamaskNetworkId === network)
   }
 
+  /**
+    @returns {array} of all the txMetas in store
+  */
   getFullTxList () {
     return this.store.getState().transactions
   }
 
-  // Returns the tx list
+  /**
+    @returns {array} the tx list whos status is unapproved
+  */
   getUnapprovedTxList () {
     const txList = this.getTxsByMetaData('status', 'unapproved')
     return txList.reduce((result, tx) => {
@@ -57,18 +80,35 @@ module.exports = class TransactionStateManager extends EventEmitter {
     }, {})
   }
 
+  /**
+    @param address {string} - hex prefixed address to sort the txMetas for [optional]
+    @returns {array} the tx list whos status is submitted
+  */
   getPendingTransactions (address) {
     const opts = { status: 'submitted' }
     if (address) opts.from = address
     return this.getFilteredTxList(opts)
   }
 
+  /**
+    @param address {string} - hex prefixed address to sort the txMetas for [optional]
+    @returns {array} the tx list whos status is confirmed
+  */
   getConfirmedTransactions (address) {
     const opts = { status: 'confirmed' }
     if (address) opts.from = address
     return this.getFilteredTxList(opts)
   }
 
+  /**
+    Adds the txMeta to the list of transactions in the store.
+    if the list is over txHistoryLimit it will remove a transaction that
+    is in its final state
+    it will allso add the key `history` to the txMeta with the snap shot of the original
+    object
+    @param txMeta {object}
+    @returns {object} the txMeta
+  */
   addTx (txMeta) {
     this.once(`${txMeta.id}:signed`, function (txId) {
       this.removeAllListeners(`${txMeta.id}:rejected`)
@@ -93,7 +133,7 @@ module.exports = class TransactionStateManager extends EventEmitter {
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
       const index = transactions.findIndex((metaTx) => {
-        return this.getFinalStates().includes(metaTx.status)
+        return getFinalStates().includes(metaTx.status)
       })
       if (index !== -1) {
         transactions.splice(index, 1)
@@ -103,12 +143,21 @@ module.exports = class TransactionStateManager extends EventEmitter {
     this._saveTxList(transactions)
     return txMeta
   }
-  // gets tx by Id and returns it
+  /**
+    @param txId {number}
+    @returns {object} the txMeta who matches the given id if none found
+    for the network returns undefined
+  */
   getTx (txId) {
     const txMeta = this.getTxsByMetaData('id', txId)[0]
     return txMeta
   }
 
+  /**
+    updates the txMeta in the list and adds a history entry
+    @param txMeta {object} - the txMeta to update
+    @param note {string} - a not about the update for history
+  */
   updateTx (txMeta, note) {
     // validate txParams
     if (txMeta.txParams) {
@@ -136,15 +185,22 @@ module.exports = class TransactionStateManager extends EventEmitter {
   }
 
 
-  // merges txParams obj onto txData.txParams
-  // use extend to ensure that all fields are filled
+  /**
+    merges txParams obj onto txMeta.txParams
+    use extend to ensure that all fields are filled
+    @param txId {number} - the id of the txMeta
+    @param txParams {object} - the updated txParams
+  */
   updateTxParams (txId, txParams) {
     const txMeta = this.getTx(txId)
     txMeta.txParams = extend(txMeta.txParams, txParams)
     this.updateTx(txMeta, `txStateManager#updateTxParams`)
   }
 
-  // validates txParams members by type
+  /**
+    validates txParams members by type
+    @param txParams {object} - txParams to validate
+  */
   validateTxParams (txParams) {
     Object.keys(txParams).forEach((key) => {
       const value = txParams[key]
@@ -161,17 +217,18 @@ module.exports = class TransactionStateManager extends EventEmitter {
     })
   }
 
-/*
-  Takes an object of fields to search for eg:
-  let thingsToLookFor = {
-    to: '0x0..',
-    from: '0x0..',
-    status: 'signed',
-    err: undefined,
-  }
-  and returns a list of tx with all
+/**
+  @param opts {object} -  an object of fields to search for eg:<br>
+  let <code>thingsToLookFor = {<br>
+    to: '0x0..',<br>
+    from: '0x0..',<br>
+    status: 'signed',<br>
+    err: undefined,<br>
+  }<br></code>
+  @returns a {array} of txMeta with all
   options matching
-
+  */
+  /*
   ****************HINT****************
   | `err: undefined` is like looking |
   | for a tx with no err             |
@@ -192,7 +249,14 @@ module.exports = class TransactionStateManager extends EventEmitter {
     })
     return filteredTxList
   }
+  /**
 
+    @param key {string} - the key to check
+    @param value - the value your looking for
+    @param txList {array} - [optional] the list to search. default is the txList
+    from txStateManager#getTxList
+    @returns {array} a list of txMetas who matches the search params
+  */
   getTxsByMetaData (key, value, txList = this.getTxList()) {
     return txList.filter((txMeta) => {
       if (txMeta.txParams[key]) {
@@ -205,33 +269,51 @@ module.exports = class TransactionStateManager extends EventEmitter {
 
   // get::set status
 
-  // should return the status of the tx.
+  /**
+    @param txId {number} - the txMeta Id
+    @return {string} the status of the tx.
+  */
   getTxStatus (txId) {
     const txMeta = this.getTx(txId)
     return txMeta.status
   }
 
-  // should update the status of the tx to 'rejected'.
+  /**
+    should update the status of the tx to 'rejected'.
+    @param txId {number} - the txMeta Id
+  */
   setTxStatusRejected (txId) {
     this._setTxStatus(txId, 'rejected')
   }
 
-  // should update the status of the tx to 'unapproved'.
+  /**
+    should update the status of the tx to 'unapproved'.
+    @param txId {number} - the txMeta Id
+  */
   setTxStatusUnapproved (txId) {
     this._setTxStatus(txId, 'unapproved')
   }
-  // should update the status of the tx to 'approved'.
+  /**
+    should update the status of the tx to 'approved'.
+    @param txId {number} - the txMeta Id
+  */
   setTxStatusApproved (txId) {
     this._setTxStatus(txId, 'approved')
   }
 
-  // should update the status of the tx to 'signed'.
+  /**
+    should update the status of the tx to 'signed'.
+    @param txId {number} - the txMeta Id
+  */
   setTxStatusSigned (txId) {
     this._setTxStatus(txId, 'signed')
   }
 
-  // should update the status of the tx to 'submitted'.
-  // and add a time stamp for when it was called
+  /**
+    should update the status of the tx to 'submitted'.
+    and add a time stamp for when it was called
+    @param txId {number} - the txMeta Id
+  */
   setTxStatusSubmitted (txId) {
     const txMeta = this.getTx(txId)
     txMeta.submittedTime = (new Date()).getTime()
@@ -239,17 +321,29 @@ module.exports = class TransactionStateManager extends EventEmitter {
     this._setTxStatus(txId, 'submitted')
   }
 
-  // should update the status of the tx to 'confirmed'.
+  /**
+    should update the status of the tx to 'confirmed'.
+    @param txId {number} - the txMeta Id
+  */
   setTxStatusConfirmed (txId) {
     this._setTxStatus(txId, 'confirmed')
   }
 
-  // should update the status dropped
+  /**
+    should update the status of the tx to 'dropped'.
+    @param txId {number} - the txMeta Id
+  */
   setTxStatusDropped (txId) {
     this._setTxStatus(txId, 'dropped')
   }
 
 
+  /**
+    should update the status of the tx to 'failed'.
+    and put the error on the txMeta
+    @param txId {number} - the txMeta Id
+    @param err {erroObject} - error object
+  */
   setTxStatusFailed (txId, err) {
     const txMeta = this.getTx(txId)
     txMeta.err = {
@@ -260,16 +354,11 @@ module.exports = class TransactionStateManager extends EventEmitter {
     this._setTxStatus(txId, 'failed')
   }
 
-  // returns an array of states that can be considered final
-  getFinalStates () {
-    return [
-      'rejected', // the user has responded no!
-      'confirmed', // the tx has been included in a block.
-      'failed', // the tx failed for some reason, included on tx data.
-      'dropped', // the tx nonce was already used
-    ]
-  }
-
+  /**
+    Removes transaction from the given address for the current network
+    from the txList
+    @param address {string} - hex string of the from address on the txParams to remove
+  */
   wipeTransactions (address) {
     // network only tx
     const txs = this.getFullTxList()
@@ -295,6 +384,14 @@ module.exports = class TransactionStateManager extends EventEmitter {
   //    - `'confirmed'` the tx has been included in a block.
   //    - `'failed'` the tx failed for some reason, included on tx data.
   //    - `'dropped'` the tx nonce was already used
+
+  /**
+    @param txId {number} - the txMeta Id
+    @param status {string} - the status to set on the txMeta
+    @emits tx:status-update - passes txId and status
+    @emits ${txMeta.id}:finished - if it is a finished state. Passes the txMeta
+    @emits update:badge
+  */
   _setTxStatus (txId, status) {
     const txMeta = this.getTx(txId)
     txMeta.status = status
@@ -307,9 +404,14 @@ module.exports = class TransactionStateManager extends EventEmitter {
     this.emit('update:badge')
   }
 
-  // Saves the new/updated txList.
+  /**
+    Saves the new/updated txList.
+    @param transactions {array} - the list of transactions to save
+  */
   // Function is intended only for internal use
   _saveTxList (transactions) {
     this.store.updateState({ transactions })
   }
 }
+
+module.exports = TransactionStateManager

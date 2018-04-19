@@ -11,6 +11,7 @@ const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 tx-utils are utility methods for Transaction manager
 its passed ethquery
 and used to do things like calculate gas of a tx.
+@param provider {object}
 */
 
 module.exports = class TxGasUtil {

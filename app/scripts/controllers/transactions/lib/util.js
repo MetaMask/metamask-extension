@@ -3,11 +3,15 @@ const {
   isValidAddress,
 } = require('ethereumjs-util')
 
+/**
+@module
+*/
 module.exports = {
   normalizeTxParams,
   validateTxParams,
   validateFrom,
   validateRecipient,
+  getFinalStates,
 }
 
 
@@ -16,22 +20,30 @@ const normalizers = {
   from: from => addHexPrefix(from).toLowerCase(),
   to: to => addHexPrefix(to).toLowerCase(),
   nonce: nonce => addHexPrefix(nonce),
-  value: value =>  value ? addHexPrefix(value) : '0x0',
+  value: value => addHexPrefix(value),
   data: data => addHexPrefix(data),
   gas: gas => addHexPrefix(gas),
   gasPrice: gasPrice => addHexPrefix(gasPrice),
 }
+
  /**
+  normalizes txParams
+  @param txParams {object}
+  @returns {object} normalized txParams
  */
 function normalizeTxParams (txParams) {
   // apply only keys in the normalizers
   const normalizedTxParams = {}
-  for (let key in normalizers) {
+  for (const key in normalizers) {
     if (txParams[key]) normalizedTxParams[key] = normalizers[key](txParams[key])
   }
   return normalizedTxParams
 }
 
+ /**
+  validates txParams
+  @param txParams {object}
+ */
 function validateTxParams (txParams) {
   validateFrom(txParams)
   validateRecipient(txParams)
@@ -47,11 +59,19 @@ function validateTxParams (txParams) {
   }
 }
 
+ /**
+  validates the from field in  txParams
+  @param txParams {object}
+ */
 function validateFrom (txParams) {
   if (!(typeof txParams.from === 'string')) throw new Error(`Invalid from address ${txParams.from} not a string`)
   if (!isValidAddress(txParams.from)) throw new Error('Invalid from address')
 }
 
+ /**
+  validates the to field in  txParams
+  @param txParams {object}
+ */
 function validateRecipient (txParams) {
   if (txParams.to === '0x' || txParams.to === null) {
     if (txParams.data) {
@@ -64,3 +84,16 @@ function validateRecipient (txParams) {
   }
   return txParams
 }
+
+  /**
+    @returns an {array} of states that can be considered final
+  */
+function getFinalStates () {
+  return [
+    'rejected', // the user has responded no!
+    'confirmed', // the tx has been included in a block.
+    'failed', // the tx failed for some reason, included on tx data.
+    'dropped', // the tx nonce was already used
+  ]
+}
+
