@@ -8,6 +8,50 @@ describe('preferences controller', function () {
     preferencesController = new PreferencesController()
   })
 
+  describe('setAddresses', function () {
+    it('should keep a map of addresses to names and addresses in the store', function () {
+      preferencesController.setAddresses([
+        '0xda22le',
+        '0x7e57e2',
+      ])
+
+      const {identities} = preferencesController.store.getState()
+      assert.deepEqual(identities, {
+        '0xda22le': {
+          name: 'Account 1',
+          address: '0xda22le',
+        },
+        '0x7e57e2': {
+          name: 'Account 2',
+          address: '0x7e57e2',
+        },
+      })
+    })
+
+    it('should replace its list of addresses', function () {
+      preferencesController.setAddresses([
+        '0xda22le',
+        '0x7e57e2',
+      ])
+      preferencesController.setAddresses([
+        '0xda22le77',
+        '0x7e57e277',
+      ])
+
+      const {identities} = preferencesController.store.getState()
+      assert.deepEqual(identities, {
+        '0xda22le77': {
+          name: 'Account 1',
+          address: '0xda22le77',
+        },
+        '0x7e57e277': {
+          name: 'Account 2',
+          address: '0x7e57e277',
+        },
+      })
+    })
+  })
+
   describe('getTokens', function () {
     it('should return an empty list initially', async function () {
       await preferencesController.setSelectedAddress('0x7e57e2')

@@ -63,6 +63,16 @@ class PreferencesController {
     this.store.updateState({ currentLocale: key })
   }
 
+  setAddresses (addresses) {
+    const oldIdentities = this.store.getState().identities
+    const identities = addresses.reduce((ids, address, index) => {
+      const oldId = oldIdentities[address] || {}
+      ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
+      return ids
+    }, {})
+    this.store.updateState({ identities })
+  }
+
   /**
    * Setter for the `selectedAddress` property
    *

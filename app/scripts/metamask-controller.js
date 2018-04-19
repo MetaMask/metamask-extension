@@ -434,7 +434,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
       } else {
         vault = await this.keyringController.createNewVaultAndKeychain(password)
-        this.selectFirstIdentity(vault)
+        const accounts = await this.keyringController.getAccounts()
+        this.preferencesController.setAddresses(accounts)
+        this.selectFirstIdentity()
       }
       release()
     } catch (err) {
@@ -454,7 +456,9 @@ module.exports = class MetamaskController extends EventEmitter {
     const release = await this.createVaultMutex.acquire()
     try {
       const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
-      this.selectFirstIdentity(vault)
+      const accounts = await this.keyringController.getAccounts()
+      this.preferencesController.setAddresses(accounts)
+      this.selectFirstIdentity()
       release()
       return vault
     } catch (err) {
@@ -472,12 +476,10 @@ module.exports = class MetamaskController extends EventEmitter {
    */
 
   /**
-   * Retrieves the first Identiy from the passed Vault and selects the related address
-   *
-   * @param  {} vault
+   * Sets the first address in the state to the selected address
    */
-  selectFirstIdentity (vault) {
-    const { identities } = vault
+  selectFirstIdentity () {
+    const { identities } = this.preferencesController.store.getState()
     const address = Object.keys(identities)[0]
     this.preferencesController.setSelectedAddress(address)
   }
@@ -503,13 +505,15 @@ module.exports = class MetamaskController extends EventEmitter {
 
     await this.verifySeedPhrase()
 
+    this.preferencesController.setAddresses(newAccounts)
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
         this.preferencesController.setSelectedAddress(address)
       }
     })
 
-    return keyState
+    const {identities} = this.preferencesController.store.getState()
+    return {...keyState, identities}
   }
 
   /**
