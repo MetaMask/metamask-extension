@@ -170,10 +170,15 @@ SignatureRequest.prototype.renderBody = function () {
   let notice = this.context.t('youSign') + ':'
 
   const { txData } = this.props
-  const { type, msgParams: { data } } = txData
+  const { type, msgParams: { data, encoding } } = txData
 
   if (type === 'personal_sign') {
-    rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
+    const name = this.context.t('message')
+    if (encoding === 'hex') {
+      rows = [{ name, value: data }]
+    } else {
+      rows = [{ name, value: this.msgHexToText(data) }]
+    }
   } else if (type === 'eth_signTypedData') {
     rows = data
   } else if (type === 'eth_sign') {

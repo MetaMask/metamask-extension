@@ -21,7 +21,7 @@ PendingMsgDetails.prototype.render = function () {
   var identity = state.identities[address] || { address: address }
   var account = state.accounts[address] || { address: address }
 
-  var { data } = msgParams
+  var { data, encoding } = msgParams
 
   return (
     h('div', {
@@ -47,6 +47,7 @@ PendingMsgDetails.prototype.render = function () {
       }, [
         h('label.font-small', { style: { display: 'block' } }, 'MESSAGE'),
         h(BinaryRenderer, {
+          encoding,
           value: data,
           style: {
             height: '215px',
