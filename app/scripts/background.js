@@ -1,3 +1,7 @@
+/*
+ * @file The entry point for the web extension singleton process.
+ */
+
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pump = require('pump')
@@ -61,6 +65,21 @@ initialize().catch(log.error)
 // setup metamask mesh testing container
 setupMetamaskMeshMetrics()
 
+/*
+ * The data emitted from the MetaMaskController.store EventEmitter, also used to initialize the MetaMaskController.
+ * @typedef MetaMaskState
+ */
+
+/*
+ * @typedef VersionedData
+ * @property {MetaMaskState} data - The data emitted from MetaMask controller, or used to initialize it.
+ * @property {Number} version - The latest migration version that has been run.
+ */
+
+/*
+ * Initializes the MetaMask controller, and sets up all platform configuration.
+ * @returns {Promise} Setup complete.
+ */
 async function initialize () {
   const initState = await loadStateFromPersistence()
   const initLangCode = await getFirstPreferredLangCode()
@@ -72,6 +91,11 @@ async function initialize () {
 // State and Persistence
 //
 
+/*
+ * Loads any stored data, prioritizing the latest storage strategy.
+ * Migrates that data schema in case it was last loaded on an older version.
+ * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
+ */
 async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
@@ -134,6 +158,16 @@ async function loadStateFromPersistence () {
   return versionedData.data
 }
 
+/*
+ * Initializes the MetaMask Controller with any initial state and default language.
+ * Configures platform-specific error reporting strategy.
+ * Streams emitted state updates to platform-specific storage strategy.
+ * Creates platform listeners for new Dapps/Contexts, and sets up their data connections to the controller.
+ *
+ * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
+ * @param {String} initLangCode - The region code for the language preferred by the current user.
+ * @returns {Promise} After setup is complete.
+ */
 function setupController (initState, initLangCode) {
   //
   // MetaMask Controller
@@ -172,6 +206,11 @@ function setupController (initState, initLangCode) {
     }
   )
 
+  /*
+   * Assigns the given state to the versioned object (with metadata), and returns that.
+   * @param {Object} state - The state object as emitted by the MetaMaskController.
+   * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
+   */
   function versionifyData (state) {
     versionedData.data = state
     return versionedData
@@ -208,6 +247,18 @@ function setupController (initState, initLangCode) {
     return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
   }
 
+  /*
+   * A runtime.Port object, as provided by the browser:
+   * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
+   * @typedef Port
+   * @type Object
+   */
+
+  /*
+   * Connects a Port to the MetaMask controller via a multiplexed duplex stream.
+   * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
+   * @param {Port} remotePort - The port provided by a new context.
+   */
   function connectRemote (remotePort) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
@@ -261,7 +312,10 @@ function setupController (initState, initLangCode) {
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
 
-  // plugin badge text
+  /*
+   * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
+   * The number reflects the current number of pending transactions or message signatures needing user approval.
+   */
   function updateBadge () {
     var label = ''
     var unapprovedTxCount = controller.txController.getUnapprovedTxCount()
@@ -283,7 +337,9 @@ function setupController (initState, initLangCode) {
 // Etc...
 //
 
-// popup trigger
+/*
+ * Opens the browser popup for user confirmation
+ */
 function triggerUi () {
   extension.tabs.query({ active: true }, tabs => {
     const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
