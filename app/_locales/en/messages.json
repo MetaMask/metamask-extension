@@ -908,5 +908,8 @@
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "generatingTransaction": {
+    "message": "Generating transaction"
   }
 }

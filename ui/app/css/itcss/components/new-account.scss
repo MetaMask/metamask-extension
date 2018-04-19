@@ -35,13 +35,14 @@
       font-size: 18px;
       line-height: 24px;
       text-align: center;
+      cursor: pointer;
     }
 
     &__tab:first-of-type {
       margin-right: 20px;
     }
 
-    &__unselected:hover {
+    &__tab:hover {
       color: $black;
       border-bottom: none;
     }
@@ -49,9 +50,9 @@
     &__selected {
       color: $curious-blue;
       border-bottom: 3px solid $curious-blue;
+      cursor: initial;
     }
   }
-
 }
 
 .new-account-import-disclaimer {

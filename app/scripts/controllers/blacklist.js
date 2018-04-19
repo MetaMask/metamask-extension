@@ -1,6 +1,7 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
 const PhishingDetector = require('eth-phishing-detect/src/detector')
+const log = require('loglevel')
 
 // compute phishing lists
 const PHISHING_DETECTION_CONFIG = require('eth-phishing-detect/src/config.json')
