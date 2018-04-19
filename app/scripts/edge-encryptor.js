@@ -7,11 +7,11 @@ const Unibabel = require('browserify-unibabel')
  */
 class EdgeEncryptor {
   /**
-   * Encrypts an arbitrary JavaScript object to cypher text
+   * Encrypts an arbitrary JavaScript object to ciphertext
    *
-   * @param {string} password Password used to unlock a cryptographic key
+   * @param {string} password Used to generate a key to encrypt the data
    * @param {Object} dataObject Data to encrypt
-   * @returns {Object} Object containing cypher text, generation vectors, and salt
+   * @returns {Promise<Object>} Promise resolving to an object with ciphertext
    */
   encrypt (password, dataObject) {
       var salt = this._generateSalt()
@@ -34,10 +34,10 @@ class EdgeEncryptor {
   }
 
   /**
-   * Decrypts an arbitrary JavaScript object from cypher text
+   * Decrypts an arbitrary JavaScript object from ciphertext
    *
-   * @param {string} password Password used to unlock a cryptographic key
-   * @param {string} text Cypher text of an encrypted JavaScript object
+   * @param {string} password Used to generate a key to decrypt the data
+   * @param {string} text Ciphertext of an encrypted JavaScript object
    * @returns {Promise<Object>} Promise resolving to copy of decrypted JavaScript object
    */
   decrypt (password, text) {

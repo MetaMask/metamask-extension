@@ -52,7 +52,9 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
 var __define
 
 /**
- * Caches reference to global define object and deletes it
+ * Caches reference to global define object and deletes it to
+ * avoid conflicts with other global define objects, such as
+ * AMD's define function
  */
 function cleanContextForImports () {
   __define = global.define

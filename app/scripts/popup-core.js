@@ -12,7 +12,7 @@ module.exports = initializePopup
 /**
  * Asynchronously initializes the MetaMask popup UI
  *
- * @param {{ container: Element, connectionStream: any }} config Popup configuration object 
+ * @param {{ container: Element, connectionStream: * }} config Popup configuration object 
  * @param {Function} cb Called when initialization is comlete
  */
 function initializePopup ({ container, connectionStream }, cb) {
@@ -26,7 +26,7 @@ function initializePopup ({ container, connectionStream }, cb) {
 /**
  * Establishes streamed connections to background scripts and a Web3 provider
  *
- * @param {any} connectionStream PortStream instance establishing a background connection
+ * @param {*} connectionStream PortStream instance establishing a background connection
  * @param {Function} cb Called when controller connection is established
  */
 function connectToAccountManager (connectionStream, cb) {
@@ -41,7 +41,7 @@ function connectToAccountManager (connectionStream, cb) {
 /**
  * Establishes a streamed connection to a Web3 provider
  *
- * @param {any} connectionStream PortStream instance establishing a background connection
+ * @param {*} connectionStream PortStream instance establishing a background connection
  */
 function setupWeb3Connection (connectionStream) {
   var providerStream = new StreamProvider()
@@ -56,7 +56,7 @@ function setupWeb3Connection (connectionStream) {
 /**
  * Establishes a streamed connection to the background account manager
  *
- * @param {any} connectionStream PortStream instance establishing a background connection
+ * @param {*} connectionStream PortStream instance establishing a background connection
  * @param {Function} cb Called when the remote account manager connection is established
  */
 function setupControllerConnection (connectionStream, cb) {
