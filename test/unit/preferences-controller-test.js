@@ -52,6 +52,27 @@ describe('preferences controller', function () {
     })
   })
 
+  describe('setAccountLabel', function () {
+    it('should update a label for the given account', function () {
+      preferencesController.setAddresses([
+        '0xda22le',
+        '0x7e57e2',
+      ])
+
+      assert.deepEqual(preferencesController.store.getState().identities['0xda22le'], {
+        name: 'Account 1',
+        address: '0xda22le',
+      })
+
+
+      preferencesController.setAccountLabel('0xda22le', 'Dazzle')
+      assert.deepEqual(preferencesController.store.getState().identities['0xda22le'], {
+        name: 'Dazzle',
+        address: '0xda22le',
+      })
+    })
+  })
+
   describe('getTokens', function () {
     it('should return an empty list initially', async function () {
       await preferencesController.setSelectedAddress('0x7e57e2')
