@@ -144,7 +144,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // address book controller
     this.addressBookController = new AddressBookController({
       initState: initState.AddressBookController,
-    }, this.keyringController)
+      preferencesStore: this.preferencesController.store,
+    })
 
     // tx mgmt
     this.txController = new TransactionController({
