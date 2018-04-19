@@ -2,13 +2,21 @@ const assert = require('assert')
 const sinon = require('sinon')
 const clone = require('clone')
 const nock = require('nock')
+const ObservableStore = require('obs-store')
 const MetaMaskController = require('../../app/scripts/metamask-controller')
+const TransactionController = require('../../app/scripts/controllers/transactions')
 const blacklistJSON = require('../stub/blacklist')
 const firstTimeState = require('../../app/scripts/first-time-state')
+const { createTestProviderTools } = require('../stub/provider')
+
+const currentNetworkId = 42
 
 describe('MetaMaskController', function () {
   let metamaskController
   const sandbox = sinon.createSandbox()
+  const providerResultStub = {}
+  const providerTools = createTestProviderTools({ scaffold: providerResultStub })
+  const provider = providerTools.provider
   const noop = () => {}
 
   beforeEach(function () {
@@ -278,6 +286,34 @@ describe('MetaMaskController', function () {
       })
       assert.equal(getConfigSeed, undefined)
     })
+
+    it('#addNewAccount', async function () {
+      await metamaskController.addNewAccount()
+      const getAccounts = await metamaskController.keyringController.getAccounts()
+      assert.equal(getAccounts.length, 2)
+    })
+  })
+
+  describe('#resetAccount', function () {
+
+    beforeEach(function () {
+      const selectedAddressStub = sinon.stub(metamaskController.preferencesController, 'getSelectedAddress')
+      const getNetworkstub = sinon.stub(metamaskController.txController.txStateManager, 'getNetwork')
+
+      selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+      getNetworkstub.returns(42)
+
+      metamaskController.txController.txStateManager._saveTxList([
+        { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'} },
+        { id: 2, status: 'rejected', metamaskNetworkId: 32, txParams: {} },
+        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4'} },
+      ])
+    })
+
+    it('wipes transactions from only the correct network id and with the selected address', async function () {
+      await metamaskController.resetAccount()
+      assert.equal(metamaskController.txController.txStateManager.getTx(1), undefined)
+    })
   })
 
   describe('#clearSeedWordCache', function () {
@@ -358,6 +394,15 @@ describe('MetaMaskController', function () {
   })
 
   describe('#newUnsignedPersonalMessage', function () {
+
+    it('errors with no from in msgParams', function () {
+      const msgParams = {
+        'data': data,
+      }
+      metamaskController.newUnsignedPersonalMessage(msgParams, function (error) {
+        assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
+      })
+    })
 
     let msgParams, metamaskMsgs, messages, msgId
 
