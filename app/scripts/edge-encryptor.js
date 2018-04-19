@@ -7,11 +7,11 @@ const Unibabel = require('browserify-unibabel')
  */
 class EdgeEncryptor {
   /**
-   * Encrypts an arbitrary JavaScript object to ciphertext
+   * Encrypts an arbitrary object to ciphertext
    *
    * @param {string} password Used to generate a key to encrypt the data
    * @param {Object} dataObject Data to encrypt
-   * @returns {Promise<Object>} Promise resolving to an object with ciphertext
+   * @returns {Promise<string>} Promise resolving to an object with ciphertext
    */
   encrypt (password, dataObject) {
       var salt = this._generateSalt()
@@ -34,11 +34,11 @@ class EdgeEncryptor {
   }
 
   /**
-   * Decrypts an arbitrary JavaScript object from ciphertext
+   * Decrypts an arbitrary object from ciphertext
    *
    * @param {string} password Used to generate a key to decrypt the data
-   * @param {string} text Ciphertext of an encrypted JavaScript object
-   * @returns {Promise<Object>} Promise resolving to copy of decrypted JavaScript object
+   * @param {string} text Ciphertext of an encrypted object
+   * @returns {Promise<Object>} Promise resolving to copy of decrypted object
    */
   decrypt (password, text) {
       const payload = JSON.parse(text)
@@ -67,7 +67,7 @@ class EdgeEncryptor {
    *
    * @private
    * @param {string} password Password used to unlock a cryptographic key
-   * @param {string} salt Random base-64 data
+   * @param {string} salt Random base64 data
    * @returns {Promise<Object>} Promise resolving to a derived key
    */
   _keyFromPassword (password, salt) {
@@ -81,10 +81,10 @@ class EdgeEncryptor {
   }
 
   /**
-   * Generates random base-64 encoded data
+   * Generates random base64 encoded data
    *
    * @private
-   * @returns {string} Randomized base-64 encoded data
+   * @returns {string} Randomized base64 encoded data
    */
   _generateSalt (byteCount = 32) {
       var view = new Uint8Array(byteCount)

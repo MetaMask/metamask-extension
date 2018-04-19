@@ -3,6 +3,14 @@ const extend = require('xtend')
 const BalanceController = require('./balance')
 
 /**
+ * @typedef {Object} ComputedBalancesOptions
+ * @property {Object} accountTracker Account tracker store reference
+ * @property {Object} txController Token controller reference
+ * @property {Object} blockTracker Block tracker reference
+ * @property {Object} initState Initial state to populate this internal store with
+ */
+
+/**
  * Background controller responsible for syncing
  * and computing ETH balances for all accounts
  */
@@ -10,7 +18,7 @@ class ComputedbalancesController {
   /**
    * Creates a new controller instance
    *
-   * @param {Object} [opts] Controller configuration parameters 
+   * @param {ComputedBalancesOptions} [opts] Controller configuration parameters 
    */
   constructor (opts = {}) {
     const { accountTracker, txController, blockTracker } = opts
@@ -52,7 +60,7 @@ class ComputedbalancesController {
    * Uses current account state to sync and track all
    * addresses associated with the current account
    *
-   * @param {Object} store Account tracking state
+   * @param {{ accounts: Object }} store Account tracking state
    */
   syncAllAccountsFromStore (store) {
     const upstream = Object.keys(store.accounts)

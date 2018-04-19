@@ -34,8 +34,8 @@ global.METAMASK_DEBUG = process.env.METAMASK_DEBUG
 /**
  * @typedef {Object} EnumConfig
  * @property {string} DEFAULT_RPC Default network provider URL
- * @property {string} OLD_UI_NETWORK_TYPE
- * @property {string} BETA_UI_NETWORK_TYPE
+ * @property {string} OLD_UI_NETWORK_TYPE Network associated with old UI
+ * @property {string} BETA_UI_NETWORK_TYPE Network associated with new UI
  */
 
 /**

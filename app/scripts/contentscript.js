@@ -112,7 +112,7 @@ function logStreamDisconnectWarning (remoteLabel, err) {
 /**
  * Determines if Web3 should be injected
  *
- * @returns {boolean} True of Web3 should be injected
+ * @returns {boolean} {@code true} if Web3 should be injected
  */
 function shouldInjectWeb3 () {
   return doctypeCheck() && suffixCheck()
@@ -122,7 +122,7 @@ function shouldInjectWeb3 () {
 /**
  * Checks the doctype of the current document if it exists
  *
- * @returns {boolean} True if the doctype is html or if none exists
+ * @returns {boolean} {@code true} if the doctype is html or if none exists
  */
 function doctypeCheck () {
   const doctype = window.document.doctype
@@ -136,7 +136,7 @@ function doctypeCheck () {
 /**
  * Checks the current document extension
  *
- * @returns {boolean} True if the current extension is not prohibited
+ * @returns {boolean} {@code true} if the current extension is not prohibited
  */
 function suffixCheck () {
   var prohibitedTypes = ['xml', 'pdf']
@@ -154,7 +154,7 @@ function suffixCheck () {
 /**
  * Checks the documentElement of the current document
  *
- * @returns {boolean} True if the documentElement is an html node or if none exists
+ * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
  */
 function documentElementCheck () {
   var documentElement = document.documentElement.nodeName
@@ -167,7 +167,7 @@ function documentElementCheck () {
 /**
  * Checks if the current domain is blacklisted
  * 
- * @returns {boolean} True if the current domain is blacklisted
+ * @returns {boolean} {@code true} if the current domain is blacklisted
  */
 function blacklistedDomainCheck () {
   var blacklistedDomains = [

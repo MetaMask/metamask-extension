@@ -8,7 +8,7 @@ inherits(PortDuplexStream, Duplex)
 
 /**
  * Creates a stream that's both readable and writable.
- * The stream supports arbitrary JavaScript objects.
+ * The stream supports arbitrary objects.
  *
  * @class
  * @param {Object} port Remote Port object
@@ -60,7 +60,7 @@ PortDuplexStream.prototype._read = noop
  * this writable stream.
  * 
  * @private
- * @param {*} msg Arbitrary JavaScript object to write
+ * @param {*} msg Arbitrary object to write
  * @param {string} encoding Encoding to use when writing payload
  * @param {Function} cb Called when writing is complete or an error occurs
  */
