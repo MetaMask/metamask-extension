@@ -4,8 +4,17 @@ const PreferencesController = require('../../app/scripts/controllers/preferences
 describe('preferences controller', function () {
   let preferencesController
 
-  before(() => {
+  beforeEach(() => {
     preferencesController = new PreferencesController()
+  })
+
+  describe('getTokens', function () {
+    it('should return an empty list initially', async function () {
+      await preferencesController.setSelectedAddress('0x7e57e2')
+
+      const tokens = preferencesController.getTokens()
+      assert.equal(tokens.length, 0, 'empty list of tokens')
+    })
   })
 
   describe('addToken', function () {
@@ -14,6 +23,7 @@ describe('preferences controller', function () {
       const symbol = 'ABBR'
       const decimals = 5
 
+      await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken(address, symbol, decimals)
 
       const tokens = preferencesController.getTokens()
@@ -30,6 +40,7 @@ describe('preferences controller', function () {
       const symbol = 'ABBR'
       const decimals = 5
 
+      await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.addToken(address, symbol, decimals)
 
       const newDecimals = 6
@@ -42,6 +53,44 @@ describe('preferences controller', function () {
       assert.equal(added.address, address, 'set address correctly')
       assert.equal(added.symbol, symbol, 'set symbol correctly')
       assert.equal(added.decimals, newDecimals, 'updated decimals correctly')
+    })
+
+    it('should allow adding tokens to two separate addresses', async function () {
+      const address = '0xabcdef1234567'
+      const symbol = 'ABBR'
+      const decimals = 5
+
+      await preferencesController.setSelectedAddress('0x7e57e2')
+      await preferencesController.addToken(address, symbol, decimals)
+      assert.equal(preferencesController.getTokens().length, 1, 'one token added for 1st address')
+
+      await preferencesController.setSelectedAddress('0xda22le')
+      await preferencesController.addToken(address, symbol, decimals)
+      assert.equal(preferencesController.getTokens().length, 1, 'one token added for 2nd address')
+    })
+  })
+
+  describe('removeToken', function () {
+    it('should remove the only token from its state', async function () {
+      await preferencesController.setSelectedAddress('0x7e57e2')
+      await preferencesController.addToken('0xa', 'A', 5)
+      await preferencesController.removeToken('0xa')
+
+      const tokens = preferencesController.getTokens()
+      assert.equal(tokens.length, 0, 'one token removed')
+    })
+
+    it('should remove a token from its state', async function () {
+      await preferencesController.setSelectedAddress('0x7e57e2')
+      await preferencesController.addToken('0xa', 'A', 4)
+      await preferencesController.addToken('0xb', 'B', 5)
+      await preferencesController.removeToken('0xa')
+
+      const tokens = preferencesController.getTokens()
+      assert.equal(tokens.length, 1, 'one token removed')
+
+      const [token1] = tokens
+      assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5})
     })
   })
 })
