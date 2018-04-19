@@ -345,10 +345,9 @@ function transitionBackward () {
   }
 }
 
-function confirmSeedWords () {
+function clearSeedWordCache () {
+  log.debug(`background.clearSeedWordCache`)
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    log.debug(`background.clearSeedWordCache`)
     return new Promise((resolve, reject) => {
       background.clearSeedWordCache((err, account) => {
         if (err) {
@@ -361,9 +360,22 @@ function confirmSeedWords () {
         resolve(account)
       })
     })
-    .then(() => dispatch(setIsRevealingSeedWords(false)))
-    .then(() => dispatch(actions.hideLoadingIndication()))
-    .catch(() => dispatch(actions.hideLoadingIndication()))
+  }
+}
+
+function confirmSeedWords () {
+  return async dispatch => {
+    dispatch(actions.showLoadingIndication())
+    const account = await dispatch(clearSeedWordCache())
+    return dispatch(setIsRevealingSeedWords(false))
+      .then(() => {
+        dispatch(actions.hideLoadingIndication())
+        return account
+      })
+      .catch(() => {
+        dispatch(actions.hideLoadingIndication())
+        return account
+      })
   }
 }
 
