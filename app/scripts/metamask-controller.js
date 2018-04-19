@@ -51,7 +51,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * @constructor
-   * @param {Object} opts
+ * @param {Object} opts
    */
    constructor (opts) {
     super()
@@ -399,8 +399,6 @@ module.exports = class MetamaskController extends EventEmitter {
       markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
     }
   }
-
-
 
 //=============================================================================
 // VAULT / KEYRING RELATED METHODS
@@ -834,13 +832,13 @@ module.exports = class MetamaskController extends EventEmitter {
     cb(null, this.getState())
   }
 
-  markPasswordForgotten(cb) {
+  markPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(true)
     this.sendUpdate()
     cb()
   }
 
-  unMarkPasswordForgotten(cb) {
+  unMarkPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(false)
     this.sendUpdate()
     cb()
@@ -914,6 +912,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // setup connection
     const providerStream = createEngineStream({ engine })
+    // data event listener
+    this.provider.on('data', (err, data) => !err ? providerStream.emit('data', data) : log.error(err))
     pump(
       outStream,
       providerStream,

@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter
+const EventEmitter = require('events')
 const semver = require('semver')
 const extend = require('xtend')
 const ObservableStore = require('obs-store')

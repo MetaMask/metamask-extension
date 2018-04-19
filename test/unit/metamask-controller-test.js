@@ -8,7 +8,7 @@ const firstTimeState = require('../../app/scripts/first-time-state')
 
 describe('MetaMaskController', function () {
   let metamaskController
-  const sandbox = sinon.sandbox.create()
+  const sandbox = sinon.createSandbox()
   const noop = () => { }
 
   beforeEach(function () {

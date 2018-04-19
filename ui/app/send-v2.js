@@ -128,6 +128,7 @@ SendTransactionScreen.prototype.updateGas = function () {
         this.setState({ gasLoadingError: false })
       })
       .catch(err => {
+        if (err) throw err
         this.setState({ gasLoadingError: true })
       })
   } else {

@@ -1,10 +1,10 @@
 /*global Web3*/
 cleanContextForImports()
-require('web3/dist/web3.min.js')
+require('web3/dist/web3.min')
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
-const setupDappAutoReload = require('./lib/auto-reload.js')
-const MetamaskInpageProvider = require('./lib/inpage-provider.js')
+const setupDappAutoReload = require('./lib/auto-reload')
+const MetamaskInpageProvider = require('./lib/inpage-provider')
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
@@ -14,13 +14,13 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 //
 
 // setup background connection
-var metamaskStream = new LocalMessageDuplexStream({
+const metamaskStream = new LocalMessageDuplexStream({
   name: 'inpage',
   target: 'contentscript',
 })
 
 // compose the inpage provider
-var inpageProvider = new MetamaskInpageProvider(metamaskStream)
+const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
 //
 // setup web3
@@ -33,7 +33,7 @@ if (typeof window.web3 !== 'undefined') {
      or MetaMask and another web3 extension. Please remove one
      and try again.`)
 }
-var web3 = new Web3(inpageProvider)
+const web3 = new Web3(inpageProvider)
 web3.setProvider = function () {
   log.debug('MetaMask - overrode web3.setProvider')
 }
@@ -47,6 +47,20 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
 })
 
+// clear subscriptions
+function clearSubscriptions () {
+  if (inpageProvider.subscriptions) {
+    inpageProvider.sendAsync({
+      jsonrpc: '2.0',
+      method: 'eth_unsubscribe',
+      params: inpageProvider.subscriptions,
+    }, () => {
+      console.log('cleared subscriptions')
+    })
+  }
+}
+window.onbeforeunload = clearSubscriptions
+
 //
 // util
 //
@@ -54,7 +68,7 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
-var __define
+let __define
 
 function cleanContextForImports () {
   __define = global.define

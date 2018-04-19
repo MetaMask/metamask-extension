@@ -6,7 +6,7 @@ var contractNamer = require(path.join(__dirname, '..', '..', 'old-ui', 'lib', 'c
 
 describe('contractNamer', function () {
   beforeEach(function () {
-    this.sinon = sinon.sandbox.create()
+    this.sinon = sinon.createSandbox()
   })
 
   afterEach(function () {

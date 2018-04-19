@@ -1,25 +1,25 @@
-// var jsdom = require('mocha-jsdom')
-var assert = require('assert')
-var freeze = require('deep-freeze-strict')
-var path = require('path')
-var sinon = require('sinon')
+// const jsdom = require('mocha-jsdom')
+const assert = require('assert')
+const freeze = require('deep-freeze-strict')
+const path = require('path')
+const sinon = require('sinon')
 
-var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'actions.js'))
-var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'reducers.js'))
+const actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'actions.js'))
+const reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'reducers.js'))
 
 describe('tx confirmation screen', function () {
   beforeEach(function () {
-    this.sinon = sinon.sandbox.create()
+    this.sinon = sinon.createSandbox()
   })
 
   afterEach(function () {
     this.sinon.restore()
   })
 
-  var initialState, result
+  let initialState, result
 
   describe('when there is only one tx', function () {
-    var firstTxId = 1457634084250832
+    const firstTxId = 1457634084250832
 
     beforeEach(function () {
       initialState = {
@@ -60,7 +60,7 @@ describe('tx confirmation screen', function () {
       })
 
       it('should have no unconfirmed txs remaining', function () {
-        var count = getUnconfirmedTxCount(result)
+        const count = getUnconfirmedTxCount(result)
         assert.equal(count, 0)
       })
     })
@@ -68,7 +68,6 @@ describe('tx confirmation screen', function () {
 })
 
 function getUnconfirmedTxCount (state) {
-  var txs = state.metamask.unapprovedTxs
-  var count = Object.keys(txs).length
-  return count
+  const txs = state.metamask.unapprovedTxs
+  return Object.keys(txs).length
 }

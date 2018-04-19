@@ -2,7 +2,7 @@ var assert = require('assert')
 
 const additions = require('react-testutils-additions')
 const h = require('react-hyperscript')
-const ReactTestUtils = require('react-addons-test-utils')
+const ReactTestUtils = require('react-dom/test-utils')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 
