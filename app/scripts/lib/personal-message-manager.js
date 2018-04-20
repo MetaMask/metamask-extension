@@ -3,6 +3,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const createId = require('./random-id')
 const hexRe = /^[0-9A-Fa-f]+$/g
+const log = require('loglevel')
 
 /**
  * Represents, and contains data about, an 'personal_sign' type signature request. These are created when a

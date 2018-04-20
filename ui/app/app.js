@@ -6,6 +6,7 @@ const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
+const log = require('loglevel')
 
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
@@ -55,10 +56,19 @@ const {
 
 class App extends Component {
   componentWillMount () {
-    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
+    const {
+      currentCurrency,
+      setCurrentCurrencyToUSD,
+      isRevealingSeedWords,
+      clearSeedWords,
+    } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
+    }
+
+    if (isRevealingSeedWords) {
+      clearSeedWords()
     }
   }
 
@@ -135,8 +145,6 @@ class App extends Component {
         (isLoading || isLoadingNetwork) && h(Loading, {
           loadingMessage: loadMessage,
         }),
-
-        // this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
         // content
         this.renderRoutes(),
@@ -301,17 +309,6 @@ class App extends Component {
     )
   }
 
-  renderLoadingIndicator ({ isLoading, isLoadingNetwork, loadMessage }) {
-    const { isMascara } = this.props
-
-    return isMascara
-      ? null
-      : h(Loading, {
-        isLoading: isLoading || isLoadingNetwork,
-        loadingMessage: loadMessage,
-      })
-  }
-
   toggleMetamaskActive () {
     if (!this.props.isUnlocked) {
       // currently inactive: redirect to password box
@@ -405,6 +402,8 @@ App.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   t: PropTypes.func,
+  isRevealingSeedWords: PropTypes.bool,
+  clearSeedWords: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -485,6 +484,7 @@ function mapDispatchToProps (dispatch, ownProps) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
+    clearSeedWords: () => dispatch(actions.confirmSeedWords()),
   }
 }
 

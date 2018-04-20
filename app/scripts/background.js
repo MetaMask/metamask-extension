@@ -21,12 +21,16 @@ const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
+const {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+} = require('./lib/enums')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
-window.log = log
-log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 const platform = new ExtensionPlatform()
 const notificationManager = new NotificationManager()
@@ -44,7 +48,7 @@ const isEdge = !isIE && !!window.StyleMedia
 
 let popupIsOpen = false
 let notificationIsOpen = false
-let openMetamaskTabsIDs = {}
+const openMetamaskTabsIDs = {}
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
@@ -173,7 +177,7 @@ function setupController (initState, initLangCode) {
     return versionedData
   }
 
-  function persistData(state) {
+  function persistData (state) {
     if (!state) {
       throw new Error('MetaMask - updated state is missing', state)
     }
@@ -192,30 +196,53 @@ function setupController (initState, initLangCode) {
   //
   // connect to other contexts
   //
-
   extension.runtime.onConnect.addListener(connectRemote)
+
+  const metamaskInternalProcessHash = {
+    [ENVIRONMENT_TYPE_POPUP]: true,
+    [ENVIRONMENT_TYPE_NOTIFICATION]: true,
+    [ENVIRONMENT_TYPE_FULLSCREEN]: true,
+  }
+
+  const isClientOpenStatus = () => {
+    return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
+  }
+
   function connectRemote (remotePort) {
-    const isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
+    const processName = remotePort.name
+    const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
     const portStream = new PortStream(remotePort)
+
     if (isMetaMaskInternalProcess) {
       // communication with popup
-      popupIsOpen = popupIsOpen || (remotePort.name === 'popup')
+      controller.isClientOpen = true
       controller.setupTrustedCommunication(portStream, 'MetaMask')
-      // record popup as closed
-      if (remotePort.sender.url.match(/home.html$/)) {
-        openMetamaskTabsIDs[remotePort.sender.tab.id] = true
-      }
-      if (remotePort.name === 'popup') {
+
+      if (processName === ENVIRONMENT_TYPE_POPUP) {
+        popupIsOpen = true
+
         endOfStream(portStream, () => {
           popupIsOpen = false
-          if (remotePort.sender.url.match(/home.html$/)) {
-            openMetamaskTabsIDs[remotePort.sender.tab.id] = false
-          }
+          controller.isClientOpen = isClientOpenStatus()
         })
       }
-      if (remotePort.name === 'notification') {
+
+      if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
+        notificationIsOpen = true
+
         endOfStream(portStream, () => {
           notificationIsOpen = false
+          controller.isClientOpen = isClientOpenStatus()
+        })
+      }
+
+      if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
+        const tabId = remotePort.sender.tab.id
+        openMetamaskTabsIDs[tabId] = true
+
+        endOfStream(portStream, () => {
+          delete openMetamaskTabsIDs[tabId]
+          controller.isClientOpen = isClientOpenStatus()
         })
       }
     } else {
@@ -258,10 +285,11 @@ function setupController (initState, initLangCode) {
 
 // popup trigger
 function triggerUi () {
-  extension.tabs.query({ active: true }, (tabs) => {
-    const currentlyActiveMetamaskTab = tabs.find(tab => openMetamaskTabsIDs[tab.id])
-    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) notificationManager.showPopup()
-    notificationIsOpen = true
+  extension.tabs.query({ active: true }, tabs => {
+    const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
+    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
+      notificationManager.showPopup()
+    }
   })
 }
 

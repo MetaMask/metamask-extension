@@ -1,4 +1,5 @@
 const valuesFor = require('../app/util').valuesFor
+const log = require('loglevel')
 
 module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, typedMessages, network) {
   log.debug('tx-helper called with params:')

@@ -1,6 +1,7 @@
 # MetaMask Browser Extension
 [![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension) [![Coverage Status](https://coveralls.io/repos/github/MetaMask/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/MetaMask/metamask-extension?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/MetaMask/metamask-extension.svg)](https://greenkeeper.io/) [![Stories in Ready](https://badge.waffle.io/MetaMask/metamask-extension.png?label=in%20progress&title=waffle.io)](https://waffle.io/MetaMask/metamask-extension)
 
+[Internal documentation](./docs/jsdocs)
 
 ## Support
 
@@ -68,6 +69,7 @@ To write tests that will be run in the browser using QUnit, add your test files 
 - [How to develop a live-reloading UI](./docs/ui-dev-mode.md)
 - [How to add a new translation to MetaMask](./docs/translating-guide.md)
 - [Publishing Guide](./docs/publishing.md)
+- [The MetaMask Team](./docs/team.md)
 - [How to develop an in-browser mocked UI](./docs/ui-mock-mode.md)
 - [How to live reload on local dependency changes](./docs/developing-on-deps.md)
 - [How to add new networks to the Provider Menu](./docs/adding-new-networks.md)

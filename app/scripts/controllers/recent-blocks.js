@@ -2,6 +2,7 @@ const ObservableStore = require('obs-store')
 const extend = require('xtend')
 const BN = require('ethereumjs-util').BN
 const EthQuery = require('eth-query')
+const log = require('loglevel')
 
 class RecentBlocksController {
 

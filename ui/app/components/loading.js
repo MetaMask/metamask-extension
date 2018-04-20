@@ -1,6 +1,7 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
+const classnames = require('classnames')
 
 class LoadingIndicator extends Component {
   renderMessage () {
@@ -10,14 +11,16 @@ class LoadingIndicator extends Component {
 
   render () {
     return (
-      h('.full-flex-height.loading-overlay', {}, [
-        h('img', {
-          src: 'images/loading.svg',
-        }),
+      h('.loading-overlay', {
+        className: classnames({ 'loading-overlay--full-screen': this.props.fullScreen }),
+      }, [
+        h('.flex-center.flex-column', [
+          h('img', {
+            src: 'images/loading.svg',
+          }),
 
-        h('br'),
-
-        this.renderMessage(),
+          this.renderMessage(),
+        ]),
       ])
     )
   }
@@ -25,6 +28,7 @@ class LoadingIndicator extends Component {
 
 LoadingIndicator.propTypes = {
   loadingMessage: PropTypes.string,
+  fullScreen: PropTypes.bool,
 }
 
 module.exports = LoadingIndicator

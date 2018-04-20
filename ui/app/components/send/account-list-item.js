@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
+const { checksumAddress } = require('../../util')
 const Identicon = require('../identicon')
 const CurrencyDisplay = require('./currency-display')
 const { conversionRateSelector, getCurrentCurrency } = require('../../selectors')
@@ -56,7 +57,7 @@ AccountListItem.prototype.render = function () {
 
     ]),
 
-    displayAddress && name && h('div.account-list-item__account-address', address),
+    displayAddress && name && h('div.account-list-item__account-address', checksumAddress(address)),
 
     displayBalance && h(CurrencyDisplay, {
       primaryCurrency: 'ETH',

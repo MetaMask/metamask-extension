@@ -8,6 +8,7 @@ const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const log = require('loglevel')
 
 
 module.exports = EnsInput

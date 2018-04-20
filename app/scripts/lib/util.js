@@ -1,14 +1,11 @@
 const ethUtil = require('ethereumjs-util')
 const assert = require('assert')
 const BN = require('bn.js')
-
-module.exports = {
-  getStack,
-  sufficientBalance,
-  hexToBn,
-  bnToHex,
-  BnMultiplyByFraction,
-}
+const {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+} = require('./enums')
 
 /**
  * Generates an example stack trace
@@ -19,6 +16,25 @@ module.exports = {
 function getStack () {
   const stack = new Error('Stack trace generator - not an error').stack
   return stack
+}
+
+/**
+ * Used to determine the window type through which the app is being viewed.
+ *  - 'popup' refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
+ *  - 'responsive' refers to the main browser window
+ *  - 'notification' refers to the popup that appears in its own window when taking action outside of metamask
+ *
+ * @returns {string} A single word label that represents the type of window through which the app is being viewed
+ *
+ */
+const getEnvironmentType = (url = window.location.href) => {
+  if (url.match(/popup.html(?:\?.+)*$/)) {
+    return ENVIRONMENT_TYPE_POPUP
+  } else if (url.match(/home.html(?:\?.+)*$/) || url.match(/home.html(?:#.*)*$/)) {
+    return ENVIRONMENT_TYPE_FULLSCREEN
+  } else {
+    return ENVIRONMENT_TYPE_NOTIFICATION
+  }
 }
 
 /**
@@ -81,4 +97,13 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
   const numBN = new BN(numerator)
   const denomBN = new BN(denominator)
   return targetBN.mul(numBN).div(denomBN)
+}
+
+module.exports = {
+  getStack,
+  getEnvironmentType,
+  sufficientBalance,
+  hexToBn,
+  bnToHex,
+  BnMultiplyByFraction,
 }
