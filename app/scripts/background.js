@@ -1,4 +1,4 @@
-/*
+/**
  * @file The entry point for the web extension singleton process.
  */
 
@@ -86,7 +86,7 @@ setupMetamaskMeshMetrics()
  * @property {number} submittedTime - The time the transaction was submitted to the network, in Unix epoch time (ms).
  */
 
-/*
+/**
  * The data emitted from the MetaMaskController.store EventEmitter, also used to initialize the MetaMaskController.
  * @typedef MetaMaskState
  * @property {boolean} isInitialized - Whether the first vault has been created.
@@ -139,13 +139,13 @@ setupMetamaskMeshMetrics()
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
  */
 
-/*
+/**
  * @typedef VersionedData
  * @property {MetaMaskState} data - The data emitted from MetaMask controller, or used to initialize it.
  * @property {Number} version - The latest migration version that has been run.
  */
 
-/*
+/**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  * @returns {Promise} Setup complete.
  */
@@ -160,7 +160,7 @@ async function initialize () {
 // State and Persistence
 //
 
-/*
+/**
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
@@ -227,7 +227,7 @@ async function loadStateFromPersistence () {
   return versionedData.data
 }
 
-/*
+/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -275,7 +275,7 @@ function setupController (initState, initLangCode) {
     }
   )
 
-  /*
+  /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
    * @param {Object} state - The state object as emitted by the MetaMaskController.
    * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
@@ -316,14 +316,14 @@ function setupController (initState, initLangCode) {
     return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
   }
 
-  /*
+  /**
    * A runtime.Port object, as provided by the browser:
-   * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
+   * @link https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
    * @typedef Port
    * @type Object
    */
 
-  /*
+  /**
    * Connects a Port to the MetaMask controller via a multiplexed duplex stream.
    * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
    * @param {Port} remotePort - The port provided by a new context.
@@ -381,7 +381,7 @@ function setupController (initState, initLangCode) {
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
 
-  /*
+  /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
@@ -406,7 +406,7 @@ function setupController (initState, initLangCode) {
 // Etc...
 //
 
-/*
+/**
  * Opens the browser popup for user confirmation
  */
 function triggerUi () {
