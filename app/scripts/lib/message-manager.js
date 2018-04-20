@@ -20,7 +20,7 @@ var msgData = {
  * @typedef {Object} Message
  * @property {number} id An id to track and identify the message object
  * @property {object} msgParams The parameters to pass to the eth_sign method once the signature request is approved.
- * @property {object} msgParams.metamaskId Added to msgParams for tracking and identification within Metamask.
+ * @property {object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
  * @property {string} msgParams.data A hex string conversion of the raw buffer data of the signature request
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed' or 'rejected'
@@ -36,7 +36,7 @@ module.exports = class MessageManager extends EventEmitter {
    *
    * @typedef {Object} MessageManager
    * @param {object} opts @deprecated
-   * @property {object} memStore The observable store where Messages are saved with persistance.
+   * @property {object} memStore The observable store where Messages are saved.
    * @property {object} memStore.unapprovedMsgs A collection of all Messages in the 'unapproved' state
    * @property {number} memStore.unapprovedMsgCount The count of all Messages in this.memStore.unapprobedMsgs
    * @property {array} messages Holds all messages that have been created by this MessageManager
@@ -126,8 +126,8 @@ module.exports = class MessageManager extends EventEmitter {
    * Approves a Message. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise with
    * any the message params modified for proper signing.
    *
-   * @param {object} msgParams The msgParams to be used when eth_sign is called, plus data added by Metamask.
-   * @param {object} msgParams.metamaskId Added to msgParams for tracking and identification within Metamask.
+   * @param {object} msgParams The msgParams to be used when eth_sign is called, plus data added by MetaMask.
+   * @param {object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    *
    */

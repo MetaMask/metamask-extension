@@ -11,7 +11,7 @@ class BalanceController {
    * @param {Object} opts Initialize various properties of the class.
    * @property {string} address A base 16 hex string. The account address which has the balance managed by this
    * BalanceController.
-   * @property {AccountTracker} accountTracker Contains and updates the users accounts; is the source of the account
+   * @property {AccountTracker} accountTracker Stores and updates the users accounts
    * for which this BalanceController manages balance.
    * @property {TransactionController} txController Stores, tracks and manages transactions. Here used to create a listener for
    * transaction updates.
@@ -58,7 +58,7 @@ class BalanceController {
 
   /**
    * Sets up listeners and subscriptions which should trigger an update of ethBalance. These updates include:
-   * - when a transaction changes to a submitted, confirmed or failed state
+   * - when a transaction changes state to 'submitted', 'confirmed' or 'failed'
    * - when the current account changes (i.e. a new account is selected)
    * - when there is a block update 
    *

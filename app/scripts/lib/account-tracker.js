@@ -57,7 +57,7 @@ class AccountTracker extends EventEmitter {
    * AccountTracker.
    *
    * Once this AccountTracker's accounts are up to date with those referenced by the passed addresses, each
-   * of these accounts are given an updated balance via Ethquery.
+   * of these accounts are given an updated balance via EthQuery.
    *
    * @param {array} address The array of hex addresses for accounts with which this AccountTracker's accounts should be
    * in sync
@@ -119,7 +119,7 @@ class AccountTracker extends EventEmitter {
    *
    * @private
    * @param {object} block Data about the block that contains the data to update to.
-   * @fires 'block' The updated state, if all account updates are successfull
+   * @fires 'block' The updated state, if all account updates are successful
    *
    */
   _updateForBlock (block) {
@@ -139,7 +139,7 @@ class AccountTracker extends EventEmitter {
   /**
    * Calls this._updateAccount for each account in this.store
    *
-   * @param {Function} cb A callback to pass to this._updateAccount, called after each account is succesfully updated
+   * @param {Function} cb A callback to pass to this._updateAccount, called after each account is successfully updated
    *
    */
   _updateAccounts (cb = noop) {

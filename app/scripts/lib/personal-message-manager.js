@@ -3,7 +3,6 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const createId = require('./random-id')
 const hexRe = /^[0-9A-Fa-f]+$/g
-const log = require('loglevel')
 
 /**
  * Represents, and contains data about, an 'personal_sign' type signature request. These are created when a
@@ -15,7 +14,7 @@ const log = require('loglevel')
  * @property {number} id An id to track and identify the message object
  * @property {object} msgParams The parameters to pass to the personal_sign method once the signature request is
  * approved.
- * @property {object} msgParams.metamaskId Added to msgParams for tracking and identification within Metamask.
+ * @property {object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
  * @property {string} msgParams.data A hex string conversion of the raw buffer data of the signature request
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed' or 'rejected'
@@ -124,8 +123,8 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    * Approves a PersonalMessage. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
    * with any the message params modified for proper signing.
    *
-   * @param {object} msgParams The msgParams to be used when eth_sign is called, plus data added by Metamask.
-   * @param {object} msgParams.metamaskId Added to msgParams for tracking and identification within Metamask.
+   * @param {object} msgParams The msgParams to be used when eth_sign is called, plus data added by MetaMask.
+   * @param {object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    *
    */

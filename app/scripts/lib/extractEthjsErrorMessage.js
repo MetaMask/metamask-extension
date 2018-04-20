@@ -5,7 +5,7 @@ module.exports = extractEthjsErrorMessage
 
 
 /**
- * Extracts the important part of an ethjs-rpc error message. If the passed error is not anis isEthjsRpcError, the error
+ * Extracts the important part of an ethjs-rpc error message. If the passed error is not an isEthjsRpcError, the error
  * is returned unchanged.
  *
  * @param {string} errorMessage The error message to parse
