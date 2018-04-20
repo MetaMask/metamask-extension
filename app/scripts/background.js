@@ -65,9 +65,78 @@ initialize().catch(log.error)
 // setup metamask mesh testing container
 setupMetamaskMeshMetrics()
 
+/**
+ * An object representing a transaction, in whatever state it is in.
+ * @typedef TransactionMeta
+ *
+ * @property {number} id - An internally unique tx identifier.
+ * @property {number} time - Time the tx was first suggested, in unix epoch time (ms).
+ * @property {string} status - The current transaction status (unapproved, signed, submitted, dropped, failed, rejected), as defined in `tx-state-manager.js`.
+ * @property {string} metamaskNetworkId - The transaction's network ID, used for EIP-155 compliance.
+ * @property {boolean} loadingDefaults - TODO: Document
+ * @property {Object} txParams - The tx params as passed to the network provider.
+ * @property {Object[]} history - A history of mutations to this TransactionMeta object.
+ * @property {boolean} gasPriceSpecified - True if the suggesting dapp specified a gas price, prevents auto-estimation.
+ * @property {boolean} gasLimitSpecified - True if the suggesting dapp specified a gas limit, prevents auto-estimation.
+ * @property {string} estimatedGas - A hex string represented the estimated gas limit required to complete the transaction.
+ * @property {string} origin - A string representing the interface that suggested the transaction.
+ * @property {Object} nonceDetails - A metadata object containing information used to derive the suggested nonce, useful for debugging nonce issues.
+ * @property {string} rawTx - A hex string of the final signed transaction, ready to submit to the network.
+ * @property {string} hash - A hex string of the transaction hash, used to identify the transaction on the network.
+ * @property {number} submittedTime - The time the transaction was submitted to the network, in Unix epoch time (ms).
+ */
+
 /*
  * The data emitted from the MetaMaskController.store EventEmitter, also used to initialize the MetaMaskController.
  * @typedef MetaMaskState
+ * @property {boolean} isInitialized - Whether the first vault has been created.
+ * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
+ * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
+ * @property {boolean} isMascara - True if the current context is the extensionless MetaMascara project.
+ * @property {boolean} isPopup - Returns true if the current view is an externally-triggered notification.
+ * @property {string} rpcTarget - DEPRECATED - The URL of the current RPC provider.
+ * @property {Object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
+ * @property {Object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
+ * @property {boolean} noActiveNotices - False if there are notices the user should confirm before using the application.
+ * @property {Array} frequentRpcList - A list of frequently used RPCs, including custom user-provided ones.
+ * @property {Array} addressBook - A list of previously sent to addresses.
+ * @property {address} selectedTokenAddress - Used to indicate if a token is globally selected. Should be deprecated in favor of UI-centric token selection.
+ * @property {Object} tokenExchangeRates - Info about current token prices.
+ * @property {Array} tokens - Tokens held by the current user, including their balances.
+ * @property {Object} send - TODO: Document
+ * @property {Object} coinOptions - TODO: Document
+ * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
+ * @property {Object} featureFlags - An object for optional feature flags.
+ * @property {string} networkEndpointType - TODO: Document
+ * @property {boolean} isRevealingSeedWords - True if seed words are currently being recovered, and should be shown to user.
+ * @property {boolean} welcomeScreen - True if welcome screen should be shown.
+ * @property {string} currentLocale - A locale string matching the user's preferred display language.
+ * @property {Object} provider - The current selected network provider.
+ * @property {string} provider.rpcTarget - The address for the RPC API, if using an RPC API.
+ * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
+ * @property {string} network - A stringified number of the current network ID.
+ * @property {Object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
+ * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
+ * @property {TransactionMeta[]} selectedAddressTxList - An array of transactions associated with the currently selected account.
+ * @property {Object} unapprovedMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
+ * * @property {Object} unapprovedPersonalMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
+  * @property {Object} unapprovedTypedMsgs - An object of messages associated with the currently selected account, mapping a unique ID to the options.
+ * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
+ * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
+ * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
+ * @property {Object} computedBalances - Maps accounts to their balances, accounting for balance changes from pending transactions.
+ * @property {string} currentAccountTab - A view identifying string for displaying the current displayed view, allows user to have a preferred tab in the old UI (between tokens and history).
+ * @property {string} selectedAddress - A lower case hex string of the currently selected address.
+ * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
+ * @property {number} conversionRate - A number representing the current exchange rate from the user's preferred currency to Ether.
+ * @property {number} conversionDate - A unix epoch date (ms) for the time the current conversion rate was last retrieved.
+ * @property {Object} infuraNetworkStatus - An object of infura network status checks.
+ * @property {Block[]} recentBlocks - An array of recent blocks, used to calculate an effective but cheap gas price.
+ * @property {Array} shapeShiftTxList - An array of objects describing shapeshift exchange attempts.
+ * @property {Array} lostAccounts - TODO: Remove this feature. A leftover from the version-3 migration where our seed-phrase library changed to fix a bug where some accounts were mis-generated, but we recovered the old accounts as "lost" instead of losing them.
+ * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
  */
 
 /*
