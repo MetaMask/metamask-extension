@@ -87,7 +87,7 @@ setupMetamaskMeshMetrics()
  */
 
 /**
- * The data emitted from the MetaMaskController.store EventEmitter, also used to initialize the MetaMaskController.
+ * The data emitted from the MetaMaskController.store EventEmitter, also used to initialize the MetaMaskController. Available in UI on React state as state.metamask.
  * @typedef MetaMaskState
  * @property {boolean} isInitialized - Whether the first vault has been created.
  * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
