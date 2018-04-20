@@ -914,6 +914,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // setup connection
     const providerStream = createEngineStream({ engine })
+    // data event listener
+    this.provider.on('data', (err, data) => !err ? providerStream.emit('data', data) : log.error(err))
     pump(
       outStream,
       providerStream,
