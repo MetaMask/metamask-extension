@@ -315,10 +315,11 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Returns an api-object which is consumed by the UI.
-   * The API object is composed of callback functions.
+   * Returns an Object containing API Callback Functions.
+   * These functions are the interface for the UI.
+   * The API object can be transmitted over a stream with dnode.
    *
-   * @returns {Object}
+   * @returns {Object} Object containing API functions.
    */
   getApi () {
     const keyringController = this.keyringController
@@ -420,7 +421,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @param  {string} password
    *
-   * @returns {} vault
+   * @returns {Object} vault
    */
   async createNewVaultAndKeychain (password) {
     const release = await this.createVaultMutex.acquire()
@@ -600,7 +601,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * These are defined in app/scripts/account-import-strategies
    * Each strategy represents a different way of serializing an Ethereum key pair.
    *
-   * @param  {string} strategy - A unique identifier for a
+   * @param  {string} strategy - A unique identifier for an account import strategy.
    * @param  {any} args - The data required by that strategy to import an account.
    * @param  {Function} cb - A callback function called with a state update on success.
    */
@@ -649,7 +650,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Signifies user intent to complete an eth_sign method.
    *
    * @param  {Object} msgParams The params passed to eth_call.
-   * @returns Promise<Object> Full state update.
+   * @returns {Promise<Object>} Full state update.
    */
   signMessage (msgParams) {
     log.info('MetaMaskController - signMessage')
@@ -670,10 +671,10 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  /*
+  /**
    * Used to cancel a message submitted via eth_sign.
    *
-   * @param {String} msgId - The id of the message to cancel.
+   * @param {string} msgId - The id of the message to cancel.
    */
   cancelMessage (msgId, cb) {
     const messageManager = this.messageManager
@@ -685,7 +686,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   // personal_sign methods:
 
-  /*
+  /**
    * Called when a dapp uses the personal_sign method.
    * This is identical to the Geth eth_sign method, and may eventually replace
    * eth_sign.
@@ -721,7 +722,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Triggers signing, and the callback function from newUnsignedPersonalMessage.
    *
    * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
-   * @returns {Promise<Object} - A full state update.
+   * @returns {Promise<Object>/} - A full state update.
    */
   signPersonalMessage (msgParams) {
     log.info('MetaMaskController - signPersonalMessage')
@@ -741,9 +742,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  /*
+  /**
    * Used to cancel a personal_sign type message.
-   * @param {String} msgId - The ID of the message to cancel.
+   * @param {string} msgId - The ID of the message to cancel.
    * @param {Function} cb - The callback function called with a full state update.
    */
   cancelPersonalMessage (msgId, cb) {
@@ -756,7 +757,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   // eth_signTypedData methods
 
-  /*
+  /**
    * Called when a dapp uses the eth_signTypedData method, per EIP 712.
    *
    * @param {Object} msgParams - The params passed to eth_signTypedData.
@@ -809,9 +810,9 @@ module.exports = class MetamaskController extends EventEmitter {
       })
   }
 
-  /*
+  /**
    * Used to cancel a eth_signTypedData type message.
-   * @param {String} msgId - The ID of the message to cancel.
+   * @param {string} msgId - The ID of the message to cancel.
    * @param {Function} cb - The callback function called with a full state update.
    */
   cancelTypedMessage (msgId, cb) {
@@ -841,7 +842,7 @@ module.exports = class MetamaskController extends EventEmitter {
     .then(() => migratorOutput)
   }
 
-  /*
+  /**
    * A legacy method used to record user confirmation that they understand
    * that some of their accounts have been recovered but should be backed up.
    *
@@ -874,6 +875,12 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
+   * An account object
+   * @typedef Account
+   * @property string privateKey - The private key of the account.
+   */
+
+  /**
    * Probably no longer needed, related to the Version 3 migration.
    * Imports a hash of accounts to private keys into the vault.
    *
@@ -883,7 +890,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * Uses the array's private keys to create a new Simple Key Pair keychain
    * and add it to the keyring controller.
    * @deprecated
-   * @param  {Object} {lostAccounts} @Array accounts <{ address, privateKey }>
+   * @param  {Account[]} lostAccounts -
+   * @returns {Keyring[]} An array of the restored keyrings.
    */
   importLostAccounts ({ lostAccounts }) {
     const privKeys = lostAccounts.map(acct => acct.privateKey)
@@ -897,11 +905,11 @@ module.exports = class MetamaskController extends EventEmitter {
 // END (VAULT / KEYRING RELATED METHODS)
 //=============================================================================
 
-  /*
+  /**
    * Allows a user to try to speed up a transaction by retrying it
    * with higher gas.
    *
-   * @param {String} txId - The ID of the transaction to speed up.
+   * @param {string} txId - The ID of the transaction to speed up.
    * @param {Function} cb - The callback function called with a full state update.
    */
   async retryTransaction (txId, cb) {
@@ -914,7 +922,7 @@ module.exports = class MetamaskController extends EventEmitter {
 // PASSWORD MANAGEMENT
 //=============================================================================
 
-  /*
+  /**
    * Allows a user to begin the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
@@ -924,7 +932,7 @@ module.exports = class MetamaskController extends EventEmitter {
     cb()
   }
 
-  /*
+  /**
    * Allows a user to end the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
@@ -938,11 +946,11 @@ module.exports = class MetamaskController extends EventEmitter {
 // SETUP
 //=============================================================================
 
-  /*
+  /**
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
    * @param {*} connectionStream - The Duplex stream to connect to.
-   * @param {String} originDomain - The domain requesting the stream, which
+   * @param {string} originDomain - The domain requesting the stream, which
    * may trigger a blacklist reload.
    */
   setupUntrustedCommunication (connectionStream, originDomain) {
@@ -960,14 +968,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
-  /*
+  /**
    * Used to create a multiplexed stream for connecting to a trusted context,
    * like our own user interfaces, which have the provider APIs, but also
    * receive the exported API from this controller, which includes trusted
    * functions, like the ability to approve transactions or sign messages.
    *
    * @param {*} connectionStream - The duplex stream to connect to.
-   * @param {String} originDomain - The domain requesting the connection,
+   * @param {string} originDomain - The domain requesting the connection,
    * used in logging and error reporting.
    */
   setupTrustedCommunication (connectionStream, originDomain) {
@@ -978,14 +986,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.setupProviderConnection(mux.createStream('provider'), originDomain)
   }
 
-  /*
+  /**
    * Called when we detect a suspicious domain. Requests the browser redirects
    * to our anti-phishing page.
    *
    * @private
    * @param {*} connectionStream - The duplex stream to the per-page script,
    * for sending the reload attempt to.
-   * @param {String} hostname - The URL that triggered the suspicion.
+   * @param {string} hostname - The URL that triggered the suspicion.
    */
   sendPhishingWarning (connectionStream, hostname) {
     const mux = setupMultiplex(connectionStream)
@@ -993,7 +1001,7 @@ module.exports = class MetamaskController extends EventEmitter {
     phishingStream.write({ hostname })
   }
 
-  /*
+  /**
    * A method for providing our API over a stream using Dnode.
    * @param {*} outStream - The stream to provide our API over.
    */
@@ -1015,10 +1023,10 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  /*
+  /**
    * A method for serving our ethereum provider over a given stream.
    * @param {*} outStream - The stream to provide over.
-   * @param {String} origin - The URI of the requesting resource.
+   * @param {string} origin - The URI of the requesting resource.
    */
   setupProviderConnection (outStream, origin) {
     // setup json rpc engine stack
@@ -1049,7 +1057,7 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
-  /*
+  /**
    * A method for providing our public config info over a stream.
    * This includes info we like to be synchronous if possible, like
    * the current selected account, and network ID.
@@ -1069,7 +1077,7 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
-  /*
+  /**
    * A method for emitting the full MetaMask state to all registered listeners.
    * @private
    */
@@ -1077,12 +1085,12 @@ module.exports = class MetamaskController extends EventEmitter {
     this.emit('update', this.getState())
   }
 
-  /*
+  /**
    * A method for estimating a good gas price at recent prices.
    * Returns the lowest price that would have been included in
    * 50% of recent blocks.
    *
-   * @returns {String} A hex representation of the suggested wei gas price.
+   * @returns {string} A hex representation of the suggested wei gas price.
    */
   getGasPrice () {
     const { recentBlocksController } = this
@@ -1117,9 +1125,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
   // Log blocks
 
-  /*
+  /**
    * A method for setting the user's preferred display currency.
-   * @param {String} currencyCode - The code of the preferred currency.
+   * @param {string} currencyCode - The code of the preferred currency.
    * @param {Function} cb - A callback function returning currency info.
    */
   setCurrentCurrency (currencyCode, cb) {
@@ -1137,12 +1145,12 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  /*
+  /**
    * A method for forwarding the user to the easiest way to obtain ether,
    * or the network "gas" currency, for the current selected network.
    *
-   * @param {String} address - The address to fund.
-   * @param {String} amount - The amount of ether desired, as a base 10 string.
+   * @param {string} address - The address to fund.
+   * @param {string} amount - The amount of ether desired, as a base 10 string.
    */
   buyEth (address, amount) {
     if (!amount) amount = '5'
@@ -1151,9 +1159,9 @@ module.exports = class MetamaskController extends EventEmitter {
     if (url) this.platform.openWindow({ url })
   }
 
-  /*
+  /**
    * A method for triggering a shapeshift currency transfer.
-   * @param {String} depositAddress - The address to deposit to.
+   * @param {string} depositAddress - The address to deposit to.
    * @property {string} depositType - An abbreviation of the type of crypto currency to be deposited.
    */
   createShapeShiftTx (depositAddress, depositType) {
@@ -1162,9 +1170,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
   // network
 
-  /*
+  /**
    * A method for selecting a custom URL for an ethereum RPC provider.
-   * @param {String} rpcTarget - A URL for a valid Ethereum RPC API.
+   * @param {string} rpcTarget - A URL for a valid Ethereum RPC API.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
   async setCustomRpc (rpcTarget) {
@@ -1173,9 +1181,9 @@ module.exports = class MetamaskController extends EventEmitter {
     return rpcTarget
   }
 
-  /*
+  /**
    * Sets whether or not to use the blockie identicon format.
-   * @param {Boolean} val - True for bockie, false for jazzicon.
+   * @param {boolean} val - True for bockie, false for jazzicon.
    * @param {Function} cb - A callback function called when complete.
    */
   setUseBlockie (val, cb) {
@@ -1187,9 +1195,9 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  /*
+  /**
    * A method for setting a user's current locale, affecting the language rendered.
-   * @param {String} key - Locale identifier.
+   * @param {string} key - Locale identifier.
    * @param {Function} cb - A callback function called when complete.
    */
   setCurrentLocale (key, cb) {
@@ -1201,7 +1209,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  /*
+  /**
    * A method for initializing storage the first time.
    * @param {Object} initState - The default state to initialize with.
    * @private
@@ -1215,20 +1223,20 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  /*
+  /**
    * A method for recording whether the MetaMask user interface is open or not.
    * @private
-   * @param {Boolean} open
+   * @param {boolean} open
    */
   set isClientOpen (open) {
     this._isClientOpen = open
     this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
   }
 
-  /*
+  /**
    * A method for activating the retrieval of price data, which should only be fetched when the UI is visible.
    * @private
-   * @param {Boolean} active - True if price data should be getting fetched.
+   * @param {boolean} active - True if price data should be getting fetched.
    */
   set isClientOpenAndUnlocked (active) {
     this.tokenRatesController.isActive = active
