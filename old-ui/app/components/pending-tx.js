@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../../../ui/app/actions')
 const clone = require('clone')
+const log = require('loglevel')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
@@ -15,10 +16,6 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const BNInput = require('./bn-as-decimal-input')
 
-// corresponds with 0.1 GWEI
-const MIN_GAS_PRICE_BN = new BN('100000000')
-const MIN_GAS_LIMIT_BN = new BN('21000')
-
 module.exports = PendingTx
 inherits(PendingTx, Component)
 function PendingTx () {
@@ -28,6 +25,10 @@ function PendingTx () {
     txData: null,
     submitting: false,
   }
+
+  // corresponds with 0.1 GWEI on mainnet
+  this.MIN_GAS_PRICE_BN = this.props.provider === 'mainnet' ? new BN('100000000') : new BN('0')
+  this.MIN_GAS_LIMIT_BN = new BN('21000')
 }
 
 PendingTx.prototype.render = function () {
@@ -62,12 +63,12 @@ PendingTx.prototype.render = function () {
   const gasBn = hexToBn(gas)
   // default to 8MM gas limit
   const gasLimit = new BN(parseInt(blockGasLimit) || '8000000')
-  const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 19, 20)
-  const saferGasLimitBN = this.bnMultiplyByFraction(gasLimit, 18, 20)
+  const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 99, 100)
+  const saferGasLimitBN = this.bnMultiplyByFraction(gasLimit, 98, 100)
   const safeGasLimit = safeGasLimitBN.toString(10)
 
   // Gas Price
-  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
+  const gasPrice = txParams.gasPrice || this.MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
@@ -210,7 +211,7 @@ PendingTx.prototype.render = function () {
                   precision: 9,
                   scale: 9,
                   suffix: 'GWEI',
-                  min: forceGasMin || MIN_GAS_PRICE_BN,
+                  min: forceGasMin || this.MIN_GAS_PRICE_BN,
                   style: {
                     position: 'relative',
                     top: '5px',
@@ -311,7 +312,7 @@ PendingTx.prototype.render = function () {
               style: {
                 fontSize: '0.9em',
               },
-            }, 'Gas limit set dangerously high. Approving this transaction is likely to fail.')
+            }, 'Gas limit set dangerously high. Approving this transaction is liable to fail.')
           : null,
         ]),
 
