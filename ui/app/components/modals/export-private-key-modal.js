@@ -1,14 +1,15 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
-const ethUtil = require('ethereumjs-util')
+const { stripHexPrefix } = require('ethereumjs-util')
 const actions = require('../../actions')
 const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../selectors')
 const ReadOnlyInput = require('../readonly-input')
-const t = require('../../../i18n')
 const copyToClipboard = require('copy-to-clipboard')
+const { checksumAddress } = require('../../util')
 
 function mapStateToProps (state) {
   return {
@@ -38,7 +39,12 @@ function ExportPrivateKeyModal () {
   }
 }
 
+ExportPrivateKeyModal.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ExportPrivateKeyModal)
+
 
 ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (password, address) {
   const { exportAccount } = this.props
@@ -49,13 +55,13 @@ ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (passwo
 
 ExportPrivateKeyModal.prototype.renderPasswordLabel = function (privateKey) {
   return h('span.private-key-password-label', privateKey
-    ? t('copyPrivateKey')
-    : t('typePassword')
+    ? this.context.t('copyPrivateKey')
+    : this.context.t('typePassword')
   )
 }
 
 ExportPrivateKeyModal.prototype.renderPasswordInput = function (privateKey) {
-  const plainKey = privateKey && ethUtil.stripHexPrefix(privateKey)
+  const plainKey = privateKey && stripHexPrefix(privateKey)
 
   return privateKey
     ? h(ReadOnlyInput, {
@@ -81,14 +87,14 @@ ExportPrivateKeyModal.prototype.renderButton = function (className, onClick, lab
 ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, address, hideModal) {
   return h('div.export-private-key-buttons', {}, [
     !privateKey && this.renderButton(
-      'btn-cancel export-private-key__button export-private-key__button--cancel',
+      'btn-secondary--lg export-private-key__button export-private-key__button--cancel',
       () => hideModal(),
       'Cancel'
     ),
 
     (privateKey
-      ? this.renderButton('btn-clear export-private-key__button', () => hideModal(), t('done'))
-      : this.renderButton('btn-clear export-private-key__button', () => this.exportAccountAndGetPrivateKey(this.state.password, address), t('confirm'))
+      ? this.renderButton('btn-primary--lg export-private-key__button', () => hideModal(), this.context.t('done'))
+      : this.renderButton('btn-primary--lg export-private-key__button', () => this.exportAccountAndGetPrivateKey(this.state.password, address), this.context.t('confirm'))
     ),
 
   ])
@@ -116,12 +122,12 @@ ExportPrivateKeyModal.prototype.render = function () {
       h(ReadOnlyInput, {
         wrapperClass: 'ellip-address-wrapper',
         inputClass: 'qr-ellip-address ellip-address',
-        value: address,
+        value: checksumAddress(address),
       }),
 
       h('div.account-modal-divider'),
 
-      h('span.modal-body-title', t('showPrivateKeys')),
+      h('span.modal-body-title', this.context.t('showPrivateKeys')),
 
       h('div.private-key-password', {}, [
         this.renderPasswordLabel(privateKey),
@@ -131,7 +137,7 @@ ExportPrivateKeyModal.prototype.render = function () {
         !warning ? null : h('span.private-key-password-error', warning),
       ]),
 
-      h('div.private-key-password-warning', t('privateKeyWarning')),
+      h('div.private-key-password-warning', this.context.t('privateKeyWarning')),
 
       this.renderButtons(privateKey, this.state.password, address, hideModal),
 

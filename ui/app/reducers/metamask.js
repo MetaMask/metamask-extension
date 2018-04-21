@@ -1,7 +1,8 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
-const environmentType = require('../../../app/scripts/lib/environment-type')
+const { getEnvironmentType } = require('../../../app/scripts/lib/util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../app/scripts/lib/enums')
 const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
 
 module.exports = reduceMetamask
@@ -15,7 +16,7 @@ function reduceMetamask (state, action) {
     isUnlocked: false,
     isAccountMenuOpen: false,
     isMascara: window.platform instanceof MetamascaraPlatform,
-    isPopup: environmentType() === 'popup',
+    isPopup: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
@@ -24,6 +25,7 @@ function reduceMetamask (state, action) {
     frequentRpcList: [],
     addressBook: [],
     selectedTokenAddress: null,
+    contractExchangeRates: {},
     tokenExchangeRates: {},
     tokens: [],
     send: {
@@ -38,6 +40,8 @@ function reduceMetamask (state, action) {
       errors: {},
       maxModeOn: false,
       editingTransactionId: null,
+      forceGasMin: null,
+      toNickname: '',
     },
     coinOptions: {},
     useBlockie: false,
@@ -45,6 +49,7 @@ function reduceMetamask (state, action) {
     networkEndpointType: OLD_UI_NETWORK_TYPE,
     isRevealingSeedWords: false,
     welcomeScreenSeen: false,
+    currentLocale: '',
   }, state.metamask)
 
   switch (action.type) {
@@ -173,15 +178,6 @@ function reduceMetamask (state, action) {
         conversionDate: action.value.conversionDate,
       })
 
-    case actions.UPDATE_TOKEN_EXCHANGE_RATE:
-      const { payload: { pair, marketinfo } } = action
-      return extend(metamaskState, {
-        tokenExchangeRates: {
-          ...metamaskState.tokenExchangeRates,
-          [pair]: marketinfo,
-        },
-      })
-
     case actions.UPDATE_TOKENS:
       return extend(metamaskState, {
         tokens: action.newTokens,
@@ -237,7 +233,8 @@ function reduceMetamask (state, action) {
       return extend(metamaskState, {
         send: {
           ...metamaskState.send,
-          to: action.value,
+          to: action.value.to,
+          toNickname: action.value.nickname,
         },
       })
 
@@ -297,6 +294,7 @@ function reduceMetamask (state, action) {
           memo: '',
           errors: {},
           editingTransactionId: null,
+          forceGasMin: null,
         },
       })
 
@@ -351,6 +349,11 @@ function reduceMetamask (state, action) {
     case actions.CLOSE_WELCOME_SCREEN:
       return extend(metamaskState, {
         welcomeScreenSeen: true,
+      })
+
+    case actions.SET_CURRENT_LOCALE:
+      return extend(metamaskState, {
+        currentLocale: action.value,
       })
 
     default:

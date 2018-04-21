@@ -3,6 +3,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const createId = require('./random-id')
 const hexRe = /^[0-9A-Fa-f]+$/g
+const log = require('loglevel')
 
 
 module.exports = class PersonalMessageManager extends EventEmitter {

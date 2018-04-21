@@ -18,6 +18,7 @@ const selectors = {
   getCurrentAccountWithSendEtherInfo,
   getGasPrice,
   getGasLimit,
+  getForceGasMin,
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
@@ -55,27 +56,21 @@ function getSelectedToken (state) {
   const tokens = state.metamask.tokens || []
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
+  const sendToken = state.metamask.send.token
 
-  return selectedToken || null
+  return selectedToken || sendToken || null
 }
 
 function getSelectedTokenExchangeRate (state) {
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
+  const contractExchangeRates = state.metamask.contractExchangeRates
   const selectedToken = getSelectedToken(state) || {}
-  const { symbol = '' } = selectedToken
-
-  const pair = `${symbol.toLowerCase()}_eth`
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
-
-  return tokenExchangeRate
+  const { address } = selectedToken
+  return contractExchangeRates[address] || 0
 }
 
-function getTokenExchangeRate (state, tokenSymbol) {
-  const pair = `${tokenSymbol.toLowerCase()}_eth`
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
-
-  return tokenExchangeRate
+function getTokenExchangeRate (state, address) {
+  const contractExchangeRates = state.metamask.contractExchangeRates
+  return contractExchangeRates[address] || 0
 }
 
 function conversionRateSelector (state) {
@@ -128,6 +123,10 @@ function getGasPrice (state) {
 
 function getGasLimit (state) {
   return state.metamask.send.gasLimit
+}
+
+function getForceGasMin (state) {
+  return state.metamask.send.forceGasMin
 }
 
 function getSendFrom (state) {

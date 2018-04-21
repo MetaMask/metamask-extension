@@ -1,4 +1,5 @@
 const { inherits } = require('util')
+const PropTypes = require('prop-types')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 
@@ -6,7 +7,7 @@ const ethAbi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
 
 const FromDropdown = require('./components/send/from-dropdown')
-const ToAutoComplete = require('./components/send/to-autocomplete')
+const EnsInput = require('./components/ens-input')
 const CurrencyDisplay = require('./components/send/currency-display')
 const MemoTextArea = require('./components/send/memo-textarea')
 const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
@@ -26,8 +27,14 @@ const {
 const {
   isBalanceSufficient,
   isTokenBalanceSufficient,
+  getGasTotal,
 } = require('./components/send/send-utils')
 const { isValidAddress } = require('./util')
+const { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } = require('./routes')
+
+SendTransactionScreen.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = SendTransactionScreen
 
@@ -42,6 +49,7 @@ function SendTransactionScreen () {
       to: null,
       amount: null,
     },
+    gasLoadingError: false,
   }
 
   this.handleToChange = this.handleToChange.bind(this)
@@ -80,17 +88,6 @@ SendTransactionScreen.prototype.updateSendTokenBalance = function (usersToken) {
 }
 
 SendTransactionScreen.prototype.componentWillMount = function () {
-  const {
-    updateTokenExchangeRate,
-    selectedToken = {},
-  } = this.props
-
-  const { symbol } = selectedToken || {}
-
-  if (symbol) {
-    updateTokenExchangeRate(symbol)
-  }
-
   this.updateGas()
 }
 
@@ -126,21 +123,17 @@ SendTransactionScreen.prototype.updateGas = function () {
         estimateGas(estimateGasParams),
       ])
       .then(([gasPrice, gas]) => {
-        const newGasTotal = this.getGasTotal(gas, gasPrice)
+        const newGasTotal = getGasTotal(gas, gasPrice)
         updateGasTotal(newGasTotal)
+        this.setState({ gasLoadingError: false })
+      })
+      .catch(err => {
+        this.setState({ gasLoadingError: true })
       })
   } else {
-    const newGasTotal = this.getGasTotal(gasLimit, gasPrice)
+    const newGasTotal = getGasTotal(gasLimit, gasPrice)
     updateGasTotal(newGasTotal)
   }
-}
-
-SendTransactionScreen.prototype.getGasTotal = function (gasLimit, gasPrice) {
-  return multiplyCurrencies(gasLimit, gasPrice, {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 16,
-  })
 }
 
 SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
@@ -179,19 +172,18 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
 }
 
 SendTransactionScreen.prototype.renderHeader = function () {
-  const { selectedToken, clearSend, goHome } = this.props
-  const tokenText = selectedToken ? 'tokens' : 'ETH'
+  const { selectedToken, clearSend, history } = this.props
 
   return h('div.page-container__header', [
 
-    h('div.page-container__title', selectedToken ? 'Send Tokens' : 'Send ETH'),
+    h('div.page-container__title', selectedToken ? this.context.t('sendTokens') : this.context.t('sendETH')),
 
-    h('div.page-container__subtitle', `Only send ${tokenText} to an Ethereum address.`),
+    h('div.page-container__subtitle', this.context.t('onlySendToEtherAddress')),
 
     h('div.page-container__header-close', {
       onClick: () => {
         clearSend()
-        goHome()
+        history.push(DEFAULT_ROUTE)
       },
     }),
 
@@ -248,28 +240,25 @@ SendTransactionScreen.prototype.renderFromRow = function () {
   ])
 }
 
-SendTransactionScreen.prototype.handleToChange = function (to) {
+SendTransactionScreen.prototype.handleToChange = function (to, nickname = '') {
   const {
     updateSendTo,
     updateSendErrors,
-    from: {address: from},
   } = this.props
   let toError = null
 
   if (!to) {
-    toError = 'Required'
+    toError = this.context.t('required')
   } else if (!isValidAddress(to)) {
-    toError = 'Recipient address is invalid'
-  } else if (to === from) {
-    toError = 'From and To address cannot be the same'
+    toError = this.context.t('invalidAddressRecipient')
   }
 
-  updateSendTo(to)
+  updateSendTo(to, nickname)
   updateSendErrors({ to: toError })
 }
 
 SendTransactionScreen.prototype.renderToRow = function () {
-  const { toAccounts, errors, to } = this.props
+  const { toAccounts, errors, to, network } = this.props
 
   const { toDropdownOpen } = this.state
 
@@ -277,14 +266,17 @@ SendTransactionScreen.prototype.renderToRow = function () {
 
     h('div.send-v2__form-label', [
 
-      'To:',
+      this.context.t('to'),
 
-      this.renderErrorMessage('to'),
+      this.renderErrorMessage(this.context.t('to')),
 
     ]),
 
     h('div.send-v2__form-field', [
-      h(ToAutoComplete, {
+      h(EnsInput, {
+        name: 'address',
+        placeholder: 'Recipient Address',
+        network,
         to,
         accounts: Object.entries(toAccounts).map(([key, account]) => account),
         dropdownOpen: toDropdownOpen,
@@ -377,11 +369,11 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   )
 
   if (conversionRate && !sufficientBalance) {
-    amountError = 'Insufficient funds.'
+    amountError = this.context.t('insufficientFunds')
   } else if (verifyTokenBalance && !sufficientTokens) {
-    amountError = 'Insufficient tokens.'
+    amountError = this.context.t('insufficientTokens')
   } else if (amountLessThanZero) {
-    amountError = 'Can not send negative amounts of ETH.'
+    amountError = this.context.t('negativeETH')
   }
 
   updateSendErrors({ amount: amountError })
@@ -411,7 +403,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
           setMaxModeTo(true)
           this.setAmountToMax()
         },
-      }, [ !maxModeOn ? 'Max' : '' ]),
+      }, [ !maxModeOn ? this.context.t('max') : '' ]),
     ]),
 
     h('div.send-v2__form-field', [
@@ -436,10 +428,11 @@ SendTransactionScreen.prototype.renderGasRow = function () {
     showCustomizeGasModal,
     gasTotal,
   } = this.props
+  const { gasLoadingError } = this.state
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'Gas fee:'),
+    h('div.send-v2__form-label', this.context.t('gasFee')),
 
     h('div.send-v2__form-field', [
 
@@ -448,6 +441,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
         conversionRate,
         convertedCurrency,
         onClick: showCustomizeGasModal,
+        gasLoadingError,
       }),
 
     ]),
@@ -473,45 +467,46 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
 }
 
 SendTransactionScreen.prototype.renderForm = function () {
-  return h('div.send-v2__form', {}, [
+  return h('.page-container__content', {}, [
+    h('.send-v2__form', [
+      this.renderFromRow(),
 
-    this.renderFromRow(),
+      this.renderToRow(),
 
-    this.renderToRow(),
+      this.renderAmountRow(),
 
-    this.renderAmountRow(),
+      this.renderGasRow(),
 
-    this.renderGasRow(),
+      // this.renderMemoRow(),
 
-    // this.renderMemoRow(),
-
+    ]),
   ])
 }
 
 SendTransactionScreen.prototype.renderFooter = function () {
   const {
-    goHome,
     clearSend,
     gasTotal,
     tokenBalance,
     selectedToken,
     errors: { amount: amountError, to: toError },
+    history,
   } = this.props
 
   const missingTokenBalance = selectedToken && !tokenBalance
   const noErrors = !amountError && toError === null
 
   return h('div.page-container__footer', [
-    h('button.btn-cancel.page-container__footer-button', {
+    h('button.btn-secondary--lg.page-container__footer-button', {
       onClick: () => {
         clearSend()
-        goHome()
+        history.push(DEFAULT_ROUTE)
       },
-    }, 'Cancel'),
-    h('button.btn-clear.page-container__footer-button', {
+    }, this.context.t('cancel')),
+    h('button.btn-primary--lg.page-container__footer-button', {
       disabled: !noErrors || !gasTotal || missingTokenBalance,
       onClick: event => this.onSubmit(event),
-    }, 'Next'),
+    }, this.context.t('next')),
   ])
 }
 
@@ -530,11 +525,11 @@ SendTransactionScreen.prototype.render = function () {
   )
 }
 
-SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress) {
+SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress, nickname = '') {
   const { toAccounts, addToAddressBook } = this.props
   if (!toAccounts.find(({ address }) => newAddress === address)) {
     // TODO: nickname, i.e. addToAddressBook(recipient, nickname)
-    addToAddressBook(newAddress)
+    addToAddressBook(newAddress, nickname)
   }
 }
 
@@ -571,10 +566,17 @@ SendTransactionScreen.prototype.getEditedTx = function () {
       data,
     })
   } else {
+    const { data } = unapprovedTxs[editingTransactionId].txParams
+
     Object.assign(editingTx.txParams, {
       value: ethUtil.addHexPrefix(amount),
       to: ethUtil.addHexPrefix(to),
+      data,
     })
+
+    if (typeof editingTx.txParams.data === 'undefined') {
+      delete editingTx.txParams.data
+    }
   }
 
   return editingTx
@@ -584,7 +586,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
   const {
     from: {address: from},
-    to,
+    to: _to,
     amount,
     gasLimit: gas,
     gasPrice,
@@ -593,6 +595,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     updateTx,
     selectedToken,
     editingTransactionId,
+    toNickname,
     errors: { amount: amountError, to: toError },
   } = this.props
 
@@ -602,11 +605,12 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     return
   }
 
-  this.addToAddressBookIfNew(to)
+  const to = ethUtil.addHexPrefix(_to)
+
+  this.addToAddressBookIfNew(to, toNickname)
 
   if (editingTransactionId) {
     const editedTx = this.getEditedTx()
-
     updateTx(editedTx)
   } else {
 
@@ -622,8 +626,14 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
       txParams.to = to
     }
 
+    Object.keys(txParams).forEach(key => {
+      txParams[key] = ethUtil.addHexPrefix(txParams[key])
+    })
+
     selectedToken
       ? signTokenTx(selectedToken.address, to, amount, txParams)
       : signTx(txParams)
   }
+
+  this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
 }

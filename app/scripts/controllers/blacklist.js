@@ -1,6 +1,7 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
 const PhishingDetector = require('eth-phishing-detect/src/detector')
+const log = require('loglevel')
 
 // compute phishing lists
 const PHISHING_DETECTION_CONFIG = require('eth-phishing-detect/src/config.json')
@@ -41,9 +42,9 @@ class BlacklistController {
 
   scheduleUpdates () {
     if (this._phishingUpdateIntervalRef) return
-    this.updatePhishingList()
+    this.updatePhishingList().catch(log.warn)
     this._phishingUpdateIntervalRef = setInterval(() => {
-      this.updatePhishingList()
+      this.updatePhishingList().catch(log.warn)
     }, POLLING_INTERVAL)
   }
 
@@ -57,4 +58,3 @@ class BlacklistController {
 }
 
 module.exports = BlacklistController
-

@@ -13,6 +13,9 @@ async function runFirstTimeUsageTest (assert, done) {
 
   await skipNotices(app)
 
+  const welcomeButton = (await findAsync(app, '.welcome-screen__button'))[0]
+  welcomeButton.click()
+
   // Scroll through terms
   const title = (await findAsync(app, '.create-password__title')).text()
   assert.equal(title, 'Create Password', 'create password screen')
@@ -57,9 +60,9 @@ async function runFirstTimeUsageTest (assert, done) {
   ;(await findAsync(app, '.first-time-flow__button')).click()
 
   // Deposit Ether Screen
-  const buyEthTitle = (await findAsync(app, '.buy-ether__title'))[0]
-  assert.equal(buyEthTitle.textContent, 'Deposit Ether', 'deposit ether screen')
-  ;(await findAsync(app, '.buy-ether__do-it-later')).click()
+  const depositEthTitle = (await findAsync(app, '.page-container__title'))[0]
+  assert.equal(depositEthTitle.textContent, 'Deposit Ether', 'deposit ether screen')
+  ;(await findAsync(app, '.page-container__header-close')).click()
 
   const menu = (await findAsync(app, '.account-menu__icon'))[0]
   menu.click()

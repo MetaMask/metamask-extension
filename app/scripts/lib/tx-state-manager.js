@@ -1,8 +1,20 @@
 const extend = require('xtend')
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
+const createId = require('./random-id')
 const ethUtil = require('ethereumjs-util')
 const txStateHistoryHelper = require('./tx-state-history-helper')
+
+// STATUS METHODS
+  // statuses:
+  //    - `'unapproved'` the user has not responded
+  //    - `'rejected'` the user has responded no!
+  //    - `'approved'` the user has approved the tx
+  //    - `'signed'` the tx is signed
+  //    - `'submitted'` the tx is sent to a server
+  //    - `'confirmed'` the tx has been included in a block.
+  //    - `'failed'` the tx failed for some reason, included on tx data.
+  //    - `'dropped'` the tx nonce was already used
 
 module.exports = class TransactionStateManager extends EventEmitter {
   constructor ({ initState, txHistoryLimit, getNetwork }) {
@@ -16,9 +28,14 @@ module.exports = class TransactionStateManager extends EventEmitter {
     this.getNetwork = getNetwork
   }
 
-  // Returns the number of txs for the current network.
-  getTxCount () {
-    return this.getTxList().length
+  generateTxMeta (opts) {
+    return extend({
+      id: createId(),
+      time: (new Date()).getTime(),
+      status: 'unapproved',
+      metamaskNetworkId: this.getNetwork(),
+      loadingDefaults: true,
+    }, opts)
   }
 
   getTxList () {
@@ -66,7 +83,7 @@ module.exports = class TransactionStateManager extends EventEmitter {
     txMeta.history.push(snapshot)
 
     const transactions = this.getFullTxList()
-    const txCount = this.getTxCount()
+    const txCount = transactions.length
     const txHistoryLimit = this.txHistoryLimit
 
     // checks if the length of the tx history is
@@ -75,8 +92,10 @@ module.exports = class TransactionStateManager extends EventEmitter {
     // or rejected tx's.
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
-      const index = transactions.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
-      transactions.splice(index, 1)
+      let index = transactions.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
+      if (index !== -1) {
+        transactions.splice(index, 1)
+      }
     }
     transactions.push(txMeta)
     this._saveTxList(transactions)
@@ -89,12 +108,13 @@ module.exports = class TransactionStateManager extends EventEmitter {
   }
 
   updateTx (txMeta, note) {
+    // validate txParams
     if (txMeta.txParams) {
-      Object.keys(txMeta.txParams).forEach((key) => {
-        const value = txMeta.txParams[key]
-        if (typeof value !== 'string') console.error(`${key}: ${value} in txParams is not a string`)
-        if (!ethUtil.isHexPrefixed(value)) console.error('is not hex prefixed, anything on txParams must be hex prefixed')
-      })
+      if (typeof txMeta.txParams.data === 'undefined') {
+        delete txMeta.txParams.data
+      }
+
+      this.validateTxParams(txMeta.txParams)
     }
 
     // create txMeta snapshot for history
@@ -120,6 +140,23 @@ module.exports = class TransactionStateManager extends EventEmitter {
     const txMeta = this.getTx(txId)
     txMeta.txParams = extend(txMeta.txParams, txParams)
     this.updateTx(txMeta, `txStateManager#updateTxParams`)
+  }
+
+  // validates txParams members by type
+  validateTxParams(txParams) {
+    Object.keys(txParams).forEach((key) => {
+      const value = txParams[key]
+      // validate types
+      switch (key) {
+        case 'chainId':
+          if (typeof value !== 'number' && typeof value !== 'string') throw new Error(`${key} in txParams is not a Number or hex string. got: (${value})`)
+          break
+        default:
+          if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
+          if (!ethUtil.isHexPrefixed(value)) throw new Error(`${key} in txParams is not hex prefixed. got: (${value})`)
+          break
+      }
+    })
   }
 
 /*
@@ -164,16 +201,6 @@ module.exports = class TransactionStateManager extends EventEmitter {
     })
   }
 
-  // STATUS METHODS
-  // statuses:
-  //    - `'unapproved'` the user has not responded
-  //    - `'rejected'` the user has responded no!
-  //    - `'approved'` the user has approved the tx
-  //    - `'signed'` the tx is signed
-  //    - `'submitted'` the tx is sent to a server
-  //    - `'confirmed'` the tx has been included in a block.
-  //    - `'failed'` the tx failed for some reason, included on tx data.
-
   // get::set status
 
   // should return the status of the tx.
@@ -202,7 +229,11 @@ module.exports = class TransactionStateManager extends EventEmitter {
   }
 
   // should update the status of the tx to 'submitted'.
+  // and add a time stamp for when it was called
   setTxStatusSubmitted (txId) {
+    const txMeta = this.getTx(txId)
+    txMeta.submittedTime = (new Date()).getTime()
+    this.updateTx(txMeta, 'txStateManager - add submitted time stamp')
     this._setTxStatus(txId, 'submitted')
   }
 
@@ -210,6 +241,12 @@ module.exports = class TransactionStateManager extends EventEmitter {
   setTxStatusConfirmed (txId) {
     this._setTxStatus(txId, 'confirmed')
   }
+
+  // should update the status dropped
+  setTxStatusDropped (txId) {
+    this._setTxStatus(txId, 'dropped')
+  }
+
 
   setTxStatusFailed (txId, err) {
     const txMeta = this.getTx(txId)

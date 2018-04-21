@@ -2,6 +2,76 @@
   Buttons
  */
 
+.btn-primary,
+.btn-primary--lg,
+.btn-secondary,
+.btn-secondary--lg {
+  background: $white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: border-color .3s ease;
+  padding: 0 20px;
+  min-width: 140px;
+  text-transform: uppercase;
+}
+
+.btn-primary,
+.btn-primary--lg {
+  color: $curious-blue;
+  border: 2px solid $spindle;
+
+  &:active {
+    background: $zumthor;
+    border-color: $curious-blue;
+  }
+
+  &:hover {
+    border-color: $curious-blue;
+  }
+
+  &--disabled,
+  &[disabled] {
+    cursor: auto;
+    opacity: .5;
+    pointer-events: none;
+  }
+}
+
+.btn-secondary,
+.btn-secondary--lg {
+  color: $scorpion;
+  border: 2px solid $dusty-gray;
+
+  &:active {
+    background: $gallery;
+    border-color: $dusty-gray;
+  }
+
+  &:hover {
+    border-color: $scorpion;
+  }
+
+  &--disabled,
+  &[disabled] {
+    cursor: auto;
+    opacity: .5;
+    pointer-events: none;
+  }
+}
+
+.btn-primary, .btn-secondary {
+  height: 44px;
+}
+
+.btn-primary--lg, .btn-secondary--lg {
+  height: 54px;
+}
+
 .btn-green {
   background-color: #02c9b1; // TODO: reusable color in colors.css
 }
@@ -43,6 +113,18 @@
   &:hover {
     border-color: $scorpion;
   }
+}
+
+.btn-confirm {
+  background-color: $caribbean-green; // TODO: reusable color in colors.css
+  text-align: center;
+  padding: .8rem 1rem;
+  color: $white;
+  border: 2px solid $caribbean-green;
+  border-radius: 4px;
+  font-size: .85rem;
+  font-weight: 400;
+  transition: border-color .3s ease;
 }
 
 // No longer used in flat design, remove when modal buttons done
@@ -116,20 +198,6 @@ button.btn-thin {
   margin: 12px 0;
   padding: 6px;
   font-size: 13px;
-}
-
-.btn-secondary {
-  border: 1px solid #979797;
-  border-radius: 2px;
-  background-color: $white;
-  font-size: 16px;
-  line-height: 24px;
-  padding: 16px 42px;
-
-  &[disabled] {
-    background-color: $white !important;
-    opacity: .5;
-  }
 }
 
 .btn-tertiary {

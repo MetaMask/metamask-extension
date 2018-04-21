@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Markdown from 'react-markdown'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
 import debounce from 'lodash.debounce'
-import {markNoticeRead} from '../../../../ui/app/actions'
+import { markNoticeRead } from '../../../../ui/app/actions'
 import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
+import { INITIALIZE_BACKUP_PHRASE_ROUTE } from '../../../../ui/app/routes'
 import LoadingScreen from './loading-screen'
 
 class NoticeScreen extends Component {
@@ -16,8 +19,15 @@ class NoticeScreen extends Component {
       date: PropTypes.string,
       body: PropTypes.string,
     }),
-    next: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        next: PropTypes.func.isRequired,
+      }),
+    }),
     markNoticeRead: PropTypes.func,
+    history: PropTypes.object,
+    isLoading: PropTypes.bool,
+    noActiveNotices: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -29,17 +39,24 @@ class NoticeScreen extends Component {
   }
 
   componentDidMount () {
+    if (this.props.noActiveNotices) {
+      this.props.history.push(INITIALIZE_BACKUP_PHRASE_ROUTE)
+    }
+
     this.onScroll()
   }
 
   acceptTerms = () => {
-    const { markNoticeRead, lastUnreadNotice, next } = this.props
-    const defer = markNoticeRead(lastUnreadNotice)
-      .then(() => this.setState({ atBottom: false }))
-
-    if ((/terms/gi).test(lastUnreadNotice.title)) {
-      defer.then(next)
-    }
+    const { markNoticeRead, lastUnreadNotice, history } = this.props
+    markNoticeRead(lastUnreadNotice)
+      .then(hasActiveNotices => {
+        if (!hasActiveNotices) {
+          history.push(INITIALIZE_BACKUP_PHRASE_ROUTE)
+        } else {
+          this.setState({ atBottom: false })
+          this.onScroll()
+        }
+      })
   }
 
   onScroll = debounce(() => {
@@ -63,36 +80,56 @@ class NoticeScreen extends Component {
     return (
       isLoading
         ? <LoadingScreen />
-        : <div
-          className="tou"
-          onScroll={this.onScroll}
-        >
-          <Identicon address={address} diameter={70} />
-          <div className="tou__title">{title}</div>
-          <Markdown
-            className="tou__body markdown"
-            source={body}
-            skipHtml
-          />
-          <button
-            className="first-time-flow__button"
-            onClick={atBottom && this.acceptTerms}
-            disabled={!atBottom}
-          >
-            Accept
-          </button>
-          <Breadcrumbs total={3} currentIndex={2} />
-        </div>
+        : (
+          <div className="first-time-flow">
+            <div className="first-view-main-wrapper">
+              <div className="first-view-main">
+                <div
+                  className="tou"
+                  onScroll={this.onScroll}
+                >
+                  <Identicon address={address} diameter={70} />
+                  <div className="tou__title">{title}</div>
+                  <Markdown
+                    className="tou__body markdown"
+                    source={body}
+                    skipHtml
+                  />
+                  <button
+                    className="first-time-flow__button"
+                    onClick={atBottom && this.acceptTerms}
+                    disabled={!atBottom}
+                  >
+                    Accept
+                  </button>
+                  <Breadcrumbs total={3} currentIndex={2} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )
     )
   }
 }
 
-export default connect(
-  ({ metamask: { selectedAddress, lastUnreadNotice }, appState: { isLoading } }) => ({
-    lastUnreadNotice,
+const mapStateToProps = ({ metamask, appState }) => {
+  const { selectedAddress, lastUnreadNotice, noActiveNotices } = metamask
+  const { isLoading } = appState
+
+  return {
     address: selectedAddress,
-  }),
-  dispatch => ({
-    markNoticeRead: notice => dispatch(markNoticeRead(notice)),
-  })
+    lastUnreadNotice,
+    noActiveNotices,
+    isLoading,
+  }
+}
+
+export default compose(
+  withRouter,
+  connect(
+    mapStateToProps,
+    dispatch => ({
+      markNoticeRead: notice => dispatch(markNoticeRead(notice)),
+    })
+  )
 )(NoticeScreen)

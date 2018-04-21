@@ -29,18 +29,19 @@
   "plugins": [
     "mocha",
     "chai",
-    "react"
+    "react",
+    "json"
   ],
 
   "globals": {
     "document": false,
-    "log": true,
     "navigator": false,
     "web3": true,
     "window": false
   },
 
   "rules": {
+    "no-restricted-globals": ["error", "event"],
     "accessor-pairs": 2,
     "arrow-spacing": [2, { "before": true, "after": true }],
     "block-spacing": [2, "always"],
@@ -148,7 +149,7 @@
     "space-in-parens": [1, "never"],
     "space-infix-ops": 2,
     "space-unary-ops": [2, { "words": true, "nonwords": false }],
-    "spaced-comment": [2, "always", { "markers": ["global", "globals", "eslint", "eslint-disable", "*package", "!", ","] }],
+    "spaced-comment": [2, "always", { "markers": ["global", "globals", "eslint", "eslint-disable", "*package", "!", ","], "exceptions": ["=", "-"] } ],
     "strict": 0,
     "template-curly-spacing": [2, "never"],
     "use-isnan": 2,

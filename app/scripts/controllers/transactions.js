@@ -6,8 +6,8 @@ const EthQuery = require('ethjs-query')
 const TransactionStateManager = require('../lib/tx-state-manager')
 const TxGasUtil = require('../lib/tx-gas-utils')
 const PendingTransactionTracker = require('../lib/pending-tx-tracker')
-const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
+const log = require('loglevel')
 
 /*
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -92,8 +92,8 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker.on('tx:warning', (txMeta) => {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
     })
+    this.pendingTxTracker.on('tx:confirmed', (txId) => this._markNonceDuplicatesDropped(txId))
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
-    this.pendingTxTracker.on('tx:confirmed', this.txStateManager.setTxStatusConfirmed.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
         txMeta.firstRetryBlockNumber = latestBlockNumber
@@ -162,9 +162,11 @@ module.exports = class TransactionController extends EventEmitter {
     this.emit(`${txMeta.id}:unapproved`, txMeta)
   }
 
-  async newUnapprovedTransaction (txParams) {
+  async newUnapprovedTransaction (txParams, opts = {}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const initialTxMeta = await this.addUnapprovedTransaction(txParams)
+    initialTxMeta.origin = opts.origin
+    this.txStateManager.updateTx(initialTxMeta, '#newUnapprovedTransaction - adding the origin')
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
@@ -184,21 +186,15 @@ module.exports = class TransactionController extends EventEmitter {
 
   async addUnapprovedTransaction (txParams) {
     // validate
-    await this.txGasUtil.validateTxParams(txParams)
+    const normalizedTxParams = this._normalizeTxParams(txParams)
+    this._validateTxParams(normalizedTxParams)
     // construct txMeta
-    const txMeta = {
-      id: createId(),
-      time: (new Date()).getTime(),
-      status: 'unapproved',
-      metamaskNetworkId: this.getNetwork(),
-      txParams: txParams,
-      loadingDefaults: true,
-    }
+    let txMeta = this.txStateManager.generateTxMeta({ txParams: normalizedTxParams })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
     try {
-      await this.addTxDefaults(txMeta)
+      txMeta = await this.addTxDefaults(txMeta)
     } catch (error) {
       console.log(error)
       this.txStateManager.setTxStatusFailed(txMeta.id, error)
@@ -215,7 +211,6 @@ module.exports = class TransactionController extends EventEmitter {
     const txParams = txMeta.txParams
     // ensure value
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
-    txMeta.nonceSpecified = Boolean(txParams.nonce)
     let gasPrice = txParams.gasPrice
     if (!gasPrice) {
       gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
@@ -226,11 +221,17 @@ module.exports = class TransactionController extends EventEmitter {
     return await this.txGasUtil.analyzeGasUsage(txMeta)
   }
 
-  async retryTransaction (txId) {
-    this.txStateManager.setTxStatusUnapproved(txId)
-    const txMeta = this.txStateManager.getTx(txId)
-    txMeta.lastGasPrice = txMeta.txParams.gasPrice
-    this.txStateManager.updateTx(txMeta, 'retryTransaction: manual retry')
+  async retryTransaction (originalTxId) {
+    const originalTxMeta = this.txStateManager.getTx(originalTxId)
+    const lastGasPrice = originalTxMeta.txParams.gasPrice
+    const txMeta = this.txStateManager.generateTxMeta({
+      txParams: originalTxMeta.txParams,
+      lastGasPrice,
+      loadingDefaults: false,
+    })
+    this.addTx(txMeta)
+    this.emit('newUnapprovedTx', txMeta)
+    return txMeta
   }
 
   async updateTransaction (txMeta) {
@@ -253,11 +254,9 @@ module.exports = class TransactionController extends EventEmitter {
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
-      const nonce = txMeta.nonceSpecified ? txMeta.txParams.nonce : nonceLock.nextNonce
-      if (nonce > nonceLock.nextNonce) {
-        const message = `Specified nonce may not be larger than account's next valid nonce.`
-        throw new Error(message)
-      }
+      // if txMeta has lastGasPrice then it is a retry at same nonce with higher
+      // gas price transaction and their for the nonce should not be calculated
+      const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
       txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
@@ -278,12 +277,14 @@ module.exports = class TransactionController extends EventEmitter {
 
   async signTransaction (txId) {
     const txMeta = this.txStateManager.getTx(txId)
-    const txParams = txMeta.txParams
-    const fromAddress = txParams.from
     // add network/chain id
-    txParams.chainId = ethUtil.addHexPrefix(this.getChainId().toString(16))
+    const chainId = this.getChainId()
+    const txParams = Object.assign({}, txMeta.txParams, { chainId })
+    // sign tx
+    const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
     await this.signEthTx(ethTx, fromAddress)
+    // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id)
     const rawTx = ethUtil.bufferToHex(ethTx.serialize())
     return rawTx
@@ -313,6 +314,76 @@ module.exports = class TransactionController extends EventEmitter {
 //
 //           PRIVATE METHODS
 //
+
+  _normalizeTxParams (txParams) {
+    // functions that handle normalizing of that key in txParams
+    const whiteList = {
+      from: from => ethUtil.addHexPrefix(from).toLowerCase(),
+      to: to => ethUtil.addHexPrefix(txParams.to).toLowerCase(),
+      nonce: nonce => ethUtil.addHexPrefix(nonce),
+      value: value => ethUtil.addHexPrefix(value),
+      data: data => ethUtil.addHexPrefix(data),
+      gas: gas => ethUtil.addHexPrefix(gas),
+      gasPrice: gasPrice => ethUtil.addHexPrefix(gasPrice),
+    }
+
+    // apply only keys in the whiteList
+    const normalizedTxParams = {}
+    Object.keys(whiteList).forEach((key) => {
+      if (txParams[key]) normalizedTxParams[key] = whiteList[key](txParams[key])
+    })
+
+    return normalizedTxParams
+  }
+
+  _validateTxParams (txParams) {
+    this._validateFrom(txParams)
+    this._validateRecipient(txParams)
+    if ('value' in txParams) {
+      const value = txParams.value.toString()
+      if (value.includes('-')) {
+        throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
+      }
+
+      if (value.includes('.')) {
+        throw new Error(`Invalid transaction value of ${txParams.value} number must be in wei`)
+      }
+    }
+  }
+
+  _validateFrom (txParams) {
+    if ( !(typeof txParams.from === 'string') ) throw new Error(`Invalid from address ${txParams.from} not a string`)
+    if (!ethUtil.isValidAddress(txParams.from)) throw new Error('Invalid from address')
+  }
+
+  _validateRecipient (txParams) {
+    if (txParams.to === '0x' || txParams.to === null ) {
+      if (txParams.data) {
+        delete txParams.to
+      } else {
+        throw new Error('Invalid recipient address')
+      }
+    } else if ( txParams.to !== undefined && !ethUtil.isValidAddress(txParams.to) ) {
+      throw new Error('Invalid recipient address')
+    }
+    return txParams
+  }
+
+  _markNonceDuplicatesDropped (txId) {
+    this.txStateManager.setTxStatusConfirmed(txId)
+    // get the confirmed transactions nonce and from address
+    const txMeta = this.txStateManager.getTx(txId)
+    const { nonce, from } = txMeta.txParams
+    const sameNonceTxs = this.txStateManager.getFilteredTxList({nonce, from})
+    if (!sameNonceTxs.length) return
+    // mark all same nonce transactions as dropped and give i a replacedBy hash
+    sameNonceTxs.forEach((otherTxMeta) => {
+      if (otherTxMeta.id === txId) return
+      otherTxMeta.replacedBy = txMeta.hash
+      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce')
+      this.txStateManager.setTxStatusDropped(otherTxMeta.id)
+    })
+  }
 
   _updateMemstore () {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()

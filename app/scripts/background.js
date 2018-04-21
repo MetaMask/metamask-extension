@@ -19,13 +19,18 @@ const setupRaven = require('./lib/setupRaven')
 const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
-
+const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
+const getObjStructure = require('./lib/getObjStructure')
+const {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+} = require('./lib/enums')
 
 const STORAGE_KEY = 'metamask-config'
-const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
-window.log = log
-log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 const platform = new ExtensionPlatform()
 const notificationManager = new NotificationManager()
@@ -42,7 +47,8 @@ const isIE = !!document.documentMode
 const isEdge = !isIE && !!window.StyleMedia
 
 let popupIsOpen = false
-let openMetamaskTabsIDs = {}
+let notificationIsOpen = false
+const openMetamaskTabsIDs = {}
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
@@ -57,7 +63,8 @@ setupMetamaskMeshMetrics()
 
 async function initialize () {
   const initState = await loadStateFromPersistence()
-  await setupController(initState)
+  const initLangCode = await getFirstPreferredLangCode()
+  await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
 }
 
@@ -75,6 +82,38 @@ async function loadStateFromPersistence () {
                   diskStore.getState() ||
                   migrator.generateInitialState(firstTimeState)
 
+  // check if somehow state is empty
+  // this should never happen but new error reporting suggests that it has
+  // for a small number of users
+  // https://github.com/metamask/metamask-extension/issues/3919
+  if (versionedData && !versionedData.data) {
+    // try to recover from diskStore incase only localStore is bad
+    const diskStoreState = diskStore.getState()
+    if (diskStoreState && diskStoreState.data) {
+      // we were able to recover (though it might be old)
+      versionedData = diskStoreState
+      const vaultStructure = getObjStructure(versionedData)
+      raven.captureMessage('MetaMask - Empty vault found - recovered from diskStore', {
+        // "extra" key is required by Sentry
+        extra: { vaultStructure },
+      })
+    } else {
+      // unable to recover, clear state
+      versionedData = migrator.generateInitialState(firstTimeState)
+      raven.captureMessage('MetaMask - Empty vault found - unable to recover')
+    }
+  }
+
+  // report migration errors to sentry
+  migrator.on('error', (err) => {
+    // get vault structure without secrets
+    const vaultStructure = getObjStructure(versionedData)
+    raven.captureException(err, {
+      // "extra" key is required by Sentry
+      extra: { vaultStructure },
+    })
+  })
+
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
   if (!versionedData) {
@@ -82,14 +121,20 @@ async function loadStateFromPersistence () {
   }
 
   // write to disk
-  if (localStore.isSupported) localStore.set(versionedData)
-  diskStore.putState(versionedData)
+  if (localStore.isSupported) {
+    localStore.set(versionedData)
+  } else {
+    // throw in setTimeout so as to not block boot
+    setTimeout(() => {
+      throw new Error('MetaMask - Localstore not supported')
+    })
+  }
 
   // return just the data
   return versionedData.data
 }
 
-function setupController (initState) {
+function setupController (initState, initLangCode) {
   //
   // MetaMask Controller
   //
@@ -101,6 +146,8 @@ function setupController (initState) {
     showUnapprovedTx: triggerUi,
     // initial state
     initState,
+    // initial locale code
+    initLangCode,
     // platform specific api
     platform,
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
@@ -119,10 +166,9 @@ function setupController (initState) {
     asStream(controller.store),
     debounce(1000),
     storeTransform(versionifyData),
-    storeTransform(syncDataWithExtension),
-    asStream(diskStore),
+    storeTransform(persistData),
     (error) => {
-      log.error('pump hit error', error)
+      log.error('MetaMask - Persistence pipeline failed', error)
     }
   )
 
@@ -131,7 +177,13 @@ function setupController (initState) {
     return versionedData
   }
 
-  function syncDataWithExtension(state) {
+  function persistData (state) {
+    if (!state) {
+      throw new Error('MetaMask - updated state is missing', state)
+    }
+    if (!state.data) {
+      throw new Error('MetaMask - updated state does not have data', state)
+    }
     if (localStore.isSupported) {
       localStore.set(state)
       .catch((err) => {
@@ -144,25 +196,53 @@ function setupController (initState) {
   //
   // connect to other contexts
   //
-
   extension.runtime.onConnect.addListener(connectRemote)
+
+  const metamaskInternalProcessHash = {
+    [ENVIRONMENT_TYPE_POPUP]: true,
+    [ENVIRONMENT_TYPE_NOTIFICATION]: true,
+    [ENVIRONMENT_TYPE_FULLSCREEN]: true,
+  }
+
+  const isClientOpenStatus = () => {
+    return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
+  }
+
   function connectRemote (remotePort) {
-    const isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
+    const processName = remotePort.name
+    const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
     const portStream = new PortStream(remotePort)
+
     if (isMetaMaskInternalProcess) {
       // communication with popup
-      popupIsOpen = popupIsOpen || (remotePort.name === 'popup')
+      controller.isClientOpen = true
       controller.setupTrustedCommunication(portStream, 'MetaMask')
-      // record popup as closed
-      if (remotePort.sender.url.match(/home.html$/)) {
-        openMetamaskTabsIDs[remotePort.sender.tab.id] = true
-      }
-      if (remotePort.name === 'popup') {
+
+      if (processName === ENVIRONMENT_TYPE_POPUP) {
+        popupIsOpen = true
+
         endOfStream(portStream, () => {
           popupIsOpen = false
-          if (remotePort.sender.url.match(/home.html$/)) {
-            openMetamaskTabsIDs[remotePort.sender.tab.id] = false
-          }
+          controller.isClientOpen = isClientOpenStatus()
+        })
+      }
+
+      if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
+        notificationIsOpen = true
+
+        endOfStream(portStream, () => {
+          notificationIsOpen = false
+          controller.isClientOpen = isClientOpenStatus()
+        })
+      }
+
+      if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
+        const tabId = remotePort.sender.tab.id
+        openMetamaskTabsIDs[tabId] = true
+
+        endOfStream(portStream, () => {
+          delete openMetamaskTabsIDs[tabId]
+          controller.isClientOpen = isClientOpenStatus()
         })
       }
     } else {
@@ -205,9 +285,11 @@ function setupController (initState) {
 
 // popup trigger
 function triggerUi () {
-  extension.tabs.query({ active: true }, (tabs) => {
-    const currentlyActiveMetamaskTab = tabs.find(tab => openMetamaskTabsIDs[tab.id])
-    if (!popupIsOpen && !currentlyActiveMetamaskTab) notificationManager.showPopup()
+  extension.tabs.query({ active: true }, tabs => {
+    const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
+    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
+      notificationManager.showPopup()
+    }
   })
 }
 

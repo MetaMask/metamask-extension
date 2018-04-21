@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const extend = require('xtend')
@@ -8,10 +9,16 @@ const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const t = require('../../i18n')
+const connect = require('react-redux').connect
+const ToAutoComplete = require('./send/to-autocomplete')
+const log = require('loglevel')
 
+EnsInput.contextTypes = {
+  t: PropTypes.func,
+}
 
-module.exports = EnsInput
+module.exports = connect()(EnsInput)
+
 
 inherits(EnsInput, Component)
 function EnsInput () {
@@ -22,12 +29,14 @@ EnsInput.prototype.render = function () {
   const props = this.props
   const opts = extend(props, {
     list: 'addresses',
-    onChange: () => {
+    onChange: (recipient) => {
       const network = this.props.network
       const networkHasEnsSupport = getNetworkEnsSupport(network)
+
+      props.onChange(recipient)
+
       if (!networkHasEnsSupport) return
 
-      const recipient = document.querySelector('input[name="address"]').value
       if (recipient.match(ensRE) === null) {
         return this.setState({
           loadingEns: false,
@@ -39,34 +48,13 @@ EnsInput.prototype.render = function () {
       this.setState({
         loadingEns: true,
       })
-      this.checkName()
+      this.checkName(recipient)
     },
   })
   return h('div', {
-    style: { width: '100%' },
+    style: { width: '100%', position: 'relative' },
   }, [
-    h('input.large-input.send-screen-input', opts),
-    // The address book functionality.
-    h('datalist#addresses',
-      [
-        // Corresponds to the addresses owned.
-        Object.keys(props.identities).map((key) => {
-          const identity = props.identities[key]
-          return h('option', {
-            value: identity.address,
-            label: identity.name,
-            key: identity.address,
-          })
-        }),
-        // Corresponds to previously sent-to addresses.
-        props.addressBook.map((identity) => {
-          return h('option', {
-            value: identity.address,
-            label: identity.name,
-            key: identity.address,
-          })
-        }),
-      ]),
+    h(ToAutoComplete, { ...opts }),
     this.ensIcon(),
   ])
 }
@@ -83,20 +71,19 @@ EnsInput.prototype.componentDidMount = function () {
   }
 }
 
-EnsInput.prototype.lookupEnsName = function () {
-  const recipient = document.querySelector('input[name="address"]').value
+EnsInput.prototype.lookupEnsName = function (recipient) {
   const { ensResolution } = this.state
 
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
-    if (address === ZERO_ADDRESS) throw new Error(t('noAddressForName'))
+    if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
         ensResolution: address,
         nickname: recipient.trim(),
-        hoverText: address + '\n' + t('clickCopy'),
+        hoverText: address + '\n' + this.context.t('clickCopy'),
         ensFailure: false,
       })
     }
@@ -130,8 +117,8 @@ EnsInput.prototype.ensIcon = function (recipient) {
     title: hoverText,
     style: {
       position: 'absolute',
-      padding: '9px',
-      transform: 'translatex(-40px)',
+      top: '16px',
+      left: '-25px',
     },
   }, this.ensIconContents(recipient))
 }

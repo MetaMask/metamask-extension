@@ -26,7 +26,7 @@ async function runAddTokenFlowTest (assert, done) {
   assert.ok($('.token-list-item').length === 0, 'no tokens added')
 
   // Go to Add Token screen
-  let addTokenButton = await queryAsync($, 'button.btn-clear.wallet-view__add-token-button')
+  let addTokenButton = await queryAsync($, 'button.btn-primary.wallet-view__add-token-button')
   assert.ok(addTokenButton[0], 'add token button present')
   addTokenButton[0].click()
 
@@ -34,26 +34,26 @@ async function runAddTokenFlowTest (assert, done) {
   let addTokenWrapper = await queryAsync($, '.add-token__wrapper')
   assert.ok(addTokenWrapper[0], 'add token wrapper renders')
 
-  let addTokenTitle = await queryAsync($, '.add-token__title')
-  assert.equal(addTokenTitle[0].textContent, 'Add Token', 'add token title is correct')
+  let addTokenTitle = await queryAsync($, '.add-token__header__title')
+  assert.equal(addTokenTitle[0].textContent, 'Add Tokens', 'add token title is correct')
 
   // Cancel Add Token
-  const cancelAddTokenButton = await queryAsync($, 'button.btn-cancel.add-token__button')
+  const cancelAddTokenButton = await queryAsync($, 'button.btn-secondary--lg.add-token__cancel-button')
   assert.ok(cancelAddTokenButton[0], 'cancel add token button present')
   cancelAddTokenButton.click()
 
   assert.ok($('.wallet-view')[0], 'cancelled and returned to account detail wallet view')
 
   // Return to Add Token Screen
-  addTokenButton = await queryAsync($, 'button.btn-clear.wallet-view__add-token-button')
+  addTokenButton = await queryAsync($, 'button.btn-primary.wallet-view__add-token-button')
   assert.ok(addTokenButton[0], 'add token button present')
   addTokenButton[0].click()
 
   // Verify Add Token Screen
   addTokenWrapper = await queryAsync($, '.add-token__wrapper')
-  addTokenTitle = await queryAsync($, '.add-token__title')
+  addTokenTitle = await queryAsync($, '.add-token__header__title')
   assert.ok(addTokenWrapper[0], 'add token wrapper renders')
-  assert.equal(addTokenTitle[0].textContent, 'Add Token', 'add token title is correct')
+  assert.equal(addTokenTitle[0].textContent, 'Add Tokens', 'add token title is correct')
 
   // Search for token
   const searchInput = await queryAsync($, 'input.add-token__input')
@@ -68,18 +68,18 @@ async function runAddTokenFlowTest (assert, done) {
   tokenWrapper[0].click()
 
   // Click Next button
-  let nextButton = await queryAsync($, 'button.btn-clear.add-token__button')
+  let nextButton = await queryAsync($, 'button.btn-primary--lg')
   assert.equal(nextButton[0].textContent, 'Next', 'next button rendered')
   nextButton[0].click()
 
   // Confirm Add token
   assert.equal(
     $('.add-token__description')[0].textContent,
-    'Would you like to add these tokens?',
+    'Token balance(s)',
     'confirm add token rendered'
   )
-  assert.ok($('button.btn-clear.add-token__button')[0], 'confirm add token button found')
-  $('button.btn-clear.add-token__button')[0].click()
+  assert.ok($('button.btn-primary--lg')[0], 'confirm add token button found')
+  $('button.btn-primary--lg')[0].click()
 
   // Verify added token image
   let heroBalance = await queryAsync($, '.hero-balance')
@@ -87,13 +87,15 @@ async function runAddTokenFlowTest (assert, done) {
   assert.ok(tokenImageUrl.indexOf(heroBalance.find('img').attr('src')) > -1, 'token added')
 
   // Return to Add Token Screen
-  addTokenButton = await queryAsync($, 'button.btn-clear.wallet-view__add-token-button')
+  addTokenButton = await queryAsync($, 'button.btn-primary.wallet-view__add-token-button')
   assert.ok(addTokenButton[0], 'add token button present')
   addTokenButton[0].click()
 
-  const addCustom = await queryAsync($, '.add-token__add-custom')
-  assert.ok(addCustom[0], 'add custom token button present')
-  addCustom[0].click()
+  const addTokenTabs = await queryAsync($, '.add-token__header__tabs__tab')
+  assert.equal(addTokenTabs.length, 2, 'expected number of tabs')
+  assert.equal(addTokenTabs[1].textContent, 'Custom Token', 'Custom Token tab present')
+  assert.ok(addTokenTabs[1], 'add custom token tab present')
+  addTokenTabs[1].click()
 
   // Input token contract address
   const customInput = await queryAsync($, 'input.add-token__add-custom-input')
@@ -101,14 +103,15 @@ async function runAddTokenFlowTest (assert, done) {
   reactTriggerChange(customInput[0])
 
   // Click Next button
-  nextButton = await queryAsync($, 'button.btn-clear.add-token__button')
+  nextButton = await queryAsync($, 'button.btn-primary--lg')
   assert.equal(nextButton[0].textContent, 'Next', 'next button rendered')
   nextButton[0].click()
 
   // Verify symbol length error since contract address won't return symbol
   const errorMessage = await queryAsync($, '.add-token__add-custom-error-message')
   assert.ok(errorMessage[0], 'error rendered')
-  $('button.btn-cancel.add-token__button')[0].click()
+
+  $('button.btn-secondary--lg')[0].click()
 
   // // Confirm Add token
   // assert.equal(
@@ -116,8 +119,8 @@ async function runAddTokenFlowTest (assert, done) {
   //   'Would you like to add these tokens?',
   //   'confirm add token rendered'
   // )
-  // assert.ok($('button.btn-clear.add-token__button')[0], 'confirm add token button found')
-  // $('button.btn-clear.add-token__button')[0].click()
+  // assert.ok($('button.btn-primary--lg')[0], 'confirm add token button found')
+  // $('button.btn-primary--lg')[0].click()
 
   // // Verify added token image
   // heroBalance = await queryAsync($, '.hero-balance')

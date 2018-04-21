@@ -1,19 +1,43 @@
 const Component = require('react').Component
-const { connect } = require('react-redux')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
+const PropTypes = require('prop-types')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../../actions')
 const clone = require('clone')
-const Identicon = require('../identicon')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
-const { conversionUtil, addCurrencies } = require('../../conversion-util')
-const t = require('../../../i18n')
+const classnames = require('classnames')
+const {
+  conversionUtil,
+  addCurrencies,
+  multiplyCurrencies,
+} = require('../../conversion-util')
+const {
+  getGasTotal,
+  isBalanceSufficient,
+} = require('../send/send-utils')
+const GasFeeDisplay = require('../send/gas-fee-display-v2')
+const SenderToRecipient = require('../sender-to-recipient')
+const NetworkDisplay = require('../network-display')
+const currencyFormatter = require('currency-formatter')
+const currencies = require('currency-formatter/currencies')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
+const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendEther)
+ConfirmSendEther.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(ConfirmSendEther)
+
 
 function mapStateToProps (state) {
   const {
@@ -24,12 +48,14 @@ function mapStateToProps (state) {
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
+  const { balance } = accounts[selectedAddress]
   return {
     conversionRate,
     identities,
     selectedAddress,
     currentCurrency,
     send,
+    balance,
   }
 }
 
@@ -44,6 +70,7 @@ function mapDispatchToProps (dispatch) {
         to,
         value: amount,
       } = txParams
+
       dispatch(actions.updateSend({
         gasLimit,
         gasPrice,
@@ -53,9 +80,32 @@ function mapDispatchToProps (dispatch) {
         errors: { to: null, amount: null },
         editingTransactionId: id,
       }))
-      dispatch(actions.showSendPage())
     },
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
+    showCustomizeGasModal: (txMeta, sendGasLimit, sendGasPrice, sendGasTotal) => {
+      const { id, txParams, lastGasPrice } = txMeta
+      const { gas: txGasLimit, gasPrice: txGasPrice } = txParams
+
+      let forceGasMin
+      if (lastGasPrice) {
+        forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
+          multiplicandBase: 16,
+          multiplierBase: 10,
+          toNumericBase: 'hex',
+          fromDenomination: 'WEI',
+        }))
+      }
+
+      dispatch(actions.updateSend({
+        gasLimit: sendGasLimit || txGasLimit,
+        gasPrice: sendGasPrice || txGasPrice,
+        editingTransactionId: id,
+        gasTotal: sendGasTotal,
+        forceGasMin,
+      }))
+      dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
+    },
+    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
   }
 }
 
@@ -64,6 +114,52 @@ function ConfirmSendEther () {
   Component.call(this)
   this.state = {}
   this.onSubmit = this.onSubmit.bind(this)
+}
+
+ConfirmSendEther.prototype.updateComponentSendErrors = function (prevProps) {
+  const {
+    balance: oldBalance,
+    conversionRate: oldConversionRate,
+  } = prevProps
+  const {
+    updateSendErrors,
+    balance,
+    conversionRate,
+    send: {
+      errors: {
+        simulationFails,
+      },
+    },
+  } = this.props
+  const txMeta = this.gatherTxMeta()
+
+  const shouldUpdateBalanceSendErrors = balance && [
+    balance !== oldBalance,
+    conversionRate !== oldConversionRate,
+  ].some(x => Boolean(x))
+
+  if (shouldUpdateBalanceSendErrors) {
+    const balanceIsSufficient = this.isBalanceSufficient(txMeta)
+    updateSendErrors({
+      insufficientFunds: balanceIsSufficient ? false : this.context.t('insufficientFunds'),
+    })
+  }
+
+  const shouldUpdateSimulationSendError = Boolean(txMeta.simulationFails) !== Boolean(simulationFails)
+
+  if (shouldUpdateSimulationSendError) {
+    updateSendErrors({
+      simulationFails: !txMeta.simulationFails ? false : this.context.t('transactionError'),
+    })
+  }
+}
+
+ConfirmSendEther.prototype.componentWillMount = function () {
+  this.updateComponentSendErrors({})
+}
+
+ConfirmSendEther.prototype.componentDidUpdate = function (prevProps) {
+  this.updateComponentSendErrors(prevProps)
 }
 
 ConfirmSendEther.prototype.getAmount = function () {
@@ -140,6 +236,7 @@ ConfirmSendEther.prototype.getGasFee = function () {
   return {
     FIAT,
     ETH,
+    gasFeeInHex: txFeeBn.toString(16),
   }
 }
 
@@ -147,7 +244,8 @@ ConfirmSendEther.prototype.getData = function () {
   const { identities } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  const { FIAT: gasFeeInFIAT, ETH: gasFeeInETH } = this.getGasFee()
+  const account = identities ? identities[txParams.from] || {} : {}
+  const { FIAT: gasFeeInFIAT, ETH: gasFeeInETH, gasFeeInHex } = this.getGasFee()
   const { FIAT: amountInFIAT, ETH: amountInETH } = this.getAmount()
 
   const totalInFIAT = addCurrencies(gasFeeInFIAT, amountInFIAT, {
@@ -162,11 +260,11 @@ ConfirmSendEther.prototype.getData = function () {
   return {
     from: {
       address: txParams.from,
-      name: identities[txParams.from].name,
+      name: account.name,
     },
     to: {
       address: txParams.to,
-      name: identities[txParams.to] ? identities[txParams.to].name : t('newRecipient'),
+      name: identities[txParams.to] ? identities[txParams.to].name : this.context.t('newRecipient'),
     },
     memo: txParams.memo || '',
     gasFeeInFIAT,
@@ -175,11 +273,40 @@ ConfirmSendEther.prototype.getData = function () {
     amountInETH,
     totalInFIAT,
     totalInETH,
+    gasFeeInHex,
   }
 }
 
+ConfirmSendEther.prototype.convertToRenderableCurrency = function (value, currencyCode) {
+  const upperCaseCurrencyCode = currencyCode.toUpperCase()
+
+  return currencies.find(currency => currency.code === upperCaseCurrencyCode)
+    ? currencyFormatter.format(Number(value), {
+      code: upperCaseCurrencyCode,
+    })
+    : value
+}
+
+ConfirmSendEther.prototype.editTransaction = function (txMeta) {
+  const { editTransaction, history } = this.props
+  editTransaction(txMeta)
+  history.push(SEND_ROUTE)
+}
+
 ConfirmSendEther.prototype.render = function () {
-  const { editTransaction, currentCurrency, clearSend } = this.props
+  const {
+    currentCurrency,
+    clearSend,
+    conversionRate,
+    currentCurrency: convertedCurrency,
+    showCustomizeGasModal,
+    send: {
+      gasTotal,
+      gasLimit: sendGasLimit,
+      gasPrice: sendGasPrice,
+      errors,
+    },
+  } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -193,12 +320,19 @@ ConfirmSendEther.prototype.render = function () {
       name: toName,
     },
     memo,
-    gasFeeInFIAT,
-    gasFeeInETH,
+    gasFeeInHex,
     amountInFIAT,
     totalInFIAT,
     totalInETH,
   } = this.getData()
+
+  const title = txMeta.lastGasPrice ? 'Reprice Transaction' : 'Confirm'
+  const subtitle = txMeta.lastGasPrice
+    ? 'Increase your gas fee to attempt to overwrite and speed up your transaction'
+    : 'Please review your transaction.'
+
+  const convertedAmountInFiat = this.convertToRenderableCurrency(amountInFIAT, currentCurrency)
+  const convertedTotalInFiat = this.convertToRenderableCurrency(totalInFIAT, currentCurrency)
 
   // This is from the latest master
   // It handles some of the errors that we are not currently handling
@@ -214,41 +348,28 @@ ConfirmSendEther.prototype.render = function () {
   this.inputs = []
 
   return (
-    h('div.confirm-screen-container.confirm-send-ether', [
-      // Main Send token Card
-      h('div.page-container', [
-        h('div.page-container__header', [
-          h('button.confirm-screen-back-button', {
-            onClick: () => editTransaction(txMeta),
+    // Main Send token Card
+    h('.page-container', [
+      h('.page-container__header', [
+        h('.page-container__header-row', [
+          h('span.page-container__back-button', {
+            onClick: () => this.editTransaction(txMeta),
+            style: {
+              visibility: !txMeta.lastGasPrice ? 'initial' : 'hidden',
+            },
           }, 'Edit'),
-          h('div.page-container__title', 'Confirm'),
-          h('div.page-container__subtitle', `Please review your transaction.`),
+          window.METAMASK_UI_TYPE === 'notification' && h(NetworkDisplay),
         ]),
-        h('div.flex-row.flex-center.confirm-screen-identicons', [
-          h('div.confirm-screen-account-wrapper', [
-            h(
-              Identicon,
-              {
-                address: fromAddress,
-                diameter: 60,
-              },
-            ),
-            h('span.confirm-screen-account-name', fromName),
-            // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
-          ]),
-          h('i.fa.fa-arrow-right.fa-lg'),
-          h('div.confirm-screen-account-wrapper', [
-            h(
-              Identicon,
-              {
-                address: txParams.to,
-                diameter: 60,
-              },
-            ),
-            h('span.confirm-screen-account-name', toName),
-            // h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
-          ]),
-        ]),
+        h('.page-container__title', title),
+        h('.page-container__subtitle', subtitle),
+      ]),
+      h('.page-container__content', [
+        h(SenderToRecipient, {
+          senderName: fromName,
+          senderAddress: fromAddress,
+          recipientName: toName,
+          recipientAddress: txParams.to,
+        }),
 
         // h('h3.flex-center.confirm-screen-sending-to-message', {
         //   style: {
@@ -259,7 +380,7 @@ ConfirmSendEther.prototype.render = function () {
         //   `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
         // ]),
 
-        h('h3.flex-center.confirm-screen-send-amount', [`${amountInFIAT}`]),
+        h('h3.flex-center.confirm-screen-send-amount', [`${convertedAmountInFiat}`]),
         h('h3.flex-center.confirm-screen-send-amount-currency', [ currentCurrency.toUpperCase() ]),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
@@ -267,7 +388,7 @@ ConfirmSendEther.prototype.render = function () {
 
         h('div.confirm-screen-rows', [
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('from') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', fromName),
               h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
@@ -275,7 +396,7 @@ ConfirmSendEther.prototype.render = function () {
           ]),
 
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('to') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', toName),
               h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
@@ -283,25 +404,34 @@ ConfirmSendEther.prototype.render = function () {
           ]),
 
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('gasFee') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('gasFee') ]),
             h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', `${gasFeeInFIAT} ${currentCurrency.toUpperCase()}`),
-
-              h('div.confirm-screen-row-detail', `${gasFeeInETH} ETH`),
+              h(GasFeeDisplay, {
+                gasTotal: gasTotal || gasFeeInHex,
+                conversionRate,
+                convertedCurrency,
+                onClick: () => showCustomizeGasModal(txMeta, sendGasLimit, sendGasPrice, gasTotal),
+              }),
             ]),
           ]),
 
-
-          h('section.flex-row.flex-center.confirm-screen-total-box ', [
-            h('div.confirm-screen-section-column', [
-              h('span.confirm-screen-label', [ t('total') + ' ' ]),
-              h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
+          h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
+            h('div', {
+              className: classnames({
+                'confirm-screen-section-column--with-error': errors['insufficientFunds'],
+                'confirm-screen-section-column': !errors['insufficientFunds'],
+              }),
+            }, [
+              h('span.confirm-screen-label', [ this.context.t('total') + ' ' ]),
+              h('div.confirm-screen-total-box__subtitle', [ this.context.t('amountPlusGas') ]),
             ]),
 
             h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', `${totalInFIAT} ${currentCurrency.toUpperCase()}`),
+              h('div.confirm-screen-row-info', `${convertedTotalInFiat} ${currentCurrency.toUpperCase()}`),
               h('div.confirm-screen-row-detail', `${totalInETH} ETH`),
             ]),
+
+            this.renderErrorMessage('insufficientFunds'),
           ]),
         ]),
 
@@ -387,33 +517,51 @@ ConfirmSendEther.prototype.render = function () {
       ]),
 
       h('form#pending-tx-form', {
+        className: 'confirm-screen-form',
         onSubmit: this.onSubmit,
       }, [
-        // Cancel Button
-        h('div.cancel.btn-light.confirm-screen-cancel-button.allcaps', {
-          onClick: (event) => {
-            clearSend()
-            this.cancel(event, txMeta)
-          },
-        }, t('cancel')),
+        this.renderErrorMessage('simulationFails'),
+        h('.page-container__footer', [
+          // Cancel Button
+          h('button.btn-cancel.page-container__footer-button.allcaps', {
+            onClick: (event) => {
+              clearSend()
+              this.cancel(event, txMeta)
+            },
+          }, this.context.t('cancel')),
 
-        // Accept Button
-        h('button.confirm-screen-confirm-button.allcaps', [t('confirm')]),
+          // Accept Button
+          h('button.btn-confirm.page-container__footer-button.allcaps', {
+            onClick: event => this.onSubmit(event),
+          }, this.context.t('confirm')),
+        ]),
       ]),
     ])
   )
 }
 
+ConfirmSendEther.prototype.renderErrorMessage = function (message) {
+  const { send: { errors } } = this.props
+
+  return errors[message]
+    ? h('div.confirm-screen-error', [ errors[message] ])
+    : null
+}
+
 ConfirmSendEther.prototype.onSubmit = function (event) {
   event.preventDefault()
+  const { updateSendErrors } = this.props
   const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
+  const balanceIsSufficient = this.isBalanceSufficient(txMeta)
   this.setState({ valid, submitting: true })
 
-  if (valid && this.verifyGasParams()) {
+  if (valid && this.verifyGasParams() && balanceIsSufficient) {
     this.props.sendTransaction(txMeta, event)
+  } else if (!balanceIsSufficient) {
+    updateSendErrors({ insufficientFunds: this.context.t('insufficientFunds') })
   } else {
-    this.props.dispatch(actions.displayWarning(t('invalidGasParams')))
+    updateSendErrors({ invalidGasParams: this.context.t('invalidGasParams') })
     this.setState({ submitting: false })
   }
 }
@@ -423,6 +571,29 @@ ConfirmSendEther.prototype.cancel = function (event, txMeta) {
   const { cancelTransaction } = this.props
 
   cancelTransaction(txMeta)
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
+}
+
+ConfirmSendEther.prototype.isBalanceSufficient = function (txMeta) {
+  const {
+    balance,
+    conversionRate,
+  } = this.props
+  const {
+    txParams: {
+      gas,
+      gasPrice,
+      value: amount,
+    },
+  } = txMeta
+  const gasTotal = getGasTotal(gas, gasPrice)
+
+  return isBalanceSufficient({
+    amount,
+    gasTotal,
+    balance,
+    conversionRate,
+  })
 }
 
 ConfirmSendEther.prototype.checkValidity = function () {
@@ -445,6 +616,27 @@ ConfirmSendEther.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
+
+  const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
+  const {
+    lastGasPrice,
+    txParams: {
+      gasPrice: txGasPrice,
+      gas: txGasLimit,
+    },
+  } = txData
+
+  let forceGasMin
+  if (lastGasPrice) {
+    forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
+      multiplicandBase: 16,
+      multiplierBase: 10,
+      toNumericBase: 'hex',
+    }))
+  }
+
+  txData.txParams.gasPrice = sendGasPrice || forceGasMin || txGasPrice
+  txData.txParams.gas = sendGasLimit || txGasLimit
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData

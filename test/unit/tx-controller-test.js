@@ -162,7 +162,7 @@ describe('Transaction Controller', function () {
   describe('#addUnapprovedTransaction', function () {
 
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
-      txController.addUnapprovedTransaction({})
+      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d' })
       .then((txMeta) => {
         assert(('id' in txMeta), 'should have a id')
         assert(('time' in txMeta), 'should have a time stamp')
@@ -182,7 +182,7 @@ describe('Transaction Controller', function () {
         assert(txMetaFromEmit, 'txMeta is falsey')
         done()
       })
-      txController.addUnapprovedTransaction({})
+      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d' })
       .catch(done)
     })
 
@@ -210,27 +210,97 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#validateTxParams', function () {
-    it('does not throw for positive values', function (done) {
+  describe('#_validateTxParams', function () {
+    it('does not throw for positive values', function () {
       var sample = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '0x01',
       }
-      txController.txGasUtil.validateTxParams(sample).then(() => {
-        done()
-      }).catch(done)
+      txController._validateTxParams(sample)
     })
 
-    it('returns error for negative values', function (done) {
+    it('returns error for negative values', function () {
       var sample = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '-0x01',
       }
-      txController.txGasUtil.validateTxParams(sample)
-      .then(() => done('expected to thrown on negativity values but didn\'t'))
-      .catch((err) => {
+      try {
+        txController._validateTxParams(sample)
+      } catch (err) {
         assert.ok(err, 'error')
-        done()
-      })
+      }
     })
+  })
+
+  describe('#_normalizeTxParams', () => {
+    it('should normalize txParams', () => {
+      let txParams = {
+        chainId: '0x1',
+        from: 'a7df1beDBF813f57096dF77FCd515f0B3900e402',
+        to: null,
+        data: '68656c6c6f20776f726c64',
+        random: 'hello world',
+      }
+
+      let normalizedTxParams = txController._normalizeTxParams(txParams)
+
+      assert(!normalizedTxParams.chainId, 'their should be no chainId')
+      assert(!normalizedTxParams.to, 'their should be no to address if null')
+      assert.equal(normalizedTxParams.from.slice(0, 2), '0x', 'from should be hexPrefixd')
+      assert.equal(normalizedTxParams.data.slice(0, 2), '0x', 'data should be hexPrefixd')
+      assert(!('random' in normalizedTxParams), 'their should be no random key in normalizedTxParams')
+
+      txParams.to = 'a7df1beDBF813f57096dF77FCd515f0B3900e402'
+      normalizedTxParams = txController._normalizeTxParams(txParams)
+      assert.equal(normalizedTxParams.to.slice(0, 2), '0x', 'to should be hexPrefixd')
+
+    })
+  })
+
+  describe('#_validateRecipient', () => {
+    it('removes recipient for txParams with 0x when contract data is provided', function () {
+      const zeroRecipientandDataTxParams = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        to: '0x',
+        data: 'bytecode',
+      }
+      const sanitizedTxParams = txController._validateRecipient(zeroRecipientandDataTxParams)
+      assert.deepEqual(sanitizedTxParams, { from: '0x1678a085c290ebd122dc42cba69373b5953b831d', data: 'bytecode' }, 'no recipient with 0x')
+    })
+
+    it('should error when recipient is 0x', function () {
+      const zeroRecipientTxParams = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        to: '0x',
+      }
+      assert.throws(() => { txController._validateRecipient(zeroRecipientTxParams) }, Error, 'Invalid recipient address')
+    })
+  })
+
+
+  describe('#_validateFrom', () => {
+    it('should error when from is not a hex string', function () {
+
+      // where from is undefined
+      const txParams = {}
+      assert.throws(() => { txController._validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+
+      // where from is array
+      txParams.from = []
+      assert.throws(() => { txController._validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+
+      // where from is a object
+      txParams.from = {}
+      assert.throws(() => { txController._validateFrom(txParams) }, Error, `Invalid from address ${txParams.from} not a string`)
+
+      // where from is a invalid address
+      txParams.from = 'im going to fail'
+      assert.throws(() => { txController._validateFrom(txParams) }, Error, `Invalid from address`)
+
+      // should run
+      txParams.from ='0x1678a085c290ebd122dc42cba69373b5953b831d'
+      txController._validateFrom(txParams)
+      })
   })
 
   describe('#addTx', function () {
@@ -392,6 +462,49 @@ describe('Transaction Controller', function () {
     })
   })
 
+  describe('#retryTransaction', function () {
+    it('should create a new txMeta with the same txParams as the original one', function (done) {
+      let txParams = {
+        nonce: '0x00',
+        from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
+        to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
+        data: '0x0',
+      }
+      txController.txStateManager._saveTxList([
+        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams },
+      ])
+      txController.retryTransaction(1)
+      .then((txMeta) => {
+        assert.equal(txMeta.txParams.nonce, txParams.nonce, 'nonce should be the same')
+        assert.equal(txMeta.txParams.from, txParams.from, 'from should be the same')
+        assert.equal(txMeta.txParams.to, txParams.to, 'to should be the same')
+        assert.equal(txMeta.txParams.data, txParams.data, 'data should be the same')
+        assert.ok(('lastGasPrice' in txMeta), 'should have the key `lastGasPrice`')
+        assert.equal(txController.txStateManager.getTxList().length, 2)
+        done()
+      }).catch(done)
+    })
+  })
+
+  describe('#_markNonceDuplicatesDropped', function () {
+    it('should mark all nonce duplicates as dropped without marking the confirmed transaction as dropped', function () {
+      txController.txStateManager._saveTxList([
+        { id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 2, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 4, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 5, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 6, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 7, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+      ])
+      txController._markNonceDuplicatesDropped(1)
+      const confirmedTx = txController.txStateManager.getTx(1)
+      const droppedTxs = txController.txStateManager.getFilteredTxList({ nonce: '0x01', status: 'dropped' })
+      assert.equal(confirmedTx.status, 'confirmed', 'the confirmedTx should remain confirmed')
+      assert.equal(droppedTxs.length, 6, 'their should be 6 dropped txs')
+
+    })
+  })
 
   describe('#getPendingTransactions', function () {
     beforeEach(function () {
@@ -401,7 +514,7 @@ describe('Transaction Controller', function () {
         { id: 3, status: 'approved', metamaskNetworkId: currentNetworkId, txParams: {} },
         { id: 4, status: 'signed', metamaskNetworkId: currentNetworkId, txParams: {} },
         { id: 5, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {} },
-        { id: 6, status: 'confimed', metamaskNetworkId: currentNetworkId, txParams: {} },
+        { id: 6, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} },
         { id: 7, status: 'failed', metamaskNetworkId: currentNetworkId, txParams: {} },
       ])
     })

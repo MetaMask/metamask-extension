@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
@@ -10,9 +11,18 @@ const { formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 const classnames = require('classnames')
 const { tokenInfoGetter } = require('../token-util')
-const t = require('../../i18n')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
+const { CONFIRM_TRANSACTION_ROUTE } = require('../routes')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(TxList)
+
+TxList.contextTypes = {
+  t: PropTypes.func,
+}
 
 function mapStateToProps (state) {
   return {
@@ -40,7 +50,7 @@ TxList.prototype.render = function () {
   return h('div.flex-column', [
     h('div.flex-row.tx-list-header-wrapper', [
       h('div.flex-row.tx-list-header', [
-        h('div', 'transactions'),
+        h('div', this.context.t('transactions')),
       ]),
     ]),
     h('div.flex-column.tx-list-container', {}, [
@@ -57,7 +67,7 @@ TxList.prototype.renderTransaction = function () {
     : [h(
         'div.tx-list-item.tx-list-item--empty',
         { key: 'tx-list-none' },
-        [ t('noTransactions') ],
+        [ this.context.t('noTransactions') ],
       )]
 }
 
@@ -72,12 +82,13 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
 
   const props = {
     dateString: formatDate(transaction.time),
-    address: transaction.txParams.to,
+    address: transaction.txParams && transaction.txParams.to,
     transactionStatus: transaction.status,
-    transactionAmount: transaction.txParams.value,
-    transActionId: transaction.id,
+    transactionAmount: transaction.txParams && transaction.txParams.value,
+    transactionId: transaction.id,
     transactionHash: transaction.hash,
     transactionNetworkId: transaction.metamaskNetworkId,
+    transactionSubmittedTime: transaction.submittedTime,
   }
 
   const {
@@ -85,30 +96,36 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionStatus,
     transactionAmount,
     dateString,
-    transActionId,
+    transactionId,
     transactionHash,
     transactionNetworkId,
+    transactionSubmittedTime,
   } = props
-  const { showConfTxPage } = this.props
+  const { history } = this.props
 
   const opts = {
-    key: transActionId || transactionHash,
+    key: transactionId || transactionHash,
     txParams: transaction.txParams,
+    isMsg: Boolean(transaction.msgParams),
     transactionStatus,
-    transActionId,
+    transactionId,
     dateString,
     address,
     transactionAmount,
     transactionHash,
     conversionRate,
     tokenInfoGetter: this.tokenInfoGetter,
+    transactionSubmittedTime,
   }
 
   const isUnapproved = transactionStatus === 'unapproved'
 
   if (isUnapproved) {
-    opts.onClick = () => showConfTxPage({id: transActionId})
-    opts.transactionStatus = t('Not Started')
+    opts.onClick = () => {
+      this.props.showConfTxPage({ id: transactionId })
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    }
+    opts.transactionStatus = this.context.t('notStarted')
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
   }

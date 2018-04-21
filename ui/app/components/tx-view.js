@@ -1,17 +1,27 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const actions = require('../actions')
 const selectors = require('../selectors')
-const t = require('../../i18n')
+const { SEND_ROUTE } = require('../routes')
+const { checksumAddress: toChecksumAddress } = require('../util')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
 const Identicon = require('./identicon')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(TxView)
+
+TxView.contextTypes = {
+  t: PropTypes.func,
+}
 
 function mapStateToProps (state) {
   const sidebarOpen = state.appState.sidebarOpen
@@ -22,7 +32,7 @@ function mapStateToProps (state) {
   const network = state.metamask.network
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
-  const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
+  const checksumAddress = toChecksumAddress(selectedAddress)
   const identity = identities[selectedAddress]
 
   return {
@@ -64,30 +74,30 @@ TxView.prototype.renderHeroBalance = function () {
 }
 
 TxView.prototype.renderButtons = function () {
-  const {selectedToken, showModal, showSendPage, showSendTokenPage } = this.props
+  const {selectedToken, showModal, history } = this.props
 
   return !selectedToken
     ? (
       h('div.flex-row.flex-center.hero-balance-buttons', [
-        h('button.btn-clear.hero-balance-button.allcaps', {
+        h('button.btn-primary.hero-balance-button', {
           onClick: () => showModal({
             name: 'DEPOSIT_ETHER',
           }),
-        }, t('deposit')),
+        }, this.context.t('deposit')),
 
-        h('button.btn-clear.hero-balance-button.allcaps', {
+        h('button.btn-primary.hero-balance-button', {
           style: {
             marginLeft: '0.8em',
           },
-          onClick: showSendPage,
-        }, t('send')),
+          onClick: () => history.push(SEND_ROUTE),
+        }, this.context.t('send')),
       ])
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
-        h('button.btn-clear.hero-balance-button', {
-          onClick: showSendTokenPage,
-        }, t('send')),
+        h('button.btn-primary.hero-balance-button', {
+          onClick: () => history.push(SEND_ROUTE),
+        }, this.context.t('send')),
       ])
     )
 }

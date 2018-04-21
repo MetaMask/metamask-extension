@@ -35,13 +35,14 @@
       font-size: 18px;
       line-height: 24px;
       text-align: center;
+      cursor: pointer;
     }
 
     &__tab:first-of-type {
       margin-right: 20px;
     }
 
-    &__unselected:hover {
+    &__tab:hover {
       color: $black;
       border-bottom: none;
     }
@@ -49,9 +50,9 @@
     &__selected {
       color: $curious-blue;
       border-bottom: 3px solid $curious-blue;
+      cursor: initial;
     }
   }
-
 }
 
 .new-account-import-disclaimer {
@@ -192,29 +193,8 @@
     justify-content: space-between;
   }
 
-  &__button-cancel,
-  &__button-create {
-    height: 55px;
+  &__button {
     width: 150px;
-    border-radius: 2px;
-    background-color: #FFFFFF;
-  }
-
-  &__button-cancel {
-    border: 1px solid $dusty-gray;
-    color: $dusty-gray;
-    font-family: Roboto;
-    font-size: 16px;
-    line-height: 21px;
-    text-align: center;
-  }
-
-  &__button-create {
-    border: 1px solid $curious-blue;
-    color: $curious-blue;
-    font-family: Roboto;
-    font-size: 16px;
-    line-height: 21px;
-    text-align: center;
+    min-width: initial;
   }
 }

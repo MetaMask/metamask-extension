@@ -1,6 +1,7 @@
 const Component = require('react').Component
-const { connect } = require('react-redux')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const clone = require('clone')
 const abi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
@@ -11,6 +12,7 @@ const util = require('../../util')
 const ConfirmSendEther = require('./confirm-send-ether')
 const ConfirmSendToken = require('./confirm-send-token')
 const ConfirmDeployContract = require('./confirm-deploy-contract')
+const Loading = require('../loading')
 
 const TX_TYPES = {
   DEPLOY_CONTRACT: 'deploy_contract',
@@ -53,9 +55,23 @@ function PendingTx () {
   }
 }
 
-PendingTx.prototype.componentWillMount = async function () {
+PendingTx.prototype.componentDidMount = function () {
+  this.setTokenData()
+}
+
+PendingTx.prototype.componentDidUpdate = function (prevProps, prevState) {
+  if (prevState.isFetching) {
+    this.setTokenData()
+  }
+}
+
+PendingTx.prototype.setTokenData = async function () {
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
+
+  if (txMeta.loadingDefaults) {
+    return
+  }
 
   if (!txParams.to) {
     return this.setState({
@@ -64,13 +80,20 @@ PendingTx.prototype.componentWillMount = async function () {
     })
   }
 
-  try {
+  // inspect tx data for supported special confirmation screens
+  let isTokenTransaction = false
+  if (txParams.data) {
+    const tokenData = abiDecoder.decodeMethod(txParams.data)
+    const { name: tokenMethodName } = tokenData || {}
+    isTokenTransaction = (tokenMethodName === 'transfer')
+  }
+
+  if (isTokenTransaction) {
     const token = util.getContractAtAddress(txParams.to)
     const results = await Promise.all([
       token.symbol(),
       token.decimals(),
     ])
-
     const [ symbol, decimals ] = results
 
     if (symbol[0] && decimals[0]) {
@@ -83,11 +106,14 @@ PendingTx.prototype.componentWillMount = async function () {
       })
     } else {
       this.setState({
-        transactionType: TX_TYPES.SEND_ETHER,
+        transactionType: TX_TYPES.SEND_TOKEN,
+        tokenAddress: txParams.to,
+        tokenSymbol: null,
+        tokenDecimals: null,
         isFetching: false,
       })
     }
-  } catch (e) {
+  } else {
     this.setState({
       transactionType: TX_TYPES.SEND_ETHER,
       isFetching: false,
@@ -115,7 +141,10 @@ PendingTx.prototype.render = function () {
   const { sendTransaction } = this.props
 
   if (isFetching) {
-    return h('noscript')
+    return h(Loading, {
+      fullScreen: true,
+      loadingMessage: this.context.t('generatingTransaction'),
+    })
   }
 
   switch (transactionType) {
@@ -140,6 +169,12 @@ PendingTx.prototype.render = function () {
         sendTransaction,
       })
     default:
-      return h('noscript')
+      return h(Loading, {
+        fullScreen: true,
+      })
   }
+}
+
+PendingTx.contextTypes = {
+  t: PropTypes.func,
 }

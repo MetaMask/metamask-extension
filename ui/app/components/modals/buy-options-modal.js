@@ -1,10 +1,10 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const networkNames = require('../../../../app/scripts/config.js').networkNames
-const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -33,7 +33,12 @@ function BuyOptions () {
   Component.call(this)
 }
 
+BuyOptions.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(BuyOptions)
+
 
 BuyOptions.prototype.renderModalContentOption = function (title, header, onClick) {
   return h('div.buy-modal-content-option', {
@@ -57,15 +62,15 @@ BuyOptions.prototype.render = function () {
       }, [
         h('div.buy-modal-content-title', {
           style: {},
-        }, t('transfers')),
-        h('div', {}, t('howToDeposit')),
+        }, this.context.t('transfers')),
+        h('div', {}, this.context.t('howToDeposit')),
       ]),
 
       h('div.buy-modal-content-options.flex-column.flex-center', {}, [
 
         isTestNetwork
-          ? this.renderModalContentOption(networkName, t('testFaucet'), () => toFaucet(network))
-          : this.renderModalContentOption('Coinbase', t('depositFiat'), () => toCoinbase(address)),
+          ? this.renderModalContentOption(networkName, this.context.t('testFaucet'), () => toFaucet(network))
+          : this.renderModalContentOption('Coinbase', this.context.t('depositFiat'), () => toCoinbase(address)),
 
         // h('div.buy-modal-content-option', {}, [
         //   h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
@@ -73,8 +78,8 @@ BuyOptions.prototype.render = function () {
         // ]),,
 
         this.renderModalContentOption(
-          t('directDeposit'),
-          t('depositFromAccount'),
+          this.context.t('directDeposit'),
+          this.context.t('depositFromAccount'),
           () => this.goToAccountDetailsModal()
         ),
 
@@ -85,7 +90,7 @@ BuyOptions.prototype.render = function () {
           background: 'white',
         },
         onClick: () => { this.props.hideModal() },
-      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, t('cancel'))),
+      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, this.context.t('cancel'))),
     ]),
   ])
 }

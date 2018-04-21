@@ -102,7 +102,6 @@ ConfigManager.prototype.setShowSeedWords = function (should) {
   this.setData(data)
 }
 
-
 ConfigManager.prototype.getShouldShowSeedWords = function () {
   var data = this.getData()
   return data.showSeedWords
@@ -118,6 +117,27 @@ ConfigManager.prototype.getSeedWords = function () {
   var data = this.getData()
   return data.seedWords
 }
+
+/**
+ * Called to set the isRevealingSeedWords flag. This happens only when the user chooses to reveal
+ * the seed words and not during the first time flow.
+ * @param {boolean} reveal - Value to set the isRevealingSeedWords flag.
+ */
+ConfigManager.prototype.setIsRevealingSeedWords = function (reveal = false) {
+  const data = this.getData()
+  data.isRevealingSeedWords = reveal
+  this.setData(data)
+}
+
+/**
+ * Returns the isRevealingSeedWords flag.
+ * @returns {boolean|undefined}
+ */
+ConfigManager.prototype.getIsRevealingSeedWords = function () {
+  const data = this.getData()
+  return data.isRevealingSeedWords
+}
+
 ConfigManager.prototype.setRpcTarget = function (rpcUrl) {
   var config = this.getConfig()
   config.provider = {

@@ -1,17 +1,23 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
-const t = require('../i18n')
 const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
-const environmentType = require('../../app/scripts/lib/environment-type')
+const { getEnvironmentType } = require('../../app/scripts/lib/util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../app/scripts/lib/enums')
 
 const Mascot = require('./components/mascot')
 
+UnlockScreen.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(UnlockScreen)
+
 
 inherits(UnlockScreen, Component)
 function UnlockScreen () {
@@ -41,7 +47,7 @@ UnlockScreen.prototype.render = function () {
           textTransform: 'uppercase',
           color: '#7F8082',
         },
-      }, t('appName')),
+      }, this.context.t('appName')),
 
       h('input.large-input', {
         type: 'password',
@@ -67,12 +73,12 @@ UnlockScreen.prototype.render = function () {
         style: {
           margin: 10,
         },
-      }, 'Log In'),
+      }, this.context.t('login')),
 
       h('p.pointer', {
         onClick: () => {
           this.props.dispatch(actions.markPasswordForgotten())
-          if (environmentType() === 'popup') {
+          if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
             global.platform.openExtensionInBrowser()
           }
         },
@@ -81,7 +87,7 @@ UnlockScreen.prototype.render = function () {
           color: 'rgb(247, 134, 28)',
           textDecoration: 'underline',
         },
-      }, 'Restore from seed phrase'),
+      }, this.context.t('restoreFromSeed')),
 
       h('p.pointer', {
         onClick: () => {
@@ -94,7 +100,7 @@ UnlockScreen.prototype.render = function () {
           textDecoration: 'underline',
           marginTop: '32px',
         },
-      }, 'Use classic interface'),
+      }, this.context.t('classicInterface')),
     ])
   )
 }

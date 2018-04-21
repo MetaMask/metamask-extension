@@ -2,6 +2,8 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const abi = require('ethereumjs-abi')
 const SendEther = require('../../send-v2')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 
 const {
   accountsWithSendEtherInfoSelector,
@@ -16,7 +18,10 @@ const {
   getSelectedTokenContract,
 } = require('../../selectors')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(SendEther)
 
 function mapStateToProps (state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state)
@@ -48,6 +53,7 @@ function mapStateToProps (state) {
     primaryCurrency,
     convertedCurrency: getCurrentCurrency(state),
     data,
+    selectedAddress,
     amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
     tokenContract: getSelectedTokenContract(state),
     unapprovedTxs: state.metamask.unapprovedTxs,
@@ -60,7 +66,6 @@ function mapDispatchToProps (dispatch) {
     showCustomizeGasModal: () => dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' })),
     estimateGas: params => dispatch(actions.estimateGas(params)),
     getGasPrice: () => dispatch(actions.getGasPrice()),
-    updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
     signTokenTx: (tokenAddress, toAddress, amount, txData) => (
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
@@ -68,17 +73,16 @@ function mapDispatchToProps (dispatch) {
     updateAndApproveTx: txParams => dispatch(actions.updateAndApproveTx(txParams)),
     updateTx: txData => dispatch(actions.updateTransaction(txData)),
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
-    addToAddressBook: address => dispatch(actions.addToAddressBook(address)),
+    addToAddressBook: (address, nickname) => dispatch(actions.addToAddressBook(address, nickname)),
     updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
     updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
     updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
     updateSendTokenBalance: tokenBalance => dispatch(actions.updateSendTokenBalance(tokenBalance)),
     updateSendFrom: newFrom => dispatch(actions.updateSendFrom(newFrom)),
-    updateSendTo: newTo => dispatch(actions.updateSendTo(newTo)),
+    updateSendTo: (newTo, nickname) => dispatch(actions.updateSendTo(newTo, nickname)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
-    goHome: () => dispatch(actions.goHome()),
     clearSend: () => dispatch(actions.clearSend()),
     setMaxModeTo: bool => dispatch(actions.setMaxModeTo(bool)),
   }

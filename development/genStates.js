@@ -1,6 +1,8 @@
 const fs = require('fs')
 const path = require('path')
-const { promisify } = require('util')
+const promisify = require('pify')
+const enLocaleMessages = require('../app/_locales/en/messages.json')
+
 
 start().catch(console.error)
 
@@ -12,6 +14,9 @@ async function start () {
     const stateFilePath = path.join(__dirname, 'states', stateFileName)
     const stateFileContent = await promisify(fs.readFile)(stateFilePath, 'utf8')
     const state = JSON.parse(stateFileContent)
+
+    state.localeMessages = { en: enLocaleMessages, current: {} }
+
     const stateName = stateFileName.split('.')[0].replace(/-/g, ' ', 'g')
     states[stateName] = state
   }))

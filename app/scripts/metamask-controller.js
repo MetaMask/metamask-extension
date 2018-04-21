@@ -1,8 +1,14 @@
+/**
+ * @file      The central metamask controller. Aggregates other controllers and exports an api.
+ * @copyright Copyright (c) 2018 MetaMask
+ * @license   MIT
+ */
+
 const EventEmitter = require('events')
-const extend = require('xtend')
 const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
+const ComposableObservableStore = require('./lib/ComposableObservableStore')
 const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
 const RpcEngine = require('json-rpc-engine')
@@ -28,6 +34,7 @@ const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
+const TokenRatesController = require('./controllers/token-rates')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -38,16 +45,20 @@ const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
+const log = require('loglevel')
 
 module.exports = class MetamaskController extends EventEmitter {
 
-  constructor (opts) {
+  /**
+   * @constructor
+   * @param {Object} opts
+   */
+   constructor (opts) {
     super()
 
     this.defaultMaxListeners = 20
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
-
     this.opts = opts
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
@@ -56,7 +67,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.platform = opts.platform
 
     // observable state store
-    this.store = new ObservableStore(initState)
+    this.store = new ComposableObservableStore(initState)
 
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex()
@@ -72,6 +83,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // preferences controller
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
+      initLangCode: opts.initLangCode,
     })
 
     // currency controller
@@ -93,6 +105,11 @@ module.exports = class MetamaskController extends EventEmitter {
     // rpc provider
     this.provider = this.initializeProvider()
     this.blockTracker = this.provider._blockTracker
+
+    // token exchange rate tracker
+    this.tokenRatesController = new TokenRatesController({
+      preferences: this.preferencesController.store,
+    })
 
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
@@ -174,64 +191,52 @@ module.exports = class MetamaskController extends EventEmitter {
     this.typedMessageManager = new TypedMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
-    // manual disk state subscriptions
-    this.txController.store.subscribe((state) => {
-      this.store.updateState({ TransactionController: state })
-    })
-    this.keyringController.store.subscribe((state) => {
-      this.store.updateState({ KeyringController: state })
-    })
-    this.preferencesController.store.subscribe((state) => {
-      this.store.updateState({ PreferencesController: state })
-    })
-    this.addressBookController.store.subscribe((state) => {
-      this.store.updateState({ AddressBookController: state })
-    })
-    this.currencyController.store.subscribe((state) => {
-      this.store.updateState({ CurrencyController: state })
-    })
-    this.noticeController.store.subscribe((state) => {
-      this.store.updateState({ NoticeController: state })
-    })
-    this.shapeshiftController.store.subscribe((state) => {
-      this.store.updateState({ ShapeShiftController: state })
-    })
-    this.networkController.store.subscribe((state) => {
-      this.store.updateState({ NetworkController: state })
+    this.store.updateStructure({
+      TransactionController: this.txController.store,
+      KeyringController: this.keyringController.store,
+      PreferencesController: this.preferencesController.store,
+      AddressBookController: this.addressBookController.store,
+      CurrencyController: this.currencyController.store,
+      NoticeController: this.noticeController.store,
+      ShapeShiftController: this.shapeshiftController.store,
+      NetworkController: this.networkController.store,
+      InfuraController: this.infuraController.store,
     })
 
-    this.infuraController.store.subscribe((state) => {
-      this.store.updateState({ InfuraController: state })
+    this.memStore = new ComposableObservableStore(null, {
+      NetworkController: this.networkController.store,
+      AccountTracker: this.accountTracker.store,
+      TxController: this.txController.memStore,
+      BalancesController: this.balancesController.store,
+      TokenRatesController: this.tokenRatesController.store,
+      MessageManager: this.messageManager.memStore,
+      PersonalMessageManager: this.personalMessageManager.memStore,
+      TypesMessageManager: this.typedMessageManager.memStore,
+      KeyringController: this.keyringController.memStore,
+      PreferencesController: this.preferencesController.store,
+      RecentBlocksController: this.recentBlocksController.store,
+      AddressBookController: this.addressBookController.store,
+      CurrencyController: this.currencyController.store,
+      NoticeController: this.noticeController.memStore,
+      ShapeshiftController: this.shapeshiftController.store,
+      InfuraController: this.infuraController.store,
     })
-
-    // manual mem state subscriptions
-    const sendUpdate = this.sendUpdate.bind(this)
-    this.networkController.store.subscribe(sendUpdate)
-    this.accountTracker.store.subscribe(sendUpdate)
-    this.txController.memStore.subscribe(sendUpdate)
-    this.balancesController.store.subscribe(sendUpdate)
-    this.messageManager.memStore.subscribe(sendUpdate)
-    this.personalMessageManager.memStore.subscribe(sendUpdate)
-    this.typedMessageManager.memStore.subscribe(sendUpdate)
-    this.keyringController.memStore.subscribe(sendUpdate)
-    this.preferencesController.store.subscribe(sendUpdate)
-    this.recentBlocksController.store.subscribe(sendUpdate)
-    this.addressBookController.store.subscribe(sendUpdate)
-    this.currencyController.store.subscribe(sendUpdate)
-    this.noticeController.memStore.subscribe(sendUpdate)
-    this.shapeshiftController.store.subscribe(sendUpdate)
-    this.infuraController.store.subscribe(sendUpdate)
+    this.memStore.subscribe(this.sendUpdate.bind(this))
   }
 
-  //
-  // Constructor helpers
-  //
-
+  /**
+   * Constructor helper: initialize a provider.
+   */
   initializeProvider () {
     const providerOpts = {
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
+        eth_sendTransaction: (payload, next, end) => {
+          const origin = payload.origin
+          const txParams = payload.params[0]
+          nodeify(this.txController.newUnapprovedTransaction, this.txController)(txParams, { origin }, end)
+        },
       },
       // account mgmt
       getAccounts: (cb) => {
@@ -246,7 +251,6 @@ module.exports = class MetamaskController extends EventEmitter {
         cb(null, result)
       },
       // tx signing
-      processTransaction: nodeify(async (txParams) => await this.txController.newUnapprovedTransaction(txParams), this),
       // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
       // personal_sign msg signing
@@ -257,12 +261,16 @@ module.exports = class MetamaskController extends EventEmitter {
     return providerProxy
   }
 
+  /**
+   * Constructor helper: initialize a public config store.
+   */
   initPublicConfigStore () {
     // get init state
     const publicConfigStore = new ObservableStore()
 
     // memStore -> transform -> publicConfigStore
     this.on('update', (memState) => {
+      this.isClientOpenAndUnlocked = memState.isUnlocked && this._isClientOpen
       const publicState = selectPublicState(memState)
       publicConfigStore.putState(publicState)
     })
@@ -278,48 +286,38 @@ module.exports = class MetamaskController extends EventEmitter {
     return publicConfigStore
   }
 
-  //
-  // State Management
-  //
+//=============================================================================
+// EXPOSED TO THE UI SUBSYSTEM
+//=============================================================================
 
+  /**
+   * The metamask-state of the various controllers, made available to the UI
+   *
+   * @returns {Object} status
+   */
   getState () {
     const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
     const isInitialized = (!!wallet || !!vault)
 
-    return extend(
-      {
-        isInitialized,
-      },
-      this.networkController.store.getState(),
-      this.accountTracker.store.getState(),
-      this.txController.memStore.getState(),
-      this.messageManager.memStore.getState(),
-      this.personalMessageManager.memStore.getState(),
-      this.typedMessageManager.memStore.getState(),
-      this.keyringController.memStore.getState(),
-      this.balancesController.store.getState(),
-      this.preferencesController.store.getState(),
-      this.addressBookController.store.getState(),
-      this.currencyController.store.getState(),
-      this.noticeController.memStore.getState(),
-      this.infuraController.store.getState(),
-      this.recentBlocksController.store.getState(),
-      // config manager
-      this.configManager.getConfig(),
-      this.shapeshiftController.store.getState(),
-      {
+    return {
+      ...{ isInitialized },
+      ...this.memStore.getFlatState(),
+      ...this.configManager.getConfig(),
+      ...{
         lostAccounts: this.configManager.getLostAccounts(),
         seedWords: this.configManager.getSeedWords(),
         forgottenPassword: this.configManager.getPasswordForgotten(),
-      }
-    )
+        isRevealingSeedWords: Boolean(this.configManager.getIsRevealingSeedWords()),
+      },
+    }
   }
 
-  //
-  // Remote Features
-  //
-
+  /**
+   * Returns an api-object which is consumed by the UI
+   *
+   * @returns {Object}
+   */
   getApi () {
     const keyringController = this.keyringController
     const preferencesController = this.preferencesController
@@ -333,6 +331,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
+      setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -347,8 +346,9 @@ module.exports = class MetamaskController extends EventEmitter {
       placeSeedWords: this.placeSeedWords.bind(this),
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
-      resetAccount: this.resetAccount.bind(this),
+      resetAccount: nodeify(this.resetAccount, this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      setIsRevealingSeedWords: this.configManager.setIsRevealingSeedWords.bind(this.configManager),
 
       // vault management
       submitPassword: nodeify(keyringController.submitPassword, keyringController),
@@ -399,6 +399,456 @@ module.exports = class MetamaskController extends EventEmitter {
       markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
     }
   }
+
+
+
+//=============================================================================
+// VAULT / KEYRING RELATED METHODS
+//=============================================================================
+
+  /**
+   * Creates a new Vault(?) and create a new keychain(?)
+   *
+   * A vault is ...
+   *
+   * A keychain is ...
+   *
+   *
+   * @param  {} password
+   *
+   * @returns {} vault
+   */
+  async createNewVaultAndKeychain (password) {
+    const release = await this.createVaultMutex.acquire()
+    let vault
+
+    try {
+      const accounts = await this.keyringController.getAccounts()
+
+      if (accounts.length > 0) {
+        vault = await this.keyringController.fullUpdate()
+
+      } else {
+        vault = await this.keyringController.createNewVaultAndKeychain(password)
+        this.selectFirstIdentity(vault)
+      }
+      release()
+    } catch (err) {
+      release()
+      throw err
+    }
+
+    return vault
+  }
+
+  /**
+   * Create a new Vault and restore an existent keychain
+   * @param  {} password
+   * @param  {} seed
+   */
+  async createNewVaultAndRestore (password, seed) {
+    const release = await this.createVaultMutex.acquire()
+    try {
+      const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
+      this.selectFirstIdentity(vault)
+      release()
+      return vault
+    } catch (err) {
+      release()
+      throw err
+    }
+  }
+
+  /**
+   * Retrieves the first Identiy from the passed Vault and selects the related address
+   *
+   * An Identity is ...
+   *
+   * @param  {} vault
+   */
+  selectFirstIdentity (vault) {
+    const { identities } = vault
+    const address = Object.keys(identities)[0]
+    this.preferencesController.setSelectedAddress(address)
+  }
+
+  // ?
+  // Opinionated Keyring Management
+  //
+
+  /**
+   * Adds a new account to ...
+   *
+   * @returns {} keyState
+   */
+  async addNewAccount () {
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    if (!primaryKeyring) {
+      throw new Error('MetamaskController - No HD Key Tree found')
+    }
+    const keyringController = this.keyringController
+    const oldAccounts = await keyringController.getAccounts()
+    const keyState = await keyringController.addNewAccount(primaryKeyring)
+    const newAccounts = await keyringController.getAccounts()
+
+    await this.verifySeedPhrase()
+
+    newAccounts.forEach((address) => {
+      if (!oldAccounts.includes(address)) {
+        this.preferencesController.setSelectedAddress(address)
+      }
+    })
+
+    return keyState
+  }
+
+  /**
+   * Adds the current vault's seed words to the UI's state tree.
+   *
+   * Used when creating a first vault, to allow confirmation.
+   * Also used when revealing the seed words in the confirmation view.
+   */
+  placeSeedWords (cb) {
+
+    this.verifySeedPhrase()
+      .then((seedWords) => {
+        this.configManager.setSeedWords(seedWords)
+        return cb(null, seedWords)
+      })
+      .catch((err) => {
+        return cb(err)
+      })
+  }
+
+  /**
+   * Verifies the validity of the current vault's seed phrase.
+   *
+   * Validity: seed phrase restores the accounts belonging to the current vault.
+   *
+   * Called when the first account is created and on unlocking the vault.
+   */
+  async verifySeedPhrase () {
+
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    if (!primaryKeyring) {
+      throw new Error('MetamaskController - No HD Key Tree found')
+    }
+
+    const serialized = await primaryKeyring.serialize()
+    const seedWords = serialized.mnemonic
+
+    const accounts = await primaryKeyring.getAccounts()
+    if (accounts.length < 1) {
+      throw new Error('MetamaskController - No accounts found')
+    }
+
+    try {
+      await seedPhraseVerifier.verifyAccounts(accounts, seedWords)
+      return seedWords
+    } catch (err) {
+      log.error(err.message)
+      throw err
+    }
+  }
+
+  /**
+   * Remove the primary account seed phrase from the UI's state tree.
+   *
+   * The seed phrase remains available in the background process.
+   *
+   */
+  clearSeedWordCache (cb) {
+    this.configManager.setSeedWords(null)
+    cb(null, this.preferencesController.getSelectedAddress())
+  }
+
+  /**
+   * ?
+   */
+  async resetAccount (cb) {
+    const selectedAddress = this.preferencesController.getSelectedAddress()
+    this.txController.wipeTransactions(selectedAddress)
+
+    const networkController = this.networkController
+    const oldType = networkController.getProviderConfig().type
+    await networkController.setProviderType(oldType, true)
+
+    return selectedAddress
+  }
+
+  /**
+   * Imports an account ... ?
+   *
+   * @param  {} strategy
+   * @param  {} args
+   * @param  {} cb
+   */
+  importAccountWithStrategy (strategy, args, cb) {
+    accountImporter.importAccount(strategy, args)
+    .then((privateKey) => {
+      return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    })
+    .then(keyring => keyring.getAccounts())
+    .then((accounts) => this.preferencesController.setSelectedAddress(accounts[0]))
+    .then(() => { cb(null, this.keyringController.fullUpdate()) })
+    .catch((reason) => { cb(reason) })
+  }
+
+  // ---------------------------------------------------------------------------
+  // Identity Management (sign)
+
+  /**
+   * @param  {} msgParams
+   * @param  {} cb
+   */
+  signMessage (msgParams, cb) {
+    log.info('MetaMaskController - signMessage')
+    const msgId = msgParams.metamaskId
+
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.messageManager.approveMessage(msgParams)
+    .then((cleanMsgParams) => {
+      // signs the message
+      return this.keyringController.signMessage(cleanMsgParams)
+    })
+    .then((rawSig) => {
+      // tells the listener that the message has been signed
+      // and can be returned to the dapp
+      this.messageManager.setMsgStatusSigned(msgId, rawSig)
+      return this.getState()
+    })
+  }
+
+  // Prefixed Style Message Signing Methods:
+
+  /**
+   *
+   * @param  {} msgParams
+   * @param  {} cb
+   */
+  approvePersonalMessage (msgParams, cb) {
+    const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  /**
+   * @param  {} msgParams
+   */
+  signPersonalMessage (msgParams) {
+    log.info('MetaMaskController - signPersonalMessage')
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.personalMessageManager.approveMessage(msgParams)
+    .then((cleanMsgParams) => {
+      // signs the message
+      return this.keyringController.signPersonalMessage(cleanMsgParams)
+    })
+    .then((rawSig) => {
+      // tells the listener that the message has been signed
+      // and can be returned to the dapp
+      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
+      return this.getState()
+    })
+  }
+
+  /**
+   * @param  {} msgParams
+   */
+  signTypedMessage (msgParams) {
+    log.info('MetaMaskController - signTypedMessage')
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.typedMessageManager.approveMessage(msgParams)
+      .then((cleanMsgParams) => {
+        // signs the message
+        return this.keyringController.signTypedMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
+        // tells the listener that the message has been signed
+        // and can be returned to the dapp
+        this.typedMessageManager.setMsgStatusSigned(msgId, rawSig)
+        return this.getState()
+      })
+  }
+
+  // ---------------------------------------------------------------------------
+  // Account Restauration
+
+  /**
+   * ?
+   *
+   * @param  {} migratorOutput
+   */
+  restoreOldVaultAccounts (migratorOutput) {
+    const { serialized } = migratorOutput
+    return this.keyringController.restoreKeyring(serialized)
+    .then(() => migratorOutput)
+  }
+
+  /**
+   * ?
+   *
+   * @param  {} migratorOutput
+   */
+  restoreOldLostAccounts (migratorOutput) {
+    const { lostAccounts } = migratorOutput
+    if (lostAccounts) {
+      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
+      return this.importLostAccounts(migratorOutput)
+    }
+    return Promise.resolve(migratorOutput)
+  }
+
+  /**
+   * Import (lost) Accounts
+   *
+   * @param  {Object} {lostAccounts} @Array accounts <{ address, privateKey }>
+   *
+   * Uses the array's private keys to create a new Simple Key Pair keychain
+   * and add it to the keyring controller.
+   */
+  importLostAccounts ({ lostAccounts }) {
+    const privKeys = lostAccounts.map(acct => acct.privateKey)
+    return this.keyringController.restoreKeyring({
+      type: 'Simple Key Pair',
+      data: privKeys,
+    })
+  }
+
+//=============================================================================
+// END (VAULT / KEYRING RELATED METHODS)
+//=============================================================================
+
+//
+
+//=============================================================================
+// MESSAGES
+//=============================================================================
+
+  async retryTransaction (txId, cb) {
+    await this.txController.retryTransaction(txId)
+    const state = await this.getState()
+    return state
+  }
+
+
+  newUnsignedMessage (msgParams, cb) {
+    const msgId = this.messageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.messageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  newUnsignedPersonalMessage (msgParams, cb) {
+    if (!msgParams.from) {
+      return cb(new Error('MetaMask Message Signature: from field is required.'))
+    }
+
+    const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  newUnsignedTypedMessage (msgParams, cb) {
+    let msgId
+    try {
+      msgId = this.typedMessageManager.addUnapprovedMessage(msgParams)
+      this.sendUpdate()
+      this.opts.showUnconfirmedMessage()
+    } catch (e) {
+      return cb(e)
+    }
+
+    this.typedMessageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  cancelMessage (msgId, cb) {
+    const messageManager = this.messageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
+  }
+
+  cancelPersonalMessage (msgId, cb) {
+    const messageManager = this.personalMessageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
+  }
+
+  cancelTypedMessage (msgId, cb) {
+    const messageManager = this.typedMessageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
+  }
+
+  markAccountsFound (cb) {
+    this.configManager.setLostAccounts([])
+    this.sendUpdate()
+    cb(null, this.getState())
+  }
+
+  markPasswordForgotten(cb) {
+    this.configManager.setPasswordForgotten(true)
+    this.sendUpdate()
+    cb()
+  }
+
+  unMarkPasswordForgotten(cb) {
+    this.configManager.setPasswordForgotten(false)
+    this.sendUpdate()
+    cb()
+  }
+
+//=============================================================================
+// SETUP
+//=============================================================================
 
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
@@ -517,363 +967,9 @@ module.exports = class MetamaskController extends EventEmitter {
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
   }
 
-  //
-  // Vault Management
-  //
-
-  async createNewVaultAndKeychain (password) {
-    const release = await this.createVaultMutex.acquire()
-    let vault
-
-    try {
-      const accounts = await this.keyringController.getAccounts()
-
-      if (accounts.length > 0) {
-        vault = await this.keyringController.fullUpdate()
-
-      } else {
-        vault = await this.keyringController.createNewVaultAndKeychain(password)
-        this.selectFirstIdentity(vault)
-      }
-      release()
-    } catch (err) {
-      release()
-      throw err
-    }
-
-    return vault
-  }
-
-  async createNewVaultAndRestore (password, seed) {
-    const release = await this.createVaultMutex.acquire()
-    try {
-      const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
-      this.selectFirstIdentity(vault)
-      release()
-      return vault
-    } catch (err) {
-      release()
-      throw err
-    }
-  }
-
-  selectFirstIdentity (vault) {
-    const { identities } = vault
-    const address = Object.keys(identities)[0]
-    this.preferencesController.setSelectedAddress(address)
-  }
-
-  //
-  // Opinionated Keyring Management
-  //
-
-  async addNewAccount () {
-    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    if (!primaryKeyring) {
-      throw new Error('MetamaskController - No HD Key Tree found')
-    }
-    const keyringController = this.keyringController
-    const oldAccounts = await keyringController.getAccounts()
-    const keyState = await keyringController.addNewAccount(primaryKeyring)
-    const newAccounts = await keyringController.getAccounts()
-
-    await this.verifySeedPhrase()
-
-    newAccounts.forEach((address) => {
-      if (!oldAccounts.includes(address)) {
-        this.preferencesController.setSelectedAddress(address)
-      }
-    })
-
-    return keyState
-  }
-
-  // Adds the current vault's seed words to the UI's state tree.
-  //
-  // Used when creating a first vault, to allow confirmation.
-  // Also used when revealing the seed words in the confirmation view.
-  placeSeedWords (cb) {
-
-    this.verifySeedPhrase()
-      .then((seedWords) => {
-        this.configManager.setSeedWords(seedWords)
-        return cb(null, seedWords)
-      })
-      .catch((err) => {
-        return cb(err)
-      })
-  }
-
-  // Verifies the current vault's seed words if they can restore the
-  // accounts belonging to the current vault.
-  //
-  // Called when the first account is created and on unlocking the vault.
-  async verifySeedPhrase () {
-
-    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    if (!primaryKeyring) {
-      throw new Error('MetamaskController - No HD Key Tree found')
-    }
-
-    const serialized = await primaryKeyring.serialize()
-    const seedWords = serialized.mnemonic
-
-    const accounts = await primaryKeyring.getAccounts()
-    if (accounts.length < 1) {
-      throw new Error('MetamaskController - No accounts found')
-    }
-
-    try {
-      await seedPhraseVerifier.verifyAccounts(accounts, seedWords)
-      return seedWords
-    } catch (err) {
-      log.error(err.message)
-      throw err
-    }
-  }
-
-  // ClearSeedWordCache
-  //
-  // Removes the primary account's seed words from the UI's state tree,
-  // ensuring they are only ever available in the background process.
-  clearSeedWordCache (cb) {
-    this.configManager.setSeedWords(null)
-    cb(null, this.preferencesController.getSelectedAddress())
-  }
-
-  resetAccount (cb) {
-    const selectedAddress = this.preferencesController.getSelectedAddress()
-    this.txController.wipeTransactions(selectedAddress)
-    cb(null, selectedAddress)
-  }
-
-
-  importAccountWithStrategy (strategy, args, cb) {
-    accountImporter.importAccount(strategy, args)
-    .then((privateKey) => {
-      return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
-    })
-    .then(keyring => keyring.getAccounts())
-    .then((accounts) => this.preferencesController.setSelectedAddress(accounts[0]))
-    .then(() => { cb(null, this.keyringController.fullUpdate()) })
-    .catch((reason) => { cb(reason) })
-  }
-
-
-  //
-  // Identity Management
-  //
-  //
-
-  async retryTransaction (txId, cb) {
-    await this.txController.retryTransaction(txId)
-    const state = await this.getState()
-    return state
-  }
-
-
-  newUnsignedMessage (msgParams, cb) {
-    const msgId = this.messageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
-    this.messageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-
-  newUnsignedPersonalMessage (msgParams, cb) {
-    if (!msgParams.from) {
-      return cb(new Error('MetaMask Message Signature: from field is required.'))
-    }
-
-    const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
-    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-
-  newUnsignedTypedMessage (msgParams, cb) {
-    let msgId
-    try {
-      msgId = this.typedMessageManager.addUnapprovedMessage(msgParams)
-      this.sendUpdate()
-      this.opts.showUnconfirmedMessage()
-    } catch (e) {
-      return cb(e)
-    }
-
-    this.typedMessageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-
-  signMessage (msgParams, cb) {
-    log.info('MetaMaskController - signMessage')
-    const msgId = msgParams.metamaskId
-
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.messageManager.approveMessage(msgParams)
-    .then((cleanMsgParams) => {
-      // signs the message
-      return this.keyringController.signMessage(cleanMsgParams)
-    })
-    .then((rawSig) => {
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
-      this.messageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
-    })
-  }
-
-  cancelMessage (msgId, cb) {
-    const messageManager = this.messageManager
-    messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-    }
-  }
-
-  // Prefixed Style Message Signing Methods:
-  approvePersonalMessage (msgParams, cb) {
-    const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
-    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-
-  signPersonalMessage (msgParams) {
-    log.info('MetaMaskController - signPersonalMessage')
-    const msgId = msgParams.metamaskId
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.personalMessageManager.approveMessage(msgParams)
-    .then((cleanMsgParams) => {
-      // signs the message
-      return this.keyringController.signPersonalMessage(cleanMsgParams)
-    })
-    .then((rawSig) => {
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
-      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
-    })
-  }
-
-  signTypedMessage (msgParams) {
-    log.info('MetaMaskController - signTypedMessage')
-    const msgId = msgParams.metamaskId
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.typedMessageManager.approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-        // signs the message
-        return this.keyringController.signTypedMessage(cleanMsgParams)
-      })
-      .then((rawSig) => {
-        // tells the listener that the message has been signed
-        // and can be returned to the dapp
-        this.typedMessageManager.setMsgStatusSigned(msgId, rawSig)
-        return this.getState()
-      })
-  }
-
-  cancelPersonalMessage (msgId, cb) {
-    const messageManager = this.personalMessageManager
-    messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-    }
-  }
-
-  cancelTypedMessage (msgId, cb) {
-    const messageManager = this.typedMessageManager
-    messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-    }
-  }
-
-  markAccountsFound (cb) {
-    this.configManager.setLostAccounts([])
-    this.sendUpdate()
-    cb(null, this.getState())
-  }
-
-  markPasswordForgotten(cb) {
-    this.configManager.setPasswordForgotten(true)
-    this.sendUpdate()
-    cb()
-  }
-
-  unMarkPasswordForgotten(cb) {
-    this.configManager.setPasswordForgotten(false)
-    this.sendUpdate()
-    cb()
-  }
-
-  restoreOldVaultAccounts (migratorOutput) {
-    const { serialized } = migratorOutput
-    return this.keyringController.restoreKeyring(serialized)
-    .then(() => migratorOutput)
-  }
-
-  restoreOldLostAccounts (migratorOutput) {
-    const { lostAccounts } = migratorOutput
-    if (lostAccounts) {
-      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
-      return this.importLostAccounts(migratorOutput)
-    }
-    return Promise.resolve(migratorOutput)
-  }
-
-  // IMPORT LOST ACCOUNTS
-  // @Object with key lostAccounts: @Array accounts <{ address, privateKey }>
-  // Uses the array's private keys to create a new Simple Key Pair keychain
-  // and add it to the keyring controller.
-  importLostAccounts ({ lostAccounts }) {
-    const privKeys = lostAccounts.map(acct => acct.privateKey)
-    return this.keyringController.restoreKeyring({
-      type: 'Simple Key Pair',
-      data: privKeys,
-    })
-  }
-
-  //
-  // config
-  //
+//=============================================================================
+// CONFIG
+//=============================================================================
 
   // Log blocks
 
@@ -920,6 +1016,15 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  setCurrentLocale (key, cb) {
+    try {
+      this.preferencesController.setCurrentLocale(key)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
   recordFirstTimeInfo (initState) {
     if (!('firstTimeInfo' in initState)) {
       initState.firstTimeInfo = {
@@ -929,4 +1034,12 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  set isClientOpen (open) {
+    this._isClientOpen = open
+    this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+  }
+
+  set isClientOpenAndUnlocked (active) {
+    this.tokenRatesController.isActive = active
+  }
 }

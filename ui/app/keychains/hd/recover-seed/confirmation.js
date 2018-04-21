@@ -1,11 +1,25 @@
 const inherits = require('util').inherits
-
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../actions')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
+const {
+  DEFAULT_ROUTE,
+  INITIALIZE_BACKUP_PHRASE_ROUTE,
+} = require('../../../routes')
 
-module.exports = connect(mapStateToProps)(RevealSeedConfirmation)
+RevealSeedConfirmation.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps)
+)(RevealSeedConfirmation)
+
 
 inherits(RevealSeedConfirmation, Component)
 function RevealSeedConfirmation () {
@@ -49,13 +63,13 @@ RevealSeedConfirmation.prototype.render = function () {
         },
       }, [
 
-        h('h4', 'Do not recover your seed words in a public place! These words can be used to steal all your accounts.'),
+        h('h4', this.context.t('revealSeedWordsWarning')),
 
         // confirmation
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box',
-          placeholder: 'Enter your password to confirm',
+          placeholder: this.context.t('enterPasswordConfirm'),
           onKeyPress: this.checkConfirmation.bind(this),
           style: {
             width: 260,
@@ -91,7 +105,7 @@ RevealSeedConfirmation.prototype.render = function () {
         ),
 
         props.inProgress && (
-          h('span.in-progress-notification', 'Generating Seed...')
+          h('span.in-progress-notification', this.context.t('generatingSeed'))
         ),
       ]),
     ])
@@ -104,6 +118,8 @@ RevealSeedConfirmation.prototype.componentDidMount = function () {
 
 RevealSeedConfirmation.prototype.goHome = function () {
   this.props.dispatch(actions.showConfigPage(false))
+  this.props.dispatch(actions.confirmSeedWords())
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 // create vault
@@ -118,4 +134,5 @@ RevealSeedConfirmation.prototype.checkConfirmation = function (event) {
 RevealSeedConfirmation.prototype.revealSeedWords = function () {
   var password = document.getElementById('password-box').value
   this.props.dispatch(actions.requestRevealSeed(password))
+    .then(() => this.props.history.push(INITIALIZE_BACKUP_PHRASE_ROUTE))
 }

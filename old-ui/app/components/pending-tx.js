@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../../../ui/app/actions')
 const clone = require('clone')
+const log = require('loglevel')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
@@ -62,8 +63,8 @@ PendingTx.prototype.render = function () {
   const gasBn = hexToBn(gas)
   // default to 8MM gas limit
   const gasLimit = new BN(parseInt(blockGasLimit) || '8000000')
-  const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 19, 20)
-  const saferGasLimitBN = this.bnMultiplyByFraction(gasLimit, 18, 20)
+  const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 99, 100)
+  const saferGasLimitBN = this.bnMultiplyByFraction(gasLimit, 98, 100)
   const safeGasLimit = safeGasLimitBN.toString(10)
 
   // Gas Price
@@ -311,7 +312,7 @@ PendingTx.prototype.render = function () {
               style: {
                 fontSize: '0.9em',
               },
-            }, 'Gas limit set dangerously high. Approving this transaction is likely to fail.')
+            }, 'Gas limit set dangerously high. Approving this transaction is liable to fail.')
           : null,
         ]),
 

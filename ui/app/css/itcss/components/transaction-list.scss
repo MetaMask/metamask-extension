@@ -97,7 +97,7 @@
 
 .tx-list-content-wrapper {
   align-items: stretch;
-  margin-bottom: 4px;
+  margin: 4px 0;
   flex: 1 0 auto;
   width: 100%;
   display: flex;
@@ -126,6 +126,54 @@
   }
 }
 
+.tx-list-item-retry-container {
+  background: #d1edff;
+  width: 100%;
+  border-radius: 4px;
+  font-size: 0.8em;
+  display: flex;
+  justify-content: center;
+  margin-left: 44px;
+  width: calc(100% - 44px);
+
+  @media screen and (min-width: 576px) and (max-width: 679px) {
+    flex-flow: column;
+    align-items: center;
+  }
+
+  @media screen and (min-width: 380px) and (max-width: 575px) {
+    flex-flow: row;
+  }
+
+  @media screen and (max-width: 379px) {
+    flex-flow: column;
+    align-items: center;
+  }
+}
+
+.tx-list-item-retry-copy {
+  font-family: Roboto;
+}
+
+.tx-list-item-retry-link {
+  text-decoration: underline;
+  margin-left: 6px;
+  cursor: pointer;
+
+  @media screen and (min-width: 576px) and (max-width: 679px) {
+    margin-left: 0px;
+  }
+
+  @media screen and (min-width: 380px) and (max-width: 575px) {
+    margin-left: 6px;
+  }
+
+  @media screen and (max-width: 379px) {
+    margin-left: 0px;
+    text-align: center;
+  }
+}
+
 .tx-list-date {
   color: $dusty-gray;
   font-size: 12px;
@@ -136,6 +184,7 @@
   align-self: center;
   flex: 0 0 auto;
   margin-right: 16px;
+  display: flex;
 }
 
 .tx-list-account-and-status-wrapper {
@@ -188,6 +237,10 @@
   .tx-list-status--rejected,
   .tx-list-status--failed {
     color: $monzo;
+  }
+
+  .tx-list-status--dropped {
+    opacity: 0.5;
   }
 }
 

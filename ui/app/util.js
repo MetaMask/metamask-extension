@@ -57,6 +57,7 @@ module.exports = {
   isInvalidChecksumAddress,
   allNull,
   getTokenAddressFromTokenObject,
+  checksumAddress,
 }
 
 function valuesFor (obj) {
@@ -67,7 +68,7 @@ function valuesFor (obj) {
 
 function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
   if (!address) return ''
-  let checked = ethUtil.toChecksumAddress(address)
+  let checked = checksumAddress(address)
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked)
   }
@@ -76,7 +77,7 @@ function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includ
 
 function miniAddressSummary (address) {
   if (!address) return ''
-  var checked = ethUtil.toChecksumAddress(address)
+  var checked = checksumAddress(address)
   return checked ? checked.slice(0, 4) + '...' + checked.slice(-4) : '...'
 }
 
@@ -271,6 +272,7 @@ function exportAsFile (filename, data) {
     window.navigator.msSaveBlob(blob, filename)
   } else {
     const elem = window.document.createElement('a')
+    elem.target = '_blank'
     elem.href = window.URL.createObjectURL(blob)
     elem.download = filename
     document.body.appendChild(elem)
@@ -285,4 +287,14 @@ function allNull (obj) {
 
 function getTokenAddressFromTokenObject (token) {
   return Object.values(token)[0].address.toLowerCase()
+}
+
+/**
+ * Safely checksumms a potentially-null address
+ * 
+ * @param {String} [address] - address to checksum
+ * @returns {String} - checksummed address
+ */
+function checksumAddress (address) {
+  return address ? ethUtil.toChecksumAddress(address) : ''
 }

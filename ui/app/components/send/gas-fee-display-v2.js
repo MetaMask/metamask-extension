@@ -1,10 +1,16 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const CurrencyDisplay = require('./currency-display')
-const t = require('../../../i18n')
+const connect = require('react-redux').connect
 
-module.exports = GasFeeDisplay
+GasFeeDisplay.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(GasFeeDisplay)
+
 
 inherits(GasFeeDisplay, Component)
 function GasFeeDisplay () {
@@ -18,6 +24,7 @@ GasFeeDisplay.prototype.render = function () {
     onClick,
     primaryCurrency = 'ETH',
     convertedCurrency,
+    gasLoadingError,
   } = this.props
 
   return h('div.send-v2__gas-fee-display', [
@@ -31,13 +38,15 @@ GasFeeDisplay.prototype.render = function () {
         convertedPrefix: '$',
         readOnly: true,
       })
-      : h('div.currency-display', t('loading')),
+      : gasLoadingError
+        ? h('div.currency-display.currency-display--message', this.context.t('setGasPrice'))
+        : h('div.currency-display', this.context.t('loading')),
 
-    h('button.send-v2__sliders-icon-container', {
+    h('button.sliders-icon-container', {
       onClick,
-      disabled: !gasTotal,
+      disabled: !gasTotal && !gasLoadingError,
     }, [
-      h('i.fa.fa-sliders.send-v2__sliders-icon'),
+      h('i.fa.fa-sliders.sliders-icon'),
     ]),
 
   ])

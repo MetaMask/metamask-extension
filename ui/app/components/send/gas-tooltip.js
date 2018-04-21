@@ -1,10 +1,16 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const InputNumber = require('../input-number.js')
-const t = require('../../../i18n')
+const connect = require('react-redux').connect
 
-module.exports = GasTooltip
+GasTooltip.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(GasTooltip)
+
 
 inherits(GasTooltip, Component)
 function GasTooltip () {
@@ -82,7 +88,7 @@ GasTooltip.prototype.render = function () {
             'marginTop': '81px',
           },
         }, [
-          h('span.gas-tooltip-label', {}, [t('gasLimit')]),
+          h('span.gas-tooltip-label', {}, [this.context.t('gasLimit')]),
           h('i.fa.fa-info-circle'),
         ]),
         h(InputNumber, {

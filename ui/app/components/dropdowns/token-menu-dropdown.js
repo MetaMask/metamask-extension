@@ -1,11 +1,17 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const t = require('../../../i18n')
+
+
+TokenMenuDropdown.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect(null, mapDispatchToProps)(TokenMenuDropdown)
+
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -44,7 +50,7 @@ TokenMenuDropdown.prototype.render = function () {
             showHideTokenConfirmationModal(this.props.token)
             this.props.onClose()
           },
-        }, t('hideToken')),
+        }, this.context.t('hideToken')),
 
       ]),
     ]),
