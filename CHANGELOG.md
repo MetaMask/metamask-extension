@@ -2,10 +2,68 @@
 
 ## Current Master
 
-- Add ability for internationalization.
+- Correctly format currency conversion for locally selected preferred currency.
+- Improved performance of 3D fox logo.
+- Fetch token prices based on contract address, not symbol
+- Fix bug that prevents setting language locale in settings.
+- Allow zero gas price on testnet.
+
+## 4.5.5 Fri Apr 06 2018
+
+- Graceful handling of unknown keys in txParams
+- Fixes buggy handling of historical transactions with unknown keys in txParams
+- Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
+- Fix Download State Logs button [#3791](https://github.com/MetaMask/metamask-extension/issues/3791)
+- Enhanced migration error handling + reporting
+
+## 4.5.4 (aborted) Thu Apr 05 2018
+
+- Graceful handling of unknown keys in txParams
+- Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
+- Fix Download State Logs button [#3791](https://github.com/MetaMask/metamask-extension/issues/3791)
+- Fix migration error reporting
+
+## 4.5.3 Wed Apr 04 2018
+
+- Fix bug where checksum address are messing with balance issue [#3843](https://github.com/MetaMask/metamask-extension/issues/3843)
+- new ui: fix the confirm transaction screen
+
+## 4.5.2 Wed Apr 04 2018
+
+- Fix overly strict validation where transactions were rejected with hex encoded "chainId"
+
+## 4.5.1 Tue Apr 03 2018
+
+- Fix default network (should be mainnet not Rinkeby)
+- Fix Sentry automated error reporting endpoint
+
+## 4.5.0 Mon Apr 02 2018
+
+- (beta ui) Internationalization: Select your preferred language in the settings screen
+- Internationalization: various locale improvements
+- Fix bug where the "Reset account" feature would not clear the network cache.
+- Increase maximum gas limit, to allow very gas heavy transactions, since block gas limits have been stable.
+
+## 4.4.0 Mon Mar 26 2018
+
+- Internationalization: Taiwanese, Thai, Slovenian
+- Fixes bug where MetaMask would not open once its storage grew too large.
+- Updates design of new-ui Add Token screen
+- New-ui can send to ens addresses
+- Update new-ui button styles
+- Signed-type-data notification handles long messages
+- Popup extension in new-ui uses new on-boarding designs
+- Buy ether step of new-ui on-boarding uses new buy ether modal designs
+
+## 4.3.0 Wed Mar 21 2018
+
+- (beta) Add internationalization support! Includes translations for 13 (!!) new languages: French, Spanish, Italian, German, Dutch, Portuguese, Japanese, Korean, Vietnamese, Mandarin, Hindi, Tagalog, and Russian! Select "Try Beta" in the menu to take them for a spin. Read more about the community effort [here](https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c)
+- No longer uses nonces specified by the dapp
 - Will now throw an error if the `to` field in txParams is not valid.
 - Will strip null values from the `to` field.
-- Fix flashing to Log in screen after logging in or restoring from seed phrase.
+- (beta) No longer shows token confirmation screen when performing a non-send
+- (beta) Fixes bug where tx data was nullified when repricing a tx
+- Fix flashing Login screen after logging in or restoring from seed phrase.
 - Increase tap areas for menu buttons on mobile
 - Change all fonts in new-ui onboarding to Roboto, size 400
 - Add a welcome screen to new-ui onboarding flow
