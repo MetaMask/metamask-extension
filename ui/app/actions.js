@@ -83,7 +83,7 @@ var actions = {
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
   requestRevealSeed: requestRevealSeed,
-
+  requestRevealSeedWords,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
@@ -427,6 +427,30 @@ function revealSeedConfirmation () {
   }
 }
 
+function verifyPassword (password) {
+  return new Promise((resolve, reject) => {
+    background.submitPassword(password, error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(true)
+    })
+  })
+}
+
+function verifySeedPhrase () {
+  return new Promise((resolve, reject) => {
+    background.verifySeedPhrase((error, seedWords) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(seedWords)
+    })
+  })
+}
+
 function requestRevealSeed (password) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
@@ -451,6 +475,24 @@ function requestRevealSeed (password) {
         })
       })
     })
+  }
+}
+
+function requestRevealSeedWords (password) {
+  return async dispatch => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.submitPassword`)
+
+    try {
+      await verifyPassword(password)
+      const seedWords = await verifySeedPhrase()
+      dispatch(actions.hideLoadingIndication())
+      return seedWords
+    } catch (error) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(error.message))
+      throw new Error(error.message)
+    }
   }
 }
 
