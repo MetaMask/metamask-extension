@@ -46,7 +46,7 @@ class TokenRatesController {
   }
 
   /**
-   * @type {Number} - Interval used to poll for exchange rates
+   * @type {Number}
    */
   set interval (interval) {
     this._handle && clearInterval(this._handle)
@@ -55,7 +55,7 @@ class TokenRatesController {
   }
 
   /**
-   * @type {Object} - Preferences controller instance
+   * @type {Object}
    */
   set preferences (preferences) {
     this._preferences && this._preferences.unsubscribe()
@@ -66,7 +66,7 @@ class TokenRatesController {
   }
 
   /**
-   * @type {Array} - Array of token objects with contract addresses
+   * @type {Array}
    */
   set tokens (tokens) {
     this._tokens = tokens
