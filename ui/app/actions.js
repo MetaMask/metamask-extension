@@ -351,6 +351,7 @@ function confirmSeedWords () {
     log.debug(`background.clearSeedWordCache`)
     return new Promise((resolve, reject) => {
       background.clearSeedWordCache((err, account) => {
+        dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
@@ -361,9 +362,6 @@ function confirmSeedWords () {
         resolve(account)
       })
     })
-    .then(() => dispatch(setIsRevealingSeedWords(false)))
-    .then(() => dispatch(actions.hideLoadingIndication()))
-    .catch(() => dispatch(actions.hideLoadingIndication()))
   }
 }
 
@@ -448,13 +446,11 @@ function requestRevealSeed (password) {
           }
 
           dispatch(actions.showNewVaultSeed(result))
+          dispatch(actions.hideLoadingIndication())
           resolve()
         })
       })
     })
-      .then(() => dispatch(setIsRevealingSeedWords(true)))
-      .then(() => dispatch(actions.hideLoadingIndication()))
-      .catch(() => dispatch(actions.hideLoadingIndication()))
   }
 }
 
@@ -1909,13 +1905,5 @@ function updateNetworkEndpointType (networkEndpointType) {
   return {
     type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
     value: networkEndpointType,
-  }
-}
-
-function setIsRevealingSeedWords (reveal) {
-  return dispatch => {
-    log.debug(`background.setIsRevealingSeedWords`)
-    background.setIsRevealingSeedWords(reveal)
-    return forceUpdateMetamaskState(dispatch)
   }
 }

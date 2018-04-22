@@ -56,19 +56,10 @@ const {
 
 class App extends Component {
   componentWillMount () {
-    const {
-      currentCurrency,
-      setCurrentCurrencyToUSD,
-      isRevealingSeedWords,
-      clearSeedWords,
-    } = this.props
+    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
-    }
-
-    if (isRevealingSeedWords) {
-      clearSeedWords()
     }
   }
 
@@ -402,8 +393,6 @@ App.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   t: PropTypes.func,
-  isRevealingSeedWords: PropTypes.bool,
-  clearSeedWords: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -484,7 +473,6 @@ function mapDispatchToProps (dispatch, ownProps) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
-    clearSeedWords: () => dispatch(actions.confirmSeedWords()),
   }
 }
 
