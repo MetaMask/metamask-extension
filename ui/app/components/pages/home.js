@@ -5,6 +5,7 @@ const { Redirect, withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('../../actions')
+const log = require('loglevel')
 
 // init
 const NewKeyChainScreen = require('../../new-keychain')

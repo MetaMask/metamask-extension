@@ -2,13 +2,13 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const actions = require('../actions')
 const selectors = require('../selectors')
 const { SEND_ROUTE } = require('../routes')
+const { checksumAddress: toChecksumAddress } = require('../util')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
@@ -32,7 +32,7 @@ function mapStateToProps (state) {
   const network = state.metamask.network
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
-  const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
+  const checksumAddress = toChecksumAddress(selectedAddress)
   const identity = identities[selectedAddress]
 
   return {

@@ -7,7 +7,7 @@ const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const Identicon = require('../../identicon')
-const ethUtil = require('ethereumjs-util')
+const { checksumAddress } = require('../../../util')
 const copyToClipboard = require('copy-to-clipboard')
 const { formatBalance } = require('../../../util')
 
@@ -311,8 +311,7 @@ class AccountDropdowns extends Component {
             closeMenu: () => {},
             onClick: () => {
               const { selected } = this.props
-              const checkSumAddress = selected && ethUtil.toChecksumAddress(selected)
-              copyToClipboard(checkSumAddress)
+              copyToClipboard(checksumAddress(selected))
             },
             style: Object.assign(
               dropdownMenuItemStyle,

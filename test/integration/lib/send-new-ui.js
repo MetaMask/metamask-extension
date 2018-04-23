@@ -91,7 +91,7 @@ async function runSendFlowTest(assert, done) {
   )
   assert.equal(
     sendGasField.find('.currency-display__converted-value')[0].textContent,
-    '0.24 USD',
+    '$0.24 USD',
     'send gas field should show estimated gas total converted to USD'
   )
 
@@ -118,7 +118,7 @@ async function runSendFlowTest(assert, done) {
   )
   assert.equal(
     (await findAsync(sendGasField, '.currency-display__converted-value'))[0].textContent,
-    '3.60 USD',
+    '$3.60 USD',
     'send gas field should show customized gas total converted to USD'
   )
 
@@ -138,9 +138,9 @@ async function runSendFlowTest(assert, done) {
 
   const confirmScreenRows = await queryAsync($, '.confirm-screen-rows')
   const confirmScreenGas = confirmScreenRows.find('.currency-display__converted-value')[0]
-  assert.equal(confirmScreenGas.textContent, '3.60 USD', 'confirm screen should show correct gas')
+  assert.equal(confirmScreenGas.textContent, '$3.60 USD', 'confirm screen should show correct gas')
   const confirmScreenTotal = confirmScreenRows.find('.confirm-screen-row-info')[2]
-  assert.equal(confirmScreenTotal.textContent, '2405.36 USD', 'confirm screen should show correct total')
+  assert.equal(confirmScreenTotal.textContent, '$2,405.36 USD', 'confirm screen should show correct total')
 
   const confirmScreenBackButton = await queryAsync($, '.page-container__back-button')
   confirmScreenBackButton[0].click()

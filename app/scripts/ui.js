@@ -3,12 +3,14 @@ const OldMetaMaskUiCss = require('../../old-ui/css')
 const NewMetaMaskUiCss = require('../../ui/css')
 const startPopup = require('./popup-core')
 const PortStream = require('./lib/port-stream.js')
-const isPopupOrNotification = require('./lib/is-popup-or-notification')
+const { getEnvironmentType } = require('./lib/util')
+const { ENVIRONMENT_TYPE_NOTIFICATION } = require('./lib/enums')
 const extension = require('extensionizer')
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
 const setupRaven = require('./lib/setupRaven')
+const log = require('loglevel')
 
 start().catch(log.error)
 
@@ -26,7 +28,7 @@ async function start() {
   // injectCss(css)
 
   // identify window type (popup, notification)
-  const windowType = isPopupOrNotification()
+  const windowType = getEnvironmentType(window.location.href)
   global.METAMASK_UI_TYPE = windowType
   closePopupIfOpen(windowType)
 
@@ -68,7 +70,7 @@ async function start() {
 
 
   function closePopupIfOpen (windowType) {
-    if (windowType !== 'notification') {
+    if (windowType !== ENVIRONMENT_TYPE_NOTIFICATION) {
       // should close only chrome popup
       notificationManager.closePopup()
     }

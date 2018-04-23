@@ -9,7 +9,7 @@ import Identicon from '../../../../ui/app/components/identicon'
 import { confirmSeedWords, showModal } from '../../../../ui/app/actions'
 import Breadcrumbs from './breadcrumbs'
 import LoadingScreen from './loading-screen'
-import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
+import { DEFAULT_ROUTE, INITIALIZE_BACKUP_PHRASE_ROUTE } from '../../../../ui/app/routes'
 
 class ConfirmSeedScreen extends Component {
   static propTypes = {
@@ -53,7 +53,7 @@ class ConfirmSeedScreen extends Component {
   }
 
   render () {
-    const { seedWords } = this.props
+    const { seedWords, history } = this.props
     const { selectedSeeds, shuffledSeeds } = this.state
     const isValid = seedWords === selectedSeeds.map(([_, seed]) => seed).join(' ')
 
@@ -66,6 +66,16 @@ class ConfirmSeedScreen extends Component {
             <div className="first-view-main-wrapper">
               <div className="first-view-main">
                 <div className="backup-phrase">
+                  <a
+                    className="backup-phrase__back-button"
+                    onClick={e => {
+                      e.preventDefault()
+                      history.push(INITIALIZE_BACKUP_PHRASE_ROUTE)
+                    }}
+                    href="#"
+                  >
+                    {`< Back`}
+                  </a>
                   <Identicon address={this.props.address} diameter={70} />
                   <div className="backup-phrase__content-wrapper">
                     <div>

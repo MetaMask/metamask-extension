@@ -1,9 +1,13 @@
-// append dapp origin domain to request
 module.exports = createOriginMiddleware
 
-function createOriginMiddleware ({ origin }) {
-  return function originMiddleware (req, res, next, end) {
-    req.origin = origin
+/**
+ * Returns a middleware that appends the DApp origin to request
+ * @param {{ origin: string }} opts - The middleware options
+ * @returns {Function}
+ */
+function createOriginMiddleware (opts) {
+  return function originMiddleware (/** @type {any} */ req, /** @type {any} */ _, /** @type {Function} */ next) {
+    req.origin = opts.origin
     next()
   }
 }
