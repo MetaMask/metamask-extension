@@ -25,17 +25,18 @@ const log = require('loglevel')
       calculating nonces
 
 
-@param {object} opts -
-  @property  {object} opts.initState initial transaction list default is an empty array
+  @class
+  @param {Object} opts
+  @property  {Object} opts.initState initial transaction list default is an empty array
   @property  {Object} opts.networkStore an observable store for network number
-  @property  {Object} opts.blockTracker
+  @param {Object} opts.blockTracker - An instance of eth-blocktracker
   @property  {Object} opts.provider
+  @param {Object} opts.provider - A network provider.
   @property  {Object} opts.signTransaction function the signs an ethereumjs-tx
   @property  {function} opts.getGasPrice optional gas price calculator
   @property  {function} opts.signTransaction ethTx signer that returns a rawTx
   @property  {number} opts.txHistoryLimit number *optional* for limiting how many transactions are in state
   @property  {Object} opts.preferencesStore
-@class
 */
 
 class TransactionController extends EventEmitter {
@@ -103,21 +104,21 @@ class TransactionController extends EventEmitter {
     this.emit(`${txMeta.id}:unapproved`, txMeta)
   }
 
-/**
+  /**
   wipes the transactions for a given account
-  @param address {string} - hex string of the from address for txs being removed
-*/
+  @param {string} address - hex string of the from address for txs being removed
+  */
   wipeTransactions (address) {
     this.txStateManager.wipeTransactions(address)
   }
 
-/**
-add a new unapproved transaction to the pipeline
-@returns {promise}
-@param txParams {object} - txParams for the transaction
-@param opts {object} - with the key origin to put the origin on the txMeta
+  /**
+  add a new unapproved transaction to the pipeline
 
-*/
+  @returns {promise}
+  @param txParams {Object} - txParams for the transaction
+  @param opts {Object} - with the key origin to put the origin on the txMeta
+  */
   async newUnapprovedTransaction (txParams, opts = {}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const initialTxMeta = await this.addUnapprovedTransaction(txParams)
@@ -171,7 +172,7 @@ add a new unapproved transaction to the pipeline
   }
 /**
   adds the tx gas defaults: gas && gasPrice
-  @param txMeta {object} - the txMeta object
+  @param txMeta {Object} - the txMeta object
   @returns {promise} resolves with txMeta
 */
   async addTxGasDefaults (txMeta) {
@@ -211,7 +212,7 @@ add a new unapproved transaction to the pipeline
 
   /**
   updates the txMeta in the txStateManager
-  @param txMeta {object} - the updated txMeta
+  @param txMeta {Object} - the updated txMeta
   */
   async updateTransaction (txMeta) {
     this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
@@ -219,7 +220,7 @@ add a new unapproved transaction to the pipeline
 
   /**
   updates and approves the transaction
-  @param txMeta {object}
+  @param txMeta {Object}
   */
   async updateAndApproveTransaction (txMeta) {
     this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction')

@@ -1,7 +1,7 @@
 # Transaction Controller
 
 Transaction Controller is an aggregate of sub-controllers and trackers
-composing them in a way to be exposed to the metamask controller
+exposed to the MetaMask controller.
 
 - txStateManager
     responsible for the state of a transaction and
@@ -14,11 +14,11 @@ composing them in a way to be exposed to the metamask controller
 - nonceTracker
     calculating nonces
 
-## flow digram of processing a transaction
+## Flow diagram of processing a transaction
 
 ![transaction-flow](../../../../docs/transaction-flow.png)
 
-## txMeta's && txParams
+## txMeta's & txParams
 
 A txMeta is the "meta" object it has all the random bits of info we need about a transaction on it. txParams are sacred every thing on txParams gets signed so it must
 be a valid key and be hex prefixed except for the network number. Extra stuff must go on the txMeta!
@@ -59,8 +59,8 @@ txMeta = {
               "value": "0x3b9aca00"
             },
             ...], // I've removed most of history for this
-  "gasPriceSpecified": false, //weather or not the user/dapp has specified gasPrice
-  "gasLimitSpecified": false, //weather or not the user/dapp has specified gas
+  "gasPriceSpecified": false, //whether or not the user/dapp has specified gasPrice
+  "gasLimitSpecified": false, //whether or not the user/dapp has specified gas
   "estimatedGas": "5208",
   "origin": "MetaMask", //debug
   "nonceDetails": {

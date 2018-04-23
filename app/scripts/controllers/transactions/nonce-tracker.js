@@ -2,12 +2,12 @@ const EthQuery = require('ethjs-query')
 const assert = require('assert')
 const Mutex = require('await-semaphore').Mutex
 /**
-  @param opts {object} -
+  @param opts {Object} -
     @property {Object} opts.provider a ethereum provider
-    @property {function} opts.getPendingTransactions a function that returns an array of txMeta
-    whos status is `submitted`
-    @property {function} opts.getConfirmedTransactions a function that returns an array of txMeta
-    whos status is `confirmed`
+    @property {Function} opts.getPendingTransactions a function that returns an array of txMeta
+    whosee status is `submitted`
+    @property {Function} opts.getConfirmedTransactions a function that returns an array of txMeta
+    whose status is `confirmed`
   @class
 */
 class NonceTracker {
@@ -21,7 +21,7 @@ class NonceTracker {
   }
 
   /**
-    @returns {object} with the key releaseLock (the gloabl mutex)
+    @returns {Promise<Object>} with the key releaseLock (the gloabl mutex)
   */
   async getGlobalLock () {
     const globalMutex = this._lookupMutex('global')
@@ -31,17 +31,18 @@ class NonceTracker {
   }
 
   /**
-  this will return an object with the `nextNonce` `nonceDetails` which is an
-  object with:
-      highestLocallyConfirmed (nonce),
-      highestSuggested (either the network nonce or the highestLocallyConfirmed nonce),
-      nextNetworkNonce (the nonce suggested by the network),
-  and the releaseLock
-  <br>note: releaseLock must be called after adding signed tx to pending transactions
-  (or discarding)<br>
+   * @typedef NonceDetails
+   * @property {number} highestLocallyConfirmed - A hex string of the highest nonce on a confirmed transaction.
+   * @property {number} nextNetworkNonce - The next nonce suggested by the eth_getTransactionCount method.
+   * @property {number} highetSuggested - The maximum between the other two, the number returned.
+   */
 
-  @param address {string} the hex string for the address whos nonce we are calculating
-  @returns {object}
+  /**
+  this will return an object with the `nextNonce` `nonceDetails` of type NonceDetails, and the releaseLock
+  Note: releaseLock must be called after adding a signed tx to pending transactions (or discarding).
+
+  @param address {string} the hex string for the address whose nonce we are calculating
+  @returns {Promise<Object>}
   */
   async getNonceLock (address) {
     // await global mutex free
