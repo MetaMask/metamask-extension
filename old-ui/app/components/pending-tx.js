@@ -16,10 +16,6 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const BNInput = require('./bn-as-decimal-input')
 
-// corresponds with 0.1 GWEI
-const MIN_GAS_PRICE_BN = new BN('100000000')
-const MIN_GAS_LIMIT_BN = new BN('21000')
-
 module.exports = PendingTx
 inherits(PendingTx, Component)
 function PendingTx () {
@@ -29,6 +25,10 @@ function PendingTx () {
     txData: null,
     submitting: false,
   }
+
+  // corresponds with 0.1 GWEI on mainnet
+  this.MIN_GAS_PRICE_BN = this.props.provider === 'mainnet' ? new BN('100000000') : new BN('0')
+  this.MIN_GAS_LIMIT_BN = new BN('21000')
 }
 
 PendingTx.prototype.render = function () {
@@ -68,7 +68,7 @@ PendingTx.prototype.render = function () {
   const safeGasLimit = safeGasLimitBN.toString(10)
 
   // Gas Price
-  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
+  const gasPrice = txParams.gasPrice || this.MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
@@ -211,7 +211,7 @@ PendingTx.prototype.render = function () {
                   precision: 9,
                   scale: 9,
                   suffix: 'GWEI',
-                  min: forceGasMin || MIN_GAS_PRICE_BN,
+                  min: forceGasMin || this.MIN_GAS_PRICE_BN,
                   style: {
                     position: 'relative',
                     top: '5px',
