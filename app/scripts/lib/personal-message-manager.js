@@ -12,9 +12,9 @@ const hexRe = /^[0-9A-Fa-f]+$/g
  *
  * @typedef {Object} PersonalMessage
  * @property {number} id An id to track and identify the message object
- * @property {object} msgParams The parameters to pass to the personal_sign method once the signature request is
+ * @property {Object} msgParams The parameters to pass to the personal_sign method once the signature request is
  * approved.
- * @property {object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
+ * @property {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
  * @property {string} msgParams.data A hex string conversion of the raw buffer data of the signature request
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed' or 'rejected'
@@ -28,9 +28,9 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    * Controller in charge of managing - storing, adding, removing, updating - PersonalMessage.
    *
    * @typedef {Object} PersonalMessageManager
-   * @param {object} opts @deprecated
-   * @property {object} memStore The observable store where PersonalMessage are saved with persistance.
-   * @property {object} memStore.unapprovedPersonalMsgs A collection of all PersonalMessages in the 'unapproved' state
+   * @param {Object} opts @deprecated
+   * @property {Object} memStore The observable store where PersonalMessage are saved with persistance.
+   * @property {Object} memStore.unapprovedPersonalMsgs A collection of all PersonalMessages in the 'unapproved' state
    * @property {number} memStore.unapprovedPersonalMsgCount The count of all PersonalMessages in this.memStore.unapprobedMsgs
    * @property {array} messages Holds all messages that have been created by this PersonalMessageManager
    *
@@ -57,7 +57,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
   /**
    * A getter for the 'unapproved' PersonalMessages in this.messages
    *
-   * @returns {object} An index of PersonalMessage ids to PersonalMessages, for all 'unapproved' PersonalMessages in
+   * @returns {Object} An index of PersonalMessage ids to PersonalMessages, for all 'unapproved' PersonalMessages in
    * this.messages
    *
    */
@@ -71,7 +71,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    * the new PersonalMessage to this.messages, and to save the unapproved PersonalMessages from that list to
    * this.memStore.
    *
-   * @param {object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
    * @returns {number} The id of the newly created PersonalMessage.
    *
    */
@@ -123,8 +123,8 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    * Approves a PersonalMessage. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
    * with any the message params modified for proper signing.
    *
-   * @param {object} msgParams The msgParams to be used when eth_sign is called, plus data added by MetaMask.
-   * @param {object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
+   * @param {Object} msgParams The msgParams to be used when eth_sign is called, plus data added by MetaMask.
+   * @param {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    *
    */
@@ -161,7 +161,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
   /**
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
-   * @param {object} msgParams The msgParams to modify
+   * @param {Object} msgParams The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    *
    */
