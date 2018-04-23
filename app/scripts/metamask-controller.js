@@ -263,6 +263,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * Constructor helper: initialize a public config store.
+   * This store is used to make some config info available to Dapps synchronously.
    */
   initPublicConfigStore () {
     // get init state
@@ -314,9 +315,11 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Returns an api-object which is consumed by the UI
+   * Returns an Object containing API Callback Functions.
+   * These functions are the interface for the UI.
+   * The API object can be transmitted over a stream with dnode.
    *
-   * @returns {Object}
+   * @returns {Object} Object containing API functions.
    */
   getApi () {
     const keyringController = this.keyringController
@@ -407,16 +410,18 @@ module.exports = class MetamaskController extends EventEmitter {
 //=============================================================================
 
   /**
-   * Creates a new Vault(?) and create a new keychain(?)
+   * Creates a new Vault and create a new keychain.
    *
-   * A vault is ...
+   * A vault, or KeyringController, is a controller that contains
+   * many different account strategies, currently called Keyrings.
+   * Creating it new means wiping all previous keyrings.
    *
-   * A keychain is ...
+   * A keychain, or keyring, controls many accounts with a single backup and signing strategy.
+   * For example, a mnemonic phrase can generate many accounts, and is a keyring.
    *
+   * @param  {string} password
    *
-   * @param  {} password
-   *
-   * @returns {} vault
+   * @returns {Object} vault
    */
   async createNewVaultAndKeychain (password) {
     const release = await this.createVaultMutex.acquire()
@@ -442,7 +447,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Create a new Vault and restore an existent keychain
+   * Create a new Vault and restore an existent keyring.
    * @param  {} password
    * @param  {} seed
    */
@@ -460,9 +465,15 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
+   * @type Identity
+   * @property {string} name - The account nickname.
+   * @property {string} address - The account's ethereum address, in lower case.
+   * @property {boolean} mayBeFauceting - Whether this account is currently
+   * receiving funds from our automatic Ropsten faucet.
+   */
+
+  /**
    * Retrieves the first Identiy from the passed Vault and selects the related address
-   *
-   * An Identity is ...
    *
    * @param  {} vault
    */
@@ -472,12 +483,12 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController.setSelectedAddress(address)
   }
 
-  // ?
-  // Opinionated Keyring Management
+  //
+  // Account Management
   //
 
   /**
-   * Adds a new account to ...
+   * Adds a new account to the default (first) HD seed phrase Keyring.
    *
    * @returns {} keyState
    */
@@ -507,6 +518,8 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * Used when creating a first vault, to allow confirmation.
    * Also used when revealing the seed words in the confirmation view.
+   *
+   * @param {Function} cb - A callback called on completion.
    */
   placeSeedWords (cb) {
 
@@ -526,6 +539,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * Validity: seed phrase restores the accounts belonging to the current vault.
    *
    * Called when the first account is created and on unlocking the vault.
+   *
+   * @returns {Promise<string>} Seed phrase to be confirmed by the user.
    */
   async verifySeedPhrase () {
 
@@ -556,6 +571,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * The seed phrase remains available in the background process.
    *
+   * @param {function} cb Callback function called with the current address.
    */
   clearSeedWordCache (cb) {
     this.configManager.setSeedWords(null)
@@ -563,9 +579,13 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * ?
+   * Clears the transaction history, to allow users to force-reset their nonces.
+   * Mostly used in development environments, when networks are restarted with
+   * the same network ID.
+   *
+   * @returns Promise<string> The current selected address.
    */
-  async resetAccount (cb) {
+  async resetAccount () {
     const selectedAddress = this.preferencesController.getSelectedAddress()
     this.txController.wipeTransactions(selectedAddress)
 
@@ -577,11 +597,13 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Imports an account ... ?
+   * Imports an account with the specified import strategy.
+   * These are defined in app/scripts/account-import-strategies
+   * Each strategy represents a different way of serializing an Ethereum key pair.
    *
-   * @param  {} strategy
-   * @param  {} args
-   * @param  {} cb
+   * @param  {string} strategy - A unique identifier for an account import strategy.
+   * @param  {any} args - The data required by that strategy to import an account.
+   * @param  {Function} cb - A callback function called with a state update on success.
    */
   importAccountWithStrategy (strategy, args, cb) {
     accountImporter.importAccount(strategy, args)
@@ -595,13 +617,42 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   // ---------------------------------------------------------------------------
-  // Identity Management (sign)
+  // Identity Management (signature operations)
+
+  // eth_sign methods:
 
   /**
-   * @param  {} msgParams
-   * @param  {} cb
+   * Called when a Dapp uses the eth_sign method, to request user approval.
+   * eth_sign is a pure signature of arbitrary data. It is on a deprecation
+   * path, since this data can be a transaction, or can leak private key
+   * information.
+   *
+   * @param {Object} msgParams - The params passed to eth_sign.
+   * @param {Function} cb = The callback function called with the signature.
    */
-  signMessage (msgParams, cb) {
+  newUnsignedMessage (msgParams, cb) {
+    const msgId = this.messageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.messageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  /**
+   * Signifies user intent to complete an eth_sign method.
+   *
+   * @param  {Object} msgParams The params passed to eth_call.
+   * @returns {Promise<Object>} Full state update.
+   */
+  signMessage (msgParams) {
     log.info('MetaMaskController - signMessage')
     const msgId = msgParams.metamaskId
 
@@ -620,148 +671,32 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  // Prefixed Style Message Signing Methods:
-
   /**
+   * Used to cancel a message submitted via eth_sign.
    *
-   * @param  {} msgParams
-   * @param  {} cb
+   * @param {string} msgId - The id of the message to cancel.
    */
-  approvePersonalMessage (msgParams, cb) {
-    const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
-    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-
-  /**
-   * @param  {} msgParams
-   */
-  signPersonalMessage (msgParams) {
-    log.info('MetaMaskController - signPersonalMessage')
-    const msgId = msgParams.metamaskId
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.personalMessageManager.approveMessage(msgParams)
-    .then((cleanMsgParams) => {
-      // signs the message
-      return this.keyringController.signPersonalMessage(cleanMsgParams)
-    })
-    .then((rawSig) => {
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
-      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
-    })
-  }
-
-  /**
-   * @param  {} msgParams
-   */
-  signTypedMessage (msgParams) {
-    log.info('MetaMaskController - signTypedMessage')
-    const msgId = msgParams.metamaskId
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.typedMessageManager.approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-        // signs the message
-        return this.keyringController.signTypedMessage(cleanMsgParams)
-      })
-      .then((rawSig) => {
-        // tells the listener that the message has been signed
-        // and can be returned to the dapp
-        this.typedMessageManager.setMsgStatusSigned(msgId, rawSig)
-        return this.getState()
-      })
-  }
-
-  // ---------------------------------------------------------------------------
-  // Account Restauration
-
-  /**
-   * ?
-   *
-   * @param  {} migratorOutput
-   */
-  restoreOldVaultAccounts (migratorOutput) {
-    const { serialized } = migratorOutput
-    return this.keyringController.restoreKeyring(serialized)
-    .then(() => migratorOutput)
-  }
-
-  /**
-   * ?
-   *
-   * @param  {} migratorOutput
-   */
-  restoreOldLostAccounts (migratorOutput) {
-    const { lostAccounts } = migratorOutput
-    if (lostAccounts) {
-      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
-      return this.importLostAccounts(migratorOutput)
+  cancelMessage (msgId, cb) {
+    const messageManager = this.messageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
     }
-    return Promise.resolve(migratorOutput)
   }
+
+  // personal_sign methods:
 
   /**
-   * Import (lost) Accounts
+   * Called when a dapp uses the personal_sign method.
+   * This is identical to the Geth eth_sign method, and may eventually replace
+   * eth_sign.
    *
-   * @param  {Object} {lostAccounts} @Array accounts <{ address, privateKey }>
+   * We currently define our eth_sign and personal_sign mostly for legacy Dapps.
    *
-   * Uses the array's private keys to create a new Simple Key Pair keychain
-   * and add it to the keyring controller.
+   * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
+   * @param {Function} cb - The callback function called with the signature.
+   * Passed back to the requesting Dapp.
    */
-  importLostAccounts ({ lostAccounts }) {
-    const privKeys = lostAccounts.map(acct => acct.privateKey)
-    return this.keyringController.restoreKeyring({
-      type: 'Simple Key Pair',
-      data: privKeys,
-    })
-  }
-
-//=============================================================================
-// END (VAULT / KEYRING RELATED METHODS)
-//=============================================================================
-
-//
-
-//=============================================================================
-// MESSAGES
-//=============================================================================
-
-  async retryTransaction (txId, cb) {
-    await this.txController.retryTransaction(txId)
-    const state = await this.getState()
-    return state
-  }
-
-
-  newUnsignedMessage (msgParams, cb) {
-    const msgId = this.messageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
-    this.messageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-
   newUnsignedPersonalMessage (msgParams, cb) {
     if (!msgParams.from) {
       return cb(new Error('MetaMask Message Signature: from field is required.'))
@@ -782,6 +717,52 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
+  /**
+   * Signifies a user's approval to sign a personal_sign message in queue.
+   * Triggers signing, and the callback function from newUnsignedPersonalMessage.
+   *
+   * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
+   * @returns {Promise<Object>} - A full state update.
+   */
+  signPersonalMessage (msgParams) {
+    log.info('MetaMaskController - signPersonalMessage')
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.personalMessageManager.approveMessage(msgParams)
+    .then((cleanMsgParams) => {
+      // signs the message
+      return this.keyringController.signPersonalMessage(cleanMsgParams)
+    })
+    .then((rawSig) => {
+      // tells the listener that the message has been signed
+      // and can be returned to the dapp
+      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
+      return this.getState()
+    })
+  }
+
+  /**
+   * Used to cancel a personal_sign type message.
+   * @param {string} msgId - The ID of the message to cancel.
+   * @param {Function} cb - The callback function called with a full state update.
+   */
+  cancelPersonalMessage (msgId, cb) {
+    const messageManager = this.personalMessageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
+  }
+
+  // eth_signTypedData methods
+
+  /**
+   * Called when a dapp uses the eth_signTypedData method, per EIP 712.
+   *
+   * @param {Object} msgParams - The params passed to eth_signTypedData.
+   * @param {Function} cb - The callback function, called with the signature.
+   */
   newUnsignedTypedMessage (msgParams, cb) {
     let msgId
     try {
@@ -804,22 +785,36 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  cancelMessage (msgId, cb) {
-    const messageManager = this.messageManager
-    messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-    }
+  /**
+   * The method for a user approving a call to eth_signTypedData, per EIP 712.
+   * Triggers the callback in newUnsignedTypedMessage.
+   *
+   * @param  {Object} msgParams - The params passed to eth_signTypedData.
+   * @returns {Object} Full state update.
+   */
+  signTypedMessage (msgParams) {
+    log.info('MetaMaskController - signTypedMessage')
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.typedMessageManager.approveMessage(msgParams)
+      .then((cleanMsgParams) => {
+        // signs the message
+        return this.keyringController.signTypedMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
+        // tells the listener that the message has been signed
+        // and can be returned to the dapp
+        this.typedMessageManager.setMsgStatusSigned(msgId, rawSig)
+        return this.getState()
+      })
   }
 
-  cancelPersonalMessage (msgId, cb) {
-    const messageManager = this.personalMessageManager
-    messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-    }
-  }
-
+  /**
+   * Used to cancel a eth_signTypedData type message.
+   * @param {string} msgId - The ID of the message to cancel.
+   * @param {Function} cb - The callback function called with a full state update.
+   */
   cancelTypedMessage (msgId, cb) {
     const messageManager = this.typedMessageManager
     messageManager.rejectMsg(msgId)
@@ -828,18 +823,119 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // MetaMask Version 3 Migration Account Restauration Methods
+
+  /**
+   * A legacy method (probably dead code) that was used when we swapped out our
+   * key management library that we depended on.
+   *
+   * Described in:
+   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
+   *
+   * @deprecated
+   * @param  {} migratorOutput
+   */
+  restoreOldVaultAccounts (migratorOutput) {
+    const { serialized } = migratorOutput
+    return this.keyringController.restoreKeyring(serialized)
+    .then(() => migratorOutput)
+  }
+
+  /**
+   * A legacy method used to record user confirmation that they understand
+   * that some of their accounts have been recovered but should be backed up.
+   *
+   * @deprecated
+   * @param {Function} cb - A callback function called with a full state update.
+   */
   markAccountsFound (cb) {
     this.configManager.setLostAccounts([])
     this.sendUpdate()
     cb(null, this.getState())
   }
 
+  /**
+   * A legacy method (probably dead code) that was used when we swapped out our
+   * key management library that we depended on.
+   *
+   * Described in:
+   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
+   *
+   * @deprecated
+   * @param  {} migratorOutput
+   */
+  restoreOldLostAccounts (migratorOutput) {
+    const { lostAccounts } = migratorOutput
+    if (lostAccounts) {
+      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
+      return this.importLostAccounts(migratorOutput)
+    }
+    return Promise.resolve(migratorOutput)
+  }
+
+  /**
+   * An account object
+   * @typedef Account
+   * @property string privateKey - The private key of the account.
+   */
+
+  /**
+   * Probably no longer needed, related to the Version 3 migration.
+   * Imports a hash of accounts to private keys into the vault.
+   *
+   * Described in:
+   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
+   *
+   * Uses the array's private keys to create a new Simple Key Pair keychain
+   * and add it to the keyring controller.
+   * @deprecated
+   * @param  {Account[]} lostAccounts -
+   * @returns {Keyring[]} An array of the restored keyrings.
+   */
+  importLostAccounts ({ lostAccounts }) {
+    const privKeys = lostAccounts.map(acct => acct.privateKey)
+    return this.keyringController.restoreKeyring({
+      type: 'Simple Key Pair',
+      data: privKeys,
+    })
+  }
+
+//=============================================================================
+// END (VAULT / KEYRING RELATED METHODS)
+//=============================================================================
+
+  /**
+   * Allows a user to try to speed up a transaction by retrying it
+   * with higher gas.
+   *
+   * @param {string} txId - The ID of the transaction to speed up.
+   * @param {Function} cb - The callback function called with a full state update.
+   */
+  async retryTransaction (txId, cb) {
+    await this.txController.retryTransaction(txId)
+    const state = await this.getState()
+    return state
+  }
+
+//=============================================================================
+// PASSWORD MANAGEMENT
+//=============================================================================
+
+  /**
+   * Allows a user to begin the seed phrase recovery process.
+   * @param {Function} cb - A callback function called when complete.
+   */
   markPasswordForgotten(cb) {
     this.configManager.setPasswordForgotten(true)
     this.sendUpdate()
     cb()
   }
 
+  /**
+   * Allows a user to end the seed phrase recovery process.
+   * @param {Function} cb - A callback function called when complete.
+   */
   unMarkPasswordForgotten(cb) {
     this.configManager.setPasswordForgotten(false)
     this.sendUpdate()
@@ -850,6 +946,13 @@ module.exports = class MetamaskController extends EventEmitter {
 // SETUP
 //=============================================================================
 
+  /**
+   * Used to create a multiplexed stream for connecting to an untrusted context
+   * like a Dapp or other extension.
+   * @param {*} connectionStream - The Duplex stream to connect to.
+   * @param {string} originDomain - The domain requesting the stream, which
+   * may trigger a blacklist reload.
+   */
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
     if (this.blacklistController.checkForPhishing(originDomain)) {
@@ -865,6 +968,16 @@ module.exports = class MetamaskController extends EventEmitter {
     this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
+  /**
+   * Used to create a multiplexed stream for connecting to a trusted context,
+   * like our own user interfaces, which have the provider APIs, but also
+   * receive the exported API from this controller, which includes trusted
+   * functions, like the ability to approve transactions or sign messages.
+   *
+   * @param {*} connectionStream - The duplex stream to connect to.
+   * @param {string} originDomain - The domain requesting the connection,
+   * used in logging and error reporting.
+   */
   setupTrustedCommunication (connectionStream, originDomain) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream)
@@ -873,12 +986,25 @@ module.exports = class MetamaskController extends EventEmitter {
     this.setupProviderConnection(mux.createStream('provider'), originDomain)
   }
 
+  /**
+   * Called when we detect a suspicious domain. Requests the browser redirects
+   * to our anti-phishing page.
+   *
+   * @private
+   * @param {*} connectionStream - The duplex stream to the per-page script,
+   * for sending the reload attempt to.
+   * @param {string} hostname - The URL that triggered the suspicion.
+   */
   sendPhishingWarning (connectionStream, hostname) {
     const mux = setupMultiplex(connectionStream)
     const phishingStream = mux.createStream('phishing')
     phishingStream.write({ hostname })
   }
 
+  /**
+   * A method for providing our API over a stream using Dnode.
+   * @param {*} outStream - The stream to provide our API over.
+   */
   setupControllerConnection (outStream) {
     const api = this.getApi()
     const dnode = Dnode(api)
@@ -897,6 +1023,11 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
+  /**
+   * A method for serving our ethereum provider over a given stream.
+   * @param {*} outStream - The stream to provide over.
+   * @param {string} origin - The URI of the requesting resource.
+   */
   setupProviderConnection (outStream, origin) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
@@ -926,6 +1057,16 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
+  /**
+   * A method for providing our public config info over a stream.
+   * This includes info we like to be synchronous if possible, like
+   * the current selected account, and network ID.
+   *
+   * Since synchronous methods have been deprecated in web3,
+   * this is a good candidate for deprecation.
+   *
+   * @param {*} outStream - The stream to provide public config over.
+   */
   setupPublicConfig (outStream) {
     pump(
       asStream(this.publicConfigStore),
@@ -936,10 +1077,21 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
+  /**
+   * A method for emitting the full MetaMask state to all registered listeners.
+   * @private
+   */
   privateSendUpdate () {
     this.emit('update', this.getState())
   }
 
+  /**
+   * A method for estimating a good gas price at recent prices.
+   * Returns the lowest price that would have been included in
+   * 50% of recent blocks.
+   *
+   * @returns {string} A hex representation of the suggested wei gas price.
+   */
   getGasPrice () {
     const { recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
@@ -973,6 +1125,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
   // Log blocks
 
+  /**
+   * A method for setting the user's preferred display currency.
+   * @param {string} currencyCode - The code of the preferred currency.
+   * @param {Function} cb - A callback function returning currency info.
+   */
   setCurrentCurrency (currencyCode, cb) {
     try {
       this.currencyController.setCurrentCurrency(currencyCode)
@@ -988,6 +1145,13 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * A method for forwarding the user to the easiest way to obtain ether,
+   * or the network "gas" currency, for the current selected network.
+   *
+   * @param {string} address - The address to fund.
+   * @param {string} amount - The amount of ether desired, as a base 10 string.
+   */
   buyEth (address, amount) {
     if (!amount) amount = '5'
     const network = this.networkController.getNetworkState()
@@ -995,18 +1159,33 @@ module.exports = class MetamaskController extends EventEmitter {
     if (url) this.platform.openWindow({ url })
   }
 
+  /**
+   * A method for triggering a shapeshift currency transfer.
+   * @param {string} depositAddress - The address to deposit to.
+   * @property {string} depositType - An abbreviation of the type of crypto currency to be deposited.
+   */
   createShapeShiftTx (depositAddress, depositType) {
     this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
   }
 
   // network
 
-  async setCustomRpc (rpcTarget, rpcList) {
+  /**
+   * A method for selecting a custom URL for an ethereum RPC provider.
+   * @param {string} rpcTarget - A URL for a valid Ethereum RPC API.
+   * @returns {Promise<String>} - The RPC Target URL confirmed.
+   */
+  async setCustomRpc (rpcTarget) {
     this.networkController.setRpcTarget(rpcTarget)
     await this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
   }
 
+  /**
+   * Sets whether or not to use the blockie identicon format.
+   * @param {boolean} val - True for bockie, false for jazzicon.
+   * @param {Function} cb - A callback function called when complete.
+   */
   setUseBlockie (val, cb) {
     try {
       this.preferencesController.setUseBlockie(val)
@@ -1016,6 +1195,11 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * A method for setting a user's current locale, affecting the language rendered.
+   * @param {string} key - Locale identifier.
+   * @param {Function} cb - A callback function called when complete.
+   */
   setCurrentLocale (key, cb) {
     try {
       this.preferencesController.setCurrentLocale(key)
@@ -1025,6 +1209,11 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * A method for initializing storage the first time.
+   * @param {Object} initState - The default state to initialize with.
+   * @private
+   */
   recordFirstTimeInfo (initState) {
     if (!('firstTimeInfo' in initState)) {
       initState.firstTimeInfo = {
@@ -1034,11 +1223,21 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * A method for recording whether the MetaMask user interface is open or not.
+   * @private
+   * @param {boolean} open
+   */
   set isClientOpen (open) {
     this._isClientOpen = open
     this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
   }
 
+  /**
+   * A method for activating the retrieval of price data, which should only be fetched when the UI is visible.
+   * @private
+   * @param {boolean} active - True if price data should be getting fetched.
+   */
   set isClientOpenAndUnlocked (active) {
     this.tokenRatesController.isActive = active
   }
