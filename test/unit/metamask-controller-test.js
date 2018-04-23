@@ -2,21 +2,15 @@ const assert = require('assert')
 const sinon = require('sinon')
 const clone = require('clone')
 const nock = require('nock')
-const ObservableStore = require('obs-store')
 const MetaMaskController = require('../../app/scripts/metamask-controller')
-const TransactionController = require('../../app/scripts/controllers/transactions')
 const blacklistJSON = require('../stub/blacklist')
 const firstTimeState = require('../../app/scripts/first-time-state')
-const { createTestProviderTools } = require('../stub/provider')
 
 const currentNetworkId = 42
 
 describe('MetaMaskController', function () {
   let metamaskController
   const sandbox = sinon.createSandbox()
-  const providerResultStub = {}
-  const providerTools = createTestProviderTools({ scaffold: providerResultStub })
-  const provider = providerTools.provider
   const noop = () => {}
 
   beforeEach(function () {
@@ -146,7 +140,7 @@ describe('MetaMaskController', function () {
       assert.equal(metamaskController.preferencesController.store.getState().useBlockie, false)
     })
 
-    it('setUseBlockie to true', async function () {
+    it('setUseBlockie to true', function () {
       metamaskController.setUseBlockie(true, noop)
       assert.equal(metamaskController.preferencesController.store.getState().useBlockie, true)
     })
@@ -442,6 +436,75 @@ describe('MetaMaskController', function () {
       const msgIdInt = parseInt(msgId)
       metamaskController.cancelPersonalMessage(msgIdInt, noop)
       assert.equal(messages[0].status, 'rejected')
+    })
+  })
+
+  describe('#approvePersonalMessage', function () {
+
+    it('errors with no from in msgParams', function () {
+      const msgParams = {
+        'data': data,
+      }
+      metamaskController.approvePersonalMessage(msgParams, function (error) {
+        assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
+      })
+    })
+
+    let msgParams, metamaskMsgs, msgId
+
+    const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+    const data = '0x43727970746f6b697474696573'
+
+    beforeEach(function () {
+
+      msgParams = {
+        'from': address,
+        'data': data,
+      }
+
+      metamaskController.approvePersonalMessage(msgParams, noop)
+      metamaskMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
+      msgId = Object.keys(metamaskMsgs)[0]
+    })
+
+    it('persists address from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.from, address)
+    })
+
+    it('persists data from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.data, data)
+    })
+
+    it('sets the status to unapproved', function () {
+      assert.equal(metamaskMsgs[msgId].status, 'unapproved')
+    })
+
+    it('sets the type to personal_sign', function () {
+      assert.equal(metamaskMsgs[msgId].type, 'personal_sign')
+    })
+  })
+
+  describe('#markAccountsFound', function () {
+    it('adds lost accounts to config manager data', function () {
+      metamaskController.markAccountsFound(noop)
+      const configManagerData = metamaskController.configManager.getData()
+      assert.deepEqual(configManagerData.lostAccounts, [])
+    })
+  })
+
+  describe('#markPasswordForgotten', function () {
+    it('adds and sets forgottenPassword to config data to true', function () {
+      metamaskController.markPasswordForgotten(noop)
+      const configManagerData = metamaskController.configManager.getData()
+      assert.equal(configManagerData.forgottenPassword, true)
+    })
+  })
+
+  describe('#unMarkPasswordForgotten', function () {
+    it('adds and sets forgottenPassword to config data to false', function () {
+      metamaskController.unMarkPasswordForgotten(noop)
+      const configManagerData = metamaskController.configManager.getData()
+      assert.equal(configManagerData.forgottenPassword, false)
     })
   })
 
