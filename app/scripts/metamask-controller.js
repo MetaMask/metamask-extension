@@ -722,7 +722,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Triggers signing, and the callback function from newUnsignedPersonalMessage.
    *
    * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
-   * @returns {Promise<Object>/} - A full state update.
+   * @returns {Promise<Object>} - A full state update.
    */
   signPersonalMessage (msgParams) {
     log.info('MetaMaskController - signPersonalMessage')
