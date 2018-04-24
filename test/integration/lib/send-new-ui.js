@@ -23,6 +23,37 @@ global.ethQuery = {
 
 global.ethereumProvider = {}
 
+async function customizeGas(assert, eth, usd) {
+  const sendGasOpenCustomizeModalButton = await queryAsync($, '.sliders-icon-container')
+  sendGasOpenCustomizeModalButton[0].click()
+
+  const customizeGasModal = await queryAsync($, '.send-v2__customize-gas')
+  assert.ok(customizeGasModal[0], 'should render the customize gas modal')
+
+  const customizeGasPriceInput = (await queryAsync($, '.send-v2__gas-modal-card')).first().find('input')
+  customizeGasPriceInput.val(500)
+  reactTriggerChange(customizeGasPriceInput[0])
+  const customizeGasLimitInput = (await queryAsync($, '.send-v2__gas-modal-card')).last().find('input')
+  customizeGasLimitInput.val(60000)
+  reactTriggerChange(customizeGasLimitInput[0])
+
+  const customizeGasSaveButton = await queryAsync($, '.send-v2__customize-gas__save')
+  customizeGasSaveButton[0].click()
+  const sendGasField = await queryAsync($, '.send-v2__gas-fee-display')
+
+  assert.equal(
+    (await findAsync(sendGasField, '.currency-display__input-wrapper > input')).val(),
+    eth,
+    'send gas field should show customized gas total'
+  )
+
+  assert.equal(
+    (await findAsync(sendGasField, '.currency-display__converted-value'))[0].textContent,
+    usd,
+    'send gas field should show customized gas total converted to USD'
+  )
+}
+
 async function runSendFlowTest(assert, done) {
   console.log('*** start runSendFlowTest')
   const selectState = await queryAsync($, 'select')
@@ -95,32 +126,8 @@ async function runSendFlowTest(assert, done) {
     'send gas field should show estimated gas total converted to USD'
   )
 
-  const sendGasOpenCustomizeModalButton = await queryAsync($, '.sliders-icon-container')
-  sendGasOpenCustomizeModalButton[0].click()
-
-  const customizeGasModal = await queryAsync($, '.send-v2__customize-gas')
-  assert.ok(customizeGasModal[0], 'should render the customize gas modal')
-
-  const customizeGasPriceInput = (await queryAsync($, '.send-v2__gas-modal-card')).first().find('input')
-  customizeGasPriceInput.val(50)
-  reactTriggerChange(customizeGasPriceInput[0])
-  const customizeGasLimitInput = (await queryAsync($, '.send-v2__gas-modal-card')).last().find('input')
-  customizeGasLimitInput.val(60000)
-  reactTriggerChange(customizeGasLimitInput[0])
-
-  const customizeGasSaveButton = await queryAsync($, '.send-v2__customize-gas__save')
-  customizeGasSaveButton[0].click()
-
-  assert.equal(
-    (await findAsync(sendGasField, '.currency-display__input-wrapper > input')).val(),
-    '0.003',
-    'send gas field should show customized gas total'
-  )
-  assert.equal(
-    (await findAsync(sendGasField, '.currency-display__converted-value'))[0].textContent,
-    '$3.60 USD',
-    'send gas field should show customized gas total converted to USD'
-  )
+  // await customizeGas(assert, '0', '$0.00 USD')
+  await customizeGas(assert, '0.003', '$3.60 USD')
 
   const sendButton = await queryAsync($, 'button.btn-primary--lg.page-container__footer-button')
   assert.equal(sendButton[0].textContent, 'Next', 'next button rendered')
