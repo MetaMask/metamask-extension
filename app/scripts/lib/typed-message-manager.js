@@ -9,8 +9,6 @@ const log = require('loglevel')
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
  * signature for an eth_signTypedData call is requested.
  *
- * @see {@link }
- *
  * @typedef {Object} TypedMessage
  * @property {number} id An id to track and identify the message object
  * @property {Object} msgParams The parameters to pass to the eth_signTypedData method once the signature request is
