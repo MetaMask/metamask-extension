@@ -6,7 +6,7 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
-const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
+const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/controllers/network/enums')
 const { getEnvironmentType } = require('../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../app/scripts/lib/enums')
 

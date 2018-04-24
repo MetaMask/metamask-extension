@@ -3,7 +3,7 @@ const actions = require('../actions')
 const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
 const { getEnvironmentType } = require('../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../app/scripts/lib/enums')
-const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
+const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/controllers/network/enums')
 
 module.exports = reduceMetamask
 

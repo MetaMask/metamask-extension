@@ -12,7 +12,7 @@ const SimpleDropdown = require('../../dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
 const { REVEAL_SEED_ROUTE } = require('../../../routes')
 const locales = require('../../../../../app/_locales/index.json')
-const { OLD_UI_NETWORK_TYPE } = require('../../../../../app/scripts/config').enums
+const { OLD_UI_NETWORK_TYPE } = require('../../../../../app/scripts/controllers/network/enums')
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
