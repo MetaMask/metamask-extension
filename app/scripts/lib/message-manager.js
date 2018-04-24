@@ -3,14 +3,6 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const createId = require('./random-id')
 
-var msgData = {
-  id: msgId,
-  msgParams: msgParams,
-  time: time,
-  status: 'unapproved',
-  type: 'eth_sign',
-}
-
 /**
  * Represents, and contains data about, an 'eth_sign' type signature request. These are created when a signature for
  * an eth_sign call is requested.
