@@ -2,6 +2,7 @@ const assert = require('assert')
 const sinon = require('sinon')
 const clone = require('clone')
 const nock = require('nock')
+const createThoughStream = require('through2').obj
 const MetaMaskController = require('../../app/scripts/metamask-controller')
 const blacklistJSON = require('../stub/blacklist')
 const firstTimeState = require('../../app/scripts/first-time-state')
@@ -185,6 +186,10 @@ describe('MetaMaskController', function () {
       .reply(200)
 
       rpcTarget = metamaskController.setCustomRpc(customRPC)
+    })
+
+    afterEach(function () {
+      nock.cleanAll()
     })
 
     it('returns custom RPC that when called', async function () {
@@ -481,6 +486,46 @@ describe('MetaMaskController', function () {
 
     it('sets the type to personal_sign', function () {
       assert.equal(metamaskMsgs[msgId].type, 'personal_sign')
+    })
+  })
+
+  describe('#setupUntrustedCommunication', function () {
+    let streamTest
+
+    const phishingUrl = 'decentral.market'
+
+    afterEach(function () {
+      streamTest.end()
+    })
+
+    it('sets up phishing stream for untrusted communication ', async function () {
+      await metamaskController.blacklistController.updatePhishingList()
+
+      streamTest = createThoughStream((chunk, enc, cb) => {
+        assert.equal(chunk.name, 'phishing')
+        assert.equal(chunk.data.hostname, phishingUrl)
+         cb()
+        })
+      // console.log(streamTest)
+       metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+    })
+  })
+
+  describe('#setupTrustedCommunication', function () {
+    let streamTest
+
+    afterEach(function () {
+      streamTest.end()
+    })
+
+    it('sets up controller dnode api for trusted communication', function (done) {
+      streamTest = createThoughStream((chunk, enc, cb) => { 
+        assert.equal(chunk.name, 'controller')
+        cb()
+        done()
+      })
+
+      metamaskController.setupTrustedCommunication(streamTest, 'mycrypto.com')
     })
   })
 
