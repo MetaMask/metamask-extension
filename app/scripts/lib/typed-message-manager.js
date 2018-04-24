@@ -3,7 +3,7 @@ const ObservableStore = require('obs-store')
 const createId = require('./random-id')
 const assert = require('assert')
 const sigUtil = require('eth-sig-util')
-
+const log = require('loglevel')
 
 module.exports = class TypedMessageManager extends EventEmitter {
   constructor (opts) {

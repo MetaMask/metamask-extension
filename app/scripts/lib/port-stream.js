@@ -6,6 +6,13 @@ module.exports = PortDuplexStream
 
 inherits(PortDuplexStream, Duplex)
 
+/**
+ * Creates a stream that's both readable and writable.
+ * The stream supports arbitrary objects.
+ *
+ * @class
+ * @param {Object} port Remote Port object
+ */
 function PortDuplexStream (port) {
   Duplex.call(this, {
     objectMode: true,
@@ -15,8 +22,13 @@ function PortDuplexStream (port) {
   port.onDisconnect.addListener(this._onDisconnect.bind(this))
 }
 
-// private
-
+/**
+ * Callback triggered when a message is received from
+ * the remote Port associated with this Stream.
+ *
+ * @private
+ * @param {Object} msg - Payload from the onMessage listener of Port
+ */
 PortDuplexStream.prototype._onMessage = function (msg) {
   if (Buffer.isBuffer(msg)) {
     delete msg._isBuffer
@@ -27,14 +39,31 @@ PortDuplexStream.prototype._onMessage = function (msg) {
   }
 }
 
+/**
+ * Callback triggered when the remote Port
+ * associated with this Stream disconnects.
+ *
+ * @private
+ */
 PortDuplexStream.prototype._onDisconnect = function () {
   this.destroy()
 }
 
-// stream plumbing
-
+/**
+ * Explicitly sets read operations to a no-op
+ */
 PortDuplexStream.prototype._read = noop
 
+
+/**
+ * Called internally when data should be written to
+ * this writable stream.
+ * 
+ * @private
+ * @param {*} msg Arbitrary object to write
+ * @param {string} encoding Encoding to use when writing payload
+ * @param {Function} cb Called when writing is complete or an error occurs
+ */
 PortDuplexStream.prototype._write = function (msg, encoding, cb) {
   try {
     if (Buffer.isBuffer(msg)) {

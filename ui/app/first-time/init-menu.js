@@ -8,8 +8,9 @@ const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
 const getCaretCoordinates = require('textarea-caret')
 const { RESTORE_VAULT_ROUTE, DEFAULT_ROUTE } = require('../routes')
-const environmentType = require('../../../app/scripts/lib/environment-type')
-const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
+const { getEnvironmentType } = require('../../../app/scripts/lib/util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../app/scripts/lib/enums')
+const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/controllers/network/enums')
 
 class InitializeMenuScreen extends Component {
   constructor (props) {
@@ -180,7 +181,7 @@ class InitializeMenuScreen extends Component {
 
   showRestoreVault () {
     this.props.markPasswordForgotten()
-    if (environmentType() === 'popup') {
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
       global.platform.openExtensionInBrowser()
     }
 

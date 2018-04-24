@@ -5,9 +5,12 @@ const actions = require('./app/actions')
 const configureStore = require('./app/store')
 const txHelper = require('./lib/tx-helper')
 const { fetchLocale } = require('./i18n-helper')
-const { OLD_UI_NETWORK_TYPE, BETA_UI_NETWORK_TYPE } = require('../app/scripts/config').enums
+const {
+  OLD_UI_NETWORK_TYPE,
+  BETA_UI_NETWORK_TYPE,
+} = require('../app/scripts/controllers/network/enums')
 
-global.log = require('loglevel')
+const log = require('loglevel')
 
 module.exports = launchMetamaskUi
 

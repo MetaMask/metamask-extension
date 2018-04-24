@@ -3,6 +3,7 @@ const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
+const log = require('loglevel')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -222,8 +223,6 @@ var actions = {
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
   shapeShiftSubview: shapeShiftSubview,
-  UPDATE_TOKEN_EXCHANGE_RATE: 'UPDATE_TOKEN_EXCHANGE_RATE',
-  updateTokenExchangeRate,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
   coinShiftRquest: coinShiftRquest,
@@ -348,13 +347,11 @@ function transitionBackward () {
   }
 }
 
-function confirmSeedWords () {
+function clearSeedWordCache () {
+  log.debug(`background.clearSeedWordCache`)
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    log.debug(`background.clearSeedWordCache`)
     return new Promise((resolve, reject) => {
       background.clearSeedWordCache((err, account) => {
-        dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
@@ -365,6 +362,22 @@ function confirmSeedWords () {
         resolve(account)
       })
     })
+  }
+}
+
+function confirmSeedWords () {
+  return async dispatch => {
+    dispatch(actions.showLoadingIndication())
+    const account = await dispatch(clearSeedWordCache())
+    return dispatch(setIsRevealingSeedWords(false))
+      .then(() => {
+        dispatch(actions.hideLoadingIndication())
+        return account
+      })
+      .catch(() => {
+        dispatch(actions.hideLoadingIndication())
+        return account
+      })
   }
 }
 
@@ -449,11 +462,13 @@ function requestRevealSeed (password) {
           }
 
           dispatch(actions.showNewVaultSeed(result))
-          dispatch(actions.hideLoadingIndication())
           resolve()
         })
       })
     })
+      .then(() => dispatch(setIsRevealingSeedWords(true)))
+      .then(() => dispatch(actions.hideLoadingIndication()))
+      .catch(() => dispatch(actions.hideLoadingIndication()))
   }
 }
 
@@ -1753,28 +1768,6 @@ function shapeShiftRequest (query, options, cb) {
   }
 }
 
-function updateTokenExchangeRate (token = '') {
-  const pair = `${token.toLowerCase()}_eth`
-
-  return dispatch => {
-    if (!token) {
-      return
-    }
-
-    shapeShiftRequest('marketinfo', { pair }, marketinfo => {
-      if (!marketinfo.error) {
-        dispatch({
-          type: actions.UPDATE_TOKEN_EXCHANGE_RATE,
-          payload: {
-            pair,
-            marketinfo,
-          },
-        })
-      }
-    })
-  }
-}
-
 function setFeatureFlag (feature, activated, notificationType) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -1930,5 +1923,13 @@ function updateNetworkEndpointType (networkEndpointType) {
   return {
     type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
     value: networkEndpointType,
+  }
+}
+
+function setIsRevealingSeedWords (reveal) {
+  return dispatch => {
+    log.debug(`background.setIsRevealingSeedWords`)
+    background.setIsRevealingSeedWords(reveal)
+    return forceUpdateMetamaskState(dispatch)
   }
 }

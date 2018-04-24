@@ -4,6 +4,7 @@ const PersistentForm = require('../../../lib/persistent-form')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../actions')
+const log = require('loglevel')
 
 RestoreVaultScreen.contextTypes = {
   t: PropTypes.func,

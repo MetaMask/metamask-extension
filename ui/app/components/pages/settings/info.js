@@ -3,6 +3,14 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 
 class Info extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      version: global.platform.getVersion(),
+    }
+  }
+
   renderLogo () {
     return (
       h('div.settings__info-logo-wrapper', [
@@ -76,7 +84,7 @@ class Info extends Component {
             this.renderLogo(),
             h('div.settings__info-item', [
               h('div.settings__info-version-header', 'MetaMask Version'),
-              h('div.settings__info-version-number', '4.0.0'),
+              h('div.settings__info-version-number', this.state.version),
             ]),
             h('div.settings__info-item', [
               h(
