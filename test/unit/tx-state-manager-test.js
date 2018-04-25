@@ -1,8 +1,8 @@
 const assert = require('assert')
 const clone = require('clone')
 const ObservableStore = require('obs-store')
-const TxStateManager = require('../../app/scripts/lib/tx-state-manager')
-const txStateHistoryHelper = require('../../app/scripts/lib/tx-state-history-helper')
+const TxStateManager = require('../../app/scripts/controllers/transactions/tx-state-manager')
+const txStateHistoryHelper = require('../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
 const noop = () => true
 
 describe('TransactionStateManager', function () {
