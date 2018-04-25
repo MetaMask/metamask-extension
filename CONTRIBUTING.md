@@ -12,11 +12,13 @@ For any new programmatic functionality, we like unit tests when possible, so if 
 
 ### PR Format
 
-We use [waffle](https://waffle.io/) for project management, and it will automatically keep us organized if you do one simple thing:
-
 If this PR closes the issue, add the line `Fixes #$ISSUE_NUMBER`. Ex. For closing issue 418, include the line `Fixes #418`.
 
 If it doesn't close the issue but addresses it partially, just include a reference to the issue number, like `#418`.
+
+Submit your PR against the `develop` branch. This is where we merge new features so they get some time to receive extra testing before being pushed to `master` for production.
+
+If your PR is a hot-fix that needs to be published urgently, you may submit a PR against the `master` branch, but this PR will receive tighter scrutiny before merging.
 
 ## Before Merging
 
