@@ -2,11 +2,11 @@ const EthQuery = require('ethjs-query')
 const assert = require('assert')
 const Mutex = require('await-semaphore').Mutex
 /**
-  @param opts {Object} -
-    @property {Object} opts.provider a ethereum provider
-    @property {Function} opts.getPendingTransactions a function that returns an array of txMeta
+  @param opts {Object}
+    @param {Object} opts.provider a ethereum provider
+    @param {Function} opts.getPendingTransactions a function that returns an array of txMeta
     whosee status is `submitted`
-    @property {Function} opts.getConfirmedTransactions a function that returns an array of txMeta
+    @param {Function} opts.getConfirmedTransactions a function that returns an array of txMeta
     whose status is `confirmed`
   @class
 */
@@ -42,7 +42,7 @@ class NonceTracker {
   Note: releaseLock must be called after adding a signed tx to pending transactions (or discarding).
 
   @param address {string} the hex string for the address whose nonce we are calculating
-  @returns {Promise<Object>}
+  @returns {Promise<NonceDetails>}
   */
   async getNonceLock (address) {
     // await global mutex free
@@ -146,6 +146,17 @@ class NonceTracker {
     return highestNonce
   }
 
+  /**
+    @typedef {object} highestContinuousFrom
+    @property {string} - name the name for how the nonce was calculated based on the data used
+    @property {number} - nonce the next suggested nonce
+    @property {object} - details the provided starting nonce that was used (for debugging)
+  */
+  /**
+    @param txList {array} - list of txMeta's
+    @param startPoint {number} - the highest known locally confirmed nonce
+    @returns {highestContinuousFrom}
+  */
   _getHighestContinuousFrom (txList, startPoint) {
     const nonces = txList.map((txMeta) => {
       const nonce = txMeta.txParams.nonce
@@ -163,6 +174,10 @@ class NonceTracker {
 
   // this is a hotfix for the fact that the blockTracker will
   // change when the network changes
+
+  /**
+    @returns {Object} the current blockTracker
+  */
   _getBlockTracker () {
     return this.provider._blockTracker
   }

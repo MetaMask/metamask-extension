@@ -20,11 +20,11 @@ const { getFinalStates } = require('./lib/util')
   <br>   - `'confirmed'` the tx has been included in a block.
   <br>   - `'failed'` the tx failed for some reason, included on tx data.
   <br>   - `'dropped'` the tx nonce was already used
-  @param opts {object} -
-  @property {object} opts.initState with the key transaction {array}
-  @property {number} opts.txHistoryLimit limit for how many finished
+  @param opts {object}
+  @param {object} [opts.initState={ transactions: [] }] initial transactions list with the key transaction {array}
+  @param {number} [opts.txHistoryLimit] limit for how many finished
   transactions can hang around in state
-  @property {function} opts.getNetwork return network number
+  @param {function} opts.getNetwork return network number
   @class
 */
 class TransactionStateManager extends EventEmitter {
@@ -81,8 +81,9 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @param address {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} the tx list whos status is submitted
+    @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
+    @returns {array} the tx list whos status is submitted if no address is provide
+    returns all txMetas who's status is submitted for the current network
   */
   getPendingTransactions (address) {
     const opts = { status: 'submitted' }
@@ -91,8 +92,9 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @param address {string} - hex prefixed address to sort the txMetas for [optional]
-    @returns {array} the tx list whos status is confirmed
+    @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
+    @returns {array} the tx list whos status is confirmed if no address is provide
+    returns all txMetas who's status is confirmed for the current network
   */
   getConfirmedTransactions (address) {
     const opts = { status: 'confirmed' }
@@ -106,7 +108,7 @@ class TransactionStateManager extends EventEmitter {
     is in its final state
     it will allso add the key `history` to the txMeta with the snap shot of the original
     object
-    @param txMeta {object}
+    @param txMeta {Object}
     @returns {object} the txMeta
   */
   addTx (txMeta) {
@@ -155,8 +157,8 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     updates the txMeta in the list and adds a history entry
-    @param txMeta {object} - the txMeta to update
-    @param note {string} - a not about the update for history
+    @param txMeta {Object} - the txMeta to update
+    @param [note] {string} - a not about the update for history
   */
   updateTx (txMeta, note) {
     // validate txParams
@@ -225,6 +227,7 @@ class TransactionStateManager extends EventEmitter {
     status: 'signed',<br>
     err: undefined,<br>
   }<br></code>
+  @param [initialList=this.getTxList()]
   @returns a {array} of txMeta with all
   options matching
   */
@@ -253,7 +256,7 @@ class TransactionStateManager extends EventEmitter {
 
     @param key {string} - the key to check
     @param value - the value your looking for
-    @param txList {array} - [optional] the list to search. default is the txList
+    @param [txList=this.getTxList()] {array} - the list to search. default is the txList
     from txStateManager#getTxList
     @returns {array} a list of txMetas who matches the search params
   */

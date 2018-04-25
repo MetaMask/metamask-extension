@@ -9,10 +9,10 @@ const EthQuery = require('ethjs-query')
   As well as continues broadcast while in the pending state
 <br>
 @param config {object} - non optional configuration object consists of:
-    @property {Object} config.provider
-    @property {Object} config.nonceTracker see nonce tracker
-    @property {function} config.getPendingTransactions a function for getting an array of transactions,
-    @property {function} config.publishTransaction a async function for publishing raw transactions,
+    @param {Object} config.provider - A network provider.
+    @param {Object} config.nonceTracker see nonce tracker
+    @param {function} config.getPendingTransactions a function for getting an array of transactions,
+    @param {function} config.publishTransaction a async function for publishing raw transactions,
 
 
 @class
@@ -117,7 +117,7 @@ class PendingTransactionTracker extends EventEmitter {
 
   /**
     resubmits the individual txMeta used in resubmitPendingTxs
-    @param txMeta {object} - txMeta object
+    @param txMeta {Object} - txMeta object
     @param latestBlockNumber {string} - hex string for the latest block number
     @emits tx:retry
     @returns txHash {string}
@@ -147,7 +147,7 @@ class PendingTransactionTracker extends EventEmitter {
   }
   /**
     Ask the network for the transaction to see if it has been include in a block
-    @param txMeta {object} - the txMeta object
+    @param txMeta {Object} - the txMeta object
     @emits tx:failed
     @emits tx:confirmed
     @emits tx:warning
@@ -208,7 +208,7 @@ class PendingTransactionTracker extends EventEmitter {
 
   /**
     checks to see if a confirmed txMeta has the same nonce
-    @param txMeta {object} - txMeta object
+    @param txMeta {Object} - txMeta object
     @returns {boolean}
   */
   async _checkIfNonceIsTaken (txMeta) {

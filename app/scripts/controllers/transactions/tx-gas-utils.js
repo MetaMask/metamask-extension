@@ -7,19 +7,23 @@ const {
 const { addHexPrefix } = require('ethereumjs-util')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
-/*
-tx-utils are utility methods for Transaction manager
+/**
+tx-gas-utils are gas utility methods for Transaction manager
 its passed ethquery
 and used to do things like calculate gas of a tx.
-@param provider {object}
+@param {Object} provider - A network provider.
 */
 
-module.exports = class TxGasUtil {
+class TxGasUtil {
 
   constructor (provider) {
     this.query = new EthQuery(provider)
   }
 
+  /**
+    @param txMeta {Object} - the txMeta object
+    @returns {object} the txMeta object with the gas written to the txParams
+  */
   async analyzeGasUsage (txMeta) {
     const block = await this.query.getBlockByNumber('latest', true)
     let estimatedGasHex
@@ -39,6 +43,12 @@ module.exports = class TxGasUtil {
     return txMeta
   }
 
+  /**
+    Estimates the tx's gas usage
+    @param txMeta {Object} - the txMeta object
+    @param blockGasLimitHex {string} - hex string of the block's gas limit
+    @returns {string} the estimated gas limit as a hex string
+  */
   async estimateTxGas (txMeta, blockGasLimitHex) {
     const txParams = txMeta.txParams
 
@@ -71,6 +81,12 @@ module.exports = class TxGasUtil {
     return await this.query.estimateGas(txParams)
   }
 
+  /**
+    Writes the gas on the txParams in the txMeta
+    @param txMeta {Object} - the txMeta object to write to
+    @param blockGasLimitHex {string} - the block gas limit hex
+    @param estimatedGasHex {string} - the estimated gas hex
+  */
   setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
     txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
     const txParams = txMeta.txParams
@@ -88,6 +104,13 @@ module.exports = class TxGasUtil {
     return
   }
 
+  /**
+    Adds a gas buffer with out exceeding the block gas limit
+
+    @param initialGasLimitHex {string} - the initial gas limit to add the buffer too
+    @param blockGasLimitHex {string} - the block gas limit
+    @returns {string} the buffered gas limit as a hex string
+  */
   addGasBuffer (initialGasLimitHex, blockGasLimitHex) {
     const initialGasLimitBn = hexToBn(initialGasLimitHex)
     const blockGasLimitBn = hexToBn(blockGasLimitHex)
@@ -102,3 +125,5 @@ module.exports = class TxGasUtil {
     return bnToHex(upperGasLimitBn)
   }
 }
+
+module.exports = TxGasUtil
