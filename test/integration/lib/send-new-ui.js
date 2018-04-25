@@ -23,7 +23,7 @@ global.ethQuery = {
 
 global.ethereumProvider = {}
 
-async function customizeGas(assert, eth, usd) {
+async function customizeGas (assert, price, limit, ethFee, usdFee) {
   const sendGasOpenCustomizeModalButton = await queryAsync($, '.sliders-icon-container')
   sendGasOpenCustomizeModalButton[0].click()
 
@@ -31,10 +31,10 @@ async function customizeGas(assert, eth, usd) {
   assert.ok(customizeGasModal[0], 'should render the customize gas modal')
 
   const customizeGasPriceInput = (await queryAsync($, '.send-v2__gas-modal-card')).first().find('input')
-  customizeGasPriceInput.val(500)
+  customizeGasPriceInput.val(price)
   reactTriggerChange(customizeGasPriceInput[0])
   const customizeGasLimitInput = (await queryAsync($, '.send-v2__gas-modal-card')).last().find('input')
-  customizeGasLimitInput.val(60000)
+  customizeGasLimitInput.val(limit)
   reactTriggerChange(customizeGasLimitInput[0])
 
   const customizeGasSaveButton = await queryAsync($, '.send-v2__customize-gas__save')
@@ -43,13 +43,13 @@ async function customizeGas(assert, eth, usd) {
 
   assert.equal(
     (await findAsync(sendGasField, '.currency-display__input-wrapper > input')).val(),
-    eth,
+    ethFee,
     'send gas field should show customized gas total'
   )
 
   assert.equal(
     (await findAsync(sendGasField, '.currency-display__converted-value'))[0].textContent,
-    usd,
+    usdFee,
     'send gas field should show customized gas total converted to USD'
   )
 }
@@ -126,8 +126,8 @@ async function runSendFlowTest(assert, done) {
     'send gas field should show estimated gas total converted to USD'
   )
 
-  // await customizeGas(assert, '0', '$0.00 USD')
-  await customizeGas(assert, '0.003', '$3.60 USD')
+  await customizeGas(assert, 0, 21000, '0', '$0.00 USD')
+  await customizeGas(assert, 500, 60000, '0.003', '$3.60 USD')
 
   const sendButton = await queryAsync($, 'button.btn-primary--lg.page-container__footer-button')
   assert.equal(sendButton[0].textContent, 'Next', 'next button rendered')

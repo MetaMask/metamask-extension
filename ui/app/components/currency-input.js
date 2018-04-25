@@ -70,21 +70,6 @@ CurrencyInput.prototype.handleChange = function (newValue) {
   onInputChange(sanitizedValue)
 }
 
-// If state.value === props.value plus a decimal point, or at least one
-// zero or a decimal point and at least one zero, then this returns state.value
-// after it is sanitized with getValueParts
-CurrencyInput.prototype.getValueToRender = function () {
-  const { value } = this.props
-  const { value: stateValue } = this.state
-
-  const trailingStateString = (new RegExp(`^${value}(.+)`)).exec(stateValue)
-  const trailingDecimalAndZeroes = trailingStateString && (/^[.0]0*/).test(trailingStateString[1])
-
-  return sanitizeValue(trailingDecimalAndZeroes
-    ? stateValue
-    : value)
-}
-
 CurrencyInput.prototype.render = function () {
   const {
     className,
@@ -92,12 +77,13 @@ CurrencyInput.prototype.render = function () {
     readOnly,
     inputRef,
     type,
+    value,
   } = this.props
-  const { emptyState, focused } = this.state
-
+  const { emptyState, focused, value: stateValue } = this.state
   const inputSizeMultiplier = readOnly ? 1 : 1.2
+  const valueToRender = (typeof stateValue === 'undefined' || value !== stateValue) ?
+    sanitizeValue(value) : stateValue
 
-  const valueToRender = this.getValueToRender()
   return h('input', {
     className,
     type,
