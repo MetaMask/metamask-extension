@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.6.0 Thu Apr 26 2018
+
 - Correctly format currency conversion for locally selected preferred currency.
 - Improved performance of 3D fox logo.
 - Fetch token prices based on contract address, not symbol
