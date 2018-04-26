@@ -42,7 +42,8 @@
     "announce": "node development/announcer.js",
     "version:bump": "node development/run-version-bump.js",
     "generateNotice": "node notices/notice-generator.js",
-    "deleteNotice": "node notices/notice-delete.js"
+    "deleteNotice": "node notices/notice-delete.js",
+    "storybook": "start-storybook -p 6006 -c .storybook"
   },
   "browserify": {
     "transform": [
@@ -191,6 +192,9 @@
   },
   "devDependencies": {
     "@sentry/cli": "^1.30.3",
+    "@storybook/addon-info": "^3.4.2",
+    "@storybook/addon-knobs": "^3.4.2",
+    "@storybook/react": "^3.4.2",
     "babel-core": "^6.24.1",
     "babel-eslint": "^8.0.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
@@ -208,6 +212,7 @@
     "compression": "^1.7.1",
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.4",
+    "css-loader": "^0.28.11",
     "deep-freeze-strict": "^1.1.1",
     "del": "^3.0.0",
     "envify": "^4.0.0",
@@ -218,6 +223,7 @@
     "eslint-plugin-mocha": "^5.0.0",
     "eslint-plugin-react": "^7.4.0",
     "eth-json-rpc-middleware": "^1.2.7",
+    "file-loader": "^1.1.11",
     "fs-promise": "^2.0.3",
     "ganache-cli": "^6.1.0",
     "gifencoder": "^1.1.0",
@@ -256,6 +262,7 @@
     "node-sass": "^4.7.2",
     "nyc": "^11.0.3",
     "open": "0.0.5",
+    "path": "^0.12.7",
     "png-file-stream": "^1.0.0",
     "prompt": "^1.0.0",
     "qs": "^6.2.0",
@@ -265,10 +272,13 @@
     "react-test-renderer": "^15.6.2",
     "react-testutils-additions": "^15.2.0",
     "redux-test-utils": "^0.2.2",
+    "resolve-url-loader": "^2.3.0",
     "rimraf": "^2.6.2",
+    "sass-loader": "^7.0.1",
     "selenium-webdriver": "^3.5.0",
     "shell-parallel": "^1.0.3",
     "sinon": "^5.0.0",
+    "style-loader": "^0.21.0",
     "stylelint-config-standard": "^18.2.0",
     "tape": "^4.5.1",
     "testem": "^2.0.0",
