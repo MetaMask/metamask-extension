@@ -90,7 +90,7 @@
     "eth-block-tracker": "^2.3.0",
     "eth-contract-metadata": "^1.1.5",
     "eth-hd-keyring": "^1.2.1",
-    "eth-json-rpc-filters": "^1.2.5",
+    "eth-json-rpc-filters": "^1.2.6",
     "eth-json-rpc-infura": "^3.0.0",
     "eth-keyring-controller": "^2.2.0",
     "eth-phishing-detect": "^1.1.4",
@@ -185,7 +185,7 @@
     "valid-url": "^1.0.9",
     "vreme": "^3.0.2",
     "web3": "^0.20.1",
-    "web3-provider-engine": "^13.8.0",
+    "web3-provider-engine": "^14.0.5",
     "web3-stream-provider": "^3.0.1",
     "xtend": "^4.0.1"
   },
@@ -272,7 +272,7 @@
     "stylelint-config-standard": "^18.2.0",
     "tape": "^4.5.1",
     "testem": "^2.0.0",
-    "uglifyify": "^4.0.5",
+    "uglifyify": "github:MetaMask/uglifyify#keep-flags",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.9.0"
