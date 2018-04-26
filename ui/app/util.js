@@ -1,3 +1,4 @@
+// test
 const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
 const hexToBn = require('../../app/scripts/lib/hex-to-bn')
@@ -291,7 +292,7 @@ function getTokenAddressFromTokenObject (token) {
 
 /**
  * Safely checksumms a potentially-null address
- * 
+ *
  * @param {String} [address] - address to checksum
  * @returns {String} - checksummed address
  */
