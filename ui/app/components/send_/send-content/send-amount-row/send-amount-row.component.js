@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component'
-import AmountMaxButton from '../amount-max-button/amount-max-button.component'
+import AmountMaxButton from './amount-max-button/amount-max-button.component'
 import CurrencyDisplay from '../../../send/currency-display'
 
 export default class SendAmountRow extends Component {
 
   static propTypes = {
-    amountConversionRate: PropTypes.string,
-    conversionRate: PropTypes.string,
-    from: PropTypes.object,
+    amountConversionRate: PropTypes.number,
+    conversionRate: PropTypes.number,
     gasTotal: PropTypes.string,
     primaryCurrency: PropTypes.string,
     selectedToken: PropTypes.object,
@@ -23,7 +22,7 @@ export default class SendAmountRow extends Component {
     const {
       amountConversionRate,
       conversionRate,
-      from: { balance },
+      balance,
       gasTotal,
       primaryCurrency,
       selectedToken,
@@ -69,16 +68,16 @@ export default class SendAmountRow extends Component {
         showError={inError}
         errorType={'amount'}
       >
-        !inError && gasTotal && <AmountMaxButton />
+        {!inError && gasTotal && <AmountMaxButton />}
         <CurrencyDisplay
-          inError={inError},
-          primaryCurrency={primaryCurrency},
-          convertedCurrency={convertedCurrency},
-          selectedToken={selectedToken},
-          value={amount || '0x0'},
-          conversionRate={amountConversionRate},
-          handleChange={this.handleAmountChange},
-        >
+          inError={inError}
+          primaryCurrency={primaryCurrency}
+          convertedCurrency={convertedCurrency}
+          selectedToken={selectedToken}
+          value={amount || '0x0'}
+          conversionRate={amountConversionRate}
+          handleChange={newAmount => this.handleAmountChange(newAmount)}
+        />
       </SendRowWrapper>
     );
   }

@@ -1,27 +1,30 @@
+import { connect } from 'react-redux'
 import {
-    getSendFrom,
     getConversionRate,
     getSelectedTokenContract,
-    getCurrentAccountWithSendEtherInfo,
     accountsWithSendEtherInfoSelector,
+    getSendFromObject,
 } from '../../send.selectors.js'
-import { getFromDropdownOpen } from './send-from-row.selectors.js'
+import {
+  getFromDropdownOpen,
+} from './send-from-row.selectors.js'
 import { calcTokenUpdateAmount } from './send-from-row.utils.js'
 import {
     updateSendTokenBalance,
     updateSendFrom,
-} from '../../../actions'
+} from '../../../../actions'
 import {
     openFromDropdown,
     closeFromDropdown,
-} from '../../../ducks/send'
+} from '../../../../ducks/send'
 import SendFromRow from './send-from-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFromRow)
 
 function mapStateToProps (state) {
+  console.log(`$% mapStateToProps accountsWithSendEtherInfoSelector`, accountsWithSendEtherInfoSelector);
   return {
-    from: getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state),
+    from: getSendFromObject(state),
     fromAccounts: accountsWithSendEtherInfoSelector(state),
     conversionRate: getConversionRate(state),
     fromDropdownOpen: getFromDropdownOpen(state),
@@ -38,7 +41,7 @@ function mapDispatchToProps (dispatch) {
         dispatch(updateSendTokenBalance(tokenBalance))
     },
     updateSendFrom: newFrom => dispatch(updateSendFrom(newFrom)),
-    openFromDropdown: () => dispatch(()),
-    closeFromDropdown: () => dispatch(()),
+    openFromDropdown: () => dispatch(openFromDropdown()),
+    closeFromDropdown: () => dispatch(closeFromDropdown()),
   }
 }

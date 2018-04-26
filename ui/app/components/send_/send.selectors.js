@@ -2,14 +2,14 @@ import { valuesFor } from '../../util'
 import abi from 'human-standard-token-abi'
 import {
   multiplyCurrencies,
-} from './conversion-util'
+} from '../../conversion-util'
 
 const selectors = {
   accountsWithSendEtherInfoSelector,
   autoAddToBetaUI,
-  getConversionRate,
   getAddressBook,
   getConversionRate,
+  getConvertedCurrency,
   getCurrentAccountWithSendEtherInfo,
   getCurrentCurrency,
   getCurrentNetwork,
@@ -17,6 +17,7 @@ const selectors = {
   getForceGasMin,
   getGasLimit,
   getGasPrice,
+  getGasTotal,
   getSelectedAccount,
   getSelectedAddress,
   getSelectedIdentity,
@@ -25,12 +26,18 @@ const selectors = {
   getSelectedTokenExchangeRate,
   getSelectedTokenToFiatRate,
   getSendAmount,
+  getSendEditingTransactionId,
   getSendErrors,
   getSendFrom,
+  getSendFromObject,
   getSendFromBalance,
   getSendMaxModeState,
   getSendTo,
+  getSendToAccounts,
+  getTokenBalance,
   getTokenExchangeRate,
+  getUnapprovedTxs,
+  isSendFormInError,
   transactionsSelector,
 }
 
@@ -84,8 +91,16 @@ function getTokenExchangeRate (state, tokenSymbol) {
   return tokenExchangeRate
 }
 
+function getUnapprovedTxs (state) {
+  return state.metamask.unapprovedTxs
+}
+
 function getConversionRate (state) {
   return state.metamask.conversionRate
+}
+
+function getConvertedCurrency (state) {
+  return state.metamask.currentCurrency
 }
 
 function getAddressBook (state) {
@@ -97,11 +112,13 @@ function accountsWithSendEtherInfoSelector (state) {
     accounts,
     identities,
   } = state.metamask
-
+  console.log(`accountsWithSendEtherInfoSelector accounts`, accounts);
+  console.log(`accountsWithSendEtherInfoSelector identities`, identities);
   const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
     return Object.assign({}, account, identities[key])
   })
 
+  console.log(`accountsWithSendEtherInfoSelector accountsWithSendEtherInfo`, accountsWithSendEtherInfo);
   return accountsWithSendEtherInfo
 }
 
@@ -132,6 +149,10 @@ function getGasPrice (state) {
   return state.metamask.send.gasPrice
 }
 
+function getGasTotal (state) {
+  return state.metamask.send.gasTotal
+}
+
 function getGasLimit (state) {
   return state.metamask.send.gasLimit
 }
@@ -144,8 +165,12 @@ function getSendFrom (state) {
   return state.metamask.send.from
 }
 
+function getSendFromObject (state) {
+  return getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state)
+}
+
 function getSendFromBalance (state) {
-  const from = state.metamask.send.from || {}
+  const from = getSendFrom(state) || getSelectedAccount(state)
   return from.balance
 }
 
@@ -203,12 +228,20 @@ function getCurrentViewContext (state) {
   return currentView.context
 }
 
+function getSendEditingTransactionId (state) {
+  return state.metamask.send.editingTransactionId
+}
+
 function getSendErrors (state) {
   return state.metamask.send.errors
 }
 
 function getSendTo (state) {
   return state.metamask.send.to
+}
+
+function getTokenBalance (state) {
+  return state.metamask.send.tokenBalance
 }
 
 function getSendToAccounts (state) {
@@ -221,4 +254,9 @@ function getSendToAccounts (state) {
 
 function getCurrentNetwork (state) {
   return state.metamask.network
+}
+
+function isSendFormInError (state) {
+  const { amount, to } = getSendErrors(state)
+  return Boolean(amount || toError !== null)
 }

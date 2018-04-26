@@ -19,19 +19,14 @@ export default class SendRowWrapper extends Component {
         children,
     } = this.props
 
-    let formField = children[0]
-    let customLabelContent = null
-
-    if (children.length === 2) {
-      formField = children[1]
-      customLabelContent = children[0]
-    }
+    let formField = Array.isArray(children) ? children[1] || children[0] : children
+    let customLabelContent = children.length === 1 ? children[0] : null
 
     return (
       <div className="send-v2__form-row">
         <div className="send-v2__form-label">
             {label}
-            (showError && <SendRowErrorMessage errorType={errorType}/>)
+            {showError && <SendRowErrorMessage errorType={errorType}/>}
             {customLabelContent}
         </div>
         <div className="send-v2__form-field">

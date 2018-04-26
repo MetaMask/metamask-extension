@@ -1,6 +1,6 @@
 const {
   calcTokenAmount,
-} = require('../../token-util')
+} = require('../../../../token-util')
 
 function calcTokenUpdateAmount (usersToken, selectedToken) {
   const { decimals } = selectedToken || {}

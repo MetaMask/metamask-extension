@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component'
-import FromDropdown from '../../../send/from-dropdown'
+import FromDropdown from './from-dropdown/from-dropdown.component'
 
 export default class SendFromRow extends Component {
 
   static propTypes = {
     closeFromDropdown: PropTypes.func,
-    conversionRate: PropTypes.string,
-    from: PropTypes.string,
+    conversionRate: PropTypes.number,
+    from: PropTypes.object,
     fromAccounts: PropTypes.array,
     fromDropdownOpen: PropTypes.bool,
     openFromDropdown: PropTypes.func,
@@ -41,7 +41,7 @@ export default class SendFromRow extends Component {
       openFromDropdown,
       closeFromDropdown,
     } = this.props
-
+    console.log(`$% SendFromRow fromAccounts`, fromAccounts);
     return (
       <SendRowWrapper label={`${this.context.t('from')}:`}>
         <FromDropdown

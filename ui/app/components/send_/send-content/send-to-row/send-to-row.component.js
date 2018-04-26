@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component'
-import ToDropdown from '../../../ens-input'
+import EnsInput from '../../../ens-input'
 
 export default class SendToRow extends Component {
 
@@ -14,19 +14,20 @@ export default class SendToRow extends Component {
     updateSendToError: PropTypes.func,
     openToDropdown: PropTypes.func,
     closeToDropdown: PropTypes.func,
-    network: PropTypes.number,
+    network: PropTypes.string,
   };
 
   handleToChange (to, nickname = '') {
     const { updateSendTo, updateSendToError } = this.props
     updateSendTo(to, nickname)
-    updateSendErrors(to)
+    updateSendToError(to)
   }
 
   render () {
     const {
       from,
       fromAccounts,
+      toAccounts,
       conversionRate,
       fromDropdownOpen,
       tokenContract,
@@ -34,6 +35,8 @@ export default class SendToRow extends Component {
       closeToDropdown,
       network,
       inError,
+      to,
+      toDropdownOpen,
     } = this.props
 
     return (
@@ -44,14 +47,14 @@ export default class SendToRow extends Component {
       >
         <EnsInput
           name={'address'}
-          placeholder={this.context.t('recipient Address')}
-          network={network},
-          to={to},
+          placeholder={this.context.t('recipientAddress')}
+          network={network}
+          to={to}
           accounts={toAccounts}
           dropdownOpen={toDropdownOpen}
           openDropdown={() => openToDropdown()}
           closeDropdown={() => closeToDropdown()}
-          onChange={this.handleToChange}
+          onChange={(newTo, newNickname) => this.handleToChange(newTo, newNickname)}
           inError={inError}
         />
       </SendRowWrapper>

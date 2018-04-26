@@ -8,6 +8,7 @@ export default class PageContainer extends Component {
   };
 
   render () {
+    console.log(`QQQQQQQQQQQQQQQQQ this.props.children`, this.props.children);
     return (
       <div className="page-container">
         {this.props.children}

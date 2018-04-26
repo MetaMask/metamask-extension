@@ -31,7 +31,7 @@ export default class AmountMaxButton extends Component {
   }
 
   render () {
-    const { setMaxModeTo } = this.props
+    const { setMaxModeTo, maxModeOn } = this.props
 
     return (
       <div
@@ -42,7 +42,7 @@ export default class AmountMaxButton extends Component {
           this.setAmountToMax()
         }}
       >
-        {!maxModeOn ? this.context.t('max') : '' ])}
+        {!maxModeOn ? this.context.t('max') : ''}
       </div>
     );
   }

@@ -10,10 +10,11 @@ const CLOSE_TO_DROPDOWN = 'metamask/send/CLOSE_TO_DROPDOWN';
 const initState = {
   fromDropdownOpen: false,
   toDropdownOpen: false,
+  errors: {},
 }
 
 // Reducer
-export default function reducer(state = initState, action = {}) {
+export default function reducer({ send: sendState = initState }, action = {}) {
   switch (action.type) {
     case OPEN_FROM_DROPDOWN:
       return extend(sendState, {
