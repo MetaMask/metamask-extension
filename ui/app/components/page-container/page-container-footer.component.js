@@ -31,7 +31,7 @@ export default class PageContainerFooter extends Component {
         </button>
 
       </div>
-    );
+    )
   }
 
 }

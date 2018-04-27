@@ -19,14 +19,14 @@ export default class AccountListItem extends Component {
 
   render () {
     const {
-      className,
       account,
-      handleClick,
-      icon = null,
+      className,
       conversionRate,
       currentCurrency,
-      displayBalance = true,
       displayAddress = false,
+      displayBalance = true,
+      handleClick,
+      icon = null,
     } = this.props
 
     const { name, address, balance } = account || {}
@@ -36,32 +36,32 @@ export default class AccountListItem extends Component {
       onClick={() => handleClick({ name, address, balance })}
     >
 
-      <div className='account-list-item__top-row'>
+      <div className="account-list-item__top-row">
         <Identicon
           address={address}
+          className="account-list-item__identicon"
           diameter={18}
-          className='account-list-item__identicon'
         />
 
-        <div className='account-list-item__account-name'>{ name || address }</div>
+        <div className="account-list-item__account-name">{ name || address }</div>
 
-        {icon && <div className='account-list-item__icon'>{ icon }</div>}
+        {icon && <div className="account-list-item__icon">{ icon }</div>}
 
       </div>
 
-      {displayAddress && name && <div className='account-list-item__account-address'>
+      {displayAddress && name && <div className="account-list-item__account-address">
         { checksumAddress(address) }
       </div>}
 
       {displayBalance && <CurrencyDisplay
-        primaryCurrency='ETH'
-        convertedCurrency={currentCurrency}
-        value={balance}
+        className="account-list-item__account-balances"
         conversionRate={conversionRate}
+        convertedBalanceClassName="account-list-item__account-secondary-balance"
+        convertedCurrency={currentCurrency}
+        primaryBalanceClassName="account-list-item__account-primary-balance"
+        primaryCurrency="ETH"
         readOnly={true}
-        className='account-list-item__account-balances'
-        primaryBalanceClassName='account-list-item__account-primary-balance'
-        convertedBalanceClassName='account-list-item__account-secondary-balance'
+        value={balance}
       />}
 
     </div>)

@@ -14,9 +14,9 @@ export default class SendRowErrorMessage extends Component {
 
     return (
       errorMessage
-        ? <div className='send-v2__error'>{this.context.t(errorMessage)}</div>
+        ? <div className="send-v2__error">{this.context.t(errorMessage)}</div>
         : null
-    );
+    )
   }
 
 }

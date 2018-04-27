@@ -7,13 +7,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(SendHeader)
 
 function mapStateToProps (state) {
   return {
-    isToken: Boolean(getSelectedToken(state))
+    isToken: Boolean(getSelectedToken(state)),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(goHome()),
     clearSend: () => dispatch(clearSend()),
+    goHome: () => dispatch(goHome()),
   }
 }

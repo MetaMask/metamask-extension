@@ -8,10 +8,10 @@ function getToErrorObject (to) {
   } else if (!isValidAddress(to)) {
       toError = 'invalidAddressRecipient'
   }
-  
+
   return { to: toError }
 }
 
 module.exports = {
-  getToErrorObject
+  getToErrorObject,
 }

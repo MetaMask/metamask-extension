@@ -29,7 +29,7 @@ export default class PageContainerHeader extends Component {
         />
 
       </div>
-    );
+    )
   }
 
 }

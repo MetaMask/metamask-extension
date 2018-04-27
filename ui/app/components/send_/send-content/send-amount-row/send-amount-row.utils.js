@@ -1,4 +1,3 @@
-const { isValidAddress } = require('../../../../util')
 const {
   conversionGreaterThan,
 } = require('../../../../conversion-util')
@@ -9,31 +8,23 @@ const {
 
 function getAmountErrorObject ({
   amount,
-  balance,
   amountConversionRate,
+  balance,
   conversionRate,
+  gasTotal,
   primaryCurrency,
   selectedToken,
-  gasTotal,
   tokenBalance,
 }) {
-  console.log(`#& getAmountErrorObject amount`, amount);
-  console.log(`#& getAmountErrorObject balance`, balance);
-  console.log(`#& getAmountErrorObject amountConversionRate`, amountConversionRate);
-  console.log(`#& getAmountErrorObject conversionRate`, conversionRate);
-  console.log(`#& getAmountErrorObject primaryCurrency`, primaryCurrency);
-  console.log(`#& getAmountErrorObject selectedToken`, selectedToken);
-  console.log(`#& getAmountErrorObject gasTotal`, gasTotal);
-  console.log(`#& getAmountErrorObject tokenBalance`, tokenBalance);
   let insufficientFunds = false
   if (gasTotal && conversionRate) {
     insufficientFunds = !isBalanceSufficient({
       amount: selectedToken ? '0x0' : amount,
-      gasTotal,
-      balance,
-      primaryCurrency,
       amountConversionRate,
+      balance,
       conversionRate,
+      gasTotal,
+      primaryCurrency,
     })
   }
 
@@ -66,5 +57,5 @@ function getAmountErrorObject ({
 }
 
 module.exports = {
-  getAmountErrorObject
+  getAmountErrorObject,
 }

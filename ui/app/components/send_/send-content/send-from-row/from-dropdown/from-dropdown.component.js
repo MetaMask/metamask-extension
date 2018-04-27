@@ -26,25 +26,26 @@ export default class FromDropdown extends Component {
   renderDropdown () {
     const {
       accounts,
-      selectedAccount,
       closeDropdown,
       onSelect,
+      selectedAccount,
     } = this.props
 
     return (<div>
       <div
-        className='send-v2__from-dropdown__close-area'
+        className="send-v2__from-dropdown__close-area"
         onClick={() => closeDropdown}
       />
-      <div className='send-v2__from-dropdown__list'>
-        {...accounts.map(account => <AccountListItem
-          className='account-list-item__dropdown'
+      <div className="send-v2__from-dropdown__list">
+        {...accounts.map((account, index) => <AccountListItem
           account={account}
+          className="account-list-item__dropdown"
           handleClick={() => {
             onSelect(account)
             closeDropdown()
           }}
           icon={this.getListItemIcon(account, selectedAccount.address)}
+          key={`from-dropdown-account-#${index}`}
         />)}
       </div>
     </div>)
@@ -52,13 +53,12 @@ export default class FromDropdown extends Component {
 
   render () {
     const {
-      selectedAccount,
-      openDropdown,
       dropdownOpen,
+      openDropdown,
+      selectedAccount,
     } = this.props
-    console.log(`&*& openDropdown`, openDropdown);
-    console.log(`&*& dropdownOpen`, dropdownOpen);
-    return <div className='send-v2__from-dropdown'>
+
+    return <div className="send-v2__from-dropdown">
       <AccountListItem
         account={selectedAccount}
         handleClick={openDropdown}

@@ -6,15 +6,15 @@ import EnsInput from '../../../ens-input'
 export default class SendToRow extends Component {
 
   static propTypes = {
+    closeToDropdown: PropTypes.func,
+    inError: PropTypes.bool,
+    network: PropTypes.string,
+    openToDropdown: PropTypes.func,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
     toDropdownOpen: PropTypes.bool,
-    inError: PropTypes.bool,
     updateSendTo: PropTypes.func,
     updateSendToError: PropTypes.func,
-    openToDropdown: PropTypes.func,
-    closeToDropdown: PropTypes.func,
-    network: PropTypes.string,
   };
 
   handleToChange (to, nickname = '') {
@@ -25,40 +25,35 @@ export default class SendToRow extends Component {
 
   render () {
     const {
-      from,
-      fromAccounts,
-      toAccounts,
-      conversionRate,
-      fromDropdownOpen,
-      tokenContract,
-      openToDropdown,
       closeToDropdown,
-      network,
       inError,
+      network,
+      openToDropdown,
       to,
+      toAccounts,
       toDropdownOpen,
     } = this.props
 
     return (
       <SendRowWrapper
+        errorType={'to'}
         label={`${this.context.t('to')}:`}
         showError={inError}
-        errorType={'to'}
       >
         <EnsInput
-          name={'address'}
-          placeholder={this.context.t('recipientAddress')}
-          network={network}
-          to={to}
           accounts={toAccounts}
-          dropdownOpen={toDropdownOpen}
-          openDropdown={() => openToDropdown()}
           closeDropdown={() => closeToDropdown()}
-          onChange={(newTo, newNickname) => this.handleToChange(newTo, newNickname)}
+          dropdownOpen={toDropdownOpen}
           inError={inError}
+          name={'address'}
+          network={network}
+          onChange={(newTo, newNickname) => this.handleToChange(newTo, newNickname)}
+          openDropdown={() => openToDropdown()}
+          placeholder={this.context.t('recipientAddress')}
+          to={to}
         />
       </SendRowWrapper>
-    );
+    )
   }
 
 }

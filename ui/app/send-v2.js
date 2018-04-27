@@ -3,23 +3,8 @@ const PropTypes = require('prop-types')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 
-const ethAbi = require('ethereumjs-abi')
-const ethUtil = require('ethereumjs-util')
-
-const FromDropdown = require('./components/send/from-dropdown')
-const EnsInput = require('./components/ens-input')
-const CurrencyDisplay = require('./components/send/currency-display')
-const MemoTextArea = require('./components/send/memo-textarea')
-const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
-
 const {
-  TOKEN_TRANSFER_FUNCTION_SIGNATURE,
-} = require('./components/send/send-constants')
-
-const {
-  multiplyCurrencies,
   conversionGreaterThan,
-  subtractCurrencies,
 } = require('./conversion-util')
 const {
   calcTokenAmount,
@@ -29,8 +14,6 @@ const {
   isTokenBalanceSufficient,
   getGasTotal,
 } = require('./components/send/send-utils')
-const { isValidAddress } = require('./util')
-const { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } = require('./routes')
 
 import PageContainer from './components/page-container/page-container.component'
 import SendHeader from './components/send_/send-header/send-header.container'

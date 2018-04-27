@@ -6,24 +6,24 @@ import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../routes'
 export default class SendFooter extends Component {
 
   static propTypes = {
-    addToAddressBook: PropTypes.func,
+    addToAddressBookIfNew: PropTypes.func,
     amount: PropTypes.string,
     clearSend: PropTypes.func,
+    disabled: PropTypes.bool,
     editingTransactionId: PropTypes.string,
-    errors:  PropTypes.object,
+    errors: PropTypes.object,
     from: PropTypes.object,
     gasLimit: PropTypes.string,
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
     history: PropTypes.object,
     selectedToken: PropTypes.object,
-    signTokenTx: PropTypes.func,
-    signTx: PropTypes.func,
+    sign: PropTypes.func,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
     tokenBalance: PropTypes.string,
     unapprovedTxs: PropTypes.object,
-    updateTx: PropTypes.func,
+    update: PropTypes.func,
   };
 
   onSubmit (event) {
@@ -56,13 +56,13 @@ export default class SendFooter extends Component {
 
     editingTransactionId
       ? update({
-        from,
-        to,
         amount,
+        editingTransactionId,
+        from,
         gas,
         gasPrice,
         selectedToken,
-        editingTransactionId,
+        to,
         unapprovedTxs,
       })
       : sign({ selectedToken, to, amount, from, gas, gasPrice })
@@ -83,7 +83,7 @@ export default class SendFooter extends Component {
         onSubmit={e => this.onSubmit(e)}
         disabled={disabled}
       />
-    );
+    )
   }
 
 }

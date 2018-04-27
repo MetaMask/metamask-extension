@@ -4,29 +4,29 @@ import PropTypes from 'prop-types'
 export default class AmountMaxButton extends Component {
 
   static propTypes = {
-    tokenBalance: PropTypes.string,
-    gasTotal: PropTypes.string,
     balance: PropTypes.string,
+    gasTotal: PropTypes.string,
+    maxModeOn: PropTypes.bool,
     selectedToken: PropTypes.object,
     setAmountToMax: PropTypes.func,
     setMaxModeTo: PropTypes.func,
-    maxModeOn: PropTypes.bool,
+    tokenBalance: PropTypes.string,
   };
 
   setAmountToMax = function () {
     const {
       balance,
-      tokenBalance,
-      selectedToken,
       gasTotal,
+      selectedToken,
       setAmountToMax,
+      tokenBalance,
     } = this.props
 
     setAmountToMax({
-      tokenBalance,
-      selectedToken,
+      balance,
       gasTotal,
-      setAmountToMax,
+      selectedToken,
+      tokenBalance,
     })
   }
 
@@ -35,7 +35,7 @@ export default class AmountMaxButton extends Component {
 
     return (
       <div
-        className='send-v2__amount-max'
+        className="send-v2__amount-max"
         onClick={(event) => {
           event.preventDefault()
           setMaxModeTo(true)
@@ -44,7 +44,7 @@ export default class AmountMaxButton extends Component {
       >
         {!maxModeOn ? this.context.t('max') : ''}
       </div>
-    );
+    )
   }
 
 }

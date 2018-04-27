@@ -8,13 +8,21 @@ const {
   calcTokenAmount,
 } = require('../../token-util')
 
+function getGasTotal (gasLimit, gasPrice) {
+  return multiplyCurrencies(gasLimit, gasPrice, {
+    toNumericBase: 'hex',
+    multiplicandBase: 16,
+    multiplierBase: 16,
+  })
+}
+
 function isBalanceSufficient ({
   amount = '0x0',
-  gasTotal = '0x0',
-  balance,
-  primaryCurrency,
   amountConversionRate,
+  balance,
   conversionRate,
+  gasTotal = '0x0',
+  primaryCurrency,
 }) {
   const totalAmount = addCurrencies(amount, gasTotal, {
     aBase: 16,
@@ -61,14 +69,6 @@ function isTokenBalanceSufficient ({
   )
 
   return tokenBalanceIsSufficient
-}
-
-function getGasTotal (gasLimit, gasPrice) {
-  return multiplyCurrencies(gasLimit, gasPrice, {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 16,
-  })
 }
 
 module.exports = {

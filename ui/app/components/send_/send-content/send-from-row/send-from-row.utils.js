@@ -8,5 +8,5 @@ function calcTokenUpdateAmount (usersToken, selectedToken) {
 }
 
 module.exports = {
-  calcTokenUpdateAmount
+  calcTokenUpdateAmount,
 }

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import ethUtil from 'ethereumjs-util' 
+import ethUtil from 'ethereumjs-util'
 import {
   addToAddressBook,
   clearSend,
@@ -27,31 +27,32 @@ import {
 } from './send-footer.selectors'
 import {
   addressIsNew,
-  formShouldBeDisabled,
   constructTxParams,
+  constructUpdatedTx,
+  formShouldBeDisabled,
 } from './send-footer.utils'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 
 function mapStateToProps (state) {
   return {
-    isToken: Boolean(getSelectedToken(state)),
-    inError: isSendFormInError(state),
+    amount: getSendAmount(state),
     disabled: formShouldBeDisabled({
       inError: isSendFormInError(state),
       selectedToken: getSelectedToken(state),
       tokenBalance: getTokenBalance(state),
       gasTotal: getGasTotal(state),
     }),
-    amount: getSendAmount(state),
     editingTransactionId: getSendEditingTransactionId(state),
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
+    inError: isSendFormInError(state),
+    isToken: Boolean(getSelectedToken(state)),
     selectedToken: getSelectedToken(state),
     to: getSendTo(state),
-    unapprovedTxs: getUnapprovedTxs(state),
     toAccounts: getSendToAccounts(state),
+    unapprovedTxs: getUnapprovedTxs(state),
   }
 }
 
@@ -102,6 +103,6 @@ function mapDispatchToProps (dispatch) {
         // TODO: nickname, i.e. addToAddressBook(recipient, nickname)
         dispatch(addToAddressBook(hexPrefixedAddress, nickname))
       }
-    }
+    },
   }
 }

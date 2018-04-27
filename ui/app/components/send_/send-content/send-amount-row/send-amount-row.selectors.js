@@ -5,10 +5,10 @@ import {
 } from '../../send.selectors.js'
 
 const selectors = {
-  getMaxModeOn,
-  sendAmountIsInError,
-  getPrimaryCurrency,
   getAmountConversionRate,
+  getMaxModeOn,
+  getPrimaryCurrency,
+  sendAmountIsInError,
 }
 
 module.exports = selectors
@@ -27,7 +27,7 @@ function getPrimaryCurrency (state) {
 }
 
 function getAmountConversionRate (state) {
-  return Boolean(getSelectedToken(state))
+  return getSelectedToken(state)
     ? getSelectedTokenToFiatRate(state)
     : getConversionRate(state)
 }

@@ -12,7 +12,7 @@ export default class PageContainerContent extends Component {
       <div className="page-container__content">
         {this.props.children}
       </div>
-    );
+    )
   }
 
 }

@@ -33,28 +33,27 @@ export default class SendFromRow extends Component {
 
   render () {
     const {
+      closeFromDropdown,
+      conversionRate,
       from,
       fromAccounts,
-      conversionRate,
       fromDropdownOpen,
-      tokenContract,
       openFromDropdown,
-      closeFromDropdown,
     } = this.props
-    console.log(`$% SendFromRow fromAccounts`, fromAccounts);
+
     return (
       <SendRowWrapper label={`${this.context.t('from')}:`}>
         <FromDropdown
-          dropdownOpen={fromDropdownOpen}
           accounts={fromAccounts}
-          selectedAccount={from}
-          onSelect={newFrom => this.handleFromChange(newFrom)}
-          openDropdown={() => openFromDropdown()}
           closeDropdown={() => closeFromDropdown()}
           conversionRate={conversionRate}
+          dropdownOpen={fromDropdownOpen}
+          onSelect={newFrom => this.handleFromChange(newFrom)}
+          openDropdown={() => openFromDropdown()}
+          selectedAccount={from}
         />
       </SendRowWrapper>
-    );
+    )
   }
 
 }

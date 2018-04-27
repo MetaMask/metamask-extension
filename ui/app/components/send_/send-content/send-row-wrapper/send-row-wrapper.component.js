@@ -5,22 +5,22 @@ import SendRowErrorMessage from './send-row-error-message/send-row-error-message
 export default class SendRowWrapper extends Component {
 
   static propTypes = {
-    label: PropTypes.string,
-    showError: PropTypes.bool,
     children: PropTypes.node,
     errorType: PropTypes.string,
+    label: PropTypes.string,
+    showError: PropTypes.bool,
   };
 
   render () {
     const {
-        label,
-        errorType = '',
-        showError = false,
-        children,
+      children,
+      errorType = '',
+      label,
+      showError = false,
     } = this.props
 
-    let formField = Array.isArray(children) ? children[1] || children[0] : children
-    let customLabelContent = children.length === 1 ? children[0] : null
+    const formField = Array.isArray(children) ? children[1] || children[0] : children
+    const customLabelContent = children.length === 1 ? children[0] : null
 
     return (
       <div className="send-v2__form-row">
@@ -33,7 +33,7 @@ export default class SendRowWrapper extends Component {
             {formField}
         </div>
       </div>
-    );
+    )
   }
 
 }

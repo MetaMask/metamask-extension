@@ -7,22 +7,26 @@ import CurrencyDisplay from '../../../send/currency-display'
 export default class SendAmountRow extends Component {
 
   static propTypes = {
+    amount: PropTypes.string,
     amountConversionRate: PropTypes.number,
+    balance: PropTypes.string,
     conversionRate: PropTypes.number,
+    convertedCurrency: PropTypes.string,
     gasTotal: PropTypes.string,
+    inError: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     selectedToken: PropTypes.object,
+    setMaxModeTo: PropTypes.func,
     tokenBalance: PropTypes.string,
-    updateSendAmountError: PropTypes.func,
     updateSendAmount: PropTypes.func,
-    setMaxModeTo: PropTypes.func
+    updateSendAmountError: PropTypes.func,
   }
 
   validateAmount (amount) {
     const {
       amountConversionRate,
-      conversionRate,
       balance,
+      conversionRate,
       gasTotal,
       primaryCurrency,
       selectedToken,
@@ -55,9 +59,8 @@ export default class SendAmountRow extends Component {
       amount,
       amountConversionRate,
       convertedCurrency,
-      inError,
       gasTotal,
-      maxModeOn,
+      inError,
       primaryCurrency = 'ETH',
       selectedToken,
     } = this.props
@@ -70,16 +73,16 @@ export default class SendAmountRow extends Component {
       >
         {!inError && gasTotal && <AmountMaxButton />}
         <CurrencyDisplay
+          conversionRate={amountConversionRate}
+          convertedCurrency={convertedCurrency}
+          handleChange={newAmount => this.handleAmountChange(newAmount)}
           inError={inError}
           primaryCurrency={primaryCurrency}
-          convertedCurrency={convertedCurrency}
           selectedToken={selectedToken}
           value={amount || '0x0'}
-          conversionRate={amountConversionRate}
-          handleChange={newAmount => this.handleAmountChange(newAmount)}
         />
       </SendRowWrapper>
-    );
+    )
   }
 
 }

@@ -18,5 +18,5 @@ function calcMaxAmount ({ balance, gasTotal, selectedToken, tokenBalance }) {
 }
 
 module.exports = {
-  calcMaxAmount
+  calcMaxAmount,
 }

@@ -5,9 +5,9 @@ import PageContainerHeader from '../../page-container/page-container-header.comp
 export default class SendHeader extends Component {
 
   static propTypes = {
-    isToken: PropTypes.bool,
     clearSend: PropTypes.func,
     goHome: PropTypes.func,
+    isToken: PropTypes.bool,
   };
 
   render () {
@@ -15,14 +15,14 @@ export default class SendHeader extends Component {
 
     return (
       <PageContainerHeader
-        title={isToken ? this.context.t('sendTokens') : this.context.t('sendETH')}
-        subtitle={this.context.t('onlySendToEtherAddress')}
         onClose={() => {
           clearSend()
           goHome()
         }}
+        subtitle={this.context.t('onlySendToEtherAddress')}
+        title={isToken ? this.context.t('sendTokens') : this.context.t('sendETH')}
       />
-    );
+    )
   }
 
 }

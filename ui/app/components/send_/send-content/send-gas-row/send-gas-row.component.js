@@ -8,20 +8,23 @@ export default class SendGasRow extends Component {
   static propTypes = {
     closeFromDropdown: PropTypes.func,
     conversionRate: PropTypes.number,
+    convertedCurrency: PropTypes.string,
     from: PropTypes.string,
     fromAccounts: PropTypes.array,
     fromDropdownOpen: PropTypes.bool,
+    gasLoadingError: PropTypes.bool,
+    gasTotal: PropTypes.string,
     openFromDropdown: PropTypes.func,
+    showCustomizeGasModal: PropTypes.bool,
     tokenContract: PropTypes.object,
     updateSendFrom: PropTypes.func,
     updateSendTokenBalance: PropTypes.func,
-    gasLoadingError: PropTypes.bool,
   };
 
   async handleFromChange (newFrom) {
     const {
-      updateSendFrom,
       tokenContract,
+      updateSendFrom,
       updateSendTokenBalance,
     } = this.props
 
@@ -36,22 +39,22 @@ export default class SendGasRow extends Component {
     const {
       conversionRate,
       convertedCurrency,
-      showCustomizeGasModal,
-      gasTotal,
       gasLoadingError,
+      gasTotal,
+      showCustomizeGasModal,
     } = this.props
 
     return (
       <SendRowWrapper label={`${this.context.t('gasFee')}:`}>
         <GasFeeDisplay
-          gasTotal={gasTotal}
           conversionRate={conversionRate}
           convertedCurrency={convertedCurrency}
-          onClick={() => showCustomizeGasModal()}
           gasLoadingError={gasLoadingError}
+          gasTotal={gasTotal}
+          onClick={() => showCustomizeGasModal()}
         />
       </SendRowWrapper>
-    );
+    )
   }
 
 }

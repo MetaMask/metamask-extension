@@ -1,8 +1,7 @@
 import { connect } from 'react-redux'
 import {
-    getSendTo,
-    getToAccounts,
     getCurrentNetwork,
+    getSendTo,
     getSendToAccounts,
 } from '../../send.selectors.js'
 import {
@@ -23,23 +22,22 @@ import SendToRow from './send-to-row.component'
 export default connect(mapStateToProps, mapDispatchToProps)(SendToRow)
 
 function mapStateToProps (state) {
-  updateSendTo
   return {
+    inError: sendToIsInError(state),
+    network: getCurrentNetwork(state),
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
     toDropdownOpen: getToDropdownOpen(state),
-    inError: sendToIsInError(state),
-    network: getCurrentNetwork(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    closeToDropdown: () => dispatch(closeToDropdown()),
+    openToDropdown: () => dispatch(openToDropdown()),
+    updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
     updateSendToError: (to) => {
         dispatch(updateSendErrors(getToErrorObject(to)))
     },
-    updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
-    openToDropdown: () => dispatch(openToDropdown()),
-    closeToDropdown: () => dispatch(closeToDropdown()),
   }
 }
