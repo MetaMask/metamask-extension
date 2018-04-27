@@ -1,7 +1,15 @@
 const EthQuery = require('ethjs-query')
 const assert = require('assert')
 const Mutex = require('await-semaphore').Mutex
-
+/**
+  @param opts {Object}
+    @param {Object} opts.provider a ethereum provider
+    @param {Function} opts.getPendingTransactions a function that returns an array of txMeta
+    whosee status is `submitted`
+    @param {Function} opts.getConfirmedTransactions a function that returns an array of txMeta
+    whose status is `confirmed`
+  @class
+*/
 class NonceTracker {
 
   constructor ({ provider, getPendingTransactions, getConfirmedTransactions }) {
@@ -12,6 +20,9 @@ class NonceTracker {
     this.lockMap = {}
   }
 
+  /**
+    @returns {Promise<Object>} with the key releaseLock (the gloabl mutex)
+  */
   async getGlobalLock () {
     const globalMutex = this._lookupMutex('global')
     // await global mutex free
@@ -19,8 +30,20 @@ class NonceTracker {
     return { releaseLock }
   }
 
-  // releaseLock must be called
-  // releaseLock must be called after adding signed tx to pending transactions (or discarding)
+  /**
+   * @typedef NonceDetails
+   * @property {number} highestLocallyConfirmed - A hex string of the highest nonce on a confirmed transaction.
+   * @property {number} nextNetworkNonce - The next nonce suggested by the eth_getTransactionCount method.
+   * @property {number} highetSuggested - The maximum between the other two, the number returned.
+   */
+
+  /**
+  this will return an object with the `nextNonce` `nonceDetails` of type NonceDetails, and the releaseLock
+  Note: releaseLock must be called after adding a signed tx to pending transactions (or discarding).
+
+  @param address {string} the hex string for the address whose nonce we are calculating
+  @returns {Promise<NonceDetails>}
+  */
   async getNonceLock (address) {
     // await global mutex free
     await this._globalMutexFree()
@@ -123,6 +146,17 @@ class NonceTracker {
     return highestNonce
   }
 
+  /**
+    @typedef {object} highestContinuousFrom
+    @property {string} - name the name for how the nonce was calculated based on the data used
+    @property {number} - nonce the next suggested nonce
+    @property {object} - details the provided starting nonce that was used (for debugging)
+  */
+  /**
+    @param txList {array} - list of txMeta's
+    @param startPoint {number} - the highest known locally confirmed nonce
+    @returns {highestContinuousFrom}
+  */
   _getHighestContinuousFrom (txList, startPoint) {
     const nonces = txList.map((txMeta) => {
       const nonce = txMeta.txParams.nonce
@@ -140,6 +174,10 @@ class NonceTracker {
 
   // this is a hotfix for the fact that the blockTracker will
   // change when the network changes
+
+  /**
+    @returns {Object} the current blockTracker
+  */
   _getBlockTracker () {
     return this.provider._blockTracker
   }
