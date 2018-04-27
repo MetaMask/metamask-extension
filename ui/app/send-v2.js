@@ -493,7 +493,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
     history,
   } = this.props
 
-  const missingTokenBalance = selectedToken && !tokenBalance
+  const missingTokenBalance = selectedToken && (tokenBalance === null || tokenBalance === undefined)
   const noErrors = !amountError && toError === null
 
   return h('div.page-container__footer', [
