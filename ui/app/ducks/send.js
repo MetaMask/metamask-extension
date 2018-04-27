@@ -5,6 +5,7 @@ const OPEN_FROM_DROPDOWN = 'metamask/send/OPEN_FROM_DROPDOWN'
 const CLOSE_FROM_DROPDOWN = 'metamask/send/CLOSE_FROM_DROPDOWN'
 const OPEN_TO_DROPDOWN = 'metamask/send/OPEN_TO_DROPDOWN'
 const CLOSE_TO_DROPDOWN = 'metamask/send/CLOSE_TO_DROPDOWN'
+const UPDATE_SEND_ERRORS = 'metamask/send/UPDATE_SEND_ERRORS'
 
 // TODO: determine if this approach to initState is consistent with conventional ducks pattern
 const initState = {
@@ -32,6 +33,13 @@ export default function reducer ({ send: sendState = initState }, action = {}) {
       return extend(sendState, {
         toDropdownOpen: false,
       })
+    case UPDATE_SEND_ERRORS:
+      return extend(sendState, {
+        errors: {
+          ...sendState.errors,
+          ...action.value,
+        },
+      })
     default:
       return sendState
   }
@@ -52,4 +60,11 @@ export function openToDropdown () {
 
 export function closeToDropdown () {
   return { type: CLOSE_TO_DROPDOWN }
+}
+
+export function updateSendErrors (errorObject) {
+  return {
+    type: UPDATE_SEND_ERRORS,
+    value: errorObject,
+  }
 }

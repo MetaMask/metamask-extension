@@ -14,19 +14,19 @@ export default class SendFromRow extends Component {
     openFromDropdown: PropTypes.func,
     tokenContract: PropTypes.object,
     updateSendFrom: PropTypes.func,
-    updateSendTokenBalance: PropTypes.func,
+    setSendTokenBalance: PropTypes.func,
   };
 
   async handleFromChange (newFrom) {
     const {
       updateSendFrom,
       tokenContract,
-      updateSendTokenBalance,
+      setSendTokenBalance,
     } = this.props
 
     if (tokenContract) {
       const usersToken = await tokenContract.balanceOf(newFrom.address)
-      updateSendTokenBalance(usersToken)
+      setSendTokenBalance(usersToken)
     }
     updateSendFrom(newFrom)
   }

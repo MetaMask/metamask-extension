@@ -18,22 +18,7 @@ export default class SendGasRow extends Component {
     showCustomizeGasModal: PropTypes.func,
     tokenContract: PropTypes.object,
     updateSendFrom: PropTypes.func,
-    updateSendTokenBalance: PropTypes.func,
   };
-
-  async handleFromChange (newFrom) {
-    const {
-      tokenContract,
-      updateSendFrom,
-      updateSendTokenBalance,
-    } = this.props
-
-    if (tokenContract) {
-      const usersToken = await tokenContract.balanceOf(newFrom.address)
-      updateSendTokenBalance(usersToken)
-    }
-    updateSendFrom(newFrom)
-  }
 
   render () {
     const {

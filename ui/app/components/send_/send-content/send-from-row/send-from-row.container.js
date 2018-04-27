@@ -11,7 +11,7 @@ import {
 import { calcTokenUpdateAmount } from './send-from-row.utils.js'
 import {
     updateSendFrom,
-    updateSendTokenBalance,
+    setSendTokenBalance,
 } from '../../../../actions'
 import {
     closeFromDropdown,
@@ -36,11 +36,11 @@ function mapDispatchToProps (dispatch) {
     closeFromDropdown: () => dispatch(closeFromDropdown()),
     openFromDropdown: () => dispatch(openFromDropdown()),
     updateSendFrom: newFrom => dispatch(updateSendFrom(newFrom)),
-    updateSendTokenBalance: (usersToken, selectedToken) => {
+    setSendTokenBalance: (usersToken, selectedToken) => {
         if (!usersToken) return
 
         const tokenBalance = calcTokenUpdateAmount(selectedToken, selectedToken)
-        dispatch(updateSendTokenBalance(tokenBalance))
+        dispatch(setSendTokenBalance(tokenBalance))
     },
   }
 }

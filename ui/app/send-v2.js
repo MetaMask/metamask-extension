@@ -84,7 +84,7 @@ SendTransactionScreen.prototype.updateGas = function () {
     estimateGas,
     selectedAddress,
     data,
-    updateGasTotal,
+    setGasTotal,
     from,
     tokenContract,
     editingTransactionId,
@@ -110,7 +110,7 @@ SendTransactionScreen.prototype.updateGas = function () {
       ])
       .then(([gasPrice, gas]) => {
         const newGasTotal = getGasTotal(gas, gasPrice)
-        updateGasTotal(newGasTotal)
+        setGasTotal(newGasTotal)
         this.setState({ gasLoadingError: false })
       })
       .catch(err => {
@@ -118,7 +118,7 @@ SendTransactionScreen.prototype.updateGas = function () {
       })
   } else {
     const newGasTotal = getGasTotal(gasLimit, gasPrice)
-    updateGasTotal(newGasTotal)
+    setGasTotal(newGasTotal)
   }
 }
 

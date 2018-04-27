@@ -10,12 +10,12 @@ import {
 } from './send-to-row.selectors.js'
 import { getToErrorObject } from './send-to-row.utils.js'
 import {
-    updateSendErrors,
     updateSendTo,
 } from '../../../../actions'
 import {
-    openToDropdown,
-    closeToDropdown,
+  updateSendErrors,
+  openToDropdown,
+  closeToDropdown,
 } from '../../../../ducks/send'
 import SendToRow from './send-to-row.component'
 

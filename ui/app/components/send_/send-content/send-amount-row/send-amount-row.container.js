@@ -1,24 +1,26 @@
 import { connect } from 'react-redux'
 import {
+  getAmountConversionRate,
   getConversionRate,
   getConvertedCurrency,
   getGasTotal,
+  getPrimaryCurrency,
   getSelectedToken,
   getSendAmount,
   getSendFromBalance,
   getTokenBalance,
-} from '../../send.selectors.js'
+} from '../../send.selectors'
 import {
-  getAmountConversionRate,
-  getPrimaryCurrency,
   sendAmountIsInError,
-} from './send-amount-row.selectors.js'
-import { getAmountErrorObject } from './send-amount-row.utils.js'
+} from './send-amount-row.selectors'
+import { getAmountErrorObject } from '../../send.utils'
 import {
   setMaxModeTo,
   updateSendAmount,
-  updateSendErrors,
 } from '../../../../actions'
+import {
+  updateSendErrors,
+} from '../../../../ducks/send'
 import SendAmountRow from './send-amount-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendAmountRow)

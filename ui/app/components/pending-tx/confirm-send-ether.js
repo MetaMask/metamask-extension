@@ -29,6 +29,10 @@ const currencies = require('currency-formatter/currencies')
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 
+import {
+  updateSendErrors,
+} from '../../ducks/send'
+
 ConfirmSendEther.contextTypes = {
   t: PropTypes.func,
 }
@@ -105,7 +109,7 @@ function mapDispatchToProps (dispatch) {
       }))
       dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },
-    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
+    updateSendErrors: error => dispatch(updateSendErrors(error)),
   }
 }
 

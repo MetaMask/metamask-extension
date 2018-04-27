@@ -7,8 +7,22 @@ const {
 const {
   calcTokenAmount,
 } = require('../../token-util')
+const {
+  conversionGreaterThan,
+} = require('../../conversion-util')
 
-function getGasTotal (gasLimit, gasPrice) {
+module.exports = {
+  calcGasTotal,
+  doesAmountErrorRequireUpdate,
+  generateTokenTransferData,
+  getAmountErrorObject,
+  getParamsForGasEstimate,
+  calcTokenBalance,
+  isBalanceSufficient,
+  isTokenBalanceSufficient,
+}
+
+function calcGasTotal (gasLimit, gasPrice) {
   return multiplyCurrencies(gasLimit, gasPrice, {
     toNumericBase: 'hex',
     multiplicandBase: 16,
@@ -71,8 +85,99 @@ function isTokenBalanceSufficient ({
   return tokenBalanceIsSufficient
 }
 
-module.exports = {
-  getGasTotal,
-  isBalanceSufficient,
-  isTokenBalanceSufficient,
+function getAmountErrorObject ({
+  amount,
+  amountConversionRate,
+  balance,
+  conversionRate,
+  gasTotal,
+  primaryCurrency,
+  selectedToken,
+  tokenBalance,
+}) {
+  let insufficientFunds = false
+  if (gasTotal && conversionRate) {
+    insufficientFunds = !isBalanceSufficient({
+      amount: selectedToken ? '0x0' : amount,
+      amountConversionRate,
+      balance,
+      conversionRate,
+      gasTotal,
+      primaryCurrency,
+    })
+  }
+
+  let inSufficientTokens = false
+  if (selectedToken && tokenBalance !== null) {
+    const { decimals } = selectedToken
+    inSufficientTokens = !isTokenBalanceSufficient({
+      tokenBalance,
+      amount,
+      decimals,
+    })
+  }
+
+  const amountLessThanZero = conversionGreaterThan(
+    { value: 0, fromNumericBase: 'dec' },
+    { value: amount, fromNumericBase: 'hex' },
+  )
+
+  let amountError = null
+
+  if (insufficientFunds) {
+    amountError = 'insufficientFunds'
+  } else if (inSufficientTokens) {
+    amountError = 'insufficientTokens'
+  } else if (amountLessThanZero) {
+    amountError = 'negativeETH'
+  }
+
+  return { amount: amountError }
+}
+
+function getParamsForGasEstimate (selectedAddress, symbol, data) {
+  const estimatedGasParams = {
+    from: selectedAddress,
+    gas: '746a528800',
+  }
+
+  if (symbol) {
+    Object.assign(estimatedGasParams, { value: '0x0' })
+  }
+
+  if (data) {
+    Object.assign(estimatedGasParams, { data })
+  }
+
+  return estimatedGasParams
+}
+
+function calcTokenBalance ({ selectedToken, usersToken }) {
+  const { decimals } = selectedToken || {}
+  return calcTokenAmount(usersToken.balance.toString(), decimals)
+}
+
+function doesAmountErrorRequireUpdate ({
+  balance,
+  gasTotal,
+  prevBalance,
+  prevGasTotal,
+  prevTokenBalance,
+  selectedToken,
+  tokenBalance,
+}) {
+  const balanceHasChanged = balance !== prevBalance
+  const gasTotalHasChange = gasTotal !== prevGasTotal
+  const tokenBalanceHasChanged = selectedToken && tokenBalance !== prevTokenBalance
+  const amountErrorRequiresUpdate = balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
+
+  return amountErrorRequiresUpdate
+}
+
+function generateTokenTransferData (abi, selectedAddress, selectedToken) {
+  if (!selectedToken) return
+  return Array.prototype.map.call(
+    abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
+    x => ('00' + x.toString(16)).slice(-2)
+  ).join('')
 }

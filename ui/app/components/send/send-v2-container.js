@@ -18,6 +18,10 @@ const {
   getSelectedTokenContract,
 } = require('../../selectors')
 
+import {
+  updateSendErrors,
+} from '../../ducks/send'
+
 module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
@@ -74,7 +78,8 @@ function mapDispatchToProps (dispatch) {
     updateTx: txData => dispatch(actions.updateTransaction(txData)),
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
     addToAddressBook: (address, nickname) => dispatch(actions.addToAddressBook(address, nickname)),
-    updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
+    setGasTotal: newTotal => dispatch(actions.setGasTotal(newTotal)),
+    updateGasTotal: () => dispatch(actions.updateGasTotal()),
     updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
     updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
     updateSendTokenBalance: tokenBalance => dispatch(actions.updateSendTokenBalance(tokenBalance)),
@@ -82,7 +87,7 @@ function mapDispatchToProps (dispatch) {
     updateSendTo: (newTo, nickname) => dispatch(actions.updateSendTo(newTo, nickname)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
-    updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
+    updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     clearSend: () => dispatch(actions.clearSend()),
     setMaxModeTo: bool => dispatch(actions.setMaxModeTo(bool)),
   }

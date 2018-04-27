@@ -1,6 +1,11 @@
 const abi = require('human-standard-token-abi')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
+const {
+  calcGasTotal,
+  getParamsForGasEstimate,
+  calcTokenBalance,
+} = require('./components/send_/send.utils')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
@@ -173,14 +178,16 @@ var actions = {
   updateGasLimit,
   updateGasPrice,
   updateGasTotal,
+  setGasTotal,
+  setSendTokenBalance,
   updateSendTokenBalance,
   updateSendFrom,
   updateSendTo,
   updateSendAmount,
   updateSendMemo,
-  updateSendErrors,
   setMaxModeTo,
   updateSend,
+  updateSendErrors,
   clearSend,
   setSelectedAddress,
   // app messages
@@ -716,14 +723,64 @@ function updateGasPrice (gasPrice) {
   }
 }
 
-function updateGasTotal (gasTotal) {
+function setGasTotal (gasTotal) {
   return {
     type: actions.UPDATE_GAS_TOTAL,
     value: gasTotal,
   }
 }
 
-function updateSendTokenBalance (tokenBalance) {
+function updateGasTotal ({ selectedAddress, selectedToken, data }) {
+  return (dispatch) => {
+    const { symbol } = selectedToken || {}
+    const estimateGasParams = getParamsForGasEstimate(selectedAddress, symbol, data)
+    return Promise.all([
+      dispatch(actions.getGasPrice()),
+      dispatch(actions.estimateGas(estimateGasParams)),
+    ])
+    .then(([gasPrice, gas]) => {
+      const newGasTotal = calcGasTotal(gas, gasPrice)
+      dispatch(actions.setGasTotal(newGasTotal))
+      dispatch(updateSendErrors({ gasLoadingError: null }))
+    })
+    .catch(err => {
+      log.error(err)
+      dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
+    })
+  }
+}
+
+function updateSendTokenBalance ({
+  selectedToken,
+  tokenContract,
+  address,
+}) {
+  return (dispatch) => {
+    const tokenBalancePromise = tokenContract
+      ? tokenContract.balanceOf(address)
+      : Promise.resolve()
+    return tokenBalancePromise
+      .then(usersToken => {
+        if (usersToken) {
+          const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
+          dispatch(setSendTokenBalance(newTokenBalance))
+        }
+      })
+      .catch(err => {
+        log.error(err)
+        updateSendErrors({ tokenBalance: 'tokenBalanceError' })
+      })
+  }
+}
+
+function updateSendErrors (errorObject) {
+  return {
+    type: actions.UPDATE_SEND_ERRORS,
+    value: errorObject,
+  }
+}
+
+function setSendTokenBalance (tokenBalance) {
   return {
     type: actions.UPDATE_SEND_TOKEN_BALANCE,
     value: tokenBalance,
@@ -755,13 +812,6 @@ function updateSendMemo (memo) {
   return {
     type: actions.UPDATE_SEND_MEMO,
     value: memo,
-  }
-}
-
-function updateSendErrors (error) {
-  return {
-    type: actions.UPDATE_SEND_ERRORS,
-    value: error,
   }
 }
 

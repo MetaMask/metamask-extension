@@ -8,7 +8,10 @@ export default class SendAmountRow extends Component {
 
   static propTypes = {
     amount: PropTypes.string,
-    amountConversionRate: PropTypes.number,
+    amountConversionRate: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
     balance: PropTypes.string,
     conversionRate: PropTypes.number,
     convertedCurrency: PropTypes.string,

@@ -8,6 +8,7 @@ const selectors = {
   accountsWithSendEtherInfoSelector,
   autoAddToBetaUI,
   getAddressBook,
+  getAmountConversionRate,
   getConversionRate,
   getConvertedCurrency,
   getCurrentAccountWithSendEtherInfo,
@@ -18,6 +19,7 @@ const selectors = {
   getGasLimit,
   getGasPrice,
   getGasTotal,
+  getPrimaryCurrency,
   getSelectedAccount,
   getSelectedAddress,
   getSelectedIdentity,
@@ -77,6 +79,12 @@ function getAddressBook (state) {
   return state.metamask.addressBook
 }
 
+function getAmountConversionRate (state) {
+  return getSelectedToken(state)
+    ? getSelectedTokenToFiatRate(state)
+    : getConversionRate(state)
+}
+
 function getConversionRate (state) {
   return state.metamask.conversionRate
 }
@@ -121,6 +129,11 @@ function getGasTotal (state) {
   return state.metamask.send.gasTotal
 }
 
+function getPrimaryCurrency (state) {
+  const selectedToken = getSelectedToken(state)
+  return selectedToken && selectedToken.symbol
+}
+
 function getSelectedAccount (state) {
   const accounts = state.metamask.accounts
   const selectedAddress = getSelectedAddress(state)
@@ -161,9 +174,8 @@ function getSelectedTokenExchangeRate (state) {
   const tokenExchangeRates = state.metamask.tokenExchangeRates
   const selectedToken = getSelectedToken(state) || {}
   const { symbol = '' } = selectedToken
-
   const pair = `${symbol.toLowerCase()}_eth`
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
+  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates && tokenExchangeRates[pair] || {}
 
   return tokenExchangeRate
 }
@@ -190,7 +202,7 @@ function getSendEditingTransactionId (state) {
 }
 
 function getSendErrors (state) {
-  return state.metamask.send.errors
+  return state.send.errors
 }
 
 function getSendFrom (state) {

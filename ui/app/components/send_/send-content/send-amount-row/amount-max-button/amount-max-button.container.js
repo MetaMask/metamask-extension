@@ -9,10 +9,12 @@ import { getMaxModeOn } from '../send-amount-row.selectors.js'
 import { calcMaxAmount } from './amount-max-button.utils.js'
 import {
   updateSendAmount,
-  updateSendErrors,
   setMaxModeTo,
-} from '../../../actions'
+} from '../../../../../actions'
 import AmountMaxButton from './amount-max-button.component'
+import {
+  updateSendErrors,
+} from '../../../../../ducks/send'
 
 export default connect(mapStateToProps, mapDispatchToProps)(AmountMaxButton)
 

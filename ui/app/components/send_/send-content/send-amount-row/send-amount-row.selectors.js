@@ -1,13 +1,5 @@
-import {
-  getSelectedToken,
-  getSelectedTokenToFiatRate,
-  getConversionRate,
-} from '../../send.selectors.js'
-
 const selectors = {
-  getAmountConversionRate,
   getMaxModeOn,
-  getPrimaryCurrency,
   sendAmountIsInError,
 }
 
@@ -18,16 +10,5 @@ function getMaxModeOn (state) {
 }
 
 function sendAmountIsInError (state) {
-  return Boolean(state.metamask.send.errors.amount)
-}
-
-function getPrimaryCurrency (state) {
-  const selectedToken = getSelectedToken(state)
-  return selectedToken && selectedToken.symbol
-}
-
-function getAmountConversionRate (state) {
-  return getSelectedToken(state)
-    ? getSelectedTokenToFiatRate(state)
-    : getConversionRate(state)
+  return Boolean(state.send.errors.amount)
 }

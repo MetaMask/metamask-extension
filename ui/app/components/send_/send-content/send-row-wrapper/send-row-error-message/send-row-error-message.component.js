@@ -10,6 +10,7 @@ export default class SendRowErrorMessage extends Component {
 
   render () {
     const { errors, errorType } = this.props
+
     const errorMessage = errors[errorType]
 
     return (
