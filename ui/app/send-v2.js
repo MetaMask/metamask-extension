@@ -203,11 +203,11 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   )
 
   if (conversionRate && !sufficientBalance) {
-    amountError = this.context.t('insufficientFunds')
+    amountError = 'insufficientFunds'
   } else if (verifyTokenBalance && !sufficientTokens) {
-    amountError = this.context.t('insufficientTokens')
+    amountError = 'insufficientTokens'
   } else if (amountLessThanZero) {
-    amountError = this.context.t('negativeETH')
+    amountError = 'negativeETH'
   }
 
   updateSendErrors({ amount: amountError })

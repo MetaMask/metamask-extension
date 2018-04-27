@@ -558,9 +558,9 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams() && balanceIsSufficient) {
     this.props.sendTransaction(txMeta, event)
   } else if (!balanceIsSufficient) {
-    updateSendErrors({ insufficientFunds: this.context.t('insufficientFunds') })
+    updateSendErrors({ insufficientFunds: 'insufficientFunds' })
   } else {
-    updateSendErrors({ invalidGasParams: this.context.t('invalidGasParams') })
+    updateSendErrors({ invalidGasParams: 'invalidGasParams' })
     this.setState({ submitting: false })
   }
 }

@@ -15,7 +15,7 @@ export default class SendGasRow extends Component {
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
     openFromDropdown: PropTypes.func,
-    showCustomizeGasModal: PropTypes.bool,
+    showCustomizeGasModal: PropTypes.func,
     tokenContract: PropTypes.object,
     updateSendFrom: PropTypes.func,
     updateSendTokenBalance: PropTypes.func,

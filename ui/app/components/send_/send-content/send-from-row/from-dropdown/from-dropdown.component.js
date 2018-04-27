@@ -37,7 +37,7 @@ export default class FromDropdown extends Component {
         onClick={() => closeDropdown}
       />
       <div className="send-v2__from-dropdown__list">
-        {...accounts.map((account, index) => <AccountListItem
+        {accounts.map((account, index) => <AccountListItem
           account={account}
           className="account-list-item__dropdown"
           handleClick={() => {
