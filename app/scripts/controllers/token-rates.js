@@ -1,4 +1,5 @@
 const ObservableStore = require('obs-store')
+const { warn } = require('loglevel')
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
@@ -42,7 +43,10 @@ class TokenRatesController {
       const response = await fetch(`https://metamask.balanc3.net/prices?from=${address}&to=ETH&autoConversion=false&summaryOnly=true`)
       const json = await response.json()
       return json && json.length ? json[0].averagePrice : 0
-    } catch (error) { }
+    } catch (error) {
+      warn(`MetaMask - TokenRatesController exchange rate fetch failed for ${address}.`, error)
+      return 0
+    }
   }
 
   /**
