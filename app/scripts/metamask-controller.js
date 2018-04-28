@@ -29,7 +29,6 @@ const AddressBookController = require('./controllers/address-book')
 const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
 const RecentBlocksController = require('./controllers/recent-blocks')
-const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
@@ -186,7 +185,6 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     this.networkController.lookupNetwork()
-    this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
     this.typedMessageManager = new TypedMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
@@ -209,7 +207,6 @@ module.exports = class MetamaskController extends EventEmitter {
       TxController: this.txController.memStore,
       BalancesController: this.balancesController.store,
       TokenRatesController: this.tokenRatesController.store,
-      MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
@@ -252,7 +249,7 @@ module.exports = class MetamaskController extends EventEmitter {
       },
       // tx signing
       // old style msg signing
-      processMessage: this.newUnsignedMessage.bind(this),
+      processMessage: this.newUnsignedPersonalMessage.bind(this),
       // personal_sign msg signing
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       processTypedMessage: this.newUnsignedTypedMessage.bind(this),
@@ -379,21 +376,21 @@ module.exports = class MetamaskController extends EventEmitter {
       saveAccountLabel: nodeify(keyringController.saveAccountLabel, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
-      // txController
+      // xController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
 
-      // messageManager
-      signMessage: nodeify(this.signMessage, this),
-      cancelMessage: this.cancelMessage.bind(this),
+      // eth_sign
+      signMessage: nodeify(this.signPersonalMessage, this),
+      cancelMessage: this.cancelPersonalMessage.bind(this),
 
-      // personalMessageManager
+      // personal_sign
       signPersonalMessage: nodeify(this.signPersonalMessage, this),
       cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
 
-      // personalMessageManager
+      // eth_signTypedData
       signTypedMessage: nodeify(this.signTypedMessage, this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
@@ -619,79 +616,13 @@ module.exports = class MetamaskController extends EventEmitter {
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
-  // eth_sign methods:
-
   /**
-   * Called when a Dapp uses the eth_sign method, to request user approval.
-   * eth_sign is a pure signature of arbitrary data. It is on a deprecation
-   * path, since this data can be a transaction, or can leak private key
-   * information.
+   * Called when a dapp uses the personal_sign or eth_sign methods.
+   * This is identical to the Geth eth_sign method.
    *
-   * @param {Object} msgParams - The params passed to eth_sign.
-   * @param {Function} cb = The callback function called with the signature.
-   */
-  newUnsignedMessage (msgParams, cb) {
-    const msgId = this.messageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
-    this.messageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-
-  /**
-   * Signifies user intent to complete an eth_sign method.
-   *
-   * @param  {Object} msgParams The params passed to eth_call.
-   * @returns {Promise<Object>} Full state update.
-   */
-  signMessage (msgParams) {
-    log.info('MetaMaskController - signMessage')
-    const msgId = msgParams.metamaskId
-
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.messageManager.approveMessage(msgParams)
-    .then((cleanMsgParams) => {
-      // signs the message
-      return this.keyringController.signMessage(cleanMsgParams)
-    })
-    .then((rawSig) => {
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
-      this.messageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
-    })
-  }
-
-  /**
-   * Used to cancel a message submitted via eth_sign.
-   *
-   * @param {string} msgId - The id of the message to cancel.
-   */
-  cancelMessage (msgId, cb) {
-    const messageManager = this.messageManager
-    messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-    }
-  }
-
-  // personal_sign methods:
-
-  /**
-   * Called when a dapp uses the personal_sign method.
-   * This is identical to the Geth eth_sign method, and may eventually replace
-   * eth_sign.
-   *
-   * We currently define our eth_sign and personal_sign mostly for legacy Dapps.
+   * For a long time, the MetaMask eth_sign method did not include the prefix,
+   * for retroactive Dapp compatibility reasons, but we have since pointed
+   * both these methods at the same function.
    *
    * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
    * @param {Function} cb - The callback function called with the signature.

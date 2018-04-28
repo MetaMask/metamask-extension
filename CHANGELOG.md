@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Update the eth_sign signature method to use a signature prefix the way personal_sign has. [breaking]
+
 ## 4.6.0 Thu Apr 26 2018
 
 - Correctly format currency conversion for locally selected preferred currency.
