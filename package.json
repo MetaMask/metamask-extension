@@ -102,7 +102,7 @@
     "ethereumjs-util": "github:ethereumjs/ethereumjs-util#ac5d0908536b447083ea422b435da27f26615de9",
     "ethereumjs-wallet": "^0.6.0",
     "etherscan-link": "^1.0.2",
-    "ethjs": "^0.3.4",
+    "ethjs": "^0.2.8",
     "ethjs-contract": "0.1.9",
     "ethjs-ens": "^2.0.0",
     "ethjs-query": "^0.3.4",
