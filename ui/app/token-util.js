@@ -17,10 +17,7 @@ function tokenInfoGetter () {
 async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
   const existingToken = existingTokens.find(({ address }) => tokenAddress === address)
   if (existingToken) {
-    return {
-      symbol: existingToken.symbol,
-      decimals: existingToken.decimals,
-    }
+    return existingToken
   }
   
   let result = []
