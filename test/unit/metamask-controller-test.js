@@ -102,17 +102,17 @@ describe('MetaMaskController', function () {
 
     it('should clear previous identities after vault restoration', async () => {
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
-      assert.deepEqual(metamaskController.keyringController.memStore.getState().identities, {
+      assert.deepEqual(metamaskController.getState().identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
       })
 
       await metamaskController.keyringController.saveAccountLabel(TEST_ADDRESS, 'Account Foo')
-      assert.deepEqual(metamaskController.keyringController.memStore.getState().identities, {
+      assert.deepEqual(metamaskController.getState().identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
       })
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
-      assert.deepEqual(metamaskController.keyringController.memStore.getState().identities, {
+      assert.deepEqual(metamaskController.getState().identities, {
         [TEST_ADDRESS_ALT]: { address: TEST_ADDRESS_ALT, name: DEFAULT_LABEL },
       })
     })
