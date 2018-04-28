@@ -55,6 +55,10 @@ function ShapeshiftForm () {
   }
 }
 
+ShapeshiftForm.prototype.getCoinPair = function () {
+  return `${this.state.depositCoin.toUpperCase()}_ETH`
+}
+
 ShapeshiftForm.prototype.componentWillMount = function () {
   this.props.shapeShiftSubview()
 }
@@ -120,14 +124,12 @@ ShapeshiftForm.prototype.renderMetadata = function (label, value) {
 }
 
 ShapeshiftForm.prototype.renderMarketInfo = function () {
-  const { depositCoin } = this.state
-  const coinPair = `${depositCoin}_eth`
   const { tokenExchangeRates } = this.props
   const {
     limit,
     rate,
     minimum,
-  } = tokenExchangeRates[coinPair] || {}
+  } = tokenExchangeRates[this.getCoinPair()] || {}
 
   return h('div.shapeshift-form__metadata', {}, [
 
@@ -172,10 +174,9 @@ ShapeshiftForm.prototype.renderQrCode = function () {
 
 ShapeshiftForm.prototype.render = function () {
   const { coinOptions, btnClass, warning } = this.props
-  const { depositCoin, errorMessage, showQrCode, depositAddress } = this.state
-  const coinPair = `${depositCoin}_eth`
+  const { errorMessage, showQrCode, depositAddress } = this.state
   const { tokenExchangeRates } = this.props
-  const token = tokenExchangeRates[coinPair]
+  const token = tokenExchangeRates[this.getCoinPair()]
 
   return h('div.shapeshift-form-wrapper', [
     showQrCode
