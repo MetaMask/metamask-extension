@@ -484,16 +484,6 @@ function generateBundler(opts, performBundle) {
     NODE_ENV: opts.devMode ? 'development' : 'production',
   }))
 
-  // Minification
-  if (opts.minifyBuild) {
-    bundler.transform('uglifyify', {
-      global: true,
-      mangle: {
-        reserved: [ 'MetamaskInpageProvider' ]
-      },
-    })
-  }
-
   if (opts.watch) {
     bundler = watchify(bundler)
     // on any file update, re-runs the bundler
@@ -565,6 +555,16 @@ function bundleTask(opts) {
       buildStream = buildStream
         // loads map from browserify file
         .pipe(sourcemaps.init({ loadMaps: true }))
+    }
+
+    // Minification
+    if (opts.minifyBuild) {
+      buildStream = buildStream
+      .pipe(uglify({
+        mangle: {
+          reserved: [ 'MetamaskInpageProvider' ]
+        },
+      }))
     }
 
     // Finalize Source Maps (writes .map file)
