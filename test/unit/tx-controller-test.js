@@ -6,16 +6,15 @@ const ObservableStore = require('obs-store')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const TxGasUtils = require('../../app/scripts/controllers/transactions/tx-gas-utils')
-const { createTestProviderTools } = require('../stub/provider')
+const { createTestProviderTools, getTestAccounts } = require('../stub/provider')
 
 const noop = () => true
 const currentNetworkId = 42
 const otherNetworkId = 36
-const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 
 
 describe('Transaction Controller', function () {
-  let txController, provider, providerResultStub, testBlockchain
+  let txController, provider, providerResultStub, query, fromAccount
 
   beforeEach(function () {
     providerResultStub = {
@@ -24,9 +23,9 @@ describe('Transaction Controller', function () {
       // by default, all accounts are external accounts (not contracts)
       eth_getCode: '0x',
     }
-    const providerTools = createTestProviderTools({ scaffold: providerResultStub })
-    provider = providerTools.provider
-    testBlockchain = providerTools.testBlockchain
+    provider = createTestProviderTools({ scaffold: providerResultStub }).provider
+    query = new EthjsQuery(provider)
+    fromAccount = getTestAccounts()[0]
 
     txController = new TransactionController({
       provider,
@@ -34,7 +33,7 @@ describe('Transaction Controller', function () {
       txHistoryLimit: 10,
       blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
       signTransaction: (ethTx) => new Promise((resolve) => {
-        ethTx.sign(privKey)
+        ethTx.sign(fromAccount.key)
         resolve()
       }),
     })
@@ -298,12 +297,12 @@ describe('Transaction Controller', function () {
 
   describe('#updateAndApproveTransaction', function () {
     let txMeta
-    beforeEach(function () {
+    beforeEach(() => {
       txMeta = {
         id: 1,
         status: 'unapproved',
         txParams: {
-          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          from: fromAccount.address,
           to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           gasPrice: '0x77359400',
           gas: '0x7b0d',
@@ -312,11 +311,12 @@ describe('Transaction Controller', function () {
         metamaskNetworkId: currentNetworkId,
       }
     })
-    it('should update and approve transactions', function () {
+    it('should update and approve transactions', async () => {
       txController.txStateManager.addTx(txMeta)
-      txController.updateAndApproveTransaction(txMeta)
+      const approvalPromise = txController.updateAndApproveTransaction(txMeta)
       const tx = txController.txStateManager.getTx(1)
       assert.equal(tx.status, 'approved')
+      await approvalPromise
     })
   })
 
