@@ -38,8 +38,8 @@ async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
   const [ symbol = [], decimals = [] ] = result
 
   return {
-    symbol: symbol[0],
-    decimals: decimals[0],
+    symbol: symbol[0] || null,
+    decimals: decimals[0] && decimals[0].toString() || null,
   }
 }
 

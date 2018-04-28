@@ -94,23 +94,13 @@ PendingTx.prototype.setTokenData = async function () {
   if (isTokenTransaction) {
     const { symbol, decimals } = await getSymbolAndDecimals(txParams.to, existingTokens)
 
-    if (symbol && decimals) {
-      this.setState({
-        transactionType: TX_TYPES.SEND_TOKEN,
-        tokenAddress: txParams.to,
-        tokenSymbol: symbol,
-        tokenDecimals: decimals,
-        isFetching: false,
-      })
-    } else {
-      this.setState({
-        transactionType: TX_TYPES.SEND_TOKEN,
-        tokenAddress: txParams.to,
-        tokenSymbol: null,
-        tokenDecimals: null,
-        isFetching: false,
-      })
-    }
+    this.setState({
+      transactionType: TX_TYPES.SEND_TOKEN,
+      tokenAddress: txParams.to,
+      tokenSymbol: symbol,
+      tokenDecimals: decimals,
+      isFetching: false,
+    })
   } else {
     this.setState({
       transactionType: TX_TYPES.SEND_ETHER,
