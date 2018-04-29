@@ -24,19 +24,20 @@ function setupRaven(opts) {
     transport: function(opts) {
       const report = opts.data
       // simplify certain complex error messages
-      report.exception.values.forEach(item => {
-        let errorMessage = item.value
-        // simplify ethjs error messages
-        errorMessage = extractEthjsErrorMessage(errorMessage)
-        // simplify 'Transaction Failed: known transaction'
-        if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
-          // cut the hash from the error message
-          errorMessage = 'Transaction Failed: known transaction'
-        }
-        // finalize
-        item.value = errorMessage
-      })
-
+      if (report.exception && report.exception.values) {
+        report.exception.values.forEach(item => {
+          let errorMessage = item.value
+          // simplify ethjs error messages
+          errorMessage = extractEthjsErrorMessage(errorMessage)
+          // simplify 'Transaction Failed: known transaction'
+          if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
+            // cut the hash from the error message
+            errorMessage = 'Transaction Failed: known transaction'
+          }
+          // finalize
+          item.value = errorMessage
+        })
+      }
       // modify report urls
       rewriteReportUrls(report)
       // make request normally
@@ -52,11 +53,13 @@ function rewriteReportUrls(report) {
   // update request url
   report.request.url = toMetamaskUrl(report.request.url)
   // update exception stack trace
-  report.exception.values.forEach(item => {
-    item.stacktrace.frames.forEach(frame => {
-      frame.filename = toMetamaskUrl(frame.filename)
+  if (report.exception && report.exception.values) {
+    report.exception.values.forEach(item => {
+      item.stacktrace.frames.forEach(frame => {
+        frame.filename = toMetamaskUrl(frame.filename)
+      })
     })
-  })
+  }
 }
 
 function toMetamaskUrl(origUrl) {
