@@ -261,7 +261,11 @@ function setupController (initState, initLangCode) {
   controller.txController.on(`tx:status-update`, (txId, status) => {
     if (status !== 'failed') return
     const txMeta = controller.txController.txStateManager.getTx(txId)
-    reportFailedTxToSentry({ raven, txMeta })
+    try {
+      reportFailedTxToSentry({ raven, txMeta })
+    } catch (e) {
+      console.error(e)
+    }
   })
 
   // setup state persistence
