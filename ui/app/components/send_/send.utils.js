@@ -10,6 +10,11 @@ const {
 const {
   conversionGreaterThan,
 } = require('../../conversion-util')
+const {
+  INSUFFICIENT_FUNDS_ERROR,
+  INSUFFICIENT_TOKENS_ERROR,
+  NEGATIVE_ETH_ERROR,
+} = require('./send.constants')
 
 module.exports = {
   calcGasTotal,
@@ -125,11 +130,11 @@ function getAmountErrorObject ({
   let amountError = null
 
   if (insufficientFunds) {
-    amountError = 'insufficientFunds'
+    amountError = INSUFFICIENT_FUNDS_ERROR
   } else if (inSufficientTokens) {
-    amountError = 'insufficientTokens'
+    amountError = INSUFFICIENT_TOKENS_ERROR
   } else if (amountLessThanZero) {
-    amountError = 'negativeETH'
+    amountError = NEGATIVE_ETH_ERROR
   }
 
   return { amount: amountError }
