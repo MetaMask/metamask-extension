@@ -20,7 +20,7 @@ export default class SendRowWrapper extends Component {
     } = this.props
 
     const formField = Array.isArray(children) ? children[1] || children[0] : children
-    const customLabelContent = children.length === 1 ? children[0] : null
+    const customLabelContent = children.length > 1 ? children[0] : null
 
     return (
       <div className="send-v2__form-row">

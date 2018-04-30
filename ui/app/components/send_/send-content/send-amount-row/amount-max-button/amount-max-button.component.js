@@ -13,7 +13,7 @@ export default class AmountMaxButton extends Component {
     tokenBalance: PropTypes.string,
   };
 
-  setAmountToMax = function () {
+  setMaxAmount () {
     const {
       balance,
       gasTotal,
@@ -39,7 +39,7 @@ export default class AmountMaxButton extends Component {
         onClick={(event) => {
           event.preventDefault()
           setMaxModeTo(true)
-          this.setAmountToMax()
+          this.setMaxAmount()
         }}
       >
         {!maxModeOn ? this.context.t('max') : ''}
