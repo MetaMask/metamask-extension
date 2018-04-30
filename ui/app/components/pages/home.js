@@ -21,7 +21,7 @@ const QrView = require('../../components/qr-code')
 
 // Routes
 const {
-  REVEAL_SEED_ROUTE,
+  INITIALIZE_BACKUP_PHRASE_ROUTE,
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   NOTICE_ROUTE,
@@ -69,7 +69,7 @@ class Home extends Component {
       log.debug('rendering seed words')
       return h(Redirect, {
         to: {
-          pathname: REVEAL_SEED_ROUTE,
+          pathname: INITIALIZE_BACKUP_PHRASE_ROUTE,
         },
       })
     }

@@ -1,0 +1,17 @@
+.reveal-seed {
+  &__content {
+    padding: 20px;
+  }
+
+  &__label {
+    padding-bottom: 10px;
+    font-weight: 400;
+    display: inline-block;
+  }
+
+  &__error {
+    color: $crimson;
+    font-size: 14px;
+    padding-top: 5px;
+  }
+}

@@ -9,6 +9,7 @@
 - Fetch token prices based on contract address, not symbol
 - Fix bug that prevents setting language locale in settings.
 - Show checksum addresses throughout the UI
+- Allow transactions with a 0 gwei gas price
 
 ## 4.5.5 Fri Apr 06 2018
 
