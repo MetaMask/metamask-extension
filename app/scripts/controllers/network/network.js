@@ -111,7 +111,7 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   async setProviderType (type, forceUpdate = false) {
-    assert(type !== 'rpc', `NetworkController.setProviderType - cannot connect by type "rpc"`)
+    assert.notEqual(type, 'rpc', `NetworkController.setProviderType - cannot connect by type "rpc"`)
     // skip if type already matches
     if (type === this.getProviderConfig().type && !forceUpdate) {
       return
