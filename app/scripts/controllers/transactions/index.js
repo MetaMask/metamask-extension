@@ -1,5 +1,6 @@
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
+const BaseController = require('../ts/BaseController').default
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const EthQuery = require('ethjs-query')
@@ -42,7 +43,7 @@ class TransactionController extends EventEmitter {
   constructor (opts) {
     super()
     this.networkStore = opts.networkStore || new ObservableStore({})
-    this.preferencesStore = opts.preferencesStore || new ObservableStore({})
+    this.preferencesStore = opts.preferencesStore || new BaseController({})
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
@@ -331,7 +332,7 @@ class TransactionController extends EventEmitter {
     /** @returns the network number stored in networkStore */
     this.getNetwork = () => this.networkStore.getState()
     /** @returns the user selected address */
-    this.getSelectedAddress = () => this.preferencesStore.getState().selectedAddress
+    this.getSelectedAddress = () => this.preferencesStore.state.selectedAddress
     /** Returns an array of transactions whos status is unapproved */
     this.getUnapprovedTxCount = () => Object.keys(this.txStateManager.getUnapprovedTxList()).length
     /**

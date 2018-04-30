@@ -1,11 +1,11 @@
 const assert = require('assert')
-const PreferencesController = require('../../app/scripts/controllers/preferences')
+const PreferencesController = require('../../app/scripts/controllers/ts/PreferencesController').default
 
 describe('preferences controller', function () {
   let preferencesController
 
   before(() => {
-    preferencesController = new PreferencesController()
+    preferencesController = new PreferencesController({})
   })
 
   describe('addToken', function () {
@@ -16,7 +16,7 @@ describe('preferences controller', function () {
 
       await preferencesController.addToken(address, symbol, decimals)
 
-      const tokens = preferencesController.getTokens()
+      const tokens = preferencesController.state.tokens
       assert.equal(tokens.length, 1, 'one token added')
 
       const added = tokens[0]
@@ -35,7 +35,7 @@ describe('preferences controller', function () {
       const newDecimals = 6
       await preferencesController.addToken(address, symbol, newDecimals)
 
-      const tokens = preferencesController.getTokens()
+      const tokens = preferencesController.state.tokens
       assert.equal(tokens.length, 1, 'one token added')
 
       const added = tokens[0]

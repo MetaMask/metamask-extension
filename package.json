@@ -4,11 +4,11 @@
   "public": false,
   "private": true,
   "scripts": {
-    "start": "gulp dev:extension",
-    "mascara": "gulp dev:mascara & node ./mascara/example/server",
-    "dist": "gulp dist",
+    "start": "npm run build:ts && gulp dev:extension",
+    "mascara": "npm run build:ts && gulp dev:mascara & node ./mascara/example/server",
+    "dist": "npm run build:ts && gulp dist",
     "doc": "jsdoc -c development/tools/.jsdoc.json",
-    "test": "npm run test:unit && npm run test:integration && npm run lint",
+    "test": "npm run build:ts && npm run test:unit && npm run test:integration && npm run lint",
     "test:unit": "cross-env METAMASK_ENV=test mocha --exit --require test/setup.js --recursive \"test/unit/**/*.js\"",
     "test:single": "cross-env METAMASK_ENV=test mocha --require test/helper.js",
     "test:integration": "npm run test:integration:build && npm run test:flat && npm run test:mascara",
@@ -42,7 +42,8 @@
     "announce": "node development/announcer.js",
     "version:bump": "node development/run-version-bump.js",
     "generateNotice": "node notices/notice-generator.js",
-    "deleteNotice": "node notices/notice-delete.js"
+    "deleteNotice": "node notices/notice-delete.js",
+    "build:ts": "tsc"
   },
   "browserify": {
     "transform": [
@@ -272,6 +273,7 @@
     "stylelint-config-standard": "^18.2.0",
     "tape": "^4.5.1",
     "testem": "^2.0.0",
+    "typescript": "^2.8.3",
     "uglifyify": "github:MetaMask/uglifyify#keep-flags",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",

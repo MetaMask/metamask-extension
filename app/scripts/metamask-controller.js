@@ -21,7 +21,7 @@ const createProviderMiddleware = require('./lib/createProviderMiddleware')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
-const PreferencesController = require('./controllers/preferences')
+const PreferencesController = require('./controllers/ts/PreferencesController').default
 const CurrencyController = require('./controllers/currency')
 const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
@@ -34,7 +34,7 @@ const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
-const TokenRatesController = require('./controllers/token-rates')
+const TokenRatesController = require('./controllers/ts/TokenRatesController').default
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -46,6 +46,7 @@ const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
+const normalize = require('eth-sig-util').normalize
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -81,9 +82,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // preferences controller
-    this.preferencesController = new PreferencesController({
-      initState: initState.PreferencesController,
+    this.preferencesController = new PreferencesController({}, {
       initLangCode: opts.initLangCode,
+      ...initState.PreferencesController,
     })
 
     // currency controller
@@ -108,7 +109,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
-      preferences: this.preferencesController.store,
+      preferencesController: this.preferencesController,
     })
 
     this.recentBlocksController = new RecentBlocksController({
@@ -136,7 +137,7 @@ module.exports = class MetamaskController extends EventEmitter {
       }, [])
       if (addresses.length === 1) {
         const address = addresses[0]
-        this.preferencesController.setSelectedAddress(address)
+        this.preferencesController.updateState({ selectedAddress: normalize(address) })
       }
       this.accountTracker.syncWithAddresses(addresses)
     })
@@ -150,7 +151,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.txController = new TransactionController({
       initState: initState.TransactionController || initState.TransactionManager,
       networkStore: this.networkController.networkStore,
-      preferencesStore: this.preferencesController.store,
+      preferencesStore: this.preferencesController,
       txHistoryLimit: 40,
       getNetwork: this.networkController.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
@@ -194,7 +195,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.store.updateStructure({
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
-      PreferencesController: this.preferencesController.store,
+      PreferencesController: this.preferencesController,
       AddressBookController: this.addressBookController.store,
       CurrencyController: this.currencyController.store,
       NoticeController: this.noticeController.store,
@@ -208,12 +209,12 @@ module.exports = class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       BalancesController: this.balancesController.store,
-      TokenRatesController: this.tokenRatesController.store,
+      TokenRatesController: this.tokenRatesController,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
-      PreferencesController: this.preferencesController.store,
+      PreferencesController: this.preferencesController,
       RecentBlocksController: this.recentBlocksController.store,
       AddressBookController: this.addressBookController.store,
       CurrencyController: this.currencyController.store,
@@ -242,7 +243,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getAccounts: (cb) => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const result = []
-        const selectedAddress = this.preferencesController.getSelectedAddress()
+        const selectedAddress = this.preferencesController.state.selectedAddress
 
         // only show address if account is unlocked
         if (isUnlocked && selectedAddress) {
@@ -362,11 +363,23 @@ module.exports = class MetamaskController extends EventEmitter {
       setCustomRpc: nodeify(this.setCustomRpc, this),
 
       // PreferencesController
-      setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
-      addToken: nodeify(preferencesController.addToken, preferencesController),
-      removeToken: nodeify(preferencesController.removeToken, preferencesController),
-      setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
-      setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
+      setSelectedAddress: nodeify(selectedAddress => new Promise(resolve => {
+          preferencesController.updateState({ selectedAddress: normalize(selectedAddress) })
+          resolve()
+      }), preferencesController),
+      addToken: nodeify(token => new Promise(resolve => {
+        resolve(preferencesController.addToken(token))
+      }), preferencesController),
+      removeToken: nodeify(token => new Promise(resolve => {
+        resolve(preferencesController.removeToken(token))
+      }), preferencesController),
+      setCurrentAccountTab: nodeify(currentAccountTab => new Promise(resolve => {
+        preferencesController.updateState({ currentAccountTab })
+        resolve()
+      }), preferencesController),
+      setFeatureFlag: nodeify((feature, activated) => new Promise(resolve => {
+        resolve(preferencesController.setFeatureFlag(feature, activated))
+      }), preferencesController),
 
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
@@ -480,7 +493,7 @@ module.exports = class MetamaskController extends EventEmitter {
   selectFirstIdentity (vault) {
     const { identities } = vault
     const address = Object.keys(identities)[0]
-    this.preferencesController.setSelectedAddress(address)
+    this.preferencesController.updateState({ selectedAddress: normalize(address) })
   }
 
   //
@@ -506,7 +519,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
-        this.preferencesController.setSelectedAddress(address)
+        this.preferencesController.updateState({ selectedAddress: normalize(address) })
       }
     })
 
@@ -575,7 +588,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   clearSeedWordCache (cb) {
     this.configManager.setSeedWords(null)
-    cb(null, this.preferencesController.getSelectedAddress())
+    cb(null, this.preferencesController.state.selectedAddress)
   }
 
   /**
@@ -586,7 +599,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns Promise<string> The current selected address.
    */
   async resetAccount () {
-    const selectedAddress = this.preferencesController.getSelectedAddress()
+    const selectedAddress = this.preferencesController.state.selectedAddress
     this.txController.wipeTransactions(selectedAddress)
 
     const networkController = this.networkController
@@ -611,7 +624,10 @@ module.exports = class MetamaskController extends EventEmitter {
       return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
     })
     .then(keyring => keyring.getAccounts())
-    .then((accounts) => this.preferencesController.setSelectedAddress(accounts[0]))
+    .then((accounts) => new Promise(resolve => {
+      this.preferencesController.updateState({ selectedAddress: normalize(accounts[0]) })
+      resolve()
+    }))
     .then(() => { cb(null, this.keyringController.fullUpdate()) })
     .catch((reason) => { cb(reason) })
   }
@@ -1177,7 +1193,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async setCustomRpc (rpcTarget) {
     this.networkController.setRpcTarget(rpcTarget)
-    await this.preferencesController.updateFrequentRpcList(rpcTarget)
+    this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
   }
 
@@ -1188,7 +1204,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setUseBlockie (val, cb) {
     try {
-      this.preferencesController.setUseBlockie(val)
+      this.preferencesController.updateState({ useBlockie: val })
       cb(null)
     } catch (err) {
       cb(err)
@@ -1202,7 +1218,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setCurrentLocale (key, cb) {
     try {
-      this.preferencesController.setCurrentLocale(key)
+      this.preferencesController.updateState({ currentLocale: key })
       cb(null)
     } catch (err) {
       cb(err)
@@ -1239,6 +1255,6 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {boolean} active - True if price data should be getting fetched.
    */
   set isClientOpenAndUnlocked (active) {
-    this.tokenRatesController.isActive = active
+    this.tokenRatesController.disabled = !active
   }
 }
