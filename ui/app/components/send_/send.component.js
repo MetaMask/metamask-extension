@@ -129,7 +129,7 @@ export default class SendTransactionScreen extends PersistentForm {
 
     return (
       <PageContainer>
-        <SendHeader/>
+        <SendHeader history={history}/>
         <SendContent/>
         <SendFooter history={history}/>
       </PageContainer>
