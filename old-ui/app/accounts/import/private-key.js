@@ -63,5 +63,5 @@ PrivateKeyImportView.prototype.createKeyringOnEnter = function (event) {
 PrivateKeyImportView.prototype.createNewKeychain = function () {
   const input = document.getElementById('private-key-box')
   const privateKey = input.value
-  this.props.dispatch(actions.importNewAccount('Private Key', [ privateKey ]))
+  this.props.dispatch(actions.importNewAccount('Private Key', [ privateKey ])).catch()
 }

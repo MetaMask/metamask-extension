@@ -71,10 +71,12 @@ class ImportAccountScreen extends Component {
       case OPTIONS.JSON_FILE:
         return importNewAccount('JSON File', [ jsonFile, password ])
           .then(next)
+          .catch()
       case OPTIONS.PRIVATE_KEY:
       default:
         return importNewAccount('Private Key', [ privateKey ])
           .then(next)
+          .catch()
     }
   }
 

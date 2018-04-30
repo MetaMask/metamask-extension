@@ -92,4 +92,5 @@ PrivateKeyImportView.prototype.createNewKeychain = function () {
 
   importNewAccount('Private Key', [ privateKey ])
     .then(() => history.push(DEFAULT_ROUTE))
+    .catch()
 }

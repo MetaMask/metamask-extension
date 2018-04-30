@@ -104,7 +104,7 @@ class JsonImportSubview extends Component {
       return this.props.displayWarning(message)
     }
 
-    this.props.importNewJsonAccount([ fileContents, password ])
+    this.props.importNewJsonAccount([ fileContents, password ]).catch()
   }
 }
 
