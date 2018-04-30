@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { goHome, clearSend } from '../../../actions'
+import { clearSend } from '../../../actions'
 import SendHeader from './send-header.component'
 import { getSelectedToken } from '../../../selectors'
 
@@ -14,6 +14,5 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     clearSend: () => dispatch(clearSend()),
-    goHome: () => dispatch(goHome()),
   }
 }

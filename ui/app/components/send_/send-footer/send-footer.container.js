@@ -3,7 +3,6 @@ import ethUtil from 'ethereumjs-util'
 import {
   addToAddressBook,
   clearSend,
-  goHome,
   signTokenTx,
   signTx,
   updateTransaction,
@@ -58,7 +57,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(goHome()),
     clearSend: () => dispatch(clearSend()),
     sign: ({ selectedToken, to, amount, from, gas, gasPrice }) => {
       const txParams = constructTxParams({
