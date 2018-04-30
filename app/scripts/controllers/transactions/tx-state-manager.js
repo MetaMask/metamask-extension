@@ -2,6 +2,7 @@ const extend = require('xtend')
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
+const log = require('loglevel')
 const txStateHistoryHelper = require('./lib/tx-state-history-helper')
 const createId = require('../../lib/random-id')
 const { getFinalStates } = require('./lib/util')
@@ -398,13 +399,19 @@ class TransactionStateManager extends EventEmitter {
   _setTxStatus (txId, status) {
     const txMeta = this.getTx(txId)
     txMeta.status = status
-    this.emit(`${txMeta.id}:${status}`, txId)
-    this.emit(`tx:status-update`, txId, status)
-    if (['submitted', 'rejected', 'failed'].includes(status)) {
-      this.emit(`${txMeta.id}:finished`, txMeta)
-    }
-    this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
-    this.emit('update:badge')
+    setTimeout(() => {
+      try {
+        this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
+        this.emit(`${txMeta.id}:${status}`, txId)
+        this.emit(`tx:status-update`, txId, status)
+        if (['submitted', 'rejected', 'failed'].includes(status)) {
+          this.emit(`${txMeta.id}:finished`, txMeta)
+        }
+        this.emit('update:badge')
+      } catch (error) {
+        log.error(error)
+      }
+    })
   }
 
   /**
