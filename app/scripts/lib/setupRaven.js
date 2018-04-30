@@ -24,6 +24,8 @@ function setupRaven(opts) {
     transport: function(opts) {
       const report = opts.data
       try {
+        // handle error-like non-error exceptions
+        nonErrorException(report)
         // simplify certain complex error messages (e.g. Ethjs)
         simplifyErrorMessages(report)
         // modify report urls
@@ -38,6 +40,14 @@ function setupRaven(opts) {
   client.install()
 
   return Raven
+}
+
+function nonErrorException(report) {
+  // handle errors that lost their error-ness in serialization
+  if (report.message.includes('Non-Error exception captured with keys: message')) {
+    if (!(report.extra && report.extra.__serialized__)) return
+    report.message = `Non-Error Exception: ${report.extra.__serialized__.message}`
+  }
 }
 
 function simplifyErrorMessages(report) {
