@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="33px" height="32px" viewBox="0 0 33 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 7</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Reveal-Seedphrase" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Seed-phrase-2" transform="translate(-29.000000, -155.000000)">
+            <g id="Group-2" transform="translate(0.000000, 132.000000)">
+                <g id="Group" transform="translate(28.000000, 19.000000)">
+                    <g id="Group-19-Copy-2" transform="translate(0.000000, 3.000000)">
+                        <g id="Group-7">
+                            <path d="M20.1321134,3.85444772 L32.5721829,26.6020033 C33.367162,28.0556794 32.8331826,29.8785746 31.3795065,30.6735537 C30.9381289,30.9149321 30.4431378,31.0414403 29.9400695,31.0414403 L5.05993054,31.0414403 C3.40307629,31.0414403 2.05993054,29.6982946 2.05993054,28.0414403 C2.05993054,27.538372 2.18643873,27.0433809 2.42781712,26.6020033 L14.8678866,3.85444772 C15.6628657,2.40077162 17.4857609,1.86679221 18.939437,2.66177133 C19.442875,2.93708896 19.8567958,3.35100977 20.1321134,3.85444772 Z" id="Triangle-2-Copy" stroke="#FF001F" stroke-width="2"></path>
+                            <rect id="Rectangle-5" fill="#FF001F" x="16" y="9" width="3" height="13"></rect>
+                            <rect id="Rectangle-5-Copy" fill="#FF001F" x="16" y="24" width="3" height="3"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

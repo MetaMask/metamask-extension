@@ -247,7 +247,7 @@ gulp.task('dev:scss', createScssBuildTask({
   src: 'ui/app/css/index.scss',
   dest: 'ui/app/css/output',
   devMode: true,
-  pattern: 'ui/app/css/**/*.scss',
+  pattern: 'ui/app/**/*.scss',
 }))
 
 function createScssBuildTask({ src, dest, devMode, pattern }) {
