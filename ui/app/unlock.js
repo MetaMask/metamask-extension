@@ -92,7 +92,6 @@ UnlockScreen.prototype.render = function () {
       h('p.pointer', {
         onClick: () => {
           this.props.dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
-            .then(() => this.props.dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
         },
         style: {
           fontSize: '0.8em',

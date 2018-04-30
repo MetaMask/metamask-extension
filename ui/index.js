@@ -57,7 +57,6 @@ async function startApp (metamaskState, accountManager, opts) {
 
   const useBetaUi = metamaskState.featureFlags.betaUI
   const networkEndpointType = useBetaUi ? BETA_UI_NETWORK_TYPE : OLD_UI_NETWORK_TYPE
-  store.dispatch(actions.setNetworkEndpoints(networkEndpointType))
 
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.unapprovedPersonalMsgs, metamaskState.unapprovedTypedMessages, metamaskState.network)

@@ -409,7 +409,6 @@ App.prototype.renderDropdown = function () {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       onClick: () => {
         this.props.dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
-          .then(() => this.props.dispatch(actions.setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
       },
     }, 'Try Beta!'),
   ])
@@ -472,7 +471,6 @@ App.prototype.renderPrimary = function () {
           onClick: () => {
             global.platform.openExtensionInBrowser()
             props.dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
-              .then(() => props.dispatch(actions.setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
           },
           style: {
             fontSize: '0.8em',

@@ -8,7 +8,6 @@ const {
   tryUnlockMetamask,
   forgotPassword,
   markPasswordForgotten,
-  setNetworkEndpoints,
   setFeatureFlag,
 } = require('../../actions')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
@@ -146,7 +145,6 @@ class UnlockScreen extends Component {
         h('p.pointer', {
           onClick: () => {
             this.props.useOldInterface()
-              .then(() => this.props.setNetworkEndpoints(OLD_UI_NETWORK_TYPE))
           },
           style: {
             fontSize: '0.8em',
@@ -168,7 +166,6 @@ UnlockScreen.propTypes = {
   isUnlocked: PropTypes.bool,
   t: PropTypes.func,
   useOldInterface: PropTypes.func,
-  setNetworkEndpoints: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -184,7 +181,6 @@ const mapDispatchToProps = dispatch => {
     tryUnlockMetamask: password => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     useOldInterface: () => dispatch(setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL')),
-    setNetworkEndpoints: type => dispatch(setNetworkEndpoints(type)),
   }
 }
 

@@ -38,19 +38,6 @@ module.exports = class NetworkController extends EventEmitter {
     this.on('networkDidChange', this.lookupNetwork)
   }
 
-  async setNetworkEndpoints (version) {
-    if (version === this._networkEndpointVersion) {
-      return
-    }
-
-    this._networkEndpointVersion = version
-    this._networkEndpoints = getNetworkEndpoints(version)
-    this._defaultRpc = this._networkEndpoints[DEFAULT_NETWORK]
-    const { type } = this.getProviderConfig()
-
-    return this.setProviderType(type, true)
-  }
-
   initializeProvider (_providerParams) {
     this._baseProviderParams = _providerParams
     const { type, rpcTarget } = this.providerStore.getState()
