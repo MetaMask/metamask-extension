@@ -70,13 +70,15 @@ class ImportAccountScreen extends Component {
     switch (this.state.selectedOption) {
       case OPTIONS.JSON_FILE:
         return importNewAccount('JSON File', [ jsonFile, password ])
-          .then(next)
+          // JS runtime requires caught rejections but failures are handled by Redux
           .catch()
+          .then(next)
       case OPTIONS.PRIVATE_KEY:
       default:
         return importNewAccount('Private Key', [ privateKey ])
-          .then(next)
+          // JS runtime requires caught rejections but failures are handled by Redux
           .catch()
+          .then(next)
     }
   }
 
