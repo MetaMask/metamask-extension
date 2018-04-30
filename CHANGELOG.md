@@ -2,6 +2,14 @@
 
 ## Current Master
 
+## 4.6.1 Mon Apr 30 2018
+
+- Fix bug where sending a transaction resulted in an infinite spinner
+- Allow transactions with a 0 gwei gas price
+- Handle encoding errors in ERC20 symbol + digits
+- Fix ShapeShift forms (new + old ui)
+- Fix sourcemaps
+
 ## 4.6.0 Thu Apr 26 2018
 
 - Correctly format currency conversion for locally selected preferred currency.
