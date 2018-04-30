@@ -10,7 +10,7 @@ export default class SendContent extends Component {
   render () {
     return (
       <PageContainerContent>
-        <div className=".send-v2__form">
+        <div className="send-v2__form">
           <SendFromRow />
           <SendToRow />
           <SendAmountRow />
