@@ -23,23 +23,14 @@ function setupRaven(opts) {
     release,
     transport: function(opts) {
       const report = opts.data
-      // simplify certain complex error messages
-      if (report.exception && report.exception.values) {
-        report.exception.values.forEach(item => {
-          let errorMessage = item.value
-          // simplify ethjs error messages
-          errorMessage = extractEthjsErrorMessage(errorMessage)
-          // simplify 'Transaction Failed: known transaction'
-          if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
-            // cut the hash from the error message
-            errorMessage = 'Transaction Failed: known transaction'
-          }
-          // finalize
-          item.value = errorMessage
-        })
+      try {
+        // simplify certain complex error messages (e.g. Ethjs)
+        simplifyErrorMessages(report)
+        // modify report urls
+        rewriteReportUrls(report)
+      } catch (err) {
+        console.warn(err)
       }
-      // modify report urls
-      rewriteReportUrls(report)
       // make request normally
       client._makeRequest(opts)
     },
@@ -47,6 +38,23 @@ function setupRaven(opts) {
   client.install()
 
   return Raven
+}
+
+function simplifyErrorMessages(report) {
+  if (report.exception && report.exception.values) {
+    report.exception.values.forEach(item => {
+      let errorMessage = item.value
+      // simplify ethjs error messages
+      errorMessage = extractEthjsErrorMessage(errorMessage)
+      // simplify 'Transaction Failed: known transaction'
+      if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
+        // cut the hash from the error message
+        errorMessage = 'Transaction Failed: known transaction'
+      }
+      // finalize
+      item.value = errorMessage
+    })
+  }
 }
 
 function rewriteReportUrls(report) {
