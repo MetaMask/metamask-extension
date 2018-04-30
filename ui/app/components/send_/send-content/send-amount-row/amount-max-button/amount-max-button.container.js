@@ -5,7 +5,7 @@ import {
   getSendFromBalance,
   getTokenBalance,
 } from '../../../send.selectors.js'
-import { getMaxModeOn } from '../send-amount-row.selectors.js'
+import { getMaxModeOn } from './amount-max-button.selectors.js'
 import { calcMaxAmount } from './amount-max-button.utils.js'
 import {
   updateSendAmount,
