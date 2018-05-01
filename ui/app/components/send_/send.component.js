@@ -6,7 +6,6 @@ import {
   doesAmountErrorRequireUpdate,
 } from './send.utils'
 
-import PageContainer from '..//page-container/page-container.component'
 import SendHeader from './send-header/send-header.container'
 import SendContent from './send-content/send-content.component'
 import SendFooter from './send-footer/send-footer.container'
@@ -128,11 +127,11 @@ export default class SendTransactionScreen extends PersistentForm {
     const { history } = this.props
 
     return (
-      <PageContainer>
+      <div className="page-container">
         <SendHeader history={history}/>
         <SendContent/>
         <SendFooter history={history}/>
-      </PageContainer>
+      </div>
     )
   }
 
