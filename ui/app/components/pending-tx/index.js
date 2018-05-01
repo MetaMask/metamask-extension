@@ -12,7 +12,7 @@ const util = require('../../util')
 const ConfirmSendEther = require('./confirm-send-ether')
 const ConfirmSendToken = require('./confirm-send-token')
 const ConfirmDeployContract = require('./confirm-deploy-contract')
-const Loading = require('../loading')
+const Loading = require('../loading-screen')
 
 const TX_TYPES = {
   DEPLOY_CONTRACT: 'deploy_contract',
