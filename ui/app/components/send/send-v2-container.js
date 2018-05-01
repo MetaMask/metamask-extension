@@ -62,6 +62,7 @@ function mapStateToProps (state) {
     tokenContract: getSelectedTokenContract(state),
     unapprovedTxs: state.metamask.unapprovedTxs,
     network: state.metamask.network,
+    isToken: Boolean(getSelectedToken(state)),
   }
 }
 
