@@ -16,8 +16,9 @@ describe('', function () {
   before(async function () {
     const extPath = path.resolve('dist/firefox')
     driver = buildFirefoxWebdriver()
-    installWebExt(driver, extPath)
     await delay(2000)
+    installWebExt(driver, extPath)
+    await delay(2000)    
   })
 
   afterEach(async function () {
@@ -34,7 +35,7 @@ describe('', function () {
 
     it('switches to Firefox addon list', async function () {
       await driver.get('about:debugging#addons')
-      await delay(1000)
+      await delay(10000)
     })
 
     it(`selects MetaMask's extension id and opens it in the current tab`, async function () {
