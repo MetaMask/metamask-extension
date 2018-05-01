@@ -535,7 +535,7 @@ function importNewAccount (strategy, args) {
     } catch (err) {
       dispatch(actions.hideLoadingIndication())
       dispatch(actions.displayWarning(err.message))
-      return
+      throw err
     }
     dispatch(actions.hideLoadingIndication())
     dispatch(actions.updateMetamaskState(newState))
