@@ -307,14 +307,14 @@ describe('', function () {
 
 })
 
-function installWebExt (driver, extension) {
-  const cmd = new Command('moz-install-web-ext')
+async function installWebExt (driver, extension) {
+  const cmd = await new Command('moz-install-web-ext')
     .setParameter('path', path.resolve(extension))
     .setParameter('temporary', true)
 
-  driver.getExecutor()
+  await driver.getExecutor()
     .defineCommand(cmd.getName(), 'POST', '/session/:sessionId/moz/addon/install')
 
-  return driver.schedule(cmd, 'installWebExt(' + extension + ')')
+  return await driver.schedule(cmd, 'installWebExt(' + extension + ')')
 }
 
