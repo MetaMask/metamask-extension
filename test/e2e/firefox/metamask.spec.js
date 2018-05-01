@@ -17,7 +17,7 @@ describe('', function () {
     const extPath = path.resolve('dist/firefox')
     driver = buildFirefoxWebdriver()
     installWebExt(driver, extPath)
-    await delay(1000)
+    await delay(2000)
   })
 
   afterEach(async function () {
