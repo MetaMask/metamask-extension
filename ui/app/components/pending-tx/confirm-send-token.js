@@ -1,4 +1,6 @@
 const Component = require('react').Component
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
@@ -25,6 +27,8 @@ const {
   calcTokenAmount,
 } = require('../../token-util')
 const classnames = require('classnames')
+const currencyFormatter = require('currency-formatter')
+const currencies = require('currency-formatter/currencies')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
@@ -33,16 +37,24 @@ const {
   getSelectedAddress,
   getSelectedTokenContract,
 } = require('../../selectors')
+const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
+
+import {
+  updateSendErrors,
+} from '../../ducks/send'
 
 ConfirmSendToken.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendToken)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(ConfirmSendToken)
 
 
 function mapStateToProps (state, ownProps) {
-  const { token: { symbol }, txData } = ownProps
+  const { token: { address }, txData } = ownProps
   const { txParams } = txData || {}
   const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data)
 
@@ -53,7 +65,7 @@ function mapStateToProps (state, ownProps) {
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = getSelectedAddress(state)
-  const tokenExchangeRate = getTokenExchangeRate(state, symbol)
+  const tokenExchangeRate = getTokenExchangeRate(state, address)
   const { balance } = accounts[selectedAddress]
   return {
     conversionRate,
@@ -69,12 +81,9 @@ function mapStateToProps (state, ownProps) {
 }
 
 function mapDispatchToProps (dispatch, ownProps) {
-  const { token: { symbol } } = ownProps
-
   return {
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
-    updateTokenExchangeRate: () => dispatch(actions.updateTokenExchangeRate(symbol)),
     editTransaction: txMeta => {
       const { token: { address } } = ownProps
       const { txParams = {}, id } = txMeta
@@ -136,7 +145,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       }))
       dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },
-    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
+    updateSendErrors: error => dispatch(updateSendErrors(error)),
   }
 }
 
@@ -145,6 +154,12 @@ function ConfirmSendToken () {
   Component.call(this)
   this.state = {}
   this.onSubmit = this.onSubmit.bind(this)
+}
+
+ConfirmSendToken.prototype.editTransaction = function (txMeta) {
+  const { editTransaction, history } = this.props
+  editTransaction(txMeta)
+  history.push(SEND_ROUTE)
 }
 
 ConfirmSendToken.prototype.updateComponentSendErrors = function (prevProps) {
@@ -191,7 +206,6 @@ ConfirmSendToken.prototype.componentWillMount = function () {
     .balanceOf(selectedAddress)
     .then(usersToken => {
     })
-  this.props.updateTokenExchangeRate()
   this.updateComponentSendErrors({})
 }
 
@@ -310,10 +324,12 @@ ConfirmSendToken.prototype.renderHeroAmount = function () {
   const txParams = txMeta.txParams || {}
   const { memo = '' } = txParams
 
+  const convertedAmountInFiat = this.convertToRenderableCurrency(fiatAmount, currentCurrency)
+
   return fiatAmount
     ? (
       h('div.confirm-send-token__hero-amount-wrapper', [
-        h('h3.flex-center.confirm-screen-send-amount', `${fiatAmount}`),
+        h('h3.flex-center.confirm-screen-send-amount', `${convertedAmountInFiat}`),
         h('h3.flex-center.confirm-screen-send-amount-currency', currentCurrency),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
@@ -361,6 +377,9 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
   const { fiat: fiatAmount, token: tokenAmount } = this.getAmount()
   const { fiat: fiatGas, token: tokenGas } = this.getGasFee()
 
+  const totalInFIAT = fiatAmount && fiatGas && addCurrencies(fiatAmount, fiatGas)
+  const convertedTotalInFiat = this.convertToRenderableCurrency(totalInFIAT, currentCurrency)
+
   return fiatAmount && fiatGas
     ? (
       h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
@@ -370,7 +389,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
         ]),
 
         h('div.confirm-screen-section-column', [
-          h('div.confirm-screen-row-info', `${addCurrencies(fiatAmount, fiatGas)} ${currentCurrency}`),
+          h('div.confirm-screen-row-info', `${convertedTotalInFiat} ${currentCurrency}`),
           h('div.confirm-screen-row-detail', `${addCurrencies(tokenAmount, tokenGas || '0')} ${symbol}`),
         ]),
       ])
@@ -405,8 +424,17 @@ ConfirmSendToken.prototype.renderErrorMessage = function (message) {
     : null
 }
 
+ConfirmSendToken.prototype.convertToRenderableCurrency = function (value, currencyCode) {
+  const upperCaseCurrencyCode = currencyCode.toUpperCase()
+
+  return currencies.find(currency => currency.code === upperCaseCurrencyCode)
+    ? currencyFormatter.format(Number(value), {
+      code: upperCaseCurrencyCode,
+    })
+    : value
+}
+
 ConfirmSendToken.prototype.render = function () {
-  const { editTransaction } = this.props
   const txMeta = this.gatherTxMeta()
   const {
     from: {
@@ -433,7 +461,7 @@ ConfirmSendToken.prototype.render = function () {
       h('div.page-container', [
         h('div.page-container__header', [
           !txMeta.lastGasPrice && h('button.confirm-screen-back-button', {
-            onClick: () => editTransaction(txMeta),
+            onClick: () => this.editTransaction(txMeta),
           }, this.context.t('edit')),
           h('div.page-container__title', title),
           h('div.page-container__subtitle', subtitle),
@@ -513,7 +541,9 @@ ConfirmSendToken.prototype.render = function () {
             }, this.context.t('cancel')),
 
             // Accept Button
-            h('button.btn-confirm.page-container__footer-button.allcaps', [this.context.t('confirm')]),
+            h('button.btn-confirm.page-container__footer-button.allcaps', {
+              onClick: event => this.onSubmit(event),
+            }, [this.context.t('confirm')]),
           ]),
         ]),
       ]),
@@ -532,9 +562,9 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams() && balanceIsSufficient) {
     this.props.sendTransaction(txMeta, event)
   } else if (!balanceIsSufficient) {
-    updateSendErrors({ insufficientFunds: this.context.t('insufficientFunds') })
+    updateSendErrors({ insufficientFunds: 'insufficientFunds' })
   } else {
-    updateSendErrors({ invalidGasParams: this.context.t('invalidGasParams') })
+    updateSendErrors({ invalidGasParams: 'invalidGasParams' })
     this.setState({ submitting: false })
   }
 }
@@ -566,6 +596,7 @@ ConfirmSendToken.prototype.cancel = function (event, txMeta) {
   const { cancelTransaction } = this.props
 
   cancelTransaction(txMeta)
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 ConfirmSendToken.prototype.checkValidity = function () {

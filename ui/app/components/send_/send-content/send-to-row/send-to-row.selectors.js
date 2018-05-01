@@ -10,5 +10,5 @@ function getToDropdownOpen (state) {
 }
 
 function sendToIsInError (state) {
-    return Boolean(state.metamask.send.to)
+    return Boolean(state.send.errors.to)
 }

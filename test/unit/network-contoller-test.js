@@ -1,6 +1,10 @@
 const assert = require('assert')
 const nock = require('nock')
 const NetworkController = require('../../app/scripts/controllers/network')
+const {
+  getNetworkDisplayName,
+  getNetworkEndpoints,
+} = require('../../app/scripts/controllers/network/util')
 
 const { createTestProviderTools } = require('../stub/provider')
 const providerResultStub = {}
@@ -78,5 +82,41 @@ describe('# Network Controller', function () {
         assert.equal(rpcTarget, 'https://mainnet.infura.io/metamask', 'returns the right rpcAddress')
       })
     })
+  })
+})
+
+describe('# Network utils', () => {
+  it('getNetworkDisplayName should return the correct network name', () => {
+    const tests = [
+      {
+        input: 3,
+        expected: 'Ropsten',
+      }, {
+        input: 4,
+        expected: 'Rinkeby',
+      }, {
+        input: 42,
+        expected: 'Kovan',
+      }, {
+        input: 'ropsten',
+        expected: 'Ropsten',
+      }, {
+        input: 'rinkeby',
+        expected: 'Rinkeby',
+      }, {
+        input: 'kovan',
+        expected: 'Kovan',
+      }, {
+        input: 'mainnet',
+        expected: 'Main Ethereum Network',
+      },
+    ]
+
+    tests.forEach(({ input, expected }) => assert.equal(getNetworkDisplayName(input), expected))
+  })
+
+  it('getNetworkEndpoints should return the correct endpoints', () => {
+    assert.equal(getNetworkEndpoints('networkBeta').ropsten, 'https://ropsten.infura.io/metamask2')
+    assert.equal(getNetworkEndpoints('network').rinkeby, 'https://rinkeby.infura.io/metamask')
   })
 })

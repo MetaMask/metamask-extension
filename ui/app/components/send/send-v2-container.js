@@ -2,6 +2,8 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const abi = require('ethereumjs-abi')
 const SendEther = require('../../send-v2')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 
 const {
   accountsWithSendEtherInfoSelector,
@@ -16,7 +18,14 @@ const {
   getSelectedTokenContract,
 } = require('../../selectors')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
+import {
+  updateSendErrors,
+} from '../../ducks/send'
+
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(SendEther)
 
 function mapStateToProps (state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state)
@@ -62,7 +71,6 @@ function mapDispatchToProps (dispatch) {
     showCustomizeGasModal: () => dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' })),
     estimateGas: params => dispatch(actions.estimateGas(params)),
     getGasPrice: () => dispatch(actions.getGasPrice()),
-    updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
     signTokenTx: (tokenAddress, toAddress, amount, txData) => (
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
@@ -71,7 +79,8 @@ function mapDispatchToProps (dispatch) {
     updateTx: txData => dispatch(actions.updateTransaction(txData)),
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
     addToAddressBook: (address, nickname) => dispatch(actions.addToAddressBook(address, nickname)),
-    updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
+    setGasTotal: newTotal => dispatch(actions.setGasTotal(newTotal)),
+    updateGasTotal: () => dispatch(actions.updateGasTotal()),
     updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
     updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
     updateSendTokenBalance: tokenBalance => dispatch(actions.updateSendTokenBalance(tokenBalance)),
@@ -79,8 +88,7 @@ function mapDispatchToProps (dispatch) {
     updateSendTo: (newTo, nickname) => dispatch(actions.updateSendTo(newTo, nickname)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
-    updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
-    goHome: () => dispatch(actions.goHome()),
+    updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     clearSend: () => dispatch(actions.clearSend()),
     setMaxModeTo: bool => dispatch(actions.setMaxModeTo(bool)),
   }

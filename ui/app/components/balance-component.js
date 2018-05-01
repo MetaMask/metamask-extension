@@ -4,6 +4,8 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenBalance = require('./token-balance')
 const Identicon = require('./identicon')
+const currencyFormatter = require('currency-formatter')
+const currencies = require('currency-formatter/currencies')
 
 const { formatBalance, generateBalanceObject } = require('../util')
 
@@ -97,9 +99,17 @@ BalanceComponent.prototype.renderFiatAmount = function (fiatDisplayNumber, fiatS
   const shouldNotRenderFiat = fiatDisplayNumber === 'N/A' || Number(fiatDisplayNumber) === 0
   if (shouldNotRenderFiat) return null
 
+  const upperCaseFiatSuffix = fiatSuffix.toUpperCase()
+
+  const display = currencies.find(currency => currency.code === upperCaseFiatSuffix)
+    ? currencyFormatter.format(Number(fiatDisplayNumber), {
+      code: upperCaseFiatSuffix,
+    })
+    : `${fiatPrefix}${fiatDisplayNumber} ${upperCaseFiatSuffix}`
+
   return h('div.fiat-amount', {
     style: {},
-  }, `${fiatPrefix}${fiatDisplayNumber} ${fiatSuffix}`)
+  }, display)
 }
 
 BalanceComponent.prototype.getTokenBalance = function (formattedBalance, shorten) {
@@ -117,5 +127,9 @@ BalanceComponent.prototype.getFiatDisplayNumber = function (formattedBalance, co
 
   const splitBalance = formattedBalance.split(' ')
 
-  return (Number(splitBalance[0]) * conversionRate).toFixed(2)
+  const convertedNumber = (Number(splitBalance[0]) * conversionRate)
+  const wholePart = Math.floor(convertedNumber)
+  const decimalPart = convertedNumber - wholePart
+
+  return wholePart + Number(decimalPart.toPrecision(2))
 }

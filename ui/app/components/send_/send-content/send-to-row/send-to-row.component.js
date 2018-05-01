@@ -1,57 +1,59 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import SendRowWrapper from '../../../send/from-dropdown'
-import ToDropdown from '../../../ens-input'
+import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component'
+import EnsInput from '../../../ens-input'
 
 export default class SendToRow extends Component {
 
   static propTypes = {
+    closeToDropdown: PropTypes.func,
+    inError: PropTypes.bool,
+    network: PropTypes.string,
+    openToDropdown: PropTypes.func,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
     toDropdownOpen: PropTypes.bool,
-    inError: PropTypes.bool,
     updateSendTo: PropTypes.func,
     updateSendToError: PropTypes.func,
-    openToDropdown: PropTypes.func,
-    closeToDropdown: PropTypes.func,
-    network: PropTypes.number,
   };
 
   handleToChange (to, nickname = '') {
     const { updateSendTo, updateSendToError } = this.props
     updateSendTo(to, nickname)
-    updateSendErrors(to)
+    updateSendToError(to)
   }
 
   render () {
     const {
-      from,
-      fromAccounts,
-      conversionRate,
-      fromDropdownOpen,
-      tokenContract,
-      openToDropdown,
       closeToDropdown,
-      network,
       inError,
+      network,
+      openToDropdown,
+      to,
+      toAccounts,
+      toDropdownOpen,
     } = this.props
 
     return (
-      <SendRowWrapper label={`${this.context.t('to')}:`}>
+      <SendRowWrapper
+        errorType={'to'}
+        label={`${this.context.t('to')}:`}
+        showError={inError}
+      >
         <EnsInput
-          name={'address'}
-          placeholder={this.context.t('recipient Address')}
-          network={network},
-          to={to},
           accounts={toAccounts}
-          dropdownOpen={toDropdownOpen}
-          openDropdown={() => openToDropdown()}
           closeDropdown={() => closeToDropdown()}
-          onChange={this.handleToChange}
+          dropdownOpen={toDropdownOpen}
           inError={inError}
+          name={'address'}
+          network={network}
+          onChange={(newTo, newNickname) => this.handleToChange(newTo, newNickname)}
+          openDropdown={() => openToDropdown()}
+          placeholder={this.context.t('recipientAddress')}
+          to={to}
         />
       </SendRowWrapper>
-    );
+    )
   }
 
 }

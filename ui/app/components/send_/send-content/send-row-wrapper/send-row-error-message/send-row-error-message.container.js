@@ -1,3 +1,4 @@
+import { connect } from 'react-redux'
 import { getSendErrors } from '../../../send.selectors'
 import SendRowErrorMessage from './send-row-error-message.component'
 

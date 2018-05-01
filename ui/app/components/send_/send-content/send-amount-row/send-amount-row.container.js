@@ -1,48 +1,51 @@
+import { connect } from 'react-redux'
 import {
-  getSelectedToken,
-  getPrimaryCurrency,
   getAmountConversionRate,
+  getConversionRate,
   getConvertedCurrency,
-  getSendAmount,
   getGasTotal,
-  getSelectedBalance,
+  getPrimaryCurrency,
+  getSelectedToken,
+  getSendAmount,
+  getSendFromBalance,
   getTokenBalance,
-} from '../../send.selectors.js'
+} from '../../send.selectors'
 import {
-  getMaxModeOn,
-  getSendAmountError,
-} from './send-amount-row.selectors.js'
-import { getAmountErrorObject } from './send-to-row.utils.js'
+  sendAmountIsInError,
+} from './send-amount-row.selectors'
+import { getAmountErrorObject } from '../../send.utils'
+import {
+  setMaxModeTo,
+  updateSendAmount,
+} from '../../../../actions'
 import {
   updateSendErrors,
-  updateSendTo,
-} from '../../../actions'
-import {
-  openToDropdown,
-  closeToDropdown,
-} from '../../../ducks/send'
-import SendToRow from './send-to-row.component'
+} from '../../../../ducks/send'
+import SendAmountRow from './send-amount-row.component'
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendToRow)
+export default connect(mapStateToProps, mapDispatchToProps)(SendAmountRow)
 
 function mapStateToProps (state) {
-updateSendTo
-return {
-  to: getSendTo(state),
-  toAccounts: getSendToAccounts(state),
-  toDropdownOpen: getToDropdownOpen(state),
-  inError: sendToIsInError(state),
-  network: getCurrentNetwork(state),
-}
+  return {
+    amount: getSendAmount(state),
+    amountConversionRate: getAmountConversionRate(state),
+    balance: getSendFromBalance(state),
+    conversionRate: getConversionRate(state),
+    convertedCurrency: getConvertedCurrency(state),
+    gasTotal: getGasTotal(state),
+    inError: sendAmountIsInError(state),
+    primaryCurrency: getPrimaryCurrency(state),
+    selectedToken: getSelectedToken(state),
+    tokenBalance: getTokenBalance(state),
+  }
 }
 
 function mapDispatchToProps (dispatch) {
-return {
-  updateSendToError: (to) => {
-      dispatch(updateSendErrors(getToErrorObject(to)))
-  },
-  updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
-  openToDropdown: () => dispatch(()),
-  closeToDropdown: () => dispatch(()),
-}
+  return {
+    setMaxModeTo: bool => dispatch(setMaxModeTo(bool)),
+    updateSendAmount: newAmount => dispatch(updateSendAmount(newAmount)),
+    updateSendAmountError: (amountDataObject) => {
+        dispatch(updateSendErrors(getAmountErrorObject(amountDataObject)))
+    },
+  }
 }

@@ -2,8 +2,11 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
+const log = require('loglevel')
 
 const PendingTx = require('./components/pending-tx')
 const SignatureRequest = require('./components/signature-request')
@@ -11,19 +14,21 @@ const SignatureRequest = require('./components/signature-request')
 // const PendingPersonalMsg = require('./components/pending-personal-msg')
 // const PendingTypedMsg = require('./components/pending-typed-msg')
 const Loading = require('./components/loading')
+const { DEFAULT_ROUTE } = require('./routes')
 
-// const contentDivider = h('div', {
-//   style: {
-//     marginLeft: '16px',
-//     marginRight: '16px',
-//     height:'1px',
-//     background:'#E7E7E7',
-//   },
-// })
-
-module.exports = connect(mapStateToProps)(ConfirmTxScreen)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps)
+)(ConfirmTxScreen)
 
 function mapStateToProps (state) {
+  const { metamask } = state
+  const {
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
+    unapprovedTypedMessagesCount,
+  } = metamask
+
   return {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
@@ -40,6 +45,10 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
     computedBalances: state.metamask.computedBalances,
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
+    unapprovedTypedMessagesCount,
+    send: state.metamask.send,
     selectedAddressTxList: state.metamask.selectedAddressTxList,
   }
 }
@@ -49,11 +58,35 @@ function ConfirmTxScreen () {
   Component.call(this)
 }
 
+ConfirmTxScreen.prototype.getUnapprovedMessagesTotal = function () {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = this.props
+
+  return unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount
+}
+
+ConfirmTxScreen.prototype.componentDidMount = function () {
+  const {
+    unapprovedTxs = {},
+    network,
+    send,
+  } = this.props
+  const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
+
+  if (unconfTxList.length === 0 && !send.to && this.getUnapprovedMessagesTotal() === 0) {
+    this.props.history.push(DEFAULT_ROUTE)
+  }
+}
+
 ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   const {
-    unapprovedTxs,
+    unapprovedTxs = {},
     network,
     selectedAddressTxList,
+    send,
   } = this.props
   const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
   const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)
@@ -61,8 +94,9 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   const prevTx = selectedAddressTxList.find(({ id }) => id === prevTxData.id) || {}
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
-  if (prevTx.status === 'dropped' && unconfTxList.length === 0) {
-    this.goHome({})
+  if (unconfTxList.length === 0 &&
+    (prevTx.status === 'dropped' || !send.to && this.getUnapprovedMessagesTotal() === 0)) {
+    this.props.history.push(DEFAULT_ROUTE)
   }
 }
 
@@ -103,7 +137,6 @@ ConfirmTxScreen.prototype.render = function () {
   */
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
-  if (unconfTxList.length === 0) return h(Loading)
 
   return currentTxView({
     // Properties
@@ -152,6 +185,7 @@ function currentTxView (opts) {
     //   return h(PendingTypedMsg, opts)
     // }
   }
+
   return h(Loading)
 }
 
@@ -163,6 +197,7 @@ ConfirmTxScreen.prototype.buyEth = function (address, event) {
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   this.stopPropagation(event)
   this.props.dispatch(actions.updateAndApproveTx(txData))
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
@@ -182,7 +217,7 @@ ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
   var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
-  this.props.dispatch(actions.signMsg(params))
+  return this.props.dispatch(actions.signMsg(params))
 }
 
 ConfirmTxScreen.prototype.stopPropagation = function (event) {
@@ -196,7 +231,7 @@ ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
   var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
-  this.props.dispatch(actions.signPersonalMsg(params))
+  return this.props.dispatch(actions.signPersonalMsg(params))
 }
 
 ConfirmTxScreen.prototype.signTypedMessage = function (msgData, event) {
@@ -204,25 +239,25 @@ ConfirmTxScreen.prototype.signTypedMessage = function (msgData, event) {
   var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
-  this.props.dispatch(actions.signTypedMsg(params))
+  return this.props.dispatch(actions.signTypedMsg(params))
 }
 
 ConfirmTxScreen.prototype.cancelMessage = function (msgData, event) {
   log.info('canceling message')
   this.stopPropagation(event)
-  this.props.dispatch(actions.cancelMsg(msgData))
+  return this.props.dispatch(actions.cancelMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.cancelPersonalMessage = function (msgData, event) {
   log.info('canceling personal message')
   this.stopPropagation(event)
-  this.props.dispatch(actions.cancelPersonalMsg(msgData))
+  return this.props.dispatch(actions.cancelPersonalMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.cancelTypedMessage = function (msgData, event) {
   log.info('canceling typed message')
   this.stopPropagation(event)
-  this.props.dispatch(actions.cancelTypedMsg(msgData))
+  return this.props.dispatch(actions.cancelTypedMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.goHome = function (event) {

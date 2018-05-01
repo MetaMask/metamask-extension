@@ -8,6 +8,10 @@ const GasModalCard = require('./gas-modal-card')
 
 const ethUtil = require('ethereumjs-util')
 
+import {
+  updateSendErrors,
+} from '../../ducks/send'
+
 const {
   MIN_GAS_PRICE_DEC,
   MIN_GAS_LIMIT_DEC,
@@ -63,9 +67,9 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => dispatch(actions.hideModal()),
     updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
     updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
-    updateGasTotal: newGasTotal => dispatch(actions.updateGasTotal(newGasTotal)),
+    updateGasTotal: newGasTotal => dispatch(actions.setGasTotal(newGasTotal)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
-    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
+    updateSendErrors: error => dispatch(updateSendErrors(error)),
   }
 }
 

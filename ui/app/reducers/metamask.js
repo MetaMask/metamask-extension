@@ -1,8 +1,9 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
-const environmentType = require('../../../app/scripts/lib/environment-type')
-const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
+const { getEnvironmentType } = require('../../../app/scripts/lib/util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../app/scripts/lib/enums')
+const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/controllers/network/enums')
 
 module.exports = reduceMetamask
 
@@ -15,7 +16,7 @@ function reduceMetamask (state, action) {
     isUnlocked: false,
     isAccountMenuOpen: false,
     isMascara: window.platform instanceof MetamascaraPlatform,
-    isPopup: environmentType() === 'popup',
+    isPopup: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
@@ -24,6 +25,7 @@ function reduceMetamask (state, action) {
     frequentRpcList: [],
     addressBook: [],
     selectedTokenAddress: null,
+    contractExchangeRates: {},
     tokenExchangeRates: {},
     tokens: [],
     send: {
@@ -176,15 +178,6 @@ function reduceMetamask (state, action) {
         conversionDate: action.value.conversionDate,
       })
 
-    case actions.UPDATE_TOKEN_EXCHANGE_RATE:
-      const { payload: { pair, marketinfo } } = action
-      return extend(metamaskState, {
-        tokenExchangeRates: {
-          ...metamaskState.tokenExchangeRates,
-          [pair]: marketinfo,
-        },
-      })
-
     case actions.UPDATE_TOKENS:
       return extend(metamaskState, {
         tokens: action.newTokens,
@@ -258,17 +251,6 @@ function reduceMetamask (state, action) {
         send: {
           ...metamaskState.send,
           memo: action.value,
-        },
-      })
-
-    case actions.UPDATE_SEND_ERRORS:
-      return extend(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          errors: {
-            ...metamaskState.send.errors,
-            ...action.value,
-          },
         },
       })
 
@@ -358,7 +340,7 @@ function reduceMetamask (state, action) {
         welcomeScreenSeen: true,
       })
 
-    case action.SET_CURRENT_LOCALE:
+    case actions.SET_CURRENT_LOCALE:
       return extend(metamaskState, {
         currentLocale: action.value,
       })
