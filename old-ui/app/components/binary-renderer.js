@@ -13,8 +13,9 @@ function BinaryRenderer () {
 
 BinaryRenderer.prototype.render = function () {
   const props = this.props
-  const { value, style } = props
-  const text = this.hexToText(value)
+  const { value, style, encoding } = props
+
+  const text = encoding === 'hex' ? value : this.hexToText(value)
 
   const defaultStyle = extend({
     width: '315px',
