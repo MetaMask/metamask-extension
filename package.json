@@ -193,6 +193,12 @@
   },
   "devDependencies": {
     "@sentry/cli": "^1.30.3",
+    "@storybook/addon-actions": "^3.4.3",
+    "@storybook/addon-links": "^3.4.3",
+    "@storybook/addons": "^3.4.3",
+    "@storybook/channel-postmessage": "^3.4.3",
+    "@storybook/client-logger": "^3.4.3",
+    "@storybook/core": "^3.4.3",
     "babel-core": "^6.24.1",
     "babel-eslint": "^8.0.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
