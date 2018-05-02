@@ -249,7 +249,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",
     "karma-firefox-launcher": "^1.0.1",
-    "karma-qunit": "^1.2.1",
+    "karma-qunit": "^2.0.2",
     "lodash.assign": "^4.0.6",
     "mocha": "^5.0.0",
     "mocha-eslint": "^4.0.0",
