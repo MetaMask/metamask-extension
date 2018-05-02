@@ -185,12 +185,8 @@ jobs:
             && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
       - restore_cache:
           key: dependency-cache-{{ .Revision }}
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
       - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
+          key: build-cache-{{ .Revision }} 
       - run:
           name: test:e2e:firefox
           command: npm run test:e2e:firefox
