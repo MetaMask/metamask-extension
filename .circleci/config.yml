@@ -15,6 +15,9 @@ workflows:
       - test-lint:
           requires:
             - prep-deps-npm
+      - test-deps:
+          requires:
+            - prep-deps-npm
       - test-e2e:
           requires:
             - prep-deps-npm
@@ -43,6 +46,7 @@ workflows:
       - all-tests-pass:
           requires:
             - test-lint
+            - test-deps
             - test-unit
             - test-e2e
             - test-integration-mascara-chrome
@@ -144,6 +148,17 @@ jobs:
       - run:
           name: Test
           command: npm run lint
+
+  test-deps:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Revision }}
+      - run:
+          name: Test
+          command: npx nsp check
 
   test-e2e:
     docker:
