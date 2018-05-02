@@ -193,6 +193,7 @@
   },
   "devDependencies": {
     "@sentry/cli": "^1.30.3",
+    "@storybook/react": "^3.4.3",
     "babel-core": "^6.24.1",
     "babel-eslint": "^8.0.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
