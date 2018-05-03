@@ -89,7 +89,7 @@ describe('Metamask popup page', function () {
 
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
-      await driver.wait(until.elementIsEnabled(button), 300)
+      await driver.wait(until.elementIsEnabled(button), 500)
       const buttonEnabled = await button.isEnabled()
       assert.equal(buttonEnabled, true, 'enabled continue button')
       await button.click()
