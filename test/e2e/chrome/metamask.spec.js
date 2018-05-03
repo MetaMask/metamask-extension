@@ -4,6 +4,7 @@ const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
 const webdriver = require('selenium-webdriver')
+const until = require('selenium-webdriver/lib/until')
 const By = webdriver.By
 const { delay, buildChromeWebDriver } = require('../func')
 
@@ -25,9 +26,9 @@ describe('Metamask popup page', function () {
     }
   })
 
-  after(async function () {
-    await driver.quit()
-  })
+  // after(async function () {
+  //   await driver.quit()
+  // })
 
   describe('Setup', function () {
 
@@ -38,18 +39,18 @@ describe('Metamask popup page', function () {
     })
 
     it(`selects MetaMask's extension id and opens it in the current tab`, async function () {
-      // // For latest Chrome version (when they updated the extension view)
-      // // Use piercing CSS selector /deep/ to access  the extension id in the Shadow Dom
-      // const elems = await driver.findElements(By.css('* /deep/ extensions-item'))
-      // extensionId = await elems[1].getAttribute('id')
-
-      const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
+      // For latest Chrome version (when they updated the extension view)
+      // Use piercing CSS selector /deep/ to access  the extension id in the Shadow Dom
+      const elems = await driver.findElements(By.css('* /deep/ extensions-item'))
       extensionId = await elems[1].getAttribute('id')
+      // const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
+      // extensionId = await elems[1].getAttribute('id')
       await driver.get(`chrome-extension://${extensionId}/popup.html`)
       await delay(500)
     })
 
     it('sets provider type to localhost', async function () {
+      await driver.wait(until.elementLocated(By.css('#app-content')))
       await setProviderType('localhost')
       await delay(300)
     })
@@ -63,17 +64,20 @@ describe('Metamask popup page', function () {
     })
 
     it('shows privacy notice', async () => {
-      const privacy = await driver.findElement(By.css('.terms-header')).getText()
-      assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
+      await driver.wait(async () => {
+        const privacyHeader = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > h3')).getText()
+        assert.equal(privacyHeader, 'PRIVACY NOTICE', 'shows privacy notice')  
+        return privacyHeader === 'PRIVACY NOTICE'
+      })
       await driver.findElement(By.css('button')).click()
-      await delay(300)
     })
 
     it('show terms of use', async () => {
-      await delay(300)
-      const terms = await driver.findElement(By.css('.terms-header')).getText()
-      assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
-      await delay(300)
+      await driver.wait(async () => {
+        const terms = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > h3')).getText()
+        assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
+        return terms === 'TERMS OF USE'
+      })
     })
 
     it('checks if the TOU button is disabled', async () => {
@@ -86,10 +90,9 @@ describe('Metamask popup page', function () {
 
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
-      await delay(300)
+      await driver.wait(until.elementIsEnabled(button))
       const buttonEnabled = await button.isEnabled()
       assert.equal(buttonEnabled, true, 'enabled continue button')
-      await delay(200)
       await button.click()
     })
 
