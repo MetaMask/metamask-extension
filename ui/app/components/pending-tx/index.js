@@ -8,11 +8,11 @@ const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(abi)
 const inherits = require('util').inherits
 const actions = require('../../actions')
-const util = require('../../util')
+const { getSymbolAndDecimals } = require('../../token-util')
 const ConfirmSendEther = require('./confirm-send-ether')
 const ConfirmSendToken = require('./confirm-send-token')
 const ConfirmDeployContract = require('./confirm-deploy-contract')
-const Loading = require('../loading')
+const Loading = require('../loading-screen')
 
 const TX_TYPES = {
   DEPLOY_CONTRACT: 'deploy_contract',
@@ -26,6 +26,7 @@ function mapStateToProps (state) {
   const {
     conversionRate,
     identities,
+    tokens: existingTokens,
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
@@ -33,6 +34,7 @@ function mapStateToProps (state) {
     conversionRate,
     identities,
     selectedAddress,
+    existingTokens,
   }
 }
 
@@ -66,6 +68,7 @@ PendingTx.prototype.componentDidUpdate = function (prevProps, prevState) {
 }
 
 PendingTx.prototype.setTokenData = async function () {
+  const { existingTokens } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -89,30 +92,15 @@ PendingTx.prototype.setTokenData = async function () {
   }
 
   if (isTokenTransaction) {
-    const token = util.getContractAtAddress(txParams.to)
-    const results = await Promise.all([
-      token.symbol(),
-      token.decimals(),
-    ])
-    const [ symbol, decimals ] = results
+    const { symbol, decimals } = await getSymbolAndDecimals(txParams.to, existingTokens)
 
-    if (symbol[0] && decimals[0]) {
-      this.setState({
-        transactionType: TX_TYPES.SEND_TOKEN,
-        tokenAddress: txParams.to,
-        tokenSymbol: symbol[0],
-        tokenDecimals: decimals[0],
-        isFetching: false,
-      })
-    } else {
-      this.setState({
-        transactionType: TX_TYPES.SEND_TOKEN,
-        tokenAddress: txParams.to,
-        tokenSymbol: null,
-        tokenDecimals: null,
-        isFetching: false,
-      })
-    }
+    this.setState({
+      transactionType: TX_TYPES.SEND_TOKEN,
+      tokenAddress: txParams.to,
+      tokenSymbol: symbol,
+      tokenDecimals: decimals,
+      isFetching: false,
+    })
   } else {
     this.setState({
       transactionType: TX_TYPES.SEND_ETHER,

@@ -138,7 +138,7 @@ ShapeshiftForm.prototype.renderMain = function () {
             width: '229px',
             height: '82px',
           },
-        }, this.props.warning)
+        }, this.props.warning + '')
         : this.renderInfo(),
 
       this.renderRefundAddressForCoin(coin),

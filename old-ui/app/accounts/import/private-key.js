@@ -64,4 +64,6 @@ PrivateKeyImportView.prototype.createNewKeychain = function () {
   const input = document.getElementById('private-key-box')
   const privateKey = input.value
   this.props.dispatch(actions.importNewAccount('Private Key', [ privateKey ]))
+    // JS runtime requires caught rejections but failures are handled by Redux
+    .catch()
 }

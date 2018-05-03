@@ -105,6 +105,8 @@ class JsonImportSubview extends Component {
     }
 
     this.props.importNewJsonAccount([ fileContents, password ])
+      // JS runtime requires caught rejections but failures are handled by Redux 
+      .catch()
   }
 }
 
