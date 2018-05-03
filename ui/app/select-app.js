@@ -7,7 +7,6 @@ const App = require('./app')
 const OldApp = require('../../old-ui/app/app')
 const { autoAddToBetaUI } = require('./selectors')
 const { setFeatureFlag } = require('./actions')
-const { BETA_UI_NETWORK_TYPE } = require('../../app/scripts/controllers/network/enums')
 const I18nProvider = require('./i18n-provider')
 
 function mapStateToProps (state) {
