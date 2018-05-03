@@ -207,6 +207,27 @@ input.large-input {
   &__content {
     height: 100%;
     overflow-y: auto;
+    min-height: 250px;
+    max-height: 400px;
+  }
+
+  &__warning-container {
+    background: $linen;
+    padding: 20px;
+    display: flex;
+    align-items: start;
+  }
+
+  &__warning-message {
+    padding-left: 15px;
+  }
+
+  &__warning-title {
+    font-weight: 500;
+  }
+
+  &__warning-icon {
+    padding-top: 5px;
   }
 }
 
@@ -235,5 +256,51 @@ input.large-input {
     overflow-y: auto;
     background-color: $white;
     border-radius: 0;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .page-container {
+    height: 600px;
+    flex: 0 0 auto;
+  }
+}
+
+.input-label {
+  padding-bottom: 10px;
+  font-weight: 400;
+  display: inline-block;
+}
+
+input.form-control {
+  padding-left: 10px;
+  font-size: 14px;
+  height: 40px;
+  border: 1px solid $alto;
+  border-radius: 3px;
+  width: 100%;
+
+  &::-webkit-input-placeholder {
+    font-weight: 100;
+    color: $dusty-gray;
+  }
+
+  &::-moz-placeholder {
+    font-weight: 100;
+    color: $dusty-gray;
+  }
+
+  &:-ms-input-placeholder {
+    font-weight: 100;
+    color: $dusty-gray;
+  }
+
+  &:-moz-placeholder {
+    font-weight: 100;
+    color: $dusty-gray;
+  }
+
+  &--error {
+    border: 1px solid $monzo;
   }
 }

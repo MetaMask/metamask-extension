@@ -89,7 +89,6 @@ CurrencyDisplay.prototype.render = function () {
   } = this.props
 
   const valueToRender = this.getValueToRender()
-
   const convertedValueToRender = this.getConvertedValueToRender(valueToRender)
 
   return h('div', {
@@ -97,22 +96,24 @@ CurrencyDisplay.prototype.render = function () {
     style: {
       borderColor: inError ? 'red' : null,
     },
-    onClick: () => this.currencyInput.focus(),
+    onClick: () => this.currencyInput && this.currencyInput.focus(),
   }, [
 
     h('div.currency-display__primary-row', [
 
       h('div.currency-display__input-wrapper', [
 
-        h(CurrencyInput, {
+        h(readOnly ? 'input' : CurrencyInput, {
           className: primaryBalanceClassName,
           value: `${valueToRender}`,
           placeholder: '0',
           readOnly,
-          onInputChange: newValue => {
-            handleChange(this.getAmount(newValue))
-          },
-          inputRef: input => { this.currencyInput = input },
+          ...(!readOnly ? {
+            onInputChange: newValue => {
+              handleChange(this.getAmount(newValue))
+            },
+            inputRef: input => { this.currencyInput = input },
+          } : {}),
         }),
 
         h('span.currency-display__currency-symbol', primaryCurrency),

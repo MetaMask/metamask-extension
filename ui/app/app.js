@@ -24,12 +24,12 @@ const Initialized = require('./components/pages/initialized')
 const Settings = require('./components/pages/settings')
 const UnlockPage = require('./components/pages/unlock')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
-const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
 const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 
-const Loading = require('./components/loading')
+const Loading = require('./components/loading-screen')
 const NetworkIndicator = require('./components/network')
 const Identicon = require('./components/identicon')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
@@ -56,19 +56,10 @@ const {
 
 class App extends Component {
   componentWillMount () {
-    const {
-      currentCurrency,
-      setCurrentCurrencyToUSD,
-      isRevealingSeedWords,
-      clearSeedWords,
-    } = this.props
+    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
-    }
-
-    if (isRevealingSeedWords) {
-      clearSeedWords()
     }
   }
 
@@ -144,6 +135,7 @@ class App extends Component {
 
         (isLoading || isLoadingNetwork) && h(Loading, {
           loadingMessage: loadMessage,
+          fullScreen: true,
         }),
 
         // content
@@ -402,8 +394,6 @@ App.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   t: PropTypes.func,
-  isRevealingSeedWords: PropTypes.bool,
-  clearSeedWords: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -484,7 +474,6 @@ function mapDispatchToProps (dispatch, ownProps) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
-    clearSeedWords: () => dispatch(actions.confirmSeedWords()),
   }
 }
 

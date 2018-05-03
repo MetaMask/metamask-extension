@@ -23,22 +23,16 @@ function setupRaven(opts) {
     release,
     transport: function(opts) {
       const report = opts.data
-      // simplify certain complex error messages
-      report.exception.values.forEach(item => {
-        let errorMessage = item.value
-        // simplify ethjs error messages
-        errorMessage = extractEthjsErrorMessage(errorMessage)
-        // simplify 'Transaction Failed: known transaction'
-        if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
-          // cut the hash from the error message
-          errorMessage = 'Transaction Failed: known transaction'
-        }
-        // finalize
-        item.value = errorMessage
-      })
-
-      // modify report urls
-      rewriteReportUrls(report)
+      try {
+        // handle error-like non-error exceptions
+        nonErrorException(report)
+        // simplify certain complex error messages (e.g. Ethjs)
+        simplifyErrorMessages(report)
+        // modify report urls
+        rewriteReportUrls(report)
+      } catch (err) {
+        console.warn(err)
+      }
       // make request normally
       client._makeRequest(opts)
     },
@@ -48,15 +42,42 @@ function setupRaven(opts) {
   return Raven
 }
 
+function nonErrorException(report) {
+  // handle errors that lost their error-ness in serialization
+  if (report.message.includes('Non-Error exception captured with keys: message')) {
+    if (!(report.extra && report.extra.__serialized__)) return
+    report.message = `Non-Error Exception: ${report.extra.__serialized__.message}`
+  }
+}
+
+function simplifyErrorMessages(report) {
+  if (report.exception && report.exception.values) {
+    report.exception.values.forEach(item => {
+      let errorMessage = item.value
+      // simplify ethjs error messages
+      errorMessage = extractEthjsErrorMessage(errorMessage)
+      // simplify 'Transaction Failed: known transaction'
+      if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
+        // cut the hash from the error message
+        errorMessage = 'Transaction Failed: known transaction'
+      }
+      // finalize
+      item.value = errorMessage
+    })
+  }
+}
+
 function rewriteReportUrls(report) {
   // update request url
   report.request.url = toMetamaskUrl(report.request.url)
   // update exception stack trace
-  report.exception.values.forEach(item => {
-    item.stacktrace.frames.forEach(frame => {
-      frame.filename = toMetamaskUrl(frame.filename)
+  if (report.exception && report.exception.values) {
+    report.exception.values.forEach(item => {
+      item.stacktrace.frames.forEach(frame => {
+        frame.filename = toMetamaskUrl(frame.filename)
+      })
     })
-  })
+  }
 }
 
 function toMetamaskUrl(origUrl) {

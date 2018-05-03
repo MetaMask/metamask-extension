@@ -13,7 +13,7 @@ const SignatureRequest = require('./components/signature-request')
 // const PendingMsg = require('./components/pending-msg')
 // const PendingPersonalMsg = require('./components/pending-personal-msg')
 // const PendingTypedMsg = require('./components/pending-typed-msg')
-const Loading = require('./components/loading')
+const Loading = require('./components/loading-screen')
 const { DEFAULT_ROUTE } = require('./routes')
 
 module.exports = compose(
