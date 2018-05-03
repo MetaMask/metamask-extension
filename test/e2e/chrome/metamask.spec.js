@@ -39,20 +39,19 @@ describe('Metamask popup page', function () {
     })
 
     it(`selects MetaMask's extension id and opens it in the current tab`, async function () {
-      // For latest Chrome version (when they updated the extension view)
-      // Use piercing CSS selector /deep/ to access  the extension id in the Shadow Dom
-      const elems = await driver.findElements(By.css('* /deep/ extensions-item'))
-      extensionId = await elems[1].getAttribute('id')
-      // const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
+      // // For latest Chrome version (when they updated the extension view)
+      // // Use piercing CSS selector /deep/ to access  the extension id in the Shadow Dom
+      // const elems = await driver.findElements(By.css('* /deep/ extensions-item'))
       // extensionId = await elems[1].getAttribute('id')
+      const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
+      extensionId = await elems[1].getAttribute('id')
       await driver.get(`chrome-extension://${extensionId}/popup.html`)
       await delay(500)
     })
 
     it('sets provider type to localhost', async function () {
-      await driver.wait(until.elementLocated(By.css('#app-content')))
+      await driver.wait(until.elementLocated(By.css('#app-content')), 300)
       await setProviderType('localhost')
-      await delay(300)
     })
   })
 
@@ -68,7 +67,7 @@ describe('Metamask popup page', function () {
         const privacyHeader = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > h3')).getText()
         assert.equal(privacyHeader, 'PRIVACY NOTICE', 'shows privacy notice')  
         return privacyHeader === 'PRIVACY NOTICE'
-      })
+      }, 300)
       await driver.findElement(By.css('button')).click()
     })
 
@@ -90,7 +89,7 @@ describe('Metamask popup page', function () {
 
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
-      await driver.wait(until.elementIsEnabled(button))
+      await driver.wait(until.elementIsEnabled(button), 300)
       const buttonEnabled = await button.isEnabled()
       assert.equal(buttonEnabled, true, 'enabled continue button')
       await button.click()
