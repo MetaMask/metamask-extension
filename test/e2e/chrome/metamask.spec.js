@@ -26,9 +26,9 @@ describe('Metamask popup page', function () {
     }
   })
 
-  // after(async function () {
-  //   await driver.quit()
-  // })
+  after(async function () {
+    await driver.quit()
+  })
 
   describe('Setup', function () {
 
