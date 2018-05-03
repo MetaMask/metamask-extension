@@ -29,7 +29,7 @@ const AddTokenPage = require('./components/pages/add-token')
 const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 
-const Loading = require('./components/loading')
+const Loading = require('./components/loading-screen')
 const NetworkIndicator = require('./components/network')
 const Identicon = require('./components/identicon')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
@@ -135,6 +135,7 @@ class App extends Component {
 
         (isLoading || isLoadingNetwork) && h(Loading, {
           loadingMessage: loadMessage,
+          fullScreen: true,
         }),
 
         // content
