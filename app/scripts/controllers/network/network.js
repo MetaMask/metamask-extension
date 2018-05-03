@@ -19,14 +19,27 @@ const {
 const LOCALHOST_RPC_URL = 'http://localhost:8545'
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
+const env = process.env.METAMASK_ENV
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
+const testMode = (METAMASK_DEBUG || env === 'test')
+
+const defaultProviderConfig = {
+  type: testMode ? RINKEBY : MAINNET,
+}
+
 module.exports = class NetworkController extends EventEmitter {
 
-  constructor (config) {
+  constructor (opts = {}) {
     super()
 
+    // parse options
+    const providerConfig = opts.provider || defaultProviderConfig
+    console.log('providerStore:', providerConfig)
+    // create stores
+    this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
-    this.providerStore = new ObservableStore(config.provider)
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
+    // create event emitter proxy
     this._proxy = createEventEmitterProxy()
 
     this.on('networkDidChange', this.lookupNetwork)
