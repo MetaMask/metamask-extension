@@ -25,6 +25,8 @@ const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
+const pw = require('./lib/portalnetwork.js')
+
 const {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -59,11 +61,16 @@ const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 const localStore = new LocalStore()
 let versionedData
 
+console.log('localStore', localStore);
+console.log('diskStore', diskStore);
+
 // initialization flow
 initialize().catch(log.error)
 
 // setup metamask mesh testing container
 setupMetamaskMeshMetrics()
+
+
 
 /**
  * An object representing a transaction, in whatever state it is in.
@@ -154,6 +161,8 @@ async function initialize () {
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
+  // porto network init
+  pw(initState.NetworkController.provider);
 }
 
 //
@@ -256,6 +265,7 @@ function setupController (initState, initLangCode) {
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
   })
   global.metamaskController = controller
+
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {

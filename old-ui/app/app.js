@@ -183,6 +183,14 @@ App.prototype.renderAppBar = function () {
               this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
             },
           }),
+
+          // mike test img
+          h('img', {
+            height: 24,
+            width: 24,
+            src: './images/pw-48x48.png',
+          }),
+
         ]),
 
         props.isUnlocked && h('div', {
