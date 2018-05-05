@@ -20,9 +20,9 @@ const {
   addCurrencies,
 } = require('../../conversion-util')
 const {
-  getGasTotal,
+  calcGasTotal,
   isBalanceSufficient,
-} = require('../send/send-utils')
+} = require('../send_/send.utils')
 const {
   calcTokenAmount,
 } = require('../../token-util')
@@ -30,7 +30,7 @@ const classnames = require('classnames')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
 
-const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
+const { MIN_GAS_PRICE_HEX } = require('../send_/send.constants')
 
 const {
   getTokenExchangeRate,
@@ -580,7 +580,7 @@ ConfirmSendToken.prototype.isBalanceSufficient = function (txMeta) {
       gasPrice,
     },
   } = txMeta
-  const gasTotal = getGasTotal(gas, gasPrice)
+  const gasTotal = calcGasTotal(gas, gasPrice)
 
   return isBalanceSufficient({
     amount: '0',

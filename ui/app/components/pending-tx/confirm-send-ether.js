@@ -17,16 +17,16 @@ const {
   multiplyCurrencies,
 } = require('../../conversion-util')
 const {
-  getGasTotal,
+  calcGasTotal,
   isBalanceSufficient,
-} = require('../send/send-utils')
+} = require('../send_/send.utils')
 const GasFeeDisplay = require('../send/gas-fee-display-v2')
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
 
-const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
+const { MIN_GAS_PRICE_HEX } = require('../send_/send.constants')
 const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 
 import {
@@ -590,7 +590,7 @@ ConfirmSendEther.prototype.isBalanceSufficient = function (txMeta) {
       value: amount,
     },
   } = txMeta
-  const gasTotal = getGasTotal(gas, gasPrice)
+  const gasTotal = calcGasTotal(gas, gasPrice)
 
   return isBalanceSufficient({
     amount,

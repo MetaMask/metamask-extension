@@ -1,6 +1,6 @@
-import ethAbi from 'ethereumjs-abi'
-import ethUtil from 'ethereumjs-util'
-import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
+const ethAbi = require('ethereumjs-abi')
+const ethUtil = require('ethereumjs-util')
+const { TOKEN_TRANSFER_FUNCTION_SIGNATURE } = require('../send.constants')
 
 function formShouldBeDisabled ({ inError, selectedToken, tokenBalance, gasTotal }) {
   const missingTokenBalance = selectedToken && !tokenBalance
@@ -47,6 +47,7 @@ function constructUpdatedTx ({
   }
 
   if (selectedToken) {
+    console.log(`ethAbi.rawEncode`, ethAbi.rawEncode)
     const data = TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
       ethAbi.rawEncode(['address', 'uint256'], [to, ethUtil.addHexPrefix(amount)]),
       x => ('00' + x.toString(16)).slice(-2)
@@ -70,6 +71,8 @@ function constructUpdatedTx ({
       delete editingTx.txParams.data
     }
   }
+
+  return editingTx
 }
 
 function addressIsNew (toAccounts, newAddress) {
@@ -81,4 +84,5 @@ module.exports = {
   formShouldBeDisabled,
   constructTxParams,
   constructUpdatedTx,
+  addHexPrefixToObjectValues,
 }

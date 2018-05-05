@@ -1,4 +1,4 @@
-import { getSendErrors } from '../send.selectors'
+const { getSendErrors } = require('../send.selectors')
 
 const selectors = {
   isSendFormInError,

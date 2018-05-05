@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import abi from 'ethereumjs-abi'
 import SendEther from './send.component'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
@@ -46,7 +45,7 @@ function mapStateToProps (state) {
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
     conversionRate: getConversionRate(state),
-    data: generateTokenTransferData(abi, selectedAddress, selectedToken),
+    data: generateTokenTransferData(selectedAddress, selectedToken),
     editingTransactionId: getSendEditingTransactionId(state),
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
@@ -72,6 +71,7 @@ function mapDispatchToProps (dispatch) {
       selectedAddress,
       selectedToken,
     }) => {
+      console.log(`editingTransactionId`, editingTransactionId)
       !editingTransactionId
         ? dispatch(updateGasTotal({ selectedAddress, selectedToken, data }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))

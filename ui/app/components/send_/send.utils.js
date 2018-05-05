@@ -3,18 +3,17 @@ const {
   conversionUtil,
   conversionGTE,
   multiplyCurrencies,
+  conversionGreaterThan,
 } = require('../../conversion-util')
 const {
   calcTokenAmount,
 } = require('../../token-util')
 const {
-  conversionGreaterThan,
-} = require('../../conversion-util')
-const {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_ETH_ERROR,
 } = require('./send.constants')
+const abi = require('ethereumjs-abi')
 
 module.exports = {
   calcGasTotal,
@@ -179,8 +178,9 @@ function doesAmountErrorRequireUpdate ({
   return amountErrorRequiresUpdate
 }
 
-function generateTokenTransferData (abi, selectedAddress, selectedToken) {
+function generateTokenTransferData (selectedAddress, selectedToken) {
   if (!selectedToken) return
+  console.log(`abi.rawEncode`, abi.rawEncode)
   return Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
     x => ('00' + x.toString(16)).slice(-2)

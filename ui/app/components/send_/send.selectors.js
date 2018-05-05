@@ -1,12 +1,12 @@
-import { valuesFor } from '../../util'
-import abi from 'human-standard-token-abi'
-import {
+const { valuesFor } = require('../../util')
+const abi = require('human-standard-token-abi')
+const {
   multiplyCurrencies,
-} from '../../conversion-util'
+} = require('../../conversion-util')
 
 const selectors = {
   accountsWithSendEtherInfoSelector,
-  autoAddToBetaUI,
+  // autoAddToBetaUI,
   getAddressBook,
   getAmountConversionRate,
   getConversionRate,
@@ -58,22 +58,22 @@ function accountsWithSendEtherInfoSelector (state) {
   return accountsWithSendEtherInfo
 }
 
-function autoAddToBetaUI (state) {
-  const autoAddTransactionThreshold = 12
-  const autoAddAccountsThreshold = 2
-  const autoAddTokensThreshold = 1
+// function autoAddToBetaUI (state) {
+//   const autoAddTransactionThreshold = 12
+//   const autoAddAccountsThreshold = 2
+//   const autoAddTokensThreshold = 1
 
-  const numberOfTransactions = state.metamask.selectedAddressTxList.length
-  const numberOfAccounts = Object.keys(state.metamask.accounts).length
-  const numberOfTokensAdded = state.metamask.tokens.length
+//   const numberOfTransactions = state.metamask.selectedAddressTxList.length
+//   const numberOfAccounts = Object.keys(state.metamask.accounts).length
+//   const numberOfTokensAdded = state.metamask.tokens.length
 
-  const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
-    (numberOfAccounts > autoAddAccountsThreshold) &&
-    (numberOfTokensAdded > autoAddTokensThreshold)
-  const userIsNotInBeta = !state.metamask.featureFlags.betaUI
+//   const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
+//     (numberOfAccounts > autoAddAccountsThreshold) &&
+//     (numberOfTokensAdded > autoAddTokensThreshold)
+//   const userIsNotInBeta = !state.metamask.featureFlags.betaUI
 
-  return userIsNotInBeta && userPassesThreshold
-}
+//   return userIsNotInBeta && userPassesThreshold
+// }
 
 function getAddressBook (state) {
   return state.metamask.addressBook
@@ -117,12 +117,12 @@ function getForceGasMin (state) {
   return state.metamask.send.forceGasMin
 }
 
-function getGasPrice (state) {
-  return state.metamask.send.gasPrice
-}
-
 function getGasLimit (state) {
   return state.metamask.send.gasLimit
+}
+
+function getGasPrice (state) {
+  return state.metamask.send.gasPrice
 }
 
 function getGasTotal (state) {

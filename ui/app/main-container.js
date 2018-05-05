@@ -20,7 +20,7 @@ MainContainer.prototype.render = function () {
   //    - pass resulting h() to MainContainer
   //  - error checking in separate func
   //  - router in separate func
-  let contents = {
+  const contents = {
     component: AccountAndTransactionDetails,
     key: 'account-detail',
     style: {},

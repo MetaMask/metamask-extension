@@ -16,11 +16,11 @@ const {
   MIN_GAS_PRICE_DEC,
   MIN_GAS_LIMIT_DEC,
   MIN_GAS_PRICE_GWEI,
-} = require('../send/send-constants')
+} = require('../send_/send.constants')
 
 const {
   isBalanceSufficient,
-} = require('../send/send-utils')
+} = require('../send_/send.utils')
 
 const {
   conversionUtil,

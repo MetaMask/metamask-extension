@@ -203,8 +203,8 @@ TxListItem.prototype.showRetryButton = function () {
   const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
   const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[currentNonceSubmittedTxs.length - 1]
-  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce
-    && lastSubmittedTxWithCurrentNonce.id === transactionId
+  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce &&
+    lastSubmittedTxWithCurrentNonce.id === transactionId
 
   return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
 }

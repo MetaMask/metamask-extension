@@ -5,5 +5,5 @@ const selectors = {
 module.exports = selectors
 
 function sendGasIsInError (state) {
-  return state.metamask.send.errors.gasLoading
+  return state.send.errors.gasLoading
 }
