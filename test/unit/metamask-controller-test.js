@@ -460,51 +460,6 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe('#approvePersonalMessage', function () {
-
-    it('errors with no from in msgParams', function () {
-      const msgParams = {
-        'data': data,
-      }
-      metamaskController.approvePersonalMessage(msgParams, function (error) {
-        assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
-      })
-    })
-
-    let msgParams, metamaskMsgs, msgId
-
-    const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
-    const data = '0x43727970746f6b697474696573'
-
-    beforeEach(function () {
-
-      msgParams = {
-        'from': address,
-        'data': data,
-      }
-
-      metamaskController.approvePersonalMessage(msgParams, noop)
-      metamaskMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
-      msgId = Object.keys(metamaskMsgs)[0]
-    })
-
-    it('persists address from msg params', function () {
-      assert.equal(metamaskMsgs[msgId].msgParams.from, address)
-    })
-
-    it('persists data from msg params', function () {
-      assert.equal(metamaskMsgs[msgId].msgParams.data, data)
-    })
-
-    it('sets the status to unapproved', function () {
-      assert.equal(metamaskMsgs[msgId].status, 'unapproved')
-    })
-
-    it('sets the type to personal_sign', function () {
-      assert.equal(metamaskMsgs[msgId].type, 'personal_sign')
-    })
-  })
-
   describe('#setupUntrustedCommunication', function () {
     let streamTest
 
