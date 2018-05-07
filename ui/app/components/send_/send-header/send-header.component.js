@@ -11,17 +11,17 @@ export default class SendHeader extends Component {
     isToken: PropTypes.bool,
   };
 
-  render () {
-    const { isToken, clearSend, history } = this.props
+  onClose () {
+    this.props.clearSend()
+    this.props.history.push(DEFAULT_ROUTE)
+  }
 
+  render () {
     return (
       <PageContainerHeader
-        onClose={() => {
-          clearSend()
-          history.push(DEFAULT_ROUTE)
-        }}
+        onClose={() => this.onClose()}
         subtitle={this.context.t('onlySendToEtherAddress')}
-        title={isToken ? this.context.t('sendTokens') : this.context.t('sendETH')}
+        title={this.props.isToken ? this.context.t('sendTokens') : this.context.t('sendETH')}
       />
     )
   }

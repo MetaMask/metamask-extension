@@ -26,6 +26,11 @@ export default class SendFooter extends Component {
     update: PropTypes.func,
   };
 
+  onCancel () {
+    this.props.clearSend()
+    this.props.history.push(DEFAULT_ROUTE)
+  }
+
   onSubmit (event) {
     event.preventDefault()
     const {
@@ -44,7 +49,7 @@ export default class SendFooter extends Component {
       toAccounts,
     } = this.props
 
-    // Should not be needed because submit should be disabled if there are no errors.
+    // Should not be needed because submit should be disabled if there are errors.
     // const noErrors = !amountError && toError === null
 
     // if (!noErrors) {
@@ -70,18 +75,12 @@ export default class SendFooter extends Component {
     this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
   }
 
-
   render () {
-    const { clearSend, disabled, history } = this.props
-
     return (
       <PageContainerFooter
-        onCancel={() => {
-          clearSend()
-          history.push(DEFAULT_ROUTE)
-        }}
+        onCancel={() => this.onCancel()}
         onSubmit={e => this.onSubmit(e)}
-        disabled={disabled}
+        disabled={this.props.disabled}
       />
     )
   }
