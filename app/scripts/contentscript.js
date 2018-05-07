@@ -174,6 +174,7 @@ function blacklistedDomainCheck () {
     'uscourts.gov',
     'dropbox.com',
     'webbyawards.com',
+    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
   ]
   var currentUrl = window.location.href
   var currentRegex

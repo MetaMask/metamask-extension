@@ -16,7 +16,7 @@ const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
 const Mascot = require('../mascot')
-const { OLD_UI_NETWORK_TYPE } = require('../../../../app/scripts/config').enums
+const { OLD_UI_NETWORK_TYPE } = require('../../../../app/scripts/controllers/network/enums')
 const { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } = require('../../routes')
 
 class UnlockScreen extends Component {

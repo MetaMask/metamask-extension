@@ -8,6 +8,11 @@ const blacklistJSON = require('../stub/blacklist')
 const firstTimeState = require('../../app/scripts/first-time-state')
 
 const currentNetworkId = 42
+const DEFAULT_LABEL = 'Account 1'
+const TEST_SEED = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+const TEST_SEED_ALT = 'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle'
+const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
 
 describe('MetaMaskController', function () {
   let metamaskController
@@ -100,17 +105,28 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndRestore', function () {
     it('should be able to call newVaultAndRestore despite a mistake.', async function () {
-
       const password = 'what-what-what'
-      const wrongSeed = 'debris dizzy just program just float decrease vacant alarm reduce speak stadiu'
-      const rightSeed = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
-      await metamaskController.createNewVaultAndRestore(password, wrongSeed)
-        .catch((e) => {
-          return
-        })
-      await metamaskController.createNewVaultAndRestore(password, rightSeed)
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED.slice(0, -1)).catch((e) => null)
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
       assert(metamaskController.keyringController.createNewVaultAndRestore.calledTwice)
+    })
+
+    it('should clear previous identities after vault restoration', async () => {
+      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
+      assert.deepEqual(metamaskController.getState().identities, {
+        [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
+      })
+
+      await metamaskController.keyringController.saveAccountLabel(TEST_ADDRESS, 'Account Foo')
+      assert.deepEqual(metamaskController.getState().identities, {
+        [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
+      })
+
+      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
+      assert.deepEqual(metamaskController.getState().identities, {
+        [TEST_ADDRESS_ALT]: { address: TEST_ADDRESS_ALT, name: DEFAULT_LABEL },
+      })
     })
   })
 

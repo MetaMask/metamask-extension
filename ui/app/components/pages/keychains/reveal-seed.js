@@ -2,11 +2,27 @@ const { Component } = require('react')
 const { connect } = require('react-redux')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const { exportAsFile } = require('../../../util')
-const { requestRevealSeed, confirmSeedWords } = require('../../../actions')
+const classnames = require('classnames')
+
+const { requestRevealSeedWords } = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../routes')
+const ExportTextContainer = require('../../export-text-container')
+
+const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
+const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
 
 class RevealSeedPage extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      screen: PASSWORD_PROMPT_SCREEN,
+      password: '',
+      seedWords: null,
+      error: null,
+    }
+  }
+
   componentDidMount () {
     const passwordBox = document.getElementById('password-box')
     if (passwordBox) {
@@ -14,182 +30,135 @@ class RevealSeedPage extends Component {
     }
   }
 
-  checkConfirmation (event) {
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      this.revealSeedWords()
-    }
+  handleSubmit (event) {
+    event.preventDefault()
+    this.setState({ seedWords: null, error: null })
+    this.props.requestRevealSeedWords(this.state.password)
+      .then(seedWords => this.setState({ seedWords, screen: REVEAL_SEED_SCREEN }))
+      .catch(error => this.setState({ error: error.message }))
   }
 
-  revealSeedWords () {
-    const password = document.getElementById('password-box').value
-    this.props.requestRevealSeed(password)
-  }
-
-  renderSeed () {
-    const { seedWords, confirmSeedWords, history } = this.props
-
+  renderWarning () {
     return (
-      h('.initialize-screen.flex-column.flex-center.flex-grow', [
-
-        h('h3.flex-center.text-transform-uppercase', {
-          style: {
-            background: '#EBEBEB',
-            color: '#AEAEAE',
-            marginTop: 36,
-            marginBottom: 8,
-            width: '100%',
-            fontSize: '20px',
-            padding: 6,
-          },
-        }, [
-          'Vault Created',
-        ]),
-
-        h('div', {
-          style: {
-            fontSize: '1em',
-            marginTop: '10px',
-            textAlign: 'center',
-          },
-        }, [
-          h('span.error', 'These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret.'),
-        ]),
-
-        h('textarea.twelve-word-phrase', {
-          readOnly: true,
-          value: seedWords,
+      h('.page-container__warning-container', [
+        h('img.page-container__warning-icon', {
+          src: 'images/warning.svg',
         }),
-
-        h('button.primary', {
-          onClick: () => confirmSeedWords().then(() => history.push(DEFAULT_ROUTE)),
-          style: {
-            margin: '24px',
-            fontSize: '0.9em',
-            marginBottom: '10px',
-          },
-        }, 'I\'ve copied it somewhere safe'),
-
-        h('button.primary', {
-          onClick: () => exportAsFile(`MetaMask Seed Words`, seedWords),
-          style: {
-            margin: '10px',
-            fontSize: '0.9em',
-          },
-        }, 'Save Seed Words As File'),
+        h('.page-container__warning-message', [
+          h('.page-container__warning-title', [this.context.t('revealSeedWordsWarningTitle')]),
+          h('div', [this.context.t('revealSeedWordsWarning')]),
+        ]),
       ])
     )
   }
 
-  renderConfirmation () {
-    const { history, warning, inProgress } = this.props
+  renderContent () {
+    return this.state.screen === PASSWORD_PROMPT_SCREEN
+      ? this.renderPasswordPromptContent()
+      : this.renderRevealSeedContent()
+  }
+
+  renderPasswordPromptContent () {
+    const { t } = this.context
 
     return (
-      h('.initialize-screen.flex-column.flex-center.flex-grow', {
-        style: { maxWidth: '420px' },
+      h('form', {
+        onSubmit: event => this.handleSubmit(event),
       }, [
-
-        h('h3.flex-center.text-transform-uppercase', {
-          style: {
-            background: '#EBEBEB',
-            color: '#AEAEAE',
-            marginBottom: 24,
-            width: '100%',
-            fontSize: '20px',
-            padding: 6,
-          },
-        }, [
-          'Reveal Seed Words',
-        ]),
-
-        h('.div', {
-          style: {
-            display: 'flex',
-            flexDirection: 'column',
-            padding: '20px',
-            justifyContent: 'center',
-          },
-        }, [
-
-          h('h4', 'Do not recover your seed words in a public place! These words can be used to steal all your accounts.'),
-
-          // confirmation
-          h('input.large-input.letter-spacey', {
+        h('label.input-label', {
+          htmlFor: 'password-box',
+        }, t('enterPasswordContinue')),
+        h('.input-group', [
+          h('input.form-control', {
             type: 'password',
+            placeholder: t('password'),
             id: 'password-box',
-            placeholder: 'Enter your password to confirm',
-            onKeyPress: this.checkConfirmation.bind(this),
-            style: {
-              width: 260,
-              marginTop: '12px',
-            },
+            value: this.state.password,
+            onChange: event => this.setState({ password: event.target.value }),
+            className: classnames({ 'form-control--error': this.state.error }),
           }),
-
-          h('.flex-row.flex-start', {
-            style: {
-              marginTop: 30,
-              width: '50%',
-            },
-          }, [
-            // cancel
-            h('button.primary', {
-              onClick: () => history.push(DEFAULT_ROUTE),
-            }, 'CANCEL'),
-
-            // submit
-            h('button.primary', {
-              style: { marginLeft: '10px' },
-              onClick: this.revealSeedWords.bind(this),
-            }, 'OK'),
-
-          ]),
-
-          warning && (
-            h('span.error', {
-              style: {
-                margin: '20px',
-              },
-            }, warning.split('-'))
-          ),
-
-          inProgress && (
-            h('span.in-progress-notification', 'Generating Seed...')
-          ),
         ]),
+        this.state.error && h('.reveal-seed__error', this.state.error),
+      ])
+    )
+  }
+
+  renderRevealSeedContent () {
+    const { t } = this.context
+
+    return (
+      h('div', [
+        h('label.reveal-seed__label', t('yourPrivateSeedPhrase')),
+        h(ExportTextContainer, {
+          text: this.state.seedWords,
+          filename: t('metamaskSeedWords'),
+        }),
+      ])
+    )
+  }
+
+  renderFooter () {
+    return this.state.screen === PASSWORD_PROMPT_SCREEN
+      ? this.renderPasswordPromptFooter()
+      : this.renderRevealSeedFooter()
+  }
+
+  renderPasswordPromptFooter () {
+    return (
+      h('.page-container__footer', [
+        h('button.btn-secondary--lg.page-container__footer-button', {
+          onClick: () => this.props.history.push(DEFAULT_ROUTE),
+        }, this.context.t('cancel')),
+        h('button.btn-primary--lg.page-container__footer-button', {
+          onClick: event => this.handleSubmit(event),
+          disabled: this.state.password === '',
+        }, this.context.t('next')),
+      ])
+    )
+  }
+
+  renderRevealSeedFooter () {
+    return (
+      h('.page-container__footer', [
+        h('button.btn-secondary--lg.page-container__footer-button', {
+          onClick: () => this.props.history.push(DEFAULT_ROUTE),
+        }, this.context.t('close')),
       ])
     )
   }
 
   render () {
-    return this.props.seedWords
-      ? this.renderSeed()
-      : this.renderConfirmation()
+    return (
+      h('.page-container', [
+        h('.page-container__header', [
+          h('.page-container__title', this.context.t('revealSeedWordsTitle')),
+          h('.page-container__subtitle', this.context.t('revealSeedWordsDescription')),
+        ]),
+        h('.page-container__content', [
+          this.renderWarning(),
+          h('.reveal-seed__content', [
+            this.renderContent(),
+          ]),
+        ]),
+        this.renderFooter(),
+      ])
+    )
   }
 }
 
 RevealSeedPage.propTypes = {
-  requestRevealSeed: PropTypes.func,
-  confirmSeedWords: PropTypes.func,
-  seedWords: PropTypes.string,
-  inProgress: PropTypes.bool,
+  requestRevealSeedWords: PropTypes.func,
   history: PropTypes.object,
-  warning: PropTypes.string,
 }
 
-const mapStateToProps = state => {
-  const { appState: { warning }, metamask: { seedWords } } = state
-
-  return {
-    warning,
-    seedWords,
-  }
+RevealSeedPage.contextTypes = {
+  t: PropTypes.func,
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    requestRevealSeed: password => dispatch(requestRevealSeed(password)),
-    confirmSeedWords: () => dispatch(confirmSeedWords()),
+    requestRevealSeedWords: password => dispatch(requestRevealSeedWords(password)),
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(RevealSeedPage)
+module.exports = connect(null, mapDispatchToProps)(RevealSeedPage)

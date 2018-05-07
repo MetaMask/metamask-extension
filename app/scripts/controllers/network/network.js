@@ -1,17 +1,24 @@
 const assert = require('assert')
 const EventEmitter = require('events')
 const createMetamaskProvider = require('web3-provider-engine/zero.js')
-const SubproviderFromProvider = require('web3-provider-engine/subproviders/web3.js')
+const SubproviderFromProvider = require('web3-provider-engine/subproviders/provider.js')
 const createInfuraProvider = require('eth-json-rpc-infura/src/createProvider')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
 const EthQuery = require('eth-query')
-const createEventEmitterProxy = require('../lib/events-proxy.js')
-const networkConfig = require('../config.js')
+const createEventEmitterProxy = require('../../lib/events-proxy.js')
 const log = require('loglevel')
-const { OLD_UI_NETWORK_TYPE, DEFAULT_RPC } = networkConfig.enums
-const INFURA_PROVIDER_TYPES = ['ropsten', 'rinkeby', 'kovan', 'mainnet']
+const {
+  ROPSTEN,
+  RINKEBY,
+  KOVAN,
+  MAINNET,
+  OLD_UI_NETWORK_TYPE,
+  DEFAULT_NETWORK,
+} = require('./enums')
+const { getNetworkEndpoints } = require('./util')
+const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
 module.exports = class NetworkController extends EventEmitter {
 
@@ -19,8 +26,8 @@ module.exports = class NetworkController extends EventEmitter {
     super()
 
     this._networkEndpointVersion = OLD_UI_NETWORK_TYPE
-    this._networkEndpoints = this.getNetworkEndpoints(OLD_UI_NETWORK_TYPE)
-    this._defaultRpc = this._networkEndpoints[DEFAULT_RPC]
+    this._networkEndpoints = getNetworkEndpoints(OLD_UI_NETWORK_TYPE)
+    this._defaultRpc = this._networkEndpoints[DEFAULT_NETWORK]
 
     config.provider.rpcTarget = this.getRpcAddressForType(config.provider.type, config.provider)
     this.networkStore = new ObservableStore('loading')
@@ -37,15 +44,11 @@ module.exports = class NetworkController extends EventEmitter {
     }
 
     this._networkEndpointVersion = version
-    this._networkEndpoints = this.getNetworkEndpoints(version)
-    this._defaultRpc = this._networkEndpoints[DEFAULT_RPC]
+    this._networkEndpoints = getNetworkEndpoints(version)
+    this._defaultRpc = this._networkEndpoints[DEFAULT_NETWORK]
     const { type } = this.getProviderConfig()
 
     return this.setProviderType(type, true)
-  }
-
-  getNetworkEndpoints (version = OLD_UI_NETWORK_TYPE) {
-    return networkConfig[version]
   }
 
   initializeProvider (_providerParams) {

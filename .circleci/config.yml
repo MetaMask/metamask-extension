@@ -15,19 +15,13 @@ workflows:
       - test-lint:
           requires:
             - prep-deps-npm
+      - test-deps:
+          requires:
+            - prep-deps-npm
       - test-e2e:
           requires:
             - prep-deps-npm
             - prep-build
-      - job-screens:
-          requires:
-            - prep-deps-npm
-            - prep-build
-      - job-publish:
-          requires:
-            - prep-deps-npm
-            - prep-build
-            - job-screens
       - test-unit:
           requires:
             - prep-deps-npm
@@ -52,13 +46,24 @@ workflows:
       - all-tests-pass:
           requires:
             - test-lint
+            - test-deps
             - test-unit
             - test-e2e
-            - job-screens
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
             - test-integration-flat-firefox
+      - job-screens:
+          requires:
+            - prep-deps-npm
+            - prep-build
+            - all-tests-pass
+      - job-publish:
+          requires:
+            - prep-deps-npm
+            - prep-build
+            - job-screens
+            - all-tests-pass
 
 jobs:
   prep-deps-npm:
@@ -143,6 +148,17 @@ jobs:
       - run:
           name: Test
           command: npm run lint
+
+  test-deps:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Revision }}
+      - run:
+          name: Test
+          command: npx nsp check
 
   test-e2e:
     docker:
