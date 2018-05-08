@@ -378,13 +378,13 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccount": {
-    "message": "导入账户",
+    "message": "导入账户"
   },
   "importAccountMsg": {
     "message":" Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
   "importAnAccount": {
-    "message": "导入一个账户",
+    "message": "导入一个账户"
   },
   "importDen": {
     "message": "导入存在的 DEN"
