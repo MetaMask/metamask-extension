@@ -39,12 +39,12 @@ describe('Metamask popup page', function () {
     })
 
     it(`selects MetaMask's extension id and opens it in the current tab`, async function () {
-      // // For latest Chrome version (when they updated the extension view)
-      // // Use piercing CSS selector /deep/ to access  the extension id in the Shadow Dom
-      // const elems = await driver.findElements(By.css('* /deep/ extensions-item'))
-      // extensionId = await elems[1].getAttribute('id')
-      const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
+      // For latest Chrome version (when they updated the extension view)
+      // Use piercing CSS selector /deep/ to access  the extension id in the Shadow Dom
+      const elems = await driver.findElements(By.css('* /deep/ extensions-item'))
       extensionId = await elems[1].getAttribute('id')
+      // const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
+      // extensionId = await elems[1].getAttribute('id')
       await driver.get(`chrome-extension://${extensionId}/popup.html`)
       await delay(500)
     })
