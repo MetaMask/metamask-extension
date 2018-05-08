@@ -39,7 +39,7 @@ async function captureAllScreens() {
   const extPath = path.resolve('dist/chrome')
   driver = buildWebDriver(extPath)
   await driver.get('chrome://extensions-frame')
-  const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
+  const elems = await driver.findElements(By.css('* /deep/ extensions-item'))
   const extensionId = await elems[1].getAttribute('id')
   await driver.get(`chrome-extension://${extensionId}/home.html`)
   await delay(500)
