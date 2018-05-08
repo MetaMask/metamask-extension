@@ -638,7 +638,7 @@
     "message": "还原保险柜"
   },
   "required": {
-    "message": "Required"
+    "message": "必填"
   },
   "retryWithMoreGas": {
     "message": "使用更高的 Gas Price 重试"
