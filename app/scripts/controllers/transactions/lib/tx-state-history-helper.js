@@ -25,26 +25,31 @@ function migrateFromSnapshotsToDiffs (longHistory) {
 }
 
 /**
-  generates an array of history objects sense the previous state.
-  The object has the keys opp(the operation preformed),
-  path(the key and if a nested object then each key will be seperated with a `/`)
-  value
-  with the first entry having the note
+  Generates an array of history objects sense the previous state.
+  The object has the keys 
+    op (the operation performed),
+    path (the key and if a nested object then each key will be seperated with a `/`)
+    value
+  with the first entry having the note and a timestamp when the change took place
   @param previousState {object} - the previous state of the object
   @param newState {object} - the update object
   @param note {string} - a optional note for the state change
-  @reurns {array}
+  @returns {array}
 */
 function generateHistoryEntry (previousState, newState, note) {
   const entry = jsonDiffer.compare(previousState, newState)
   // Add a note to the first op, since it breaks if we append it to the entry
-  if (note && entry[0]) entry[0].note = note
+  if (entry[0]) {
+    if (note) entry[0].note = note
+
+    entry[0].timestamp = (new Date()).getTime()
+  }
   return entry
 }
 
 /**
   Recovers previous txMeta state obj
-  @return {object}
+  @returns {object}
 */
 function replayHistory (_shortHistory) {
   const shortHistory = clone(_shortHistory)
