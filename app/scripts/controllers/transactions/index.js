@@ -114,7 +114,7 @@ class TransactionController extends EventEmitter {
   /**
     Check if a txMeta in the list with the same nonce has been confirmed in a block
     if the txParams dont have a nonce will return false
-    @returns {boolean} weather the nonce has been used in a transaction confirmed in a block
+    @returns {boolean} whether the nonce has been used in a transaction confirmed in a block
     @param {object} txMeta - the txMeta object
   */
   async isNonceTaken (txMeta) {
