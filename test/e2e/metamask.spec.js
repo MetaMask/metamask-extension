@@ -16,9 +16,35 @@ describe('Metamask popup page', function () {
   before(async function () {
     const extPath = path.resolve('dist/chrome')
     driver = buildWebDriver(extPath)
-    await driver.get('chrome://extensions-frame')
-    const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
-    const extensionId = await elems[1].getAttribute('id')
+
+    const logs = await driver.manage().logs().get("driver");
+    
+    const responseStr = 'DevTools response: '
+    let extensionId
+    for (let {message} of logs) {
+      
+      if (extensionId) break
+
+      if (!message.startsWith(responseStr + '[ ')) continue
+
+      const response = message.substring(responseStr.length)
+
+      const responseParts = JSON.parse(response)
+
+      if (!Array.isArray(responseParts)) continue
+
+      for (let {title, url} of responseParts) {
+        if (title !== 'MetaMask') continue
+
+        const regexp = new RegExp('chrome-extension:\/\/([a-z]+)\/_generated_background_page.html', 'i')
+        const result = url.match(regexp)
+        if (!result) { assert.fail('could not find extension id') }
+
+        extensionId = result[1]
+        break
+      }
+    }
+
     await driver.get(`chrome-extension://${extensionId}/popup.html`)
     await delay(500)
   })
