@@ -44,7 +44,7 @@ async function captureAllScreens() {
   const responseStr = 'DevTools response: '
   let extensionId
   for (let {message} of logs) {
-    
+
     if (extensionId) break
 
     if (!message.startsWith(responseStr + '[ ')) continue
