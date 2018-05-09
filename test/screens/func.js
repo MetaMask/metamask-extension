@@ -13,6 +13,9 @@ exports.buildWebDriver = function buildWebDriver (extPath) {
         args: [`load-extension=${extPath}`],
       },
     })
+    .setLoggingPrefs( {
+      "driver": "DEBUG",
+    })
     .forBrowser('chrome')
     .build()
 }
