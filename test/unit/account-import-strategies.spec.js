@@ -24,7 +24,7 @@ describe('Account Import Strategies', function () {
   it('imports json string and password to return a private key', async function () {
     const fileContentsPassword = 'password1'
     const importJson = await accountImporter.importAccount('JSON File', [ json, fileContentsPassword])
-    console.log(importJson)
+    assert.equal(importJson, '0x5733876abe94146069ce8bcbabbde2677f2e35fa33e875e92041ed2ac87e5bc7')
   })
 
 })
