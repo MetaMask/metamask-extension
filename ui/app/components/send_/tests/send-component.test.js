@@ -27,6 +27,7 @@ sinon.spy(SendTransactionScreen.prototype, 'updateGas')
 
 describe('Send Component', function () {
   let wrapper
+  let instance
 
   beforeEach(() => {
     wrapper = shallow(<SendTransactionScreen

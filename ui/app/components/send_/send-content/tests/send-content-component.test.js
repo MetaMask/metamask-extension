@@ -9,7 +9,7 @@ import SendFromRow from '../send-from-row/send-from-row.container'
 import SendGasRow from '../send-gas-row/send-gas-row.container'
 import SendToRow from '../send-to-row/send-to-row.container'
 
-describe('Send Component', function () {
+describe('SendContent Component', function () {
   let wrapper
 
   beforeEach(() => {
@@ -29,10 +29,10 @@ describe('Send Component', function () {
 
     it('should render the correct row components as grandchildren of the PageContainerContent component', () => {
       const PageContainerContentChild = wrapper.find(PageContainerContent).children()
-      PageContainerContentChild.childAt(0).is(SendFromRow)
-      PageContainerContentChild.childAt(1).is(SendToRow)
-      PageContainerContentChild.childAt(2).is(SendAmountRow)
-      PageContainerContentChild.childAt(3).is(SendGasRow)
+      assert(PageContainerContentChild.childAt(0).is(SendFromRow))
+      assert(PageContainerContentChild.childAt(1).is(SendToRow))
+      assert(PageContainerContentChild.childAt(2).is(SendAmountRow))
+      assert(PageContainerContentChild.childAt(3).is(SendGasRow))
     })
   })
 })

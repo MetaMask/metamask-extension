@@ -16,8 +16,9 @@ const historySpies = {
 
 sinon.spy(SendHeader.prototype, 'onClose')
 
-describe('Send Component', function () {
+describe('SendHeader Component', function () {
   let wrapper
+  let instance
 
   beforeEach(() => {
     wrapper = shallow(<SendHeader

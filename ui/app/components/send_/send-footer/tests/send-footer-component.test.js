@@ -21,8 +21,9 @@ const MOCK_EVENT = { preventDefault: () => {} }
 sinon.spy(SendFooter.prototype, 'onCancel')
 sinon.spy(SendFooter.prototype, 'onSubmit')
 
-describe('Send Component', function () {
+describe('SendFooter Component', function () {
   let wrapper
+  let instance
 
   beforeEach(() => {
     wrapper = shallow(<SendFooter
