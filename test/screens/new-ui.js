@@ -11,6 +11,7 @@ const sizeOfPng = require('image-size/lib/types/png')
 const By = webdriver.By
 const { delay, buildWebDriver } = require('./func')
 const localesIndex = require('../../app/_locales/index.json')
+const assert = require('assert')
 
 let driver
 
@@ -38,9 +39,21 @@ async function captureAllScreens() {
   // setup selenium and install extension
   const extPath = path.resolve('dist/chrome')
   driver = buildWebDriver(extPath)
-  await driver.get('chrome://extensions-frame')
-  const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
-  const extensionId = await elems[1].getAttribute('id')
+  await driver.get('chrome://extensions')
+  const elems = await driver.findElements(By.css('body /deep/ extensions-item'))
+  let metamaskElement
+  for (let i=0; i< elems.length; i++) {
+    let nameElement = await elems[i].findElement(By.css('* /deep/ #name'))
+    let name = await nameElement.getText()
+    if (name === 'MetaMask') {
+      metamaskElement = elems[i]
+      break
+    }
+  }
+
+  assert.ok(metamaskElement, 'could not find MetaMask extension')
+
+  const extensionId = await metamaskElement.getAttribute('id')
   await driver.get(`chrome-extension://${extensionId}/home.html`)
   await delay(500)
   tabs = await driver.getAllWindowHandles()
