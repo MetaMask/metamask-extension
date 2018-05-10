@@ -21,6 +21,7 @@
   display: flex;
   justify-content: center;
   background: #f7861c;
+  flex: 0 0 auto;
 }
 
 .alpha-warning,

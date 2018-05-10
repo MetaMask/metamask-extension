@@ -21,7 +21,7 @@ async function runTxListItemsTest(assert, done) {
   selectState.val('tx list items')
   reactTriggerChange(selectState[0])
 
-  const metamaskLogo = await queryAsync($, '.left-menu-wrapper')
+  const metamaskLogo = await queryAsync($, '.app-header__logo-container')
   assert.ok(metamaskLogo[0], 'metamask logo present')
   metamaskLogo[0].click()
 
@@ -46,7 +46,7 @@ async function runTxListItemsTest(assert, done) {
   const failedTx = txListItems[4]
   const failedTxRenderedStatus = await findAsync($(failedTx), '.tx-list-status')
   assert.equal(failedTxRenderedStatus[0].textContent, 'Failed', 'failedTx has correct label')
-  
+
   const shapeShiftTx = txListItems[5]
   const shapeShiftTxStatus = await findAsync($(shapeShiftTx), '.flex-column div:eq(1)')
   assert.equal(shapeShiftTxStatus[0].textContent, 'No deposits received', 'shapeShiftTx has correct status')
