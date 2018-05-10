@@ -401,7 +401,7 @@ class TransactionStateManager extends EventEmitter {
     this.emit(`${txMeta.id}:${status}`, txId)
     this.emit(`tx:status-update`, txId, status)
     if (['submitted', 'rejected', 'failed'].includes(status)) {
-       this.emit(`${txMeta.id}:finished`, txMeta)
+      this.emit(`${txMeta.id}:finished`, txMeta)
     }
     this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
     this.emit('update:badge')

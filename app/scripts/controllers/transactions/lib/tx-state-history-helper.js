@@ -26,7 +26,7 @@ function migrateFromSnapshotsToDiffs (longHistory) {
 
 /**
   Generates an array of history objects sense the previous state.
-  The object has the keys 
+  The object has the keys
     op (the operation performed),
     path (the key and if a nested object then each key will be seperated with a `/`)
     value
