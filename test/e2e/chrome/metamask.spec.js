@@ -102,7 +102,8 @@ describe('Metamask popup page', function () {
 
     it('shows value was created and seed phrase', async () => {
       await delay(300)
-      await driver.findElement(By.css('.twelve-word-phrase')).getText()
+      const seedPhrase = await driver.findElement(By.css('.twelve-word-phrase')).getText()
+      assert.equal(seedPhrase.split(' ').length, 12)
       const continueAfterSeedPhrase = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > button:nth-child(4)'))
       assert.equal(await continueAfterSeedPhrase.getText(), `I'VE COPIED IT SOMEWHERE SAFE`)
       await continueAfterSeedPhrase.click()

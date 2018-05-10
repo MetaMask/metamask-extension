@@ -9,7 +9,7 @@ const By = webdriver.By
 const { delay, buildFirefoxWebdriver } = require('../func')
 
 describe('', function () {
-  let driver, seedPhase, accountAddress, tokenAddress, extensionId
+  let driver, accountAddress, tokenAddress, extensionId
 
   this.timeout(0)
 
@@ -34,7 +34,7 @@ describe('', function () {
 
     it('switches to Firefox addon list', async function () {
       await driver.get('about:debugging#addons')
-      await delay(10000)
+      await delay(700)
     })
 
     it(`selects MetaMask's extension id and opens it in the current tab`, async function () {
@@ -102,7 +102,8 @@ describe('', function () {
 
     it('shows value was created and seed phrase', async () => {
       await delay(300)
-      seedPhase = await driver.findElement(By.css('.twelve-word-phrase')).getText()
+      cosnt seedPhase = await driver.findElement(By.css('.twelve-word-phrase')).getText()
+      assert.equal(seedPhrase.split(' ').length, 12)
       const continueAfterSeedPhrase = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > button:nth-child(4)'))
       assert.equal(await continueAfterSeedPhrase.getText(), `I'VE COPIED IT SOMEWHERE SAFE`)
       await continueAfterSeedPhrase.click()
