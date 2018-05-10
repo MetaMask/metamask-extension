@@ -54,6 +54,7 @@ async function captureAllScreens() {
   assert.ok(metamaskElement, 'could not find MetaMask extension')
 
   const extensionId = await metamaskElement.getAttribute('id')
+  await driver.get(`chrome-extension://${extensionId}/home.html`)
   await delay(500)
   tabs = await driver.getAllWindowHandles()
   await driver.switchTo().window(tabs[0])
