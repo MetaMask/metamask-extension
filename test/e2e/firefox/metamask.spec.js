@@ -34,7 +34,7 @@ describe('', function () {
 
     it('switches to Firefox addon list', async function () {
       await driver.get('about:debugging#addons')
-      await delay(700)
+      await delay(1000)
     })
 
     it(`selects MetaMask's extension id and opens it in the current tab`, async function () {
