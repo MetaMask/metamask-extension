@@ -9,7 +9,7 @@ const By = webdriver.By
 const { delay, buildChromeWebDriver } = require('../func')
 
 describe('Metamask popup page', function () {
-  let driver, seedPhase, accountAddress, tokenAddress, extensionId
+  let driver, accountAddress, tokenAddress, extensionId
 
   this.timeout(0)
 
@@ -39,12 +39,7 @@ describe('Metamask popup page', function () {
     })
 
     it(`selects MetaMask's extension id and opens it in the current tab`, async function () {
-      // For latest Chrome version (when they updated the extension view)
-      // Use piercing CSS selector /deep/ to access  the extension id in the Shadow Dom
-      const elems = await driver.findElements(By.css('* /deep/ extensions-item'))
-      extensionId = await elems[1].getAttribute('id')
-      // const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
-      // extensionId = await elems[1].getAttribute('id')
+      extensionId = await getExtensionId()
       await driver.get(`chrome-extension://${extensionId}/popup.html`)
       await delay(500)
     })
@@ -107,7 +102,7 @@ describe('Metamask popup page', function () {
 
     it('shows value was created and seed phrase', async () => {
       await delay(300)
-      seedPhase = await driver.findElement(By.css('.twelve-word-phrase')).getText()
+      await driver.findElement(By.css('.twelve-word-phrase')).getText()
       const continueAfterSeedPhrase = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > button:nth-child(4)'))
       assert.equal(await continueAfterSeedPhrase.getText(), `I'VE COPIED IT SOMEWHERE SAFE`)
       await continueAfterSeedPhrase.click()
@@ -294,11 +289,16 @@ describe('Metamask popup page', function () {
     })
   })
 
-  async function setProviderType(type) {
+  async function getExtensionId () {
+    const extension = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("#container > div.items-container > extensions-item:nth-child(2)").getAttribute("id")')
+    return extension
+  }
+
+  async function setProviderType (type) {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
-  async function verboseReportOnFailure(test) {
+  async function verboseReportOnFailure (test) {
     const artifactDir = `./test-artifacts/chrome/${test.title}`
     const filepathBase = `${artifactDir}/test-failure`
     await pify(mkdirp)(artifactDir)
