@@ -11,6 +11,7 @@ const sizeOfPng = require('image-size/lib/types/png')
 const By = webdriver.By
 const { delay, buildWebDriver } = require('./func')
 const localesIndex = require('../../app/_locales/index.json')
+const assert = require('assert')
 
 let driver
 
