@@ -71,10 +71,23 @@ async function runFirstTimeUsageTest (assert, done) {
   assert.ok(lock, 'Lock menu item found')
   lock.click()
 
-  const pwBox2 = (await findAsync(app, '#password-box'))[0]
-  pwBox2.value = PASSWORD
+  await timeout(1000)
 
-  const createButton2 = (await findAsync(app, 'button.primary'))[0]
+  const pwBox2 = (await findAsync(app, '#password'))[0]
+  pwBox2.focus()
+  await timeout(1000)
+
+  // Used to set values on TextField input component
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype, 'value'
+  ).set
+
+  nativeInputValueSetter.call(pwBox2, PASSWORD)
+
+  var ev2 = new Event('input', { bubbles: true})
+  pwBox2.dispatchEvent(ev2)
+
+  const createButton2 = (await findAsync(app, 'button[type="submit"]'))[0]
   createButton2.click()
 
   const detail2 = (await findAsync(app, '.wallet-view'))[0]

@@ -1,15 +1,15 @@
 .app-header {
   align-items: center;
-  visibility: visible;
   background: $gallery;
   position: relative;
   z-index: $header-z-index;
   display: flex;
   flex-flow: column nowrap;
+  width: 100%;
+  flex: 0 0 auto;
 
   @media screen and (max-width: 575px) {
     padding: 12px;
-    width: 100%;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, .08);
     z-index: $mobile-header-z-index;
   }
@@ -17,48 +17,75 @@
   @media screen and (min-width: 576px) {
     height: 75px;
     justify-content: center;
-  }
 
-  .metafox-icon {
-    cursor: pointer;
-  }
-}
-
-.app-header--initialized {
-
-  @media screen and (min-width: 576px) {
-    &::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 32px;
-      background: $gallery;
-      bottom: -32px;
+    &--back-drop {
+      &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 32px;
+        background: $gallery;
+        bottom: -32px;
+      }
     }
   }
-}
 
-.app-header-contents {
-  display: flex;
-  justify-content: space-between;
-  flex-flow: row nowrap;
-  width: 100%;
-  height: 6.9vh;
-
-  @media screen and (max-width: 575px) {
-    height: 100%;
+  &__metafox {
+    cursor: pointer;
   }
 
-  @media screen and (min-width: 576px) {
-    width: 85vw;
+  &__beta-label {
+    font-family: Roboto;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: .8rem;
+    color: $buttercup;
+    margin-left: 5px;
+    line-height: initial;
+
+    @media screen and (max-width: 575px) {
+      display: none;
+    }
   }
 
-  @media screen and (min-width: 769px) {
-    width: 80vw;
+  &__contents {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row nowrap;
+    width: 100%;
+
+    @media screen and (max-width: 575px) {
+      height: 100%;
+    }
+
+    @media screen and (min-width: 576px) {
+      width: 85vw;
+    }
+
+    @media screen and (min-width: 769px) {
+      width: 80vw;
+    }
+
+    @media screen and (min-width: 1281px) {
+      width: 62vw;
+    }
   }
 
-  @media screen and (min-width: 1281px) {
-    width: 62vw;
+  &__logo-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__account-menu-container {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    .identicon {
+      cursor: pointer;
+    }
   }
 }
 
@@ -76,20 +103,6 @@
   }
 }
 
-.beta-label {
-  font-family: Roboto;
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: .8rem;
-  color: $buttercup;
-  margin-left: 5px;
-  line-height: initial;
-
-  @media screen and (max-width: 575px) {
-    display: none;
-  }
-}
-
 h2.page-subtitle {
   text-transform: uppercase;
   color: #aeaeae;
@@ -101,21 +114,4 @@ h2.page-subtitle {
   display: flex;
   flex-direction: row;
   align-items: center;
-}
-
-.left-menu-wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  cursor: pointer;
-}
-
-.header__right-actions {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-
-  .identicon {
-    cursor: pointer;
-  }
 }

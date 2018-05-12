@@ -393,6 +393,9 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "importUsingSeed": {
+    "message": "Import using account seed phrase"
+  },
   "infoHelp": {
     "message": "Info & Help"
   },
@@ -632,7 +635,7 @@
     "message": "Reset Account"
   },
   "restoreFromSeed": {
-    "message": "Restore from seed phrase"
+    "message": "Restore account?"
   },
   "restoreVault": {
     "message": "Restore Vault"
@@ -896,6 +899,9 @@
   "unknownNetworkId": {
     "message": "Unknown network ID"
   },
+  "unlockMessage": {
+    "message": "The decentralized web awaits"
+  },
   "uriErrorMsg": {
     "message": "URIs require the appropriate HTTP/HTTPS prefix."
   },
@@ -923,6 +929,9 @@
   },
   "warning": {
     "message": "Warning"
+  },
+  "welcomeBack": {
+    "message": "Welcome Back!"
   },
   "welcomeBeta": {
     "message": "Welcome to MetaMask Beta"

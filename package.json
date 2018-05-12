@@ -136,6 +136,7 @@
     "lodash.shuffle": "^4.2.0",
     "lodash.uniqby": "^4.7.0",
     "loglevel": "^1.4.1",
+    "material-ui": "1.0.0-beta.44",
     "metamascara": "^2.0.0",
     "metamask-logo": "^2.1.4",
     "mkdirp": "^0.5.1",
