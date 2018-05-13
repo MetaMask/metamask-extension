@@ -8,6 +8,9 @@ const styles = {
     '&$cssFocused': {
       color: '#aeaeae',
     },
+    '&$cssError': {
+      color: '#aeaeae',
+    },
     fontWeight: '400',
     color: '#aeaeae',
   },
@@ -17,6 +20,7 @@ const styles = {
       backgroundColor: '#f7861c',
     },
   },
+  cssError: {},
 }
 
 const TextField = props => {
@@ -30,6 +34,7 @@ const TextField = props => {
         FormLabelClasses: {
           root: classes.cssLabel,
           focused: classes.cssFocused,
+          error: classes.cssError,
         },
       }}
       InputProps={{
