@@ -238,7 +238,7 @@ describe('', function () {
     // There is an issue with blank confirmation window, but the button is still there and the driver is able to clicked (?.?)
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
-      await driver.switchTo().window(windowHandles[2])
+      await driver.switchTo().window(windowHandles[windowHandles.length - 1])
       const metamaskSubmit = await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'))
       await metamaskSubmit.click()
       await delay(1000)
