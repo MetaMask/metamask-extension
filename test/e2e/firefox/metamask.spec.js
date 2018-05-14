@@ -126,7 +126,7 @@ describe('', function () {
     it('accepts account password after lock', async () => {
       await delay(500)
       await driver.findElement(By.id('password-box')).sendKeys('123456789')
-      await driver.findElement(By.css('button')).click()
+      await driver.findElement(By.id('password-box')).sendKeys(webdriver.Key.ENTER)
       await delay(500)
     })
 
