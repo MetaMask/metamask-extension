@@ -59,6 +59,7 @@ describe('', function () {
     })
 
     it('shows privacy notice', async () => {
+      await delay(300)
       const privacy = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
       await driver.findElement(By.css('button')).click()
