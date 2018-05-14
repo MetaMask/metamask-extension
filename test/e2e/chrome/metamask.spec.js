@@ -291,7 +291,7 @@ describe('Metamask popup page', function () {
   })
 
   async function getExtensionId () {
-    const extension = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("#container > div.items-container > extensions-item:nth-child(2)").getAttribute("id")')
+    const extension = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("extensions-item:nth-child(2)").getAttribute("id")')
     return extension
   }
 
