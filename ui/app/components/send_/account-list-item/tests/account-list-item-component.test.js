@@ -46,6 +46,17 @@ describe('AccountListItem Component', function () {
       assert(wrapper.find('.mockClassName').hasClass('account-list-item'))
     })
 
+    it('should call handleClick with the expected props when the root div is clicked', () => {
+      const { onClick } = wrapper.find('.mockClassName').props()
+      assert.equal(propsMethodSpies.handleClick.callCount, 0)
+      onClick()
+      assert.equal(propsMethodSpies.handleClick.callCount, 1)
+      assert.deepEqual(
+        propsMethodSpies.handleClick.getCall(0).args,
+        [{ address: 'mockAddress', name: 'mockName', balance: 'mockBalance' }]
+      )
+    })
+
     it('should have a top row div', () => {
       assert.equal(wrapper.find('.mockClassName > .account-list-item__top-row').length, 1)
       assert(wrapper.find('.mockClassName > .account-list-item__top-row').is('div'))

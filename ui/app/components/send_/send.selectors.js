@@ -165,6 +165,7 @@ function getSelectedToken (state) {
 
 function getSelectedTokenContract (state) {
   const selectedToken = getSelectedToken(state)
+
   return selectedToken
     ? global.eth.contract(abi).at(selectedToken.address)
     : null
