@@ -237,7 +237,7 @@ describe('Metamask popup page', function () {
 
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
-      await driver.switchTo().window(windowHandles[2])
+      await driver.switchTo().window(windowHandles[windowHandles.length - 1])
       const metamaskSubmit = await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'))
       await metamaskSubmit.click()
       await delay(1000)
@@ -291,7 +291,7 @@ describe('Metamask popup page', function () {
   })
 
   async function getExtensionId () {
-    const extension = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("#container > div.items-container > extensions-item:nth-child(2)").getAttribute("id")')
+    const extension = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("extensions-item:nth-child(2)").getAttribute("id")')
     return extension
   }
 

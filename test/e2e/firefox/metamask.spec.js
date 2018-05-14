@@ -59,6 +59,7 @@ describe('', function () {
     })
 
     it('shows privacy notice', async () => {
+      await delay(300)
       const privacy = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
       await driver.findElement(By.css('button')).click()
@@ -125,7 +126,7 @@ describe('', function () {
     it('accepts account password after lock', async () => {
       await delay(500)
       await driver.findElement(By.id('password-box')).sendKeys('123456789')
-      await driver.findElement(By.css('button')).click()
+      await driver.findElement(By.id('password-box')).sendKeys(webdriver.Key.ENTER)
       await delay(500)
     })
 
@@ -238,7 +239,7 @@ describe('', function () {
     // There is an issue with blank confirmation window, but the button is still there and the driver is able to clicked (?.?)
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
-      await driver.switchTo().window(windowHandles[2])
+      await driver.switchTo().window(windowHandles[windowHandles.length - 1])
       const metamaskSubmit = await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'))
       await metamaskSubmit.click()
       await delay(1000)
