@@ -724,7 +724,7 @@
     "message": "New Password (min 8 chars)"
   },
   "seedPhraseReq": {
-    "message": "seed phrases are 12 words long"
+    "message": "Seed phrases are 12 words long"
   },
   "select": {
     "message": "Select"

@@ -74,8 +74,8 @@ async function captureAllScreens() {
   await driver.findElement(By.css('button')).click()
   await captureLanguageScreenShots('create password')
 
-  const passwordBox = await driver.findElement(By.css('input[type=password]:nth-of-type(1)'))
-  const passwordBoxConfirm = await driver.findElement(By.css('input[type=password]:nth-of-type(2)'))
+  const passwordBox = await driver.findElement(By.css('input#create-password'))
+  const passwordBoxConfirm = await driver.findElement(By.css('input#confirm-password'))
   passwordBox.sendKeys('123456789')
   passwordBoxConfirm.sendKeys('123456789')
   await delay(500)
