@@ -15,7 +15,6 @@ const propsMethodSpies = {
 
 describe('FromDropdown Component', function () {
   let wrapper
-  let instance
 
   beforeEach(() => {
     wrapper = shallow(<FromDropdown
@@ -26,7 +25,6 @@ describe('FromDropdown Component', function () {
       openDropdown={propsMethodSpies.openDropdown}
       selectedAccount={ { address: 'mockAddress' } }
     />, { context: { t: str => str + '_t' } })
-    instance = wrapper.instance()
   })
 
   afterEach(() => {

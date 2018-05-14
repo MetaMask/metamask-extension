@@ -11,11 +11,8 @@ const propsMethodSpies = {
   showCustomizeGasModal: sinon.spy(),
 }
 
-const MOCK_EVENT = { preventDefault: () => {} }
-
 describe('SendGasRow Component', function () {
   let wrapper
-  let instance
 
   beforeEach(() => {
     wrapper = shallow(<SendGasRow
@@ -25,7 +22,6 @@ describe('SendGasRow Component', function () {
       gasTotal={'mockGasTotal'}
       showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
     />, { context: { t: str => str + '_t' } })
-    instance = wrapper.instance()
   })
 
   afterEach(() => {
@@ -57,10 +53,10 @@ describe('SendGasRow Component', function () {
         gasTotal,
         onClick,
       } = wrapper.find(SendRowWrapper).childAt(0).props()
-      assert.equal(conversionRate,20)
-      assert.equal(convertedCurrency,'mockConvertedCurrency')
+      assert.equal(conversionRate, 20)
+      assert.equal(convertedCurrency, 'mockConvertedCurrency')
       assert.equal(gasLoadingError, false)
-      assert.equal(gasTotal,'mockGasTotal')
+      assert.equal(gasTotal, 'mockGasTotal')
       assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 0)
       onClick()
       assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 1)

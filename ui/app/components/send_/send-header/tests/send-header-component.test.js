@@ -18,7 +18,6 @@ sinon.spy(SendHeader.prototype, 'onClose')
 
 describe('SendHeader Component', function () {
   let wrapper
-  let instance
 
   beforeEach(() => {
     wrapper = shallow(<SendHeader
@@ -26,7 +25,6 @@ describe('SendHeader Component', function () {
       history={historySpies}
       isToken={false}
     />, { context: { t: str => str } })
-    instance = wrapper.instance()
   })
 
   afterEach(() => {

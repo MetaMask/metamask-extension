@@ -15,7 +15,6 @@ sinon.spy(SendDropdownList.prototype, 'getListItemIcon')
 
 describe('SendDropdownList Component', function () {
   let wrapper
-  let instance
 
   beforeEach(() => {
     wrapper = shallow(<SendDropdownList
@@ -28,7 +27,6 @@ describe('SendDropdownList Component', function () {
       onSelect={propsMethodSpies.onSelect}
       activeAddress={'mockAddress2'}
     />, { context: { t: str => str + '_t' } })
-    instance = wrapper.instance()
   })
 
   afterEach(() => {
@@ -81,7 +79,6 @@ describe('SendDropdownList Component', function () {
           account,
           className,
           handleClick,
-          icon,
         } = accountListItem.props()
         assert.deepEqual(account, { address: 'mockAccount' + index })
         assert.equal(className, 'account-list-item__dropdown')

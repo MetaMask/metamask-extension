@@ -27,7 +27,6 @@ sinon.spy(SendTransactionScreen.prototype, 'updateGas')
 
 describe('Send Component', function () {
   let wrapper
-  let instance
 
   beforeEach(() => {
     wrapper = shallow(<SendTransactionScreen
@@ -51,7 +50,6 @@ describe('Send Component', function () {
       updateSendErrors={propsMethodSpies.updateSendErrors}
       updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
     />)
-    instance = wrapper.instance()
   })
 
   afterEach(() => {

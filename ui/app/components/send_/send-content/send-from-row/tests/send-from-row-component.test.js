@@ -14,8 +14,6 @@ const propsMethodSpies = {
   setSendTokenBalance: sinon.spy(),
 }
 
-const MOCK_EVENT = { preventDefault: () => {} }
-
 sinon.spy(SendFromRow.prototype, 'handleFromChange')
 
 describe('SendFromRow Component', function () {
@@ -60,8 +58,8 @@ describe('SendFromRow Component', function () {
     it('should call tokenContract.balanceOf and setSendTokenBalance if tokenContract is defined', async () => {
       wrapper.setProps({
         tokenContract: {
-          balanceOf: () => new Promise((resolve) => resolve('mockUsersToken'))
-        }
+          balanceOf: () => new Promise((resolve) => resolve('mockUsersToken')),
+        },
       })
       assert.equal(propsMethodSpies.setSendTokenBalance.callCount, 0)
       await instance.handleFromChange('mockFrom')
@@ -81,9 +79,7 @@ describe('SendFromRow Component', function () {
 
     it('should pass the correct props to SendRowWrapper', () => {
       const {
-        errorType,
         label,
-        showError,
       } = wrapper.find(SendRowWrapper).props()
 
       assert.equal(label, 'from_t:')

@@ -7,7 +7,7 @@ import Identicon from '../../../identicon'
 import CurrencyDisplay from '../../../send/currency-display'
 
 const utilsMethodStubs = {
-  checksumAddress: sinon.stub().returns('mockCheckSumAddress')
+  checksumAddress: sinon.stub().returns('mockCheckSumAddress'),
 }
 
 const AccountListItem = proxyquire('../account-list-item.component.js', {
@@ -21,7 +21,6 @@ const propsMethodSpies = {
 
 describe('AccountListItem Component', function () {
   let wrapper
-  let instance
 
   beforeEach(() => {
     wrapper = shallow(<AccountListItem
@@ -34,7 +33,6 @@ describe('AccountListItem Component', function () {
       handleClick={propsMethodSpies.handleClick}
       icon={<i className="mockIcon" />}
     />, { context: { t: str => str + '_t' } })
-    instance = wrapper.instance()
   })
 
   afterEach(() => {

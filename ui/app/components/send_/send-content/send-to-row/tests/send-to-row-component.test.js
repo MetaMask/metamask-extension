@@ -14,8 +14,6 @@ const propsMethodSpies = {
   updateSendToError: sinon.spy(),
 }
 
-const MOCK_EVENT = { preventDefault: () => {} }
-
 sinon.spy(SendToRow.prototype, 'handleToChange')
 
 describe('SendToRow Component', function () {

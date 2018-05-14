@@ -23,7 +23,6 @@ sinon.spy(SendFooter.prototype, 'onSubmit')
 
 describe('SendFooter Component', function () {
   let wrapper
-  let instance
 
   beforeEach(() => {
     wrapper = shallow(<SendFooter
@@ -46,7 +45,6 @@ describe('SendFooter Component', function () {
       unapprovedTxs={['mockTx']}
       update={propsMethodSpies.update}
     />, { context: { t: str => str } })
-    instance = wrapper.instance()
   })
 
   afterEach(() => {

@@ -14,8 +14,6 @@ const propsMethodSpies = {
   updateSendAmountError: sinon.spy(),
 }
 
-const MOCK_EVENT = { preventDefault: () => {} }
-
 sinon.spy(SendAmountRow.prototype, 'handleAmountChange')
 sinon.spy(SendAmountRow.prototype, 'validateAmount')
 
