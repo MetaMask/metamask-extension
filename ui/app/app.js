@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
-const { Route, Switch, withRouter } = require('react-router-dom')
+const { Route, Switch, withRouter, matchPath } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
@@ -22,22 +22,22 @@ const Home = require('./components/pages/home')
 const Authenticated = require('./components/pages/authenticated')
 const Initialized = require('./components/pages/initialized')
 const Settings = require('./components/pages/settings')
-const UnlockPage = require('./components/pages/unlock')
+const UnlockPage = require('./components/pages/unlock-page')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
-const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
 const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 
-const Loading = require('./components/loading')
-const NetworkIndicator = require('./components/network')
-const Identicon = require('./components/identicon')
+const Loading = require('./components/loading-screen')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
 const AccountMenu = require('./components/account-menu')
 
 // Global Modals
 const Modal = require('./components/modals/index').Modal
+
+const AppHeader = require('./components/app-header')
 
 // Routes
 const {
@@ -56,19 +56,10 @@ const {
 
 class App extends Component {
   componentWillMount () {
-    const {
-      currentCurrency,
-      setCurrentCurrencyToUSD,
-      isRevealingSeedWords,
-      clearSeedWords,
-    } = this.props
+    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
-    }
-
-    if (isRevealingSeedWords) {
-      clearSeedWords()
     }
   }
 
@@ -78,11 +69,11 @@ class App extends Component {
     return (
       h(Switch, [
         h(Route, { path: INITIALIZE_ROUTE, component: InitializeScreen }),
-        h(Initialized, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedConfirmation }),
         h(Initialized, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
-        h(Initialized, { path: SETTINGS_ROUTE, component: Settings }),
         h(Initialized, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
-        h(Initialized, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
+        h(Authenticated, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedConfirmation }),
+        h(Authenticated, { path: SETTINGS_ROUTE, component: Settings }),
+        h(Authenticated, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
         h(Authenticated, { path: CONFIRM_TRANSACTION_ROUTE, component: ConfirmTxScreen }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
@@ -90,6 +81,15 @@ class App extends Component {
         h(Authenticated, { path: DEFAULT_ROUTE, exact, component: Home }),
       ])
     )
+  }
+
+  renderAppHeader () {
+    const { location } = this.props
+    const isInitializing = matchPath(location.pathname, {
+      path: INITIALIZE_ROUTE, exact: false,
+    })
+
+    return isInitializing ? null : h(AppHeader)
   }
 
   render () {
@@ -128,8 +128,7 @@ class App extends Component {
         // global modal
         h(Modal, {}, []),
 
-        // app bar
-        this.renderAppBar(),
+        this.renderAppHeader(),
 
         // sidebar
         this.renderSidebar(),
@@ -144,6 +143,7 @@ class App extends Component {
 
         (isLoading || isLoadingNetwork) && h(Loading, {
           loadingMessage: loadMessage,
+          fullScreen: true,
         }),
 
         // content
@@ -203,110 +203,6 @@ class App extends Component {
         },
       }, []) : undefined,
     ])
-  }
-
-  renderAppBar () {
-    const {
-      isUnlocked,
-      network,
-      provider,
-      networkDropdownOpen,
-      showNetworkDropdown,
-      hideNetworkDropdown,
-      isInitialized,
-      welcomeScreenSeen,
-      isPopup,
-      betaUI,
-    } = this.props
-
-    if (window.METAMASK_UI_TYPE === 'notification') {
-      return null
-    }
-
-    const props = this.props
-    const {isMascara, isOnboarding} = props
-
-    // Do not render header if user is in mascara onboarding
-    if (isMascara && isOnboarding) {
-      return null
-    }
-
-    // Do not render header if user is in mascara buy ether
-    if (isMascara && props.currentView.name === 'buyEth') {
-      return null
-    }
-
-    return (
-
-      h('.full-width', {
-        style: {},
-      }, [
-
-        (isInitialized || welcomeScreenSeen || isPopup || !betaUI) && h('.app-header.flex-row.flex-space-between', {
-          className: classnames({
-            'app-header--initialized': !isOnboarding,
-          }),
-        }, [
-          h('div.app-header-contents', {}, [
-            h('div.left-menu-wrapper', {
-              onClick: () => props.history.push(DEFAULT_ROUTE),
-            }, [
-              // mini logo
-              h('img.metafox-icon', {
-                height: 42,
-                width: 42,
-                src: '/images/metamask-fox.svg',
-              }),
-
-              // metamask name
-              h('.flex-row', [
-                h('h1', this.context.t('appName')),
-                h('div.beta-label', this.context.t('beta')),
-              ]),
-
-            ]),
-
-            betaUI && isInitialized && h('div.header__right-actions', [
-              h('div.network-component-wrapper', {
-                style: {},
-              }, [
-                // Network Indicator
-                h(NetworkIndicator, {
-                  network,
-                  provider,
-                  disabled: this.props.location.pathname === CONFIRM_TRANSACTION_ROUTE,
-                  onClick: (event) => {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    return networkDropdownOpen === false
-                      ? showNetworkDropdown()
-                      : hideNetworkDropdown()
-                  },
-                }),
-
-              ]),
-
-              isUnlocked && h('div.account-menu__icon', { onClick: this.props.toggleAccountMenu }, [
-                h(Identicon, {
-                  address: this.props.selectedAddress,
-                  diameter: 32,
-                }),
-              ]),
-            ]),
-          ]),
-        ]),
-
-        !isInitialized && !isPopup && betaUI && h('.alpha-warning__container', {}, [
-          h('h2', {
-            className: classnames({
-              'alpha-warning': welcomeScreenSeen,
-              'alpha-warning-welcome-screen': !welcomeScreenSeen,
-            }),
-          }, 'Please be aware that this version is still under development'),
-        ]),
-
-      ])
-    )
   }
 
   toggleMetamaskActive () {
@@ -402,8 +298,6 @@ App.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   t: PropTypes.func,
-  isRevealingSeedWords: PropTypes.bool,
-  clearSeedWords: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -484,7 +378,6 @@ function mapDispatchToProps (dispatch, ownProps) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
-    clearSeedWords: () => dispatch(actions.confirmSeedWords()),
   }
 }
 

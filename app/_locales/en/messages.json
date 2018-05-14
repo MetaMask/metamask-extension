@@ -98,6 +98,9 @@
   "clickCopy": {
     "message": "Click to Copy"
   },
+  "close": {
+    "message": "Close"
+  },
   "confirm": {
     "message": "Confirm"
   },
@@ -259,6 +262,9 @@
   "enterPasswordConfirm": {
     "message": "Enter your password to confirm"
   },
+  "enterPasswordContinue": {
+    "message": "Enter password to continue"
+  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -331,6 +337,9 @@
   "gasPriceRequired": {
     "message": "Gas Price Required"
   },
+  "generatingTransaction": {
+    "message": "Generating transaction"
+  },
   "getEther": {
     "message": "Get Ether"
   },
@@ -383,6 +392,9 @@
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "Import using account seed phrase"
   },
   "infoHelp": {
     "message": "Info & Help"
@@ -476,6 +488,9 @@
   "metamaskDescription": {
     "message": "MetaMask is a secure identity vault for Ethereum."
   },
+  "metamaskSeedWords": {
+    "message": "MetaMask Seed Words"
+  },
   "min": {
     "message": "Minimum"
   },
@@ -549,6 +564,9 @@
     "message": "or",
     "description": "choice between creating or importing a new account"
   },
+  "password": {
+    "message": "Password"
+  },
   "passwordCorrect": {
     "message": "Please make sure your password is correct."
   },
@@ -617,7 +635,7 @@
     "message": "Reset Account"
   },
   "restoreFromSeed": {
-    "message": "Restore from seed phrase"
+    "message": "Restore account?"
   },
   "restoreVault": {
     "message": "Restore Vault"
@@ -634,8 +652,17 @@
   "revealSeedWords": {
     "message": "Reveal Seed Words"
   },
+  "revealSeedWordsTitle": {
+    "message": "Seed Phrase"
+  },
+  "revealSeedWordsDescription": {
+    "message": "If you ever change browsers or move computers, you will need this seed phrase to access your accounts. Save them somewhere safe and secret."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "DO NOT share this phrase with anyone!"
+  },
   "revealSeedWordsWarning": {
-    "message": "Do not recover your seed words in a public place! These words can be used to steal all your accounts."
+    "message": "These words can be used to steal all your accounts."
   },
   "revert": {
     "message": "Revert"
@@ -676,6 +703,9 @@
   },
   "reprice_subtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
+  },
+  "saveAsCsvFile": {
+    "message": "Save as CSV File"
   },
   "saveAsFile": {
     "message": "Save as File",
@@ -869,6 +899,9 @@
   "unknownNetworkId": {
     "message": "Unknown network ID"
   },
+  "unlockMessage": {
+    "message": "The decentralized web awaits"
+  },
   "uriErrorMsg": {
     "message": "URIs require the appropriate HTTP/HTTPS prefix."
   },
@@ -897,6 +930,9 @@
   "warning": {
     "message": "Warning"
   },
+  "welcomeBack": {
+    "message": "Welcome Back!"
+  },
   "welcomeBeta": {
     "message": "Welcome to MetaMask Beta"
   },
@@ -909,7 +945,7 @@
   "youSign": {
     "message": "You are signing"
   },
-  "generatingTransaction": {
-    "message": "Generating transaction"
+  "yourPrivateSeedPhrase": {
+    "message": "Your private seed phrase"
   }
 }

@@ -284,8 +284,7 @@ CustomizeGasModal.prototype.render = function () {
         h(GasModalCard, {
           value: convertedGasPrice,
           min: forceGasMin || MIN_GAS_PRICE_GWEI,
-          // max: 1000,
-          step: multiplyCurrencies(MIN_GAS_PRICE_GWEI, 10),
+          step: 1,
           onChange: value => this.convertAndSetGasPrice(value),
           title: this.context.t('gasPrice'),
           copy: this.context.t('gasPriceCalculation'),
@@ -294,7 +293,6 @@ CustomizeGasModal.prototype.render = function () {
         h(GasModalCard, {
           value: convertedGasLimit,
           min: 1,
-          // max: 100000,
           step: 1,
           onChange: value => this.convertAndSetGasLimit(value),
           title: this.context.t('gasLimit'),

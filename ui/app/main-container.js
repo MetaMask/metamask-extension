@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const AccountAndTransactionDetails = require('./account-and-transaction-details')
 const Settings = require('./components/pages/settings')
-const UnlockScreen = require('./components/pages/unlock')
+const UnlockScreen = require('./components/pages/unlock-page')
 const log = require('loglevel')
 
 module.exports = MainContainer

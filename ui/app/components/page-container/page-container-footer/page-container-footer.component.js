@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Button from './components/button'
 
 export default class PageContainerFooter extends Component {
 
@@ -27,20 +28,24 @@ export default class PageContainerFooter extends Component {
     return (
       <div className="page-container__footer">
 
-        <button
-          className="btn-secondary--lg page-container__footer-button"
+        <Button
+          type="secondary"
+          large={true}
+          className="page-container__footer-button"
           onClick={() => onCancel()}
         >
           { this.context.t('cancel') || cancelText }
-        </button>
+        </Button>
 
-        <button
-          className="btn-primary--lg page-container__footer-button"
+        <Button
+          type="primary"
+          large={true}
+          className="page-container__footer-button"
           disabled={disabled}
           onClick={e => onSubmit(e)}
         >
           { this.context.t('next') || submitText }
-        </button>
+        </Button>
 
       </div>
     )

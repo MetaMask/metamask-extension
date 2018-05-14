@@ -1,4 +1,5 @@
 const abi = require('human-standard-token-abi')
+const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const {
@@ -88,7 +89,7 @@ var actions = {
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
   requestRevealSeed: requestRevealSeed,
-
+  requestRevealSeedWords,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
@@ -325,6 +326,7 @@ function tryUnlockMetamask (password) {
           background.verifySeedPhrase(err => {
             if (err) {
               dispatch(actions.displayWarning(err.message))
+              return reject(err)
             }
 
             resolve()
@@ -338,6 +340,7 @@ function tryUnlockMetamask (password) {
       .catch(err => {
         dispatch(actions.unlockFailed(err.message))
         dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
       })
   }
 }
@@ -354,11 +357,13 @@ function transitionBackward () {
   }
 }
 
-function clearSeedWordCache () {
-  log.debug(`background.clearSeedWordCache`)
+function confirmSeedWords () {
   return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.clearSeedWordCache`)
     return new Promise((resolve, reject) => {
       background.clearSeedWordCache((err, account) => {
+        dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
@@ -369,22 +374,6 @@ function clearSeedWordCache () {
         resolve(account)
       })
     })
-  }
-}
-
-function confirmSeedWords () {
-  return async dispatch => {
-    dispatch(actions.showLoadingIndication())
-    const account = await dispatch(clearSeedWordCache())
-    return dispatch(setIsRevealingSeedWords(false))
-      .then(() => {
-        dispatch(actions.hideLoadingIndication())
-        return account
-      })
-      .catch(() => {
-        dispatch(actions.hideLoadingIndication())
-        return account
-      })
   }
 }
 
@@ -450,6 +439,30 @@ function revealSeedConfirmation () {
   }
 }
 
+function verifyPassword (password) {
+  return new Promise((resolve, reject) => {
+    background.submitPassword(password, error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(true)
+    })
+  })
+}
+
+function verifySeedPhrase () {
+  return new Promise((resolve, reject) => {
+    background.verifySeedPhrase((error, seedWords) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(seedWords)
+    })
+  })
+}
+
 function requestRevealSeed (password) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
@@ -469,13 +482,29 @@ function requestRevealSeed (password) {
           }
 
           dispatch(actions.showNewVaultSeed(result))
+          dispatch(actions.hideLoadingIndication())
           resolve()
         })
       })
     })
-      .then(() => dispatch(setIsRevealingSeedWords(true)))
-      .then(() => dispatch(actions.hideLoadingIndication()))
-      .catch(() => dispatch(actions.hideLoadingIndication()))
+  }
+}
+
+function requestRevealSeedWords (password) {
+  return async dispatch => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.submitPassword`)
+
+    try {
+      await verifyPassword(password)
+      const seedWords = await verifySeedPhrase()
+      dispatch(actions.hideLoadingIndication())
+      return seedWords
+    } catch (error) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(error.message))
+      throw new Error(error.message)
+    }
   }
 }
 
@@ -506,31 +535,26 @@ function addNewKeyring (type, opts) {
 }
 
 function importNewAccount (strategy, args) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
-    log.debug(`background.importAccountWithStrategy`)
-    return new Promise((resolve, reject) => {
-      background.importAccountWithStrategy(strategy, args, (err) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-        log.debug(`background.getState`)
-        background.getState((err, newState) => {
-          dispatch(actions.hideLoadingIndication())
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          dispatch(actions.updateMetamaskState(newState))
-          dispatch({
-            type: actions.SHOW_ACCOUNT_DETAIL,
-            value: newState.selectedAddress,
-          })
-          resolve(newState)
-        })
-      })
+  return async (dispatch) => {
+    let newState
+    dispatch(actions.showLoadingIndication('This may take a while, please be patient.'))
+    try {
+      log.debug(`background.importAccountWithStrategy`)
+      await pify(background.importAccountWithStrategy).call(background, strategy, args)
+      log.debug(`background.getState`)
+      newState = await pify(background.getState).call(background)
+    } catch (err) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(err.message))
+      throw err
+    }
+    dispatch(actions.hideLoadingIndication())
+    dispatch(actions.updateMetamaskState(newState))
+    dispatch({
+      type: actions.SHOW_ACCOUNT_DETAIL,
+      value: newState.selectedAddress,
     })
+    return newState
   }
 }
 
@@ -1973,13 +1997,5 @@ function updateNetworkEndpointType (networkEndpointType) {
   return {
     type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
     value: networkEndpointType,
-  }
-}
-
-function setIsRevealingSeedWords (reveal) {
-  return dispatch => {
-    log.debug(`background.setIsRevealingSeedWords`)
-    background.setIsRevealingSeedWords(reveal)
-    return forceUpdateMetamaskState(dispatch)
   }
 }
