@@ -106,7 +106,7 @@ describe('MetaMaskController', function () {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
       })
 
-      await metamaskController.keyringController.saveAccountLabel(TEST_ADDRESS, 'Account Foo')
+      await metamaskController.preferencesController.setAccountLabel(TEST_ADDRESS, 'Account Foo')
       assert.deepEqual(metamaskController.getState().identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
       })
