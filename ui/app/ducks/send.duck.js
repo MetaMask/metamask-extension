@@ -16,32 +16,34 @@ const initState = {
 
 // Reducer
 export default function reducer ({ send: sendState = initState }, action = {}) {
+  const newState = extend({}, sendState)
+
   switch (action.type) {
     case OPEN_FROM_DROPDOWN:
-      return extend(sendState, {
+      return extend(newState, {
         fromDropdownOpen: true,
       })
     case CLOSE_FROM_DROPDOWN:
-      return extend(sendState, {
+      return extend(newState, {
         fromDropdownOpen: false,
       })
     case OPEN_TO_DROPDOWN:
-      return extend(sendState, {
+      return extend(newState, {
         toDropdownOpen: true,
       })
     case CLOSE_TO_DROPDOWN:
-      return extend(sendState, {
+      return extend(newState, {
         toDropdownOpen: false,
       })
     case UPDATE_SEND_ERRORS:
-      return extend(sendState, {
+      return extend(newState, {
         errors: {
-          ...sendState.errors,
+          ...newState.errors,
           ...action.value,
         },
       })
     default:
-      return sendState
+      return newState
   }
 }
 

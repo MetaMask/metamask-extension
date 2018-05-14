@@ -42,12 +42,12 @@ const {
 import mockState from './send-selectors-test-data'
 
 describe('send selectors', () => {
-  let tempGlobalEth = Object.assign({}, global.eth)
+  const tempGlobalEth = Object.assign({}, global.eth)
   beforeEach(() => {
     global.eth = {
       contract: sinon.stub().returns({
-        at: address => 'mockAt:' + address
-      })
+        at: address => 'mockAt:' + address,
+      }),
     }
   })
 

@@ -90,31 +90,31 @@ module.exports = {
       {
         'id': 'mockTokenTx1',
         'txParams': {
-          'to': '0x8d6b81208414189a58339873ab429b6c47ab92d3'
+          'to': '0x8d6b81208414189a58339873ab429b6c47ab92d3',
         },
-        'time': 1700000000000
+        'time': 1700000000000,
       },
       {
         'id': 'mockTokenTx2',
         'txParams': {
-          'to': '0xafaketokenaddress'
+          'to': '0xafaketokenaddress',
         },
-        'time': 1600000000000
+        'time': 1600000000000,
       },
       {
         'id': 'mockTokenTx3',
         'txParams': {
-          'to': '0x8d6b81208414189a58339873ab429b6c47ab92d3'
+          'to': '0x8d6b81208414189a58339873ab429b6c47ab92d3',
         },
-        'time': 1500000000000
+        'time': 1500000000000,
       },
       {
         'id': 'mockEthTx1',
         'txParams': {
-          'to': '0xd85a4b6a394794842887b8284293d69163007bbb'
+          'to': '0xd85a4b6a394794842887b8284293d69163007bbb',
         },
-        'time': 1400000000000
-      }
+        'time': 1400000000000,
+      },
     ],
     'selectedTokenAddress': '0x8d6b81208414189a58339873ab429b6c47ab92d3',
     'unapprovedMsgs': {
@@ -195,7 +195,7 @@ module.exports = {
         'txValue': 'de0b6b3a7640000',
         'maxCost': 'de234b52e4a0800',
         'gasPrice': '4a817c800',
-      }
+      },
     },
     'currentLocale': 'en',
   },
