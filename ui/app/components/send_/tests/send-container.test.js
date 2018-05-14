@@ -42,7 +42,7 @@ proxyquire('../send.container.js', {
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
   },
   '../../actions': actionSpies,
-  '../../ducks/send': duckActionSpies,
+  '../../ducks/send.duck': duckActionSpies,
   './send.utils.js': {
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
     generateTokenTransferData: (a, b) => `mockData:${a + b}`,

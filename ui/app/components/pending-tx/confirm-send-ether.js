@@ -31,7 +31,7 @@ const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 
 import {
   updateSendErrors,
-} from '../../ducks/send'
+} from '../../ducks/send.duck'
 
 ConfirmSendEther.contextTypes = {
   t: PropTypes.func,

@@ -10,7 +10,7 @@ const ethUtil = require('ethereumjs-util')
 
 import {
   updateSendErrors,
-} from '../../ducks/send'
+} from '../../ducks/send.duck'
 
 const {
   MIN_GAS_PRICE_DEC,

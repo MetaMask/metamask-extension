@@ -16,7 +16,7 @@ import {
 import {
     closeFromDropdown,
     openFromDropdown,
-} from '../../../../ducks/send'
+} from '../../../../ducks/send.duck'
 import SendFromRow from './send-from-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFromRow)

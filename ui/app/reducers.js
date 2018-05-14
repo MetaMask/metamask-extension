@@ -8,7 +8,7 @@ const reduceIdentities = require('./reducers/identities')
 const reduceMetamask = require('./reducers/metamask')
 const reduceApp = require('./reducers/app')
 const reduceLocale = require('./reducers/locale')
-const reduceSend = require('./ducks/send').default
+const reduceSend = require('./ducks/send.duck').default
 
 window.METAMASK_CACHED_LOG_STATE = null
 

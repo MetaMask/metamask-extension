@@ -33,7 +33,7 @@ proxyquire('../send-to-row.container.js', {
   },
   './send-to-row.utils.js': { getToErrorObject: (t) => `mockError:${t}` },
   '../../../../actions': actionSpies,
-  '../../../../ducks/send': duckActionSpies,
+  '../../../../ducks/send.duck': duckActionSpies,
 })
 
 describe('send-to-row container', () => {

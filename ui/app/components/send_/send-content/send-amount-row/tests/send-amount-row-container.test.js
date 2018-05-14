@@ -35,7 +35,7 @@ proxyquire('../send-amount-row.container.js', {
   './send-amount-row.selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
   '../../send.utils': { getAmountErrorObject: (mockDataObject) => ({ ...mockDataObject, mockChange: true }) },
   '../../../../actions': actionSpies,
-  '../../../../ducks/send': duckActionSpies,
+  '../../../../ducks/send.duck': duckActionSpies,
 })
 
 describe('send-amount-row container', () => {

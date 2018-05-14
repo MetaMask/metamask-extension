@@ -31,7 +31,7 @@ proxyquire('../send-from-row.container.js', {
   './send-from-row.selectors.js': { getFromDropdownOpen: (s) => `mockFromDropdownOpen:${s}` },
   '../../send.utils.js': { calcTokenBalance: (a, b) => a + b },
   '../../../../actions': actionSpies,
-  '../../../../ducks/send': duckActionSpies,
+  '../../../../ducks/send.duck': duckActionSpies,
 })
 
 describe('send-from-row container', () => {

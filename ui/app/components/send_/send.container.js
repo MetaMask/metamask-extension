@@ -26,7 +26,7 @@ import {
 } from '../../actions'
 import {
   updateSendErrors,
-} from '../../ducks/send'
+} from '../../ducks/send.duck'
 import {
   calcGasTotal,
   generateTokenTransferData,
