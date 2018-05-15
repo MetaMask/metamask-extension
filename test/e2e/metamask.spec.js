@@ -4,20 +4,30 @@ const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
 const webdriver = require('selenium-webdriver')
-const Command = require('selenium-webdriver/lib/command').Command
+const until = require('selenium-webdriver/lib/until')
 const By = webdriver.By
-const { delay, buildFirefoxWebdriver } = require('../func')
+const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 
-describe('', function () {
+describe('Metamask popup page', function () {
   let driver, accountAddress, tokenAddress, extensionId
 
   this.timeout(0)
 
   before(async function () {
-    const extPath = path.resolve('dist/firefox')
-    driver = buildFirefoxWebdriver()
-    installWebExt(driver, extPath)
-    await delay(700)
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      const extPath = path.resolve('dist/chrome')
+      driver = buildChromeWebDriver(extPath)
+      extensionId = await getExtensionIdChrome(driver)
+      await driver.get(`chrome-extension://${extensionId}/popup.html`)
+
+    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+      const extPath = path.resolve('dist/firefox')
+      driver = buildFirefoxWebdriver()
+      await installWebExt(driver, extPath)
+      await delay(500)
+      extensionId = await getExtensionIdFirefox(driver)
+      await driver.get(`moz-extension://${extensionId}/popup.html`)
+    }
   })
 
   afterEach(async function () {
@@ -32,22 +42,18 @@ describe('', function () {
 
   describe('Setup', function () {
 
-    it('switches to Firefox addon list', async function () {
-      await driver.get('about:debugging#addons')
-      await delay(1000)
-    })
-
-    it(`selects MetaMask's extension id and opens it in the current tab`, async function () {
-      const tabs = await driver.getAllWindowHandles()
-      await driver.switchTo().window(tabs[0])
-      extensionId = await driver.findElement(By.css('dd.addon-target-info-content:nth-child(6) > span:nth-child(1)')).getText()
-      await driver.get(`moz-extension://${extensionId}/popup.html`)
-      await delay(500)
+    it('switches to extension/addon list', async function () {
+      await driver.wait(async () => {
+        await until.urlContains('#how-it-works')
+        const tabs = await driver.getAllWindowHandles()
+        await driver.switchTo().window(tabs[0])
+        return true
+      }, 300)
     })
 
     it('sets provider type to localhost', async function () {
-      await setProviderType('localhost')
       await delay(300)
+      await setProviderType('localhost')
     })
   })
 
@@ -59,6 +65,7 @@ describe('', function () {
     })
 
     it('shows privacy notice', async () => {
+      await delay(300)
       const privacy = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
       await driver.findElement(By.css('button')).click()
@@ -66,10 +73,11 @@ describe('', function () {
     })
 
     it('show terms of use', async () => {
-      await delay(300)
-      const terms = await driver.findElement(By.css('.terms-header')).getText()
-      assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
-      await delay(300)
+      await driver.wait(async () => {
+        const terms = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > h3')).getText()
+        assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
+        return terms === 'TERMS OF USE'
+      })
     })
 
     it('checks if the TOU button is disabled', async () => {
@@ -82,11 +90,8 @@ describe('', function () {
 
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
-      await delay(300)
-      const buttonEnabled = await button.isEnabled()
-      assert.equal(buttonEnabled, true, 'enabled continue button')
-      await delay(200)
-      await button.click()
+      const buttonEnabled = await driver.wait(until.elementIsEnabled(button))
+      await buttonEnabled.click()
     })
 
     it('accepts password with length of eight', async () => {
@@ -125,7 +130,7 @@ describe('', function () {
     it('accepts account password after lock', async () => {
       await delay(500)
       await driver.findElement(By.id('password-box')).sendKeys('123456789')
-      await driver.findElement(By.css('button')).click()
+      await driver.findElement(By.css('button')).sendKeys(webdriver.Key.ENTER)
       await delay(500)
     })
 
@@ -145,6 +150,7 @@ describe('', function () {
   })
 
   describe('Import Ganache seed phrase', function () {
+
     it('logs out', async function () {
       await driver.findElement(By.css('.sandwich-expando')).click()
       await delay(200)
@@ -235,10 +241,10 @@ describe('', function () {
       await delay(1000)
     })
 
-    // There is an issue with blank confirmation window, but the button is still there and the driver is able to clicked (?.?)
+    //  // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
-      await driver.switchTo().window(windowHandles[2])
+      await driver.switchTo().window(windowHandles[windowHandles.length - 1])
       const metamaskSubmit = await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'))
       await metamaskSubmit.click()
       await delay(1000)
@@ -253,7 +259,11 @@ describe('', function () {
     })
 
     it('navigates back to MetaMask popup in the tab', async function () {
-      await driver.get(`moz-extension://${extensionId}/popup.html`)
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
+        await driver.get(`chrome-extension://${extensionId}/popup.html`)
+      } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+        await driver.get(`moz-extension://${extensionId}/popup.html`)
+      }
       await delay(700)
     })
   })
@@ -282,7 +292,7 @@ describe('', function () {
       await tokenContractAddress.sendKeys(tokenAddress)
       await delay(300)
       await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button')).click()
-      await delay(100)
+      await delay(200)
     })
 
     it('checks the token balance', async function () {
@@ -291,12 +301,12 @@ describe('', function () {
     })
   })
 
-  async function setProviderType(type) {
+  async function setProviderType (type) {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
-  async function verboseReportOnFailure(test) {
-    const artifactDir = `./test-artifacts/firefox/${test.title}`
+  async function verboseReportOnFailure (test) {
+    const artifactDir = `./test-artifacts/chrome/${test.title}`
     const filepathBase = `${artifactDir}/test-failure`
     await pify(mkdirp)(artifactDir)
     // capture screenshot
@@ -308,15 +318,3 @@ describe('', function () {
   }
 
 })
-
-async function installWebExt (driver, extension) {
-  const cmd = await new Command('moz-install-web-ext')
-    .setParameter('path', path.resolve(extension))
-    .setParameter('temporary', true)
-
-  await driver.getExecutor()
-    .defineCommand(cmd.getName(), 'POST', '/session/:sessionId/moz/addon/install')
-
-  return await driver.schedule(cmd, 'installWebExt(' + extension + ')')
-}
-
