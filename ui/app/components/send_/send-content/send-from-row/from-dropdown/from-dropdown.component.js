@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import AccountListItem from '../../../account-list-item/account-list-item.container'
-import SendDropdownList from '../../send-dropdown-list/send-dropdown-list.component'
+import AccountListItem from '../../../account-list-item/'
+import SendDropdownList from '../../send-dropdown-list/'
 
 export default class FromDropdown extends Component {
 

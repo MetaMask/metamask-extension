@@ -6,9 +6,9 @@ import {
   doesAmountErrorRequireUpdate,
 } from './send.utils'
 
-import SendHeader from './send-header/send-header.container'
-import SendContent from './send-content/send-content.component'
-import SendFooter from './send-footer/send-footer.container'
+import SendHeader from './send-header/'
+import SendContent from './send-content/'
+import SendFooter from './send-footer/'
 
 export default class SendTransactionScreen extends PersistentForm {
 

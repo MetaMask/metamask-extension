@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component'
-import FromDropdown from './from-dropdown/from-dropdown.component'
+import SendRowWrapper from '../send-row-wrapper/'
+import FromDropdown from './from-dropdown/'
 
 export default class SendFromRow extends Component {
 

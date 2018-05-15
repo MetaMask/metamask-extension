@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import SendRowErrorMessage from './send-row-error-message/send-row-error-message.container'
+import SendRowErrorMessage from './send-row-error-message/'
 
 export default class SendRowWrapper extends Component {
 
