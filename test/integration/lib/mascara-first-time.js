@@ -1,5 +1,4 @@
 const PASSWORD = 'password123'
-const reactTriggerChange = require('react-trigger-change')
 const {
   timeout,
   findAsync,
@@ -11,6 +10,11 @@ async function runFirstTimeUsageTest (assert, done) {
 
   const app = await queryAsync($, '#app-content')
 
+  // Used to set values on TextField input component
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype, 'value'
+  ).set
+
   await skipNotices(app)
 
   const welcomeButton = (await findAsync(app, '.welcome-screen__button'))[0]
@@ -21,12 +25,14 @@ async function runFirstTimeUsageTest (assert, done) {
   assert.equal(title, 'Create Password', 'create password screen')
 
   // enter password
-  const pwBox = (await findAsync(app, '.first-time-flow__input'))[0]
-  const confBox = (await findAsync(app, '.first-time-flow__input'))[1]
-  pwBox.value = PASSWORD
-  confBox.value = PASSWORD
-  reactTriggerChange(pwBox)
-  reactTriggerChange(confBox)
+  const pwBox = (await findAsync(app, '#create-password'))[0]
+  const confBox = (await findAsync(app, '#confirm-password'))[0]
+
+  nativeInputValueSetter.call(pwBox, PASSWORD)
+  pwBox.dispatchEvent(new Event('input', { bubbles: true}))
+
+  nativeInputValueSetter.call(confBox, PASSWORD)
+  confBox.dispatchEvent(new Event('input', { bubbles: true}))
 
   // Create Password
   const createButton = (await findAsync(app, 'button.first-time-flow__button'))[0]
@@ -77,15 +83,8 @@ async function runFirstTimeUsageTest (assert, done) {
   pwBox2.focus()
   await timeout(1000)
 
-  // Used to set values on TextField input component
-  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-    window.HTMLInputElement.prototype, 'value'
-  ).set
-
   nativeInputValueSetter.call(pwBox2, PASSWORD)
-
-  var ev2 = new Event('input', { bubbles: true})
-  pwBox2.dispatchEvent(ev2)
+  pwBox2.dispatchEvent(new Event('input', { bubbles: true}))
 
   const createButton2 = (await findAsync(app, 'button[type="submit"]'))[0]
   createButton2.click()
