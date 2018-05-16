@@ -205,10 +205,8 @@ input.large-input {
   }
 
   &__content {
-    height: 100%;
     overflow-y: auto;
-    min-height: 250px;
-    max-height: 400px;
+    flex: 1;
   }
 
   &__warning-container {
@@ -256,6 +254,7 @@ input.large-input {
     overflow-y: auto;
     background-color: $white;
     border-radius: 0;
+    flex: 1;
   }
 }
 

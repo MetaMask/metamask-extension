@@ -12,7 +12,6 @@ const SimpleDropdown = require('../../dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
 const { REVEAL_SEED_ROUTE } = require('../../../routes')
 const locales = require('../../../../../app/_locales/index.json')
-const { OLD_UI_NETWORK_TYPE } = require('../../../../../app/scripts/controllers/network/enums')
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -349,7 +348,6 @@ const mapDispatchToProps = dispatch => {
     updateCurrentLocale: key => dispatch(actions.updateCurrentLocale(key)),
     setFeatureFlagToBeta: () => {
       return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
-        .then(() => dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
     },
     showResetAccountConfirmationModal: () => {
       return dispatch(actions.showModal({ name: 'CONFIRM_RESET_ACCOUNT' }))

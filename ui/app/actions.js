@@ -271,7 +271,6 @@ var actions = {
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
   // Network
-  setNetworkEndpoints,
   updateNetworkEndpointType,
   UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
 
@@ -317,6 +316,7 @@ function tryUnlockMetamask (password) {
           background.verifySeedPhrase(err => {
             if (err) {
               dispatch(actions.displayWarning(err.message))
+              return reject(err)
             }
 
             resolve()
@@ -330,6 +330,7 @@ function tryUnlockMetamask (password) {
       .catch(err => {
         dispatch(actions.unlockFailed(err.message))
         dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
       })
   }
 }
@@ -1919,23 +1920,6 @@ function setLocaleMessages (localeMessages) {
   return {
     type: actions.SET_LOCALE_MESSAGES,
     value: localeMessages,
-  }
-}
-
-function setNetworkEndpoints (networkEndpointType) {
-  return dispatch => {
-    log.debug('background.setNetworkEndpoints')
-    return new Promise((resolve, reject) => {
-      background.setNetworkEndpoints(networkEndpointType, err => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.updateNetworkEndpointType(networkEndpointType))
-        resolve(networkEndpointType)
-      })
-    })
   }
 }
 

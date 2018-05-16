@@ -14,52 +14,40 @@ const {
   RINKEBY,
   KOVAN,
   MAINNET,
-  OLD_UI_NETWORK_TYPE,
-  DEFAULT_NETWORK,
+  LOCALHOST,
 } = require('./enums')
-const { getNetworkEndpoints } = require('./util')
+const LOCALHOST_RPC_URL = 'http://localhost:8545'
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
+
+const env = process.env.METAMASK_ENV
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
+const testMode = (METAMASK_DEBUG || env === 'test')
+
+const defaultProviderConfig = {
+  type: testMode ? RINKEBY : MAINNET,
+}
 
 module.exports = class NetworkController extends EventEmitter {
 
-  constructor (config) {
+  constructor (opts = {}) {
     super()
 
-    this._networkEndpointVersion = OLD_UI_NETWORK_TYPE
-    this._networkEndpoints = getNetworkEndpoints(OLD_UI_NETWORK_TYPE)
-    this._defaultRpc = this._networkEndpoints[DEFAULT_NETWORK]
-
-    config.provider.rpcTarget = this.getRpcAddressForType(config.provider.type, config.provider)
+    // parse options
+    const providerConfig = opts.provider || defaultProviderConfig
+    // create stores
+    this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
-    this.providerStore = new ObservableStore(config.provider)
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
+    // create event emitter proxy
     this._proxy = createEventEmitterProxy()
 
     this.on('networkDidChange', this.lookupNetwork)
   }
 
-  async setNetworkEndpoints (version) {
-    if (version === this._networkEndpointVersion) {
-      return
-    }
-
-    this._networkEndpointVersion = version
-    this._networkEndpoints = getNetworkEndpoints(version)
-    this._defaultRpc = this._networkEndpoints[DEFAULT_NETWORK]
-    const { type } = this.getProviderConfig()
-
-    return this.setProviderType(type, true)
-  }
-
   initializeProvider (_providerParams) {
     this._baseProviderParams = _providerParams
     const { type, rpcTarget } = this.providerStore.getState()
-    // map rpcTarget to rpcUrl
-    const opts = {
-      type,
-      rpcUrl: rpcTarget,
-    }
-    this._configureProvider(opts)
+    this._configureProvider({ type, rpcTarget })
     this._proxy.on('block', this._logBlock.bind(this))
     this._proxy.on('error', this.verifyNetwork.bind(this))
     this.ethQuery = new EthQuery(this._proxy)
@@ -96,43 +84,25 @@ module.exports = class NetworkController extends EventEmitter {
     })
   }
 
-  setRpcTarget (rpcUrl) {
-    this.providerStore.updateState({
+  setRpcTarget (rpcTarget) {
+    const providerConfig = {
       type: 'rpc',
-      rpcTarget: rpcUrl,
-    })
-    this._switchNetwork({ rpcUrl })
-  }
-
-  getCurrentRpcAddress () {
-    const provider = this.getProviderConfig()
-    if (!provider) return null
-    return this.getRpcAddressForType(provider.type)
-  }
-
-  async setProviderType (type, forceUpdate = false) {
-    assert(type !== 'rpc', `NetworkController.setProviderType - cannot connect by type "rpc"`)
-    // skip if type already matches
-    if (type === this.getProviderConfig().type && !forceUpdate) {
-      return
+      rpcTarget,
     }
+    this.providerStore.updateState(providerConfig)
+    this._switchNetwork(providerConfig)
+  }
 
-    const rpcTarget = this.getRpcAddressForType(type)
-    assert(rpcTarget, `NetworkController - unknown rpc address for type "${type}"`)
-    this.providerStore.updateState({ type, rpcTarget })
-    this._switchNetwork({ type })
+  async setProviderType (type) {
+    assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
+    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
+    const providerConfig = { type }
+    this.providerStore.updateState(providerConfig)
+    this._switchNetwork(providerConfig)
   }
 
   getProviderConfig () {
     return this.providerStore.getState()
-  }
-
-  getRpcAddressForType (type, provider = this.getProviderConfig()) {
-    if (this._networkEndpoints[type]) {
-      return this._networkEndpoints[type]
-    }
-
-    return provider && provider.rpcTarget ? provider.rpcTarget : this._defaultRpc
   }
 
   //
@@ -146,32 +116,27 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureProvider (opts) {
-    // type-based rpc endpoints
-    const { type } = opts
-    if (type) {
-      // type-based infura rpc endpoints
-      const isInfura = INFURA_PROVIDER_TYPES.includes(type)
-      opts.rpcUrl = this.getRpcAddressForType(type)
-      if (isInfura) {
-        this._configureInfuraProvider(opts)
-      // other type-based rpc endpoints
-      } else {
-        this._configureStandardProvider(opts)
-      }
+    const { type, rpcTarget } = opts
+    // infura type-based endpoints
+    const isInfura = INFURA_PROVIDER_TYPES.includes(type)
+    if (isInfura) {
+      this._configureInfuraProvider(opts)
+    // other type-based rpc endpoints
+    } else if (type === LOCALHOST) {
+      this._configureStandardProvider({ rpcUrl: LOCALHOST_RPC_URL })
     // url-based rpc endpoints
+    } else if (type === 'rpc'){
+      this._configureStandardProvider({ rpcUrl: rpcTarget })
     } else {
-      this._configureStandardProvider(opts)
+      throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
     }
   }
 
-  _configureInfuraProvider (opts) {
-    log.info('_configureInfuraProvider', opts)
-    const infuraProvider = createInfuraProvider({
-      network: opts.type,
-    })
+  _configureInfuraProvider ({ type }) {
+    log.info('_configureInfuraProvider', type)
+    const infuraProvider = createInfuraProvider({ network: type })
     const infuraSubprovider = new SubproviderFromProvider(infuraProvider)
     const providerParams = extend(this._baseProviderParams, {
-      rpcUrl: opts.rpcUrl,
       engineParams: {
         pollingInterval: 8000,
         blockTrackerProvider: infuraProvider,

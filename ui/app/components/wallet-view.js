@@ -102,6 +102,7 @@ WalletView.prototype.render = function () {
     selectedIdentity,
     keyrings,
     showAccountDetailModal,
+    sidebarOpen,
     hideSidebar,
     history,
   } = this.props
@@ -182,7 +183,10 @@ WalletView.prototype.render = function () {
     h(TokenList),
 
     h('button.btn-primary.wallet-view__add-token-button', {
-      onClick: () => history.push(ADD_TOKEN_ROUTE),
+      onClick: () => {
+        history.push(ADD_TOKEN_ROUTE)
+        sidebarOpen && hideSidebar()
+      },
     }, this.context.t('addToken')),
   ])
 }
