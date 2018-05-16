@@ -316,6 +316,7 @@ function tryUnlockMetamask (password) {
           background.verifySeedPhrase(err => {
             if (err) {
               dispatch(actions.displayWarning(err.message))
+              return reject(err)
             }
 
             resolve()
@@ -329,6 +330,7 @@ function tryUnlockMetamask (password) {
       .catch(err => {
         dispatch(actions.unlockFailed(err.message))
         dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
       })
   }
 }
@@ -534,7 +536,7 @@ function importNewAccount (strategy, args) {
     } catch (err) {
       dispatch(actions.hideLoadingIndication())
       dispatch(actions.displayWarning(err.message))
-      return
+      throw err
     }
     dispatch(actions.hideLoadingIndication())
     dispatch(actions.updateMetamaskState(newState))

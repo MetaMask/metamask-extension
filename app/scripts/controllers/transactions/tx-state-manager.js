@@ -262,7 +262,7 @@ class TransactionStateManager extends EventEmitter {
   */
   getTxsByMetaData (key, value, txList = this.getTxList()) {
     return txList.filter((txMeta) => {
-      if (txMeta.txParams[key]) {
+      if (key in txMeta.txParams) {
         return txMeta.txParams[key] === value
       } else {
         return txMeta[key] === value
