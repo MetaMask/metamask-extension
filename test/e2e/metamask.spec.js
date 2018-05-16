@@ -4,7 +4,6 @@ const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
 const webdriver = require('selenium-webdriver')
-const until = require('selenium-webdriver/lib/until')
 const By = webdriver.By
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 
@@ -24,7 +23,7 @@ describe('Metamask popup page', function () {
       const extPath = path.resolve('dist/firefox')
       driver = buildFirefoxWebdriver()
       await installWebExt(driver, extPath)
-      await delay(500)
+      await delay(700)
       extensionId = await getExtensionIdFirefox(driver)
       await driver.get(`moz-extension://${extensionId}/popup.html`)
     }
@@ -42,19 +41,17 @@ describe('Metamask popup page', function () {
 
   describe('Setup', function () {
 
-    it('switches to extension/addon list', async function () {
-      await driver.wait(async () => {
-        await until.urlContains('#how-it-works')
-        const tabs = await driver.getAllWindowHandles()
-        await driver.switchTo().window(tabs[0])
-        return true
-      }, 300)
+    it('switches to Chrome extensions list', async function () {
+      await delay(300)
+      const windowHandles = await driver.getAllWindowHandles()
+      await driver.switchTo().window(windowHandles[0])
     })
 
     it('sets provider type to localhost', async function () {
       await delay(300)
       await setProviderType('localhost')
     })
+
   })
 
   describe('Account Creation', () => {
@@ -73,11 +70,9 @@ describe('Metamask popup page', function () {
     })
 
     it('show terms of use', async () => {
-      await driver.wait(async () => {
-        const terms = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > h3')).getText()
-        assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
-        return terms === 'TERMS OF USE'
-      })
+      const terms = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > h3')).getText()
+      assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
+      delay(300)
     })
 
     it('checks if the TOU button is disabled', async () => {
@@ -85,13 +80,12 @@ describe('Metamask popup page', function () {
       assert.equal(button, false, 'disabled continue button')
       const element = await driver.findElement(By.linkText('Attributions'))
       await driver.executeScript('arguments[0].scrollIntoView(true)', element)
-      await delay(300)
+      await delay(700)
     })
 
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
-      const buttonEnabled = await driver.wait(until.elementIsEnabled(button))
-      await buttonEnabled.click()
+      await button.click()
     })
 
     it('accepts password with length of eight', async () => {
@@ -269,6 +263,7 @@ describe('Metamask popup page', function () {
   })
 
   describe('Add Token', function () {
+
     it('switches to the add token screen', async function () {
       const tokensTab = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > section > div > div.inactiveForm.pointer'))
       assert.equal(await tokensTab.getText(), 'TOKENS')
@@ -306,7 +301,12 @@ describe('Metamask popup page', function () {
   }
 
   async function verboseReportOnFailure (test) {
-    const artifactDir = `./test-artifacts/chrome/${test.title}`
+    let artifactDir
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      artifactDir = `./test-artifacts/chrome/${test.title}`
+    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+      artifactDir = `./test-artifacts/firefox/${test.title}`
+    } 
     const filepathBase = `${artifactDir}/test-failure`
     await pify(mkdirp)(artifactDir)
     // capture screenshot
