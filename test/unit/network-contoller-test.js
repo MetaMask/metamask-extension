@@ -3,17 +3,15 @@ const nock = require('nock')
 const NetworkController = require('../../app/scripts/controllers/network')
 const {
   getNetworkDisplayName,
-  getNetworkEndpoints,
 } = require('../../app/scripts/controllers/network/util')
 
 const { createTestProviderTools } = require('../stub/provider')
 const providerResultStub = {}
-const provider = createTestProviderTools({ scaffold: providerResultStub }).provider
 
 describe('# Network Controller', function () {
   let networkController
   const noop = () => {}
-  const networkControllerProviderInit = {
+  const networkControllerProviderConfig = {
     getAccounts: noop,
   }
 
@@ -24,11 +22,9 @@ describe('# Network Controller', function () {
       .post('/metamask')
       .reply(200)
 
-    networkController = new NetworkController({
-      provider,
-    })
+    networkController = new NetworkController()
 
-    networkController.initializeProvider(networkControllerProviderInit, provider)
+    networkController.initializeProvider(networkControllerProviderConfig)
   })
 
   afterEach(function () {
@@ -38,7 +34,7 @@ describe('# Network Controller', function () {
   describe('network', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
-        networkController.initializeProvider(networkControllerProviderInit, provider)
+        networkController.initializeProvider(networkControllerProviderConfig)
         const proxy = networkController._proxy
         proxy.setTarget({ test: true, on: () => {} })
         assert.ok(proxy.test)
@@ -59,12 +55,6 @@ describe('# Network Controller', function () {
       })
     })
 
-    describe('#getRpcAddressForType', function () {
-      it('should return the right rpc address', function () {
-        const rpcTarget = networkController.getRpcAddressForType('mainnet')
-        assert.equal(rpcTarget, 'https://mainnet.infura.io/metamask', 'returns the right rpcAddress')
-      })
-    })
     describe('#setProviderType', function () {
       it('should update provider.type', function () {
         networkController.setProviderType('mainnet')
@@ -76,16 +66,11 @@ describe('# Network Controller', function () {
         const loading = networkController.isNetworkLoading()
         assert.ok(loading, 'network is loading')
       })
-      it('should set the right rpcTarget', function () {
-        networkController.setProviderType('mainnet')
-        const rpcTarget = networkController.getProviderConfig().rpcTarget
-        assert.equal(rpcTarget, 'https://mainnet.infura.io/metamask', 'returns the right rpcAddress')
-      })
     })
   })
 })
 
-describe('# Network utils', () => {
+describe('Network utils', () => {
   it('getNetworkDisplayName should return the correct network name', () => {
     const tests = [
       {
@@ -113,10 +98,5 @@ describe('# Network utils', () => {
     ]
 
     tests.forEach(({ input, expected }) => assert.equal(getNetworkDisplayName(input), expected))
-  })
-
-  it('getNetworkEndpoints should return the correct endpoints', () => {
-    assert.equal(getNetworkEndpoints('networkBeta').ropsten, 'https://ropsten.infura.io/metamask2')
-    assert.equal(getNetworkEndpoints('network').rinkeby, 'https://rinkeby.infura.io/metamask')
   })
 })
