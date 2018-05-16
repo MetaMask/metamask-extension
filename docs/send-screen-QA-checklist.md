@@ -1,4 +1,10 @@
-Send screen QA checklist:
+# Send screen QA checklist:
+
+This checklist can be to guide QA of the send screen. It can also be used to guide e2e tests for the send screen.
+
+Once all of these are QA verified on master, resolutions to any bugs related to the send screen should include and update to this list.
+
+Additional features or functionality on the send screen should include an update to this list.
 
 ## Send Eth mode
   - [ ] **Header** _It should:_
