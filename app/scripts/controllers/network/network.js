@@ -34,7 +34,6 @@ module.exports = class NetworkController extends EventEmitter {
 
     // parse options
     const providerConfig = opts.provider || defaultProviderConfig
-    console.log('providerStore:', providerConfig)
     // create stores
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
