@@ -42,7 +42,7 @@ function generateHistoryEntry (previousState, newState, note) {
   if (entry[0]) {
     if (note) entry[0].note = note
 
-    entry[0].timestamp = (new Date()).getTime()
+    entry[0].timestamp = Date.now()
   }
   return entry
 }
