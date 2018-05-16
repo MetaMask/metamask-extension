@@ -158,7 +158,7 @@ class TransactionStateManager extends EventEmitter {
   /**
     updates the txMeta in the list and adds a history entry
     @param txMeta {Object} - the txMeta to update
-    @param [note] {string} - a not about the update for history
+    @param [note] {string} - a note about the update for history
   */
   updateTx (txMeta, note) {
     // validate txParams
