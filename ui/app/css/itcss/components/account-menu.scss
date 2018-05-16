@@ -23,6 +23,10 @@
   &__icon {
     margin-left: 20px;
     cursor: pointer;
+
+    &--disabled {
+      cursor: initial;
+    }
   }
 
   &__header {

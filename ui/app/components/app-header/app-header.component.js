@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { matchPath } from 'react-router-dom'
 
-const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../../app/scripts/lib/enums')
-const { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } = require('../../routes')
+const {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} = require('../../../../app/scripts/lib/enums')
+const { DEFAULT_ROUTE, INITIALIZE_ROUTE, CONFIRM_TRANSACTION_ROUTE } = require('../../routes')
 const Identicon = require('../identicon')
 const NetworkIndicator = require('../network')
 
@@ -36,13 +40,23 @@ class AppHeader extends Component {
       : hideNetworkDropdown()
   }
 
+  isConfirming () {
+    const { location } = this.props
+
+    return Boolean(matchPath(location.pathname, {
+      path: CONFIRM_TRANSACTION_ROUTE, exact: false,
+    }))
+  }
+
   renderAccountMenu () {
     const { isUnlocked, toggleAccountMenu, selectedAddress } = this.props
 
     return isUnlocked && (
       <div
-        className="account-menu__icon"
-        onClick={toggleAccountMenu}
+        className={classnames('account-menu__icon', {
+          'account-menu__icon--disabled': this.isConfirming(),
+        })}
+        onClick={() => this.isConfirming() || toggleAccountMenu()}
       >
         <Identicon
           address={selectedAddress}
@@ -50,6 +64,26 @@ class AppHeader extends Component {
         />
       </div>
     )
+  }
+
+  hideAppHeader () {
+    const { location } = this.props
+
+    const isInitializing = Boolean(matchPath(location.pathname, {
+      path: INITIALIZE_ROUTE, exact: false,
+    }))
+
+    if (isInitializing) {
+      return true
+    }
+
+    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+      return true
+    }
+
+    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP && this.isConfirming()) {
+      return true
+    }
   }
 
   render () {
@@ -61,7 +95,7 @@ class AppHeader extends Component {
       isUnlocked,
     } = this.props
 
-    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (this.hideAppHeader()) {
       return null
     }
 
