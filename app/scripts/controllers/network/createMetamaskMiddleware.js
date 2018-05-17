@@ -1,5 +1,5 @@
 const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
-const createScaffoldMiddleware = require('json-rpc-engine/src/scaffold')
+const createScaffoldMiddleware = require('json-rpc-engine/src/createScaffoldMiddleware')
 const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 const createWalletSubprovider = require('eth-json-rpc-middleware/wallet')
 

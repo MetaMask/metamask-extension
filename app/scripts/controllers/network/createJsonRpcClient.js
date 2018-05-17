@@ -3,7 +3,7 @@ const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware
 const createFetchMiddleware = require('eth-json-rpc-middleware/fetch')
 const createBlockRefMiddleware = require('eth-json-rpc-middleware/block-ref')
 const createBlockCacheMiddleware = require('eth-json-rpc-middleware/block-cache')
-const createInflightMiddleware = require('eth-json-rpc-middleware/inflight')
+const createInflightMiddleware = require('eth-json-rpc-middleware/inflight-cache')
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
 const BlockTracker = require('eth-block-tracker')
 
