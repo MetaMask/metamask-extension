@@ -369,10 +369,12 @@ describe('MetaMaskController', function () {
 
     let msgParams, metamaskMsgs, messages, msgId
 
-    const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+    const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
     const data = '0x43727970746f6b697474696573'
 
-    beforeEach(function () {
+    beforeEach(async function () {
+
+      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
 
       msgParams = {
         'from': address,
@@ -383,6 +385,7 @@ describe('MetaMaskController', function () {
       metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
       messages = metamaskController.messageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
+      messages[0].msgParams.metamaskId = parseInt(msgId)
     })
 
     it('persists address from msg params', function () {
@@ -406,6 +409,14 @@ describe('MetaMaskController', function () {
       metamaskController.cancelMessage(msgIdInt, noop)
       assert.equal(messages[0].status, 'rejected')
     })
+
+    it('errors when signing a message', async function () {
+      try {
+        await metamaskController.signMessage(messages[0].msgParams)
+      } catch (error) {
+        assert.equal(error.message, 'message length is invalid')
+      }
+    })
   })
 
   describe('#newUnsignedPersonalMessage', function () {
@@ -419,12 +430,14 @@ describe('MetaMaskController', function () {
       })
     })
 
-    let msgParams, metamaskMsgs, messages, msgId
+    let msgParams, metamaskPersonalMsgs, personalMessages, msgId
 
-    const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+    const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
     const data = '0x43727970746f6b697474696573'
 
-    beforeEach(function () {
+    beforeEach(async function () {
+
+      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
 
       msgParams = {
         'from': address,
@@ -432,31 +445,38 @@ describe('MetaMaskController', function () {
       }
 
       metamaskController.newUnsignedPersonalMessage(msgParams, noop)
-      metamaskMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
-      messages = metamaskController.personalMessageManager.messages
-      msgId = Object.keys(metamaskMsgs)[0]
+      metamaskPersonalMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
+      personalMessages = metamaskController.personalMessageManager.messages
+      msgId = Object.keys(metamaskPersonalMsgs)[0]
+      personalMessages[0].msgParams.metamaskId = parseInt(msgId)
     })
 
     it('persists address from msg params', function () {
-      assert.equal(metamaskMsgs[msgId].msgParams.from, address)
+      assert.equal(metamaskPersonalMsgs[msgId].msgParams.from, address)
     })
 
     it('persists data from msg params', function () {
-      assert.equal(metamaskMsgs[msgId].msgParams.data, data)
+      assert.equal(metamaskPersonalMsgs[msgId].msgParams.data, data)
     })
 
     it('sets the status to unapproved', function () {
-      assert.equal(metamaskMsgs[msgId].status, 'unapproved')
+      assert.equal(metamaskPersonalMsgs[msgId].status, 'unapproved')
     })
 
     it('sets the type to personal_sign', function () {
-      assert.equal(metamaskMsgs[msgId].type, 'personal_sign')
+      assert.equal(metamaskPersonalMsgs[msgId].type, 'personal_sign')
     })
 
     it('rejects the message', function () {
       const msgIdInt = parseInt(msgId)
       metamaskController.cancelPersonalMessage(msgIdInt, noop)
-      assert.equal(messages[0].status, 'rejected')
+      assert.equal(personalMessages[0].status, 'rejected')
+    })
+
+    it('errors when signing a message', async function () {
+      await metamaskController.signPersonalMessage(personalMessages[0].msgParams)
+      assert.equal(metamaskPersonalMsgs[msgId].status, 'signed')
+      assert.equal(metamaskPersonalMsgs[msgId].rawSig, '0x6a1b65e2b8ed53cf398a769fad24738f9fbe29841fe6854e226953542c4b6a173473cb152b6b1ae5f06d601d45dd699a129b0a8ca84e78b423031db5baa734741b')      
     })
   })
 
