@@ -18,9 +18,14 @@ workflows:
       - test-deps:
           requires:
             - prep-deps-npm
-      - test-e2e:
+      - test-e2e-chrome:
           requires:
             - prep-deps-npm
+            - prep-build
+      - test-e2e-firefox:
+          requires:
+            - prep-deps-npm
+            - prep-deps-firefox            
             - prep-build
       - test-unit:
           requires:
@@ -48,7 +53,8 @@ workflows:
             - test-lint
             - test-deps
             - test-unit
-            - test-e2e
+            - test-e2e-chrome
+            - test-e2e-firefox
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
@@ -160,7 +166,7 @@ jobs:
           name: Test
           command: npx nsp check
 
-  test-e2e:
+  test-e2e-chrome:
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -171,7 +177,34 @@ jobs:
           key: build-cache-{{ .Revision }}
       - run:
           name: Test
-          command: npm run test:e2e
+          command: npm run test:e2e:chrome
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+  
+  test-e2e-firefox:
+    environment:
+      browsers: '["Firefox"]'
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-firefox-{{ .Revision }}
+      - run:
+          name: Install firefox
+          command: >
+            sudo rm -r /opt/firefox
+            && sudo mv firefox /opt/firefox58
+            && sudo mv /usr/bin/firefox /usr/bin/firefox-old
+            && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
+      - restore_cache:
+          key: dependency-cache-{{ .Revision }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }} 
+      - run:
+          name: test:e2e:firefox
+          command: npm run test:e2e:firefox
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -335,3 +368,4 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'weew - everything passed!'
+          

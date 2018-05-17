@@ -1,4 +1,5 @@
 require('chromedriver')
+require('geckodriver')
 const webdriver = require('selenium-webdriver')
 
 exports.delay = function delay (time) {
@@ -6,13 +7,16 @@ exports.delay = function delay (time) {
 }
 
 
-exports.buildWebDriver = function buildWebDriver (extPath) {
+exports.buildChromeWebDriver = function buildChromeWebDriver (extPath) {
   return new webdriver.Builder()
     .withCapabilities({
       chromeOptions: {
         args: [`load-extension=${extPath}`],
       },
     })
-    .forBrowser('chrome')
     .build()
+}
+
+exports.buildFirefoxWebdriver = function buildFirefoxWebdriver (extPath) {
+  return new webdriver.Builder().build()
 }
