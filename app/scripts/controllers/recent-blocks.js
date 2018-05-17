@@ -1,6 +1,5 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
-const BN = require('ethereumjs-util').BN
 const EthQuery = require('eth-query')
 const log = require('loglevel')
 const pify = require('pify')
@@ -125,7 +124,7 @@ class RecentBlocksController {
   async backfill() {
     this.blockTracker.once('latest', async (blockNumberHex) => {
       let recentBlocks
-      const blockNumber = Number.parseInt(blockNumberHex, 16)
+      let blockNumber = Number.parseInt(blockNumberHex, 16)
       let state = this.store.getState()
       recentBlocks = state.recentBlocks
 
@@ -136,7 +135,7 @@ class RecentBlocksController {
 
           if (newBlock) {
             this.backfillBlock(newBlock)
-            blockNum = newBlock.number
+            blockNumber = Number.parseInt(newBlock.number, 16)
           }
 
           state = this.store.getState()
