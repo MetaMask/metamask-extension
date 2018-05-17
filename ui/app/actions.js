@@ -161,6 +161,7 @@ var actions = {
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
   // send screen
   estimateGas,
+  getGasEstimate,
   getGasPrice,
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
@@ -757,7 +758,7 @@ function setGasTotal (gasTotal) {
   }
 }
 
-function updateGasTotal ({ selectedAddress, selectedToken, data }) {
+function getGasEstimate ({ selectedAddress, selectedToken, data }) {
   return (dispatch) => {
     const { symbol } = selectedToken || {}
     const estimateGasParams = getParamsForGasEstimate(selectedAddress, symbol, data)
@@ -766,8 +767,16 @@ function updateGasTotal ({ selectedAddress, selectedToken, data }) {
       dispatch(actions.estimateGas(estimateGasParams)),
     ])
     .then(([gasPrice, gas]) => {
-      const newGasTotal = calcGasTotal(gas, gasPrice)
-      dispatch(actions.setGasTotal(newGasTotal))
+      return calcGasTotal(gas, gasPrice)
+    })
+  }
+}
+
+function updateGasTotal ({ selectedAddress, selectedToken, data }) {
+  return (dispatch) => {
+    return dispatch(actions.getGasEstimate({ selectedAddress, selectedToken, data }))
+    .then((gasEstimate) => {
+      dispatch(actions.setGasTotal(gasEstimate))
       dispatch(updateSendErrors({ gasLoadingError: null }))
     })
     .catch(err => {
