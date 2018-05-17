@@ -175,7 +175,6 @@ UnlockPage.propTypes = {
   isUnlocked: PropTypes.bool,
   t: PropTypes.func,
   useOldInterface: PropTypes.func,
-  setNetworkEndpoints: PropTypes.func,
 }
 
 export default UnlockPage

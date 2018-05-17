@@ -271,7 +271,6 @@ var actions = {
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
   // Network
-  setNetworkEndpoints,
   updateNetworkEndpointType,
   UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
 
@@ -1921,23 +1920,6 @@ function setLocaleMessages (localeMessages) {
   return {
     type: actions.SET_LOCALE_MESSAGES,
     value: localeMessages,
-  }
-}
-
-function setNetworkEndpoints (networkEndpointType) {
-  return dispatch => {
-    log.debug('background.setNetworkEndpoints')
-    return new Promise((resolve, reject) => {
-      background.setNetworkEndpoints(networkEndpointType, err => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.updateNetworkEndpointType(networkEndpointType))
-        resolve(networkEndpointType)
-      })
-    })
   }
 }
 

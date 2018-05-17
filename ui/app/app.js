@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
-const { Route, Switch, withRouter, matchPath } = require('react-router-dom')
+const { Route, Switch, withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
@@ -83,15 +83,6 @@ class App extends Component {
     )
   }
 
-  renderAppHeader () {
-    const { location } = this.props
-    const isInitializing = matchPath(location.pathname, {
-      path: INITIALIZE_ROUTE, exact: false,
-    })
-
-    return isInitializing ? null : h(AppHeader)
-  }
-
   render () {
     const {
       isLoading,
@@ -128,7 +119,7 @@ class App extends Component {
         // global modal
         h(Modal, {}, []),
 
-        this.renderAppHeader(),
+        h(AppHeader),
 
         // sidebar
         this.renderSidebar(),
