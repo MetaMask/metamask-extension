@@ -2,8 +2,9 @@ const assert = require('assert')
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
-const extend = require('xtend')
 const EthQuery = require('eth-query')
+const JsonRpcEngine = require('json-rpc-engine')
+const providerFromEngine = require('eth-json-rpc-middle/providerFromEngine')
 const log = require('loglevel')
 const createMetamaskMiddleware = require('./createMetamaskMiddleware')
 const createInfuraClient = require('./createInfuraClient')
@@ -19,7 +20,6 @@ const {
   MAINNET,
   LOCALHOST,
 } = require('./enums')
-const LOCALHOST_RPC_URL = 'http://localhost:8545'
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
 const env = process.env.METAMASK_ENV
@@ -58,7 +58,7 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   // return the proxies so the references will always be good
-  getProviderAndBlockTracker() {
+  getProviderAndBlockTracker () {
     const provider = this._providerProxy
     const blockTracker = this._blockTracker
     return { provider, blockTracker }
@@ -135,7 +135,7 @@ module.exports = class NetworkController extends EventEmitter {
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints
-    } else if (type === 'rpc'){
+    } else if (type === 'rpc') {
       this._configureStandardProvider({ rpcUrl: rpcTarget })
     } else {
       throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)

@@ -5,14 +5,14 @@ const createWalletSubprovider = require('eth-json-rpc-middleware/wallet')
 
 module.exports = createMetamaskMiddleware
 
-function createMetamaskMiddleware({
+function createMetamaskMiddleware ({
   version,
   getAccounts,
   processTransaction,
   processEthSignMessage,
   processTypedMessage,
   processPersonalMessage,
-  getPendingNonce
+  getPendingNonce,
 }) {
   const metamaskMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
@@ -28,7 +28,7 @@ function createMetamaskMiddleware({
       processPersonalMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
-  })
+  ])
   return metamaskMiddleware
 }
 
