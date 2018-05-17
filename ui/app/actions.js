@@ -1,4 +1,5 @@
 const abi = require('human-standard-token-abi')
+const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const ethUtil = require('ethereumjs-util')
@@ -270,7 +271,6 @@ var actions = {
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
   // Network
-  setNetworkEndpoints,
   updateNetworkEndpointType,
   UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
 
@@ -316,6 +316,7 @@ function tryUnlockMetamask (password) {
           background.verifySeedPhrase(err => {
             if (err) {
               dispatch(actions.displayWarning(err.message))
+              return reject(err)
             }
 
             resolve()
@@ -329,6 +330,7 @@ function tryUnlockMetamask (password) {
       .catch(err => {
         dispatch(actions.unlockFailed(err.message))
         dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
       })
   }
 }
@@ -523,31 +525,26 @@ function addNewKeyring (type, opts) {
 }
 
 function importNewAccount (strategy, args) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
-    log.debug(`background.importAccountWithStrategy`)
-    return new Promise((resolve, reject) => {
-      background.importAccountWithStrategy(strategy, args, (err) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-        log.debug(`background.getState`)
-        background.getState((err, newState) => {
-          dispatch(actions.hideLoadingIndication())
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          dispatch(actions.updateMetamaskState(newState))
-          dispatch({
-            type: actions.SHOW_ACCOUNT_DETAIL,
-            value: newState.selectedAddress,
-          })
-          resolve(newState)
-        })
-      })
+  return async (dispatch) => {
+    let newState
+    dispatch(actions.showLoadingIndication('This may take a while, please be patient.'))
+    try {
+      log.debug(`background.importAccountWithStrategy`)
+      await pify(background.importAccountWithStrategy).call(background, strategy, args)
+      log.debug(`background.getState`)
+      newState = await pify(background.getState).call(background)
+    } catch (err) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(err.message))
+      throw err
+    }
+    dispatch(actions.hideLoadingIndication())
+    dispatch(actions.updateMetamaskState(newState))
+    dispatch({
+      type: actions.SHOW_ACCOUNT_DETAIL,
+      value: newState.selectedAddress,
     })
+    return newState
   }
 }
 
@@ -1923,23 +1920,6 @@ function setLocaleMessages (localeMessages) {
   return {
     type: actions.SET_LOCALE_MESSAGES,
     value: localeMessages,
-  }
-}
-
-function setNetworkEndpoints (networkEndpointType) {
-  return dispatch => {
-    log.debug('background.setNetworkEndpoints')
-    return new Promise((resolve, reject) => {
-      background.setNetworkEndpoints(networkEndpointType, err => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.updateNetworkEndpointType(networkEndpointType))
-        resolve(networkEndpointType)
-      })
-    })
   }
 }
 

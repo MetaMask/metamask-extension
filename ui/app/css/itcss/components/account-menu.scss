@@ -23,6 +23,10 @@
   &__icon {
     margin-left: 20px;
     cursor: pointer;
+
+    &--disabled {
+      cursor: initial;
+    }
   }
 
   &__header {
@@ -40,7 +44,6 @@
     font-size: 12px;
     line-height: 23px;
     padding: 0 24px;
-    font-weight: 300;
   }
 
   &__item-icon {
@@ -113,7 +116,6 @@
   &__name {
     color: $white;
     font-size: 18px;
-    font-weight: 300;
   }
 
   &__balance {
@@ -124,7 +126,6 @@
   &__action {
     font-size: 16px;
     line-height: 18px;
-    font-weight: 300;
     cursor: pointer;
   }
 }

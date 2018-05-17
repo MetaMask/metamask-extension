@@ -176,14 +176,21 @@ describe('TransactionStateManager', function () {
       assert.deepEqual(updatedTx.history[0], txStateHistoryHelper.snapshotFromTxMeta(updatedTx), 'first history item is initial state')
       // modify value and updateTx
       updatedTx.txParams.gasPrice = desiredGasPrice
+      const before = new Date().getTime()
       txStateManager.updateTx(updatedTx)
+      const after = new Date().getTime()
       // check updated value
       const result = txStateManager.getTx('1')
       assert.equal(result.txParams.gasPrice, desiredGasPrice, 'gas price updated')
       // validate history was updated
       assert.equal(result.history.length, 2, 'two history items (initial + diff)')
+      assert.equal(result.history[1].length, 1, 'two history state items (initial + diff)')
+      
       const expectedEntry = { op: 'replace', path: '/txParams/gasPrice', value: desiredGasPrice }
-      assert.deepEqual(result.history[1], [expectedEntry], 'two history items (initial + diff)')
+      assert.deepEqual(result.history[1][0].op, expectedEntry.op, 'two history items (initial + diff) operation')
+      assert.deepEqual(result.history[1][0].path, expectedEntry.path, 'two history items (initial + diff) path')
+      assert.deepEqual(result.history[1][0].value, expectedEntry.value, 'two history items (initial + diff) value')
+      assert.ok(result.history[1][0].timestamp >= before && result.history[1][0].timestamp <= after)
     })
   })
 

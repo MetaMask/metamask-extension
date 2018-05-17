@@ -3,7 +3,6 @@ const {
   RINKEBY,
   KOVAN,
   MAINNET,
-  LOCALHOST,
   ROPSTEN_CODE,
   RINKEYBY_CODE,
   KOVAN_CODE,
@@ -11,17 +10,6 @@ const {
   RINKEBY_DISPLAY_NAME,
   KOVAN_DISPLAY_NAME,
   MAINNET_DISPLAY_NAME,
-  MAINNET_RPC_URL,
-  ROPSTEN_RPC_URL,
-  KOVAN_RPC_URL,
-  RINKEBY_RPC_URL,
-  LOCALHOST_RPC_URL,
-  MAINNET_RPC_URL_BETA,
-  ROPSTEN_RPC_URL_BETA,
-  KOVAN_RPC_URL_BETA,
-  RINKEBY_RPC_URL_BETA,
-  OLD_UI_NETWORK_TYPE,
-  BETA_UI_NETWORK_TYPE,
 } = require('./enums')
 
 const networkToNameMap = {
@@ -34,32 +22,8 @@ const networkToNameMap = {
   [KOVAN_CODE]: KOVAN_DISPLAY_NAME,
 }
 
-const networkEndpointsMap = {
-  [OLD_UI_NETWORK_TYPE]: {
-    [LOCALHOST]: LOCALHOST_RPC_URL,
-    [MAINNET]: MAINNET_RPC_URL,
-    [ROPSTEN]: ROPSTEN_RPC_URL,
-    [KOVAN]: KOVAN_RPC_URL,
-    [RINKEBY]: RINKEBY_RPC_URL,
-  },
-  [BETA_UI_NETWORK_TYPE]: {
-    [LOCALHOST]: LOCALHOST_RPC_URL,
-    [MAINNET]: MAINNET_RPC_URL_BETA,
-    [ROPSTEN]: ROPSTEN_RPC_URL_BETA,
-    [KOVAN]: KOVAN_RPC_URL_BETA,
-    [RINKEBY]: RINKEBY_RPC_URL_BETA,
-  },
-}
-
 const getNetworkDisplayName = key => networkToNameMap[key]
-
-const getNetworkEndpoints = (networkType = OLD_UI_NETWORK_TYPE) => {
-  return {
-    ...networkEndpointsMap[networkType],
-  }
-}
 
 module.exports = {
   getNetworkDisplayName,
-  getNetworkEndpoints,
 }

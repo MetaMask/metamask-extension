@@ -355,7 +355,6 @@ module.exports = class MetamaskController extends EventEmitter {
       submitPassword: nodeify(keyringController.submitPassword, keyringController),
 
       // network management
-      setNetworkEndpoints: nodeify(networkController.setNetworkEndpoints, networkController),
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
 
@@ -382,6 +381,7 @@ module.exports = class MetamaskController extends EventEmitter {
       updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
+      isNonceTaken: nodeify(txController.isNonceTaken, txController),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
