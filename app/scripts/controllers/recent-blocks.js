@@ -4,7 +4,7 @@ const BN = require('ethereumjs-util').BN
 const EthQuery = require('eth-query')
 const log = require('loglevel')
 const pify = require('pify')
-const timeout = (duration) => new Promise(resolve => setTimeout(duration, resolve))
+const timeout = (duration) => new Promise(resolve => setTimeout(resolve, duration))
 
 class RecentBlocksController {
 
