@@ -4,7 +4,7 @@ const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
 const webdriver = require('selenium-webdriver')
-const By = webdriver.By
+const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 
 describe('Metamask popup page', function () {
@@ -70,7 +70,7 @@ describe('Metamask popup page', function () {
     })
 
     it('show terms of use', async () => {
-      const terms = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > h3')).getText()
+      const terms = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
       delay(300)
     })
@@ -124,7 +124,7 @@ describe('Metamask popup page', function () {
     it('accepts account password after lock', async () => {
       await delay(500)
       await driver.findElement(By.id('password-box')).sendKeys('123456789')
-      await driver.findElement(By.css('button')).sendKeys(webdriver.Key.ENTER)
+      await driver.findElement(By.id('password-box')).sendKeys(Key.ENTER)
       await delay(500)
     })
 
@@ -235,7 +235,7 @@ describe('Metamask popup page', function () {
       await delay(1000)
     })
 
-    //  // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
+    // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
