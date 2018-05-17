@@ -1,5 +1,5 @@
 const assert = require('assert')
-const txStateHistoryHelper = require('../../app/scripts/lib/tx-state-history-helper')
+const txStateHistoryHelper = require('../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
 const testVault = require('../data/v17-long-history.json')
 
 

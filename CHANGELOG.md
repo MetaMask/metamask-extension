@@ -2,6 +2,35 @@
 
 ## Current Master
 
+## 4.6.0 Thu Apr 26 2018
+
+- Correctly format currency conversion for locally selected preferred currency.
+- Improved performance of 3D fox logo.
+- Fetch token prices based on contract address, not symbol
+- Fix bug that prevents setting language locale in settings.
+- Show checksum addresses throughout the UI
+- Allow transactions with a 0 gwei gas price
+
+## 4.5.5 Fri Apr 06 2018
+
+- Graceful handling of unknown keys in txParams
+- Fixes buggy handling of historical transactions with unknown keys in txParams
+- Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
+- Fix Download State Logs button [#3791](https://github.com/MetaMask/metamask-extension/issues/3791)
+- Enhanced migration error handling + reporting
+
+## 4.5.4 (aborted) Thu Apr 05 2018
+
+- Graceful handling of unknown keys in txParams
+- Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
+- Fix Download State Logs button [#3791](https://github.com/MetaMask/metamask-extension/issues/3791)
+- Fix migration error reporting
+
+## 4.5.3 Wed Apr 04 2018
+
+- Fix bug where checksum address are messing with balance issue [#3843](https://github.com/MetaMask/metamask-extension/issues/3843)
+- new ui: fix the confirm transaction screen
+
 ## 4.5.2 Wed Apr 04 2018
 
 - Fix overly strict validation where transactions were rejected with hex encoded "chainId"

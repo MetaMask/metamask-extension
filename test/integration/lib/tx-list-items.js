@@ -53,7 +53,7 @@ async function runTxListItemsTest(assert, done) {
 
   const confirmedTokenTx = txListItems[6]
   const confirmedTokenTxAddress = await findAsync($(confirmedTokenTx), '.tx-list-account')
-  assert.equal(confirmedTokenTxAddress[0].textContent, '0xe7884118...81a9', 'confirmedTokenTx has correct address')
+  assert.equal(confirmedTokenTxAddress[0].textContent, '0xE7884118...81a9', 'confirmedTokenTx has correct address')
 
   const rejectedTx = txListItems[7]
   const rejectedTxRenderedStatus = await findAsync($(rejectedTx), '.tx-list-status')

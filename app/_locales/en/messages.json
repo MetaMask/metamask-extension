@@ -98,6 +98,9 @@
   "clickCopy": {
     "message": "Click to Copy"
   },
+  "close": {
+    "message": "Close"
+  },
   "confirm": {
     "message": "Confirm"
   },
@@ -259,6 +262,9 @@
   "enterPasswordConfirm": {
     "message": "Enter your password to confirm"
   },
+  "enterPasswordContinue": {
+    "message": "Enter password to continue"
+  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -330,6 +336,9 @@
   },
   "gasPriceRequired": {
     "message": "Gas Price Required"
+  },
+  "generatingTransaction": {
+    "message": "Generating transaction"
   },
   "getEther": {
     "message": "Get Ether"
@@ -476,6 +485,9 @@
   "metamaskDescription": {
     "message": "MetaMask is a secure identity vault for Ethereum."
   },
+  "metamaskSeedWords": {
+    "message": "MetaMask Seed Words"
+  },
   "min": {
     "message": "Minimum"
   },
@@ -548,6 +560,9 @@
   "or": {
     "message": "or",
     "description": "choice between creating or importing a new account"
+  },
+  "password": {
+    "message": "Password"
   },
   "passwordCorrect": {
     "message": "Please make sure your password is correct."
@@ -634,8 +649,17 @@
   "revealSeedWords": {
     "message": "Reveal Seed Words"
   },
+  "revealSeedWordsTitle": {
+    "message": "Seed Phrase"
+  },
+  "revealSeedWordsDescription": {
+    "message": "If you ever change browsers or move computers, you will need this seed phrase to access your accounts. Save them somewhere safe and secret."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "DO NOT share this phrase with anyone!"
+  },
   "revealSeedWordsWarning": {
-    "message": "Do not recover your seed words in a public place! These words can be used to steal all your accounts."
+    "message": "These words can be used to steal all your accounts."
   },
   "revert": {
     "message": "Revert"
@@ -676,6 +700,9 @@
   },
   "reprice_subtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
+  },
+  "saveAsCsvFile": {
+    "message": "Save as CSV File"
   },
   "saveAsFile": {
     "message": "Save as File",
@@ -908,5 +935,8 @@
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Your private seed phrase"
   }
 }

@@ -1,20 +1,25 @@
-
 class SwPlatform {
-
-  //
-  // Public
-  //
-
+  /**
+   * Reloads the platform
+   */
   reload () {
-    // you cant actually do this
-    global.location.reload()
+    // TODO: you can't actually do this
+    /** @type {any} */ (global).location.reload()
   }
 
-  openWindow ({ url }) {
-    // this doesnt actually work
-    global.open(url, '_blank')
+  /**
+   * Opens a window
+   * @param {{url: string}} opts - The window options
+   */
+  openWindow (opts) {
+    // TODO: this doesn't actually work
+    /** @type {any} */ (global).open(opts.url, '_blank')
   }
 
+  /**
+   * Returns the platform version
+   * @returns {string}
+   */
   getVersion () {
     return '<unable to read version>'
   }

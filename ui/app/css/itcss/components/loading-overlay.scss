@@ -1,13 +1,14 @@
 .loading-overlay {
-  left: 0px;
+  left: 0;
   z-index: 50;
   position: absolute;
   flex-direction: column;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 1 1 auto;
   width: 100%;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, .8);
 
   @media screen and (max-width: 575px) {
     margin-top: 56px;
@@ -18,4 +19,32 @@
     margin-top: 75px;
     height: calc(100% - 75px);
   }
+
+  &--full-screen {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    margin-top: 0;
+  }
+
+  &__container {
+    position: absolute;
+    top: 33%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__message {
+    margin-top: 32px;
+    font-weight: 400;
+    font-size: 20px;
+    color: $manatee;
+  }
+}
+
+.spinner {
+  height: 58px;
+  width: 58px;
 }

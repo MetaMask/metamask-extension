@@ -3,12 +3,13 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
-const ethUtil = require('ethereumjs-util')
+const { stripHexPrefix } = require('ethereumjs-util')
 const actions = require('../../actions')
 const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../selectors')
 const ReadOnlyInput = require('../readonly-input')
 const copyToClipboard = require('copy-to-clipboard')
+const { checksumAddress } = require('../../util')
 
 function mapStateToProps (state) {
   return {
@@ -60,7 +61,7 @@ ExportPrivateKeyModal.prototype.renderPasswordLabel = function (privateKey) {
 }
 
 ExportPrivateKeyModal.prototype.renderPasswordInput = function (privateKey) {
-  const plainKey = privateKey && ethUtil.stripHexPrefix(privateKey)
+  const plainKey = privateKey && stripHexPrefix(privateKey)
 
   return privateKey
     ? h(ReadOnlyInput, {
@@ -121,7 +122,7 @@ ExportPrivateKeyModal.prototype.render = function () {
       h(ReadOnlyInput, {
         wrapperClass: 'ellip-address-wrapper',
         inputClass: 'qr-ellip-address ellip-address',
-        value: address,
+        value: checksumAddress(address),
       }),
 
       h('div.account-modal-divider'),

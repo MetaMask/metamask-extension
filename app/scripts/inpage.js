@@ -3,16 +3,11 @@ cleanContextForImports()
 require('web3/dist/web3.min.js')
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
-// const PingStream = require('ping-pong-stream/ping')
-// const endOfStream = require('end-of-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
 
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
-window.log = log
-log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
-
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 //
 // setup plugin communication
@@ -47,20 +42,20 @@ log.debug('MetaMask - injected web3')
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
 // set web3 defaultAccount
-
 inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
 })
-
-//
-// util
-//
 
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
 var __define
 
+/**
+ * Caches reference to global define object and deletes it to
+ * avoid conflicts with other global define objects, such as
+ * AMD's define function
+ */
 function cleanContextForImports () {
   __define = global.define
   try {
@@ -70,6 +65,9 @@ function cleanContextForImports () {
   }
 }
 
+/**
+ * Restores global define object from cached reference
+ */
 function restoreContextAfterImports () {
   try {
     global.define = __define

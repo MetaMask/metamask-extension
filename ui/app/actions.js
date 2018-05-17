@@ -1,8 +1,10 @@
 const abi = require('human-standard-token-abi')
+const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
+const log = require('loglevel')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -82,7 +84,7 @@ var actions = {
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
   requestRevealSeed: requestRevealSeed,
-
+  requestRevealSeedWords,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
@@ -220,8 +222,6 @@ var actions = {
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
   shapeShiftSubview: shapeShiftSubview,
-  UPDATE_TOKEN_EXCHANGE_RATE: 'UPDATE_TOKEN_EXCHANGE_RATE',
-  updateTokenExchangeRate,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
   coinShiftRquest: coinShiftRquest,
@@ -347,7 +347,7 @@ function transitionBackward () {
 }
 
 function confirmSeedWords () {
-  return (dispatch) => {
+  return dispatch => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.clearSeedWordCache`)
     return new Promise((resolve, reject) => {
@@ -355,7 +355,7 @@ function confirmSeedWords () {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
 
         log.info('Seed word cache cleared. ' + account)
@@ -428,6 +428,30 @@ function revealSeedConfirmation () {
   }
 }
 
+function verifyPassword (password) {
+  return new Promise((resolve, reject) => {
+    background.submitPassword(password, error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(true)
+    })
+  })
+}
+
+function verifySeedPhrase () {
+  return new Promise((resolve, reject) => {
+    background.verifySeedPhrase((error, seedWords) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(seedWords)
+    })
+  })
+}
+
 function requestRevealSeed (password) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
@@ -452,6 +476,24 @@ function requestRevealSeed (password) {
         })
       })
     })
+  }
+}
+
+function requestRevealSeedWords (password) {
+  return async dispatch => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.submitPassword`)
+
+    try {
+      await verifyPassword(password)
+      const seedWords = await verifySeedPhrase()
+      dispatch(actions.hideLoadingIndication())
+      return seedWords
+    } catch (error) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(error.message))
+      throw new Error(error.message)
+    }
   }
 }
 
@@ -482,31 +524,26 @@ function addNewKeyring (type, opts) {
 }
 
 function importNewAccount (strategy, args) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
-    log.debug(`background.importAccountWithStrategy`)
-    return new Promise((resolve, reject) => {
-      background.importAccountWithStrategy(strategy, args, (err) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-        log.debug(`background.getState`)
-        background.getState((err, newState) => {
-          dispatch(actions.hideLoadingIndication())
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          dispatch(actions.updateMetamaskState(newState))
-          dispatch({
-            type: actions.SHOW_ACCOUNT_DETAIL,
-            value: newState.selectedAddress,
-          })
-          resolve(newState)
-        })
-      })
+  return async (dispatch) => {
+    let newState
+    dispatch(actions.showLoadingIndication('This may take a while, please be patient.'))
+    try {
+      log.debug(`background.importAccountWithStrategy`)
+      await pify(background.importAccountWithStrategy).call(background, strategy, args)
+      log.debug(`background.getState`)
+      newState = await pify(background.getState).call(background)
+    } catch (err) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(err.message))
+      throw err
+    }
+    dispatch(actions.hideLoadingIndication())
+    dispatch(actions.updateMetamaskState(newState))
+    dispatch({
+      type: actions.SHOW_ACCOUNT_DETAIL,
+      value: newState.selectedAddress,
     })
+    return newState
   }
 }
 
@@ -571,35 +608,47 @@ function signMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
-    log.debug(`actions calling background.signMessage`)
-    background.signMessage(msgData, (err, newState) => {
-      log.debug('signMessage called back')
-      dispatch(actions.updateMetamaskState(newState))
-      dispatch(actions.hideLoadingIndication())
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.signMessage`)
+      background.signMessage(msgData, (err, newState) => {
+        log.debug('signMessage called back')
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
 
-      if (err) log.error(err)
-      if (err) return dispatch(actions.displayWarning(err.message))
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
 
-      dispatch(actions.completedTx(msgData.metamaskId))
+        dispatch(actions.completedTx(msgData.metamaskId))
+        return resolve(msgData)
+      })
     })
   }
 }
 
 function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
-  return (dispatch) => {
+  return dispatch => {
     dispatch(actions.showLoadingIndication())
 
-    log.debug(`actions calling background.signPersonalMessage`)
-    background.signPersonalMessage(msgData, (err, newState) => {
-      log.debug('signPersonalMessage called back')
-      dispatch(actions.updateMetamaskState(newState))
-      dispatch(actions.hideLoadingIndication())
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.signPersonalMessage`)
+      background.signPersonalMessage(msgData, (err, newState) => {
+        log.debug('signPersonalMessage called back')
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
 
-      if (err) log.error(err)
-      if (err) return dispatch(actions.displayWarning(err.message))
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
 
-      dispatch(actions.completedTx(msgData.metamaskId))
+        dispatch(actions.completedTx(msgData.metamaskId))
+        return resolve(msgData)
+      })
     })
   }
 }
@@ -609,16 +658,22 @@ function signTypedMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
-    log.debug(`actions calling background.signTypedMessage`)
-    background.signTypedMessage(msgData, (err, newState) => {
-      log.debug('signTypedMessage called back')
-      dispatch(actions.updateMetamaskState(newState))
-      dispatch(actions.hideLoadingIndication())
+    return new Promise((resolve, reject) => {
+      log.debug(`actions calling background.signTypedMessage`)
+      background.signTypedMessage(msgData, (err, newState) => {
+        log.debug('signTypedMessage called back')
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
 
-      if (err) log.error(err)
-      if (err) return dispatch(actions.displayWarning(err.message))
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
 
-      dispatch(actions.completedTx(msgData.metamaskId))
+        dispatch(actions.completedTx(msgData.metamaskId))
+        return resolve(msgData)
+      })
     })
   }
 }
@@ -798,17 +853,24 @@ function updateTransaction (txData) {
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
   return (dispatch) => {
-    log.debug(`actions calling background.updateAndApproveTx.`)
-    background.updateAndApproveTransaction(txData, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
-      dispatch(actions.clearSend())
-      if (err) {
-        dispatch(actions.txError(err))
-        dispatch(actions.goHome())
-        return log.error(err.message)
-      }
-      dispatch(actions.completedTx(txData.id))
+    log.debug(`actions calling background.updateAndApproveTx`)
+
+    return new Promise((resolve, reject) => {
+      background.updateAndApproveTransaction(txData, err => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+        dispatch(actions.clearSend())
+
+        if (err) {
+          dispatch(actions.txError(err))
+          dispatch(actions.goHome())
+          log.error(err.message)
+          reject(err)
+        }
+
+        dispatch(actions.completedTx(txData.id))
+        resolve(txData)
+      })
     })
   }
 }
@@ -836,29 +898,77 @@ function txError (err) {
 }
 
 function cancelMsg (msgData) {
-  log.debug(`background.cancelMessage`)
-  background.cancelMessage(msgData.id)
-  return actions.completedTx(msgData.id)
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      log.debug(`background.cancelMessage`)
+      background.cancelMessage(msgData.id, (err, newState) => {
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(actions.completedTx(msgData.id))
+        return resolve(msgData)
+      })
+    })
+  }
 }
 
 function cancelPersonalMsg (msgData) {
-  const id = msgData.id
-  background.cancelPersonalMessage(id)
-  return actions.completedTx(id)
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      const id = msgData.id
+      background.cancelPersonalMessage(id, (err, newState) => {
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(actions.completedTx(id))
+        return resolve(msgData)
+      })
+    })
+  }
 }
 
 function cancelTypedMsg (msgData) {
-  const id = msgData.id
-  background.cancelTypedMessage(id)
-  return actions.completedTx(id)
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      const id = msgData.id
+      background.cancelTypedMessage(id, (err, newState) => {
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          return reject(err)
+        }
+
+        dispatch(actions.completedTx(id))
+        return resolve(msgData)
+      })
+    })
+  }
 }
 
 function cancelTx (txData) {
-  return (dispatch) => {
+  return dispatch => {
     log.debug(`background.cancelTransaction`)
-    background.cancelTransaction(txData.id, () => {
-      dispatch(actions.clearSend())
-      dispatch(actions.completedTx(txData.id))
+    return new Promise((resolve, reject) => {
+      background.cancelTransaction(txData.id, () => {
+        dispatch(actions.clearSend())
+        dispatch(actions.completedTx(txData.id))
+        resolve(txData)
+      })
     })
   }
 }
@@ -1249,12 +1359,13 @@ function markNoticeRead (notice) {
           dispatch(actions.displayWarning(err))
           return reject(err)
         }
+
         if (notice) {
           dispatch(actions.showNotice(notice))
-          resolve()
+          resolve(true)
         } else {
           dispatch(actions.clearNotices())
-          resolve()
+          resolve(false)
         }
       })
     })
@@ -1677,28 +1788,6 @@ function shapeShiftRequest (query, options, cb) {
   }
 }
 
-function updateTokenExchangeRate (token = '') {
-  const pair = `${token.toLowerCase()}_eth`
-
-  return dispatch => {
-    if (!token) {
-      return
-    }
-
-    shapeShiftRequest('marketinfo', { pair }, marketinfo => {
-      if (!marketinfo.error) {
-        dispatch({
-          type: actions.UPDATE_TOKEN_EXCHANGE_RATE,
-          payload: {
-            pair,
-            marketinfo,
-          },
-        })
-      }
-    })
-  }
-}
-
 function setFeatureFlag (feature, activated, notificationType) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -1773,7 +1862,7 @@ function forceUpdateMetamaskState (dispatch) {
       }
 
       dispatch(actions.updateMetamaskState(newState))
-      resolve()
+      resolve(newState)
     })
   })
 }

@@ -3,6 +3,7 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../ui/app/actions')
+const log = require('loglevel')
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
@@ -34,7 +35,7 @@ const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
-const { BETA_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
+const { BETA_UI_NETWORK_TYPE } = require('../../app/scripts/controllers/network/enums')
 
 module.exports = connect(mapStateToProps)(App)
 

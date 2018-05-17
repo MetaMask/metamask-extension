@@ -3,12 +3,14 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const actions = require('../../actions')
 const Dropdown = require('./components/dropdown').Dropdown
 const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkDropdownIcon = require('./components/network-dropdown-icon')
 const R = require('ramda')
-
+const { SETTINGS_ROUTE } = require('../../routes')
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -41,9 +43,6 @@ function mapDispatchToProps (dispatch) {
     setRpcTarget: (target) => {
       dispatch(actions.setRpcTarget(target))
     },
-    showConfigPage: () => {
-      dispatch(actions.showConfigPage())
-    },
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
   }
@@ -59,7 +58,10 @@ NetworkDropdown.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(NetworkDropdown)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(NetworkDropdown)
 
 
 // TODO: specify default props and proptypes
@@ -227,7 +229,7 @@ NetworkDropdown.prototype.render = function () {
       DropdownMenuItem,
       {
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => this.props.showConfigPage(),
+        onClick: () => this.props.history.push(SETTINGS_ROUTE),
         style: dropdownMenuItemStyle,
       },
       [

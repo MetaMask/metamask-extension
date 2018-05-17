@@ -181,7 +181,7 @@
     "message": "DEN je vaša šifrirana shramba v MetaMasku."
   },
   "deposit": {
-    "message": "Vplačilo"
+    "message": "Vplačaj"
   },
   "depositBTC": {
     "message": "Vplačajte vaš BTC na spodnji naslov:"
@@ -507,10 +507,10 @@
     "message": "Ni se začelo"
   },
   "oldUI": {
-    "message": "Starejši uporabniški vmesnik"
+    "message": "Star UI"
   },
   "oldUIMessage": {
-    "message": "Vrnili ste se v starejši uporabniški vmesnik. V novega se lahko vrnete z možnostjo v spustnem meniju v zgornjem desnem kotu."
+    "message": "Vrnili ste se v star uporabniški vmesnik. V novega se lahko vrnete z možnostjo v spustnem meniju v zgornjem desnem kotu."
   },
   "or": {
     "message": "ali",
@@ -759,7 +759,7 @@
     "message": "Vpišite vaše geslo"
   },
   "uiWelcome": {
-    "message": "Dobrodošli v novem uporabniškem vmesniku (Beta)"
+    "message": "Dobrodošli v nov UI (Beta)"
   },
   "uiWelcomeMessage": {
     "message": "Zdaj uporabljate novi MetaMask uporabniški vmesnik. Razglejte se, preizkusite nove funkcije, kot so pošiljanje žetonov, in nas obvestite, če imate kakšne težave."

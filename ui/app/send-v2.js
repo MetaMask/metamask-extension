@@ -30,6 +30,7 @@ const {
   getGasTotal,
 } = require('./components/send/send-utils')
 const { isValidAddress } = require('./util')
+const { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } = require('./routes')
 
 SendTransactionScreen.contextTypes = {
   t: PropTypes.func,
@@ -87,17 +88,6 @@ SendTransactionScreen.prototype.updateSendTokenBalance = function (usersToken) {
 }
 
 SendTransactionScreen.prototype.componentWillMount = function () {
-  const {
-    updateTokenExchangeRate,
-    selectedToken = {},
-  } = this.props
-
-  const { symbol } = selectedToken || {}
-
-  if (symbol) {
-    updateTokenExchangeRate(symbol)
-  }
-
   this.updateGas()
 }
 
@@ -182,7 +172,7 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
 }
 
 SendTransactionScreen.prototype.renderHeader = function () {
-  const { selectedToken, clearSend, goHome } = this.props
+  const { selectedToken, clearSend, history } = this.props
 
   return h('div.page-container__header', [
 
@@ -193,7 +183,7 @@ SendTransactionScreen.prototype.renderHeader = function () {
     h('div.page-container__header-close', {
       onClick: () => {
         clearSend()
-        goHome()
+        history.push(DEFAULT_ROUTE)
       },
     }),
 
@@ -254,7 +244,6 @@ SendTransactionScreen.prototype.handleToChange = function (to, nickname = '') {
   const {
     updateSendTo,
     updateSendErrors,
-    from: {address: from},
   } = this.props
   let toError = null
 
@@ -262,8 +251,6 @@ SendTransactionScreen.prototype.handleToChange = function (to, nickname = '') {
     toError = this.context.t('required')
   } else if (!isValidAddress(to)) {
     toError = this.context.t('invalidAddressRecipient')
-  } else if (to === from) {
-    toError = this.context.t('fromToSame')
   }
 
   updateSendTo(to, nickname)
@@ -498,22 +485,22 @@ SendTransactionScreen.prototype.renderForm = function () {
 
 SendTransactionScreen.prototype.renderFooter = function () {
   const {
-    goHome,
     clearSend,
     gasTotal,
     tokenBalance,
     selectedToken,
     errors: { amount: amountError, to: toError },
+    history,
   } = this.props
 
-  const missingTokenBalance = selectedToken && !tokenBalance
+  const missingTokenBalance = selectedToken && (tokenBalance === null || tokenBalance === undefined)
   const noErrors = !amountError && toError === null
 
   return h('div.page-container__footer', [
     h('button.btn-secondary--lg.page-container__footer-button', {
       onClick: () => {
         clearSend()
-        goHome()
+        history.push(DEFAULT_ROUTE)
       },
     }, this.context.t('cancel')),
     h('button.btn-primary--lg.page-container__footer-button', {
@@ -579,12 +566,17 @@ SendTransactionScreen.prototype.getEditedTx = function () {
       data,
     })
   } else {
-    const data = unapprovedTxs[editingTransactionId].txParams.data
+    const { data } = unapprovedTxs[editingTransactionId].txParams
+
     Object.assign(editingTx.txParams, {
       value: ethUtil.addHexPrefix(amount),
       to: ethUtil.addHexPrefix(to),
       data,
     })
+
+    if (typeof editingTx.txParams.data === 'undefined') {
+      delete editingTx.txParams.data
+    }
   }
 
   return editingTx
@@ -619,7 +611,6 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
 
   if (editingTransactionId) {
     const editedTx = this.getEditedTx()
-
     updateTx(editedTx)
   } else {
 
@@ -643,4 +634,6 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
       ? signTokenTx(selectedToken.address, to, amount, txParams)
       : signTx(txParams)
   }
+
+  this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
 }

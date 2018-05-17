@@ -1,16 +1,18 @@
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const clone = require('clone')
 const abi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(abi)
 const inherits = require('util').inherits
 const actions = require('../../actions')
-const util = require('../../util')
+const { getSymbolAndDecimals } = require('../../token-util')
 const ConfirmSendEther = require('./confirm-send-ether')
 const ConfirmSendToken = require('./confirm-send-token')
 const ConfirmDeployContract = require('./confirm-deploy-contract')
+const Loading = require('../loading-screen')
 
 const TX_TYPES = {
   DEPLOY_CONTRACT: 'deploy_contract',
@@ -24,6 +26,7 @@ function mapStateToProps (state) {
   const {
     conversionRate,
     identities,
+    tokens: existingTokens,
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
@@ -31,6 +34,7 @@ function mapStateToProps (state) {
     conversionRate,
     identities,
     selectedAddress,
+    existingTokens,
   }
 }
 
@@ -53,9 +57,24 @@ function PendingTx () {
   }
 }
 
-PendingTx.prototype.componentWillMount = async function () {
+PendingTx.prototype.componentDidMount = function () {
+  this.setTokenData()
+}
+
+PendingTx.prototype.componentDidUpdate = function (prevProps, prevState) {
+  if (prevState.isFetching) {
+    this.setTokenData()
+  }
+}
+
+PendingTx.prototype.setTokenData = async function () {
+  const { existingTokens } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
+
+  if (txMeta.loadingDefaults) {
+    return
+  }
 
   if (!txParams.to) {
     return this.setState({
@@ -73,30 +92,15 @@ PendingTx.prototype.componentWillMount = async function () {
   }
 
   if (isTokenTransaction) {
-    const token = util.getContractAtAddress(txParams.to)
-    const results = await Promise.all([
-      token.symbol(),
-      token.decimals(),
-    ])
-    const [ symbol, decimals ] = results
+    const { symbol, decimals } = await getSymbolAndDecimals(txParams.to, existingTokens)
 
-    if (symbol[0] && decimals[0]) {
-      this.setState({
-        transactionType: TX_TYPES.SEND_TOKEN,
-        tokenAddress: txParams.to,
-        tokenSymbol: symbol[0],
-        tokenDecimals: decimals[0],
-        isFetching: false,
-      })
-    } else {
-      this.setState({
-        transactionType: TX_TYPES.SEND_TOKEN,
-        tokenAddress: txParams.to,
-        tokenSymbol: null,
-        tokenDecimals: null,
-        isFetching: false,
-      })
-    }
+    this.setState({
+      transactionType: TX_TYPES.SEND_TOKEN,
+      tokenAddress: txParams.to,
+      tokenSymbol: symbol,
+      tokenDecimals: decimals,
+      isFetching: false,
+    })
   } else {
     this.setState({
       transactionType: TX_TYPES.SEND_ETHER,
@@ -125,7 +129,10 @@ PendingTx.prototype.render = function () {
   const { sendTransaction } = this.props
 
   if (isFetching) {
-    return h('noscript')
+    return h(Loading, {
+      fullScreen: true,
+      loadingMessage: this.context.t('generatingTransaction'),
+    })
   }
 
   switch (transactionType) {
@@ -150,6 +157,12 @@ PendingTx.prototype.render = function () {
         sendTransaction,
       })
     default:
-      return h('noscript')
+      return h(Loading, {
+        fullScreen: true,
+      })
   }
+}
+
+PendingTx.contextTypes = {
+  t: PropTypes.func,
 }

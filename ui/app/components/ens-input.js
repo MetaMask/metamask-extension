@@ -11,6 +11,7 @@ const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const connect = require('react-redux').connect
 const ToAutoComplete = require('./send/to-autocomplete')
+const log = require('loglevel')
 
 EnsInput.contextTypes = {
   t: PropTypes.func,
@@ -32,9 +33,9 @@ EnsInput.prototype.render = function () {
       const network = this.props.network
       const networkHasEnsSupport = getNetworkEnsSupport(network)
 
-      if (!networkHasEnsSupport) return
-
       props.onChange(recipient)
+
+      if (!networkHasEnsSupport) return
 
       if (recipient.match(ensRE) === null) {
         return this.setState({

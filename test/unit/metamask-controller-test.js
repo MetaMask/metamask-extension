@@ -2,9 +2,17 @@ const assert = require('assert')
 const sinon = require('sinon')
 const clone = require('clone')
 const nock = require('nock')
+const createThoughStream = require('through2').obj
 const MetaMaskController = require('../../app/scripts/metamask-controller')
 const blacklistJSON = require('../stub/blacklist')
 const firstTimeState = require('../../app/scripts/first-time-state')
+
+const currentNetworkId = 42
+const DEFAULT_LABEL = 'Account 1'
+const TEST_SEED = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+const TEST_SEED_ALT = 'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle'
+const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
 
 describe('MetaMaskController', function () {
   let metamaskController
@@ -33,6 +41,7 @@ describe('MetaMaskController', function () {
 
     metamaskController = new MetaMaskController({
       showUnapprovedTx: noop,
+      showUnconfirmedMessage: noop,
       encryptor: {
         encrypt: function (password, object) {
           this.object = object
@@ -96,17 +105,28 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndRestore', function () {
     it('should be able to call newVaultAndRestore despite a mistake.', async function () {
-
       const password = 'what-what-what'
-      const wrongSeed = 'debris dizzy just program just float decrease vacant alarm reduce speak stadiu'
-      const rightSeed = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
-      await metamaskController.createNewVaultAndRestore(password, wrongSeed)
-        .catch((e) => {
-          return
-        })
-      await metamaskController.createNewVaultAndRestore(password, rightSeed)
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED.slice(0, -1)).catch((e) => null)
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
       assert(metamaskController.keyringController.createNewVaultAndRestore.calledTwice)
+    })
+
+    it('should clear previous identities after vault restoration', async () => {
+      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED)
+      assert.deepEqual(metamaskController.getState().identities, {
+        [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
+      })
+
+      await metamaskController.keyringController.saveAccountLabel(TEST_ADDRESS, 'Account Foo')
+      assert.deepEqual(metamaskController.getState().identities, {
+        [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
+      })
+
+      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
+      assert.deepEqual(metamaskController.getState().identities, {
+        [TEST_ADDRESS_ALT]: { address: TEST_ADDRESS_ALT, name: DEFAULT_LABEL },
+      })
     })
   })
 
@@ -137,7 +157,7 @@ describe('MetaMaskController', function () {
       assert.equal(metamaskController.preferencesController.store.getState().useBlockie, false)
     })
 
-    it('setUseBlockie to true', async function () {
+    it('setUseBlockie to true', function () {
       metamaskController.setUseBlockie(true, noop)
       assert.equal(metamaskController.preferencesController.store.getState().useBlockie, true)
     })
@@ -184,6 +204,10 @@ describe('MetaMaskController', function () {
       rpcTarget = metamaskController.setCustomRpc(customRPC)
     })
 
+    afterEach(function () {
+      nock.cleanAll()
+    })
+
     it('returns custom RPC that when called', async function () {
       assert.equal(await rpcTarget, customRPC)
     })
@@ -213,6 +237,7 @@ describe('MetaMaskController', function () {
 
   describe('#createShapeshifttx', function () {
     let depositAddress, depositType, shapeShiftTxList
+
     beforeEach(function () {
       nock('https://shapeshift.io')
         .get('/txStat/3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc')
@@ -223,10 +248,11 @@ describe('MetaMaskController', function () {
       shapeShiftTxList = metamaskController.shapeshiftController.store.getState().shapeShiftTxList
     })
 
-    it('creates', async function () {
+    it('creates a shapeshift tx', async function () {
       metamaskController.createShapeShiftTx(depositAddress, depositType)
       assert.equal(shapeShiftTxList[0].depositAddress, depositAddress)
     })
+
   })
 
   describe('#addNewAccount', function () {
@@ -245,4 +271,257 @@ describe('MetaMaskController', function () {
       }
     })
   })
+
+  describe('#verifyseedPhrase', function () {
+    let seedPhrase, getConfigSeed
+
+    it('errors when no keying is provided', async function () {
+      try {
+        await metamaskController.verifySeedPhrase()
+      } catch (error) {
+        assert.equal(error.message, 'MetamaskController - No HD Key Tree found')
+      }
+    })
+
+    beforeEach(async function () {
+      await metamaskController.createNewVaultAndKeychain('password')
+      seedPhrase = await metamaskController.verifySeedPhrase()
+    })
+
+    it('#placeSeedWords should match the initially created vault seed', function () {
+
+      metamaskController.placeSeedWords((err, result) => {
+        if (err) {
+         console.log(err)
+        } else {
+          getConfigSeed = metamaskController.configManager.getSeedWords()
+          assert.equal(result, seedPhrase)
+          assert.equal(result, getConfigSeed)
+        }
+      })
+      assert.equal(getConfigSeed, undefined)
+    })
+
+    it('#addNewAccount', async function () {
+      await metamaskController.addNewAccount()
+      const getAccounts = await metamaskController.keyringController.getAccounts()
+      assert.equal(getAccounts.length, 2)
+    })
+  })
+
+  describe('#resetAccount', function () {
+
+    beforeEach(function () {
+      const selectedAddressStub = sinon.stub(metamaskController.preferencesController, 'getSelectedAddress')
+      const getNetworkstub = sinon.stub(metamaskController.txController.txStateManager, 'getNetwork')
+
+      selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+      getNetworkstub.returns(42)
+
+      metamaskController.txController.txStateManager._saveTxList([
+        { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'} },
+        { id: 2, status: 'rejected', metamaskNetworkId: 32, txParams: {} },
+        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4'} },
+      ])
+    })
+
+    it('wipes transactions from only the correct network id and with the selected address', async function () {
+      await metamaskController.resetAccount()
+      assert.equal(metamaskController.txController.txStateManager.getTx(1), undefined)
+    })
+  })
+
+  describe('#clearSeedWordCache', function () {
+
+    it('should have set seed words', function () {
+      metamaskController.configManager.setSeedWords('test words')
+      const getConfigSeed = metamaskController.configManager.getSeedWords()
+      assert.equal(getConfigSeed, 'test words')
+    })
+
+    it('should clear config seed phrase', function () {
+      metamaskController.configManager.setSeedWords('test words')
+      metamaskController.clearSeedWordCache((err, result) => {
+        if (err) console.log(err)
+      })
+      const getConfigSeed = metamaskController.configManager.getSeedWords()
+      assert.equal(getConfigSeed, null)
+    })
+
+  })
+
+  describe('#setCurrentLocale', function () {
+
+    it('checks the default currentLocale', function () {
+      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState().currentLocale
+      assert.equal(preferenceCurrentLocale, undefined)
+    })
+
+    it('sets current locale in preferences controller', function () {
+      metamaskController.setCurrentLocale('ja', noop)
+      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState().currentLocale
+      assert.equal(preferenceCurrentLocale, 'ja')
+    })
+
+  })
+
+  describe('#newUnsignedMessage', function () {
+
+    let msgParams, metamaskMsgs, messages, msgId
+
+    const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+    const data = '0x43727970746f6b697474696573'
+
+    beforeEach(function () {
+
+      msgParams = {
+        'from': address,
+        'data': data,
+      }
+
+      metamaskController.newUnsignedMessage(msgParams, noop)
+      metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
+      messages = metamaskController.messageManager.messages
+      msgId = Object.keys(metamaskMsgs)[0]
+    })
+
+    it('persists address from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.from, address)
+    })
+
+    it('persists data from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.data, data)
+    })
+
+    it('sets the status to unapproved', function () {
+      assert.equal(metamaskMsgs[msgId].status, 'unapproved')
+    })
+
+    it('sets the type to eth_sign', function () {
+      assert.equal(metamaskMsgs[msgId].type, 'eth_sign')
+    })
+
+    it('rejects the message', function () {
+      const msgIdInt = parseInt(msgId)
+      metamaskController.cancelMessage(msgIdInt, noop)
+      assert.equal(messages[0].status, 'rejected')
+    })
+  })
+
+  describe('#newUnsignedPersonalMessage', function () {
+
+    it('errors with no from in msgParams', function () {
+      const msgParams = {
+        'data': data,
+      }
+      metamaskController.newUnsignedPersonalMessage(msgParams, function (error) {
+        assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
+      })
+    })
+
+    let msgParams, metamaskMsgs, messages, msgId
+
+    const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+    const data = '0x43727970746f6b697474696573'
+
+    beforeEach(function () {
+
+      msgParams = {
+        'from': address,
+        'data': data,
+      }
+
+      metamaskController.newUnsignedPersonalMessage(msgParams, noop)
+      metamaskMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
+      messages = metamaskController.personalMessageManager.messages
+      msgId = Object.keys(metamaskMsgs)[0]
+    })
+
+    it('persists address from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.from, address)
+    })
+
+    it('persists data from msg params', function () {
+      assert.equal(metamaskMsgs[msgId].msgParams.data, data)
+    })
+
+    it('sets the status to unapproved', function () {
+      assert.equal(metamaskMsgs[msgId].status, 'unapproved')
+    })
+
+    it('sets the type to personal_sign', function () {
+      assert.equal(metamaskMsgs[msgId].type, 'personal_sign')
+    })
+
+    it('rejects the message', function () {
+      const msgIdInt = parseInt(msgId)
+      metamaskController.cancelPersonalMessage(msgIdInt, noop)
+      assert.equal(messages[0].status, 'rejected')
+    })
+  })
+
+  describe('#setupUntrustedCommunication', function () {
+    let streamTest
+
+    const phishingUrl = 'decentral.market'
+
+    afterEach(function () {
+      streamTest.end()
+    })
+
+    it('sets up phishing stream for untrusted communication ', async function () {
+      await metamaskController.blacklistController.updatePhishingList()
+
+      streamTest = createThoughStream((chunk, enc, cb) => {
+        assert.equal(chunk.name, 'phishing')
+        assert.equal(chunk.data.hostname, phishingUrl)
+         cb()
+        })
+      // console.log(streamTest)
+       metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+    })
+  })
+
+  describe('#setupTrustedCommunication', function () {
+    let streamTest
+
+    afterEach(function () {
+      streamTest.end()
+    })
+
+    it('sets up controller dnode api for trusted communication', function (done) {
+      streamTest = createThoughStream((chunk, enc, cb) => { 
+        assert.equal(chunk.name, 'controller')
+        cb()
+        done()
+      })
+
+      metamaskController.setupTrustedCommunication(streamTest, 'mycrypto.com')
+    })
+  })
+
+  describe('#markAccountsFound', function () {
+    it('adds lost accounts to config manager data', function () {
+      metamaskController.markAccountsFound(noop)
+      const configManagerData = metamaskController.configManager.getData()
+      assert.deepEqual(configManagerData.lostAccounts, [])
+    })
+  })
+
+  describe('#markPasswordForgotten', function () {
+    it('adds and sets forgottenPassword to config data to true', function () {
+      metamaskController.markPasswordForgotten(noop)
+      const configManagerData = metamaskController.configManager.getData()
+      assert.equal(configManagerData.forgottenPassword, true)
+    })
+  })
+
+  describe('#unMarkPasswordForgotten', function () {
+    it('adds and sets forgottenPassword to config data to false', function () {
+      metamaskController.unMarkPasswordForgotten(noop)
+      const configManagerData = metamaskController.configManager.getData()
+      assert.equal(configManagerData.forgottenPassword, false)
+    })
+  })
+
 })

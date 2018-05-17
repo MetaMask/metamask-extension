@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../../../ui/app/actions')
 const clone = require('clone')
+const log = require('loglevel')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
@@ -15,8 +16,7 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const BNInput = require('./bn-as-decimal-input')
 
-// corresponds with 0.1 GWEI
-const MIN_GAS_PRICE_BN = new BN('100000000')
+const MIN_GAS_PRICE_BN = new BN('0')
 const MIN_GAS_LIMIT_BN = new BN('21000')
 
 module.exports = PendingTx
