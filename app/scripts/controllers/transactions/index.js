@@ -63,6 +63,7 @@ class TransactionController extends EventEmitter {
     this.store = this.txStateManager.store
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
+      blockTracker: this.blockTracker,
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
       getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     })

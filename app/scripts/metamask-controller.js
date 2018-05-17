@@ -103,8 +103,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.blacklistController.scheduleUpdates()
 
     // rpc provider
-    this.provider = this.initializeProvider()
-    this.blockTracker = this.provider._blockTracker
+    this.initializeProvider()
+    this.provider = this.networkController.getProviderAndBlockTracker().provider
+    this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
@@ -1033,7 +1034,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({
       provider: this.provider,
-      blockTracker: this.provider._blockTracker,
+      blockTracker: this.blockTracker,
     })
 
     engine.push(createOriginMiddleware({ origin }))
