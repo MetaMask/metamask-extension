@@ -3,6 +3,8 @@ const extend = require('xtend')
 const BN = require('ethereumjs-util').BN
 const EthQuery = require('eth-query')
 const log = require('loglevel')
+const pify = require('pify')
+const timeout = (duration) => new Promise(resolve => setTimeout(duration, resolve))
 
 class RecentBlocksController {
 
@@ -34,7 +36,7 @@ class RecentBlocksController {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
-    this.blockTracker.on('block', this.processBlock.bind(this))
+    this.blockTracker.on('latest', this.processBlock.bind(this))
     this.backfill()
   }
 
@@ -55,7 +57,10 @@ class RecentBlocksController {
    * @param {object} newBlock The new block to modify and add to the recentBlocks array
    *
    */
-  processBlock (newBlock) {
+  async processBlock (newBlockNumberHex) {
+    const newBlockNumber = Number.parseInt(newBlockNumberHex, 16)
+    const newBlock = await this.getBlockByNumber(newBlockNumber)
+
     const block = this.mapTransactionsToPrices(newBlock)
 
     const state = this.store.getState()
@@ -118,17 +123,16 @@ class RecentBlocksController {
    * @returns {Promise<void>} Promises undefined
    */
   async backfill() {
-    this.blockTracker.once('block', async (block) => {
-      let blockNum = block.number
+    this.blockTracker.once('latest', async (blockNumberHex) => {
       let recentBlocks
+      const blockNumber = Number.parseInt(blockNumberHex, 16)
       let state = this.store.getState()
       recentBlocks = state.recentBlocks
 
       while (recentBlocks.length < this.historyLength) {
         try {
-          let blockNumBn = new BN(blockNum.substr(2), 16)
-          const newNum = blockNumBn.subn(1).toString(10)
-          const newBlock = await this.getBlockByNumber(newNum)
+          const prevBlockNumber = blockNumber - 1
+          const newBlock = await this.getBlockByNumber(prevBlockNumber)
 
           if (newBlock) {
             this.backfillBlock(newBlock)
@@ -140,20 +144,8 @@ class RecentBlocksController {
         } catch (e) {
           log.error(e)
         }
-        await this.wait()
+        await timeout(100)
       }
-    })
-  }
-
-  /**
-   * A helper for this.backfill. Provides an easy way to ensure a 100 millisecond delay using await
-   *
-   * @returns {Promise<void>} Promises undefined
-   *
-   */
-  async wait () {
-    return new Promise((resolve) => {
-      setTimeout(resolve, 100)
     })
   }
 
@@ -165,13 +157,8 @@ class RecentBlocksController {
    *
    */
   async getBlockByNumber (number) {
-    const bn = new BN(number)
-    return new Promise((resolve, reject) => {
-      this.ethQuery.getBlockByNumber('0x' + bn.toString(16), true, (err, block) => {
-        if (err) reject(err)
-        resolve(block)
-      })
-    })
+    const blockNumberHex = '0x' + number.toString(16)
+    return await pify(this.ethQuery.getBlockByNumber).call(this.ethQuery, blockNumberHex, true)
   }
 
 }
