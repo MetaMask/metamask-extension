@@ -10,7 +10,6 @@ const createMetamaskMiddleware = require('./createMetamaskMiddleware')
 const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
-// const createEventEmitterProxy = require('../../lib/events-proxy.js')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
 
 const {
