@@ -9,6 +9,9 @@ workflows:
       - prep-build:
           requires:
             - prep-deps-npm
+      - prep-docs:
+          requires:
+            - prep-deps-npm
       - prep-scss:
           requires:
             - prep-deps-npm
@@ -133,6 +136,21 @@ jobs:
           paths:
             - dist
             - builds
+
+  prep-docs:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Revision }}
+      - run:
+          name: build:dist
+          command: npm run doc
+      - save_cache:
+          key: docs-cache-{{ .Revision }}
+          paths:
+            - docs/jsdoc
 
   prep-scss:
     docker:
