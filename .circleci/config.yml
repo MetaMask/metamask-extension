@@ -70,6 +70,15 @@ workflows:
             - prep-build
             - job-screens
             - all-tests-pass
+      - job-publish-release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - prep-deps-npm
+            - prep-build
+            - job-screens
+            - all-tests-pass
 
 jobs:
   prep-deps-npm:
@@ -252,6 +261,18 @@ jobs:
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
+
+  job-publish-release:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Revision }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
+      - restore_cache:
+          key: job-screens-{{ .Revision }}
       - run:
           name: sentry sourcemaps upload
           command: npm run sentry:publish
