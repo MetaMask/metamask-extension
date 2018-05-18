@@ -1,3 +1,4 @@
+const log = require('loglevel')
 const util = require('./util')
 
 function tokenInfoGetter () {
@@ -29,7 +30,7 @@ async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
       token.decimals(),
     ])
   } catch (err) {
-    console.log(`symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`, err)
+    log.warn(`symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`, err)
   }
 
   const [ symbol = [], decimals = [] ] = result
