@@ -175,7 +175,7 @@ function blacklistedDomainCheck () {
     'dropbox.com',
     'webbyawards.com',
     'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
-    'adyen.com'
+    'adyen.com',
   ]
   var currentUrl = window.location.href
   var currentRegex
