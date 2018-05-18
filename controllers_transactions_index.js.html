@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="en">
+    <title>controllers/transactions/index.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
+    <script src="scripts/semantic.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/semantic.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/override.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="ComposableObservableStore.html">ComposableObservableStore</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="ComposableObservableStore.html#getFlatState">getFlatState</a></li><li data-type='method'><a href="ComposableObservableStore.html#updateStructure">updateStructure</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="ComputedbalancesController.html">ComputedbalancesController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="ComputedbalancesController.html#syncAllAccountsFromStore">syncAllAccountsFromStore</a></li><li data-type='method'><a href="ComputedbalancesController.html#trackAddress">trackAddress</a></li><li data-type='method'><a href="ComputedbalancesController.html#trackAddressIfNotAlready">trackAddressIfNotAlready</a></li><li data-type='method'><a href="ComputedbalancesController.html#updateAllBalances">updateAllBalances</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="EdgeEncryptor.html">EdgeEncryptor</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="EdgeEncryptor.html#decrypt">decrypt</a></li><li data-type='method'><a href="EdgeEncryptor.html#encrypt">encrypt</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="Migrator.html">Migrator</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="Migrator.html#generateInitialState">generateInitialState</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="NonceTracker.html">NonceTracker</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="NonceTracker.html#_getBlockTracker">_getBlockTracker</a></li><li data-type='method'><a href="NonceTracker.html#_getHighestContinuousFrom">_getHighestContinuousFrom</a></li><li data-type='method'><a href="NonceTracker.html#getGlobalLock">getGlobalLock</a></li><li data-type='method'><a href="NonceTracker.html#getNonceLock">getNonceLock</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="PendingTransactionTracker.html">PendingTransactionTracker</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="PendingTransactionTracker.html#_checkIfNonceIsTaken">_checkIfNonceIsTaken</a></li><li data-type='method'><a href="PendingTransactionTracker.html#_checkPendingTx">_checkPendingTx</a></li><li data-type='method'><a href="PendingTransactionTracker.html#_checkPendingTxs">_checkPendingTxs</a></li><li data-type='method'><a href="PendingTransactionTracker.html#_resubmitTx">_resubmitTx</a></li><li data-type='method'><a href="PendingTransactionTracker.html#checkForTxInBlock">checkForTxInBlock</a></li><li data-type='method'><a href="PendingTransactionTracker.html#queryPendingTxs">queryPendingTxs</a></li><li data-type='method'><a href="PendingTransactionTracker.html#resubmitPendingTxs">resubmitPendingTxs</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="inverted dropdown icon"></i><a href="PortDuplexStream.html">PortDuplexStream</a></div></div></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TokenRatesController.html">TokenRatesController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TokenRatesController.html#fetchExchangeRate">fetchExchangeRate</a></li><li data-type='method'><a href="TokenRatesController.html#updateExchangeRates">updateExchangeRates</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TransactionController.html">TransactionController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TransactionController.html#_mapMethods">_mapMethods</a></li><li data-type='method'><a href="TransactionController.html#_markNonceDuplicatesDropped">_markNonceDuplicatesDropped</a></li><li data-type='method'><a href="TransactionController.html#_onBootCleanUp">_onBootCleanUp</a></li><li data-type='method'><a href="TransactionController.html#_setupListners">_setupListners</a></li><li data-type='method'><a href="TransactionController.html#_updateMemstore">_updateMemstore</a></li><li data-type='method'><a href="TransactionController.html#addTx">addTx</a></li><li data-type='method'><a href="TransactionController.html#addTxGasDefaults">addTxGasDefaults</a></li><li data-type='method'><a href="TransactionController.html#addUnapprovedTransaction">addUnapprovedTransaction</a></li><li data-type='method'><a href="TransactionController.html#approveTransaction">approveTransaction</a></li><li data-type='method'><a href="TransactionController.html#cancelTransaction">cancelTransaction</a></li><li data-type='method'><a href="TransactionController.html#getChainId">getChainId</a></li><li data-type='method'><a href="TransactionController.html#getFilteredTxList">getFilteredTxList</a></li><li data-type='method'><a href="TransactionController.html#getNetwork">getNetwork</a></li><li data-type='method'><a href="TransactionController.html#getPendingTxCount">getPendingTxCount</a></li><li data-type='method'><a href="TransactionController.html#getSelectedAddress">getSelectedAddress</a></li><li data-type='method'><a href="TransactionController.html#getState">getState</a></li><li data-type='method'><a href="TransactionController.html#getUnapprovedTxCount">getUnapprovedTxCount</a></li><li data-type='method'><a href="TransactionController.html#isNonceTaken">isNonceTaken</a></li><li data-type='method'><a href="TransactionController.html#newUnapprovedTransaction">newUnapprovedTransaction</a></li><li data-type='method'><a href="TransactionController.html#publishTransaction">publishTransaction</a></li><li data-type='method'><a href="TransactionController.html#retryTransaction">retryTransaction</a></li><li data-type='method'><a href="TransactionController.html#setTxHash">setTxHash</a></li><li data-type='method'><a href="TransactionController.html#signTransaction">signTransaction</a></li><li data-type='method'><a href="TransactionController.html#updateAndApproveTransaction">updateAndApproveTransaction</a></li><li data-type='method'><a href="TransactionController.html#updateTransaction">updateTransaction</a></li><li data-type='method'><a href="TransactionController.html#wipeTransactions">wipeTransactions</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TransactionStateManager.html">TransactionStateManager</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TransactionStateManager.html#_saveTxList">_saveTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#_setTxStatus">_setTxStatus</a></li><li data-type='method'><a href="TransactionStateManager.html#addTx">addTx</a></li><li data-type='method'><a href="TransactionStateManager.html#generateTxMeta">generateTxMeta</a></li><li data-type='method'><a href="TransactionStateManager.html#getConfirmedTransactions">getConfirmedTransactions</a></li><li data-type='method'><a href="TransactionStateManager.html#getFullTxList">getFullTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#getPendingTransactions">getPendingTransactions</a></li><li data-type='method'><a href="TransactionStateManager.html#getTx">getTx</a></li><li data-type='method'><a href="TransactionStateManager.html#getTxList">getTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#getTxsByMetaData">getTxsByMetaData</a></li><li data-type='method'><a href="TransactionStateManager.html#getTxStatus">getTxStatus</a></li><li data-type='method'><a href="TransactionStateManager.html#getUnapprovedTxList">getUnapprovedTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusApproved">setTxStatusApproved</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusConfirmed">setTxStatusConfirmed</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusDropped">setTxStatusDropped</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusFailed">setTxStatusFailed</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusRejected">setTxStatusRejected</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusSigned">setTxStatusSigned</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusSubmitted">setTxStatusSubmitted</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusUnapproved">setTxStatusUnapproved</a></li><li data-type='method'><a href="TransactionStateManager.html#updateTx">updateTx</a></li><li data-type='method'><a href="TransactionStateManager.html#updateTxParams">updateTxParams</a></li><li data-type='method'><a href="TransactionStateManager.html#validateTxParams">validateTxParams</a></li><li data-type='method'><a href="TransactionStateManager.html#wipeTransactions">wipeTransactions</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TxGasUtil.html">TxGasUtil</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TxGasUtil.html#addGasBuffer">addGasBuffer</a></li><li data-type='method'><a href="TxGasUtil.html#analyzeGasUsage">analyzeGasUsage</a></li><li data-type='method'><a href="TxGasUtil.html#estimateTxGas">estimateTxGas</a></li><li data-type='method'><a href="TxGasUtil.html#setTxGas">setTxGas</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="inverted dropdown icon"></i><a href="module.exports_module.exports.html">exports</a></div></div></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module.html#.exports">exports</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addNewAccount">addNewAccount</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#buyEth">buyEth</a></li><li data-type='method'><a href="module.html#.exports#cancelMessage">cancelMessage</a></li><li data-type='method'><a href="module.html#.exports#cancelPersonalMessage">cancelPersonalMessage</a></li><li data-type='method'><a href="module.html#.exports#cancelTypedMessage">cancelTypedMessage</a></li><li data-type='method'><a href="module.html#.exports#clearSeedWordCache">clearSeedWordCache</a></li><li data-type='method'><a href="module.html#.exports#createNewVaultAndKeychain">createNewVaultAndKeychain</a></li><li data-type='method'><a href="module.html#.exports#createNewVaultAndRestore">createNewVaultAndRestore</a></li><li data-type='method'><a href="module.html#.exports#createShapeShiftTx">createShapeShiftTx</a></li><li data-type='method'><a href="module.html#.exports#get">get</a></li><li data-type='method'><a href="module.html#.exports#getApi">getApi</a></li><li data-type='method'><a href="module.html#.exports#getGasPrice">getGasPrice</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getState">getState</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#importAccountWithStrategy">importAccountWithStrategy</a></li><li data-type='method'><a href="module.html#.exports#importLostAccounts">importLostAccounts</a></li><li data-type='method'><a href="module.html#.exports#initializeProvider">initializeProvider</a></li><li data-type='method'><a href="module.html#.exports#initPublicConfigStore">initPublicConfigStore</a></li><li data-type='method'><a href="module.html#.exports#markAccountsFound">markAccountsFound</a></li><li data-type='method'><a href="module.html#.exports#markPasswordForgotten">markPasswordForgotten</a></li><li data-type='method'><a href="module.html#.exports#newUnsignedMessage">newUnsignedMessage</a></li><li data-type='method'><a href="module.html#.exports#newUnsignedPersonalMessage">newUnsignedPersonalMessage</a></li><li data-type='method'><a href="module.html#.exports#newUnsignedTypedMessage">newUnsignedTypedMessage</a></li><li data-type='method'><a href="module.html#.exports#normalizeMsgData">normalizeMsgData</a></li><li data-type='method'><a href="module.html#.exports#placeSeedWords">placeSeedWords</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#resetAccount">resetAccount</a></li><li data-type='method'><a href="module.html#.exports#restoreOldLostAccounts">restoreOldLostAccounts</a></li><li data-type='method'><a href="module.html#.exports#restoreOldVaultAccounts">restoreOldVaultAccounts</a></li><li data-type='method'><a href="module.html#.exports#retryTransaction">retryTransaction</a></li><li data-type='method'><a href="module.html#.exports#selectFirstIdentity">selectFirstIdentity</a></li><li data-type='method'><a href="module.html#.exports#set">set</a></li><li data-type='method'><a href="module.html#.exports#setCurrentCurrency">setCurrentCurrency</a></li><li data-type='method'><a href="module.html#.exports#setCurrentLocale">setCurrentLocale</a></li><li data-type='method'><a href="module.html#.exports#setCustomRpc">setCustomRpc</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setupControllerConnection">setupControllerConnection</a></li><li data-type='method'><a href="module.html#.exports#setupProviderConnection">setupProviderConnection</a></li><li data-type='method'><a href="module.html#.exports#setupPublicConfig">setupPublicConfig</a></li><li data-type='method'><a href="module.html#.exports#setupTrustedCommunication">setupTrustedCommunication</a></li><li data-type='method'><a href="module.html#.exports#setupUntrustedCommunication">setupUntrustedCommunication</a></li><li data-type='method'><a href="module.html#.exports#setUseBlockie">setUseBlockie</a></li><li data-type='method'><a href="module.html#.exports#signMessage">signMessage</a></li><li data-type='method'><a href="module.html#.exports#signPersonalMessage">signPersonalMessage</a></li><li data-type='method'><a href="module.html#.exports#signTypedMessage">signTypedMessage</a></li><li data-type='method'><a href="module.html#.exports#unMarkPasswordForgotten">unMarkPasswordForgotten</a></li><li data-type='method'><a href="module.html#.exports#validateParams">validateParams</a></li><li data-type='method'><a href="module.html#.exports#verifySeedPhrase">verifySeedPhrase</a></li><li data-type='method'><a href="module.html#.exports#~addListener">addListener</a></li></ul></div></li></div></ul><h3>Modules</h3><ul><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module-controllers_transactions_lib_tx-state-history-helper.html">controllers/transactions/lib/tx-state-history-helper</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~generateHistoryEntry">generateHistoryEntry</a></li><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~migrateFromSnapshotsToDiffs">migrateFromSnapshotsToDiffs</a></li><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~replayHistory">replayHistory</a></li><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~snapshotFromTxMeta">snapshotFromTxMeta</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module-controllers_transactions_lib_util.html">controllers/transactions/lib/util</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~getFinalStates">getFinalStates</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~normalizeTxParams">normalizeTxParams</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~validateFrom">validateFrom</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~validateRecipient">validateRecipient</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~validateTxParams">validateTxParams</a></li></ul></div></li></div></ul><h3>Global</h3><ul><li><a href="global.html#blacklistedDomainCheck">blacklistedDomainCheck</a></li><li><a href="global.html#BnMultiplyByFraction">BnMultiplyByFraction</a></li><li><a href="global.html#bnToHex">bnToHex</a></li><li><a href="global.html#cleanContextForImports">cleanContextForImports</a></li><li><a href="global.html#connectToAccountManager">connectToAccountManager</a></li><li><a href="global.html#createLoggerMiddleware">createLoggerMiddleware</a></li><li><a href="global.html#createOriginMiddleware">createOriginMiddleware</a></li><li><a href="global.html#createProviderMiddleware">createProviderMiddleware</a></li><li><a href="global.html#deepMap">deepMap</a></li><li><a href="global.html#doctypeCheck">doctypeCheck</a></li><li><a href="global.html#documentElementCheck">documentElementCheck</a></li><li><a href="global.html#extractEthjsErrorMessage">extractEthjsErrorMessage</a></li><li><a href="global.html#getBuyEthUrl">getBuyEthUrl</a></li><li><a href="global.html#getEnvironmentType">getEnvironmentType</a></li><li><a href="global.html#getFirstPreferredLangCode">getFirstPreferredLangCode</a></li><li><a href="global.html#getObjStructure">getObjStructure</a></li><li><a href="global.html#getStack">getStack</a></li><li><a href="global.html#hexToBn">hexToBn</a></li><li><a href="global.html#initialize">initialize</a></li><li><a href="global.html#initializePopup">initializePopup</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#jsonParseStream">jsonParseStream</a></li><li><a href="global.html#jsonStringifyStream">jsonStringifyStream</a></li><li><a href="global.html#loadStateFromPersistence">loadStateFromPersistence</a></li><li><a href="global.html#logStreamDisconnectWarning">logStreamDisconnectWarning</a></li><li><a href="global.html#normalizeMsgData">normalizeMsgData</a></li><li><a href="global.html#redirectToPhishingWarning">redirectToPhishingWarning</a></li><li><a href="global.html#restoreContextAfterImports">restoreContextAfterImports</a></li><li><a href="global.html#setupController">setupController</a></li><li><a href="global.html#setupControllerConnection">setupControllerConnection</a></li><li><a href="global.html#setupInjection">setupInjection</a></li><li><a href="global.html#setupMetamaskMeshMetrics">setupMetamaskMeshMetrics</a></li><li><a href="global.html#setupMultiplex">setupMultiplex</a></li><li><a href="global.html#setupStreams">setupStreams</a></li><li><a href="global.html#setupWeb3Connection">setupWeb3Connection</a></li><li><a href="global.html#shouldInjectWeb3">shouldInjectWeb3</a></li><li><a href="global.html#sufficientBalance">sufficientBalance</a></li><li><a href="global.html#suffixCheck">suffixCheck</a></li><li><a href="global.html#triggerUi">triggerUi</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">controllers/transactions/index.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const EventEmitter = require('events')
+const ObservableStore = require('obs-store')
+const ethUtil = require('ethereumjs-util')
+const Transaction = require('ethereumjs-tx')
+const EthQuery = require('ethjs-query')
+const TransactionStateManager = require('./tx-state-manager')
+const TxGasUtil = require('./tx-gas-utils')
+const PendingTransactionTracker = require('./pending-tx-tracker')
+const NonceTracker = require('./nonce-tracker')
+const txUtils = require('./lib/util')
+const log = require('loglevel')
+
+/**
+  Transaction Controller is an aggregate of sub-controllers and trackers
+  composing them in a way to be exposed to the metamask controller
+    &lt;br>- txStateManager
+      responsible for the state of a transaction and
+      storing the transaction
+    &lt;br>- pendingTxTracker
+      watching blocks for transactions to be include
+      and emitting confirmed events
+    &lt;br>- txGasUtil
+      gas calculations and safety buffering
+    &lt;br>- nonceTracker
+      calculating nonces
+
+
+  @class
+  @param {object} - opts
+  @param {object}  opts.initState - initial transaction list default is an empty array
+  @param {Object}  opts.networkStore - an observable store for network number
+  @param {Object}  opts.blockTracker - An instance of eth-blocktracker
+  @param {Object}  opts.provider - A network provider.
+  @param {Function}  opts.signTransaction - function the signs an ethereumjs-tx
+  @param {Function}  [opts.getGasPrice] - optional gas price calculator
+  @param {Function}  opts.signTransaction - ethTx signer that returns a rawTx
+  @param {Number}  [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
+  @param {Object}  opts.preferencesStore
+*/
+
+class TransactionController extends EventEmitter {
+  constructor (opts) {
+    super()
+    this.networkStore = opts.networkStore || new ObservableStore({})
+    this.preferencesStore = opts.preferencesStore || new ObservableStore({})
+    this.provider = opts.provider
+    this.blockTracker = opts.blockTracker
+    this.signEthTx = opts.signTransaction
+    this.getGasPrice = opts.getGasPrice
+
+    this.memStore = new ObservableStore({})
+    this.query = new EthQuery(this.provider)
+    this.txGasUtil = new TxGasUtil(this.provider)
+
+    this._mapMethods()
+    this.txStateManager = new TransactionStateManager({
+      initState: opts.initState,
+      txHistoryLimit: opts.txHistoryLimit,
+      getNetwork: this.getNetwork.bind(this),
+    })
+    this._onBootCleanUp()
+
+    this.store = this.txStateManager.store
+    this.nonceTracker = new NonceTracker({
+      provider: this.provider,
+      getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
+      getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
+    })
+
+    this.pendingTxTracker = new PendingTransactionTracker({
+      provider: this.provider,
+      nonceTracker: this.nonceTracker,
+      publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
+      getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
+      getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
+    })
+
+    this.txStateManager.store.subscribe(() => this.emit('update:badge'))
+    this._setupListners()
+    // memstore is computed from a few different stores
+    this._updateMemstore()
+    this.txStateManager.store.subscribe(() => this._updateMemstore())
+    this.networkStore.subscribe(() => this._updateMemstore())
+    this.preferencesStore.subscribe(() => this._updateMemstore())
+  }
+  /** @returns {number} the chainId*/
+  getChainId () {
+    const networkState = this.networkStore.getState()
+    const getChainId = parseInt(networkState)
+    if (Number.isNaN(getChainId)) {
+      return 0
+    } else {
+      return getChainId
+    }
+  }
+
+/**
+  Adds a tx to the txlist
+  @emits ${txMeta.id}:unapproved
+*/
+  addTx (txMeta) {
+    this.txStateManager.addTx(txMeta)
+    this.emit(`${txMeta.id}:unapproved`, txMeta)
+  }
+
+  /**
+  Wipes the transactions for a given account
+  @param {string} address - hex string of the from address for txs being removed
+  */
+  wipeTransactions (address) {
+    this.txStateManager.wipeTransactions(address)
+  }
+
+  /**
+    Check if a txMeta in the list with the same nonce has been confirmed in a block
+    if the txParams dont have a nonce will return false
+    @returns {boolean} whether the nonce has been used in a transaction confirmed in a block
+    @param {object} txMeta - the txMeta object
+  */
+  async isNonceTaken (txMeta) {
+    const { from, nonce } = txMeta.txParams
+    if ('nonce' in txMeta.txParams) {
+      const sameNonceTxList = this.txStateManager.getFilteredTxList({from, nonce, status: 'confirmed'})
+      return (sameNonceTxList.length >= 1)
+    }
+    return false
+  }
+
+  /**
+  add a new unapproved transaction to the pipeline
+
+  @returns {Promise&lt;string>} the hash of the transaction after being submitted to the network
+  @param txParams {object} - txParams for the transaction
+  @param opts {object} - with the key origin to put the origin on the txMeta
+  */
+  async newUnapprovedTransaction (txParams, opts = {}) {
+    log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
+    const initialTxMeta = await this.addUnapprovedTransaction(txParams)
+    initialTxMeta.origin = opts.origin
+    this.txStateManager.updateTx(initialTxMeta, '#newUnapprovedTransaction - adding the origin')
+    // listen for tx completion (success, fail)
+    return new Promise((resolve, reject) => {
+      this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
+        switch (finishedTxMeta.status) {
+          case 'submitted':
+            return resolve(finishedTxMeta.hash)
+          case 'rejected':
+            return reject(new Error('MetaMask Tx Signature: User denied transaction signature.'))
+          case 'failed':
+            return reject(new Error(finishedTxMeta.err.message))
+          default:
+            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`))
+        }
+      })
+    })
+  }
+
+  /**
+  Validates and generates a txMeta with defaults and puts it in txStateManager
+  store
+
+  @returns {txMeta}
+  */
+
+  async addUnapprovedTransaction (txParams) {
+    // validate
+    const normalizedTxParams = txUtils.normalizeTxParams(txParams)
+    txUtils.validateTxParams(normalizedTxParams)
+    // construct txMeta
+    let txMeta = this.txStateManager.generateTxMeta({ txParams: normalizedTxParams })
+    this.addTx(txMeta)
+    this.emit('newUnapprovedTx', txMeta)
+    // add default tx params
+    try {
+      txMeta = await this.addTxGasDefaults(txMeta)
+    } catch (error) {
+      console.log(error)
+      this.txStateManager.setTxStatusFailed(txMeta.id, error)
+      throw error
+    }
+    txMeta.loadingDefaults = false
+    // save txMeta
+    this.txStateManager.updateTx(txMeta)
+
+    return txMeta
+  }
+/**
+  adds the tx gas defaults: gas &amp;&amp; gasPrice
+  @param txMeta {Object} - the txMeta object
+  @returns {Promise&lt;object>} resolves with txMeta
+*/
+  async addTxGasDefaults (txMeta) {
+    const txParams = txMeta.txParams
+    // ensure value
+    txParams.value = txParams.value ? ethUtil.addHexPrefix(txParams.value) : '0x0'
+    txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
+    let gasPrice = txParams.gasPrice
+    if (!gasPrice) {
+      gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
+    }
+    txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
+    // set gasLimit
+    return await this.txGasUtil.analyzeGasUsage(txMeta)
+  }
+
+  /**
+    Creates a new txMeta with the same txParams as the original
+    to allow the user to resign the transaction with a higher gas values
+    @param  originalTxId {number} - the id of the txMeta that
+    you want to attempt to retry
+    @return {txMeta}
+  */
+
+  async retryTransaction (originalTxId) {
+    const originalTxMeta = this.txStateManager.getTx(originalTxId)
+    const lastGasPrice = originalTxMeta.txParams.gasPrice
+    const txMeta = this.txStateManager.generateTxMeta({
+      txParams: originalTxMeta.txParams,
+      lastGasPrice,
+      loadingDefaults: false,
+    })
+    this.addTx(txMeta)
+    this.emit('newUnapprovedTx', txMeta)
+    return txMeta
+  }
+
+  /**
+  updates the txMeta in the txStateManager
+  @param txMeta {Object} - the updated txMeta
+  */
+  async updateTransaction (txMeta) {
+    this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
+  }
+
+  /**
+  updates and approves the transaction
+  @param txMeta {Object}
+  */
+  async updateAndApproveTransaction (txMeta) {
+    this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction')
+    await this.approveTransaction(txMeta.id)
+  }
+
+  /**
+  sets the tx status to approved
+  auto fills the nonce
+  signs the transaction
+  publishes the transaction
+  if any of these steps fails the tx status will be set to failed
+    @param txId {number} - the tx's Id
+  */
+  async approveTransaction (txId) {
+    let nonceLock
+    try {
+      // approve
+      this.txStateManager.setTxStatusApproved(txId)
+      // get next nonce
+      const txMeta = this.txStateManager.getTx(txId)
+      const fromAddress = txMeta.txParams.from
+      // wait for a nonce
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
+      // add nonce to txParams
+      // if txMeta has lastGasPrice then it is a retry at same nonce with higher
+      // gas price transaction and their for the nonce should not be calculated
+      const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
+      txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
+      // add nonce debugging information to txMeta
+      txMeta.nonceDetails = nonceLock.nonceDetails
+      this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
+      // sign transaction
+      const rawTx = await this.signTransaction(txId)
+      await this.publishTransaction(txId, rawTx)
+      // must set transaction to submitted/failed before releasing lock
+      nonceLock.releaseLock()
+    } catch (err) {
+      this.txStateManager.setTxStatusFailed(txId, err)
+      // must set transaction to submitted/failed before releasing lock
+      if (nonceLock) nonceLock.releaseLock()
+      // continue with error chain
+      throw err
+    }
+  }
+  /**
+    adds the chain id and signs the transaction and set the status to signed
+    @param txId {number} - the tx's Id
+    @returns - rawTx {string}
+  */
+  async signTransaction (txId) {
+    const txMeta = this.txStateManager.getTx(txId)
+    // add network/chain id
+    const chainId = this.getChainId()
+    const txParams = Object.assign({}, txMeta.txParams, { chainId })
+    // sign tx
+    const fromAddress = txParams.from
+    const ethTx = new Transaction(txParams)
+    await this.signEthTx(ethTx, fromAddress)
+    // set state to signed
+    this.txStateManager.setTxStatusSigned(txMeta.id)
+    const rawTx = ethUtil.bufferToHex(ethTx.serialize())
+    return rawTx
+  }
+
+  /**
+    publishes the raw tx and sets the txMeta to submitted
+    @param txId {number} - the tx's Id
+    @param rawTx {string} - the hex string of the serialized signed transaction
+    @returns {Promise&lt;void>}
+  */
+  async publishTransaction (txId, rawTx) {
+    const txMeta = this.txStateManager.getTx(txId)
+    txMeta.rawTx = rawTx
+    this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
+    const txHash = await this.query.sendRawTransaction(rawTx)
+    this.setTxHash(txId, txHash)
+    this.txStateManager.setTxStatusSubmitted(txId)
+  }
+
+  /**
+    Convenience method for the ui thats sets the transaction to rejected
+    @param txId {number} - the tx's Id
+    @returns {Promise&lt;void>}
+  */
+  async cancelTransaction (txId) {
+    this.txStateManager.setTxStatusRejected(txId)
+  }
+
+  /**
+    Sets the txHas on the txMeta
+    @param txId {number} - the tx's Id
+    @param txHash {string} - the hash for the txMeta
+  */
+  setTxHash (txId, txHash) {
+    // Add the tx hash to the persisted meta-tx object
+    const txMeta = this.txStateManager.getTx(txId)
+    txMeta.hash = txHash
+    this.txStateManager.updateTx(txMeta, 'transactions#setTxHash')
+  }
+
+//
+//           PRIVATE METHODS
+//
+  /** maps methods for convenience*/
+  _mapMethods () {
+    /** @returns the state in transaction controller */
+    this.getState = () => this.memStore.getState()
+    /** @returns the network number stored in networkStore */
+    this.getNetwork = () => this.networkStore.getState()
+    /** @returns the user selected address */
+    this.getSelectedAddress = () => this.preferencesStore.getState().selectedAddress
+    /** Returns an array of transactions whos status is unapproved */
+    this.getUnapprovedTxCount = () => Object.keys(this.txStateManager.getUnapprovedTxList()).length
+    /**
+      @returns a number that represents how many transactions have the status submitted
+      @param account {String} - hex prefixed account
+    */
+    this.getPendingTxCount = (account) => this.txStateManager.getPendingTransactions(account).length
+    /** see txStateManager */
+    this.getFilteredTxList = (opts) => this.txStateManager.getFilteredTxList(opts)
+  }
+
+  /**
+    If transaction controller was rebooted with transactions that are uncompleted
+    in steps of the transaction signing or user confirmation process it will either
+    transition txMetas to a failed state or try to redo those tasks.
+  */
+
+  _onBootCleanUp () {
+    this.txStateManager.getFilteredTxList({
+      status: 'unapproved',
+      loadingDefaults: true,
+    }).forEach((tx) => {
+      this.addTxGasDefaults(tx)
+      .then((txMeta) => {
+        txMeta.loadingDefaults = false
+        this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
+      }).catch((error) => {
+        this.txStateManager.setTxStatusFailed(tx.id, error)
+      })
+    })
+
+    this.txStateManager.getFilteredTxList({
+      status: 'approved',
+    }).forEach((txMeta) => {
+      const txSignError = new Error('Transaction found as "approved" during boot - possibly stuck during signing')
+      this.txStateManager.setTxStatusFailed(txMeta.id, txSignError)
+    })
+  }
+
+  /**
+    is called in constructor applies the listeners for pendingTxTracker txStateManager
+    and blockTracker
+  */
+  _setupListners () {
+    this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
+    this.pendingTxTracker.on('tx:warning', (txMeta) => {
+      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
+    })
+    this.pendingTxTracker.on('tx:confirmed', (txId) => this.txStateManager.setTxStatusConfirmed(txId))
+    this.pendingTxTracker.on('tx:confirmed', (txId) => this._markNonceDuplicatesDropped(txId))
+    this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
+    this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
+      if (!txMeta.firstRetryBlockNumber) {
+        txMeta.firstRetryBlockNumber = latestBlockNumber
+        this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:block-update')
+      }
+    })
+    this.pendingTxTracker.on('tx:retry', (txMeta) => {
+      if (!('retryCount' in txMeta)) txMeta.retryCount = 0
+      txMeta.retryCount++
+      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
+    })
+
+    this.blockTracker.on('block', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
+    // this is a little messy but until ethstore has been either
+    // removed or redone this is to guard against the race condition
+    this.blockTracker.on('latest', this.pendingTxTracker.resubmitPendingTxs.bind(this.pendingTxTracker))
+    this.blockTracker.on('sync', this.pendingTxTracker.queryPendingTxs.bind(this.pendingTxTracker))
+
+  }
+
+  /**
+    Sets other txMeta statuses to dropped if the txMeta that has been confirmed has other transactions
+    in the list have the same nonce
+
+    @param txId {Number} - the txId of the transaction that has been confirmed in a block
+  */
+  _markNonceDuplicatesDropped (txId) {
+    // get the confirmed transactions nonce and from address
+    const txMeta = this.txStateManager.getTx(txId)
+    const { nonce, from } = txMeta.txParams
+    const sameNonceTxs = this.txStateManager.getFilteredTxList({nonce, from})
+    if (!sameNonceTxs.length) return
+    // mark all same nonce transactions as dropped and give i a replacedBy hash
+    sameNonceTxs.forEach((otherTxMeta) => {
+      if (otherTxMeta.id === txId) return
+      otherTxMeta.replacedBy = txMeta.hash
+      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce')
+      this.txStateManager.setTxStatusDropped(otherTxMeta.id)
+    })
+  }
+
+  /**
+    Updates the memStore in transaction controller
+  */
+  _updateMemstore () {
+    const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
+    const selectedAddressTxList = this.txStateManager.getFilteredTxList({
+      from: this.getSelectedAddress(),
+      metamaskNetworkId: this.getNetwork(),
+    })
+    this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
+  }
+}
+
+module.exports = TransactionController
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 18 2018 14:07:52 GMT-0400 (EDT) using the radgrad jsdoc theme. Derived from docdash.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script>$('.ui.accordion').accordion();</script>
+</body>
+</html>
