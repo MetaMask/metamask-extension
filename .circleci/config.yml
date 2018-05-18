@@ -64,7 +64,7 @@ workflows:
             - prep-deps-npm
             - prep-build
             - all-tests-pass
-      - job-publish:
+      - job-publish-prerelease:
           requires:
             - prep-deps-npm
             - prep-build
@@ -226,7 +226,7 @@ jobs:
           paths:
             - test-artifacts
 
-  job-publish:
+  job-publish-prerelease:
     docker:
       - image: circleci/node:8-browsers
     steps:
