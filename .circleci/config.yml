@@ -25,7 +25,7 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox            
+            - prep-deps-firefox
             - prep-build
       - test-unit:
           requires:
@@ -181,7 +181,7 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
-  
+
   test-e2e-firefox:
     environment:
       browsers: '["Firefox"]'
@@ -201,7 +201,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ .Revision }}
       - restore_cache:
-          key: build-cache-{{ .Revision }} 
+          key: build-cache-{{ .Revision }}
       - run:
           name: test:e2e:firefox
           command: npm run test:e2e:firefox
@@ -368,4 +368,3 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'weew - everything passed!'
-          
