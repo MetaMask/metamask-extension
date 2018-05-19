@@ -266,7 +266,7 @@
     "message": "Hesla nejsou stejná"
   },
   "etherscanView": {
-    "message": "Prohlédněte si účet na Etherscan"
+    "message": "Prohlédněte si účet na Etherzero"
   },
   "exchangeRate": {
     "message": "Směnný kurz"
@@ -468,7 +468,7 @@
     "message": "slova klíčové fráze mají pouze malá písmena"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "ETZ Network"
   },
   "message": {
     "message": "Zpráva"
@@ -650,7 +650,7 @@
     "message": "Současné RPC"
   },
   "connectingToMainnet": {
-    "message": "Připojuji se k Main Ethereum Network"
+    "message": "Připojuji se k ETZ Network"
   },
   "connectingToRopsten": {
     "message": "Připojuji se k Ropsten Test Network"

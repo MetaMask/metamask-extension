@@ -124,7 +124,7 @@ CurrencyDisplay.prototype.render = function () {
 
     h('div', {
       className: convertedBalanceClassName,
-    }, `${convertedValueToRender} ${convertedCurrency.toUpperCase()}`),
+    }, null),
 
   ])
 

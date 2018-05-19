@@ -30,7 +30,7 @@
     "message": "数量 + Gas"
   },
   "appDescription": {
-    "message": "以太坊浏览器插件",
+    "message": "以太零浏览器插件",
     "description": "The description of the application"
   },
   "appName": {
@@ -190,7 +190,7 @@
     "message": "精确小数点"
   },
   "defaultNetwork": {
-    "message": "默认以太坊交易网络为主网。"
+    "message": "默认以太零交易网络为主网。"
   },
   "denExplainer": {
     "message": "你的 DEN 是存储在 MetaMask 中的已加密密码。"
@@ -272,7 +272,7 @@
     "message": "密码不匹配"
   },
   "etherscanView": {
-    "message": "在 Etherscan 上查看账户"
+    "message": "在 Etherzero 上查看账户"
   },
   "exchangeRate": {
     "message": "兑换比率"
@@ -477,7 +477,7 @@
     "message": "助记词只有小写字符"
   },
   "mainnet": {
-    "message": "以太坊主网络"
+    "message": "以太零主网络"
   },
   "message": {
     "message": "消息"
@@ -492,7 +492,7 @@
     "message": "最小"
   },
   "myAccounts": {
-    "message": "My Accounts"
+    "message": "我的账户"
   },
   "mustSelectOne": {
     "message": "至少选择一种代币."
@@ -509,7 +509,7 @@
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
+    "message": "Can not send negative amounts of ETZ."
   },
   "networks": {
     "message": "网络"
@@ -674,7 +674,7 @@
     "message": "当前 RPC"
   },
   "connectingToMainnet": {
-    "message": "正在连接到以太坊主网"
+    "message": "正在连接到以太零主网"
   },
   "connectingToRopsten": {
     "message": "正在连接到Ropsten测试网络"
@@ -739,19 +739,19 @@
     "message": "发送"
   },
   "sendETH": {
-    "message": "发送 ETH"
+    "message": "发送 ETZ"
   },
   "sendTokens": {
     "message": "发送 代币"
   },
   "onlySendToEtherAddress": {
-    "message": "只发送 ETH 给一个以太坊地址"
+    "message": "只发送 ETZ 给一个以太零地址"
   },
   "searchTokens": {
     "message": "搜索代币"
   },
   "sendTokensAnywhere": {
-    "message": "将代币发送给拥有以太坊地址的任何人"
+    "message": "将代币发送给拥有以太零地址的任何人"
   },
   "settings": {
     "message": "设置"
@@ -826,7 +826,7 @@
     "message": "至"
   },
   "toETHviaShapeShift": {
-    "message": "$1 ETH 通过 ShapeShift",
+    "message": "$1 ETZ 通过 ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {
@@ -896,6 +896,9 @@
   "unknownNetworkId": {
     "message": "未知网络ID"
   },
+  "unlockMessage": {
+    "message": "The decentralized web awaits"
+  },
   "uriErrorMsg": {
     "message": "URIs require the appropriate HTTP/HTTPS prefix."
   },
@@ -923,6 +926,9 @@
   },
   "warning": {
     "message": "警告"
+  },
+  "welcomeBack": {
+    "message": "欢迎回来!"
   },
   "welcomeBeta": {
     "message": "欢迎使用 MetaMask 测试版"

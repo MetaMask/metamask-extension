@@ -229,6 +229,8 @@ App.prototype.renderNetworkDropdown = function () {
   const state = this.state || {}
   const isOpen = state.isNetworkMenuOpen
 
+  console.log('activeNetwork',props);
+
   return h(Dropdown, {
     useCssTransition: true,
     isOpen,
@@ -259,74 +261,6 @@ App.prototype.renderNetworkDropdown = function () {
     h(
       DropdownMenuItem,
       {
-        key: 'main',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('mainnet')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.diamond'),
-        'Main Ethereum Network',
-        providerType === 'mainnet' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    h(
-      DropdownMenuItem,
-      {
-        key: 'ropsten',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('ropsten')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.red-dot'),
-        'Ropsten Test Network',
-        providerType === 'ropsten' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    h(
-      DropdownMenuItem,
-      {
-        key: 'kovan',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('kovan')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.hollow-diamond'),
-        'Kovan Test Network',
-        providerType === 'kovan' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    h(
-      DropdownMenuItem,
-      {
-        key: 'rinkeby',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.golden-square'),
-        'Rinkeby Test Network',
-        providerType === 'rinkeby' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    h(
-      DropdownMenuItem,
-      {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('localhost')),
@@ -335,9 +269,9 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [
-        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-        'Localhost 8545',
-        activeNetwork === 'http://localhost:8545' ? h('.check', '✓') : null,
+        h('.menu-icon.diamond'),
+        'ETZ Network',
+        providerType === 'localhost' ? h('.check', '✓') : null,
       ]
     ),
 
@@ -663,14 +597,14 @@ App.prototype.getNetworkName = function () {
 
   let name
 
-  if (providerName === 'mainnet') {
-    name = 'Main Ethereum Network'
+  if (providerName === 'localhost') {
+    name = 'ETZ Network'
   } else if (providerName === 'ropsten') {
     name = 'Ropsten Test Network'
   } else if (providerName === 'kovan') {
     name = 'Kovan Test Network'
   } else if (providerName === 'rinkeby') {
-    name = 'Rinkeby Test Network'
+    name = 'ETZ Network'
   } else {
     name = 'Unknown Private Network'
   }

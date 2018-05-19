@@ -80,7 +80,7 @@ BalanceComponent.prototype.renderBalance = function () {
       style: {},
     }, this.getTokenBalance(formattedBalance, shorten)),
 
-    showFiat ? this.renderFiatValue(formattedBalance) : null,
+    null,
   ])
 }
 

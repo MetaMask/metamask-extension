@@ -17,7 +17,7 @@ TokenCell.prototype.render = function () {
 
   return (
     h('li.token-cell', {
-      style: { cursor: network === '1' ? 'pointer' : 'default' },
+      style: { cursor: network === '88' ? 'pointer' : 'default' },
       onClick: this.view.bind(this, address, userAddress, network),
     }, [
 

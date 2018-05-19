@@ -53,7 +53,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
     balance = balanceObj.balance
   }
 
-  var label = balanceObj.label
+  var label = balanceObj.label;
 
   return (
     h(Tooltip, {
@@ -80,10 +80,10 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
             fontSize: '12px',
             marginLeft: '5px',
           },
-        }, label),
+        }, null),
       ]),
 
-      showFiat ? h(FiatValue, { value: props.value }) : null,
+       null,
     ]))
   )
 }

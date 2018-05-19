@@ -53,6 +53,9 @@ AccountDetailsModal.prototype.render = function () {
   } = this.props
   const { name, address } = selectedIdentity
 
+  console.log('address',address);
+  console.log('network',network);
+
   return h(AccountModalContainer, {}, [
       h(EditableLabel, {
         className: 'account-modal__name',

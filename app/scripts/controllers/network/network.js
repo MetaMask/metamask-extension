@@ -16,7 +16,7 @@ const {
   MAINNET,
   LOCALHOST,
 } = require('./enums')
-const LOCALHOST_RPC_URL = 'http://localhost:8545'
+const LOCALHOST_RPC_URL = 'https://rpc.etherzero.org:443'
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
 const env = process.env.METAMASK_ENV

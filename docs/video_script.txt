@@ -20,7 +20,7 @@ After you submit a transaction, wait for the next block for the change to be ref
 
 Now I have my own MetaMaskCoins! I can check my balance or, if I want to send some to another account, I can click the copy link on it. I check its balance, see it has none, then send it some meta-coins!
 
-This has been nice, but it’s all been on the Morden test net. But with Metamask, I can always switch what network I’m working on, say the main network, and I’m ready issue a token with the full security of the main Ethereum blockchain.
+This has been nice, but it’s all been on the Morden test net. But with Metamask, I can always switch what network I’m working on, say the ETZ Network, and I’m ready issue a token with the full security of the main Ethereum blockchain.
 
 MetaMask connects to these blockchains with no synchronization time because we host blockchain nodes by default. You can always point MetaMask at your own Ethereum RPC Server, and fully control your connection to the blockchain.
 

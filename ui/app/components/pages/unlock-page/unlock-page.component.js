@@ -122,7 +122,7 @@ class UnlockPage extends Component {
           >
             <TextField
               id="password"
-              label="Password"
+              label={this.context.t('enterPassword')}
               type="password"
               value={this.state.password}
               onChange={event => this.handleInputChange(event)}

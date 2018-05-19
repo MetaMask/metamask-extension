@@ -11,7 +11,7 @@ const KOVAN_CODE = 42
 const ROPSTEN_DISPLAY_NAME = 'Ropsten'
 const RINKEBY_DISPLAY_NAME = 'Rinkeby'
 const KOVAN_DISPLAY_NAME = 'Kovan'
-const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
+const MAINNET_DISPLAY_NAME = 'ETZ Network'
 
 
 module.exports = {

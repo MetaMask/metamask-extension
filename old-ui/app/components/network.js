@@ -40,8 +40,8 @@ Network.prototype.render = function () {
       }),
       h('i.fa.fa-caret-down'),
     ])
-  } else if (providerName === 'mainnet') {
-    hoverText = 'Main Ethereum Network'
+  } else if (parseInt(networkNumber) === 88) {
+    hoverText = 'ETZ Network'
     iconName = 'ethereum-network'
   } else if (providerName === 'ropsten') {
     hoverText = 'Ropsten Test Network'
@@ -53,8 +53,8 @@ Network.prototype.render = function () {
     hoverText = 'Kovan Test Network'
     iconName = 'kovan-test-network'
   } else if (providerName === 'rinkeby') {
-    hoverText = 'Rinkeby Test Network'
-    iconName = 'rinkeby-test-network'
+    hoverText = 'ETZ Network'
+    iconName = 'ethereum-network'
   } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
@@ -75,7 +75,7 @@ Network.prototype.render = function () {
                 style: {
                   color: '#039396',
                 }},
-              'Main Network'),
+              'ETZ Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'ropsten-test-network':
@@ -99,13 +99,13 @@ Network.prototype.render = function () {
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'rinkeby-test-network':
-            return h('.network-indicator', [
-              h('.menu-icon.golden-square'),
-              h('.network-name', {
-                style: {
-                  color: '#e7a218',
-                }},
-              'Rinkeby Test Net'),
+          return h('.network-indicator', [
+            h('.menu-icon.diamond'),
+            h('.network-name', {
+              style: {
+                color: '#039396',
+              }},
+            'ETZ Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           default:

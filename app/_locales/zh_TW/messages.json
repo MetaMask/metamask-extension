@@ -30,7 +30,7 @@
     "message": "數額 + Gas"
   },
   "appDescription": {
-    "message": "乙太坊瀏覽器擴充插件",
+    "message": "乙太零瀏覽器擴充插件",
     "description": "The description of the application"
   },
   "appName": {
@@ -266,7 +266,7 @@
     "message": "您所輸入的密碼不一致"
   },
   "etherscanView": {
-    "message": "在 Etherscan 上查看帳戶"
+    "message": "在 Etherzero 上查看帳戶"
   },
   "exchangeRate": {
     "message": "匯率"
@@ -468,7 +468,7 @@
     "message": "助憶詞僅包含小寫字元"
   },
   "mainnet": {
-    "message": "乙太坊 主網路"
+    "message": "以太零 主網路"
   },
   "message": {
     "message": "訊息"
@@ -650,7 +650,7 @@
     "message": "當前的 RPC"
   },
   "connectingToMainnet": {
-    "message": "連線到主 Ethereum 網路"
+    "message": "連線到主 ETZ 網路"
   },
   "connectingToRopsten": {
     "message": "連線到 Ropsten 測試網路"

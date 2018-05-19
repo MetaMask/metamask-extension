@@ -197,7 +197,7 @@
     "message": "I-enter ang password"
   },
   "etherscanView": {
-    "message": "Tingnan ang account sa Etherscan"
+    "message": "Tingnan ang account sa Etherzero"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
@@ -342,7 +342,7 @@
     "message": "Loose"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "ETZ Network"
   },
   "message": {
     "message": "Mensahe"

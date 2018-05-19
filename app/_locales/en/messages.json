@@ -30,7 +30,7 @@
     "message": "Amount + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "Etherzero Browser Extension",
     "description": "The description of the application"
   },
   "appName": {
@@ -272,7 +272,7 @@
     "message": "Passwords Don't Match"
   },
   "etherscanView": {
-    "message": "View account on Etherscan"
+    "message": "View account on Etherzero"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
@@ -480,7 +480,7 @@
     "message": "seed words only have lowercase characters"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "ETZ Network"
   },
   "message": {
     "message": "Message"
@@ -677,7 +677,7 @@
     "message": "Current RPC"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main Ethereum Network"
+    "message": "Connecting to ETZ Network"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"

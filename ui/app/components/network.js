@@ -48,7 +48,7 @@ Network.prototype.render = function () {
         src: 'images/loading.svg',
       }),
     ])
-  } else if (providerName === 'mainnet') {
+  } else if (parseInt(networkNumber) === 88) {
     hoverText = context.t('mainnet')
     iconName = 'ethereum-network'
   } else if (providerName === 'ropsten') {
@@ -61,8 +61,8 @@ Network.prototype.render = function () {
     hoverText = context.t('kovan')
     iconName = 'kovan-test-network'
   } else if (providerName === 'rinkeby') {
-    hoverText = context.t('rinkeby')
-    iconName = 'rinkeby-test-network'
+    hoverText = context.t('mainnet')
+    iconName = 'ethereum-network'
   } else {
     hoverText = context.t('unknownNetwork')
     iconName = 'unknown-private-network'

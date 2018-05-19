@@ -202,7 +202,7 @@ rollback to 3.10.0 due to bug
 - Fix bug with network version serialization over synchronous RPC
 - Add MetaMask version to state logs.
 - Add the total amount of tokens when multiple tokens are added under the token list
-- Use HTTPS links for Etherscan.
+- Use HTTPS links for Etherzero.
 - Update Support center link to new one with HTTPS.
 - Make web3 deprecation notice more useful by linking to a descriptive article.
 
@@ -662,7 +662,7 @@ popup notification opens up.
 
 - Added static image as fallback for when WebGL isn't supported.
 - Transaction history now has a hard limit.
-- Added info link on account screen that visits Etherscan.
+- Added info link on account screen that visits Etherzero.
 - Fixed bug where a message signing request would be lost if the vault was locked.
 - Added shortcut to open MetaMask (Ctrl+Alt+M or Cmd+Opt/Alt+M)
 - Prevent API calls in tests.
@@ -884,7 +884,7 @@ popup notification opens up.
 
 - Added ability to send ether.
 - Fixed bugs related to using Javascript numbers, which lacked appropriate precision.
-- Replaced Etherscan main-net provider with our own production RPC.
+- Replaced Etherzero main-net provider with our own production RPC.
 
 ## 1.4.0 2016-04-08
 
