@@ -139,17 +139,12 @@ class AddToken extends Component {
   }
 
   async attemptToAutoFillTokenParams (address) {
-    const { symbol, decimals } = await this.tokenInfoGetter(address)
+    const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(address)
 
-    if (symbol && decimals) {
-      this.setState({
-        customSymbol: symbol,
-        customDecimals: decimals,
-        customSymbolError: null,
-        customDecimalsError: null,
-        autoFilled: true,
-      })
-    }
+    const autoFilled = Boolean(symbol && decimals)
+    this.setState({ autoFilled })
+    this.handleCustomSymbolChange(symbol || '')
+    this.handleCustomDecimalsChange(decimals)
   }
 
   handleCustomAddressChange (value) {
