@@ -177,9 +177,9 @@ var actions = {
   CLEAR_SEND: 'CLEAR_SEND',
   OPEN_FROM_DROPDOWN: 'OPEN_FROM_DROPDOWN',
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
-  updateGasLimit,
-  updateGasPrice,
-  updateGasTotal,
+  setGasLimit,
+  setGasPrice,
+  updateGasData,
   setGasTotal,
   setSendTokenBalance,
   updateSendTokenBalance,
@@ -714,14 +714,14 @@ function estimateGas (params = {}) {
           return reject(err)
         }
         dispatch(actions.hideWarning())
-        dispatch(actions.updateGasLimit(data))
+        dispatch(actions.setGasLimit(data))
         return resolve(data)
       })
     })
   }
 }
 
-function updateGasLimit (gasLimit) {
+function setGasLimit (gasLimit) {
   return {
     type: actions.UPDATE_GAS_LIMIT,
     value: gasLimit,
@@ -737,14 +737,14 @@ function getGasPrice () {
           return reject(err)
         }
         dispatch(actions.hideWarning())
-        dispatch(actions.updateGasPrice(data))
+        dispatch(actions.setGasPrice(data))
         return resolve(data)
       })
     })
   }
 }
 
-function updateGasPrice (gasPrice) {
+function setGasPrice (gasPrice) {
   return {
     type: actions.UPDATE_GAS_PRICE,
     value: gasPrice,
@@ -772,7 +772,7 @@ function getGasEstimate ({ selectedAddress, selectedToken, data }) {
   }
 }
 
-function updateGasTotal ({ selectedAddress, selectedToken, data }) {
+function updateGasData ({ selectedAddress, selectedToken, data }) {
   return (dispatch) => {
     return dispatch(actions.getGasEstimate({ selectedAddress, selectedToken, data }))
     .then((gasEstimate) => {
