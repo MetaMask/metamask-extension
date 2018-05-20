@@ -147,9 +147,9 @@ describe('send utils', () => {
       )
     })
 
-    it('should return value property if symbol provided', () => {
+    it('should return value property if selected token provided', () => {
       assert.deepEqual(
-        getParamsForGasEstimate('mockAddress', 'ABC'),
+        getParamsForGasEstimate('mockAddress', { symbol: 'ABC' }),
         {
           from: 'mockAddress',
           gas: '746a528800',
@@ -160,7 +160,7 @@ describe('send utils', () => {
 
     it('should return data property if data provided', () => {
       assert.deepEqual(
-        getParamsForGasEstimate('mockAddress', 'ABC', 'somedata'),
+        getParamsForGasEstimate('mockAddress', { symbol: 'ABC' }, 'somedata'),
         {
           from: 'mockAddress',
           gas: '746a528800',
