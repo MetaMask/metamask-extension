@@ -139,7 +139,8 @@ function getAmountErrorObject ({
   return { amount: amountError }
 }
 
-function getParamsForGasEstimate (selectedAddress, symbol, data) {
+function getParamsForGasEstimate (selectedAddress, selectedToken, data) {
+  const { symbol } = selectedToken || {}
   const estimatedGasParams = {
     from: selectedAddress,
     gas: '746a528800',
