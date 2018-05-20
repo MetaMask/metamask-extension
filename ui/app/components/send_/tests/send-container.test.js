@@ -7,7 +7,7 @@ let mapDispatchToProps
 
 const actionSpies = {
   updateSendTokenBalance: sinon.spy(),
-  updateGasTotal: sinon.spy(),
+  updateGasData: sinon.spy(),
   setGasTotal: sinon.spy(),
 }
 const duckActionSpies = {
@@ -104,14 +104,14 @@ describe('send container', () => {
         )
       })
 
-      it('should dispatch an updateGasTotal action when editingTransactionId is falsy', () => {
+      it('should dispatch an updateGasData action when editingTransactionId is falsy', () => {
         const { selectedAddress, selectedToken, data } = mockProps
         mapDispatchToPropsObject.updateAndSetGasTotal(
           Object.assign(mockProps, {editingTransactionId: false})
         )
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
-          actionSpies.updateGasTotal.getCall(0).args[0],
+          actionSpies.updateGasData.getCall(0).args[0],
           { selectedAddress, selectedToken, data }
         )
       })

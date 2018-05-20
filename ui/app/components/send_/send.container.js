@@ -21,7 +21,7 @@ import {
 } from './send.selectors'
 import {
   updateSendTokenBalance,
-  updateGasTotal,
+  updateGasData,
   setGasTotal,
 } from '../../actions'
 import {
@@ -73,7 +73,7 @@ function mapDispatchToProps (dispatch) {
     }) => {
       console.log(`editingTransactionId`, editingTransactionId)
       !editingTransactionId
-        ? dispatch(updateGasTotal({ selectedAddress, selectedToken, data }))
+        ? dispatch(updateGasData({ selectedAddress, selectedToken, data }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {
