@@ -155,7 +155,7 @@
     "raven-js": "^3.24.2",
     "react": "^15.6.2",
     "react-addons-css-transition-group": "^15.6.0",
-    "react-dom": "^15.6.2",
+    "react-dom": "^16.3.1",
     "react-hyperscript": "^3.0.0",
     "react-markdown": "^3.0.0",
     "react-redux": "^5.0.5",
