@@ -144,7 +144,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // address book controller
     this.addressBookController = new AddressBookController({
       initState: initState.AddressBookController,
-    }, this.keyringController)
+      preferencesStore: this.preferencesController.store,
+    })
 
     // tx mgmt
     this.txController = new TransactionController({
@@ -355,7 +356,6 @@ module.exports = class MetamaskController extends EventEmitter {
       submitPassword: nodeify(keyringController.submitPassword, keyringController),
 
       // network management
-      setNetworkEndpoints: nodeify(networkController.setNetworkEndpoints, networkController),
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
 
@@ -364,6 +364,7 @@ module.exports = class MetamaskController extends EventEmitter {
       addToken: nodeify(preferencesController.addToken, preferencesController),
       removeToken: nodeify(preferencesController.removeToken, preferencesController),
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
+      setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
 
       // AddressController
@@ -374,7 +375,6 @@ module.exports = class MetamaskController extends EventEmitter {
       createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
-      saveAccountLabel: nodeify(keyringController.saveAccountLabel, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
       // txController
@@ -382,6 +382,7 @@ module.exports = class MetamaskController extends EventEmitter {
       updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
+      isNonceTaken: nodeify(txController.isNonceTaken, txController),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
@@ -433,7 +434,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
       } else {
         vault = await this.keyringController.createNewVaultAndKeychain(password)
-        this.selectFirstIdentity(vault)
+        const accounts = await this.keyringController.getAccounts()
+        this.preferencesController.setAddresses(accounts)
+        this.selectFirstIdentity()
       }
       release()
     } catch (err) {
@@ -453,7 +456,9 @@ module.exports = class MetamaskController extends EventEmitter {
     const release = await this.createVaultMutex.acquire()
     try {
       const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
-      this.selectFirstIdentity(vault)
+      const accounts = await this.keyringController.getAccounts()
+      this.preferencesController.setAddresses(accounts)
+      this.selectFirstIdentity()
       release()
       return vault
     } catch (err) {
@@ -471,12 +476,10 @@ module.exports = class MetamaskController extends EventEmitter {
    */
 
   /**
-   * Retrieves the first Identiy from the passed Vault and selects the related address
-   *
-   * @param  {} vault
+   * Sets the first address in the state to the selected address
    */
-  selectFirstIdentity (vault) {
-    const { identities } = vault
+  selectFirstIdentity () {
+    const { identities } = this.preferencesController.store.getState()
     const address = Object.keys(identities)[0]
     this.preferencesController.setSelectedAddress(address)
   }
@@ -502,13 +505,15 @@ module.exports = class MetamaskController extends EventEmitter {
 
     await this.verifySeedPhrase()
 
+    this.preferencesController.setAddresses(newAccounts)
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
         this.preferencesController.setSelectedAddress(address)
       }
     })
 
-    return keyState
+    const {identities} = this.preferencesController.store.getState()
+    return {...keyState, identities}
   }
 
   /**

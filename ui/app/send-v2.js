@@ -31,6 +31,7 @@ const {
 } = require('./components/send/send-utils')
 const { isValidAddress } = require('./util')
 const { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } = require('./routes')
+const Button = require('./components/button')
 
 SendTransactionScreen.contextTypes = {
   t: PropTypes.func,
@@ -497,13 +498,19 @@ SendTransactionScreen.prototype.renderFooter = function () {
   const noErrors = !amountError && toError === null
 
   return h('div.page-container__footer', [
-    h('button.btn-secondary--lg.page-container__footer-button', {
+    h(Button, {
+      type: 'secondary',
+      large: true,
+      className: 'page-container__footer-button',
       onClick: () => {
         clearSend()
         history.push(DEFAULT_ROUTE)
       },
     }, this.context.t('cancel')),
-    h('button.btn-primary--lg.page-container__footer-button', {
+    h(Button, {
+      type: 'primary',
+      large: true,
+      className: 'page-container__footer-button',
       disabled: !noErrors || !gasTotal || missingTokenBalance,
       onClick: event => this.onSubmit(event),
     }, this.context.t('next')),

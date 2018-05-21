@@ -1,5 +1,6 @@
 const pump = require('pump')
 const RpcEngine = require('json-rpc-engine')
+const createErrorMiddleware = require('./createErrorMiddleware')
 const createIdRemapMiddleware = require('json-rpc-engine/src/idRemapMiddleware')
 const createStreamMiddleware = require('json-rpc-middleware-stream')
 const LocalStorageStore = require('obs-store')
@@ -44,6 +45,7 @@ function MetamaskInpageProvider (connectionStream) {
   // handle sendAsync requests via dapp-side rpc engine
   const rpcEngine = new RpcEngine()
   rpcEngine.push(createIdRemapMiddleware())
+  rpcEngine.push(createErrorMiddleware())
   rpcEngine.push(streamMiddleware)
   self.rpcEngine = rpcEngine
 }

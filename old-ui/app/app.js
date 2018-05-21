@@ -35,7 +35,6 @@ const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
-const { BETA_UI_NETWORK_TYPE } = require('../../app/scripts/controllers/network/enums')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -409,7 +408,6 @@ App.prototype.renderDropdown = function () {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       onClick: () => {
         this.props.dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
-          .then(() => this.props.dispatch(actions.setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
       },
     }, 'Try Beta!'),
   ])
@@ -472,7 +470,6 @@ App.prototype.renderPrimary = function () {
           onClick: () => {
             global.platform.openExtensionInBrowser()
             props.dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
-              .then(() => props.dispatch(actions.setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
           },
           style: {
             fontSize: '0.8em',
