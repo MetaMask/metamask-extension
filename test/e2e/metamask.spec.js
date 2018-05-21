@@ -30,6 +30,14 @@ describe('Metamask popup page', function () {
   })
 
   afterEach(async function () {
+    // check for console errors
+    const errors = await checkBrowserForConsoleErrors()
+    if (errors.length) {
+      const errorReports = errors.map(err => err.message)
+      const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+      this.test.error(new Error(errorMessage))
+    }
+    // gather extra data if test failed
     if (this.currentTest.state === 'failed') {
       await verboseReportOnFailure(this.currentTest)
     }
@@ -300,13 +308,21 @@ describe('Metamask popup page', function () {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
+  async function checkBrowserForConsoleErrors() {
+    const ignoredLogTypes = ['WARNING']
+    const browserLogs = await driver.manage().logs().get('browser')
+    const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
+    const errorEntryObjects = errorEntries.map(entry => entry.toJSON())
+    return errorEntryObjects
+  }
+
   async function verboseReportOnFailure (test) {
     let artifactDir
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       artifactDir = `./test-artifacts/chrome/${test.title}`
     } else if (process.env.SELENIUM_BROWSER === 'firefox') {
       artifactDir = `./test-artifacts/firefox/${test.title}`
-    } 
+    }
     const filepathBase = `${artifactDir}/test-failure`
     await pify(mkdirp)(artifactDir)
     // capture screenshot
