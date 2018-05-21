@@ -4,9 +4,8 @@ const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
 const webdriver = require('selenium-webdriver')
-const until = require('selenium-webdriver/lib/until')
-const By = webdriver.By
-const { delay, buildChromeWebDriver } = require('../func')
+const { By, Key } = webdriver
+const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 
 describe('Metamask popup page', function () {
   let driver, accountAddress, tokenAddress, extensionId
@@ -14,10 +13,20 @@ describe('Metamask popup page', function () {
   this.timeout(0)
 
   before(async function () {
-    const extPath = path.resolve('dist/chrome')
-    driver = buildChromeWebDriver(extPath)
-    await driver.get('chrome://extensions')
-    await delay(500)
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      const extPath = path.resolve('dist/chrome')
+      driver = buildChromeWebDriver(extPath)
+      extensionId = await getExtensionIdChrome(driver)
+      await driver.get(`chrome-extension://${extensionId}/popup.html`)
+
+    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+      const extPath = path.resolve('dist/firefox')
+      driver = buildFirefoxWebdriver()
+      await installWebExt(driver, extPath)
+      await delay(700)
+      extensionId = await getExtensionIdFirefox(driver)
+      await driver.get(`moz-extension://${extensionId}/popup.html`)
+    }
   })
 
   afterEach(async function () {
@@ -33,21 +42,16 @@ describe('Metamask popup page', function () {
   describe('Setup', function () {
 
     it('switches to Chrome extensions list', async function () {
-      const tabs = await driver.getAllWindowHandles()
-      await driver.switchTo().window(tabs[0])
       await delay(300)
-    })
-
-    it(`selects MetaMask's extension id and opens it in the current tab`, async function () {
-      extensionId = await getExtensionId()
-      await driver.get(`chrome-extension://${extensionId}/popup.html`)
-      await delay(500)
+      const windowHandles = await driver.getAllWindowHandles()
+      await driver.switchTo().window(windowHandles[0])
     })
 
     it('sets provider type to localhost', async function () {
-      await driver.wait(until.elementLocated(By.css('#app-content')), 300)
+      await delay(300)
       await setProviderType('localhost')
     })
+
   })
 
   describe('Account Creation', () => {
@@ -58,20 +62,17 @@ describe('Metamask popup page', function () {
     })
 
     it('shows privacy notice', async () => {
-      await driver.wait(async () => {
-        const privacyHeader = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > h3')).getText()
-        assert.equal(privacyHeader, 'PRIVACY NOTICE', 'shows privacy notice')  
-        return privacyHeader === 'PRIVACY NOTICE'
-      }, 300)
+      await delay(300)
+      const privacy = await driver.findElement(By.css('.terms-header')).getText()
+      assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
       await driver.findElement(By.css('button')).click()
+      await delay(300)
     })
 
     it('show terms of use', async () => {
-      await driver.wait(async () => {
-        const terms = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > h3')).getText()
-        assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
-        return terms === 'TERMS OF USE'
-      })
+      const terms = await driver.findElement(By.css('.terms-header')).getText()
+      assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
+      delay(300)
     })
 
     it('checks if the TOU button is disabled', async () => {
@@ -79,13 +80,11 @@ describe('Metamask popup page', function () {
       assert.equal(button, false, 'disabled continue button')
       const element = await driver.findElement(By.linkText('Attributions'))
       await driver.executeScript('arguments[0].scrollIntoView(true)', element)
-      await delay(300)
+      await delay(700)
     })
 
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
-      const buttonEnabled = await button.isEnabled()
-      assert.equal(buttonEnabled, true, 'enabled continue button')
       await button.click()
     })
 
@@ -125,7 +124,7 @@ describe('Metamask popup page', function () {
     it('accepts account password after lock', async () => {
       await delay(500)
       await driver.findElement(By.id('password-box')).sendKeys('123456789')
-      await driver.findElement(By.css('button')).click()
+      await driver.findElement(By.id('password-box')).sendKeys(Key.ENTER)
       await delay(500)
     })
 
@@ -145,6 +144,7 @@ describe('Metamask popup page', function () {
   })
 
   describe('Import Ganache seed phrase', function () {
+
     it('logs out', async function () {
       await driver.findElement(By.css('.sandwich-expando')).click()
       await delay(200)
@@ -235,6 +235,7 @@ describe('Metamask popup page', function () {
       await delay(1000)
     })
 
+    // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
@@ -252,12 +253,17 @@ describe('Metamask popup page', function () {
     })
 
     it('navigates back to MetaMask popup in the tab', async function () {
-      await driver.get(`chrome-extension://${extensionId}/popup.html`)
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
+        await driver.get(`chrome-extension://${extensionId}/popup.html`)
+      } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+        await driver.get(`moz-extension://${extensionId}/popup.html`)
+      }
       await delay(700)
     })
   })
 
   describe('Add Token', function () {
+
     it('switches to the add token screen', async function () {
       const tokensTab = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > section > div > div.inactiveForm.pointer'))
       assert.equal(await tokensTab.getText(), 'TOKENS')
@@ -281,7 +287,7 @@ describe('Metamask popup page', function () {
       await tokenContractAddress.sendKeys(tokenAddress)
       await delay(300)
       await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button')).click()
-      await delay(100)
+      await delay(200)
     })
 
     it('checks the token balance', async function () {
@@ -290,17 +296,17 @@ describe('Metamask popup page', function () {
     })
   })
 
-  async function getExtensionId () {
-    const extension = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("extensions-item:nth-child(2)").getAttribute("id")')
-    return extension
-  }
-
   async function setProviderType (type) {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
   async function verboseReportOnFailure (test) {
-    const artifactDir = `./test-artifacts/chrome/${test.title}`
+    let artifactDir
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      artifactDir = `./test-artifacts/chrome/${test.title}`
+    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+      artifactDir = `./test-artifacts/firefox/${test.title}`
+    } 
     const filepathBase = `${artifactDir}/test-failure`
     await pify(mkdirp)(artifactDir)
     // capture screenshot

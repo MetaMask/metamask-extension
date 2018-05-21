@@ -54,7 +54,6 @@ workflows:
       - all-tests-pass:
           requires:
             - test-lint
-            - test-deps
             - test-unit
             - test-e2e-chrome
             - test-e2e-firefox
@@ -416,3 +415,4 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'weew - everything passed!'
+

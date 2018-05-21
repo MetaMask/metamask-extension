@@ -25,7 +25,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.showModal({ name: 'EXPORT_PRIVATE_KEY' }))
     },
     hideModal: () => dispatch(actions.hideModal()),
-    saveAccountLabel: (address, label) => dispatch(actions.saveAccountLabel(address, label)),
+    setAccountLabel: (address, label) => dispatch(actions.setAccountLabel(address, label)),
   }
 }
 
@@ -49,7 +49,7 @@ AccountDetailsModal.prototype.render = function () {
     selectedIdentity,
     network,
     showExportPrivateKeyModal,
-    saveAccountLabel,
+    setAccountLabel,
   } = this.props
   const { name, address } = selectedIdentity
 
@@ -57,7 +57,7 @@ AccountDetailsModal.prototype.render = function () {
       h(EditableLabel, {
         className: 'account-modal__name',
         defaultValue: name,
-        onSubmit: label => saveAccountLabel(address, label),
+        onSubmit: label => setAccountLabel(address, label),
       }),
 
       h(QrView, {

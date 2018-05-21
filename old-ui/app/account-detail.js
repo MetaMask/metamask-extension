@@ -91,7 +91,7 @@ AccountDetailScreen.prototype.render = function () {
                 isEditingLabel: false,
               },
               saveText: (text) => {
-                props.dispatch(actions.saveAccountLabel(selected, text))
+                props.dispatch(actions.setAccountLabel(selected, text))
               },
             }, [
 
