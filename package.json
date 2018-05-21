@@ -212,7 +212,7 @@
     "brfs": "^1.4.3",
     "browserify": "^16.1.1",
     "chai": "^4.1.0",
-    "chromedriver": "2.36.0",
+    "chromedriver": "2.38.3",
     "compression": "^1.7.1",
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.4",
