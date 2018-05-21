@@ -75,7 +75,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(actions.showModal({ name: 'EXPORT_PRIVATE_KEY' }))
   },
   hideModal: () => dispatch(actions.hideModal()),
-  saveAccountLabel: (address, label) => dispatch(actions.saveAccountLabel(address, label)),
+  setAccountLabel: (address, label) => dispatch(actions.setAccountLabel(address, label)),
 })
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(CreateAccountPage)

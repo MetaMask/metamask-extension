@@ -163,7 +163,7 @@ function reduceMetamask (state, action) {
         selectedTokenAddress: action.value,
       })
 
-    case actions.SAVE_ACCOUNT_LABEL:
+    case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label
       const id = {}

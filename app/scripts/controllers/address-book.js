@@ -13,19 +13,17 @@ class AddressBookController {
    * @param {object} opts Overrides the defaults for the initial state of this.store
    * @property {array} opts.initState  initializes the the state of the AddressBookController. Can contain an
    * addressBook property to initialize the addressBook array
-   * @param {KeyringController} keyringController (Soon to be deprecated) The keyringController used in the current
-   * MetamaskController. Contains the identities used in this AddressBookController.
+   * @property {object} opts.preferencesStore the {@code PreferencesController} store
    * @property {object} store The the store of the current users address book
    * @property {array} store.addressBook An array of addresses and nicknames. These are set by the user when sending
    * to a new address.
    *
    */
-  constructor (opts = {}, keyringController) {
-    const initState = extend({
+  constructor ({initState, preferencesStore}) {
+    this.store = new ObservableStore(extend({
       addressBook: [],
-    }, opts.initState)
-    this.store = new ObservableStore(initState)
-    this.keyringController = keyringController
+    }, initState))
+    this._preferencesStore = preferencesStore
   }
 
   //
@@ -62,7 +60,7 @@ class AddressBookController {
    */
   _addToAddressBook (address, name) {
     const addressBook = this._getAddressBook()
-    const identities = this._getIdentities()
+    const {identities} = this._preferencesStore.getState()
 
     const addressBookIndex = addressBook.findIndex((element) => { return element.address.toLowerCase() === address.toLowerCase() || element.name === name })
     const identitiesIndex = Object.keys(identities).findIndex((element) => { return element.toLowerCase() === address.toLowerCase() })
@@ -95,19 +93,6 @@ class AddressBookController {
   _getAddressBook () {
     return this.store.getState().addressBook
   }
-
-  /**
-   * Retrieves identities from the keyring controller in order to avoid
-   * duplication
-   *
-   * @deprecated
-   * @returns {array} Returns the identies array from the keyringContoller's state
-   *
-   */
-  _getIdentities () {
-    return this.keyringController.memStore.getState().identities
-  }
-
 }
 
 module.exports = AddressBookController
