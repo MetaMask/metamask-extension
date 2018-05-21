@@ -1,26 +1,26 @@
 const assert = require('assert')
 const AddressBookController = require('../../../../app/scripts/controllers/address-book')
 
-const mockKeyringController = {
-  memStore: {
-    getState: function () {
-      return {
-        identities: {
-          '0x0aaa': {
-            address: '0x0aaa',
-            name: 'owned',
-          },
+const stubPreferencesStore = {
+  getState: function () {
+    return {
+      identities: {
+        '0x0aaa': {
+          address: '0x0aaa',
+          name: 'owned',
         },
-      }
-    },
+      },
+    }
   },
-}
+};
 
 describe('address-book-controller', function () {
   var addressBookController
 
   beforeEach(function () {
-    addressBookController = new AddressBookController({}, mockKeyringController)
+    addressBookController = new AddressBookController({
+      preferencesStore: stubPreferencesStore,
+    })
   })
 
   describe('addres book management', function () {

@@ -4,7 +4,7 @@ const clone = require('clone')
 const nock = require('nock')
 const createThoughStream = require('through2').obj
 const MetaMaskController = require('../../../../app/scripts/metamask-controller')
-const blacklistJSON = require('../../../stub/blacklist')
+const blacklistJSON = require('eth-phishing-detect/src/config')
 const firstTimeState = require('../../../../app/scripts/first-time-state')
 
 const currentNetworkId = 42
@@ -118,7 +118,7 @@ describe('MetaMaskController', function () {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
       })
 
-      await metamaskController.keyringController.saveAccountLabel(TEST_ADDRESS, 'Account Foo')
+      await metamaskController.preferencesController.setAccountLabel(TEST_ADDRESS, 'Account Foo')
       assert.deepEqual(metamaskController.getState().identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
       })
@@ -170,14 +170,17 @@ describe('MetaMaskController', function () {
     beforeEach(function () {
       address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
       identities = {
-        identities: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            'address': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            'name': 'Account 1',
-          },
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          'address': address,
+          'name': 'Account 1',
+        },
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+          'address': '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+          'name': 'Account 2',
         },
       }
-      metamaskController.selectFirstIdentity(identities)
+      metamaskController.preferencesController.store.updateState({ identities })
+      metamaskController.selectFirstIdentity()
     })
 
     it('changes preferences controller select address', function () {
