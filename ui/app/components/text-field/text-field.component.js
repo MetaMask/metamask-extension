@@ -31,6 +31,7 @@ const styles = {
     },
   },
   formLabelFocused: {},
+  inputFocused: {},
   inputRoot: {
     'label + &': {
       marginTop: '8px',
@@ -41,7 +42,7 @@ const styles = {
     padding: '0 16px',
     display: 'flex',
     alignItems: 'center',
-    '&:focus': {
+    '&$inputFocused': {
       border: '1px solid #2f9ae0',
     },
   },
@@ -89,6 +90,7 @@ class TextField extends Component {
             root: material ? '' : classes.inputRoot,
             input: material ? '' : classes.input,
             underline: material ? classes.materialUnderline : '',
+            focused: material ? '' : classes.inputFocused,
           },
         }}
         {...textFieldProps}
