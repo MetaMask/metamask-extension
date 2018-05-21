@@ -392,8 +392,8 @@ ConfirmSendEther.prototype.render = function () {
         //   `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
         // ]),
 
-        h('h3.flex-center.confirm-screen-send-amount', [`${convertedAmountInFiat}`]),
-        h('h3.flex-center.confirm-screen-send-amount-currency', [ currentCurrency.toUpperCase() ]),
+        // h('h3.flex-center.confirm-screen-send-amount', [`${convertedAmountInFiat}`]),
+        // h('h3.flex-center.confirm-screen-send-amount-currency', [ currentCurrency.toUpperCase() ]),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
         ]),
@@ -439,8 +439,8 @@ ConfirmSendEther.prototype.render = function () {
             ]),
 
             h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', `${convertedTotalInFiat} ${currentCurrency.toUpperCase()}`),
-              h('div.confirm-screen-row-detail', `${totalInETH} ETH`),
+              // h('div.confirm-screen-row-info', `${convertedTotalInFiat} ${currentCurrency.toUpperCase()}`),
+              h('div.confirm-screen-row-detail', `${totalInETH} ETZ`),
             ]),
 
             this.renderErrorMessage('insufficientFunds'),

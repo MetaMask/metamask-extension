@@ -77,8 +77,8 @@ button, input[type="submit"] {
   transform-origin: center center;
   transition: transform 50ms ease-in;
   /* default orange */
-  background: rgba(247, 134, 28, 1);
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  background: rgba(1 , 104 , 229, 1);
+  box-shadow: 0px 3px 6px rgba(1 , 104 , 229, 0.36);
 }
 
 .btn-green, input[type="submit"].btn-green {
@@ -131,8 +131,8 @@ app
 
 button.primary {
   padding: 8px 12px;
-  background: #F7861C;
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  background: #0168E5;
+  box-shadow: 0px 3px 6px rgba(1, 104, 229, 0.36);
   color: white;
   font-size: 1.1em;
   font-family: 'Montserrat Regular';
@@ -143,7 +143,7 @@ button.btn-thin {
   border: 1px solid;
   border-color: #4D4D4D;
   color: #4D4D4D;
-  background: rgb(255, 174, 41);
+  background: rgb(1, 104, 229);
   border-radius: 4px;
   min-width: 200px;
   margin: 12px 0;
@@ -206,7 +206,7 @@ textarea.twelve-word-phrase {
 
 .check {
   margin-left: 12px;
-  color: #F7861C;
+  color: #0168E5;
   flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;
@@ -220,7 +220,7 @@ app sections
 .initialize-screen hr {
   width: 60px;
   margin: 12px;
-  border-color: #F7861C;
+  border-color: #0168E5;
   border-style: solid;
 }
 
@@ -239,7 +239,7 @@ app sections
 
 /* unlock */
 .error {
-  color: #f7861c;
+  color: #0168E5;
   margin-bottom: 9px;
 }
 
@@ -482,7 +482,7 @@ input.large-input {
   margin-bottom: 2px;
   font-size: 11px;
   text-rendering: geometricPrecision;
-  color: #F7861C;
+  color: #0168E5;
 }
 .name-label:hover .edit-text {
   visibility: visible;
@@ -517,7 +517,7 @@ input.large-input {
 /* Ether Balance Widget */
 
 .ether-balance-amount {
-  color: #F7861C;
+  color: #0168E5;
 }
 
 .ether-balance-label {
@@ -556,7 +556,7 @@ input.large-input {
   border-style: double;
   border-radius: 15px;
   border-width: 5px;
-  background: rgba(247, 134, 28, 1);
+  background: rgba(1 , 104 , 229, 1);
   border-color: #F7F7F7;
 }
 
@@ -570,7 +570,7 @@ input.large-input {
 }
 
 .radio-titles {
-  color: rgba(247, 134, 28, 1);
+  color: rgba(1 , 104 , 229, 1);
 }
 
 .radio-titles-subtext {
@@ -612,14 +612,14 @@ input.large-input {
 .input-container:hover .buy-inputs{
   box-sizing: inherit;
   border: solid;
-  border-color: #F7861C;
+  border-color: #0168E5;
   border-width: 0.5px;
   border-radius: 2px;
 }
 
 .buy-inputs:focus{
   border: solid;
-  border-color: #F7861C;
+  border-color: #0168E5;
   border-width: 0.5px;
   border-radius: 2px;
 }
@@ -707,7 +707,7 @@ input.large-input {
 
 .qr-message {
   font-size: 12px;
-  color: #F7861C;
+  color: #0168E5;
 }
 
 div.message-container > div:first-child {

@@ -26,7 +26,7 @@ textarea.twelve-word-phrase {
 .initialize-screen hr {
   width: 60px;
   margin: 12px;
-  border-color: #f7861c;
+  border-color: #0168E5;
   border-style: solid;
 }
 
@@ -46,12 +46,12 @@ textarea.twelve-word-phrase {
 /* unlock */
 .error {
   // color: #e20202;
-  color: #f7861c;
+  color: #0168E5;
   margin-bottom: 9px;
 }
 
 .warning {
-  color: #ffae00;
+  color: #0168E5;
 }
 
 .lock {
@@ -232,7 +232,7 @@ textarea.twelve-word-phrase {
   margin-bottom: 2px;
   font-size: 11px;
   text-rendering: geometricPrecision;
-  color: #f7861c;
+  color: #0168E5;
 }
 
 .name-label:hover .edit-text {
@@ -246,14 +246,14 @@ textarea.twelve-word-phrase {
   margin: 12px;
   margin-bottom: 24px;
   border-radius: 4px;
-  border: 2px solid #f3c83e;
+  border: 2px solid #0168E5;
   background: #faf6f0;
 }
 
 /* Ether Balance Widget */
 
 .ether-balance-amount {
-  color: #f7861c;
+  color: #0168E5;
 }
 
 .ether-balance-label {
@@ -291,7 +291,7 @@ textarea.twelve-word-phrase {
   border-style: double;
   border-radius: 15px;
   border-width: 5px;
-  background: rgba(247, 134, 28, 1);
+  background: rgba(1 , 104 , 229, 1);
   border-color: #f7f7f7;
 }
 
@@ -305,7 +305,7 @@ textarea.twelve-word-phrase {
 }
 
 .radio-titles {
-  color: rgba(247, 134, 28, 1);
+  color: rgba(1 , 104 , 229, 1);
 }
 
 .eth-warning {
@@ -335,14 +335,14 @@ textarea.twelve-word-phrase {
 .input-container:hover .buy-inputs {
   box-sizing: inherit;
   border: solid;
-  border-color: #f7861c;
+  border-color: #0168E5;
   border-width: .5px;
   border-radius: 2px;
 }
 
 .buy-inputs:focus {
   border: solid;
-  border-color: #f7861c;
+  border-color: #0168E5;
   border-width: .5px;
   border-radius: 2px;
 }
@@ -425,7 +425,7 @@ textarea.twelve-word-phrase {
 
 .qr-message {
   font-size: 12px;
-  color: #f7861c;
+  color: #0168E5;
 }
 
 div.message-container > div:first-child {

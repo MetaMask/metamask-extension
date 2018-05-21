@@ -14,7 +14,7 @@ class Info extends Component {
   renderLogo () {
     return (
       h('div.settings__info-logo-wrapper', [
-        h('img.settings__info-logo', { src: 'images/info-logo.png' }),
+        h('img.settings__info-logo', { src: 'images/icon-150.png' }),
       ])
     )
   }
@@ -22,35 +22,35 @@ class Info extends Component {
   renderInfoLinks () {
     return (
       h('div.settings__content-item.settings__content-item--without-height', [
-        h('div.settings__info-link-header', this.context.t('links')),
-        h('div.settings__info-link-item', [
-          h('a', {
-            href: 'https://metamask.io/privacy.html',
-            target: '_blank',
-          }, [
-            h('span.settings__info-link', this.context.t('privacyMsg')),
-          ]),
-        ]),
-        h('div.settings__info-link-item', [
-          h('a', {
-            href: 'https://metamask.io/terms.html',
-            target: '_blank',
-          }, [
-            h('span.settings__info-link', this.context.t('terms')),
-          ]),
-        ]),
-        h('div.settings__info-link-item', [
-          h('a', {
-            href: 'https://metamask.io/attributions.html',
-            target: '_blank',
-          }, [
-            h('span.settings__info-link', this.context.t('attributions')),
-          ]),
-        ]),
+        // h('div.settings__info-link-header', this.context.t('links')),
+        // h('div.settings__info-link-item', [
+        //   h('a', {
+        //     href: 'https://metamask.io/privacy.html',
+        //     target: '_blank',
+        //   }, [
+        //     h('span.settings__info-link', this.context.t('privacyMsg')),
+        //   ]),
+        // ]),
+        // h('div.settings__info-link-item', [
+        //   h('a', {
+        //     href: 'https://metamask.io/terms.html',
+        //     target: '_blank',
+        //   }, [
+        //     h('span.settings__info-link', this.context.t('terms')),
+        //   ]),
+        // ]),
+        // h('div.settings__info-link-item', [
+        //   h('a', {
+        //     href: 'https://metamask.io/attributions.html',
+        //     target: '_blank',
+        //   }, [
+        //     h('span.settings__info-link', this.context.t('attributions')),
+        //   ]),
+        // ]),
         h('hr.settings__info-separator'),
         h('div.settings__info-link-item', [
           h('a', {
-            href: 'https://support.metamask.io',
+            href: 'http://etherzero.org',
             target: '_blank',
           }, [
             h('span.settings__info-link', this.context.t('supportCenter')),
@@ -58,7 +58,7 @@ class Info extends Component {
         ]),
         h('div.settings__info-link-item', [
           h('a', {
-            href: 'https://metamask.io/',
+            href: 'http://etherzero.org',
             target: '_blank',
           }, [
             h('span.settings__info-link', this.context.t('visitWebSite')),
@@ -67,7 +67,7 @@ class Info extends Component {
         h('div.settings__info-link-item', [
           h('a', {
             target: '_blank',
-            href: 'mailto:help@metamask.io?subject=Feedback',
+            href: 'mailto:support@etherzero.org',
           }, [
             h('span.settings__info-link', this.context.t('emailUs')),
           ]),
@@ -83,14 +83,14 @@ class Info extends Component {
           h('div.settings__content-item.settings__content-item--without-height', [
             this.renderLogo(),
             h('div.settings__info-item', [
-              h('div.settings__info-version-header', 'MetaMask Version'),
+              h('div.settings__info-version-header', 'EtzMeta Version'),
               h('div.settings__info-version-number', this.state.version),
             ]),
             h('div.settings__info-item', [
-              h(
-                'div.settings__info-about',
-                this.context.t('builtInCalifornia')
-              ),
+              // h(
+              //   'div.settings__info-about',
+              //   this.context.t('builtInCalifornia')
+              // ),
             ]),
           ]),
           this.renderInfoLinks(),

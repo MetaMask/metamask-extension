@@ -50,10 +50,10 @@ AccountImportSubview.prototype.render = function () {
           padding: '5px 15px 0px 15px',
         },
       }, [
-        h('span', 'Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts '),
+        h('span', 'Imported accounts will not be associated with your originally created EtzMeta account seedphrase. Learn more about imported accounts '),
         h('span', {
           style: {
-            color: 'rgba(247, 134, 28, 1)',
+            color: 'rgba(1 , 104 , 229, 1)',
             cursor: 'pointer',
             textDecoration: 'underline',
           },
@@ -67,7 +67,7 @@ AccountImportSubview.prototype.render = function () {
       h('div', {
         style: {
           padding: '10px',
-          color: 'rgb(174, 174, 174)',
+          color: 'rgb(1, 104, 229)',
         },
       }, [
 
@@ -75,7 +75,7 @@ AccountImportSubview.prototype.render = function () {
 
         h('style', `
           .has-value.Select--single > .Select-control .Select-value .Select-value-label, .Select-value-label {
-            color: rgb(174,174,174);
+            color: rgb(1, 104, 229);
           }
         `),
 

@@ -165,8 +165,8 @@ input[type="submit"][disabled] {
 
 button.primary {
   padding: 8px 12px;
-  background: #f7861c;
-  box-shadow: 0 3px 6px rgba(247, 134, 28, .36);
+  background: #0168E5;
+  box-shadow: 0 3px 6px rgba(1 , 104 , 229, .36);
   color: $white;
   font-size: 1.1em;
   font-family: Roboto;
@@ -176,7 +176,7 @@ button.primary {
 .btn-light {
   padding: 8px 12px;
   // background: #FFFFFF; // $bg-white
-  box-shadow: 0 3px 6px rgba(247, 134, 28, .36);
+  box-shadow: 0 3px 6px rgba(1 , 104 , 229, .36);
   color: #585d67; // TODO: make reusable light button color
   font-size: 1.1em;
   font-family: Roboto;
@@ -193,7 +193,7 @@ button.btn-thin {
   border: 1px solid;
   border-color: #4d4d4d;
   color: #4d4d4d;
-  background: rgb(255, 174, 41);
+  background: rgb(1, 104, 229);
   border-radius: 4px;
   min-width: 200px;
   margin: 12px 0;

@@ -27,6 +27,9 @@ const getMessage = (locale, key, substitutions) => {
 }
 
 async function fetchLocale (localeName) {
+  if(localeName == 'zh-cn'){
+    localeName = 'zh_cn'
+  }
   try {
     const response = await fetch(`./_locales/${localeName}/messages.json`)
     const locale = await response.json()

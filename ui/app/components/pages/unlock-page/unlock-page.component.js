@@ -74,7 +74,7 @@ class UnlockPage extends Component {
 
   renderSubmitButton () {
     const style = {
-      backgroundColor: '#f7861c',
+      backgroundColor: '#0168E5',
       color: 'white',
       marginTop: '20px',
       height: '60px',

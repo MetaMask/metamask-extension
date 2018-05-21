@@ -626,7 +626,7 @@ rollback to 3.10.0 due to bug
 
 - Add support for the new, default Ropsten Test Network.
 - Fix bug that would cause MetaMask to occasionally lose its StreamProvider connection and drop requests.
-- Fix bug that would cause the Custom RPC menu item to not appear when Localhost 8545 was selected.
+- Fix bug that would cause the Custom RPC menu item to not appear when ETZ network was selected.
 - Point ropsten faucet button to actual faucet.
 - Phase out ethereumjs-util from our encryptor module.
 

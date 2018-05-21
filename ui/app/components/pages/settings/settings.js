@@ -94,7 +94,7 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', 'Current Language'),
+        h('span', this.context.t('selectLanguage')),
         h('span.settings__content-description', `${currentLocaleName}`),
       ]),
       h('div.settings__content-item', [
@@ -223,7 +223,7 @@ class Settings extends Component {
                   if (err) {
                     this.state.dispatch(actions.displayWarning(this.context.t('stateLogError')))
                   } else {
-                    exportAsFile('MetaMask State Logs.json', result)
+                    exportAsFile('EtzMeta State Logs.json', result)
                   }
                 })
               },

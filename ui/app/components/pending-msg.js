@@ -46,7 +46,7 @@ PendingMsg.prototype.render = function () {
         this.context.t('signNotice'),
         h('a', {
           href: 'https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527',
-          style: { color: 'rgb(247, 134, 28)' },
+          style: { color: 'rgb(1 , 104 , 229)' },
           onClick: (event) => {
             event.preventDefault()
             const url = 'https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527'

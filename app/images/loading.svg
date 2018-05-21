@@ -1,1 +1,55 @@
-<svg width='120px' height='120px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="uil-default"><rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect><rect  x='46' y='39' width='8' height='22' rx='5' ry='5' fill='#ffae29' transform='rotate(0 50 50) translate(0 -20)'>  <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0s' repeatCount='indefinite'/></rect><rect  x='46' y='39' width='8' height='22' rx='5' ry='5' fill='#ffae29' transform='rotate(40 50 50) translate(0 -20)'>  <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.1111111111111111s' repeatCount='indefinite'/></rect><rect  x='46' y='39' width='8' height='22' rx='5' ry='5' fill='#ffae29' transform='rotate(80 50 50) translate(0 -20)'>  <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.2222222222222222s' repeatCount='indefinite'/></rect><rect  x='46' y='39' width='8' height='22' rx='5' ry='5' fill='#ffae29' transform='rotate(120 50 50) translate(0 -20)'>  <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.3333333333333333s' repeatCount='indefinite'/></rect><rect  x='46' y='39' width='8' height='22' rx='5' ry='5' fill='#ffae29' transform='rotate(160 50 50) translate(0 -20)'>  <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.4444444444444444s' repeatCount='indefinite'/></rect><rect  x='46' y='39' width='8' height='22' rx='5' ry='5' fill='#ffae29' transform='rotate(200 50 50) translate(0 -20)'>  <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.5555555555555556s' repeatCount='indefinite'/></rect><rect  x='46' y='39' width='8' height='22' rx='5' ry='5' fill='#ffae29' transform='rotate(240 50 50) translate(0 -20)'>  <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.6666666666666666s' repeatCount='indefinite'/></rect><rect  x='46' y='39' width='8' height='22' rx='5' ry='5' fill='#ffae29' transform='rotate(280 50 50) translate(0 -20)'>  <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.7777777777777778s' repeatCount='indefinite'/></rect><rect  x='46' y='39' width='8' height='22' rx='5' ry='5' fill='#ffae29' transform='rotate(320 50 50) translate(0 -20)'>  <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.8888888888888888s' repeatCount='indefinite'/></rect></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 120 120" style="enable-background:new 0 0 120 120;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;}
+	.st1{fill:#0066CC;}
+</style>
+<rect x="34" y="34" class="st0" width="52" height="52"/>
+<path class="st1" d="M60,43.9L60,43.9c1.2,0,2.1,1.2,2.1,2.6v6.2c0,1.4-0.9,2.6-2.1,2.6l0,0c-1.2,0-2.1-1.2-2.1-2.6v-6.2
+	C57.9,45,58.8,43.9,60,43.9z">
+<animate  accumulate="none" additive="replace" attributeName="opacity" begin="0s" calcMode="linear" dur="1s" fill="remove" from="1" repeatCount="indefinite" restart="always" to="0">
+		</animate>
+</path>
+<path class="st1" d="M70.4,47.7L70.4,47.7c0.9,0.7,0.9,2.2-0.1,3.3l-4,4.8c-0.9,1.1-2.4,1.4-3.2,0.7l0,0c-0.9-0.7-0.9-2.2,0.1-3.3
+	l4-4.8C68,47.2,69.5,46.9,70.4,47.7z">
+<animate  accumulate="none" additive="replace" attributeName="opacity" begin="0.1111111111111111s" calcMode="linear" dur="1s" fill="remove" from="1" repeatCount="indefinite" restart="always" to="0">
+		</animate>
+</path>
+<path class="st1" d="M75.9,57.2L75.9,57.2c0.2,1.1-0.8,2.3-2.2,2.5l-6.2,1.1c-1.4,0.3-2.7-0.5-2.9-1.6l0,0c-0.2-1.1,0.8-2.3,2.2-2.5
+	l6.2-1.1C74.4,55.4,75.7,56.1,75.9,57.2z">
+<animate  accumulate="none" additive="replace" attributeName="opacity" begin="0.2222222222222222s" calcMode="linear" dur="1s" fill="remove" from="1" repeatCount="indefinite" restart="always" to="0">
+		</animate>
+</path>
+<path class="st1" d="M74,68.1L74,68.1c-0.6,1-2,1.2-3.3,0.5l-5.4-3.1c-1.3-0.7-1.8-2.1-1.2-3.1l0,0c0.6-1,2-1.2,3.3-0.5l5.4,3.1
+	C74,65.7,74.5,67.1,74,68.1z">
+<animate  accumulate="none" additive="replace" attributeName="opacity" begin="0.3333333333333333s" calcMode="linear" dur="1s" fill="remove" from="1" repeatCount="indefinite" restart="always" to="0">
+		</animate>
+</path>
+<path class="st1" d="M65.5,75.2L65.5,75.2c-1.1,0.4-2.3-0.4-2.9-1.7l-2.1-5.8c-0.5-1.3,0-2.8,1.1-3.2l0,0c1.1-0.4,2.3,0.4,2.9,1.7
+	l2.1,5.8C67.1,73.3,66.6,74.7,65.5,75.2z">
+<animate  accumulate="none" additive="replace" attributeName="opacity" begin="0.4444444444444444s" calcMode="linear" dur="1s" fill="remove" from="1" repeatCount="indefinite" restart="always" to="0">
+		</animate>
+</path>
+<path class="st1" d="M54.5,75.2L54.5,75.2c-1.1-0.4-1.6-1.8-1.1-3.2l2.1-5.8c0.5-1.3,1.8-2.1,2.9-1.7l0,0c1.1,0.4,1.6,1.8,1.1,3.2
+	l-2.2,5.8C56.8,74.8,55.6,75.6,54.5,75.2z">
+<animate  accumulate="none" additive="replace" attributeName="opacity" begin="0.5555555555555556s" calcMode="linear" dur="1s" fill="remove" from="1" repeatCount="indefinite" restart="always" to="0">
+		</animate>
+</path>
+<path class="st1" d="M46,68.1L46,68.1c-0.6-1,0-2.4,1.2-3.1l5.4-3.1c1.3-0.7,2.7-0.5,3.3,0.5l0,0c0.6,1,0,2.4-1.2,3.1l-5.4,3.1
+	C48.1,69.3,46.6,69.1,46,68.1z">
+<animate  accumulate="none" additive="replace" attributeName="opacity" begin="0.6666666666666666s" calcMode="linear" dur="1s" fill="remove" from="1" repeatCount="indefinite" restart="always" to="0">
+		</animate>
+</path>
+<path class="st1" d="M44.1,57.2L44.1,57.2c0.2-1.1,1.5-1.9,2.9-1.6l6.2,1.1c1.4,0.3,2.4,1.4,2.2,2.5l0,0c-0.2,1.1-1.5,1.9-2.9,1.6
+	l-6.2-1.1C44.9,59.4,43.9,58.4,44.1,57.2z">
+<animate  accumulate="none" additive="replace" attributeName="opacity" begin="0.7777777777777778s" calcMode="linear" dur="1s" fill="remove" from="1" repeatCount="indefinite" restart="always" to="0">
+		</animate>
+</path>
+<path class="st1" d="M49.6,47.7L49.6,47.7c0.9-0.7,2.3-0.4,3.3,0.6l4,4.8c0.9,1.1,1,2.6,0.1,3.3l0,0c-0.9,0.7-2.3,0.4-3.3-0.7
+	l-4-4.8C48.8,49.9,48.8,48.4,49.6,47.7z">
+<animate  accumulate="none" additive="replace" attributeName="opacity" begin="0.8888888888888888s" calcMode="linear" dur="1s" fill="remove" from="1" repeatCount="indefinite" restart="always" to="0">
+		</animate>
+</path>
+</svg>

@@ -44,7 +44,7 @@ class TokenRatesController {
       const json = await response.json()
       return json && json.length ? json[0].averagePrice : 0
     } catch (error) {
-      warn(`MetaMask - TokenRatesController exchange rate fetch failed for ${address}.`, error)
+      warn(`EtzMeta - TokenRatesController exchange rate fetch failed for ${address}.`, error)
       return 0
     }
   }

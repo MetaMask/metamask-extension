@@ -17,16 +17,16 @@ function MetamaskInpageProvider (connectionStream) {
     connectionStream,
     mux,
     connectionStream,
-    (err) => logStreamDisconnectWarning('MetaMask', err)
+    (err) => logStreamDisconnectWarning('EtzMeta', err)
   )
 
   // subscribe to metamask public config (one-way)
-  self.publicConfigStore = new LocalStorageStore({ storageKey: 'MetaMask-Config' })
+  self.publicConfigStore = new LocalStorageStore({ storageKey: 'EtzMeta-Config' })
 
   pump(
     mux.createStream('publicConfig'),
     asStream(self.publicConfigStore),
-    (err) => logStreamDisconnectWarning('MetaMask PublicConfigStore', err)
+    (err) => logStreamDisconnectWarning('EtzMeta PublicConfigStore', err)
   )
 
   // ignore phishing warning message (handled elsewhere)
@@ -38,7 +38,7 @@ function MetamaskInpageProvider (connectionStream) {
     streamMiddleware.stream,
     mux.createStream('provider'),
     streamMiddleware.stream,
-    (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
+    (err) => logStreamDisconnectWarning('EtzMeta RpcProvider', err)
   )
 
   // handle sendAsync requests via dapp-side rpc engine
@@ -87,8 +87,8 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     // throw not-supported Error
     default:
-      var link = 'https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#dizzy-all-async---think-of-metamask-as-a-light-client'
-      var message = `The MetaMask Web3 object does not support synchronous methods like ${payload.method} without a callback parameter. See ${link} for details.`
+      var link = 'https://github.com/EtzMeta/faq/blob/master/DEVELOPERS.md#dizzy-all-async---think-of-metamask-as-a-light-client'
+      var message = `The EtzMeta Web3 object does not support synchronous methods like ${payload.method} without a callback parameter. See ${link} for details.`
       throw new Error(message)
 
   }

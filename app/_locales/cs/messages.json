@@ -34,7 +34,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "EtzMeta",
     "description": "The name of the application"
   },
   "approved": {
@@ -75,7 +75,7 @@
     "message": "Pújčit si přes Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "MetaMask je navržen a vytvořen v Kalifornii."
+    "message": "EtzMeta je navržen a vytvořen v Kalifornii."
   },
   "buy": {
     "message": "Koupit"
@@ -218,7 +218,7 @@
     "message": "Vklad přes ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Pokud vlastníte jiné kryptoměny, můžete je směnit Ether a vložit ho přímo do peněženky MetaMask. Bez založení účtu."
+    "message": "Pokud vlastníte jiné kryptoměny, můžete je směnit Ether a vložit ho přímo do peněženky EtzMeta. Bez založení účtu."
   },
   "details": {
     "message": "Podrobnosti"
@@ -453,7 +453,7 @@
     "message": "Načítám tokeny..."
   },
   "localhost": {
-    "message": "Localhost 8545"
+    "message": "ETZ network"
   },
   "login": {
     "message": "Přihlásit"
@@ -474,7 +474,7 @@
     "message": "Zpráva"
   },
   "metamaskDescription": {
-    "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
+    "message": "EtzMeta je bezpečný osobní trezor pro Ethereum."
   },
   "min": {
     "message": "Minimum"
@@ -843,7 +843,7 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
-    "message": "Těchto 12 slov je jedinou možností, jak obnovit MetaMask účet. \nUložte je na bezpečné a neveřejné místo."
+    "message": "Těchto 12 slov je jedinou možností, jak obnovit EtzMeta účet. \nUložte je na bezpečné a neveřejné místo."
   },
   "typePassword": {
     "message": "Zadejte své heslo"
@@ -898,7 +898,7 @@
     "message": "Varování"
   },
   "welcomeBeta": {
-    "message": "Vítejte v MetaMask Beta"
+    "message": "Vítejte v EtzMeta Beta"
   },
   "whatsThis": {
     "message": "Co to je?"

@@ -34,7 +34,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "EtzMeta",
     "description": "The name of the application"
   },
   "attemptingConnect": {
@@ -369,7 +369,7 @@
     "message": "トークンをロード中..."
   },
   "localhost": {
-    "message": "Localhost 8545"
+    "message": "ETZ network"
   },
   "logout": {
     "message": "ログアウト"

@@ -13,7 +13,7 @@ module.exports = connect(mapStateToProps)(UnlockScreen)
 inherits(UnlockScreen, Component)
 function UnlockScreen () {
   Component.call(this)
-  this.animationEventEmitter = new EventEmitter()
+  // this.animationEventEmitter = new EventEmitter()
 }
 
 function mapStateToProps (state) {
@@ -33,9 +33,7 @@ UnlockScreen.prototype.render = function () {
     }, [
       h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
-        h(Mascot, {
-          animationEventEmitter: this.animationEventEmitter,
-        }),
+        h(Mascot, null),
 
         h('h1', {
           style: {
@@ -43,7 +41,7 @@ UnlockScreen.prototype.render = function () {
             textTransform: 'uppercase',
             color: '#7F8082',
           },
-        }, 'MetaMask'),
+        }, ''),
 
         h('input.large-input', {
           type: 'password',
@@ -77,7 +75,7 @@ UnlockScreen.prototype.render = function () {
           onClick: () => this.props.dispatch(actions.forgotPassword()),
           style: {
             fontSize: '0.8em',
-            color: 'rgb(247, 134, 28)',
+            color: 'rgb(1 , 104 , 229)',
             textDecoration: 'underline',
           },
         }, 'Restore from seed phrase'),

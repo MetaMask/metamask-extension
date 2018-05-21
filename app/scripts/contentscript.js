@@ -16,7 +16,7 @@ const inpageBundle = inpageContent + inpageSuffix
 //
 // But for now that is only Firefox
 // If we create a FireFox-only code path using that API,
-// MetaMask will be much faster loading and performant on Firefox.
+// Etzmetawill be much faster loading and performant on Firefox.
 
 if (shouldInjectWeb3()) {
   setupInjection()
@@ -36,7 +36,7 @@ function setupInjection () {
     // append as first child
     container.insertBefore(scriptTag, container.children[0])
   } catch (e) {
-    console.error('Metamask injection failed.', e)
+    console.error('Etzmetainjection failed.', e)
   }
 }
 
@@ -58,7 +58,7 @@ function setupStreams () {
     pageStream,
     pluginStream,
     pageStream,
-    (err) => logStreamDisconnectWarning('MetaMask Contentscript Forwarding', err)
+    (err) => logStreamDisconnectWarning('EtzmetaContentscript Forwarding', err)
   )
 
   // setup local multistream channels
@@ -69,13 +69,13 @@ function setupStreams () {
     mux,
     pageStream,
     mux,
-    (err) => logStreamDisconnectWarning('MetaMask Inpage', err)
+    (err) => logStreamDisconnectWarning('EtzmetaInpage', err)
   )
   pump(
     mux,
     pluginStream,
     mux,
-    (err) => logStreamDisconnectWarning('MetaMask Background', err)
+    (err) => logStreamDisconnectWarning('EtzmetaBackground', err)
   )
 
   // connect ping stream
@@ -84,7 +84,7 @@ function setupStreams () {
     mux,
     pongStream,
     mux,
-    (err) => logStreamDisconnectWarning('MetaMask PingPongStream', err)
+    (err) => logStreamDisconnectWarning('EtzmetaPingPongStream', err)
   )
 
   // connect phishing warning stream
@@ -192,6 +192,6 @@ function blacklistedDomainCheck () {
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning () {
-  console.log('MetaMask - redirecting to phishing warning')
+  console.log('Etzmeta- redirecting to phishing warning')
   window.location.href = 'https://metamask.io/phishing.html'
 }

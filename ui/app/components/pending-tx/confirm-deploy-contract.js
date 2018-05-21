@@ -179,11 +179,11 @@ class ConfirmDeployContract extends Component {
       h('section.flex-row.flex-center.confirm-screen-row', [
         h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('gasFee') ]),
         h('div.confirm-screen-section-column', [
-          h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency.toUpperCase()}`),
+          // h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency.toUpperCase()}`),
 
           h(
             'div.confirm-screen-row-detail',
-            `${ethGas} ETH`
+            `${ethGas} ETZ`
           ),
         ]),
       ])
@@ -199,8 +199,8 @@ class ConfirmDeployContract extends Component {
 
     return (
       h('div.confirm-send-token__hero-amount-wrapper', [
-        h('h3.flex-center.confirm-screen-send-amount', `${fiatAmount}`),
-        h('h3.flex-center.confirm-screen-send-amount-currency', currentCurrency.toUpperCase()),
+        // h('h3.flex-center.confirm-screen-send-amount', `${fiatAmount}`),
+        // h('h3.flex-center.confirm-screen-send-amount-currency', currentCurrency.toUpperCase()),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', memo),
         ]),
@@ -221,8 +221,8 @@ class ConfirmDeployContract extends Component {
         ]),
 
         h('div.confirm-screen-section-column', [
-          h('div.confirm-screen-row-info', `${fiatAmount + fiatGas} ${currentCurrency.toUpperCase()}`),
-          h('div.confirm-screen-row-detail', `${tokenAmount + ethGas} ETH`),
+          // h('div.confirm-screen-row-info', `${fiatAmount + fiatGas} ${currentCurrency.toUpperCase()}`),
+          h('div.confirm-screen-row-detail', `${tokenAmount + ethGas} ETZ`),
         ]),
       ])
     )

@@ -117,7 +117,7 @@ ExportAccountView.prototype.render = function () {
         style: {
           marginLeft: '10px',
         },
-        onClick: () => exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
+        onClick: () => exportAsFile(`EtzMeta ${nickname} Private Key`, plainKey),
       }, 'Save as File'),
     ])
   }

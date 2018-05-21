@@ -34,7 +34,7 @@
     "description": "De beschrijving van de applicatie"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "EtzMeta",
     "description": "De naam van de applicatie"
   },
   "attemptingConnect": {
@@ -72,7 +72,7 @@
     "message": "Lenen met Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "MetaMask is ontworpen en gebouwd in Californië."
+    "message": "EtzMeta is ontworpen en gebouwd in Californië."
   },
   "buy": {
     "message": "Kopen"
@@ -178,7 +178,7 @@
     "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
   },
   "denExplainer": {
-    "message": "Uw DEN is uw wachtwoord-gecodeerde opslag binnen MetaMask."
+    "message": "Uw DEN is uw wachtwoord-gecodeerde opslag binnen EtzMeta."
   },
   "deposit": {
     "message": "Storting"
@@ -206,7 +206,7 @@
     "message": "Stort met ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Als u andere cryptocurrencies bezit, kunt u Ether direct in uw MetaMask-portemonnee ruilen en storten. Geen account nodig."
+    "message": "Als u andere cryptocurrencies bezit, kunt u Ether direct in uw EtzMeta-portemonnee ruilen en storten. Geen account nodig."
   },
   "details": {
     "message": "Details"
@@ -351,7 +351,7 @@
     "message": "Account importeren"
   },
   "importAccountMsg": {
-    "message":" Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
+    "message":" Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte EtzMeta-account. Meer informatie over geïmporteerde accounts"
   },
   "importAnAccount": {
     "message": "Importeer een account"
@@ -420,7 +420,7 @@
     "message": "Tokens laden ..."
   },
   "localhost": {
-    "message": "Localhost 8545"
+    "message": "ETZ network"
   },
   "login": {
     "message": "Log in"
@@ -441,7 +441,7 @@
     "message": "Bericht"
   },
   "metamaskDescription": {
-    "message": "MetaMask is een veilige identiteitskluis voor Ethereum."
+    "message": "EtzMeta is een veilige identiteitskluis voor Ethereum."
   },
   "min": {
     "message": "Minimum"
@@ -453,7 +453,7 @@
     "message": "Moet ten minste één token selecteren."
   },
   "needEtherInWallet": {
-    "message": "Om te communiceren met gedecentraliseerde applicaties met MetaMask, heb je Ether nodig in je portemonnee."
+    "message": "Om te communiceren met gedecentraliseerde applicaties met EtzMeta, heb je Ether nodig in je portemonnee."
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
@@ -731,7 +731,7 @@
     "message": "Token Symbol"
   },
   "tokenWarning1": {
-    "message": "Houd de tokens bij die je hebt gekocht met je MetaMask-account. Als je tokens met een ander account hebt gekocht, worden die tokens hier niet weergegeven."
+    "message": "Houd de tokens bij die je hebt gekocht met je EtzMeta-account. Als je tokens met een ander account hebt gekocht, worden die tokens hier niet weergegeven."
   },
   "total": {
     "message": "Totaal"
@@ -753,7 +753,7 @@
     "description": "Gevolgd door een link (hier) om tegensaldi te bekijken"
   },
   "twelveWords": {
-    "message": "Deze 12 woorden zijn de enige manier om uw MetaMask-accounts te herstellen.\nBewaar ze ergens veilig en geheim."
+    "message": "Deze 12 woorden zijn de enige manier om uw EtzMeta-accounts te herstellen.\nBewaar ze ergens veilig en geheim."
   },
   "typePassword": {
     "message": "Typ uw wachtwoord"
@@ -805,7 +805,7 @@
     "message": "Waarschuwing"
   },
   "welcomeBeta": {
-    "message": "Welkom bij MetaMask Beta"
+    "message": "Welkom bij EtzMeta Beta"
   },
   "whatsThis": {
     "message": "Wat is dit?"

@@ -27,17 +27,17 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 //
 
 if (typeof window.web3 !== 'undefined') {
-  throw new Error(`MetaMask detected another web3.
-     MetaMask will not work reliably with another web3 extension.
+  throw new Error(`Etzmetadetected another web3.
+     Etzmetawill not work reliably with another web3 extension.
      This usually happens if you have two MetaMasks installed,
-     or MetaMask and another web3 extension. Please remove one
+     or Etzmetaand another web3 extension. Please remove one
      and try again.`)
 }
 var web3 = new Web3(inpageProvider)
 web3.setProvider = function () {
-  log.debug('MetaMask - overrode web3.setProvider')
+  log.debug('Etzmeta- overrode web3.setProvider')
 }
-log.debug('MetaMask - injected web3')
+log.debug('Etzmeta- injected web3')
 // export global web3, with usage-detection
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
@@ -61,7 +61,7 @@ function cleanContextForImports () {
   try {
     global.define = undefined
   } catch (_) {
-    console.warn('MetaMask - global.define could not be deleted.')
+    console.warn('Etzmeta- global.define could not be deleted.')
   }
 }
 
@@ -72,6 +72,6 @@ function restoreContextAfterImports () {
   try {
     global.define = __define
   } catch (_) {
-    console.warn('MetaMask - global.define could not be overwritten.')
+    console.warn('Etzmeta- global.define could not be overwritten.')
   }
 }

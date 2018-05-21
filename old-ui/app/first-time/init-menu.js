@@ -44,9 +44,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      h(Mascot, {
-        animationEventEmitter: this.animationEventEmitter,
-      }),
+      h('img.main_logo', {src:`images/icon-200.png`,style:{marginTop: 50}}),
 
       h('h1', {
         style: {
@@ -55,7 +53,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
           color: '#7F8082',
           marginBottom: 10,
         },
-      }, 'MetaMask'),
+      }, ''),
 
 
       h('div', [
@@ -74,7 +72,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
             style: {
               fontSize: '18px',
               position: 'relative',
-              color: 'rgb(247, 134, 28)',
+              color: 'rgb(1, 104, 229)',
               top: '2px',
               marginLeft: '4px',
             },
@@ -122,7 +120,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
           onClick: this.showRestoreVault.bind(this),
           style: {
             fontSize: '0.8em',
-            color: 'rgb(247, 134, 28)',
+            color: 'rgb(1, 104, 229)',
             textDecoration: 'underline',
           },
         }, 'Import Existing DEN'),

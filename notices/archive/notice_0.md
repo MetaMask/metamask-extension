@@ -80,7 +80,7 @@ You agree that, except as otherwise expressly provided in these Terms, there sha
 
 ## 12. Notice and Procedure For Making Claims of Copyright Infringement ##
 
-If you believe that your copyright or the copyright of a person on whose behalf you are authorized to act has been infringed, please provide MetaMask’s Copyright Agent a written Notice containing the following information:
+If you believe that your copyright or the copyright of a person on whose behalf you are authorized to act has been infringed, please provide EtzMeta’s Copyright Agent a written Notice containing the following information:
 
 · an electronic or physical signature of the person authorized to act on behalf of the owner of the copyright or other intellectual property interest;
 
@@ -94,7 +94,7 @@ If you believe that your copyright or the copyright of a person on whose behalf 
 
 · a statement by you, made under penalty of perjury, that the above information in your Notice is accurate and that you are the copyright or intellectual property owner or authorized to act on the copyright or intellectual property owner's behalf.
 
-MetaMask’s Copyright Agent can be reached at:
+EtzMeta’s Copyright Agent can be reached at:
 
 Email: copyright [at] metamask [dot] io
 

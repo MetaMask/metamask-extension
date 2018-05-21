@@ -47,7 +47,7 @@ class Migrator extends EventEmitter {
       } catch (err) {
         // rewrite error message to add context without clobbering stack
         const originalErrorMessage = err.message
-        err.message = `MetaMask Migration Error #${migration.version}: ${originalErrorMessage}`
+        err.message = `EtzMeta Migration Error #${migration.version}: ${originalErrorMessage}`
         console.warn(err.stack)
         // emit error instead of throw so as to not break the run (gracefully fail)
         this.emit('error', err)

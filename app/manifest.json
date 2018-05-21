@@ -3,7 +3,7 @@
   "short_name": "__MSG_appName__",
   "version": "4.6.0",
   "manifest_version": 2,
-  "author": "https://metamask.io",
+  "author": "http://etherzero.org",
   "description": "__MSG_appDescription__",
   "commands": {
     "_execute_browser_action": {
@@ -37,7 +37,7 @@
       "19": "images/icon-19.png",
       "38": "images/icon-38.png"
     },
-    "default_title": "MetaMask",
+    "default_title": "EtzMeta",
     "default_popup": "popup.html"
   },
   "content_scripts": [
