@@ -112,21 +112,6 @@ class TransactionController extends EventEmitter {
   }
 
   /**
-    Check if a txMeta in the list with the same nonce has been confirmed in a block
-    if the txParams dont have a nonce will return false
-    @returns {boolean} whether the nonce has been used in a transaction confirmed in a block
-    @param {object} txMeta - the txMeta object
-  */
-  async isNonceTaken (txMeta) {
-    const { from, nonce } = txMeta.txParams
-    if ('nonce' in txMeta.txParams) {
-      const sameNonceTxList = this.txStateManager.getFilteredTxList({from, nonce, status: 'confirmed'})
-      return (sameNonceTxList.length >= 1)
-    }
-    return false
-  }
-
-  /**
   add a new unapproved transaction to the pipeline
 
   @returns {Promise<string>} the hash of the transaction after being submitted to the network
