@@ -9,6 +9,9 @@ workflows:
       - prep-build:
           requires:
             - prep-deps-npm
+      - prep-docs:
+          requires:
+            - prep-deps-npm
       - prep-scss:
           requires:
             - prep-deps-npm
@@ -25,7 +28,7 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox            
+            - prep-deps-firefox
             - prep-build
       - test-unit:
           requires:
@@ -63,10 +66,20 @@ workflows:
             - prep-deps-npm
             - prep-build
             - all-tests-pass
-      - job-publish:
+      - job-publish-prerelease:
           requires:
             - prep-deps-npm
             - prep-build
+            - job-screens
+            - all-tests-pass
+      - job-publish-release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - prep-deps-npm
+            - prep-build
+            - prep-docs
             - job-screens
             - all-tests-pass
 
@@ -124,6 +137,21 @@ jobs:
             - dist
             - builds
 
+  prep-docs:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Revision }}
+      - run:
+          name: build:dist
+          command: npm run doc
+      - save_cache:
+          key: docs-cache-{{ .Revision }}
+          paths:
+            - docs/jsdoc
+
   prep-scss:
     docker:
       - image: circleci/node:8-browsers
@@ -180,7 +208,7 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
-  
+
   test-e2e-firefox:
     environment:
       browsers: '["Firefox"]'
@@ -200,7 +228,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ .Revision }}
       - restore_cache:
-          key: build-cache-{{ .Revision }} 
+          key: build-cache-{{ .Revision }}
       - run:
           name: test:e2e:firefox
           command: npm run test:e2e:firefox
@@ -225,7 +253,7 @@ jobs:
           paths:
             - test-artifacts
 
-  job-publish:
+  job-publish-prerelease:
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -251,9 +279,29 @@ jobs:
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
+
+  job-publish-release:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Revision }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
+      - restore_cache:
+          key: docs-cache-{{ .Revision }}
+      - restore_cache:
+          key: job-screens-{{ .Revision }}
       - run:
           name: sentry sourcemaps upload
           command: npm run sentry:publish
+      - run:
+          name: github gh-pages docs publish
+          command: >
+            git config user.name metamaskbot
+            git config user.email admin@metamask.io
+            gh-pages -d docs/jsdocs
 
   test-unit:
     docker:
@@ -367,4 +415,4 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'weew - everything passed!'
-          
+
