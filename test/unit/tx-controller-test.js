@@ -40,36 +40,6 @@ describe('Transaction Controller', function () {
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })
 
-  describe('#isNonceTaken', function () {
-    it('should return true', function (done) {
-      txController.txStateManager._saveTxList([
-        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {nonce: 0, from: '0x8ACCE2391C0d510a6C5E5D8f819A678F79B7E675'} },
-        { id: 2, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {nonce: 0, from: '0x8ACCE2391C0d510a6C5E5D8f819A678F79B7E675'} },
-        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {nonce: 0, from: '0x8ACCE2391C0d510a6C5E5D8f819A678F79B7E675'} },
-      ])
-      txController.isNonceTaken({txParams: {nonce:0, from:'0x8ACCE2391C0d510a6C5E5D8f819A678F79B7E675'}})
-      .then((isNonceTaken) => {
-        assert(isNonceTaken)
-        done()
-      }).catch(done)
-
-    })
-    it('should return false', function (done) {
-      txController.txStateManager._saveTxList([
-        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {nonce: 0, from: '0x8ACCE2391C0d510a6C5E5D8f819A678F79B7E675'} },
-        { id: 2, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {nonce: 0, from: '0x8ACCE2391C0d510a6C5E5D8f819A678F79B7E675'} },
-        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {nonce: 0, from: '0x8ACCE2391C0d510a6C5E5D8f819A678F79B7E675'} },
-      ])
-
-      txController.isNonceTaken({txParams: {nonce:0, from:'0x8ACCE2391C0d510a6C5E5D8f819A678F79B7E675'}})
-      .then((isNonceTaken) => {
-        assert(!isNonceTaken)
-        done()
-      }).catch(done)
-
-    })
-  })
-
   describe('#getState', function () {
     it('should return a state object with the right keys and datat types', function () {
       const exposedState = txController.getState()
