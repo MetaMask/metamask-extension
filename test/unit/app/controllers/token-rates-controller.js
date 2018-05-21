@@ -1,6 +1,6 @@
 const assert = require('assert')
 const sinon = require('sinon')
-const TokenRatesController = require('../../app/scripts/controllers/token-rates')
+const TokenRatesController = require('../../../../app/scripts/controllers/token-rates')
 const ObservableStore = require('obs-store')
 
 describe('TokenRatesController', () => {

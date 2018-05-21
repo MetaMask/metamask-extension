@@ -1,6 +1,6 @@
 const assert = require('assert')
 const sinon = require('sinon')
-const InfuraController = require('../../app/scripts/controllers/infura')
+const InfuraController = require('../../../../app/scripts/controllers/infura')
 
 describe('infura-controller', function () {
   let infuraController, sandbox, networkStatus

@@ -1,22 +1,22 @@
 const assert = require('assert')
 const path = require('path')
 
-const wallet1 = require(path.join('..', 'lib', 'migrations', '001.json'))
-const vault4 = require(path.join('..', 'lib', 'migrations', '004.json'))
+const wallet1 = require(path.join('..', '..', 'lib', 'migrations', '001.json'))
+const vault4 = require(path.join('..', '..', 'lib', 'migrations', '004.json'))
 let vault5, vault6, vault7, vault8, vault9 // vault10, vault11
 
-const migration2 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '002'))
-const migration3 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '003'))
-const migration4 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '004'))
-const migration5 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '005'))
-const migration6 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '006'))
-const migration7 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '007'))
-const migration8 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '008'))
-const migration9 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '009'))
-const migration10 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '010'))
-const migration11 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '011'))
-const migration12 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '012'))
-const migration13 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '013'))
+const migration2 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '002'))
+const migration3 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '003'))
+const migration4 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '004'))
+const migration5 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '005'))
+const migration6 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '006'))
+const migration7 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '007'))
+const migration8 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '008'))
+const migration9 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '009'))
+const migration10 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '010'))
+const migration11 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '011'))
+const migration12 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '012'))
+const migration13 = require(path.join('..', '..', '..', 'app', 'scripts', 'migrations', '013'))
 
 
 const oldTestRpc = 'https://rawtestrpc.metamask.io/'

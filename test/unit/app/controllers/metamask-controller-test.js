@@ -3,9 +3,9 @@ const sinon = require('sinon')
 const clone = require('clone')
 const nock = require('nock')
 const createThoughStream = require('through2').obj
-const MetaMaskController = require('../../app/scripts/metamask-controller')
-const blacklistJSON = require('../stub/blacklist')
-const firstTimeState = require('../../app/scripts/first-time-state')
+const MetaMaskController = require('../../../../app/scripts/metamask-controller')
+const blacklistJSON = require('../../../stub/blacklist')
+const firstTimeState = require('../../../../app/scripts/first-time-state')
 
 const currentNetworkId = 42
 const DEFAULT_LABEL = 'Account 1'

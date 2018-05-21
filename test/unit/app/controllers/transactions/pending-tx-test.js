@@ -3,9 +3,9 @@ const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const ObservableStore = require('obs-store')
 const clone = require('clone')
-const { createTestProviderTools } = require('../stub/provider')
-const PendingTransactionTracker = require('../../app/scripts/controllers/transactions/pending-tx-tracker')
-const MockTxGen = require('../lib/mock-tx-gen')
+const { createTestProviderTools } = require('../../../../stub/provider')
+const PendingTransactionTracker = require('../../../../../app/scripts/controllers/transactions/pending-tx-tracker')
+const MockTxGen = require('../../../../lib/mock-tx-gen')
 const sinon = require('sinon')
 const noop = () => true
 const currentNetworkId = 42

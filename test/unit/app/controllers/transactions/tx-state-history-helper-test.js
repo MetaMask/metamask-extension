@@ -1,6 +1,6 @@
 const assert = require('assert')
-const txStateHistoryHelper = require('../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
-const testVault = require('../data/v17-long-history.json')
+const txStateHistoryHelper = require('../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
+const testVault = require('../../../../data/v17-long-history.json')
 
 describe ('Transaction state history helper', function () {
 

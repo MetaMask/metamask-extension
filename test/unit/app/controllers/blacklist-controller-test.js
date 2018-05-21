@@ -1,5 +1,5 @@
 const assert = require('assert')
-const BlacklistController = require('../../app/scripts/controllers/blacklist')
+const BlacklistController = require('../../../../app/scripts/controllers/blacklist')
 
 describe('blacklist controller', function () {
   let blacklistController

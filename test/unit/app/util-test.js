@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { sufficientBalance } = require('../../app/scripts/lib/util')
+const { sufficientBalance } = require('../../../app/scripts/lib/util')
 
 
 describe('SufficientBalance', function () {

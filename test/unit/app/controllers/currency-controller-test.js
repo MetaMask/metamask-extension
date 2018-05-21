@@ -3,7 +3,7 @@ global.fetch = global.fetch || require('isomorphic-fetch')
 
 const assert = require('assert')
 const nock = require('nock')
-const CurrencyController = require('../../app/scripts/controllers/currency')
+const CurrencyController = require('../../../../app/scripts/controllers/currency')
 
 describe('currency-controller', function () {
   var currencyController

@@ -1,6 +1,6 @@
 const assert = require('assert')
-const PendingBalanceCalculator = require('../../app/scripts/lib/pending-balance-calculator')
-const MockTxGen = require('../lib/mock-tx-gen')
+const PendingBalanceCalculator = require('../../../app/scripts/lib/pending-balance-calculator')
+const MockTxGen = require('../../lib/mock-tx-gen')
 const BN = require('ethereumjs-util').BN
 let providerResultStub = {}
 

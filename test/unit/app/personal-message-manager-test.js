@@ -1,6 +1,6 @@
 const assert = require('assert')
 
-const PersonalMessageManager = require('../../app/scripts/lib/personal-message-manager')
+const PersonalMessageManager = require('../../../app/scripts/lib/personal-message-manager')
 
 describe('Personal Message Manager', function () {
   let messageManager
