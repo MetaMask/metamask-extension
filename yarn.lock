@@ -4762,7 +4762,7 @@ extension-link-enabler@^1.0.0:
   dependencies:
     extensionizer "^1.0.0"
 
-extensionizer@^1.0.0:
+extensionizer@^1.0.0, extensionizer@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/extensionizer/-/extensionizer-1.0.1.tgz#504544239a7610ba8404b15c1832091a37768d09"
 
