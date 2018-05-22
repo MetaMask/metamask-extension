@@ -1,5 +1,5 @@
 const assert = require('assert')
-const ComposableObservableStore = require('../../app/scripts/lib/ComposableObservableStore')
+const ComposableObservableStore = require('../../../app/scripts/lib/ComposableObservableStore')
 const ObservableStore = require('obs-store')
 
 describe('ComposableObservableStore', () => {

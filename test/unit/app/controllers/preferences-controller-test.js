@@ -1,5 +1,5 @@
 const assert = require('assert')
-const PreferencesController = require('../../app/scripts/controllers/preferences')
+const PreferencesController = require('../../../../app/scripts/controllers/preferences')
 
 describe('preferences controller', function () {
   let preferencesController

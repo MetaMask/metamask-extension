@@ -1,7 +1,7 @@
 const assert = require('assert')
 const clone = require('clone')
-const Migrator = require('../../app/scripts/lib/migrator/')
-const liveMigrations = require('../../app/scripts/migrations/')
+const Migrator = require('../../../app/scripts/lib/migrator/')
+const liveMigrations = require('../../../app/scripts/migrations/')
 const stubMigrations = [
   {
     version: 1,
@@ -33,7 +33,7 @@ const versionedData = {meta: {version: 0}, data: {hello: 'world'}}
 
 const firstTimeState = {
   meta: { version: 0 },
-  data: require('../../app/scripts/first-time-state'),
+  data: require('../../../app/scripts/first-time-state'),
 }
 
 describe('Migrator', () => {

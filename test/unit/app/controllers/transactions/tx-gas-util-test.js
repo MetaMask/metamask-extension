@@ -3,8 +3,8 @@ const Transaction = require('ethereumjs-tx')
 const BN = require('bn.js')
 
 
-const { hexToBn, bnToHex } = require('../../app/scripts/lib/util')
-const TxUtils = require('../../app/scripts/controllers/transactions/tx-gas-utils')
+const { hexToBn, bnToHex } = require('../../../../../app/scripts/lib/util')
+const TxUtils = require('../../../../../app/scripts/controllers/transactions/tx-gas-utils')
 
 
 describe('txUtils', function () {

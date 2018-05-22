@@ -1,6 +1,6 @@
 const assert = require('assert')
 
-const EdgeEncryptor = require('../../app/scripts/edge-encryptor')
+const EdgeEncryptor = require('../../../app/scripts/edge-encryptor')
 
 var password = 'passw0rd1'
 var data = 'some random data'

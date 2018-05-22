@@ -1,6 +1,6 @@
 const assert = require('assert')
-const configManagerGen = require('../lib/mock-config-manager')
-const NoticeController = require('../../app/scripts/notice-controller')
+const configManagerGen = require('../../../lib/mock-config-manager')
+const NoticeController = require('../../../../app/scripts/notice-controller')
 
 describe('notice-controller', function () {
   var noticeController

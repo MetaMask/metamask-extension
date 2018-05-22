@@ -1,6 +1,6 @@
 const assert = require('assert')
 const sinon = require('sinon')
-const InfuraController = require('../../app/scripts/controllers/infura')
+const InfuraController = require('../../../../app/scripts/controllers/infura')
 
 describe('infura-controller', function () {
   let infuraController, sandbox, networkStatus
@@ -8,7 +8,7 @@ describe('infura-controller', function () {
 
   before(async function () {
     infuraController = new InfuraController()
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     sinon.stub(infuraController, 'checkInfuraNetworkStatus').resolves(response)
     networkStatus = await infuraController.checkInfuraNetworkStatus()
   })

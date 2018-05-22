@@ -1,5 +1,5 @@
 const assert = require('assert')
-const AddressBookController = require('../../app/scripts/controllers/address-book')
+const AddressBookController = require('../../../../app/scripts/controllers/address-book')
 
 const stubPreferencesStore = {
   getState: function () {

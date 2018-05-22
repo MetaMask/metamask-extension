@@ -1,5 +1,5 @@
 const assert = require('assert')
-const nodeify = require('../../app/scripts/lib/nodeify')
+const nodeify = require('../../../app/scripts/lib/nodeify')
 
 describe('nodeify', function () {
   var obj = {

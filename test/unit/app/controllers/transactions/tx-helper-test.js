@@ -1,5 +1,5 @@
 const assert = require('assert')
-const txHelper = require('../../ui/lib/tx-helper')
+const txHelper = require('../../../../../ui/lib/tx-helper')
 
 describe('txHelper', function () {
   it('always shows the oldest tx first', function () {

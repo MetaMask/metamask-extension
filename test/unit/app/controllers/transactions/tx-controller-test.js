@@ -4,9 +4,9 @@ const EthTx = require('ethereumjs-tx')
 const EthjsQuery = require('ethjs-query')
 const ObservableStore = require('obs-store')
 const sinon = require('sinon')
-const TransactionController = require('../../app/scripts/controllers/transactions')
-const TxGasUtils = require('../../app/scripts/controllers/transactions/tx-gas-utils')
-const { createTestProviderTools, getTestAccounts } = require('../stub/provider')
+const TransactionController = require('../../../../../app/scripts/controllers/transactions')
+const TxGasUtils = require('../../../../../app/scripts/controllers/transactions/tx-gas-utils')
+const { createTestProviderTools, getTestAccounts } = require('../../../../stub/provider')
 
 const noop = () => true
 const currentNetworkId = 42
