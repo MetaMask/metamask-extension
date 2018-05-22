@@ -30,6 +30,18 @@ describe('Metamask popup page', function () {
   })
 
   afterEach(async function () {
+    // logs command not supported in firefox
+    // https://github.com/SeleniumHQ/selenium/issues/2910
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      // check for console errors
+      const errors = await checkBrowserForConsoleErrors()
+      if (errors.length) {
+        const errorReports = errors.map(err => err.message)
+        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
+        this.test.error(new Error(errorMessage))
+      }
+    }
+    // gather extra data if test failed
     if (this.currentTest.state === 'failed') {
       await verboseReportOnFailure(this.currentTest)
     }
@@ -300,13 +312,33 @@ describe('Metamask popup page', function () {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
+  async function checkBrowserForConsoleErrors() {
+    const ignoredLogTypes = ['WARNING']
+    const ignoredErrorMessages = [
+      // React throws error warnings on "dataset", but still sets the data-* properties correctly
+      'Warning: Unknown prop `dataset` on ',
+      // Third-party Favicon 404s show up as errors
+      'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
+      // React Development build - known issue blocked by test build sys
+      'Warning: It looks like you\'re using a minified copy of the development build of React.',
+      // Redux Development build - known issue blocked by test build sys
+      'This means that you are running a slower development build of Redux.',
+    ]
+    const browserLogs = await driver.manage().logs().get('browser')
+    const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
+    const errorObjects = errorEntries.map(entry => entry.toJSON())
+    // ignore all errors that contain a message in `ignoredErrorMessages`
+    const matchedErrorObjects = errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
+    return matchedErrorObjects
+  }
+
   async function verboseReportOnFailure (test) {
     let artifactDir
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       artifactDir = `./test-artifacts/chrome/${test.title}`
     } else if (process.env.SELENIUM_BROWSER === 'firefox') {
       artifactDir = `./test-artifacts/firefox/${test.title}`
-    } 
+    }
     const filepathBase = `${artifactDir}/test-failure`
     await pify(mkdirp)(artifactDir)
     // capture screenshot
