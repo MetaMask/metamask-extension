@@ -15,8 +15,9 @@
   font-size: 14px;
   font-weight: 500;
   transition: border-color .3s ease;
-  padding: 0 20px;
+  padding: 0 16px;
   min-width: 140px;
+  width: 100%;
   text-transform: uppercase;
   outline: none;
 }
@@ -110,6 +111,7 @@
   font-size: .85rem;
   font-weight: 400;
   transition: border-color .3s ease;
+  width: 100%;
 
   &:hover {
     border-color: $scorpion;
@@ -126,6 +128,7 @@
   font-size: .85rem;
   font-weight: 400;
   transition: border-color .3s ease;
+  width: 100%;
 }
 
 // No longer used in flat design, remove when modal buttons done

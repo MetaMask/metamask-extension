@@ -6,6 +6,9 @@ module.exports = function(config) {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: process.cwd(),
 
+    // Uncomment to allow for longer timeouts
+    // browserNoActivityTimeout: 100000000,
+
     browserConsoleLogOptions: {
       terminal: false,
     },

@@ -275,6 +275,10 @@ var actions = {
   UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
 
   retryTransaction,
+  SET_PENDING_TOKENS: 'SET_PENDING_TOKENS',
+  CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
+  setPendingTokens,
+  clearPendingTokens,
 }
 
 module.exports = actions
@@ -1927,5 +1931,24 @@ function updateNetworkEndpointType (networkEndpointType) {
   return {
     type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
     value: networkEndpointType,
+  }
+}
+
+function setPendingTokens (pendingTokens) {
+  const { customToken = {}, selectedTokens = {} } = pendingTokens
+  const { address, symbol, decimals } = customToken
+  const tokens = address && symbol && decimals
+    ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }
+    : selectedTokens
+
+  return {
+    type: actions.SET_PENDING_TOKENS,
+    payload: tokens,
+  }
+}
+
+function clearPendingTokens () {
+  return {
+    type: actions.CLEAR_PENDING_TOKENS,
   }
 }

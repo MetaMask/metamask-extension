@@ -1,2 +1,2 @@
-const Button = require('./button.component')
+import Button from './button.component'
 module.exports = Button

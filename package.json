@@ -63,6 +63,7 @@
     ]
   },
   "dependencies": {
+    "@material-ui/core": "^1.0.0",
     "abi-decoder": "^1.0.9",
     "asmcrypto.js": "0.22.0",
     "async": "^2.5.0",
@@ -136,7 +137,6 @@
     "lodash.shuffle": "^4.2.0",
     "lodash.uniqby": "^4.7.0",
     "loglevel": "^1.4.1",
-    "material-ui": "1.0.0-beta.44",
     "metamascara": "^2.0.0",
     "metamask-logo": "^2.1.4",
     "mkdirp": "^0.5.1",
