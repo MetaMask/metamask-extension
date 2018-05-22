@@ -4,7 +4,6 @@ const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const {
   calcGasTotal,
-  getParamsForGasEstimate,
   calcTokenBalance,
   estimateGas,
   estimateGasPriceFromRecentBlocks,
@@ -725,12 +724,24 @@ function setGasTotal (gasTotal) {
   }
 }
 
-function updateGasData ({ recentBlocks, selectedAddress, selectedToken, data }) {
+function updateGasData ({
+  blockGasLimit,
+  data,
+  recentBlocks,
+  selectedAddress,
+  selectedToken,
+  to,
+}) {
   return (dispatch) => {
-    const estimateGasParams = getParamsForGasEstimate(selectedAddress, selectedToken, data)
     return Promise.all([
       Promise.resolve(estimateGasPriceFromRecentBlocks(recentBlocks)),
-      estimateGas(estimateGasParams),
+      estimateGas({
+        blockGasLimit,
+        data,
+        selectedAddress,
+        selectedToken,
+        to,
+      }),
     ])
     .then(([gasPrice, gas]) => {
       dispatch(actions.setGasPrice(gasPrice))

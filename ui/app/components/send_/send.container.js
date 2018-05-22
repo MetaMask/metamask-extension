@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import {
   getAmountConversionRate,
+  getBlockGasLimit,
   getConversionRate,
   getCurrentNetwork,
   getGasLimit,
@@ -45,6 +46,7 @@ function mapStateToProps (state) {
   return {
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
+    blockGasLimit: getBlockGasLimit(state),
     conversionRate: getConversionRate(state),
     data: generateTokenTransferData(selectedAddress, selectedToken),
     editingTransactionId: getSendEditingTransactionId(state),
@@ -66,6 +68,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     updateAndSetGasTotal: ({
+      blockGasLimit,
       data,
       editingTransactionId,
       gasLimit,
@@ -75,7 +78,7 @@ function mapDispatchToProps (dispatch) {
       selectedToken,
     }) => {
       !editingTransactionId
-        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, data }))
+        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, data, blockGasLimit }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {
