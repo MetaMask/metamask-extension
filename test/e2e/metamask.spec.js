@@ -315,6 +315,8 @@ describe('Metamask popup page', function () {
       'Warning: Unknown prop `dataset` on ',
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
+      // React Minified build - known issue blocked by test build sys
+      'Warning: It looks like you\'re using a minified copy of the development build of React.',
     ]
     const browserLogs = await driver.manage().logs().get('browser')
     const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
