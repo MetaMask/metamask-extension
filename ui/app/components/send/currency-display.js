@@ -50,7 +50,7 @@ CurrencyDisplay.prototype.getValueToRender = function () {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
-      numberOfDecimals: 6,
+      numberOfDecimals: 9,
       conversionRate,
     })
 }
