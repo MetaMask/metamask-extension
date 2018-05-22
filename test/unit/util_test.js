@@ -10,7 +10,7 @@ describe('util', function () {
   for (var i = 0; i < 18; i++) { ethInWei += '0' }
 
   beforeEach(function () {
-    this.sinon = sinon.sandbox.create()
+    this.sinon = sinon.createSandbox()
   })
 
   afterEach(function () {

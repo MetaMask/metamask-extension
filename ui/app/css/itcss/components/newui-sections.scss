@@ -144,8 +144,8 @@ $wallet-view-bg: $alabaster;
     flex: 0 0 auto;
     margin: 36px auto;
     background: none;
-    padding: .7rem 2rem;
     transition: border-color .3s ease;
+    width: 150px;
 
     &:hover {
       border-color: $curious-blue;

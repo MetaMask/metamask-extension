@@ -23,6 +23,9 @@
   "addTokens": {
     "message": "Add Tokens"
   },
+  "addAcquiredTokens": {
+    "message": "Add the tokens you've acquired using MetaMask"
+  },
   "amount": {
     "message": "Amount"
   },
@@ -53,7 +56,7 @@
     "message": "Back"
   },
   "balance": {
-    "message": "Balance:"
+    "message": "Balance"
   },
   "balances": {
     "message": "Token balance(s)"
@@ -717,6 +720,9 @@
   "search": {
     "message": "Search"
   },
+  "searchResults": {
+    "message": "Search Results"
+  },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
   },
@@ -831,6 +837,9 @@
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
     "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Token"
   },
   "tokenAddress": {
     "message": "Token Address"

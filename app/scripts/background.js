@@ -322,7 +322,7 @@ function setupController (initState, initLangCode) {
 
   /**
    * A runtime.Port object, as provided by the browser:
-   * @link https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
+   * @see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
    * @typedef Port
    * @type Object
    */

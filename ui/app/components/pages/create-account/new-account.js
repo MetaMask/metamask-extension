@@ -87,7 +87,7 @@ const mapDispatchToProps = dispatch => {
       return dispatch(actions.addNewAccount())
         .then(newAccountAddress => {
           if (newAccountName) {
-            dispatch(actions.saveAccountLabel(newAccountAddress, newAccountName))
+            dispatch(actions.setAccountLabel(newAccountAddress, newAccountName))
           }
         })
     },
