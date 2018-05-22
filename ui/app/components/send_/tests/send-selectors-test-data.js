@@ -198,6 +198,7 @@ module.exports = {
       },
     },
     'currentLocale': 'en',
+    recentBlocks: ['mockBlock1', 'mockBlock2', 'mockBlock3'],
   },
   'appState': {
     'menuOpen': false,

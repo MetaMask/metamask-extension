@@ -12,12 +12,15 @@ const {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_ETH_ERROR,
+  ONE_GWEI_IN_WEI_HEX,
 } = require('./send.constants')
 const abi = require('ethereumjs-abi')
 
 module.exports = {
   calcGasTotal,
   doesAmountErrorRequireUpdate,
+  estimateGas,
+  estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
   getParamsForGasEstimate,
@@ -179,6 +182,17 @@ function doesAmountErrorRequireUpdate ({
   return amountErrorRequiresUpdate
 }
 
+function estimateGas (params = {}) {
+  return new Promise((resolve, reject) => {
+    global.ethQuery.estimateGas(params, (err, data) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve(data)
+    })
+  })
+}
+
 function generateTokenTransferData (selectedAddress, selectedToken) {
   if (!selectedToken) return
   console.log(`abi.rawEncode`, abi.rawEncode)
@@ -186,4 +200,27 @@ function generateTokenTransferData (selectedAddress, selectedToken) {
     abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
     x => ('00' + x.toString(16)).slice(-2)
   ).join('')
+}
+
+function hexComparator (a, b) {
+  return conversionGreaterThan(
+    { value: a, fromNumericBase: 'hex' },
+    { value: b, fromNumericBase: 'hex' },
+  ) ? 1 : -1
+}
+
+function estimateGasPriceFromRecentBlocks (recentBlocks) {
+  // Return 1 gwei if no blocks have been observed:
+  if (!recentBlocks || recentBlocks.length === 0) {
+    return ONE_GWEI_IN_WEI_HEX
+  }
+  const lowestPrices = recentBlocks.map((block) => {
+    if (!block.gasPrices || block.gasPrices.length < 1) {
+      return ONE_GWEI_IN_WEI_HEX
+    }
+    return block.gasPrices
+      .sort(hexComparator)[0]
+  })
+  .sort(hexComparator)
+  return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }

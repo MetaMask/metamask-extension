@@ -28,6 +28,13 @@ const NEGATIVE_ETH_ERROR = 'negativeETH'
 const INVALID_RECIPIENT_ADDRESS_ERROR = 'invalidAddressRecipient'
 const REQUIRED_ERROR = 'required'
 
+const ONE_GWEI_IN_WEI_HEX = ethUtil.addHexPrefix(conversionUtil('0x1', {
+  fromDenomination: 'GWEI',
+  toDenomination: 'WEI',
+  fromNumericBase: 'hex',
+  toNumericBase: 'hex',
+}))
+
 module.exports = {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
@@ -39,6 +46,7 @@ module.exports = {
   MIN_GAS_PRICE_HEX,
   MIN_GAS_TOTAL,
   NEGATIVE_ETH_ERROR,
+  ONE_GWEI_IN_WEI_HEX,
   REQUIRED_ERROR,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 }

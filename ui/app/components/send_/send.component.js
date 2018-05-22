@@ -28,6 +28,7 @@ export default class SendTransactionScreen extends PersistentForm {
     history: PropTypes.object,
     network: PropTypes.string,
     primaryCurrency: PropTypes.string,
+    recentBlocks: PropTypes.array,
     selectedAddress: PropTypes.string,
     selectedToken: PropTypes.object,
     tokenBalance: PropTypes.string,
@@ -43,6 +44,7 @@ export default class SendTransactionScreen extends PersistentForm {
       editingTransactionId,
       gasLimit,
       gasPrice,
+      recentBlocks,
       selectedAddress,
       selectedToken = {},
       updateAndSetGasTotal,
@@ -53,6 +55,7 @@ export default class SendTransactionScreen extends PersistentForm {
       editingTransactionId,
       gasLimit,
       gasPrice,
+      recentBlocks,
       selectedAddress,
       selectedToken,
     })

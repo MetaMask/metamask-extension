@@ -6,6 +6,8 @@ const {
   calcGasTotal,
   getParamsForGasEstimate,
   calcTokenBalance,
+  estimateGas,
+  estimateGasPriceFromRecentBlocks,
 } = require('./components/send_/send.utils')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
@@ -160,9 +162,6 @@ var actions = {
   updateTransactionParams,
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
   // send screen
-  estimateGas,
-  getGasEstimate,
-  getGasPrice,
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
   UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
@@ -705,42 +704,10 @@ function signTx (txData) {
   }
 }
 
-function estimateGas (params = {}) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      global.ethQuery.estimateGas(params, (err, data) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-        dispatch(actions.hideWarning())
-        dispatch(actions.setGasLimit(data))
-        return resolve(data)
-      })
-    })
-  }
-}
-
 function setGasLimit (gasLimit) {
   return {
     type: actions.UPDATE_GAS_LIMIT,
     value: gasLimit,
-  }
-}
-
-function getGasPrice () {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      global.ethQuery.gasPrice((err, data) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-        dispatch(actions.hideWarning())
-        dispatch(actions.setGasPrice(data))
-        return resolve(data)
-      })
-    })
   }
 }
 
@@ -758,22 +725,18 @@ function setGasTotal (gasTotal) {
   }
 }
 
-function getGasEstimate ({ selectedAddress, selectedToken, data }) {
+function updateGasData ({ recentBlocks, selectedAddress, selectedToken, data }) {
   return (dispatch) => {
     const estimateGasParams = getParamsForGasEstimate(selectedAddress, selectedToken, data)
     return Promise.all([
-      dispatch(actions.getGasPrice()),
-      dispatch(actions.estimateGas(estimateGasParams)),
+      Promise.resolve(estimateGasPriceFromRecentBlocks(recentBlocks)),
+      estimateGas(estimateGasParams),
     ])
     .then(([gasPrice, gas]) => {
+      dispatch(actions.setGasPrice(gasPrice))
+      dispatch(actions.setGasLimit(gas))
       return calcGasTotal(gas, gasPrice)
     })
-  }
-}
-
-function updateGasData ({ selectedAddress, selectedToken, data }) {
-  return (dispatch) => {
-    return dispatch(actions.getGasEstimate({ selectedAddress, selectedToken, data }))
     .then((gasEstimate) => {
       dispatch(actions.setGasTotal(gasEstimate))
       dispatch(updateSendErrors({ gasLoadingError: null }))

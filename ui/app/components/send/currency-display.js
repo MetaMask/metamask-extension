@@ -5,6 +5,7 @@ const CurrencyInput = require('../currency-input')
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
+const ethUtil = require('ethereumjs-util')
 
 module.exports = CurrencyDisplay
 
@@ -35,18 +36,17 @@ CurrencyDisplay.prototype.getAmount = function (value) {
 
 CurrencyDisplay.prototype.getValueToRender = function () {
   const { selectedToken, conversionRate, value } = this.props
-
   const { decimals, symbol } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
 
   return selectedToken
-    ? conversionUtil(value, {
+    ? conversionUtil(ethUtil.addHexPrefix(value), {
       fromNumericBase: 'hex',
       toCurrency: symbol,
       conversionRate: multiplier,
       invertConversionRate: true,
     })
-    : conversionUtil(value, {
+    : conversionUtil(ethUtil.addHexPrefix(value), {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',

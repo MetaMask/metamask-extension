@@ -10,6 +10,7 @@ import {
   getGasPrice,
   getGasTotal,
   getPrimaryCurrency,
+  getRecentBlocks,
   getSelectedAddress,
   getSelectedToken,
   getSelectedTokenContract,
@@ -53,6 +54,7 @@ function mapStateToProps (state) {
     gasTotal: getGasTotal(state),
     network: getCurrentNetwork(state),
     primaryCurrency: getPrimaryCurrency(state),
+    recentBlocks: getRecentBlocks(state),
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
     tokenBalance: getTokenBalance(state),
@@ -68,12 +70,12 @@ function mapDispatchToProps (dispatch) {
       editingTransactionId,
       gasLimit,
       gasPrice,
+      recentBlocks,
       selectedAddress,
       selectedToken,
     }) => {
-      console.log(`editingTransactionId`, editingTransactionId)
       !editingTransactionId
-        ? dispatch(updateGasData({ selectedAddress, selectedToken, data }))
+        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, data }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {

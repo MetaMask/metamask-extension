@@ -17,6 +17,7 @@ const {
   getGasPrice,
   getGasTotal,
   getPrimaryCurrency,
+  getRecentBlocks,
   getSelectedAccount,
   getSelectedAddress,
   getSelectedIdentity,
@@ -235,6 +236,15 @@ describe('send selectors', () => {
       assert.equal(
         getPrimaryCurrency(mockState),
         'DEF'
+      )
+    })
+  })
+
+  describe('getRecentBlocks()', () => {
+    it('should return the recent blocks', () => {
+      assert.deepEqual(
+        getRecentBlocks(mockState),
+        ['mockBlock1', 'mockBlock2', 'mockBlock3']
       )
     })
   })
