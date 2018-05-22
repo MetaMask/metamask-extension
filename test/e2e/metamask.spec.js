@@ -310,10 +310,13 @@ describe('Metamask popup page', function () {
 
   async function checkBrowserForConsoleErrors() {
     const ignoredLogTypes = ['WARNING']
+    const ignoredErrorMessages = ['Warning: Unknown prop `dataset` on ']
     const browserLogs = await driver.manage().logs().get('browser')
     const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
-    const errorEntryObjects = errorEntries.map(entry => entry.toJSON())
-    return errorEntryObjects
+    const errorObjects = errorEntries.map(entry => entry.toJSON())
+    // ignore all errors that contain a message in `ignoredErrorMessages`
+    const matchedErrorObjects = errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
+    return matchedErrorObjects
   }
 
   async function verboseReportOnFailure (test) {
