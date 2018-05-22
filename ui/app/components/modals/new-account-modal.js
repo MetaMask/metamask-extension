@@ -95,7 +95,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(actions.addNewAccount())
         .then((newAccountAddress) => {
           if (newAccountName) {
-            dispatch(actions.saveAccountLabel(newAccountAddress, newAccountName))
+            dispatch(actions.setAccountLabel(newAccountAddress, newAccountName))
           }
           dispatch(actions.hideModal())
         })

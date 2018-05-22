@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const extend = require('xtend')
 const debounce = require('debounce')
 const copyToClipboard = require('copy-to-clipboard')
 const ENS = require('ethjs-ens')
@@ -20,55 +19,61 @@ function EnsInput () {
 
 EnsInput.prototype.render = function () {
   const props = this.props
-  const opts = extend(props, {
-    list: 'addresses',
-    onChange: () => {
-      const network = this.props.network
-      const networkHasEnsSupport = getNetworkEnsSupport(network)
-      if (!networkHasEnsSupport) return
 
-      const recipient = document.querySelector('input[name="address"]').value
-      if (recipient.match(ensRE) === null) {
-        return this.setState({
-          loadingEns: false,
-          ensResolution: null,
-          ensFailure: null,
-        })
-      }
+  function onInputChange() {
+    const network = this.props.network
+    const networkHasEnsSupport = getNetworkEnsSupport(network)
+    if (!networkHasEnsSupport) return
 
-      this.setState({
-        loadingEns: true,
+    const recipient = document.querySelector('input[name="address"]').value
+    if (recipient.match(ensRE) === null) {
+      return this.setState({
+        loadingEns: false,
+        ensResolution: null,
+        ensFailure: null,
       })
-      this.checkName()
-    },
-  })
-  return h('div', {
-    style: { width: '100%' },
-  }, [
-    h('input.large-input', opts),
-    // The address book functionality.
-    h('datalist#addresses',
-      [
-        // Corresponds to the addresses owned.
-        Object.keys(props.identities).map((key) => {
-          const identity = props.identities[key]
-          return h('option', {
-            value: identity.address,
-            label: identity.name,
-            key: identity.address,
-          })
-        }),
-        // Corresponds to previously sent-to addresses.
-        props.addressBook.map((identity) => {
-          return h('option', {
-            value: identity.address,
-            label: identity.name,
-            key: identity.address,
-          })
-        }),
-      ]),
-    this.ensIcon(),
-  ])
+    }
+
+    this.setState({
+      loadingEns: true,
+    })
+    this.checkName()
+  }
+
+  return (
+    h('div', {
+      style: { width: '100%' },
+    }, [
+      h('input.large-input', {
+        name: props.name,
+        placeholder: props.placeholder,
+        list: 'addresses',
+        onChange: onInputChange.bind(this),
+      }),
+      // The address book functionality.
+      h('datalist#addresses',
+        [
+          // Corresponds to the addresses owned.
+          Object.keys(props.identities).map((key) => {
+            const identity = props.identities[key]
+            return h('option', {
+              value: identity.address,
+              label: identity.name,
+              key: identity.address,
+            })
+          }),
+          // Corresponds to previously sent-to addresses.
+          props.addressBook.map((identity) => {
+            return h('option', {
+              value: identity.address,
+              label: identity.name,
+              key: identity.address,
+            })
+          }),
+        ]),
+      this.ensIcon(),
+    ])
+  )
 }
 
 EnsInput.prototype.componentDidMount = function () {

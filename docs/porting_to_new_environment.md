@@ -1,6 +1,16 @@
 # Guide to Porting MetaMask to a New Environment
 
-MetaMask has been under continuous development for nearly two years now, and we’ve gradually discovered some very useful abstractions, that have allowed us to grow more easily. A couple of those layers together allow MetaMask to be ported to new environments and contexts increasingly easily.
+MetaMask has been under continuous development for nearly two years now, and we’ve gradually discovered some useful abstractions that have allowed us to grow more easily. A couple of those layers together allow MetaMask to be ported to new environments and contexts increasingly easily (although it still could be easier, and please let us know if you get stuck!)
+
+Before we get started, it's worth becoming familiar with our basic architecture:
+
+![metamask-architecture-diagram](./architecture.png)
+
+The `metamask-background` describes the file at `app/scripts/background.js`, which is the web extension singleton. This context instantiates an instance of the `MetaMask Controller`, which represents the user's accounts, a connection to the blockchain, and the interaction with new Dapps.
+
+When a new site is visited, the WebExtension creates a new `ContentScript` in that page's context, which can be seen at `app/scripts/contentscript.js`. This script represents a per-page setup process, which creates the per-page `web3` api, connects it to the background script via the Port API (wrapped in a [stream abstraction](https://github.com/substack/stream-handbook)), and injected into the DOM before anything loads.
+
+The most confusing part about porting MetaMask to a new platform is the way we provide the Web3 API over a series of streams between contexts. Once you understand how we create the [InpageProvider](../app/scripts/lib/inpage-provider.js) in the [inpage.js script](../app/scripts/inpage.js), you will be able to understand how the [port-stream](../app/scripts/lib/port-stream.js) is just a thin wrapper around the [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), and a similar stream API can be wrapped around any communication channel to communicate with the `MetaMaskController` via its `setupUntrustedCommunication(stream, domain)` method.
 
 ### The MetaMask Controller
 
@@ -88,3 +98,4 @@ If streams seem new and confusing to you, that's ok, they can seem strange at fi
 ## Conclusion
 
 I hope this has been helpful to you! If you have any other questionsm, or points you think need clarification in this guide, please [open an issue on our GitHub](https://github.com/MetaMask/metamask-plugin/issues/new)!
+

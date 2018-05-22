@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
 import TextField from '../../text-field'
 
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
@@ -129,6 +129,7 @@ class UnlockPage extends Component {
               error={error}
               autoFocus
               autoComplete="current-password"
+              material
               fullWidth
             />
           </form>

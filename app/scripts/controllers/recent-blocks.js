@@ -3,7 +3,6 @@ const extend = require('xtend')
 const EthQuery = require('eth-query')
 const log = require('loglevel')
 const pify = require('pify')
-const timeout = (duration) => new Promise(resolve => setTimeout(resolve, duration))
 
 class RecentBlocksController {
 
@@ -123,28 +122,21 @@ class RecentBlocksController {
    */
   async backfill() {
     this.blockTracker.once('latest', async (blockNumberHex) => {
-      let recentBlocks
-      let blockNumber = Number.parseInt(blockNumberHex, 16)
-      let state = this.store.getState()
-      recentBlocks = state.recentBlocks
-
-      while (recentBlocks.length < this.historyLength) {
+      const currentBlockNumber = Number.parseInt(blockNumberHex, 16)
+      const blocksToFetch = Math.min(currentBlockNumber, this.historyLength)
+      const prevBlockNumber = currentBlockNumber - 1
+      const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
+      await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
         try {
-          const prevBlockNumber = blockNumber - 1
-          const newBlock = await this.getBlockByNumber(prevBlockNumber)
+          const newBlock = await this.getBlockByNumber(targetBlockNumber)
 
           if (newBlock) {
             this.backfillBlock(newBlock)
-            blockNumber = Number.parseInt(newBlock.number, 16)
           }
-
-          state = this.store.getState()
-          recentBlocks = state.recentBlocks
         } catch (e) {
           log.error(e)
         }
-        await timeout(100)
-      }
+      }))
     })
   }
 
