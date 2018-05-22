@@ -62,7 +62,7 @@ function mapStateToProps (state) {
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
     currentView: state.appState.currentView,
-    activeAddress: state.appState.activeAddress,
+    selectedAddress: state.metamask.selectedAddress,
     transForward: state.appState.transForward,
     isMascara: state.metamask.isMascara,
     isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
@@ -197,7 +197,7 @@ App.prototype.renderAppBar = function () {
             style: {},
             enableAccountsSelector: true,
             identities: this.props.identities,
-            selected: this.props.currentView.context,
+            selected: this.props.selectedAddress,
             network: this.props.network,
             keyrings: this.props.keyrings,
           }, []),
@@ -588,7 +588,7 @@ App.prototype.renderPrimary = function () {
         },
       }, [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
-          onClick: () => props.dispatch(actions.backToAccountDetail(props.activeAddress)),
+          onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAddress)),
           style: {
             marginLeft: '10px',
             marginTop: '50px',
