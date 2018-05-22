@@ -18,6 +18,7 @@ export default class SendTransactionScreen extends PersistentForm {
       PropTypes.string,
       PropTypes.number,
     ]),
+    blockGasLimit: PropTypes.string,
     conversionRate: PropTypes.number,
     data: PropTypes.string,
     editingTransactionId: PropTypes.string,
@@ -40,6 +41,7 @@ export default class SendTransactionScreen extends PersistentForm {
 
   updateGas () {
     const {
+      blockGasLimit,
       data,
       editingTransactionId,
       gasLimit,
@@ -51,6 +53,7 @@ export default class SendTransactionScreen extends PersistentForm {
     } = this.props
 
     updateAndSetGasTotal({
+      blockGasLimit,
       data,
       editingTransactionId,
       gasLimit,

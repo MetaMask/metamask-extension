@@ -3,6 +3,7 @@ import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 import {
   ONE_GWEI_IN_WEI_HEX,
+  SIMPLE_GAS_COST,
 } from '../send.constants'
 const {
   addCurrencies,
@@ -18,10 +19,18 @@ const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b, obj) => a + b),
   conversionUtil: sinon.stub().callsFake((val, obj) => parseInt(val, 16)),
   conversionGTE: sinon.stub().callsFake((obj1, obj2) => obj1.value > obj2.value),
-  multiplyCurrencies: sinon.stub().callsFake((a, b) => a * b),
+  multiplyCurrencies: sinon.stub().callsFake((a, b) => `${a}x${b}`),
   calcTokenAmount: sinon.stub().callsFake((a, d) => 'calc:' + a + d),
   rawEncode: sinon.stub().returns([16, 1100]),
 }
+
+const EthQuery = function () {}
+EthQuery.prototype.estimateGas = sinon.stub().callsFake(
+  (data) => Promise.resolve({ toString: (n) => `mockToString:${n}` })
+)
+EthQuery.prototype.getCode = sinon.stub().callsFake(
+  (address) => Promise.resolve(address.match(/isContract/) ? 'not-0x' : '0x') 
+)
 
 const sendUtils = proxyquire('../send.utils.js', {
   '../../conversion-util': {
@@ -34,6 +43,7 @@ const sendUtils = proxyquire('../send.utils.js', {
   'ethereumjs-abi': {
     rawEncode: stubs.rawEncode,
   },
+  'ethjs-query': EthQuery,
 })
 
 const {
@@ -43,7 +53,6 @@ const {
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
-  getParamsForGasEstimate,
   calcTokenBalance,
   isBalanceSufficient,
   isTokenBalanceSufficient,
@@ -54,7 +63,7 @@ describe('send utils', () => {
   describe('calcGasTotal()', () => {
     it('should call multiplyCurrencies with the correct params and return the multiplyCurrencies return', () => {
       const result = calcGasTotal(12, 15)
-      assert.equal(result, 180)
+      assert.equal(result, '12x15')
       const call_ = stubs.multiplyCurrencies.getCall(0).args
       assert.deepEqual(
         call_,
@@ -142,41 +151,6 @@ describe('send utils', () => {
       it(description, () => {
         assert.deepEqual(getAmountErrorObject(obj), obj.expectedResult)
       })
-    })
-  })
-
-  describe('getParamsForGasEstimate()', () => {
-    it('should return from and gas properties if no symbol or data', () => {
-      assert.deepEqual(
-        getParamsForGasEstimate('mockAddress'),
-        {
-          from: 'mockAddress',
-          gas: '746a528800',
-        }
-      )
-    })
-
-    it('should return value property if selected token provided', () => {
-      assert.deepEqual(
-        getParamsForGasEstimate('mockAddress', { symbol: 'ABC' }),
-        {
-          from: 'mockAddress',
-          gas: '746a528800',
-          value: '0x0',
-        }
-      )
-    })
-
-    it('should return data property if data provided', () => {
-      assert.deepEqual(
-        getParamsForGasEstimate('mockAddress', { symbol: 'ABC' }, 'somedata'),
-        {
-          from: 'mockAddress',
-          gas: '746a528800',
-          value: '0x0',
-          data: 'somedata',
-        }
-      )
     })
   })
 
@@ -271,38 +245,66 @@ describe('send utils', () => {
   })
 
   describe('estimateGas', () => {
-    let tempEthQuery
-    beforeEach(() => {
-      tempEthQuery = global.ethQuery
-      global.ethQuery = {
-        estimateGas: sinon.stub().callsFake((data, cb) => {
-          return cb(
-            data.isMockErr ? 'mockErr' : null,
-            Object.assign(data, { estimateGasCalled: true })
-          )
-        })
-      }
-    })
+    const baseMockParams = {
+      blockGasLimit: '0x64',
+      selectedAddress: 'mockAddress',
+      to: '0xisContract',
+    }
+    const baseExpectedCall = {
+      from: 'mockAddress',
+      gas: '0x64x0.95',
+      to: '0xisContract',
+    }
 
     afterEach(() => {
-      global.ethQuery = tempEthQuery
+      EthQuery.prototype.estimateGas.resetHistory()
+      EthQuery.prototype.getCode.resetHistory()
     })
 
-    it('should call ethQuery.estimateGas and resolve that call\'s data', async () => {
-      const result = await estimateGas({ mockParam: 'someData' })
-      assert.equal(global.ethQuery.estimateGas.callCount, 1)
+    it('should call ethQuery.estimateGas with the expected params', async () => {
+      const result = await estimateGas(baseMockParams)
+      assert.equal(EthQuery.prototype.estimateGas.callCount, 1)
       assert.deepEqual(
-        result,
-        { mockParam: 'someData', estimateGasCalled: true }
+        EthQuery.prototype.estimateGas.getCall(0).args[0],
+        baseExpectedCall
       )
+      assert.equal(result, 'mockToString:16')
     })
 
-    it('should reject with ethQuery.estimateGas error', async () => {
-      try {
-        await estimateGas({ mockParam: 'someData', isMockErr: true })
-      } catch (err) {
-        assert.equal(err, 'mockErr')
-      }
+    it('should call ethQuery.estimateGas with a value of 0x0 if the passed selectedToken has a symbol', async () => {
+      const result = await estimateGas(Object.assign({ selectedToken: { symbol: true } }, baseMockParams))
+      assert.equal(EthQuery.prototype.estimateGas.callCount, 1)
+      assert.deepEqual(
+        EthQuery.prototype.estimateGas.getCall(0).args[0],
+        Object.assign({ value: '0x0' }, baseExpectedCall)
+      )
+      assert.equal(result, 'mockToString:16')
+    })
+
+    it('should call ethQuery.estimateGas with data if data is passed', async () => {
+      const result = await estimateGas(Object.assign({ data: 'mockData' }, baseMockParams))
+      assert.equal(EthQuery.prototype.estimateGas.callCount, 1)
+      assert.deepEqual(
+        EthQuery.prototype.estimateGas.getCall(0).args[0],
+        Object.assign({ data: 'mockData' }, baseExpectedCall)
+      )
+      assert.equal(result, 'mockToString:16')
+    })
+
+    it('should call ethQuery.estimateGas with data if data is passed', async () => {
+      const result = await estimateGas(Object.assign({ data: 'mockData' }, baseMockParams))
+      assert.equal(EthQuery.prototype.estimateGas.callCount, 1)
+      assert.deepEqual(
+        EthQuery.prototype.estimateGas.getCall(0).args[0],
+        Object.assign({ data: 'mockData' }, baseExpectedCall)
+      )
+      assert.equal(result, 'mockToString:16')
+    })
+
+    it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async () => {
+      assert.equal(EthQuery.prototype.estimateGas.callCount, 0)
+      const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123' }))
+      assert.equal(result, SIMPLE_GAS_COST)
     })
   })
 

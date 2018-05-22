@@ -13,18 +13,19 @@ const {
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_ETH_ERROR,
   ONE_GWEI_IN_WEI_HEX,
+  SIMPLE_GAS_COST,
 } = require('./send.constants')
+const EthQuery = require('ethjs-query')
 const abi = require('ethereumjs-abi')
 
 module.exports = {
   calcGasTotal,
+  calcTokenBalance,
   doesAmountErrorRequireUpdate,
   estimateGas,
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
-  getParamsForGasEstimate,
-  calcTokenBalance,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 }
@@ -142,24 +143,6 @@ function getAmountErrorObject ({
   return { amount: amountError }
 }
 
-function getParamsForGasEstimate (selectedAddress, selectedToken, data) {
-  const { symbol } = selectedToken || {}
-  const estimatedGasParams = {
-    from: selectedAddress,
-    gas: '746a528800',
-  }
-
-  if (symbol) {
-    Object.assign(estimatedGasParams, { value: '0x0' })
-  }
-
-  if (data) {
-    Object.assign(estimatedGasParams, { data })
-  }
-
-  return estimatedGasParams
-}
-
 function calcTokenBalance ({ selectedToken, usersToken }) {
   const { decimals } = selectedToken || {}
   return calcTokenAmount(usersToken.balance.toString(), decimals)
@@ -182,15 +165,40 @@ function doesAmountErrorRequireUpdate ({
   return amountErrorRequiresUpdate
 }
 
-function estimateGas (params = {}) {
-  return new Promise((resolve, reject) => {
-    global.ethQuery.estimateGas(params, (err, data) => {
-      if (err) {
-        return reject(err)
-      }
-      return resolve(data)
-    })
+async function estimateGas ({ selectedAddress, selectedToken, data, blockGasLimit, to }) {
+  const ethQuery = new EthQuery(global.ethereumProvider)
+  const { symbol } = selectedToken || {}
+  const estimatedGasParams = { from: selectedAddress }
+
+  if (symbol) {
+    Object.assign(estimatedGasParams, { value: '0x0' })
+  }
+
+  if (data) {
+    Object.assign(estimatedGasParams, { data })
+  }
+  // if recipient has no code, gas is 21k max:
+  const hasRecipient = Boolean(to)
+  let code
+  if (hasRecipient) code = await ethQuery.getCode(to)
+
+  if (hasRecipient && (!code || code === '0x')) {
+    return SIMPLE_GAS_COST
+  }
+
+  estimatedGasParams.to = to
+
+  // if not, fall back to block gasLimit
+  estimatedGasParams.gas = multiplyCurrencies(blockGasLimit, 0.95, {
+    multiplicandBase: 16,
+    multiplierBase: 10,
+    roundDown: '0',
+    toNumericBase: 'hex',
   })
+
+  // run tx
+  const estimatedGas = await ethQuery.estimateGas(estimatedGasParams)
+  return estimatedGas.toString(16)
 }
 
 function generateTokenTransferData (selectedAddress, selectedToken) {
@@ -222,5 +230,6 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
       .sort(hexComparator)[0]
   })
   .sort(hexComparator)
+
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }
