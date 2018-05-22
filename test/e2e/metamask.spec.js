@@ -310,7 +310,12 @@ describe('Metamask popup page', function () {
 
   async function checkBrowserForConsoleErrors() {
     const ignoredLogTypes = ['WARNING']
-    const ignoredErrorMessages = ['Warning: Unknown prop `dataset` on ']
+    const ignoredErrorMessages = [
+      // React throws error warnings on "dataset", but still sets the data-* properties correctly
+      'Warning: Unknown prop `dataset` on ',
+      // Third-party Favicon 404s show up as errors
+      'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
+    ]
     const browserLogs = await driver.manage().logs().get('browser')
     const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
     const errorObjects = errorEntries.map(entry => entry.toJSON())
