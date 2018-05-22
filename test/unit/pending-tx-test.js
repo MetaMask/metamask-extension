@@ -13,7 +13,7 @@ const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 
 
-describe.only('PendingTransactionTracker', function () {
+describe('PendingTransactionTracker', function () {
   let pendingTxTracker, txMeta, txMetaNoHash, txMetaNoRawTx, providerResultStub,
   provider, txMeta3, txList, knownErrors
   this.timeout(10000)
