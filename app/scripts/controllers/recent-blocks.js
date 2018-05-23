@@ -8,7 +8,7 @@ class RecentBlocksController {
 
   /**
    * Controller responsible for storing, updating and managing the recent history of blocks. Blocks are back filled
-   * upon the controller's construction and then the list is updated when the given block tracker gets a 'block' event
+   * upon the controller's construction and then the list is updated when the given block tracker gets a 'latest' event
    * (indicating that there is a new block to process).
    *
    * @typedef {Object} RecentBlocksController
@@ -16,7 +16,7 @@ class RecentBlocksController {
    * @param {BlockTracker} opts.blockTracker Contains objects necessary for tracking blocks and querying the blockchain
    * @param {BlockTracker} opts.provider The provider used to create a new EthQuery instance.
    * @property {BlockTracker} blockTracker Points to the passed BlockTracker. On RecentBlocksController construction,
-   * listens for 'block' events so that new blocks can be processed and added to storage.
+   * listens for 'latest' events so that new blocks can be processed and added to storage.
    * @property {EthQuery} ethQuery Points to the EthQuery instance created with the passed provider
    * @property {number} historyLength The maximum length of blocks to track
    * @property {object} store Stores the recentBlocks
@@ -111,9 +111,9 @@ class RecentBlocksController {
   }
 
   /**
-   * On this.blockTracker's first 'block' event after this RecentBlocksController's instantiation, the store.recentBlocks
+   * On this.blockTracker's first 'latest' event after this RecentBlocksController's instantiation, the store.recentBlocks
    * array is populated with this.historyLength number of blocks. The block number of the this.blockTracker's first
-   * 'block' event is used to iteratively generate all the numbers of the previous blocks, which are obtained by querying
+   * 'latest' event is used to iteratively generate all the numbers of the previous blocks, which are obtained by querying
    * the blockchain. These blocks are backfilled so that the recentBlocks array is ordered from oldest to newest.
    *
    * Each iteration over the block numbers is delayed by 100 milliseconds.
