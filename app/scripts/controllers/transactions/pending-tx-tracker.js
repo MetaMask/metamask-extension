@@ -27,6 +27,7 @@ class PendingTransactionTracker extends EventEmitter {
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
     this.publishTransaction = config.publishTransaction
+    this.confirmTransaction = config.confirmTransaction
     this._checkPendingTxs()
   }
 
@@ -37,7 +38,8 @@ class PendingTransactionTracker extends EventEmitter {
     @emits tx:confirmed
     @emits tx:failed
   */
-  checkForTxInBlock (block) {
+  async checkForTxInBlock (blockNumber) {
+    const block = await this._getBlock(blockNumber)
     const signedTxList = this.getPendingTransactions()
     if (!signedTxList.length) return
     signedTxList.forEach((txMeta) => {
@@ -51,9 +53,12 @@ class PendingTransactionTracker extends EventEmitter {
         return
       }
 
+      if (!block.transactions.length) return
 
-      block.transactions.forEach((tx) => {
-        if (tx.hash === txHash) this.emit('tx:confirmed', txId)
+      block.transactions.forEach((hash) => {
+        if (hash === txHash) {
+          this.confirmTransaction(txId)
+        }
       })
     })
   }
@@ -70,7 +75,7 @@ class PendingTransactionTracker extends EventEmitter {
       return
     }
     // if we synced by more than one block, check for missed pending transactions
-    const diff = Number.parseInt(newBlock.number, 16) - Number.parseInt(oldBlock.number, 16)
+    const diff = Number.parseInt(newBlock, 16) - Number.parseInt(oldBlock, 16)
     if (diff > 1) this._checkPendingTxs()
   }
 
@@ -79,11 +84,11 @@ class PendingTransactionTracker extends EventEmitter {
     @param block {object} - a block object
     @emits tx:warning
   */
-  resubmitPendingTxs (block) {
+  resubmitPendingTxs (blockNumber) {
     const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
-    pending.forEach((txMeta) => this._resubmitTx(txMeta, block.number).catch((err) => {
+    pending.forEach((txMeta) => this._resubmitTx(txMeta, blockNumber).catch((err) => {
       /*
       Dont marked as failed if the error is a "known" transaction warning
       "there is already a transaction with the same sender-nonce
@@ -179,7 +184,7 @@ class PendingTransactionTracker extends EventEmitter {
       txParams = await this.query.getTransactionByHash(txHash)
       if (!txParams) return
       if (txParams.blockNumber) {
-        this.emit('tx:confirmed', txId)
+        this.confirmTransaction(txId)
       }
     } catch (err) {
       txMeta.warning = {
@@ -206,11 +211,17 @@ class PendingTransactionTracker extends EventEmitter {
     nonceGlobalLock.releaseLock()
   }
 
+  async _getBlock (blockNumber) {
+    return await this.query.getBlockByNumber(blockNumber, false)
+  }
+
   /**
     checks to see if a confirmed txMeta has the same nonce
     @param txMeta {Object} - txMeta object
     @returns {boolean}
   */
+
+
   async _checkIfNonceIsTaken (txMeta) {
     const address = txMeta.txParams.from
     const completed = this.getCompletedTransactions(address)

@@ -57,6 +57,7 @@ class TransactionController extends EventEmitter {
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
       getNetwork: this.getNetwork.bind(this),
+      confirmTransaction: this.confirmTransaction.bind(this),
     })
     this._onBootCleanUp()
 
@@ -301,6 +302,11 @@ class TransactionController extends EventEmitter {
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 
+  confirmTransaction (txId) {
+    this.txStateManager.setTxStatusConfirmed(txId)
+    this._markNonceDuplicatesDropped(txId)
+  }
+
   /**
     Convenience method for the ui thats sets the transaction to rejected
     @param txId {number} - the tx's Id
@@ -381,8 +387,6 @@ class TransactionController extends EventEmitter {
     this.pendingTxTracker.on('tx:warning', (txMeta) => {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
     })
-    this.pendingTxTracker.on('tx:confirmed', (txId) => this.txStateManager.setTxStatusConfirmed(txId))
-    this.pendingTxTracker.on('tx:confirmed', (txId) => this._markNonceDuplicatesDropped(txId))
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
