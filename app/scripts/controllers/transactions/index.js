@@ -400,7 +400,7 @@ class TransactionController extends EventEmitter {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
     })
 
-    this.blockTracker.on('block', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
+    this.blockTracker.on('latest', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
     // this is a little messy but until ethstore has been either
     // removed or redone this is to guard against the race condition
     this.blockTracker.on('latest', this.pendingTxTracker.resubmitPendingTxs.bind(this.pendingTxTracker))
