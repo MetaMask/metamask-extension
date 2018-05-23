@@ -18,8 +18,8 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => {
       dispatch(actions.hideModal())
     },
-    saveAccountLabel: (account, label) => {
-      dispatch(actions.saveAccountLabel(account, label))
+    setAccountLabel: (account, label) => {
+      dispatch(actions.setAccountLabel(account, label))
     },
   }
 }
@@ -41,7 +41,7 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(EditAccountNameMod
 
 
 EditAccountNameModal.prototype.render = function () {
-  const { hideModal, saveAccountLabel, identity } = this.props
+  const { hideModal, setAccountLabel, identity } = this.props
 
   return h('div', {}, [
     h('div.flex-column.edit-account-name-modal-content', {
@@ -69,7 +69,7 @@ EditAccountNameModal.prototype.render = function () {
       h('button.btn-clear.edit-account-name-modal-save-button.allcaps', {
         onClick: () => {
           if (this.state.inputText.length !== 0) {
-            saveAccountLabel(identity.address, this.state.inputText)
+            setAccountLabel(identity.address, this.state.inputText)
             hideModal()
           }
         },

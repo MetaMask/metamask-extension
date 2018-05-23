@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
-const { Route, Switch, withRouter, matchPath } = require('react-router-dom')
+const { Route, Switch, withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
@@ -26,6 +26,7 @@ const UnlockPage = require('./components/pages/unlock-page')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
+const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
 const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 
@@ -47,6 +48,7 @@ const {
   REVEAL_SEED_ROUTE,
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
+  CONFIRM_ADD_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
   SEND_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -77,19 +79,11 @@ class App extends Component {
         h(Authenticated, { path: CONFIRM_TRANSACTION_ROUTE, component: ConfirmTxScreen }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
+        h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
         h(Authenticated, { path: NEW_ACCOUNT_ROUTE, component: CreateAccountPage }),
         h(Authenticated, { path: DEFAULT_ROUTE, exact, component: Home }),
       ])
     )
-  }
-
-  renderAppHeader () {
-    const { location } = this.props
-    const isInitializing = matchPath(location.pathname, {
-      path: INITIALIZE_ROUTE, exact: false,
-    })
-
-    return isInitializing ? null : h(AppHeader)
   }
 
   render () {
@@ -128,7 +122,7 @@ class App extends Component {
         // global modal
         h(Modal, {}, []),
 
-        this.renderAppHeader(),
+        h(AppHeader),
 
         // sidebar
         this.renderSidebar(),

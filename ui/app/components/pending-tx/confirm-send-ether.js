@@ -28,6 +28,10 @@ const currencies = require('currency-formatter/currencies')
 
 const { MIN_GAS_PRICE_HEX } = require('../send_/send.constants')
 const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
+const {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+} = require('../../../../app/scripts/lib/enums')
 
 import {
   updateSendErrors,
@@ -297,6 +301,14 @@ ConfirmSendEther.prototype.editTransaction = function (txMeta) {
   history.push(SEND_ROUTE)
 }
 
+ConfirmSendEther.prototype.renderNetworkDisplay = function () {
+  const windowType = window.METAMASK_UI_TYPE
+
+  return (windowType === ENVIRONMENT_TYPE_NOTIFICATION || windowType === ENVIRONMENT_TYPE_POPUP)
+    ? h(NetworkDisplay)
+    : null
+}
+
 ConfirmSendEther.prototype.render = function () {
   const {
     currentCurrency,
@@ -362,7 +374,7 @@ ConfirmSendEther.prototype.render = function () {
               visibility: !txMeta.lastGasPrice ? 'initial' : 'hidden',
             },
           }, 'Edit'),
-          window.METAMASK_UI_TYPE === 'notification' && h(NetworkDisplay),
+          this.renderNetworkDisplay(),
         ]),
         h('.page-container__title', title),
         h('.page-container__subtitle', subtitle),

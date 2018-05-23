@@ -129,8 +129,8 @@ var actions = {
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
   exportAccountComplete,
-  SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
-  saveAccountLabel: saveAccountLabel,
+  SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
+  setAccountLabel,
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
@@ -280,11 +280,14 @@ var actions = {
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
   // Network
-  setNetworkEndpoints,
   updateNetworkEndpointType,
   UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
 
   retryTransaction,
+  SET_PENDING_TOKENS: 'SET_PENDING_TOKENS',
+  CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
+  setPendingTokens,
+  clearPendingTokens,
 }
 
 module.exports = actions
@@ -1651,13 +1654,13 @@ function showPrivateKey (key) {
   }
 }
 
-function saveAccountLabel (account, label) {
+function setAccountLabel (account, label) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    log.debug(`background.saveAccountLabel`)
+    log.debug(`background.setAccountLabel`)
 
     return new Promise((resolve, reject) => {
-      background.saveAccountLabel(account, label, (err) => {
+      background.setAccountLabel(account, label, (err) => {
         dispatch(actions.hideLoadingIndication())
 
         if (err) {
@@ -1666,7 +1669,7 @@ function saveAccountLabel (account, label) {
         }
 
         dispatch({
-          type: actions.SAVE_ACCOUNT_LABEL,
+          type: actions.SET_ACCOUNT_LABEL,
           value: { account, label },
         })
 
@@ -1976,26 +1979,28 @@ function setLocaleMessages (localeMessages) {
   }
 }
 
-function setNetworkEndpoints (networkEndpointType) {
-  return dispatch => {
-    log.debug('background.setNetworkEndpoints')
-    return new Promise((resolve, reject) => {
-      background.setNetworkEndpoints(networkEndpointType, err => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.updateNetworkEndpointType(networkEndpointType))
-        resolve(networkEndpointType)
-      })
-    })
-  }
-}
-
 function updateNetworkEndpointType (networkEndpointType) {
   return {
     type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
     value: networkEndpointType,
+  }
+}
+
+function setPendingTokens (pendingTokens) {
+  const { customToken = {}, selectedTokens = {} } = pendingTokens
+  const { address, symbol, decimals } = customToken
+  const tokens = address && symbol && decimals
+    ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }
+    : selectedTokens
+
+  return {
+    type: actions.SET_PENDING_TOKENS,
+    payload: tokens,
+  }
+}
+
+function clearPendingTokens () {
+  return {
+    type: actions.CLEAR_PENDING_TOKENS,
   }
 }

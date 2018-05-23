@@ -6,7 +6,6 @@ const {
   tryUnlockMetamask,
   forgotPassword,
   markPasswordForgotten,
-  setNetworkEndpoints,
 } = require('../../../actions')
 
 import UnlockPage from './unlock-page.component'
@@ -23,7 +22,6 @@ const mapDispatchToProps = dispatch => {
     forgotPassword: () => dispatch(forgotPassword()),
     tryUnlockMetamask: password => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
-    setNetworkEndpoints: type => dispatch(setNetworkEndpoints(type)),
   }
 }
 

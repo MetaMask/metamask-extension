@@ -25,7 +25,7 @@ function setupRaven(opts) {
       const report = opts.data
       try {
         // handle error-like non-error exceptions
-        nonErrorException(report)
+        rewriteErrorLikeExceptions(report)
         // simplify certain complex error messages (e.g. Ethjs)
         simplifyErrorMessages(report)
         // modify report urls
@@ -42,27 +42,35 @@ function setupRaven(opts) {
   return Raven
 }
 
-function nonErrorException(report) {
-  // handle errors that lost their error-ness in serialization
-  if (report.message.includes('Non-Error exception captured with keys: message')) {
-    if (!(report.extra && report.extra.__serialized__)) return
-    report.message = `Non-Error Exception: ${report.extra.__serialized__.message}`
-  }
+function rewriteErrorLikeExceptions(report) {
+  // handle errors that lost their error-ness in serialization (e.g. dnode)
+  rewriteErrorMessages(report, (errorMessage) => {
+    if (!errorMessage.includes('Non-Error exception captured with keys:')) return errorMessage
+    if (!(report.extra && report.extra.__serialized__ && report.extra.__serialized__.message)) return errorMessage
+    return `Non-Error Exception: ${report.extra.__serialized__.message}`
+  })
 }
 
 function simplifyErrorMessages(report) {
+  rewriteErrorMessages(report, (errorMessage) => {
+    // simplify ethjs error messages
+    errorMessage = extractEthjsErrorMessage(errorMessage)
+    // simplify 'Transaction Failed: known transaction'
+    if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
+      // cut the hash from the error message
+      errorMessage = 'Transaction Failed: known transaction'
+    }
+    return errorMessage
+  })
+}
+
+function rewriteErrorMessages(report, rewriteFn) {
+  // rewrite top level message
+  report.message = rewriteFn(report.message)
+  // rewrite each exception message
   if (report.exception && report.exception.values) {
     report.exception.values.forEach(item => {
-      let errorMessage = item.value
-      // simplify ethjs error messages
-      errorMessage = extractEthjsErrorMessage(errorMessage)
-      // simplify 'Transaction Failed: known transaction'
-      if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
-        // cut the hash from the error message
-        errorMessage = 'Transaction Failed: known transaction'
-      }
-      // finalize
-      item.value = errorMessage
+      item.value = rewriteFn(item.value)
     })
   }
 }
