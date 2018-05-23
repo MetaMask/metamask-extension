@@ -82,7 +82,7 @@ export default class SendTransactionScreen extends PersistentForm {
     } = prevProps
 
     const uninitialized = [prevBalance, prevGasTotal].every(n => n === null)
-
+    console.log(`@#@# uninitialized`, uninitialized);
     if (!uninitialized) {
       const amountErrorRequiresUpdate = doesAmountErrorRequireUpdate({
         balance,
@@ -120,6 +120,17 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   componentWillMount () {
+    const {
+      from: { address, balance },
+      selectedToken,
+      tokenContract,
+      updateSendTokenBalance,
+    } = this.props
+    updateSendTokenBalance({
+      selectedToken,
+      tokenContract,
+      address,
+    })
     this.updateGas()
   }
 

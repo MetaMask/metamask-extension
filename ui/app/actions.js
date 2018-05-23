@@ -790,7 +790,7 @@ function updateSendTokenBalance ({
       .then(usersToken => {
         if (usersToken) {
           const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
-          dispatch(setSendTokenBalance(newTokenBalance))
+          dispatch(setSendTokenBalance(newTokenBalance.toString(10)))
         }
       })
       .catch(err => {
