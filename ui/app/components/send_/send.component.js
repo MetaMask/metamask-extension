@@ -39,8 +39,9 @@ export default class SendTransactionScreen extends PersistentForm {
     updateSendTokenBalance: PropTypes.func,
   };
 
-  updateGas () {
+  updateGas ({ to } = {}) {
     const {
+      amount,
       blockGasLimit,
       data,
       editingTransactionId,
@@ -61,6 +62,8 @@ export default class SendTransactionScreen extends PersistentForm {
       recentBlocks,
       selectedAddress,
       selectedToken,
+      to: to && to.toLowerCase(),
+      value: amount,
     })
   }
 
@@ -146,7 +149,7 @@ export default class SendTransactionScreen extends PersistentForm {
     return (
       <div className="page-container">
         <SendHeader history={history}/>
-        <SendContent/>
+        <SendContent updateGas={(updateData) => this.updateGas(updateData)}/>
         <SendFooter history={history}/>
       </div>
     )
