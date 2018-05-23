@@ -7,14 +7,13 @@
  * on each new block.
  */
 
-const async = require('async')
 const EthQuery = require('eth-query')
 const ObservableStore = require('obs-store')
-const EventEmitter = require('events').EventEmitter
-function noop () {}
+const log = require('loglevel')
+const pify = require('pify')
 
 
-class AccountTracker extends EventEmitter {
+class AccountTracker {
 
   /**
    * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -35,8 +34,6 @@ class AccountTracker extends EventEmitter {
    *
    */
   constructor (opts = {}) {
-    super()
-
     const initState = {
       accounts: {},
       currentBlockGasLimit: '',
@@ -44,12 +41,12 @@ class AccountTracker extends EventEmitter {
     this.store = new ObservableStore(initState)
 
     this._provider = opts.provider
-    this._query = new EthQuery(this._provider)
+    this._query = pify(new EthQuery(this._provider))
     this._blockTracker = opts.blockTracker
     // subscribe to latest block
-    this._blockTracker.on('block', this._updateForBlock.bind(this))
+    this._blockTracker.on('latest', this._updateForBlock.bind(this))
     // blockTracker.currentBlock may be null
-    this._currentBlockNumber = this._blockTracker.currentBlock
+    this._currentBlockNumber = this._blockTracker.getCurrentBlock()
   }
 
   /**
@@ -67,49 +64,57 @@ class AccountTracker extends EventEmitter {
     const accounts = this.store.getState().accounts
     const locals = Object.keys(accounts)
 
-    const toAdd = []
+    const accountsToAdd = []
     addresses.forEach((upstream) => {
       if (!locals.includes(upstream)) {
-        toAdd.push(upstream)
+        accountsToAdd.push(upstream)
       }
     })
 
-    const toRemove = []
+    const accountsToRemove = []
     locals.forEach((local) => {
       if (!addresses.includes(local)) {
-        toRemove.push(local)
+        accountsToRemove.push(local)
       }
     })
 
-    toAdd.forEach(upstream => this.addAccount(upstream))
-    toRemove.forEach(local => this.removeAccount(local))
-    this._updateAccounts()
+    this.addAccounts(accountsToAdd)
+    this.removeAccounts(accountsToRemove)
   }
 
   /**
-   * Adds a new address to this AccountTracker's accounts object, which points to an empty object. This object will be
+   * Adds new addresses to track the balances of
    * given a balance as long this._currentBlockNumber is defined.
    *
-   * @param {string} address A hex address of a new account to store in this AccountTracker's accounts object
+   * @param {array} addresses An array of hex addresses of new accounts to track
    *
    */
-  addAccount (address) {
+  addAccounts (addresses) {
     const accounts = this.store.getState().accounts
-    accounts[address] = {}
+    // add initial state for addresses
+    addresses.forEach(address => {
+      accounts[address] = {}
+    })
+    // save accounts state
     this.store.updateState({ accounts })
+    // fetch balances for the accounts if there is block number ready
     if (!this._currentBlockNumber) return
-    this._updateAccount(address)
+    addresses.forEach(address => this._updateAccount(address))
   }
 
   /**
-   * Removes an account from this AccountTracker's accounts object
+   * Removes accounts from being tracked
    *
-   * @param {string} address A hex address of a the account to remove
+   * @param {array} an array of hex addresses to stop tracking
    *
    */
-  removeAccount (address) {
+  removeAccounts (addresses) {
     const accounts = this.store.getState().accounts
-    delete accounts[address]
+    // remove each state object
+    addresses.forEach(address => {
+      delete accounts[address]
+    })
+    // save accounts state
     this.store.updateState({ accounts })
   }
 
@@ -118,71 +123,55 @@ class AccountTracker extends EventEmitter {
    * via EthQuery
    *
    * @private
-   * @param {object} block Data about the block that contains the data to update to.
+   * @param {number} blockNumber the block number to update to.
    * @fires 'block' The updated state, if all account updates are successful
    *
    */
-  _updateForBlock (block) {
-    this._currentBlockNumber = block.number
-    const currentBlockGasLimit = block.gasLimit
+  async _updateForBlock (blockNumber) {
+    this._currentBlockNumber = blockNumber
 
+    // this shouldn't be here...
+    const currentBlock = await this._query.getBlockByNumber(blockNumber, false)
+    const currentBlockGasLimit = currentBlock.gasLimit
     this.store.updateState({ currentBlockGasLimit })
 
-    async.parallel([
-      this._updateAccounts.bind(this),
-    ], (err) => {
-      if (err) return console.error(err)
-      this.emit('block', this.store.getState())
-    })
+    try {
+      await this._updateAccounts()
+    } catch (err) {
+      log.error(err)
+    }
   }
 
   /**
    * Calls this._updateAccount for each account in this.store
    *
-   * @param {Function} cb A callback to pass to this._updateAccount, called after each account is successfully updated
+   * @returns {Promise} after all account balances updated
    *
    */
-  _updateAccounts (cb = noop) {
+  async _updateAccounts () {
     const accounts = this.store.getState().accounts
     const addresses = Object.keys(accounts)
-    async.each(addresses, this._updateAccount.bind(this), cb)
+    await Promise.all(addresses.map(this._updateAccount.bind(this)))
   }
 
   /**
-   * Updates the current balance of an account. Gets an updated balance via this._getAccount.
+   * Updates the current balance of an account.
    *
    * @private
    * @param {string} address A hex address of a the account to be updated
-   * @param {Function} cb A callback to call once the account at address is successfully update
+   * @returns {Promise} after the account balance is updated
    *
    */
-  _updateAccount (address, cb = noop) {
-    this._getAccount(address, (err, result) => {
-      if (err) return cb(err)
-      result.address = address
-      const accounts = this.store.getState().accounts
-      // only populate if the entry is still present
-      if (accounts[address]) {
-        accounts[address] = result
-        this.store.updateState({ accounts })
-      }
-      cb(null, result)
-    })
-  }
-
-  /**
-   * Gets the current balance of an account via EthQuery.
-   *
-   * @private
-   * @param {string} address A hex address of a the account to query
-   * @param {Function} cb A callback to call once the account at address is successfully update
-   *
-   */
-  _getAccount (address, cb = noop) {
-    const query = this._query
-    async.parallel({
-      balance: query.getBalance.bind(query, address),
-    }, cb)
+  async _updateAccount (address) {
+    // query balance
+    const balance = await this._query.getBalance(address)
+    const result = { address, balance }
+    // update accounts state
+    const { accounts } = this.store.getState()
+    // only populate if the entry is still present
+    if (!accounts[address]) return
+    accounts[address] = result
+    this.store.updateState({ accounts })
   }
 
 }
