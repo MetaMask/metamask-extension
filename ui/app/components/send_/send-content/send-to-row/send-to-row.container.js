@@ -8,7 +8,6 @@ import {
     getToDropdownOpen,
     sendToIsInError,
 } from './send-to-row.selectors.js'
-import { getToErrorObject } from './send-to-row.utils.js'
 import {
     updateSendTo,
 } from '../../../../actions'
@@ -36,8 +35,8 @@ function mapDispatchToProps (dispatch) {
     closeToDropdown: () => dispatch(closeToDropdown()),
     openToDropdown: () => dispatch(openToDropdown()),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
-    updateSendToError: (to) => {
-        dispatch(updateSendErrors(getToErrorObject(to)))
+    updateSendToError: (toErrorObject) => {
+        dispatch(updateSendErrors(toErrorObject))
     },
   }
 }

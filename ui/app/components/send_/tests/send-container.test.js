@@ -99,6 +99,8 @@ describe('send container', () => {
         recentBlocks: ['mockBlock'],
         selectedAddress: '0x4',
         selectedToken: { address: '0x1' },
+        to: 'mockTo',
+        value: 'mockValue',
       }
 
       it('should dispatch a setGasTotal action when editingTransactionId is truthy', () => {
@@ -111,14 +113,14 @@ describe('send container', () => {
       })
 
       it('should dispatch an updateGasData action when editingTransactionId is falsy', () => {
-        const { selectedAddress, selectedToken, data, recentBlocks, blockGasLimit } = mockProps
+        const { selectedAddress, selectedToken, data, recentBlocks, blockGasLimit, to, value } = mockProps
         mapDispatchToPropsObject.updateAndSetGasTotal(
           Object.assign({}, mockProps, {editingTransactionId: false})
         )
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.updateGasData.getCall(0).args[0],
-          { selectedAddress, selectedToken, data, recentBlocks, blockGasLimit }
+          { selectedAddress, selectedToken, data, recentBlocks, blockGasLimit, to, value }
         )
       })
     })

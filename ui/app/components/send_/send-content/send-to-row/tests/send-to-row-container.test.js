@@ -31,7 +31,6 @@ proxyquire('../send-to-row.container.js', {
     getToDropdownOpen: (s) => `mockToDropdownOpen:${s}`,
     sendToIsInError: (s) => `mockInError:${s}`,
   },
-  './send-to-row.utils.js': { getToErrorObject: (t) => `mockError:${t}` },
   '../../../../actions': actionSpies,
   '../../../../ducks/send.duck': duckActionSpies,
 })
@@ -99,12 +98,12 @@ describe('send-to-row container', () => {
 
     describe('updateSendToError()', () => {
       it('should dispatch an action', () => {
-        mapDispatchToPropsObject.updateSendToError('mockTo')
+        mapDispatchToPropsObject.updateSendToError('mockToErrorObject')
         assert(dispatchSpy.calledOnce)
         assert(duckActionSpies.updateSendErrors.calledOnce)
         assert.equal(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
-          'mockError:mockTo'
+          'mockToErrorObject'
         )
       })
     })

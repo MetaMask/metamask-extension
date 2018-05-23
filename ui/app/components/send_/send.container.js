@@ -76,9 +76,11 @@ function mapDispatchToProps (dispatch) {
       recentBlocks,
       selectedAddress,
       selectedToken,
+      to,
+      value,
     }) => {
       !editingTransactionId
-        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, data, blockGasLimit }))
+        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, data, blockGasLimit, to, value }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {

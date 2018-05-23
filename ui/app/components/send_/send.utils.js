@@ -15,8 +15,8 @@ const {
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
 } = require('./send.constants')
-const EthQuery = require('ethjs-query')
 const abi = require('ethereumjs-abi')
+const ethUtil = require('ethereumjs-util')
 
 module.exports = {
   calcGasTotal,
@@ -165,40 +165,44 @@ function doesAmountErrorRequireUpdate ({
   return amountErrorRequiresUpdate
 }
 
-async function estimateGas ({ selectedAddress, selectedToken, data, blockGasLimit, to }) {
-  const ethQuery = new EthQuery(global.ethereumProvider)
+async function estimateGas ({ selectedAddress, selectedToken, data, blockGasLimit, to, value, gasPrice, estimateGasMethod }) {
   const { symbol } = selectedToken || {}
-  const estimatedGasParams = { from: selectedAddress }
+  const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
 
   if (symbol) {
-    Object.assign(estimatedGasParams, { value: '0x0' })
+    Object.assign(paramsForGasEstimate, { value: '0x0' })
   }
 
   if (data) {
-    Object.assign(estimatedGasParams, { data })
+    Object.assign(paramsForGasEstimate, { data })
   }
   // if recipient has no code, gas is 21k max:
   const hasRecipient = Boolean(to)
   let code
-  if (hasRecipient) code = await ethQuery.getCode(to)
-
+  if (hasRecipient) code = await global.eth.getCode(to)
   if (hasRecipient && (!code || code === '0x')) {
     return SIMPLE_GAS_COST
   }
 
-  estimatedGasParams.to = to
+  paramsForGasEstimate.to = to
 
   // if not, fall back to block gasLimit
-  estimatedGasParams.gas = multiplyCurrencies(blockGasLimit, 0.95, {
+  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
     multiplicandBase: 16,
     multiplierBase: 10,
     roundDown: '0',
     toNumericBase: 'hex',
-  })
+  }))
 
   // run tx
-  const estimatedGas = await ethQuery.estimateGas(estimatedGasParams)
-  return estimatedGas.toString(16)
+  return new Promise((resolve, reject) => {
+    estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(estimatedGas.toString(16))
+    })
+  })
 }
 
 function generateTokenTransferData (selectedAddress, selectedToken) {
