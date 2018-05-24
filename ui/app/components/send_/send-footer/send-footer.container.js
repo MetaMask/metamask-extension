@@ -26,7 +26,6 @@ import {
   addressIsNew,
   constructTxParams,
   constructUpdatedTx,
-  formShouldBeDisabled,
 } from './send-footer.utils'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
@@ -34,21 +33,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 function mapStateToProps (state) {
   return {
     amount: getSendAmount(state),
-    disabled: formShouldBeDisabled({
-      inError: isSendFormInError(state),
-      selectedToken: getSelectedToken(state),
-      tokenBalance: getTokenBalance(state),
-      gasTotal: getGasTotal(state),
-    }),
     editingTransactionId: getSendEditingTransactionId(state),
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
     gasPrice: getGasPrice(state),
+    gasTotal: getGasTotal(state),
     inError: isSendFormInError(state),
-    isToken: Boolean(getSelectedToken(state)),
     selectedToken: getSelectedToken(state),
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
+    tokenBalance: getTokenBalance(state),
     unapprovedTxs: getUnapprovedTxs(state),
   }
 }

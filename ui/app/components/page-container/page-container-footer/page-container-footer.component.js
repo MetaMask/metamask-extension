@@ -34,7 +34,7 @@ export default class PageContainerFooter extends Component {
           className="page-container__footer-button"
           onClick={() => onCancel()}
         >
-          { this.context.t('cancel') || cancelText }
+          { cancelText || this.context.t('cancel') }
         </Button>
 
         <Button
@@ -44,7 +44,7 @@ export default class PageContainerFooter extends Component {
           disabled={disabled}
           onClick={e => onSubmit(e)}
         >
-          { this.context.t('next') || submitText }
+          { submitText || this.context.t('next') }
         </Button>
 
       </div>
