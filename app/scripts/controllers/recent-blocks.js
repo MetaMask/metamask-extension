@@ -34,7 +34,13 @@ class RecentBlocksController {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
-    this.blockTracker.on('latest', this.processBlock.bind(this))
+    this.blockTracker.on('latest', async (newBlockNumberHex) => {
+      try {
+        await this.processBlock(newBlockNumberHex)
+      } catch (err) {
+        log.error(err)
+      }
+    })
     this.backfill()
   }
 
