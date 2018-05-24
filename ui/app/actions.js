@@ -1397,16 +1397,24 @@ function markAccountsFound () {
 
 function retryTransaction (txId) {
   log.debug(`background.retryTransaction`)
+  let newTxId
+
   return (dispatch) => {
-    background.retryTransaction(txId, (err, newState) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      const { selectedAddressTxList } = newState
-      const { id: newTxId } = selectedAddressTxList[selectedAddressTxList.length - 1]
-      dispatch(actions.updateMetamaskState(newState))
-      dispatch(actions.viewPendingTx(newTxId))
+    return new Promise((resolve, reject) => {
+      background.retryTransaction(txId, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        newTxId = id
+        resolve(newState)
+      })
     })
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTxId)
   }
 }
 

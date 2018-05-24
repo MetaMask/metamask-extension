@@ -42,6 +42,7 @@ function reduceApp (state, action) {
       open: false,
       modalState: {
         name: null,
+        props: {},
       },
       previousModalState: {
         name: null,
@@ -88,13 +89,17 @@ function reduceApp (state, action) {
 
     // modal methods:
     case actions.MODAL_OPEN:
+      const { name, ...modalProps } = action.payload
+
       return extend(appState, {
-        modal: Object.assign(
-          state.appState.modal,
-          { open: true },
-          { modalState: action.payload },
-          { previousModalState: appState.modal.modalState},
-        ),
+        modal: {
+          open: true,
+          modalState: {
+            name: name,
+            props: { ...modalProps },
+          },
+          previousModalState: { ...appState.modal.modalState },
+        },
       })
 
     case actions.MODAL_CLOSE:
@@ -102,7 +107,7 @@ function reduceApp (state, action) {
         modal: Object.assign(
           state.appState.modal,
           { open: false },
-          { modalState: { name: null } },
+          { modalState: { name: null, props: {} } },
           { previousModalState: appState.modal.modalState},
         ),
       })

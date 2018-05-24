@@ -402,6 +402,9 @@
   "infoHelp": {
     "message": "Info & Help"
   },
+  "initialTransactionConfirmed": {
+    "message": "Your initial transaction was confirmed by the network. Click OK to go back."
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
@@ -701,10 +704,10 @@
   "save": {
     "message": "Save"
   },
-  "reprice_title": {
-    "message": "Reprice Transaction"
+  "speedUpTitle": {
+    "message": "Speed Up Transaction"
   },
-  "reprice_subtitle": {
+  "speedUpSubtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
   },
   "saveAsCsvFile": {
