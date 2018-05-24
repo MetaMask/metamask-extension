@@ -66,11 +66,11 @@ function simplifyErrorMessages(report) {
 
 function rewriteErrorMessages(report, rewriteFn) {
   // rewrite top level message
-  report.message = rewriteFn(report.message)
+  if (typeof report.message === 'string') report.message = rewriteFn(report.message)
   // rewrite each exception message
   if (report.exception && report.exception.values) {
     report.exception.values.forEach(item => {
-      item.value = rewriteFn(item.value)
+      if (typeof item.value === 'string') item.value = rewriteFn(item.value)
     })
   }
 }
