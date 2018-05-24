@@ -130,8 +130,9 @@ class AccountTracker {
   async _updateForBlock (blockNumber) {
     this._currentBlockNumber = blockNumber
 
-    // this shouldn't be here...
+    // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
     const currentBlock = await this._query.getBlockByNumber(blockNumber, false)
+    if (!currentBlock) return
     const currentBlockGasLimit = currentBlock.gasLimit
     this.store.updateState({ currentBlockGasLimit })
 
