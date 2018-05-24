@@ -52,7 +52,10 @@ describe('PendingTransactionTracker', function () {
       getPendingTransactions: () => {return []},
       getCompletedTransactions: () => {return []},
       publishTransaction: () => {},
+      confirmTransaction: () => {},
     })
+
+    pendingTxTracker._getBlock = (blockNumber) => { return {number: blockNumber, transactions: []} }
   })
 
   describe('_checkPendingTx state management', function () {
@@ -120,40 +123,36 @@ describe('PendingTransactionTracker', function () {
       })
       pendingTxTracker.checkForTxInBlock(block)
     })
-    it('should emit \'txConfirmed\' if the tx is in the block', function (done) {
-      const block = { transactions: [txMeta]}
-      pendingTxTracker.getPendingTransactions = () => [txMeta]
-      pendingTxTracker.once('tx:confirmed', (txId) => {
-        assert(txId, txMeta.id, 'should pass txId')
-        done()
-      })
-      pendingTxTracker.once('tx:failed', (_, err) => { done(err) })
-      pendingTxTracker.checkForTxInBlock(block)
-    })
   })
   describe('#queryPendingTxs', function () {
     it('should call #_checkPendingTxs if their is no oldBlock', function (done) {
       let newBlock, oldBlock
-      newBlock = { number: '0x01' }
-      pendingTxTracker._checkPendingTxs = done
+      newBlock = '0x01'
+      const originalFunction = pendingTxTracker._checkPendingTxs
+      pendingTxTracker._checkPendingTxs = () => { done() }
       pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
+      pendingTxTracker._checkPendingTxs = originalFunction
     })
     it('should call #_checkPendingTxs if oldBlock and the newBlock have a diff of greater then 1', function (done) {
       let newBlock, oldBlock
-      oldBlock = { number: '0x01' }
-      newBlock = { number: '0x03' }
-      pendingTxTracker._checkPendingTxs = done
+      oldBlock = '0x01'
+      newBlock = '0x03'
+      const originalFunction = pendingTxTracker._checkPendingTxs
+      pendingTxTracker._checkPendingTxs = () => { done() }
       pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
+      pendingTxTracker._checkPendingTxs = originalFunction
     })
     it('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less', function (done) {
       let newBlock, oldBlock
-      oldBlock = { number: '0x1' }
-      newBlock = { number: '0x2' }
+      oldBlock = '0x1'
+      newBlock = '0x2'
+      const originalFunction = pendingTxTracker._checkPendingTxs
       pendingTxTracker._checkPendingTxs = () => {
         const err = new Error('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less')
         done(err)
       }
       pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
+      pendingTxTracker._checkPendingTxs = originalFunction
       done()
     })
   })
@@ -169,16 +168,6 @@ describe('PendingTransactionTracker', function () {
 
     it('should should return if query does not return txParams', function () {
       providerResultStub.eth_getTransactionByHash = null
-      pendingTxTracker._checkPendingTx(txMeta)
-    })
-
-    it('should emit \'txConfirmed\'', function (done) {
-      providerResultStub.eth_getTransactionByHash = {blockNumber: '0x01'}
-      pendingTxTracker.once('tx:confirmed', (txId) => {
-        assert(txId, txMeta.id, 'should pass txId')
-        done()
-      })
-      pendingTxTracker.once('tx:failed', (_, err) => { done(err) })
       pendingTxTracker._checkPendingTx(txMeta)
     })
   })
@@ -207,7 +196,7 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#resubmitPendingTxs', function () {
-    const blockStub = { number: '0x0' };
+    const blockNuberStub = '0x0'
     beforeEach(function () {
     const txMeta2 = txMeta3 = txMeta
     txList = [txMeta, txMeta2, txMeta3].map((tx) => {
@@ -225,7 +214,7 @@ describe('PendingTransactionTracker', function () {
       Promise.all(txList.map((tx) => tx.processed))
       .then((txCompletedList) => done())
       .catch(done)
-      pendingTxTracker.resubmitPendingTxs(blockStub)
+      pendingTxTracker.resubmitPendingTxs(blockNuberStub)
     })
     it('should not emit \'tx:failed\' if the txMeta throws a known txError', function (done) {
       knownErrors =[
@@ -252,7 +241,7 @@ describe('PendingTransactionTracker', function () {
       .then((txCompletedList) => done())
       .catch(done)
 
-      pendingTxTracker.resubmitPendingTxs(blockStub)
+      pendingTxTracker.resubmitPendingTxs(blockNuberStub)
     })
     it('should emit \'tx:warning\' if it encountered a real error', function (done) {
       pendingTxTracker.once('tx:warning', (txMeta, err) => {
@@ -270,7 +259,7 @@ describe('PendingTransactionTracker', function () {
       .then((txCompletedList) => done())
       .catch(done)
 
-      pendingTxTracker.resubmitPendingTxs(blockStub)
+      pendingTxTracker.resubmitPendingTxs(blockNuberStub)
     })
   })
   describe('#_resubmitTx', function () {
