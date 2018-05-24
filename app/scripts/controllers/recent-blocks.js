@@ -57,7 +57,7 @@ class RecentBlocksController {
    */
   async processBlock (newBlockNumberHex) {
     const newBlockNumber = Number.parseInt(newBlockNumberHex, 16)
-    const newBlock = await this.getBlockByNumber(newBlockNumber)
+    const newBlock = await this.getBlockByNumber(newBlockNumber, true)
 
     const block = this.mapTransactionsToPrices(newBlock)
 
@@ -128,7 +128,7 @@ class RecentBlocksController {
       const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
       await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
         try {
-          const newBlock = await this.getBlockByNumber(targetBlockNumber)
+          const newBlock = await this.getBlockByNumber(targetBlockNumber, true)
 
           if (newBlock) {
             this.backfillBlock(newBlock)
