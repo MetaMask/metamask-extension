@@ -247,7 +247,7 @@ module.exports = class MetamaskController extends EventEmitter {
         }
       },
       // tx signing
-      processTransaction: this.txController.newUnapprovedTransaction.bind(this.txController),
+      processTransaction: this.newUnapprovedTransaction.bind(this),
       // msg signing
       processEthSignMessage: this.newUnsignedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
@@ -616,6 +616,18 @@ module.exports = class MetamaskController extends EventEmitter {
 
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
+
+  /**
+   * Called when a Dapp suggests a new tx to be signed.
+   * this wrapper needs to exist so we can provide a reference to
+   *  "newUnapprovedTransaction" before "txController" is instantiated
+   *
+   * @param {Object} msgParams - The params passed to eth_sign.
+   * @param {Object} req - (optional) the original request, containing the origin
+   */
+  async newUnapprovedTransaction(txParams, req) {
+    return await this.txController.newUnapprovedTransaction(txParams, req)
+  }
 
   // eth_sign methods:
 
