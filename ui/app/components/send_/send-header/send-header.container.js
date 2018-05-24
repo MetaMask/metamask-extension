@@ -1,13 +1,14 @@
 import { connect } from 'react-redux'
 import { clearSend } from '../../../actions'
 import SendHeader from './send-header.component'
-import { getSelectedToken } from '../../../selectors'
+import { getSubtitleParams, getTitleKey } from './send-header.selectors'
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendHeader)
 
 function mapStateToProps (state) {
   return {
-    isToken: Boolean(getSelectedToken(state)),
+    titleKey: getTitleKey(state),
+    subtitleParams: getSubtitleParams(state),
   }
 }
 

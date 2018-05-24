@@ -18,7 +18,10 @@ proxyquire('../send-header.container.js', {
     },
   },
   '../../../actions': actionSpies,
-  '../../../selectors': { getSelectedToken: (s) => `mockSelectedToken:${s}` },
+  './send-header.selectors': {
+    getTitleKey: (s) => `mockTitleKey:${s}`,
+    getSubtitleParams: (s) => `mockSubtitleParams:${s}`,
+  },
 })
 
 describe('send-header container', () => {
@@ -27,7 +30,8 @@ describe('send-header container', () => {
 
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
-        isToken: true,
+        titleKey: 'mockTitleKey:mockState',
+        subtitleParams: 'mockSubtitleParams:mockState',
       })
     })
 

@@ -253,6 +253,9 @@
   "editAccountName": {
     "message": "Edit Account Name"
   },
+  "editingTransaction": {
+    "message": "Make changes to your transaction"
+  },
   "emailUs": {
     "message": "Email us!"
   },
@@ -755,6 +758,10 @@
   },
   "onlySendToEtherAddress": {
     "message": "Only send ETH to an Ethereum address."
+  },
+  "onlySendTokensToAccountAddress": {
+    "message": "Only send $1 to an Ethereum account address.",
+    "description": "displays token symbol"
   },
   "searchTokens": {
     "message": "Search Tokens"

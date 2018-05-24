@@ -23,8 +23,9 @@ describe('SendHeader Component', function () {
     wrapper = shallow(<SendHeader
       clearSend={propsMethodSpies.clearSend}
       history={historySpies}
-      isToken={false}
-    />, { context: { t: str => str } })
+      titleKey={'mockTitleKey'}
+      subtitleParams={[ 'mockSubtitleKey', 'mockVal']}
+    />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 
   afterEach(() => {
@@ -59,8 +60,8 @@ describe('SendHeader Component', function () {
         subtitle,
         title,
       } = wrapper.find(PageContainerHeader).props()
-      assert.equal(subtitle, 'onlySendToEtherAddress')
-      assert.equal(title, 'sendETH')
+      assert.equal(subtitle, 'mockSubtitleKeymockVal')
+      assert.equal(title, 'mockTitleKey')
       assert.equal(SendHeader.prototype.onClose.callCount, 0)
       onClose()
       assert.equal(SendHeader.prototype.onClose.callCount, 1)

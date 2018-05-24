@@ -8,7 +8,8 @@ export default class SendHeader extends Component {
   static propTypes = {
     clearSend: PropTypes.func,
     history: PropTypes.object,
-    isToken: PropTypes.bool,
+    titleKey: PropTypes.string,
+    subtitleParams: PropTypes.array,
   };
 
   onClose () {
@@ -20,8 +21,8 @@ export default class SendHeader extends Component {
     return (
       <PageContainerHeader
         onClose={() => this.onClose()}
-        subtitle={this.context.t('onlySendToEtherAddress')}
-        title={this.props.isToken ? this.context.t('sendTokens') : this.context.t('sendETH')}
+        subtitle={this.context.t(...this.props.subtitleParams)}
+        title={this.context.t(this.props.titleKey)}
       />
     )
   }
