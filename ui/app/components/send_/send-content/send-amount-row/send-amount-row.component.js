@@ -64,7 +64,7 @@ export default class SendAmountRow extends Component {
       convertedCurrency,
       gasTotal,
       inError,
-      primaryCurrency = 'ETH',
+      primaryCurrency,
       selectedToken,
     } = this.props
 
@@ -80,7 +80,7 @@ export default class SendAmountRow extends Component {
           convertedCurrency={convertedCurrency}
           handleChange={newAmount => this.handleAmountChange(newAmount)}
           inError={inError}
-          primaryCurrency={primaryCurrency}
+          primaryCurrency={primaryCurrency || 'ETH'}
           selectedToken={selectedToken}
           value={amount || '0x0'}
         />

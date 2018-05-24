@@ -156,5 +156,11 @@ describe('SendAmountRow Component', function () {
         ['mockNewAmount']
       )
     })
+
+    it('should pass the default primaryCurrency to the CurrencyDisplay if primaryCurrency is falsy', () => {
+      wrapper.setProps({ primaryCurrency: null })
+      const { primaryCurrency } = wrapper.find(SendRowWrapper).childAt(1).props()
+      assert.equal(primaryCurrency, 'ETH')
+    })
   })
 })
