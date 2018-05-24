@@ -192,7 +192,7 @@ SendTransactionScreen.prototype.renderHeader = function () {
 }
 
 SendTransactionScreen.prototype.renderErrorMessage = function (errorType) {
-  const { errors } = this.props
+  const { errors } = this.state
   const errorMessage = errors[errorType]
 
   return errorMessage
@@ -259,9 +259,9 @@ SendTransactionScreen.prototype.handleToChange = function (to, nickname = '') {
 }
 
 SendTransactionScreen.prototype.renderToRow = function () {
-  const { toAccounts, errors, to, network } = this.props
+  const { toAccounts, to, network } = this.props
 
-  const { toDropdownOpen } = this.state
+  const { errors, toDropdownOpen } = this.state
 
   return h('div.send-v2__form-row', [
 
@@ -386,12 +386,12 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     primaryCurrency = 'ETH',
     convertedCurrency,
     amountConversionRate,
-    errors,
     amount,
     setMaxModeTo,
     maxModeOn,
     gasTotal,
   } = this.props
+  const { errors } = this.state
 
   return h('div.send-v2__form-row', [
 
@@ -490,9 +490,9 @@ SendTransactionScreen.prototype.renderFooter = function () {
     gasTotal,
     tokenBalance,
     selectedToken,
-    errors: { amount: amountError, to: toError },
     history,
   } = this.props
+  const { errors: { amount: amountError, to: toError } } = this.state
 
   const missingTokenBalance = selectedToken && (tokenBalance === null || tokenBalance === undefined)
   const noErrors = !amountError && toError === null
@@ -603,8 +603,8 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     selectedToken,
     editingTransactionId,
     toNickname,
-    errors: { amount: amountError, to: toError },
   } = this.props
+  const { errors: { amount: amountError, to: toError } } = this.state
 
   const noErrors = !amountError && toError === null
 
