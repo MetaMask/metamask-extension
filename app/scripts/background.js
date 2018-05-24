@@ -25,7 +25,7 @@ const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
-const pw = require('./lib/portalnetwork.js')
+const ipfsContent = require('./lib/ipfsContent.js')
 
 const {
   ENVIRONMENT_TYPE_POPUP,
@@ -60,9 +60,6 @@ const openMetamaskTabsIDs = {}
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 const localStore = new LocalStore()
 let versionedData
-
-console.log('localStore', localStore);
-console.log('diskStore', diskStore);
 
 // initialization flow
 initialize().catch(log.error)
@@ -161,8 +158,7 @@ async function initialize () {
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
-  // porto network init
-  pw(initState.NetworkController.provider);
+  ipfsContent(initState.NetworkController.provider)
 }
 
 //
