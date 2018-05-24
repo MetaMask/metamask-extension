@@ -241,7 +241,7 @@ module.exports = class MetamaskController extends EventEmitter {
         },
       },
       // account mgmt
-      getAccounts: (cb) => {
+      getAccounts: async () => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const result = []
         const selectedAddress = this.preferencesController.getSelectedAddress()
@@ -250,7 +250,7 @@ module.exports = class MetamaskController extends EventEmitter {
         if (isUnlocked && selectedAddress) {
           result.push(selectedAddress)
         }
-        cb(null, result)
+        return result
       },
       // tx signing
       // old style msg signing
