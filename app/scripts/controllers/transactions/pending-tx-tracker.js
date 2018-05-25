@@ -1,6 +1,7 @@
 const EventEmitter = require('events')
 const log = require('loglevel')
 const EthQuery = require('ethjs-query')
+const timeout = (duration) => new Promise(resolve => setTimeout(resolve, duration))
 /**
 
   Event emitter utility class for tracking the transactions as they<br>
@@ -212,7 +213,15 @@ class PendingTransactionTracker extends EventEmitter {
   }
 
   async _getBlock (blockNumber) {
-    return await this.query.getBlockByNumber(blockNumber, false)
+    let block
+    while (!block) {
+      // block requests will sometimes return null due do the infura api
+      // being backed by multiple out-of-sync clients
+      block = await this.query.getBlockByNumber(blockNumber, false)
+      // if block is null, wait 1 sec then try again
+      if (!block) await timeout(1000)
+    }
+    return block
   }
 
   /**
