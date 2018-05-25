@@ -25,7 +25,7 @@ class TxGasUtil {
     @returns {object} the txMeta object with the gas written to the txParams
   */
   async analyzeGasUsage (txMeta) {
-    const block = await this.query.getBlockByNumber('latest', true)
+    const block = await this.query.getBlockByNumber('latest', false)
     let estimatedGasHex
     try {
       estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
