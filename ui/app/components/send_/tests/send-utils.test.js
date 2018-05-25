@@ -241,7 +241,10 @@ describe('send utils', () => {
       selectedAddress: 'mockAddress',
       to: '0xisContract',
       estimateGasMethod: sinon.stub().callsFake(
-        (data, cb) => cb(null, { toString: (n) => `mockToString:${n}` })
+        (data, cb) => cb(
+          data.to.match(/willFailBecauseOf:/) ? { message: data.to.match(/\:(.+)$/)[1] } : null,
+          { toString: (n) => `mockToString:${n}` }
+        )
       ),
     }
     const baseExpectedCall = {
@@ -297,6 +300,30 @@ describe('send utils', () => {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
       const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123' }))
       assert.equal(result, SIMPLE_GAS_COST)
+    })
+
+    it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async () => {
+      const result = await estimateGas(Object.assign({}, baseMockParams, {
+        to: 'isContract willFailBecauseOf:Transaction execution error.',
+      }))
+      assert.equal(result, '0x64x0.95')
+    })
+
+    it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async () => {
+      const result = await estimateGas(Object.assign({}, baseMockParams, {
+        to: 'isContract willFailBecauseOf:gas required exceeds allowance or always failing transaction.',
+      }))
+      assert.equal(result, '0x64x0.95')
+    })
+
+    it(`should reject other errors`, async () => {
+      try {
+        await estimateGas(Object.assign({}, baseMockParams, {
+          to: 'isContract willFailBecauseOf:some other error',
+        }))
+      } catch (err) {
+        assert.deepEqual(err, { message: 'some other error' })
+      }
     })
   })
 
