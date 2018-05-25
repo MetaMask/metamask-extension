@@ -193,14 +193,21 @@ async function estimateGas ({ selectedAddress, selectedToken, data, blockGasLimi
     roundDown: '0',
     toNumericBase: 'hex',
   }))
-
   // run tx
   return new Promise((resolve, reject) => {
-    estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
+    return estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
       if (err) {
-        reject(err)
+        const simulationFailed = (
+          err.message.includes('Transaction execution error.') ||
+          err.message.includes('gas required exceeds allowance or always failing transaction')
+        )
+        if (simulationFailed) {
+          return resolve(paramsForGasEstimate.gas)
+        } else {
+          return reject(err)
+        }
       }
-      resolve(estimatedGas.toString(16))
+      return resolve(estimatedGas.toString(16))
     })
   })
 }
