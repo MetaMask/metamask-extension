@@ -37,6 +37,7 @@ describe('SendFooter Component', function () {
       gasPrice={'mockGasPrice'}
       gasTotal={'mockGasTotal'}
       history={historySpies}
+      inError={false}
       selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
       sign={propsMethodSpies.sign}
       to={'mockTo'}
@@ -70,6 +71,39 @@ describe('SendFooter Component', function () {
       wrapper.instance().onCancel()
       assert.equal(historySpies.push.callCount, 1)
       assert.equal(historySpies.push.getCall(0).args[0], DEFAULT_ROUTE)
+    })
+  })
+
+
+  describe('formShouldBeDisabled()', () => {
+    const config = {
+      'should return true if inError is truthy': {
+        inError: true,
+        expectedResult: true,
+      },
+      'should return true if gasTotal is falsy': {
+        inError: false,
+        gasTotal: false,
+        expectedResult: true,
+      },
+      'should return true if selectedToken is truthy and tokenBalance is falsy': {
+        selectedToken: true,
+        tokenBalance: null,
+        expectedResult: true,
+      },
+      'should return false if inError is false and all other params are truthy': {
+        inError: false,
+        gasTotal: '0x123',
+        selectedToken: true,
+        tokenBalance: 123,
+        expectedResult: false,
+      },
+    }
+    Object.entries(config).map(([description, obj]) => {
+      it(description, () => {
+        wrapper.setProps(obj)
+        assert.equal(wrapper.instance().formShouldBeDisabled(), obj.expectedResult)
+      })
     })
   })
 
@@ -134,6 +168,35 @@ describe('SendFooter Component', function () {
   })
 
   describe('render', () => {
+    beforeEach(() => {
+      sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns('formShouldBeDisabledReturn')
+      wrapper = shallow(<SendFooter
+        addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
+        amount={'mockAmount'}
+        clearSend={propsMethodSpies.clearSend}
+        disabled={true}
+        editingTransactionId={'mockEditingTransactionId'}
+        errors={{}}
+        from={ { address: 'mockAddress', balance: 'mockBalance' } }
+        gasLimit={'mockGasLimit'}
+        gasPrice={'mockGasPrice'}
+        gasTotal={'mockGasTotal'}
+        history={historySpies}
+        inError={false}
+        selectedToken={{ mockProp: 'mockSelectedTokenProp' }}
+        sign={propsMethodSpies.sign}
+        to={'mockTo'}
+        toAccounts={['mockAccount']}
+        tokenBalance={'mockTokenBalance'}
+        unapprovedTxs={['mockTx']}
+        update={propsMethodSpies.update}
+      />, { context: { t: str => str } })
+    })
+
+    afterEach(() => {
+      SendFooter.prototype.formShouldBeDisabled.restore()
+    })
+
     it('should render a PageContainerFooter component', () => {
       assert.equal(wrapper.find(PageContainerFooter).length, 1)
     })
@@ -144,7 +207,7 @@ describe('SendFooter Component', function () {
         onSubmit,
         disabled,
       } = wrapper.find(PageContainerFooter).props()
-      assert.equal(disabled, true)
+      assert.equal(disabled, 'formShouldBeDisabledReturn')
 
       assert.equal(SendFooter.prototype.onSubmit.callCount, 0)
       onSubmit(MOCK_EVENT)

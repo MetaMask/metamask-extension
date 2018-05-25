@@ -17,6 +17,7 @@ export default class SendFooter extends Component {
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
     history: PropTypes.object,
+    inError: PropTypes.bool,
     selectedToken: PropTypes.object,
     sign: PropTypes.func,
     to: PropTypes.string,
@@ -75,12 +76,18 @@ export default class SendFooter extends Component {
     this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
   }
 
+  formShouldBeDisabled () {
+    const { inError, selectedToken, tokenBalance, gasTotal } = this.props
+    const missingTokenBalance = selectedToken && !tokenBalance
+    return inError || !gasTotal || missingTokenBalance
+  }
+
   render () {
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}
         onSubmit={e => this.onSubmit(e)}
-        disabled={this.props.disabled}
+        disabled={this.formShouldBeDisabled()}
       />
     )
   }

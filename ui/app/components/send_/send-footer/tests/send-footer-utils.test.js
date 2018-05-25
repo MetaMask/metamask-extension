@@ -16,7 +16,6 @@ const sendUtils = proxyquire('../send-footer.utils.js', {
 })
 const {
   addressIsNew,
-  formShouldBeDisabled,
   constructTxParams,
   constructUpdatedTx,
   addHexPrefixToObjectValues,
@@ -62,37 +61,6 @@ describe('send-footer utils', () => {
         ], '0xxyz'),
         true
       )
-    })
-  })
-
-  describe('formShouldBeDisabled()', () => {
-    const config = {
-      'should return true if inError is truthy': {
-        inError: true,
-        expectedResult: true,
-      },
-      'should return true if gasTotal is falsy': {
-        inError: false,
-        gasTotal: false,
-        expectedResult: true,
-      },
-      'should return true if selectedToken is truthy and tokenBalance is falsy': {
-        selectedToken: true,
-        tokenBalance: null,
-        expectedResult: true,
-      },
-      'should return false if inError is false and all other params are truthy': {
-        inError: false,
-        gasTotal: '0x123',
-        selectedToken: true,
-        tokenBalance: 123,
-        expectedResult: false,
-      },
-    }
-    Object.entries(config).map(([description, obj]) => {
-      it(description, () => {
-        assert.equal(formShouldBeDisabled(obj), obj.expectedResult)
-      })
     })
   })
 

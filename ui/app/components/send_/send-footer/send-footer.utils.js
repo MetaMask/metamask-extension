@@ -2,11 +2,6 @@ const ethAbi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
 const { TOKEN_TRANSFER_FUNCTION_SIGNATURE } = require('../send.constants')
 
-function formShouldBeDisabled ({ inError, selectedToken, tokenBalance, gasTotal }) {
-  const missingTokenBalance = selectedToken && !tokenBalance
-  return inError || !gasTotal || missingTokenBalance
-}
-
 function addHexPrefixToObjectValues (obj) {
   return Object.keys(obj).reduce((newObj, key) => {
     return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
@@ -81,7 +76,6 @@ function addressIsNew (toAccounts, newAddress) {
 
 module.exports = {
   addressIsNew,
-  formShouldBeDisabled,
   constructTxParams,
   constructUpdatedTx,
   addHexPrefixToObjectValues,
