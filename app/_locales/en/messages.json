@@ -676,6 +676,9 @@
   "ropsten": {
     "message": "Ropsten Test Network"
   },
+  "rpc": {
+    "message": "Custom RPC"
+  },
   "currentRpc": {
     "message": "Current RPC"
   },
