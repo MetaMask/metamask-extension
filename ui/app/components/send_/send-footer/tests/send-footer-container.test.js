@@ -16,7 +16,6 @@ const utilsStubs = {
   addressIsNew: sinon.stub().returns(true),
   constructTxParams: sinon.stub().returns('mockConstructedTxParams'),
   constructUpdatedTx: sinon.stub().returns('mockConstructedUpdatedTxParams'),
-  formShouldBeDisabled: sinon.stub().returns('mockFormShouldBeDisabled'),
 }
 
 proxyquire('../send-footer.container.js', {
@@ -53,27 +52,18 @@ describe('send-footer container', () => {
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         amount: 'mockAmount:mockState',
-        disabled: 'mockFormShouldBeDisabled',
         selectedToken: 'mockSelectedToken:mockState',
         editingTransactionId: 'mockEditingTransactionId:mockState',
         from: 'mockFromObject:mockState',
         gasLimit: 'mockGasLimit:mockState',
         gasPrice: 'mockGasPrice:mockState',
+        gasTotal: 'mockGasTotal:mockState',
         inError: 'mockInError:mockState',
-        isToken: true,
         to: 'mockTo:mockState',
         toAccounts: 'mockToAccounts:mockState',
+        tokenBalance: 'mockTokenBalance:mockState',
         unapprovedTxs: 'mockUnapprovedTxs:mockState',
       })
-      assert.deepEqual(
-        utilsStubs.formShouldBeDisabled.getCall(0).args[0],
-        {
-          inError: 'mockInError:mockState',
-          selectedToken: 'mockSelectedToken:mockState',
-          tokenBalance: 'mockTokenBalance:mockState',
-          gasTotal: 'mockGasTotal:mockState',
-        }
-      )
     })
 
   })

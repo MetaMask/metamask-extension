@@ -142,6 +142,7 @@ describe('Send Component', function () {
 
     it('should not call updateSendTokenBalance or this.updateGas if network === prevNetwork', () => {
       SendTransactionScreen.prototype.updateGas.resetHistory()
+      propsMethodSpies.updateSendTokenBalance.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',
@@ -168,6 +169,7 @@ describe('Send Component', function () {
 
     it('should call updateSendTokenBalance and this.updateGas with the correct params', () => {
       SendTransactionScreen.prototype.updateGas.resetHistory()
+      propsMethodSpies.updateSendTokenBalance.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',

@@ -35,7 +35,7 @@ export default class FromDropdown extends Component {
         closeDropdown={closeDropdown}
         onSelect={onSelect}
         activeAddress={selectedAccount.address}
-      />},
+      />}
     </div>
   }
 
