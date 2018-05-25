@@ -14,6 +14,9 @@ global.log = log
 // polyfills
 //
 
+// fetch
+global.fetch = require('isomorphic-fetch')
+
 // dom
 require('jsdom-global')()
 
