@@ -17,6 +17,7 @@ describe('PendingTransactionTracker', function () {
   let pendingTxTracker, txMeta, txMetaNoHash, txMetaNoRawTx, providerResultStub,
   provider, txMeta3, txList, knownErrors
   this.timeout(10000)
+
   beforeEach(function () {
     txMeta = {
       id: 1,
@@ -331,7 +332,7 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#_checkIfNonceIsTaken', function () {
-    beforeEach ( function () {
+    beforeEach(function () {
       let confirmedTxList = [{
         id: 1,
         hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
