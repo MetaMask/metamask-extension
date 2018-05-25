@@ -1,5 +1,7 @@
 require('chromedriver')
 require('geckodriver')
+const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const webdriver = require('selenium-webdriver')
 const Command = require('selenium-webdriver/lib/command').Command
@@ -19,10 +21,15 @@ function delay (time) {
 }
 
 function buildChromeWebDriver (extPath) {
+  const tmpProfile = path.join(os.tmpdir(), fs.mkdtempSync('mm-chrome-profile'));
   return new webdriver.Builder()
     .withCapabilities({
       chromeOptions: {
-        args: [`load-extension=${extPath}`],
+        args: [
+          `load-extension=${extPath}`,
+          `user-data-dir=${tmpProfile}`,
+        ],
+        binary: process.env.SELENIUM_CHROME_BINARY,
       },
     })
     .build()
