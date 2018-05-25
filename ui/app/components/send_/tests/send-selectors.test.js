@@ -36,7 +36,6 @@ const {
   getTokenBalance,
   getTokenExchangeRate,
   getUnapprovedTxs,
-  isSendFormInError,
   transactionsSelector,
 } = selectors
 import mockState from './send-selectors-test-data'
@@ -542,39 +541,6 @@ describe('send selectors', () => {
             gasPrice: '4a817c800',
           },
         }
-      )
-    })
-  })
-
-  describe('isSendFormInError()', () => {
-    it('should return true if amount or to errors are truthy', () => {
-      const editedMockState1 = {
-        send: Object.assign({}, mockState.send, {
-          errors: { amount: true },
-        }),
-      }
-      assert.deepEqual(
-        isSendFormInError(editedMockState1),
-        true
-      )
-      const editedMockState2 = {
-        send: Object.assign({}, mockState.send, {
-          errors: { to: true },
-        }),
-      }
-      assert.deepEqual(
-        isSendFormInError(editedMockState2),
-        true
-      )
-    })
-
-    it('should return false if amount is falsy and to is null', () => {
-      const editedMockState = {
-        send: Object.assign({}, mockState.send, { errors: { amount: false, to: null } }),
-      }
-      assert.deepEqual(
-        isSendFormInError(editedMockState),
-        false
       )
     })
   })

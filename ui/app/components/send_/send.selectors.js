@@ -39,7 +39,6 @@ const selectors = {
   getTokenBalance,
   getTokenExchangeRate,
   getUnapprovedTxs,
-  isSendFormInError,
   transactionsSelector,
 }
 
@@ -249,11 +248,6 @@ function getTokenExchangeRate (state, tokenSymbol) {
 
 function getUnapprovedTxs (state) {
   return state.metamask.unapprovedTxs
-}
-
-function isSendFormInError (state) {
-  const { amount, to } = getSendErrors(state)
-  return Boolean(amount || to !== null)
 }
 
 function transactionsSelector (state) {

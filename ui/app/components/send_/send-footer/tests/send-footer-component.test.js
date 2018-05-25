@@ -86,6 +86,12 @@ describe('SendFooter Component', function () {
         gasTotal: false,
         expectedResult: true,
       },
+      'should return true if to is truthy': {
+        to: '0xsomevalidAddress',
+        inError: false,
+        gasTotal: false,
+        expectedResult: true,
+      },
       'should return true if selectedToken is truthy and tokenBalance is falsy': {
         selectedToken: true,
         tokenBalance: null,

@@ -7,6 +7,5 @@ const selectors = {
 module.exports = selectors
 
 function isSendFormInError (state) {
-  const { amount, to } = getSendErrors(state)
-  return Boolean(amount || to !== null)
+  return Object.values(getSendErrors(state)).some(n => n)
 }
