@@ -12,9 +12,8 @@ const Mutex = require('await-semaphore').Mutex
 */
 class NonceTracker {
 
-  constructor ({ provider, blockTracker, getPendingTransactions, getConfirmedTransactions }) {
+  constructor ({ provider, getPendingTransactions, getConfirmedTransactions }) {
     this.provider = provider
-    this.blockTracker = blockTracker
     this.ethQuery = new EthQuery(provider)
     this.getPendingTransactions = getPendingTransactions
     this.getConfirmedTransactions = getConfirmedTransactions
@@ -76,11 +75,8 @@ class NonceTracker {
   }
 
   async _getCurrentBlock () {
-    const currentBlock = this.blockTracker.getCurrentBlock()
-    if (currentBlock) return currentBlock
-    return await new Promise((reject, resolve) => {
-      this.blockTracker.once('latest', resolve)
-    })
+    const blockTracker = this._getBlockTracker()
+    return await blockTracker.getLatestBlock()
   }
 
   async _globalMutexFree () {
@@ -108,8 +104,7 @@ class NonceTracker {
     // calculate next nonce
     // we need to make sure our base count
     // and pending count are from the same block
-    const currentBlock = await this._getCurrentBlock()
-    const blockNumber = currentBlock.blockNumber
+    const blockNumber = await this._getCurrentBlock()
     const baseCountBN = await this.ethQuery.getTransactionCount(address, blockNumber || 'latest')
     const baseCount = baseCountBN.toNumber()
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
@@ -170,6 +165,16 @@ class NonceTracker {
     }
 
     return { name: 'local', nonce: highest, details: { startPoint, highest } }
+  }
+
+  // this is a hotfix for the fact that the blockTracker will
+  // change when the network changes
+
+  /**
+    @returns {Object} the current blockTracker
+  */
+  _getBlockTracker () {
+    return this.provider._blockTracker
   }
 }
 
