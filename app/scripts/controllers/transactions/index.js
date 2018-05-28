@@ -128,7 +128,6 @@ class TransactionController extends EventEmitter {
   @param opts {object} - with the key origin to put the origin on the txMeta
   */
 
-
   async newUnapprovedTransaction (txParams, opts = {}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const initialTxMeta = await this.addUnapprovedTransaction(txParams)
@@ -145,7 +144,7 @@ class TransactionController extends EventEmitter {
           case 'failed':
             return reject(this.cleanErrorStack(new Error(finishedTxMeta.err.message)))
           default:
-            return reject(this.cleanErrorStack(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`))
+            return reject(this.cleanErrorStack(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
         }
       })
     })
