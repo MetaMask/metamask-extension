@@ -78,7 +78,7 @@ class TransactionController extends EventEmitter {
     })
 
     this.txStateManager.store.subscribe(() => this.emit('update:badge'))
-    this._setupListners()
+    this._setupListeners()
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.txStateManager.store.subscribe(() => this._updateMemstore())
@@ -382,8 +382,9 @@ class TransactionController extends EventEmitter {
     is called in constructor applies the listeners for pendingTxTracker txStateManager
     and blockTracker
   */
-  _setupListners () {
+  _setupListeners () {
     this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
+    this._setupBlockTrackerListener()
     this.pendingTxTracker.on('tx:warning', (txMeta) => {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
     })
@@ -399,13 +400,6 @@ class TransactionController extends EventEmitter {
       txMeta.retryCount++
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
     })
-
-    this.blockTracker.on('block', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
-    // this is a little messy but until ethstore has been either
-    // removed or redone this is to guard against the race condition
-    this.blockTracker.on('latest', this.pendingTxTracker.resubmitPendingTxs.bind(this.pendingTxTracker))
-    this.blockTracker.on('sync', this.pendingTxTracker.queryPendingTxs.bind(this.pendingTxTracker))
-
   }
 
   /**
@@ -427,6 +421,40 @@ class TransactionController extends EventEmitter {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce')
       this.txStateManager.setTxStatusDropped(otherTxMeta.id)
     })
+  }
+
+  _setupBlockTrackerListener () {
+    let listenersAreActive = false
+    const latestBlockHandler = this._onLatestBlock.bind(this)
+    const blockTracker = this.blockTracker
+    const txStateManager = this.txStateManager
+
+    txStateManager.on('tx:status-update', updateSubscription)
+    updateSubscription()
+
+    function updateSubscription() {
+      const pendingTxs = txStateManager.getPendingTransactions()
+      if (!listenersAreActive && pendingTxs.length > 0) {
+        blockTracker.on('latest', latestBlockHandler)
+        listenersAreActive = true
+      } else if (listenersAreActive && !pendingTxs.length) {
+        blockTracker.removeListener('latest', latestBlockHandler)
+        listenersAreActive = false
+      }
+    }
+  }
+
+  async _onLatestBlock (blockNumber) {
+    try {
+      await this.pendingTxTracker.updatePendingTxs()
+    } catch (err) {
+      log.error(err)
+    }
+    try {
+      await this.pendingTxTracker.resubmitPendingTxs(blockNumber)
+    } catch (err) {
+      log.error(err)
+    }
   }
 
   /**

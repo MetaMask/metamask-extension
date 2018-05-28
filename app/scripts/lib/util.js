@@ -99,7 +99,21 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
   return targetBN.mul(numBN).div(denomBN)
 }
 
+function applyListeners (listeners, emitter) {
+  Object.keys(listeners).forEach((key) => {
+    emitter.on(key, listeners[key])
+  })
+}
+
+function removeListeners (listeners, emitter) {
+  Object.keys(listeners).forEach((key) => {
+    emitter.removeListener(key, listeners[key])
+  })
+}
+
 module.exports = {
+  removeListeners,
+  applyListeners,
   getStack,
   getEnvironmentType,
   sufficientBalance,

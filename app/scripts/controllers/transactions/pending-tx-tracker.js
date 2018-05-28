@@ -24,60 +24,27 @@ class PendingTransactionTracker extends EventEmitter {
     super()
     this.query = new EthQuery(config.provider)
     this.nonceTracker = config.nonceTracker
-    // default is one day
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
     this.publishTransaction = config.publishTransaction
     this.confirmTransaction = config.confirmTransaction
-    this._checkPendingTxs()
+    this.updatePendingTxs()
   }
 
   /**
-    checks if a signed tx is in a block and
-    if it is included emits tx status as 'confirmed'
-    @param block {object}, a full block
-    @emits tx:confirmed
-    @emits tx:failed
+    checks the network for signed txs and releases the nonce global lock if it is
   */
-  async checkForTxInBlock (blockNumber) {
-    const block = await this._getBlock(blockNumber)
-    const signedTxList = this.getPendingTransactions()
-    if (!signedTxList.length) return
-    signedTxList.forEach((txMeta) => {
-      const txHash = txMeta.hash
-      const txId = txMeta.id
-
-      if (!txHash) {
-        const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
-        noTxHashErr.name = 'NoTxHashError'
-        this.emit('tx:failed', txId, noTxHashErr)
-        return
-      }
-
-      if (!block.transactions.length) return
-
-      block.transactions.forEach((hash) => {
-        if (hash === txHash) {
-          this.confirmTransaction(txId)
-        }
-      })
-    })
-  }
-
-  /**
-    asks the network for the transaction to see if a block number is included on it
-    if we have skipped/missed blocks
-    @param object - oldBlock newBlock
-  */
-  queryPendingTxs ({ oldBlock, newBlock }) {
-    // check pending transactions on start
-    if (!oldBlock) {
-      this._checkPendingTxs()
-      return
+  async updatePendingTxs () {
+    const pendingTxs = this.getPendingTransactions()
+    // in order to keep the nonceTracker accurate we block it while updating pending transactions
+    const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
+    try {
+      await Promise.all(pendingTxs.map((txMeta) => this._checkPendingTx(txMeta)))
+    } catch (err) {
+      log.error('PendingTransactionTracker - Error updating pending transactions')
+      log.error(err)
     }
-    // if we synced by more than one block, check for missed pending transactions
-    const diff = Number.parseInt(newBlock, 16) - Number.parseInt(oldBlock, 16)
-    if (diff > 1) this._checkPendingTxs()
+    nonceGlobalLock.releaseLock()
   }
 
   /**
@@ -151,6 +118,7 @@ class PendingTransactionTracker extends EventEmitter {
     this.emit('tx:retry', txMeta)
     return txHash
   }
+
   /**
     Ask the network for the transaction to see if it has been include in a block
     @param txMeta {Object} - the txMeta object
@@ -180,9 +148,8 @@ class PendingTransactionTracker extends EventEmitter {
     }
 
     // get latest transaction status
-    let txParams
     try {
-      txParams = await this.query.getTransactionByHash(txHash)
+      const txParams = await this.query.getTransactionByHash(txHash)
       if (!txParams) return
       if (txParams.blockNumber) {
         this.confirmTransaction(txId)
@@ -194,34 +161,6 @@ class PendingTransactionTracker extends EventEmitter {
       }
       this.emit('tx:warning', txMeta, err)
     }
-  }
-
-  /**
-    checks the network for signed txs and releases the nonce global lock if it is
-  */
-  async _checkPendingTxs () {
-    const signedTxList = this.getPendingTransactions()
-    // in order to keep the nonceTracker accurate we block it while updating pending transactions
-    const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
-    try {
-      await Promise.all(signedTxList.map((txMeta) => this._checkPendingTx(txMeta)))
-    } catch (err) {
-      log.error('PendingTransactionWatcher - Error updating pending transactions')
-      log.error(err)
-    }
-    nonceGlobalLock.releaseLock()
-  }
-
-  async _getBlock (blockNumber) {
-    let block
-    while (!block) {
-      // block requests will sometimes return null due do the infura api
-      // being backed by multiple out-of-sync clients
-      block = await this.query.getBlockByNumber(blockNumber, false)
-      // if block is null, wait 1 sec then try again
-      if (!block) await timeout(1000)
-    }
-    return block
   }
 
   /**

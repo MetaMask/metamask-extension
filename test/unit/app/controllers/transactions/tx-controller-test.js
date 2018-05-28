@@ -1,4 +1,5 @@
 const assert = require('assert')
+const EventEmitter = require('events')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const EthjsQuery = require('ethjs-query')
@@ -26,12 +27,13 @@ describe('Transaction Controller', function () {
     provider = createTestProviderTools({ scaffold: providerResultStub }).provider
     query = new EthjsQuery(provider)
     fromAccount = getTestAccounts()[0]
-
+    const blockTrackerStub = new EventEmitter()
+    blockTrackerStub.getCurrentBlock = noop
     txController = new TransactionController({
       provider,
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
-      blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
+      blockTracker: blockTrackerStub,
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(fromAccount.key)
         resolve()

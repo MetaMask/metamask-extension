@@ -7,7 +7,7 @@ const { createTestProviderTools } = require('../../../../stub/provider')
 const PendingTransactionTracker = require('../../../../../app/scripts/controllers/transactions/pending-tx-tracker')
 const MockTxGen = require('../../../../lib/mock-tx-gen')
 const sinon = require('sinon')
-const noop = () => true
+const noop =()=>true
 const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
@@ -108,56 +108,6 @@ describe('PendingTransactionTracker', function () {
     })
   })
 
-  describe('#checkForTxInBlock', function () {
-    it('should return if no pending transactions', function () {
-      // throw a type error if it trys to do anything on the block
-      // thus failing the test
-      const block = Proxy.revocable({}, {}).revoke()
-      pendingTxTracker.checkForTxInBlock(block)
-    })
-    it('should emit \'tx:failed\' if the txMeta does not have a hash', function (done) {
-      const block = Proxy.revocable({}, {}).revoke()
-      pendingTxTracker.getPendingTransactions = () => [txMetaNoHash]
-      pendingTxTracker.once('tx:failed', (txId, err) => {
-        assert(txId, txMetaNoHash.id, 'should pass txId')
-        done()
-      })
-      pendingTxTracker.checkForTxInBlock(block)
-    })
-  })
-  describe('#queryPendingTxs', function () {
-    it('should call #_checkPendingTxs if their is no oldBlock', function (done) {
-      let newBlock, oldBlock
-      newBlock = '0x01'
-      const originalFunction = pendingTxTracker._checkPendingTxs
-      pendingTxTracker._checkPendingTxs = () => { done() }
-      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
-      pendingTxTracker._checkPendingTxs = originalFunction
-    })
-    it('should call #_checkPendingTxs if oldBlock and the newBlock have a diff of greater then 1', function (done) {
-      let newBlock, oldBlock
-      oldBlock = '0x01'
-      newBlock = '0x03'
-      const originalFunction = pendingTxTracker._checkPendingTxs
-      pendingTxTracker._checkPendingTxs = () => { done() }
-      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
-      pendingTxTracker._checkPendingTxs = originalFunction
-    })
-    it('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less', function (done) {
-      let newBlock, oldBlock
-      oldBlock = '0x1'
-      newBlock = '0x2'
-      const originalFunction = pendingTxTracker._checkPendingTxs
-      pendingTxTracker._checkPendingTxs = () => {
-        const err = new Error('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less')
-        done(err)
-      }
-      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
-      pendingTxTracker._checkPendingTxs = originalFunction
-      done()
-    })
-  })
-
   describe('#_checkPendingTx', function () {
     it('should emit \'tx:failed\' if the txMeta does not have a hash', function (done) {
       pendingTxTracker.once('tx:failed', (txId, err) => {
@@ -187,7 +137,6 @@ describe('PendingTransactionTracker', function () {
     it('should warp all txMeta\'s in #_checkPendingTx', function (done) {
       pendingTxTracker.getPendingTransactions = () => txList
       pendingTxTracker._checkPendingTx = (tx) => { tx.resolve(tx) }
-      const list = txList.map
       Promise.all(txList.map((tx) => tx.processed))
       .then((txCompletedList) => done())
       .catch(done)
@@ -201,7 +150,7 @@ describe('PendingTransactionTracker', function () {
     beforeEach(function () {
     const txMeta2 = txMeta3 = txMeta
     txList = [txMeta, txMeta2, txMeta3].map((tx) => {
-        tx.processed = new Promise ((resolve) => { tx.resolve = resolve })
+        tx.processed = new Promise((resolve) => { tx.resolve = resolve })
         return tx
       })
     })
@@ -218,7 +167,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.resubmitPendingTxs(blockNuberStub)
     })
     it('should not emit \'tx:failed\' if the txMeta throws a known txError', function (done) {
-      knownErrors =[
+      knownErrors = [
         // geth
         '     Replacement transaction Underpriced            ',
         '       known transaction',

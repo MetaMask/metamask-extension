@@ -9,6 +9,7 @@ package
 # IDEs
 .idea
 .vscode
+.sublime-project
 
 temp
 .tmp
