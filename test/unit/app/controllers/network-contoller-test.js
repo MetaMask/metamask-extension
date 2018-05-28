@@ -33,7 +33,7 @@ describe('# Network Controller', function () {
 
   describe('network', function () {
     describe('#provider', function () {
-      it.only('provider should be updatable without reassignment', function () {
+      it('provider should be updatable without reassignment', function () {
         networkController.initializeProvider(networkControllerProviderConfig)
         const providerProxy = networkController.getProviderAndBlockTracker().provider
         assert.equal(providerProxy.test, undefined)
