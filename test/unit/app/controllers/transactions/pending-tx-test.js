@@ -107,56 +107,6 @@ describe('PendingTransactionTracker', function () {
     })
   })
 
-  describe('#checkForTxInBlock', function () {
-    it('should return if no pending transactions', function () {
-      // throw a type error if it trys to do anything on the block
-      // thus failing the test
-      const block = Proxy.revocable({}, {}).revoke()
-      pendingTxTracker.checkForTxInBlock(block)
-    })
-    it('should emit \'tx:failed\' if the txMeta does not have a hash', function (done) {
-      const block = Proxy.revocable({}, {}).revoke()
-      pendingTxTracker.getPendingTransactions = () => [txMetaNoHash]
-      pendingTxTracker.once('tx:failed', (txId, err) => {
-        assert(txId, txMetaNoHash.id, 'should pass txId')
-        done()
-      })
-      pendingTxTracker.checkForTxInBlock(block)
-    })
-  })
-  describe('#queryPendingTxs', function () {
-    it('should call #_checkPendingTxs if their is no oldBlock', function (done) {
-      let newBlock, oldBlock
-      newBlock = '0x01'
-      const originalFunction = pendingTxTracker._checkPendingTxs
-      pendingTxTracker._checkPendingTxs = () => { done() }
-      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
-      pendingTxTracker._checkPendingTxs = originalFunction
-    })
-    it('should call #_checkPendingTxs if oldBlock and the newBlock have a diff of greater then 1', function (done) {
-      let newBlock, oldBlock
-      oldBlock = '0x01'
-      newBlock = '0x03'
-      const originalFunction = pendingTxTracker._checkPendingTxs
-      pendingTxTracker._checkPendingTxs = () => { done() }
-      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
-      pendingTxTracker._checkPendingTxs = originalFunction
-    })
-    it('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less', function (done) {
-      let newBlock, oldBlock
-      oldBlock = '0x1'
-      newBlock = '0x2'
-      const originalFunction = pendingTxTracker._checkPendingTxs
-      pendingTxTracker._checkPendingTxs = () => {
-        const err = new Error('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less')
-        done(err)
-      }
-      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
-      pendingTxTracker._checkPendingTxs = originalFunction
-      done()
-    })
-  })
-
   describe('#_checkPendingTx', function () {
     it('should emit \'tx:failed\' if the txMeta does not have a hash', function (done) {
       pendingTxTracker.once('tx:failed', (txId, err) => {
