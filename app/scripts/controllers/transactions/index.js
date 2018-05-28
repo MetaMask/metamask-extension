@@ -451,7 +451,7 @@ class TransactionController extends EventEmitter {
       log.error(err)
     }
     try {
-      await this.pendingTxTracker.resubmitPendingTxs(newBlock)
+      await this.pendingTxTracker.resubmitPendingTxs(blockNumber)
     } catch (err) {
       log.error(err)
     }
