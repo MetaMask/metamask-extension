@@ -242,7 +242,7 @@ describe('send utils', () => {
       to: '0xisContract',
       estimateGasMethod: sinon.stub().callsFake(
         (data, cb) => cb(
-          data.to.match(/willFailBecauseOf:/) ? { message: data.to.match(/\:(.+)$/)[1] } : null,
+          data.to.match(/willFailBecauseOf:/) ? { message: data.to.match(/:(.+)$/)[1] } : null,
           { toString: (n) => `mockToString:${n}` }
         )
       ),
