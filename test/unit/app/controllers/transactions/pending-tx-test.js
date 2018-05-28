@@ -134,14 +134,14 @@ describe('PendingTransactionTracker', function () {
       })
     })
 
-    it('should warp all txMeta\'s in #_checkPendingTx', function (done) {
+    it('should warp all txMeta\'s in #updatePendingTxs', function (done) {
       pendingTxTracker.getPendingTransactions = () => txList
       pendingTxTracker._checkPendingTx = (tx) => { tx.resolve(tx) }
       Promise.all(txList.map((tx) => tx.processed))
       .then((txCompletedList) => done())
       .catch(done)
 
-      pendingTxTracker._checkPendingTxs()
+      pendingTxTracker.updatePendingTxs()
     })
   })
 
