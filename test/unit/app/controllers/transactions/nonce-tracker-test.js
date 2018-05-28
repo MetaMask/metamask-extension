@@ -229,6 +229,7 @@ function generateNonceTrackerWith (pending, confirmed, providerStub = '0x0') {
   }
   const blockTracker = {
     getCurrentBlock: () => '0x11b568',
+    getLatestBlock: async () => '0x11b568',
   }
   return new NonceTracker({
     provider,
