@@ -1,7 +1,7 @@
 const EventEmitter = require('events')
 const log = require('loglevel')
 const EthQuery = require('ethjs-query')
-const timeout = (duration) => new Promise(resolve => setTimeout(resolve, duration))
+
 /**
 
   Event emitter utility class for tracking the transactions as they<br>
