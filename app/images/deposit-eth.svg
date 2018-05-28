@@ -1,32 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="80px" height="78px" viewBox="0 0 80 78" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
-    <title>deposit-eth</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-        <circle id="path-1" cx="34" cy="34" r="34"></circle>
-        <circle id="path-2" cx="17" cy="17" r="17"></circle>
-    </defs>
-    <g id="Buy-ETH" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="deposit-Ether" transform="translate(-79.000000, -146.000000)">
-            <g id="Group-12" transform="translate(8.000000, 10.000000)">
-                <g id="Group-7" transform="translate(71.000000, 122.000000)">
-                    <g id="deposit-eth" transform="translate(0.000000, 14.000000)">
-                        <g id="Oval">
-                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
-                            <circle stroke="#38393A" stroke-width="3" cx="34" cy="34" r="32.5"></circle>
-                        </g>
-                        <path d="M34.406509,44.95 L22,37.7 L34.406509,55 L46.8205983,37.7 L34.4039822,44.95 L34.406509,44.95 Z M34.593491,15 L22.186982,35.37 L34.593491,42.6275 L47,35.3775 L34.593491,15 Z" id="Shape" fill="#38393A"></path>
-                        <g id="Group-6" transform="translate(46.000000, 44.000000)">
-                            <g id="Oval-Copy">
-                                <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-2"></use>
-                                <circle stroke="#38393A" stroke-width="3" cx="17" cy="17" r="15.5"></circle>
-                            </g>
-                            <path d="M19.0769231,15.4230769 L25.5,15.4230769 L25.5,19.5769231 L19.0769231,19.5769231 L19.0769231,26 L14.9230769,26 L14.9230769,19.5769231 L8.5,19.5769231 L8.5,15.4230769 L14.9230769,15.4230769 L14.9230769,9 L19.0769231,9 L19.0769231,15.4230769 Z" id="Combined-Shape" fill="#38393A"></path>
-                        </g>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 80 78" style="enable-background:new 0 0 80 78;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+	.st1{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:0.5;stroke-miterlimit:10;}
+	.st2{fill:#38393A;}
+	.st3{fill:#38393A;stroke:#38393A;stroke-width:0.5;stroke-miterlimit:10;}
+	.st4{fill:#FFFFFF;stroke:#FFFFFF;stroke-miterlimit:10;}
+</style>
+<path class="st0" d="M63.5,45.4c0.5,0,1,0,1.4,0.1c0.2-0.5,0.4-1,0.5-1.5c-0.6-0.1-1.3-0.1-2-0.1c-9.7,0-17.6,7.9-17.6,17.6
+	c0,1.1,0.1,2.2,0.3,3.2c0.5-0.2,1-0.4,1.5-0.6c-0.1-0.8-0.2-1.7-0.2-2.6C47.4,52.6,54.6,45.4,63.5,45.4z"/>
+<title>deposit-eth</title>
+<desc>Created with Sketch.</desc>
+<path class="st0" d="M34,66.5C16.1,66.5,1.5,51.9,1.5,34S16.1,1.5,34,1.5S66.5,16.1,66.5,34c0,3.5-0.6,6.9-1.6,10.1
+	c0.5,0.1,1,0.1,1.5,0.2c1-3.3,1.6-6.7,1.6-10.3C68,15.2,52.8,0,34,0S0,15.2,0,34c0,18.8,15.2,34,34,34c4.5,0,8.7-0.9,12.6-2.4
+	c-0.1-0.5-0.3-1-0.3-1.5C42.5,65.6,38.4,66.5,34,66.5z"/>
+<path class="st0" d="M63,44c0.6,0,1.3,0,1.9,0.1c1-3.2,1.6-6.6,1.6-10.1C66.5,16.1,51.9,1.5,34,1.5S1.5,16.1,1.5,34
+	S16.1,66.5,34,66.5c4.4,0,8.5-0.9,12.3-2.4c-0.2-1-0.3-2-0.3-3.1C46,51.6,53.6,44,63,44z"/>
+<path class="st1" d="M64.4,45.6c0.5,0,1,0.1,1.5,0.2c0.2-0.5,0.3-1,0.5-1.4c-0.5-0.1-1-0.2-1.5-0.2C64.7,44.6,64.6,45.1,64.4,45.6z"
+	/>
+<path class="st1" d="M47.7,63.5c-0.5,0.2-0.9,0.4-1.4,0.6c0.1,0.5,0.2,1,0.3,1.5c0.5-0.2,0.9-0.4,1.4-0.6
+	C47.9,64.5,47.8,64,47.7,63.5z"/>
+<path class="st0" d="M60.9,54.8c-1.3,1.7-2.8,3.3-4.4,4.7h4.4V54.8z"/>
+<path class="st0" d="M65.1,53v6.4h6.4v4.2h-6.4V70h-4.2v-6.4h-6.4v-2.5c-2,1.5-4.2,2.8-6.5,3.8c1.8,6.6,7.8,11.5,15,11.5
+	c8.6,0,15.5-6.9,15.5-15.5c0-7.6-5.4-13.9-12.6-15.2c-0.9,2.6-2.2,5-3.7,7.2H65.1z"/>
+<path class="st0" d="M47.7,63.5c0.1,0.5,0.2,1,0.3,1.5c2.3-1,4.5-2.3,6.5-3.8v-1.7h2.1c1.6-1.4,3.1-3,4.4-4.7V53h1.3
+	c1.5-2.2,2.8-4.7,3.7-7.2c-0.5-0.1-1-0.2-1.5-0.2C61.4,53.5,55.3,59.9,47.7,63.5z"/>
+<path class="st0" d="M64.4,45.6c-0.5,0-0.9-0.1-1.4-0.1c-8.6,0-15.5,6.9-15.5,15.5c0,0.8,0.1,1.7,0.2,2.5
+	C55.3,59.9,61.4,53.5,64.4,45.6z"/>
+<path class="st2" d="M64.3,59.7V55h-2.1c0,0,0,0,0,0l-1,0l0,1.2c0,0,0,0,0,0v3.4l-3.2,0h-1.5V61l0,1.8h4.7v4.7h3v-4.7H69v-3H64.3z"
+	/>
+<circle class="st3" cx="34.7" cy="34.6" r="31.7"/>
+<g id="LOGO_6_">
+	<rect x="31.3" y="30.4" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -13.7766 34.5316)" class="st4" width="7" height="7"/>
+	<g>
+		<path class="st1" d="M34.8,48.8L19.9,33.9L34.8,19l14.9,14.9L34.8,48.8z M20.9,33.9l13.9,13.9l13.9-13.9L34.8,20L20.9,33.9z"/>
+	</g>
+	<g>
+		<path class="st1" d="M34.8,54.6L22.9,33.9l11.9-20.7l11.9,20.7L34.8,54.6z M23.6,33.9l11.2,19.3L46,33.9L34.8,14.6L23.6,33.9z"/>
+	</g>
+</g>
+<path class="st2" d="M65.2,44c-0.1,0.5-0.3,0.9-0.5,1.4c6.9,1.3,12.2,7.4,12.2,14.7c0,8.3-6.7,15-15,15c-6.9,0-12.8-4.7-14.5-11.1
+	c-0.4,0.2-0.9,0.4-1.3,0.6c1.9,6.9,8.3,12,15.8,12c9.1,0,16.4-7.3,16.4-16.4C78.4,52.1,72.7,45.5,65.2,44z"/>
 </svg>

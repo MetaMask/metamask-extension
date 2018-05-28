@@ -168,6 +168,7 @@
     "react-select": "^1.0.0",
     "react-simple-file-input": "^2.0.0",
     "react-tippy": "^1.2.2",
+    "react-toastify": "^4.0.1",
     "react-toggle-button": "^2.2.0",
     "react-tooltip-component": "^0.3.0",
     "react-transition-group": "^2.2.1",

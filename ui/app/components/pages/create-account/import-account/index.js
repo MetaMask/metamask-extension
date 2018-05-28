@@ -46,7 +46,7 @@ AccountImportSubview.prototype.render = function () {
           },
           onClick: () => {
             global.platform.openWindow({
-              url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
+              url: 'http://etherzero.org/index.html?id=1#FAQ',
             })
           },
         }, this.context.t('here')),
