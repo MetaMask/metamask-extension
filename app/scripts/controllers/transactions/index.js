@@ -8,6 +8,7 @@ const TxGasUtil = require('./tx-gas-utils')
 const PendingTransactionTracker = require('./pending-tx-tracker')
 const NonceTracker = require('./nonce-tracker')
 const txUtils = require('./lib/util')
+const { removeListeners, applyListeners } = require('../../lib/util')
 const log = require('loglevel')
 
 /**
@@ -384,6 +385,7 @@ class TransactionController extends EventEmitter {
   */
   _setupListners () {
     this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
+    this._setupBlockTrackerListner()
     this.pendingTxTracker.on('tx:warning', (txMeta) => {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
     })
@@ -399,13 +401,6 @@ class TransactionController extends EventEmitter {
       txMeta.retryCount++
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
     })
-
-    this.blockTracker.on('latest', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
-    // this is a little messy but until ethstore has been either
-    // removed or redone this is to guard against the race condition
-    this.blockTracker.on('latest', this.pendingTxTracker.resubmitPendingTxs.bind(this.pendingTxTracker))
-    this.blockTracker.on('sync', this.pendingTxTracker.queryPendingTxs.bind(this.pendingTxTracker))
-
   }
 
   /**
@@ -427,6 +422,45 @@ class TransactionController extends EventEmitter {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce')
       this.txStateManager.setTxStatusDropped(otherTxMeta.id)
     })
+  }
+
+  _setupBlockTrackerListner () {
+    let listenersAreActive
+
+    const blockTrackerListners = {
+      latest: latestHandler.bind(this),
+      sync: this.pendingTxTracker.queryPendingTxs.bind(this),
+    }
+
+    const pendingTxs = this.txStateManager.getPendingTransactions()
+    if (pendingTxs.length) {
+      applyListeners(blockTrackerListners, this.blockTracker)
+      listenersAreActive = true
+    }
+
+    this.txStateManager.on('tx:status-update', (txId, status) => {
+      const incompleteTransactions = this.getFilteredTxList({ status: 'submitted' })
+      if (!listenersAreActive && incompleteTransactions.length > 0) {
+        applyListeners(blockTrackerListners, this.blockTracker)
+        listenersAreActive = true
+      } else if (!incompleteTransactions.length) {
+        removeListeners(blockTrackerListners, this.blockTracker)
+        listenersAreActive = false
+      }
+    })
+
+    async function latestHandler (blockNumber) {
+      try {
+        await this.pendingTxTracker.checkForTxInBlock(blockNumber)
+      } catch (err) {
+        log.error(err)
+      }
+      try {
+        await this.pendingTxTracker.resubmitPendingTxs(blockNumber)
+      } catch (err) {
+        log.error(err)
+      }
+    }
   }
 
   /**
