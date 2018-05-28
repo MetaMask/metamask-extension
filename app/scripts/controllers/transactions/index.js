@@ -112,12 +112,23 @@ class TransactionController extends EventEmitter {
   }
 
   /**
+  Returns error without stack trace for better UI display
+  @param {Error} err - error which stack will be cleaned
+  */
+  cleanErrorStack(err){
+    err.stack = err.name + ': ' + err.message
+    return err
+  }
+
+  /**
   add a new unapproved transaction to the pipeline
 
   @returns {Promise<string>} the hash of the transaction after being submitted to the network
   @param txParams {object} - txParams for the transaction
   @param opts {object} - with the key origin to put the origin on the txMeta
   */
+
+
   async newUnapprovedTransaction (txParams, opts = {}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const initialTxMeta = await this.addUnapprovedTransaction(txParams)
@@ -130,11 +141,11 @@ class TransactionController extends EventEmitter {
           case 'submitted':
             return resolve(finishedTxMeta.hash)
           case 'rejected':
-            return reject(new Error('MetaMask Tx Signature: User denied transaction signature.'))
+            return reject(this.cleanErrorStack(new Error('MetaMask Tx Signature: User denied transaction signature.')))
           case 'failed':
-            return reject(new Error(finishedTxMeta.err.message))
+            return reject(this.cleanErrorStack(new Error(finishedTxMeta.err.message)))
           default:
-            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`))
+            return reject(this.cleanErrorStack(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`))
         }
       })
     })
