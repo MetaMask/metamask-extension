@@ -1,10 +1,10 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const CurrencyInput = require('../currency-input')
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
+const NumericInput = require('react-numeric-input')
 
 module.exports = CurrencyDisplay
 
@@ -21,21 +21,36 @@ function toHexWei (value) {
   })
 }
 
+CurrencyDisplay.prototype.componentWillMount = function () {
+  this.setState({
+    valueToRender: this.getValueToRender(this.props),
+  })
+}
+
+CurrencyDisplay.prototype.componentWillReceiveProps = function (nextProps) {
+  const currentValueToRender = this.getValueToRender(this.props)
+  const newValueToRender = this.getValueToRender(nextProps)
+  if (currentValueToRender !== newValueToRender) {
+    this.setState({
+      valueToRender: newValueToRender,
+    })
+  }
+}
+
 CurrencyDisplay.prototype.getAmount = function (value) {
   const { selectedToken } = this.props
   const { decimals } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
 
-  const sendAmount = multiplyCurrencies(value, multiplier, {toNumericBase: 'hex'})
+  const sendAmount = multiplyCurrencies(value || '0', multiplier, {toNumericBase: 'hex'})
 
   return selectedToken
     ? sendAmount
     : toHexWei(value)
 }
 
-CurrencyDisplay.prototype.getValueToRender = function () {
-  const { selectedToken, conversionRate, value } = this.props
-
+CurrencyDisplay.prototype.getValueToRender = function ({ selectedToken, conversionRate, value }) {
+  if (value === '0x0') return ''
   const { decimals, symbol } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
 
@@ -76,6 +91,19 @@ CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValu
     : convertedValue
 }
 
+CurrencyDisplay.prototype.handleChange = function (newVal) {
+  this.setState({ valueToRender: newVal })
+  this.props.onChange(this.getAmount(newVal))
+}
+
+CurrencyDisplay.prototype.getInputWidth = function (valueToRender, readOnly) {
+  const valueString = String(valueToRender)
+  const valueLength = valueString.length || 1
+  const dynamicBuffer = readOnly ? 0 : 1
+  const decimalPointDeficit = !readOnly && valueString.match(/\./) ? -0.5 : 0
+  return (valueLength + dynamicBuffer + decimalPointDeficit) + 'ch'
+}
+
 CurrencyDisplay.prototype.render = function () {
   const {
     className = 'currency-display',
@@ -85,10 +113,10 @@ CurrencyDisplay.prototype.render = function () {
     convertedCurrency,
     readOnly = false,
     inError = false,
-    handleChange,
+    onBlur,
   } = this.props
+  const { valueToRender } = this.state
 
-  const valueToRender = this.getValueToRender()
   const convertedValueToRender = this.getConvertedValueToRender(valueToRender)
 
   return h('div', {
@@ -103,20 +131,19 @@ CurrencyDisplay.prototype.render = function () {
 
       h('div.currency-display__input-wrapper', [
 
-        h(readOnly ? 'input' : CurrencyInput, {
+        h(NumericInput, {
           className: primaryBalanceClassName,
           value: `${valueToRender}`,
-          placeholder: '0',
+          placeholder: `0 ${primaryCurrency}`,
           readOnly,
           ...(!readOnly ? {
-            onInputChange: newValue => {
-              handleChange(this.getAmount(newValue))
-            },
-            inputRef: input => { this.currencyInput = input },
+            onChange: e => this.handleChange(e),
+            onBlur: () => onBlur(this.getAmount(valueToRender)),
           } : {}),
+          style: false,
+          format: num => `${num} ${primaryCurrency}`,
+          parse: stringWithCurrency => stringWithCurrency && stringWithCurrency.match(/^([.\d]+)/)[1],
         }),
-
-        h('span.currency-display__currency-symbol', primaryCurrency),
 
       ]),
 
