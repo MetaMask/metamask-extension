@@ -108,17 +108,17 @@ class ConfirmDeployContract extends Component {
     const FIAT = conversionUtil(txParams.value, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
-      fromCurrency: 'ETH',
+      fromCurrency: 'ETZ',
       toCurrency: currentCurrency,
       numberOfDecimals: 2,
       fromDenomination: 'WEI',
       conversionRate,
     })
-    const ETH = conversionUtil(txParams.value, {
+    const ETZ = conversionUtil(txParams.value, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
-      fromCurrency: 'ETH',
-      toCurrency: 'ETH',
+      fromCurrency: 'ETZ',
+      toCurrency: 'ETZ',
       fromDenomination: 'WEI',
       conversionRate,
       numberOfDecimals: 6,
@@ -126,7 +126,7 @@ class ConfirmDeployContract extends Component {
 
     return {
       fiat: Number(FIAT),
-      token: Number(ETH),
+      token: Number(ETZ),
     }
 
   }
@@ -150,24 +150,24 @@ class ConfirmDeployContract extends Component {
       fromNumericBase: 'BN',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
-      fromCurrency: 'ETH',
+      fromCurrency: 'ETZ',
       toCurrency: currentCurrency,
       numberOfDecimals: 2,
       conversionRate,
     })
-    const ETH = conversionUtil(txFeeBn, {
+    const ETZ = conversionUtil(txFeeBn, {
       fromNumericBase: 'BN',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
-      fromCurrency: 'ETH',
-      toCurrency: 'ETH',
+      fromCurrency: 'ETZ',
+      toCurrency: 'ETZ',
       numberOfDecimals: 6,
       conversionRate,
     })
 
     return {
       fiat: Number(FIAT),
-      eth: Number(ETH),
+      eth: Number(ETZ),
     }
   }
 

@@ -187,7 +187,7 @@
     "message": "Количество десятичных разрядов"
   },
   "defaultNetwork": {
-    "message": "Основная сеть Ethereum – это сеть по умолчанию для Ether транзакций."
+    "message": "Основная сеть Ethereum – это сеть по умолчанию для ETZ транзакций."
   },
   "denExplainer": {
     "message": "DEN – это зашифрованное паролем хранилище внутри EtzMeta."
@@ -206,7 +206,7 @@
     "message": "Пополнить Eth"
   },
   "depositEther": {
-    "message": "Пополнить Ether"
+    "message": "Пополнить ETZ"
   },
   "depositFiat": {
     "message": "Пополнить деньгами"
@@ -218,7 +218,7 @@
     "message": "Пополнить через ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Если у вас есть другие криптовалюты, вы можете торговать и пополнять Ether напрямую в ваш EtzMeta кошелек. Нет необходимости в счете."
+    "message": "Если у вас есть другие криптовалюты, вы можете торговать и пополнять ETZ напрямую в ваш EtzMeta кошелек. Нет необходимости в счете."
   },
   "details": {
     "message": "Детали"
@@ -227,10 +227,10 @@
     "message": "Прямое пополнение"
   },
   "directDepositEther": {
-    "message": "Прямое пополнение Ether"
+    "message": "Прямое пополнение ETZ"
   },
   "directDepositEtherExplainer": {
-    "message": "Если у вас уже есть Ether, то самый быстрый способ получить Ether в ваш новый кошелек – это прямое пополнение."
+    "message": "Если у вас уже есть ETZ, то самый быстрый способ получить ETZ в ваш новый кошелек – это прямое пополнение."
   },
   "done": {
     "message": "Готово"
@@ -326,11 +326,11 @@
     "message": "Установите стоимость газа"
   },
   "getEther": {
-    "message": "Получить Ether"
+    "message": "Получить ETZ"
   },
   "getEtherFromFaucet": {
-    "message": "Получить Ether из крана для $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Получить ETZ из крана для $1",
+    "description": "Displays network name for ETZ faucet"
   },
   "greaterThanMin": {
     "message": "должно быть больше или равно $1.",
@@ -353,7 +353,7 @@
     "message": "Скрыть токен?"
   },
   "howToDeposit": {
-    "message": "Как бы вы хотели пополнить Ether?"
+    "message": "Как бы вы хотели пополнить ETZ?"
   },
   "holdEther": {
     "message": "Позволяет вам хранить ether и токены и служит в качестве моста в децентрализированные приложения."
@@ -480,7 +480,7 @@
     "message": "Необходимо выбрать как минимум 1 токен."
   },
   "needEtherInWallet": {
-    "message": "Для взаимодействия с децентрализованными приложениями с помощью EtzMeta нужен Ether в вашем кошельке."
+    "message": "Для взаимодействия с децентрализованными приложениями с помощью EtzMeta нужен ETZ в вашем кошельке."
   },
   "needImportFile": {
     "message": "Вы должны выбрать файл для импорта.",
@@ -491,7 +491,7 @@
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "Невозможно отправить отрицательную сумму ETH."
+    "message": "Невозможно отправить отрицательную сумму ETZ."
   },
   "networks": {
     "message": "Сети"
@@ -700,13 +700,13 @@
     "message": "Отправить"
   },
   "sendETH": {
-    "message": "Отправить ETH"
+    "message": "Отправить ETZ"
   },
   "sendTokens": {
     "message": "Отправить токены"
   },
   "onlySendToEtherAddress": {
-    "message": "Отправляйте ETH только на Ethereum адреса."
+    "message": "Отправляйте ETZ только на Ethereum адреса."
   },
   "searchTokens": {
     "message": "Поиск токенов"
@@ -787,7 +787,7 @@
     "message": "Получатель: "
   },
   "toETHviaShapeShift": {
-    "message": "$1 в ETH через ShapeShift",
+    "message": "$1 в ETZ через ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {

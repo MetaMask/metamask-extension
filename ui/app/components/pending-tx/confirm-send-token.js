@@ -258,17 +258,17 @@ ConfirmSendToken.prototype.getGasFee = function () {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
-    fromCurrency: 'ETH',
+    fromCurrency: 'ETZ',
     toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
   })
-  const ETH = conversionUtil(gasTotal, {
+  const ETZ = conversionUtil(gasTotal, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
-    fromCurrency: 'ETH',
-    toCurrency: 'ETH',
+    fromCurrency: 'ETZ',
+    toCurrency: 'ETZ',
     numberOfDecimals: 6,
     conversionRate,
   })
@@ -285,7 +285,7 @@ ConfirmSendToken.prototype.getGasFee = function () {
 
   return {
     fiat: +Number(FIAT).toFixed(2),
-    eth: ETH,
+    eth: ETZ,
     token: tokenExchangeRate
       ? tokenGas
       : null,

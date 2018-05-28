@@ -175,7 +175,7 @@
     "message": "Decimalen van precisie"
   },
   "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
+    "message": "Het standaardnetwerk voor ETZ-transacties is Main Net."
   },
   "denExplainer": {
     "message": "Uw DEN is uw wachtwoord-gecodeerde opslag binnen EtzMeta."
@@ -194,7 +194,7 @@
     "message": "Aanbetaling Eth"
   },
   "depositEther": {
-    "message": "Stort Ether"
+    "message": "Stort ETZ"
   },
   "depositFiat": {
     "message": "Stort met Fiat"
@@ -206,7 +206,7 @@
     "message": "Stort met ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Als u andere cryptocurrencies bezit, kunt u Ether direct in uw EtzMeta-portemonnee ruilen en storten. Geen account nodig."
+    "message": "Als u andere cryptocurrencies bezit, kunt u ETZ direct in uw EtzMeta-portemonnee ruilen en storten. Geen account nodig."
   },
   "details": {
     "message": "Details"
@@ -215,10 +215,10 @@
     "message": "Directe storting"
   },
   "directDepositEther": {
-    "message": "Directe Ether storten"
+    "message": "Directe ETZ storten"
   },
   "directDepositEtherExplainer": {
-    "message": "Als je al wat Ether hebt, de snelste manier om Ether in je nieuwe portemonnee te krijgen door een directe storting."
+    "message": "Als je al wat ETZ hebt, de snelste manier om ETZ in je nieuwe portemonnee te krijgen door een directe storting."
   },
   "done": {
     "message": "Gedaan"
@@ -311,11 +311,11 @@
     "message": "Gasprijs vereist"
   },
   "getEther": {
-    "message": "Krijg Ether"
+    "message": "Krijg ETZ"
   },
   "getEtherFromFaucet": {
-    "message": "Haal Ether uit een kraan voor de $1",
-    "description": "Geeft de netwerknaam voor Ether-kraan weer"
+    "message": "Haal ETZ uit een kraan voor de $1",
+    "description": "Geeft de netwerknaam voor ETZ-kraan weer"
   },
   "greaterThanMin": {
     "message": "moet groter zijn dan of gelijk zijn aan $1.",
@@ -338,7 +338,7 @@
     "message": "Token verbergen?"
   },
   "howToDeposit": {
-    "message": "Hoe zou je Ether willen deponeren?"
+    "message": "Hoe zou je ETZ willen deponeren?"
   },
   "holdEther": {
     "message": "Hiermee kunt u ether & tokens bewaren en dient u als brug naar gedecentraliseerde applicaties."
@@ -453,7 +453,7 @@
     "message": "Moet ten minste één token selecteren."
   },
   "needEtherInWallet": {
-    "message": "Om te communiceren met gedecentraliseerde applicaties met EtzMeta, heb je Ether nodig in je portemonnee."
+    "message": "Om te communiceren met gedecentraliseerde applicaties met EtzMeta, heb je ETZ nodig in je portemonnee."
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
@@ -464,7 +464,7 @@
     "description": "Wachtwoord en bestand nodig om een ​​account te importeren"
   },
   "negativeETH": {
-    "message": "Kan geen negatieve hoeveelheden ETH verzenden."
+    "message": "Kan geen negatieve hoeveelheden ETZ verzenden."
   },
   "networks": {
     "message": "netwerken"
@@ -643,7 +643,7 @@
     "message": "Sturen"
   },
   "sendETH": {
-    "message": "Verzend ETH"
+    "message": "Verzend ETZ"
   },
   "sendTokens": {
     "message": "Stuur tokens"
@@ -712,7 +712,7 @@
     "message": "Naar"
   },
   "toETHviaShapeShift": {
-    "message": "$1 tot ETH via ShapeShift",
+    "message": "$1 tot ETZ via ShapeShift",
     "description": "systeem zal het aanbetalingstype invullen bij het begin van het bericht"
   },
   "tokenAddress": {

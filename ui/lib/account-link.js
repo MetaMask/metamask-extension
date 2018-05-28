@@ -6,16 +6,16 @@ module.exports = function (address, network) {
       link = `https://explorer.etherzero.org/addr/${address}`
       break
     case 2: // morden test net
-      link = `https://morden.etherscan.io/address/${address}`
+      link = `https://explorer.etherzero.org/addr/${address}`
       break
     case 3: // ropsten test net
-      link = `https://ropsten.etherscan.io/address/${address}`
+      link = `https://explorer.etherzero.org/addr/${address}`
       break
     case 4: // rinkeby test net
-      link = `https://rinkeby.etherscan.io/address/${address}`
+      link = `https://explorer.etherzero.org/addr/${address}`
       break
     case 42: // kovan test net
-      link = `https://kovan.etherscan.io/address/${address}`
+      link = `https://explorer.etherzero.org/addr/${address}`
       break
     default:
       link = ''

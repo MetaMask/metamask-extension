@@ -130,7 +130,7 @@ setupMetamaskMeshMetrics()
  * @property {string} currentAccountTab - A view identifying string for displaying the current displayed view, allows user to have a preferred tab in the old UI (between tokens and history).
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
- * @property {number} conversionRate - A number representing the current exchange rate from the user's preferred currency to Ether.
+ * @property {number} conversionRate - A number representing the current exchange rate from the user's preferred currency to ETZ.
  * @property {number} conversionDate - A unix epoch date (ms) for the time the current conversion rate was last retrieved.
  * @property {Object} infuraNetworkStatus - An object of infura network status checks.
  * @property {Block[]} recentBlocks - An array of recent blocks, used to calculate an effective but cheap gas price.

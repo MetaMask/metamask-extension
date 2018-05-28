@@ -9,7 +9,7 @@ module.exports = function (network) {
       prefix = 'ropsten.'
       break
     case 4: // rinkeby test net
-      prefix = 'rinkeby.'
+      prefix = ''
       break
     case 42: // kovan test net
       prefix = 'kovan.'

@@ -191,7 +191,7 @@
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "Vplačilo ETH"
+    "message": "Vplačilo ETZ"
   },
   "depositEther": {
     "message": "Vplačilo ethera"
@@ -315,7 +315,7 @@
   },
   "getEtherFromFaucet": {
     "message": "Pridobite ether iz fauceta za $1",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for ETZ faucet"
   },
   "greaterThanMin": {
     "message": "mora biti višji ali enak $1.",
@@ -464,7 +464,7 @@
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "Ni mogoče poslati negativne vsote ETH."
+    "message": "Ni mogoče poslati negativne vsote ETZ."
   },
   "networks": {
     "message": "Omrežja"
@@ -643,7 +643,7 @@
     "message": "Pošlji"
   },
   "sendETH": {
-    "message": "Pošlji ETH"
+    "message": "Pošlji ETZ"
   },
   "sendTokens": {
     "message": "Pošlji žetone"
@@ -712,7 +712,7 @@
     "message": "Za"
   },
   "toETHviaShapeShift": {
-    "message": "$1 v ETH prek ShapeShift",
+    "message": "$1 v ETZ prek ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {

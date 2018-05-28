@@ -190,7 +190,7 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "The default network for ETZ transactions is Main Net."
   },
   "denExplainer": {
     "message": "Your DEN is your password-encrypted storage within EtzMeta."
@@ -209,7 +209,7 @@
     "message": "Deposit Eth"
   },
   "depositEther": {
-    "message": "Deposit Ether"
+    "message": "Deposit ETZ"
   },
   "depositFiat": {
     "message": "Deposit with Fiat"
@@ -221,7 +221,7 @@
     "message": "Deposit with ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your EtzMeta wallet. No Account Needed."
+    "message": "If you own other cryptocurrencies, you can trade and deposit ETZ directly into your EtzMeta wallet. No Account Needed."
   },
   "details": {
     "message": "Details"
@@ -230,10 +230,10 @@
     "message": "Direct Deposit"
   },
   "directDepositEther": {
-    "message": "Directly Deposit Ether"
+    "message": "Directly Deposit ETZ"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "If you already have some ETZ, the quickest way to get ETZ in your new wallet by direct deposit."
   },
   "done": {
     "message": "Done"
@@ -341,11 +341,11 @@
     "message": "Generating transaction"
   },
   "getEther": {
-    "message": "Get Ether"
+    "message": "Get ETZ"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Get ETZ from a faucet for the $1",
+    "description": "Displays network name for ETZ faucet"
   },
   "greaterThanMin": {
     "message": "must be greater than or equal to $1.",
@@ -368,7 +368,7 @@
     "message": "Hide Token?"
   },
   "howToDeposit": {
-    "message": "How would you like to deposit Ether?"
+    "message": "How would you like to deposit ETZ?"
   },
   "holdEther": {
     "message": "It allows you to hold ether & tokens, and serves as your bridge to decentralized applications."
@@ -501,7 +501,7 @@
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using EtzMeta, you’ll need Ether in your wallet."
+    "message": "To interact with decentralized applications using EtzMeta, you’ll need ETZ in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -512,7 +512,7 @@
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
+    "message": "Can not send negative amounts of ETZ."
   },
   "networks": {
     "message": "Networks"
@@ -745,13 +745,13 @@
     "message": "Send"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "Send ETZ"
   },
   "sendTokens": {
     "message": "Send Tokens"
   },
   "onlySendToEtherAddress": {
-    "message": "Only send ETH to an Ethereum address."
+    "message": "Only send ETZ to an Ethereum address."
   },
   "searchTokens": {
     "message": "Search Tokens"
@@ -832,7 +832,7 @@
     "message": "To: "
   },
   "toETHviaShapeShift": {
-    "message": "$1 to ETH via ShapeShift",
+    "message": "$1 to ETZ via ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {

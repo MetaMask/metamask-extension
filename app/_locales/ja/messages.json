@@ -279,7 +279,7 @@
   },
   "getEtherFromFaucet": {
     "message": "フォーセットで $1のEtherを得ることができます。",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for ETZ faucet"
   },
   "greaterThanMin": {
     "message": " $1以上にして下さい。",

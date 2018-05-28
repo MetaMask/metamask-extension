@@ -315,7 +315,7 @@
   },
   "getEtherFromFaucet": {
     "message": "รับอีเธอร์ที่ปล่อยจาก $1",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for ETZ faucet"
   },
   "greaterThanMin": {
     "message": "ต้องมากกว่าหรือเท่ากับ $1.",

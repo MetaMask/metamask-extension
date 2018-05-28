@@ -156,13 +156,13 @@
             "status": "available"
           },
           "ETH": {
-            "name": "Ether",
+            "name": "ETZ",
             "symbol": "ETH",
             "image": "https://shapeshift.io/images/coins/ether.png",
             "status": "available"
           },
           "ETC": {
-            "name": "Ether Classic",
+            "name": "ETZ Classic",
             "symbol": "ETC",
             "image": "https://shapeshift.io/images/coins/etherclassic.png",
             "status": "available"

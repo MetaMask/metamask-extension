@@ -187,7 +187,7 @@
     "message": "小數點精度"
   },
   "defaultNetwork": {
-    "message": "預設 Ether 交易網路為主網路（Main Net）。"
+    "message": "預設 ETZ 交易網路為主網路（Main Net）。"
   },
   "denExplainer": {
     "message": "你的 DEN 是在你的 EtzMeta 中的加密密碼儲存庫。"
@@ -206,7 +206,7 @@
     "message": "存入 Eth"
   },
   "depositEther": {
-    "message": "存入 Ether"
+    "message": "存入 ETZ"
   },
   "depositFiat": {
     "message": "從法定貨幣存入"
@@ -218,7 +218,7 @@
     "message": "從 ShapeShift 存入"
   },
   "depositShapeShiftExplainer": {
-    "message": "如果你擁有其他加密貨幣，你可以直接交易並存入 Ether 到你的 EtzMeta 錢包。不需要開帳戶。"
+    "message": "如果你擁有其他加密貨幣，你可以直接交易並存入 ETZ 到你的 EtzMeta 錢包。不需要開帳戶。"
   },
   "details": {
     "message": "詳情"
@@ -227,10 +227,10 @@
     "message": "直接存入"
   },
   "directDepositEther": {
-    "message": "直接存入 Ether"
+    "message": "直接存入 ETZ"
   },
   "directDepositEtherExplainer": {
-    "message": "如果你已經擁有了一些 Ether，使用直接存入功能是讓你的新錢包最快取得 Ether 的方式。"
+    "message": "如果你已經擁有了一些 ETZ，使用直接存入功能是讓你的新錢包最快取得 ETZ 的方式。"
   },
   "done": {
     "message": "完成"
@@ -332,11 +332,11 @@
     "message": "必需填寫 Gas 價格"
   },
   "getEther": {
-    "message": "取得 Ether"
+    "message": "取得 ETZ"
   },
   "getEtherFromFaucet": {
-    "message": "從水管取得$1 Ether",
-    "description": "Displays network name for Ether faucet"
+    "message": "從水管取得$1 ETZ",
+    "description": "Displays network name for ETZ faucet"
   },
   "greaterThanMin": {
     "message": "必須要大於等於 $1。",
@@ -359,7 +359,7 @@
     "message": "隱藏代幣？"
   },
   "howToDeposit": {
-    "message": "你想怎麼存入 Ether？"
+    "message": "你想怎麼存入 ETZ？"
   },
   "holdEther": {
     "message": "Etzmeta讓您能保存 ether 和代幣, 並成為您接觸分散式應用程式的途徑."
@@ -486,7 +486,7 @@
     "message": "必須選擇至少 1 代幣."
   },
   "needEtherInWallet": {
-    "message": "要使用 EtzMeta 存取 DAPP 時，您的錢包中需要有 Ether。"
+    "message": "要使用 EtzMeta 存取 DAPP 時，您的錢包中需要有 ETZ。"
   },
   "needImportFile": {
     "message": "您必須選擇一個檔案來導入。",
@@ -497,7 +497,7 @@
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "不能送出負值的 ETH。"
+    "message": "不能送出負值的 ETZ。"
   },
   "networks": {
     "message": "網路"
@@ -706,13 +706,13 @@
     "message": "發送"
   },
   "sendETH": {
-    "message": "發送 ETH"
+    "message": "發送 ETZ"
   },
   "sendTokens": {
     "message": "發送代幣"
   },
   "onlySendToEtherAddress": {
-    "message": "只發送 ETH 到乙太坊地址."
+    "message": "只發送 ETZ 到乙太坊地址."
   },
   "searchTokens": {
     "message": "搜尋代幣"
@@ -793,7 +793,7 @@
     "message": "目的帳號"
   },
   "toETHviaShapeShift": {
-    "message": "$1 ETH 透過 ShapeShift",
+    "message": "$1 ETZ 透過 ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {

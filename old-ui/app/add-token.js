@@ -104,7 +104,7 @@ AddTokenScreen.prototype.render = function () {
 
           h('div', { style: {display: 'flex'} }, [
             h('input#token_symbol', {
-              placeholder: `Like "ETH"`,
+              placeholder: `Like "ETZ"`,
               value: symbol,
               style: {
                 width: 'inherit',

@@ -690,7 +690,7 @@ rollback to 3.10.0 due to bug
 - Add Parity compatibility, fixing Geth dependency issues.
 - Add a link to the transaction in history that goes to https://metamask.github.io/eth-tx-viz
 too help visualize transactions and to where they are going.
-- Show "Buy Ether" button and warning on tx confirmation when sender balance is insufficient
+- Show "Buy ETZ" button and warning on tx confirmation when sender balance is insufficient
 
 ## 2.12.1 2016-09-14
 
@@ -959,7 +959,7 @@ popup notification opens up.
 
 - Corrected text above account list. Selected account is visible to all sites, not just the current domain.
 - Merged the UI codebase into the main plugin codebase for simpler maintenance.
-- Fix Ether display rounding error. Now rendering to four decimal points.
+- Fix ETZ display rounding error. Now rendering to four decimal points.
 - Fix some inpage synchronous methods
 - Change account rendering to show four decimals and a leading zero.
 

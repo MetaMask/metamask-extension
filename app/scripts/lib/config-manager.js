@@ -162,10 +162,10 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
       return KOVAN_RPC_URL
 
     case 'rinkeby':
-      return RINKEBY_RPC_URL
+      return MAINNET_RPC_URL
 
     default:
-      return provider && provider.rpcTarget ? provider.rpcTarget : RINKEBY_RPC_URL
+      return provider && provider.rpcTarget ? provider.rpcTarget : MAINNET_RPC_URL
   }
 }
 

@@ -497,7 +497,7 @@
     "description": "ஒரு கணக்கை இறக்குமதி செய்ய கடவுச்சொல் மற்றும் கோப்பு தேவை"
   },
   "negativeETH": {
-    "message": "ETH எதிர்மறை அளவுகளை அனுப்ப முடியாது."
+    "message": "ETZ எதிர்மறை அளவுகளை அனுப்ப முடியாது."
   },
   "networks": {
     "message": "நெட்வொர்க்ஸ்"
@@ -712,13 +712,13 @@
     "message": "அனுப்பு"
   },
   "sendETH": {
-    "message": "ETH ஐ அனுப்பு"
+    "message": "ETZ ஐ அனுப்பு"
   },
   "sendTokens": {
     "message": "டோக்கன்களை அனுப்பவும்"
   },
   "onlySendToEtherAddress": {
-    "message": "ETH ஐ ஒரு எதரியும் முகவரிக்கு மட்டும் அனுப்பவும்."
+    "message": "ETZ ஐ ஒரு எதரியும் முகவரிக்கு மட்டும் அனுப்பவும்."
   },
   "searchTokens": {
     "message": "தேடல் டோக்கன்ஸ்"
@@ -799,7 +799,7 @@
     "message": "பெறுநர்: "
   },
   "toETHviaShapeShift": {
-    "message": "$ 1 முதல் ETH வரை வடிவம்",
+    "message": "$ 1 முதல் ETZ வரை வடிவம்",
     "description": "செய்தி தொடக்கத்தில் வைப்பு வகைகளில் நிரப்பப்படும்"
   },
   "tokenAddress": {

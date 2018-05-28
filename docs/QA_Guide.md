@@ -16,9 +16,9 @@ Steps to mark a full pass of QA complete.
     * Restore from seed
     * Create a second account
     * Import a loose account (not related to HD Wallet)
-    * Import old existing vault seed phrase (pref with test Ether)
+    * Import old existing vault seed phrase (pref with test ETZ)
     * Download State Logs, Priv key file, seed phrase file.
-* Send Ether
+* Send ETZ
     * by address
     * by ens name
 * Web3 API Stability

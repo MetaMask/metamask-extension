@@ -184,7 +184,7 @@
     "message": "Dezimalangabe der Präzision"
   },
   "defaultNetwork": {
-    "message": "Das Standardnetzwerk für Ether Transaktionen ist das Main Net."
+    "message": "Das Standardnetzwerk für ETZ Transaktionen ist das Main Net."
   },
   "denExplainer": {
     "message": "Dein DEN ist dein passwortverschlüsselter Speicher innerhalb von EtzMeta."
@@ -203,7 +203,7 @@
     "message": "Eth kaufen"
   },
   "depositEther": {
-    "message": "Ether einzahlen"
+    "message": "ETZ einzahlen"
   },
   "depositFiat": {
     "message": "Fiat einzahlen"
@@ -224,10 +224,10 @@
     "message": "Sofortige Einzahlung"
   },
   "directDepositEther": {
-    "message": "Sofort Ether einzahlen"
+    "message": "Sofort ETZ einzahlen"
   },
   "directDepositEtherExplainer": {
-    "message": "Wenn du bereits Ether besitzt, ist die sofortige Einzahlung die schnellste Methode Ether in deine neue Wallet zu bekommen."
+    "message": "Wenn du bereits ETZ besitzt, ist die sofortige Einzahlung die schnellste Methode ETZ in deine neue Wallet zu bekommen."
   },
   "done": {
     "message": "Fertig"
@@ -329,11 +329,11 @@
     "message": "Gaspreis benötigt"
   },
   "getEther": {
-    "message": "Ether holen"
+    "message": "ETZ holen"
   },
   "getEtherFromFaucet": {
-    "message": "Ether für $1 vom Faucet holen",
-    "description": "Zeigt den Netzwerknamen für den Ether Faucet an"
+    "message": "ETZ für $1 vom Faucet holen",
+    "description": "Zeigt den Netzwerknamen für den ETZ Faucet an"
   },
   "greaterThanMin": {
     "message": "Muss größer oder gleich $1 sein.",
@@ -356,7 +356,7 @@
     "message": "Token ausblenden?"
   },
   "howToDeposit": {
-    "message": "Wie möchtest du Ether einzahlen?"
+    "message": "Wie möchtest du ETZ einzahlen?"
   },
   "holdEther": {
     "message": "Es erlaubt dir ether & Token zu halten und dient dir als Verbindung zu dezentralisierten Applikationen."
@@ -477,7 +477,7 @@
     "message": "Du musst mindestens 1 Token auswählen."
   },
   "needEtherInWallet": {
-    "message": "Um dezentralisierte Applikationen mit EtzMeta verwenden zu können, benötigst du Ether in deiner Wallet."
+    "message": "Um dezentralisierte Applikationen mit EtzMeta verwenden zu können, benötigst du ETZ in deiner Wallet."
   },
   "needImportFile": {
     "message": "Für den Import musst du eine Datei auswählen.",
@@ -488,7 +488,7 @@
     "description": "Passwort und Datei sind notwendig um einen Account zu importieren"
   },
   "negativeETH": {
-    "message": "Negative ETH Beträge können nicht versendet werden."
+    "message": "Negative ETZ Beträge können nicht versendet werden."
   },
   "networks": {
     "message": "Netzwerke"
@@ -694,13 +694,13 @@
     "message": "Senden"
   },
   "sendETH": {
-    "message": "ETH senden"
+    "message": "ETZ senden"
   },
   "sendTokens": {
     "message": "Token senden"
   },
   "onlySendToEtherAddress": {
-    "message": "ETH unbedingt nur zu einer Ethereum Adresse senden."
+    "message": "ETZ unbedingt nur zu einer Ethereum Adresse senden."
   },
   "sendTokensAnywhere": {
     "message": "Token zu einer beliebigen Person mit einem Ethereumaccount senden"
@@ -778,7 +778,7 @@
     "message": "An:"
   },
   "toETHviaShapeShift": {
-    "message": "$1 an ETH via ShapeShift",
+    "message": "$1 an ETZ via ShapeShift",
     "description": "Das System wird den Einzahlungstyp im Beginn der Nachricht eintragen"
   },
   "tokenAddress": {

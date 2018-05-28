@@ -136,7 +136,7 @@ ShiftListItem.prototype.renderInfo = function () {
             color: '#ABA9AA',
             width: '100%',
           },
-        }, `${props.depositType} to ETH via ShapeShift`),
+        }, `${props.depositType} to ETZ via ShapeShift`),
         h('div', 'No deposits received'),
         h('div', {
           style: {
@@ -159,7 +159,7 @@ ShiftListItem.prototype.renderInfo = function () {
             color: '#ABA9AA',
             width: '100%',
           },
-        }, `${props.depositType} to ETH via ShapeShift`),
+        }, `${props.depositType} to ETZ via ShapeShift`),
         h('div', 'Conversion in progress'),
         h('div', {
           style: {

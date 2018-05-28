@@ -166,7 +166,7 @@ PendingTx.prototype.render = function () {
 
           h('.table-box', [
 
-            // Ether Value
+            // ETZ Value
             // Currently not customizable, but easily modified
             // in the way that gas and gasLimit currently are.
             h('.row', [
@@ -295,7 +295,7 @@ PendingTx.prototype.render = function () {
               style: {
                 fontSize: '0.9em',
               },
-            }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
+            }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETZ.')
           : null,
 
           insufficientBalance ?
@@ -332,7 +332,7 @@ PendingTx.prototype.render = function () {
           }, 'Reset'),
 
           // Accept Button or Buy Button
-          insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy Ether') :
+          insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy ETZ') :
             h('input.confirm.btn-green', {
               type: 'submit',
               value: 'SUBMIT',

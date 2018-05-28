@@ -136,7 +136,7 @@
     "message": "RPC personnalisé"
   },
   "defaultNetwork": {
-    "message": "Le réseau par défaut pour les transactions Ether est Main Net."
+    "message": "Le réseau par défaut pour les transactions ETZ est Main Net."
   },
   "denExplainer": {
     "message": "Votre DEN est votre stockage crypté par mot de passe dans EtzMeta."
@@ -155,7 +155,7 @@
     "message": "Dépôt Eth"
   },
   "depositEther": {
-    "message": "Dépôt Ether"
+    "message": "Dépôt ETZ"
   },
   "depositFiat": {
     "message": "Dépôt de monnaie-fiat"
@@ -167,7 +167,7 @@
     "message": "Déposez avec ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Si vous possédez d'autres crypto-monnaies, vous pouvez échanger et déposer de l'Ether directement dans votre portefeuille EtzMeta. Aucun compte n'est requis."
+    "message": "Si vous possédez d'autres crypto-monnaies, vous pouvez échanger et déposer de l'ETZ directement dans votre portefeuille EtzMeta. Aucun compte n'est requis."
   },
   "details": {
     "message": "Détails"
@@ -176,10 +176,10 @@
     "message": "Dépôt direct"
   },
   "directDepositEther": {
-    "message": "Dépôt direct d'Ether"
+    "message": "Dépôt direct d'ETZ"
   },
   "directDepositEtherExplainer": {
-    "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille est par dépôt direct."
+    "message": "Si vous avez déjà de l'ETZ, le moyen le plus rapide d'obtenir des ETZ dans votre nouveau portefeuille est par dépôt direct."
   },
   "done": {
     "message": "Fait"
@@ -254,11 +254,11 @@
     "message": "Prix du gaz requis"
   },
   "getEther": {
-    "message": "Obtenir des Ether"
+    "message": "Obtenir des ETZ"
   },
   "getEtherFromFaucet": {
-    "message": "Obtenir de l'Ether d'une faucet pour $1",
-    "description": "Affiche le nom du réseau pour la faucet d'Ether"
+    "message": "Obtenir de l'ETZ d'une faucet pour $1",
+    "description": "Affiche le nom du réseau pour la faucet d'ETZ"
   },
   "greaterThanMin": {
     "message": "doit être supérieur ou égal à $1.",
@@ -278,7 +278,7 @@
     "message": "Masquer le jeton?"
   },
   "howToDeposit": {
-    "message": "Comment voulez-vous déposer de l'Ether?"
+    "message": "Comment voulez-vous déposer de l'ETZ?"
   },
   "import": {
     "message": "Importer",
@@ -354,7 +354,7 @@
     "message": "Mes comptes"
   },
   "needEtherInWallet": {
-    "message": "Pour interagir avec des applications décentralisées à l'aide de EtzMeta, vous aurez besoin d'Ether dans votre portefeuille."
+    "message": "Pour interagir avec des applications décentralisées à l'aide de EtzMeta, vous aurez besoin d'ETZ dans votre portefeuille."
   },
   "needImportFile": {
     "message": "Vous devez sélectionner un fichier à importer.",
@@ -541,7 +541,7 @@
     "message": "Destinataire"
   },
   "toETHviaShapeShift": {
-    "message": "$1 à ETH via ShapeShift",
+    "message": "$1 à ETZ via ShapeShift",
     "description": "le système remplira le type de dépôt au début du message"
   },
   "tokenBalance": {

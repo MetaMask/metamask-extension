@@ -187,7 +187,7 @@
       "message": "Ondalık hassasiyeti"
     },
     "defaultNetwork": {
-      "message": "Ether işlemleri için varsayılan ağ Main Net."
+      "message": "ETZ işlemleri için varsayılan ağ Main Net."
     },
     "denExplainer": {
       "message": "DEN'iniz EtzMeta içersinde parola-şifrelenmiş deponuzdur."
@@ -206,7 +206,7 @@
       "message": "Eth yatır"
     },
     "depositEther": {
-      "message": "Ether yatır"
+      "message": "ETZ yatır"
     },
     "depositFiat": {
       "message": "Para yatır"
@@ -218,7 +218,7 @@
       "message": "ShapeShift ile yatır"
     },
     "depositShapeShiftExplainer": {
-      "message": "Eğer başka kripto paralara sahipseniz, EtzMeta cüzdanınıza direk olarak Ether yatırabilirsiniz. Hesaba gerek yoktur."
+      "message": "Eğer başka kripto paralara sahipseniz, EtzMeta cüzdanınıza direk olarak ETZ yatırabilirsiniz. Hesaba gerek yoktur."
     },
     "details": {
       "message": "Ayrıntılar"
@@ -227,10 +227,10 @@
       "message": "Direk Yatırma"
     },
     "directDepositEther": {
-      "message": "Direk Ether Yatırma"
+      "message": "Direk ETZ Yatırma"
     },
     "directDepositEtherExplainer": {
-      "message": "Eğer çoktan Etheriniz varsa, yeni hesabınıza Ether aktarmanın en kolay yolu direk yatırmadır."
+      "message": "Eğer çoktan Etheriniz varsa, yeni hesabınıza ETZ aktarmanın en kolay yolu direk yatırmadır."
     },
     "done": {
       "message": "Bitti"
@@ -332,11 +332,11 @@
       "message": "Gas Fiyatı Gereklidir"
     },
     "getEther": {
-      "message": "Ether Al"
+      "message": "ETZ Al"
     },
     "getEtherFromFaucet": {
-      "message": "Musluktan $1 karşılığı Ether alın",
-      "description": "Ether musluğunun ağ ismini gösterir"
+      "message": "Musluktan $1 karşılığı ETZ alın",
+      "description": "ETZ musluğunun ağ ismini gösterir"
     },
     "greaterThanMin": {
       "message": "must be greater than or equal to $1.",
@@ -359,10 +359,10 @@
       "message": "Jetonu gizle?"
     },
     "howToDeposit": {
-      "message": "Ether'i nasıl yatırmak istersiniz?"
+      "message": "ETZ'i nasıl yatırmak istersiniz?"
     },
     "holdEther": {
-      "message": "Ether ve jeton tutmanızı sağlar ve merkezi olmayan uygulamalar ve sizin aranızda köprü vazifesi görür."
+      "message": "ETZ ve jeton tutmanızı sağlar ve merkezi olmayan uygulamalar ve sizin aranızda köprü vazifesi görür."
     },
     "import": {
       "message": "Al",
@@ -486,7 +486,7 @@
       "message": "En az bir jeton seçilmeli"
     },
     "needEtherInWallet": {
-      "message": "EtzMeta kullanarak merkezi olamayan uygulamalarla etkileşmek için cüzdanınızda Ether bulunmalıdır."
+      "message": "EtzMeta kullanarak merkezi olamayan uygulamalarla etkileşmek için cüzdanınızda ETZ bulunmalıdır."
     },
     "needImportFile": {
       "message": "Almak için bir dosya seçmelisiniz.",
@@ -497,7 +497,7 @@
       "description": "Hesap almak için parola ve dosya gerekiyor."
     },
     "negativeETH": {
-      "message": "Negatif ETH miktarları gönderilemez."
+      "message": "Negatif ETZ miktarları gönderilemez."
     },
     "networks": {
       "message": "Ağlar"
@@ -712,13 +712,13 @@
       "message": "Gönder"
     },
     "sendETH": {
-      "message": "ETH Gönder"
+      "message": "ETZ Gönder"
     },
     "sendTokens": {
       "message": "Jeton Gönder"
     },
     "onlySendToEtherAddress": {
-      "message": "Ethereum adresine sadece ETH gönder."
+      "message": "Ethereum adresine sadece ETZ gönder."
     },
     "searchTokens": {
       "message": "Jeton ara"
@@ -799,7 +799,7 @@
       "message": "Kime: "
     },
     "toETHviaShapeShift": {
-      "message": "ShapeShift üstünden $1'dan ETH'e",
+      "message": "ShapeShift üstünden $1'dan ETZ'e",
       "description": "system will fill in deposit type in start of message"
     },
     "tokenAddress": {

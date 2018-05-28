@@ -135,7 +135,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case 'loading':
       return
 
-    case '1':
+    case '88':
       return this.mainnetSubview()
 
     // Ropsten, Rinkeby, Kovan

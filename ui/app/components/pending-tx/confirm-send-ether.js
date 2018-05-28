@@ -174,17 +174,17 @@ ConfirmSendEther.prototype.getAmount = function () {
   const FIAT = conversionUtil(txParams.value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromCurrency: 'ETH',
+    fromCurrency: 'ETZ',
     toCurrency: currentCurrency,
     numberOfDecimals: 2,
     fromDenomination: 'WEI',
     conversionRate,
   })
-  const ETH = conversionUtil(txParams.value, {
+  const ETZ = conversionUtil(txParams.value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromCurrency: 'ETH',
-    toCurrency: 'ETH',
+    fromCurrency: 'ETZ',
+    toCurrency: 'ETZ',
     fromDenomination: 'WEI',
     conversionRate,
     numberOfDecimals: 6,
@@ -192,7 +192,7 @@ ConfirmSendEther.prototype.getAmount = function () {
 
   return {
     FIAT,
-    ETH,
+    ETZ,
   }
 
 }
@@ -222,24 +222,24 @@ ConfirmSendEther.prototype.getGasFee = function () {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
-    fromCurrency: 'ETH',
+    fromCurrency: 'ETZ',
     toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
   })
-  const ETH = conversionUtil(txFeeBn, {
+  const ETZ = conversionUtil(txFeeBn, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
-    fromCurrency: 'ETH',
-    toCurrency: 'ETH',
+    fromCurrency: 'ETZ',
+    toCurrency: 'ETZ',
     numberOfDecimals: 6,
     conversionRate,
   })
 
   return {
     FIAT,
-    ETH,
+    ETZ,
     gasFeeInHex: txFeeBn.toString(16),
   }
 }
@@ -249,8 +249,8 @@ ConfirmSendEther.prototype.getData = function () {
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
   const account = identities ? identities[txParams.from] || {} : {}
-  const { FIAT: gasFeeInFIAT, ETH: gasFeeInETH, gasFeeInHex } = this.getGasFee()
-  const { FIAT: amountInFIAT, ETH: amountInETH } = this.getAmount()
+  const { FIAT: gasFeeInFIAT, ETZ: gasFeeInETH, gasFeeInHex } = this.getGasFee()
+  const { FIAT: amountInFIAT, ETZ: amountInETH } = this.getAmount()
 
   const totalInFIAT = addCurrencies(gasFeeInFIAT, amountInFIAT, {
     toNumericBase: 'dec',
@@ -471,7 +471,7 @@ ConfirmSendEther.prototype.render = function () {
 //               marginLeft: 50,
 //               fontSize: '0.9em',
 //             },
-//           }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
+//           }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETZ.')
 //         : null,
 
 //         insufficientBalance ?

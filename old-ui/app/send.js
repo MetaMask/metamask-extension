@@ -259,7 +259,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
   if (parts[1]) {
     var decimal = parts[1]
     if (decimal.length > 18) {
-      message = 'Ether amount is too precise.'
+      message = 'ETZ amount is too precise.'
       return this.props.dispatch(actions.displayWarning(message))
     }
   }
@@ -274,7 +274,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
   }
 
   if (input < 0) {
-    message = 'Can not send negative amounts of ETH.'
+    message = 'Can not send negative amounts of ETZ.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 

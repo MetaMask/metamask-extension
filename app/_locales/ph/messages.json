@@ -136,7 +136,7 @@
     "message": "Custom RPC"
   },
   "defaultNetwork": {
-    "message": "Ang default network para sa Ether transactions ay ang Main Net."
+    "message": "Ang default network para sa ETZ transactions ay ang Main Net."
   },
   "denExplainer": {
     "message": "Ang iyong DEN ang nagsisilbing password-encrypted storage mo sa loob ng EtzMeta."
@@ -155,7 +155,7 @@
     "message": "I-deposito ang Eth"
   },
   "depositEther": {
-    "message": "I-deposito ang Ether"
+    "message": "I-deposito ang ETZ"
   },
   "depositFiat": {
     "message": "I-deposito ang Fiat"
@@ -167,7 +167,7 @@
     "message": "I-deposito gamit ang ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Kung ikaw ay nagmamay-ari ng iba pang cryptocurrencies, pwede kang mag-trade at mag-deposito ng Ether diretso sa iyong EtzMeta wallet. Hindi mo na kailangan ng account."
+    "message": "Kung ikaw ay nagmamay-ari ng iba pang cryptocurrencies, pwede kang mag-trade at mag-deposito ng ETZ diretso sa iyong EtzMeta wallet. Hindi mo na kailangan ng account."
   },
   "details": {
     "message": "Detalye"
@@ -176,10 +176,10 @@
     "message": "Direktang Deposito"
   },
   "directDepositEther": {
-    "message": "Direktang I-deposito ang Ether"
+    "message": "Direktang I-deposito ang ETZ"
   },
   "directDepositEtherExplainer": {
-    "message": "Kung ika ay mayroon nang Ether, ang pinakamabilis na paraan upang makuha ang Ether sa iyong bagong wallet ay sa pamamagitan ng direktang deposito."
+    "message": "Kung ika ay mayroon nang ETZ, ang pinakamabilis na paraan upang makuha ang ETZ sa iyong bagong wallet ay sa pamamagitan ng direktang deposito."
   },
   "done": {
     "message": "Tapos na"
@@ -254,11 +254,11 @@
     "message": "Kailangan ang Gas Price"
   },
   "getEther": {
-    "message": "Kumuha ng Ether"
+    "message": "Kumuha ng ETZ"
   },
   "getEtherFromFaucet": {
-    "message": "Kumuha ng Ether mula sa faucet para sa $1",
-    "description": "Ipinapakita ang pangalan ng network para sa Ether faucet"
+    "message": "Kumuha ng ETZ mula sa faucet para sa $1",
+    "description": "Ipinapakita ang pangalan ng network para sa ETZ faucet"
   },
   "greaterThanMin": {
     "message": "dapat mas malaki o katumbas ng $1.",
@@ -278,7 +278,7 @@
     "message": "Itago ang Token?"
   },
   "howToDeposit": {
-    "message": "Paano mo gustong mag-deposito ng Ether?"
+    "message": "Paano mo gustong mag-deposito ng ETZ?"
   },
   "import": {
     "message": "I-import",
@@ -354,7 +354,7 @@
     "message": "Aking mga Account"
   },
   "needEtherInWallet": {
-    "message": "Upang makipag-ugnayan sa decentralized applications gamit ang EtzMeta, kakailanganin mo ng Ether sa iyong wallet."
+    "message": "Upang makipag-ugnayan sa decentralized applications gamit ang EtzMeta, kakailanganin mo ng ETZ sa iyong wallet."
   },
   "needImportFile": {
     "message": "Dapat kang pumili ng file para i-import.",
@@ -541,7 +541,7 @@
     "message": "To"
   },
   "toETHviaShapeShift": {
-    "message": "$1 sa ETH sa pamamagitan ng ShapeShift",
+    "message": "$1 sa ETZ sa pamamagitan ng ShapeShift",
     "description": "Pupunan ng system ang deposit type sa simula ng mensahe"
   },
   "tokenBalance": {

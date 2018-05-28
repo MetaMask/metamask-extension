@@ -209,7 +209,7 @@
     "message": "存入 Eth"
   },
   "depositEther": {
-    "message": "存入 Ether"
+    "message": "存入 ETZ"
   },
   "depositFiat": {
     "message": "从 Fiat 存入"
@@ -221,7 +221,7 @@
     "message": "从 ShapeShift 存入"
   },
   "depositShapeShiftExplainer": {
-    "message": "如果你拥有其他加密货币，你可以直接交易并存入 Ether 到你的 EtzMeta 钱包。 不需要帐户。"
+    "message": "如果你拥有其他加密货币，你可以直接交易并存入 ETZ 到你的 EtzMeta 钱包。 不需要帐户。"
   },
   "details": {
     "message": "详情"
@@ -230,10 +230,10 @@
     "message": "直接存入"
   },
   "directDepositEther": {
-    "message": "直接存入 Ether"
+    "message": "直接存入 ETZ"
   },
   "directDepositEtherExplainer": {
-    "message": "如果你已经有了一些 Ether，通过直接转入是你的新钱包获取 Ether 的最快捷方式。"
+    "message": "如果你已经有了一些 Ether，通过直接转入是你的新钱包获取 ETZ 的最快捷方式。"
   },
   "done": {
     "message": "完成"
@@ -341,11 +341,11 @@
     "message": "生成 交易"
   },
   "getEther": {
-    "message": "获取 Ether"
+    "message": "获取 ETZ"
   },
   "getEtherFromFaucet": {
-    "message": "从水管获取$1网络的 Ether",
-    "description": "Displays network name for Ether faucet"
+    "message": "从水管获取$1网络的 ETZ",
+    "description": "Displays network name for ETZ faucet"
   },
   "greaterThanMin": {
     "message": "必须要大于等于 $1。",

@@ -209,7 +209,7 @@ ShapeshiftForm.prototype.render = function () {
                 this.context.t('receive'),
               ]),
 
-              h('div.shapeshift-form__selector-input', ['ETH']),
+              h('div.shapeshift-form__selector-input', ['ETZ']),
 
             ]),
 

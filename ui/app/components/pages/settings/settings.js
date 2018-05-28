@@ -139,7 +139,7 @@ class Settings extends Component {
       case 'rinkeby':
         title = this.context.t('currentNetwork')
         value = this.context.t('rinkeby')
-        color = '#ebb33f'
+        color = '#038789'
         break
 
       default:

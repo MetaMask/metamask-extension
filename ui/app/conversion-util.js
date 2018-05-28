@@ -6,8 +6,8 @@
 *
 * @param {(number | string | BN)} value The value to convert.
 * @param {Object} [options] Options to specify details of the conversion
-* @param {string} [options.fromCurrency = 'ETH' | 'USD'] The currency of the passed value
-* @param {string} [options.toCurrency = 'ETH' | 'USD'] The desired currency of the result
+* @param {string} [options.fromCurrency = 'ETZ' | 'USD'] The currency of the passed value
+* @param {string} [options.toCurrency = 'ETZ' | 'USD'] The desired currency of the result
 * @param {string} [options.fromNumericBase = 'hex' | 'dec' | 'BN'] The numeric basic of the passed value.
 * @param {string} [options.toNumericBase = 'hex' | 'dec' | 'BN'] The desired numeric basic of the result.
 * @param {string} [options.fromDenomination = 'WEI'] The denomination of the passed value

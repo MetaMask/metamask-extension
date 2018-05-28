@@ -24,7 +24,7 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const testMode = (METAMASK_DEBUG || env === 'test')
 
 const defaultProviderConfig = {
-  type: testMode ? RINKEBY : MAINNET,
+  type: testMode ? MAINNET : MAINNET,
 }
 
 module.exports = class NetworkController extends EventEmitter {
@@ -120,7 +120,7 @@ module.exports = class NetworkController extends EventEmitter {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
-      this._configureInfuraProvider(opts)
+      this._configureStandardProvider({ rpcUrl: LOCALHOST_RPC_URL })
     // other type-based rpc endpoints
     } else if (type === LOCALHOST) {
       this._configureStandardProvider({ rpcUrl: LOCALHOST_RPC_URL })

@@ -5,12 +5,12 @@ const MAINNET = 'mainnet'
 const LOCALHOST = 'localhost'
 
 const ROPSTEN_CODE = 3
-const RINKEYBY_CODE = 4
+const RINKEYBY_CODE = 88
 const KOVAN_CODE = 42
 
-const ROPSTEN_DISPLAY_NAME = 'Ropsten'
-const RINKEBY_DISPLAY_NAME = 'Rinkeby'
-const KOVAN_DISPLAY_NAME = 'Kovan'
+const ROPSTEN_DISPLAY_NAME = 'ETZ Network'
+const RINKEBY_DISPLAY_NAME = 'ETZ Network'
+const KOVAN_DISPLAY_NAME = 'ETZ Network'
 const MAINNET_DISPLAY_NAME = 'ETZ Network'
 
 

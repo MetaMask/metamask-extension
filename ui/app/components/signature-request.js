@@ -117,7 +117,7 @@ SignatureRequest.prototype.renderBalance = function () {
 
     h('div.request-signature__balance-text', [this.context.t('balance')]),
 
-    h('div.request-signature__balance-value', `${balanceInEther} ETH`),
+    h('div.request-signature__balance-value', `${balanceInEther} ETZ`),
 
   ])
 }

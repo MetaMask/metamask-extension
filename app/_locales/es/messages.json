@@ -199,7 +199,7 @@
     "message": "Los decimales deben ser al menos 0 y no más de 36"
   },
   "defaultNetwork": {
-    "message": "La red por defecto para las transacciones de Ether es MainNet (red principal)"
+    "message": "La red por defecto para las transacciones de ETZ es MainNet (red principal)"
   },
   "denExplainer": {
     "message": "El DEN es tu contraseña encriptada almacenada dentro de EtzMeta"
@@ -215,10 +215,10 @@
     "description": "Informa al usuario que moneda ha elegido para depositar en shapeshift"
   },
   "depositEth": {
-    "message": "Depositar Ether"
+    "message": "Depositar ETZ"
   },
   "depositEther": {
-    "message": "Depositar Ether"
+    "message": "Depositar ETZ"
   },
   "depositFiat": {
     "message": "Depositar con fiat (divisa nacional)"
@@ -230,7 +230,7 @@
     "message": "Depositar con ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Si posees otras criptomonedas, puedes intercambiar y depositar Ether directamente en tu billetera de EtzMeta. No necesitas tener una cuenta."
+    "message": "Si posees otras criptomonedas, puedes intercambiar y depositar ETZ directamente en tu billetera de EtzMeta. No necesitas tener una cuenta."
   },
   "details": {
     "message": "Detalles"
@@ -239,10 +239,10 @@
     "message": "Depósito directo"
   },
   "directDepositEther": {
-    "message": "Depositar Ether directamente"
+    "message": "Depositar ETZ directamente"
   },
   "directDepositEtherExplainer": {
-    "message": "Si posees Ether, la forma más rápida de transferirlo a tu nueva billetera es depositándolo directamente"
+    "message": "Si posees ETZ, la forma más rápida de transferirlo a tu nueva billetera es depositándolo directamente"
   },
   "done": {
     "message": "Completo"
@@ -338,11 +338,11 @@
     "message": "Generando semilla..."
   },
   "getEther": {
-    "message": "Conseguir Ether"
+    "message": "Conseguir ETZ"
   },
   "getEtherFromFaucet": {
-    "message": "Obtenga Ether de un faucet (grifo) por $1",
-    "description": "Muestra el nombre de la red para el faucet (grifo) de Ether"
+    "message": "Obtenga ETZ de un faucet (grifo) por $1",
+    "description": "Muestra el nombre de la red para el faucet (grifo) de ETZ"
   },
   "greaterThanMin": {
     "message": "Debe ser mayor o igual a $1",
@@ -368,7 +368,7 @@
     "message": "Te permite mantener tus ether y tokens, así como puente para aplicaciones descentralizadas"
   },
   "howToDeposit": {
-    "message": "¿Cómo te gustaria depositar Ether?"
+    "message": "¿Cómo te gustaria depositar ETZ?"
   },
   "import": {
     "message": "Importar",
@@ -489,7 +489,7 @@
     "message": "Mis cuentas"
   },
   "needEtherInWallet": {
-    "message": "Para interactuar con una aplicación descentralizada usando EtzMeta, necesitas tener Ether en tu billetera"
+    "message": "Para interactuar con una aplicación descentralizada usando EtzMeta, necesitas tener ETZ en tu billetera"
   },
   "needImportFile": {
     "message": "Debes seleccionar un archivo para importar",
@@ -500,7 +500,7 @@
     "description": "Contraseña y archivo necesarios para importar una cuenta"
   },
   "negativeETH": {
-    "message": "No se pueden mandar cantidades negativas de ETH"
+    "message": "No se pueden mandar cantidades negativas de ETZ"
   },
   "networks": {
     "message": "Redes"
@@ -697,7 +697,7 @@
     "message": "Enviar"
   },
   "sendETH": {
-    "message": "Enviar Ether"
+    "message": "Enviar ETZ"
   },
   "sendTokens": {
     "message": "Enviar tokens"
@@ -775,7 +775,7 @@
     "message": "Para:"
   },
   "toETHviaShapeShift": {
-    "message": "$1 a ETH via ShapeShift",
+    "message": "$1 a ETZ via ShapeShift",
     "description": "el sistema llenará el tipo de depósito al principio del mensaje"
   },
   "tokenAddress": {
