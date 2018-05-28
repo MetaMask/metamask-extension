@@ -112,7 +112,7 @@ class CurrencyController {
       this.setConversionRate(Number(parsedResponse.bid))
       this.setConversionDate(Number(parsedResponse.timestamp))
     } catch (err) {
-      log.warn(`EtzMeta - Failed to query currency conversion:`, currentCurrency, err)
+      log.warn(`Seed - Failed to query currency conversion:`, currentCurrency, err)
       this.setConversionRate(0)
       this.setConversionDate('N/A')
     }

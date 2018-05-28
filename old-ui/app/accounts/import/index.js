@@ -50,7 +50,7 @@ AccountImportSubview.prototype.render = function () {
           padding: '5px 15px 0px 15px',
         },
       }, [
-        h('span', 'Imported accounts will not be associated with your originally created EtzMeta account seedphrase. Learn more about imported accounts '),
+        h('span', 'Imported accounts will not be associated with your originally created Seed account seedphrase. Learn more about imported accounts '),
         h('span', {
           style: {
             color: 'rgba(1 , 104 , 229, 1)',

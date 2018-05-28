@@ -12,7 +12,7 @@ const log = require('loglevel')
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
-  composing them in a way to be exposed to the Etzmetacontroller
+  composing them in a way to be exposed to the Seedcontroller
     <br>- txStateManager
       responsible for the state of a transaction and
       storing the transaction
@@ -145,11 +145,11 @@ class TransactionController extends EventEmitter {
           case 'submitted':
             return resolve(finishedTxMeta.hash)
           case 'rejected':
-            return reject(new Error('EtzmetaTx Signature: User denied transaction signature.'))
+            return reject(new Error('SeedTx Signature: User denied transaction signature.'))
           case 'failed':
             return reject(new Error(finishedTxMeta.err.message))
           default:
-            return reject(new Error(`EtzmetaTx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`))
+            return reject(new Error(`SeedTx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`))
         }
       })
     })

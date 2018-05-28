@@ -125,7 +125,7 @@ ConfigScreen.prototype.render = function () {
                   if (err) {
                     state.dispatch(actions.displayWarning('Error in retrieving state logs.'))
                   } else {
-                    exportAsFile('EtzMeta State Logs.json', result)
+                    exportAsFile('Seed State Logs.json', result)
                   }
                 })
               },

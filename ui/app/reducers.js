@@ -28,7 +28,7 @@ function rootReducer (state, action) {
   state.identities = reduceIdentities(state, action)
 
   //
-  // EtzMeta
+  // Seed
   //
 
   state.metamask = reduceMetamask(state, action)

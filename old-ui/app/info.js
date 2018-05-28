@@ -46,7 +46,7 @@ InfoScreen.prototype.render = function () {
           // current version number
 
           h('.info.info-gray', [
-            h('div', 'EtzMeta'),
+            h('div', 'Seed'),
             h('div', {
               style: {
                 marginBottom: '10px',

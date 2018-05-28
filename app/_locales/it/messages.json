@@ -34,7 +34,7 @@
     "description": "La descrizione dell'applicazione"
   },
   "appName": {
-    "message": "EtzMeta",
+    "message": "Seed",
     "description": "Il nome dell'applicazione"
   },
   "attemptingConnect": {
@@ -72,7 +72,7 @@
     "message": "Prendi in presisito con Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "EtzMeta è progettato e costruito in California."
+    "message": "Seed è progettato e costruito in California."
   },
   "buy": {
     "message": "Compra"
@@ -206,7 +206,7 @@
     "message": "Deposita con ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Se possiedi altre criptomonete, puoi scambiare e depositare ETZ direttamente nel tuo portafoglio EtzMeta. Nessun account richiesto."
+    "message": "Se possiedi altre criptomonete, puoi scambiare e depositare ETZ direttamente nel tuo portafoglio Seed. Nessun account richiesto."
   },
   "details": {
     "message": "Dettagli"
@@ -351,7 +351,7 @@
     "message": "Importa Account"
   },
   "importAccountMsg": {
-    "message":" Gli account importati non saranno associati alla frase seed originariamente creata con EtzMeta. Impara di più sugli account importati "    
+    "message":" Gli account importati non saranno associati alla frase seed originariamente creata con Seed. Impara di più sugli account importati "    
   },
   "importAnAccount": {
     "message": "Importa un account"
@@ -441,7 +441,7 @@
     "message": "Messaggio"
   },
   "metamaskDescription": {
-    "message": "EtzMeta è una cassaforte sicura per identità su Ethereum."
+    "message": "Seed è una cassaforte sicura per identità su Ethereum."
   },
   "min": {
     "message": "Minimo"
@@ -453,7 +453,7 @@
     "message": "Devi selezionare almeno un token."
   },
   "needEtherInWallet": {
-    "message": "Per interagire con applicazioni decentralizzate con EtzMeta, devi possedere ETZ nel tuo portafoglio."
+    "message": "Per interagire con applicazioni decentralizzate con Seed, devi possedere ETZ nel tuo portafoglio."
   },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
@@ -731,7 +731,7 @@
     "message": "Simbolo Token"
   },
   "tokenWarning1": {
-    "message": "Tieni traccia dei token che hai acquistato con il tuo account EtzMeta. Se hai acquistato token con un account diverso, quei token non appariranno qui."
+    "message": "Tieni traccia dei token che hai acquistato con il tuo account Seed. Se hai acquistato token con un account diverso, quei token non appariranno qui."
   },
   "total": {
     "message": "Totale"
@@ -753,7 +753,7 @@
     "description": "Seguito da un link (qui) per vedere il bilancio dei token"
   },
   "twelveWords": {    
-    "message": "Queste 12 parole sono l'unico modo per ripristinare i tuoi account EtzMeta. \nSalvale in un posto sicuro e segreto."
+    "message": "Queste 12 parole sono l'unico modo per ripristinare i tuoi account Seed. \nSalvale in un posto sicuro e segreto."
   },
   "typePassword": {
     "message": "Inserisci Password"
@@ -762,7 +762,7 @@
     "message": "Benvenuto alla nuova interfaccia (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Stai utilizzanto la nuova interfaccia di EtzMeta. Guarda in giro, prova nuove funzionalità come inviare token, e facci sapere se hai dei problemi."    
+    "message": "Stai utilizzanto la nuova interfaccia di Seed. Guarda in giro, prova nuove funzionalità come inviare token, e facci sapere se hai dei problemi."    
   },
   "unavailable": {
     "message": "Non Disponibile"
@@ -805,7 +805,7 @@
     "message": "Attenzione"
   },
   "welcomeBeta": {
-    "message": "Benvenuto nella Beta di EtzMeta"
+    "message": "Benvenuto nella Beta di Seed"
   },
   "whatsThis": {
     "message": "Cos'è questo?"

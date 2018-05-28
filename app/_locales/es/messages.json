@@ -34,7 +34,7 @@
     "description": "La descripción de la aplicación"
   },
   "appName": {
-    "message": "EtzMeta",
+    "message": "Seed",
     "description": "El nombre de la aplicación"
   },
   "approved": {
@@ -75,7 +75,7 @@
     "message": "Pedir prestado con Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "Etzmetafue diseñado y construido en California"
+    "message": "Seedfue diseñado y construido en California"
   },
   "buy": {
     "message": "Comprar"
@@ -202,7 +202,7 @@
     "message": "La red por defecto para las transacciones de ETZ es MainNet (red principal)"
   },
   "denExplainer": {
-    "message": "El DEN es tu contraseña encriptada almacenada dentro de EtzMeta"
+    "message": "El DEN es tu contraseña encriptada almacenada dentro de Seed"
   },
   "deposit": {
     "message": "Depositar"
@@ -230,7 +230,7 @@
     "message": "Depositar con ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Si posees otras criptomonedas, puedes intercambiar y depositar ETZ directamente en tu billetera de EtzMeta. No necesitas tener una cuenta."
+    "message": "Si posees otras criptomonedas, puedes intercambiar y depositar ETZ directamente en tu billetera de Seed. No necesitas tener una cuenta."
   },
   "details": {
     "message": "Detalles"
@@ -388,7 +388,7 @@
     "description": "Estado que muestra que una cuenta ha sido completamente cargada en el llavero"
   },
   "importAccountMsg": {
-    "message": "Las cuentas importadas no serán asociadas con tu cuenta original creada con tu EtzMeta. Aprende más acerca de importar cuentas."
+    "message": "Las cuentas importadas no serán asociadas con tu cuenta original creada con tu Seed. Aprende más acerca de importar cuentas."
   },
   "info": {
     "message": "Información"
@@ -477,7 +477,7 @@
     "message": "Mensaje"
   },
   "metamaskDescription": {
-    "message": "EtzMeta es una identidad segura en Ethereum"
+    "message": "Seed es una identidad segura en Ethereum"
   },
   "min": {
     "message": "Mínimo"
@@ -489,7 +489,7 @@
     "message": "Mis cuentas"
   },
   "needEtherInWallet": {
-    "message": "Para interactuar con una aplicación descentralizada usando EtzMeta, necesitas tener ETZ en tu billetera"
+    "message": "Para interactuar con una aplicación descentralizada usando Seed, necesitas tener ETZ en tu billetera"
   },
   "needImportFile": {
     "message": "Debes seleccionar un archivo para importar",
@@ -794,7 +794,7 @@
     "message": "Símbolo del token"
   },
   "tokenWarning1": {
-    "message": "Mantén un registro de los tokens que has comprado con tu cuenta de EtzMeta. Si compraste tokens usando una cuenta diferente, esos tokens no aparecerán aquí."
+    "message": "Mantén un registro de los tokens que has comprado con tu cuenta de Seed. Si compraste tokens usando una cuenta diferente, esos tokens no aparecerán aquí."
   },
   "total": {
     "message": "Total"
@@ -816,7 +816,7 @@
     "description": "Seguidos por un enlace (aquí) para ver los saldos de token"
   },
   "twelveWords": {
-    "message": "Estas 12 palabras son la única forma de restablecer tus cuentas de EtzMeta. \nGuárdalas en un lugar seguro y secreto."
+    "message": "Estas 12 palabras son la única forma de restablecer tus cuentas de Seed. \nGuárdalas en un lugar seguro y secreto."
   },
   "typePassword": {
     "message": "Escribe tu contraseña"
@@ -825,7 +825,7 @@
     "message": "Bienvenido a la nueva UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Estás usando la nueva UI de EtzMeta. Echa un vistazo alrededor, prueba las nuevas características, tales como mandar tokens, y háznos saber si tienes algún problema"
+    "message": "Estás usando la nueva UI de Seed. Echa un vistazo alrededor, prueba las nuevas características, tales como mandar tokens, y háznos saber si tienes algún problema"
   },
   "unavailable": {
     "message": "No disponible"
@@ -874,7 +874,7 @@
     "message": "Advertencia"
   },
   "welcomeBeta": {
-    "message": "Bienvenido a EtzmetaBeta"
+    "message": "Bienvenido a SeedBeta"
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

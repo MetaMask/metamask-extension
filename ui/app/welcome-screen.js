@@ -45,9 +45,9 @@ class WelcomeScreen extends Component {
             height: '225',
           }),
 
-          h('div.welcome-screen__info__header', 'Welcome to EtzMeta Beta'),
+          h('div.welcome-screen__info__header', 'Welcome to Seed Beta'),
 
-          h('div.welcome-screen__info__copy', 'EtzMeta is a secure identity vault for Ethereum.'),
+          h('div.welcome-screen__info__copy', 'Seed is a secure identity vault for Ethereum.'),
 
           h('div.welcome-screen__info__copy', `It allows you to hold ether & tokens,
             and serves as your bridge to decentralized applications.`),

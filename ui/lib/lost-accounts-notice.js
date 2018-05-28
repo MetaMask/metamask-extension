@@ -4,7 +4,7 @@ module.exports = function (lostAccounts) {
   return {
     date: new Date().toDateString(),
     title: 'Account Problem Caught',
-    body: `EtzMeta has fixed a bug where some accounts were previously mis-generated. This was a rare issue, but you were affected!
+    body: `Seed has fixed a bug where some accounts were previously mis-generated. This was a rare issue, but you were affected!
 
 We have successfully imported the accounts that were mis-generated, but they will no longer be recovered with your normal seed phrase.
 

@@ -29,7 +29,7 @@
   },
   "appName": {
     "description": "Tên phần mềm",
-    "message": "EtzMeta"
+    "message": "Seed"
   },
   "attemptingConnect": {
     "message": "Đang kết nối đến blockchain."
@@ -139,7 +139,7 @@
     "message": "Mạng lưới mặc định dùng cho các giao dịch ETZ là Main Net (tiền ETZ thật)."
   },
   "denExplainer": {
-    "message": "Số DEN của bạn là mật khẩu đã được mã hóa và lưu trữ trong EtzMeta"
+    "message": "Số DEN của bạn là mật khẩu đã được mã hóa và lưu trữ trong Seed"
   },
   "deposit": {
     "message": "Ký gửi/nạp tiền"
@@ -167,7 +167,7 @@
     "message": "Ký gửi với ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Nếu bạn sở hữu các đồng tiền điện tử khác, bạn có thể giao dịch và ký gửi ETZ trực tiếp vào ví EtzMeta của bạn. Không cần tạo thêm tài khoản."
+    "message": "Nếu bạn sở hữu các đồng tiền điện tử khác, bạn có thể giao dịch và ký gửi ETZ trực tiếp vào ví Seed của bạn. Không cần tạo thêm tài khoản."
   },
   "details": {
     "message": "Chi tiết"
@@ -354,7 +354,7 @@
     "message": "Tài khoản của tôi"
   },
   "needEtherInWallet": {
-    "message": "Để tương tác với các ứng dụng phân tán bằng EtzMeta, bạn sẽ phải cần có ETZ trong ví của bạn."
+    "message": "Để tương tác với các ứng dụng phân tán bằng Seed, bạn sẽ phải cần có ETZ trong ví của bạn."
   },
   "needImportFile": {
     "description": "Người dùng đang nhập một tài khoản và cần thêm tập tin để tiếp tục",

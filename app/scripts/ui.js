@@ -77,7 +77,7 @@ async function start() {
   }
 
   function displayCriticalError (err) {
-    container.innerHTML = '<div class="critical-error">The EtzMeta app failed to load: please open and close EtzMeta again to restart.</div>'
+    container.innerHTML = '<div class="critical-error">The Seed app failed to load: please open and close Seed again to restart.</div>'
     container.style.height = '80px'
     log.error(err.stack)
     throw err

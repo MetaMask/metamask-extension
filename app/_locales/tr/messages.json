@@ -34,7 +34,7 @@
       "description": "Uygulama açıklaması"
     },
     "appName": {
-      "message": "EtzMeta",
+      "message": "Seed",
       "description": "Uygulama ismi"
     },
     "approved": {
@@ -75,7 +75,7 @@
       "message": "Dharma (Beta) ile ödünç al"
     },
     "builtInCalifornia": {
-      "message": "EtzMeta California'da tasarlandı ve yaratıldı"
+      "message": "Seed California'da tasarlandı ve yaratıldı"
     },
     "buy": {
       "message": "Satın al"
@@ -190,7 +190,7 @@
       "message": "ETZ işlemleri için varsayılan ağ Main Net."
     },
     "denExplainer": {
-      "message": "DEN'iniz EtzMeta içersinde parola-şifrelenmiş deponuzdur."
+      "message": "DEN'iniz Seed içersinde parola-şifrelenmiş deponuzdur."
     },
     "deposit": {
       "message": "Yatır"
@@ -218,7 +218,7 @@
       "message": "ShapeShift ile yatır"
     },
     "depositShapeShiftExplainer": {
-      "message": "Eğer başka kripto paralara sahipseniz, EtzMeta cüzdanınıza direk olarak ETZ yatırabilirsiniz. Hesaba gerek yoktur."
+      "message": "Eğer başka kripto paralara sahipseniz, Seed cüzdanınıza direk olarak ETZ yatırabilirsiniz. Hesaba gerek yoktur."
     },
     "details": {
       "message": "Ayrıntılar"
@@ -372,7 +372,7 @@
       "message": "Hesap Al"
     },
     "importAccountMsg": {
-      "message":" Alınan hesaplar orjinal kaynakifadenizle yarattığınız EtzMeta hesabınızla ilişkilendirilmez. Alınan hesaplar ile ilgili daha fazla bilgi edinin "
+      "message":" Alınan hesaplar orjinal kaynakifadenizle yarattığınız Seed hesabınızla ilişkilendirilmez. Alınan hesaplar ile ilgili daha fazla bilgi edinin "
     },
     "importAnAccount": {
       "message": "Hesap al"
@@ -419,7 +419,7 @@
       "description": "Hesap alımı için düzenle"
     },
     "keepTrackTokens": {
-      "message": "EtzMeta hesabınızla satın aldığınız jetonların kaydını tutun."
+      "message": "Seed hesabınızla satın aldığınız jetonların kaydını tutun."
     },
     "kovan": {
       "message": "Kovan Test Ağı"
@@ -474,7 +474,7 @@
       "message": "Mesaj"
     },
     "metamaskDescription": {
-      "message": "EtzMeta Ethereum için güvenli bir kimlik kasasıdır."
+      "message": "Seed Ethereum için güvenli bir kimlik kasasıdır."
     },
     "min": {
       "message": "Minimum"
@@ -486,7 +486,7 @@
       "message": "En az bir jeton seçilmeli"
     },
     "needEtherInWallet": {
-      "message": "EtzMeta kullanarak merkezi olamayan uygulamalarla etkileşmek için cüzdanınızda ETZ bulunmalıdır."
+      "message": "Seed kullanarak merkezi olamayan uygulamalarla etkileşmek için cüzdanınızda ETZ bulunmalıdır."
     },
     "needImportFile": {
       "message": "Almak için bir dosya seçmelisiniz.",
@@ -818,7 +818,7 @@
       "message": "Jeton Sembolü"
     },
     "tokenWarning1": {
-      "message": "EtzMeta hesabınızla aldığınız jetonların kaydını tutun. Başka bir hesapla jetonlar satın aldıysanız, o jetonlar burada gözükmeyecektir."
+      "message": "Seed hesabınızla aldığınız jetonların kaydını tutun. Başka bir hesapla jetonlar satın aldıysanız, o jetonlar burada gözükmeyecektir."
     },
     "total": {
       "message": "Toplam"
@@ -843,7 +843,7 @@
       "description": "Jeton bakiyelerini görmek için bir link (burası) ile takip ediliyor"
     },
     "twelveWords": {
-      "message": "EtzMeta hesaplarınızı geri getirmenin tek yolu bu 12 kelimedir.\nBu kelimeleri güvenli ve gizli bir yerde saklayın."
+      "message": "Seed hesaplarınızı geri getirmenin tek yolu bu 12 kelimedir.\nBu kelimeleri güvenli ve gizli bir yerde saklayın."
     },
     "typePassword": {
       "message": "Parolanızı girin"
@@ -852,7 +852,7 @@
       "message": "Yeni UI (Beta)'ya hoşgeldiniz"
     },
     "uiWelcomeMessage": {
-      "message": "Şu anda yeni EtzmetaUI kullanmaktasınız. Gözatın, jeton gönderme gibi yeni özellikleri deneyin ve herhangi bir sorunlar karşılaşırsanız bize haber verin"
+      "message": "Şu anda yeni SeedUI kullanmaktasınız. Gözatın, jeton gönderme gibi yeni özellikleri deneyin ve herhangi bir sorunlar karşılaşırsanız bize haber verin"
     },
     "unapproved": {
       "message": "Onaylanmadı"
@@ -898,7 +898,7 @@
       "message": "Uyarı"
     },
     "welcomeBeta": {
-      "message": "EtzMeta Beta'ya Hoşgeldiniz"
+      "message": "Seed Beta'ya Hoşgeldiniz"
     },
     "whatsThis": {
       "message": "Bu nedir?"
