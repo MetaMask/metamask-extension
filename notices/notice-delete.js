@@ -1,8 +1,5 @@
 var fs = require('fs')
-var path = require('path')
 var prompt = require('prompt')
-var open = require('open')
-var extend = require('extend')
 var notices = require('./notices.json')
 
 
@@ -14,10 +11,10 @@ notices.forEach((notice) => {
 prompt.get(['id'], (error, res) => {
 prompt.start()
   if (error) {
-    console.log("Exiting...")
+    console.log('Exiting...')
     process.exit()
   }
-  var index = notices.findIndex((notice) => { return notice.id == res.id})
+  var index = notices.findIndex((notice) => { return notice.id === res.id })
   if (index === -1) {
     console.log('Notice not found. Exiting...')
   }
