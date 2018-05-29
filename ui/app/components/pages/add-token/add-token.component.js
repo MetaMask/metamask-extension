@@ -323,7 +323,7 @@ class AddToken extends Component {
         </div>
         <div className="page-container__footer">
           <Button
-            type="secondary"
+            type="default"
             large
             className="page-container__footer-button"
             onClick={() => {
