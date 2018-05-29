@@ -1,5 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const inherits = require('util').inherits
 const exportAsFile = require('../util').exportAsFile
 const copyToClipboard = require('copy-to-clipboard')
@@ -7,7 +8,12 @@ const actions = require('../actions')
 const ethUtil = require('ethereumjs-util')
 const connect = require('react-redux').connect
 
+ExportAccountView.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(ExportAccountView)
+
 
 inherits(ExportAccountView, Component)
 function ExportAccountView () {
@@ -35,7 +41,7 @@ ExportAccountView.prototype.render = function () {
   if (notExporting) return h('div')
 
   if (exportRequested) {
-    const warning = `Export private keys at your own risk.`
+    const warning = this.context.t('exportPrivateKeyWarning')
     return (
       h('div', {
         style: {
@@ -53,7 +59,7 @@ ExportAccountView.prototype.render = function () {
             h('p.error', warning),
             h('input#exportAccount.sizing-input', {
               type: 'password',
-              placeholder: 'confirm password',
+              placeholder: this.context.t('confirmPassword').toLowerCase(),
               onKeyPress: this.onExportKeyPress.bind(this),
               style: {
                 position: 'relative',
@@ -74,10 +80,10 @@ ExportAccountView.prototype.render = function () {
                 style: {
                   marginRight: '10px',
                 },
-              }, 'Submit'),
+              }, this.context.t('submit')),
               h('button', {
                 onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-              }, 'Cancel'),
+              }, this.context.t('cancel')),
             ]),
           (this.props.warning) && (
           h('span.error', {
@@ -98,7 +104,7 @@ ExportAccountView.prototype.render = function () {
         margin: '0 20px',
       },
     }, [
-      h('label', 'Your private key (click to copy):'),
+      h('label', this.context.t('copyPrivateKey') + ':'),
       h('p.error.cursor-pointer', {
         style: {
           textOverflow: 'ellipsis',
@@ -112,13 +118,13 @@ ExportAccountView.prototype.render = function () {
       }, plainKey),
       h('button', {
         onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-      }, 'Done'),
+      }, this.context.t('done')),
       h('button', {
         style: {
           marginLeft: '10px',
         },
         onClick: () => exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
-      }, 'Save as File'),
+      }, this.context.t('saveAsFile')),
     ])
   }
 }

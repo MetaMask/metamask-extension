@@ -8,6 +8,7 @@
     "frequentRpcList": [],
     "unapprovedTxs": {},
     "currentCurrency": "USD",
+    "featureFlags": {"betaUI": false},
     "conversionRate": 12.7527416,
     "conversionDate": 1487624341,
     "noActiveNotices": false,
@@ -34,7 +35,9 @@
       "type": "testnet"
     },
     "shapeShiftTxList": [],
-    "lostAccounts": []
+    "lostAccounts": [],
+    "tokens": [],
+    "currentLocale": "en"
   },
   "appState": {
     "menuOpen": false,
@@ -47,7 +50,12 @@
     },
     "transForward": true,
     "isLoading": false,
-    "warning": null
+    "warning": null,
+    "modal": {
+      "modalState": {"name": null},
+      "open": false,
+      "previousModalState": {"name": null}
+    }
   },
   "identities": {},
   "computedBalances": {}

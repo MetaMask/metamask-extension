@@ -1,11 +1,18 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const ReactMarkdown = require('react-markdown')
 const linker = require('extension-link-enabler')
 const findDOMNode = require('react-dom').findDOMNode
+const connect = require('react-redux').connect
 
-module.exports = Notice
+Notice.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(Notice)
+
 
 inherits(Notice, Component)
 function Notice () {
@@ -102,21 +109,21 @@ Notice.prototype.render = function () {
         }),
       ]),
 
-      h('button', {
+      h('button.primary', {
         disabled,
         onClick: () => {
-          this.setState({disclaimerDisabled: true})
-          onConfirm()
+          this.setState({disclaimerDisabled: true}, () => onConfirm())
         },
         style: {
           marginTop: '18px',
         },
-      }, 'Accept'),
+      }, this.context.t('accept')),
     ])
   )
 }
 
 Notice.prototype.componentDidMount = function () {
+  // eslint-disable-next-line react/no-find-dom-node
   var node = findDOMNode(this)
   linker.setupListener(node)
   if (document.getElementsByClassName('notice-box')[0].clientHeight < 310) {
@@ -125,6 +132,7 @@ Notice.prototype.componentDidMount = function () {
 }
 
 Notice.prototype.componentWillUnmount = function () {
+  // eslint-disable-next-line react/no-find-dom-node
   var node = findDOMNode(this)
   linker.teardownListener(node)
 }

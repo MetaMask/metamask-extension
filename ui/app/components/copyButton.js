@@ -1,11 +1,18 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const copyToClipboard = require('copy-to-clipboard')
+const connect = require('react-redux').connect
 
 const Tooltip = require('./tooltip')
 
-module.exports = CopyButton
+CopyButton.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(CopyButton)
+
 
 inherits(CopyButton, Component)
 function CopyButton () {
@@ -22,7 +29,7 @@ CopyButton.prototype.render = function () {
   const value = props.value
   const copied = state.copied
 
-  const message = copied ? 'Copied' : props.title || ' Copy '
+  const message = copied ? this.context.t('copiedButton') : props.title || this.context.t('copyButton')
 
   return h('.copy-button', {
     style: {

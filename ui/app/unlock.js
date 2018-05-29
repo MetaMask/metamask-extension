@@ -1,14 +1,23 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
+const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/controllers/network/enums')
+const { getEnvironmentType } = require('../../app/scripts/lib/util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../app/scripts/lib/enums')
 
 const Mascot = require('./components/mascot')
 
+UnlockScreen.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(UnlockScreen)
+
 
 inherits(UnlockScreen, Component)
 function UnlockScreen () {
@@ -26,62 +35,72 @@ UnlockScreen.prototype.render = function () {
   const state = this.props
   const warning = state.warning
   return (
-    h('.flex-column', {
-      style: {
-        width: 'inherit',
-      },
-    }, [
-      h('.unlock-screen.flex-column.flex-center.flex-grow', [
+    h('.unlock-screen', [
 
-        h(Mascot, {
-          animationEventEmitter: this.animationEventEmitter,
-        }),
+      h(Mascot, {
+        animationEventEmitter: this.animationEventEmitter,
+      }),
 
-        h('h1', {
-          style: {
-            fontSize: '1.4em',
-            textTransform: 'uppercase',
-            color: '#7F8082',
-          },
-        }, 'MetaMask'),
+      h('h1', {
+        style: {
+          fontSize: '1.4em',
+          textTransform: 'uppercase',
+          color: '#7F8082',
+        },
+      }, this.context.t('appName')),
 
-        h('input.large-input', {
-          type: 'password',
-          id: 'password-box',
-          placeholder: 'enter password',
-          style: {
+      h('input.large-input', {
+        type: 'password',
+        id: 'password-box',
+        placeholder: 'enter password',
+        style: {
+          background: 'white',
+        },
+        onKeyPress: this.onKeyPress.bind(this),
+        onInput: this.inputChanged.bind(this),
+      }),
 
-          },
-          onKeyPress: this.onKeyPress.bind(this),
-          onInput: this.inputChanged.bind(this),
-        }),
+      h('.error', {
+        style: {
+          display: warning ? 'block' : 'none',
+          padding: '0 20px',
+          textAlign: 'center',
+        },
+      }, warning),
 
-        h('.error', {
-          style: {
-            display: warning ? 'block' : 'none',
-            padding: '0 20px',
-            textAlign: 'center',
-          },
-        }, warning),
+      h('button.primary.cursor-pointer', {
+        onClick: this.onSubmit.bind(this),
+        style: {
+          margin: 10,
+        },
+      }, this.context.t('login')),
 
-        h('button.primary.cursor-pointer', {
-          onClick: this.onSubmit.bind(this),
-          style: {
-            margin: 10,
-          },
-        }, 'Unlock'),
-      ]),
+      h('p.pointer', {
+        onClick: () => {
+          this.props.dispatch(actions.markPasswordForgotten())
+          if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+            global.platform.openExtensionInBrowser()
+          }
+        },
+        style: {
+          fontSize: '0.8em',
+          color: 'rgb(247, 134, 28)',
+          textDecoration: 'underline',
+        },
+      }, this.context.t('restoreFromSeed')),
 
-      h('.flex-row.flex-center.flex-grow', [
-        h('p.pointer', {
-          onClick: () => this.props.dispatch(actions.forgotPassword()),
-          style: {
-            fontSize: '0.8em',
-            color: 'rgb(247, 134, 28)',
-            textDecoration: 'underline',
-          },
-        }, 'Restore from seed phrase'),
-      ]),
+      h('p.pointer', {
+        onClick: () => {
+          this.props.dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+            .then(() => this.props.dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
+        },
+        style: {
+          fontSize: '0.8em',
+          color: '#aeaeae',
+          textDecoration: 'underline',
+          marginTop: '32px',
+        },
+      }, this.context.t('classicInterface')),
     ])
   )
 }

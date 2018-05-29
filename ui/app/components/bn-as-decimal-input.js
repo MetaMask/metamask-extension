@@ -1,11 +1,18 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const extend = require('xtend')
+const connect = require('react-redux').connect
 
-module.exports = BnAsDecimalInput
+BnAsDecimalInput.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(BnAsDecimalInput)
+
 
 inherits(BnAsDecimalInput, Component)
 function BnAsDecimalInput () {
@@ -31,6 +38,8 @@ BnAsDecimalInput.prototype.render = function () {
   const suffix = props.suffix
   const style = props.style
   const valueString = value.toString(10)
+  const newMin = min && this.downsize(min.toString(10), scale)
+  const newMax = max && this.downsize(max.toString(10), scale)
   const newValue = this.downsize(valueString, scale)
 
   return (
@@ -47,8 +56,8 @@ BnAsDecimalInput.prototype.render = function () {
           type: 'number',
           step: 'any',
           required: true,
-          min,
-          max,
+          min: newMin,
+          max: newMax,
           style: extend({
             display: 'block',
             textAlign: 'right',
@@ -128,17 +137,19 @@ BnAsDecimalInput.prototype.updateValidity = function (event) {
 }
 
 BnAsDecimalInput.prototype.constructWarning = function () {
-  const { name, min, max } = this.props
+  const { name, min, max, scale, suffix } = this.props
+  const newMin = min && this.downsize(min.toString(10), scale)
+  const newMax = max && this.downsize(max.toString(10), scale)
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += `must be greater than or equal to  ${min} and less than or equal to ${max}.`
+    message += this.context.t('betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
   } else if (min) {
-    message += `must be greater than or equal to ${min}.`
+    message += this.context.t('greaterThanMin', [`${newMin} ${suffix}`])
   } else if (max) {
-    message += `must be less than or equal to ${max}.`
+    message += this.context.t('lessThanMax', [`${newMax} ${suffix}`])
   } else {
-    message += 'Invalid input.'
+    message += this.context.t('invalidInput')
   }
 
   return message

@@ -17,6 +17,20 @@ class ExtensionPlatform {
     return extension.runtime.getManifest().version
   }
 
+  openExtensionInBrowser () {
+    const extensionURL = extension.runtime.getURL('home.html')
+    this.openWindow({ url: extensionURL })
+  }
+
+  getPlatformInfo (cb) {
+    try {
+      extension.runtime.getPlatformInfo((platform) => {
+        cb(null, platform)
+      })
+    } catch (e) {
+      cb(e)
+    }
+  }
 }
 
 module.exports = ExtensionPlatform

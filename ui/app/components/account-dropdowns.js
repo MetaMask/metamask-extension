@@ -1,14 +1,14 @@
 const Component = require('react').Component
-const PropTypes = require('react').PropTypes
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../actions')
-const genAccountLink = require('../../lib/account-link.js')
+const genAccountLink = require('etherscan-link').createAccountLink
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const Identicon = require('./identicon')
-const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
+const { checksumAddress } = require('../util')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -79,7 +79,7 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label', 'LOOSE') : null
+      return isLoose ? h('.keyring-label.allcaps', this.context.t('loose')) : null
     } catch (e) { return }
   }
 
@@ -129,7 +129,7 @@ class AccountDropdowns extends Component {
                 diameter: 32,
               },
             ),
-            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, 'Create Account'),
+            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, this.context.t('createAccount')),
           ],
         ),
         h(
@@ -154,14 +154,12 @@ class AccountDropdowns extends Component {
                 fontSize: '24px',
                 marginBottom: '5px',
               },
-            }, 'Import Account'),
+            }, this.context.t('importAccount')),
           ]
         ),
       ]
     )
   }
-
-
 
   renderAccountOptions () {
     const { actions } = this.props
@@ -175,7 +173,7 @@ class AccountDropdowns extends Component {
           minWidth: '180px',
         },
         isOpen: optionsMenuActive,
-        onClickOutside: () => {
+        onClickOutside: (event) => {
           const { classList } = event.target
           const isNotToggleElement = !classList.contains(this.optionsMenuToggleClassName)
           if (optionsMenuActive && isNotToggleElement) {
@@ -194,7 +192,7 @@ class AccountDropdowns extends Component {
               global.platform.openWindow({ url })
             },
           },
-          'View account on Etherscan',
+          this.context.t('etherscanView'),
         ),
         h(
           DropdownMenuItem,
@@ -206,7 +204,7 @@ class AccountDropdowns extends Component {
               actions.showQrView(selected, identity ? identity.name : '')
             },
           },
-          'Show QR Code',
+          this.context.t('showQRCode'),
         ),
         h(
           DropdownMenuItem,
@@ -214,11 +212,10 @@ class AccountDropdowns extends Component {
             closeMenu: () => {},
             onClick: () => {
               const { selected } = this.props
-              const checkSumAddress = selected && ethUtil.toChecksumAddress(selected)
-              copyToClipboard(checkSumAddress)
+              copyToClipboard(checksumAddress(selected))
             },
           },
-          'Copy Address to clipboard',
+          this.context.t('copyAddress'),
         ),
         h(
           DropdownMenuItem,
@@ -228,7 +225,7 @@ class AccountDropdowns extends Component {
               actions.requestAccountExport()
             },
           },
-          'Export Private Key',
+          this.context.t('exportPrivateKey'),
         ),
       ]
     )
@@ -297,6 +294,12 @@ AccountDropdowns.propTypes = {
   identities: PropTypes.objectOf(PropTypes.object),
   selected: PropTypes.string,
   keyrings: PropTypes.array,
+  actions: PropTypes.objectOf(PropTypes.func),
+  network: PropTypes.string,
+  style: PropTypes.object,
+  enableAccountOptions: PropTypes.bool,
+  enableAccountsSelector: PropTypes.bool,
+    t: PropTypes.func,
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -310,6 +313,10 @@ const mapDispatchToProps = (dispatch) => {
       showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
     },
   }
+}
+
+AccountDropdowns.contextTypes = {
+  t: PropTypes.func,
 }
 
 module.exports = {

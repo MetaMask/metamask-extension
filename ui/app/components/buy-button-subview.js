@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
@@ -8,9 +9,14 @@ const ShapeshiftForm = require('./shapeshift-form')
 const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
-const networkNames = require('../../../app/scripts/config.js').networkNames
+const { getNetworkDisplayName } = require('../../../app/scripts/controllers/network/util')
+
+BuyButtonSubview.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
+
 
 function mapStateToProps (state) {
   return {
@@ -76,7 +82,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, 'Buy Eth'),
+        }, this.context.t('depositEth')),
       ]),
 
       // loading indication
@@ -87,7 +93,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
           left: '49vw',
         },
       }, [
-        h(Loading, { isLoading }),
+        isLoading && h(Loading),
       ]),
 
       // account panel
@@ -118,7 +124,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, 'Select Service'),
+        }, this.context.t('selectService')),
       ]),
 
     ])
@@ -142,8 +148,8 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '3':
     case '4':
     case '42':
-      const networkName = networkNames[network]
-      const label = `${networkName} Test Faucet`
+      const networkName = getNetworkDisplayName(network)
+      const label = `${networkName} ${this.context.t('testFaucet')}`
       return (
         h('div.flex-column', {
           style: {
@@ -164,14 +170,14 @@ BuyButtonSubview.prototype.primarySubview = function () {
               style: {
                 marginTop: '15px',
               },
-            }, 'Borrow With Dharma (Beta)')
+            }, this.context.t('borrowDharma'))
           ) : null,
       ])
     )
 
     default:
       return (
-        h('h2.error', 'Unknown network ID')
+        h('h2.error', this.context.t('unknownNetworkId'))
       )
 
   }
@@ -203,8 +209,8 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
             'ShapeShift',
           ],
           subtext: {
-            'Coinbase': 'Crypto/FIAT (USA only)',
-            'ShapeShift': 'Crypto',
+            'Coinbase': `${this.context.t('crypto')}/${this.context.t('fiat')} (${this.context.t('usaOnly')})`,
+            'ShapeShift': this.context.t('crypto'),
           },
           onClick: this.radioHandler.bind(this),
         }),
@@ -245,7 +251,7 @@ BuyButtonSubview.prototype.navigateTo = function (url) {
 
 BuyButtonSubview.prototype.backButtonContext = function () {
   if (this.props.context === 'confTx') {
-    this.props.dispatch(actions.showConfTxPage(false))
+    this.props.dispatch(actions.showConfTxPage({transForward: false}))
   } else {
     this.props.dispatch(actions.goHome())
   }

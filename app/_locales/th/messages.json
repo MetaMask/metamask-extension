@@ -1,0 +1,819 @@
+{
+  "accept": {
+    "message": "ยอมรับ"
+  },
+  "account": {
+    "message": "บัญชี"
+  },
+  "accountDetails": {
+    "message": "รายละเอียดบัญชี"
+  },
+  "accountName": {
+    "message": "ชื่อบัญชี"
+  },
+  "address": {
+    "message": "แอดเดรส"
+  },
+  "addCustomToken": {
+    "message": "เพิ่มโทเค็นด้วยตัวเอง"
+  },
+  "addToken": {
+    "message": "เพิ่มโทเค็น"
+  },
+  "addTokens": {
+    "message": "เพิ่มหลายโทเค็น"
+  },
+  "amount": {
+    "message": "จำนวน"
+  },
+  "amountPlusGas": {
+    "message": "จำนวน + แก๊ส"
+  },
+  "appDescription": {
+    "message": "ส่วนขยายเบราว์เซอร์สำหรับอีเธอเรียม",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "attemptingConnect": {
+    "message": "กำลังเชื่อมต่อกับบล็อกเชน"
+  },
+  "attributions": {
+    "message": "อ้างถึง"
+  },
+  "available": {
+    "message": "ว่าง"
+  },
+  "back": {
+    "message": "กลับ"
+  },
+  "balance": {
+    "message": "ยอดคงเหลือ:"
+  },
+  "balances": {
+    "message": "ยอดคงเหลือของคุณ"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "ยอดคงเหลือไม่พอสำหรับจ่ายค่าแก๊สทั้งหมด"
+  },
+  "beta": {
+    "message": "เบต้า"
+  },
+  "betweenMinAndMax": {
+    "message": "ต้องมากกว่าหรือเท่ากับ $1 และน้อยกว่าหรือเท่ากับ $2",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "blockiesIdenticon": {
+    "message": "ใช้งาน Blockies Identicon"
+  },
+  "borrowDharma": {
+    "message": "ยืมด้วย Dharma (เบต้า)"
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask ออกแบบและพัฒนาที่แคลิฟอร์เนีย"
+  },
+  "buy": {
+    "message": "ซื้อ"
+  },
+  "buyCoinbase": {
+    "message": "ซื้อด้วย Coinbase"
+  },
+  "buyCoinbaseExplainer": {
+    "message": "Coinbase เป็นแหล่งซื้อขายบิตคอยน์ไลท์คอยน์และอีเธอเรียมที่ได้รับความนิยมสูงสุดในโลก"
+  },
+  "cancel": {
+    "message": "ยกเลิก"
+  },
+  "classicInterface": {
+    "message": "ใช้หน้าตาแบบเก่า"
+  },
+  "clickCopy": {
+    "message": "กดเพื่อคัดลอก"
+  },
+  "confirm": {
+    "message": "ยืนยัน"
+  },
+  "confirmContract": {
+    "message": "ยืนยันสัญญา"
+  },
+  "confirmPassword": {
+    "message": "ยืนยันรหัสผ่าน"
+  },
+  "confirmTransaction": {
+    "message": "ยืนยันการทำรายการธุรกรรม"
+  },
+  "continue": {
+    "message": "ทำต่อไป"
+  },
+  "continueToCoinbase": {
+    "message": "ไปที่ Coinbase"
+  },
+  "contractDeployment": {
+    "message": "การติดตั้งสัญญา"
+  },
+  "conversionProgress": {
+    "message": "กำลังดำเนินการแปลงหน่วย"
+  },
+  "copiedButton": {
+    "message": "คัดลอกแล้ว"
+  },
+  "copiedClipboard": {
+    "message": "คัดลอกไปที่คลิบบอร์ดแล้ว"
+  },
+  "copiedExclamation": {
+    "message": "คัดลอกแล้ว!"
+  },
+  "copiedSafe": {
+    "message": "ฉันได้คัดลอกเก็บไว้ในที่ปลอดภัยเรียบร้อยแล้ว"
+  },
+  "copy": {
+    "message": "คัดลอก"
+  },
+  "copyToClipboard": {
+    "message": "คัดลอกไปคลิปบอร์ด"
+  },
+  "copyButton": {
+    "message": " คัดลอก "
+  },
+  "copyPrivateKey": {
+    "message": "นี่คือคีย์ส่วนตัวของคุณ(กดเพื่อคัดลอก)"
+  },
+  "create": {
+    "message": "สร้าง"
+  },
+  "createAccount": {
+    "message": "สร้างบัญชี"
+  },
+  "createDen": {
+    "message": "สร้าง"
+  },
+  "crypto": {
+    "message": "คริปโต",
+    "description": "Exchange type (cryptocurrencies)"
+  },
+  "currentConversion": {
+    "message": "อัตราแลกเปลี่ยนปัจจุบัน"
+  },
+  "currentNetwork": {
+    "message": "เครือข่ายปัจจุบัน"
+  },
+  "customGas": {
+    "message": "กำหนดค่าแก็สเอง"
+  },
+  "customize": {
+    "message": "กำหนดค่าเอง"
+  },
+  "customRPC": {
+    "message": "กำหนดค่า RPC เอง"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "จำนวนต้องมากกว่า 0 และไม่เกิน 36"
+  },
+  "decimal": {
+    "message": "ตำแหน่งของทศนิยม"
+  },
+  "defaultNetwork": {
+    "message": "ค่าเริ่มต้นของเครือข่ายสำหรับทำรายการธุรกรรมอีเธอร์คือ Main Net"
+  },
+  "denExplainer": {
+    "message": "DEN ของคุณคือตัวเก็บข้อมูลที่เข้ารหัสไว้ด้วยรหัสผ่านของคุณภายใน MetaMask "
+  },
+  "deposit": {
+    "message": "ฝาก"
+  },
+  "depositBTC": {
+    "message": "ฝากบิตคอยน์ของคุณไปที่แอดเดรสด้านล่างนี้:"
+  },
+  "depositCoin": {
+    "message": "ฝาก $1 ของคุณไปที่แอดเดรสด้านล่างนี้:",
+    "description": "Tells the user what coin they have selected to deposit with shapeshift"
+  },
+  "depositEth": {
+    "message": "การฝากอีเธอร์"
+  },
+  "depositEther": {
+    "message": "การฝากอีเธอร์"
+  },
+  "depositFiat": {
+    "message": "ฝากด้วยเงินตรา"
+  },
+  "depositFromAccount": {
+    "message": "ฝากจากบัญชีอื่น"
+  },
+  "depositShapeShift": {
+    "message": "ฝากด้วย ShapeShift"
+  },
+  "depositShapeShiftExplainer": {
+    "message": "ถ้ามีเงินสกุลอื่นอยู่ก็สามารถแลกเงินและฝากเป็นอีเธอร์ได้โดยตรงเข้ากระเป๋า MetaMask ได้เลยไม่ต้องสมัครบัญชี"
+  },
+  "details": {
+    "message": "รายละเอียด"
+  },
+  "directDeposit": {
+    "message": "ฝากตรง"
+  },
+  "directDepositEther": {
+    "message": "ฝากอีเธอร์โดยตรง"
+  },
+  "directDepositEtherExplainer": {
+    "message": "ถ้าคุณมีอีเธอร์อยู่แล้ววิธีการที่เร็วที่สุดในการเอาเงินเข้ากระเป๋าใหม่ก็คือการโอนตรงๆ"
+  },
+  "done": {
+    "message": "เสร็จสิ้น"
+  },
+  "downloadStateLogs": {
+    "message": "ดาวน์โหลดล็อกสถานะ"
+  },
+  "edit": {
+    "message": "แก้ไข"
+  },
+  "editAccountName": {
+    "message": "แก้ไขชื่อบัญชี"
+  },
+  "emailUs": {
+    "message": "อีเมลหาเรา!"
+  },
+  "encryptNewDen": {
+    "message": "เข้ารหัส DEN ของคุณ"
+  },
+  "enterPassword": {
+    "message": "ใส่รหัสผ่าน"
+  },
+  "enterPasswordConfirm": {
+    "message": "ใส่รหัสผ่านอีกครั้งเพื่อยืนยัน"
+  },
+  "etherscanView": {
+    "message": "ดูบัญชีบน Etherscan"
+  },
+  "exchangeRate": {
+    "message": "อัตราแลกเปลี่ยน"
+  },
+  "exportPrivateKey": {
+    "message": "ส่งออกคีย์ส่วนตัว"
+  },
+  "exportPrivateKeyWarning": {
+    "message": "ส่งออกคีย์ส่วนตัวโดยคุณรับความเสี่ยงเอง"
+  },
+  "failed": {
+    "message": "ล้มเหลว"
+  },
+  "fiat": {
+    "message": "เงินตรา",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "นำเข้าไฟล์ไม่สำเหร็จ กดที่นี่!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "followTwitter": {
+    "message": "ติดตามเราบนทวิตเตอร์"
+  },
+  "from": {
+    "message": "จาก"
+  },
+  "fromToSame": {
+    "message": "แอดเดรสที่ส่งกับที่รับจะต้องไม่ไช่อันเดียวกัน"
+  },
+  "fromShapeShift": {
+    "message": "จาก ShapeShift"
+  },
+  "gas": {
+    "message": "แก็ส",
+    "description": "Short indication of gas cost"
+  },
+  "gasFee": {
+    "message": "ค่าแก๊ส"
+  },
+  "gasLimit": {
+    "message": "วงเงินแก็ส"
+  },
+  "gasLimitCalculation": {
+    "message": "เราแนะนำวงเงินแก็สตามความสำเร็จบนเครือข่าย"
+  },
+  "gasLimitRequired": {
+    "message": "ต้องกำหนดวงเงินแก็ส"
+  },
+  "gasLimitTooLow": {
+    "message": "วงเงินแก็สต้องอย่างน้อย 21000"
+  },
+  "generatingSeed": {
+    "message": "กำลังสร้างชีด..."
+  },
+  "gasPrice": {
+    "message": "ราคาแก๊ส (GWEI)"
+  },
+  "gasPriceCalculation": {
+    "message": "เราแนะนำราคาแก็สตามความสำเร็จบนเครือข่าย"
+  },
+  "gasPriceRequired": {
+    "message": "ต้องมีราคาแก๊ส"
+  },
+  "getEther": {
+    "message": "รับอีเธอร์"
+  },
+  "getEtherFromFaucet": {
+    "message": "รับอีเธอร์ที่ปล่อยจาก $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "greaterThanMin": {
+    "message": "ต้องมากกว่าหรือเท่ากับ $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "here": {
+    "message": "ที่นี่",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hereList": {
+    "message": "รายการอยู่ที่นี่!!!!"
+  },
+  "hide": {
+    "message": "ซ่อน"
+  },
+  "hideToken": {
+    "message": "ซ่อนโทเค็น"
+  },
+  "hideTokenPrompt": {
+    "message": "ซ่อนโทเค็นหรือไม่?"
+  },
+  "howToDeposit": {
+    "message": "คุณต้องการฝากอีเธอร์อย่างไร?"
+  },
+  "holdEther": {
+    "message": "ช่วยคุณถืออีเทอร์และโทเค็นและทำหน้าที่เป็นสะพานเชื่อมต่อกับแอพพลิเคชันแบบกระจาย"
+  },
+  "import": {
+    "message": "นำเข้า",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "นำเข้าบัญชี"
+  },
+  "importAccountMsg": {
+    "message":"บัญชีที่นำเข้าจะไม่ถูกรวมกับบัญชีที่สร้างด้วยคำเเริ่มต้นบนเมต้ามาร์สในตอนแรก เรียนรู้เพิ่มเติมเกี่ยวกับบัญชีที่นำเข้า"
+  },
+  "importAnAccount": {
+    "message": "นำเข้าบัญชี"
+  },
+  "importDen": {
+    "message": "นำเข้า DEN ที่มีอยู่แล้ว"
+  },
+  "imported": {
+    "message": "นำเข้าเรียบร้อย",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infoHelp": {
+    "message": "ข้อมูลและความช่วยเหลือ"
+  },
+  "insufficientFunds": {
+    "message": "เงินทุนไม่เพียงพอ"
+  },
+  "insufficientTokens": {
+    "message": "โทเค็นไม่เพียงพอ"
+  },
+  "invalidAddress": {
+    "message": "แอดแดรสไม่ถูกต้อง"
+  },
+  "invalidAddressRecipient": {
+    "message": "แอดแดรสผู้รับไม่ถูกต้อง"
+  },
+  "invalidGasParams": {
+    "message": "ตั้งค่าแก๊สไม่ถูกต้อง"
+  },
+  "invalidInput": {
+    "message": "อินพุทไม่ถูกต้อง"
+  },
+  "invalidRequest": {
+    "message": "คำร้องขอไม่ถูกต้อง"
+  },
+  "invalidRPC": {
+    "message": "RPC URI ไม่ถูกต้อง"
+  },
+  "jsonFail": {
+    "message": "เกิดบางอย่างผิดพลาด โปรดตรวจสอบว่าไฟล์ JSON ของคุณมีรูปแบบที่ถูกต้อง."
+  },
+  "jsonFile": {
+    "message": "ไฟล์ JSON",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "เครือข่ายทดสอบ Kovan"
+  },
+  "knowledgeDataBase": {
+    "message": "ไปที่คลังความรู้ของเรา"
+  },
+  "lessThanMax": {
+    "message": "ต้องน้อยกว่าหรือเท่ากับ $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "likeToAddTokens": {
+    "message": "คุณต้องการเพิ่มโทเค็นเหล่านี้หรือไม่?"
+  },
+  "limit": {
+    "message": "ข้อจำกัด"
+  },
+  "loading": {
+    "message": "กำลังโหลด..."
+  },
+  "loadingTokens": {
+    "message": "กำลังโหลดโทเค็น..."
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "login": {
+    "message": "เข้าสู่ระบบ"
+  },
+  "logout": {
+    "message": "ออกจากระบบ"
+  },
+  "loose": {
+    "message": "อิสระ"
+  },
+  "loweCaseWords": {
+    "message": "กลุ่มคำชีดมีเพียงตัวพิมพ์เล็กเท่านั้น"
+  },
+  "mainnet": {
+    "message": "เครือข่าย Main Net"
+  },
+  "message": {
+    "message": "ข้อความ"
+  },
+  "metamaskDescription": {
+    "message": "MetaMask คือที่เก็บตัวตนนิรภัยสำหรับอีเธอเรียม"
+  },
+  "min": {
+    "message": "ขั้นต่ำ"
+  },
+  "myAccounts": {
+    "message": "บัญชีของฉัน"
+  },
+  "mustSelectOne": {
+    "message": "ต้องเลือกอย่างน้อย 1 โทเค็น"
+  },
+  "needEtherInWallet": {
+    "message": "คุณจะต้องมีอีเธอร์ในกระเป๋าเงินของคุณในการใช้งานกับแอพพลิเคชันแบบกระจายด้วย MetaMask"
+  },
+  "needImportFile": {
+    "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "needImportPassword": {
+    "message": "คุณต้องป้อนรหัสผ่านสำหรับไฟล์ที่เลือก",
+    "description": "Password and file needed to import an account"
+  },
+  "negativeETH": {
+    "message": "ไม่สามารถส่งอีเธอร์เป็นจำนวนติดลบได้"
+  },
+  "networks": {
+    "message": "เครือข่าย"
+  },
+  "newAccount": {
+    "message": "บัญชีใหม่"
+  },
+  "newAccountNumberName": {
+    "message": "บัญชี $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "สร้างสัญญาใหม่"
+  },
+  "newPassword": {
+    "message": "รหัสผ่านใหม่(ขั้นต่ำ 8 ตัวอักษร)"
+  },
+  "newRecipient": {
+    "message": "ผู้รับใหม่"
+  },
+  "newRPC": {
+    "message": "RPC URL ใหม่"
+  },
+  "next": {
+    "message": "ถัดไป"
+  },
+  "noAddressForName": {
+    "message": "ยังไม่มีแอดแดรสไหนตั้งในชื่อนี้"
+  },
+  "noDeposits": {
+    "message": "ไม่มีเงินฝากเข้ามา"
+  },
+  "noTransactionHistory": {
+    "message": "ไม่มีรายการธุรกรรมในอดีต"
+  },
+  "noTransactions": {
+    "message": "ยังไม่มีรายการธุรกรรม"
+  },
+  "notStarted": {
+    "message": "ยังไม่เริ่ม"
+  },
+  "oldUI": {
+    "message": "หน้าตาแบบเก่า"
+  },
+  "oldUIMessage": {
+    "message": "คุณได้เปลี่ยนเป็นหน้าตาแบบเก่าแล้ว คุณสามารถเปลี่ยนเป็นหน้าตาแบบใหม่ได้โดยไปที่ตัวเลือกตรงเมนูมุมขวาบน"
+  },
+  "or": {
+    "message": "หรือ",
+    "description": "choice between creating or importing a new account"
+  },
+  "passwordCorrect": {
+    "message": "โปรดตรวจสอบว่ารหัสผ่านของคุณถูกต้อง"
+  },
+  "passwordMismatch": {
+    "message": "รหัสผ่านไม่ตรงกัน",
+    "description": "in password creation process, the two new password fields did not match"
+  },
+  "passwordShort": {
+    "message": "รหัสผ่านไม่ยาวพอ",
+    "description": "in password creation process, the password is not long enough to be secure"
+  },
+  "pastePrivateKey": {
+    "message": "วางคีย์ส่วนตัวของคุณที่นี่:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "วางคำชีดของคุณที่นี่!"
+  },
+  "personalAddressDetected": {
+    "message": "ตรวจพบแอดแดรสส่วนตัวแล้ว ใส่แอดแดรสสัญญาโทเค็น"
+  },
+  "pleaseReviewTransaction": {
+    "message": "โปรดตรวจสอบธุรกรรมของคุณ"
+  },
+  "privacyMsg": {
+    "message": "นโยบายสความเป็นส่วนตัว"
+  },
+  "privateKey": {
+    "message": "คีย์ส่วนตัว",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "คำเตือน: ห้ามเปิดเผยคีย์นี้ ทุกคนที่มีคีย์ส่วนตัวสามารถขโมยข้อมูลใด ๆ ที่เก็บไว้ในบัญชีของคุณได้"
+  },
+  "privateNetwork": {
+    "message": "เครือข่ายส่วนตัว"
+  },
+  "qrCode": {
+    "message": "แสดง QR Code"
+  },
+  "readdToken": {
+    "message": "คุณสามารถเพิ่มโทเค็นนี้ในอนาคตได้โดยไปที่ “เพิ่มโทเค็น” ในเมนูตัวเลือกบัญชีของคุณ"
+  },
+  "readMore": {
+    "message": "อ่านเพิ่มเติมที่นี่"
+  },
+  "readMore2": {
+    "message": "อ่านเพิ่มเติม"
+  },
+  "receive": {
+    "message": "รับ"
+  },
+  "recipientAddress": {
+    "message": "แอดแดรสผู้รับ"
+  },
+  "refundAddress": {
+    "message": "แอดแดรสสำหรับการคืนเงินของคุณ"
+  },
+  "rejected": {
+    "message": "ถูกปฏิเสธ"
+  },
+  "resetAccount": {
+    "message": "รีเซ็ตบัญชี"
+  },
+  "restoreFromSeed": {
+    "message": "กู้คืนจากกลุ่มคำชีด"
+  },
+  "required": {
+    "message": "จำเป็น"
+  },
+  "retryWithMoreGas": {
+    "message": "ลองใหม่ด้วยราคาแก๊สที่สูงกว่านี้ที่นี่"
+  },
+  "revealSeedWords": {
+    "message": "เปิดเผยกลุ่มคำชีด"
+  },
+  "revealSeedWordsWarning": {
+    "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ"
+  },
+  "revert": {
+    "message": "ย้อนกลับ"
+  },
+  "rinkeby": {
+    "message": "เครือข่ายทดสอบ Rinkeby"
+  },
+  "ropsten": {
+    "message": "เครือข่ายทดสอบ Ropsten"
+  },
+  "sampleAccountName": {
+    "message": "เช่น บัญชีเฮงเฮงของฉัน",
+    "description": "Help user understand concept of adding a human-readable name to their account"
+  },
+  "save": {
+    "message": "บันทึก"
+  },
+  "saveAsFile": {
+    "message": "บันทึกเป็นไฟล์",
+    "description": "Account export process"
+  },
+  "saveSeedAsFile": {
+    "message": "บันทึกกลุ่มคำชีดเป็นไฟล์"
+  },
+  "search": {
+    "message": "ค้นหา"
+  },
+  "secretPhrase": {
+    "message": "ป้อนกลุ่มคำสิบสองคำเพื่อกู้คืนตู้เซฟของคุณ"
+  },
+  "seedPhraseReq": {
+    "message": "กลุ่มคำชีดมีความยาว 12 คำ"
+  },
+  "select": {
+    "message": "เลือก"
+  },
+  "selectCurrency": {
+    "message": "เลือกสกุลเงิน"
+  },
+  "selectService": {
+    "message": "เลือกบริการ"
+  },
+  "selectType": {
+    "message": "เลือกประเภท"
+  },
+  "send": {
+    "message": "ส่ง"
+  },
+  "sendETH": {
+    "message": "ส่งอีเธอร์"
+  },
+  "sendTokens": {
+    "message": "ส่งโทเค็น"
+  },
+  "sendTokensAnywhere": {
+    "message": "ส่งโทเค็นไปให้ทุกคนที่มีบัญชีอีเธอเรียม"
+  },
+  "settings": {
+    "message": "การตั้งค่า"
+  },
+  "shapeshiftBuy": {
+    "message": "ซื้อด้วย Shapeshift"
+  },
+  "showPrivateKeys": {
+    "message": "แสดงคีย์ส่วนตัว"
+  },
+  "showQRCode": {
+    "message": "แสดง QR Code"
+  },
+  "sign": {
+    "message": "เซ็นชื่อ"
+  },
+  "signMessage": {
+    "message": "เซ็นชื่อในข้อความ"
+  },
+  "signNotice": {
+    "message": "การเซ็นชื่อในข้อความนี้อาจจะเป็นอันตรายได้ \nเซ็นชื่อเฉพาะข้อความจากแหล่งที่คุณไว้วางใจได้จริง ๆ เท่านั้น \nวิธีที่อันตรายนี้จะถูกลบออกในอนาคต"
+  },
+  "sigRequest": {
+    "message": "ขอลายเซ็น"
+  },
+  "sigRequested": {
+    "message": "ขอลายเซ็นแล้ว"
+  },
+  "spaceBetween": {
+    "message": "มีช่องว่างได้เพียงตัวเดียวระหว่างคำเท่านั้น"
+  },
+  "status": {
+    "message": "สถานะ"
+  },
+  "stateLogs": {
+    "message": "บันทึกของสถานะ"
+  },
+  "stateLogsDescription": {
+    "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
+  },
+  "submit": {
+    "message": "ตกลง"
+  },
+  "supportCenter": {
+    "message": "ไปที่ศูนย์สนับสนุนของเรา"
+  },
+  "symbolBetweenZeroTen": {
+    "message": "สัญลักษณ์ต้องมีความยาวตั้งแต่ 0 ถึง 10 อักขระ"
+  },
+  "takesTooLong": {
+    "message": "ใช้เวลานานเกินไปใช่หรือไม่?"
+  },
+  "terms": {
+    "message": "ข้อตกลงในการใช้งาน"
+  },
+  "testFaucet": {
+    "message": "ตัวแจกจ่ายเพื่อการทดสอบ"
+  },
+  "to": {
+    "message": "ถึง"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 เป็นอีเธอร์โดย ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "tokenAddress": {
+    "message": "แอดแดรสโทเค็น"
+  },
+  "tokenAlreadyAdded": {
+    "message": "โทเคนได้ถูกเพิ่มไปแล้ว"
+  },
+  "tokenBalance": {
+    "message": "ยอดโทเค็นคงเหลือของคุณคือ:"
+  },
+  "tokenSelection": {
+    "message": "ค้นหาโทเค็นหรือเลือกจากรายการโทเค็นยอดนิยมของเรา"
+  },
+  "tokenSymbol": {
+    "message": "สัญลักษณ์ประจำตัว"
+  },
+  "tokenWarning1": {
+    "message": "ติดตามโทเค็นที่คุณซื้อด้วยบัญชี MetaMask ของคุณ หากคุณซื้อโทเค็นโดยใช้บัญชีอื่นโทเค็นเหล่านั้นจะไม่ปรากฏที่นี่"
+  },
+  "total": {
+    "message": "รวม"
+  },
+  "transactions": {
+    "message": "ธุรกรรม"
+  },
+  "transactionMemo": {
+    "message": "บันทึกช่วยจำของการทำธุรกรรม (ไม่บังคับ)"
+  },
+  "transactionNumber": {
+    "message": "หมายเลขธุรกรรม"
+  },
+  "transfers": {
+    "message": "โอน"
+  },
+  "troubleTokenBalances": {
+    "message": "เรามีปัญหาในการโหลดยอดโทเค็นคงเหลือของคุณ คุณสามารถดูได้ที่นี่",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "twelveWords": {
+    "message": "กลุ่มคำ 12 คำเหล่านี้เป็นวิธีเดียวที่จะกู้คืนบัญชี MetaMask ของคุณ \n กรุณาเก็บไว้ในที่ปลอดภัยและเก็บเป็นความลับ"
+  },
+  "typePassword": {
+    "message": "พิมพ์รหัสผ่านของคุณ"
+  },
+  "uiWelcome": {
+    "message": "ยินดีต้อนรับสู่หน้าตาใหม่ (เบต้า)"
+  },
+  "uiWelcomeMessage": {
+    "message": "ขณะนี้คุณใช้งาน Metamask หน้าตาใหม่แล้ว ลองใช้ความสามรถใหม่ ๆ เช่นการส่งโทเค็นและหากพบปัญหากรุณาแจ้งให้เราทราบ"
+  },
+  "unavailable": {
+    "message": "ใช้งานไม่ได้"
+  },
+  "unknown": {
+    "message": "ไม่รู้จัก"
+  },
+  "unknownNetwork": {
+    "message": "ไม่รู้จักเครือข่ายส่วนตัว"
+  },
+  "unknownNetworkId": {
+    "message": "ไม่รู้จักหมายเลขเครือข่าย"
+  },
+  "uriErrorMsg": {
+    "message": "URI ต้องมีคำนำหน้าเป็น HTTP หรือ HTTPS"
+  },
+  "usaOnly": {
+    "message": "ในสหรัฐอเมริกาเท่านั้น",
+    "description": "Using this exchange is limited to people inside the USA"
+  },
+  "usedByClients": {
+    "message": "ถูกใช้งานโดยหลายไคลเอนท์"
+  },
+  "useOldUI": {
+    "message": "ใช้หน้าตาเก่า"
+  },
+  "validFileImport": {
+    "message": "คุณต้องเลือกไฟล์ที่ถูกต้องเพื่อนำเข้า"
+  },
+  "vaultCreated": {
+    "message": "สร้างตู้เซฟแล้ว"
+  },
+  "viewAccount": {
+    "message": "ดูบัญชี"
+  },
+  "visitWebSite": {
+    "message": "เยี่ยมชมเว็บไซต์ของเรา"
+  },
+  "warning": {
+    "message": "คำเตือน"
+  },
+  "welcomeBeta": {
+    "message": "ยินดีต้อนรับสู่ MetaMask เบต้า"
+  },
+  "whatsThis": {
+    "message": "นี่คืออะไร?"
+  },
+  "yourSigRequested": {
+    "message": "ลายเซ็นของคุณกำลังได้รับการร้องขอ"
+  },
+  "youSign": {
+    "message": "คุณกำลังเซ็นชื่อ"
+  }
+}
