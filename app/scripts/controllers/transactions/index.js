@@ -83,7 +83,11 @@ class TransactionController extends EventEmitter {
     this.txStateManager.store.subscribe(() => this._updateMemstore())
     this.networkStore.subscribe(() => this._updateMemstore())
     this.preferencesStore.subscribe(() => this._updateMemstore())
+
+    // request state update to finalize initialization
+    this._updatePendingTxsAfterFirstBlock()
   }
+
   /** @returns {number} the chainId*/
   getChainId () {
     const networkState = this.networkStore.getState()
@@ -347,6 +351,14 @@ class TransactionController extends EventEmitter {
     this.getPendingTxCount = (account) => this.txStateManager.getPendingTransactions(account).length
     /** see txStateManager */
     this.getFilteredTxList = (opts) => this.txStateManager.getFilteredTxList(opts)
+  }
+
+  // called once on startup
+  async _updatePendingTxsAfterFirstBlock () {
+    // wait for first block so we know we're ready
+    await this.blockTracker.getLatestBlock()
+    // get status update for all pending transactions (for the current network)
+    await this.pendingTxTracker.updatePendingTxs()
   }
 
   /**

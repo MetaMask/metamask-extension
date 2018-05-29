@@ -34,11 +34,10 @@ class PendingTransactionTracker extends EventEmitter {
     checks the network for signed txs and releases the nonce global lock if it is
   */
   async updatePendingTxs () {
-    const pendingTxs = this.getPendingTransactions()
     // in order to keep the nonceTracker accurate we block it while updating pending transactions
-    console.log('updating pending txs....', pendingTxs)
     const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
     try {
+      const pendingTxs = this.getPendingTransactions()
       await Promise.all(pendingTxs.map((txMeta) => this._checkPendingTx(txMeta)))
     } catch (err) {
       log.error('PendingTransactionTracker - Error updating pending transactions')
