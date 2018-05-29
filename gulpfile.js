@@ -13,7 +13,6 @@ const zip = require('gulp-zip')
 const assign = require('lodash.assign')
 const livereload = require('gulp-livereload')
 const del = require('del')
-const eslint = require('gulp-eslint')
 const fs = require('fs')
 const path = require('path')
 const manifest = require('./app/manifest.json')
@@ -211,29 +210,6 @@ gulp.task('dev:copy',
     'manifest:opera'
   )
 )
-
-// lint js
-
-const lintTargets = ['app/**/*.json', 'app/**/*.js', '!app/scripts/vendor/**/*.js', 'ui/**/*.js', 'old-ui/**/*.js', 'mascara/src/*.js', 'mascara/server/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js', '!mascara/test/jquery-3.1.0.min.js', 'test/**/*.js']
-
-gulp.task('lint', function () {
-  // Ignoring node_modules, dist/firefox, and docs folders:
-  return gulp.src(lintTargets)
-    .pipe(eslint(fs.readFileSync(path.join(__dirname, '.eslintrc'))))
-    // eslint.format() outputs the lint results to the console.
-    // Alternatively use eslint.formatEach() (see Docs).
-    .pipe(eslint.format())
-    // To have the process exit with an error code (1) on
-    // lint error, return the stream and pipe to failAfterError last.
-    .pipe(eslint.failAfterError())
-});
-
-gulp.task('lint:fix', function () {
-  return gulp.src(lintTargets)
-    .pipe(eslint(Object.assign(fs.readFileSync(path.join(__dirname, '.eslintrc')), { fix: true })))
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
-});
 
 // scss compilation and autoprefixing tasks
 
