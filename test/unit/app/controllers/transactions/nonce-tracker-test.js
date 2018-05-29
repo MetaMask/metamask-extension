@@ -1,7 +1,7 @@
 const assert = require('assert')
 const NonceTracker = require('../../../../../app/scripts/controllers/transactions/nonce-tracker')
 const MockTxGen = require('../../../../lib/mock-tx-gen')
-let providerResultStub = {}
+const providerResultStub = {}
 
 describe('Nonce Tracker', function () {
   let nonceTracker, provider

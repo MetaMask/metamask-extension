@@ -6,11 +6,11 @@ const firstTimeState = {
 }
 const properTime = (new Date()).getTime()
 const storage = {
-  "meta": {},
-  "data": {
-    "TransactionController": {
-      "transactions": [
-      ]
+  'meta': {},
+  'data': {
+    'TransactionController': {
+      'transactions': [
+      ],
     },
   },
 }

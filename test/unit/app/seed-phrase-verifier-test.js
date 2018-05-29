@@ -9,8 +9,8 @@ describe('SeedPhraseVerifier', function () {
 
   describe('verifyAccounts', function () {
 
-    let password = 'passw0rd1'
-    let hdKeyTree = 'HD Key Tree'
+    const password = 'passw0rd1'
+    const hdKeyTree = 'HD Key Tree'
 
     let keyringController
     let vault
@@ -30,54 +30,54 @@ describe('SeedPhraseVerifier', function () {
 
     it('should be able to verify created account with seed words', async function () {
 
-      let createdAccounts = await primaryKeyring.getAccounts()
+      const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
-      let serialized = await primaryKeyring.serialize()
-      let seedWords = serialized.mnemonic
+      const serialized = await primaryKeyring.serialize()
+      const seedWords = serialized.mnemonic
       assert.notEqual(seedWords.length, 0)
-    
-      let result = await seedPhraseVerifier.verifyAccounts(createdAccounts, seedWords)
+
+      const result = await seedPhraseVerifier.verifyAccounts(createdAccounts, seedWords)
     })
 
     it('should be able to verify created account (upper case) with seed words', async function () {
 
-      let createdAccounts = await primaryKeyring.getAccounts()
+      const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
-      let upperCaseAccounts = [createdAccounts[0].toUpperCase()]
+      const upperCaseAccounts = [createdAccounts[0].toUpperCase()]
 
-      let serialized = await primaryKeyring.serialize()
-      let seedWords = serialized.mnemonic
+      const serialized = await primaryKeyring.serialize()
+      const seedWords = serialized.mnemonic
       assert.notEqual(seedWords.length, 0)
-    
-      let result = await seedPhraseVerifier.verifyAccounts(upperCaseAccounts, seedWords)
+
+      const result = await seedPhraseVerifier.verifyAccounts(upperCaseAccounts, seedWords)
     })
 
     it('should be able to verify created account (lower case) with seed words', async function () {
 
-      let createdAccounts = await primaryKeyring.getAccounts()
+      const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
-      let lowerCaseAccounts = [createdAccounts[0].toLowerCase()]
+      const lowerCaseAccounts = [createdAccounts[0].toLowerCase()]
 
-      let serialized = await primaryKeyring.serialize()
-      let seedWords = serialized.mnemonic
+      const serialized = await primaryKeyring.serialize()
+      const seedWords = serialized.mnemonic
       assert.notEqual(seedWords.length, 0)
-    
-      let result = await seedPhraseVerifier.verifyAccounts(lowerCaseAccounts, seedWords)
+
+      const result = await seedPhraseVerifier.verifyAccounts(lowerCaseAccounts, seedWords)
     })
 
     it('should return error with good but different seed words', async function () {
 
-      let createdAccounts = await primaryKeyring.getAccounts()
+      const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
-      let serialized = await primaryKeyring.serialize()
-      let seedWords = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
-      
-      try { 
-        let result = await seedPhraseVerifier.verifyAccounts(createdAccounts, seedWords)
-        assert.fail("Should reject")
+      const serialized = await primaryKeyring.serialize()
+      const seedWords = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+
+      try {
+        const result = await seedPhraseVerifier.verifyAccounts(createdAccounts, seedWords)
+        assert.fail('Should reject')
       } catch (err) {
         assert.ok(err.message.indexOf('Not identical accounts!') >= 0, 'Wrong error message')
       }
@@ -85,15 +85,15 @@ describe('SeedPhraseVerifier', function () {
 
     it('should return error with undefined existing accounts', async function () {
 
-      let createdAccounts = await primaryKeyring.getAccounts()
+      const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
-      let serialized = await primaryKeyring.serialize()
-      let seedWords = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+      const serialized = await primaryKeyring.serialize()
+      const seedWords = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
 
-      try { 
-        let result = await seedPhraseVerifier.verifyAccounts(undefined, seedWords)
-        assert.fail("Should reject")
+      try {
+        const result = await seedPhraseVerifier.verifyAccounts(undefined, seedWords)
+        assert.fail('Should reject')
       } catch (err) {
         assert.equal(err.message, 'No created accounts defined.')
       }
@@ -101,15 +101,15 @@ describe('SeedPhraseVerifier', function () {
 
     it('should return error with empty accounts array', async function () {
 
-      let createdAccounts = await primaryKeyring.getAccounts()
+      const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
-      let serialized = await primaryKeyring.serialize()
-      let seedWords = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+      const serialized = await primaryKeyring.serialize()
+      const seedWords = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
 
-      try { 
-        let result = await seedPhraseVerifier.verifyAccounts([], seedWords)
-        assert.fail("Should reject")
+      try {
+        const result = await seedPhraseVerifier.verifyAccounts([], seedWords)
+        assert.fail('Should reject')
       } catch (err) {
         assert.equal(err.message, 'No created accounts defined.')
       }
@@ -120,14 +120,14 @@ describe('SeedPhraseVerifier', function () {
       const keyState = await keyringController.addNewAccount(primaryKeyring)
       const keyState2 = await keyringController.addNewAccount(primaryKeyring)
 
-      let createdAccounts = await primaryKeyring.getAccounts()
+      const createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 3)
 
-      let serialized = await primaryKeyring.serialize()
-      let seedWords = serialized.mnemonic
+      const serialized = await primaryKeyring.serialize()
+      const seedWords = serialized.mnemonic
       assert.notEqual(seedWords.length, 0)
-    
-      let result = await seedPhraseVerifier.verifyAccounts(createdAccounts, seedWords)
+
+      const result = await seedPhraseVerifier.verifyAccounts(createdAccounts, seedWords)
     })
   })
 })

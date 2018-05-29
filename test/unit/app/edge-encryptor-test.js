@@ -11,7 +11,7 @@ global.crypto = global.crypto || {
       array[i] = Math.random() * 100
     }
     return array
-  }
+  },
 }
 
 describe('EdgeEncryptor', function () {
@@ -33,7 +33,7 @@ describe('EdgeEncryptor', function () {
     it('should return proper format.', function (done) {
       edgeEncryptor.encrypt(password, data)
         .then(function (encryptedData) {
-          let encryptedObject = JSON.parse(encryptedData)
+          const encryptedObject = JSON.parse(encryptedData)
           assert.ok(encryptedObject.data, 'there is no data')
           assert.ok(encryptedObject.iv && encryptedObject.iv.length != 0, 'there is no iv')
           assert.ok(encryptedObject.salt && encryptedObject.salt.length != 0, 'there is no salt')
@@ -56,7 +56,7 @@ describe('EdgeEncryptor', function () {
         assert.notEqual(encryptedData[1].length, 0)
         done()
       })
-    })    
+    })
   })
 
   describe('decrypt', function () {
