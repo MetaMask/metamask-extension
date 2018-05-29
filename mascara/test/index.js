@@ -1,9 +1,9 @@
 var fs = require('fs')
 var path = require('path')
-var browserify = require('browserify');
+var browserify = require('browserify')
 var tests = fs.readdirSync(path.join(__dirname, 'lib'))
 var bundlePath = path.join(__dirname, 'test-bundle.js')
-var b = browserify();
+var b = browserify()
 
 // Remove old bundle
 try {
@@ -14,9 +14,9 @@ try {
 
 var writeStream = fs.createWriteStream(bundlePath)
 
-tests.forEach(function(fileName) {
+tests.forEach(function (fileName) {
   b.add(path.join(__dirname, 'lib', fileName))
 })
 
-b.bundle().pipe(writeStream);
+b.bundle().pipe(writeStream)
 

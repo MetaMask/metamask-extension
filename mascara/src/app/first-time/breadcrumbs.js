@@ -8,7 +8,7 @@ export default class Breadcrumbs extends Component {
     currentIndex: PropTypes.number,
   };
 
-  render() {
+  render () {
     const {total, currentIndex} = this.props
     return (
       <div className="breadcrumbs">
@@ -20,7 +20,7 @@ export default class Breadcrumbs extends Component {
           />
         ))}
       </div>
-    );
+    )
   }
 
 }
