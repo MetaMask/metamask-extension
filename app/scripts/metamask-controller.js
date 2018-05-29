@@ -608,7 +608,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
     const accounts = await keyring.getAccounts()
     // update accounts in preferences controller
-    const allAccounts = await keyringController.getAccounts()
+    const allAccounts = await this.keyringController.getAccounts()
     this.preferencesController.setAddresses(allAccounts)
     // set new account as selected
     await this.preferencesController.setSelectedAddress(accounts[0])
