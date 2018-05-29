@@ -1,0 +1,21 @@
+.transaction-confirmed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px;
+
+  &__title {
+    font-size: 2rem;
+    padding: 16px 0;
+  }
+
+  &__description {
+    text-align: center;
+    font-size: .875rem;
+    line-height: 1.5rem;
+  }
+
+  @media screen and (max-width: 575px) {
+    justify-content: center;
+  }
+}

@@ -12,6 +12,7 @@ const actions = require('../../actions')
 const clone = require('clone')
 const Identicon = require('../identicon')
 const GasFeeDisplay = require('../send/gas-fee-display-v2.js')
+const NetworkDisplay = require('../network-display')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const {
@@ -38,6 +39,11 @@ const {
   getSelectedTokenContract,
 } = require('../../selectors')
 const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
+
+const {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+} = require('../../../../app/scripts/lib/enums')
 
 ConfirmSendToken.contextTypes = {
   t: PropTypes.func,
@@ -430,6 +436,43 @@ ConfirmSendToken.prototype.convertToRenderableCurrency = function (value, curren
     : value
 }
 
+ConfirmSendToken.prototype.renderHeaderRow = function (isTxReprice) {
+  const windowType = window.METAMASK_UI_TYPE
+  const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+    windowType !== ENVIRONMENT_TYPE_POPUP
+
+  if (isTxReprice && isFullScreen) {
+    return null
+  }
+
+  return (
+    h('.page-container__header-row', [
+      h('span.page-container__back-button', {
+        onClick: () => this.editTransaction(),
+        style: {
+          visibility: isTxReprice ? 'hidden' : 'initial',
+        },
+      }, 'Edit'),
+      !isFullScreen && h(NetworkDisplay),
+    ])
+  )
+}
+
+ConfirmSendToken.prototype.renderHeader = function (isTxReprice) {
+  const title = isTxReprice ? this.context.t('speedUpTitle') : this.context.t('confirm')
+  const subtitle = isTxReprice
+    ? this.context.t('speedUpSubtitle')
+    : this.context.t('pleaseReviewTransaction')
+
+  return (
+    h('.page-container__header', [
+      this.renderHeaderRow(isTxReprice),
+      h('.page-container__title', title),
+      h('.page-container__subtitle', subtitle),
+    ])
+  )
+}
+
 ConfirmSendToken.prototype.render = function () {
   const txMeta = this.gatherTxMeta()
   const {
@@ -443,25 +486,13 @@ ConfirmSendToken.prototype.render = function () {
     },
   } = this.getData()
 
-  this.inputs = []
-
   const isTxReprice = Boolean(txMeta.lastGasPrice)
-  const title = isTxReprice ? this.context.t('reprice_title') : this.context.t('confirm')
-  const subtitle = isTxReprice
-    ? this.context.t('reprice_subtitle')
-    : this.context.t('pleaseReviewTransaction')
 
   return (
     h('div.confirm-screen-container.confirm-send-token', [
       // Main Send token Card
       h('div.page-container', [
-        h('div.page-container__header', [
-          !txMeta.lastGasPrice && h('button.confirm-screen-back-button', {
-            onClick: () => this.editTransaction(txMeta),
-          }, this.context.t('edit')),
-          h('div.page-container__title', title),
-          h('div.page-container__subtitle', subtitle),
-        ]),
+        this.renderHeader(isTxReprice),
         h('.page-container__content', [
           h('div.flex-row.flex-center.confirm-screen-identicons', [
             h('div.confirm-screen-account-wrapper', [

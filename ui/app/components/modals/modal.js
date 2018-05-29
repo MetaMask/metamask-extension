@@ -20,6 +20,7 @@ const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
 const ConfirmResetAccount = require('./notification-modals/confirm-reset-account')
+const TransactionConfirmed = require('./transaction-confirmed')
 
 const accountModalStyle = {
   mobileModalStyle: {
@@ -265,6 +266,37 @@ const MODALS = {
     },
   },
 
+  TRANSACTION_CONFIRMED: {
+    disableBackdropClick: true,
+    contents: [
+      h(TransactionConfirmed, {}, []),
+    ],
+    mobileModalStyle: {
+      width: '100%',
+      height: '100%',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
+      top: '0',
+      display: 'flex',
+    },
+    laptopModalStyle: {
+      width: '344px',
+      transform: 'translate3d(-50%, 0, 0px)',
+      top: '15%',
+      border: '1px solid #CCCFD1',
+      borderRadius: '8px',
+      backgroundColor: '#FFFFFF',
+      boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
+    },
+    contentStyle: {
+      borderRadius: '8px',
+      height: '100%',
+    },
+  },
+
   DEFAULT: {
     contents: [],
     mobileModalStyle: {},
@@ -306,7 +338,7 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 Modal.prototype.render = function () {
   const modal = MODALS[this.props.modalState.name || 'DEFAULT']
 
-  const children = modal.contents
+  const { contents: children, disableBackdropClick = false } = modal
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
   const contentStyle = modal.contentStyle || {}
 
@@ -326,6 +358,7 @@ Modal.prototype.render = function () {
       modalStyle,
       contentStyle,
       backdropStyle: BACKDROPSTYLE,
+      closeOnClick: !disableBackdropClick,
     },
     children,
   )

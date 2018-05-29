@@ -28,6 +28,7 @@ function reduceMetamask (state, action) {
     contractExchangeRates: {},
     tokenExchangeRates: {},
     tokens: [],
+    pendingTokens: {},
     send: {
       gasLimit: null,
       gasPrice: null,
@@ -163,7 +164,7 @@ function reduceMetamask (state, action) {
         selectedTokenAddress: action.value,
       })
 
-    case actions.SAVE_ACCOUNT_LABEL:
+    case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label
       const id = {}
@@ -355,6 +356,17 @@ function reduceMetamask (state, action) {
       return extend(metamaskState, {
         currentLocale: action.value,
       })
+
+    case actions.SET_PENDING_TOKENS:
+      return extend(metamaskState, {
+        pendingTokens: { ...action.payload },
+      })
+
+    case actions.CLEAR_PENDING_TOKENS: {
+      return extend(metamaskState, {
+        pendingTokens: {},
+      })
+    }
 
     default:
       return metamaskState

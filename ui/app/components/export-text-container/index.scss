@@ -1,0 +1,52 @@
+.export-text-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid $alto;
+  border-radius: 4px;
+  font-weight: 400;
+
+  &__text-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 4px;
+    background: $alabaster;
+  }
+
+  &__text {
+    resize: none;
+    border: none;
+    background: $alabaster;
+    font-size: 20px;
+    text-align: center;
+  }
+
+  &__buttons-container {
+    display: flex;
+    flex-direction: row;
+    border-top: 1px solid $alto;
+    width: 100%;
+  }
+
+  &__button {
+    padding: 10px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    cursor: pointer;
+    color: $curious-blue;
+
+    &--copy {
+      border-right: 1px solid $alto;
+    }
+  }
+
+  &__button-text {
+    padding-left: 10px;
+  }
+}

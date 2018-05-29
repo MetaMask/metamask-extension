@@ -159,7 +159,7 @@ class TransactionStateManager extends EventEmitter {
   /**
     updates the txMeta in the list and adds a history entry
     @param txMeta {Object} - the txMeta to update
-    @param [note] {string} - a not about the update for history
+    @param [note] {string} - a note about the update for history
   */
   updateTx (txMeta, note) {
     // validate txParams
@@ -263,7 +263,7 @@ class TransactionStateManager extends EventEmitter {
   */
   getTxsByMetaData (key, value, txList = this.getTxList()) {
     return txList.filter((txMeta) => {
-      if (txMeta.txParams[key]) {
+      if (key in txMeta.txParams) {
         return txMeta.txParams[key] === value
       } else {
         return txMeta[key] === value

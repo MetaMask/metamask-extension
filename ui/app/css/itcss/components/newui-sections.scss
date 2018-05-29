@@ -117,7 +117,6 @@ $wallet-view-bg: $alabaster;
     font-size: 14px;
     line-height: 12px;
     padding: 4px 12px;
-    font-weight: 300;
     cursor: pointer;
     flex: 0 0 auto;
 
@@ -145,8 +144,8 @@ $wallet-view-bg: $alabaster;
     flex: 0 0 auto;
     margin: 36px auto;
     background: none;
-    padding: .7rem 2rem;
     transition: border-color .3s ease;
+    width: 150px;
 
     &:hover {
       border-color: $curious-blue;
@@ -264,7 +263,6 @@ $wallet-view-bg: $alabaster;
 // wallet view
 .account-name {
   font-size: 24px;
-  font-weight: 300;
   color: $black;
   margin-top: 8px;
   margin-bottom: .9rem;

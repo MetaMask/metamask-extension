@@ -166,7 +166,7 @@ function documentElementCheck () {
 
 /**
  * Checks if the current domain is blacklisted
- * 
+ *
  * @returns {boolean} {@code true} if the current domain is blacklisted
  */
 function blacklistedDomainCheck () {
@@ -174,6 +174,8 @@ function blacklistedDomainCheck () {
     'uscourts.gov',
     'dropbox.com',
     'webbyawards.com',
+    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
+    'adyen.com',
   ]
   var currentUrl = window.location.href
   var currentRegex
