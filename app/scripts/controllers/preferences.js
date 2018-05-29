@@ -111,7 +111,7 @@ class PreferencesController {
   /**
    * Adds a new token to the token array, or updates the token if passed an address that already exists.
    * Modifies the existing tokens array from the store. All objects in the tokens array array AddedToken objects.
-   * @see AddedToken {@link AddedToken} 
+   * @see AddedToken {@link AddedToken}
    *
    * @param {string} rawAddress Hex address of the token contract. May or may not be a checksum address.
    * @param {string} symbol The symbol of the token
@@ -197,7 +197,7 @@ class PreferencesController {
   }
 
   /**
-   * Setter for the `currentAccountTab` property 
+   * Setter for the `currentAccountTab` property
    *
    * @param {string} currentAccountTab Specifies the new tab to be marked as current
    * @returns {Promise<void>} Promise resolves with undefined
@@ -215,7 +215,7 @@ class PreferencesController {
    * The returned list will have a max length of 2. If the _url currently exists it the list, it will be moved to the
    * end of the list. The current list is modified and returned as a promise.
    *
-   * @param {string} _url The rpc url to add to the frequentRpcList. 
+   * @param {string} _url The rpc url to add to the frequentRpcList.
    * @returns {Promise<array>} The updated frequentRpcList.
    *
    */
