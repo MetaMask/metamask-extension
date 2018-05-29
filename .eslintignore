@@ -11,6 +11,7 @@ app/scripts/chromereload.js
 
 ui/lib/blockies.js
 
+mascara/src/app/first-time/spinner.js
 mascara/test/jquery-3.1.0.min.js
 
 test/integration/bundle.js
