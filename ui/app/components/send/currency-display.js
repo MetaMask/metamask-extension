@@ -4,7 +4,6 @@ const inherits = require('util').inherits
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
-const NumericInput = require('react-numeric-input')
 
 module.exports = CurrencyDisplay
 
@@ -92,6 +91,7 @@ CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValu
 }
 
 CurrencyDisplay.prototype.handleChange = function (newVal) {
+  console.log(`%^ 95 newVal`, newVal);
   this.setState({ valueToRender: newVal })
   this.props.onChange(this.getAmount(newVal))
 }
@@ -124,26 +124,33 @@ CurrencyDisplay.prototype.render = function () {
     style: {
       borderColor: inError ? 'red' : null,
     },
-    onClick: () => this.currencyInput && this.currencyInput.focus(),
+    onClick: () => {
+      this.currencyInput && this.currencyInput.focus()
+    },
   }, [
 
     h('div.currency-display__primary-row', [
 
       h('div.currency-display__input-wrapper', [
 
-        h(NumericInput, {
+        h('input', {
           className: primaryBalanceClassName,
           value: `${valueToRender}`,
-          placeholder: `0 ${primaryCurrency}`,
+          placeholder: '0',
+          type: 'number',
           readOnly,
           ...(!readOnly ? {
-            onChange: e => this.handleChange(e),
+            onChange: e => this.handleChange(e.target.value),
             onBlur: () => onBlur(this.getAmount(valueToRender)),
           } : {}),
-          style: false,
-          format: num => `${num} ${primaryCurrency}`,
-          parse: stringWithCurrency => stringWithCurrency && stringWithCurrency.match(/^([.\d]+)/)[1],
+          ref: input => { this.currencyInput = input },
+          style: {
+            width: this.getInputWidth(valueToRender, readOnly),
+          },
+          min: 0,
         }),
+
+        h('span.currency-display__currency-symbol', primaryCurrency),
 
       ]),
 
