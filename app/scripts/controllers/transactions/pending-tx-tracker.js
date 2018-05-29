@@ -28,7 +28,6 @@ class PendingTransactionTracker extends EventEmitter {
     this.getCompletedTransactions = config.getCompletedTransactions
     this.publishTransaction = config.publishTransaction
     this.confirmTransaction = config.confirmTransaction
-    this.updatePendingTxs()
   }
 
   /**
@@ -37,6 +36,7 @@ class PendingTransactionTracker extends EventEmitter {
   async updatePendingTxs () {
     const pendingTxs = this.getPendingTransactions()
     // in order to keep the nonceTracker accurate we block it while updating pending transactions
+    console.log('updating pending txs....', pendingTxs)
     const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
     try {
       await Promise.all(pendingTxs.map((txMeta) => this._checkPendingTx(txMeta)))
@@ -152,7 +152,7 @@ class PendingTransactionTracker extends EventEmitter {
       const txParams = await this.query.getTransactionByHash(txHash)
       if (!txParams) return
       if (txParams.blockNumber) {
-        this.confirmTransaction(txId)
+        this.emit('tx:confirmed', txId)
       }
     } catch (err) {
       txMeta.warning = {

@@ -57,7 +57,6 @@ class TransactionController extends EventEmitter {
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
       getNetwork: this.getNetwork.bind(this),
-      confirmTransaction: this.confirmTransaction.bind(this),
     })
     this._onBootCleanUp()
 
@@ -389,6 +388,7 @@ class TransactionController extends EventEmitter {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
     })
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
+    this.pendingTxTracker.on('tx:confirmed', (txId) => this.confirmTransaction(txId))
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
         txMeta.firstRetryBlockNumber = latestBlockNumber
