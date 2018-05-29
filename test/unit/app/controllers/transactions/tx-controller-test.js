@@ -29,6 +29,7 @@ describe('Transaction Controller', function () {
     fromAccount = getTestAccounts()[0]
     const blockTrackerStub = new EventEmitter()
     blockTrackerStub.getCurrentBlock = noop
+    blockTrackerStub.getLatestBlock = noop
     txController = new TransactionController({
       provider,
       networkStore: new ObservableStore(currentNetworkId),
