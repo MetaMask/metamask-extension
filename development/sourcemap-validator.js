@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const { SourceMapConsumer } = require('source-map')
 
 //
@@ -11,9 +12,9 @@ const { SourceMapConsumer } = require('source-map')
 
 start()
 
-async function start() {
-  const rawBuild = fs.readFileSync(__dirname + '/../dist/chrome/inpage.js', 'utf8')
-  const rawSourceMap = fs.readFileSync(__dirname + '/../dist/sourcemaps/inpage.js.map', 'utf8')
+async function start () {
+  const rawBuild = fs.readFileSync(path.join(__dirname, '/../dist/chrome/inpage.js'), 'utf8')
+  const rawSourceMap = fs.readFileSync(path.join(__dirname, '/../dist/sourcemaps/inpage.js.map'), 'utf8')
   const consumer = await new SourceMapConsumer(rawSourceMap)
 
   console.log('hasContentsOfAllSources:', consumer.hasContentsOfAllSources(), '\n')
@@ -34,7 +35,7 @@ async function start() {
       if (result.source === 'node_modules/web3/dist/web3.min.js') return // minified mess
       const sourceContent = consumer.sourceContentFor(result.source)
       const sourceLines = sourceContent.split('\n')
-      const line = sourceLines[result.line-1]
+      const line = sourceLines[result.line - 1]
       console.log(`\n========================== ${result.source} ====================================\n`)
       console.log(line)
       console.log(`\n==============================================================================\n`)
@@ -42,8 +43,9 @@ async function start() {
   })
 }
 
-function indicesOf(substring, string) {
-  var a=[],i=-1;
-  while((i=string.indexOf(substring,i+1)) >= 0) a.push(i);
-  return a;
+function indicesOf (substring, string) {
+  const a = []
+  let i = -1
+  while ((i = string.indexOf(substring, i + 1)) >= 0) a.push(i)
+  return a
 }

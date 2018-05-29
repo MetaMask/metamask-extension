@@ -4,7 +4,7 @@ const VERSION = require('../dist/chrome/manifest.json').version
 
 start().catch(console.error)
 
-async function start() {
+async function start () {
 
   const GITHUB_COMMENT_TOKEN = process.env.GITHUB_COMMENT_TOKEN
   const CIRCLE_PULL_REQUEST = process.env.CIRCLE_PULL_REQUEST
@@ -20,7 +20,7 @@ async function start() {
   }
 
   const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop()
-  const SHORT_SHA1 = CIRCLE_SHA1.slice(0,7)
+  const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7)
   const BUILD_LINK_BASE = `https://${CIRCLE_BUILD_NUM}-42009758-gh.circle-artifacts.com/0`
 
   const MASCARA = `${BUILD_LINK_BASE}/builds/mascara/home.html`
