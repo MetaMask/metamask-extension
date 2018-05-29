@@ -350,7 +350,7 @@ module.exports = class MetamaskController extends EventEmitter {
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: nodeify(this.resetAccount, this),
-      importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // vault management
       submitPassword: nodeify(keyringController.submitPassword, keyringController),
@@ -608,15 +608,15 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param  {any} args - The data required by that strategy to import an account.
    * @param  {Function} cb - A callback function called with a state update on success.
    */
-  importAccountWithStrategy (strategy, args, cb) {
-    accountImporter.importAccount(strategy, args)
-    .then((privateKey) => {
-      return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
-    })
-    .then(keyring => keyring.getAccounts())
-    .then((accounts) => this.preferencesController.setSelectedAddress(accounts[0]))
-    .then(() => { cb(null, this.keyringController.fullUpdate()) })
-    .catch((reason) => { cb(reason) })
+  async importAccountWithStrategy (strategy, args) {
+    const privateKey = await accountImporter.importAccount(strategy, args)
+    const keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    const accounts = await keyring.getAccounts()
+    // update accounts in preferences controller
+    const allAccounts = await this.keyringController.getAccounts()
+    this.preferencesController.setAddresses(allAccounts)
+    // set new account as selected
+    await this.preferencesController.setSelectedAddress(accounts[0])
   }
 
   // ---------------------------------------------------------------------------
