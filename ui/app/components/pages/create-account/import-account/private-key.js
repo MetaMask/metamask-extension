@@ -91,7 +91,7 @@ PrivateKeyImportView.prototype.createNewKeychain = function () {
   const { importNewAccount, history } = this.props
 
   importNewAccount('Private Key', [ privateKey ])
-    // JS runtime requires caught rejections but failures are handled by Redux 
+    // JS runtime requires caught rejections but failures are handled by Redux
     .catch()
     .then(() => history.push(DEFAULT_ROUTE))
 }
