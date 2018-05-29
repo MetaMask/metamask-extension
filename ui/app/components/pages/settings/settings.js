@@ -217,7 +217,7 @@ class Settings extends Component {
         ]),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.btn-primary--lg.settings__button', {
+            h('button.btn-primary.btn--large.settings__button', {
               onClick (event) {
                 window.logStateString((err, result) => {
                   if (err) {
@@ -242,7 +242,7 @@ class Settings extends Component {
         h('div.settings__content-item', this.context.t('revealSeedWords')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.btn-primary--lg.settings__button--red', {
+            h('button.btn-primary.btn--large.settings__button--red', {
               onClick: event => {
                 event.preventDefault()
                 history.push(REVEAL_SEED_ROUTE)
@@ -262,7 +262,7 @@ class Settings extends Component {
         h('div.settings__content-item', this.context.t('useOldUI')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.btn-primary--lg.settings__button--orange', {
+            h('button.btn-primary.btn--large.settings__button--orange', {
               onClick (event) {
                 event.preventDefault()
                 setFeatureFlagToBeta()
@@ -281,7 +281,7 @@ class Settings extends Component {
       h('div.settings__content-item', this.context.t('resetAccount')),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
-          h('button.btn-primary--lg.settings__button--orange', {
+          h('button.btn-primary.btn--large.settings__button--orange', {
             onClick (event) {
               event.preventDefault()
               showResetAccountConfirmationModal()
