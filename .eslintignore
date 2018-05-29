@@ -1,6 +1,7 @@
 node_modules/**
 dist/**
 builds/**
+docs/**
 
 development/bundle.js
 development/states.js
