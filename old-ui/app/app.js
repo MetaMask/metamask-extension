@@ -184,13 +184,6 @@ App.prototype.renderAppBar = function () {
             },
           }),
 
-          // mike test img
-          h('img', {
-            height: 24,
-            width: 24,
-            src: './images/pw-48x48.png',
-          }),
-
         ]),
 
         props.isUnlocked && h('div', {
