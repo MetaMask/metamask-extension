@@ -121,6 +121,12 @@ describe('Metamask popup page', function () {
       await delay(300)
     })
 
+    it('adds a second account', async function () {
+      await driver.findElement(By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div')).click()
+      await delay(300)
+      await driver.findElement(By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span')).click()
+    })
+
     it('shows account address', async function () {
       accountAddress = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div')).getText()
     })
