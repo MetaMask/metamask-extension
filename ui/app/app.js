@@ -137,7 +137,6 @@ class App extends Component {
 
         (isLoading || isLoadingNetwork) && h(Loading, {
           loadingMessage: loadMessage,
-          fullScreen: true,
         }),
 
         // content
