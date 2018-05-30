@@ -30,7 +30,7 @@ async function checkAccount (networkId, account) {
   const damnedAccounts = await keyring.getAccounts()
   for (let i = 0; i < damnedAccounts.length; i++) {
     if (damnedAccounts[i].toLowerCase() === accountToCheck) {
-      throw new Error('this is a public account')
+      throw new Error('Recipient is a public account')
     }
   }
 }
