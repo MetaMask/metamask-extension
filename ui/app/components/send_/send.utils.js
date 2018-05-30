@@ -221,26 +221,21 @@ function generateTokenTransferData (selectedAddress, selectedToken) {
   ).join('')
 }
 
-function hexComparator (a, b) {
-  return conversionGreaterThan(
-    { value: a, fromNumericBase: 'hex' },
-    { value: b, fromNumericBase: 'hex' },
-  ) ? 1 : -1
-}
-
 function estimateGasPriceFromRecentBlocks (recentBlocks) {
   // Return 1 gwei if no blocks have been observed:
   if (!recentBlocks || recentBlocks.length === 0) {
     return ONE_GWEI_IN_WEI_HEX
   }
+
   const lowestPrices = recentBlocks.map((block) => {
     if (!block.gasPrices || block.gasPrices.length < 1) {
       return ONE_GWEI_IN_WEI_HEX
     }
-    return block.gasPrices
-      .sort(hexComparator)[0]
+    return block.gasPrices.reduce((currentLowest, next) => {
+      return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
+    })
   })
-  .sort(hexComparator)
+  .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }
