@@ -11,9 +11,8 @@ const GIFEncoder = require('gifencoder')
 const pngFileStream = require('png-file-stream')
 const sizeOfPng = require('image-size/lib/types/png')
 const By = webdriver.By
-const { delay, buildWebDriver } = require('./func')
 const localesIndex = require('../../app/_locales/index.json')
-// const localesIndex = []
+const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('../e2e/func')
 
 const eth = new Ethjs(new Ethjs.HttpProvider('http://localhost:8545'))
 
@@ -50,11 +49,10 @@ async function captureAllScreens() {
 
   await cleanScreenShotDir()
 
-  // setup selenium and install extension
   const extPath = path.resolve('dist/chrome')
-  driver = buildWebDriver(extPath)
-  await driver.get('chrome://extensions-frame')
-  const extensionId = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("#container > div.items-container > extensions-item:nth-child(2)").getAttribute("id")')
+  driver = buildChromeWebDriver(extPath)
+  const extensionId = await getExtensionIdChrome(driver)
+
   await driver.get(`chrome-extension://${extensionId}/home.html`)
   await delay(500)
   tabs = await driver.getAllWindowHandles()

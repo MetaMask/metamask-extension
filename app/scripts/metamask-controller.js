@@ -45,6 +45,7 @@ const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
+const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -642,9 +643,9 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
         default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
     })
   }
@@ -702,7 +703,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   newUnsignedPersonalMessage (msgParams, cb) {
     if (!msgParams.from) {
-      return cb(new Error('MetaMask Message Signature: from field is required.'))
+      return cb(cleanErrorStack(new Error('MetaMask Message Signature: from field is required.')))
     }
 
     const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
@@ -713,9 +714,9 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
         default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
     })
   }
@@ -781,9 +782,9 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
         default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
     })
   }
