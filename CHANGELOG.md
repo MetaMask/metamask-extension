@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix Brave support
 - Adds error messages when passwords don't match in onboarding flow.
 - Adds modal notification if a retry in the process of being confirmed is dropped.
 - New unlock screen design.
