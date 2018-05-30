@@ -10,7 +10,7 @@ var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'redu
 describe('#unlockMetamask(selectedAccount)', function () {
   beforeEach(function () {
     // sinon allows stubbing methods that are easily verified
-    this.sinon = sinon.sandbox.create()
+    this.sinon = sinon.createSandbox()
   })
 
   afterEach(function () {

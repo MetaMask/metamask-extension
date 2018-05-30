@@ -119,29 +119,21 @@ class RecentBlocksController {
    */
   async backfill() {
     this.blockTracker.once('block', async (block) => {
-      let blockNum = block.number
-      let recentBlocks
-      let state = this.store.getState()
-      recentBlocks = state.recentBlocks
-
-      while (recentBlocks.length < this.historyLength) {
+      const currentBlockNumber = Number.parseInt(block.number, 16)
+      const blocksToFetch = Math.min(currentBlockNumber, this.historyLength)
+      const prevBlockNumber = currentBlockNumber - 1
+      const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
+      await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
         try {
-          let blockNumBn = new BN(blockNum.substr(2), 16)
-          const newNum = blockNumBn.subn(1).toString(10)
-          const newBlock = await this.getBlockByNumber(newNum)
+          const newBlock = await this.getBlockByNumber(targetBlockNumber)
 
           if (newBlock) {
             this.backfillBlock(newBlock)
-            blockNum = newBlock.number
           }
-
-          state = this.store.getState()
-          recentBlocks = state.recentBlocks
         } catch (e) {
           log.error(e)
         }
-        await this.wait()
-      }
+      }))
     })
   }
 

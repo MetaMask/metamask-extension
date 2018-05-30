@@ -175,7 +175,6 @@
   margin-top: 12px;
   text-align: center;
   font-size: 40px;
-  font-weight: 300;
   line-height: 53px;
   flex: 0 0 auto;
 }
@@ -235,7 +234,6 @@ section .confirm-screen-account-number,
   padding-left: 35px;
   font-size: 16px;
   line-height: 22px;
-  font-weight: 300;
 
   &:not(:last-of-type) {
     border-bottom: 1px solid $alto;
@@ -336,7 +334,6 @@ section .confirm-screen-account-number,
   border-width: 0;
   box-shadow: none;
   flex: 1 0 auto;
-  font-weight: 300;
   margin: 0 5px;
 }
 
@@ -353,6 +350,5 @@ section .confirm-screen-account-number,
   box-shadow: none;
   cursor: pointer;
   flex: 1 0 auto;
-  font-weight: 300;
   margin: 0 5px;
 }

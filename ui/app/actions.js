@@ -1,4 +1,5 @@
 const abi = require('human-standard-token-abi')
+const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const ethUtil = require('ethereumjs-util')
@@ -123,8 +124,8 @@ var actions = {
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
   exportAccountComplete,
-  SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
-  saveAccountLabel: saveAccountLabel,
+  SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
+  setAccountLabel,
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
@@ -270,11 +271,14 @@ var actions = {
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
   // Network
-  setNetworkEndpoints,
   updateNetworkEndpointType,
   UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
 
   retryTransaction,
+  SET_PENDING_TOKENS: 'SET_PENDING_TOKENS',
+  CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
+  setPendingTokens,
+  clearPendingTokens,
 }
 
 module.exports = actions
@@ -316,6 +320,7 @@ function tryUnlockMetamask (password) {
           background.verifySeedPhrase(err => {
             if (err) {
               dispatch(actions.displayWarning(err.message))
+              return reject(err)
             }
 
             resolve()
@@ -329,6 +334,7 @@ function tryUnlockMetamask (password) {
       .catch(err => {
         dispatch(actions.unlockFailed(err.message))
         dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
       })
   }
 }
@@ -523,31 +529,26 @@ function addNewKeyring (type, opts) {
 }
 
 function importNewAccount (strategy, args) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
-    log.debug(`background.importAccountWithStrategy`)
-    return new Promise((resolve, reject) => {
-      background.importAccountWithStrategy(strategy, args, (err) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-        log.debug(`background.getState`)
-        background.getState((err, newState) => {
-          dispatch(actions.hideLoadingIndication())
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-            return reject(err)
-          }
-          dispatch(actions.updateMetamaskState(newState))
-          dispatch({
-            type: actions.SHOW_ACCOUNT_DETAIL,
-            value: newState.selectedAddress,
-          })
-          resolve(newState)
-        })
-      })
+  return async (dispatch) => {
+    let newState
+    dispatch(actions.showLoadingIndication('This may take a while, please be patient.'))
+    try {
+      log.debug(`background.importAccountWithStrategy`)
+      await pify(background.importAccountWithStrategy).call(background, strategy, args)
+      log.debug(`background.getState`)
+      newState = await pify(background.getState).call(background)
+    } catch (err) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(err.message))
+      throw err
+    }
+    dispatch(actions.hideLoadingIndication())
+    dispatch(actions.updateMetamaskState(newState))
+    dispatch({
+      type: actions.SHOW_ACCOUNT_DETAIL,
+      value: newState.selectedAddress,
     })
+    return newState
   }
 }
 
@@ -1396,16 +1397,24 @@ function markAccountsFound () {
 
 function retryTransaction (txId) {
   log.debug(`background.retryTransaction`)
+  let newTxId
+
   return (dispatch) => {
-    background.retryTransaction(txId, (err, newState) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      const { selectedAddressTxList } = newState
-      const { id: newTxId } = selectedAddressTxList[selectedAddressTxList.length - 1]
-      dispatch(actions.updateMetamaskState(newState))
-      dispatch(actions.viewPendingTx(newTxId))
+    return new Promise((resolve, reject) => {
+      background.retryTransaction(txId, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        newTxId = id
+        resolve(newState)
+      })
     })
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTxId)
   }
 }
 
@@ -1601,13 +1610,13 @@ function showPrivateKey (key) {
   }
 }
 
-function saveAccountLabel (account, label) {
+function setAccountLabel (account, label) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    log.debug(`background.saveAccountLabel`)
+    log.debug(`background.setAccountLabel`)
 
     return new Promise((resolve, reject) => {
-      background.saveAccountLabel(account, label, (err) => {
+      background.setAccountLabel(account, label, (err) => {
         dispatch(actions.hideLoadingIndication())
 
         if (err) {
@@ -1616,7 +1625,7 @@ function saveAccountLabel (account, label) {
         }
 
         dispatch({
-          type: actions.SAVE_ACCOUNT_LABEL,
+          type: actions.SET_ACCOUNT_LABEL,
           value: { account, label },
         })
 
@@ -1926,26 +1935,28 @@ function setLocaleMessages (localeMessages) {
   }
 }
 
-function setNetworkEndpoints (networkEndpointType) {
-  return dispatch => {
-    log.debug('background.setNetworkEndpoints')
-    return new Promise((resolve, reject) => {
-      background.setNetworkEndpoints(networkEndpointType, err => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.updateNetworkEndpointType(networkEndpointType))
-        resolve(networkEndpointType)
-      })
-    })
-  }
-}
-
 function updateNetworkEndpointType (networkEndpointType) {
   return {
     type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
     value: networkEndpointType,
+  }
+}
+
+function setPendingTokens (pendingTokens) {
+  const { customToken = {}, selectedTokens = {} } = pendingTokens
+  const { address, symbol, decimals } = customToken
+  const tokens = address && symbol && decimals
+    ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }
+    : selectedTokens
+
+  return {
+    type: actions.SET_PENDING_TOKENS,
+    payload: tokens,
+  }
+}
+
+function clearPendingTokens () {
+  return {
+    type: actions.CLEAR_PENDING_TOKENS,
   }
 }
