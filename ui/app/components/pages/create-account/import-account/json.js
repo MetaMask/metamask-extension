@@ -82,18 +82,19 @@ class JsonImportSubview extends Component {
   }
 
   createNewKeychain () {
+    const { firstAddress, displayWarning, importNewJsonAccount, setSelectedAddress } = this.props
     const state = this.state
 
     if (!state) {
       const message = this.context.t('validFileImport')
-      return this.props.displayWarning(message)
+      return displayWarning(message)
     }
 
     const { fileContents } = state
 
     if (!fileContents) {
       const message = this.context.t('needImportFile')
-      return this.props.displayWarning(message)
+      return displayWarning(message)
     }
 
     const passwordInput = document.getElementById('json-password-box')
@@ -101,12 +102,20 @@ class JsonImportSubview extends Component {
 
     if (!password) {
       const message = this.context.t('needImportPassword')
-      return this.props.displayWarning(message)
+      return displayWarning(message)
     }
 
-    this.props.importNewJsonAccount([ fileContents, password ])
-      // JS runtime requires caught rejections but failures are handled by Redux 
+    importNewJsonAccount([ fileContents, password ])
+      // JS runtime requires caught rejections but failures are handled by Redux
       .catch()
+      .then(({ selectedAddress }) => {
+        if (selectedAddress) {
+          history.push(DEFAULT_ROUTE)
+        } else {
+          displayWarning('Error importing account.')
+          setSelectedAddress(firstAddress)
+        }
+      })
   }
 }
 
@@ -114,14 +123,17 @@ JsonImportSubview.propTypes = {
   error: PropTypes.string,
   goHome: PropTypes.func,
   displayWarning: PropTypes.func,
+  firstAddress: PropTypes.string,
   importNewJsonAccount: PropTypes.func,
   history: PropTypes.object,
+  setSelectedAddress: PropTypes.func,
   t: PropTypes.func,
 }
 
 const mapStateToProps = state => {
   return {
     error: state.appState.warning,
+    firstAddress: Object.keys(state.metamask.accounts)[0],
   }
 }
 
@@ -130,6 +142,7 @@ const mapDispatchToProps = dispatch => {
     goHome: () => dispatch(actions.goHome()),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     importNewJsonAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
+    setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
   }
 }
 
