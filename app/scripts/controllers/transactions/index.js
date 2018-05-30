@@ -160,8 +160,8 @@ class TransactionController extends EventEmitter {
     this.emit('newUnapprovedTx', txMeta)
 
     try {
-      // check whether recipient account is public
-      await recipientBlacklistChecker.checkAccount(txMeta.metamaskNetworkId, normalizedTxParams.to)
+      // check whether recipient account is blacklisted
+      recipientBlacklistChecker.checkAccount(txMeta.metamaskNetworkId, normalizedTxParams.to)
       // add default tx params
       txMeta = await this.addTxGasDefaults(txMeta)
     } catch (error) {

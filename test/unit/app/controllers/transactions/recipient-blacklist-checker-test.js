@@ -25,39 +25,38 @@ describe('Recipient Blacklist Checker', function () {
   })
 
   describe('#checkAccount', function () {
-    it('does not fail on test networks', async function () {
+    it('does not fail on test networks', function () {
       let callCount = 0
       const networks = [ROPSTEN_CODE, RINKEYBY_CODE, KOVAN_CODE]
       for (let networkId in networks) {
-        await Promise.all(publicAccounts.map(async (account) => {
-          await recipientBlackListChecker.checkAccount(networkId, account)
-          callCount++
+        publicAccounts.forEach((account) => {
+           recipientBlackListChecker.checkAccount(networkId, account)
+            callCount++
         })
-        )
       }
       assert.equal(callCount, 30)
     })
 
-    it('fails on mainnet', async function () {
+    it('fails on mainnet', function () {
       const mainnetId = 1
       let callCount = 0
-      await Promise.all(publicAccounts.map(async (account) => {
+      publicAccounts.forEach((account) => {
         try {
-          await recipientBlackListChecker.checkAccount(mainnetId, account)
+          recipientBlackListChecker.checkAccount(mainnetId, account)
           assert.fail('function should have thrown an error')
         } catch (err) {
           assert.equal(err.message, 'Recipient is a public account')
         }
         callCount++
-      }))
+      })
       assert.equal(callCount, 10)
     })
 
-    it('fails for public account - uppercase', async function () {
+    it('fails for public account - uppercase', function () {
       const mainnetId = 1
       const publicAccount = '0X0D1D4E623D10F9FBA5DB95830F7D3839406C6AF2'
       try {
-        await recipientBlackListChecker.checkAccount(mainnetId, publicAccount)
+        recipientBlackListChecker.checkAccount(mainnetId, publicAccount)
         assert.fail('function should have thrown an error')
       } catch (err) {
         assert.equal(err.message, 'Recipient is a public account')
