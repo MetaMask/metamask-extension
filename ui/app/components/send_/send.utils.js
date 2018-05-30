@@ -158,7 +158,7 @@ function getParamsForGasEstimate (selectedAddress, symbol, data) {
 
 function calcTokenBalance ({ selectedToken, usersToken }) {
   const { decimals } = selectedToken || {}
-  return calcTokenAmount(usersToken.balance.toString(), decimals)
+  return calcTokenAmount(usersToken.balance.toString(), decimals) + ''
 }
 
 function doesAmountErrorRequireUpdate ({

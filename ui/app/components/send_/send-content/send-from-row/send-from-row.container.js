@@ -39,7 +39,7 @@ function mapDispatchToProps (dispatch) {
     setSendTokenBalance: (usersToken, selectedToken) => {
         if (!usersToken) return
 
-        const tokenBalance = calcTokenBalance(usersToken, selectedToken)
+        const tokenBalance = calcTokenBalance({ usersToken, selectedToken })
         dispatch(setSendTokenBalance(tokenBalance))
     },
   }

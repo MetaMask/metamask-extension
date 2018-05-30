@@ -29,7 +29,7 @@ proxyquire('../send-from-row.container.js', {
     getSendFromObject: (s) => `mockFrom:${s}`,
   },
   './send-from-row.selectors.js': { getFromDropdownOpen: (s) => `mockFromDropdownOpen:${s}` },
-  '../../send.utils.js': { calcTokenBalance: (a, b) => a + b },
+  '../../send.utils.js': { calcTokenBalance: ({ usersToken, selectedToken }) => usersToken + selectedToken },
   '../../../../actions': actionSpies,
   '../../../../ducks/send.duck': duckActionSpies,
 })
