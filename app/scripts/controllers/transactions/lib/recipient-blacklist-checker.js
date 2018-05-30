@@ -6,9 +6,9 @@ module.exports = {
 }
 
 /**
+ * Checks if a specified account on a specified network is blacklisted.
   @param networkId {number}
   @param account {string}
-  @returns {array}
 */
 async function checkAccount (networkId, account) {
 
