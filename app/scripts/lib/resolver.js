@@ -43,7 +43,7 @@ function getProvider (type) {
     case 'ropsten':
       return 'https://ropsten.infura.io/'
     default:
-      return 'http://localhost:3000/'
+      return 'http://localhost:8545/'
   }
 }
 
