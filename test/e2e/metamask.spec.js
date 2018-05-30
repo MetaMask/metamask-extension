@@ -128,6 +128,7 @@ describe('Metamask popup page', function () {
     })
 
     it('shows account address', async function () {
+      await delay(300)
       accountAddress = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div')).getText()
     })
 
