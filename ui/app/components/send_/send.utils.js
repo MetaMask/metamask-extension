@@ -36,7 +36,7 @@ function calcGasTotal (gasLimit, gasPrice) {
 
 function isBalanceSufficient ({
   amount = '0x0',
-  amountConversionRate,
+  amountConversionRate = 0,
   balance,
   conversionRate,
   gasTotal = '0x0',
@@ -58,7 +58,7 @@ function isBalanceSufficient ({
     {
       value: totalAmount,
       fromNumericBase: 'hex',
-      conversionRate: amountConversionRate || conversionRate,
+      conversionRate: Number(amountConversionRate) || conversionRate,
       fromCurrency: primaryCurrency,
     },
   )

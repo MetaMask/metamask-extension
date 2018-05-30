@@ -25,7 +25,7 @@ const SendTransactionScreen = proxyquire('../send.component.js', {
 sinon.spy(SendTransactionScreen.prototype, 'componentDidMount')
 sinon.spy(SendTransactionScreen.prototype, 'updateGas')
 
-describe('Send Component', function () {
+describe.only('Send Component', function () {
   let wrapper
 
   beforeEach(() => {
@@ -68,14 +68,17 @@ describe('Send Component', function () {
 
   describe('componentWillMount', () => {
     it('should call this.updateGas', () => {
-      assert(SendTransactionScreen.prototype.updateGas.calledOnce)
+      SendTransactionScreen.prototype.updateGas.resetHistory()
+      propsMethodSpies.updateSendErrors.resetHistory()
+      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
       wrapper.instance().componentWillMount()
-      assert(SendTransactionScreen.prototype.updateGas.calledTwice)
+      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
     })
   })
 
   describe('componentDidUpdate', () => {
     it('should call doesAmountErrorRequireUpdate with the expected params', () => {
+      utilsMethodStubs.getAmountErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
           balance: '',
@@ -97,6 +100,7 @@ describe('Send Component', function () {
     })
 
     it('should not call getAmountErrorObject if doesAmountErrorRequireUpdate returns false', () => {
+      utilsMethodStubs.getAmountErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'mockBalance',
@@ -106,6 +110,7 @@ describe('Send Component', function () {
     })
 
     it('should call getAmountErrorObject if doesAmountErrorRequireUpdate returns true', () => {
+      utilsMethodStubs.getAmountErrorObject.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',
@@ -128,6 +133,7 @@ describe('Send Component', function () {
     })
 
     it('should call updateSendErrors with the expected params', () => {
+      propsMethodSpies.updateSendErrors.resetHistory()
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',

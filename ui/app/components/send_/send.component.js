@@ -83,30 +83,31 @@ export default class SendTransactionScreen extends PersistentForm {
 
     const uninitialized = [prevBalance, prevGasTotal].every(n => n === null)
 
-    if (!uninitialized) {
-      const amountErrorRequiresUpdate = doesAmountErrorRequireUpdate({
+    const amountErrorRequiresUpdate = doesAmountErrorRequireUpdate({
+      balance,
+      gasTotal,
+      prevBalance,
+      prevGasTotal,
+      prevTokenBalance,
+      selectedToken,
+      tokenBalance,
+    })
+
+    if (amountErrorRequiresUpdate) {
+      const amountErrorObject = getAmountErrorObject({
+        amount,
+        amountConversionRate,
         balance,
+        conversionRate,
         gasTotal,
-        prevBalance,
-        prevGasTotal,
-        prevTokenBalance,
+        primaryCurrency,
         selectedToken,
         tokenBalance,
       })
+      updateSendErrors(amountErrorObject)
+    }
 
-      if (amountErrorRequiresUpdate) {
-        const amountErrorObject = getAmountErrorObject({
-          amount,
-          amountConversionRate,
-          balance,
-          conversionRate,
-          gasTotal,
-          primaryCurrency,
-          selectedToken,
-          tokenBalance,
-        })
-        updateSendErrors(amountErrorObject)
-      }
+    if (!uninitialized) {
 
       if (network !== prevNetwork && network !== 'loading') {
         updateSendTokenBalance({
