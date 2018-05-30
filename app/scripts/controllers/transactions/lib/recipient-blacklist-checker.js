@@ -12,8 +12,8 @@ module.exports = {
 */
 async function checkAccount (networkId, account) {
 
-  // mainnet's network id === 1
-  if (networkId !== 1) {
+  const mainnetId = 1
+  if (networkId !== mainnetId) {
     return
   }
 

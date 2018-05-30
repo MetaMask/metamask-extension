@@ -10,7 +10,7 @@ const NonceTracker = require('./nonce-tracker')
 const txUtils = require('./lib/util')
 const cleanErrorStack = require('../../lib/cleanErrorStack')
 const log = require('loglevel')
-const recipientBlackListChecker = require('./lib/recipient-blacklist-checker')
+const recipientBlacklistChecker = require('./lib/recipient-blacklist-checker')
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -161,7 +161,7 @@ class TransactionController extends EventEmitter {
 
     try {
       // check whether recipient account is public
-      await recipientBlackListChecker.checkAccount(txMeta.metamaskNetworkId, normalizedTxParams.to)
+      await recipientBlacklistChecker.checkAccount(txMeta.metamaskNetworkId, normalizedTxParams.to)
       // add default tx params
       txMeta = await this.addTxGasDefaults(txMeta)
     } catch (error) {
