@@ -91,7 +91,6 @@ CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValu
 }
 
 CurrencyDisplay.prototype.handleChange = function (newVal) {
-  console.log(`%^ 95 newVal`, newVal);
   this.setState({ valueToRender: newVal })
   this.props.onChange(this.getAmount(newVal))
 }
