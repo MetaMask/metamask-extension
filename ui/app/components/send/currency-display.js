@@ -49,7 +49,7 @@ CurrencyDisplay.prototype.getAmount = function (value) {
 }
 
 CurrencyDisplay.prototype.getValueToRender = function ({ selectedToken, conversionRate, value }) {
-  if (value === '0x0') return ''
+  if (value === '0x0') return '0'
   const { decimals, symbol } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
 

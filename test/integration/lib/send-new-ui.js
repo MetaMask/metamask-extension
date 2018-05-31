@@ -101,7 +101,7 @@ async function runSendFlowTest(assert, done) {
   const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(2)')
   sendAmountField.find('.currency-display')[0].click()
 
-  const sendAmountFieldInput = await findAsync(sendAmountField, 'input:text')
+  const sendAmountFieldInput = await findAsync(sendAmountField, '.currency-display__input')
   sendAmountFieldInput.val('5.1')
   reactTriggerChange(sendAmountField.find('input')[0])
 
