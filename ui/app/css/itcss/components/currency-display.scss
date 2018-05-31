@@ -47,10 +47,32 @@
   &__input-wrapper {
     position: relative;
     display: flex;
+
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
   }
 
   &__currency-symbol {
     margin-top: 1px;
     color: $scorpion;
+  }
+
+  .react-numeric-input {
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
   }
 }

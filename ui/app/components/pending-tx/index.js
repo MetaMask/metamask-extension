@@ -130,7 +130,6 @@ PendingTx.prototype.render = function () {
 
   if (isFetching) {
     return h(Loading, {
-      fullScreen: true,
       loadingMessage: this.context.t('generatingTransaction'),
     })
   }
@@ -157,9 +156,7 @@ PendingTx.prototype.render = function () {
         sendTransaction,
       })
     default:
-      return h(Loading, {
-        fullScreen: true,
-      })
+      return h(Loading)
   }
 }
 

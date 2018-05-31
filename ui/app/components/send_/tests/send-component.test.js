@@ -25,7 +25,7 @@ const SendTransactionScreen = proxyquire('../send.component.js', {
 sinon.spy(SendTransactionScreen.prototype, 'componentDidMount')
 sinon.spy(SendTransactionScreen.prototype, 'updateGas')
 
-describe.only('Send Component', function () {
+describe('Send Component', function () {
   let wrapper
 
   beforeEach(() => {

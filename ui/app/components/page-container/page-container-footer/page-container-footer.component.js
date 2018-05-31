@@ -29,7 +29,7 @@ export default class PageContainerFooter extends Component {
       <div className="page-container__footer">
 
         <Button
-          type="secondary"
+          type="default"
           large={true}
           className="page-container__footer-button"
           onClick={() => onCancel()}

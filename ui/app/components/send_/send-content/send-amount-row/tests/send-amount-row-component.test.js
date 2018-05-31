@@ -14,7 +14,7 @@ const propsMethodSpies = {
   updateSendAmountError: sinon.spy(),
 }
 
-sinon.spy(SendAmountRow.prototype, 'handleAmountChange')
+sinon.spy(SendAmountRow.prototype, 'updateAmount')
 sinon.spy(SendAmountRow.prototype, 'validateAmount')
 
 describe('SendAmountRow Component', function () {
@@ -45,7 +45,7 @@ describe('SendAmountRow Component', function () {
     propsMethodSpies.updateSendAmount.resetHistory()
     propsMethodSpies.updateSendAmountError.resetHistory()
     SendAmountRow.prototype.validateAmount.resetHistory()
-    SendAmountRow.prototype.handleAmountChange.resetHistory()
+    SendAmountRow.prototype.updateAmount.resetHistory()
   })
 
   describe('validateAmount', () => {
@@ -71,11 +71,11 @@ describe('SendAmountRow Component', function () {
 
   })
 
-  describe('handleAmountChange', () => {
+  describe('updateAmount', () => {
 
     it('should call setMaxModeTo', () => {
       assert.equal(propsMethodSpies.setMaxModeTo.callCount, 0)
-      instance.handleAmountChange('someAmount')
+      instance.updateAmount('someAmount')
       assert.equal(propsMethodSpies.setMaxModeTo.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.setMaxModeTo.getCall(0).args,
@@ -83,19 +83,9 @@ describe('SendAmountRow Component', function () {
       )
     })
 
-    it('should call this.validateAmount', () => {
-      assert.equal(SendAmountRow.prototype.validateAmount.callCount, 0)
-      instance.handleAmountChange('someAmount')
-      assert.equal(SendAmountRow.prototype.validateAmount.callCount, 1)
-      assert.deepEqual(
-        propsMethodSpies.updateSendAmount.getCall(0).args,
-        ['someAmount']
-      )
-    })
-
     it('should call updateSendAmount', () => {
       assert.equal(propsMethodSpies.updateSendAmount.callCount, 0)
-      instance.handleAmountChange('someAmount')
+      instance.updateAmount('someAmount')
       assert.equal(propsMethodSpies.updateSendAmount.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.updateSendAmount.getCall(0).args,
@@ -136,7 +126,8 @@ describe('SendAmountRow Component', function () {
       const {
         conversionRate,
         convertedCurrency,
-        handleChange,
+        onBlur,
+        onChange,
         inError,
         primaryCurrency,
         selectedToken,
@@ -148,11 +139,18 @@ describe('SendAmountRow Component', function () {
       assert.equal(primaryCurrency, 'mockPrimaryCurrency')
       assert.deepEqual(selectedToken, { address: 'mockTokenAddress' })
       assert.equal(value, 'mockAmount')
-      assert.equal(SendAmountRow.prototype.handleAmountChange.callCount, 0)
-      handleChange('mockNewAmount')
-      assert.equal(SendAmountRow.prototype.handleAmountChange.callCount, 1)
+      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 0)
+      onBlur('mockNewAmount')
+      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 1)
       assert.deepEqual(
-        SendAmountRow.prototype.handleAmountChange.getCall(0).args,
+        SendAmountRow.prototype.updateAmount.getCall(0).args,
+        ['mockNewAmount']
+      )
+      assert.equal(SendAmountRow.prototype.validateAmount.callCount, 0)
+      onChange('mockNewAmount')
+      assert.equal(SendAmountRow.prototype.validateAmount.callCount, 1)
+      assert.deepEqual(
+        SendAmountRow.prototype.validateAmount.getCall(0).args,
         ['mockNewAmount']
       )
     })

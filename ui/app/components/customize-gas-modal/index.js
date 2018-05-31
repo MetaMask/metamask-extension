@@ -312,7 +312,7 @@ CustomizeGasModal.prototype.render = function () {
         }, [this.context.t('revert')]),
 
         h('div.send-v2__customize-gas__buttons', [
-          h('button.btn-secondary.send-v2__customize-gas__cancel', {
+          h('button.btn-default.send-v2__customize-gas__cancel', {
             onClick: this.props.hideModal,
             style: {
               marginRight: '10px',

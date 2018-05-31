@@ -7,6 +7,7 @@ const { compose } = require('recompose')
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
 const log = require('loglevel')
+const R = require('ramda')
 
 const PendingTx = require('./components/pending-tx')
 const SignatureRequest = require('./components/signature-request')
@@ -87,37 +88,74 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
     network,
     selectedAddressTxList,
     send,
+    history,
+    match: { params: { id: transactionId } = {} },
   } = this.props
-  const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
-  const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)
-  const prevTxData = prevUnconfTxList[prevIndex] || {}
-  const prevTx = selectedAddressTxList.find(({ id }) => id === prevTxData.id) || {}
+
+  let prevTx
+
+  if (transactionId) {
+    prevTx = R.find(({ id }) => id + '' === transactionId)(selectedAddressTxList)
+  } else {
+    const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
+    const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)
+    const prevTxData = prevUnconfTxList[prevIndex] || {}
+    prevTx = selectedAddressTxList.find(({ id }) => id === prevTxData.id) || {}
+  }
+
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
-  if (unconfTxList.length === 0 &&
-    (prevTx.status === 'dropped' || !send.to && this.getUnapprovedMessagesTotal() === 0)) {
+  if (prevTx.status === 'dropped') {
+    this.props.dispatch(actions.showModal({
+      name: 'TRANSACTION_CONFIRMED',
+      onHide: () => history.push(DEFAULT_ROUTE),
+    }))
+
+    return
+  }
+
+  if (unconfTxList.length === 0 && !send.to && this.getUnapprovedMessagesTotal() === 0) {
     this.props.history.push(DEFAULT_ROUTE)
   }
+}
+
+ConfirmTxScreen.prototype.getTxData = function () {
+  const {
+    network,
+    index,
+    unapprovedTxs,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTypedMessages,
+    match: { params: { id: transactionId } = {} },
+  } = this.props
+
+  const unconfTxList = txHelper(
+    unapprovedTxs,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTypedMessages,
+    network
+  )
+
+  log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`)
+
+  return transactionId
+    ? R.find(({ id }) => id + '' === transactionId)(unconfTxList)
+    : unconfTxList[index]
 }
 
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
   const {
-    network,
-    unapprovedTxs,
     currentCurrency,
-    unapprovedMsgs,
-    unapprovedPersonalMsgs,
-    unapprovedTypedMessages,
     conversionRate,
     blockGasLimit,
     // provider,
     // computedBalances,
   } = props
 
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
-
-  var txData = unconfTxList[props.index] || {}
+  var txData = this.getTxData() || {}
   var txParams = txData.params || {}
 
   // var isNotification = isPopupOrNotification() === 'notification'
@@ -136,7 +174,6 @@ ConfirmTxScreen.prototype.render = function () {
     ]),
   */
 
-  log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
 
   return currentTxView({
     // Properties

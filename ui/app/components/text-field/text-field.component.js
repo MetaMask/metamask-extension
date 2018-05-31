@@ -1,7 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import { default as MaterialTextField } from '@material-ui/core/TextField'
+
+const inputLabelBase = {
+  transform: 'none',
+  transition: 'none',
+  position: 'initial',
+  color: '#5b5b5b',
+}
 
 const styles = {
   materialLabel: {
@@ -46,57 +53,57 @@ const styles = {
       border: '1px solid #2f9ae0',
     },
   },
+  largeInputLabel: {
+    ...inputLabelBase,
+    fontSize: '1rem',
+  },
   inputLabel: {
+    ...inputLabelBase,
     fontSize: '.75rem',
-    transform: 'none',
-    transition: 'none',
-    position: 'initial',
-    color: '#5b5b5b',
   },
 }
 
-class TextField extends Component {
-  static defaultProps = {
-    error: null,
-  }
+const TextField = props => {
+  const { error, classes, material, startAdornment, largeLabel, ...textFieldProps } = props
 
-  static propTypes = {
-    error: PropTypes.string,
-    classes: PropTypes.object,
-    material: PropTypes.bool,
-    startAdornment: PropTypes.element,
-  }
+  return (
+    <MaterialTextField
+      error={Boolean(error)}
+      helperText={error}
+      InputLabelProps={{
+        shrink: material ? undefined : true,
+        className: material ? '' : (largeLabel ? classes.largeInputLabel : classes.inputLabel),
+        FormLabelClasses: {
+          root: material ? classes.materialLabel : classes.formLabel,
+          focused: material ? classes.materialFocused : classes.formLabelFocused,
+          error: classes.materialError,
+        },
+      }}
+      InputProps={{
+        startAdornment: startAdornment || undefined,
+        disableUnderline: !material,
+        classes: {
+          root: material ? '' : classes.inputRoot,
+          input: material ? '' : classes.input,
+          underline: material ? classes.materialUnderline : '',
+          focused: material ? '' : classes.inputFocused,
+        },
+      }}
+      {...textFieldProps}
+    />
+  )
+}
 
-  render () {
-    const { error, classes, material, startAdornment, ...textFieldProps } = this.props
+TextField.defaultProps = {
+  error: null,
+}
 
-    return (
-      <MaterialTextField
-        error={Boolean(error)}
-        helperText={error}
-        InputLabelProps={{
-          shrink: material ? undefined : true,
-          className: material ? '' : classes.inputLabel,
-          FormLabelClasses: {
-            root: material ? classes.materialLabel : classes.formLabel,
-            focused: material ? classes.materialFocused : classes.formLabelFocused,
-            error: classes.materialError,
-          },
-        }}
-        InputProps={{
-          startAdornment: startAdornment || undefined,
-          disableUnderline: !material,
-          classes: {
-            root: material ? '' : classes.inputRoot,
-            input: material ? '' : classes.input,
-            underline: material ? classes.materialUnderline : '',
-            focused: material ? '' : classes.inputFocused,
-          },
-        }}
-        {...textFieldProps}
-      />
-    )
-  }
+TextField.propTypes = {
+  error: PropTypes.string,
+  classes: PropTypes.object,
+  material: PropTypes.bool,
+  startAdornment: PropTypes.element,
+  largeLabel: PropTypes.bool,
 }
 
 export default withStyles(styles)(TextField)
