@@ -45,6 +45,7 @@ const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
+const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -350,7 +351,7 @@ module.exports = class MetamaskController extends EventEmitter {
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: nodeify(this.resetAccount, this),
-      importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // vault management
       submitPassword: nodeify(keyringController.submitPassword, keyringController),
@@ -608,15 +609,15 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param  {any} args - The data required by that strategy to import an account.
    * @param  {Function} cb - A callback function called with a state update on success.
    */
-  importAccountWithStrategy (strategy, args, cb) {
-    accountImporter.importAccount(strategy, args)
-    .then((privateKey) => {
-      return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
-    })
-    .then(keyring => keyring.getAccounts())
-    .then((accounts) => this.preferencesController.setSelectedAddress(accounts[0]))
-    .then(() => { cb(null, this.keyringController.fullUpdate()) })
-    .catch((reason) => { cb(reason) })
+  async importAccountWithStrategy (strategy, args) {
+    const privateKey = await accountImporter.importAccount(strategy, args)
+    const keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    const accounts = await keyring.getAccounts()
+    // update accounts in preferences controller
+    const allAccounts = await this.keyringController.getAccounts()
+    this.preferencesController.setAddresses(allAccounts)
+    // set new account as selected
+    await this.preferencesController.setSelectedAddress(accounts[0])
   }
 
   // ---------------------------------------------------------------------------
@@ -642,9 +643,9 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
         default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
     })
   }
@@ -702,7 +703,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   newUnsignedPersonalMessage (msgParams, cb) {
     if (!msgParams.from) {
-      return cb(new Error('MetaMask Message Signature: from field is required.'))
+      return cb(cleanErrorStack(new Error('MetaMask Message Signature: from field is required.')))
     }
 
     const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
@@ -713,9 +714,9 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
         default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
     })
   }
@@ -781,9 +782,9 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
         default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
     })
   }

@@ -76,7 +76,7 @@ class App extends Component {
         h(Authenticated, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedConfirmation }),
         h(Authenticated, { path: SETTINGS_ROUTE, component: Settings }),
         h(Authenticated, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
-        h(Authenticated, { path: CONFIRM_TRANSACTION_ROUTE, component: ConfirmTxScreen }),
+        h(Authenticated, { path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`, component: ConfirmTxScreen }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
@@ -137,7 +137,6 @@ class App extends Component {
 
         (isLoading || isLoadingNetwork) && h(Loading, {
           loadingMessage: loadMessage,
-          fullScreen: true,
         }),
 
         // content

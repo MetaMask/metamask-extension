@@ -405,6 +405,9 @@
   "infoHelp": {
     "message": "Info & Help"
   },
+  "initialTransactionConfirmed": {
+    "message": "Your initial transaction was confirmed by the network. Click OK to go back."
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
@@ -523,6 +526,9 @@
   "networks": {
     "message": "Networks"
   },
+  "nevermind": {
+    "message": "Nevermind"
+  },
   "newAccount": {
     "message": "New Account"
   },
@@ -637,8 +643,14 @@
   "rejected": {
     "message": "Rejected"
   },
+  "reset": {
+    "message": "Reset"
+  },
   "resetAccount": {
     "message": "Reset Account"
+  },
+  "resetAccountDescription": {
+    "message": "Resetting your account will clear your transaction history."
   },
   "restoreFromSeed": {
     "message": "Restore account?"
@@ -679,6 +691,9 @@
   "ropsten": {
     "message": "Ropsten Test Network"
   },
+  "rpc": {
+    "message": "Custom RPC"
+  },
   "currentRpc": {
     "message": "Current RPC"
   },
@@ -704,10 +719,10 @@
   "save": {
     "message": "Save"
   },
-  "reprice_title": {
-    "message": "Reprice Transaction"
+  "speedUpTitle": {
+    "message": "Speed Up Transaction"
   },
-  "reprice_subtitle": {
+  "speedUpSubtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
   },
   "saveAsCsvFile": {
@@ -898,7 +913,7 @@
     "message": "Welcome to the New UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+    "message": "You are now using the new Metamask UI."
   },
   "unapproved": {
     "message": "Unapproved"

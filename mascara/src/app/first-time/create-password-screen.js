@@ -143,6 +143,7 @@ class CreatePasswordScreen extends Component {
               autoComplete="new-password"
               margin="normal"
               fullWidth
+              largeLabel
             />
             <TextField
               id="confirm-password"
@@ -155,6 +156,7 @@ class CreatePasswordScreen extends Component {
               autoComplete="confirm-password"
               margin="normal"
               fullWidth
+              largeLabel
             />
             <button
               className="first-time-flow__button"
