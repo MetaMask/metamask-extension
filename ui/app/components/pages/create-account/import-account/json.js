@@ -106,8 +106,6 @@ class JsonImportSubview extends Component {
     }
 
     importNewJsonAccount([ fileContents, password ])
-      // JS runtime requires caught rejections but failures are handled by Redux
-      .catch()
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
           history.push(DEFAULT_ROUTE)
@@ -116,6 +114,7 @@ class JsonImportSubview extends Component {
           setSelectedAddress(firstAddress)
         }
       })
+      .catch(err => displayWarning(err))
   }
 }
 
