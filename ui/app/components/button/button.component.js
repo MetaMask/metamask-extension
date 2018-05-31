@@ -1,7 +1,6 @@
-const { Component } = require('react')
-const h = require('react-hyperscript')
-const PropTypes = require('prop-types')
-const classnames = require('classnames')
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 const SECONDARY = 'secondary'
 const CLASSNAME_PRIMARY = 'btn-primary'
@@ -24,10 +23,12 @@ class Button extends Component {
     const { type, large, className, ...buttonProps } = this.props
 
     return (
-      h('button', {
-        className: classnames(getClassName(type, large), className),
-        ...buttonProps,
-      }, this.props.children)
+      <button
+        className={classnames(getClassName(type, large), className)}
+        { ...buttonProps }
+      >
+        { this.props.children }
+      </button>
     )
   }
 }
@@ -39,5 +40,5 @@ Button.propTypes = {
   children: PropTypes.string,
 }
 
-module.exports = Button
+export default Button
 

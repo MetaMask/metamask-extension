@@ -146,6 +146,7 @@ class ImportSeedPhraseScreen extends Component {
               error={passwordError}
               autoComplete="new-password"
               margin="normal"
+              largeLabel
             />
             <TextField
               id="confirm-password"
@@ -157,6 +158,7 @@ class ImportSeedPhraseScreen extends Component {
               error={confirmPasswordError}
               autoComplete="confirm-password"
               margin="normal"
+              largeLabel
             />
             <button
               className="first-time-flow__button"

@@ -2,6 +2,12 @@ const extension = require('extensionizer')
 const promisify = require('pify')
 const allLocales = require('../../_locales/index.json')
 
+const isSupported = extension.i18n && extension.i18n.getAcceptLanguages
+const getPreferredLocales = isSupported ? promisify(
+  extension.i18n.getAcceptLanguages,
+  { errorFirst: false }
+) : async () => []
+
 const existingLocaleCodes = allLocales.map(locale => locale.code.toLowerCase().replace('_', '-'))
 
 /**
@@ -12,10 +18,7 @@ const existingLocaleCodes = allLocales.map(locale => locale.code.toLowerCase().r
  *
  */
 async function getFirstPreferredLangCode () {
-  const userPreferredLocaleCodes = await promisify(
-    extension.i18n.getAcceptLanguages,
-    { errorFirst: false }
-  )()
+  const userPreferredLocaleCodes = await getPreferredLocales()
   const firstPreferredLangCode = userPreferredLocaleCodes
     .map(code => code.toLowerCase())
     .find(code => existingLocaleCodes.includes(code))

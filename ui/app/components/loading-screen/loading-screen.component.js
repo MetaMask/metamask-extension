@@ -1,7 +1,6 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
-const classnames = require('classnames')
 const Spinner = require('../spinner')
 
 class LoadingScreen extends Component {
@@ -12,9 +11,7 @@ class LoadingScreen extends Component {
 
   render () {
     return (
-      h('.loading-overlay', {
-        className: classnames({ 'loading-overlay--full-screen': this.props.fullScreen }),
-      }, [
+      h('.loading-overlay', [
         h('.loading-overlay__container', [
           h(Spinner, {
             color: '#F7C06C',
@@ -29,7 +26,6 @@ class LoadingScreen extends Component {
 
 LoadingScreen.propTypes = {
   loadingMessage: PropTypes.string,
-  fullScreen: PropTypes.bool,
 }
 
 module.exports = LoadingScreen

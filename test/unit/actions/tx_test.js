@@ -9,7 +9,7 @@ var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'redu
 
 describe('tx confirmation screen', function () {
   beforeEach(function () {
-    this.sinon = sinon.sandbox.create()
+    this.sinon = sinon.createSandbox()
   })
 
   afterEach(function () {

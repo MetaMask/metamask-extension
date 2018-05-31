@@ -291,18 +291,48 @@ ConfirmSendEther.prototype.convertToRenderableCurrency = function (value, curren
     : value
 }
 
-ConfirmSendEther.prototype.editTransaction = function (txMeta) {
+ConfirmSendEther.prototype.editTransaction = function () {
   const { editTransaction, history } = this.props
+  const txMeta = this.gatherTxMeta()
   editTransaction(txMeta)
   history.push(SEND_ROUTE)
 }
 
-ConfirmSendEther.prototype.renderNetworkDisplay = function () {
+ConfirmSendEther.prototype.renderHeaderRow = function (isTxReprice) {
   const windowType = window.METAMASK_UI_TYPE
+  const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+    windowType !== ENVIRONMENT_TYPE_POPUP
 
-  return (windowType === ENVIRONMENT_TYPE_NOTIFICATION || windowType === ENVIRONMENT_TYPE_POPUP)
-    ? h(NetworkDisplay)
-    : null
+  if (isTxReprice && isFullScreen) {
+    return null
+  }
+
+  return (
+    h('.page-container__header-row', [
+      h('span.page-container__back-button', {
+        onClick: () => this.editTransaction(),
+        style: {
+          visibility: isTxReprice ? 'hidden' : 'initial',
+        },
+      }, 'Edit'),
+      !isFullScreen && h(NetworkDisplay),
+    ])
+  )
+}
+
+ConfirmSendEther.prototype.renderHeader = function (isTxReprice) {
+  const title = isTxReprice ? this.context.t('speedUpTitle') : this.context.t('confirm')
+  const subtitle = isTxReprice
+    ? this.context.t('speedUpSubtitle')
+    : this.context.t('pleaseReviewTransaction')
+
+  return (
+    h('.page-container__header', [
+      this.renderHeaderRow(isTxReprice),
+      h('.page-container__title', title),
+      h('.page-container__subtitle', subtitle),
+    ])
+  )
 }
 
 ConfirmSendEther.prototype.render = function () {
@@ -320,6 +350,7 @@ ConfirmSendEther.prototype.render = function () {
     },
   } = this.props
   const txMeta = this.gatherTxMeta()
+  const isTxReprice = Boolean(txMeta.lastGasPrice)
   const txParams = txMeta.txParams || {}
 
   const {
@@ -337,11 +368,6 @@ ConfirmSendEther.prototype.render = function () {
     totalInFIAT,
     totalInETH,
   } = this.getData()
-
-  const title = txMeta.lastGasPrice ? 'Reprice Transaction' : 'Confirm'
-  const subtitle = txMeta.lastGasPrice
-    ? 'Increase your gas fee to attempt to overwrite and speed up your transaction'
-    : 'Please review your transaction.'
 
   const convertedAmountInFiat = this.convertToRenderableCurrency(amountInFIAT, currentCurrency)
   const convertedTotalInFiat = this.convertToRenderableCurrency(totalInFIAT, currentCurrency)
@@ -362,19 +388,7 @@ ConfirmSendEther.prototype.render = function () {
   return (
     // Main Send token Card
     h('.page-container', [
-      h('.page-container__header', [
-        h('.page-container__header-row', [
-          h('span.page-container__back-button', {
-            onClick: () => this.editTransaction(txMeta),
-            style: {
-              visibility: !txMeta.lastGasPrice ? 'initial' : 'hidden',
-            },
-          }, 'Edit'),
-          this.renderNetworkDisplay(),
-        ]),
-        h('.page-container__title', title),
-        h('.page-container__subtitle', subtitle),
-      ]),
+      this.renderHeader(isTxReprice),
       h('.page-container__content', [
         h(SenderToRecipient, {
           senderName: fromName,

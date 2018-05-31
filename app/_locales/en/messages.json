@@ -23,6 +23,9 @@
   "addTokens": {
     "message": "Add Tokens"
   },
+  "addAcquiredTokens": {
+    "message": "Add the tokens you've acquired using MetaMask"
+  },
   "amount": {
     "message": "Amount"
   },
@@ -53,7 +56,7 @@
     "message": "Back"
   },
   "balance": {
-    "message": "Balance:"
+    "message": "Balance"
   },
   "balances": {
     "message": "Token balance(s)"
@@ -399,6 +402,9 @@
   "infoHelp": {
     "message": "Info & Help"
   },
+  "initialTransactionConfirmed": {
+    "message": "Your initial transaction was confirmed by the network. Click OK to go back."
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
@@ -673,6 +679,9 @@
   "ropsten": {
     "message": "Ropsten Test Network"
   },
+  "rpc": {
+    "message": "Custom RPC"
+  },
   "currentRpc": {
     "message": "Current RPC"
   },
@@ -698,10 +707,10 @@
   "save": {
     "message": "Save"
   },
-  "reprice_title": {
-    "message": "Reprice Transaction"
+  "speedUpTitle": {
+    "message": "Speed Up Transaction"
   },
-  "reprice_subtitle": {
+  "speedUpSubtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
   },
   "saveAsCsvFile": {
@@ -716,6 +725,9 @@
   },
   "search": {
     "message": "Search"
+  },
+  "searchResults": {
+    "message": "Search Results"
   },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
@@ -831,6 +843,9 @@
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
     "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "Token"
   },
   "tokenAddress": {
     "message": "Token Address"

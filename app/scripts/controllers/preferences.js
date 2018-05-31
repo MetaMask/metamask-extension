@@ -27,6 +27,7 @@ class PreferencesController {
       useBlockie: false,
       featureFlags: {},
       currentLocale: opts.initLangCode,
+      identities: {},
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -60,6 +61,16 @@ class PreferencesController {
    */
   setCurrentLocale (key) {
     this.store.updateState({ currentLocale: key })
+  }
+
+  setAddresses (addresses) {
+    const oldIdentities = this.store.getState().identities
+    const identities = addresses.reduce((ids, address, index) => {
+      const oldId = oldIdentities[address] || {}
+      ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
+      return ids
+    }, {})
+    this.store.updateState({ identities })
   }
 
   /**
@@ -156,6 +167,21 @@ class PreferencesController {
   }
 
   /**
+   * Sets a custom label for an account
+   * @param {string} account the account to set a label for
+   * @param {string} label the custom label for the account
+   * @return {Promise<string>}
+   */
+  setAccountLabel (account, label) {
+    const address = normalizeAddress(account)
+    const {identities} = this.store.getState()
+    identities[address] = identities[address] || {}
+    identities[address].name = label
+    this.store.updateState({ identities })
+    return Promise.resolve(label)
+  }
+
+  /**
    * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
    *
    * @param {string} _url The the new rpc url to add to the updated list
@@ -189,8 +215,8 @@ class PreferencesController {
    * The returned list will have a max length of 2. If the _url currently exists it the list, it will be moved to the
    * end of the list. The current list is modified and returned as a promise.
    *
-   * @param {string} _url The rpc url to add to the frequentRpcList.
-   * @returns {Promise<array>} The updated frequentRpcList. 
+   * @param {string} _url The rpc url to add to the frequentRpcList. 
+   * @returns {Promise<array>} The updated frequentRpcList.
    *
    */
   addToFrequentRpcList (_url) {

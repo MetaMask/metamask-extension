@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
 import TextField from '../../text-field'
 
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
@@ -34,14 +34,7 @@ class UnlockPage extends Component {
     }
   }
 
-  tryUnlockMetamask (password) {
-    const { tryUnlockMetamask, history } = this.props
-    tryUnlockMetamask(password)
-      .then(() => history.push(DEFAULT_ROUTE))
-      .catch(({ message }) => this.setState({ error: message }))
-  }
-
-  handleSubmit (event) {
+  async handleSubmit (event) {
     event.preventDefault()
     event.stopPropagation()
 
@@ -54,9 +47,14 @@ class UnlockPage extends Component {
 
     this.setState({ error: null })
 
-    tryUnlockMetamask(password)
-      .then(() => history.push(DEFAULT_ROUTE))
-      .catch(({ message }) => this.setState({ error: message }))
+    try {
+      await tryUnlockMetamask(password)
+    } catch ({ message }) {
+      this.setState({ error: message })
+      return
+    }
+
+    history.push(DEFAULT_ROUTE)
   }
 
   handleInputChange ({ target }) {
@@ -129,6 +127,7 @@ class UnlockPage extends Component {
               error={error}
               autoFocus
               autoComplete="current-password"
+              material
               fullWidth
             />
           </form>

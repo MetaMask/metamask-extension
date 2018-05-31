@@ -5,29 +5,43 @@ const mkdirp = require('mkdirp')
 const rimraf = require('rimraf')
 const webdriver = require('selenium-webdriver')
 const endOfStream = require('end-of-stream')
+const clipboardy = require('clipboardy')
+const Ethjs = require('ethjs')
 const GIFEncoder = require('gifencoder')
 const pngFileStream = require('png-file-stream')
 const sizeOfPng = require('image-size/lib/types/png')
 const By = webdriver.By
-const { delay, buildWebDriver } = require('./func')
 const localesIndex = require('../../app/_locales/index.json')
+const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('../e2e/func')
+
+const eth = new Ethjs(new Ethjs.HttpProvider('http://localhost:8545'))
 
 let driver
+let screenshotCount = 0
 
-captureAllScreens().catch((err) => {
+captureAllScreens()
+.then(async () => {
+  // build screenshots into gif
+  console.log('building gif...')
+  await generateGif()
+
+  await driver.quit()
+  process.exit()
+})
+.catch(async (err) => {
   try {
     console.error(err)
-    verboseReportOnFailure()
-    driver.quit()
+    verboseReportOnFailure({ title: 'something broke' })
   } catch (err) {
     console.error(err)
   }
+
+  await driver.quit()
   process.exit(1)
 })
 
-async function captureAllScreens() {
-  let screenshotCount = 0
 
+async function captureAllScreens() {
   // common names
   let button
   let tabs
@@ -35,11 +49,10 @@ async function captureAllScreens() {
 
   await cleanScreenShotDir()
 
-  // setup selenium and install extension
   const extPath = path.resolve('dist/chrome')
-  driver = buildWebDriver(extPath)
-  await driver.get('chrome://extensions-frame')
-  const extensionId = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("#container > div.items-container > extensions-item:nth-child(2)").getAttribute("id")')
+  driver = buildChromeWebDriver(extPath)
+  const extensionId = await getExtensionIdChrome(driver)
+
   await driver.get(`chrome-extension://${extensionId}/home.html`)
   await delay(500)
   tabs = await driver.getAllWindowHandles()
@@ -74,10 +87,11 @@ async function captureAllScreens() {
   await driver.findElement(By.css('button')).click()
   await captureLanguageScreenShots('create password')
 
+  const password = '123456789'
   const passwordBox = await driver.findElement(By.css('input#create-password'))
   const passwordBoxConfirm = await driver.findElement(By.css('input#confirm-password'))
-  passwordBox.sendKeys('123456789')
-  passwordBoxConfirm.sendKeys('123456789')
+  passwordBox.sendKeys(password)
+  passwordBoxConfirm.sendKeys(password)
   await delay(500)
   await captureLanguageScreenShots('choose-password-filled')
 
@@ -111,109 +125,123 @@ async function captureAllScreens() {
   await delay(300)
   await captureLanguageScreenShots('secret backup phrase - reveal')
 
+  const seedPhrase = await driver.findElement(By.css('.backup-phrase__secret-words')).getText()
+  const seedPhraseWords = seedPhrase.split(' ')
   await driver.findElement(By.css('button')).click()
   await delay(300)
   await captureLanguageScreenShots('confirm secret backup phrase')
 
-  // finish up
-  console.log('building gif...')
-  await generateGif()
-  await driver.quit()
-  return
+  // enter seed phrase
+  const seedPhraseButtons = await driver.findElements(By.css('.backup-phrase__confirm-seed-options > button'))
+  const seedPhraseButtonWords = await Promise.all(seedPhraseButtons.map(button => button.getText()))
+  for (let targetWord of seedPhraseWords) {
+    const wordIndex = seedPhraseButtonWords.indexOf(targetWord)
+    if (wordIndex === -1) throw new Error(`Captured seed phrase word "${targetWord}" not in found seed phrase button options ${seedPhraseButtonWords.join(' ')}`)
+    await driver.findElement(By.css(`.backup-phrase__confirm-seed-options > button:nth-child(${wordIndex+1})`)).click()
+    await delay(100)
+  }
+  await captureLanguageScreenShots('confirm secret backup phrase - words selected correctly')
 
-  //
-  // await button.click()
-  // await delay(700)
-  // this.seedPhase = await driver.findElement(By.css('.twelve-word-phrase')).getText()
-  // await captureScreenShot('seed phrase')
-  //
-  // const continueAfterSeedPhrase = await driver.findElement(By.css('button'))
-  // await continueAfterSeedPhrase.click()
+  await driver.findElement(By.css('.backup-phrase__content-wrapper .first-time-flow__button')).click()
+  await delay(300)
+  await captureLanguageScreenShots('metamask post-initialize greeter screen deposit ether')
+
+  await driver.findElement(By.css('.page-container__header-close')).click()
+  await delay(300)
+  await captureLanguageScreenShots('metamask account main screen')
+
+  // account details + export private key
+  await driver.findElement(By.css('.wallet-view__name-container > .wallet-view__details-button')).click()
+  await delay(300)
+  await captureLanguageScreenShots('metamask account detail screen')
+
+  await driver.findElement(By.css('.account-modal__button:nth-of-type(2)')).click()
+  await delay(300)
+  await captureLanguageScreenShots('metamask account detail export private key screen - initial')
+
+  await driver.findElement(By.css('.private-key-password > input')).sendKeys(password)
+  await delay(300)
+  await captureLanguageScreenShots('metamask account detail export private key screen - password entered')
+
+  await driver.findElement(By.css('.btn-primary--lg.export-private-key__button')).click()
+  await delay(300)
+  await captureLanguageScreenShots('metamask account detail export private key screen - reveal key')
+
+  await driver.findElement(By.css('.export-private-key__button')).click()
+  await delay(300)
+  await captureLanguageScreenShots('metamask account detail export private key screen - done')
+
+  // get eth from Ganache
+  // const viewAddressButton = await driver.findElement(By.css('.wallet-view__address'))
+  // await driver.actions({ bridge: true }).move({ origin: viewAddressButton }).perform()
+  // console.log('driver.actions', driver.actions({ bridge: true }))
   // await delay(300)
-  // await captureScreenShot('main screen')
-  //
-  // await driver.findElement(By.css('.sandwich-expando')).click()
-  // await delay(500)
-  // await captureScreenShot('menu')
+  // await captureLanguageScreenShots('metamask home - hover copy address')
 
-  // await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)')).click()
-  // await captureScreenShot('main screen')
-  // it('should accept account password after lock', async () => {
-  //   await delay(500)
-  //   await driver.findElement(By.id('password-box')).sendKeys('123456789')
-  //   await driver.findElement(By.css('button')).click()
-  //   await delay(500)
-  // })
-  //
-  // it('should show QR code option', async () => {
-  //   await delay(300)
-  //   await driver.findElement(By.css('.fa-ellipsis-h')).click()
-  //   await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > i > div > div > li:nth-child(3)')).click()
-  //   await delay(300)
-  // })
-  //
-  // it('should show the account address', async () => {
-  //   this.accountAddress = await driver.findElement(By.css('.ellip-address')).getText()
-  //   await driver.findElement(By.css('.fa-arrow-left')).click()
-  //   await delay(500)
-  // })
+  await driver.findElement(By.css('.wallet-view__address')).click()
+  await delay(100)
+  await captureLanguageScreenShots('metamask home - hover copy address')
 
-  async function captureLanguageScreenShots(label) {
-    const nonEnglishLocales = localesIndex.filter(localeMeta => localeMeta.code !== 'en')
-    // take english shot
-    await captureScreenShot(`${label} (en)`)
-    for (let localeMeta of nonEnglishLocales) {
-      // set locale and take shot
-      await setLocale(localeMeta.code)
-      await delay(300)
-      await captureScreenShot(`${label} (${localeMeta.code})`)
-    }
-    // return locale to english
-    await setLocale('en')
+  const primaryAddress = clipboardy.readSync()
+  await requestEther(primaryAddress)
+  // wait for block polling
+  await delay(10000)
+  await captureLanguageScreenShots('metamask home - has ether')
+
+}
+
+
+async function captureLanguageScreenShots(label) {
+  const nonEnglishLocales = localesIndex.filter(localeMeta => localeMeta.code !== 'en')
+  // take english shot
+  await captureScreenShot(`${label} (en)`)
+  for (let localeMeta of nonEnglishLocales) {
+    // set locale and take shot
+    await setLocale(localeMeta.code)
     await delay(300)
+    await captureScreenShot(`${label} (${localeMeta.code})`)
   }
+  // return locale to english
+  await setLocale('en')
+  await delay(300)
+}
 
-  async function setLocale(code) {
-    await driver.executeScript('window.metamask.updateCurrentLocale(arguments[0])', code)
-  }
+async function setLocale(code) {
+  await driver.executeScript('window.metamask.updateCurrentLocale(arguments[0])', code)
+}
 
-  async function setProviderType(type) {
-    await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
-  }
+async function setProviderType(type) {
+  await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
+}
 
-  // cleanup
-  await driver.quit()
+async function cleanScreenShotDir() {
+  await pify(rimraf)(`./test-artifacts/screens/`)
+}
 
-  async function cleanScreenShotDir() {
-    await pify(rimraf)(`./test-artifacts/screens/`)
-  }
+async function captureScreenShot(label) {
+  const shotIndex = screenshotCount.toString().padStart(4, '0')
+  screenshotCount++
+  const artifactDir = `./test-artifacts/screens/`
+  await pify(mkdirp)(artifactDir)
+  // capture screenshot
+  const screenshot = await driver.takeScreenshot()
+  await pify(fs.writeFile)(`${artifactDir}/${shotIndex} - ${label}.png`, screenshot, { encoding: 'base64' })
+}
 
-  async function captureScreenShot(label) {
-    const shotIndex = screenshotCount.toString().padStart(4, '0')
-    screenshotCount++
-    const artifactDir = `./test-artifacts/screens/`
-    await pify(mkdirp)(artifactDir)
-    // capture screenshot
-    const screenshot = await driver.takeScreenshot()
-    await pify(fs.writeFile)(`${artifactDir}/${shotIndex} - ${label}.png`, screenshot, { encoding: 'base64' })
-  }
+async function generateGif(){
+  // calculate screenshot size
+  const screenshot = await driver.takeScreenshot()
+  const pngBuffer = Buffer.from(screenshot, 'base64')
+  const size = sizeOfPng.calculate(pngBuffer)
 
-  async function generateGif(){
-    // calculate screenshot size
-    const screenshot = await driver.takeScreenshot()
-    const pngBuffer = Buffer.from(screenshot, 'base64')
-    const size = sizeOfPng.calculate(pngBuffer)
+  // read only the english pngs into gif
+  const encoder = new GIFEncoder(size.width, size.height)
+  const stream = pngFileStream('./test-artifacts/screens/* (en).png')
+    .pipe(encoder.createWriteStream({ repeat: 0, delay: 1000, quality: 10 }))
+    .pipe(fs.createWriteStream('./test-artifacts/screens/walkthrough (en).gif'))
 
-    // read only the english pngs into gif
-    const encoder = new GIFEncoder(size.width, size.height)
-    const stream = pngFileStream('./test-artifacts/screens/* (en).png')
-      .pipe(encoder.createWriteStream({ repeat: 0, delay: 1000, quality: 10 }))
-      .pipe(fs.createWriteStream('./test-artifacts/screens/walkthrough (en).gif'))
-
-    // wait for end
-    await pify(endOfStream)(stream)
-  }
-
+  // wait for end
+  await pify(endOfStream)(stream)
 }
 
 async function verboseReportOnFailure(test) {
@@ -226,4 +254,9 @@ async function verboseReportOnFailure(test) {
   // capture dom source
   const htmlSource = await driver.getPageSource()
   await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+}
+
+async function requestEther(address) {
+  const accounts = await eth.accounts()
+  await eth.sendTransaction({ from: accounts[0], to: address, value: 1 * 1e18, data: '0x0' })
 }
