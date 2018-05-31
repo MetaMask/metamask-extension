@@ -49,11 +49,10 @@ export default class SendAmountRow extends Component {
     })
   }
 
-  handleAmountChange (amount) {
+  updateAmount (amount) {
     const { updateSendAmount, setMaxModeTo } = this.props
 
     setMaxModeTo(false)
-    this.validateAmount(amount)
     updateSendAmount(amount)
   }
 
@@ -78,7 +77,8 @@ export default class SendAmountRow extends Component {
         <CurrencyDisplay
           conversionRate={amountConversionRate}
           convertedCurrency={convertedCurrency}
-          handleChange={newAmount => this.handleAmountChange(newAmount)}
+          onBlur={newAmount => this.updateAmount(newAmount)}
+          onChange={newAmount => this.validateAmount(newAmount)}
           inError={inError}
           primaryCurrency={primaryCurrency || 'ETH'}
           selectedToken={selectedToken}
