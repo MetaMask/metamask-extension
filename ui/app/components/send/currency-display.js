@@ -98,9 +98,8 @@ CurrencyDisplay.prototype.handleChange = function (newVal) {
 CurrencyDisplay.prototype.getInputWidth = function (valueToRender, readOnly) {
   const valueString = String(valueToRender)
   const valueLength = valueString.length || 1
-  const dynamicBuffer = readOnly ? 0 : 1
-  const decimalPointDeficit = !readOnly && valueString.match(/\./) ? -0.5 : 0
-  return (valueLength + dynamicBuffer + decimalPointDeficit) + 'ch'
+  const decimalPointDeficit = valueString.match(/\./) ? -0.5 : 0
+  return (valueLength + decimalPointDeficit + 0.75) + 'ch'
 }
 
 CurrencyDisplay.prototype.render = function () {
