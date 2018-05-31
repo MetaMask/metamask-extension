@@ -115,8 +115,8 @@ function logStreamDisconnectWarning (remoteLabel, err) {
  * @returns {boolean} {@code true} if Web3 should be injected
  */
 function shouldInjectWeb3 () {
-  return doctypeCheck() && suffixCheck()
-    && documentElementCheck() && !blacklistedDomainCheck()
+  return doctypeCheck() && suffixCheck() &&
+    documentElementCheck() && !blacklistedDomainCheck()
 }
 
 /**

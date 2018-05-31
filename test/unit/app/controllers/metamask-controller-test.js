@@ -479,7 +479,7 @@ describe('MetaMaskController', function () {
     it('errors when signing a message', async function () {
       await metamaskController.signPersonalMessage(personalMessages[0].msgParams)
       assert.equal(metamaskPersonalMsgs[msgId].status, 'signed')
-      assert.equal(metamaskPersonalMsgs[msgId].rawSig, '0x6a1b65e2b8ed53cf398a769fad24738f9fbe29841fe6854e226953542c4b6a173473cb152b6b1ae5f06d601d45dd699a129b0a8ca84e78b423031db5baa734741b')      
+      assert.equal(metamaskPersonalMsgs[msgId].rawSig, '0x6a1b65e2b8ed53cf398a769fad24738f9fbe29841fe6854e226953542c4b6a173473cb152b6b1ae5f06d601d45dd699a129b0a8ca84e78b423031db5baa734741b')
     })
   })
 
@@ -513,7 +513,7 @@ describe('MetaMaskController', function () {
     })
 
     it('sets up controller dnode api for trusted communication', function (done) {
-      streamTest = createThoughStream((chunk, enc, cb) => { 
+      streamTest = createThoughStream((chunk, enc, cb) => {
         assert.equal(chunk.name, 'controller')
         cb()
         done()

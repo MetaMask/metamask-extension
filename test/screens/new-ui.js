@@ -41,7 +41,7 @@ captureAllScreens()
 })
 
 
-async function captureAllScreens() {
+async function captureAllScreens () {
   // common names
   let button
   let tabs
@@ -134,10 +134,10 @@ async function captureAllScreens() {
   // enter seed phrase
   const seedPhraseButtons = await driver.findElements(By.css('.backup-phrase__confirm-seed-options > button'))
   const seedPhraseButtonWords = await Promise.all(seedPhraseButtons.map(button => button.getText()))
-  for (let targetWord of seedPhraseWords) {
+  for (const targetWord of seedPhraseWords) {
     const wordIndex = seedPhraseButtonWords.indexOf(targetWord)
     if (wordIndex === -1) throw new Error(`Captured seed phrase word "${targetWord}" not in found seed phrase button options ${seedPhraseButtonWords.join(' ')}`)
-    await driver.findElement(By.css(`.backup-phrase__confirm-seed-options > button:nth-child(${wordIndex+1})`)).click()
+    await driver.findElement(By.css(`.backup-phrase__confirm-seed-options > button:nth-child(${wordIndex + 1})`)).click()
     await delay(100)
   }
   await captureLanguageScreenShots('confirm secret backup phrase - words selected correctly')
@@ -191,11 +191,11 @@ async function captureAllScreens() {
 }
 
 
-async function captureLanguageScreenShots(label) {
+async function captureLanguageScreenShots (label) {
   const nonEnglishLocales = localesIndex.filter(localeMeta => localeMeta.code !== 'en')
   // take english shot
   await captureScreenShot(`${label} (en)`)
-  for (let localeMeta of nonEnglishLocales) {
+  for (const localeMeta of nonEnglishLocales) {
     // set locale and take shot
     await setLocale(localeMeta.code)
     await delay(300)
@@ -206,19 +206,19 @@ async function captureLanguageScreenShots(label) {
   await delay(300)
 }
 
-async function setLocale(code) {
+async function setLocale (code) {
   await driver.executeScript('window.metamask.updateCurrentLocale(arguments[0])', code)
 }
 
-async function setProviderType(type) {
+async function setProviderType (type) {
   await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
 }
 
-async function cleanScreenShotDir() {
+async function cleanScreenShotDir () {
   await pify(rimraf)(`./test-artifacts/screens/`)
 }
 
-async function captureScreenShot(label) {
+async function captureScreenShot (label) {
   const shotIndex = screenshotCount.toString().padStart(4, '0')
   screenshotCount++
   const artifactDir = `./test-artifacts/screens/`
@@ -228,7 +228,7 @@ async function captureScreenShot(label) {
   await pify(fs.writeFile)(`${artifactDir}/${shotIndex} - ${label}.png`, screenshot, { encoding: 'base64' })
 }
 
-async function generateGif(){
+async function generateGif () {
   // calculate screenshot size
   const screenshot = await driver.takeScreenshot()
   const pngBuffer = Buffer.from(screenshot, 'base64')
@@ -244,7 +244,7 @@ async function generateGif(){
   await pify(endOfStream)(stream)
 }
 
-async function verboseReportOnFailure(test) {
+async function verboseReportOnFailure (test) {
   const artifactDir = `./test-artifacts/${test.title}`
   const filepathBase = `${artifactDir}/test-failure`
   await pify(mkdirp)(artifactDir)
@@ -256,7 +256,7 @@ async function verboseReportOnFailure(test) {
   await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
 }
 
-async function requestEther(address) {
+async function requestEther (address) {
   const accounts = await eth.accounts()
   await eth.sendTransaction({ from: accounts[0], to: address, value: 1 * 1e18, data: '0x0' })
 }

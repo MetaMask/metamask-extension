@@ -371,7 +371,7 @@ describe('Transaction Controller', function () {
 
   describe('#retryTransaction', function () {
     it('should create a new txMeta with the same txParams as the original one', function (done) {
-      let txParams = {
+      const txParams = {
         nonce: '0x00',
         from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
         to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',

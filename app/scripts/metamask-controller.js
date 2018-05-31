@@ -404,7 +404,6 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
 
-
 //=============================================================================
 // VAULT / KEYRING RELATED METHODS
 //=============================================================================
@@ -930,7 +929,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Allows a user to begin the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
-  markPasswordForgotten(cb) {
+  markPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(true)
     this.sendUpdate()
     cb()
@@ -940,7 +939,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Allows a user to end the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
-  unMarkPasswordForgotten(cb) {
+  unMarkPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(false)
     this.sendUpdate()
     cb()

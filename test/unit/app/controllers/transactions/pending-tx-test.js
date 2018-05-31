@@ -47,10 +47,10 @@ describe('PendingTransactionTracker', function () {
       nonceTracker: {
         getGlobalLock: async () => {
           return { releaseLock: () => {} }
-        }
+        },
       },
-      getPendingTransactions: () => {return []},
-      getCompletedTransactions: () => {return []},
+      getPendingTransactions: () => { return [] },
+      getCompletedTransactions: () => { return [] },
       publishTransaction: () => {},
     })
   })
@@ -189,7 +189,7 @@ describe('PendingTransactionTracker', function () {
       txMeta2.id = 2
       txMeta3.id = 3
       txList = [txMeta, txMeta2, txMeta3].map((tx) => {
-        tx.processed = new Promise ((resolve) => { tx.resolve = resolve })
+        tx.processed = new Promise((resolve) => { tx.resolve = resolve })
         return tx
       })
     })
@@ -207,11 +207,11 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#resubmitPendingTxs', function () {
-    const blockStub = { number: '0x0' };
+    const blockStub = { number: '0x0' }
     beforeEach(function () {
     const txMeta2 = txMeta3 = txMeta
     txList = [txMeta, txMeta2, txMeta3].map((tx) => {
-        tx.processed = new Promise ((resolve) => { tx.resolve = resolve })
+        tx.processed = new Promise((resolve) => { tx.resolve = resolve })
         return tx
       })
     })
@@ -228,7 +228,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.resubmitPendingTxs(blockStub)
     })
     it('should not emit \'tx:failed\' if the txMeta throws a known txError', function (done) {
-      knownErrors =[
+      knownErrors = [
         // geth
         '     Replacement transaction Underpriced            ',
         '       known transaction',
@@ -342,8 +342,8 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#_checkIfNonceIsTaken', function () {
-    beforeEach ( function () {
-      let confirmedTxList = [{
+    beforeEach(function () {
+      const confirmedTxList = [{
         id: 1,
         hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
         status: 'confirmed',

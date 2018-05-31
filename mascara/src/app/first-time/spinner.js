@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-export default function Spinner({ className = '', color = "#000000" }) {
+export default function Spinner ({ className = '', color = '#000000' }) {
   return (
     <div className={`spinner ${className}`}>
       <svg className="lds-spinner" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style={{background: 'none'}}>
@@ -66,5 +66,5 @@ export default function Spinner({ className = '', color = "#000000" }) {
         </g>
       </svg>
     </div>
-  );
+  )
 }

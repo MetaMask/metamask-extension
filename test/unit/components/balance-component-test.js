@@ -8,7 +8,7 @@ const mockState = {
     accounts: { abc: {} },
     network: 1,
     selectedAddress: 'abc',
-  }
+  },
 }
 
 describe('BalanceComponent', function () {

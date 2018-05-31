@@ -125,7 +125,7 @@ module.exports = class NetworkController extends EventEmitter {
     } else if (type === LOCALHOST) {
       this._configureStandardProvider({ rpcUrl: LOCALHOST_RPC_URL })
     // url-based rpc endpoints
-    } else if (type === 'rpc'){
+    } else if (type === 'rpc') {
       this._configureStandardProvider({ rpcUrl: rpcTarget })
     } else {
       throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
