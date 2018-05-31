@@ -127,7 +127,7 @@ async function runSendFlowTest(assert, done) {
   )
 
   await customizeGas(assert, 0, 21000, '0', '$0.00 USD')
-  await customizeGas(assert, 500, 60000, '0.003', '$3.60 USD')
+  await customizeGas(assert, 500, 60000, '0.03', '$36.03 USD')
 
   const sendButton = await queryAsync($, 'button.btn-primary--lg.page-container__footer-button')
   assert.equal(sendButton[0].textContent, 'Next', 'next button rendered')
