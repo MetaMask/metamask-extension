@@ -13,10 +13,18 @@ storiesOf('Button', module)
       {text('text', 'Click me')}
     </Button>
   )
-  .add('secondary', () => (
+  .add('secondary', () =>
     <Button
       onClick={action('clicked')}
       type="secondary"
+    >
+      {text('text', 'Click me')}
+    </Button>
+  )
+  .add('default', () => (
+    <Button
+      onClick={action('clicked')}
+      type="default"
     >
       {text('text', 'Click me')}
     </Button>
@@ -34,6 +42,15 @@ storiesOf('Button', module)
     <Button
       onClick={action('clicked')}
       type="secondary"
+      large
+    >
+      {text('text', 'Click me')}
+    </Button>
+  ))
+  .add('large default', () => (
+    <Button
+      onClick={action('clicked')}
+      type="default"
       large
     >
       {text('text', 'Click me')}

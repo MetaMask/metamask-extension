@@ -503,17 +503,23 @@ function requestRevealSeedWords (password) {
 }
 
 function resetAccount () {
-    return (dispatch) => {
-        background.resetAccount((err, account) => {
-            dispatch(actions.hideLoadingIndication())
-            if (err) {
-                dispatch(actions.displayWarning(err.message))
-            }
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
 
-            log.info('Transaction history reset for ' + account)
-            dispatch(actions.showAccountsPage())
-        })
-    }
+    return new Promise((resolve, reject) => {
+      background.resetAccount((err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.info('Transaction history reset for ' + account)
+        dispatch(actions.showAccountsPage())
+        resolve(account)
+      })
+    })
+  }
 }
 
 function addNewKeyring (type, opts) {
@@ -1397,16 +1403,24 @@ function markAccountsFound () {
 
 function retryTransaction (txId) {
   log.debug(`background.retryTransaction`)
+  let newTxId
+
   return (dispatch) => {
-    background.retryTransaction(txId, (err, newState) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      const { selectedAddressTxList } = newState
-      const { id: newTxId } = selectedAddressTxList[selectedAddressTxList.length - 1]
-      dispatch(actions.updateMetamaskState(newState))
-      dispatch(actions.viewPendingTx(newTxId))
+    return new Promise((resolve, reject) => {
+      background.retryTransaction(txId, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        newTxId = id
+        resolve(newState)
+      })
     })
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTxId)
   }
 }
 

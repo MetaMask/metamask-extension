@@ -2,20 +2,15 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-const SECONDARY = 'secondary'
+const CLASSNAME_DEFAULT = 'btn-default'
 const CLASSNAME_PRIMARY = 'btn-primary'
-const CLASSNAME_PRIMARY_LARGE = 'btn-primary--lg'
 const CLASSNAME_SECONDARY = 'btn-secondary'
-const CLASSNAME_SECONDARY_LARGE = 'btn-secondary--lg'
+const CLASSNAME_LARGE = 'btn--large'
 
-const getClassName = (type, large = false) => {
-  let output = type === SECONDARY ? CLASSNAME_SECONDARY : CLASSNAME_PRIMARY
-
-  if (large) {
-    output += ` ${type === SECONDARY ? CLASSNAME_SECONDARY_LARGE : CLASSNAME_PRIMARY_LARGE}`
-  }
-
-  return output
+const typeHash = {
+  default: CLASSNAME_DEFAULT,
+  primary: CLASSNAME_PRIMARY,
+  secondary: CLASSNAME_SECONDARY,
 }
 
 class Button extends Component {
@@ -24,7 +19,11 @@ class Button extends Component {
 
     return (
       <button
-        className={classnames(getClassName(type, large), className)}
+        className={classnames(
+          typeHash[type],
+          large && CLASSNAME_LARGE,
+          className
+        )}
         { ...buttonProps }
       >
         { this.props.children }

@@ -499,7 +499,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
 
   return h('div.page-container__footer', [
     h(Button, {
-      type: 'secondary',
+      type: 'default',
       large: true,
       className: 'page-container__footer-button',
       onClick: () => {

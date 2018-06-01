@@ -38,13 +38,13 @@ class NewAccountCreateForm extends Component {
 
       h('div.new-account-create-form__buttons', {}, [
 
-        h('button.btn-secondary--lg.new-account-create-form__button', {
+        h('button.btn-default.btn--large.new-account-create-form__button', {
           onClick: () => history.push(DEFAULT_ROUTE),
         }, [
           this.context.t('cancel'),
         ]),
 
-        h('button.btn-primary--lg.new-account-create-form__button', {
+        h('button.btn-primary.btn--large.new-account-create-form__button', {
           onClick: () => {
             createAccount(newAccountName || defaultAccountName)
               .then(() => history.push(DEFAULT_ROUTE))
