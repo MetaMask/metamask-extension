@@ -132,7 +132,7 @@ setupMetamaskMeshMetrics()
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
  * @property {number} conversionRate - A number representing the current exchange rate from the user's preferred currency to Ether.
  * @property {number} conversionDate - A unix epoch date (ms) for the time the current conversion rate was last retrieved.
- * @property {Object} infuraNetworkStatus - An object of infura network status checks.
+ * @property {Object} networkStatus - An object of infura network status checks.
  * @property {Block[]} recentBlocks - An array of recent blocks, used to calculate an effective but cheap gas price.
  * @property {Array} shapeShiftTxList - An array of objects describing shapeshift exchange attempts.
  * @property {Array} lostAccounts - TODO: Remove this feature. A leftover from the version-3 migration where our seed-phrase library changed to fix a bug where some accounts were mis-generated, but we recovered the old accounts as "lost" instead of losing them.
