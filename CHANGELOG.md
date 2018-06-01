@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 4.7.1 Fri Jun 01 2018
+
+- Fix bug where errors were not returned to Dapps.
+
 ## 4.7.0 Wed May 30 2018
 
 - Fix Brave support

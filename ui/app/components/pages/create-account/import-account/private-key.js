@@ -59,13 +59,13 @@ PrivateKeyImportView.prototype.render = function () {
 
       h('div.new-account-import-form__buttons', {}, [
 
-        h('button.btn-secondary--lg.new-account-create-form__button', {
+        h('button.btn-default.btn--large.new-account-create-form__button', {
           onClick: () => this.props.history.push(DEFAULT_ROUTE),
         }, [
           this.context.t('cancel'),
         ]),
 
-        h('button.btn-primary--lg.new-account-create-form__button', {
+        h('button.btn-primary.btn--large.new-account-create-form__button', {
           onClick: () => this.createNewKeychain(),
         }, [
           this.context.t('import'),
@@ -91,7 +91,7 @@ PrivateKeyImportView.prototype.createNewKeychain = function () {
   const { importNewAccount, history } = this.props
 
   importNewAccount('Private Key', [ privateKey ])
-    // JS runtime requires caught rejections but failures are handled by Redux 
+    // JS runtime requires caught rejections but failures are handled by Redux
     .catch()
     .then(() => history.push(DEFAULT_ROUTE))
 }

@@ -6,12 +6,11 @@ const TransactionConfirmed = (props, context) => {
 
   return (
     <div className="modal-container__content">
-      <img src="images/check-icon.svg" />
       <div className="modal-container__title">
-        { `${t('confirmed')}!` }
+        { `${t('uiWelcome')}` }
       </div>
       <div className="modal-container__description">
-        { t('initialTransactionConfirmed') }
+        { t('uiWelcomeMessage') }
       </div>
     </div>
   )

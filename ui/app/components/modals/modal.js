@@ -19,8 +19,30 @@ const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
-const ConfirmResetAccount = require('./notification-modals/confirm-reset-account')
+const ConfirmResetAccount = require('./confirm-reset-account')
 const TransactionConfirmed = require('./transaction-confirmed')
+const WelcomeBeta = require('./welcome-beta')
+const Notification = require('./notification')
+
+const modalContainerBaseStyle = {
+  transform: 'translate3d(-50%, 0, 0px)',
+  border: '1px solid #CCCFD1',
+  borderRadius: '8px',
+  backgroundColor: '#FFFFFF',
+  boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
+}
+
+const modalContainerLaptopStyle = {
+  ...modalContainerBaseStyle,
+  width: '344px',
+  top: '15%',
+}
+
+const modalContainerMobileStyle = {
+  ...modalContainerBaseStyle,
+  width: '309px',
+  top: '12.5%',
+}
 
 const accountModalStyle = {
   mobileModalStyle: {
@@ -174,18 +196,18 @@ const MODALS = {
 
   BETA_UI_NOTIFICATION_MODAL: {
     contents: [
-      h(NotifcationModal, {
-        header: 'uiWelcome',
-        message: 'uiWelcomeMessage',
-      }),
+      h(Notification, [
+        h(WelcomeBeta),
+      ]),
     ],
     mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+      ...modalContainerMobileStyle,
     },
     laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 
@@ -209,12 +231,13 @@ const MODALS = {
   CONFIRM_RESET_ACCOUNT: {
     contents: h(ConfirmResetAccount),
     mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+      ...modalContainerMobileStyle,
     },
     laptopModalStyle: {
-      width: '473px',
-      top: 'calc(33% + 45px)',
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 
@@ -269,31 +292,18 @@ const MODALS = {
   TRANSACTION_CONFIRMED: {
     disableBackdropClick: true,
     contents: [
-      h(TransactionConfirmed, {}, []),
+      h(Notification, [
+        h(TransactionConfirmed),
+      ]),
     ],
     mobileModalStyle: {
-      width: '100%',
-      height: '100%',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
-      top: '0',
-      display: 'flex',
+      ...modalContainerMobileStyle,
     },
     laptopModalStyle: {
-      width: '344px',
-      transform: 'translate3d(-50%, 0, 0px)',
-      top: '15%',
-      border: '1px solid #CCCFD1',
-      borderRadius: '8px',
-      backgroundColor: '#FFFFFF',
-      boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
+      ...modalContainerLaptopStyle,
     },
     contentStyle: {
       borderRadius: '8px',
-      height: '100%',
     },
   },
 
