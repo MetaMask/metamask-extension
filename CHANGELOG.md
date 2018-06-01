@@ -2,6 +2,13 @@
 
 ## Current Master
 
+## 4.7.1 Fri Jun 01 2018
+
+- Fix bug where errors were not returned to Dapps.
+
+## 4.7.0 Wed May 30 2018
+
+- Fix Brave support
 - Adds error messages when passwords don't match in onboarding flow.
 - Adds modal notification if a retry in the process of being confirmed is dropped.
 - New unlock screen design.
