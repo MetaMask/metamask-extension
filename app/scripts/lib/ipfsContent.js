@@ -14,13 +14,13 @@ module.exports = function (provider) {
 
             resolver.resolve(name, provider).then(ipfsHash => {
                 clearTimeout(clearTime)
-                let url = 'https://gateway.ipfs.io/ipfs/' + ipfsHash
+                let url = 'https://ipfs.infura.io/ipfs/' + ipfsHash
                 return fetch(url, { method: 'HEAD' }).then(response => response.status).then(statusCode => {
                     if (statusCode !== 200) return extension.tabs.update(tab.id, { url: '404.html' })
                     extension.tabs.update(tab.id, { url: url })
                 })
                 .catch(err => {
-                    url = 'https://gateway.ipfs.io/ipfs/' + ipfsHash
+                    url = 'https://ipfs.infura.io/ipfs/' + ipfsHash
                     extension.tabs.update(tab.id, {url: url})
                     return err
                 })
