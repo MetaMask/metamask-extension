@@ -253,7 +253,7 @@ describe('MetaMaskController', function () {
     let defaultMetaMaskCurrency
 
     beforeEach(function () {
-      defaultMetaMaskCurrency = metamaskController.currencyController.getCurrentCurrency()
+      defaultMetaMaskCurrency = metamaskController.currencyRateController.state.currentCurrency
     })
 
     it('defaults to usd', function () {
@@ -262,7 +262,7 @@ describe('MetaMaskController', function () {
 
     it('sets currency to JPY', function () {
       metamaskController.setCurrentCurrency('JPY', noop)
-      assert.equal(metamaskController.currencyController.getCurrentCurrency(), 'JPY')
+      assert.equal(metamaskController.currencyRateController.activeCurrency, 'JPY')
     })
   })
 
