@@ -25,7 +25,7 @@ const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
 const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
-const AddressBookController = require('./controllers/address-book')
+const AddressBookController = require('@metamask/gaba/AddressBookController').default
 const NetworkStatusController = require('@metamask/gaba/NetworkStatusController').default
 const BlacklistController = require('./controllers/blacklist')
 const RecentBlocksController = require('./controllers/recent-blocks')
@@ -102,8 +102,8 @@ module.exports = class MetamaskController extends EventEmitter {
     this.currencyController.updateConversionRate()
     this.currencyController.scheduleConversionInterval()
 
-    // infura controller
-    this.networkStatusController = new NetworkStatusController()
+    // network status controller
+    this.networkStatusController = new NetworkStatusController(initState.NetworkStatusController)
 
     this.blacklistController = new BlacklistController()
     this.blacklistController.scheduleUpdates()
@@ -150,10 +150,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // address book controller
-    this.addressBookController = new AddressBookController({
-      initState: initState.AddressBookController,
-      preferencesStore: this.preferencesController.store,
-    })
+    this.addressBookController = new AddressBookController(initState.AddressBookController)
 
     // tx mgmt
     this.txController = new TransactionController({
@@ -204,12 +201,12 @@ module.exports = class MetamaskController extends EventEmitter {
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
-      AddressBookController: this.addressBookController.store,
+      AddressBookController: this.addressBookController,
       CurrencyController: this.currencyController.store,
       NoticeController: this.noticeController.store,
       ShapeShiftController: this.shapeshiftController.store,
       NetworkController: this.networkController.store,
-      InfuraController: this.networkStatusController,
+      NetworkStatusController: this.networkStatusController,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -224,11 +221,11 @@ module.exports = class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
       RecentBlocksController: this.recentBlocksController.store,
-      AddressBookController: this.addressBookController.store,
+      AddressBookController: this.addressBookController,
       CurrencyController: this.currencyController.store,
       NoticeController: this.noticeController.memStore,
       ShapeshiftController: this.shapeshiftController.store,
-      InfuraController: this.networkStatusController,
+      NetworkStatusController: this.networkStatusController,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -376,7 +373,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
 
       // AddressController
-      setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
+      setAddressBook: addressBookController.set.bind(addressBookController),
 
       // KeyringController
       setLocked: nodeify(keyringController.setLocked, keyringController),
