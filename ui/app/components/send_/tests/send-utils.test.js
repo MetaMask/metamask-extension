@@ -106,11 +106,23 @@ describe('send utils', () => {
 
   describe('generateTokenTransferData()', () => {
     it('should return undefined if not passed a selected token', () => {
-      assert.equal(generateTokenTransferData('mockAddress', false), undefined)
+      assert.equal(generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', selectedToken: false}), undefined)
+    })
+
+    it('should call abi.rawEncode with the correct params', () => {
+      stubs.rawEncode.resetHistory()
+      generateTokenTransferData({ toAddress: 'mockAddress', amount: 'ab', selectedToken: true})
+      assert.deepEqual(
+        stubs.rawEncode.getCall(0).args,
+        [['address', 'uint256'], ['mockAddress', '0xab']]
+      )
     })
 
     it('should return encoded token transfer data', () => {
-      assert.equal(generateTokenTransferData('mockAddress', true), '104c')
+      assert.equal(
+        generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', selectedToken: true}),
+        '0xa9059cbb104c'
+      )
     })
   })
 
@@ -276,22 +288,17 @@ describe('send utils', () => {
       assert.equal(result, 'mockToString:16')
     })
 
-    it('should call ethQuery.estimateGas with a value of 0x0 if the passed selectedToken has a symbol', async () => {
-      const result = await estimateGas(Object.assign({ selectedToken: { symbol: true } }, baseMockParams))
+    it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a selectedToken', async () => {
+      const result = await estimateGas(Object.assign({ data: 'mockData', selectedToken: { address: 'mockAddress' } }, baseMockParams))
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
-        Object.assign({ gasPrice: undefined, value: '0x0' }, baseExpectedCall)
-      )
-      assert.equal(result, 'mockToString:16')
-    })
-
-    it('should call ethQuery.estimateGas with data if data is passed', async () => {
-      const result = await estimateGas(Object.assign({ data: 'mockData' }, baseMockParams))
-      assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
-      assert.deepEqual(
-        baseMockParams.estimateGasMethod.getCall(0).args[0],
-        Object.assign({ gasPrice: undefined, value: undefined, data: 'mockData' }, baseExpectedCall)
+        Object.assign({}, baseExpectedCall, {
+          gasPrice: undefined,
+          value: '0x0',
+          data: '0xa9059cbb104c',
+          to: 'mockAddress',
+        })
       )
       assert.equal(result, 'mockToString:16')
     })
@@ -300,6 +307,12 @@ describe('send utils', () => {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
       const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123' }))
       assert.equal(result, SIMPLE_GAS_COST)
+    })
+
+    it(`should not return ${SIMPLE_GAS_COST} if passed a selectedToken`, async () => {
+      assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
+      const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123', selectedToken: { address: '' } }))
+      assert.notEqual(result, SIMPLE_GAS_COST)
     })
 
     it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async () => {

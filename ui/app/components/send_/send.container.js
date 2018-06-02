@@ -31,7 +31,6 @@ import {
 } from '../../ducks/send.duck'
 import {
   calcGasTotal,
-  generateTokenTransferData,
 } from './send.utils.js'
 
 module.exports = compose(
@@ -40,15 +39,11 @@ module.exports = compose(
 )(SendEther)
 
 function mapStateToProps (state) {
-  const selectedAddress = getSelectedAddress(state)
-  const selectedToken = getSelectedToken(state)
-
   return {
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
     blockGasLimit: getBlockGasLimit(state),
     conversionRate: getConversionRate(state),
-    data: generateTokenTransferData(selectedAddress, selectedToken),
     editingTransactionId: getSendEditingTransactionId(state),
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
@@ -69,7 +64,6 @@ function mapDispatchToProps (dispatch) {
   return {
     updateAndSetGasTotal: ({
       blockGasLimit,
-      data,
       editingTransactionId,
       gasLimit,
       gasPrice,
@@ -80,7 +74,7 @@ function mapDispatchToProps (dispatch) {
       value,
     }) => {
       !editingTransactionId
-        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, data, blockGasLimit, to, value }))
+        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, blockGasLimit, to, value }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {

@@ -732,7 +732,6 @@ function setGasTotal (gasTotal) {
 
 function updateGasData ({
   blockGasLimit,
-  data,
   recentBlocks,
   selectedAddress,
   selectedToken,
@@ -746,7 +745,6 @@ function updateGasData ({
       estimateGas({
         estimateGasMethod: background.estimateGas,
         blockGasLimit,
-        data,
         selectedAddress,
         selectedToken,
         to,

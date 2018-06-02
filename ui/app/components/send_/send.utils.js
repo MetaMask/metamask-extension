@@ -14,6 +14,7 @@ const {
   NEGATIVE_ETH_ERROR,
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
+  TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } = require('./send.constants')
 const abi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
@@ -165,26 +166,23 @@ function doesAmountErrorRequireUpdate ({
   return amountErrorRequiresUpdate
 }
 
-async function estimateGas ({ selectedAddress, selectedToken, data, blockGasLimit, to, value, gasPrice, estimateGasMethod }) {
-  const { symbol } = selectedToken || {}
+async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to, value, gasPrice, estimateGasMethod }) {
   const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
 
-  if (symbol) {
-    Object.assign(paramsForGasEstimate, { value: '0x0' })
+  if (selectedToken) {
+    paramsForGasEstimate.value = '0x0'
+    paramsForGasEstimate.data = generateTokenTransferData({ toAddress: to, amount: value, selectedToken })
   }
 
-  if (data) {
-    Object.assign(paramsForGasEstimate, { data })
-  }
   // if recipient has no code, gas is 21k max:
   const hasRecipient = Boolean(to)
   let code
   if (hasRecipient) code = await global.eth.getCode(to)
-  if (hasRecipient && (!code || code === '0x')) {
+  if (hasRecipient && (!code || code === '0x') && !selectedToken) {
     return SIMPLE_GAS_COST
   }
 
-  paramsForGasEstimate.to = to
+  paramsForGasEstimate.to = selectedToken ? selectedToken.address : to
 
   // if not, fall back to block gasLimit
   paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
@@ -212,11 +210,10 @@ async function estimateGas ({ selectedAddress, selectedToken, data, blockGasLimi
   })
 }
 
-function generateTokenTransferData (selectedAddress, selectedToken) {
+function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selectedToken }) {
   if (!selectedToken) return
-  console.log(`abi.rawEncode`, abi.rawEncode)
-  return Array.prototype.map.call(
-    abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
+  return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
+    abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
     x => ('00' + x.toString(16)).slice(-2)
   ).join('')
 }

@@ -34,7 +34,6 @@ describe('Send Component', function () {
       amountConversionRate={'mockAmountConversionRate'}
       blockGasLimit={'mockBlockGasLimit'}
       conversionRate={10}
-      data={'mockData'}
       editingTransactionId={'mockEditingTransactionId'}
       from={ { address: 'mockAddress', balance: 'mockBalance' } }
       gasLimit={'mockGasLimit'}
@@ -210,7 +209,6 @@ describe('Send Component', function () {
         propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0],
         {
           blockGasLimit: 'mockBlockGasLimit',
-          data: 'mockData',
           editingTransactionId: 'mockEditingTransactionId',
           gasLimit: 'mockGasLimit',
           gasPrice: 'mockGasPrice',
