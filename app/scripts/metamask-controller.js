@@ -139,6 +139,8 @@ module.exports = class MetamaskController extends EventEmitter {
         const address = addresses[0]
         this.preferencesController.setSelectedAddress(address)
       }
+      // ensure preferences + identities controller know about all addresses
+      this.preferencesController.addAddresses(addresses)
       this.accountTracker.syncWithAddresses(addresses)
     })
 
