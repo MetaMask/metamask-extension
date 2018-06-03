@@ -63,6 +63,13 @@ class PreferencesController {
     this.store.updateState({ currentLocale: key })
   }
 
+  /**
+   * Updates identities to only include specified addresses. Removes identities
+   * not included in addresses array
+   *
+   * @param {string[]} addresses An array of hex addresses
+   *
+   */
   setAddresses (addresses) {
     const oldIdentities = this.store.getState().identities
     const identities = addresses.reduce((ids, address, index) => {
@@ -70,6 +77,24 @@ class PreferencesController {
       ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
       return ids
     }, {})
+    this.store.updateState({ identities })
+  }
+
+  /**
+   * Adds addresses to the identities object without removing identities
+   *
+   * @param {string[]} addresses An array of hex addresses
+   *
+   */
+  addAddresses (addresses) {
+    const identities = this.store.getState().identities
+    addresses.forEach((address) => {
+      // skip if already exists
+      if (identities[address]) return
+      // add missing identity
+      const identityCount = Object.keys(identities).length
+      identities[address] = { name: `Account ${identityCount + 1}`, address }
+    })
     this.store.updateState({ identities })
   }
 
@@ -111,7 +136,7 @@ class PreferencesController {
   /**
    * Adds a new token to the token array, or updates the token if passed an address that already exists.
    * Modifies the existing tokens array from the store. All objects in the tokens array array AddedToken objects.
-   * @see AddedToken {@link AddedToken} 
+   * @see AddedToken {@link AddedToken}
    *
    * @param {string} rawAddress Hex address of the token contract. May or may not be a checksum address.
    * @param {string} symbol The symbol of the token
@@ -181,6 +206,16 @@ class PreferencesController {
     return Promise.resolve(label)
   }
 
+  /*
+   * Clears the saved account nicknames.
+   * @return {Promise<>}
+   */
+  clearAccountLabels() {
+    const state = this.store.getState()
+    state.identities = {}
+    this.store.putState(state)
+  }
+
   /**
    * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
    *
@@ -197,7 +232,7 @@ class PreferencesController {
   }
 
   /**
-   * Setter for the `currentAccountTab` property 
+   * Setter for the `currentAccountTab` property
    *
    * @param {string} currentAccountTab Specifies the new tab to be marked as current
    * @returns {Promise<void>} Promise resolves with undefined
@@ -215,7 +250,7 @@ class PreferencesController {
    * The returned list will have a max length of 2. If the _url currently exists it the list, it will be moved to the
    * end of the list. The current list is modified and returned as a promise.
    *
-   * @param {string} _url The rpc url to add to the frequentRpcList. 
+   * @param {string} _url The rpc url to add to the frequentRpcList.
    * @returns {Promise<array>} The updated frequentRpcList.
    *
    */

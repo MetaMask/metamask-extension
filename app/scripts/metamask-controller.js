@@ -139,6 +139,8 @@ module.exports = class MetamaskController extends EventEmitter {
         const address = addresses[0]
         this.preferencesController.setSelectedAddress(address)
       }
+      // ensure preferences + identities controller know about all addresses
+      this.preferencesController.addAddresses(addresses)
       this.accountTracker.syncWithAddresses(addresses)
     })
 
@@ -458,6 +460,7 @@ module.exports = class MetamaskController extends EventEmitter {
     try {
       const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
       const accounts = await this.keyringController.getAccounts()
+      this.preferencesController.clearAccountLabels()
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
       release()
