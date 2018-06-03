@@ -22,7 +22,9 @@ class CreateAccountPage extends Component {
           }),
         }),
         onClick: () => history.push(NEW_ACCOUNT_ROUTE),
-      }, 'Create'),
+      }, [
+        this.context.t('create')
+      ]),
 
       h('div.new-account__tabs__tab', {
         className: classnames('new-account__tabs__tab', {
@@ -31,14 +33,16 @@ class CreateAccountPage extends Component {
           }),
         }),
         onClick: () => history.push(IMPORT_ACCOUNT_ROUTE),
-      }, 'Import'),
+      }, [
+        this.context.t('import')
+      ]),
     ])
   }
 
   render () {
     return h('div.new-account', {}, [
       h('div.new-account__header', [
-        h('div.new-account__title', 'New Account'),
+        h('div.new-account__title', this.context.t('newAccount') ),
         this.renderTabs(),
       ]),
       h('div.new-account__form', [
@@ -62,6 +66,11 @@ class CreateAccountPage extends Component {
 CreateAccountPage.propTypes = {
   location: PropTypes.object,
   history: PropTypes.object,
+  t: PropTypes.func,
+}
+
+CreateAccountPage.contextTypes = {
+  t: PropTypes.func,
 }
 
 const mapStateToProps = state => ({
