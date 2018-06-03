@@ -242,7 +242,7 @@ ShapeshiftForm.prototype.render = function () {
 
       ]),
 
-      !depositAddress && h('button.btn-primary--lg.shapeshift-form__shapeshift-buy-btn', {
+      !depositAddress && h('button.btn-primary.btn--large.shapeshift-form__shapeshift-buy-btn', {
         className: btnClass,
         disabled: !token,
         onClick: () => this.onBuyWithShapeShift(),

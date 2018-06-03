@@ -503,17 +503,23 @@ function requestRevealSeedWords (password) {
 }
 
 function resetAccount () {
-    return (dispatch) => {
-        background.resetAccount((err, account) => {
-            dispatch(actions.hideLoadingIndication())
-            if (err) {
-                dispatch(actions.displayWarning(err.message))
-            }
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
 
-            log.info('Transaction history reset for ' + account)
-            dispatch(actions.showAccountsPage())
-        })
-    }
+    return new Promise((resolve, reject) => {
+      background.resetAccount((err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.info('Transaction history reset for ' + account)
+        dispatch(actions.showAccountsPage())
+        resolve(account)
+      })
+    })
+  }
 }
 
 function addNewKeyring (type, opts) {

@@ -163,7 +163,7 @@ async function captureAllScreens() {
   await delay(300)
   await captureLanguageScreenShots('metamask account detail export private key screen - password entered')
 
-  await driver.findElement(By.css('.btn-primary--lg.export-private-key__button')).click()
+  await driver.findElement(By.css('.btn-primary.btn--large.export-private-key__button')).click()
   await delay(300)
   await captureLanguageScreenShots('metamask account detail export private key screen - reveal key')
 

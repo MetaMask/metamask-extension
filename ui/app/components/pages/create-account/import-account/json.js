@@ -51,7 +51,7 @@ class JsonImportSubview extends Component {
 
         h('div.new-account-create-form__buttons', {}, [
 
-          h('button.btn-secondary.new-account-create-form__button', {
+          h('button.btn-default.new-account-create-form__button', {
             onClick: () => this.props.history.push(DEFAULT_ROUTE),
           }, [
             this.context.t('cancel'),

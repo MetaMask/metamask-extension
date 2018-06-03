@@ -61,7 +61,7 @@ PrivateKeyImportView.prototype.render = function () {
 
       h('div.new-account-import-form__buttons', {}, [
 
-        h('button.btn-secondary--lg.new-account-create-form__button', {
+        h('button.btn-default.btn--large.new-account-create-form__button', {
           onClick: () => {
             displayWarning(null)
             this.props.history.push(DEFAULT_ROUTE)
@@ -70,7 +70,7 @@ PrivateKeyImportView.prototype.render = function () {
           this.context.t('cancel'),
         ]),
 
-        h('button.btn-primary--lg.new-account-create-form__button', {
+        h('button.btn-primary.btn--large.new-account-create-form__button', {
           onClick: () => this.createNewKeychain(),
         }, [
           this.context.t('import'),
