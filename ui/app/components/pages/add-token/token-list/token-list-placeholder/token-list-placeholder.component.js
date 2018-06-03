@@ -15,7 +15,7 @@ export default class TokenListPlaceholder extends Component {
         </div>
         <a
           className="token-list-placeholder__link"
-          href="http://metamask.helpscoutdocs.com/article/16-managing-erc20-tokens"
+          href="https://consensys.zendesk.com/hc/en-us/articles/360004135092"
           target="_blank"
           rel="noopener noreferrer"
         >
