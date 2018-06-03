@@ -67,7 +67,7 @@ class PreferencesController {
    * Updates identities to only include specified addresses. Removes identities
    * not included in addresses array
    *
-   * @param {arrays} addresses An array of hex addresses
+   * @param {string[]} addresses An array of hex addresses
    *
    */
   setAddresses (addresses) {
@@ -83,7 +83,7 @@ class PreferencesController {
   /**
    * Adds addresses to the identities object without removing identities
    *
-   * @param {arrays} addresses An array of hex addresses
+   * @param {string[]} addresses An array of hex addresses
    *
    */
   addAddresses (addresses) {
