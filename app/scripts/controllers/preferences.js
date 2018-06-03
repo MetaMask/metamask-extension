@@ -206,6 +206,16 @@ class PreferencesController {
     return Promise.resolve(label)
   }
 
+  /*
+   * Clears the saved account nicknames.
+   * @return {Promise<>}
+   */
+  clearAccountLabels() {
+    const state = this.store.getState()
+    state.identities = {}
+    this.store.putState(state)
+  }
+
   /**
    * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
    *

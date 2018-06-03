@@ -460,6 +460,7 @@ module.exports = class MetamaskController extends EventEmitter {
     try {
       const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
       const accounts = await this.keyringController.getAccounts()
+      this.preferencesController.clearAccountLabels()
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
       release()
