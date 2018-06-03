@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 4.7.2 Sun Jun 03 2018
+
+- Fix bug preventing users from logging in. Internally accounts and identities were out of sync.
+
 ## 4.7.1 Fri Jun 01 2018
 
 - Fix bug where errors were not returned to Dapps.
