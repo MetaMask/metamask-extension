@@ -126,11 +126,6 @@ class PreferencesController {
     // Identities are no longer present.
     if (Object.keys(newlyLost).length > 0) {
 
-      // timeout to prevent blocking the thread:
-      setTimeout(() => {
-        alert('Error 4486: MetaMask has encountered a very strange error. Please open a support issue immediately at support@metamask.io.')
-      }, 10)
-
       // Notify our servers:
       const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
       const firstTimeInfo = this.getFirstTimeInfo ? this.getFirstTimeInfo() : {}
