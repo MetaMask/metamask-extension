@@ -176,10 +176,11 @@ async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to,
 
   // if recipient has no code, gas is 21k max:
   const hasRecipient = Boolean(to)
-  let code
-  if (hasRecipient) code = await global.eth.getCode(to)
-  if (hasRecipient && (!code || code === '0x') && !selectedToken) {
-    return SIMPLE_GAS_COST
+  if (hasRecipient && !selectedToken) {
+    const code = await global.eth.getCode(to)
+    if (!code || code === '0x') {
+      return SIMPLE_GAS_COST
+    }
   }
 
   paramsForGasEstimate.to = selectedToken ? selectedToken.address : to
