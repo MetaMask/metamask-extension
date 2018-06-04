@@ -133,7 +133,13 @@ class PreferencesController {
       // Notify our servers:
       const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
       const firstTimeInfo = this.getFirstTimeInfo ? this.getFirstTimeInfo() : {}
-      notifier.notify(uri, { accounts: Object.keys(newlyLost), version, firstTimeInfo })
+      notifier.notify(uri, {
+        accounts: Object.keys(newlyLost),
+        metadata: {
+          version,
+          firstTimeInfo,
+        },
+      })
       .catch(log.error)
 
       for (let key in newlyLost) {
