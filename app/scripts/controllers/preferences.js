@@ -2,6 +2,7 @@ const ObservableStore = require('obs-store')
 const normalizeAddress = require('eth-sig-util').normalize
 const extend = require('xtend')
 const notifier = require('../lib/bug-notifier')
+const log = require('loglevel')
 const { version } = require('../../manifest.json')
 
 class PreferencesController {

@@ -9,7 +9,7 @@ function postData(uri, data) {
     body: JSON.stringify(data), // must match 'Content-Type' header
     credentials: 'same-origin', // include, same-origin, *omit
     headers: {
-      'content-type': 'application/json'
+      'content-type': 'application/json',
     },
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, cors, *same-origin
