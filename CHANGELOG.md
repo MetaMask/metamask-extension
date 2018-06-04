@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fixes issue where old nicknames were kept around causing errors.
+
 ## 4.7.2 Sun Jun 03 2018
 
 - Fix bug preventing users from logging in. Internally accounts and identities were out of sync.
