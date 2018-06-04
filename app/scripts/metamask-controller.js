@@ -356,7 +356,7 @@ module.exports = class MetamaskController extends EventEmitter {
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // vault management
-      submitPassword: nodeify(keyringController.submitPassword, keyringController),
+      submitPassword: nodeify(this.submitPassword, this),
 
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
@@ -490,6 +490,38 @@ module.exports = class MetamaskController extends EventEmitter {
     const address = Object.keys(identities)[0]
     this.preferencesController.setSelectedAddress(address)
   }
+
+  async submitPassword (password) {
+    const result = await this.keyringController.submitPassword(password)
+    await this.verifyAllAccountsHaveKeys()
+    return result
+  }
+
+  async verifyAllAccountsAreValid () {
+    const { identities } = this.preferencesController.store.getState()
+    const addresses = Object.keys(identities)
+    let orphanedAccounts = await Promise.all(addresses.map(async (address) => {
+      try {
+        // this will throw if the keyring is missing
+        const keyring = await this.keyringController.getKeyringForAccount(address)
+      } catch (err) {
+        // this will report the error to sentry
+        if (err.message.inludes('No keyring found for the requested account.')) {
+          // we have found an orphaned account
+          return address
+        } else {
+          // an unexpected error
+          log.error(err)
+        }
+      }
+    }))
+    // remove undefined values
+    orphanedAccounts = orphanedAccounts.filter(Boolean)
+    if (!orphanedAccounts.length) return
+    // log orphanedAccounts
+    log.error(`Accounts failed verification: ${orphanedAccounts.map(address => '\n' + address)}`)
+  }
+
 
   //
   // Account Management
