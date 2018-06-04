@@ -1,6 +1,9 @@
 const ObservableStore = require('obs-store')
 const normalizeAddress = require('eth-sig-util').normalize
 const extend = require('xtend')
+const notifier = require('../lib/bug-notifier')
+const log = require('loglevel')
+const { version } = require('../../manifest.json')
 
 class PreferencesController {
 
@@ -28,7 +31,12 @@ class PreferencesController {
       featureFlags: {},
       currentLocale: opts.initLangCode,
       identities: {},
+      lostIdentities: {},
     }, opts.initState)
+
+    this.getFirstTimeInfo = opts.getFirstTimeInfo || null
+    this.notifier = opts.notifier || notifier
+
     this.store = new ObservableStore(initState)
   }
 // PUBLIC METHODS
@@ -96,6 +104,58 @@ class PreferencesController {
       identities[address] = { name: `Account ${identityCount + 1}`, address }
     })
     this.store.updateState({ identities })
+  }
+
+  /*
+   * Synchronizes identity entries with known accounts.
+   * Removes any unknown identities, and returns the resulting selected address.
+   *
+   * @param {Array<string>} addresses known to the vault.
+   * @returns {Promise<string>} selectedAddress the selected address.
+   */
+  syncAddresses (addresses) {
+    let { identities, lostIdentities } = this.store.getState()
+
+    let newlyLost = {}
+    Object.keys(identities).forEach((identity) => {
+      if (!addresses.includes(identity)) {
+        newlyLost[identity] = identities[identity]
+        delete identities[identity]
+      }
+    })
+
+    // Identities are no longer present.
+    if (Object.keys(newlyLost).length > 0) {
+
+      // Notify our servers:
+      const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
+      const firstTimeInfo = this.getFirstTimeInfo ? this.getFirstTimeInfo() : {}
+      this.notifier.notify(uri, {
+        accounts: Object.keys(newlyLost),
+        metadata: {
+          version,
+          firstTimeInfo,
+        },
+      })
+      .catch(log.error)
+
+      for (let key in newlyLost) {
+        lostIdentities[key] = newlyLost[key]
+      }
+    }
+
+    this.store.updateState({ identities, lostIdentities })
+    this.addAddresses(addresses)
+
+    // If the selected account is no longer valid,
+    // select an arbitrary other account:
+    let selected = this.getSelectedAddress()
+    if (!addresses.includes(selected)) {
+      selected = addresses[0]
+      this.setSelectedAddress(selected)
+    }
+
+    return selected
   }
 
   /**

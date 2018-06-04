@@ -116,6 +116,10 @@
   &__name {
     color: $white;
     font-size: 18px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
   }
 
   &__balance {

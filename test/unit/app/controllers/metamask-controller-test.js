@@ -45,7 +45,7 @@ describe('MetaMaskController', function () {
       encryptor: {
         encrypt: function (password, object) {
           this.object = object
-          return Promise.resolve()
+          return Promise.resolve('mock-encrypted')
         },
         decrypt: function () {
           return Promise.resolve(this.object)
@@ -60,6 +60,36 @@ describe('MetaMaskController', function () {
   afterEach(function () {
     nock.cleanAll()
     sandbox.restore()
+  })
+
+  describe('submitPassword', function () {
+    const password = 'password'
+
+    beforeEach(async function () {
+      await metamaskController.createNewVaultAndKeychain(password)
+    })
+
+    it('removes any identities that do not correspond to known accounts.', async function () {
+      const fakeAddress = '0xbad0'
+      metamaskController.preferencesController.addAddresses([fakeAddress])
+      metamaskController.preferencesController.notifier = {
+        notify: async () => {
+          return true
+        },
+      }
+      await metamaskController.submitPassword(password)
+
+      const identities = Object.keys(metamaskController.preferencesController.store.getState().identities)
+      const addresses = await metamaskController.keyringController.getAccounts()
+
+      identities.forEach((identity) => {
+        assert.ok(addresses.includes(identity), `addresses should include all IDs: ${identity}`)
+      })
+
+      addresses.forEach((address) => {
+        assert.ok(identities.includes(address), `identities should include all Addresses: ${address}`)
+      })
+    })
   })
 
   describe('#getGasPrice', function () {
@@ -479,7 +509,7 @@ describe('MetaMaskController', function () {
     it('errors when signing a message', async function () {
       await metamaskController.signPersonalMessage(personalMessages[0].msgParams)
       assert.equal(metamaskPersonalMsgs[msgId].status, 'signed')
-      assert.equal(metamaskPersonalMsgs[msgId].rawSig, '0x6a1b65e2b8ed53cf398a769fad24738f9fbe29841fe6854e226953542c4b6a173473cb152b6b1ae5f06d601d45dd699a129b0a8ca84e78b423031db5baa734741b')      
+      assert.equal(metamaskPersonalMsgs[msgId].rawSig, '0x6a1b65e2b8ed53cf398a769fad24738f9fbe29841fe6854e226953542c4b6a173473cb152b6b1ae5f06d601d45dd699a129b0a8ca84e78b423031db5baa734741b')
     })
   })
 
@@ -513,7 +543,7 @@ describe('MetaMaskController', function () {
     })
 
     it('sets up controller dnode api for trusted communication', function (done) {
-      streamTest = createThoughStream((chunk, enc, cb) => { 
+      streamTest = createThoughStream((chunk, enc, cb) => {
         assert.equal(chunk.name, 'controller')
         cb()
         done()

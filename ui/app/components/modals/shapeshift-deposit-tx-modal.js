@@ -8,7 +8,7 @@ const AccountModalContainer = require('./account-modal-container')
 
 function mapStateToProps (state) {
   return {
-    Qr: state.appState.modal.modalState.Qr,
+    Qr: state.appState.modal.modalState.props.Qr,
   }
 }
 
