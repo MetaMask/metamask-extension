@@ -24,7 +24,6 @@ const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
-const BlacklistController = require('./controllers/blacklist')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
@@ -48,6 +47,7 @@ const log = require('loglevel')
 const AddressBookController = require('@metamask/gaba/AddressBookController').default
 const CurrencyRateController = require('@metamask/gaba/CurrencyRateController').default
 const NetworkStatusController = require('@metamask/gaba/NetworkStatusController').default
+const PhishingController = require('@metamask/gaba/PhishingController').default
 const TokenRatesController = require('@metamask/gaba/TokenRatesController').default
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -102,8 +102,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // network status controller
     this.networkStatusController = new NetworkStatusController(initState.NetworkStatusController)
 
-    this.blacklistController = new BlacklistController()
-    this.blacklistController.scheduleUpdates()
+    this.phishingController = new PhishingController()
 
     // rpc provider
     this.provider = this.initializeProvider()
@@ -996,7 +995,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
-    if (this.blacklistController.checkForPhishing(originDomain)) {
+    if (this.phishingController.test(originDomain)) {
       log.debug('MetaMask - sending phishing warning for', originDomain)
       this.sendPhishingWarning(connectionStream, originDomain)
       return

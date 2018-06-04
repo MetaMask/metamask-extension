@@ -521,7 +521,7 @@ describe('MetaMaskController', function () {
     })
 
     it('sets up phishing stream for untrusted communication ', async function () {
-      await metamaskController.blacklistController.updatePhishingList()
+      await metamaskController.phishingController.updatePhishingLists()
 
       streamTest = createThoughStream((chunk, enc, cb) => {
         assert.equal(chunk.name, 'phishing')
