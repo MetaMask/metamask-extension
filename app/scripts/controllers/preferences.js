@@ -146,6 +146,8 @@ class PreferencesController {
     this.store.updateState({ identities, lostIdentities })
     this.addAddresses(addresses)
 
+    // If the selected account is no longer valid,
+    // select an arbitrary other account:
     let selected = this.getSelectedAddress()
     if (!addresses.includes(selected)) {
       selected = addresses[0]
