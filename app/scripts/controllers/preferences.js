@@ -111,15 +111,17 @@ class PreferencesController {
    */
   syncAddresses (addresses) {
     let { identities, lostIdentities } = this.store.getState()
+
+    let newlyLost = {}
     Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
         delete identities[identity]
-        lostIdentities[identity] = identities[identity]
+        newlyLost[identity] = identities[identity]
       }
     })
 
     // Identities are no longer present.
-    if (Object.keys(lostIdentities).length > 0) {
+    if (Object.keys(newlyLost).length > 0) {
 
       // timeout to prevent blocking the thread:
       setTimeout(() => {
@@ -130,6 +132,10 @@ class PreferencesController {
       const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
       notifier.notify(uri, { accounts: Object.keys(lostIdentities) })
       .catch(log.error)
+
+      for (let key in newlyLost) {
+        lostIdentities[key] = newlyLost[key]
+      }
     }
 
     this.store.updateState({ identities, lostIdentities })
