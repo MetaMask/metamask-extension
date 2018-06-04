@@ -1,6 +1,8 @@
 const ObservableStore = require('obs-store')
 const normalizeAddress = require('eth-sig-util').normalize
 const extend = require('xtend')
+const BugNotifier = require('../lib/bug-notifier')
+const notifier = new BugNotifier()
 
 class PreferencesController {
 
@@ -30,6 +32,7 @@ class PreferencesController {
       identities: {},
       lostIdentities: {},
     }, opts.initState)
+
     this.store = new ObservableStore(initState)
   }
 // PUBLIC METHODS
@@ -108,16 +111,26 @@ class PreferencesController {
    */
   syncAddresses (addresses) {
     let { identities, lostIdentities } = this.store.getState()
-
     Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
         delete identities[identity]
         lostIdentities[identity] = identities[identity]
-
-        // TODO: Report the bug to Sentry including the now-lost identity.
-        alert('Error 4486: MetaMask has encountered a very strange error. Please open a support issue immediately at support@metamask.io.')
       }
     })
+
+    // Identities are no longer present.
+    if (Object.keys(lostIdentities).length > 0) {
+
+      // timeout to prevent blocking the thread:
+      setTimeout(() => {
+        alert('Error 4486: MetaMask has encountered a very strange error. Please open a support issue immediately at support@metamask.io.')
+      }, 10)
+
+      // Notify our servers:
+      const uri =
+      notifier.notify(uri, { accounts: Object.keys(lostIdentities) })
+      .catch(log.error)
+    }
 
     this.store.updateState({ identities, lostIdentities })
     this.addAddresses(addresses)
