@@ -127,7 +127,7 @@ class PreferencesController {
       }, 10)
 
       // Notify our servers:
-      const uri =
+      const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
       notifier.notify(uri, { accounts: Object.keys(lostIdentities) })
       .catch(log.error)
     }
