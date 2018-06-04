@@ -28,6 +28,7 @@ class PreferencesController {
       featureFlags: {},
       currentLocale: opts.initLangCode,
       identities: {},
+      lostIdentities: {},
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -106,18 +107,19 @@ class PreferencesController {
    * @returns {Promise<string>} selectedAddress the selected address.
    */
   syncAddresses (addresses) {
-    const identities = this.store.getState().identities
+    let { identities, lostIdentities } = this.store.getState()
 
     Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
         delete identities[identity]
+        lostIdentities[identity] = identities[identity]
 
         // TODO: Report the bug to Sentry including the now-lost identity.
         alert('Error 4486: MetaMask has encountered a very strange error. Please open a support issue immediately at support@metamask.io.')
       }
     })
 
-    this.store.updateState({ identities })
+    this.store.updateState({ identities, lostIdentities })
     this.addAddresses(addresses)
 
     let selected = this.getSelectedAddress()
