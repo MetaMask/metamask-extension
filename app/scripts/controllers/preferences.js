@@ -113,7 +113,7 @@ class PreferencesController {
         delete identities[identity]
 
         // TODO: Report the bug to Sentry including the now-lost identity.
-        // TODO: Inform the user of the lost identity.
+        alert('Error 4486: MetaMask has encountered a very strange error. Please open a support issue immediately at support@metamask.io.')
       }
     })
 
