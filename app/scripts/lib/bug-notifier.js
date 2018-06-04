@@ -16,5 +16,7 @@ function postData(uri, data) {
   })
 }
 
-module.exports = BugNotifier
+const notifier = new BugNotifier()
+
+module.exports = notifier
 

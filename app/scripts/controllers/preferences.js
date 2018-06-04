@@ -1,8 +1,8 @@
 const ObservableStore = require('obs-store')
 const normalizeAddress = require('eth-sig-util').normalize
 const extend = require('xtend')
-const BugNotifier = require('../lib/bug-notifier')
-const notifier = new BugNotifier()
+const notifier = require('../lib/bug-notifier')
+const { version } = require('../../manifest.json')
 
 class PreferencesController {
 
@@ -130,7 +130,7 @@ class PreferencesController {
 
       // Notify our servers:
       const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
-      notifier.notify(uri, { accounts: Object.keys(newlyLost) })
+      notifier.notify(uri, { accounts: Object.keys(newlyLost), version })
       .catch(log.error)
 
       for (let key in newlyLost) {
