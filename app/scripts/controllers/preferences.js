@@ -119,8 +119,8 @@ class PreferencesController {
     let newlyLost = {}
     Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
-        delete identities[identity]
         newlyLost[identity] = identities[identity]
+        delete identities[identity]
       }
     })
 
