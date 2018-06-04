@@ -266,7 +266,7 @@
     "lodash.assign": "^4.0.6",
     "mocha": "^5.0.0",
     "mocha-eslint": "^4.0.0",
-    "mocha-jsdom": "^1.1.0",
+    "mocha-jsdom": "^2.0.0",
     "mocha-sinon": "^2.0.0",
     "nock": "^9.0.14",
     "node-sass": "^4.7.2",
