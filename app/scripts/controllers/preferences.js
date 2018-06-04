@@ -98,6 +98,37 @@ class PreferencesController {
     this.store.updateState({ identities })
   }
 
+  /*
+   * Synchronizes identity entries with known accounts.
+   * Removes any unknown identities, and returns the resulting selected address.
+   *
+   * @param {Array<string>} addresses known to the vault.
+   * @returns {Promise<string>} selectedAddress the selected address.
+   */
+  syncAddresses (addresses) {
+    const identities = this.store.getState().identities
+
+    Object.keys(identities).forEach((identity) => {
+      if (!addresses.includes(identity)) {
+        delete identities[identity]
+
+        // TODO: Report the bug to Sentry including the now-lost identity.
+        // TODO: Inform the user of the lost identity.
+      }
+    })
+
+    this.store.updateState({ identities })
+    this.addAddresses(addresses)
+
+    let selected = this.getSelectedAddress()
+    if (!addresses.includes(selected)) {
+      selected = addresses[0]
+      this.setSelectedAddress(selected)
+    }
+
+    return selected
+  }
+
   /**
    * Setter for the `selectedAddress` property
    *
