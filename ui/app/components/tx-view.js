@@ -8,7 +8,9 @@ const { compose } = require('recompose')
 const actions = require('../actions')
 const selectors = require('../selectors')
 const { SEND_ROUTE } = require('../routes')
+const copyToClipboard = require('copy-to-clipboard')
 const { checksumAddress: toChecksumAddress } = require('../util')
+const Tooltip = require('./tooltip-v2.js')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
@@ -60,6 +62,10 @@ function mapDispatchToProps (dispatch) {
 inherits(TxView, Component)
 function TxView () {
   Component.call(this)
+
+  this.state = {
+    hasCopied: false,
+  }
 }
 
 TxView.prototype.renderHeroBalance = function () {
@@ -103,52 +109,77 @@ TxView.prototype.renderButtons = function () {
 }
 
 TxView.prototype.render = function () {
-  const { selectedAddress, identity, network, isMascara } = this.props
+  const { selectedAddress, identity, network, isMascara, checksumAddress } = this.props
 
   return h('div.tx-view.flex-column', {
     style: {},
   }, [
 
-    h('div.flex-row.phone-visible', {
-      style: {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flex: '0 0 auto',
-        margin: '10px',
-      },
-    }, [
-
-      h('div.fa.fa-bars', {
+    h('div.phone-visible__wrapper', [
+      h('div.flex-row.phone-visible__content', {
         style: {
-          fontSize: '1.3em',
-          cursor: 'pointer',
-          padding: '10px',
-        },
-        onClick: () => this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar(),
-      }),
-
-      h('.identicon-wrapper.select-none', {
-        style: {
-          marginLeft: '0.9em',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flex: '1',
         },
       }, [
-        h(Identicon, {
-          diameter: 24,
-          address: selectedAddress,
-          network,
+
+        h('div.fa.fa-bars', {
+          style: {
+            fontSize: '1.3em',
+            cursor: 'pointer',
+            padding: '10px',
+            'padding-top': '4px',
+          },
+          onClick: () => this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar(),
         }),
+
+        h('.identicon-wrapper.select-none', {
+          style: {
+            marginLeft: '0.9em',
+          },
+        }, [
+          h(Identicon, {
+            diameter: 24,
+            address: selectedAddress,
+            network,
+          }),
+        ]),
+
+        h(Tooltip, {
+          position: 'bottom',
+          title: this.state.hasCopied ? this.context.t('copiedExclamation') : this.context.t('copyToClipboard'),
+          style: {
+            display: 'flex',
+            cursor: 'pointer',
+          },
+        }, [
+          h('span.account-name', {
+            // className: classnames({
+            //   'wallet-view__address__pressed': this.state.copyToClipboardPressed,
+            // }),
+            onClick: () => {
+              copyToClipboard(checksumAddress)
+              this.setState({ hasCopied: true })
+              setTimeout(() => this.setState({ hasCopied: false }), 3000)
+            },
+            onMouseDown: () => {
+              this.setState({ copyToClipboardPressed: true })
+            },
+            onMouseUp: () => {
+              this.setState({ copyToClipboardPressed: false })
+            },
+          }, [
+            h('div.account-name__name', identity.name),
+            h('div.account-name__address', `${selectedAddress.slice(0, 4)}...${selectedAddress.slice(selectedAddress.length - 4)}`),
+          ]),
+        ]),
+
+        !isMascara && h('div.open-in-browser', {
+          onClick: () => global.platform.openExtensionInBrowser(),
+        }, [h('img', { src: 'images/popout.svg' })]),
+
       ]),
-
-      h('span.account-name', {
-        style: {},
-      }, [
-        identity.name,
-      ]),
-
-      !isMascara && h('div.open-in-browser', {
-        onClick: () => global.platform.openExtensionInBrowser(),
-      }, [h('img', { src: 'images/popout.svg' })]),
-
     ]),
 
     this.renderHeroBalance(),

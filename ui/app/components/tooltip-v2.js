@@ -12,7 +12,7 @@ function Tooltip () {
 
 Tooltip.prototype.render = function () {
   const props = this.props
-  const { position, title, children, wrapperClassName } = props
+  const { position, title, children, style, wrapperClassName } = props
 
   return h('div', {
       className: wrapperClassName,
@@ -25,6 +25,7 @@ Tooltip.prototype.render = function () {
       hideOnClick: false,
       size: 'small',
       arrow: true,
+      style,
     }, children),
 
   ])
