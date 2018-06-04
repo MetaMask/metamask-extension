@@ -35,6 +35,7 @@ class PreferencesController {
     }, opts.initState)
 
     this.getFirstTimeInfo = opts.getFirstTimeInfo || null
+    this.notifier = opts.notifier || notifier
 
     this.store = new ObservableStore(initState)
   }
@@ -129,7 +130,7 @@ class PreferencesController {
       // Notify our servers:
       const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
       const firstTimeInfo = this.getFirstTimeInfo ? this.getFirstTimeInfo() : {}
-      notifier.notify(uri, {
+      this.notifier.notify(uri, {
         accounts: Object.keys(newlyLost),
         metadata: {
           version,
