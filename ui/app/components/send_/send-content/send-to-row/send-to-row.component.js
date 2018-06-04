@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
 import EnsInput from '../../../ens-input'
+import { getToErrorObject } from './send-to-row.utils.js'
 
 export default class SendToRow extends Component {
 
@@ -13,14 +14,19 @@ export default class SendToRow extends Component {
     to: PropTypes.string,
     toAccounts: PropTypes.array,
     toDropdownOpen: PropTypes.bool,
+    updateGas: PropTypes.func,
     updateSendTo: PropTypes.func,
     updateSendToError: PropTypes.func,
   };
 
   handleToChange (to, nickname = '') {
-    const { updateSendTo, updateSendToError } = this.props
+    const { updateSendTo, updateSendToError, updateGas } = this.props
+    const toErrorObject = getToErrorObject(to)
     updateSendTo(to, nickname)
-    updateSendToError(to)
+    updateSendToError(toErrorObject)
+    if (toErrorObject.to === null) {
+      updateGas({ to })
+    }
   }
 
   render () {

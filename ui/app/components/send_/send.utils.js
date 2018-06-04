@@ -12,16 +12,21 @@ const {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_ETH_ERROR,
+  ONE_GWEI_IN_WEI_HEX,
+  SIMPLE_GAS_COST,
+  TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } = require('./send.constants')
 const abi = require('ethereumjs-abi')
+const ethUtil = require('ethereumjs-util')
 
 module.exports = {
   calcGasTotal,
+  calcTokenBalance,
   doesAmountErrorRequireUpdate,
+  estimateGas,
+  estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
-  getParamsForGasEstimate,
-  calcTokenBalance,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 }
@@ -139,23 +144,6 @@ function getAmountErrorObject ({
   return { amount: amountError }
 }
 
-function getParamsForGasEstimate (selectedAddress, symbol, data) {
-  const estimatedGasParams = {
-    from: selectedAddress,
-    gas: '746a528800',
-  }
-
-  if (symbol) {
-    Object.assign(estimatedGasParams, { value: '0x0' })
-  }
-
-  if (data) {
-    Object.assign(estimatedGasParams, { data })
-  }
-
-  return estimatedGasParams
-}
-
 function calcTokenBalance ({ selectedToken, usersToken }) {
   const { decimals } = selectedToken || {}
   return calcTokenAmount(usersToken.balance.toString(), decimals) + ''
@@ -178,11 +166,74 @@ function doesAmountErrorRequireUpdate ({
   return amountErrorRequiresUpdate
 }
 
-function generateTokenTransferData (selectedAddress, selectedToken) {
+async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to, value, gasPrice, estimateGasMethod }) {
+  const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
+
+  if (selectedToken) {
+    paramsForGasEstimate.value = '0x0'
+    paramsForGasEstimate.data = generateTokenTransferData({ toAddress: to, amount: value, selectedToken })
+  }
+
+  // if recipient has no code, gas is 21k max:
+  const hasRecipient = Boolean(to)
+  if (hasRecipient && !selectedToken) {
+    const code = await global.eth.getCode(to)
+    if (!code || code === '0x') {
+      return SIMPLE_GAS_COST
+    }
+  }
+
+  paramsForGasEstimate.to = selectedToken ? selectedToken.address : to
+
+  // if not, fall back to block gasLimit
+  paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
+    multiplicandBase: 16,
+    multiplierBase: 10,
+    roundDown: '0',
+    toNumericBase: 'hex',
+  }))
+  // run tx
+  return new Promise((resolve, reject) => {
+    return estimateGasMethod(paramsForGasEstimate, (err, estimatedGas) => {
+      if (err) {
+        const simulationFailed = (
+          err.message.includes('Transaction execution error.') ||
+          err.message.includes('gas required exceeds allowance or always failing transaction')
+        )
+        if (simulationFailed) {
+          return resolve(paramsForGasEstimate.gas)
+        } else {
+          return reject(err)
+        }
+      }
+      return resolve(estimatedGas.toString(16))
+    })
+  })
+}
+
+function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selectedToken }) {
   if (!selectedToken) return
-  console.log(`abi.rawEncode`, abi.rawEncode)
-  return Array.prototype.map.call(
-    abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
+  return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
+    abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
     x => ('00' + x.toString(16)).slice(-2)
   ).join('')
+}
+
+function estimateGasPriceFromRecentBlocks (recentBlocks) {
+  // Return 1 gwei if no blocks have been observed:
+  if (!recentBlocks || recentBlocks.length === 0) {
+    return ONE_GWEI_IN_WEI_HEX
+  }
+
+  const lowestPrices = recentBlocks.map((block) => {
+    if (!block.gasPrices || block.gasPrices.length < 1) {
+      return ONE_GWEI_IN_WEI_HEX
+    }
+    return block.gasPrices.reduce((currentLowest, next) => {
+      return parseInt(next, 16) < parseInt(currentLowest, 16) ? next : currentLowest
+    })
+  })
+  .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
+
+  return lowestPrices[Math.floor(lowestPrices.length / 2)]
 }

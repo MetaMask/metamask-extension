@@ -8,9 +8,9 @@ function getToErrorObject (to) {
   let toError = null
 
   if (!to) {
-      toError = REQUIRED_ERROR
+    toError = REQUIRED_ERROR
   } else if (!isValidAddress(to)) {
-      toError = INVALID_RECIPIENT_ADDRESS_ERROR
+    toError = INVALID_RECIPIENT_ADDRESS_ERROR
   }
 
   return { to: toError }

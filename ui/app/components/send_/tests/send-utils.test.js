@@ -1,6 +1,14 @@
 import assert from 'assert'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
+import {
+  ONE_GWEI_IN_WEI_HEX,
+  SIMPLE_GAS_COST,
+} from '../send.constants'
+const {
+  addCurrencies,
+  subtractCurrencies,
+} = require('../../../conversion-util')
 
 const {
   INSUFFICIENT_FUNDS_ERROR,
@@ -11,7 +19,7 @@ const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b, obj) => a + b),
   conversionUtil: sinon.stub().callsFake((val, obj) => parseInt(val, 16)),
   conversionGTE: sinon.stub().callsFake((obj1, obj2) => obj1.value > obj2.value),
-  multiplyCurrencies: sinon.stub().callsFake((a, b) => a * b),
+  multiplyCurrencies: sinon.stub().callsFake((a, b) => `${a}x${b}`),
   calcTokenAmount: sinon.stub().callsFake((a, d) => 'calc:' + a + d),
   rawEncode: sinon.stub().returns([16, 1100]),
 }
@@ -31,10 +39,11 @@ const sendUtils = proxyquire('../send.utils.js', {
 
 const {
   calcGasTotal,
+  estimateGas,
   doesAmountErrorRequireUpdate,
+  estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
-  getParamsForGasEstimate,
   calcTokenBalance,
   isBalanceSufficient,
   isTokenBalanceSufficient,
@@ -45,7 +54,7 @@ describe('send utils', () => {
   describe('calcGasTotal()', () => {
     it('should call multiplyCurrencies with the correct params and return the multiplyCurrencies return', () => {
       const result = calcGasTotal(12, 15)
-      assert.equal(result, 180)
+      assert.equal(result, '12x15')
       const call_ = stubs.multiplyCurrencies.getCall(0).args
       assert.deepEqual(
         call_,
@@ -97,11 +106,23 @@ describe('send utils', () => {
 
   describe('generateTokenTransferData()', () => {
     it('should return undefined if not passed a selected token', () => {
-      assert.equal(generateTokenTransferData('mockAddress', false), undefined)
+      assert.equal(generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', selectedToken: false}), undefined)
+    })
+
+    it('should call abi.rawEncode with the correct params', () => {
+      stubs.rawEncode.resetHistory()
+      generateTokenTransferData({ toAddress: 'mockAddress', amount: 'ab', selectedToken: true})
+      assert.deepEqual(
+        stubs.rawEncode.getCall(0).args,
+        [['address', 'uint256'], ['mockAddress', '0xab']]
+      )
     })
 
     it('should return encoded token transfer data', () => {
-      assert.equal(generateTokenTransferData('mockAddress', true), '104c')
+      assert.equal(
+        generateTokenTransferData({ toAddress: 'mockAddress', amount: '0xa', selectedToken: true}),
+        '0xa9059cbb104c'
+      )
     })
   })
 
@@ -133,41 +154,6 @@ describe('send utils', () => {
       it(description, () => {
         assert.deepEqual(getAmountErrorObject(obj), obj.expectedResult)
       })
-    })
-  })
-
-  describe('getParamsForGasEstimate()', () => {
-    it('should return from and gas properties if no symbol or data', () => {
-      assert.deepEqual(
-        getParamsForGasEstimate('mockAddress'),
-        {
-          from: 'mockAddress',
-          gas: '746a528800',
-        }
-      )
-    })
-
-    it('should return value property if symbol provided', () => {
-      assert.deepEqual(
-        getParamsForGasEstimate('mockAddress', 'ABC'),
-        {
-          from: 'mockAddress',
-          gas: '746a528800',
-          value: '0x0',
-        }
-      )
-    })
-
-    it('should return data property if data provided', () => {
-      assert.deepEqual(
-        getParamsForGasEstimate('mockAddress', 'ABC', 'somedata'),
-        {
-          from: 'mockAddress',
-          gas: '746a528800',
-          value: '0x0',
-          data: 'somedata',
-        }
-      )
     })
   })
 
@@ -261,4 +247,158 @@ describe('send utils', () => {
     })
   })
 
+  describe('estimateGas', () => {
+    const baseMockParams = {
+      blockGasLimit: '0x64',
+      selectedAddress: 'mockAddress',
+      to: '0xisContract',
+      estimateGasMethod: sinon.stub().callsFake(
+        (data, cb) => cb(
+          data.to.match(/willFailBecauseOf:/) ? { message: data.to.match(/:(.+)$/)[1] } : null,
+          { toString: (n) => `mockToString:${n}` }
+        )
+      ),
+    }
+    const baseExpectedCall = {
+      from: 'mockAddress',
+      gas: '0x64x0.95',
+      to: '0xisContract',
+    }
+
+    beforeEach(() => {
+      global.eth = {
+        getCode: sinon.stub().callsFake(
+          (address) => Promise.resolve(address.match(/isContract/) ? 'not-0x' : '0x')
+        ),
+      }
+    })
+
+    afterEach(() => {
+      baseMockParams.estimateGasMethod.resetHistory()
+      global.eth.getCode.resetHistory()
+    })
+
+    it('should call ethQuery.estimateGas with the expected params', async () => {
+      const result = await estimateGas(baseMockParams)
+      assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
+      assert.deepEqual(
+        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall)
+      )
+      assert.equal(result, 'mockToString:16')
+    })
+
+    it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a selectedToken', async () => {
+      const result = await estimateGas(Object.assign({ data: 'mockData', selectedToken: { address: 'mockAddress' } }, baseMockParams))
+      assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
+      assert.deepEqual(
+        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        Object.assign({}, baseExpectedCall, {
+          gasPrice: undefined,
+          value: '0x0',
+          data: '0xa9059cbb104c',
+          to: 'mockAddress',
+        })
+      )
+      assert.equal(result, 'mockToString:16')
+    })
+
+    it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async () => {
+      assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
+      const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123' }))
+      assert.equal(result, SIMPLE_GAS_COST)
+    })
+
+    it(`should not return ${SIMPLE_GAS_COST} if passed a selectedToken`, async () => {
+      assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
+      const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123', selectedToken: { address: '' } }))
+      assert.notEqual(result, SIMPLE_GAS_COST)
+    })
+
+    it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async () => {
+      const result = await estimateGas(Object.assign({}, baseMockParams, {
+        to: 'isContract willFailBecauseOf:Transaction execution error.',
+      }))
+      assert.equal(result, '0x64x0.95')
+    })
+
+    it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async () => {
+      const result = await estimateGas(Object.assign({}, baseMockParams, {
+        to: 'isContract willFailBecauseOf:gas required exceeds allowance or always failing transaction.',
+      }))
+      assert.equal(result, '0x64x0.95')
+    })
+
+    it(`should reject other errors`, async () => {
+      try {
+        await estimateGas(Object.assign({}, baseMockParams, {
+          to: 'isContract willFailBecauseOf:some other error',
+        }))
+      } catch (err) {
+        assert.deepEqual(err, { message: 'some other error' })
+      }
+    })
+  })
+
+  describe('estimateGasPriceFromRecentBlocks', () => {
+    const ONE_GWEI_IN_WEI_HEX_PLUS_ONE = addCurrencies(ONE_GWEI_IN_WEI_HEX, '0x1', {
+      aBase: 16,
+      bBase: 16,
+      toNumericBase: 'hex',
+    })
+    const ONE_GWEI_IN_WEI_HEX_PLUS_TWO = addCurrencies(ONE_GWEI_IN_WEI_HEX, '0x2', {
+      aBase: 16,
+      bBase: 16,
+      toNumericBase: 'hex',
+    })
+    const ONE_GWEI_IN_WEI_HEX_MINUS_ONE = subtractCurrencies(ONE_GWEI_IN_WEI_HEX, '0x1', {
+      aBase: 16,
+      bBase: 16,
+      toNumericBase: 'hex',
+    })
+
+    it(`should return ${ONE_GWEI_IN_WEI_HEX} if recentBlocks is falsy`, () => {
+      assert.equal(estimateGasPriceFromRecentBlocks(), ONE_GWEI_IN_WEI_HEX)
+    })
+
+    it(`should return ${ONE_GWEI_IN_WEI_HEX} if recentBlocks is empty`, () => {
+      assert.equal(estimateGasPriceFromRecentBlocks([]), ONE_GWEI_IN_WEI_HEX)
+    })
+
+    it(`should estimate a block's gasPrice as ${ONE_GWEI_IN_WEI_HEX} if it has no gas prices`, () => {
+      const mockRecentBlocks = [
+        { gasPrices: null },
+        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_PLUS_ONE ] },
+        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_MINUS_ONE ] },
+      ]
+      assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), ONE_GWEI_IN_WEI_HEX)
+    })
+
+    it(`should estimate a block's gasPrice as ${ONE_GWEI_IN_WEI_HEX} if it has empty gas prices`, () => {
+      const mockRecentBlocks = [
+        { gasPrices: [] },
+        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_PLUS_ONE ] },
+        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_MINUS_ONE ] },
+      ]
+      assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), ONE_GWEI_IN_WEI_HEX)
+    })
+
+    it(`should return the middle value of all blocks lowest prices`, () => {
+      const mockRecentBlocks = [
+        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_PLUS_TWO ] },
+        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_MINUS_ONE ] },
+        { gasPrices: [ ONE_GWEI_IN_WEI_HEX_PLUS_ONE ] },
+      ]
+      assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), ONE_GWEI_IN_WEI_HEX_PLUS_ONE)
+    })
+
+    it(`should work if a block has multiple gas prices`, () => {
+      const mockRecentBlocks = [
+        { gasPrices: [ '0x1', '0x2', '0x3', '0x4', '0x5' ] },
+        { gasPrices: [ '0x101', '0x100', '0x103', '0x104', '0x102' ] },
+        { gasPrices: [ '0x150', '0x50', '0x100', '0x200', '0x5' ] },
+      ]
+      assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), '0x5')
+    })
+  })
 })

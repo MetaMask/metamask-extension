@@ -22,6 +22,7 @@ module.exports = {
         'name': 'Send Account 4',
       },
     },
+    'currentBlockGasLimit': '0x4c1878',
     'currentCurrency': 'USD',
     'conversionRate': 1200.88200327,
     'conversionDate': 1489013762,
@@ -198,6 +199,7 @@ module.exports = {
       },
     },
     'currentLocale': 'en',
+    recentBlocks: ['mockBlock1', 'mockBlock2', 'mockBlock3'],
   },
   'appState': {
     'menuOpen': false,

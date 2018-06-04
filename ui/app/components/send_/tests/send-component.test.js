@@ -32,8 +32,8 @@ describe('Send Component', function () {
     wrapper = shallow(<SendTransactionScreen
       amount={'mockAmount'}
       amountConversionRate={'mockAmountConversionRate'}
+      blockGasLimit={'mockBlockGasLimit'}
       conversionRate={10}
-      data={'mockData'}
       editingTransactionId={'mockEditingTransactionId'}
       from={ { address: 'mockAddress', balance: 'mockBalance' } }
       gasLimit={'mockGasLimit'}
@@ -42,6 +42,7 @@ describe('Send Component', function () {
       history={{ mockProp: 'history-abc'}}
       network={'3'}
       primaryCurrency={'mockPrimaryCurrency'}
+      recentBlocks={['mockBlock']}
       selectedAddress={'mockSelectedAddress'}
       selectedToken={'mockSelectedToken'}
       tokenBalance={'mockTokenBalance'}
@@ -207,14 +208,23 @@ describe('Send Component', function () {
       assert.deepEqual(
         propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0],
         {
-          data: 'mockData',
+          blockGasLimit: 'mockBlockGasLimit',
           editingTransactionId: 'mockEditingTransactionId',
           gasLimit: 'mockGasLimit',
           gasPrice: 'mockGasPrice',
+          recentBlocks: ['mockBlock'],
           selectedAddress: 'mockSelectedAddress',
           selectedToken: 'mockSelectedToken',
+          to: undefined,
+          value: 'mockAmount',
         }
       )
+    })
+
+    it('should call updateAndSetGasTotal with to set to lowercase if passed', () => {
+      propsMethodSpies.updateAndSetGasTotal.resetHistory()
+      wrapper.instance().updateGas({ to: '0xABC' })
+      assert.equal(propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0].to, '0xabc')
     })
   })
 

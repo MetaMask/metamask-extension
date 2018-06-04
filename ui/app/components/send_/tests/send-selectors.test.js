@@ -5,6 +5,7 @@ const {
   accountsWithSendEtherInfoSelector,
   // autoAddToBetaUI,
   getAddressBook,
+  getBlockGasLimit,
   getAmountConversionRate,
   getConversionRate,
   getConvertedCurrency,
@@ -17,6 +18,7 @@ const {
   getGasPrice,
   getGasTotal,
   getPrimaryCurrency,
+  getRecentBlocks,
   getSelectedAccount,
   getSelectedAddress,
   getSelectedIdentity,
@@ -134,6 +136,15 @@ describe('send selectors', () => {
     })
   })
 
+  describe('getBlockGasLimit', () => {
+    it('should return the current block gas limit', () => {
+      assert.deepEqual(
+        getBlockGasLimit(mockState),
+        '0x4c1878'
+      )
+    })
+  })
+
   describe('getConversionRate()', () => {
     it('should return the eth conversion rate', () => {
       assert.deepEqual(
@@ -235,6 +246,15 @@ describe('send selectors', () => {
       assert.equal(
         getPrimaryCurrency(mockState),
         'DEF'
+      )
+    })
+  })
+
+  describe('getRecentBlocks()', () => {
+    it('should return the recent blocks', () => {
+      assert.deepEqual(
+        getRecentBlocks(mockState),
+        ['mockBlock1', 'mockBlock2', 'mockBlock3']
       )
     })
   })

@@ -117,7 +117,7 @@ async function runSendFlowTest(assert, done) {
   const sendGasField = await queryAsync($, '.send-v2__gas-fee-display')
   assert.equal(
     sendGasField.find('.currency-display__input-wrapper > input').val(),
-    '0.000198',
+    '0.000198264',
     'send gas field should show estimated gas total'
   )
   assert.equal(

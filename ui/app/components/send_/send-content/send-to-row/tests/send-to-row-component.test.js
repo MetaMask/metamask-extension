@@ -2,7 +2,15 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import SendToRow from '../send-to-row.component.js'
+import proxyquire from 'proxyquire'
+
+const SendToRow = proxyquire('../send-to-row.component.js', {
+  './send-to-row.utils.js': {
+    getToErrorObject: (to) => ({
+      to: to === false ? null : `mockToErrorObject:${to}`,
+    }),
+  },
+}).default
 
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 import EnsInput from '../../../../ens-input'
@@ -10,6 +18,7 @@ import EnsInput from '../../../../ens-input'
 const propsMethodSpies = {
   closeToDropdown: sinon.spy(),
   openToDropdown: sinon.spy(),
+  updateGas: sinon.spy(),
   updateSendTo: sinon.spy(),
   updateSendToError: sinon.spy(),
 }
@@ -29,6 +38,7 @@ describe('SendToRow Component', function () {
       to={'mockTo'}
       toAccounts={['mockAccount']}
       toDropdownOpen={false}
+      updateGas={propsMethodSpies.updateGas}
       updateSendTo={propsMethodSpies.updateSendTo}
       updateSendToError={propsMethodSpies.updateSendToError}
     />, { context: { t: str => str + '_t' } })
@@ -61,10 +71,21 @@ describe('SendToRow Component', function () {
       assert.equal(propsMethodSpies.updateSendToError.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.updateSendToError.getCall(0).args,
-        ['mockTo2']
+        [{ to: 'mockToErrorObject:mockTo2' }]
       )
     })
 
+    it('should not call updateGas if there is a to error', () => {
+      assert.equal(propsMethodSpies.updateGas.callCount, 0)
+      instance.handleToChange('mockTo2')
+      assert.equal(propsMethodSpies.updateGas.callCount, 0)
+    })
+
+    it('should call updateGas if there is no to error', () => {
+      assert.equal(propsMethodSpies.updateGas.callCount, 0)
+      instance.handleToChange(false)
+      assert.equal(propsMethodSpies.updateGas.callCount, 1)
+    })
   })
 
   describe('render', () => {

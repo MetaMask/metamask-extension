@@ -7,7 +7,7 @@ let mapDispatchToProps
 
 const actionSpies = {
   updateSendTokenBalance: sinon.spy(),
-  updateGasTotal: sinon.spy(),
+  updateGasData: sinon.spy(),
   setGasTotal: sinon.spy(),
 }
 const duckActionSpies = {
@@ -26,12 +26,14 @@ proxyquire('../send.container.js', {
   'recompose': { compose: (arg1, arg2) => () => arg2() },
   './send.selectors': {
     getAmountConversionRate: (s) => `mockAmountConversionRate:${s}`,
+    getBlockGasLimit: (s) => `mockBlockGasLimit:${s}`,
     getConversionRate: (s) => `mockConversionRate:${s}`,
     getCurrentNetwork: (s) => `mockNetwork:${s}`,
     getGasLimit: (s) => `mockGasLimit:${s}`,
     getGasPrice: (s) => `mockGasPrice:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
     getPrimaryCurrency: (s) => `mockPrimaryCurrency:${s}`,
+    getRecentBlocks: (s) => `mockRecentBlocks:${s}`,
     getSelectedAddress: (s) => `mockSelectedAddress:${s}`,
     getSelectedToken: (s) => `mockSelectedToken:${s}`,
     getSelectedTokenContract: (s) => `mockTokenContract:${s}`,
@@ -45,7 +47,6 @@ proxyquire('../send.container.js', {
   '../../ducks/send.duck': duckActionSpies,
   './send.utils.js': {
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
-    generateTokenTransferData: (a, b) => `mockData:${a + b}`,
   },
 })
 
@@ -57,8 +58,8 @@ describe('send container', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         amount: 'mockAmount:mockState',
         amountConversionRate: 'mockAmountConversionRate:mockState',
+        blockGasLimit: 'mockBlockGasLimit:mockState',
         conversionRate: 'mockConversionRate:mockState',
-        data: 'mockData:mockSelectedAddress:mockStatemockSelectedToken:mockState',
         editingTransactionId: 'mockEditingTransactionId:mockState',
         from: 'mockFrom:mockState',
         gasLimit: 'mockGasLimit:mockState',
@@ -66,6 +67,7 @@ describe('send container', () => {
         gasTotal: 'mockGasTotal:mockState',
         network: 'mockNetwork:mockState',
         primaryCurrency: 'mockPrimaryCurrency:mockState',
+        recentBlocks: 'mockRecentBlocks:mockState',
         selectedAddress: 'mockSelectedAddress:mockState',
         selectedToken: 'mockSelectedToken:mockState',
         tokenBalance: 'mockTokenBalance:mockState',
@@ -87,12 +89,15 @@ describe('send container', () => {
 
     describe('updateAndSetGasTotal()', () => {
       const mockProps = {
-        data: '0x1',
+        blockGasLimit: 'mockBlockGasLimit',
         editingTransactionId: '0x2',
         gasLimit: '0x3',
         gasPrice: '0x4',
+        recentBlocks: ['mockBlock'],
         selectedAddress: '0x4',
         selectedToken: { address: '0x1' },
+        to: 'mockTo',
+        value: 'mockValue',
       }
 
       it('should dispatch a setGasTotal action when editingTransactionId is truthy', () => {
@@ -104,15 +109,15 @@ describe('send container', () => {
         )
       })
 
-      it('should dispatch an updateGasTotal action when editingTransactionId is falsy', () => {
-        const { selectedAddress, selectedToken, data } = mockProps
+      it('should dispatch an updateGasData action when editingTransactionId is falsy', () => {
+        const { selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value } = mockProps
         mapDispatchToPropsObject.updateAndSetGasTotal(
-          Object.assign(mockProps, {editingTransactionId: false})
+          Object.assign({}, mockProps, {editingTransactionId: false})
         )
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
-          actionSpies.updateGasTotal.getCall(0).args[0],
-          { selectedAddress, selectedToken, data }
+          actionSpies.updateGasData.getCall(0).args[0],
+          { selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value }
         )
       })
     })

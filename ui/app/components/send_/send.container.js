@@ -4,12 +4,14 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import {
   getAmountConversionRate,
+  getBlockGasLimit,
   getConversionRate,
   getCurrentNetwork,
   getGasLimit,
   getGasPrice,
   getGasTotal,
   getPrimaryCurrency,
+  getRecentBlocks,
   getSelectedAddress,
   getSelectedToken,
   getSelectedTokenContract,
@@ -21,7 +23,7 @@ import {
 } from './send.selectors'
 import {
   updateSendTokenBalance,
-  updateGasTotal,
+  updateGasData,
   setGasTotal,
 } from '../../actions'
 import {
@@ -29,7 +31,6 @@ import {
 } from '../../ducks/send.duck'
 import {
   calcGasTotal,
-  generateTokenTransferData,
 } from './send.utils.js'
 
 module.exports = compose(
@@ -38,14 +39,11 @@ module.exports = compose(
 )(SendEther)
 
 function mapStateToProps (state) {
-  const selectedAddress = getSelectedAddress(state)
-  const selectedToken = getSelectedToken(state)
-
   return {
     amount: getSendAmount(state),
     amountConversionRate: getAmountConversionRate(state),
+    blockGasLimit: getBlockGasLimit(state),
     conversionRate: getConversionRate(state),
-    data: generateTokenTransferData(selectedAddress, selectedToken),
     editingTransactionId: getSendEditingTransactionId(state),
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
@@ -53,6 +51,7 @@ function mapStateToProps (state) {
     gasTotal: getGasTotal(state),
     network: getCurrentNetwork(state),
     primaryCurrency: getPrimaryCurrency(state),
+    recentBlocks: getRecentBlocks(state),
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
     tokenBalance: getTokenBalance(state),
@@ -64,16 +63,18 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     updateAndSetGasTotal: ({
-      data,
+      blockGasLimit,
       editingTransactionId,
       gasLimit,
       gasPrice,
+      recentBlocks,
       selectedAddress,
       selectedToken,
+      to,
+      value,
     }) => {
-      console.log(`editingTransactionId`, editingTransactionId)
       !editingTransactionId
-        ? dispatch(updateGasTotal({ selectedAddress, selectedToken, data }))
+        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, blockGasLimit, to, value }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {
