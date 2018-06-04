@@ -109,46 +109,49 @@ TxView.prototype.render = function () {
     style: {},
   }, [
 
-    h('div.flex-row.phone-visible', {
-      style: {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flex: '0 0 auto',
-        margin: '10px',
-      },
-    }, [
-
-      h('div.fa.fa-bars', {
+    h('div.phone-visible__wrapper', [
+      h('div.flex-row.phone-visible__content', {
         style: {
-          fontSize: '1.3em',
-          cursor: 'pointer',
-          padding: '10px',
-        },
-        onClick: () => this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar(),
-      }),
-
-      h('.identicon-wrapper.select-none', {
-        style: {
-          marginLeft: '0.9em',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flex: '1',
         },
       }, [
-        h(Identicon, {
-          diameter: 24,
-          address: selectedAddress,
-          network,
+
+        h('div.fa.fa-bars', {
+          style: {
+            fontSize: '1.3em',
+            cursor: 'pointer',
+            padding: '10px',
+            'padding-top': '4px',
+          },
+          onClick: () => this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar(),
         }),
+
+        h('.identicon-wrapper.select-none', {
+          style: {
+            marginLeft: '0.9em',
+          },
+        }, [
+          h(Identicon, {
+            diameter: 24,
+            address: selectedAddress,
+            network,
+          }),
+        ]),
+
+        h('span.account-name', {
+          style: {},
+        }, [
+          h('div.account-name__name', identity.name),
+          h('div.account-name__address', `${selectedAddress.slice(0, 4)}...${selectedAddress.slice(selectedAddress.length - 4)}`),
+        ]),
+
+        !isMascara && h('div.open-in-browser', {
+          onClick: () => global.platform.openExtensionInBrowser(),
+        }, [h('img', { src: 'images/popout.svg' })]),
+
       ]),
-
-      h('span.account-name', {
-        style: {},
-      }, [
-        identity.name,
-      ]),
-
-      !isMascara && h('div.open-in-browser', {
-        onClick: () => global.platform.openExtensionInBrowser(),
-      }, [h('img', { src: 'images/popout.svg' })]),
-
     ]),
 
     this.renderHeroBalance(),

@@ -6,6 +6,8 @@
     justify-content: flex-start;
     align-items: center;
     flex: 0 0 auto;
+    background: $alabaster-light;
+    border-top: 10px solid $alabaster-light;
   }
 
   @media screen and (min-width: $break-large) {

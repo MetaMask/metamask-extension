@@ -42,7 +42,19 @@ $wallet-view-bg: $alabaster;
     }
 
     .account-name {
-      display: none;
+
+      &__name {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: $scorpion;
+      }
+
+      &__address {
+        font-size: 0.7rem;
+        color: $dusty-gray;
+        margin-top: 2px;
+      }
+      
     }
   }
 }
@@ -52,6 +64,7 @@ $wallet-view-bg: $alabaster;
   display: flex;
   justify-content: center;
   padding: 10px;
+  padding-top: 0px;
 }
 
 // wallet view and sidebar
@@ -213,7 +226,9 @@ $wallet-view-bg: $alabaster;
   }
 
   .phone-visible {
-    display: none;
+    &__wrapper {
+      display: none;
+    }
   }
 
   .main-container {
@@ -248,7 +263,24 @@ $wallet-view-bg: $alabaster;
   }
 
   .phone-visible {
-    display: flex;
+    &__wrapper {
+      display: flex;
+      flex: 1 0 auto;
+      background: $alabaster-light;
+      max-height: 15%;
+    }
+
+    &__content {
+      padding: 10px 10px 0px 10px;
+      border-bottom: 1px solid $alto;
+      height: 100%;
+
+      .account-name {
+        height: 100%;
+        margin-bottom: 0.8rem;
+        margin-top: 0.2rem;
+      }
+    }
   }
 
   .main-container {
