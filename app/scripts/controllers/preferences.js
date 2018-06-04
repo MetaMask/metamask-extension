@@ -130,7 +130,7 @@ class PreferencesController {
 
       // Notify our servers:
       const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
-      notifier.notify(uri, { accounts: Object.keys(lostIdentities) })
+      notifier.notify(uri, { accounts: Object.keys(newlyLost) })
       .catch(log.error)
 
       for (let key in newlyLost) {
