@@ -10,7 +10,7 @@ class DiagnosticsReporter {
       await this.submit({
         accounts: Object.keys(orphans),
         metadata: {
-          type: 'orphans'
+          type: 'orphans',
         },
       })
     } catch (err) {
