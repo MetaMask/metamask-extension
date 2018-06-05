@@ -46,6 +46,7 @@ const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
+const notifier = require('./lib/bug-notifier')
 const log = require('loglevel')
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -63,6 +64,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.opts = opts
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
+
+    // metamask diagnostics reporter
+    this.notifier = opts.notifier || notifier
 
     // platform-specific api
     this.platform = opts.platform
@@ -486,6 +490,35 @@ module.exports = class MetamaskController extends EventEmitter {
   async submitPassword (password) {
     await this.keyringController.submitPassword(password)
     const accounts = await this.keyringController.getAccounts()
+
+    // verify keyrings
+    try {
+      const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair')
+      if (nonSimpleKeyrings.length > 1) {
+        const keyrings = await Promise.all(nonSimpleKeyrings.map(async (keyring, index) => {
+          return {
+            index,
+            type: keyring.type,
+            accounts: await keyring.getAccounts()
+          }
+        }))
+        // unexpected number of keyrings, report to diagnostics
+        const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
+        const firstTimeInfo = this.getFirstTimeInfo ? this.getFirstTimeInfo() : {}
+        await this.notifier.notify(uri, {
+          accounts: [],
+          metadata: {
+            type: 'keyrings',
+            keyrings,
+            version,
+            firstTimeInfo,
+          },
+        })
+      }
+    } catch (err) {
+      console.error('Keyring validation error:')
+      console.error(err)
+    }
 
     await this.preferencesController.syncAddresses(accounts)
     return this.keyringController.fullUpdate()
