@@ -2,7 +2,12 @@
 
 ## Current Master
 
-- Fixes issue where old nicknames were kept around causing errors.
+## 4.7.3 Mon Jun 04 2018
+
+- Hide token now uses new modal
+- Indicate the current selected account on the popup account view
+- Reduce height of notice container in onboarding
+- Fixes issue where old nicknames were kept around causing errors
 
 ## 4.7.2 Sun Jun 03 2018
 
