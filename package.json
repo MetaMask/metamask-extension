@@ -118,6 +118,7 @@
     "fast-levenshtein": "^2.0.6",
     "file-loader": "^1.1.11",
     "fuse.js": "^3.2.0",
+    "gaba": "^1.0.0-beta.2",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-debug": "^3.2.0",
