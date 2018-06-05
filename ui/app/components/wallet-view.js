@@ -111,6 +111,10 @@ WalletView.prototype.render = function () {
 
   const checksummedAddress = checksumAddress(selectedAddress)
 
+  if (!selectedAddress) {
+    throw new Error('selectedAddress should not be ' + String(selectedAddress))
+  }
+
   const keyring = keyrings.find((kr) => {
     return kr.accounts.includes(selectedAddress) ||
       kr.accounts.includes(selectedIdentity.address)
