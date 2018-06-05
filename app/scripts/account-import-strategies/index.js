@@ -16,6 +16,9 @@ const accountImporter = {
 
   strategies: {
     'Private Key': (privateKey) => {
+      if (!privateKey) {
+        throw new Error('Cannot import an empty key.')
+      }
       const stripped = ethUtil.stripHexPrefix(privateKey)
       return stripped
     },
