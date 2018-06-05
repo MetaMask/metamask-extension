@@ -1,9 +1,7 @@
 const ObservableStore = require('obs-store')
 const normalizeAddress = require('eth-sig-util').normalize
 const extend = require('xtend')
-const notifier = require('../lib/bug-notifier')
-const log = require('loglevel')
-const { version } = require('../../manifest.json')
+
 
 class PreferencesController {
 
@@ -34,8 +32,7 @@ class PreferencesController {
       lostIdentities: {},
     }, opts.initState)
 
-    this.getFirstTimeInfo = opts.getFirstTimeInfo || null
-    this.notifier = opts.notifier || notifier
+    this.diagnostics = opts.diagnostics
 
     this.store = new ObservableStore(initState)
   }
@@ -128,17 +125,9 @@ class PreferencesController {
     if (Object.keys(newlyLost).length > 0) {
 
       // Notify our servers:
-      const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
-      const firstTimeInfo = this.getFirstTimeInfo ? this.getFirstTimeInfo() : {}
-      this.notifier.notify(uri, {
-        accounts: Object.keys(newlyLost),
-        metadata: {
-          version,
-          firstTimeInfo,
-        },
-      })
-      .catch(log.error)
+      if (this.diagnostics) this.diagnostics.reportOrphans(newlyLost)
 
+      // store lost accounts
       for (let key in newlyLost) {
         lostIdentities[key] = newlyLost[key]
       }
