@@ -2,6 +2,15 @@
 
 ## Current Master
 
+- Fixes issue where old nicknames were kept around causing errors.
+
+## 4.7.2 Sun Jun 03 2018
+
+- Fix bug preventing users from logging in. Internally accounts and identities were out of sync.
+- Fix support links to point to new support system (Zendesk)
+- Fix bug in migration #26 ( moving account nicknames to preferences )
+- Clears account nicknames on restore from seedPhrase
+
 ## 4.7.1 Fri Jun 01 2018
 
 - Fix bug where errors were not returned to Dapps.
