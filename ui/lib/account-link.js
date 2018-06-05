@@ -18,6 +18,7 @@ module.exports = function (address, network) {
       link = `https://kovan.etherscan.io/address/${address}`
       break
     default:
+      // FIXME
       link = ''
       break
   }

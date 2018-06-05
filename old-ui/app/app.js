@@ -328,6 +328,23 @@ App.prototype.renderNetworkDropdown = function () {
     h(
       DropdownMenuItem,
       {
+        key: 'classic',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('classic')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.diamond'),
+        'Ethereum Classic Network',
+        providerType === 'classic' ? h('.check', '✓') : null,
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('localhost')),
@@ -672,6 +689,8 @@ App.prototype.getNetworkName = function () {
     name = 'Kovan Test Network'
   } else if (providerName === 'rinkeby') {
     name = 'Rinkeby Test Network'
+  } else if (providerName === 'classic') {
+    name = 'Ethereum Classic Network'
   } else {
     name = 'Unknown Private Network'
   }
