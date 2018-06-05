@@ -85,6 +85,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
+      getFirstTimeInfo: () => initState.firstTimeInfo,
     })
 
     // currency controller
@@ -139,6 +140,8 @@ module.exports = class MetamaskController extends EventEmitter {
         const address = addresses[0]
         this.preferencesController.setSelectedAddress(address)
       }
+      // ensure preferences + identities controller know about all addresses
+      this.preferencesController.addAddresses(addresses)
       this.accountTracker.syncWithAddresses(addresses)
     })
 
@@ -354,7 +357,7 @@ module.exports = class MetamaskController extends EventEmitter {
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // vault management
-      submitPassword: nodeify(keyringController.submitPassword, keyringController),
+      submitPassword: nodeify(this.submitPassword, this),
 
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
@@ -458,7 +461,11 @@ module.exports = class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore (password, seed) {
     const release = await this.createVaultMutex.acquire()
     try {
+      // clear known identities
+      this.preferencesController.setAddresses([])
+      // create new vault
       const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
+      // set new identities
       const accounts = await this.keyringController.getAccounts()
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
@@ -468,6 +475,22 @@ module.exports = class MetamaskController extends EventEmitter {
       release()
       throw err
     }
+  }
+
+  /*
+   * Submits the user's password and attempts to unlock the vault.
+   * Also synchronizes the preferencesController, to ensure its schema
+   * is up to date with known accounts once the vault is decrypted.
+   *
+   * @param {string} password - The user's password
+   * @returns {Promise<object>} - The keyringController update.
+   */
+  async submitPassword (password) {
+    await this.keyringController.submitPassword(password)
+    const accounts = await this.keyringController.getAccounts()
+
+    await this.preferencesController.syncAddresses(accounts)
+    return this.keyringController.fullUpdate()
   }
 
   /**
