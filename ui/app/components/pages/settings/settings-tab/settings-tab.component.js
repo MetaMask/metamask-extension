@@ -121,7 +121,7 @@ export default class SettingsTab extends PureComponent {
 
   renderNewRpcUrl () {
     const { t } = this.context
-    const { newRpc } = this.state
+    const { newRpc, chainId } = this.state
 
     return (
       <div className="settings-page__content-row">
@@ -144,11 +144,25 @@ export default class SettingsTab extends PureComponent {
               fullWidth
               margin="none"
             />
+            <TextField
+              type="text"
+              id="chainid"
+              placeholder={t('optionalChainId')}
+              value={chainId}
+              onChange={e => this.setState({ chainId: e.target.value })}
+              onKeyPress={e => {
+                if (e.key === 'Enter') {
+                  this.validateRpc(newRpc, chainId)
+                }
+              }}
+              fullWidth
+              margin="none"
+            />
             <div
               className="settings-tab__rpc-save-button"
               onClick={e => {
                 e.preventDefault()
-                this.validateRpc(newRpc)
+                this.validateRpc(newRpc, chainId)
               }}
             >
               { t('save') }
@@ -159,11 +173,11 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  validateRpc (newRpc) {
+  validateRpc (newRpc, chainId) {
     const { setRpcTarget, displayWarning } = this.props
 
     if (validUrl.isWebUri(newRpc)) {
-      setRpcTarget(newRpc)
+      setRpcTarget(newRpc, chainId)
     } else {
       const appendedRpc = `http://${newRpc}`
 

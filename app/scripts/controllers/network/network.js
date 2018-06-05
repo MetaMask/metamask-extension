@@ -11,6 +11,7 @@ const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
+const networks = { networkList: {} }
 
 const {
   ROPSTEN,
@@ -51,8 +52,8 @@ module.exports = class NetworkController extends EventEmitter {
 
   initializeProvider (providerParams) {
     this._baseProviderParams = providerParams
-    const { type, rpcTarget } = this.providerStore.getState()
-    this._configureProvider({ type, rpcTarget })
+    const { type, rpcTarget, chainId } = this.providerStore.getState()
+    this._configureProvider({ type, rpcTarget, chainId })
     this.lookupNetwork()
   }
 
@@ -72,7 +73,16 @@ module.exports = class NetworkController extends EventEmitter {
     return this.networkStore.getState()
   }
 
-  setNetworkState (network) {
+  setNetworkState (network, type) {
+    if (network === 'loading') {
+      return this.networkStore.putState(network)
+    }
+
+    // type must be defined
+    if (!type) {
+      return
+    }
+    network = networks.networkList[type] && networks.networkList[type].chainId ? networks.networkList[type].chainId : network
     return this.networkStore.putState(network)
   }
 
@@ -85,18 +95,20 @@ module.exports = class NetworkController extends EventEmitter {
     if (!this._provider) {
       return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
     }
+    var { type } = this.providerStore.getState()
     const ethQuery = new EthQuery(this._provider)
     ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) return this.setNetworkState('loading')
       log.info('web3.getNetwork returned ' + network)
-      this.setNetworkState(network)
+      this.setNetworkState(network, type)
     })
   }
 
-  setRpcTarget (rpcTarget) {
+  setRpcTarget (rpcTarget, chainId) {
     const providerConfig = {
       type: 'rpc',
       rpcTarget,
+      chainId,
     }
     this.providerConfig = providerConfig
   }
@@ -132,7 +144,7 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureProvider (opts) {
-    const { type, rpcTarget } = opts
+    const { type, rpcTarget, chainId } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
@@ -142,7 +154,7 @@ module.exports = class NetworkController extends EventEmitter {
       this._configureLocalhostProvider()
     // url-based rpc endpoints
     } else if (type === 'rpc') {
-      this._configureStandardProvider({ rpcUrl: rpcTarget })
+      this._configureStandardProvider({ rpcUrl: rpcTarget, chainId })
     } else {
       throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
     }
@@ -160,9 +172,14 @@ module.exports = class NetworkController extends EventEmitter {
     this._setNetworkClient(networkClient)
   }
 
-  _configureStandardProvider ({ rpcUrl }) {
+  _configureStandardProvider ({ rpcUrl, chainId }) {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
     const networkClient = createJsonRpcClient({ rpcUrl })
+    // hack to add a 'rpc' network with chainId
+    networks.networkList['rpc'] = {
+      chainId: chainId,
+      rpcUrl,
+    }
     this._setNetworkClient(networkClient)
   }
 

@@ -26,6 +26,7 @@ function mapStateToProps (state) {
     provider: state.metamask.provider,
     frequentRpcList: state.metamask.frequentRpcList || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
+    network: state.metamask.network,
   }
 }
 
@@ -40,8 +41,8 @@ function mapDispatchToProps (dispatch) {
     setDefaultRpcTarget: type => {
       dispatch(actions.setDefaultRpcTarget(type))
     },
-    setRpcTarget: (target) => {
-      dispatch(actions.setRpcTarget(target))
+    setRpcTarget: (target, network) => {
+      dispatch(actions.setRpcTarget(target, network))
     },
     delRpcTarget: (target) => {
       dispatch(actions.delRpcTarget(target))
@@ -276,6 +277,8 @@ NetworkDropdown.prototype.getNetworkName = function () {
 NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
   const reversedRpcList = rpcList.slice().reverse()
+  const rpcTarget = provider.rpcTarget
+  const network = props.network
 
   return reversedRpcList.map((rpc) => {
     const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
@@ -288,7 +291,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
         {
           key: `common${rpc}`,
           closeMenu: () => this.props.hideNetworkDropdown(),
-          onClick: () => props.setRpcTarget(rpc),
+          onClick: () => props.setRpcTarget(rpc, network),
           style: {
             fontSize: '16px',
             lineHeight: '20px',
@@ -319,6 +322,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
 NetworkDropdown.prototype.renderCustomOption = function (provider) {
   const { rpcTarget, type } = provider
   const props = this.props
+  const network = props.network
 
   if (type !== 'rpc') return null
 
@@ -332,7 +336,7 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
-          onClick: () => props.setRpcTarget(rpcTarget),
+          onClick: () => props.setRpcTarget(rpcTarget, network),
           closeMenu: () => this.props.hideNetworkDropdown(),
           style: {
             fontSize: '16px',

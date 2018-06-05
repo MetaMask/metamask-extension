@@ -695,6 +695,9 @@
   "newRPC": {
     "message": "New RPC URL"
   },
+  "optionalChainId": {
+    "message": "ChainId (optional)"
+  },
   "next": {
     "message": "Next"
   },
