@@ -497,7 +497,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // verify keyrings
     const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair')
     if (nonSimpleKeyrings.length > 1 && this.diagnostics) {
-      await this.reportMultipleKeyrings(nonSimpleKeyrings)
+      await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
 
     await this.preferencesController.syncAddresses(accounts)
