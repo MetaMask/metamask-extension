@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Attempting to import an empty private key will now show a clear error.
 - Fixes issue where old nicknames were kept around causing errors.
 
 ## 4.7.2 Sun Jun 03 2018
