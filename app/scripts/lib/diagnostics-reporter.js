@@ -7,7 +7,7 @@ class DiagnosticsReporter {
 
   async reportOrphans(orphans) {
     try {
-      await this.submit({
+      return await this.submit({
         accounts: Object.keys(orphans),
         metadata: {
           type: 'orphans',
@@ -28,7 +28,7 @@ class DiagnosticsReporter {
           accounts: await keyring.getAccounts(),
         }
       }))
-      await this.submit({
+      return await this.submit({
         accounts: [],
         metadata: {
           type: 'keyrings',
@@ -49,7 +49,7 @@ class DiagnosticsReporter {
       return await postData(message)
     } catch (err) {
       console.error('DiagnosticsReporter - "submit" encountered an error:')
-      console.error(err)
+      throw err
     }
   }
 
