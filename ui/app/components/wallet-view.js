@@ -36,7 +36,6 @@ function mapStateToProps (state) {
     tokens: state.metamask.tokens,
     keyrings: state.metamask.keyrings,
     selectedAddress: selectors.getSelectedAddress(state),
-    selectedIdentity: selectors.getSelectedIdentity(state),
     selectedAccount: selectors.getSelectedAccount(state),
     selectedTokenAddress: state.metamask.selectedTokenAddress,
   }
@@ -99,12 +98,12 @@ WalletView.prototype.render = function () {
   const {
     responsiveDisplayClassname,
     selectedAddress,
-    selectedIdentity,
     keyrings,
     showAccountDetailModal,
     sidebarOpen,
     hideSidebar,
     history,
+    identities,
   } = this.props
   // temporary logs + fake extra wallets
   // console.log('walletview, selectedAccount:', selectedAccount)
@@ -116,8 +115,7 @@ WalletView.prototype.render = function () {
   }
 
   const keyring = keyrings.find((kr) => {
-    return kr.accounts.includes(selectedAddress) ||
-      kr.accounts.includes(selectedIdentity.address)
+    return kr.accounts.includes(selectedAddress)
   })
 
   const type = keyring.type
@@ -149,7 +147,7 @@ WalletView.prototype.render = function () {
         h('span.account-name', {
           style: {},
         }, [
-          selectedIdentity.name,
+          identities[selectedAddress].name,
         ]),
 
         h('button.btn-clear.wallet-view__details-button.allcaps', this.context.t('details')),
