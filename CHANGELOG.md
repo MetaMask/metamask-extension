@@ -2,6 +2,11 @@
 
 ## Current Master
 
+## 4.7.4 Tue Jun 05 2018
+
+- Add diagnostic reporting for users with multiple HD keyrings
+- Throw explicit error when selected account is unset
+
 ## 4.7.3 Mon Jun 04 2018
 
 - Hide token now uses new modal
