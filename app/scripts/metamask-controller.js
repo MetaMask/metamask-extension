@@ -23,7 +23,6 @@ const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const NoticeController = require('./notice-controller')
-const ShapeShiftController = require('./controllers/shapeshift')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
@@ -48,6 +47,7 @@ const AddressBookController = require('gaba/AddressBookController').default
 const CurrencyRateController = require('gaba/CurrencyRateController').default
 const NetworkStatusController = require('gaba/NetworkStatusController').default
 const PhishingController = require('gaba/PhishingController').default
+const ShapeShiftController = require('gaba/ShapeShiftController').default
 const TokenRatesController = require('gaba/TokenRatesController').default
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -182,9 +182,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // to be uncommented when retrieving notices from a remote server.
     // this.noticeController.startPolling()
 
-    this.shapeshiftController = new ShapeShiftController({
-      initState: initState.ShapeShiftController,
-    })
+    this.shapeshiftController = new ShapeShiftController(initState.ShapeShiftController)
 
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
@@ -199,7 +197,7 @@ module.exports = class MetamaskController extends EventEmitter {
       AddressBookController: this.addressBookController,
       CurrencyRateController: this.currencyRateController,
       NoticeController: this.noticeController.store,
-      ShapeShiftController: this.shapeshiftController.store,
+      ShapeShiftController: this.shapeshiftController,
       NetworkController: this.networkController.store,
       NetworkStatusController: this.networkStatusController,
     })
@@ -219,7 +217,7 @@ module.exports = class MetamaskController extends EventEmitter {
       AddressBookController: this.addressBookController,
       CurrencyRateController: this.currencyRateController,
       NoticeController: this.noticeController.memStore,
-      ShapeshiftController: this.shapeshiftController.store,
+      ShapeshiftController: this.shapeshiftController,
       NetworkStatusController: this.networkStatusController,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
@@ -1204,7 +1202,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @property {string} depositType - An abbreviation of the type of crypto currency to be deposited.
    */
   createShapeShiftTx (depositAddress, depositType) {
-    this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
+    this.shapeshiftController.createTransaction(depositAddress, depositType)
   }
 
   // network

@@ -67,9 +67,9 @@ function formatDate (date) {
 
 ShiftListItem.prototype.renderUtilComponents = function () {
   var props = this.props
-  const { conversionRate, currentCurrency } = props
+  const { conversionRate, currentCurrency, response = {} } = props
 
-  switch (props.response.status) {
+  switch (response.status) {
     case 'no_deposits':
       return h('.flex-row', [
         h(CopyButton, {
@@ -122,7 +122,9 @@ ShiftListItem.prototype.renderUtilComponents = function () {
 
 ShiftListItem.prototype.renderInfo = function () {
   var props = this.props
-  switch (props.response.status) {
+  const { response = {} } = props
+
+  switch (response.status) {
     case 'no_deposits':
       return h('.flex-column', {
         style: {
