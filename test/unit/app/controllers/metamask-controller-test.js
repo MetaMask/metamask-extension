@@ -53,6 +53,9 @@ describe('MetaMaskController', function () {
       },
       initState: clone(firstTimeState),
     })
+    // disable diagnostics
+    metamaskController.diagnostics = null
+    // add sinon method spies
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndKeychain')
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndRestore')
   })
