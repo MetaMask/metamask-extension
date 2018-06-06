@@ -63,7 +63,7 @@ describe('MetaMaskController', function () {
     sandbox.restore()
   })
 
-  describe('', function () {
+  describe('#eth_sendTransaction', function () {
 
     let unapproveTxList, txId, unapprovedTx
 
@@ -91,7 +91,7 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe('', function () {
+  describe('#getAccounts', function () {
 
     beforeEach(async function () {
       const password = 'a-fake-password'
@@ -99,9 +99,10 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
     })
 
-    it('', function () {
+    it('returns first address when dapp calls web3.eth.getAccounts', function () {
       metamaskController.networkController._baseProviderParams.getAccounts((err, res) => {
         assert.ifError(err)
+        assert.equal(res.length, 1)
         assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
       })
     })
