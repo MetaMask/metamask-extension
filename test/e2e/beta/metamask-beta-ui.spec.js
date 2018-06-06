@@ -217,8 +217,10 @@ describe('MetaMask', function () {
     })
 
     it('clicks through the deposit modal', async () => {
+      const buyModal = await driver.findElement(By.css('span .modal'))
       const closeModal = await findElement(driver, By.css('.page-container__header-close'))
       await closeModal.click()
+      await driver.wait(until.stalenessOf(buyModal))
       await delay(regularDelayMs)
     })
   })
@@ -316,7 +318,6 @@ describe('MetaMask', function () {
 
   describe('Send ETH from inside MetaMask', () => {
     it('starts to send a transaction', async function () {
-
       const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
       await sendButton.click()
       await delay(regularDelayMs)
