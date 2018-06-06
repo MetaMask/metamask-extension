@@ -4,7 +4,6 @@ const copyToClipboard = require('copy-to-clipboard')
 //
 // Sub-Reducers take in the complete state and return their sub-state
 //
-const reduceIdentities = require('./reducers/identities')
 const reduceMetamask = require('./reducers/metamask')
 const reduceApp = require('./reducers/app')
 const reduceLocale = require('./reducers/locale')
@@ -20,12 +19,6 @@ function rootReducer (state, action) {
   if (action.type === 'GLOBAL_FORCE_UPDATE') {
     return action.value
   }
-
-  //
-  // Identities
-  //
-
-  state.identities = reduceIdentities(state, action)
 
   //
   // MetaMask
