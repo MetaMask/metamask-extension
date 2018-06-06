@@ -23,9 +23,10 @@ class AccountDropdowns extends Component {
 
   renderAccounts () {
     const { identities, selected, keyrings } = this.props
+    const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
 
-    return Object.keys(identities).map((key, index) => {
-      const identity = identities[key]
+    return accountOrder.map((address, index) => {
+      const identity = identities[address]
       const isSelected = identity.address === selected
 
       const simpleAddress = identity.address.substring(2).toLowerCase()
