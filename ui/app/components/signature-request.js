@@ -235,12 +235,12 @@ SignatureRequest.prototype.renderFooter = function () {
   }
 
   return h('div.request-signature__footer', [
-    h('button.btn-secondary--lg.request-signature__footer__cancel-button', {
+    h('button.btn-default.btn--large.request-signature__footer__cancel-button', {
       onClick: event => {
         cancel(event).then(() => this.props.history.push(DEFAULT_ROUTE))
       },
     }, this.context.t('cancel')),
-    h('button.btn-primary--lg', {
+    h('button.btn-primary.btn--large', {
       onClick: event => {
         sign(event).then(() => this.props.history.push(DEFAULT_ROUTE))
       },

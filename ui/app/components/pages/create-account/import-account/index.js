@@ -46,7 +46,7 @@ AccountImportSubview.prototype.render = function () {
           },
           onClick: () => {
             global.platform.openWindow({
-              url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
+              url: 'https://consensys.zendesk.com/hc/en-us/articles/360004180111-What-are-imported-accounts-New-UI',
             })
           },
         }, this.context.t('here')),

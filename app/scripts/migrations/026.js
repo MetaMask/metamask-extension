@@ -27,7 +27,7 @@ module.exports = {
 
 function transformState (state) {
   if (!state.KeyringController || !state.PreferencesController) {
-    return
+    return state
   }
 
   if (!state.KeyringController.walletNicknames) {

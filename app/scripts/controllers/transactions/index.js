@@ -8,6 +8,7 @@ const TxGasUtil = require('./tx-gas-utils')
 const PendingTransactionTracker = require('./pending-tx-tracker')
 const NonceTracker = require('./nonce-tracker')
 const txUtils = require('./lib/util')
+const cleanErrorStack = require('../../lib/cleanErrorStack')
 const log = require('loglevel')
 
 /**
@@ -123,6 +124,7 @@ class TransactionController extends EventEmitter {
   @param txParams {object} - txParams for the transaction
   @param opts {object} - with the key origin to put the origin on the txMeta
   */
+
   async newUnapprovedTransaction (txParams, opts = {}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const initialTxMeta = await this.addUnapprovedTransaction(txParams)
@@ -135,11 +137,11 @@ class TransactionController extends EventEmitter {
           case 'submitted':
             return resolve(finishedTxMeta.hash)
           case 'rejected':
-            return reject(new Error('MetaMask Tx Signature: User denied transaction signature.'))
+            return reject(cleanErrorStack(new Error('MetaMask Tx Signature: User denied transaction signature.')))
           case 'failed':
-            return reject(new Error(finishedTxMeta.err.message))
+            return reject(cleanErrorStack(new Error(finishedTxMeta.err.message)))
           default:
-            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`))
+            return reject(cleanErrorStack(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`)))
         }
       })
     })

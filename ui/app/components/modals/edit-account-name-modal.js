@@ -9,7 +9,7 @@ const { getSelectedAccount } = require('../../selectors')
 function mapStateToProps (state) {
   return {
     selectedAccount: getSelectedAccount(state),
-    identity: state.appState.modal.modalState.identity,
+    identity: state.appState.modal.modalState.props.identity,
   }
 }
 

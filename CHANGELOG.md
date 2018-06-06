@@ -2,6 +2,41 @@
 
 ## Current Master
 
+- Fixes issue where old nicknames were kept around causing errors.
+
+## 4.7.2 Sun Jun 03 2018
+
+- Fix bug preventing users from logging in. Internally accounts and identities were out of sync.
+- Fix support links to point to new support system (Zendesk)
+- Fix bug in migration #26 ( moving account nicknames to preferences )
+- Clears account nicknames on restore from seedPhrase
+
+## 4.7.1 Fri Jun 01 2018
+
+- Fix bug where errors were not returned to Dapps.
+
+## 4.7.0 Wed May 30 2018
+
+- Fix Brave support
+- Adds error messages when passwords don't match in onboarding flow.
+- Adds modal notification if a retry in the process of being confirmed is dropped.
+- New unlock screen design.
+- Design improvements to the add token screen.
+- Fix inconsistencies in confirm screen between extension and browser window modes.
+- Fix scrolling in deposit ether modal.
+- Fix styling of app spinner.
+- Font weight changed from 300 to 400.
+- New reveal screen design.
+- Styling improvements to labels in first time flow and signature request headers.
+
+## 4.6.1 Mon Apr 30 2018
+
+- Fix bug where sending a transaction resulted in an infinite spinner
+- Allow transactions with a 0 gwei gas price
+- Handle encoding errors in ERC20 symbol + digits
+- Fix ShapeShift forms (new + old ui)
+- Fix sourcemaps
+
 ## 4.6.0 Thu Apr 26 2018
 
 - Correctly format currency conversion for locally selected preferred currency.

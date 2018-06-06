@@ -34,14 +34,7 @@ class UnlockPage extends Component {
     }
   }
 
-  tryUnlockMetamask (password) {
-    const { tryUnlockMetamask, history } = this.props
-    tryUnlockMetamask(password)
-      .catch(({ message }) => this.setState({ error: message }))
-      .then(() => history.push(DEFAULT_ROUTE))
-  }
-
-  handleSubmit (event) {
+  async handleSubmit (event) {
     event.preventDefault()
     event.stopPropagation()
 
@@ -54,9 +47,14 @@ class UnlockPage extends Component {
 
     this.setState({ error: null })
 
-    tryUnlockMetamask(password)
-      .catch(({ message }) => this.setState({ error: message }))
-      .then(() => history.push(DEFAULT_ROUTE))
+    try {
+      await tryUnlockMetamask(password)
+    } catch ({ message }) {
+      this.setState({ error: message })
+      return
+    }
+
+    history.push(DEFAULT_ROUTE)
   }
 
   handleInputChange ({ target }) {

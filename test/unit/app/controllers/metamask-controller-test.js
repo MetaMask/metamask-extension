@@ -47,7 +47,7 @@ describe('MetaMaskController', function () {
       encryptor: {
         encrypt: function (password, object) {
           this.object = object
-          return Promise.resolve()
+          return Promise.resolve('mock-encrypted')
         },
         decrypt: function () {
           return Promise.resolve(this.object)
@@ -62,6 +62,31 @@ describe('MetaMaskController', function () {
   afterEach(function () {
     nock.cleanAll()
     sandbox.restore()
+  })
+
+  describe('submitPassword', function () {
+    const password = 'password'
+
+    beforeEach(async function () {
+      await metamaskController.createNewVaultAndKeychain(password)
+    })
+
+    it('removes any identities that do not correspond to known accounts.', async function () {
+      const fakeAddress = '0xbad0'
+      metamaskController.preferencesController.addAddresses([fakeAddress])
+      await metamaskController.submitPassword(password)
+
+      const identities = Object.keys(metamaskController.preferencesController.store.getState().identities)
+      const addresses = await metamaskController.keyringController.getAccounts()
+
+      identities.forEach((identity) => {
+        assert.ok(addresses.includes(identity), `addresses should include all IDs: ${identity}`)
+      })
+
+      addresses.forEach((address) => {
+        assert.ok(identities.includes(address), `identities should include all Addresses: ${address}`)
+      })
+    })
   })
 
   describe('#getGasPrice', function () {
