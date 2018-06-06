@@ -91,10 +91,8 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       // Close all other tabs
-      const [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
+      const [oldUi, newUi] = await driver.getAllWindowHandles()
       await driver.switchTo().window(oldUi)
-      await driver.close()
-      await driver.switchTo().window(infoPage)
       await driver.close()
       await driver.switchTo().window(newUi)
       await delay(regularDelayMs)
@@ -391,11 +389,11 @@ describe('MetaMask', function () {
     })
 
     it('can pick a token from the existing options', async () => {
-      const [tokenSearch] = await driver.findElements(By.css('input.add-token__input'))
+      const [tokenSearch] = await driver.findElements(By.css('#search-tokens'))
       await tokenSearch.sendKeys('BAT')
       await delay(regularDelayMs)
 
-      const [token] = await driver.findElements(By.xpath("//div[contains(text(), 'BAT')]"))
+      const [token] = await driver.findElements(By.xpath("//span[contains(text(), 'BAT')]"))
       await token.click()
       await delay(regularDelayMs)
 
@@ -428,7 +426,7 @@ describe('MetaMask', function () {
         tokenName,
         tokenDecimal,
         tokenSymbol,
-      ] = await driver.findElements(By.css('input'))
+      ] = await driver.findElements(By.css('.form-control'))
 
       await totalSupply.sendKeys('100')
       await tokenName.sendKeys('Test')
@@ -468,7 +466,7 @@ describe('MetaMask', function () {
       await addCustomToken.click()
       await delay(regularDelayMs)
 
-      const [newTokenAddress] = await driver.findElements(By.css('.add-token__add-custom-form input'))
+      const [newTokenAddress] = await driver.findElements(By.css('#custom-address'))
       await newTokenAddress.sendKeys(tokenAddress)
       await delay(regularDelayMs)
 
