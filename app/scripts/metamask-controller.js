@@ -46,6 +46,7 @@ const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
+const DiagnosticsReporter = require('./lib/diagnostics-reporter')
 const log = require('loglevel')
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -63,6 +64,12 @@ module.exports = class MetamaskController extends EventEmitter {
     this.opts = opts
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
+
+    // metamask diagnostics reporter
+    this.diagnostics = opts.diagnostics || new DiagnosticsReporter({
+      firstTimeInfo: initState.firstTimeInfo,
+      version,
+    })
 
     // platform-specific api
     this.platform = opts.platform
@@ -85,6 +92,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
+      diagnostics: this.diagnostics,
     })
 
     // currency controller
@@ -139,6 +147,8 @@ module.exports = class MetamaskController extends EventEmitter {
         const address = addresses[0]
         this.preferencesController.setSelectedAddress(address)
       }
+      // ensure preferences + identities controller know about all addresses
+      this.preferencesController.addAddresses(addresses)
       this.accountTracker.syncWithAddresses(addresses)
     })
 
@@ -354,7 +364,7 @@ module.exports = class MetamaskController extends EventEmitter {
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // vault management
-      submitPassword: nodeify(keyringController.submitPassword, keyringController),
+      submitPassword: nodeify(this.submitPassword, this),
 
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
@@ -456,7 +466,11 @@ module.exports = class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore (password, seed) {
     const release = await this.createVaultMutex.acquire()
     try {
+      // clear known identities
+      this.preferencesController.setAddresses([])
+      // create new vault
       const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
+      // set new identities
       const accounts = await this.keyringController.getAccounts()
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
@@ -466,6 +480,28 @@ module.exports = class MetamaskController extends EventEmitter {
       release()
       throw err
     }
+  }
+
+  /*
+   * Submits the user's password and attempts to unlock the vault.
+   * Also synchronizes the preferencesController, to ensure its schema
+   * is up to date with known accounts once the vault is decrypted.
+   *
+   * @param {string} password - The user's password
+   * @returns {Promise<object>} - The keyringController update.
+   */
+  async submitPassword (password) {
+    await this.keyringController.submitPassword(password)
+    const accounts = await this.keyringController.getAccounts()
+
+    // verify keyrings
+    const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair')
+    if (nonSimpleKeyrings.length > 1 && this.diagnostics) {
+      await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
+    }
+
+    await this.preferencesController.syncAddresses(accounts)
+    return this.keyringController.fullUpdate()
   }
 
   /**

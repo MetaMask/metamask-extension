@@ -2,10 +2,10 @@
   Buttons
  */
 
+.btn-default,
 .btn-primary,
-.btn-primary--lg,
-.btn-secondary,
-.btn-secondary--lg {
+.btn-secondary {
+  height: 44px;
   background: $white;
   display: flex;
   justify-content: center;
@@ -20,10 +20,16 @@
   width: 100%;
   text-transform: uppercase;
   outline: none;
+
+  &--disabled,
+  &[disabled] {
+    cursor: auto;
+    opacity: .5;
+    pointer-events: none;
+  }
 }
 
-.btn-primary,
-.btn-primary--lg {
+.btn-primary {
   color: $curious-blue;
   border: 2px solid $spindle;
 
@@ -35,17 +41,23 @@
   &:hover {
     border-color: $curious-blue;
   }
+}
 
-  &--disabled,
-  &[disabled] {
-    cursor: auto;
-    opacity: .5;
-    pointer-events: none;
+.btn-secondary {
+  color: $monzo;
+  border: 2px solid lighten($monzo, 40%);
+
+  &:active {
+    background: lighten($monzo, 55%);
+    border-color: $monzo;
+  }
+
+  &:hover {
+    border-color: $monzo;
   }
 }
 
-.btn-secondary,
-.btn-secondary--lg {
+.btn-default {
   color: $scorpion;
   border: 2px solid $dusty-gray;
 
@@ -57,20 +69,9 @@
   &:hover {
     border-color: $scorpion;
   }
-
-  &--disabled,
-  &[disabled] {
-    cursor: auto;
-    opacity: .5;
-    pointer-events: none;
-  }
 }
 
-.btn-primary, .btn-secondary {
-  height: 44px;
-}
-
-.btn-primary--lg, .btn-secondary--lg {
+.btn--large {
   height: 54px;
 }
 

@@ -59,6 +59,7 @@ function createErrorMiddleware ({ override = true } = {}) {
       if (!error) { return done() }
       sanitizeRPCError(error)
       log.error(`MetaMask - RPC Error: ${error.message}`, error)
+      done()
     })
   }
 }
