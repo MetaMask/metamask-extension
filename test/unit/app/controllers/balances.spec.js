@@ -1,5 +1,4 @@
 const assert = require('assert')
-const sinon = require('sinon')
 const EventEmitter = require('events').EventEmitter
 const ObservableStore = require('obs-store')
 
@@ -8,15 +7,14 @@ const BalanceController = require('../../../../app/scripts/controllers/balance')
 const PendingBalanceCalculator = require('../../../../app/scripts/lib/pending-balance-calculator')
 const AccountTracker = require('../../../../app/scripts/lib/account-tracker')
 const TransactionController = require('../../../../app/scripts/controllers/transactions')
-const { createTestProviderTools, getTestAccounts } = require('../../../stub/provider')
+const { createTestProviderTools } = require('../../../stub/provider')
 
-const noop = () => true
 const currentNetworkId = 42
 
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
 
-describe('', function () {
+describe('Balance Controller', function () {
   let balanceController
 
   it('errors when address, accountTracker, txController, or blockTracker', function () {
@@ -65,14 +63,4 @@ describe('', function () {
     assert.equal(balanceControllerState.ethBalance, '0x5e942b06dc24c4d50')
   })
 
-  xit('', async function () {
-    sinon.stub(balanceController, 'txController')
-    // console.log(balanceController.txController._events)
-    const event = Object.keys(balanceController.txController._events)[0]
-    console.log(event)
-    balanceController.txController.emit('tx:status-update', 1, 'failed')
-    // balanceController.updateBalance()
-    // console.log(await balanceController.balanceCalc.getBalance())
-    // console.log(balanceController.store.getState())
-  })
 })
