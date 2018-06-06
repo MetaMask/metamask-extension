@@ -151,15 +151,10 @@ class PreferencesController {
    * Setter for the `selectedAddress` property
    *
    * @param {string} _address A new hex address for an account
-   * @returns {Promise<void>} Promise resolves with undefined
-   *
    */
   setSelectedAddress (_address) {
-    return new Promise((resolve, reject) => {
-      const address = normalizeAddress(_address)
-      this.store.updateState({ selectedAddress: address })
-      resolve()
-    })
+    const selectedAddress = normalizeAddress(_address)
+    this.store.updateState({ selectedAddress })
   }
 
   /**

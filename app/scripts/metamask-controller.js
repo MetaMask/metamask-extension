@@ -371,7 +371,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setCustomRpc: nodeify(this.setCustomRpc, this),
 
       // PreferencesController
-      setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
+      setSelectedAddress: preferencesController.setSelectedAddress.bind(preferencesController),
       addToken: nodeify(preferencesController.addToken, preferencesController),
       removeToken: nodeify(preferencesController.removeToken, preferencesController),
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
@@ -500,7 +500,7 @@ module.exports = class MetamaskController extends EventEmitter {
       await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
 
-    await this.preferencesController.syncAddresses(accounts)
+    this.preferencesController.syncAddresses(accounts)
     return this.keyringController.fullUpdate()
   }
 
@@ -653,7 +653,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const allAccounts = await this.keyringController.getAccounts()
     this.preferencesController.setAddresses(allAccounts)
     // set new account as selected
-    await this.preferencesController.setSelectedAddress(accounts[0])
+    this.preferencesController.setSelectedAddress(accounts[0])
   }
 
   // ---------------------------------------------------------------------------
