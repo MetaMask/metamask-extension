@@ -558,10 +558,12 @@ function importNewAccount (strategy, args) {
     }
     dispatch(actions.hideLoadingIndication())
     dispatch(actions.updateMetamaskState(newState))
-    dispatch({
-      type: actions.SHOW_ACCOUNT_DETAIL,
-      value: newState.selectedAddress,
-    })
+    if (newState.selectedAddress) {
+      dispatch({
+        type: actions.SHOW_ACCOUNT_DETAIL,
+        value: newState.selectedAddress,
+      })
+    }
     return newState
   }
 }

@@ -99,7 +99,7 @@ class App extends Component {
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
-      this.getConnectingLabel() : null
+      this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
 
     return (
@@ -210,7 +210,10 @@ class App extends Component {
     }
   }
 
-  getConnectingLabel = function () {
+  getConnectingLabel = function (loadingMessage) {
+    if (loadingMessage) {
+      return loadingMessage
+    }
     const { provider } = this.props
     const providerName = provider.type
 

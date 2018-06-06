@@ -46,6 +46,7 @@ const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
+const DiagnosticsReporter = require('./lib/diagnostics-reporter')
 const log = require('loglevel')
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -63,6 +64,12 @@ module.exports = class MetamaskController extends EventEmitter {
     this.opts = opts
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
+
+    // metamask diagnostics reporter
+    this.diagnostics = opts.diagnostics || new DiagnosticsReporter({
+      firstTimeInfo: initState.firstTimeInfo,
+      version,
+    })
 
     // platform-specific api
     this.platform = opts.platform
@@ -85,7 +92,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      getFirstTimeInfo: () => initState.firstTimeInfo,
+      diagnostics: this.diagnostics,
     })
 
     // currency controller
@@ -488,6 +495,12 @@ module.exports = class MetamaskController extends EventEmitter {
   async submitPassword (password) {
     await this.keyringController.submitPassword(password)
     const accounts = await this.keyringController.getAccounts()
+
+    // verify keyrings
+    const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair')
+    if (nonSimpleKeyrings.length > 1 && this.diagnostics) {
+      await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
+    }
 
     await this.preferencesController.syncAddresses(accounts)
     return this.keyringController.fullUpdate()

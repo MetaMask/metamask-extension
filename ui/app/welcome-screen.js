@@ -14,6 +14,11 @@ class WelcomeScreen extends Component {
     closeWelcomeScreen: PropTypes.func.isRequired,
     welcomeScreenSeen: PropTypes.bool,
     history: PropTypes.object,
+    t: PropTypes.func,
+  }
+
+  static contextTypes = {
+    t: PropTypes.func,
   }
 
   constructor (props) {
@@ -45,16 +50,15 @@ class WelcomeScreen extends Component {
             height: '225',
           }),
 
-          h('div.welcome-screen__info__header', 'Welcome to MetaMask Beta'),
+          h('div.welcome-screen__info__header', this.context.t('welcomeBeta')),
 
-          h('div.welcome-screen__info__copy', 'MetaMask is a secure identity vault for Ethereum.'),
+          h('div.welcome-screen__info__copy', this.context.t('metamaskDescription')),
 
-          h('div.welcome-screen__info__copy', `It allows you to hold ether & tokens,
-            and serves as your bridge to decentralized applications.`),
+          h('div.welcome-screen__info__copy', this.context.t('holdEther')),
 
           h('button.welcome-screen__button', {
             onClick: this.initiateAccountCreation,
-          }, 'Continue'),
+          }, this.context.t('continue')),
 
         ]),
 

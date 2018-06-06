@@ -53,6 +53,9 @@ describe('MetaMaskController', function () {
       },
       initState: clone(firstTimeState),
     })
+    // disable diagnostics
+    metamaskController.diagnostics = null
+    // add sinon method spies
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndKeychain')
     sandbox.spy(metamaskController.keyringController, 'createNewVaultAndRestore')
   })
@@ -72,11 +75,6 @@ describe('MetaMaskController', function () {
     it('removes any identities that do not correspond to known accounts.', async function () {
       const fakeAddress = '0xbad0'
       metamaskController.preferencesController.addAddresses([fakeAddress])
-      metamaskController.preferencesController.notifier = {
-        notify: async () => {
-          return true
-        },
-      }
       await metamaskController.submitPassword(password)
 
       const identities = Object.keys(metamaskController.preferencesController.store.getState().identities)
