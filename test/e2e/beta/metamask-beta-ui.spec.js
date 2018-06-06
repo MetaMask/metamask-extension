@@ -93,9 +93,14 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       // Close all other tabs
-      const [oldUi, newUi] = await driver.getAllWindowHandles()
+      let [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
+      newUi = newUi || infoPage
       await driver.switchTo().window(oldUi)
       await driver.close()
+      if (infoPage !== newUi) {
+        await driver.switchTo().window(infoPage)
+        await driver.close()
+      }
       await driver.switchTo().window(newUi)
       await delay(regularDelayMs)
 

@@ -89,18 +89,23 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('selects the new UI option', async () => {
-      const button = await driver.findElement(By.xpath("//p[contains(text(), 'Try Beta Version')]"))
+      const button = await findElement(driver, By.xpath("//p[contains(text(), 'Try Beta Version')]"))
       await button.click()
       await delay(regularDelayMs)
 
       // Close all other tabs
-      const [oldUi, newUi] = await driver.getAllWindowHandles()
+      let [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
+      newUi = newUi || infoPage
       await driver.switchTo().window(oldUi)
       await driver.close()
+      if (infoPage !== newUi) {
+        await driver.switchTo().window(infoPage)
+        await driver.close()
+      }
       await driver.switchTo().window(newUi)
       await delay(regularDelayMs)
 
-      const [continueBtn] = await driver.findElements(By.css('.welcome-screen__button'))
+      const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
       await continueBtn.click()
       await delay(regularDelayMs)
     })
