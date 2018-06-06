@@ -23,7 +23,7 @@ class CreateAccountPage extends Component {
         }),
         onClick: () => history.push(NEW_ACCOUNT_ROUTE),
       }, [
-        this.context.t('create')
+        this.context.t('create'),
       ]),
 
       h('div.new-account__tabs__tab', {
@@ -34,7 +34,7 @@ class CreateAccountPage extends Component {
         }),
         onClick: () => history.push(IMPORT_ACCOUNT_ROUTE),
       }, [
-        this.context.t('import')
+        this.context.t('import'),
       ]),
     ])
   }
