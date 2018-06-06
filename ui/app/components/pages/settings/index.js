@@ -14,8 +14,8 @@ class Config extends Component {
     return h('div.settings__tabs', [
       h(TabBar, {
         tabs: [
-          { content: 'Settings', key: SETTINGS_ROUTE },
-          { content: 'Info', key: INFO_ROUTE },
+          { content: this.context.t('settings'), key: SETTINGS_ROUTE },
+          { content: this.context.t('info'), key: INFO_ROUTE },
         ],
         isActive: key => matchPath(location.pathname, { path: key, exact: true }),
         onSelect: key => history.push(key),
@@ -54,6 +54,11 @@ class Config extends Component {
 Config.propTypes = {
   location: PropTypes.object,
   history: PropTypes.object,
+  t: PropTypes.func,
+}
+
+Config.contextTypes = {
+  t: PropTypes.func,
 }
 
 module.exports = Config
