@@ -45,7 +45,6 @@ const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
-const cleanErrorStack = require('./lib/cleanErrorStack')
 const DiagnosticsReporter = require('./lib/diagnostics-reporter')
 const log = require('loglevel')
 
