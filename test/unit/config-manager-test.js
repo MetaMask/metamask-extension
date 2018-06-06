@@ -112,4 +112,107 @@ describe('config-manager', function () {
       })
     })
   })
+
+  describe('#setVault', function () {
+    it('sets and gets vault data', function () {
+      const testString = 'encrypted-string'
+      configManager.setVault(testString)
+      const data = configManager.getData()
+      assert.equal(data.vault, testString)
+    })
+  })
+
+  describe('#getKeychains', function () {
+    it('sets and gets keychain', function () {
+      const testString = 'keychain'
+      configManager.setKeychains(testString)
+      const keyChains = configManager.getKeychains()
+      assert.equal(keyChains, 'keychain')
+    })
+  })
+
+    describe('#setSelectedAccount', function () {
+      it('sets and gets selected account', function () {
+        const address = '0x023'
+        configManager.setSelectedAccount(address)
+        const selectedAddress = configManager.getSelectedAccount()
+        assert.equal(selectedAddress, address)
+      })
+    })
+
+    describe('#setShowSeedWords', function () {
+      it('sets and gets shouldShowSeed', function () {
+        configManager.setShowSeedWords(true)
+        const boolShowSeed = configManager.getShouldShowSeedWords()
+        assert.equal(boolShowSeed, true)
+      })
+    })
+
+    describe('#setProviderType', function () {
+      it('sets and gets provider type', function () {
+        configManager.setProviderType('localhost')
+        const providerType = configManager.getProvider()
+        assert.equal(providerType.type, 'localhost')
+      })
+    })
+
+    describe('#useEtherscanProvider', function () {
+      it('sets provider to etherscan', function () {
+        configManager.useEtherscanProvider()
+        const providerType = configManager.getProvider()
+        assert.equal(providerType.type, 'etherscan')
+      })
+    })
+
+    describe('#getCurrentRpcAddress', function () {
+
+      it('returns null when no provider is set', function () {
+        assert.equal(configManager.getCurrentRpcAddress(), null)
+      })
+
+      it('returns infura mainnet url when provider is mainnet', function () {
+        configManager.setProviderType('mainnet')
+        assert.equal(configManager.getCurrentRpcAddress(), 'https://mainnet.infura.io')
+      })
+
+      it('returns infura ropsten url when provider is ropsten', function () {
+        configManager.setProviderType('ropsten')
+        assert.equal(configManager.getCurrentRpcAddress(), 'https://ropsten.infura.io')
+      })
+
+      it('returns infura kovan url when provider is kovan', function () {
+        configManager.setProviderType('kovan')
+        assert.equal(configManager.getCurrentRpcAddress(), 'https://kovan.infura.io')
+      })
+
+      it('returns infura rinkeby url when provider is rinkeby', function () {
+        configManager.setProviderType('rinkeby')
+        assert.equal(configManager.getCurrentRpcAddress(), 'https://rinkeby.infura.io')
+      })
+
+      it('defaults to rinkbey when provider type is called with empty args', function () {
+        configManager.setProviderType()
+        assert.equal(configManager.getCurrentRpcAddress(), 'https://rinkeby.infura.io')
+      })
+    })
+
+    describe('#setSalt', function () {
+      it('sets and gets salt', function () {
+        const testSalt = 'OeolQodCv33b'
+        configManager.setSalt(testSalt)
+        assert.equal(configManager.getSalt(), testSalt)
+      })
+    })
+
+    describe.only('#subscribe', function () {
+      it('subscribes and unsubscribes', function () {
+
+        configManager.subscribe(configManager.setData)
+        assert.equal(typeof configManager._subs[0], 'function')
+
+        configManager.unsubscribe(configManager.setData)
+        assert.equal(configManager._subs.length, 0)
+      })
+    })
+
 })
