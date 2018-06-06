@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { sufficientBalance } = require('../../../app/scripts/lib/util')
+const { sufficientBalance, getEnvironmentType, getStack } = require('../../../app/scripts/lib/util')
 
 
 describe('SufficientBalance', function () {
@@ -37,5 +37,20 @@ describe('SufficientBalance', function () {
 
     const result = sufficientBalance(tx, balance)
     assert.ok(!result, 'insufficient balance found.')
+  })
+
+  it('returns popup enviornment with popup.html path', function () {
+    const envoirnment = getEnvironmentType('test.io/popup.html')
+    assert.equal(envoirnment, 'popup')
+  })
+
+  it('returns fullscreen enviornment with home.html path', function () {
+    const envoirnment = getEnvironmentType('test.io/home.html')
+    assert.equal(envoirnment, 'fullscreen')
+  })
+
+  it('returns error message stack', function () {
+    const stack = getStack()
+    assert(stack)
   })
 })
