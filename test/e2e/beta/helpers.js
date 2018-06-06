@@ -1,11 +1,14 @@
 const fs = require('fs')
 const mkdirp = require('mkdirp')
 const pify = require('pify')
+const {until} = require('selenium-webdriver')
 
 module.exports = {
   checkBrowserForConsoleErrors,
   loadExtension,
   verboseReportOnFailure,
+  findElement,
+  findElements,
 }
 
 async function loadExtension (driver, extensionId) {
@@ -52,4 +55,12 @@ async function verboseReportOnFailure (driver, test) {
   await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
   const htmlSource = await driver.getPageSource()
   await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+}
+
+async function findElement (driver, by, timeout = 10000) {
+  return driver.wait(until.elementLocated(by), timeout)
+}
+
+async function findElements (driver, by, timeout = 10000) {
+  return driver.wait(until.elementsLocated(by), timeout)
 }
