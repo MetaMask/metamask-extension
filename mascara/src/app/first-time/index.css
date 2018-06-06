@@ -123,10 +123,6 @@
     width: calc(100vw - 80px);
   }
 
-  .unique-image {
-    width: auto;
-  }
-
   .create-password__title,
   .unique-image__title,
   .tou__title,
@@ -148,7 +144,7 @@
     height: 100%;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     margin-top: 12px;
   }
 
@@ -181,7 +177,6 @@
     margin: 0 !important;
     padding: 16px 20px !important;
     height: 30vh !important;
-    width: calc(100% - 48px) !important;
   }
 
   .backup-phrase__content-wrapper {
@@ -280,6 +275,12 @@
   width: 335px;
 }
 
+@media only screen and (max-width: 575px) {
+  .unique-image__body-text {
+    width: initial;
+  }
+}
+
 .unique-image__body-text +
 .unique-image__body-text,
 .backup-phrase__body-text +
@@ -294,7 +295,7 @@
   border-radius: 8px;
   background-color: #FFFFFF;
   margin: 0 142px 0 0;
-  height: 334px;
+  height: 200px;
   overflow-y: auto;
   color: #757575;
   font-family: Roboto;
@@ -679,7 +680,7 @@ button.backup-phrase__confirm-seed-option:hover {
 }
 
 .first-time-flow__input {
-  width: 350px;
+  max-width: 350px;
 }
 
 .first-time-flow__button {
