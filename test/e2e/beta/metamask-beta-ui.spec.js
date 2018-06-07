@@ -1,7 +1,7 @@
 const path = require('path')
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
-const { By, Key } = webdriver
+const { By, Key, until } = webdriver
 const {
   delay,
   buildChromeWebDriver,
@@ -11,6 +11,8 @@ const {
   getExtensionIdFirefox,
 } = require('../func')
 const {
+  findElement,
+  findElements,
   checkBrowserForConsoleErrors,
   loadExtension,
   verboseReportOnFailure,
@@ -22,10 +24,10 @@ describe('MetaMask', function () {
   let tokenAddress
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
-  const tinyDelayMs = 500
+  const tinyDelayMs = 1000
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
-  const waitingNewPageDelayMs = regularDelayMs * 10
+  const waitingNewPageDelayMs = regularDelayMs * 30
 
   this.timeout(0)
   this.bail(true)
@@ -76,30 +78,33 @@ describe('MetaMask', function () {
     })
 
     it('use the local network', async function () {
-      const [networkSelector] = await driver.findElements(By.css('#network_component'))
+      const networkSelector = await findElement(driver, By.css('#network_component'))
       await networkSelector.click()
       await delay(regularDelayMs)
 
-      const [localhost] = await driver.findElements(By.xpath(`//li[contains(text(), 'Localhost')]`))
+      const localhost = await findElement(driver, By.xpath(`//li[contains(text(), 'Localhost')]`))
       await localhost.click()
       await delay(regularDelayMs)
     })
 
     it('selects the new UI option', async () => {
-      const button = await driver.findElement(By.xpath("//p[contains(text(), 'Try Beta Version')]"))
+      const button = await findElement(driver, By.xpath("//p[contains(text(), 'Try Beta Version')]"))
       await button.click()
       await delay(regularDelayMs)
 
       // Close all other tabs
-      const [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
+      let [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
+      newUi = newUi || infoPage
       await driver.switchTo().window(oldUi)
       await driver.close()
-      await driver.switchTo().window(infoPage)
-      await driver.close()
+      if (infoPage !== newUi) {
+        await driver.switchTo().window(infoPage)
+        await driver.close()
+      }
       await driver.switchTo().window(newUi)
       await delay(regularDelayMs)
 
-      const [continueBtn] = await driver.findElements(By.css('.welcome-screen__button'))
+      const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
       await continueBtn.click()
       await delay(regularDelayMs)
     })
@@ -107,9 +112,9 @@ describe('MetaMask', function () {
 
   describe('Going through the first time flow', () => {
     it('accepts a secure password', async () => {
-      const [passwordBox] = await driver.findElements(By.css('.create-password #create-password'))
-      const [passwordBoxConfirm] = await driver.findElements(By.css('.create-password #confirm-password'))
-      const [button] = await driver.findElements(By.css('.create-password button'))
+      const passwordBox = await findElement(driver, By.css('.create-password #create-password'))
+      const passwordBoxConfirm = await findElement(driver, By.css('.create-password #confirm-password'))
+      const button = await findElement(driver, By.css('.create-password button'))
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
@@ -118,23 +123,23 @@ describe('MetaMask', function () {
     })
 
     it('clicks through the unique image screen', async () => {
-      const [nextScreen] = await driver.findElements(By.css('.unique-image button'))
+      const nextScreen = await findElement(driver, By.css('.unique-image button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the privacy notice', async () => {
-      const [nextScreen] = await driver.findElements(By.css('.tou button'))
+      const nextScreen = await findElement(driver, By.css('.tou button'))
       await nextScreen.click()
       await delay(regularDelayMs)
 
       const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
       assert.equal(canClickThrough, false, 'disabled continue button')
-      const [bottomOfTos] = await driver.findElements(By.linkText('Attributions'))
+      const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
       await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
       await delay(regularDelayMs)
 
-      const [acceptTos] = await driver.findElements(By.css('.tou button'))
+      const acceptTos = await findElement(driver, By.css('.tou button'))
       await acceptTos.click()
       await delay(regularDelayMs)
     })
@@ -142,7 +147,7 @@ describe('MetaMask', function () {
     let seedPhrase
 
     it('reveals the seed phrase', async () => {
-      const [revealSeedPhrase] = await driver.findElements(By.css('.backup-phrase__secret-blocker'))
+      const revealSeedPhrase = await findElement(driver, By.css('.backup-phrase__secret-blocker'))
       await revealSeedPhrase.click()
       await delay(regularDelayMs)
 
@@ -150,7 +155,7 @@ describe('MetaMask', function () {
       assert.equal(seedPhrase.split(' ').length, 12)
       await delay(regularDelayMs)
 
-      const [nextScreen] = await driver.findElements(By.css('.backup-phrase button'))
+      const nextScreen = await findElement(driver, By.css('.backup-phrase button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
@@ -158,62 +163,64 @@ describe('MetaMask', function () {
     it('can retype the seed phrase', async () => {
       const words = seedPhrase.split(' ')
 
-      const [word0] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[0]}')]`))
+      const word0 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[0]}')]`))
       await word0.click()
       await delay(tinyDelayMs)
 
-      const [word1] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[1]}')]`))
+      const word1 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[1]}')]`))
       await word1.click()
       await delay(tinyDelayMs)
 
-      const [word2] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[2]}')]`))
+      const word2 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[2]}')]`))
       await word2.click()
       await delay(tinyDelayMs)
 
-      const [word3] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[3]}')]`))
+      const word3 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[3]}')]`))
       await word3.click()
       await delay(tinyDelayMs)
 
-      const [word4] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[4]}')]`))
+      const word4 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[4]}')]`))
       await word4.click()
       await delay(tinyDelayMs)
 
-      const [word5] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[5]}')]`))
+      const word5 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[5]}')]`))
       await word5.click()
       await delay(tinyDelayMs)
 
-      const [word6] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[6]}')]`))
+      const word6 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[6]}')]`))
       await word6.click()
       await delay(tinyDelayMs)
 
-      const [word7] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[7]}')]`))
+      const word7 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[7]}')]`))
       await word7.click()
       await delay(tinyDelayMs)
 
-      const [word8] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[8]}')]`))
+      const word8 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[8]}')]`))
       await word8.click()
       await delay(tinyDelayMs)
 
-      const [word9] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[9]}')]`))
+      const word9 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[9]}')]`))
       await word9.click()
       await delay(tinyDelayMs)
 
-      const [word10] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[10]}')]`))
+      const word10 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[10]}')]`))
       await word10.click()
       await delay(tinyDelayMs)
 
-      const [word11] = await driver.findElements(By.xpath(`//button[contains(text(), '${words[11]}')]`))
+      const word11 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[11]}')]`))
       await word11.click()
       await delay(tinyDelayMs)
 
-      const [confirm] = await driver.findElements(By.xpath(`//button[contains(text(), 'Confirm')]`))
+      const confirm = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirm.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the deposit modal', async () => {
-      const [closeModal] = await driver.findElements(By.css('.page-container__header-close'))
+      const buyModal = await driver.findElement(By.css('span .modal'))
+      const closeModal = await findElement(driver, By.css('.page-container__header-close'))
       await closeModal.click()
+      await driver.wait(until.stalenessOf(buyModal))
       await delay(regularDelayMs)
     })
   })
@@ -234,7 +241,7 @@ describe('MetaMask', function () {
       await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)
 
-      const [logoutButton] = await driver.findElements(By.css('.account-menu__logout-button'))
+      const logoutButton = await findElement(driver, By.css('.account-menu__logout-button'))
       assert.equal(await logoutButton.getText(), 'Log out')
       await logoutButton.click()
       await delay(regularDelayMs)
@@ -252,23 +259,23 @@ describe('MetaMask', function () {
       await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)
 
-      const [createAccount] = await driver.findElements(By.xpath(`//div[contains(text(), 'Create Account')]`))
+      const createAccount = await findElement(driver, By.xpath(`//div[contains(text(), 'Create Account')]`))
       await createAccount.click()
       await delay(regularDelayMs)
     })
 
     it('set account name', async () => {
-      const [accountName] = await driver.findElements(By.css('.new-account-create-form input'))
+      const accountName = await findElement(driver, By.css('.new-account-create-form input'))
       await accountName.sendKeys('2nd account')
       await delay(regularDelayMs)
 
-      const [create] = await driver.findElements(By.xpath(`//button[contains(text(), 'Create')]`))
+      const create = await findElement(driver, By.xpath(`//button[contains(text(), 'Create')]`))
       await create.click()
       await delay(regularDelayMs)
     })
 
     it('should correct account name', async () => {
-      const [accountName] = await driver.findElements(By.css('.account-name'))
+      const accountName = await findElement(driver, By.css('.account-name'))
       assert.equal(await accountName.getText(), '2nd account')
       await delay(regularDelayMs)
     })
@@ -279,19 +286,19 @@ describe('MetaMask', function () {
       await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)
 
-      const [logoutButton] = await driver.findElements(By.css('.account-menu__logout-button'))
+      const logoutButton = await findElement(driver, By.css('.account-menu__logout-button'))
       assert.equal(await logoutButton.getText(), 'Log out')
       await logoutButton.click()
       await delay(regularDelayMs)
     })
 
     it('imports seed phrase', async () => {
-      const [restoreSeedLink] = await driver.findElements(By.css('.unlock-page__link--import'))
+      const restoreSeedLink = await findElement(driver, By.css('.unlock-page__link--import'))
       assert.equal(await restoreSeedLink.getText(), 'Import using account seed phrase')
       await restoreSeedLink.click()
       await delay(regularDelayMs)
 
-      const [seedTextArea] = await driver.findElements(By.css('textarea'))
+      const seedTextArea = await findElement(driver, By.css('textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await delay(regularDelayMs)
 
@@ -302,7 +309,7 @@ describe('MetaMask', function () {
     })
 
     it('balance renders', async () => {
-      const balance = await driver.findElement(By.css('.balance-display .token-amount'))
+      const balance = await findElement(driver, By.css('.balance-display .token-amount'))
       const tokenAmount = await balance.getText()
       assert.equal(tokenAmount, '100.000 ETH')
       await delay(regularDelayMs)
@@ -311,41 +318,41 @@ describe('MetaMask', function () {
 
   describe('Send ETH from inside MetaMask', () => {
     it('starts to send a transaction', async function () {
-      const [sendButton] = await driver.findElements(By.xpath(`//button[contains(text(), 'Send')]`))
+      const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
       await sendButton.click()
       await delay(regularDelayMs)
 
-      const [inputAddress] = await driver.findElements(By.css('input[placeholder="Recipient Address"]'))
-      const [inputAmount] = await driver.findElements(By.css('.currency-display__input'))
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
+      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmount.sendKeys('1')
 
       // Set the gas limit
-      const [configureGas] = await driver.findElements(By.css('.send-v2__gas-fee-display button'))
+      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
       await configureGas.click()
       await delay(regularDelayMs)
 
-      const [save] = await driver.findElements(By.xpath(`//button[contains(text(), 'Save')]`))
+      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
       await delay(regularDelayMs)
 
       // Continue to next screen
-      const [nextScreen] = await driver.findElements(By.xpath(`//button[contains(text(), 'Next')]`))
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     it('confirms the transaction', async function () {
-      const [confirmButton] = await driver.findElements(By.xpath(`//button[contains(text(), 'Confirm')]`))
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
       await delay(regularDelayMs)
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await driver.findElements(By.css('.tx-list-item'))
+      const transactions = await findElements(driver, By.css('.tx-list-item'))
       assert.equal(transactions.length, 1)
 
-      const txValues = await driver.findElements(By.css('.tx-list-value'))
+      const txValues = await findElements(driver, By.css('.tx-list-value'))
       assert.equal(txValues.length, 1)
       assert.equal(await txValues[0].getText(), '1 ETH')
     })
@@ -360,7 +367,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(faucet)
       await delay(regularDelayMs)
 
-      const [send1eth] = await driver.findElements(By.xpath(`//button[contains(text(), '10 ether')]`))
+      const send1eth = await findElement(driver, By.xpath(`//button[contains(text(), '10 ether')]`), 14000)
       await send1eth.click()
       await delay(regularDelayMs)
 
@@ -368,7 +375,7 @@ describe('MetaMask', function () {
       await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
-      const [confirmButton] = await driver.findElements(By.xpath(`//button[contains(text(), 'Confirm')]`))
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 14000)
       await confirmButton.click()
       await delay(regularDelayMs)
 
@@ -385,31 +392,32 @@ describe('MetaMask', function () {
 
   describe('Add existing token using search', () => {
     it('clicks on the Add Token button', async () => {
-      const [addToken] = await driver.findElements(By.xpath(`//button[contains(text(), 'Add Token')]`))
+      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
       await addToken.click()
       await delay(regularDelayMs)
     })
 
     it('can pick a token from the existing options', async () => {
-      const [tokenSearch] = await driver.findElements(By.css('input.add-token__input'))
+      const tokenSearch = await findElement(driver, By.css('#search-tokens'))
       await tokenSearch.sendKeys('BAT')
       await delay(regularDelayMs)
 
-      const [token] = await driver.findElements(By.xpath("//div[contains(text(), 'BAT')]"))
+      const token = await findElement(driver, By.xpath("//span[contains(text(), 'BAT')]"))
       await token.click()
       await delay(regularDelayMs)
 
-      const [nextScreen] = await driver.findElements(By.xpath(`//button[contains(text(), 'Next')]`))
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
       await nextScreen.click()
       await delay(regularDelayMs)
 
-      const [addTokens] = await driver.findElements(By.xpath(`//button[contains(text(), 'Add Tokens')]`))
+      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
       await addTokens.click()
       await delay(largeDelayMs)
     })
 
     it('renders the balance for the chosen token', async () => {
-      const balance = await driver.findElement(By.css('.tx-view .balance-display .token-amount'))
+      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
+      await driver.wait(until.elementTextIs(balance, '0BAT'))
       const tokenAmount = await balance.getText()
       assert.equal(tokenAmount, '0BAT')
       await delay(regularDelayMs)
@@ -428,14 +436,14 @@ describe('MetaMask', function () {
         tokenName,
         tokenDecimal,
         tokenSymbol,
-      ] = await driver.findElements(By.css('input'))
+      ] = await findElements(driver, By.css('.form-control'))
 
       await totalSupply.sendKeys('100')
       await tokenName.sendKeys('Test')
       await tokenDecimal.sendKeys('0')
       await tokenSymbol.sendKeys('TST')
 
-      const [createToken] = await driver.findElements(By.xpath(`//button[contains(text(), 'Create Token')]`))
+      const createToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Create Token')]`))
       await createToken.click()
       await delay(regularDelayMs)
 
@@ -443,7 +451,7 @@ describe('MetaMask', function () {
       await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
-      const [confirmButton] = await driver.findElements(By.xpath(`//button[contains(text(), 'Confirm')]`))
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
       await delay(regularDelayMs)
 
@@ -458,31 +466,32 @@ describe('MetaMask', function () {
     })
 
     it('clicks on the Add Token button', async () => {
-      const [addToken] = await driver.findElements(By.xpath(`//button[contains(text(), 'Add Token')]`))
+      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
       await addToken.click()
       await delay(regularDelayMs)
     })
 
     it('picks the newly created Test token', async () => {
-      const [addCustomToken] = await driver.findElements(By.xpath("//div[contains(text(), 'Custom Token')]"))
+      const addCustomToken = await findElement(driver, By.xpath("//div[contains(text(), 'Custom Token')]"))
       await addCustomToken.click()
       await delay(regularDelayMs)
 
-      const [newTokenAddress] = await driver.findElements(By.css('.add-token__add-custom-form input'))
+      const newTokenAddress = await findElement(driver, By.css('#custom-address'))
       await newTokenAddress.sendKeys(tokenAddress)
       await delay(regularDelayMs)
 
-      const [nextScreen] = await driver.findElements(By.xpath(`//button[contains(text(), 'Next')]`))
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
       await nextScreen.click()
       await delay(regularDelayMs)
 
-      const [addTokens] = await driver.findElements(By.xpath(`//button[contains(text(), 'Add Tokens')]`))
+      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
       await addTokens.click()
       await delay(regularDelayMs)
     })
 
     it('renders the balance for the new token', async () => {
-      const [balance] = await driver.findElements(By.css('.tx-view .balance-display .token-amount'))
+      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
+      await driver.wait(until.elementTextIs(balance, '100TST'))
       const tokenAmount = await balance.getText()
       assert.equal(tokenAmount, '100TST')
       await delay(regularDelayMs)

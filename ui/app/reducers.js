@@ -7,6 +7,7 @@ const copyToClipboard = require('copy-to-clipboard')
 const reduceMetamask = require('./reducers/metamask')
 const reduceApp = require('./reducers/app')
 const reduceLocale = require('./reducers/locale')
+const reduceSend = require('./ducks/send.duck').default
 
 window.METAMASK_CACHED_LOG_STATE = null
 
@@ -37,6 +38,12 @@ function rootReducer (state, action) {
   //
 
   state.localeMessages = reduceLocale(state, action)
+
+  //
+  // Send
+  //
+
+  state.send = reduceSend(state, action)
 
   window.METAMASK_CACHED_LOG_STATE = state
   return state

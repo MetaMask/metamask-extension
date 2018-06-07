@@ -11,7 +11,7 @@ const log = require('loglevel')
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
 // accounts
-const SendTransactionScreen2 = require('./components/send/send-v2-container')
+const SendTransactionScreen = require('./components/send_/send.container')
 const ConfirmTxScreen = require('./conf-tx')
 
 // slideout menu
@@ -77,7 +77,7 @@ class App extends Component {
         h(Authenticated, { path: SETTINGS_ROUTE, component: Settings }),
         h(Authenticated, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
         h(Authenticated, { path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`, component: ConfirmTxScreen }),
-        h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen2 }),
+        h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
         h(Authenticated, { path: NEW_ACCOUNT_ROUTE, component: CreateAccountPage }),
