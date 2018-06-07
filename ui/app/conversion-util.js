@@ -11,7 +11,8 @@
 * @param {string} [options.fromNumericBase = 'hex' | 'dec' | 'BN'] The numeric basic of the passed value.
 * @param {string} [options.toNumericBase = 'hex' | 'dec' | 'BN'] The desired numeric basic of the result.
 * @param {string} [options.fromDenomination = 'WEI'] The denomination of the passed value
-* @param {number} [options.numberOfDecimals] The desired number of in the result
+* @param {string} [options.numberOfDecimals] The desired number of decimals in the result
+* @param {string} [options.roundDown] The desired number of decimals to round down to
 * @param {number} [options.conversionRate] The rate to use to make the fromCurrency -> toCurrency conversion
 * @returns {(number | string | BN)}
 *
@@ -38,6 +39,7 @@ const BIG_NUMBER_GWEI_MULTIPLIER = new BigNumber('1000000000')
 // Individual Setters
 const convert = R.invoker(1, 'times')
 const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_HALF_DOWN)
+const roundDown = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
 const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
 const decToBigNumberViaString = n => R.pipe(String, toBigNumber['dec'])
 
@@ -104,6 +106,7 @@ const converter = R.pipe(
   whenPredSetWithPropAndSetter(fromAndToCurrencyPropsNotEqual, 'conversionRate', convert),
   whenPropApplySetterMap('toDenomination', toSpecifiedDenomination),
   whenPredSetWithPropAndSetter(R.prop('numberOfDecimals'), 'numberOfDecimals', round),
+  whenPredSetWithPropAndSetter(R.prop('roundDown'), 'roundDown', roundDown),
   whenPropApplySetterMap('toNumericBase', baseChange),
   R.view(R.lensProp('value'))
 )

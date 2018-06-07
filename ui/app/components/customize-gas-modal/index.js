@@ -8,15 +8,19 @@ const GasModalCard = require('./gas-modal-card')
 
 const ethUtil = require('ethereumjs-util')
 
+import {
+  updateSendErrors,
+} from '../../ducks/send.duck'
+
 const {
   MIN_GAS_PRICE_DEC,
   MIN_GAS_LIMIT_DEC,
   MIN_GAS_PRICE_GWEI,
-} = require('../send/send-constants')
+} = require('../send_/send.constants')
 
 const {
   isBalanceSufficient,
-} = require('../send/send-utils')
+} = require('../send_/send.utils')
 
 const {
   conversionUtil,
@@ -61,11 +65,11 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
-    updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
-    updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
-    updateGasTotal: newGasTotal => dispatch(actions.updateGasTotal(newGasTotal)),
+    setGasPrice: newGasPrice => dispatch(actions.setGasPrice(newGasPrice)),
+    setGasLimit: newGasLimit => dispatch(actions.setGasLimit(newGasLimit)),
+    setGasTotal: newGasTotal => dispatch(actions.setGasTotal(newGasTotal)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
-    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
+    updateSendErrors: error => dispatch(updateSendErrors(error)),
   }
 }
 
@@ -105,10 +109,10 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(CustomizeGasModal)
 
 CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
   const {
-    updateGasPrice,
-    updateGasLimit,
+    setGasPrice,
+    setGasLimit,
     hideModal,
-    updateGasTotal,
+    setGasTotal,
     maxModeOn,
     selectedToken,
     balance,
@@ -125,9 +129,9 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
     updateSendAmount(maxAmount)
   }
 
-  updateGasPrice(ethUtil.addHexPrefix(gasPrice))
-  updateGasLimit(ethUtil.addHexPrefix(gasLimit))
-  updateGasTotal(ethUtil.addHexPrefix(gasTotal))
+  setGasPrice(ethUtil.addHexPrefix(gasPrice))
+  setGasLimit(ethUtil.addHexPrefix(gasLimit))
+  setGasTotal(ethUtil.addHexPrefix(gasTotal))
   updateSendErrors({ insufficientFunds: false })
   hideModal()
 }

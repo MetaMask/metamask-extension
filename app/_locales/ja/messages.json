@@ -62,6 +62,9 @@
     "message": " $1以上 $2以下にして下さい。",
     "description": "helper for inputting hex as decimal input"
   },
+  "blockiesIdenticon": {
+    "message": "Blockies Identicon を使用"
+  },
   "borrowDharma": {
     "message": "Dharmaで借りる(ベータ版)"
   },
@@ -94,6 +97,9 @@
   },
   "confirmTransaction": {
     "message": "トランザクションの確認"
+  },
+  "continue": {
+    "message": "続行"
   },
   "continueToCoinbase": {
     "message": "Coinbaseを開く"
@@ -359,6 +365,9 @@
   "likeToAddTokens": {
     "message": "トークンを追加しますか?"
   },
+  "links": {
+    "message": "リンク"
+  },
   "limit": {
     "message": "リミット"
   },
@@ -371,11 +380,17 @@
   "localhost": {
     "message": "Localhost 8545"
   },
+  "login": {
+    "message": "ログイン"
+  },
   "logout": {
     "message": "ログアウト"
   },
   "loose": {
     "message": "外部秘密鍵"
+  },
+  "max": {
+    "message": "最大"
   },
   "mainnet": {
     "message": "Ethereumメインネットワーク"
@@ -417,7 +432,7 @@
     "message": "新規コントラクト"
   },
   "newPassword": {
-    "message": "新規パスワード(最低８文字)"
+    "message": "新規パスワード(最低8文字)"
   },
   "newRecipient": {
     "message": "新規受取人"
@@ -453,6 +468,9 @@
     "message": "または",
     "description": "choice between creating or importing a new account"
   },
+  "password": {
+    "message": "パスワード"
+  },
   "passwordMismatch": {
     "message": "パスワードが一致しません。",
     "description": "in password creation process, the two new password fields did not match"
@@ -473,6 +491,9 @@
   },
   "popularTokens": {
     "message": "人気のトークン"
+  },
+  "privacyMsg": {
+    "message": "プライバシーポリシー"
   },
   "privateKey": {
     "message": "秘密鍵",
@@ -546,6 +567,12 @@
     "message": "ファイルとして保存",
     "description": "Account export process"
   },
+  "search": {
+    "message": "検索"
+  },
+  "searchResults": {
+    "message": "検索結果"
+  },
   "selectService": {
     "message": "サービスを選択"
   },
@@ -575,7 +602,7 @@
   },
   "info": {
     "message": "情報"
-    },
+  },
   "shapeshiftBuy": {
     "message": "Shapeshiftで交換"
   },
@@ -609,6 +636,9 @@
   "takesTooLong": {
     "message": "送信に時間がかかりますか?"
   },
+  "terms": {
+    "message": "利用規約"
+  },
   "testFaucet": {
     "message": "Faucetをテスト"
   },
@@ -618,6 +648,9 @@
   "toETHviaShapeShift": {
     "message": "ShapeShiftで $1をETHにする",
     "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "トークン"
   },
   "tokenAddress": {
     "message": "トークンアドレス"
@@ -689,6 +722,12 @@
   },
   "warning": {
     "message": "警告"
+  },
+  "welcomeBack": {
+    "message": "おかえりなさい!"
+  },
+  "welcomeBeta": {
+    "message": "MetaMask ベータ版へようこそ!"
   },
   "whatsThis": {
     "message": "この機能について"

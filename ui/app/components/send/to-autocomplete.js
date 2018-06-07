@@ -2,7 +2,7 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const AccountListItem = require('./account-list-item')
+const AccountListItem = require('../send_/account-list-item/account-list-item.component').default
 const connect = require('react-redux').connect
 
 ToAutoComplete.contextTypes = {
