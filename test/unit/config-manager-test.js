@@ -204,7 +204,7 @@ describe('config-manager', function () {
       })
     })
 
-    describe.only('#subscribe', function () {
+    describe('#subscribe', function () {
       it('subscribes and unsubscribes', function () {
 
         configManager.subscribe(configManager.setData)
