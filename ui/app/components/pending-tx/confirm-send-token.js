@@ -21,9 +21,9 @@ const {
   addCurrencies,
 } = require('../../conversion-util')
 const {
-  getGasTotal,
+  calcGasTotal,
   isBalanceSufficient,
-} = require('../send/send-utils')
+} = require('../send_/send.utils')
 const {
   calcTokenAmount,
 } = require('../../token-util')
@@ -31,7 +31,7 @@ const classnames = require('classnames')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
 
-const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
+const { MIN_GAS_PRICE_HEX } = require('../send_/send.constants')
 
 const {
   getTokenExchangeRate,
@@ -39,6 +39,10 @@ const {
   getSelectedTokenContract,
 } = require('../../selectors')
 const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
+
+import {
+  updateSendErrors,
+} from '../../ducks/send.duck'
 
 const {
   ENVIRONMENT_TYPE_POPUP,
@@ -109,7 +113,7 @@ function mapDispatchToProps (dispatch, ownProps) {
         to,
         amount: tokenAmountInHex,
         errors: { to: null, amount: null },
-        editingTransactionId: id,
+        editingTransactionId: id && id.toString(),
         token: ownProps.token,
       }))
       dispatch(actions.showSendTokenPage())
@@ -147,7 +151,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       }))
       dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },
-    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
+    updateSendErrors: error => dispatch(updateSendErrors(error)),
   }
 }
 
@@ -589,9 +593,9 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams() && balanceIsSufficient) {
     this.props.sendTransaction(txMeta, event)
   } else if (!balanceIsSufficient) {
-    updateSendErrors({ insufficientFunds: this.context.t('insufficientFunds') })
+    updateSendErrors({ insufficientFunds: 'insufficientFunds' })
   } else {
-    updateSendErrors({ invalidGasParams: this.context.t('invalidGasParams') })
+    updateSendErrors({ invalidGasParams: 'invalidGasParams' })
     this.setState({ submitting: false })
   }
 }
@@ -607,7 +611,7 @@ ConfirmSendToken.prototype.isBalanceSufficient = function (txMeta) {
       gasPrice,
     },
   } = txMeta
-  const gasTotal = getGasTotal(gas, gasPrice)
+  const gasTotal = calcGasTotal(gas, gasPrice)
 
   return isBalanceSufficient({
     amount: '0',

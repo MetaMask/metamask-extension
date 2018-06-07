@@ -394,6 +394,8 @@ module.exports = class MetamaskController extends EventEmitter {
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
+      isNonceTaken: nodeify(txController.isNonceTaken, txController),
+      estimateGas: nodeify(this.estimateGas, this),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
@@ -956,6 +958,18 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.txController.retryTransaction(txId)
     const state = await this.getState()
     return state
+  }
+
+  estimateGas (estimateGasParams) {
+    return new Promise((resolve, reject) => {
+      return this.txController.txGasUtil.query.estimateGas(estimateGasParams, (err, res) => {
+        if (err) {
+          return reject(err)
+        }
+
+        return resolve(res)
+      })
+    })
   }
 
 //=============================================================================

@@ -151,5 +151,10 @@
     "scrollToBottom": false,
     "forgottenPassword": null
   },
-  "identities": {}
+  "identities": {},
+  "send": {
+    "fromDropdownOpen": false,
+    "toDropdownOpen": false,
+    "errors": {}
+  }
 }
