@@ -1,7 +1,6 @@
 const extension = require('extensionizer')
 const promisify = require('pify')
 const allLocales = require('../../_locales/index.json')
-const log = require('loglevel')
 
 const getPreferredLocales = extension.i18n ? promisify(
   extension.i18n.getAcceptLanguages,
@@ -25,7 +24,7 @@ async function getFirstPreferredLangCode () {
   if(!userPreferredLocaleCodes){
     userPreferredLocaleCodes = []    
   }
-  
+
   const firstPreferredLangCode = userPreferredLocaleCodes
     .map(code => code.toLowerCase())
     .find(code => existingLocaleCodes.includes(code))
