@@ -1,11 +1,15 @@
 # MetaMask Browser Extension
 [![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension) [![Coverage Status](https://coveralls.io/repos/github/MetaMask/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/MetaMask/metamask-extension?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/MetaMask/metamask-extension.svg)](https://greenkeeper.io/) [![Stories in Ready](https://badge.waffle.io/MetaMask/metamask-extension.png?label=in%20progress&title=waffle.io)](https://waffle.io/MetaMask/metamask-extension)
 
-[Internal documentation](./docs/jsdocs)
-
 ## Support
 
 If you're a user seeking support, [here is our support site](https://metamask.helpscoutdocs.com/).
+
+## Introduction
+
+[Mission Statement](./MISSION.md)
+
+[Internal documentation](./docs/jsdocs)
 
 ## Developing Compatible Dapps
 
@@ -23,7 +27,9 @@ If you're a web dapp developer, we've got two types of guides for you:
 ## Building locally
 
  - Install [Node.js](https://nodejs.org/en/) version 6.3.1 or later.
- - Install local dependencies with `npm install`.
+ - Install dependencies:
+   - For node versions up to and including 9, install local dependencies with `npm install`.
+   - For node versions 10 and later, install [Yarn](https://yarnpkg.com/lang/en/docs/install/) and use `yarn install`.
  - Install gulp globally with `npm install -g gulp-cli`.
  - Build the project to the `./dist/` folder with `gulp build`.
  - Optionally, to rebuild on file changes, run `gulp dev`.

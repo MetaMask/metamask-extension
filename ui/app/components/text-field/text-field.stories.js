@@ -22,3 +22,32 @@ storiesOf('TextField', module)
       error="Invalid value"
     />
   )
+  .add('Mascara text', () =>
+    <TextField
+      label="Text"
+      type="text"
+      largeLabel
+    />
+  )
+  .add('Material text', () =>
+    <TextField
+      label="Text"
+      type="text"
+      material
+    />
+  )
+  .add('Material password', () =>
+    <TextField
+      label="Password"
+      type="password"
+      material
+    />
+  )
+  .add('Material error', () =>
+    <TextField
+      type="text"
+      label="Name"
+      error="Invalid value"
+      material
+    />
+  )

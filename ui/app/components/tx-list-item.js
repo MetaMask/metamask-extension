@@ -1,5 +1,7 @@
 const Component = require('react').Component
 const PropTypes = require('prop-types')
+const { compose } = require('recompose')
+const { withRouter } = require('react-router-dom')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const inherits = require('util').inherits
@@ -16,13 +18,16 @@ const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
+const { CONFIRM_TRANSACTION_ROUTE } = require('../routes')
 
 TxListItem.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TxListItem)
-
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(TxListItem)
 
 function mapStateToProps (state) {
   return {
@@ -203,8 +208,8 @@ TxListItem.prototype.showRetryButton = function () {
   const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
   const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[currentNonceSubmittedTxs.length - 1]
-  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce
-    && lastSubmittedTxWithCurrentNonce.id === transactionId
+  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce &&
+    lastSubmittedTxWithCurrentNonce.id === transactionId
 
   return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
 }
@@ -216,6 +221,7 @@ TxListItem.prototype.setSelectedToken = function (tokenAddress) {
 TxListItem.prototype.resubmit = function () {
   const { transactionId } = this.props
   this.props.retryTransaction(transactionId)
+    .then(id => this.props.history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`))
 }
 
 TxListItem.prototype.render = function () {

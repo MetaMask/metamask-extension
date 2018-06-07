@@ -43,7 +43,7 @@ async function runAddTokenFlowTest (assert, done) {
   assert.equal(addTokenTitle[0].textContent, 'Add Tokens', 'add token title is correct')
 
   // Cancel Add Token
-  const cancelAddTokenButton = await queryAsync($, 'button.btn-secondary--lg.page-container__footer-button')
+  const cancelAddTokenButton = await queryAsync($, 'button.btn-default.btn--large.page-container__footer-button')
   assert.ok(cancelAddTokenButton[0], 'cancel add token button present')
   cancelAddTokenButton.click()
 
@@ -75,15 +75,15 @@ async function runAddTokenFlowTest (assert, done) {
   tokenWrapper[0].click()
 
   // Click Next button
-  let nextButton = await queryAsync($, 'button.btn-primary--lg')
+  let nextButton = await queryAsync($, 'button.btn-primary.btn--large')
   assert.equal(nextButton[0].textContent, 'Next', 'next button rendered')
   nextButton[0].click()
 
   // Confirm Add token
   const confirmAddToken = await queryAsync($, '.confirm-add-token')
   assert.ok(confirmAddToken[0], 'confirm add token rendered')
-  assert.ok($('button.btn-primary--lg')[0], 'confirm add token button found')
-  $('button.btn-primary--lg')[0].click()
+  assert.ok($('button.btn-primary.btn--large')[0], 'confirm add token button found')
+  $('button.btn-primary.btn--large')[0].click()
 
   // Verify added token image
   let heroBalance = await queryAsync($, '.hero-balance')
@@ -120,7 +120,7 @@ async function runAddTokenFlowTest (assert, done) {
   const errorMessage = await queryAsync($, '#custom-symbol-helper-text')
   assert.ok(errorMessage[0], 'error rendered')
 
-  $('button.btn-secondary--lg')[0].click()
+  $('button.btn-default.btn--large')[0].click()
 
   // await timeout(100000)
 

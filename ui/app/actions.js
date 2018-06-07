@@ -2,6 +2,12 @@ const abi = require('human-standard-token-abi')
 const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
+const {
+  calcGasTotal,
+  calcTokenBalance,
+  estimateGas,
+  estimateGasPriceFromRecentBlocks,
+} = require('./components/send_/send.utils')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
@@ -155,8 +161,6 @@ var actions = {
   updateTransactionParams,
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
   // send screen
-  estimateGas,
-  getGasPrice,
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
   UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
@@ -169,17 +173,21 @@ var actions = {
   UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
-  updateGasLimit,
-  updateGasPrice,
-  updateGasTotal,
+  OPEN_FROM_DROPDOWN: 'OPEN_FROM_DROPDOWN',
+  CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
+  setGasLimit,
+  setGasPrice,
+  updateGasData,
+  setGasTotal,
+  setSendTokenBalance,
   updateSendTokenBalance,
   updateSendFrom,
   updateSendTo,
   updateSendAmount,
   updateSendMemo,
-  updateSendErrors,
   setMaxModeTo,
   updateSend,
+  updateSendErrors,
   clearSend,
   setSelectedAddress,
   // app messages
@@ -503,17 +511,23 @@ function requestRevealSeedWords (password) {
 }
 
 function resetAccount () {
-    return (dispatch) => {
-        background.resetAccount((err, account) => {
-            dispatch(actions.hideLoadingIndication())
-            if (err) {
-                dispatch(actions.displayWarning(err.message))
-            }
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
 
-            log.info('Transaction history reset for ' + account)
-            dispatch(actions.showAccountsPage())
-        })
-    }
+    return new Promise((resolve, reject) => {
+      background.resetAccount((err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.info('Transaction history reset for ' + account)
+        dispatch(actions.showAccountsPage())
+        resolve(account)
+      })
+    })
+  }
 }
 
 function addNewKeyring (type, opts) {
@@ -544,10 +558,12 @@ function importNewAccount (strategy, args) {
     }
     dispatch(actions.hideLoadingIndication())
     dispatch(actions.updateMetamaskState(newState))
-    dispatch({
-      type: actions.SHOW_ACCOUNT_DETAIL,
-      value: newState.selectedAddress,
-    })
+    if (newState.selectedAddress) {
+      dispatch({
+        type: actions.SHOW_ACCOUNT_DETAIL,
+        value: newState.selectedAddress,
+      })
+    }
     return newState
   }
 }
@@ -695,60 +711,96 @@ function signTx (txData) {
   }
 }
 
-function estimateGas (params = {}) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      global.ethQuery.estimateGas(params, (err, data) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-        dispatch(actions.hideWarning())
-        dispatch(actions.updateGasLimit(data))
-        return resolve(data)
-      })
-    })
-  }
-}
-
-function updateGasLimit (gasLimit) {
+function setGasLimit (gasLimit) {
   return {
     type: actions.UPDATE_GAS_LIMIT,
     value: gasLimit,
   }
 }
 
-function getGasPrice () {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      global.ethQuery.gasPrice((err, data) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-        dispatch(actions.hideWarning())
-        dispatch(actions.updateGasPrice(data))
-        return resolve(data)
-      })
-    })
-  }
-}
-
-function updateGasPrice (gasPrice) {
+function setGasPrice (gasPrice) {
   return {
     type: actions.UPDATE_GAS_PRICE,
     value: gasPrice,
   }
 }
 
-function updateGasTotal (gasTotal) {
+function setGasTotal (gasTotal) {
   return {
     type: actions.UPDATE_GAS_TOTAL,
     value: gasTotal,
   }
 }
 
-function updateSendTokenBalance (tokenBalance) {
+function updateGasData ({
+  blockGasLimit,
+  recentBlocks,
+  selectedAddress,
+  selectedToken,
+  to,
+  value,
+}) {
+  const estimatedGasPrice = estimateGasPriceFromRecentBlocks(recentBlocks)
+  return (dispatch) => {
+    return Promise.all([
+      Promise.resolve(estimatedGasPrice),
+      estimateGas({
+        estimateGasMethod: background.estimateGas,
+        blockGasLimit,
+        selectedAddress,
+        selectedToken,
+        to,
+        value,
+        gasPrice: estimatedGasPrice,
+      }),
+    ])
+    .then(([gasPrice, gas]) => {
+      dispatch(actions.setGasPrice(gasPrice))
+      dispatch(actions.setGasLimit(gas))
+      return calcGasTotal(gas, gasPrice)
+    })
+    .then((gasEstimate) => {
+      dispatch(actions.setGasTotal(gasEstimate))
+      dispatch(updateSendErrors({ gasLoadingError: null }))
+    })
+    .catch(err => {
+      log.error(err)
+      dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
+    })
+  }
+}
+
+function updateSendTokenBalance ({
+  selectedToken,
+  tokenContract,
+  address,
+}) {
+  return (dispatch) => {
+    const tokenBalancePromise = tokenContract
+      ? tokenContract.balanceOf(address)
+      : Promise.resolve()
+    return tokenBalancePromise
+      .then(usersToken => {
+        if (usersToken) {
+          const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
+          dispatch(setSendTokenBalance(newTokenBalance.toString(10)))
+        }
+      })
+      .catch(err => {
+        log.error(err)
+        updateSendErrors({ tokenBalance: 'tokenBalanceError' })
+      })
+  }
+}
+
+function updateSendErrors (errorObject) {
+  return {
+    type: actions.UPDATE_SEND_ERRORS,
+    value: errorObject,
+  }
+}
+
+function setSendTokenBalance (tokenBalance) {
   return {
     type: actions.UPDATE_SEND_TOKEN_BALANCE,
     value: tokenBalance,
@@ -780,13 +832,6 @@ function updateSendMemo (memo) {
   return {
     type: actions.UPDATE_SEND_MEMO,
     value: memo,
-  }
-}
-
-function updateSendErrors (error) {
-  return {
-    type: actions.UPDATE_SEND_ERRORS,
-    value: error,
   }
 }
 
@@ -1397,16 +1442,24 @@ function markAccountsFound () {
 
 function retryTransaction (txId) {
   log.debug(`background.retryTransaction`)
+  let newTxId
+
   return (dispatch) => {
-    background.retryTransaction(txId, (err, newState) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      const { selectedAddressTxList } = newState
-      const { id: newTxId } = selectedAddressTxList[selectedAddressTxList.length - 1]
-      dispatch(actions.updateMetamaskState(newState))
-      dispatch(actions.viewPendingTx(newTxId))
+    return new Promise((resolve, reject) => {
+      background.retryTransaction(txId, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        newTxId = id
+        resolve(newState)
+      })
     })
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => newTxId)
   }
 }
 

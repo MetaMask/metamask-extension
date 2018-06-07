@@ -12,6 +12,7 @@ const actions = require('../../actions')
 const clone = require('clone')
 const Identicon = require('../identicon')
 const GasFeeDisplay = require('../send/gas-fee-display-v2.js')
+const NetworkDisplay = require('../network-display')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const {
@@ -20,9 +21,9 @@ const {
   addCurrencies,
 } = require('../../conversion-util')
 const {
-  getGasTotal,
+  calcGasTotal,
   isBalanceSufficient,
-} = require('../send/send-utils')
+} = require('../send_/send.utils')
 const {
   calcTokenAmount,
 } = require('../../token-util')
@@ -30,7 +31,7 @@ const classnames = require('classnames')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
 
-const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
+const { MIN_GAS_PRICE_HEX } = require('../send_/send.constants')
 
 const {
   getTokenExchangeRate,
@@ -38,6 +39,15 @@ const {
   getSelectedTokenContract,
 } = require('../../selectors')
 const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
+
+import {
+  updateSendErrors,
+} from '../../ducks/send.duck'
+
+const {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+} = require('../../../../app/scripts/lib/enums')
 
 ConfirmSendToken.contextTypes = {
   t: PropTypes.func,
@@ -103,7 +113,7 @@ function mapDispatchToProps (dispatch, ownProps) {
         to,
         amount: tokenAmountInHex,
         errors: { to: null, amount: null },
-        editingTransactionId: id,
+        editingTransactionId: id && id.toString(),
         token: ownProps.token,
       }))
       dispatch(actions.showSendTokenPage())
@@ -141,7 +151,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       }))
       dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },
-    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
+    updateSendErrors: error => dispatch(updateSendErrors(error)),
   }
 }
 
@@ -430,6 +440,43 @@ ConfirmSendToken.prototype.convertToRenderableCurrency = function (value, curren
     : value
 }
 
+ConfirmSendToken.prototype.renderHeaderRow = function (isTxReprice) {
+  const windowType = window.METAMASK_UI_TYPE
+  const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+    windowType !== ENVIRONMENT_TYPE_POPUP
+
+  if (isTxReprice && isFullScreen) {
+    return null
+  }
+
+  return (
+    h('.page-container__header-row', [
+      h('span.page-container__back-button', {
+        onClick: () => this.editTransaction(),
+        style: {
+          visibility: isTxReprice ? 'hidden' : 'initial',
+        },
+      }, 'Edit'),
+      !isFullScreen && h(NetworkDisplay),
+    ])
+  )
+}
+
+ConfirmSendToken.prototype.renderHeader = function (isTxReprice) {
+  const title = isTxReprice ? this.context.t('speedUpTitle') : this.context.t('confirm')
+  const subtitle = isTxReprice
+    ? this.context.t('speedUpSubtitle')
+    : this.context.t('pleaseReviewTransaction')
+
+  return (
+    h('.page-container__header', [
+      this.renderHeaderRow(isTxReprice),
+      h('.page-container__title', title),
+      h('.page-container__subtitle', subtitle),
+    ])
+  )
+}
+
 ConfirmSendToken.prototype.render = function () {
   const txMeta = this.gatherTxMeta()
   const {
@@ -443,25 +490,13 @@ ConfirmSendToken.prototype.render = function () {
     },
   } = this.getData()
 
-  this.inputs = []
-
   const isTxReprice = Boolean(txMeta.lastGasPrice)
-  const title = isTxReprice ? this.context.t('reprice_title') : this.context.t('confirm')
-  const subtitle = isTxReprice
-    ? this.context.t('reprice_subtitle')
-    : this.context.t('pleaseReviewTransaction')
 
   return (
     h('div.confirm-screen-container.confirm-send-token', [
       // Main Send token Card
       h('div.page-container', [
-        h('div.page-container__header', [
-          !txMeta.lastGasPrice && h('button.confirm-screen-back-button', {
-            onClick: () => this.editTransaction(txMeta),
-          }, this.context.t('edit')),
-          h('div.page-container__title', title),
-          h('div.page-container__subtitle', subtitle),
-        ]),
+        this.renderHeader(isTxReprice),
         h('.page-container__content', [
           h('div.flex-row.flex-center.confirm-screen-identicons', [
             h('div.confirm-screen-account-wrapper', [
@@ -558,9 +593,9 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams() && balanceIsSufficient) {
     this.props.sendTransaction(txMeta, event)
   } else if (!balanceIsSufficient) {
-    updateSendErrors({ insufficientFunds: this.context.t('insufficientFunds') })
+    updateSendErrors({ insufficientFunds: 'insufficientFunds' })
   } else {
-    updateSendErrors({ invalidGasParams: this.context.t('invalidGasParams') })
+    updateSendErrors({ invalidGasParams: 'invalidGasParams' })
     this.setState({ submitting: false })
   }
 }
@@ -576,7 +611,7 @@ ConfirmSendToken.prototype.isBalanceSufficient = function (txMeta) {
       gasPrice,
     },
   } = txMeta
-  const gasTotal = getGasTotal(gas, gasPrice)
+  const gasTotal = calcGasTotal(gas, gasPrice)
 
   return isBalanceSufficient({
     amount: '0',

@@ -17,21 +17,25 @@ const {
   multiplyCurrencies,
 } = require('../../conversion-util')
 const {
-  getGasTotal,
+  calcGasTotal,
   isBalanceSufficient,
-} = require('../send/send-utils')
+} = require('../send_/send.utils')
 const GasFeeDisplay = require('../send/gas-fee-display-v2')
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
 
-const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
+const { MIN_GAS_PRICE_HEX } = require('../send_/send.constants')
 const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 const {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
 } = require('../../../../app/scripts/lib/enums')
+
+import {
+  updateSendErrors,
+} from '../../ducks/send.duck'
 
 ConfirmSendEther.contextTypes = {
   t: PropTypes.func,
@@ -109,7 +113,7 @@ function mapDispatchToProps (dispatch) {
       }))
       dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },
-    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
+    updateSendErrors: error => dispatch(updateSendErrors(error)),
   }
 }
 
@@ -145,7 +149,7 @@ ConfirmSendEther.prototype.updateComponentSendErrors = function (prevProps) {
   if (shouldUpdateBalanceSendErrors) {
     const balanceIsSufficient = this.isBalanceSufficient(txMeta)
     updateSendErrors({
-      insufficientFunds: balanceIsSufficient ? false : this.context.t('insufficientFunds'),
+      insufficientFunds: balanceIsSufficient ? false : 'insufficientFunds',
     })
   }
 
@@ -153,7 +157,7 @@ ConfirmSendEther.prototype.updateComponentSendErrors = function (prevProps) {
 
   if (shouldUpdateSimulationSendError) {
     updateSendErrors({
-      simulationFails: !txMeta.simulationFails ? false : this.context.t('transactionError'),
+      simulationFails: !txMeta.simulationFails ? false : 'transactionError',
     })
   }
 }
@@ -291,18 +295,48 @@ ConfirmSendEther.prototype.convertToRenderableCurrency = function (value, curren
     : value
 }
 
-ConfirmSendEther.prototype.editTransaction = function (txMeta) {
+ConfirmSendEther.prototype.editTransaction = function () {
   const { editTransaction, history } = this.props
+  const txMeta = this.gatherTxMeta()
   editTransaction(txMeta)
   history.push(SEND_ROUTE)
 }
 
-ConfirmSendEther.prototype.renderNetworkDisplay = function () {
+ConfirmSendEther.prototype.renderHeaderRow = function (isTxReprice) {
   const windowType = window.METAMASK_UI_TYPE
+  const isFullScreen = windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+    windowType !== ENVIRONMENT_TYPE_POPUP
 
-  return (windowType === ENVIRONMENT_TYPE_NOTIFICATION || windowType === ENVIRONMENT_TYPE_POPUP)
-    ? h(NetworkDisplay)
-    : null
+  if (isTxReprice && isFullScreen) {
+    return null
+  }
+
+  return (
+    h('.page-container__header-row', [
+      h('span.page-container__back-button', {
+        onClick: () => this.editTransaction(),
+        style: {
+          visibility: isTxReprice ? 'hidden' : 'initial',
+        },
+      }, 'Edit'),
+      !isFullScreen && h(NetworkDisplay),
+    ])
+  )
+}
+
+ConfirmSendEther.prototype.renderHeader = function (isTxReprice) {
+  const title = isTxReprice ? this.context.t('speedUpTitle') : this.context.t('confirm')
+  const subtitle = isTxReprice
+    ? this.context.t('speedUpSubtitle')
+    : this.context.t('pleaseReviewTransaction')
+
+  return (
+    h('.page-container__header', [
+      this.renderHeaderRow(isTxReprice),
+      h('.page-container__title', title),
+      h('.page-container__subtitle', subtitle),
+    ])
+  )
 }
 
 ConfirmSendEther.prototype.render = function () {
@@ -320,6 +354,7 @@ ConfirmSendEther.prototype.render = function () {
     },
   } = this.props
   const txMeta = this.gatherTxMeta()
+  const isTxReprice = Boolean(txMeta.lastGasPrice)
   const txParams = txMeta.txParams || {}
 
   const {
@@ -337,11 +372,6 @@ ConfirmSendEther.prototype.render = function () {
     totalInFIAT,
     totalInETH,
   } = this.getData()
-
-  const title = txMeta.lastGasPrice ? 'Reprice Transaction' : 'Confirm'
-  const subtitle = txMeta.lastGasPrice
-    ? 'Increase your gas fee to attempt to overwrite and speed up your transaction'
-    : 'Please review your transaction.'
 
   const convertedAmountInFiat = this.convertToRenderableCurrency(amountInFIAT, currentCurrency)
   const convertedTotalInFiat = this.convertToRenderableCurrency(totalInFIAT, currentCurrency)
@@ -362,19 +392,7 @@ ConfirmSendEther.prototype.render = function () {
   return (
     // Main Send token Card
     h('.page-container', [
-      h('.page-container__header', [
-        h('.page-container__header-row', [
-          h('span.page-container__back-button', {
-            onClick: () => this.editTransaction(txMeta),
-            style: {
-              visibility: !txMeta.lastGasPrice ? 'initial' : 'hidden',
-            },
-          }, 'Edit'),
-          this.renderNetworkDisplay(),
-        ]),
-        h('.page-container__title', title),
-        h('.page-container__subtitle', subtitle),
-      ]),
+      this.renderHeader(isTxReprice),
       h('.page-container__content', [
         h(SenderToRecipient, {
           senderName: fromName,
@@ -571,9 +589,9 @@ ConfirmSendEther.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams() && balanceIsSufficient) {
     this.props.sendTransaction(txMeta, event)
   } else if (!balanceIsSufficient) {
-    updateSendErrors({ insufficientFunds: this.context.t('insufficientFunds') })
+    updateSendErrors({ insufficientFunds: 'insufficientFunds' })
   } else {
-    updateSendErrors({ invalidGasParams: this.context.t('invalidGasParams') })
+    updateSendErrors({ invalidGasParams: 'invalidGasParams' })
     this.setState({ submitting: false })
   }
 }
@@ -598,7 +616,7 @@ ConfirmSendEther.prototype.isBalanceSufficient = function (txMeta) {
       value: amount,
     },
   } = txMeta
-  const gasTotal = getGasTotal(gas, gasPrice)
+  const gasTotal = calcGasTotal(gas, gasPrice)
 
   return isBalanceSufficient({
     amount,
