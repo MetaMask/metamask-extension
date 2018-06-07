@@ -4,6 +4,9 @@
 
 - Fix bug where account reset did not work with custom RPC providers.
 
+## 4.7.5 Thu Jun 07 2018
+- Fix for Brave i18n getAcceptLanguages [#4270](https://github.com/MetaMask/metamask-extension/issues/4270)
+
 ## 4.7.4 Tue Jun 05 2018
 
 - Add diagnostic reporting for users with multiple HD keyrings
