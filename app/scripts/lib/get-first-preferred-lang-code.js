@@ -3,13 +3,7 @@ const promisify = require('pify')
 const allLocales = require('../../_locales/index.json')
 const log = require('loglevel')
 
-// as far as i can tell, this is truthy in the case of Brave browser
-// where extension.i18n.getAcceptLanguages throws due to not being implemented
-// Unchecked runtime.lastError while running i18n.getAcceptLanguages: Access to extension API denied.
-// https://stackoverflow.com/questions/28431505/unchecked-runtime-lasterror-when-using-chrome-api
-const isSupported = extension.i18n && extension.i18n.getAcceptLanguages
-
-const getPreferredLocales = isSupported ? promisify(
+const getPreferredLocales = extension.i18n ? promisify(
   extension.i18n.getAcceptLanguages,
   { errorFirst: false }
 ) : async () => []
@@ -25,10 +19,13 @@ const existingLocaleCodes = allLocales.map(locale => locale.code.toLowerCase().r
  */
 async function getFirstPreferredLangCode () {
   let userPreferredLocaleCodes = await getPreferredLocales()
+  
+  // safeguard for Brave Browser until they implement chrome.i18n.getAcceptLanguages
+  // https://github.com/MetaMask/metamask-extension/issues/4270
   if(!userPreferredLocaleCodes){
     userPreferredLocaleCodes = []    
   }
-  log.debug(`user preferredLocaleCodes: ${userPreferredLocaleCodes}`)
+  
   const firstPreferredLangCode = userPreferredLocaleCodes
     .map(code => code.toLowerCase())
     .find(code => existingLocaleCodes.includes(code))
