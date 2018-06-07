@@ -285,7 +285,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.switchTo().window(faucet)
       await delay(regularDelayMs)
 
-      const send1eth = await findElement(driver, By.xpath(`//button[contains(text(), '10 ether')]`))
+      const send1eth = await findElement(driver, By.xpath(`//button[contains(text(), '10 ether')]`), 14000)
       await send1eth.click()
       await delay(regularDelayMs)
 
@@ -293,7 +293,7 @@ describe('Using MetaMask with an existing account', function () {
       await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
-      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 14000)
       await confirmButton.click()
       await delay(regularDelayMs)
 
