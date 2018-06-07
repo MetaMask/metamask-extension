@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where account reset did not work with custom RPC providers.
+
 ## 4.7.4 Tue Jun 05 2018
 
 - Add diagnostic reporting for users with multiple HD keyrings
