@@ -614,4 +614,48 @@ describe('MetaMask', function () {
       assert.equal(tokenBalanceAmount.getText(), '24 TST')
     })
   })
+
+  describe('Send token from inside MetaMask', () => {
+    it('starts to send a transaction', async function () {
+      const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
+      await sendButton.click()
+      await delay(regularDelayMs)
+
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
+      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
+      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAmount.sendKeys('50')
+
+      // Set the gas limit
+      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
+      await configureGas.click()
+      await delay(regularDelayMs)
+
+      const gasModal = await driver.findElement(By.css('span .modal'))
+      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
+      await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
+      await delay(regularDelayMs)
+
+      // Continue to next screen
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+    })
+
+    it('confirms the transaction', async function () {
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+      await delay(regularDelayMs)
+    })
+
+    it('finds the transaction in the transactions list', async function () {
+      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      assert.equal(transactions.length, 1)
+
+      const txValues = await findElements(driver, By.css('.tx-list-value'))
+      assert.equal(txValues.length, 1)
+      assert.equal(await txValues[0].getText(), '50 TST')
+    })
+  })
 })
