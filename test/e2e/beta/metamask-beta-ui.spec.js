@@ -147,8 +147,9 @@ describe('MetaMask', function () {
     let seedPhrase
 
     it('reveals the seed phrase', async () => {
-      const revealSeedPhrase = await findElement(driver, By.css('.backup-phrase__secret-blocker'), 14000)
-      await revealSeedPhrase.click()
+      await driver.wait(until.elementIsVisible(By.css('.backup-phrase__reveal-button')))
+      const revealSeedPhraseButton = await findElement(driver, By.css('.backup-phrase__reveal-button'), 10000)
+      await revealSeedPhraseButton.click()
       await delay(regularDelayMs)
 
       seedPhrase = await driver.findElement(By.css('.backup-phrase__secret-words')).getText()
@@ -392,40 +393,6 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Add existing token using search', () => {
-    it('clicks on the Add Token button', async () => {
-      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
-      await addToken.click()
-      await delay(regularDelayMs)
-    })
-
-    it('can pick a token from the existing options', async () => {
-      const tokenSearch = await findElement(driver, By.css('#search-tokens'))
-      await tokenSearch.sendKeys('BAT')
-      await delay(regularDelayMs)
-
-      const token = await findElement(driver, By.xpath("//span[contains(text(), 'BAT')]"))
-      await token.click()
-      await delay(regularDelayMs)
-
-      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-
-      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
-      await addTokens.click()
-      await delay(largeDelayMs)
-    })
-
-    it('renders the balance for the chosen token', async () => {
-      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
-      await driver.wait(until.elementTextIs(balance, '0BAT'))
-      const tokenAmount = await balance.getText()
-      assert.equal(tokenAmount, '0BAT')
-      await delay(regularDelayMs)
-    })
-  })
-
   describe('Add a custom token from TokenFactory', () => {
     it('creates a new token', async () => {
       await driver.executeScript('window.open("https://tokenfactory.surge.sh/#/factory")')
@@ -595,10 +562,48 @@ describe('MetaMask', function () {
       assert.equal(txValues.length, 5)
       assert.equal(await txValues[0].getText(), '26 TST')
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
-      await driver.wait(until.elementTextMatches(txStatuses[1], /Confirmed/))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
+
+      const tokenListItems = await findElements(driver, By.css('.token-list-item'))
+      tokenListItems[0].click()
+      await delay(regularDelayMs)
 
       const tokenBalanceAmount = await findElement(driver, By.css('.token-balance__amount'))
-      assert.equal(tokenBalanceAmount.getText(), '24 TST')
+      assert.equal(await tokenBalanceAmount.getText(), '24')
+    })
+  })
+
+  describe('Add existing token using search', () => {
+    it('clicks on the Add Token button', async () => {
+      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
+      await addToken.click()
+      await delay(regularDelayMs)
+    })
+
+    it('can pick a token from the existing options', async () => {
+      const tokenSearch = await findElement(driver, By.css('#search-tokens'))
+      await tokenSearch.sendKeys('BAT')
+      await delay(regularDelayMs)
+
+      const token = await findElement(driver, By.xpath("//span[contains(text(), 'BAT')]"))
+      await token.click()
+      await delay(regularDelayMs)
+
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+
+      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
+      await addTokens.click()
+      await delay(largeDelayMs)
+    })
+
+    it('renders the balance for the chosen token', async () => {
+      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
+      await driver.wait(until.elementTextIs(balance, '0BAT'))
+      const tokenAmount = await balance.getText()
+      assert.equal(tokenAmount, '0BAT')
+      await delay(regularDelayMs)
     })
   })
 })
