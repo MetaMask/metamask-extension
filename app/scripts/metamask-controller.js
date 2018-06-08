@@ -23,7 +23,6 @@ const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const NoticeController = require('./notice-controller')
-const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
@@ -49,6 +48,7 @@ const NetworkStatusController = require('gaba/NetworkStatusController').default
 const PhishingController = require('gaba/PhishingController').default
 const ShapeShiftController = require('gaba/ShapeShiftController').default
 const TokenRatesController = require('gaba/TokenRatesController').default
+const BlockHistoryController = require('gaba/BlockHistoryController').default
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -112,7 +112,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.tokenRatesController = new TokenRatesController()
     this.preferencesController.store.subscribe(({ tokens = [] }) => { this.tokenRatesController.tokens = tokens })
 
-    this.recentBlocksController = new RecentBlocksController({
+    this.blockHistoryController = new BlockHistoryController(undefined, {
       blockTracker: this.blockTracker,
       provider: this.provider,
     })
@@ -213,7 +213,7 @@ module.exports = class MetamaskController extends EventEmitter {
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
-      RecentBlocksController: this.recentBlocksController.store,
+      RecentBlocksController: this.blockHistoryController,
       AddressBookController: this.addressBookController,
       CurrencyRateController: this.currencyRateController,
       NoticeController: this.noticeController.memStore,
@@ -1131,8 +1131,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {string} A hex representation of the suggested wei gas price.
    */
   getGasPrice () {
-    const { recentBlocksController } = this
-    const { recentBlocks } = recentBlocksController.store.getState()
+    const { blockHistoryController } = this
+    const { recentBlocks } = blockHistoryController.state
 
     // Return 1 gwei if no blocks have been observed:
     if (recentBlocks.length === 0) {
