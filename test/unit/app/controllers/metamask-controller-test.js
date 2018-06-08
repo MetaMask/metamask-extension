@@ -585,8 +585,6 @@ describe('MetaMaskController', function () {
   describe('#setupUntrustedCommunication', function () {
     let streamTest
 
-    const phishingUrl = 'kinkik.in'
-
     beforeEach(async function () {
       await metamaskController.blacklistController.updatePhishingList()
     })
@@ -597,16 +595,29 @@ describe('MetaMaskController', function () {
 
     it('sets up phishing stream for untrusted communication ', function (done) {
 
+      const phishingUrl = 'kinkik.in'
+
       streamTest = createThoughStream((chunk, enc, cb) => {
-        console.log(chunk)
         assert.equal(chunk.name, 'phishing')
         assert.equal(chunk.data.hostname, phishingUrl)
-        console.log(chunk)
         cb()
         done()
       })
 
       metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+    })
+
+    it('returns publicConfig instead of phishing stream', function (done) {
+
+      const goodUrl = 'metabase.com'
+
+      streamTest = createThoughStream((chunk, enc, cb) => {
+        assert.equal(chunk.name, 'publicConfig')
+        cb()
+        done()
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, goodUrl)
     })
   })
 
