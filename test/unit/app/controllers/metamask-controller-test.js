@@ -113,28 +113,32 @@ describe('MetaMaskController', function () {
 
   describe('#importAccountWithStrategy', function () {
 
-    it('adds private key to keyrings in KeyringController', function (done) {
-      const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
-      metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ], function (err, res) {
-        assert.ifError(err)
-        const simpleKeyrings = metamaskController.keyringController.getKeyringsByType('Simple Key Pair')
-        const privKeyBuffer = simpleKeyrings[0].wallets[0]._privKey
-        const pubKeyBuffer = simpleKeyrings[0].wallets[0]._pubKey
-        const addressBuffer = ethUtil.pubToAddress(pubKeyBuffer)
-        const privKey = ethUtil.bufferToHex(privKeyBuffer)
-        const pubKey = ethUtil.bufferToHex(addressBuffer)
-        assert.equal(privKey, ethUtil.addHexPrefix(importPrivkey))
-        assert.equal(pubKey, '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
-        done()
-      })
+    const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
+
+    beforeEach(async function () {
+      const password = 'a-fake-password'
+
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
+      await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
     })
 
-    it('errors when importing empty string', function (done) {
-      const importPrivkey = ''
-      metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ], function (err, res) {
-        assert.equal(err.message, 'Private key does not satisfy the curve requirements (ie. it is invalid)')
-        assert.equal(metamaskController.keyringController.keyrings.length, 0)
-        done()
+    it('adds private key to keyrings in KeyringController', async function () {
+      const simpleKeyrings = metamaskController.keyringController.getKeyringsByType('Simple Key Pair')
+      const privKeyBuffer = simpleKeyrings[0].wallets[0]._privKey
+      const pubKeyBuffer = simpleKeyrings[0].wallets[0]._pubKey
+      const addressBuffer = ethUtil.pubToAddress(pubKeyBuffer)
+      const privKey = ethUtil.bufferToHex(privKeyBuffer)
+      const pubKey = ethUtil.bufferToHex(addressBuffer)
+      assert.equal(privKey, ethUtil.addHexPrefix(importPrivkey))
+      assert.equal(pubKey, '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+    })
+
+    it('adds private key to keyrings in KeyringController', async function () {
+      const keyringAccounts = await metamaskController.keyringController.getAccounts()
+      assert.equal(keyringAccounts[keyringAccounts.length - 1], '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+    })
+  })
+
   describe('submitPassword', function () {
     const password = 'password'
 
@@ -581,21 +585,28 @@ describe('MetaMaskController', function () {
   describe('#setupUntrustedCommunication', function () {
     let streamTest
 
-    const phishingUrl = 'decentral.market'
+    const phishingUrl = 'kinkik.in'
+
+    beforeEach(async function () {
+      await metamaskController.blacklistController.updatePhishingList()
+    })
 
     afterEach(function () {
       streamTest.end()
     })
 
-    it('sets up phishing stream for untrusted communication ', async function () {
-      await metamaskController.blacklistController.updatePhishingList()
+    it('sets up phishing stream for untrusted communication ', function (done) {
 
       streamTest = createThoughStream((chunk, enc, cb) => {
+        console.log(chunk)
         assert.equal(chunk.name, 'phishing')
         assert.equal(chunk.data.hostname, phishingUrl)
-         cb()
-        })
-       metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+        console.log(chunk)
+        cb()
+        done()
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
     })
   })
 
