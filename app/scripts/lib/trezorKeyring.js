@@ -8,7 +8,7 @@ const keyringType = 'Trezor Hardware'
 const TrezorConnect = require('./trezor-connect.js')
 const HDKey = require('hdkey')
 const TREZOR_FIRMWARE_VERSION = '1.4.0'
-const log = require('loglevel')
+//const log = require('loglevel')
 
 class TrezorKeyring extends EventEmitter {
   constructor (opts = {}) {
@@ -19,10 +19,11 @@ class TrezorKeyring extends EventEmitter {
     this.deserialize(opts)
     this.page = 0
     this.perPage = 5
+    this.accountToUnlock = 0
   }
 
   serialize () {
-    return Promise.resolve({ 
+    return Promise.resolve({
       hdPath: this.hdPath,
       accounts: this.accounts,
       page: this.page,
@@ -44,8 +45,6 @@ class TrezorKeyring extends EventEmitter {
       TrezorConnect.getXPubKey(
         this.hdPath,
         response => {
-          log.debug('TREZOR CONNECT RESPONSE: ')
-          log.debug(response)
           if (response.success) {
             this.hdk.publicKey = new Buffer(response.publicKey, 'hex')
             this.hdk.chainCode = new Buffer(response.chainCode, 'hex')
@@ -59,14 +58,18 @@ class TrezorKeyring extends EventEmitter {
     })
   }
 
+  setAccountToUnlock (index) {
+    this.accountToUnlock = parseInt(index, 10)
+  }
+
   addAccounts (n = 1) {
 
     return new Promise((resolve, reject) => {
       return this.unlock()
         .then(_ => {
           const pathBase = 'm'
-          const from = n
-          const to = n + 1
+          const from = this.accountToUnlock
+          const to = from + 1
 
           this.accounts = []
 
@@ -133,7 +136,7 @@ class TrezorKeyring extends EventEmitter {
   // tx is an instance of the ethereumjs-transaction class.
   async signTransaction (address, tx) {
     throw new Error('Not supported on this device')
-    /* 
+    /*
     await this.lock.acquire()
     try {
 
@@ -200,7 +203,7 @@ class TrezorKeyring extends EventEmitter {
       }
 
       return signature
-     
+
     } finally {
       await this.lock.release()
     } */
