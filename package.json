@@ -196,7 +196,7 @@
   },
   "devDependencies": {
     "@sentry/cli": "^1.30.3",
-    "@storybook/addon-info": "^3.4.2",
+    "@storybook/addon-info": "^3.4.7",
     "@storybook/addon-knobs": "^3.4.2",
     "@storybook/react": "^3.4.2",
     "babel-core": "^6.24.1",
