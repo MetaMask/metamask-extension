@@ -79,6 +79,8 @@ var actions = {
   addNewKeyring,
   importNewAccount,
   addNewAccount,
+  connectHardware,
+  unlockTrezorAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
   resetAccount,
@@ -591,6 +593,46 @@ function addNewAccount () {
 
         forceUpdateMetamaskState(dispatch)
         return resolve(newAccountAddress)
+      })
+    })
+  }
+}
+
+function connectHardware (deviceName, page) {
+  log.debug(`background.connectHardware`, deviceName, page)
+  return (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.connectHardware(deviceName, page, (err, accounts) => {
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(accounts)
+      })
+    })
+  }
+}
+
+function unlockTrezorAccount (index) {
+  log.debug(`background.unlockTrezorAccount`, index)
+  return (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.unlockTrezorAccount(index, (err, accounts) => {
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.hideLoadingIndication())
+        return resolve()
       })
     })
   }

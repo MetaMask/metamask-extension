@@ -119,6 +119,12 @@
   "confirmTransaction": {
     "message": "Confirm Transaction"
   },
+  "connectHardware": {
+    "message": "Connect Hardware"
+  },
+  "connect": {
+    "message": "Connect"
+  },
   "continue": {
     "message": "Continue"
   },
@@ -929,6 +935,9 @@
   },
   "unknownNetworkId": {
     "message": "Unknown network ID"
+  },
+  "unlock": {
+    "message": "Unlock"
   },
   "unlockMessage": {
     "message": "The decentralized web awaits"

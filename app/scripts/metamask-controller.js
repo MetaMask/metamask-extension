@@ -48,6 +48,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
 const DiagnosticsReporter = require('./lib/diagnostics-reporter')
 const log = require('loglevel')
+const TrezorKeyring = require("./lib/trezorKeyring");
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -130,9 +131,11 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
     })
-
+    
     // key mgmt
+    const additionalKeyrings = [TrezorKeyring]
     this.keyringController = new KeyringController({
+      keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
@@ -363,6 +366,10 @@ module.exports = class MetamaskController extends EventEmitter {
       resetAccount: nodeify(this.resetAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
+      // trezor
+      connectHardware: nodeify(this.connectHardware, this),
+      unlockTrezorAccount: nodeify(this.unlockTrezorAccount, this),
+
       // vault management
       submitPassword: nodeify(this.submitPassword, this),
 
@@ -522,6 +529,60 @@ module.exports = class MetamaskController extends EventEmitter {
     const address = Object.keys(identities)[0]
     this.preferencesController.setSelectedAddress(address)
   }
+
+  //
+  // Hardware
+  //
+
+  /**
+   * Fetch account list from a trezor device.
+   *
+   * @returns [] accounts
+   */
+  async connectHardware (deviceName, page) {
+    const keyringController = this.keyringController
+    const keyring = await keyringController.getKeyringsByType(
+      'Trezor Hardware Keyring'
+    )[0]
+    if (!keyring) {
+      throw new Error('MetamaskController - No Trezor Hardware Keyring found')
+    }
+
+    const accounts = page === -1 ? await keyring.getPrevAccountSet() : await keyring.getNextAccountSet()
+
+    return accounts
+
+  }
+
+  /**
+   * Imports an account from a trezor device.
+   *
+   * @returns {} keyState
+   */
+  async unlockTrezorAccount (index) {
+    const keyringController = this.keyringController
+    const keyring = await keyringController.getKeyringsByType(
+      'Trezor Hardware Keyring'
+    )[0]
+    if (!keyring) {
+      throw new Error('MetamaskController - No Trezor Hardware Keyring found')
+    }
+
+    const oldAccounts = await keyringController.getAccounts()
+    const keyState = await keyringController.addNewAccount(keyring)
+    const newAccounts = await keyringController.getAccounts()
+
+    this.preferencesController.setAddresses(newAccounts)
+    newAccounts.forEach(address => {
+      if (!oldAccounts.includes(address)) {
+        this.preferencesController.setSelectedAddress(address)
+      }
+    })
+
+    const { identities } = this.preferencesController.store.getState()
+    return { ...keyState, identities }
+   }
+ 
 
   //
   // Account Management

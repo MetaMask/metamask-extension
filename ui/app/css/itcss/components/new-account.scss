@@ -28,7 +28,6 @@
 
     &__tab {
       height: 54px;
-      width: 75px;
       padding: 15px 10px;
       color: $dusty-gray;
       font-family: Roboto;
@@ -36,10 +35,6 @@
       line-height: 24px;
       text-align: center;
       cursor: pointer;
-    }
-
-    &__tab:first-of-type {
-      margin-right: 20px;
     }
 
     &__tab:hover {
@@ -157,6 +152,106 @@
     justify-content: space-between;
   }
 }
+
+.hw-account-list {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  width: 100%;
+
+  &__title_wrapper {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+  }
+
+  &__title {
+    margin-bottom: 23px;
+    align-self: flex-start;
+    color: $scorpion;
+    font-family: Roboto;
+    font-size: 16px;
+    line-height: 21px;
+    font-weight: bold;
+    display: flex;
+    flex: 1;
+  }
+
+  &__device {
+    margin-bottom: 23px;
+    align-self: flex-end;
+    color: $scorpion;
+    font-family: Roboto;
+    font-size: 16px;
+    line-height: 21px;
+    font-weight: normal;
+    display: flex;
+  }
+
+  &__item {
+    font-size: 15px;
+    flex-direction: row;
+    display: flex;
+    padding: 10px;
+  }
+
+  &__item:nth-of-type(even) {
+    background-color: #fbfbfb;
+  }
+
+  &__item:nth-of-type(odd) {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  &__item:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  &__item__index {
+    display: flex;
+    margin-right: 20px;
+  }
+
+  &__item__radio {
+    display: flex;
+    flex: 1;
+  }
+
+  &__item__label {
+    margin-left: 10px;
+    display: flex;
+    flex: 1;
+  }
+
+  &__item__balance {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+  }
+
+  &__item__link {
+    display: flex;
+  }
+
+  &__item__link img {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.hw-list-pagination {
+  display: flex;
+  align-self: flex-end;
+  margin-top: 10px;
+
+  &__button {
+    height: 25px;
+    flex: initial;
+    min-width: 90px;
+    font-size: 12px;
+  }
+}
+
 
 .new-account-create-form {
   display: flex;
