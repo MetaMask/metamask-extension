@@ -1,10 +1,9 @@
 const { EventEmitter } = require('events')
 const ethUtil = require('ethereumjs-util')
 // const sigUtil = require('eth-sig-util')
-//const { Lock } = require('semaphore-async-await')
 
 const hdPathString = `m/44'/60'/0'/0`
-const keyringType = 'Trezor Hardware Keyring'
+const keyringType = 'Trezor Hardware'
 
 const TrezorConnect = require('./trezor-connect.js')
 const HDKey = require('hdkey')
@@ -15,7 +14,6 @@ class TrezorKeyring extends EventEmitter {
   constructor (opts = {}) {
     super()
     this.type = keyringType
-    //this.lock = new Lock()
     this.accounts = []
     this.hdk = new HDKey()
     this.deserialize(opts)
@@ -24,16 +22,22 @@ class TrezorKeyring extends EventEmitter {
   }
 
   serialize () {
-    return Promise.resolve({ hdPath: this.hdPath, accounts: this.accounts })
+    return Promise.resolve({ 
+      hdPath: this.hdPath,
+      accounts: this.accounts,
+      page: this.page,
+    })
   }
 
   deserialize (opts = {}) {
     this.hdPath = opts.hdPath || hdPathString
     this.accounts = opts.accounts || []
+    this.page = opts.page || 0
     return Promise.resolve()
   }
 
   unlock () {
+
     if (this.hdk.publicKey) return Promise.resolve()
 
     return new Promise((resolve, reject) => {
@@ -56,6 +60,7 @@ class TrezorKeyring extends EventEmitter {
   }
 
   addAccounts (n = 1) {
+
     return new Promise((resolve, reject) => {
       return this.unlock()
         .then(_ => {
@@ -82,6 +87,7 @@ class TrezorKeyring extends EventEmitter {
   }
 
   async getPage () {
+
     return new Promise((resolve, reject) => {
       return this.unlock()
         .then(_ => {
