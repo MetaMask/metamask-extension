@@ -3,12 +3,15 @@ require('geckodriver')
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
+const pify = require('pify')
+const prependFile = pify(require('prepend-file'))
 const webdriver = require('selenium-webdriver')
 const Command = require('selenium-webdriver/lib/command').Command
 const By = webdriver.By
 
 module.exports = {
   delay,
+  createModifiedTestBuild,
   buildChromeWebDriver,
   buildFirefoxWebdriver,
   installWebExt,
@@ -18,6 +21,37 @@ module.exports = {
 
 function delay (time) {
   return new Promise(resolve => setTimeout(resolve, time))
+}
+
+async function createModifiedTestBuild ({ browser, srcPath }) {
+  // copy build to test-builds directory
+  const extPath = path.resolve(`test-builds/${browser}`)
+  await fs.ensureDir(extPath)
+  await fs.copy(srcPath, extPath)
+  // inject METAMASK_TEST_CONFIG setting default test network
+  const config = { NetworkController: { provider: { type: 'localhost' } } }
+  await prependFile(`${extPath}/background.js`, `window.METAMASK_TEST_CONFIG=${JSON.stringify(config)};\n`)
+  return { extPath }
+}
+
+async function setupBrowserAndExtension ({ browser, extPath }) {
+  let drive, extensionId, extensionUri
+
+  if (browser === 'chrome') {
+    driver = buildChromeWebDriver(extPath)
+    extensionId = await getExtensionIdChrome(driver)
+    extensionUri = `chrome-extension://${extensionId}/popup.html`
+  } else if (browser === 'firefox') {
+    driver = buildFirefoxWebdriver()
+    await installWebExt(driver, extPath)
+    await delay(700)
+    extensionId = await getExtensionIdFirefox(driver)
+    extensionUri = `moz-extension://${extensionId}/popup.html`
+  } else {
+    throw new Error(`Unknown Browser "${browser}"`)
+  }
+
+  return { driver, extensionId, extensionUri }
 }
 
 function buildChromeWebDriver (extPath) {

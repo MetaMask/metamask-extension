@@ -31,7 +31,8 @@ const {
   ENVIRONMENT_TYPE_FULLSCREEN,
 } = require('./lib/enums')
 
-const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_CONFIG)
+// METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
+const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG

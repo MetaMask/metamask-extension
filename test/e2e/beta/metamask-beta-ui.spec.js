@@ -4,11 +4,8 @@ const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
 const {
   delay,
-  buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
+  createModifiedTestBuild,
+  setupBrowserAndExtension,
 } = require('../func')
 const {
   findElement,
@@ -19,6 +16,7 @@ const {
 } = require('./helpers')
 
 describe('MetaMask', function () {
+  const browser = process.env.SELENIUM_BROWSER
   let extensionId
   let driver
   let tokenAddress
@@ -33,27 +31,15 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
-    switch (process.env.SELENIUM_BROWSER) {
-      case 'chrome': {
-        const extPath = path.resolve('dist/chrome')
-        driver = buildChromeWebDriver(extPath)
-        extensionId = await getExtensionIdChrome(driver)
-        await driver.get(`chrome-extension://${extensionId}/popup.html`)
-        break
-      }
-      case 'firefox': {
-        const extPath = path.resolve('dist/firefox')
-        driver = buildFirefoxWebdriver()
-        await installWebExt(driver, extPath)
-        await delay(700)
-        extensionId = await getExtensionIdFirefox(driver)
-        await driver.get(`moz-extension://${extensionId}/popup.html`)
-      }
-    }
+    const srcPath = path.resolve(`dist/${browser}`)
+    const { extPath } = await createModifiedTestBuild({ browser, srcPath })
+    const installResult = await setupBrowserAndExtension({ browser, extPath })
+    driver = installResult.driver
+    extensionUri = installResult.extensionUri
   })
 
   afterEach(async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (browser === 'chrome') {
       const errors = await checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map(err => err.message)

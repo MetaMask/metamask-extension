@@ -3,10 +3,8 @@ const mkdirp = require('mkdirp')
 const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
-const prependFile = pify(require('prepend-file'))
-const webdriver = require('selenium-webdriver')
-const { By, Key } = webdriver
-const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
+const { By, Key } = require('selenium-webdriver')
+const { delay, createModifiedTestBuild, setupBrowserAndExtension } = require('./func')
 
 describe('Metamask popup page', function () {
   const browser = process.env.SELENIUM_BROWSER
@@ -16,25 +14,11 @@ describe('Metamask popup page', function () {
 
   before(async function () {
     const srcPath = path.resolve(`dist/${browser}`)
-    const extPath = path.resolve(`test-builds/${browser}`)
-    await fs.ensureDir(extPath)
-    await fs.copy(srcPath, extPath)
-    const config = { NetworkController: { provider: { type: 'localhost' } } }
-    await prependFile(`${extPath}/background.js`, `window.METAMASK_CONFIG=${JSON.stringify(config)};\n`)
+    const { extPath } = await createModifiedTestBuild({ browser, srcPath })
+    const installResult = await setupBrowserAndExtension({ browser, extPath })
+    driver = installResult.driver
+    extensionUri = installResult.extensionUri
 
-    if (browser === 'chrome') {
-      driver = buildChromeWebDriver(extPath)
-      extensionId = await getExtensionIdChrome(driver)
-      extensionUri = `chrome-extension://${extensionId}/popup.html`
-    } else if (browser === 'firefox') {
-      driver = buildFirefoxWebdriver()
-      await installWebExt(driver, extPath)
-      await delay(700)
-      extensionId = await getExtensionIdFirefox(driver)
-      extensionUri = `moz-extension://${extensionId}/popup.html`
-    } else {
-      throw new Error(`Unknown Browser "${browser}"`)
-    }
     await driver.get(extensionUri)
   })
 
@@ -53,7 +37,6 @@ describe('Metamask popup page', function () {
     // gather extra data if test failed
     if (this.currentTest.state === 'failed') {
       await verboseReportOnFailure(this.currentTest)
-      await delay(1000000)
     }
   })
 
