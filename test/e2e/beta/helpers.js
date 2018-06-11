@@ -3,12 +3,41 @@ const mkdirp = require('mkdirp')
 const pify = require('pify')
 const {until} = require('selenium-webdriver')
 
+const testContract = `
+  pragma solidity ^0.4.0;
+  contract PiggyBank {
+
+      uint private balance;
+      address public owner;
+
+      function PiggyBank() public {
+          owner = msg.sender;
+          balance = 0;
+      }
+
+      function deposit() public payable returns (uint) {
+          balance += msg.value;
+          return balance;
+      }
+
+      function withdraw(uint withdrawAmount) public returns (uint remainingBal) {
+          require(msg.sender == owner);
+          balance -= withdrawAmount;
+
+          msg.sender.transfer(withdrawAmount);
+
+          return balance;
+      }
+  }
+`
+
 module.exports = {
   checkBrowserForConsoleErrors,
   loadExtension,
   verboseReportOnFailure,
   findElement,
   findElements,
+  testContract,
 }
 
 async function loadExtension (driver, extensionId) {
