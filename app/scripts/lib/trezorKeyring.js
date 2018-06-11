@@ -74,7 +74,7 @@ class TrezorKeyring extends EventEmitter {
 
           for (let i = from; i < to; i++) {
 
-            this.accounts.push(this.getEthAddress(pathBase, i))
+            this.accounts.push(this._addressFromId(pathBase, i))
             this.page = 0
           }
           resolve(this.accounts)
@@ -85,7 +85,7 @@ class TrezorKeyring extends EventEmitter {
     })
   }
 
-  async getPage () {
+  getPage () {
 
     return new Promise((resolve, reject) => {
       return this.unlock()
@@ -99,7 +99,7 @@ class TrezorKeyring extends EventEmitter {
           for (let i = from; i < to; i++) {
 
             accounts.push({
-              address: this.getEthAddress(pathBase, i),
+              address: this._addressFromId(pathBase, i),
               balance: 0,
               index: i,
             })
@@ -127,22 +127,6 @@ class TrezorKeyring extends EventEmitter {
     return Promise.resolve(this.accounts.slice())
   }
 
-  padLeftEven (hex) {
-    return hex.length % 2 !== 0 ? `0${hex}` : hex
-  }
-
-  cleanData (buf) {
-    return this.padLeftEven(ethUtil.bufferToHex(buf).substring(2).toLowerCase())
-  }
-
-  getEthAddress (pathBase, i) {
-    const dkey = this.hdk.derive(`${pathBase}/${i}`)
-    const address = ethUtil
-      .publicToAddress(dkey.publicKey, true)
-      .toString('hex')
-    return ethUtil.toChecksumAddress(address)
-  }
-
   // tx is an instance of the ethereumjs-transaction class.
   async signTransaction (address, tx) {
 
@@ -152,12 +136,12 @@ class TrezorKeyring extends EventEmitter {
 
         const txData = {
           account,
-          nonce: this.cleanData(tx.nonce),
-          gasPrice: this.cleanData(tx.gasPrice),
-          gasLimit: this.cleanData(tx.gasLimit),
-          to: this.cleanData(tx.to),
-          value: this.cleanData(tx.value),
-          data: this.cleanData(tx.data),
+          nonce: this._cleanData(tx.nonce),
+          gasPrice: this._cleanData(tx.gasPrice),
+          gasLimit: this._cleanData(tx.gasLimit),
+          to: this._cleanData(tx.to),
+          value: this._cleanData(tx.value),
+          data: this._cleanData(tx.data),
           chainId: tx._chainId,
         }
 
@@ -204,41 +188,12 @@ class TrezorKeyring extends EventEmitter {
 
   // For personal_sign, we need to prefix the message:
   async signPersonalMessage (withAccount, message) {
+    // Waiting on trezor to enable this
     throw new Error('Not supported on this device')
-    /*
-    await this.lock.acquire()
-    try {
-      // Look before we leap
-      await this._checkCorrectTrezorAttached()
-
-      let accountId = await this._findAddressId(withAccount)
-      let eth = await this._getEth()
-      let msgHex = ethUtil.stripHexPrefix(message)
-      let TrezorSig = await eth.signPersonalMessage(
-        this._derivePath(accountId),
-        msgHex
-      )
-      let signature = this._personalToRawSig(TrezorSig)
-
-      // Since look before we leap check is racy, also check that signature is for account expected
-      let addressSignedWith = sigUtil.recoverPersonalSignature({
-        data: message,
-        sig: signature,
-      })
-      if (addressSignedWith.toLowerCase() !== withAccount.toLowerCase()) {
-        throw new Error(
-          `Signature is for ${addressSignedWith} but expected ${withAccount} - is the correct Trezor device attached?`
-        )
-      }
-
-      return signature
-
-    } finally {
-      await this.lock.release()
-    } */
   }
 
   async signTypedData (withAccount, typedData) {
+    // Waiting on trezor to enable this
     throw new Error('Not supported on this device')
   }
 
@@ -246,46 +201,20 @@ class TrezorKeyring extends EventEmitter {
     throw new Error('Not supported on this device')
   }
 
-  async _findAddressId (addr) {
-    const result = this.accounts.indexOf(addr)
-    if (result === -1) throw new Error('Unknown address')
-    else return result
+  _padLeftEven (hex) {
+    return hex.length % 2 !== 0 ? `0${hex}` : hex
   }
 
-  async _addressFromId (i) {
-    /* Must be called with lock acquired
-    const eth = await this._getEth()
-    return (await eth.getAddress(this._derivePath(i))).address*/
-    const result = this.accounts[i]
-    if (!result) throw new Error('Unknown address')
-    else return result
+  _cleanData (buf) {
+    return this._padLeftEven(ethUtil.bufferToHex(buf).substring(2).toLowerCase())
   }
 
-  async _checkCorrectTrezorAttached () {
-    return true
-    /* Must be called with lock acquired
-    if (this.accounts.length > 0) {
-      const expectedFirstAccount = this.accounts[0]
-      let actualFirstAccount = await this._addressFromId(0)
-      if (expectedFirstAccount !== actualFirstAccount) {
-        throw new Error(
-          `Incorrect Trezor device attached - expected device containg account ${expectedFirstAccount}, but found ${actualFirstAccount}`
-        )
-      }
-    }*/
-  }
-
-  _derivePath (i) {
-    return this.hdPath + '/' + i
-  }
-
-  _personalToRawSig (TrezorSig) {
-    var v = TrezorSig['v'] - 27
-    v = v.toString(16)
-    if (v.length < 2) {
-      v = '0' + v
-    }
-    return '0x' + TrezorSig['r'] + TrezorSig['s'] + v
+  _addressFromId(pathBase, i) {
+    const dkey = this.hdk.derive(`${pathBase}/${i}`)
+    const address = ethUtil
+      .publicToAddress(dkey.publicKey, true)
+      .toString('hex')
+    return ethUtil.toChecksumAddress(address)
   }
 }
 
