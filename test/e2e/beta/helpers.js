@@ -2,22 +2,8 @@ const { until } = require('selenium-webdriver')
 
 module.exports = {
   checkBrowserForConsoleErrors,
-  loadExtension,
   findElement,
   findElements,
-}
-
-async function loadExtension (driver, extensionId) {
-  switch (process.env.SELENIUM_BROWSER) {
-    case 'chrome': {
-      await driver.get(`chrome-extension://${extensionId}/home.html`)
-      break
-    }
-    case 'firefox': {
-      await driver.get(`moz-extension://${extensionId}/home.html`)
-      break
-    }
-  }
 }
 
 async function checkBrowserForConsoleErrors (driver) {

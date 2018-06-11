@@ -9,17 +9,16 @@ const {
   verboseReportOnFailure,
 } = require('../func')
 const {
-  checkBrowserForConsoleErrors,
-  loadExtension,
   findElement,
   findElements,
+  checkBrowserForConsoleErrors,
 } = require('./helpers')
 
 
 describe('Using MetaMask with an existing account', function () {
   const browser = process.env.SELENIUM_BROWSER
-  let extensionId
   let driver
+  let extensionUri
   let tokenAddress
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
@@ -273,7 +272,7 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
 
       await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 14000)
@@ -286,7 +285,7 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
-      await loadExtension(driver, extensionId)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
     })
   })
@@ -348,7 +347,7 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
 
       await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
@@ -361,7 +360,7 @@ describe('Using MetaMask with an existing account', function () {
       tokenAddress = await tokenContactAddress.getText()
       await driver.close()
       await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
     })
 

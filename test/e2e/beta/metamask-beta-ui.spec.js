@@ -12,13 +12,12 @@ const {
   findElement,
   findElements,
   checkBrowserForConsoleErrors,
-  loadExtension,
 } = require('./helpers')
 
 describe('MetaMask', function () {
   const browser = process.env.SELENIUM_BROWSER
-  let extensionId
   let driver
+  let extensionUri
   let tokenAddress
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
@@ -361,7 +360,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 14000)
@@ -374,7 +373,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
-      await loadExtension(driver, extensionId)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
     })
   })
@@ -437,7 +436,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
@@ -450,7 +449,7 @@ describe('MetaMask', function () {
       tokenAddress = await tokenContactAddress.getText()
       await driver.close()
       await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
     })
 

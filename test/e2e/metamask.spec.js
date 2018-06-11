@@ -8,7 +8,7 @@ const { delay, createModifiedTestBuild, setupBrowserAndExtension, verboseReportO
 
 describe('Metamask popup page', function () {
   const browser = process.env.SELENIUM_BROWSER
-  let driver, accountAddress, tokenAddress, extensionId, extensionUri
+  let driver, accountAddress, tokenAddress, extensionUri
 
   this.timeout(0)
 
