@@ -20,6 +20,7 @@ describe('Metamask popup page', function () {
     extensionUri = installResult.extensionUri
 
     await driver.get(extensionUri)
+    await delay(300)
   })
 
   afterEach(async function () {
@@ -47,7 +48,6 @@ describe('Metamask popup page', function () {
   describe('Setup', function () {
 
     it('switches to Chrome extensions list', async function () {
-      await delay(300)
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
     })

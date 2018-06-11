@@ -36,6 +36,9 @@ describe('MetaMask', function () {
     const installResult = await setupBrowserAndExtension({ browser, extPath })
     driver = installResult.driver
     extensionUri = installResult.extensionUri
+
+    await driver.get(extensionUri)
+    await delay(tinyDelayMs)
   })
 
   afterEach(async function () {
@@ -48,7 +51,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure({ browser, driver, title: this.currentTest.tile })
+      await verboseReportOnFailure({ browser, driver, title: this.currentTest.title })
     }
   })
 
