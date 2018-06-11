@@ -178,7 +178,14 @@ SignatureRequest.prototype.renderBody = function () {
     rows = data
   } else if (type === 'eth_sign') {
     rows = [{ name: this.context.t('message'), value: data }]
-    notice = this.context.t('signNotice')
+    notice = [this.context.t('signNotice'),
+      h('span.request-signature__help-link', {
+        onClick: () => {
+          global.platform.openWindow({
+            url: 'https://consensys.zendesk.com/hc/en-us/articles/360004427792',
+          })
+        },
+    }, this.context.t('learnMore'))]
   }
 
   return h('div.request-signature__body', {}, [
