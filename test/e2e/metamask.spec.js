@@ -1,8 +1,9 @@
-const fs = require('fs')
+const fs = require('fs-extra')
 const mkdirp = require('mkdirp')
 const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
+const prependFile = pify(require('prepend-file'))
 const webdriver = require('selenium-webdriver')
 const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
@@ -14,7 +15,13 @@ describe('Metamask popup page', function () {
   this.timeout(0)
 
   before(async function () {
-    const extPath = path.resolve(`dist/${browser}`)
+    const srcPath = path.resolve(`dist/${browser}`)
+    const extPath = path.resolve(`test-builds/${browser}`)
+    await fs.ensureDir(extPath)
+    await fs.copy(srcPath, extPath)
+    const config = { NetworkController: { provider: { type: 'localhost' } } }
+    await prependFile(`${extPath}/background.js`, `window.METAMASK_CONFIG=${JSON.stringify(config)};\n`)
+
     if (browser === 'chrome') {
       driver = buildChromeWebDriver(extPath)
       extensionId = await getExtensionIdChrome(driver)
@@ -46,6 +53,7 @@ describe('Metamask popup page', function () {
     // gather extra data if test failed
     if (this.currentTest.state === 'failed') {
       await verboseReportOnFailure(this.currentTest)
+      await delay(1000000)
     }
   })
 
@@ -59,11 +67,6 @@ describe('Metamask popup page', function () {
       await delay(300)
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
-    })
-
-    it('sets provider type to localhost', async function () {
-      await delay(300)
-      await setProviderType('localhost')
     })
 
   })
@@ -312,10 +315,6 @@ describe('Metamask popup page', function () {
       assert.equal(await tokenBalance.getText(), '100 TST')
     })
   })
-
-  async function setProviderType (type) {
-    await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
-  }
 
   async function checkBrowserForConsoleErrors() {
     const ignoredLogTypes = ['WARNING']

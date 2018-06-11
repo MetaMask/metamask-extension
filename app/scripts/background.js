@@ -18,7 +18,7 @@ const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
-const firstTimeState = require('./first-time-state')
+const rawFirstTimeState = require('./first-time-state')
 const setupRaven = require('./lib/setupRaven')
 const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
@@ -30,6 +30,8 @@ const {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
 } = require('./lib/enums')
+
+const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_CONFIG)
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
