@@ -683,6 +683,25 @@ describe('MetaMask', function () {
     })
   })
 
+  describe('Hide token', () => {
+    it('hides the token when clicked', async () => {
+      const [hideTokenEllipsis] = await findElements(driver, By.css('.token-list-item__ellipsis'))
+      hideTokenEllipsis.click()
+
+      const byTokenMenuDropdownOption = By.css('.token-menu-dropdown__option')
+      const tokenMenuDropdownOption = await driver.wait(until.elementLocated(byTokenMenuDropdownOption))
+      tokenMenuDropdownOption.click()
+
+      const confirmHideModal = await findElement(driver, By.css('span .modal'))
+
+      const byHideTokenConfirmationButton = By.css('.hide-token-confirmation__button')
+      const hideTokenConfirmationButton = await driver.wait(until.elementLocated(byHideTokenConfirmationButton))
+      hideTokenConfirmationButton.click()
+
+      await driver.wait(until.stalenessOf(confirmHideModal))
+    })
+  })
+
   describe('Add existing token using search', () => {
     it('clicks on the Add Token button', async () => {
       const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
