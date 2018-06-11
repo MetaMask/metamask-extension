@@ -289,7 +289,7 @@
     "sass-loader": "^7.0.1",
     "selenium-webdriver": "^3.5.0",
     "shell-parallel": "^1.0.3",
-    "sinon": "^5.0.0",
+    "sinon": "^6.0.0",
     "source-map": "^0.7.2",
     "style-loader": "^0.21.0",
     "stylelint-config-standard": "^18.2.0",
