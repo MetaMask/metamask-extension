@@ -16,6 +16,7 @@ const {
   checkBrowserForConsoleErrors,
   loadExtension,
   verboseReportOnFailure,
+  testContract,
 } = require('./helpers')
 
 describe('MetaMask', function () {
@@ -340,6 +341,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const gasModal = await driver.findElement(By.css('span .modal'))
+
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
@@ -395,6 +397,108 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
       await loadExtension(driver, extensionId)
+      await delay(regularDelayMs)
+    })
+  })
+
+  describe('Deploy contract and call contract method from Remix', () => {
+    it('writes a contract to remix', async () => {
+      await driver.executeScript('window.open("https://remix.ethereum.org/")')
+      await delay(waitingNewPageDelayMs)
+
+      const [extension, remix] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(remix)
+
+      const newContractButton = await findElement(driver, By.css('.fa-plus-circle'))
+      await newContractButton.click()
+      await delay(regularDelayMs)
+
+      const modalFooterOkay = await findElement(driver, By.css('#modal-footer-ok'))
+      await modalFooterOkay.click()
+      await delay(regularDelayMs)
+
+      await driver.executeScript('window.document.getElementById("input").editor.session.setValue(arguments[0])', testContract)
+      await delay(regularDelayMs)
+    })
+
+    it('compiles the contract', async () => {
+      const [extension, remix] = await driver.getAllWindowHandles()
+
+      const compileButton = await findElement(driver, By.css('#compile'))
+      compileButton.click()
+      const byOption = By.xpath(`//option[contains(text(), 'PiggyBank')]`)
+      await driver.wait(until.elementLocated(byOption, 10000))
+      await delay(regularDelayMs)
+
+      const runTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Run')]`))
+      await runTab.click()
+      await delay(regularDelayMs)
+
+      const deployButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Deploy')]`))
+      await deployButton.click()
+      await delay(regularDelayMs)
+
+      await driver.switchTo().window(extension)
+      await loadExtension(driver, extensionId)
+      await delay(regularDelayMs)
+
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+      await delay(regularDelayMs)
+
+      const txStatuses = await findElements(driver, By.css('.tx-list-status'))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
+
+      const txAccounts = await findElements(driver, By.css('.tx-list-account'))
+      assert.equal(await txAccounts[0].getText(), 'Contract Deployment')
+    })
+
+    it('calls and confirms a contract method', async () => {
+      const [extension, remix] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(remix)
+      await delay(regularDelayMs)
+
+      const depositButton = await findElement(driver, By.xpath(`//button[contains(text(), 'deposit')]`))
+      await depositButton.click()
+      await delay(regularDelayMs)
+
+      await driver.switchTo().window(extension)
+      await loadExtension(driver, extensionId)
+      await delay(regularDelayMs)
+
+      // Set the gas limit
+      const configureGas = await findElement(driver, By.css('.sliders-icon-container'))
+      await configureGas.click()
+      await delay(regularDelayMs)
+
+      let gasModal = await driver.findElement(By.css('span .modal'))
+
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
+      await gasPriceInput.clear()
+      await gasPriceInput.sendKeys('10')
+      await gasLimitInput.clear()
+      await gasLimitInput.sendKeys('60001')
+
+      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
+      await save.click()
+      await delay(regularDelayMs)
+
+      await driver.wait(until.stalenessOf(gasModal))
+
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+      await delay(regularDelayMs)
+
+      const txStatuses = await findElements(driver, By.css('.tx-list-status'))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
+
+      const txAccounts = await findElements(driver, By.css('.tx-list-account'))
+      const firstTxAddress = await txAccounts[0].getText()
+      assert(firstTxAddress.match(/^0x\w{8}\.{3}\w{4}$/))
+
+      await driver.switchTo().window(remix)
+      await driver.close()
+      await driver.switchTo().window(extension)
       await delay(regularDelayMs)
     })
   })
@@ -562,10 +666,10 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       const transactions = await findElements(driver, By.css('.tx-list-item'))
-      assert.equal(transactions.length, 5)
+      assert.equal(transactions.length, 7)
 
       const txValues = await findElements(driver, By.css('.tx-list-value'))
-      assert.equal(txValues.length, 5)
+      assert.equal(txValues.length, 7)
       assert.equal(await txValues[0].getText(), '26 TST')
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
