@@ -12,6 +12,7 @@ const By = webdriver.By
 module.exports = {
   delay,
   createModifiedTestBuild,
+  setupBrowserAndExtension,
   verboseReportOnFailure,
   buildChromeWebDriver,
   buildFirefoxWebdriver,
