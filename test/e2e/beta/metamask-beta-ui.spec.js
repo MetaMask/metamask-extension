@@ -147,8 +147,9 @@ describe('MetaMask', function () {
     let seedPhrase
 
     it('reveals the seed phrase', async () => {
-      const revealSeedPhrase = await findElement(driver, By.css('.backup-phrase__secret-blocker'))
-      await revealSeedPhrase.click()
+      await driver.wait(until.elementIsVisible(By.css('.backup-phrase__reveal-button')))
+      const revealSeedPhraseButton = await findElement(driver, By.css('.backup-phrase__reveal-button'), 10000)
+      await revealSeedPhraseButton.click()
       await delay(regularDelayMs)
 
       seedPhrase = await driver.findElement(By.css('.backup-phrase__secret-words')).getText()
@@ -217,7 +218,7 @@ describe('MetaMask', function () {
     })
 
     it('clicks through the deposit modal', async () => {
-      const buyModal = await driver.findElement(By.css('span .modal'))
+      const buyModal = await findElement(driver, By.css('span .modal'))
       const closeModal = await findElement(driver, By.css('.page-container__header-close'))
       await closeModal.click()
       await driver.wait(until.stalenessOf(buyModal))
@@ -332,8 +333,10 @@ describe('MetaMask', function () {
       await configureGas.click()
       await delay(regularDelayMs)
 
+      const gasModal = await driver.findElement(By.css('span .modal'))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
       await delay(regularDelayMs)
 
       // Continue to next screen
@@ -386,40 +389,6 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
       await loadExtension(driver, extensionId)
-      await delay(regularDelayMs)
-    })
-  })
-
-  describe('Add existing token using search', () => {
-    it('clicks on the Add Token button', async () => {
-      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
-      await addToken.click()
-      await delay(regularDelayMs)
-    })
-
-    it('can pick a token from the existing options', async () => {
-      const tokenSearch = await findElement(driver, By.css('#search-tokens'))
-      await tokenSearch.sendKeys('BAT')
-      await delay(regularDelayMs)
-
-      const token = await findElement(driver, By.xpath("//span[contains(text(), 'BAT')]"))
-      await token.click()
-      await delay(regularDelayMs)
-
-      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-
-      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
-      await addTokens.click()
-      await delay(largeDelayMs)
-    })
-
-    it('renders the balance for the chosen token', async () => {
-      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
-      await driver.wait(until.elementTextIs(balance, '0BAT'))
-      const tokenAmount = await balance.getText()
-      assert.equal(tokenAmount, '0BAT')
       await delay(regularDelayMs)
     })
   })
@@ -494,6 +463,146 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextIs(balance, '100TST'))
       const tokenAmount = await balance.getText()
       assert.equal(tokenAmount, '100TST')
+      await delay(regularDelayMs)
+    })
+  })
+
+  describe('Send token from inside MetaMask', () => {
+    let gasModal
+    it('starts to send a transaction', async function () {
+      const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
+      await sendButton.click()
+      await delay(regularDelayMs)
+
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
+      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
+      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAmount.sendKeys('50')
+
+      // Set the gas limit
+      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
+      await configureGas.click()
+      await delay(regularDelayMs)
+
+      gasModal = await driver.findElement(By.css('span .modal'))
+    })
+
+    it('customizes gas', async () => {
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
+      await gasPriceInput.clear()
+      await gasPriceInput.sendKeys('12.5')
+      await gasLimitInput.clear()
+      await gasLimitInput.sendKeys('56789')
+
+      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
+      await save.click()
+      await delay(regularDelayMs)
+    })
+
+    it('transitions to the confirm screen', async () => {
+      await driver.wait(until.stalenessOf(gasModal))
+
+      // Continue to next screen
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+    })
+
+    it('submits the transaction', async function () {
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+      await delay(regularDelayMs)
+    })
+
+    it('finds the transaction in the transactions list', async function () {
+      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      assert.equal(transactions.length, 1)
+
+      const txValues = await findElements(driver, By.css('.tx-list-value'))
+      assert.equal(txValues.length, 1)
+      assert.equal(await txValues[0].getText(), '50 TST')
+      const txStatuses = await findElements(driver, By.css('.tx-list-status'))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
+    })
+  })
+
+  describe('Send a custom token from TokenFactory', () => {
+    it('sends an already created token', async () => {
+      await driver.executeScript(`window.open("https://tokenfactory.surge.sh/#/token/${tokenAddress}")`)
+      await delay(waitingNewPageDelayMs)
+
+      const [extension, tokenFactory] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(tokenFactory)
+      const [
+        transferToAddress,
+        transferToAmount,
+      ] = await findElements(driver, By.css('.form-control'))
+
+      await transferToAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await transferToAmount.sendKeys('26')
+
+      const transferAmountButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Transfer Amount')]`))
+      await transferAmountButton.click()
+      await delay(regularDelayMs)
+
+      await driver.switchTo().window(extension)
+      await loadExtension(driver, extensionId)
+      await delay(regularDelayMs)
+
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+      await delay(regularDelayMs)
+    })
+
+    it('finds the transaction in the transactions list', async function () {
+      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      assert.equal(transactions.length, 5)
+
+      const txValues = await findElements(driver, By.css('.tx-list-value'))
+      assert.equal(txValues.length, 5)
+      assert.equal(await txValues[0].getText(), '26 TST')
+      const txStatuses = await findElements(driver, By.css('.tx-list-status'))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
+
+      const tokenListItems = await findElements(driver, By.css('.token-list-item'))
+      tokenListItems[0].click()
+      await delay(regularDelayMs)
+
+      const tokenBalanceAmount = await findElement(driver, By.css('.token-balance__amount'))
+      assert.equal(await tokenBalanceAmount.getText(), '24')
+    })
+  })
+
+  describe('Add existing token using search', () => {
+    it('clicks on the Add Token button', async () => {
+      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
+      await addToken.click()
+      await delay(regularDelayMs)
+    })
+
+    it('can pick a token from the existing options', async () => {
+      const tokenSearch = await findElement(driver, By.css('#search-tokens'))
+      await tokenSearch.sendKeys('BAT')
+      await delay(regularDelayMs)
+
+      const token = await findElement(driver, By.xpath("//span[contains(text(), 'BAT')]"))
+      await token.click()
+      await delay(regularDelayMs)
+
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+
+      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
+      await addTokens.click()
+      await delay(largeDelayMs)
+    })
+
+    it('renders the balance for the chosen token', async () => {
+      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
+      await driver.wait(until.elementTextIs(balance, '0BAT'))
+      const tokenAmount = await balance.getText()
+      assert.equal(tokenAmount, '0BAT')
       await delay(regularDelayMs)
     })
   })
