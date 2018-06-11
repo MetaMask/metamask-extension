@@ -647,7 +647,7 @@ ConfirmSendEther.prototype.gatherTxMeta = function () {
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
 
-  const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
+  const { gasPrice: sendGasPrice, gasLimit: sendGasLimit } = props.send
   const {
     lastGasPrice,
     txParams: {
