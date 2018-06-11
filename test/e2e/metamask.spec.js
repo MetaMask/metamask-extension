@@ -8,31 +8,33 @@ const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 
 describe('Metamask popup page', function () {
-  let driver, accountAddress, tokenAddress, extensionId
+  const browser = process.env.SELENIUM_BROWSER
+  let driver, accountAddress, tokenAddress, extensionId, extensionUri
 
   this.timeout(0)
 
   before(async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const extPath = path.resolve('dist/chrome')
+    const extPath = path.resolve(`dist/${browser}`)
+    if (browser === 'chrome') {
       driver = buildChromeWebDriver(extPath)
       extensionId = await getExtensionIdChrome(driver)
-      await driver.get(`chrome-extension://${extensionId}/popup.html`)
-
-    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-      const extPath = path.resolve('dist/firefox')
+      extensionUri = `chrome-extension://${extensionId}/popup.html`
+    } else if (browser === 'firefox') {
       driver = buildFirefoxWebdriver()
       await installWebExt(driver, extPath)
       await delay(700)
       extensionId = await getExtensionIdFirefox(driver)
-      await driver.get(`moz-extension://${extensionId}/popup.html`)
+      extensionUri = `moz-extension://${extensionId}/popup.html`
+    } else {
+      throw new Error(`Unknown Browser "${browser}"`)
     }
+    await driver.get(extensionUri)
   })
 
   afterEach(async function () {
     // logs command not supported in firefox
     // https://github.com/SeleniumHQ/selenium/issues/2910
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (browser === 'chrome') {
       // check for console errors
       const errors = await checkBrowserForConsoleErrors()
       if (errors.length) {
@@ -272,11 +274,7 @@ describe('Metamask popup page', function () {
     })
 
     it('navigates back to MetaMask popup in the tab', async function () {
-      if (process.env.SELENIUM_BROWSER === 'chrome') {
-        await driver.get(`chrome-extension://${extensionId}/popup.html`)
-      } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-        await driver.get(`moz-extension://${extensionId}/popup.html`)
-      }
+      await driver.get(extensionUri)
       await delay(700)
     })
   })
@@ -340,12 +338,7 @@ describe('Metamask popup page', function () {
   }
 
   async function verboseReportOnFailure (test) {
-    let artifactDir
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      artifactDir = `./test-artifacts/chrome/${test.title}`
-    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-      artifactDir = `./test-artifacts/firefox/${test.title}`
-    }
+    const artifactDir = `./test-artifacts/${browser}/${test.title}`
     const filepathBase = `${artifactDir}/test-failure`
     await pify(mkdirp)(artifactDir)
     // capture screenshot
