@@ -549,10 +549,10 @@ module.exports = class MetamaskController extends EventEmitter {
       throw new Error('MetamaskController - No Trezor Hardware Keyring found')
     }
 
-    const accounts = page === -1 ? await keyring.getPrevAccountSet() : await keyring.getNextAccountSet()
+    const accounts = page === -1 ? await keyring.getPrevAccountSet(this.provider) : await keyring.getNextAccountSet(this.provider)
+    this.accountTracker.syncWithAddresses(accounts.map(a => a.address))
 
     return accounts
-
   }
 
   /**
@@ -570,7 +570,6 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     keyring.setAccountToUnlock(index)
-    
     const oldAccounts = await keyringController.getAccounts()
     const keyState = await keyringController.addNewAccount(keyring)
     const newAccounts = await keyringController.getAccounts()

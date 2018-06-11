@@ -8,7 +8,7 @@ const keyringType = 'Trezor Hardware'
 const TrezorConnect = require('./trezor-connect.js')
 const HDKey = require('hdkey')
 const TREZOR_FIRMWARE_VERSION = '1.4.0'
-//const log = require('loglevel')
+const log = require('loglevel')
 
 class TrezorKeyring extends EventEmitter {
   constructor (opts = {}) {
@@ -111,6 +111,7 @@ class TrezorKeyring extends EventEmitter {
               index: i,
             })
           }
+          log.debug(accounts)
           resolve(accounts)
         })
         .catch(e => {

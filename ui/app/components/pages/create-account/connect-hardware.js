@@ -6,6 +6,7 @@ const actions = require('../../../actions')
 const genAccountLink = require('../../../../lib/account-link.js')
 const log = require('loglevel')
 const { DEFAULT_ROUTE } = require('../../../routes')
+const { formatBalance } = require('../../../util')
 
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
@@ -57,10 +58,22 @@ class ConnectHardwareForm extends Component {
     })
   }
 
+  getBalance (address) {
+    // Get the balance
+    log.debug('getBalance : ', address)
+    const { accounts } = this.props
+    const balanceValue = accounts && accounts[address] ? accounts[address].balance : ''
+    log.debug('balanceValue : ', balanceValue)
+    const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
+    log.debug('formattedBalance : ', formattedBalance)
+    return formattedBalance
+  }
+
   renderAccounts () {
     if (!this.state.accounts.length) {
       return null
     }
+
     log.debug('ACCOUNTS : ', this.state.accounts)
     log.debug('SELECTED?', this.state.selectedAccount)
 
@@ -70,6 +83,7 @@ class ConnectHardwareForm extends Component {
         h('div.hw-account-list__device', {}, ['Trezor - ETH']),
       ]),
       this.state.accounts.map((a, i) => {
+
         return h('div.hw-account-list__item', { key: a.address }, [
           h('span.hw-account-list__item__index', a.index + 1),
           h('div.hw-account-list__item__radio', [
@@ -88,7 +102,7 @@ class ConnectHardwareForm extends Component {
               `${a.address.slice(0, 4)}...${a.address.slice(-4)}`
             ),
           ]),
-          h('span.hw-account-list__item__balance', `${a.balance} ETH`),
+          h('span.hw-account-list__item__balance', `${this.getBalance(a.address)}`),
           h(
             'a.hw-account-list__item__link',
             {
@@ -194,16 +208,18 @@ ConnectHardwareForm.propTypes = {
   history: PropTypes.object,
   t: PropTypes.func,
   network: PropTypes.string,
+  accounts: PropTypes.object,
 }
 
 const mapStateToProps = state => {
   const {
-    metamask: { network, selectedAddress, identities = {} },
+    metamask: { network, selectedAddress, identities = {}, accounts = [] },
   } = state
   const numberOfExistingAccounts = Object.keys(identities).length
 
   return {
     network,
+    accounts,
     address: selectedAddress,
     numberOfExistingAccounts,
   }
