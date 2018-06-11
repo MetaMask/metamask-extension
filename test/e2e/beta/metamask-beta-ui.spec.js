@@ -136,6 +136,7 @@ describe('MetaMask', function () {
       await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
       await delay(regularDelayMs)
       const acceptTos = await findElement(driver, By.css('.tou button'))
+      driver.wait(until.elementIsEnabled(acceptTos))
       await acceptTos.click()
       await delay(regularDelayMs)
     })
@@ -160,8 +161,9 @@ describe('MetaMask', function () {
     let seedPhrase
 
     it('reveals the seed phrase', async () => {
-      await driver.wait(until.elementIsVisible(By.css('.backup-phrase__reveal-button')))
-      const revealSeedPhraseButton = await findElement(driver, By.css('.backup-phrase__reveal-button'), 10000)
+      const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
+      await driver.wait(until.elementLocated(byRevealButton, 10000))
+      const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
       await revealSeedPhraseButton.click()
       await delay(regularDelayMs)
 
@@ -245,8 +247,12 @@ describe('MetaMask', function () {
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       await delay(regularDelayMs)
 
+      let accountModal = await driver.findElement(By.css('span .modal'))
+
       await driver.executeScript("document.querySelector('.account-modal-close').click()")
-      await delay(regularDelayMs * 4)
+
+      await driver.wait(until.stalenessOf(accountModal))
+      await delay(regularDelayMs)
     })
   })
 

@@ -167,8 +167,7 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('Show account information', () => {
     it('shows the correct account address', async () => {
-      const detailsButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Details')]`))
-      detailsButton.click()
+      await driver.findElement(By.css('.wallet-view__details-button')).click()
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       await delay(regularDelayMs)
 
@@ -264,8 +263,10 @@ describe('Using MetaMask with an existing account', function () {
       await configureGas.click()
       await delay(regularDelayMs)
 
+      const gasModal = await driver.findElement(By.css('span .modal'))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
       await delay(regularDelayMs)
 
       // Continue to next screen
