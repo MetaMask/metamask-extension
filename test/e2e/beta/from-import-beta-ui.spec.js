@@ -4,22 +4,20 @@ const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
 const {
   delay,
-  buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
+  createModifiedTestBuild,
+  setupBrowserAndExtension,
+  verboseReportOnFailure,
 } = require('../func')
 const {
   checkBrowserForConsoleErrors,
   loadExtension,
-  verboseReportOnFailure,
   findElement,
   findElements,
 } = require('./helpers')
 
 
 describe('Using MetaMask with an existing account', function () {
+  const browser = process.env.SELENIUM_BROWSER
   let extensionId
   let driver
   let tokenAddress
@@ -34,30 +32,15 @@ describe('Using MetaMask with an existing account', function () {
   this.bail(true)
 
   before(async function () {
-    switch (process.env.SELENIUM_BROWSER) {
-      case 'chrome': {
-        const extensionPath = path.resolve('dist/chrome')
-        driver = buildChromeWebDriver(extensionPath)
-        extensionId = await getExtensionIdChrome(driver)
-        await driver.get(`chrome-extension://${extensionId}/popup.html`)
-        await delay(regularDelayMs)
-        break
-      }
-      case 'firefox': {
-        const extensionPath = path.resolve('dist/firefox')
-        driver = buildFirefoxWebdriver()
-        await installWebExt(driver, extensionPath)
-        await delay(regularDelayMs)
-        extensionId = await getExtensionIdFirefox(driver)
-        await driver.get(`moz-extension://${extensionId}/popup.html`)
-        await delay(regularDelayMs)
-        break
-      }
-    }
+    const srcPath = path.resolve(`dist/${browser}`)
+    const { extPath } = await createModifiedTestBuild({ browser, srcPath })
+    const installResult = await setupBrowserAndExtension({ browser, extPath })
+    driver = installResult.driver
+    extensionUri = installResult.extensionUri
   })
 
   afterEach(async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (browser === 'chrome') {
       const errors = await checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map(err => err.message)
@@ -66,7 +49,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(driver, this.currentTest)
+      await verboseReportOnFailure({ browser, driver, title: this.currentTest.title })
     }
   })
 

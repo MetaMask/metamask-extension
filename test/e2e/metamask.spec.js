@@ -4,7 +4,7 @@ const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
 const { By, Key } = require('selenium-webdriver')
-const { delay, createModifiedTestBuild, setupBrowserAndExtension } = require('./func')
+const { delay, createModifiedTestBuild, setupBrowserAndExtension, verboseReportOnFailure } = require('./func')
 
 describe('Metamask popup page', function () {
   const browser = process.env.SELENIUM_BROWSER
@@ -36,7 +36,7 @@ describe('Metamask popup page', function () {
     }
     // gather extra data if test failed
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(this.currentTest)
+      await verboseReportOnFailure({ browser, driver, title: this.currentTest.title })
     }
   })
 
@@ -317,18 +317,6 @@ describe('Metamask popup page', function () {
     // ignore all errors that contain a message in `ignoredErrorMessages`
     const matchedErrorObjects = errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
     return matchedErrorObjects
-  }
-
-  async function verboseReportOnFailure (test) {
-    const artifactDir = `./test-artifacts/${browser}/${test.title}`
-    const filepathBase = `${artifactDir}/test-failure`
-    await pify(mkdirp)(artifactDir)
-    // capture screenshot
-    const screenshot = await driver.takeScreenshot()
-    await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
-    // capture dom source
-    const htmlSource = await driver.getPageSource()
-    await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
 
 })

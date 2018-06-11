@@ -6,13 +6,13 @@ const {
   delay,
   createModifiedTestBuild,
   setupBrowserAndExtension,
+  verboseReportOnFailure,
 } = require('../func')
 const {
   findElement,
   findElements,
   checkBrowserForConsoleErrors,
   loadExtension,
-  verboseReportOnFailure,
 } = require('./helpers')
 
 describe('MetaMask', function () {
@@ -48,7 +48,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(this.currentTest)
+      await verboseReportOnFailure({ browser, driver, title: this.currentTest.tile })
     }
   })
 

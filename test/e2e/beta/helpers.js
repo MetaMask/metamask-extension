@@ -1,12 +1,8 @@
-const fs = require('fs')
-const mkdirp = require('mkdirp')
-const pify = require('pify')
-const {until} = require('selenium-webdriver')
+const { until } = require('selenium-webdriver')
 
 module.exports = {
   checkBrowserForConsoleErrors,
   loadExtension,
-  verboseReportOnFailure,
   findElement,
   findElements,
 }
@@ -40,21 +36,6 @@ async function checkBrowserForConsoleErrors (driver) {
   const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
   const errorObjects = errorEntries.map(entry => entry.toJSON())
   return errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
-}
-
-async function verboseReportOnFailure (driver, test) {
-  let artifactDir
-  if (process.env.SELENIUM_BROWSER === 'chrome') {
-    artifactDir = `./test-artifacts/chrome/${test.title}`
-  } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-    artifactDir = `./test-artifacts/firefox/${test.title}`
-  }
-  const filepathBase = `${artifactDir}/test-failure`
-  await pify(mkdirp)(artifactDir)
-  const screenshot = await driver.takeScreenshot()
-  await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
-  const htmlSource = await driver.getPageSource()
-  await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
 }
 
 async function findElement (driver, by, timeout = 10000) {

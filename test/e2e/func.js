@@ -12,6 +12,7 @@ const By = webdriver.By
 module.exports = {
   delay,
   createModifiedTestBuild,
+  verboseReportOnFailure,
   buildChromeWebDriver,
   buildFirefoxWebdriver,
   installWebExt,
@@ -94,4 +95,14 @@ async function installWebExt (driver, extension) {
     .defineCommand(cmd.getName(), 'POST', '/session/:sessionId/moz/addon/install')
 
   return await driver.schedule(cmd, 'installWebExt(' + extension + ')')
+}
+
+async function verboseReportOnFailure ({ browser, driver, title }) {
+  const artifactDir = `./test-artifacts/${browser}/${title}`
+  const filepathBase = `${artifactDir}/test-failure`
+  await fs.ensureDir(artifactDir)
+  const screenshot = await driver.takeScreenshot()
+  await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+  const htmlSource = await driver.getPageSource()
+  await fs.writeFile(`${filepathBase}-dom.html`, htmlSource)
 }
