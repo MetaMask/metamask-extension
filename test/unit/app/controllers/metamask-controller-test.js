@@ -582,6 +582,86 @@ describe('MetaMaskController', function () {
     })
   })
 
+  describe('#newUnsignedTypedMessage', function () {
+
+    it('errors with no from in msgParams', function () {
+      const msgParams = {
+        data: [],
+      }
+      metamaskController.newUnsignedTypedMessage(msgParams, function (error) {
+        assert.equal(error.message, 'Params must include a from field.')
+      })
+    })
+
+    it('errors with no from in msgParams', function () {
+      const msgParams = {
+        from: '',
+        data: [],
+      }
+      metamaskController.newUnsignedTypedMessage(msgParams, function (error) {
+        assert.equal(error.message, 'Got unwanted exception: Expected EIP712 typed data\nExpect argument to be non-empty array')
+      })
+    })
+
+    let msgParams, typedMsgs, messages, msgId
+
+    const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
+
+    beforeEach(async function () {
+
+      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
+
+      msgParams = {
+        from: address,
+        data: [
+          {
+            type: 'string',
+            name: 'unit test',
+            value: 'hello there',
+          },
+          {
+            type: 'uint32',
+            name: 'A number, but not really a number',
+            value: '$$$',
+          },
+        ]}
+
+      metamaskController.newUnsignedTypedMessage(msgParams, noop)
+      typedMsgs = metamaskController.typedMessageManager.getUnapprovedMsgs()
+      messages = metamaskController.typedMessageManager.messages
+      msgId = Object.keys(typedMsgs)[0]
+      messages[0].msgParams.metamaskId = parseInt(msgId)
+    })
+
+    it('persists address from msg params', function () {
+      assert.equal(typedMsgs[msgId].msgParams.from, address)
+    })
+
+        it('persists data from msg params', function () {
+      assert.equal(typedMsgs[msgId].msgParams, msgParams)
+    })
+
+    it('sets the status to unapproved', function () {
+      assert.equal(typedMsgs[msgId].status, 'unapproved')
+    })
+
+    it('sets the type to personal_sign', function () {
+      assert.equal(typedMsgs[msgId].type, 'eth_signTypedData')
+    })
+
+    it('rejects the message', function () {
+      const msgIdInt = parseInt(msgId)
+      metamaskController.cancelTypedMessage(msgIdInt, noop)
+      assert.equal(messages[0].status, 'rejected')
+    })
+
+    it('errors when signing a message', async function () {
+      await metamaskController.signTypedMessage(messages[0].msgParams)
+      assert.equal(typedMsgs[msgId].status, 'signed')
+      assert.equal(typedMsgs[msgId].rawSig, '0x08a1dd1648a9fa4b2d30e48e711bf00476927d24e2ab38c7a9e00bcb4888385a7c705f83b7b6f697410de6a259958cff214fec538bba24e0648e82641190865d1b')
+    })
+  })
+
   describe('#setupUntrustedCommunication', function () {
     let streamTest
 
