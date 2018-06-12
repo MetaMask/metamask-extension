@@ -30,6 +30,15 @@ workflows:
             - prep-deps-npm
             - prep-deps-firefox
             - prep-build
+      - test-e2e-beta-chrome:
+          requires:
+            - prep-deps-npm
+            - prep-build
+      - test-e2e-beta-firefox:
+          requires:
+            - prep-deps-npm
+            - prep-deps-firefox
+            - prep-build
       - test-unit:
           requires:
             - prep-deps-npm
@@ -57,6 +66,8 @@ workflows:
             - test-unit
             - test-e2e-chrome
             - test-e2e-firefox
+            - test-e2e-beta-chrome
+            - test-e2e-beta-firefox
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
@@ -110,9 +121,7 @@ jobs:
       - checkout
       - run:
           name: Download Firefox
-          command: >
-            wget https://ftp.mozilla.org/pub/firefox/releases/58.0/linux-x86_64/en-US/firefox-58.0.tar.bz2
-            && tar xjf firefox-58.0.tar.bz2
+          command: ./.circleci/scripts/firefox-download.sh
       - save_cache:
           key: dependency-cache-firefox-{{ .Revision }}
           paths:
@@ -203,15 +212,13 @@ jobs:
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - run:
-          name: Test
+          name: test:e2e:chrome
           command: npm run test:e2e:chrome
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
 
   test-e2e-firefox:
-    environment:
-      browsers: '["Firefox"]'
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -220,11 +227,7 @@ jobs:
           key: dependency-cache-firefox-{{ .Revision }}
       - run:
           name: Install firefox
-          command: >
-            sudo rm -r /opt/firefox
-            && sudo mv firefox /opt/firefox58
-            && sudo mv /usr/bin/firefox /usr/bin/firefox-old
-            && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
+          command: ./.circleci/scripts/firefox-install.sh
       - restore_cache:
           key: dependency-cache-{{ .Revision }}
       - restore_cache:
@@ -232,6 +235,43 @@ jobs:
       - run:
           name: test:e2e:firefox
           command: npm run test:e2e:firefox
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  test-e2e-beta-chrome:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Revision }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
+      - run:
+          name: test:e2e:chrome:beta
+          command: npm run test:e2e:chrome:beta
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  test-e2e-beta-firefox:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-firefox-{{ .Revision }}
+      - run:
+          name: Install firefox
+          command: ./.circleci/scripts/firefox-install.sh
+      - restore_cache:
+          key: dependency-cache-{{ .Revision }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
+      - run:
+          name: test:e2e:firefox:beta
+          command: npm run test:e2e:firefox:beta
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -325,11 +365,7 @@ jobs:
           key: dependency-cache-firefox-{{ .Revision }}
       - run:
           name: Install firefox
-          command: >
-            sudo rm -r /opt/firefox
-            && sudo mv firefox /opt/firefox58
-            && sudo mv /usr/bin/firefox /usr/bin/firefox-old
-            && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
+          command: ./.circleci/scripts/firefox-install.sh
       - restore_cache:
           key: dependency-cache-{{ .Revision }}
       - run:
@@ -372,11 +408,7 @@ jobs:
           key: dependency-cache-firefox-{{ .Revision }}
       - run:
           name: Install firefox
-          command: >
-            sudo rm -r /opt/firefox
-            && sudo mv firefox /opt/firefox58
-            && sudo mv /usr/bin/firefox /usr/bin/firefox-old
-            && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
+          command: ./.circleci/scripts/firefox-install.sh
       - restore_cache:
           key: dependency-cache-{{ .Revision }}
       - run:
@@ -415,4 +447,3 @@ jobs:
       - run:
           name: All Tests Passed
           command: echo 'weew - everything passed!'
-

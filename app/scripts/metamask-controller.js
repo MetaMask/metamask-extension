@@ -394,6 +394,8 @@ module.exports = class MetamaskController extends EventEmitter {
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
+      isNonceTaken: nodeify(txController.isNonceTaken, txController),
+      estimateGas: nodeify(this.estimateGas, this),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
@@ -434,28 +436,24 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Object} vault
    */
   async createNewVaultAndKeychain (password) {
-    const release = await this.createVaultMutex.acquire()
-    let vault
-
+    const releaseLock = await this.createVaultMutex.acquire()
     try {
+      let vault
       const accounts = await this.keyringController.getAccounts()
-
       if (accounts.length > 0) {
         vault = await this.keyringController.fullUpdate()
-
       } else {
         vault = await this.keyringController.createNewVaultAndKeychain(password)
         const accounts = await this.keyringController.getAccounts()
         this.preferencesController.setAddresses(accounts)
         this.selectFirstIdentity()
       }
-      release()
+      releaseLock()
+      return vault
     } catch (err) {
-      release()
+      releaseLock()
       throw err
     }
-
-    return vault
   }
 
   /**
@@ -464,7 +462,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param  {} seed
    */
   async createNewVaultAndRestore (password, seed) {
-    const release = await this.createVaultMutex.acquire()
+    const releaseLock = await this.createVaultMutex.acquire()
     try {
       // clear known identities
       this.preferencesController.setAddresses([])
@@ -474,10 +472,10 @@ module.exports = class MetamaskController extends EventEmitter {
       const accounts = await this.keyringController.getAccounts()
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
-      release()
+      releaseLock()
       return vault
     } catch (err) {
-      release()
+      releaseLock()
       throw err
     }
   }
@@ -628,10 +626,7 @@ module.exports = class MetamaskController extends EventEmitter {
   async resetAccount () {
     const selectedAddress = this.preferencesController.getSelectedAddress()
     this.txController.wipeTransactions(selectedAddress)
-
-    const networkController = this.networkController
-    const oldType = networkController.getProviderConfig().type
-    await networkController.setProviderType(oldType, true)
+    this.networkController.resetConnection()
 
     return selectedAddress
   }
@@ -956,6 +951,18 @@ module.exports = class MetamaskController extends EventEmitter {
     await this.txController.retryTransaction(txId)
     const state = await this.getState()
     return state
+  }
+
+  estimateGas (estimateGasParams) {
+    return new Promise((resolve, reject) => {
+      return this.txController.txGasUtil.query.estimateGas(estimateGasParams, (err, res) => {
+        if (err) {
+          return reject(err)
+        }
+
+        return resolve(res)
+      })
+    })
   }
 
 //=============================================================================
