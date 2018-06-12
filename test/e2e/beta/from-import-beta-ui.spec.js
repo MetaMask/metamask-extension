@@ -63,16 +63,6 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
     })
 
-    it('use the local network', async function () {
-      const networkSelector = await findElement(driver, By.css('#network_component'))
-      await networkSelector.click()
-      await delay(regularDelayMs)
-
-      const [localhost] = await findElements(driver, By.xpath(`//li[contains(text(), 'Localhost')]`))
-      await localhost.click()
-      await delay(regularDelayMs)
-    })
-
     it('selects the new UI option', async () => {
       const button = await findElement(driver, By.xpath("//p[contains(text(), 'Try Beta Version')]"))
       await button.click()
