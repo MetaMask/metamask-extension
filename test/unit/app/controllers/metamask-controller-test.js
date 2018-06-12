@@ -593,16 +593,6 @@ describe('MetaMaskController', function () {
       })
     })
 
-    it('errors with no from in msgParams', function () {
-      const msgParams = {
-        from: '',
-        data: [],
-      }
-      metamaskController.newUnsignedTypedMessage(msgParams, function (error) {
-        assert.equal(error.message, 'Got unwanted exception: Expected EIP712 typed data\nExpect argument to be non-empty array')
-      })
-    })
-
     let msgParams, typedMsgs, messages, msgId
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
