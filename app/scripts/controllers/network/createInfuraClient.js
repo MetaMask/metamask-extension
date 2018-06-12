@@ -1,5 +1,4 @@
 const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
-const createAsyncMiddleware = require('json-rpc-engine/src/createAsyncMiddleware')
 const createBlockReEmitMiddleware = require('eth-json-rpc-middleware/block-reemit')
 const createBlockCacheMiddleware = require('eth-json-rpc-middleware/block-cache')
 const createInflightMiddleware = require('eth-json-rpc-middleware/inflight-cache')
