@@ -436,28 +436,24 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Object} vault
    */
   async createNewVaultAndKeychain (password) {
-    const release = await this.createVaultMutex.acquire()
-    let vault
-
+    const releaseLock = await this.createVaultMutex.acquire()
     try {
+      let vault
       const accounts = await this.keyringController.getAccounts()
-
       if (accounts.length > 0) {
         vault = await this.keyringController.fullUpdate()
-
       } else {
         vault = await this.keyringController.createNewVaultAndKeychain(password)
         const accounts = await this.keyringController.getAccounts()
         this.preferencesController.setAddresses(accounts)
         this.selectFirstIdentity()
       }
-      release()
+      releaseLock()
+      return vault
     } catch (err) {
-      release()
+      releaseLock()
       throw err
     }
-
-    return vault
   }
 
   /**
@@ -466,7 +462,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param  {} seed
    */
   async createNewVaultAndRestore (password, seed) {
-    const release = await this.createVaultMutex.acquire()
+    const releaseLock = await this.createVaultMutex.acquire()
     try {
       // clear known identities
       this.preferencesController.setAddresses([])
@@ -476,10 +472,10 @@ module.exports = class MetamaskController extends EventEmitter {
       const accounts = await this.keyringController.getAccounts()
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
-      release()
+      releaseLock()
       return vault
     } catch (err) {
-      release()
+      releaseLock()
       throw err
     }
   }
