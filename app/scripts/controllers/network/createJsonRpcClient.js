@@ -4,6 +4,7 @@ const createFetchMiddleware = require('eth-json-rpc-middleware/fetch')
 const createBlockRefMiddleware = require('eth-json-rpc-middleware/block-ref')
 const createBlockCacheMiddleware = require('eth-json-rpc-middleware/block-cache')
 const createInflightMiddleware = require('eth-json-rpc-middleware/inflight-cache')
+const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/block-tracker-inspector')
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
 const BlockTracker = require('eth-block-tracker')
 
@@ -22,16 +23,4 @@ function createJsonRpcClient ({ rpcUrl }) {
     fetchMiddleware,
   ])
   return { networkMiddleware, blockTracker }
-}
-
-// inspect if response contains a block ref higher than our latest block
-const futureBlockRefRequests = ['eth_getTransactionByHash', 'eth_getTransactionReceipt']
-function createBlockTrackerInspectorMiddleware ({ blockTracker }) {
-  return createAsyncMiddleware(async (req, res, next) => {
-    if (!futureBlockRefRequests.includes(req.method)) return next()
-    await next()
-    const blockNumber = Number.parseInt(res.result.blockNumber, 16)
-    const currentBlockNumber = Number.parseInt(blockTracker.getCurrentBlock(), 16)
-    if (blockNumber > currentBlockNumber) await blockTracker.checkForLatestBlock()
-  })
 }
