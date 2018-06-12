@@ -36,6 +36,9 @@ describe('Using MetaMask with an existing account', function () {
     const installResult = await setupBrowserAndExtension({ browser, extPath })
     driver = installResult.driver
     extensionUri = installResult.extensionUri
+
+    await driver.get(extensionUri)
+    await delay(300)
   })
 
   afterEach(async function () {
