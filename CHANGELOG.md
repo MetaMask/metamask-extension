@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix bug where account reset did not work with custom RPC providers.
+- Fix bug where nonce mutex was never released
 
 ## 4.7.4 Tue Jun 05 2018
 
