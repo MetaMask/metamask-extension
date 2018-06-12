@@ -42,13 +42,13 @@ async function setupBrowserAndExtension ({ browser, extPath }) {
   if (browser === 'chrome') {
     driver = buildChromeWebDriver(extPath)
     extensionId = await getExtensionIdChrome(driver)
-    extensionUri = `chrome-extension://${extensionId}/popup.html`
+    extensionUri = `chrome-extension://${extensionId}/home.html`
   } else if (browser === 'firefox') {
     driver = buildFirefoxWebdriver()
     await installWebExt(driver, extPath)
     await delay(700)
     extensionId = await getExtensionIdFirefox(driver)
-    extensionUri = `moz-extension://${extensionId}/popup.html`
+    extensionUri = `moz-extension://${extensionId}/home.html`
   } else {
     throw new Error(`Unknown Browser "${browser}"`)
   }
