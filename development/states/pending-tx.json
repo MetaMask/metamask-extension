@@ -701,11 +701,13 @@
     "currentCurrency": "usd",
     "conversionRate": 418.62,
     "conversionDate": 1512615622,
-    "infuraNetworkStatus": {
-      "mainnet": "ok",
-      "ropsten": "ok",
-      "kovan": "ok",
-      "rinkeby": "ok"
+    "networkStatus": {
+      "infura": {
+        "mainnet": "ok",
+        "ropsten": "ok",
+        "kovan": "ok",
+        "rinkeby": "ok"
+      }
     },
     "shapeShiftTxList": [],
     "lostAccounts": []

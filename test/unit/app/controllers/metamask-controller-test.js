@@ -253,7 +253,7 @@ describe('MetaMaskController', function () {
     let defaultMetaMaskCurrency
 
     beforeEach(function () {
-      defaultMetaMaskCurrency = metamaskController.currencyController.getCurrentCurrency()
+      defaultMetaMaskCurrency = metamaskController.currencyRateController.state.currentCurrency
     })
 
     it('defaults to usd', function () {
@@ -262,7 +262,7 @@ describe('MetaMaskController', function () {
 
     it('sets currency to JPY', function () {
       metamaskController.setCurrentCurrency('JPY', noop)
-      assert.equal(metamaskController.currencyController.getCurrentCurrency(), 'JPY')
+      assert.equal(metamaskController.currencyRateController.activeCurrency, 'JPY')
     })
   })
 
@@ -276,7 +276,7 @@ describe('MetaMaskController', function () {
 
       depositAddress = '3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc'
       depositType = 'ETH'
-      shapeShiftTxList = metamaskController.shapeshiftController.store.getState().shapeShiftTxList
+      shapeShiftTxList = metamaskController.shapeshiftController.state.shapeShiftTxList
     })
 
     it('creates a shapeshift tx', async function () {
@@ -521,7 +521,7 @@ describe('MetaMaskController', function () {
     })
 
     it('sets up phishing stream for untrusted communication ', async function () {
-      await metamaskController.blacklistController.updatePhishingList()
+      await metamaskController.phishingController.updatePhishingLists()
 
       streamTest = createThoughStream((chunk, enc, cb) => {
         assert.equal(chunk.name, 'phishing')

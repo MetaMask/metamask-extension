@@ -22,19 +22,12 @@ const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
-const CurrencyController = require('./controllers/currency')
 const NoticeController = require('./notice-controller')
-const ShapeShiftController = require('./controllers/shapeshift')
-const AddressBookController = require('./controllers/address-book')
-const InfuraController = require('./controllers/infura')
-const BlacklistController = require('./controllers/blacklist')
-const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
-const TokenRatesController = require('./controllers/token-rates')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -48,6 +41,14 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
 const DiagnosticsReporter = require('./lib/diagnostics-reporter')
 const log = require('loglevel')
+
+const AddressBookController = require('gaba/AddressBookController').default
+const CurrencyRateController = require('gaba/CurrencyRateController').default
+const NetworkStatusController = require('gaba/NetworkStatusController').default
+const PhishingController = require('gaba/PhishingController').default
+const ShapeShiftController = require('gaba/ShapeShiftController').default
+const TokenRatesController = require('gaba/TokenRatesController').default
+const BlockHistoryController = require('gaba/BlockHistoryController').default
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -96,31 +97,22 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // currency controller
-    this.currencyController = new CurrencyController({
-      initState: initState.CurrencyController,
-    })
-    this.currencyController.updateConversionRate()
-    this.currencyController.scheduleConversionInterval()
+    this.currencyRateController = new CurrencyRateController(initState.CurrencyRateController)
 
-    // infura controller
-    this.infuraController = new InfuraController({
-      initState: initState.InfuraController,
-    })
-    this.infuraController.scheduleInfuraNetworkCheck()
+    // network status controller
+    this.networkStatusController = new NetworkStatusController(initState.NetworkStatusController)
 
-    this.blacklistController = new BlacklistController()
-    this.blacklistController.scheduleUpdates()
+    this.phishingController = new PhishingController()
 
     // rpc provider
     this.provider = this.initializeProvider()
     this.blockTracker = this.provider._blockTracker
 
     // token exchange rate tracker
-    this.tokenRatesController = new TokenRatesController({
-      preferences: this.preferencesController.store,
-    })
+    this.tokenRatesController = new TokenRatesController()
+    this.preferencesController.store.subscribe(({ tokens = [] }) => { this.tokenRatesController.tokens = tokens })
 
-    this.recentBlocksController = new RecentBlocksController({
+    this.blockHistoryController = new BlockHistoryController(undefined, {
       blockTracker: this.blockTracker,
       provider: this.provider,
     })
@@ -153,10 +145,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // address book controller
-    this.addressBookController = new AddressBookController({
-      initState: initState.AddressBookController,
-      preferencesStore: this.preferencesController.store,
-    })
+    this.addressBookController = new AddressBookController(initState.AddressBookController)
 
     // tx mgmt
     this.txController = new TransactionController({
@@ -193,9 +182,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // to be uncommented when retrieving notices from a remote server.
     // this.noticeController.startPolling()
 
-    this.shapeshiftController = new ShapeShiftController({
-      initState: initState.ShapeShiftController,
-    })
+    this.shapeshiftController = new ShapeShiftController(initState.ShapeShiftController)
 
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
@@ -207,12 +194,12 @@ module.exports = class MetamaskController extends EventEmitter {
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
-      AddressBookController: this.addressBookController.store,
-      CurrencyController: this.currencyController.store,
+      AddressBookController: this.addressBookController,
+      CurrencyRateController: this.currencyRateController,
       NoticeController: this.noticeController.store,
-      ShapeShiftController: this.shapeshiftController.store,
+      ShapeShiftController: this.shapeshiftController,
       NetworkController: this.networkController.store,
-      InfuraController: this.infuraController.store,
+      NetworkStatusController: this.networkStatusController,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -220,18 +207,18 @@ module.exports = class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       BalancesController: this.balancesController.store,
-      TokenRatesController: this.tokenRatesController.store,
+      TokenRatesController: this.tokenRatesController,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
-      RecentBlocksController: this.recentBlocksController.store,
-      AddressBookController: this.addressBookController.store,
-      CurrencyController: this.currencyController.store,
+      RecentBlocksController: this.blockHistoryController,
+      AddressBookController: this.addressBookController,
+      CurrencyRateController: this.currencyRateController,
       NoticeController: this.noticeController.memStore,
-      ShapeshiftController: this.shapeshiftController.store,
-      InfuraController: this.infuraController.store,
+      ShapeshiftController: this.shapeshiftController,
+      NetworkStatusController: this.networkStatusController,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -379,7 +366,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
 
       // AddressController
-      setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
+      setAddressBook: addressBookController.set.bind(addressBookController),
 
       // KeyringController
       setLocked: nodeify(keyringController.setLocked, keyringController),
@@ -1006,7 +993,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
-    if (this.blacklistController.checkForPhishing(originDomain)) {
+    if (this.phishingController.test(originDomain)) {
       log.debug('MetaMask - sending phishing warning for', originDomain)
       this.sendPhishingWarning(connectionStream, originDomain)
       return
@@ -1144,8 +1131,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {string} A hex representation of the suggested wei gas price.
    */
   getGasPrice () {
-    const { recentBlocksController } = this
-    const { recentBlocks } = recentBlocksController.store.getState()
+    const { blockHistoryController } = this
+    const { recentBlocks } = blockHistoryController.state
 
     // Return 1 gwei if no blocks have been observed:
     if (recentBlocks.length === 0) {
@@ -1183,12 +1170,11 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setCurrentCurrency (currencyCode, cb) {
     try {
-      this.currencyController.setCurrentCurrency(currencyCode)
-      this.currencyController.updateConversionRate()
+      this.currencyRateController.currency = currencyCode
       const data = {
-        conversionRate: this.currencyController.getConversionRate(),
-        currentCurrency: this.currencyController.getCurrentCurrency(),
-        conversionDate: this.currencyController.getConversionDate(),
+        conversionRate: this.currencyRateController.state.conversionRate,
+        currentCurrency: currencyCode,
+        conversionDate: this.currencyRateController.state.conversionDate,
       }
       cb(null, data)
     } catch (err) {
@@ -1216,7 +1202,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @property {string} depositType - An abbreviation of the type of crypto currency to be deposited.
    */
   createShapeShiftTx (depositAddress, depositType) {
-    this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
+    this.shapeshiftController.createTransaction(depositAddress, depositType)
   }
 
   // network
@@ -1290,6 +1276,6 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {boolean} active - True if price data should be getting fetched.
    */
   set isClientOpenAndUnlocked (active) {
-    this.tokenRatesController.isActive = active
+    this.tokenRatesController.disabled = !active
   }
 }
