@@ -1,6 +1,6 @@
 const { EventEmitter } = require('events')
 const ethUtil = require('ethereumjs-util')
-// const sigUtil = require('eth-sig-util')
+const sigUtil = require('eth-sig-util')
 
 const hdPathString = `m/44'/60'/0'/0`
 const keyringType = 'Trezor Hardware'
@@ -131,31 +131,21 @@ class TrezorKeyring extends EventEmitter {
   async signTransaction (address, tx) {
 
       return new Promise((resolve, reject) => {
-        log.debug('sign transaction ', address, tx)
-        const account = `m/44'/60'/0'/${this.unlockedAccount}`
 
-        const txData = {
-          account,
-          nonce: this._cleanData(tx.nonce),
-          gasPrice: this._cleanData(tx.gasPrice),
-          gasLimit: this._cleanData(tx.gasLimit),
-          to: this._cleanData(tx.to),
-          value: this._cleanData(tx.value),
-          data: this._cleanData(tx.data),
-          chainId: tx._chainId,
-        }
+        log.debug('sign transaction ', address, tx)
 
         TrezorConnect.ethereumSignTx(
-          txData.account,
-          txData.nonce,
-          txData.gasPrice,
-          txData.gasLimit,
-          txData.to,
-          txData.value,
-          txData.data === '' ? null : txData.data,
-          txData.chainId,
+          this._getUnlockedAccount(),
+          this._normalize(tx.nonce),
+          this._normalize(tx.gasPrice),
+          this._normalize(tx.gasLimit),
+          this._normalize(tx.to),
+          this._normalize(tx.value),
+          this._normalize(tx.data),
+          tx._chainId,
           response => {
             if (response.success) {
+
               tx.v = `0x${response.v.toString(16)}`
               tx.r = `0x${response.r}`
               tx.s = `0x${response.s}`
@@ -163,13 +153,11 @@ class TrezorKeyring extends EventEmitter {
 
               const signedTx = new Transaction(tx)
 
-              log.debug('signature is valid?', signedTx.verifySignature())
-
               const addressSignedWith = ethUtil.toChecksumAddress(`0x${signedTx.from.toString('hex')}`)
               const correctAddress = ethUtil.toChecksumAddress(address)
               if (addressSignedWith !== correctAddress) {
-                // throw new Error('signature doesnt match the right address')
                 log.error('signature doesnt match the right address', addressSignedWith, correctAddress)
+                throw new Error('signature doesnt match the right address')
               }
 
               resolve(signedTx)
@@ -188,8 +176,24 @@ class TrezorKeyring extends EventEmitter {
 
   // For personal_sign, we need to prefix the message:
   async signPersonalMessage (withAccount, message) {
-    // Waiting on trezor to enable this
-    throw new Error('Not supported on this device')
+
+    TrezorConnect.ethereumSignMessage(this._getUnlockedAccount(), message, response => {
+      if (response.success) {
+
+          const signature = this._personalToRawSig(response.signature)
+          const addressSignedWith = sigUtil.recoverPersonalSignature({data: message, sig: signature})
+          const correctAddress = ethUtil.toChecksumAddress(withAccount)
+          if (addressSignedWith !== correctAddress) {
+            log.error('signature doesnt match the right address', addressSignedWith, correctAddress)
+            throw new Error('signature doesnt match the right address')
+          }
+          return signature
+
+      } else {
+        throw new Error(response.error || 'Unknown error')
+      }
+
+    }, TREZOR_MIN_FIRMWARE_VERSION)
   }
 
   async signTypedData (withAccount, typedData) {
@@ -205,16 +209,29 @@ class TrezorKeyring extends EventEmitter {
     return hex.length % 2 !== 0 ? `0${hex}` : hex
   }
 
-  _cleanData (buf) {
+  _normalize (buf) {
     return this._padLeftEven(ethUtil.bufferToHex(buf).substring(2).toLowerCase())
   }
 
-  _addressFromId(pathBase, i) {
+  _addressFromId (pathBase, i) {
     const dkey = this.hdk.derive(`${pathBase}/${i}`)
     const address = ethUtil
       .publicToAddress(dkey.publicKey, true)
       .toString('hex')
     return ethUtil.toChecksumAddress(address)
+  }
+
+  _getUnlockedAccount () {
+    return `${this.hdPath}/${this.unlockedAccount}`
+  }
+
+  _personalToRawSig (signature) {
+    var v = signature['v'] - 27
+    v = v.toString(16)
+    if (v.length < 2) {
+      v = '0' + v
+    }
+    return '0x' + signature['r'] + signature['s'] + v
   }
 }
 
