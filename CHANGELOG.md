@@ -2,7 +2,8 @@
 
 ## Current Master
 
-- Fix bug where account reset did not work with custom RPC providers.
+- Fix bug where account reset did not work with custom RPC providers
+- Stop reloading browser page on Ethereum network change
 
 ## 4.7.4 Tue Jun 05 2018
 
