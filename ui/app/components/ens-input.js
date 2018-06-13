@@ -25,31 +25,33 @@ function EnsInput () {
   Component.call(this)
 }
 
+EnsInput.prototype.onChange = function (recipient) {
+  const network = this.props.network
+  const networkHasEnsSupport = getNetworkEnsSupport(network)
+
+  this.props.onChange(recipient)
+
+  if (!networkHasEnsSupport) return
+
+  if (recipient.match(ensRE) === null) {
+    return this.setState({
+      loadingEns: false,
+      ensResolution: null,
+      ensFailure: null,
+    })
+  }
+
+  this.setState({
+    loadingEns: true,
+  })
+  this.checkName(recipient)
+}
+
 EnsInput.prototype.render = function () {
   const props = this.props
   const opts = extend(props, {
     list: 'addresses',
-    onChange: (recipient) => {
-      const network = this.props.network
-      const networkHasEnsSupport = getNetworkEnsSupport(network)
-
-      props.onChange(recipient)
-
-      if (!networkHasEnsSupport) return
-
-      if (recipient.match(ensRE) === null) {
-        return this.setState({
-          loadingEns: false,
-          ensResolution: null,
-          ensFailure: null,
-        })
-      }
-
-      this.setState({
-        loadingEns: true,
-      })
-      this.checkName(recipient)
-    },
+    onChange: this.onChange.bind(this),
   })
   return h('div', {
     style: { width: '100%', position: 'relative' },
@@ -89,10 +91,13 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
     }
   })
   .catch((reason) => {
-    log.error(reason)
+    // log.error(reason)
+    if (reason.message !== 'ENS name not defined.') {
+      log.error(reason)
+    }
     return this.setState({
       loadingEns: false,
-      ensResolution: ZERO_ADDRESS,
+      ensResolution: recipient,
       ensFailure: true,
       hoverText: reason.message,
     })
@@ -105,6 +110,11 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   // If an address is sent without a nickname, meaning not from ENS or from
   // the user's own accounts, a default of a one-space string is used.
   const nickname = state.nickname || ' '
+  if (prevProps.network !== this.props.network) {
+    const provider = global.ethereumProvider
+    this.ens = new ENS({ provider, network: this.props.network })
+    this.onChange(ensResolution)
+  }
   if (prevState && ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
     this.props.onChange(ensResolution, nickname)
