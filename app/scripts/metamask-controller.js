@@ -48,7 +48,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
 const DiagnosticsReporter = require('./lib/diagnostics-reporter')
 const log = require('loglevel')
-const TrezorKeyring = require('./lib/trezorKeyring')
+const TrezorKeyring = require('eth-trezor-keyring')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -549,7 +549,8 @@ module.exports = class MetamaskController extends EventEmitter {
       throw new Error('MetamaskController - No Trezor Hardware Keyring found')
     }
 
-    const accounts = page === -1 ? await keyring.getPrevAccountSet(this.provider) : await keyring.getNextAccountSet(this.provider)
+    const accounts = await keyring.getPage(page)
+
     this.accountTracker.syncWithAddresses(accounts.map(a => a.address))
 
     return accounts

@@ -25,10 +25,10 @@ class ConnectHardwareForm extends Component {
       return null
     }
     this.setState({ btnText: 'Connecting...' })
-    this.getPage()
+    this.getPage(1)
   }
 
-  getPage (page = 1) {
+  getPage (page) {
     this.props
       .connectHardware('trezor', page)
       .then(accounts => {
@@ -133,7 +133,7 @@ class ConnectHardwareForm extends Component {
       h(
         'button.btn-primary.hw-list-pagination__button',
         {
-          onClick: () => this.getPage(),
+          onClick: () => this.getPage(1),
         },
         'Next >'
       ),
