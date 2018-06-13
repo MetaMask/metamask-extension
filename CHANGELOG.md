@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix bug where metamask data would stop being written to disk after prolonged use
 - Fix bug where account reset did not work with custom RPC providers.
 - Fix bug where nonce mutex was never released
 - Stop reloading browser page on Ethereum network change
