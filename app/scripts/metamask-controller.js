@@ -131,7 +131,7 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
     })
-    
+
     // key mgmt
     const additionalKeyrings = [TrezorKeyring]
     this.keyringController = new KeyringController({
@@ -423,7 +423,6 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
 
-
 //=============================================================================
 // VAULT / KEYRING RELATED METHODS
 //=============================================================================
@@ -537,19 +536,23 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async connectHardware (deviceName, page) {
 
-    const keyringController = this.keyringController
-    const keyring = await keyringController.getKeyringsByType(
-      'Trezor Hardware'
-    )[0]
-    if (!keyring) {
-      throw new Error('MetamaskController - No Trezor Hardware Keyring found')
+    switch (deviceName) {
+      case 'trezor':
+        const keyringController = this.keyringController
+        const keyring = await keyringController.getKeyringsByType(
+          'Trezor Hardware'
+        )[0]
+        if (!keyring) {
+          throw new Error('MetamaskController - No Trezor Hardware Keyring found')
+        }
+
+        const accounts = await keyring.getPage(page)
+        this.accountTracker.syncWithAddresses(accounts.map(a => a.address))
+        return accounts
+
+      default:
+        throw new Error('MetamaskController - Unknown device')
     }
-
-    const accounts = await keyring.getPage(page)
-
-    this.accountTracker.syncWithAddresses(accounts.map(a => a.address))
-
-    return accounts
   }
 
   /**
@@ -581,7 +584,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const { identities } = this.preferencesController.store.getState()
     return { ...keyState, identities }
    }
- 
+
 
   //
   // Account Management
@@ -1037,7 +1040,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Allows a user to begin the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
-  markPasswordForgotten(cb) {
+  markPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(true)
     this.sendUpdate()
     cb()
@@ -1047,7 +1050,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Allows a user to end the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
-  unMarkPasswordForgotten(cb) {
+  unMarkPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(false)
     this.sendUpdate()
     cb()
