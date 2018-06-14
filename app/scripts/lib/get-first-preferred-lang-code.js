@@ -17,12 +17,19 @@ const existingLocaleCodes = allLocales.map(locale => locale.code.toLowerCase().r
  *
  */
 async function getFirstPreferredLangCode () {
-  let userPreferredLocaleCodes = await getPreferredLocales()
-  
+  let userPreferredLocaleCodes
+
+  try {
+    userPreferredLocaleCodes = await getPreferredLocales()
+  } catch (e) {
+    // Brave currently throws when calling getAcceptLanguages, so this handles that.
+    userPreferredLocaleCodes = []
+  }
+
   // safeguard for Brave Browser until they implement chrome.i18n.getAcceptLanguages
   // https://github.com/MetaMask/metamask-extension/issues/4270
   if (!userPreferredLocaleCodes){
-    userPreferredLocaleCodes = []    
+    userPreferredLocaleCodes = []
   }
 
   const firstPreferredLangCode = userPreferredLocaleCodes
@@ -32,3 +39,4 @@ async function getFirstPreferredLangCode () {
 }
 
 module.exports = getFirstPreferredLangCode
+
