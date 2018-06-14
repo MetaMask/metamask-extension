@@ -12,6 +12,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const connect = require('react-redux').connect
 const ToAutoComplete = require('./send/to-autocomplete')
 const log = require('loglevel')
+const { isValidENSAddress } = require('../util')
 
 EnsInput.contextTypes = {
   t: PropTypes.func,
@@ -29,7 +30,7 @@ EnsInput.prototype.onChange = function (recipient) {
   const network = this.props.network
   const networkHasEnsSupport = getNetworkEnsSupport(network)
 
-  this.props.onChange(recipient)
+  this.props.onChange({ toAddress: recipient })
 
   if (!networkHasEnsSupport) return
 
@@ -38,6 +39,7 @@ EnsInput.prototype.onChange = function (recipient) {
       loadingEns: false,
       ensResolution: null,
       ensFailure: null,
+      toError: null,
     })
   }
 
@@ -87,20 +89,28 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
         nickname: recipient.trim(),
         hoverText: address + '\n' + this.context.t('clickCopy'),
         ensFailure: false,
+        toError: null,
       })
     }
   })
   .catch((reason) => {
     // log.error(reason)
-    if (reason.message !== 'ENS name not defined.') {
-      log.error(reason)
-    }
-    return this.setState({
+    const setStateObj = {
       loadingEns: false,
       ensResolution: recipient,
       ensFailure: true,
-      hoverText: reason.message,
-    })
+      toError: null,
+    }
+    if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
+      setStateObj.hoverText = this.context.t('ensNameNotFound')
+      setStateObj.toError = 'ensNameNotFound'
+      setStateObj.ensFailure = false
+    } else {
+      log.error(reason)
+      setStateObj.hoverText = reason.message
+    }
+
+    return this.setState(setStateObj)
   })
 }
 
@@ -117,7 +127,7 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   }
   if (prevState && ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
-    this.props.onChange(ensResolution, nickname)
+    this.props.onChange({ toAddress: ensResolution, nickname, toError: state.toError })
   }
 }
 
@@ -134,7 +144,9 @@ EnsInput.prototype.ensIcon = function (recipient) {
 }
 
 EnsInput.prototype.ensIconContents = function (recipient) {
-  const { loadingEns, ensFailure, ensResolution } = this.state || { ensResolution: ZERO_ADDRESS}
+  const { loadingEns, ensFailure, ensResolution, toError } = this.state || { ensResolution: ZERO_ADDRESS }
+
+  if (toError) return
 
   if (loadingEns) {
     return h('img', {
