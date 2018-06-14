@@ -7,6 +7,7 @@
 - Fix bug where account reset did not work with custom RPC providers.
 - Fix bug where nonce mutex was never released
 - Stop reloading browser page on Ethereum network change
+- Add phishing notice
 
 ## 4.7.4 Tue Jun 05 2018
 

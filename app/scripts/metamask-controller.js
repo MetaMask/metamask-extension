@@ -189,9 +189,6 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
       firstVersion: initState.firstTimeInfo.version,
     })
-    this.noticeController.updateNoticesList()
-    // to be uncommented when retrieving notices from a remote server.
-    // this.noticeController.startPolling()
 
     this.shapeshiftController = new ShapeShiftController({
       initState: initState.ShapeShiftController,
