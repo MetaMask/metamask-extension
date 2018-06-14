@@ -14,7 +14,7 @@ import LoadingScreen from './loading-screen'
 class NoticeScreen extends Component {
   static propTypes = {
     address: PropTypes.string.isRequired,
-    lastUnreadNotice: PropTypes.shape({
+    nextUnreadNotice: PropTypes.shape({
       title: PropTypes.string,
       date: PropTypes.string,
       body: PropTypes.string,
@@ -31,7 +31,7 @@ class NoticeScreen extends Component {
   };
 
   static defaultProps = {
-    lastUnreadNotice: {},
+    nextUnreadNotice: {},
   };
 
   state = {
@@ -47,8 +47,8 @@ class NoticeScreen extends Component {
   }
 
   acceptTerms = () => {
-    const { markNoticeRead, lastUnreadNotice, history } = this.props
-    markNoticeRead(lastUnreadNotice)
+    const { markNoticeRead, nextUnreadNotice, history } = this.props
+    markNoticeRead(nextUnreadNotice)
       .then(hasActiveNotices => {
         if (!hasActiveNotices) {
           history.push(INITIALIZE_BACKUP_PHRASE_ROUTE)
@@ -72,7 +72,7 @@ class NoticeScreen extends Component {
   render () {
     const {
       address,
-      lastUnreadNotice: { title, body },
+      nextUnreadNotice: { title, body },
       isLoading,
     } = this.props
     const { atBottom } = this.state
@@ -113,12 +113,12 @@ class NoticeScreen extends Component {
 }
 
 const mapStateToProps = ({ metamask, appState }) => {
-  const { selectedAddress, lastUnreadNotice, noActiveNotices } = metamask
+  const { selectedAddress, nextUnreadNotice, noActiveNotices } = metamask
   const { isLoading } = appState
 
   return {
     address: selectedAddress,
-    lastUnreadNotice,
+    nextUnreadNotice,
     noActiveNotices,
     isLoading,
   }

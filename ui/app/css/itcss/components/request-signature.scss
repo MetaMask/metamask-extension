@@ -183,6 +183,12 @@
     padding: 6px 18px 15px;
   }
 
+  &__help-link {
+    cursor: pointer;
+    text-decoration: underline;
+    color: $curious-blue;
+  }
+
   &__footer {
     width: 100%;
     display: flex;
