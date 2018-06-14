@@ -145,6 +145,9 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       // phishing notice
+      const noticeElement = await driver.findElement(By.css('.markdown'))
+      await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
+      await delay(regularDelayMs)
       const nextScreen = await findElement(driver, By.css('.tou button'))
       await nextScreen.click()
       await delay(regularDelayMs)
