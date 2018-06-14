@@ -18,6 +18,7 @@ module.exports = class NoticeController extends EventEmitter {
     this.store = new ObservableStore(initState)
     this.memStore = new ObservableStore({})
     this.store.subscribe(() => this._updateMemstore())
+    this._updateMemstore()
   }
 
   getNoticesList () {
