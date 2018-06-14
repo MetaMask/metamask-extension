@@ -129,18 +129,24 @@ describe('MetaMask', function () {
     })
 
     it('clicks through the privacy notice', async () => {
-      const nextScreen = await findElement(driver, By.css('.tou button'))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-
+      // terms of use
       const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
       assert.equal(canClickThrough, false, 'disabled continue button')
       const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
       await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
       await delay(regularDelayMs)
-
       const acceptTos = await findElement(driver, By.css('.tou button'))
       await acceptTos.click()
+      await delay(regularDelayMs)
+
+      // privacy notice
+      const nextScreen = await findElement(driver, By.css('.tou button'))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+
+      // phishing notice
+      const nextScreen = await findElement(driver, By.css('.tou button'))
+      await nextScreen.click()
       await delay(regularDelayMs)
     })
 

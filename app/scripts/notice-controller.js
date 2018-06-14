@@ -13,7 +13,7 @@ module.exports = class NoticeController extends EventEmitter {
     this.firstVersion = opts.firstVersion
     this.version = opts.version
     const initState = extend({
-      noticesList: hardCodedNotices,
+      noticesList: this._filterNotices(hardCodedNotices),
     }, opts.initState)
     this.store = new ObservableStore(initState)
     this.memStore = new ObservableStore({})
