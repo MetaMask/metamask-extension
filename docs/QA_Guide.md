@@ -3,7 +3,8 @@
 Steps to mark a full pass of QA complete.
 * Browsers: Opera, Chrome, Firefox, Edge.
 * OS: Ubuntu, Mac OSX, Windows
-* Load older version of MetaMask and attempt to simulate updating the extension.
+* Load current production version of MetaMask and simulate updating the extension with the development version.
+    * Before/after/during run through.
 * Open Developer Console in background and popup, inspect errors.
 * Watch the state logs 
   * Transactions (unapproved txs -> rejected/submitted -> confirmed)
@@ -14,7 +15,7 @@ Steps to mark a full pass of QA complete.
     * Log in again
     * Log out
     * Restore from seed
-    * Create a second account
+    * Add multiple accounts (5)
     * Import a loose account (not related to HD Wallet)
     * Import old existing vault seed phrase (pref with test Ether)
     * Download State Logs, Priv key file, seed phrase file.
@@ -32,6 +33,7 @@ Steps to mark a full pass of QA complete.
         - Aragon
         - (https://tmashuang.github.io/demo-dapp)
     * Check account balances
+    * Ensure Dapps are receiving errors (i.e. rejecting a Dapp initialized tx)
 * Token Management
     * create a token with tokenfactory (http://tokenfactory.surge.sh/#/factory)
     * Add that token to the token view
