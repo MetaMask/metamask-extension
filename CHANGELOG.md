@@ -5,6 +5,7 @@
 - Attempting to import an empty private key will now show a clear error.
 - Fix bug where metamask data would stop being written to disk after prolonged use
 - Fix bug where account reset did not work with custom RPC providers.
+- Fix for Brave i18n getAcceptLanguages [#4270](https://github.com/MetaMask/metamask-extension/issues/4270)
 - Fix bug where nonce mutex was never released
 - Stop reloading browser page on Ethereum network change
 - Add phishing notice
