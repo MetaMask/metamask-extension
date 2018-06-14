@@ -497,6 +497,7 @@ describe('MetaMask', function () {
       assert(firstTxAddress.match(/^0x\w{8}\.{3}\w{4}$/))
 
       await driver.switchTo().window(remix)
+      await driver.executeScript("window.onbeforeunload = function() {};")
       await driver.close()
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
