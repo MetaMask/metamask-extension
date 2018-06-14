@@ -14,26 +14,26 @@ describe('Account Import Strategies', function () {
     })
 
     it('throws an error for empty string private key', async () => {
-      assert.throws(function() {
-        accountImporter.importAccount('Private Key', [ '' ])
+      assert.throws(async function() {
+        await accountImporter.importAccount('Private Key', [ '' ])
       }, Error, 'no empty strings')
     })
 
     it('throws an error for undefined string private key', async () => {
-      assert.throws(function () {
-        accountImporter.importAccount('Private Key', [ undefined ])
+      assert.throws(async function () {
+        await accountImporter.importAccount('Private Key', [ undefined ])
       })
     })
 
     it('throws an error for undefined string private key', async () => {
-      assert.throws(function () {
-        accountImporter.importAccount('Private Key', [])
+      assert.throws(async function () {
+        await accountImporter.importAccount('Private Key', [])
       })
     })
 
     it('throws an error for invalid private key', async () => {
-      assert.throws(function () {
-        accountImporter.importAccount('Private Key', [ 'popcorn' ])
+      assert.throws(async function () {
+        await accountImporter.importAccount('Private Key', [ 'popcorn' ])
       })
     })
   })
