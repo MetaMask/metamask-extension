@@ -1,7 +1,8 @@
 const assert = require('assert')
 const path = require('path')
-const accountImporter = require('../../../app/scripts/account-import-strategies/index')
 const ethUtil = require('ethereumjs-util')
+const accountImporter = require('../../../app/scripts/account-import-strategies/index')
+const { assertRejects } = require('../test-utils')
 
 describe('Account Import Strategies', function () {
   const privkey = '0x4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
@@ -14,25 +15,25 @@ describe('Account Import Strategies', function () {
     })
 
     it('throws an error for empty string private key', async () => {
-      assert.throws(async function() {
+      assertRejects(async function() {
         await accountImporter.importAccount('Private Key', [ '' ])
       }, Error, 'no empty strings')
     })
 
     it('throws an error for undefined string private key', async () => {
-      assert.throws(async function () {
+      assertRejects(async function () {
         await accountImporter.importAccount('Private Key', [ undefined ])
       })
     })
 
     it('throws an error for undefined string private key', async () => {
-      assert.throws(async function () {
+      assertRejects(async function () {
         await accountImporter.importAccount('Private Key', [])
       })
     })
 
     it('throws an error for invalid private key', async () => {
-      assert.throws(async function () {
+      assertRejects(async function () {
         await accountImporter.importAccount('Private Key', [ 'popcorn' ])
       })
     })
