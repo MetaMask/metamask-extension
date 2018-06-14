@@ -20,13 +20,14 @@ const accountImporter = {
         throw new Error('Cannot import an empty key.')
       }
 
-      const stripped = ethUtil.stripHexPrefix(privateKey)
-      const buffer = ethUtil.toBuffer(stripped)
+      const prefixed = ethUtil.addHexPrefix(privateKey)
+      const buffer = ethUtil.toBuffer(prefixed)
 
       if (!ethUtil.isValidPrivate(buffer)) {
         throw new Error('Cannot import invalid private key.')
       }
 
+      const stripped = ethUtil.stripHexPrefix(prefixed)
       return stripped
     },
     'JSON File': (input, password) => {
