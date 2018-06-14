@@ -255,17 +255,6 @@ function reduceMetamask (state, action) {
         },
       })
 
-    case actions.UPDATE_SEND_ERRORS:
-      return extend(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          errors: {
-            ...metamaskState.send.errors,
-            ...action.value,
-          },
-        },
-      })
-
     case actions.UPDATE_MAX_MODE:
       return extend(metamaskState, {
         send: {

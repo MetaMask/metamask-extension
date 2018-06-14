@@ -3,7 +3,6 @@ cleanContextForImports()
 require('web3/dist/web3.min.js')
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
-const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
 
@@ -38,8 +37,24 @@ web3.setProvider = function () {
   log.debug('MetaMask - overrode web3.setProvider')
 }
 log.debug('MetaMask - injected web3')
-// export global web3, with usage-detection
-setupDappAutoReload(web3, inpageProvider.publicConfigStore)
+
+// export global web3, with usage-detection and deprecation warning
+let hasBeenWarned = false
+global.web3 = new Proxy(web3, {
+  get: (_web3, key) => {
+    // show warning once on web3 access
+    if (!hasBeenWarned && key !== 'currentProvider') {
+      console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider \nhttps://github.com/MetaMask/faq/blob/master/detecting_metamask.md#web3-deprecation')
+      hasBeenWarned = true
+    }
+    // return value normally
+    return _web3[key]
+  },
+  set: (_web3, key, value) => {
+    // set value normally
+    _web3[key] = value
+  },
+})
 
 // set web3 defaultAccount
 inpageProvider.publicConfigStore.subscribe(function (state) {

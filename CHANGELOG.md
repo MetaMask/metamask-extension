@@ -3,7 +3,22 @@
 ## Current Master
 
 - Attempting to import an empty private key will now show a clear error.
-- Fixes issue where old nicknames were kept around causing errors.
+- Fix bug where metamask data would stop being written to disk after prolonged use
+- Fix bug where account reset did not work with custom RPC providers.
+- Fix bug where nonce mutex was never released
+- Stop reloading browser page on Ethereum network change
+
+## 4.7.4 Tue Jun 05 2018
+
+- Add diagnostic reporting for users with multiple HD keyrings
+- Throw explicit error when selected account is unset
+
+## 4.7.3 Mon Jun 04 2018
+
+- Hide token now uses new modal
+- Indicate the current selected account on the popup account view
+- Reduce height of notice container in onboarding
+- Fixes issue where old nicknames were kept around causing errors
 
 ## 4.7.2 Sun Jun 03 2018
 

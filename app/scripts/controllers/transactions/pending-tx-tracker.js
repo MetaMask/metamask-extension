@@ -196,14 +196,14 @@ class PendingTransactionTracker extends EventEmitter {
   async _checkPendingTxs () {
     const signedTxList = this.getPendingTransactions()
     // in order to keep the nonceTracker accurate we block it while updating pending transactions
-    const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
+    const { releaseLock } = await this.nonceTracker.getGlobalLock()
     try {
       await Promise.all(signedTxList.map((txMeta) => this._checkPendingTx(txMeta)))
     } catch (err) {
       log.error('PendingTransactionWatcher - Error updating pending transactions')
       log.error(err)
     }
-    nonceGlobalLock.releaseLock()
+    releaseLock()
   }
 
   /**
