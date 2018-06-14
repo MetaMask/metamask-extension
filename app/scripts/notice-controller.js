@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter
 const semver = require('semver')
 const extend = require('xtend')
 const ObservableStore = require('obs-store')
-const hardCodedNotices = require('../../notices/notices.json')
+const hardCodedNotices = require('../../notices/notices.js')
 const uniqBy = require('lodash.uniqby')
 
 module.exports = class NoticeController extends EventEmitter {
