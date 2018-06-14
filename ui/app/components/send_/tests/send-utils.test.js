@@ -285,7 +285,7 @@ describe('send utils', () => {
         baseMockParams.estimateGasMethod.getCall(0).args[0],
         Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall)
       )
-      assert.equal(result, 'mockToString:16')
+      assert.equal(result, '0xmockToString:16')
     })
 
     it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a selectedToken', async () => {
@@ -300,7 +300,7 @@ describe('send utils', () => {
           to: 'mockAddress',
         })
       )
-      assert.equal(result, 'mockToString:16')
+      assert.equal(result, '0xmockToString:16')
     })
 
     it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async () => {

@@ -201,12 +201,12 @@ async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to,
           err.message.includes('gas required exceeds allowance or always failing transaction')
         )
         if (simulationFailed) {
-          return resolve(paramsForGasEstimate.gas)
+          return resolve(ethUtil.addHexPrefix(paramsForGasEstimate.gas))
         } else {
           return reject(err)
         }
       }
-      return resolve(estimatedGas.toString(16))
+      return resolve(ethUtil.addHexPrefix(estimatedGas.toString(16)))
     })
   })
 }
