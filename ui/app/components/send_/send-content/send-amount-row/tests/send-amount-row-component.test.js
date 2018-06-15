@@ -12,10 +12,12 @@ const propsMethodSpies = {
   setMaxModeTo: sinon.spy(),
   updateSendAmount: sinon.spy(),
   updateSendAmountError: sinon.spy(),
+  updateGas: sinon.spy(),
 }
 
 sinon.spy(SendAmountRow.prototype, 'updateAmount')
 sinon.spy(SendAmountRow.prototype, 'validateAmount')
+sinon.spy(SendAmountRow.prototype, 'updateGas')
 
 describe('SendAmountRow Component', function () {
   let wrapper
@@ -36,6 +38,7 @@ describe('SendAmountRow Component', function () {
       tokenBalance={'mockTokenBalance'}
       updateSendAmount={propsMethodSpies.updateSendAmount}
       updateSendAmountError={propsMethodSpies.updateSendAmountError}
+      updateGas={propsMethodSpies.updateGas}
     />, { context: { t: str => str + '_t' } })
     instance = wrapper.instance()
   })
@@ -139,15 +142,17 @@ describe('SendAmountRow Component', function () {
       assert.equal(primaryCurrency, 'mockPrimaryCurrency')
       assert.deepEqual(selectedToken, { address: 'mockTokenAddress' })
       assert.equal(value, 'mockAmount')
-      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 0)
+      assert.equal(SendAmountRow.prototype.updateGas.callCount, 0)
       onBlur('mockNewAmount')
-      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 1)
+      assert.equal(SendAmountRow.prototype.updateGas.callCount, 1)
       assert.deepEqual(
-        SendAmountRow.prototype.updateAmount.getCall(0).args,
+        SendAmountRow.prototype.updateGas.getCall(0).args,
         ['mockNewAmount']
       )
+      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 0)
       assert.equal(SendAmountRow.prototype.validateAmount.callCount, 0)
       onChange('mockNewAmount')
+      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 1)
       assert.equal(SendAmountRow.prototype.validateAmount.callCount, 1)
       assert.deepEqual(
         SendAmountRow.prototype.validateAmount.getCall(0).args,
