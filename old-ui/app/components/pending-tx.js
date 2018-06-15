@@ -65,7 +65,7 @@ PendingTx.prototype.render = function () {
 
   try {
     // default to 8MM gas limit
-    gasLimit = new BN(blockGasLimit || '8000000')
+    gasLimit = new BN(blockGasLimit || '0x7a1200', 16) // 0x7a1200 === 8000000
   } catch (e) {
     gasLimit = new BN('8000000')
   }
