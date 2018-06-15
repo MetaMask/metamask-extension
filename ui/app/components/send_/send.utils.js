@@ -4,6 +4,7 @@ const {
   conversionGTE,
   multiplyCurrencies,
   conversionGreaterThan,
+  conversionLessThan,
 } = require('../../conversion-util')
 const {
   calcTokenAmount,
@@ -201,14 +202,52 @@ async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to,
           err.message.includes('gas required exceeds allowance or always failing transaction')
         )
         if (simulationFailed) {
-          return resolve(ethUtil.addHexPrefix(paramsForGasEstimate.gas))
+          const estimateWithBuffer = addGasBuffer(
+            paramsForGasEstimate.gas,
+            blockGasLimit,
+            selectedToken ? 2 : 1.5
+          )
+          return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
         } else {
           return reject(err)
         }
       }
-      return resolve(ethUtil.addHexPrefix(estimatedGas.toString(16)))
+      const estimateWithBuffer = addGasBuffer(
+        estimatedGas.toString(16),
+        blockGasLimit,
+        selectedToken ? 2 : 1.5
+      )
+      return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
     })
   })
+}
+
+function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 1.5) {
+  const upperGasLimit = multiplyCurrencies(blockGasLimitHex, 0.9, {
+    toNumericBase: 'hex',
+    multiplicandBase: 16,
+    multiplierBase: 10,
+    numberOfDecimals: '0',
+  })
+  const bufferedGasLimit = multiplyCurrencies(initialGasLimitHex, bufferMultiplier, {
+    toNumericBase: 'hex',
+    multiplicandBase: 16,
+    multiplierBase: 10,
+    numberOfDecimals: '0',
+  })
+
+  // if initialGasLimit is above blockGasLimit, dont modify it
+  if (conversionGreaterThan(
+    { value: initialGasLimitHex, fromNumericBase: 'hex' },
+    { value: upperGasLimit, fromNumericBase: 'hex' },
+  )) return initialGasLimitHex
+  // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
+  if (conversionLessThan(
+    { value: bufferedGasLimit, fromNumericBase: 'hex' },
+    { value: upperGasLimit, fromNumericBase: 'hex' },
+  )) return bufferedGasLimit
+  // otherwise use blockGasLimit
+  return upperGasLimit
 }
 
 function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selectedToken }) {
