@@ -203,21 +203,13 @@ async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to,
           err.message.includes('gas required exceeds allowance or always failing transaction')
         )
         if (simulationFailed) {
-          const estimateWithBuffer = addGasBuffer(
-            paramsForGasEstimate.gas,
-            blockGasLimit,
-            selectedToken ? 2 : 1.5
-          )
+          const estimateWithBuffer = addGasBuffer(paramsForGasEstimate.gas, blockGasLimit, 1.5)
           return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
         } else {
           return reject(err)
         }
       }
-      const estimateWithBuffer = addGasBuffer(
-        estimatedGas.toString(16),
-        blockGasLimit,
-        selectedToken ? 2 : 1.5
-      )
+      const estimateWithBuffer = addGasBuffer(estimatedGas.toString(16), blockGasLimit, 1.5)
       return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
     })
   })

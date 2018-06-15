@@ -23,6 +23,7 @@ export default class SendAmountRow extends Component {
     tokenBalance: PropTypes.string,
     updateSendAmount: PropTypes.func,
     updateSendAmountError: PropTypes.func,
+    updateGas: PropTypes.func,
   }
 
   validateAmount (amount) {
@@ -54,6 +55,15 @@ export default class SendAmountRow extends Component {
 
     setMaxModeTo(false)
     updateSendAmount(amount)
+    this.validateAmount(amount)
+  }
+
+  updateGas (amount) {
+    const { selectedToken, updateGas } = this.props
+
+    if (selectedToken) {
+      updateGas({ amount })
+    }
   }
 
   render () {
@@ -77,12 +87,12 @@ export default class SendAmountRow extends Component {
         <CurrencyDisplay
           conversionRate={amountConversionRate}
           convertedCurrency={convertedCurrency}
-          onBlur={newAmount => this.updateAmount(newAmount)}
-          onChange={newAmount => this.validateAmount(newAmount)}
+          onBlur={newAmount => this.updateGas(newAmount)}
+          onChange={newAmount => this.updateAmount(newAmount)}
           inError={inError}
           primaryCurrency={primaryCurrency || 'ETH'}
           selectedToken={selectedToken}
-          value={amount || '0x0'}
+          value={amount}
         />
       </SendRowWrapper>
     )
