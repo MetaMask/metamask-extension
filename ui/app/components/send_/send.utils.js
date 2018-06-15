@@ -21,6 +21,7 @@ const abi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
 
 module.exports = {
+  addGasBuffer,
   calcGasTotal,
   calcTokenBalance,
   doesAmountErrorRequireUpdate,
