@@ -4,14 +4,20 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-
+const genAccountLink = require('etherscan-link').createAccountLink
+const copyToClipboard = require('copy-to-clipboard')
 
 TokenMenuDropdown.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(null, mapDispatchToProps)(TokenMenuDropdown)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TokenMenuDropdown)
 
+function mapStateToProps (state) {
+  return {
+    network: state.metamask.network,
+  }
+}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -51,7 +57,21 @@ TokenMenuDropdown.prototype.render = function () {
             this.props.onClose()
           },
         }, this.context.t('hideToken')),
-
+        h('div.token-menu-dropdown__option', {
+          onClick: (e) => {
+            e.stopPropagation()
+            copyToClipboard(this.props.token.address)
+            this.props.onClose()
+          },
+        }, this.context.t('copyContractAddress')),
+        h('div.token-menu-dropdown__option', {
+          onClick: (e) => {
+            e.stopPropagation()
+            const url = genAccountLink(this.props.token.address, this.props.network)
+            global.platform.openWindow({ url })
+            this.props.onClose()
+          },
+        }, this.context.t('viewOnEtherscan')),
       ]),
     ]),
   ])
