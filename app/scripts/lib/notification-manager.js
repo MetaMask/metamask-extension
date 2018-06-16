@@ -28,6 +28,7 @@ class NotificationManager {
       } else {
         // create new notification popup
         extension.windows.create({
+          id: 'metamask-popup',
           url: 'notification.html',
           type: 'popup',
           width,
@@ -93,7 +94,7 @@ class NotificationManager {
   _getPopupIn (windows) {
     return windows ? windows.find((win) => {
       // Returns notification popup
-      return (win && win.type === 'popup')
+      return (win && win.type === 'popup' && win.id === 'metamask-popup')
     }) : null
   }
 
