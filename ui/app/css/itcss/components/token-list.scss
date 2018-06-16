@@ -82,11 +82,8 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
 
 .token-menu-dropdown {
   width: 80%;
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, .82);
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .5);
   position: absolute;
-  top: 60px;
+  top: 52px;
   right: 25px;
   z-index: 2000;
 
