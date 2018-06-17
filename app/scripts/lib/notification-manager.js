@@ -12,6 +12,14 @@ class NotificationManager {
    *
    */
 
+   /**
+    * A success callback for when popup window is created. Saves the popup window ID in an instance variable.
+    * @param {Object} created popup window object.
+    */
+   _onCreated(popUpInfo) {
+    this._popUpId = popUpInfo.id;
+   }
+
   /**
    * Either brings an existing MetaMask notification window into focus, or creates a new notification window. New
    * notification windows are given a 'popup' type.
@@ -27,12 +35,14 @@ class NotificationManager {
         extension.windows.update(popup.id, { focused: true })
       } else {
         // create new notification popup
-        extension.windows.create({
+        let popUp = extension.windows.create({
           url: 'notification.html',
           type: 'popup',
           width,
           height,
-        })
+        });
+
+        popUp.then(this._onCreated);
       }
     })
   }
@@ -93,7 +103,7 @@ class NotificationManager {
   _getPopupIn (windows) {
     return windows ? windows.find((win) => {
       // Returns notification popup
-      return (win && win.type === 'popup')
+      return (win && win.type === 'popup' && win.id === this._popUpId)
     }) : null
   }
 
