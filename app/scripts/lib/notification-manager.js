@@ -17,7 +17,7 @@ class NotificationManager {
     * @param {Object} created popup window object.
     */
    _onCreated(popUpInfo) {
-    this._popUpId = popUpInfo.id;
+    this._popUpId = popUpInfo.id
    }
 
   /**
@@ -40,9 +40,9 @@ class NotificationManager {
           type: 'popup',
           width,
           height,
-        });
+        })
 
-        popUp.then(this._onCreated);
+        popUp.then(this._onCreated)
       }
     })
   }
