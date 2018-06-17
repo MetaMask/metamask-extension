@@ -7,7 +7,6 @@
 - Fix bug where account reset did not work with custom RPC providers.
 - Fix for Brave i18n getAcceptLanguages [#4270](https://github.com/MetaMask/metamask-extension/issues/4270)
 - Fix bug where nonce mutex was never released
-- Stop reloading browser page on Ethereum network change
 - Add phishing notice
 
 ## 4.7.4 Tue Jun 05 2018
