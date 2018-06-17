@@ -28,11 +28,12 @@ class NotificationManager {
       } else {
         // create new notification popup
         extension.windows.create({
-          id: 'metamask-popup',
           url: 'notification.html',
           type: 'popup',
           width,
           height,
+        }).then((currentPopup) => {
+          this._popupId = currentPopup.id
         })
       }
     })
@@ -85,7 +86,7 @@ class NotificationManager {
   }
 
   /**
-   * Given an array of windows, returns the first that has a 'popup' type, or null if no such window exists.
+   * Given an array of windows, returns the 'popup' that has been opened by MetaMask, or null if no such window exists.
    *
    * @private
    * @param {array} windows An array of objects containing data about the open MetaMask extension windows.
@@ -94,7 +95,7 @@ class NotificationManager {
   _getPopupIn (windows) {
     return windows ? windows.find((win) => {
       // Returns notification popup
-      return (win && win.type === 'popup' && win.id === 'metamask-popup')
+      return (win && win.type === 'popup' && win.id === this._popupId)
     }) : null
   }
 
