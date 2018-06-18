@@ -29,6 +29,7 @@ module.exports = {
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
+  getToAddressForGasUpdate,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 }
@@ -267,4 +268,8 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
   .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
+}
+
+function getToAddressForGasUpdate (...addresses) {
+  return [...addresses, ''].find(str => str !== undefined && str !== null).toLowerCase()
 }

@@ -48,6 +48,7 @@ const {
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
+  getToAddressForGasUpdate,
   calcTokenBalance,
   isBalanceSufficient,
   isTokenBalanceSufficient,
@@ -419,6 +420,17 @@ describe('send utils', () => {
         { gasPrices: [ '0x150', '0x50', '0x100', '0x200', '0x5' ] },
       ]
       assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), '0x5')
+    })
+  })
+
+  describe('getToAddressForGasUpdate()', () => {
+    it('should return empty string if all params are undefined or null', () => {
+      assert.equal(getToAddressForGasUpdate(undefined, null), '')
+    })
+
+    it('should return the first string that is not defined or null in lower case', () => {
+      assert.equal(getToAddressForGasUpdate('A', null), 'a')
+      assert.equal(getToAddressForGasUpdate(undefined, 'B'), 'b')
     })
   })
 })

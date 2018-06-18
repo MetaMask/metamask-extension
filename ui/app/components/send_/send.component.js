@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import PersistentForm from '../../../lib/persistent-form'
 import {
   getAmountErrorObject,
+  getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
 } from './send.utils'
 
@@ -38,7 +39,7 @@ export default class SendTransactionScreen extends PersistentForm {
     updateSendTokenBalance: PropTypes.func,
   };
 
-  updateGas ({ to, amount: value } = {}) {
+  updateGas ({ to: updatedToAddress, amount: value } = {}) {
     const {
       amount,
       blockGasLimit,
@@ -48,6 +49,7 @@ export default class SendTransactionScreen extends PersistentForm {
       recentBlocks,
       selectedAddress,
       selectedToken = {},
+      to: currentToAddress,
       updateAndSetGasTotal,
     } = this.props
 
@@ -59,7 +61,7 @@ export default class SendTransactionScreen extends PersistentForm {
       recentBlocks,
       selectedAddress,
       selectedToken,
-      to: to && to.toLowerCase(),
+      to: getToAddressForGasUpdate(updatedToAddress, currentToAddress),
       value: value || amount,
     })
   }
