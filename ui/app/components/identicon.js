@@ -36,6 +36,7 @@ IdenticonComponent.prototype.render = function () {
         key: 'identicon-' + address,
         style: {
           display: 'flex',
+          flexShrink: 0,
           alignItems: 'center',
           justifyContent: 'center',
           height: diameter,
