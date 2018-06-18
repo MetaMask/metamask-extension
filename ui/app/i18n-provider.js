@@ -6,14 +6,14 @@ const { compose } = require('recompose')
 const t = require('../i18n-helper').getMessage
 
 class I18nProvider extends Component {
-  getChildContext() {
+  getChildContext () {
     const { localeMessages } = this.props
     return {
       t: t.bind(null, localeMessages),
     }
   }
 
-  render() {
+  render () {
     return this.props.children
   }
 }

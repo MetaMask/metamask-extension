@@ -154,11 +154,11 @@ class Notice extends Component {
 
 const mapStateToProps = state => {
   const { metamask } = state
-  const { noActiveNotices, lastUnreadNotice, lostAccounts } = metamask
+  const { noActiveNotices, nextUnreadNotice, lostAccounts } = metamask
 
   return {
     noActiveNotices,
-    lastUnreadNotice,
+    nextUnreadNotice,
     lostAccounts,
   }
 }
@@ -171,21 +171,21 @@ Notice.propTypes = {
 
 const mapDispatchToProps = dispatch => {
   return {
-    markNoticeRead: lastUnreadNotice => dispatch(actions.markNoticeRead(lastUnreadNotice)),
+    markNoticeRead: nextUnreadNotice => dispatch(actions.markNoticeRead(nextUnreadNotice)),
     markAccountsFound: () => dispatch(actions.markAccountsFound()),
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { noActiveNotices, lastUnreadNotice, lostAccounts } = stateProps
+  const { noActiveNotices, nextUnreadNotice, lostAccounts } = stateProps
   const { markNoticeRead, markAccountsFound } = dispatchProps
 
   let notice
   let onConfirm
 
   if (!noActiveNotices) {
-    notice = lastUnreadNotice
-    onConfirm = () => markNoticeRead(lastUnreadNotice)
+    notice = nextUnreadNotice
+    onConfirm = () => markNoticeRead(nextUnreadNotice)
   } else if (lostAccounts && lostAccounts.length > 0) {
     notice = generateLostAccountsNotice(lostAccounts)
     onConfirm = () => markAccountsFound()

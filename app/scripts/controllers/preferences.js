@@ -247,6 +247,7 @@ class PreferencesController {
    * @return {Promise<string>}
    */
   setAccountLabel (account, label) {
+    if (!account) throw new Error('setAccountLabel requires a valid address, got ' + String(account))
     const address = normalizeAddress(account)
     const {identities} = this.store.getState()
     identities[address] = identities[address] || {}
