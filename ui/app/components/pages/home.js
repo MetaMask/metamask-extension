@@ -25,6 +25,7 @@ const {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   NOTICE_ROUTE,
+  CONFIRM_ADD_TOKEN_ROUTE,
 } = require('../../routes')
 
 class Home extends Component {
@@ -35,7 +36,13 @@ class Home extends Component {
       unapprovedMsgCount = 0,
       unapprovedPersonalMsgCount = 0,
       unapprovedTypedMessagesCount = 0,
+      suggestedTokens = {},
     } = this.props
+
+    // suggested new tokens
+    if (suggestedTokens.length > 0) {
+      history.push(CONFIRM_ADD_TOKEN_ROUTE)
+    }
 
     // unapprovedTxs and unapproved messages
     if (Object.keys(unapprovedTxs).length ||

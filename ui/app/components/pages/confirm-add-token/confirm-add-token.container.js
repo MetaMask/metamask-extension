@@ -1,12 +1,16 @@
 import { connect } from 'react-redux'
 import ConfirmAddToken from './confirm-add-token.component'
 
+const extend = require('xtend')
+
 const { addTokens, clearPendingTokens } = require('../../../actions')
 
 const mapStateToProps = ({ metamask }) => {
-  const { pendingTokens } = metamask
+  const { pendingTokens, suggestedTokens } = metamask
+  const params = extend(pendingTokens, suggestedTokens)
+
   return {
-    pendingTokens,
+    pendingTokens: params,
   }
 }
 
