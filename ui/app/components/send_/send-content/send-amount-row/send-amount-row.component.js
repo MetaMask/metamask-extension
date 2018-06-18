@@ -55,7 +55,6 @@ export default class SendAmountRow extends Component {
 
     setMaxModeTo(false)
     updateSendAmount(amount)
-    this.validateAmount(amount)
   }
 
   updateGas (amount) {
@@ -87,8 +86,11 @@ export default class SendAmountRow extends Component {
         <CurrencyDisplay
           conversionRate={amountConversionRate}
           convertedCurrency={convertedCurrency}
-          onBlur={newAmount => this.updateGas(newAmount)}
-          onChange={newAmount => this.updateAmount(newAmount)}
+          onBlur={newAmount => {
+            this.updateGas(newAmount)
+            this.updateAmount(newAmount)
+          }}
+          onChange={newAmount => this.validateAmount(newAmount)}
           inError={inError}
           primaryCurrency={primaryCurrency || 'ETH'}
           selectedToken={selectedToken}

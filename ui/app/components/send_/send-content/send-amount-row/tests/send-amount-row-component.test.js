@@ -143,16 +143,20 @@ describe('SendAmountRow Component', function () {
       assert.deepEqual(selectedToken, { address: 'mockTokenAddress' })
       assert.equal(value, 'mockAmount')
       assert.equal(SendAmountRow.prototype.updateGas.callCount, 0)
+      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 0)
       onBlur('mockNewAmount')
       assert.equal(SendAmountRow.prototype.updateGas.callCount, 1)
       assert.deepEqual(
         SendAmountRow.prototype.updateGas.getCall(0).args,
         ['mockNewAmount']
       )
-      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 0)
+      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 1)
+      assert.deepEqual(
+        SendAmountRow.prototype.updateAmount.getCall(0).args,
+        ['mockNewAmount']
+      )
       assert.equal(SendAmountRow.prototype.validateAmount.callCount, 0)
       onChange('mockNewAmount')
-      assert.equal(SendAmountRow.prototype.updateAmount.callCount, 1)
       assert.equal(SendAmountRow.prototype.validateAmount.callCount, 1)
       assert.deepEqual(
         SendAmountRow.prototype.validateAmount.getCall(0).args,
