@@ -33,6 +33,10 @@ const defaultProviderConfig = {
   type: testMode ? RINKEBY : MAINNET,
 }
 
+const defaultNetworkConfig = {
+  ticker: 'ETH',
+}
+
 module.exports = class NetworkController extends EventEmitter {
 
   constructor (opts = {}) {
@@ -43,7 +47,8 @@ module.exports = class NetworkController extends EventEmitter {
     // create stores
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
-    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
+    this.networkConfig = new ObservableStore(defaultNetworkConfig)
+    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore, settings: this.networkConfig })
     this.on('networkDidChange', this.lookupNetwork)
     // provider and block tracker
     this._provider = null
@@ -74,6 +79,10 @@ module.exports = class NetworkController extends EventEmitter {
 
   getNetworkState () {
     return this.networkStore.getState()
+  }
+
+  getNetworkConfig () {
+    return this.networkConfig.getState()
   }
 
   setNetworkState (network, type) {
@@ -170,6 +179,11 @@ module.exports = class NetworkController extends EventEmitter {
     log.info('NetworkController - configureInfuraProvider', type)
     const networkClient = createInfuraClient({ network: type })
     this._setNetworkClient(networkClient)
+    // setup networkConfig
+    var settings = {
+      ticker: 'ETH',
+    }
+    this.networkConfig.putState(settings)
   }
 
   _configureLocalhostProvider () {
@@ -200,6 +214,12 @@ module.exports = class NetworkController extends EventEmitter {
       rpcUrl,
       ticker: 'ETH',
     }
+    // setup networkConfig
+    var settings = {
+      network: chainId,
+    }
+    settings = extend(settings, networks.networkList['rpc'])
+    this.networkConfig.putState(settings)
     this._setNetworkClient(networkClient)
   }
 
