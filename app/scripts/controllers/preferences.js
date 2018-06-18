@@ -83,11 +83,7 @@ class PreferencesController {
       this.addSuggestedToken(tokenOpts)
       this.showAddTokenUi()
 
-      return end(null, {
-        result: rawAddress,
-        "jsonrpc": "2.0",
-        id: req.id,
-      })
+      return end(rawAddress)
     } else {
       return next()
     }
