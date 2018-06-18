@@ -11,12 +11,7 @@
 - [#4557](https://github.com/MetaMask/metamask-extension/pull/4557): Fix bug where nonce mutex was never released.
 - [#4558](https://github.com/MetaMask/metamask-extension/pull/4558): Stop reloading browser page on Ethereum network change.
 - [#4566](https://github.com/MetaMask/metamask-extension/pull/4566): Add phishing notice.
-- Attempting to import an empty private key will now show a clear error.
-- Fix bug where metamask data would stop being written to disk after prolonged use
-- Fix bug where account reset did not work with custom RPC providers.
-- Fix for Brave i18n getAcceptLanguages [#4270](https://github.com/MetaMask/metamask-extension/issues/4270)
-- Fix bug where nonce mutex was never released
-- Add phishing notice
+- [#4591](https://github.com/MetaMask/metamask-extension/pull/4591): Allow Copying Token Addresses and link to Token on Etherscan.
 
 ## 4.7.4 Tue Jun 05 2018
 
