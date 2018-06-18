@@ -57,6 +57,7 @@ CurrencyDisplay.prototype.getValueToRender = function ({ selectedToken, conversi
   return selectedToken
     ? conversionUtil(ethUtil.addHexPrefix(value), {
       fromNumericBase: 'hex',
+      toNumericBase: 'dec',
       toCurrency: symbol,
       conversionRate: multiplier,
       invertConversionRate: true,
