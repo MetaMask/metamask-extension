@@ -268,6 +268,7 @@ Home.propTypes = {
   isPopup: PropTypes.bool,
   isMouseUser: PropTypes.bool,
   t: PropTypes.func,
+  suggestedTokens: PropTypes.object,
 }
 
 function mapStateToProps (state) {
