@@ -46,7 +46,6 @@ const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
-const DiagnosticsReporter = require('./lib/diagnostics-reporter')
 const log = require('loglevel')
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -64,12 +63,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.opts = opts
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
-
-    // metamask diagnostics reporter
-    this.diagnostics = opts.diagnostics || new DiagnosticsReporter({
-      firstTimeInfo: initState.firstTimeInfo,
-      version,
-    })
 
     // platform-specific api
     this.platform = opts.platform
@@ -92,7 +85,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      diagnostics: this.diagnostics,
     })
 
     // currency controller
@@ -189,9 +181,6 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
       firstVersion: initState.firstTimeInfo.version,
     })
-    this.noticeController.updateNoticesList()
-    // to be uncommented when retrieving notices from a remote server.
-    // this.noticeController.startPolling()
 
     this.shapeshiftController = new ShapeShiftController({
       initState: initState.ShapeShiftController,
@@ -436,28 +425,24 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Object} vault
    */
   async createNewVaultAndKeychain (password) {
-    const release = await this.createVaultMutex.acquire()
-    let vault
-
+    const releaseLock = await this.createVaultMutex.acquire()
     try {
+      let vault
       const accounts = await this.keyringController.getAccounts()
-
       if (accounts.length > 0) {
         vault = await this.keyringController.fullUpdate()
-
       } else {
         vault = await this.keyringController.createNewVaultAndKeychain(password)
         const accounts = await this.keyringController.getAccounts()
         this.preferencesController.setAddresses(accounts)
         this.selectFirstIdentity()
       }
-      release()
+      releaseLock()
+      return vault
     } catch (err) {
-      release()
+      releaseLock()
       throw err
     }
-
-    return vault
   }
 
   /**
@@ -466,7 +451,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param  {} seed
    */
   async createNewVaultAndRestore (password, seed) {
-    const release = await this.createVaultMutex.acquire()
+    const releaseLock = await this.createVaultMutex.acquire()
     try {
       // clear known identities
       this.preferencesController.setAddresses([])
@@ -476,10 +461,10 @@ module.exports = class MetamaskController extends EventEmitter {
       const accounts = await this.keyringController.getAccounts()
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
-      release()
+      releaseLock()
       return vault
     } catch (err) {
-      release()
+      releaseLock()
       throw err
     }
   }
@@ -630,10 +615,7 @@ module.exports = class MetamaskController extends EventEmitter {
   async resetAccount () {
     const selectedAddress = this.preferencesController.getSelectedAddress()
     this.txController.wipeTransactions(selectedAddress)
-
-    const networkController = this.networkController
-    const oldType = networkController.getProviderConfig().type
-    await networkController.setProviderType(oldType, true)
+    this.networkController.resetConnection()
 
     return selectedAddress
   }
