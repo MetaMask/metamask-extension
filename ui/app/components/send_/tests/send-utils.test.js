@@ -323,6 +323,12 @@ describe('send utils', () => {
       assert.equal(result, SIMPLE_GAS_COST)
     })
 
+    it(`should return ${SIMPLE_GAS_COST} if not passed a selectedToken or truthy to address`, async () => {
+      assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
+      const result = await estimateGas(Object.assign({}, baseMockParams, { to: null }))
+      assert.equal(result, SIMPLE_GAS_COST)
+    })
+
     it(`should not return ${SIMPLE_GAS_COST} if passed a selectedToken`, async () => {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
       const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123', selectedToken: { address: '' } }))
