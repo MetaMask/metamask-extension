@@ -42,7 +42,7 @@ class NotificationManager {
           height,
         })
 
-        popUp.then(this._onCreated)
+        popUp.then(this._onCreated, (err) => log.error('Error occured while creating a popup window', err))
       }
     })
   }
@@ -53,11 +53,7 @@ class NotificationManager {
    */
   closePopup () {
     // closes notification popup
-    this._getPopup((err, popup) => {
-      if (err) throw err
-      if (!popup) return
-      extension.windows.remove(popup.id, console.error)
-    })
+    extension.windows.remove(this._popUpId, console.error)
   }
 
   /**
