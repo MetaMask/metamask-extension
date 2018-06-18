@@ -3,6 +3,7 @@ cleanContextForImports()
 require('web3/dist/web3.min.js')
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
+const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
 
@@ -38,7 +39,11 @@ web3.setProvider = function () {
 }
 log.debug('MetaMask - injected web3')
 
+setupDappAutoReload(web3, inpageProvider.publicConfigStore)
+
 // export global web3, with usage-detection and deprecation warning
+
+/* TODO: Uncomment this area once auto-reload.js has been deprecated:
 let hasBeenWarned = false
 global.web3 = new Proxy(web3, {
   get: (_web3, key) => {
@@ -55,6 +60,7 @@ global.web3 = new Proxy(web3, {
     _web3[key] = value
   },
 })
+*/
 
 // set web3 defaultAccount
 inpageProvider.publicConfigStore.subscribe(function (state) {
