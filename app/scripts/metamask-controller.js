@@ -1077,6 +1077,7 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(createOriginMiddleware({ origin }))
     engine.push(createLoggerMiddleware({ origin }))
     engine.push(filterMiddleware)
+    engine.push(this.preferencesController.requestAddToken.bind(this.preferencesController))
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection

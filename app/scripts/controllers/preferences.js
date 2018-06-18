@@ -25,6 +25,7 @@ class PreferencesController {
       frequentRpcList: [],
       currentAccountTab: 'history',
       tokens: [],
+      suggestedTokens: [],
       useBlockie: false,
       featureFlags: {},
       currentLocale: opts.initLangCode,
@@ -46,6 +47,30 @@ class PreferencesController {
    */
   setUseBlockie (val) {
     this.store.updateState({ useBlockie: val })
+  }
+
+  getSuggestedTokens () {
+    return this.store.getState().suggestedTokens
+  }
+
+  /**
+   * RPC engine middleware for requesting new token added
+   *
+   * @param req
+   * @param res
+   * @param {Function} - next
+   * @param {Function} - end
+   */
+  requestAddToken(req, res, next, end) {
+    if (req.method === 'eth_watchToken') {
+      // Validate params!
+ //     this.suggestedTokens.push(req.params)
+      const [ rawAddress, symbol, decimals ] = req.params
+      this.addToken(rawAddress, symbol, decimals)
+      end(null, rawAddress)
+    } else {
+      next()
+    }
   }
 
   /**

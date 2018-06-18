@@ -248,6 +248,7 @@ function setupController (initState, initLangCode) {
     showUnconfirmedMessage: triggerUi,
     unlockAccountMessage: triggerUi,
     showUnapprovedTx: triggerUi,
+    showAddTokenUi: triggerUi,
     // initial state
     initState,
     // initial locale code
@@ -436,3 +437,4 @@ extension.runtime.onInstalled.addListener(function (details) {
     extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
   }
 })
+
