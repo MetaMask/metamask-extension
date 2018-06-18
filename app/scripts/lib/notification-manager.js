@@ -1,4 +1,5 @@
 const extension = require('extensionizer')
+const log = require('loglevel')
 const height = 620
 const width = 360
 
