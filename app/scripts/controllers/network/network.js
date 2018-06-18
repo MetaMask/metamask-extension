@@ -31,6 +31,10 @@ const defaultProviderConfig = {
   type: testMode ? RINKEBY : MAINNET,
 }
 
+const defaultNetworkConfig = {
+  type: 'mainnet', ticker: 'ETH',
+}
+
 module.exports = class NetworkController extends EventEmitter {
 
   constructor (opts = {}) {
@@ -41,7 +45,8 @@ module.exports = class NetworkController extends EventEmitter {
     // create stores
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
-    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
+    this.networkConfig = new ObservableStore(defaultNetworkConfig)
+    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore, settings: this.networkConfig })
     // create event emitter proxy
     this._proxy = createEventEmitterProxy()
 
@@ -67,6 +72,10 @@ module.exports = class NetworkController extends EventEmitter {
 
   getNetworkState () {
     return this.networkStore.getState()
+  }
+
+  getNetworkConfig () {
+    return this.networkConfig.getState()
   }
 
   setNetworkState (network, type) {
@@ -175,6 +184,12 @@ module.exports = class NetworkController extends EventEmitter {
       },
       dataSubprovider: infuraSubprovider,
     })
+    // setup networkConfig
+    var settings = {
+      type,
+      ticker: 'ETH',
+    }
+    this.networkConfig.putState(settings)
     const provider = createMetamaskProvider(providerParams)
     this._setProvider(provider)
   }
@@ -185,9 +200,18 @@ module.exports = class NetworkController extends EventEmitter {
       type,
       rpcUrl: networks.networkList[type].rpcUrl,
       engineParams: {
-        pollingInterval: 8000,
+        pollingInterval: networks.networkList[type].pollingInterval || 8000,
       },
     })
+    // setup networkConfig
+    if (networks.networkList[type]) {
+      var settings = {
+        type,
+        network: networks.networkList[type].chainId,
+      }
+      settings = extend(settings, networks.networkList[type])
+      this.networkConfig.putState(settings)
+    }
     const provider = createMetamaskProvider(providerParams)
     this._setProvider(provider)
   }
@@ -203,8 +227,15 @@ module.exports = class NetworkController extends EventEmitter {
     networks.networkList['rpc'] = {
       chainId: chainId,
       rpcUrl,
-      ticker: 'ETH*',
+      ticker: 'ETH',
     }
+    // setup networkConfig
+    var settings = {
+      type: 'rpc',
+      network: chainId,
+    }
+    settings = extend(settings, networks.networkList['rpc'])
+    this.networkConfig.putState(settings)
     const provider = createMetamaskProvider(providerParams)
     this._setProvider(provider)
   }

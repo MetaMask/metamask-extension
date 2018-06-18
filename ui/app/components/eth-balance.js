@@ -1,5 +1,6 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
+const connect = require('react-redux').connect
 const { inherits } = require('util')
 const {
   formatBalance,
@@ -8,7 +9,12 @@ const {
 const Tooltip = require('./tooltip.js')
 const FiatValue = require('./fiat-value.js')
 
-module.exports = EthBalanceComponent
+module.exports = connect(mapStateToProps)(EthBalanceComponent)
+function mapStateToProps (state) {
+  return {
+    ticker: state.metamask.settings && state.metamask.settings.ticker || 'ETH',
+  }
+}
 
 inherits(EthBalanceComponent, Component)
 function EthBalanceComponent () {
@@ -17,9 +23,12 @@ function EthBalanceComponent () {
 
 EthBalanceComponent.prototype.render = function () {
   const props = this.props
-  const { value, style, width, needsParse = true } = props
+  const { ticker, value, style, width, needsParse = true } = props
 
-  const formattedValue = value ? formatBalance(value, 6, needsParse) : '...'
+  let formattedValue = value ? formatBalance(value, 6, needsParse) : '...'
+  if (ticker !== 'ETH') {
+    formattedValue = formattedValue.replace(/ETH/, ticker)
+  }
 
   return (
 
