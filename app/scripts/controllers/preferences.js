@@ -36,6 +36,7 @@ class PreferencesController {
     this.diagnostics = opts.diagnostics
 
     this.store = new ObservableStore(initState)
+    this.showAddTokenUi = opts.showAddTokenUi
   }
 // PUBLIC METHODS
 
@@ -79,7 +80,8 @@ class PreferencesController {
         symbol,
       }
 
-      this.suggestWatchToken()
+      this.addSuggestedToken(tokenOpts)
+      this.showAddTokenUi()
 
       return end(null, {
         result: rawAddress,

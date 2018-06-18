@@ -85,6 +85,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
+      showAddTokenUi: opts.showAddTokenUi,
     })
 
     // currency controller
