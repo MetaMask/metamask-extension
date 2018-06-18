@@ -702,8 +702,9 @@ describe('MetaMask', function () {
       const [hideTokenEllipsis] = await findElements(driver, By.css('.token-list-item__ellipsis'))
       hideTokenEllipsis.click()
 
-      const byTokenMenuDropdownOption = By.css('.token-menu-dropdown__option')
+      const byTokenMenuDropdownOption = By.css('.menu__item--clickable')
       const tokenMenuDropdownOption = await driver.wait(until.elementLocated(byTokenMenuDropdownOption))
+
       tokenMenuDropdownOption.click()
 
       const confirmHideModal = await findElement(driver, By.css('span .modal'))
