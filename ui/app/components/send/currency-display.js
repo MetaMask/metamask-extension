@@ -57,6 +57,7 @@ CurrencyDisplay.prototype.getValueToRender = function ({ selectedToken, conversi
   return selectedToken
     ? conversionUtil(ethUtil.addHexPrefix(value), {
       fromNumericBase: 'hex',
+      toNumericBase: 'dec',
       toCurrency: symbol,
       conversionRate: multiplier,
       invertConversionRate: true,
@@ -91,8 +92,12 @@ CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValu
     : convertedValue
 }
 
+function removeLeadingZeroes (str) {
+  return str.replace(/^0*(?=\d)/, '')
+}
+
 CurrencyDisplay.prototype.handleChange = function (newVal) {
-  this.setState({ valueToRender: newVal })
+  this.setState({ valueToRender: removeLeadingZeroes(newVal) })
   this.props.onChange(this.getAmount(newVal))
 }
 

@@ -18,10 +18,12 @@ const {
 const stubs = {
   addCurrencies: sinon.stub().callsFake((a, b, obj) => a + b),
   conversionUtil: sinon.stub().callsFake((val, obj) => parseInt(val, 16)),
-  conversionGTE: sinon.stub().callsFake((obj1, obj2) => obj1.value > obj2.value),
+  conversionGTE: sinon.stub().callsFake((obj1, obj2) => obj1.value >= obj2.value),
   multiplyCurrencies: sinon.stub().callsFake((a, b) => `${a}x${b}`),
   calcTokenAmount: sinon.stub().callsFake((a, d) => 'calc:' + a + d),
   rawEncode: sinon.stub().returns([16, 1100]),
+  conversionGreaterThan: sinon.stub().callsFake((obj1, obj2) => obj1.value > obj2.value),
+  conversionLessThan: sinon.stub().callsFake((obj1, obj2) => obj1.value < obj2.value),
 }
 
 const sendUtils = proxyquire('../send.utils.js', {
@@ -30,6 +32,8 @@ const sendUtils = proxyquire('../send.utils.js', {
     conversionUtil: stubs.conversionUtil,
     conversionGTE: stubs.conversionGTE,
     multiplyCurrencies: stubs.multiplyCurrencies,
+    conversionGreaterThan: stubs.conversionGreaterThan,
+    conversionLessThan: stubs.conversionLessThan,
   },
   '../../token-util': { calcTokenAmount: stubs.calcTokenAmount },
   'ethereumjs-abi': {
@@ -44,6 +48,7 @@ const {
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
+  getToAddressForGasUpdate,
   calcTokenBalance,
   isBalanceSufficient,
   isTokenBalanceSufficient,
@@ -255,7 +260,7 @@ describe('send utils', () => {
       estimateGasMethod: sinon.stub().callsFake(
         (data, cb) => cb(
           data.to.match(/willFailBecauseOf:/) ? { message: data.to.match(/:(.+)$/)[1] } : null,
-          { toString: (n) => `mockToString:${n}` }
+          { toString: (n) => `0xabc${n}` }
         )
       ),
     }
@@ -279,13 +284,23 @@ describe('send utils', () => {
     })
 
     it('should call ethQuery.estimateGas with the expected params', async () => {
-      const result = await estimateGas(baseMockParams)
+      const result = await sendUtils.estimateGas(baseMockParams)
       assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
       assert.deepEqual(
         baseMockParams.estimateGasMethod.getCall(0).args[0],
         Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall)
       )
-      assert.equal(result, 'mockToString:16')
+      assert.equal(result, '0xabc16')
+    })
+
+    it('should call ethQuery.estimateGas with the expected params when initialGasLimitHex is lower than the upperGasLimit', async () => {
+      const result = await estimateGas(Object.assign({}, baseMockParams, { blockGasLimit: '0xbcd' }))
+      assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
+      assert.deepEqual(
+        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        Object.assign({ gasPrice: undefined, value: undefined }, baseExpectedCall, { gas: '0xbcdx0.95' })
+      )
+      assert.equal(result, '0xabc16x1.5')
     })
 
     it('should call ethQuery.estimateGas with a value of 0x0 and the expected data and to if passed a selectedToken', async () => {
@@ -300,12 +315,18 @@ describe('send utils', () => {
           to: 'mockAddress',
         })
       )
-      assert.equal(result, 'mockToString:16')
+      assert.equal(result, '0xabc16')
     })
 
     it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async () => {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
       const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123' }))
+      assert.equal(result, SIMPLE_GAS_COST)
+    })
+
+    it(`should return ${SIMPLE_GAS_COST} if not passed a selectedToken or truthy to address`, async () => {
+      assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
+      const result = await estimateGas(Object.assign({}, baseMockParams, { to: null }))
       assert.equal(result, SIMPLE_GAS_COST)
     })
 
@@ -399,6 +420,17 @@ describe('send utils', () => {
         { gasPrices: [ '0x150', '0x50', '0x100', '0x200', '0x5' ] },
       ]
       assert.equal(estimateGasPriceFromRecentBlocks(mockRecentBlocks), '0x5')
+    })
+  })
+
+  describe('getToAddressForGasUpdate()', () => {
+    it('should return empty string if all params are undefined or null', () => {
+      assert.equal(getToAddressForGasUpdate(undefined, null), '')
+    })
+
+    it('should return the first string that is not defined or null in lower case', () => {
+      assert.equal(getToAddressForGasUpdate('A', null), 'a')
+      assert.equal(getToAddressForGasUpdate(undefined, 'B'), 'b')
     })
   })
 })
