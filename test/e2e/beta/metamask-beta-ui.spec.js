@@ -485,6 +485,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       let gasModal = await driver.findElement(By.css('span .modal'))
+      await driver.wait(until.elementLocated('send-v2__customize-gas__title'))
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
       await gasPriceInput.clear()
@@ -612,12 +613,7 @@ describe('MetaMask', function () {
     })
 
     it('customizes gas', async () => {
-      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
-      await gasPriceInput.clear()
-      await gasPriceInput.sendKeys('12.5')
-      await gasLimitInput.clear()
-      await gasLimitInput.sendKeys('56789')
-
+      await driver.wait(until.elementLocated(By.css('.send-v2__customize-gas__title')))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
       await delay(regularDelayMs)
@@ -646,11 +642,13 @@ describe('MetaMask', function () {
       assert.equal(txValues.length, 1)
       assert.equal(await txValues[0].getText(), '50 TST')
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
+      const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed|Failed/))
+      assert.equal(await tx.getText(), 'Confirmed')
     })
   })
 
   describe('Send a custom token from TokenFactory', () => {
+    let gasModal
     it('sends an already created token', async () => {
       await driver.executeScript(`window.open("https://tokenfactory.surge.sh/#/token/${tokenAddress}")`)
       await delay(waitingNewPageDelayMs)
@@ -673,6 +671,32 @@ describe('MetaMask', function () {
       await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
+      // Set the gas limit
+      const configureGas = await driver.wait(until.elementLocated(By.css('.send-v2__gas-fee-display button')))
+      await configureGas.click()
+      await delay(regularDelayMs)
+
+      gasModal = await driver.findElement(By.css('span .modal'))
+    })
+
+    it('customizes gas', async () => {
+      await driver.wait(until.elementLocated(By.css('.send-v2__customize-gas__title')))
+
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
+      await gasPriceInput.clear()
+      await gasPriceInput.sendKeys('10')
+      await gasLimitInput.clear()
+      await gasLimitInput.sendKeys('60000')
+
+      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
+      await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
+
+      const gasFeeInput = await findElement(driver, By.css('.currency-display__input'))
+      assert.equal(await gasFeeInput.getAttribute('value'), 0.0006)
+    })
+
+    it('submits the transaction', async function () {
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
       await delay(regularDelayMs)
