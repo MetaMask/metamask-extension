@@ -13,12 +13,15 @@ module.exports = class NoticeController extends EventEmitter {
     this.firstVersion = opts.firstVersion
     this.version = opts.version
     const initState = extend({
-      noticesList: this._filterNotices(hardCodedNotices),
+      noticesList: [],
     }, opts.initState)
     this.store = new ObservableStore(initState)
+    // setup memStore
     this.memStore = new ObservableStore({})
     this.store.subscribe(() => this._updateMemstore())
     this._updateMemstore()
+    // pull in latest notices
+    this.updateNoticesList()
   }
 
   getNoticesList () {
@@ -84,8 +87,8 @@ module.exports = class NoticeController extends EventEmitter {
   }
 
   async _retrieveNoticeData () {
-    // Placeholder for the API.
-    return []
+    // Placeholder for remote notice API.
+    return hardCodedNotices
   }
 
   _updateMemstore () {
