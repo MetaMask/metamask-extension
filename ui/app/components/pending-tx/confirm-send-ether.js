@@ -33,6 +33,10 @@ const {
   ENVIRONMENT_TYPE_NOTIFICATION,
 } = require('../../../../app/scripts/lib/enums')
 
+const abi = require('human-standard-token-abi')
+const abiDecoder = require('abi-decoder')
+abiDecoder.addABI(abi)
+
 ConfirmSendEther.contextTypes = {
   t: PropTypes.func,
 }
@@ -335,6 +339,36 @@ ConfirmSendEther.prototype.renderHeader = function (isTxReprice) {
   )
 }
 
+ConfirmSendEther.prototype.renderBodyCurrency = function (currentCurrency, convertedAmountInFiat) {
+  const txMeta = this.gatherTxMeta()
+
+  //TODO: Need to get data from API Server.
+  const tokenAddress = '0x53fd3150ae881b27e177062e9e1589277417052d'
+  const tokenSymbol = 'BWX'
+
+  let currency = currentCurrency.toUpperCase()
+  let amount = convertedAmountInFiat
+
+  if (txMeta.txParams.to == tokenAddress) {
+    const encodedABI = txMeta.txParams.data
+    const decodedABI = abiDecoder.decodeMethod(encodedABI)
+
+    if (decodedABI.name == 'approve') {
+      const value = decodedABI.params[1]['value']
+
+      currency = tokenSymbol
+      amount = value / 1e+18
+    }
+  }
+
+  return (
+    h('div', [
+      h('h3.flex-center.confirm-screen-send-amount', [`${amount}`]),
+      h('h3.flex-center.confirm-screen-send-amount-currency', [ `${currency}` ]),
+    ])
+  )
+}
+
 ConfirmSendEther.prototype.render = function () {
   const {
     currentCurrency,
@@ -405,9 +439,8 @@ ConfirmSendEther.prototype.render = function () {
         // }, [
         //   `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
         // ]),
-
-        h('h3.flex-center.confirm-screen-send-amount', [`${convertedAmountInFiat}`]),
-        h('h3.flex-center.confirm-screen-send-amount-currency', [ currentCurrency.toUpperCase() ]),
+        
+        this.renderBodyCurrency(currentCurrency, convertedAmountInFiat),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
         ]),
