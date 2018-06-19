@@ -9,7 +9,6 @@
 - [#4523](https://github.com/MetaMask/metamask-extension/pull/4523): Fix bug where account reset did not work with custom RPC providers.
 - [#4524](https://github.com/MetaMask/metamask-extension/pull/4524): Fix for Brave i18n getAcceptLanguages.
 - [#4557](https://github.com/MetaMask/metamask-extension/pull/4557): Fix bug where nonce mutex was never released.
-- [#4558](https://github.com/MetaMask/metamask-extension/pull/4558): Stop reloading browser page on Ethereum network change.
 - [#4566](https://github.com/MetaMask/metamask-extension/pull/4566): Add phishing notice.
 - [#4591](https://github.com/MetaMask/metamask-extension/pull/4591): Allow Copying Token Addresses and link to Token on Etherscan.
 
