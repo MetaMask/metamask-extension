@@ -234,7 +234,8 @@ describe('MetaMask', function () {
     })
 
     it('clicks through the deposit modal', async () => {
-      const buyModal = await findElement(driver, By.css('span .modal'))
+      const byBuyModal = By.css('span .modal')
+      const buyModal = await driver.wait(until.elementLocated(byBuyModal))
       const closeModal = await findElement(driver, By.css('.page-container__header-close'))
       await closeModal.click()
       await driver.wait(until.stalenessOf(buyModal))
