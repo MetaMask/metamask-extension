@@ -1,4 +1,5 @@
 const extension = require('extensionizer')
+const log = require('loglevel')
 const height = 620
 const width = 360
 
@@ -11,6 +12,14 @@ class NotificationManager {
    * @typedef {Object} NotificationManager
    *
    */
+
+   /**
+    * A success callback for when popup window is created. Saves the popup window ID in an instance variable.
+    * @param {Object} created popup window object.
+    */
+   _onCreated(popUpInfo) {
+    this._popUpId = popUpInfo.id
+   }
 
   /**
    * Either brings an existing MetaMask notification window into focus, or creates a new notification window. New
@@ -27,12 +36,14 @@ class NotificationManager {
         extension.windows.update(popup.id, { focused: true })
       } else {
         // create new notification popup
-        extension.windows.create({
+        let popUp = extension.windows.create({
           url: 'notification.html',
           type: 'popup',
           width,
           height,
         })
+
+        popUp.then(this._onCreated, (err) => log.error('Error occured while creating a popup window', err))
       }
     })
   }
@@ -43,11 +54,7 @@ class NotificationManager {
    */
   closePopup () {
     // closes notification popup
-    this._getPopup((err, popup) => {
-      if (err) throw err
-      if (!popup) return
-      extension.windows.remove(popup.id, console.error)
-    })
+    extension.windows.remove(this._popUpId, console.error)
   }
 
   /**
@@ -93,7 +100,7 @@ class NotificationManager {
   _getPopupIn (windows) {
     return windows ? windows.find((win) => {
       // Returns notification popup
-      return (win && win.type === 'popup')
+      return (win && win.type === 'popup' && win.id === this._popUpId)
     }) : null
   }
 
