@@ -6,7 +6,7 @@ import SendAmountRow from '../send-amount-row.component.js'
 
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 import AmountMaxButton from '../amount-max-button/amount-max-button.container'
-import CurrencyDisplay from '../../../../send/currency-display'
+import CurrencyDisplay from '../../../currency-display'
 
 const propsMethodSpies = {
   setMaxModeTo: sinon.spy(),

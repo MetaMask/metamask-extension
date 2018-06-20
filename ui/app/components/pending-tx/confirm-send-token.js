@@ -11,7 +11,7 @@ abiDecoder.addABI(tokenAbi)
 const actions = require('../../actions')
 const clone = require('clone')
 const Identicon = require('../identicon')
-const GasFeeDisplay = require('../send_/send-content/send-gas-row/gas-fee-display/gas-fee-display.component.js').default
+const GasFeeDisplay = require('../send/send-content/send-gas-row/gas-fee-display/').default
 const NetworkDisplay = require('../network-display')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
@@ -23,7 +23,7 @@ const {
 const {
   calcGasTotal,
   isBalanceSufficient,
-} = require('../send_/send.utils')
+} = require('../send/send.utils')
 const {
   calcTokenAmount,
 } = require('../../token-util')
@@ -31,7 +31,7 @@ const classnames = require('classnames')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
 
-const { MIN_GAS_PRICE_HEX } = require('../send_/send.constants')
+const { MIN_GAS_PRICE_HEX } = require('../send/send.constants')
 
 const {
   getTokenExchangeRate,

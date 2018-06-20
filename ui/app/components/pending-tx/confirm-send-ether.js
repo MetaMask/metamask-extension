@@ -19,14 +19,14 @@ const {
 const {
   calcGasTotal,
   isBalanceSufficient,
-} = require('../send_/send.utils')
-const GasFeeDisplay = require('../send_/send-content/send-gas-row/gas-fee-display/gas-fee-display.component').default
+} = require('../send/send.utils')
+const GasFeeDisplay = require('../send/send-content/send-gas-row/gas-fee-display/').default
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
 
-const { MIN_GAS_PRICE_HEX } = require('../send_/send.constants')
+const { MIN_GAS_PRICE_HEX } = require('../send/send.constants')
 const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 const {
   ENVIRONMENT_TYPE_POPUP,
