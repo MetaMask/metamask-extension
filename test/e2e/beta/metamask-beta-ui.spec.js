@@ -430,7 +430,7 @@ describe('MetaMask', function () {
 
     it('renders the balance for the chosen token', async () => {
       const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
-      await driver.wait(until.elementTextIs(balance, '0BAT'))
+      await driver.wait(until.elementTextIs(balance, '0BAT'), 10000)
       const tokenAmount = await balance.getText()
       assert.equal(tokenAmount, '0BAT')
       await delay(regularDelayMs)
