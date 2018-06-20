@@ -348,8 +348,9 @@ describe('Using MetaMask with an existing account', function () {
 
     it('renders the balance for the new token', async () => {
       const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
+      await driver.wait(until.elementTextMatches(balance, /^0\s*BAT\s*$/), 10000)
       const tokenAmount = await balance.getText()
-      assert.equal(tokenAmount, '0BAT')
+      assert.ok(/^0\s*BAT\s*$/.test(tokenAmount))
       await delay(regularDelayMs)
     })
   })
@@ -421,9 +422,9 @@ describe('Using MetaMask with an existing account', function () {
 
     it('renders the balance for the new token', async () => {
       const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
-      await driver.wait(until.elementTextIs(balance, '100TST'))
+      await driver.wait(until.elementTextMatches(balance, /^100\s*TST\s*$/), 10000)
       const tokenAmount = await balance.getText()
-      assert.equal(tokenAmount, '100TST')
+      assert.ok(/^100\s*TST\s*$/.test(tokenAmount))
       await delay(regularDelayMs)
     })
   })
