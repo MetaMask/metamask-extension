@@ -146,6 +146,9 @@
   "copy": {
     "message": "Copy"
   },
+  "copyContractAddress": {
+    "message": "Copy Contract Address"
+  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
@@ -954,6 +957,9 @@
   },
   "viewAccount": {
     "message": "View Account"
+  },
+  "viewOnEtherscan": {
+    "message": "View on Etherscan"
   },
   "visitWebSite": {
     "message": "Visit our web site"

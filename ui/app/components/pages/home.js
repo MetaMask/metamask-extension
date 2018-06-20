@@ -86,9 +86,9 @@ class Home extends Component {
     // if (!props.noActiveNotices) {
     //   log.debug('rendering notice screen for unread notices.')
     //   return h(NoticeScreen, {
-    //     notice: props.lastUnreadNotice,
+    //     notice: props.nextUnreadNotice,
     //     key: 'NoticeScreen',
-    //     onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
+    //     onConfirm: () => props.dispatch(actions.markNoticeRead(props.nextUnreadNotice)),
     //   })
     // } else if (props.lostAccounts && props.lostAccounts.length > 0) {
     //   log.debug('rendering notice screen for lost accounts view.')
@@ -279,7 +279,7 @@ function mapStateToProps (state) {
     noActiveNotices,
     seedWords,
     unapprovedTxs,
-    lastUnreadNotice,
+    nextUnreadNotice,
     lostAccounts,
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
@@ -313,7 +313,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     provider: state.metamask.provider,
     forgottenPassword: state.appState.forgottenPassword,
-    lastUnreadNotice,
+    nextUnreadNotice,
     lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
     currentCurrency: state.metamask.currentCurrency,
