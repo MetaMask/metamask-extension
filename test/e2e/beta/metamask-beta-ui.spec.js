@@ -486,7 +486,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       let gasModal = await driver.findElement(By.css('span .modal'))
-      await driver.wait(until.elementLocated('send-v2__customize-gas__title'))
+      await driver.wait(until.elementLocated(By.css('.send-v2__customize-gas__title')))
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
       await gasPriceInput.clear()
