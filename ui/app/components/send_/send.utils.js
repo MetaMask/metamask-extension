@@ -4,6 +4,7 @@ const {
   conversionGTE,
   multiplyCurrencies,
   conversionGreaterThan,
+  conversionLessThan,
 } = require('../../conversion-util')
 const {
   calcTokenAmount,
@@ -20,6 +21,7 @@ const abi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
 
 module.exports = {
+  addGasBuffer,
   calcGasTotal,
   calcTokenBalance,
   doesAmountErrorRequireUpdate,
@@ -27,6 +29,7 @@ module.exports = {
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
+  getToAddressForGasUpdate,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 }
@@ -175,9 +178,8 @@ async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to,
   }
 
   // if recipient has no code, gas is 21k max:
-  const hasRecipient = Boolean(to)
-  if (hasRecipient && !selectedToken) {
-    const code = await global.eth.getCode(to)
+  if (!selectedToken) {
+    const code = Boolean(to) && await global.eth.getCode(to)
     if (!code || code === '0x') {
       return SIMPLE_GAS_COST
     }
@@ -201,14 +203,44 @@ async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to,
           err.message.includes('gas required exceeds allowance or always failing transaction')
         )
         if (simulationFailed) {
-          return resolve(paramsForGasEstimate.gas)
+          const estimateWithBuffer = addGasBuffer(paramsForGasEstimate.gas, blockGasLimit, 1.5)
+          return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
         } else {
           return reject(err)
         }
       }
-      return resolve(estimatedGas.toString(16))
+      const estimateWithBuffer = addGasBuffer(estimatedGas.toString(16), blockGasLimit, 1.5)
+      return resolve(ethUtil.addHexPrefix(estimateWithBuffer))
     })
   })
+}
+
+function addGasBuffer (initialGasLimitHex, blockGasLimitHex, bufferMultiplier = 1.5) {
+  const upperGasLimit = multiplyCurrencies(blockGasLimitHex, 0.9, {
+    toNumericBase: 'hex',
+    multiplicandBase: 16,
+    multiplierBase: 10,
+    numberOfDecimals: '0',
+  })
+  const bufferedGasLimit = multiplyCurrencies(initialGasLimitHex, bufferMultiplier, {
+    toNumericBase: 'hex',
+    multiplicandBase: 16,
+    multiplierBase: 10,
+    numberOfDecimals: '0',
+  })
+
+  // if initialGasLimit is above blockGasLimit, dont modify it
+  if (conversionGreaterThan(
+    { value: initialGasLimitHex, fromNumericBase: 'hex' },
+    { value: upperGasLimit, fromNumericBase: 'hex' },
+  )) return initialGasLimitHex
+  // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
+  if (conversionLessThan(
+    { value: bufferedGasLimit, fromNumericBase: 'hex' },
+    { value: upperGasLimit, fromNumericBase: 'hex' },
+  )) return bufferedGasLimit
+  // otherwise use blockGasLimit
+  return upperGasLimit
 }
 
 function generateTokenTransferData ({ toAddress = '0x0', amount = '0x0', selectedToken }) {
@@ -236,4 +268,8 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
   .sort((a, b) => parseInt(a, 16) > parseInt(b, 16) ? 1 : -1)
 
   return lowestPrices[Math.floor(lowestPrices.length / 2)]
+}
+
+function getToAddressForGasUpdate (...addresses) {
+  return [...addresses, ''].find(str => str !== undefined && str !== null).toLowerCase()
 }
