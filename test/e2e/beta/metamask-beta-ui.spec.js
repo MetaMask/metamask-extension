@@ -516,8 +516,6 @@ describe('MetaMask', function () {
       await driver.executeScript("window.onbeforeunload = function() {};")
       await driver.close()
       await driver.switchTo().window(extension)
-      await delay(regularDelayMs)
-    })
   })
 
   describe('Add a custom token from TokenFactory', () => {
