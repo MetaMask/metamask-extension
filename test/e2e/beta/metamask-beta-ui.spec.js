@@ -694,6 +694,7 @@ describe('MetaMask', function () {
       await driver.wait(until.stalenessOf(gasModal))
 
       const gasFeeInput = await findElement(driver, By.css('.currency-display__input'))
+      await delay(regularDelayMs)
       assert.equal(await gasFeeInput.getAttribute('value'), 0.0006)
     })
 
