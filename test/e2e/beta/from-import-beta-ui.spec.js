@@ -298,7 +298,6 @@ describe('Using MetaMask with an existing account', function () {
 
       const [importAccount] = await findElements(driver, By.xpath(`//div[contains(text(), 'Import Account')]`))
       await importAccount.click()
-      await delay(regularDelayMs)
     })
 
     it('enter private key', async () => {
