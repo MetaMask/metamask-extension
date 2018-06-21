@@ -17,6 +17,7 @@ const {
   loadExtension,
   verboseReportOnFailure,
   testContract,
+  openNewPage,
 } = require('./helpers')
 
 describe('MetaMask', function () {
@@ -385,11 +386,13 @@ describe('MetaMask', function () {
 
   describe('Send ETH from Faucet', () => {
     it('starts a send transaction inside Faucet', async () => {
-      await driver.executeScript('window.open("https://faucet.metamask.io")')
-      await delay(waitingNewPageDelayMs)
+      await openNewPage(driver, 'https://faucet.metamask.io')
 
       const [extension, faucet] = await driver.getAllWindowHandles()
       await driver.switchTo().window(faucet)
+
+      const faucetPageTitle = await findElement(driver, By.css('.container-fluid'))
+      await driver.wait(until.elementTextMatches(faucetPageTitle, /MetaMask/))
       await delay(regularDelayMs)
 
       const send1eth = await findElement(driver, By.xpath(`//button[contains(text(), '10 ether')]`), 14000)
@@ -417,11 +420,10 @@ describe('MetaMask', function () {
 
   describe('Deploy contract and call contract method from Remix', () => {
     it('writes a contract to remix', async () => {
-      await driver.executeScript('window.open("https://remix.ethereum.org/")')
-      await delay(waitingNewPageDelayMs)
+      await openNewPage(driver, 'https://remix.ethereum.org/')
 
-      const [extension, remix] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(remix)
+      const byFilePanel = By.css('#filepanel')
+      await driver.wait(until.elementLocated(byFilePanel))
 
       const newContractButton = await findElement(driver, By.css('.fa-plus-circle'))
       await newContractButton.click()
@@ -521,11 +523,9 @@ describe('MetaMask', function () {
 
   describe('Add a custom token from TokenFactory', () => {
     it('creates a new token', async () => {
-      await driver.executeScript('window.open("https://tokenfactory.surge.sh/#/factory")')
-      await delay(waitingNewPageDelayMs)
-
+      openNewPage(driver, 'https://tokenfactory.surge.sh/#/factory')
       const [extension, tokenFactory] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(tokenFactory)
+
       const [
         totalSupply,
         tokenName,
@@ -651,11 +651,10 @@ describe('MetaMask', function () {
   describe('Send a custom token from TokenFactory', () => {
     let gasModal
     it('sends an already created token', async () => {
-      await driver.executeScript(`window.open("https://tokenfactory.surge.sh/#/token/${tokenAddress}")`)
-      await delay(waitingNewPageDelayMs)
+     openNewPage(driver, `https://tokenfactory.surge.sh/#/token/${tokenAddress}`)
 
       const [extension, tokenFactory] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(tokenFactory)
+
       const [
         transferToAddress,
         transferToAmount,

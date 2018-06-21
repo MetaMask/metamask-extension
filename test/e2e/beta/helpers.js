@@ -2,6 +2,7 @@ const fs = require('fs')
 const mkdirp = require('mkdirp')
 const pify = require('pify')
 const {until} = require('selenium-webdriver')
+const { delay } = require('../func')
 
 const testContract = `
   pragma solidity ^0.4.0;
@@ -37,6 +38,7 @@ module.exports = {
   verboseReportOnFailure,
   findElement,
   findElements,
+  openNewPage,
   testContract,
 }
 
@@ -92,4 +94,16 @@ async function findElement (driver, by, timeout = 10000) {
 
 async function findElements (driver, by, timeout = 10000) {
   return driver.wait(until.elementsLocated(by), timeout)
+}
+
+async function openNewPage (driver, url) {
+  await driver.executeScript('window.open()')
+  await delay(1000)
+
+  const handles = await driver.getAllWindowHandles()
+  const lastHandle = handles.pop()
+  await driver.switchTo().window(lastHandle)
+
+  await driver.get(url)
+  await delay(1000)
 }
