@@ -27,25 +27,37 @@
     @media screen and (max-width: $break-small) {
       flex-direction: column;
       flex: 0 0 auto;
+      max-width: 100%;
     }
 
     @media screen and (min-width: $break-large) {
       flex-direction: row;
       flex-grow: 3;
+      min-width: 0;
     }
   }
 
   .balance-display {
     .token-amount {
       color: $black;
+      max-width: 100%;
+
+      .token-balance {
+        display: flex;
+      }
     }
 
     @media screen and (max-width: $break-small) {
+      max-width: 100%;
       text-align: center;
 
       .token-amount {
         font-size: 1.75rem;
         margin-top: 1rem;
+
+        .token-balance {
+          flex-direction: column;
+        }
       }
 
       .fiat-amount {
@@ -56,9 +68,10 @@
     }
 
     @media screen and (min-width: $break-large) {
-      margin-left: .8em;
+      margin: 0 .8em;
       justify-content: flex-start;
       align-items: flex-start;
+      min-width: 0;
 
       .token-amount {
         font-size: 1.5rem;

@@ -19,6 +19,7 @@ import {
   getSendAmount,
   getSendEditingTransactionId,
   getSendFromObject,
+  getSendTo,
   getTokenBalance,
 } from './send.selectors'
 import {
@@ -54,6 +55,7 @@ function mapStateToProps (state) {
     recentBlocks: getRecentBlocks(state),
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
+    to: getSendTo(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
     tokenToFiatRate: getSelectedTokenToFiatRate(state),

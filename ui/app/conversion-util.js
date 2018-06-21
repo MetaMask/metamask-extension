@@ -190,6 +190,16 @@ const conversionGreaterThan = (
   return firstValue.gt(secondValue)
 }
 
+const conversionLessThan = (
+  { ...firstProps },
+  { ...secondProps },
+) => {
+  const firstValue = converter({ ...firstProps })
+  const secondValue = converter({ ...secondProps })
+
+  return firstValue.lt(secondValue)
+}
+
 const conversionMax = (
   { ...firstProps },
   { ...secondProps },
@@ -229,6 +239,7 @@ module.exports = {
   addCurrencies,
   multiplyCurrencies,
   conversionGreaterThan,
+  conversionLessThan,
   conversionGTE,
   conversionLTE,
   conversionMax,

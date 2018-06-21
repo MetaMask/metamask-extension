@@ -1,4 +1,4 @@
-const Config = require('./recipient-blacklist-config.json')
+const Config = require('./recipient-blacklist.js')
 
 /** @module*/
 module.exports = {
