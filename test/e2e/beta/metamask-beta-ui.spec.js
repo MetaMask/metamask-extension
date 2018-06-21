@@ -423,6 +423,7 @@ describe('MetaMask', function () {
 
       const byFilePanel = By.css('#filepanel')
       await driver.wait(until.elementLocated(byFilePanel))
+      await delay(regularDelayMs)
 
       const newContractButton = await findElement(driver, By.css('.fa-plus-circle'))
       await newContractButton.click()
