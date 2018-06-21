@@ -378,9 +378,8 @@ describe('MetaMask', function () {
       const transactions = await findElements(driver, By.css('.tx-list-item'))
       assert.equal(transactions.length, 1)
 
-      const txValues = await findElements(driver, By.css('.tx-list-value'))
-      assert.equal(txValues.length, 1)
-      assert.equal(await txValues[0].getText(), '1 ETH')
+      const txValues = await findElement(driver, By.css('.tx-list-value'))
+      await driver.wait(until.elementTextMatches(txValues, /1\sETH/), 10000)
     })
   })
 
@@ -524,6 +523,8 @@ describe('MetaMask', function () {
   describe('Add a custom token from TokenFactory', () => {
     it('creates a new token', async () => {
       openNewPage(driver, 'https://tokenfactory.surge.sh/#/factory')
+
+      await delay(regularDelayMs * 10)
       const [extension, tokenFactory] = await driver.getAllWindowHandles()
 
       const [
@@ -552,12 +553,15 @@ describe('MetaMask', function () {
 
       await driver.switchTo().window(tokenFactory)
       await delay(regularDelayMs)
+
       const tokenContactAddress = await driver.findElement(By.css('div > div > div:nth-child(2) > span:nth-child(3)'))
       tokenAddress = await tokenContactAddress.getText()
+
       await driver.close()
       await driver.switchTo().window(extension)
       await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
+
     })
 
     it('clicks on the Add Token button', async () => {
@@ -641,6 +645,7 @@ describe('MetaMask', function () {
 
       const txValues = await findElements(driver, By.css('.tx-list-value'))
       assert.equal(txValues.length, 1)
+      await delay(regularDelayMs)
       assert.equal(await txValues[0].getText(), '50 TST')
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed|Failed/))
@@ -684,16 +689,24 @@ describe('MetaMask', function () {
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
       await gasPriceInput.clear()
+      await delay(tinyDelayMs)
       await gasPriceInput.sendKeys('10')
+      await delay(tinyDelayMs)
       await gasLimitInput.clear()
+      await delay(tinyDelayMs)
+      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
       await gasLimitInput.sendKeys('60000')
+      await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      }
+      await delay(tinyDelayMs)
 
-      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
+      const save = await findElement(driver, By.css('.send-v2__customize-gas__save'))
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
 
       const gasFeeInput = await findElement(driver, By.css('.currency-display__input'))
-      await delay(regularDelayMs)
       assert.equal(await gasFeeInput.getAttribute('value'), 0.0006)
     })
 
