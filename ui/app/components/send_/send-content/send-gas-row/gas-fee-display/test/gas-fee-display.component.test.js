@@ -3,7 +3,7 @@ import assert from 'assert'
 import {shallow} from 'enzyme'
 import GasFeeDisplay from '../gas-fee-display.component'
 import CurrencyDisplay from '../../../../../send/currency-display'
-import sinon from "sinon";
+import sinon from 'sinon'
 
 
 const propsMethodSpies = {
@@ -36,7 +36,7 @@ describe.only('SendGasRow Component', function() {
       const {
         conversionRate,
         convertedCurrency,
-        value
+        value,
       } = wrapper.find(CurrencyDisplay).props()
       assert.equal(conversionRate, 20)
       assert.equal(convertedCurrency, 'mockConvertedCurrency')
@@ -46,7 +46,7 @@ describe.only('SendGasRow Component', function() {
     it('should render the Button with the correct props', () => {
       const {
         onClick,
-      } = wrapper.find("button").props()
+      } = wrapper.find('button').props()
       assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 0)
       onClick()
       assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 1)
