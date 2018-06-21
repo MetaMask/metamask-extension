@@ -114,7 +114,7 @@ class JsonImportSubview extends Component {
           setSelectedAddress(firstAddress)
         }
       })
-      .catch(err => displayWarning(err.message || err))
+      .catch(err => err && displayWarning(err.message || err))
   }
 }
 
