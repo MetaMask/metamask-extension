@@ -94,7 +94,6 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
     }
   })
   .catch((reason) => {
-    // log.error(reason)
     const setStateObj = {
       loadingEns: false,
       ensResolution: recipient,
