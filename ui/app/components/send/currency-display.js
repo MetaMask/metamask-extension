@@ -149,7 +149,7 @@ CurrencyDisplay.prototype.render = function () {
           } : {}),
           ref: input => { this.currencyInput = input },
           style: {
-            minWidth: this.getInputWidth(valueToRender, readOnly),
+            width: this.getInputWidth(valueToRender, readOnly),
           },
           min: 0,
         }),
