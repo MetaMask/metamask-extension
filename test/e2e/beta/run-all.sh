@@ -6,5 +6,5 @@ set -o pipefail
 
 export PATH="$PATH:./node_modules/.bin"
 
-shell-parallel -s 'npm run ganache:start' -x 'sleep 5 && mocha test/e2e/beta/metamask-beta-ui.spec'
-shell-parallel -s 'npm run ganache:start -- -d' -x 'sleep 5 && mocha test/e2e/beta/from-import-beta-ui.spec'
+shell-parallel -s 'npm run ganache:start' -x 'sleep 5 && http-server test/e2e/beta/contract-test/' -x 'sleep 5 && mocha test/e2e/beta/metamask-beta-ui.spec'
+shell-parallel -s 'npm run ganache:start -- -d'  -x 'sleep 5 && http-server test/e2e/beta/contract-test/' -x 'sleep 5 && mocha test/e2e/beta/from-import-beta-ui.spec'

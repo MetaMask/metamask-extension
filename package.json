@@ -251,6 +251,7 @@
     "gulp-util": "^3.0.7",
     "gulp-watch": "^5.0.0",
     "gulp-zip": "^4.0.0",
+    "http-server": "^0.11.1",
     "image-size": "^0.6.2",
     "isomorphic-fetch": "^2.2.1",
     "jsdoc": "^3.5.5",
