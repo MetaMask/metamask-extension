@@ -4,34 +4,6 @@ const pify = require('pify')
 const {until} = require('selenium-webdriver')
 const { delay } = require('../func')
 
-const testContract = `
-  pragma solidity ^0.4.0;
-  contract PiggyBank {
-
-      uint private balance;
-      address public owner;
-
-      function PiggyBank() public {
-          owner = msg.sender;
-          balance = 0;
-      }
-
-      function deposit() public payable returns (uint) {
-          balance += msg.value;
-          return balance;
-      }
-
-      function withdraw(uint withdrawAmount) public returns (uint remainingBal) {
-          require(msg.sender == owner);
-          balance -= withdrawAmount;
-
-          msg.sender.transfer(withdrawAmount);
-
-          return balance;
-      }
-  }
-`
-
 module.exports = {
   checkBrowserForConsoleErrors,
   loadExtension,
@@ -39,7 +11,6 @@ module.exports = {
   findElement,
   findElements,
   openNewPage,
-  testContract,
 }
 
 async function loadExtension (driver, extensionId) {
@@ -101,8 +72,8 @@ async function openNewPage (driver, url) {
   await delay(1000)
 
   const handles = await driver.getAllWindowHandles()
-  const lastHandle = handles.pop()
-  await driver.switchTo().window(lastHandle)
+  const secondHandle = handles[1]
+  await driver.switchTo().window(secondHandle)
 
   await driver.get(url)
   await delay(1000)
