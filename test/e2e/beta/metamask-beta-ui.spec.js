@@ -72,14 +72,20 @@ describe('MetaMask', function () {
   })
 
   describe('New UI setup', async function () {
+    let networkSelector
     it('switches to first tab', async function () {
       const [firstTab] = await driver.getAllWindowHandles()
       await driver.switchTo().window(firstTab)
       await delay(regularDelayMs)
+      try {
+        networkSelector = await findElement(driver, By.css('#network_component'))
+      } catch (e) {
+        await loadExtension(driver, extensionId)
+      }
+      await delay(regularDelayMs)
     })
 
     it('use the local network', async function () {
-      const networkSelector = await findElement(driver, By.css('#network_component'))
       await networkSelector.click()
       await delay(regularDelayMs)
 
@@ -177,9 +183,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
-    it('can retype the seed phrase', async () => {
-      const words = seedPhrase.split(' ')
-
+    async function retypeSeedPhrase (words) {
       const word0 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[0]}')]`))
       await word0.click()
       await delay(tinyDelayMs)
@@ -224,9 +228,20 @@ describe('MetaMask', function () {
       await word10.click()
       await delay(tinyDelayMs)
 
-      const word11 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[11]}')]`))
-      await word11.click()
-      await delay(tinyDelayMs)
+      try {
+        const word11 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[11]}')]`), 10000)
+        await word11.click()
+        await delay(tinyDelayMs)
+      } catch (e) {
+        await loadExtension(driver, extensionId)
+        await retypeSeedPhrase
+      }
+    }
+
+    it('can retype the seed phrase', async () => {
+      const words = seedPhrase.split(' ')
+
+      await retypeSeedPhrase(words)
 
       const confirm = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirm.click()
