@@ -63,7 +63,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(this.currentTest)
+      await verboseReportOnFailure(driver, this.currentTest)
     }
   })
 
