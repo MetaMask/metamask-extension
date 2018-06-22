@@ -662,8 +662,7 @@ describe('MetaMask', function () {
 
       const txValues = await findElements(driver, By.css('.tx-list-value'))
       assert.equal(txValues.length, 1)
-      await delay(regularDelayMs)
-      assert.equal(await txValues[0].getText(), '50 TST')
+      await driver.wait(until.elementTextMatches(txValues[0], /50\sTST/))
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed|Failed/))
       assert.equal(await tx.getText(), 'Confirmed')
@@ -738,8 +737,7 @@ describe('MetaMask', function () {
       assert.equal(transactions.length, 8)
 
       const txValues = await findElements(driver, By.css('.tx-list-value'))
-      assert.equal(txValues.length, 8)
-      assert.equal(await txValues[0].getText(), '26 TST')
+      await driver.wait(until.elementTextMatches(txValues[0], /26\sTST/))
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
 
