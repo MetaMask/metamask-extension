@@ -20,6 +20,8 @@ function mapStateToProps (state) {
     buyView: state.appState.buyView,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    ticker: state.metamask.ticker,
+    settings: state.metamask.settings,
     context: state.appState.currentView.context,
     isSubLoading: state.appState.isSubLoading,
   }
@@ -170,15 +172,39 @@ BuyButtonSubview.prototype.primarySubview = function () {
     )
 
     default:
-      return (
-        h('h2.error', 'Unknown network ID')
-      )
-
+      return this.mainnetSubview()
   }
 }
 
 BuyButtonSubview.prototype.mainnetSubview = function () {
   const props = this.props
+  const network = parseInt(props.network)
+
+  let selected
+  if (network === 1) {
+    selected = [
+      'Coinbase',
+      'ShapeShift',
+    ]
+  } else {
+    selected = this.props.settings.exchanges || []
+  }
+
+  const subtext = {
+    'Coinbase': 'Crypto/FIAT (USA only)',
+    'ShapeShift': 'Crypto',
+  }
+
+  let texts = {}
+  selected.forEach(ex => {
+    texts[ex] = subtext[ex]
+  })
+
+  if (selected.length === 0) {
+    return (
+      h('h2.error', 'No exchange supported')
+    )
+  }
 
   return (
 
@@ -198,14 +224,8 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
       }, [
         h(RadioList, {
           defaultFocus: props.buyView.subview,
-          labels: [
-            'Coinbase',
-            'ShapeShift',
-          ],
-          subtext: {
-            'Coinbase': 'Crypto/FIAT (USA only)',
-            'ShapeShift': 'Crypto',
-          },
+          labels: selected,
+          subtext: texts,
           onClick: this.radioHandler.bind(this),
         }),
       ]),
@@ -229,13 +249,10 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
 }
 
 BuyButtonSubview.prototype.formVersionSubview = function () {
-  const network = this.props.network
-  if (network === '1') {
-    if (this.props.buyView.formView.coinbase) {
-      return h(CoinbaseForm, this.props)
-    } else if (this.props.buyView.formView.shapeshift) {
-      return h(ShapeshiftForm, this.props)
-    }
+  if (this.props.buyView.formView.coinbase) {
+    return h(CoinbaseForm, this.props)
+  } else if (this.props.buyView.formView.shapeshift) {
+    return h(ShapeshiftForm, this.props)
   }
 }
 
@@ -252,10 +269,11 @@ BuyButtonSubview.prototype.backButtonContext = function () {
 }
 
 BuyButtonSubview.prototype.radioHandler = function (event) {
+  const ticker = this.props.ticker
   switch (event.target.title) {
     case 'Coinbase':
       return this.props.dispatch(actions.coinBaseSubview())
     case 'ShapeShift':
-      return this.props.dispatch(actions.shapeShiftSubview(this.props.provider.type))
+      return this.props.dispatch(actions.shapeShiftSubview(this.props.provider.type, ticker))
   }
 }

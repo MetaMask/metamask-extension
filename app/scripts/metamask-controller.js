@@ -1397,7 +1397,8 @@ module.exports = class MetamaskController extends EventEmitter {
   buyEth (address, amount) {
     if (!amount) amount = '5'
     const network = this.networkController.getNetworkState()
-    const url = getBuyEthUrl({ network, address, amount })
+    const link = this.networkController.getNetworkConfig().buyUrl
+    const url = getBuyEthUrl({ network, address, amount, link })
     if (url) this.platform.openWindow({ url })
   }
 

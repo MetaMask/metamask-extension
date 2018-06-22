@@ -10,6 +10,7 @@ function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     address: state.metamask.selectedAddress,
+    settings: state.metamask.settings,
   }
 }
 
@@ -24,7 +25,7 @@ function mapDispatchToProps (dispatch) {
     showAccountDetailModal: () => {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
-    toFaucet: network => dispatch(actions.buyEth({ network })),
+    toFaucet: (network, address, link) => dispatch(actions.buyEth({ network, address, amount: 0, link })),
   }
 }
 
@@ -51,8 +52,14 @@ BuyOptions.prototype.renderModalContentOption = function (title, header, onClick
 
 BuyOptions.prototype.render = function () {
   const { network, toCoinbase, address, toFaucet } = this.props
-  const isTestNetwork = ['3', '4', '42'].find(n => n === network)
+  let isTestNetwork = ['3', '4', '42'].find(n => n === network)
   const networkName = getNetworkDisplayName(network)
+
+  let link
+  if (this.props.settings.isTestNet) {
+    isTestNetwork = true
+    link = this.props.settings.buyUrl
+  }
 
   return h('div', {}, [
     h('div.buy-modal-content.transfers-subview', {
@@ -69,7 +76,7 @@ BuyOptions.prototype.render = function () {
       h('div.buy-modal-content-options.flex-column.flex-center', {}, [
 
         isTestNetwork
-          ? this.renderModalContentOption(networkName, this.context.t('testFaucet'), () => toFaucet(network))
+          ? this.renderModalContentOption(networkName, this.context.t('testFaucet'), () => toFaucet(network, address, link))
           : this.renderModalContentOption('Coinbase', this.context.t('depositFiat'), () => toCoinbase(address)),
 
         // h('div.buy-modal-content-option', {}, [
