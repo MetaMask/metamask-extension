@@ -208,7 +208,7 @@
     "babel-register": "^6.7.2",
     "babelify": "^8.0.0",
     "beefy": "^2.1.5",
-    "brfs": "^1.4.3",
+    "brfs": "^2.0.0",
     "browserify": "^16.1.1",
     "chai": "^4.1.0",
     "chromedriver": "2.36.0",
