@@ -204,6 +204,10 @@ SignatureRequest.prototype.renderBody = function () {
     h('div.request-signature__rows', [
 
       ...rows.map(({ name, value }) => {
+        console.log(value)
+        if (typeof value === 'boolean') {
+          value = value.toString()
+        }
         return h('div.request-signature__row', [
           h('div.request-signature__row-title', [`${name}:`]),
           h('div.request-signature__row-value', value),
