@@ -17,6 +17,8 @@ networks.networkList = {
     'blockExplorerToken': 'https://gastracker.io/token/[[tokenAddress]]/[[address]]',
     'service': 'Ethereum Commonwealth',
     'rpcUrl': 'https://etc-geth.0xinfra.com',
+    'exchanges': ['ShapeShift'],
+    'buyUrl': '',
   },
   [EOSCLASSIC]: {
     'chainId': EOSCLASSIC_CODE,
