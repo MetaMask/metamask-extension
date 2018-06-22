@@ -358,6 +358,13 @@ describe('MetaMaskController', function () {
       assert.equal(shapeShiftTxList[0].depositAddress, depositAddress)
     })
 
+    it('removes shapeshift tx', () => {
+      metamaskController.createShapeShiftTx(depositAddress, depositType)
+      assert.equal(shapeShiftTxList.length, 1)
+      metamaskController.shapeshiftController.removeShapeShiftTx(shapeShiftTxList[0])
+      assert.equal(shapeShiftTxList.length, 0)
+    })
+
   })
 
   describe('#addNewAccount', function () {
