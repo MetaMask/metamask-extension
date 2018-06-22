@@ -25,6 +25,7 @@ function mapStateToProps (state) {
     selectedAddress: state.metamask.selectedAddress,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
+    ticker: state.metamask.settings && state.metamask.settings.ticker || 'ETH',
   }
 }
 
@@ -84,7 +85,7 @@ ShiftListItem.prototype.renderUtilComponents = function () {
           title: this.context.t('qrCode'),
         }, [
           h('i.fa.fa-qrcode.pointer.pop-hover', {
-            onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType)),
+            onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType, props.ticker)),
             style: {
               margin: '5px',
               marginLeft: '23px',
