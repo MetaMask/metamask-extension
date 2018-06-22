@@ -637,9 +637,10 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
       await inputAmount.sendKeys('50')
+      await delay(regularDelayMs)
 
       // Set the gas limit
       const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
