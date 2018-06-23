@@ -83,51 +83,6 @@ class Home extends Component {
       })
     }
 
-    // if (!props.noActiveNotices) {
-    //   log.debug('rendering notice screen for unread notices.')
-    //   return h(NoticeScreen, {
-    //     notice: props.nextUnreadNotice,
-    //     key: 'NoticeScreen',
-    //     onConfirm: () => props.dispatch(actions.markNoticeRead(props.nextUnreadNotice)),
-    //   })
-    // } else if (props.lostAccounts && props.lostAccounts.length > 0) {
-    //   log.debug('rendering notice screen for lost accounts view.')
-    //   return h(NoticeScreen, {
-    //     notice: generateLostAccountsNotice(props.lostAccounts),
-    //     key: 'LostAccountsNotice',
-    //     onConfirm: () => props.dispatch(actions.markAccountsFound()),
-    //   })
-    // }
-
-    // if (props.seedWords) {
-    //   log.debug('rendering seed words')
-    //   return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
-    // }
-
-    // show initialize screen
-    // if (!isInitialized || forgottenPassword) {
-    //   // show current view
-    //   log.debug('rendering an initialize screen')
-    //   // switch (props.currentView.name) {
-
-    //     // case 'restoreVault':
-    //     //   log.debug('rendering restore vault screen')
-    //     //   return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-
-    //   //   default:
-    //   //     log.debug('rendering menu screen')
-    //   //     return h(InitializeScreen, {key: 'menuScreenInit'})
-    //   // }
-    // }
-
-    // // show unlock screen
-    // if (!props.isUnlocked) {
-    //   return h(MainContainer, {
-    //     currentViewName: props.currentView.name,
-    //     isUnlocked: props.isUnlocked,
-    //   })
-    // }
-
     // show current view
     switch (currentView.name) {
 
@@ -135,58 +90,9 @@ class Home extends Component {
         log.debug('rendering main container')
         return h(MainContainer, {key: 'account-detail'})
 
-      // case 'sendTransaction':
-      //   log.debug('rendering send tx screen')
-
-      //   // Going to leave this here until we are ready to delete SendTransactionScreen v1
-      //   // const SendComponentToRender = checkFeatureToggle('send-v2')
-      //   //   ? SendTransactionScreen2
-      //   //   : SendTransactionScreen
-
-      //   return h(SendTransactionScreen2, {key: 'send-transaction'})
-
-      // case 'sendToken':
-      //   log.debug('rendering send token screen')
-
-      //   // Going to leave this here until we are ready to delete SendTransactionScreen v1
-      //   // const SendTokenComponentToRender = checkFeatureToggle('send-v2')
-      //   //   ? SendTransactionScreen2
-      //   //   : SendTokenScreen
-
-      //   return h(SendTransactionScreen2, {key: 'sendToken'})
-
       case 'newKeychain':
         log.debug('rendering new keychain screen')
         return h(NewKeyChainScreen, {key: 'new-keychain'})
-
-      // case 'confTx':
-      //   log.debug('rendering confirm tx screen')
-      //   return h(Redirect, {
-      //     to: {
-      //       pathname: CONFIRM_TRANSACTION_ROUTE,
-      //     },
-      //   })
-        // return h(ConfirmTxScreen, {key: 'confirm-tx'})
-
-      // case 'add-token':
-      //   log.debug('rendering add-token screen from unlock screen.')
-      //   return h(AddTokenScreen, {key: 'add-token'})
-
-      // case 'config':
-      //   log.debug('rendering config screen')
-      //   return h(Settings, {key: 'config'})
-
-      // case 'import-menu':
-      //   log.debug('rendering import screen')
-      //   return h(Import, {key: 'import-menu'})
-
-      // case 'reveal-seed-conf':
-      //   log.debug('rendering reveal seed confirmation screen')
-      //   return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})
-
-      // case 'info':
-      //   log.debug('rendering info screen')
-      //   return h(Settings, {key: 'info', tab: 'info'})
 
       case 'buyEth':
         log.debug('rendering buy ether screen')

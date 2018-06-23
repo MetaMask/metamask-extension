@@ -12,7 +12,7 @@ const log = require('loglevel')
 const InitializeScreen = require('../../mascara/src/app/first-time').default
 // accounts
 const SendTransactionScreen = require('./components/send_/send.container')
-const ConfirmTxScreen = require('./conf-tx')
+const ConfirmTransaction = require('./components/pages/confirm-transaction')
 
 // slideout menu
 const WalletView = require('./components/wallet-view')
@@ -76,7 +76,10 @@ class App extends Component {
         h(Authenticated, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedConfirmation }),
         h(Authenticated, { path: SETTINGS_ROUTE, component: Settings }),
         h(Authenticated, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
-        h(Authenticated, { path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`, component: ConfirmTxScreen }),
+        h(Authenticated, {
+          path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`,
+          component: ConfirmTransaction,
+        }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),

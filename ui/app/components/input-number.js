@@ -2,10 +2,8 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const {
-  addCurrencies,
   conversionGTE,
   conversionLTE,
-  subtractCurrencies,
 } = require('../conversion-util')
 
 module.exports = InputNumber
@@ -51,7 +49,11 @@ InputNumber.prototype.setValue = function (newValue) {
 }
 
 InputNumber.prototype.render = function () {
+<<<<<<< HEAD
   const { unitLabel, step = 1, placeholder, value } = this.props
+=======
+  const { unitLabel, step = 1, placeholder, value = 0, min = -1, max = Infinity } = this.props
+>>>>>>> Refactor and redesign confirm transaction views
 
   return h('div.customize-gas-input-wrapper', {}, [
     h('input', {
@@ -67,11 +69,19 @@ InputNumber.prototype.render = function () {
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
     h('div.gas-tooltip-input-arrows', {}, [
       h('i.fa.fa-angle-up', {
+<<<<<<< HEAD
         onClick: () => this.setValue(addCurrencies(value, step, { toNumericBase: 'dec' })),
       }),
       h('i.fa.fa-angle-down', {
         style: { cursor: 'pointer' },
         onClick: () => this.setValue(subtractCurrencies(value, step, { toNumericBase: 'dec' })),
+=======
+        onClick: () => this.setValue(Math.min(+value + step, max)),
+      }),
+      h('i.fa.fa-angle-down', {
+        style: { cursor: 'pointer' },
+        onClick: () => this.setValue(Math.max(+value - step, min)),
+>>>>>>> Refactor and redesign confirm transaction views
       }),
     ]),
   ])

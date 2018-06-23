@@ -399,19 +399,17 @@ class TransactionStateManager extends EventEmitter {
   _setTxStatus (txId, status) {
     const txMeta = this.getTx(txId)
     txMeta.status = status
-    setTimeout(() => {
-      try {
-        this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
-        this.emit(`${txMeta.id}:${status}`, txId)
-        this.emit(`tx:status-update`, txId, status)
-        if (['submitted', 'rejected', 'failed'].includes(status)) {
-          this.emit(`${txMeta.id}:finished`, txMeta)
-        }
-        this.emit('update:badge')
-      } catch (error) {
-        log.error(error)
+    try {
+      this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
+      this.emit(`${txMeta.id}:${status}`, txId)
+      this.emit(`tx:status-update`, txId, status)
+      if (['submitted', 'rejected', 'failed'].includes(status)) {
+        this.emit(`${txMeta.id}:finished`, txMeta)
       }
-    })
+      this.emit('update:badge')
+    } catch (error) {
+      log.error(error)
+    }
   }
 
   /**
