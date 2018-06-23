@@ -664,7 +664,7 @@ describe('MetaMask', function () {
 
     it('transitions to the confirm screen', async () => {
       await driver.wait(until.stalenessOf(gasModal))
-
+      await verboseReportOnFailure(driver, { title: 'firefox4' })
       // Continue to next screen
       const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
       await nextScreen.click()
