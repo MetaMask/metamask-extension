@@ -103,7 +103,7 @@
     "eth-query": "^2.1.2",
     "eth-sig-util": "^1.4.2",
     "eth-token-tracker": "^1.1.4",
-    "eth-trezor-keyring": "github:brunobar79/eth-trezor-keyring#753bfd9b7199854eacf716a11b4f414d1a7a33d6",
+    "eth-trezor-keyring": "github:brunobar79/eth-trezor-keyring#287e041c7ff0d4b4baa83caf13917ccd388e119e",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-tx": "^1.3.0",
     "ethereumjs-util": "github:ethereumjs/ethereumjs-util#ac5d0908536b447083ea422b435da27f26615de9",

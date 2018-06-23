@@ -539,14 +539,14 @@ module.exports = class MetamaskController extends EventEmitter {
     switch (deviceName) {
       case 'trezor':
         const keyringController = this.keyringController
-        const keyring = await keyringController.getKeyringsByType(
+        let keyring = await keyringController.getKeyringsByType(
           'Trezor Hardware'
         )[0]
         if (!keyring) {
-          throw new Error('MetamaskController - No Trezor Hardware Keyring found')
+          keyring =  await this.keyringController.addNewKeyring('Trezor Hardware')
         }
 
-        const accounts = await keyring.getPage(page)
+        const accounts = page === 1 ? await keyring.getNextPage() : await keyring.getPreviousPage() 
         this.accountTracker.syncWithAddresses(accounts.map(a => a.address))
         return accounts
 
