@@ -659,6 +659,8 @@ describe('MetaMask', function () {
       await driver.wait(until.elementLocated(By.css('.send-v2__customize-gas__title')))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
+      const consolem = await driver.manage().logs().get('browser')
+      console.log(`!!! consolem`, consolem);
       await delay(regularDelayMs)
     })
 

@@ -61,7 +61,9 @@ function mapDispatchToProps (dispatch) {
         selectedToken,
         to,
       })
-
+      if (selectedToken) {
+        console.log(`!!!!! selectedToken.address, to, amount, txParams`, selectedToken.address, to, amount, txParams);
+      }
       selectedToken
         ? dispatch(signTokenTx(selectedToken.address, to, amount, txParams))
         : dispatch(signTx(txParams))
