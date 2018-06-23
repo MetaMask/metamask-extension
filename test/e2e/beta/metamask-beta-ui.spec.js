@@ -640,6 +640,11 @@ describe('MetaMask', function () {
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       const [inputAmount] = await findElements(driver, By.css('.currency-display__input'))
       await inputAmount.sendKeys('50')
+      console.log(`starts to send a transaction: inputAmount`, inputAmount);
+      const inval = await inputAmount.getAttribute('value')
+      console.log(`starts to send a transaction: inval`, inval);
+      const inreadonly = await inputAmount.getAttribute('readonly')
+      console.log(`starts to send a transaction: inreadonly`, inreadonly);
       await delay(regularDelayMs)
       await verboseReportOnFailure(driver, { title: 'firefox3' })
       // Set the gas limit
