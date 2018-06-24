@@ -4,7 +4,7 @@ import {addCurrencies} from './conversion-util'
 
 
 describe('conversion utils', () => {
-  describe.only('addCurrencies()', () => {
+  describe('addCurrencies()', () => {
     it('add whole numbers', () => {
       const result = addCurrencies(3, 5)
       assert.equal(result.toNumber(), 8)
