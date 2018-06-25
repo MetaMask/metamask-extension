@@ -73,7 +73,7 @@ describe('currency-controller', function () {
           var result = currencyController.getConversionRate()
           assert.equal(typeof result, 'number')
         }).catch(function (done, err) {
-          done(error)
+          done(err)
         })
       })
 
