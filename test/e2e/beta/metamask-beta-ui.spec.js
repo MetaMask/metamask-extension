@@ -136,6 +136,8 @@ describe('MetaMask', function () {
     })
 
     it('clicks through the ToS', async () => {
+      const testLogs = await driver.executeScript("return window.logs")
+      console.log(`testLogs`, testLogs);
       // terms of use
       const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
       assert.equal(canClickThrough, false, 'disabled continue button')
@@ -648,35 +650,53 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
       await verboseReportOnFailure(driver, { title: 'firefox3' })
       // Set the gas limit
-      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
-      await configureGas.click()
-      await delay(regularDelayMs)
+      // const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
+      // await configureGas.click()
+      // await delay(regularDelayMs)
 
-      gasModal = await driver.findElement(By.css('span .modal'))
+      // gasModal = await driver.findElement(By.css('span .modal'))
     })
 
-    it('customizes gas', async () => {
-      await driver.wait(until.elementLocated(By.css('.send-v2__customize-gas__title')))
-      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
-      await save.click()
-      const consolem = await driver.manage().logs().get('browser')
-      console.log(`!!! consolem`, consolem);
-      await delay(regularDelayMs)
-    })
+    // it('customizes gas', async () => {
+    //   await driver.wait(until.elementLocated(By.css('.send-v2__customize-gas__title')))
+    //   const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
+    //   await save.click()
+    //   await delay(regularDelayMs)
+    // })
 
     it('transitions to the confirm screen', async () => {
-      await driver.wait(until.stalenessOf(gasModal))
+      // await driver.wait(until.stalenessOf(gasModal))
+      console.log('!!! 1')
       await verboseReportOnFailure(driver, { title: 'firefox4' })
       // Continue to next screen
+      console.log('!!! 2')
+
       const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
       await nextScreen.click()
+      await verboseReportOnFailure(driver, { title: 'firefox5' })
+      const onBlurOccurred = await driver.executeScript('return window.onBlurOccurred')
+      console.log(`----------1onBlurOccurred1----------`, onBlurOccurred);
+      const signLog = await driver.executeScript('return window.signLog')
+      console.log(`----------1signLog1----------`, signLog);
+      const browserLogs = await driver.executeScript('return window.logs')
+      console.log(`----------1browserLogs1----------`, browserLogs);
+      const stateLogs = await driver.executeScript('return window.logState()')
+      console.log(`----------stateLogs----------`, stateLogs);
       await delay(regularDelayMs)
     })
 
     it('submits the transaction', async function () {
+      console.log('!!! 3')
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      console.log('!!! 4')
       await verboseReportOnFailure(driver, { title: 'firefox' })
+      console.log('!!! 5')
       await confirmButton.click()
+      console.log('!!! 6')
+      const browserLogs = await driver.executeScript('return window.logs')
+      console.log(`----------2browserLogs2----------`, browserLogs);
+      const stateLogs = await driver.executeScript('return window.logState()')
+      console.log(`----------stateLogs----------`, stateLogs);
       await delay(regularDelayMs)
     })
 
@@ -686,6 +706,10 @@ describe('MetaMask', function () {
 
       const txValues = await findElements(driver, By.css('.tx-list-value'))
       assert.equal(txValues.length, 1)
+      const browserLogs = await driver.executeScript('return window.logs')
+      console.log(`----------3browserLogs3----------`, browserLogs);
+      const stateLogs = await driver.executeScript('return window.logState()')
+      console.log(`----------stateLogs----------`, stateLogs);
       await driver.wait(until.elementTextMatches(txValues[0], /50\sTST/), 10000)
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed|Failed/), 10000)

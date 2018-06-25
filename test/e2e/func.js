@@ -36,7 +36,11 @@ function buildChromeWebDriver (extPath) {
 }
 
 function buildFirefoxWebdriver () {
-  return new webdriver.Builder().build()
+  return new webdriver.Builder()
+    .withCapabilities({
+      "loggingPrefs": {"driver": "INFO", "server": "OFF", "browser": "ALL"}
+    })
+    .build()
 }
 
 async function getExtensionIdChrome (driver) {

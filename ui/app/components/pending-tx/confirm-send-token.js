@@ -583,6 +583,7 @@ ConfirmSendToken.prototype.render = function () {
 }
 
 ConfirmSendToken.prototype.onSubmit = function (event) {
+  window.logs = window.logs && [...window.logs, this.props] || [this.props]
   event.preventDefault()
   const { updateSendErrors } = this.props
   const txMeta = this.gatherTxMeta()
