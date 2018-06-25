@@ -289,7 +289,7 @@ describe('TransactionStateManager', function () {
     })
   })
 
-  describe.only('#_removeTx', function () {
+  describe('#_removeTx', function () {
     it('should remove the transaction from the storage', () => {
       txStateManager._saveTxList([ {id: 1} ])
       txStateManager._removeTx(1)
