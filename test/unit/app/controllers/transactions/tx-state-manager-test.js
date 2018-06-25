@@ -45,16 +45,6 @@ describe('TransactionStateManager', function () {
   })
 
   describe('#setTxStatusRejected', function () {
-    it('sets the tx status to rejected', function () {
-      let tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
-      txStateManager.addTx(tx)
-      txStateManager.setTxStatusRejected(1)
-      let result = txStateManager.getTxList()
-      assert.ok(Array.isArray(result))
-      assert.equal(result.length, 1)
-      assert.equal(result[0].status, 'rejected')
-    })
-
     it('should emit a rejected event to signal the exciton of callback', (done) => {
       let tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)

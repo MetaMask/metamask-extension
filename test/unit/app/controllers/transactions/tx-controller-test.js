@@ -357,9 +357,16 @@ describe('Transaction Controller', function () {
       ])
     })
 
-    it('should set the transaction to rejected from unapproved', async function () {
-      await txController.cancelTransaction(0)
-      assert.equal(txController.txStateManager.getTx(0).status, 'rejected')
+    it('should emit a status change to rejected', function (done) {
+      txController.once('tx:status-update', (txId, status) => {
+        try {
+          assert.equal(status, 'rejected', 'status should e rejected')
+          assert.equal(txId, 0, 'id should e 0')
+          done()
+        } catch (e) { done(e) }
+      })
+
+      txController.cancelTransaction(0)
     })
 
   })
