@@ -2,6 +2,8 @@
 
 ## Current Master
 
+  - Remove rejected transactions from transaction history
+
 ## 4.8.0 Thur Jun 14 2018
 
 - [#4513](https://github.com/MetaMask/metamask-extension/pull/4513): Attempting to import an empty private key will now show a clear error.
