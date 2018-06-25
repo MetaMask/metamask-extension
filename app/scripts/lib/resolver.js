@@ -61,7 +61,7 @@ function getRegistrar (type) {
 module.exports.resolve = function (name, provider) {
   const path = name.split('.')
   const tld = path[path.length - 1]
-  if (tld === 'eth') {
+  if (tld === 'eth' || tld === 'test') {
     return ens(name, provider)
   } else {
     return new Promise((resolve, reject) => {

@@ -53,6 +53,7 @@ const isIE = !!document.documentMode
 // Edge 20+
 const isEdge = !isIE && !!window.StyleMedia
 
+let ipfsHandle
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
@@ -158,7 +159,7 @@ async function initialize () {
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
-  ipfsContent(initState.NetworkController.provider)
+  ipfsHandle = ipfsContent(initState.NetworkController.provider)
 }
 
 //
@@ -262,6 +263,10 @@ function setupController (initState, initLangCode) {
   })
   global.metamaskController = controller
 
+  controller.networkController.on('networkDidChange', () => {
+    ipfsHandle && ipfsHandle.remove()
+    ipfsHandle = ipfsContent(controller.networkController.providerStore.getState())
+  })
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
