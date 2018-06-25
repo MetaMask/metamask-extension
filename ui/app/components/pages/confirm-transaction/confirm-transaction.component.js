@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
+import R from 'ramda'
+import Loading from '../../loading-screen'
 import ConfirmTransactionSwitch from '../confirm-transaction-switch'
 import ConfirmTransactionBase from '../confirm-transaction-base'
 import ConfirmSendEther from '../confirm-send-ether'
@@ -11,12 +13,12 @@ import ConfTx from '../../../conf-tx'
 import {
   DEFAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
-  CONFIRM_DEPLOY_CONTRACT_ROUTE,
-  CONFIRM_SEND_ETHER_ROUTE,
-  CONFIRM_SEND_TOKEN_ROUTE,
-  CONFIRM_APPROVE_ROUTE,
-  CONFIRM_TOKEN_METHOD_ROUTE,
-  SIGNATURE_REQUEST_ROUTE,
+  CONFIRM_DEPLOY_CONTRACT_PATH,
+  CONFIRM_SEND_ETHER_PATH,
+  CONFIRM_SEND_TOKEN_PATH,
+  CONFIRM_APPROVE_PATH,
+  CONFIRM_TOKEN_METHOD_PATH,
+  SIGNATURE_REQUEST_PATH,
 } from '../../../routes'
 
 export default class ConfirmTransaction extends Component {
@@ -25,35 +27,107 @@ export default class ConfirmTransaction extends Component {
     totalUnapprovedCount: PropTypes.number.isRequired,
     match: PropTypes.object,
     send: PropTypes.object,
+    unconfirmedTransactions: PropTypes.array,
+    setTransactionToConfirm: PropTypes.func,
+    confirmTransaction: PropTypes.object,
   }
 
   componentDidMount () {
-    const { totalUnapprovedCount = 0, send = {}, history } = this.props
+    const {
+      totalUnapprovedCount = 0,
+      send = {},
+      history,
+      confirmTransaction: { txData: { id: transactionId } = {} },
+    } = this.props
 
     if (!totalUnapprovedCount && !send.to) {
       history.replace(DEFAULT_ROUTE)
+      return
+    }
+
+    if (!transactionId) {
+      this.setTransactionToConfirm()
+    }
+  }
+
+  componentDidUpdate () {
+    const {
+      match: { params: { id: paramsTransactionId } = {} },
+      setTransactionToConfirm,
+      confirmTransaction: { txData: { id: transactionId } = {} },
+    } = this.props
+
+    if (paramsTransactionId && transactionId && paramsTransactionId !== transactionId + '') {
+      setTransactionToConfirm(paramsTransactionId)
+    }
+
+    if (!paramsTransactionId) {
+      this.setTransactionToConfirm()
+    }
+  }
+
+  setTransactionToConfirm () {
+    const {
+      history,
+      unconfirmedTransactions,
+      match: { params: { id: paramsTransactionId } = {} },
+      setTransactionToConfirm,
+    } = this.props
+
+    if (paramsTransactionId) {
+      // Check to make sure params ID is valid
+      const tx = R.find(({ id }) => id + '' === paramsTransactionId)(unconfirmedTransactions)
+
+      if (!tx) {
+        history.replace(DEFAULT_ROUTE)
+      } else {
+        setTransactionToConfirm(paramsTransactionId)
+      }
+    } else if (unconfirmedTransactions.length) {
+      const transactionId = unconfirmedTransactions[0].id
+      setTransactionToConfirm(transactionId)
     }
   }
 
   render () {
-    return (
-      <Switch>
-        <Route
-          exact
-          path={`${CONFIRM_DEPLOY_CONTRACT_ROUTE}/:id?`}
-          component={ConfirmDeployContract}
-        />
-        <Route
-          exact
-          path={`${CONFIRM_TOKEN_METHOD_ROUTE}/:id?`}
-          component={ConfirmTransactionBase}
-        />
-        <Route exact path={`${CONFIRM_SEND_ETHER_ROUTE}/:id?`} component={ConfirmSendEther} />
-        <Route exact path={`${CONFIRM_SEND_TOKEN_ROUTE}/:id?`} component={ConfirmSendToken} />
-        <Route exact path={`${CONFIRM_APPROVE_ROUTE}/:id?`} component={ConfirmApprove} />
-        <Route exact path={SIGNATURE_REQUEST_ROUTE} component={ConfTx} />
-        <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransactionSwitch} />
-      </Switch>
-    )
+    const { confirmTransaction: { txData: { id } } = {} } = this.props
+
+    return id
+      ? (
+        <Switch>
+          <Route
+            exact
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_DEPLOY_CONTRACT_PATH}`}
+            component={ConfirmDeployContract}
+          />
+          <Route
+            exact
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TOKEN_METHOD_PATH}`}
+            component={ConfirmTransactionBase}
+          />
+          <Route
+            exact
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_SEND_ETHER_PATH}`}
+            component={ConfirmSendEther}
+          />
+          <Route
+            exact
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_SEND_TOKEN_PATH}`}
+            component={ConfirmSendToken}
+          />
+          <Route
+            exact
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_APPROVE_PATH}`}
+            component={ConfirmApprove}
+          />
+          <Route
+            exact
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
+            component={ConfTx}
+          />
+          <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransactionSwitch} />
+        </Switch>
+      )
+      : <Loading />
   }
 }

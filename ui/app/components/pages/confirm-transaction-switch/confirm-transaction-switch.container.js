@@ -1,10 +1,11 @@
 import { connect } from 'react-redux'
 import ConfirmTransactionSwitch from './confirm-transaction-switch.component'
-import { unconfirmedTransactionsListSelector } from '../../../selectors/confirm-transaction'
 
 const mapStateToProps = state => {
+  const { confirmTransaction } = state
+
   return {
-    unconfirmedTransactions: unconfirmedTransactionsListSelector(state),
+    confirmTransaction,
   }
 }
 

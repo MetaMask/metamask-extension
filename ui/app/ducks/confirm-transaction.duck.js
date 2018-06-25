@@ -284,30 +284,34 @@ export function setTransactionToConfirm (transactionId) {
       return
     }
 
-    const { lastGasPrice } = transaction
-    const txData = lastGasPrice ? increaseFromLastGasPrice(transaction) : transaction
-    dispatch(updateTxDataAndCalculate(txData))
+    if (transaction.txParams) {
+      const { lastGasPrice } = transaction
+      const txData = lastGasPrice ? increaseFromLastGasPrice(transaction) : transaction
+      dispatch(updateTxDataAndCalculate(txData))
 
-    const { txParams } = transaction
+      const { txParams } = transaction
 
-    if (txParams.data) {
-      const { tokens: existingTokens } = state
-      const { data, to: tokenAddress } = txParams
-      const tokenData = getTokenData(data)
-      dispatch(updateTokenData(tokenData))
+      if (txParams.data) {
+        const { tokens: existingTokens } = state
+        const { data, to: tokenAddress } = txParams
+        const tokenData = getTokenData(data)
+        dispatch(updateTokenData(tokenData))
 
-      const tokenSymbolData = await getSymbolAndDecimals(tokenAddress, existingTokens) || {}
-      const { symbol: tokenSymbol = '', decimals: tokenDecimals = '' } = tokenSymbolData
-      dispatch(updateTokenProps({ tokenSymbol, tokenDecimals }))
-    }
+        const tokenSymbolData = await getSymbolAndDecimals(tokenAddress, existingTokens) || {}
+        const { symbol: tokenSymbol = '', decimals: tokenDecimals = '' } = tokenSymbolData
+        dispatch(updateTokenProps({ tokenSymbol, tokenDecimals }))
+      }
 
-    if (txParams.nonce) {
-      const nonce = conversionUtil(txParams.nonce, {
-        fromNumericBase: 'hex',
-        toNumericBase: 'dec',
-      })
+      if (txParams.nonce) {
+        const nonce = conversionUtil(txParams.nonce, {
+          fromNumericBase: 'hex',
+          toNumericBase: 'dec',
+        })
 
-      dispatch(updateNonce(nonce))
+        dispatch(updateNonce(nonce))
+      }
+    } else {
+      dispatch(updateTxData(transaction))
     }
   }
 }

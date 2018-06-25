@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 import R from 'ramda'
 import ConfirmTransactionBase from './confirm-transaction-base.component'
 import {
-  setTransactionToConfirm,
   clearConfirmTransaction,
   updateGasAndCalculate,
 } from '../../../ducks/confirm-transaction.duck'
@@ -72,7 +71,6 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    setTransactionToConfirm: transactionId => dispatch(setTransactionToConfirm(transactionId)),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     clearSend: () => dispatch(clearSend()),
     showTransactionConfirmedModal: ({ onHide }) => {

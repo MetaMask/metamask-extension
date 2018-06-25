@@ -36,7 +36,6 @@ export default class ConfirmTransactionBase extends Component {
     balance: PropTypes.string,
     currentCurrency: PropTypes.string,
     conversionRate: PropTypes.number,
-    setTransactionToConfirm: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
     cancelTransaction: PropTypes.func,
     clearSend: PropTypes.func,
@@ -66,20 +65,12 @@ export default class ConfirmTransactionBase extends Component {
     onSubmit: PropTypes.func,
   }
 
-  componentDidMount () {
-    const { match: { params: { id } = {} }, setTransactionToConfirm } = this.props
-    setTransactionToConfirm(id)
-  }
-
-  componentDidUpdate (prevProps) {
+  componentDidUpdate () {
     const {
       transactionStatus,
       showTransactionConfirmedModal,
       history,
       clearConfirmTransaction,
-      match: { params: { id } = {} },
-      setTransactionToConfirm,
-      txData,
     } = this.props
 
     if (transactionStatus === 'dropped') {
@@ -91,10 +82,6 @@ export default class ConfirmTransactionBase extends Component {
       })
 
       return
-    }
-
-    if (id && id !== txData.id + '') {
-      setTransactionToConfirm(id)
     }
   }
 
