@@ -720,8 +720,10 @@ describe('MetaMask', function () {
       await transferAmountButton.click()
       await delay(regularDelayMs)
 
+      const [,, popup] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(popup)
+      await driver.close()
       await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
       // Set the gas limit
@@ -748,7 +750,6 @@ describe('MetaMask', function () {
       if (process.env.SELENIUM_BROWSER === 'firefox') {
         await gasLimitInput.sendKeys(Key.BACK_SPACE)
       }
-      await delay(tinyDelayMs)
 
       const save = await findElement(driver, By.css('.send-v2__customize-gas__save'))
       await save.click()
