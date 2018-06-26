@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
-import GasFeeDisplay from '../../../send/gas-fee-display-v2'
+import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
 
 export default class SendGasRow extends Component {
 
