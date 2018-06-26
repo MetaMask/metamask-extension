@@ -61,7 +61,7 @@ export default class ConfirmTransaction extends Component {
       setTransactionToConfirm(paramsTransactionId)
     }
 
-    if (!paramsTransactionId) {
+    if (!transactionId) {
       this.setTransactionToConfirm()
     }
   }
@@ -84,7 +84,8 @@ export default class ConfirmTransaction extends Component {
         setTransactionToConfirm(paramsTransactionId)
       }
     } else if (unconfirmedTransactions.length) {
-      const transactionId = unconfirmedTransactions[0].id
+      const totalUnconfirmed = unconfirmedTransactions.length
+      const transactionId = unconfirmedTransactions[totalUnconfirmed - 1].id
       setTransactionToConfirm(transactionId)
     }
   }

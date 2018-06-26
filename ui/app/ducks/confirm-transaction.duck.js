@@ -236,7 +236,7 @@ export function updateTxDataAndCalculate (txData) {
 
     dispatch(updateTxData(txData))
 
-    const { txParams: { value, gas: gasLimit, gasPrice } = {} } = txData
+    const { txParams: { value, gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
 
     const fiatTransactionAmount = getTransactionAmount({
       value, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,

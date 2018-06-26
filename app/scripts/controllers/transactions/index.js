@@ -157,7 +157,6 @@ class TransactionController extends EventEmitter {
     // construct txMeta
     let txMeta = this.txStateManager.generateTxMeta({ txParams: normalizedTxParams })
     this.addTx(txMeta)
-    this.emit('newUnapprovedTx', txMeta)
 
     try {
       // check whether recipient account is blacklisted
@@ -172,6 +171,7 @@ class TransactionController extends EventEmitter {
     txMeta.loadingDefaults = false
     // save txMeta
     this.txStateManager.updateTx(txMeta)
+    this.emit('newUnapprovedTx', txMeta)
 
     return txMeta
   }
