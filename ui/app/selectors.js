@@ -16,6 +16,7 @@ const selectors = {
   transactionsSelector,
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
+  getGasIsLoading,
   getGasPrice,
   getGasLimit,
   getForceGasMin,
@@ -115,6 +116,10 @@ function transactionsSelector (state) {
       .sort((a, b) => b.time - a.time)
     : txsToRender
       .sort((a, b) => b.time - a.time)
+}
+
+function getGasIsLoading (state) {
+  return state.appState.gasIsLoading
 }
 
 function getGasPrice (state) {

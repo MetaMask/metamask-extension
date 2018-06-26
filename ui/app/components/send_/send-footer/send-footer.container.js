@@ -61,7 +61,14 @@ function mapDispatchToProps (dispatch) {
         selectedToken,
         to,
       })
-
+      if (selectedToken) {
+        window.signLog = {
+          amount,
+          to,
+          tokenAdd: selectedToken.address,
+          txParams,
+        }
+      }
       selectedToken
         ? dispatch(signTokenTx(selectedToken.address, to, amount, txParams))
         : dispatch(signTx(txParams))

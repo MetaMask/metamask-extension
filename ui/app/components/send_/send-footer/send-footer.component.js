@@ -49,7 +49,7 @@ export default class SendFooter extends Component {
       update,
       toAccounts,
     } = this.props
-
+    window.logs = window.logs && [...window.logs, this.props] || [this.props]
     // Should not be needed because submit should be disabled if there are errors.
     // const noErrors = !amountError && toError === null
 
