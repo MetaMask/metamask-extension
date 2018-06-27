@@ -199,6 +199,9 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ .Revision }}
       - run:
+          name: prep test
+          command: npm install
+      - run:
           name: Test
           command: npx nsp check
 
