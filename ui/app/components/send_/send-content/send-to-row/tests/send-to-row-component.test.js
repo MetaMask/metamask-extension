@@ -6,8 +6,8 @@ import proxyquire from 'proxyquire'
 
 const SendToRow = proxyquire('../send-to-row.component.js', {
   './send-to-row.utils.js': {
-    getToErrorObject: (to) => ({
-      to: to === false ? null : `mockToErrorObject:${to}`,
+    getToErrorObject: (to, toError) => ({
+      to: to === false ? null : `mockToErrorObject:${to}${toError}`,
     }),
   },
 }).default
@@ -67,11 +67,11 @@ describe('SendToRow Component', function () {
 
     it('should call updateSendToError', () => {
       assert.equal(propsMethodSpies.updateSendToError.callCount, 0)
-      instance.handleToChange('mockTo2')
+      instance.handleToChange('mockTo2', '', 'mockToError')
       assert.equal(propsMethodSpies.updateSendToError.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.updateSendToError.getCall(0).args,
-        [{ to: 'mockToErrorObject:mockTo2' }]
+        [{ to: 'mockToErrorObject:mockTo2mockToError' }]
       )
     })
 
@@ -138,11 +138,11 @@ describe('SendToRow Component', function () {
       openDropdown()
       assert.equal(propsMethodSpies.openToDropdown.callCount, 1)
       assert.equal(SendToRow.prototype.handleToChange.callCount, 0)
-      onChange('mockNewTo', 'mockNewNickname')
+      onChange({ toAddress: 'mockNewTo', nickname: 'mockNewNickname', toError: 'mockToError' })
       assert.equal(SendToRow.prototype.handleToChange.callCount, 1)
       assert.deepEqual(
         SendToRow.prototype.handleToChange.getCall(0).args,
-        ['mockNewTo', 'mockNewNickname']
+        ['mockNewTo', 'mockNewNickname', 'mockToError']
       )
     })
   })
