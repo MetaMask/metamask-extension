@@ -10,7 +10,7 @@ const propsMethodSpies = {
   showCustomizeGasModal: sinon.spy(),
 }
 
-describe.only('SendGasRow Component', function() {
+describe('SendGasRow Component', function() {
   let wrapper
 
   beforeEach(() => {
