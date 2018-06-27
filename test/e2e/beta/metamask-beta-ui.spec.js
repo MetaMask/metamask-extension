@@ -778,7 +778,8 @@ describe('MetaMask', function () {
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
 
-      // const walletBalance = await findElement(driver, By.css('.wallet-balance'))
+      const walletBalance = await findElement(driver, By.css('.wallet-balance'))
+      await walletBalance.click()
 
       const tokenListItems = await findElements(driver, By.css('.token-list-item'))
       await tokenListItems[0].click()
