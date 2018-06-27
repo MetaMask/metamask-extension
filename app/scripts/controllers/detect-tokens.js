@@ -10,7 +10,7 @@ const {
     } = require('./network/enums')
 
 // By default, poll every 3 minutes
-const DEFAULT_INTERVAL = 180 * 1000
+const DEFAULT_INTERVAL = 15 * 1000
 
 /**
  * A controller that polls for token exchange
@@ -26,23 +26,23 @@ class DetectTokensController {
     this.preferences = preferences
     this.interval = interval
     this.network = network
+    this.contracts = contracts
   }
 
    /**
-   * For each token in eth-contract=metada, find check selectedAddress balance.
+   * For each token in eth-contract-metada, find check selectedAddress balance.
    *
    */
   async exploreNewTokens () {
     if (!this.isActive) { return }
-    if (this._network.getProviderConfig().type !== MAINNET) { return }
-    var tokens = this._preferences.store.getState().tokens
+    if (this._network.getState().provider.type !== MAINNET) { return }
     let detectedTokenAddress, token
-    for (const address in contracts) {
-        const contract = contracts[address]
-        if (contract.erc20 && !(address in tokens)) {
+    for (const address in this.contracts) {
+        const contract = this.contracts[address]
+        if (contract.erc20 && !(address in this.tokens)) {
           detectedTokenAddress = await this.fetchContractAccountBalance(address) 
           if (detectedTokenAddress) {
-            token = contracts[detectedTokenAddress]
+            token = this.contracts[detectedTokenAddress]
             this._preferences.addToken(detectedTokenAddress, token['symbol'], token['decimals'])
           }
         }
@@ -83,6 +83,8 @@ class DetectTokensController {
   set preferences (preferences) {
     if (!preferences) { return }
     this._preferences = preferences
+    this.tokens = preferences.store.getState().tokens
+  
   }
 
       /**
