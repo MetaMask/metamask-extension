@@ -35,6 +35,7 @@ const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
+const DetectTokensController = require('./controllers/detect-tokens')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -110,6 +111,12 @@ module.exports = class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
       preferences: this.preferencesController.store,
+    })
+
+    // detect tokens controller 
+    this.detectTokensController = new DetectTokensController({
+      preferences: this.preferencesController,
+      network: this.networkController,
     })
 
     this.recentBlocksController = new RecentBlocksController({
@@ -1276,5 +1283,6 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   set isClientOpenAndUnlocked (active) {
     this.tokenRatesController.isActive = active
+    this.detectTokensController.isActive = active
   }
 }
