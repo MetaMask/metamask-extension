@@ -751,7 +751,10 @@ describe('MetaMask', function () {
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
       await gasLimitInput.sendKeys('60000')
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
-      if (process.env.SELENIUM_BROWSER === 'firefox') {
+
+      // Needed for different behaviour of input in different versions of firefox
+      const gasLimitInputValue = await gasLimitInput.getAttribute('value') 
+      if (gasLimitInputValue === '600001') {
         await gasLimitInput.sendKeys(Key.BACK_SPACE)
       }
 
