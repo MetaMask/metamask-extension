@@ -726,6 +726,10 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
+      const [txListItem] = await findElements(driver, By.css('.tx-list-item'))
+      await txListItem.click()
+      await delay(regularDelayMs)
+
       // Set the gas limit
       const configureGas = await driver.wait(until.elementLocated(By.css('.send-v2__gas-fee-display button')))
       await configureGas.click()
@@ -767,16 +771,17 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       const transactions = await findElements(driver, By.css('.tx-list-item'))
-      assert.equal(transactions.length, 8)
+      assert.equal(transactions.length, 2)
 
       const txValues = await findElements(driver, By.css('.tx-list-value'))
       await driver.wait(until.elementTextMatches(txValues[0], /26\sTST/))
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
 
+      // const walletBalance = await findElement(driver, By.css('.wallet-balance'))
+
       const tokenListItems = await findElements(driver, By.css('.token-list-item'))
-      tokenListItems[0].click()
-      await delay(regularDelayMs)
+      await tokenListItems[0].click()
 
       const tokenBalanceAmount = await findElement(driver, By.css('.token-balance__amount'))
       assert.equal(await tokenBalanceAmount.getText(), '24')
@@ -786,18 +791,18 @@ describe('MetaMask', function () {
   describe('Hide token', () => {
     it('hides the token when clicked', async () => {
       const [hideTokenEllipsis] = await findElements(driver, By.css('.token-list-item__ellipsis'))
-      hideTokenEllipsis.click()
+      await hideTokenEllipsis.click()
 
       const byTokenMenuDropdownOption = By.css('.menu__item--clickable')
       const tokenMenuDropdownOption = await driver.wait(until.elementLocated(byTokenMenuDropdownOption))
 
-      tokenMenuDropdownOption.click()
+      await tokenMenuDropdownOption.click()
 
       const confirmHideModal = await findElement(driver, By.css('span .modal'))
 
       const byHideTokenConfirmationButton = By.css('.hide-token-confirmation__button')
       const hideTokenConfirmationButton = await driver.wait(until.elementLocated(byHideTokenConfirmationButton))
-      hideTokenConfirmationButton.click()
+      await hideTokenConfirmationButton.click()
 
       await driver.wait(until.stalenessOf(confirmHideModal))
     })
