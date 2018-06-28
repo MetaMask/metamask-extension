@@ -85,8 +85,12 @@ export default class ConfirmTransaction extends Component {
       }
     } else if (unconfirmedTransactions.length) {
       const totalUnconfirmed = unconfirmedTransactions.length
-      const transactionId = unconfirmedTransactions[totalUnconfirmed - 1].id
-      setTransactionToConfirm(transactionId)
+      const transaction = unconfirmedTransactions[totalUnconfirmed - 1]
+      const { id: transactionId, loadingDefaults } = transaction
+
+      if (!loadingDefaults) {
+        setTransactionToConfirm(transactionId)
+      }
     }
   }
 

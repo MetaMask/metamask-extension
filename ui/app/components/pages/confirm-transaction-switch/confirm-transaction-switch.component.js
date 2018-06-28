@@ -11,7 +11,7 @@ import {
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../routes'
-import { isConfirmDeployContract, getTokenData } from './confirm-transaction-switch.util'
+import { isConfirmDeployContract } from './confirm-transaction-switch.util'
 import { TOKEN_METHOD_TRANSFER, TOKEN_METHOD_APPROVE } from './confirm-transaction-switch.constants'
 
 export default class ConfirmTransactionSwitch extends Component {
@@ -19,19 +19,29 @@ export default class ConfirmTransactionSwitch extends Component {
     confirmTransaction: PropTypes.object,
   }
 
-  redirectToTransaction (txData) {
-    const { id, txParams: { data } } = txData
+  redirectToTransaction () {
+    const {
+      confirmTransaction: {
+        txData,
+        methodData: { name },
+        fetchingMethodData,
+      },
+    } = this.props
+    const { id } = txData
 
     if (isConfirmDeployContract(txData)) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_DEPLOY_CONTRACT_PATH}`
       return <Redirect to={{ pathname }} />
     }
 
-    if (data) {
-      const tokenData = getTokenData(data)
-      const { name: tokenMethodName } = tokenData || {}
+    if (fetchingMethodData) {
+      return <Loading />
+    }
 
-      switch (tokenMethodName) {
+    if (name) {
+      const methodName = name.toLowerCase()
+
+      switch (methodName.toLowerCase()) {
         case TOKEN_METHOD_TRANSFER: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_TOKEN_PATH}`
           return <Redirect to={{ pathname }} />
@@ -55,7 +65,7 @@ export default class ConfirmTransactionSwitch extends Component {
     const { confirmTransaction: { txData } } = this.props
 
     if (txData.txParams) {
-      return this.redirectToTransaction(txData)
+      return this.redirectToTransaction()
     } else if (txData.msgParams) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${SIGNATURE_REQUEST_PATH}`
       return <Redirect to={{ pathname }} />

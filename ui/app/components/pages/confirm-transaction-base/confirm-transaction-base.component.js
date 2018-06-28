@@ -18,6 +18,7 @@ export default class ConfirmTransactionBase extends Component {
     // Redux props
     txData: PropTypes.object,
     tokenData: PropTypes.object,
+    methodData: PropTypes.object,
     tokenProps: PropTypes.object,
     isTxReprice: PropTypes.bool,
     nonce: PropTypes.string,
@@ -245,7 +246,7 @@ export default class ConfirmTransactionBase extends Component {
           data,
         } = {},
       } = {},
-      tokenData: {
+      methodData: {
         name,
         params,
       } = {},
@@ -266,7 +267,12 @@ export default class ConfirmTransactionBase extends Component {
           </span>
         </div>
         <div className="confirm-page-container-content__data-box">
-          { JSON.stringify(params, null, 2) }
+          <div className="confirm-page-container-content__data-field-label">
+            { `${t('parameters')}:` }
+          </div>
+          <div>
+            <pre>{ JSON.stringify(params, null, 2) }</pre>
+          </div>
         </div>
         <div className="confirm-page-container-content__data-box-label">
           {`${t('hexData')}:`}
@@ -318,7 +324,7 @@ export default class ConfirmTransactionBase extends Component {
       fromAddress,
       toName,
       toAddress,
-      tokenData,
+      methodData,
       ethTransactionAmount,
       fiatTransactionAmount,
       valid: propsValid,
@@ -336,7 +342,7 @@ export default class ConfirmTransactionBase extends Component {
       warning,
     } = this.props
 
-    const { name } = tokenData
+    const { name } = methodData
     const fiatConvertedAmount = formatCurrency(fiatTransactionAmount, currentCurrency)
     const { valid, errorMessage } = this.getError()
 

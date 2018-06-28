@@ -6,6 +6,7 @@ import {
 
 import {
   getTokenData,
+  getMethodData,
   getTransactionAmount,
   getTransactionFee,
   getHexGasTotal,
@@ -25,6 +26,8 @@ const UPDATE_TX_DATA = createActionType('UPDATE_TX_DATA')
 const CLEAR_TX_DATA = createActionType('CLEAR_TX_DATA')
 const UPDATE_TOKEN_DATA = createActionType('UPDATE_TOKEN_DATA')
 const CLEAR_TOKEN_DATA = createActionType('CLEAR_TOKEN_DATA')
+const UPDATE_METHOD_DATA = createActionType('UPDATE_METHOD_DATA')
+const CLEAR_METHOD_DATA = createActionType('CLEAR_METHOD_DATA')
 const CLEAR_CONFIRM_TRANSACTION = createActionType('CLEAR_CONFIRM_TRANSACTION')
 const UPDATE_TRANSACTION_AMOUNTS = createActionType('UPDATE_TRANSACTION_AMOUNTS')
 const UPDATE_TRANSACTION_FEES = createActionType('UPDATE_TRANSACTION_FEES')
@@ -32,11 +35,14 @@ const UPDATE_TRANSACTION_TOTALS = createActionType('UPDATE_TRANSACTION_TOTALS')
 const UPDATE_HEX_GAS_TOTAL = createActionType('UPDATE_HEX_GAS_TOTAL')
 const UPDATE_TOKEN_PROPS = createActionType('UPDATE_TOKEN_PROPS')
 const UPDATE_NONCE = createActionType('UPDATE_NONCE')
+const FETCH_METHOD_DATA_START = createActionType('FETCH_METHOD_DATA_START')
+const FETCH_METHOD_DATA_END = createActionType('FETCH_METHOD_DATA_END')
 
 // Initial state
 const initState = {
   txData: {},
   tokenData: {},
+  methodData: {},
   tokenProps: {
     tokenDecimals: '',
     tokenSymbol: '',
@@ -49,6 +55,7 @@ const initState = {
   ethTransactionTotal: '',
   hexGasTotal: '',
   nonce: '',
+  fetchingMethodData: false,
 }
 
 // Reducer
@@ -77,6 +84,18 @@ export default function reducer ({ confirmTransaction: confirmState = initState 
       return {
         ...confirmState,
         tokenData: {},
+      }
+    case UPDATE_METHOD_DATA:
+      return {
+        ...confirmState,
+        methodData: {
+          ...action.payload,
+        },
+      }
+    case CLEAR_METHOD_DATA:
+      return {
+        ...confirmState,
+        methodData: {},
       }
     case UPDATE_TRANSACTION_AMOUNTS:
       const { fiatTransactionAmount, ethTransactionAmount } = action.payload
@@ -119,6 +138,16 @@ export default function reducer ({ confirmTransaction: confirmState = initState 
         ...confirmState,
         nonce: action.payload,
       }
+    case FETCH_METHOD_DATA_START:
+      return {
+        ...confirmState,
+        fetchingMethodData: true,
+      }
+    case FETCH_METHOD_DATA_END:
+      return {
+        ...confirmState,
+        fetchingMethodData: false,
+      }
     case CLEAR_CONFIRM_TRANSACTION:
       return initState
     default:
@@ -150,6 +179,19 @@ export function updateTokenData (tokenData) {
 export function clearTokenData () {
   return {
     type: CLEAR_TOKEN_DATA,
+  }
+}
+
+export function updateMethodData (methodData) {
+  return {
+    type: UPDATE_METHOD_DATA,
+    payload: methodData,
+  }
+}
+
+export function clearMethodData () {
+  return {
+    type: CLEAR_METHOD_DATA,
   }
 }
 
@@ -192,6 +234,12 @@ export function updateNonce (nonce) {
   return {
     type: UPDATE_NONCE,
     payload: nonce,
+  }
+}
+
+export function setFetchingMethodData (isFetching) {
+  return {
+    type: isFetching ? FETCH_METHOD_DATA_START : FETCH_METHOD_DATA_END,
   }
 }
 
@@ -294,6 +342,17 @@ export function setTransactionToConfirm (transactionId) {
       if (txParams.data) {
         const { tokens: existingTokens } = state
         const { data, to: tokenAddress } = txParams
+
+        try {
+          dispatch(setFetchingMethodData(true))
+          const methodData = await getMethodData(data)
+          dispatch(updateMethodData(methodData))
+          dispatch(setFetchingMethodData(false))
+        } catch (error) {
+          dispatch(updateMethodData({}))
+          dispatch(setFetchingMethodData(false))
+        }
+
         const tokenData = getTokenData(data)
         dispatch(updateTokenData(tokenData))
 

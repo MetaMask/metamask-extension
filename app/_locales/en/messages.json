@@ -286,6 +286,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "parameters": {
+    "message": "Parameters"
+  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
