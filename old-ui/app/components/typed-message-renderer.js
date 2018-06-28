@@ -35,7 +35,7 @@ TypedMessageRenderer.prototype.render = function () {
 function renderTypedData (values) {
   return values.map(function (value) {
     let v = value.value
-    if (typeof v === "boolean") {
+    if (typeof v === 'boolean') {
       v = v.toString()
     }
     return h('div', {}, [
