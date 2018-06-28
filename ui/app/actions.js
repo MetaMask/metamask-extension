@@ -746,20 +746,26 @@ function updateGasData ({
 }) {
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
-    const estimatedGasPrice = estimateGasPriceFromRecentBlocks(recentBlocks)
-    return Promise.all([
-      Promise.resolve(estimatedGasPrice),
-      estimateGas({
+    let gasPrice
+    return (() => new Promise((resolve, reject) => {
+       background.getGasPrice((err, data) => {
+           if(err !== null) return reject(err);
+           return resolve(data);
+       })
+    }))()
+    .then(estimateGasPrice => {
+      gasPrice = estimateGasPrice
+      return estimateGas({
         estimateGasMethod: background.estimateGas,
         blockGasLimit,
         selectedAddress,
         selectedToken,
         to,
         value,
-        gasPrice: estimatedGasPrice,
-      }),
-    ])
-    .then(([gasPrice, gas]) => {
+        gasPrice,
+      })
+    })
+    .then(gas => {
       dispatch(actions.setGasPrice(gasPrice))
       dispatch(actions.setGasLimit(gas))
       return calcGasTotal(gas, gasPrice)
