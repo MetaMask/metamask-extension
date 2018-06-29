@@ -15,7 +15,7 @@ describe('conversion utils', () => {
     })
 
     it('add repeating decimals', () => {
-      const result = addCurrencies(1/3, 1/9)
+      const result = addCurrencies(1 / 3, 1 / 9)
       assert.equal(result.toNumber(), 0.4444444444444444)
     })
   })
