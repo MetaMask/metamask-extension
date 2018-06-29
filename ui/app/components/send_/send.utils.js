@@ -10,6 +10,7 @@ const {
   calcTokenAmount,
 } = require('../../token-util')
 const {
+  BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_ETH_ERROR,
@@ -183,6 +184,8 @@ async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to,
     if (!code || code === '0x') {
       return SIMPLE_GAS_COST
     }
+  } else if (selectedToken && !to) {
+    return BASE_TOKEN_GAS_COST
   }
 
   paramsForGasEstimate.to = selectedToken ? selectedToken.address : to
