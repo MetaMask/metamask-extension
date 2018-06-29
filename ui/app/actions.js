@@ -6,7 +6,6 @@ const {
   calcGasTotal,
   calcTokenBalance,
   estimateGas,
-  estimateGasPriceFromRecentBlocks,
 } = require('./components/send_/send.utils')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
@@ -747,12 +746,12 @@ function updateGasData ({
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
     let gasPrice
-    return (() => new Promise((resolve, reject) => {
-       background.getGasPrice((err, data) => {
-           if(err !== null) return reject(err);
-           return resolve(data);
-       })
-    }))()
+    return new Promise((resolve, reject) => {
+      background.getGasPrice((err, data) => {
+        if (err !== null) return reject(err)
+        return resolve(data)
+      })
+    })
     .then(estimateGasPrice => {
       gasPrice = estimateGasPrice
       return estimateGas({
