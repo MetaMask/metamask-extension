@@ -8,7 +8,6 @@ const {
   getBlockGasLimit,
   getAmountConversionRate,
   getConversionRate,
-  getConvertedCurrency,
   getCurrentAccountWithSendEtherInfo,
   getCurrentCurrency,
   getCurrentNetwork,
@@ -150,15 +149,6 @@ describe('send selectors', () => {
       assert.deepEqual(
         getConversionRate(mockState),
         1200.88200327
-      )
-    })
-  })
-
-  describe('getConvertedCurrency()', () => {
-    it('should return the currently selected currency', () => {
-      assert.equal(
-        getConvertedCurrency(mockState),
-        'USD'
       )
     })
   })
