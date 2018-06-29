@@ -95,7 +95,7 @@ export default class SendAmountRow extends Component {
           primaryCurrency={primaryCurrency || 'ETH'}
           selectedToken={selectedToken}
           value={amount}
-          step={'any'}
+          step="any"
         />
       </SendRowWrapper>
     )
