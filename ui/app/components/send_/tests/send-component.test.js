@@ -12,9 +12,11 @@ const propsMethodSpies = {
   updateAndSetGasTotal: sinon.spy(),
   updateSendErrors: sinon.spy(),
   updateSendTokenBalance: sinon.spy(),
+  resetSendState: sinon.spy(),
 }
 const utilsMethodStubs = {
   getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
+  getGasFeeErrorObject: sinon.stub().returns({ gasFee: 'mockGasFeeError' }),
   doesAmountErrorRequireUpdate: sinon.stub().callsFake(obj => obj.balance !== obj.prevBalance),
 }
 
@@ -50,6 +52,7 @@ describe('Send Component', function () {
       updateAndSetGasTotal={propsMethodSpies.updateAndSetGasTotal}
       updateSendErrors={propsMethodSpies.updateSendErrors}
       updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
+      resetSendState={propsMethodSpies.resetSendState}
     />)
   })
 
@@ -58,6 +61,7 @@ describe('Send Component', function () {
     SendTransactionScreen.prototype.updateGas.resetHistory()
     utilsMethodStubs.doesAmountErrorRequireUpdate.resetHistory()
     utilsMethodStubs.getAmountErrorObject.resetHistory()
+    utilsMethodStubs.getGasFeeErrorObject.resetHistory()
     propsMethodSpies.updateAndSetGasTotal.resetHistory()
     propsMethodSpies.updateSendErrors.resetHistory()
     propsMethodSpies.updateSendTokenBalance.resetHistory()
@@ -74,6 +78,15 @@ describe('Send Component', function () {
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
       wrapper.instance().componentWillMount()
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
+    })
+  })
+
+  describe('componentWillUnmount', () => {
+    it('should call this.props.resetSendState', () => {
+      propsMethodSpies.resetSendState.resetHistory()
+      assert.equal(propsMethodSpies.resetSendState.callCount, 0)
+      wrapper.instance().componentWillUnmount()
+      assert.equal(propsMethodSpies.resetSendState.callCount, 1)
     })
   })
 
@@ -133,8 +146,51 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateSendErrors with the expected params', () => {
+    it('should call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true and selectedToken is truthy', () => {
+      utilsMethodStubs.getGasFeeErrorObject.resetHistory()
+      wrapper.instance().componentDidUpdate({
+        from: {
+          balance: 'balanceChanged',
+        },
+      })
+      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 1)
+      assert.deepEqual(
+        utilsMethodStubs.getGasFeeErrorObject.getCall(0).args[0],
+        {
+          amount: 'mockAmount',
+          amountConversionRate: 'mockAmountConversionRate',
+          balance: 'mockBalance',
+          conversionRate: 10,
+          gasTotal: 'mockGasTotal',
+          primaryCurrency: 'mockPrimaryCurrency',
+          selectedToken: 'mockSelectedToken',
+          tokenBalance: 'mockTokenBalance',
+        }
+      )
+    })
+
+    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns false', () => {
+      utilsMethodStubs.getGasFeeErrorObject.resetHistory()
+      wrapper.instance().componentDidUpdate({
+        from: { address: 'mockAddress', balance: 'mockBalance' },
+      })
+      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
+    })
+
+    it('should not call getGasFeeErrorObject if doesAmountErrorRequireUpdate returns true but selectedToken is falsy', () => {
+      utilsMethodStubs.getGasFeeErrorObject.resetHistory()
+      wrapper.setProps({ selectedToken: null })
+      wrapper.instance().componentDidUpdate({
+        from: {
+          balance: 'balanceChanged',
+        },
+      })
+      assert.equal(utilsMethodStubs.getGasFeeErrorObject.callCount, 0)
+    })
+
+    it('should call updateSendErrors with the expected params if selectedToken is falsy', () => {
       propsMethodSpies.updateSendErrors.resetHistory()
+      wrapper.setProps({ selectedToken: null })
       wrapper.instance().componentDidUpdate({
         from: {
           balance: 'balanceChanged',
@@ -143,7 +199,22 @@ describe('Send Component', function () {
       assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.updateSendErrors.getCall(0).args[0],
-        { amount: 'mockAmountError'}
+        { amount: 'mockAmountError', gasFee: null }
+      )
+    })
+
+    it('should call updateSendErrors with the expected params if selectedToken is truthy', () => {
+      propsMethodSpies.updateSendErrors.resetHistory()
+      wrapper.setProps({ selectedToken: 'someToken' })
+      wrapper.instance().componentDidUpdate({
+        from: {
+          balance: 'balanceChanged',
+        },
+      })
+      assert.equal(propsMethodSpies.updateSendErrors.callCount, 1)
+      assert.deepEqual(
+        propsMethodSpies.updateSendErrors.getCall(0).args[0],
+        { amount: 'mockAmountError', gasFee: 'mockGasFeeError' }
       )
     })
 
