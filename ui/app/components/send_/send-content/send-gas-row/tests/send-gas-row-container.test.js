@@ -19,7 +19,7 @@ proxyquire('../send-gas-row.container.js', {
   },
   '../../send.selectors.js': {
     getConversionRate: (s) => `mockConversionRate:${s}`,
-    getConvertedCurrency: (s) => `mockConvertedCurrency:${s}`,
+    getCurrentCurrency: (s) => `mockConvertedCurrency:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
   },
   './send-gas-row.selectors.js': { sendGasIsInError: (s) => `mockGasLoadingError:${s}` },

@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import SendGasRow from '../send-gas-row.component.js'
 
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
-import GasFeeDisplay from '../../../../send/gas-fee-display-v2'
+import GasFeeDisplay from '../gas-fee-display/gas-fee-display.component'
 
 const propsMethodSpies = {
   showCustomizeGasModal: sinon.spy(),

@@ -152,6 +152,9 @@
   "copy": {
     "message": "Copy"
   },
+  "copyContractAddress": {
+    "message": "Copy Contract Address"
+  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
@@ -267,6 +270,9 @@
   },
   "encryptNewDen": {
     "message": "Encrypt your new DEN"
+  },
+  "ensNameNotFound": {
+    "message": "ENS name not found"
   },
   "enterPassword": {
     "message": "Enter password"
@@ -963,6 +969,9 @@
   },
   "viewAccount": {
     "message": "View Account"
+  },
+  "viewOnEtherscan": {
+    "message": "View on Etherscan"
   },
   "visitWebSite": {
     "message": "Visit our web site"
