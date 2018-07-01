@@ -14,7 +14,6 @@ const selectors = {
   getAmountConversionRate,
   getBlockGasLimit,
   getConversionRate,
-  getConvertedCurrency,
   getCurrentAccountWithSendEtherInfo,
   getCurrentCurrency,
   getCurrentNetwork,
@@ -96,10 +95,6 @@ function getBlockGasLimit (state) {
 
 function getConversionRate (state) {
   return state.metamask.conversionRate
-}
-
-function getConvertedCurrency (state) {
-  return state.metamask.currentCurrency
 }
 
 function getCurrentAccountWithSendEtherInfo (state) {

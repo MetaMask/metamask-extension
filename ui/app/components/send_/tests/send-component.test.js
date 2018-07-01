@@ -201,7 +201,7 @@ describe('Send Component', function () {
   })
 
   describe('updateGas', () => {
-    it('should call updateAndSetGasTotal with the correct params', () => {
+    it('should call updateAndSetGasTotal with the correct params if no to prop is passed', () => {
       propsMethodSpies.updateAndSetGasTotal.resetHistory()
       wrapper.instance().updateGas()
       assert.equal(propsMethodSpies.updateAndSetGasTotal.callCount, 1)
@@ -215,9 +215,19 @@ describe('Send Component', function () {
           recentBlocks: ['mockBlock'],
           selectedAddress: 'mockSelectedAddress',
           selectedToken: 'mockSelectedToken',
-          to: undefined,
+          to: '',
           value: 'mockAmount',
         }
+      )
+    })
+
+    it('should call updateAndSetGasTotal with the correct params if a to prop is passed', () => {
+      propsMethodSpies.updateAndSetGasTotal.resetHistory()
+      wrapper.setProps({ to: 'someAddress' })
+      wrapper.instance().updateGas()
+      assert.equal(
+        propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0].to,
+        'someaddress',
       )
     })
 

@@ -12,7 +12,7 @@ proxyquire('../account-list-item.container.js', {
   },
   '../send.selectors.js': {
     getConversionRate: (s) => `mockConversionRate:${s}`,
-    getConvertedCurrency: (s) => `mockCurrentCurrency:${s}`,
+    getCurrentCurrency: (s) => `mockCurrentCurrency:${s}`,
   },
 })
 
