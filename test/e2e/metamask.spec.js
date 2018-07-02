@@ -79,6 +79,7 @@ describe('Metamask popup page', function () {
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
       await button.click()
+      await delay(300)
     })
 
     it('shows privacy notice', async () => {
@@ -89,7 +90,6 @@ describe('Metamask popup page', function () {
     })
 
     it('shows phishing notice', async () => {
-      await delay(300)
       const noticeHeader = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(noticeHeader, 'PHISHING WARNING', 'shows phishing warning')
       const element = await driver.findElement(By.css('.markdown'))
