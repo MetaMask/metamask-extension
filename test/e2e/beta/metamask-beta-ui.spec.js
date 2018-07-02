@@ -100,15 +100,21 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       // Close all other tabs
-      let [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
-      newUi = newUi || infoPage
+      let [oldUi, tab1, tab2] = await driver.getAllWindowHandles()
       await driver.switchTo().window(oldUi)
       await driver.close()
-      if (infoPage !== newUi) {
-        await driver.switchTo().window(infoPage)
+
+      await driver.switchTo().window(tab1)
+      const tab1Url = await driver.getCurrentUrl()
+      if (tab1Url.match(/metamask.io/)) {
+        await driver.switchTo().window(tab1)
         await driver.close()
+        await driver.switchTo().window(tab2)
+      } else if (tab2) {
+        await driver.switchTo().window(tab2)
+        await driver.close()
+        await driver.switchTo().window(tab1)
       }
-      await driver.switchTo().window(newUi)
       await delay(regularDelayMs)
 
       const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
