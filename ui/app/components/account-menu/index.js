@@ -9,6 +9,10 @@ const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
+const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
+
+
 const {
   SETTINGS_ROUTE,
   INFO_ROUTE,
@@ -110,7 +114,11 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       onClick: () => {
         toggleAccountMenu()
-        history.push(CONNECT_HARDWARE_ROUTE)
+        if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+          global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
+        } else {
+          history.push(CONNECT_HARDWARE_ROUTE)
+        }
       },
       icon: h('img.account-menu__item-icon', { src: 'images/connect-icon.svg' }),
       text: this.context.t('connectHardware'),
