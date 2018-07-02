@@ -17,6 +17,10 @@ export default class AccountListItem extends Component {
     icon: PropTypes.node,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   render () {
     const {
       account,
@@ -67,8 +71,3 @@ export default class AccountListItem extends Component {
     </div>)
   }
 }
-
-AccountListItem.contextTypes = {
-  t: PropTypes.func,
-}
-

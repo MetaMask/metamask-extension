@@ -24,7 +24,11 @@ export default class SendAmountRow extends Component {
     updateSendAmount: PropTypes.func,
     updateSendAmountError: PropTypes.func,
     updateGas: PropTypes.func,
-  }
+  };
+
+  static contextTypes = {
+    t: PropTypes.func,
+  };
 
   validateAmount (amount) {
     const {
@@ -101,8 +105,3 @@ export default class SendAmountRow extends Component {
   }
 
 }
-
-SendAmountRow.contextTypes = {
-  t: PropTypes.func,
-}
-

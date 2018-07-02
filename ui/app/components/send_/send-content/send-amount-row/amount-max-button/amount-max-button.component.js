@@ -13,6 +13,10 @@ export default class AmountMaxButton extends Component {
     tokenBalance: PropTypes.string,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   setMaxAmount () {
     const {
       balance,
@@ -47,8 +51,4 @@ export default class AmountMaxButton extends Component {
     )
   }
 
-}
-
-AmountMaxButton.contextTypes = {
-  t: PropTypes.func,
 }
