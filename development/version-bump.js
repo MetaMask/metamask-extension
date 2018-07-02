@@ -45,8 +45,4 @@ function newVersionFrom (manifest, bumpType) {
   return segments.map(String).join('.')
 }
 
-function bumpManifest (manifest, bumpType) {
-
-}
-
 module.exports = versionBump
