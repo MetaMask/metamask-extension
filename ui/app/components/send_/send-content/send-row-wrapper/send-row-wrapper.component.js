@@ -11,6 +11,10 @@ export default class SendRowWrapper extends Component {
     showError: PropTypes.bool,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   render () {
     const {
       children,
@@ -36,8 +40,4 @@ export default class SendRowWrapper extends Component {
     )
   }
 
-}
-
-SendRowWrapper.contextTypes = {
-  t: PropTypes.func,
 }

@@ -17,6 +17,10 @@ export default class SendFromRow extends Component {
     setSendTokenBalance: PropTypes.func,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   async handleFromChange (newFrom) {
     const {
       updateSendFrom,
@@ -56,8 +60,4 @@ export default class SendFromRow extends Component {
     )
   }
 
-}
-
-SendFromRow.contextTypes = {
-  t: PropTypes.func,
 }

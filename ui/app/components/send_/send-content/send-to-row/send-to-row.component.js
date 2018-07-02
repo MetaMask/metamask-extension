@@ -19,6 +19,10 @@ export default class SendToRow extends Component {
     updateSendToError: PropTypes.func,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   handleToChange (to, nickname = '', toError) {
     const { updateSendTo, updateSendToError, updateGas } = this.props
     const toErrorObject = getToErrorObject(to, toError)
@@ -63,8 +67,3 @@ export default class SendToRow extends Component {
   }
 
 }
-
-SendToRow.contextTypes = {
-  t: PropTypes.func,
-}
-

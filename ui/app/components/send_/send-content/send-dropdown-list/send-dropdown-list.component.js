@@ -11,6 +11,10 @@ export default class SendDropdownList extends Component {
     activeAddress: PropTypes.string,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   getListItemIcon (accountAddress, activeAddress) {
     return accountAddress === activeAddress
       ? <i className={`fa fa-check fa-lg`} style={ { color: '#02c9b1' } }/>
@@ -45,8 +49,4 @@ export default class SendDropdownList extends Component {
     </div>)
   }
 
-}
-
-SendDropdownList.contextTypes = {
-  t: PropTypes.func,
 }
