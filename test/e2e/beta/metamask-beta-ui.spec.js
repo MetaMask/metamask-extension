@@ -28,7 +28,6 @@ describe('MetaMask', function () {
   const tinyDelayMs = 1000
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
-  const waitingNewPageDelayMs = regularDelayMs * 30
 
   this.timeout(0)
   this.bail(true)
@@ -712,7 +711,7 @@ describe('MetaMask', function () {
     it('sends an already created token', async () => {
      openNewPage(driver, `https://tokenfactory.surge.sh/#/token/${tokenAddress}`)
 
-      const [extension, tokenFactory] = await driver.getAllWindowHandles()
+      const [extension] = await driver.getAllWindowHandles()
 
       const [
         transferToAddress,
