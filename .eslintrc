@@ -37,7 +37,8 @@
     "document": false,
     "navigator": false,
     "web3": true,
-    "window": false
+    "window": false,
+    "$": false
   },
 
   "rules": {
