@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const async = require('async')
 const promisify = require('pify')
 
@@ -58,12 +59,12 @@ async function startContainer (fileRegEx, testGenerator) {
     const testFilePath = sPath.replace('.', '-').replace('.', '.test.')
 
     await promisify(fs.readFile)(
-      __dirname + '/' + sFile,
+      path.join(__dirname, sFile),
       'utf8',
       async (err, result) => {
         if (err) {
           console.log('Error: ', err)
-        } else { 
+        } else {
           console.log(`result`, result.length)
           const returnObjectStrings = result
             .match(/return\s(\{[\s\S]+?})\n}/g)
