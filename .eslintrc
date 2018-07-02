@@ -38,7 +38,8 @@
     "navigator": false,
     "web3": true,
     "window": false,
-    "$": false
+    "$": false,
+    "QUnit": false
   },
 
   "rules": {
