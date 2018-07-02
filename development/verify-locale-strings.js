@@ -20,7 +20,7 @@ const specifiedLocale = process.argv[2]
 if (specifiedLocale) {
 	console.log(`Verifying selected locale "${specifiedLocale}":\n\n`)
 	const locale = localeIndex.find(localeMeta => localeMeta.code === specifiedLocale)
-	verifyLocale({ localeMeta })
+	verifyLocale({ locale })
 } else {
 	console.log('Verifying all locales:\n\n')
 	localeIndex.forEach(localeMeta => {
@@ -33,12 +33,13 @@ if (specifiedLocale) {
 function verifyLocale ({ localeMeta }) {
 	const localeCode = localeMeta.code
 	const localeName = localeMeta.name
+	let targetLocale, englishLocale
 
 	try {
 		const localeFilePath = path.join(process.cwd(), 'app', '_locales', localeCode, 'messages.json')
 		targetLocale = JSON.parse(fs.readFileSync(localeFilePath, 'utf8'))
 	} catch (e) {
-		if (e.code == 'ENOENT') {
+		if (e.code === 'ENOENT') {
 			console.log('Locale file not found')
 		} else {
 			console.log(`Error opening your locale ("${localeCode}") file: `, e)
@@ -50,7 +51,7 @@ function verifyLocale ({ localeMeta }) {
 		const englishFilePath = path.join(process.cwd(), 'app', '_locales', 'en', 'messages.json')
 		englishLocale = JSON.parse(fs.readFileSync(englishFilePath, 'utf8'))
 	} catch (e) {
-		if (e.code == 'ENOENT') {
+		if (e.code === 'ENOENT') {
 			console.log('English File not found')
 		} else {
 			console.log('Error opening english locale file: ', e)
