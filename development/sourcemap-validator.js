@@ -1,6 +1,6 @@
 const fs = require('fs')
 const { SourceMapConsumer } = require('source-map')
-
+const path = require('path')
 //
 // Utility to help check if sourcemaps are working
 //
@@ -11,9 +11,11 @@ const { SourceMapConsumer } = require('source-map')
 
 start()
 
+
 async function start () {
-  const rawBuild = fs.readFileSync(__dirname + '/../dist/chrome/inpage.js', 'utf8')
-  const rawSourceMap = fs.readFileSync(__dirname + '/../dist/sourcemaps/inpage.js.map', 'utf8')
+  const rawBuild = fs.readFileSync(path.join(__dirname, '/../dist/chrome/', 'inpage.js')
+  , 'utf8')
+  const rawSourceMap = fs.readFileSync(path.join(__dirname, '/../dist/sourcemaps/', 'inpage.js.map'), 'utf8')
   const consumer = await new SourceMapConsumer(rawSourceMap)
 
   console.log('hasContentsOfAllSources:', consumer.hasContentsOfAllSources(), '\n')
@@ -43,7 +45,8 @@ async function start () {
 }
 
 function indicesOf (substring, string) {
-  var a = [], i = -1
+  var a = []
+  var i = -1
   while ((i = string.indexOf(substring, i + 1)) >= 0) a.push(i)
   return a
 }
