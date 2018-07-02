@@ -2,15 +2,16 @@ const EventEmitter = require('events')
 const IDB = require('idb-global')
 const KEY = 'metamask-test-config'
 module.exports = class Helper extends EventEmitter {
-  constructor () {
-    super()
-  }
 
   tryToCleanContext () {
     this.unregister()
     .then(() => this.clearDb())
     .then(() => super.emit('complete'))
-    .catch((err) => super.emit('complete'))
+    .catch((err) => {
+      if (err) {
+        super.emit('complete')
+      }
+    })
   }
 
   unregister () {
