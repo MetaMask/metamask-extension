@@ -12,8 +12,6 @@ const {
   findElement,
   findElements,
   checkBrowserForConsoleErrors,
-  loadExtension,
-  verboseReportOnFailure,
   openNewPage,
 } = require('./helpers')
 
@@ -53,7 +51,7 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(driver, this.currentTest)
+      await verboseReportOnFailure({ browser, driver, title: this.currentTest.title })
     }
   })
 
@@ -70,7 +68,7 @@ describe('MetaMask', function () {
       try {
         networkSelector = await findElement(driver, By.css('#network_component'))
       } catch (e) {
-        await loadExtension(driver, extensionId)
+        await driver.get(extensionUri)
       }
       await delay(regularDelayMs)
     })
@@ -240,7 +238,7 @@ describe('MetaMask', function () {
         await word11.click()
         await delay(tinyDelayMs)
       } catch (e) {
-        await loadExtension(driver, extensionId)
+        await driver.get(extensionUri)
         await retypeSeedPhrase(words)
       }
     }
@@ -597,7 +595,7 @@ describe('MetaMask', function () {
 
       await driver.close()
       await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      await driver.get(extensionUri)
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
