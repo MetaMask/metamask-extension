@@ -12,7 +12,6 @@
  * To use, run `npm run mock`.
  */
 
-const extend = require('xtend')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const Root = require('../ui/app/root')
@@ -24,7 +23,6 @@ const Selector = require('./selector')
 const MetamaskController = require('../app/scripts/metamask-controller')
 const firstTimeState = require('../app/scripts/first-time-state')
 const ExtensionPlatform = require('../app/scripts/platforms/extension')
-const extension = require('./mockExtension')
 const noop = function () {}
 
 const log = require('loglevel')
