@@ -4,7 +4,6 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../../actions')
 const genAccountLink = require('../../../../lib/account-link.js')
-const log = require('loglevel')
 const { DEFAULT_ROUTE } = require('../../../routes')
 const { formatBalance } = require('../../../util')
 
@@ -14,7 +13,7 @@ class ConnectHardwareForm extends Component {
     this.state = {
       error: null,
       response: null,
-      btnText: 'Connect to Trezor', // Test
+      btnText: context.t('connectToTrezor'),
       selectedAccount: '',
       accounts: [],
     }
@@ -24,7 +23,7 @@ class ConnectHardwareForm extends Component {
     if (this.state.accounts.length) {
       return null
     }
-    this.setState({ btnText: 'Connecting...' })
+    this.setState({ btnText: this.context.t('connecting')})
     this.getPage(1)
   }
 
@@ -37,21 +36,18 @@ class ConnectHardwareForm extends Component {
         }
       })
       .catch(e => {
-        this.setState({ btnText: 'Connect to Trezor' })
+        this.setState({ btnText: this.context.t('connectToTrezor') })
       })
   }
 
   unlockAccount () {
     if (this.state.selectedAccount === '') {
-      return Promise.reject({ error: 'You need to select an account!' })
+      return Promise.reject({ error: this.context.t('accountSelectionRequired') })
     }
-    log.debug('should unlock account ', this.state.selectedAccount)
     return this.props.unlockTrezorAccount(this.state.selectedAccount)
   }
 
   handleRadioChange = e => {
-    log.debug('Selected account with index ', e.target.value)
-
     this.setState({
       selectedAccount: e.target.value,
       error: null,
@@ -60,12 +56,9 @@ class ConnectHardwareForm extends Component {
 
   getBalance (address) {
     // Get the balance
-    log.debug('getBalance : ', address)
     const { accounts } = this.props
     const balanceValue = accounts && accounts[address] ? accounts[address].balance : ''
-    log.debug('balanceValue : ', balanceValue)
     const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
-    log.debug('formattedBalance : ', formattedBalance)
     return formattedBalance
   }
 
@@ -74,12 +67,9 @@ class ConnectHardwareForm extends Component {
       return null
     }
 
-    log.debug('ACCOUNTS : ', this.state.accounts)
-    log.debug('SELECTED?', this.state.selectedAccount)
-
     return h('div.hw-account-list', [
       h('div.hw-account-list__title_wrapper', [
-        h('div.hw-account-list__title', {}, ['Select an Address']),
+        h('div.hw-account-list__title', {}, [this.context.t('selectAnAddress')]),
         h('div.hw-account-list__device', {}, ['Trezor - ETH']),
       ]),
       this.state.accounts.map((a, i) => {
@@ -127,7 +117,7 @@ class ConnectHardwareForm extends Component {
         {
           onClick: () => this.getPage(-1),
         },
-        '< Prev'
+        `< ${this.context.t('prev')}`
       ),
 
       h(
@@ -135,7 +125,7 @@ class ConnectHardwareForm extends Component {
         {
           onClick: () => this.getPage(1),
         },
-        'Next >'
+        `${this.context.t('next')} >`
       ),
     ])
   }

@@ -11,6 +11,9 @@
   "accountName": {
     "message": "Account Name"
   },
+  "accountSelectionRequired": {
+    "message": "You need to select an account!"
+  },
   "address": {
     "message": "Address"
   },
@@ -124,6 +127,12 @@
   },
   "connect": {
     "message": "Connect"
+  },
+  "connecting": {
+    "message": "Connecting..."
+  },
+  "connectToTrezor": {
+    "message": "Connect to Trezor"
   },
   "continue": {
     "message": "Continue"
@@ -618,6 +627,9 @@
   "popularTokens": {
     "message": "Popular Tokens"
   },
+  "prev": {
+    "message": "Prev"
+  },
   "privacyMsg": {
     "message": "Privacy Policy"
   },
@@ -792,6 +804,9 @@
   },
   "searchTokens": {
     "message": "Search Tokens"
+  },
+  "selectAnAddress": {
+    "message": "Select an Address"
   },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
