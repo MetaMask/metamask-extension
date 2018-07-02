@@ -15,7 +15,7 @@ describe('Account Import Strategies', function () {
     })
 
     it('throws an error for empty string private key', async () => {
-      assertRejects(async function() {
+      assertRejects(async function () {
         await accountImporter.importAccount('Private Key', [ '' ])
       }, Error, 'no empty strings')
     })

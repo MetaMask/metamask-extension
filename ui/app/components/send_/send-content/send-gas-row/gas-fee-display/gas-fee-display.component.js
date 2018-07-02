@@ -14,7 +14,7 @@ export default class GasFeeDisplay extends Component {
     onClick: PropTypes.func,
   };
 
-  render() {
+  render () {
     const {
       conversionRate,
       gasTotal,

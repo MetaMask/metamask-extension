@@ -16,13 +16,14 @@ module.exports = class Helper extends EventEmitter {
   unregister () {
     return global.navigator.serviceWorker.getRegistration()
     .then((registration) => {
-      if (registration) return registration.unregister()
+      if (registration) {
+ return registration.unregister()
       .then((b) => b ? Promise.resolve() : Promise.reject())
-      else return Promise.resolve()
+} else return Promise.resolve()
     })
   }
   clearDb () {
-    return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const deleteRequest = global.indexDB.deleteDatabase(KEY)
       deleteRequest.addEventListener('success', resolve)
       deleteRequest.addEventListener('error', reject)
@@ -33,7 +34,7 @@ module.exports = class Helper extends EventEmitter {
     const db = new IDB({
       version: 2,
       key: KEY,
-      initialState: state
+      initialState: state,
     })
     return db.open()
   }

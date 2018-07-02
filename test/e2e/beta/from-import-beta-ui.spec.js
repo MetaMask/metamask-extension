@@ -322,5 +322,5 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
     })
   })
-  
+
 })

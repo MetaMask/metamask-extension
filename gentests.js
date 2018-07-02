@@ -27,11 +27,11 @@ async function getAllFileNames (dirName) {
 async function start (fileRegEx, testGenerator) {
   const fileNames = await getAllFileNames('./ui/app')
   const sFiles = fileNames.filter(name => name.match(fileRegEx))
-  
+
   let sFileMethodNames
   let testFilePath
   async.each(sFiles, async (sFile, cb) => {
-    let [, sRootPath, sPath] = sFile.match(/^(.+\/)([^/]+)$/)
+    const [, sRootPath, sPath] = sFile.match(/^(.+\/)([^/]+)$/)
     sFileMethodNames = Object.keys(require(__dirname + '/' + sFile))
 
     testFilePath = sPath.replace('.', '-').replace('.', '.test.')
@@ -44,25 +44,25 @@ async function start (fileRegEx, testGenerator) {
   }, (err) => {
     console.log(err)
   })
-  
+
 }
 
 async function startContainer (fileRegEx, testGenerator) {
   const fileNames = await getAllFileNames('./ui/app')
   const sFiles = fileNames.filter(name => name.match(fileRegEx))
-  
+
   let sFileMethodNames
   async.each(sFiles, async (sFile, cb) => {
-    console.log(`sFile`, sFile);
-    let [, sRootPath, sPath] = sFile.match(/^(.+\/)([^/]+)$/)
-    
-    let testFilePath = sPath.replace('.', '-').replace('.', '.test.')
+    console.log(`sFile`, sFile)
+    const [, sRootPath, sPath] = sFile.match(/^(.+\/)([^/]+)$/)
+
+    const testFilePath = sPath.replace('.', '-').replace('.', '.test.')
 
     await promisify(fs.readFile)(
       __dirname + '/' + sFile,
       'utf8',
       async (err, result) => {
-        console.log(`result`, result.length);
+        console.log(`result`, result.length)
         const returnObjectStrings = result
           .match(/return\s(\{[\s\S]+?})\n}/g)
           .map(str => {
@@ -71,7 +71,7 @@ async function startContainer (fileRegEx, testGenerator) {
               .slice(7)
               .replace(/\n/g, '')
               .replace(/\s\s+/g, ' ')
-              
+
           })
         const mapStateToPropsAssertionObject = returnObjectStrings[0]
           .replace(/\w+:\s\w+\([\w,\s]+\),/g, str => {
@@ -113,8 +113,8 @@ async function startContainer (fileRegEx, testGenerator) {
         })
         // console.log(`containerTest`, `${__dirname}/${sRootPath}tests/${testFilePath}`, containerTest);
         console.log('----')
-        console.log(`sRootPath`, sRootPath);
-        console.log(`testFilePath`, testFilePath);
+        console.log(`sRootPath`, sRootPath)
+        console.log(`testFilePath`, testFilePath)
         await promisify(fs.writeFile)(
           `${__dirname}/${sRootPath}tests/${testFilePath}`,
           containerTest,
@@ -125,11 +125,11 @@ async function startContainer (fileRegEx, testGenerator) {
   }, (err) => {
     console.log('123', err)
   })
-  
+
 }
 
 function generateMethodList (methodArray) {
-  return methodArray.map(n => '  ' + n).join(',\n') + ',' 
+  return methodArray.map(n => '  ' + n).join(',\n') + ','
 }
 
 function generateMethodDescribeBlock (methodName, index) {

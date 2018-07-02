@@ -6,12 +6,12 @@ const path = require('path')
 const port = 8124
 
 const handler = beefy({
-    entries: {'mocker.js': 'bundle.js'}
-  , cwd: __dirname
-  , live: true
-  , open: true
-  , quiet: false
-  , bundlerFlags: ['-t', 'brfs']
+    entries: {'mocker.js': 'bundle.js'},
+   cwd: __dirname,
+   live: true,
+   open: true,
+   quiet: false,
+   bundlerFlags: ['-t', 'brfs'],
 })
 
 

@@ -16,8 +16,8 @@ QUnit.test('successful confirmation of sig requests', (assert) => {
   })
 })
 
-async function runConfirmSigRequestsTest(assert, done) {
-  let selectState = await queryAsync($, 'select')
+async function runConfirmSigRequestsTest (assert, done) {
+  const selectState = await queryAsync($, 'select')
   selectState.val('confirm sig requests')
   reactTriggerChange(selectState[0])
 
@@ -32,7 +32,7 @@ async function runConfirmSigRequestsTest(assert, done) {
   let confirmSigHeadline = await queryAsync($, '.request-signature__headline')
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
-  let confirmSigMessage = await queryAsync($, '.request-signature__notice')
+  const confirmSigMessage = await queryAsync($, '.request-signature__notice')
   assert.ok(confirmSigMessage[0].textContent.match(/^Signing\sthis\smessage/))
 
   let confirmSigRowValue = await queryAsync($, '.request-signature__row-value')

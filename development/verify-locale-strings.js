@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 //
 // Locale verification script
 //
@@ -8,7 +8,7 @@
 //
 // will check the given locale against the strings in english
 //
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 
 const fs = require('fs')
 const path = require('path')
@@ -30,14 +30,13 @@ if (specifiedLocale) {
 }
 
 
-
-function verifyLocale({ localeMeta }) {
+function verifyLocale ({ localeMeta }) {
 	const localeCode = localeMeta.code
 	const localeName = localeMeta.name
 
 	try {
 		const localeFilePath = path.join(process.cwd(), 'app', '_locales', localeCode, 'messages.json')
-		targetLocale = JSON.parse(fs.readFileSync(localeFilePath, 'utf8'));
+		targetLocale = JSON.parse(fs.readFileSync(localeFilePath, 'utf8'))
 	} catch (e) {
 		if (e.code == 'ENOENT') {
 			console.log('Locale file not found')
@@ -49,9 +48,9 @@ function verifyLocale({ localeMeta }) {
 
 	try {
 		const englishFilePath = path.join(process.cwd(), 'app', '_locales', 'en', 'messages.json')
-		englishLocale = JSON.parse(fs.readFileSync(englishFilePath, 'utf8'));
+		englishLocale = JSON.parse(fs.readFileSync(englishFilePath, 'utf8'))
 	} catch (e) {
-		if(e.code == 'ENOENT') {
+		if (e.code == 'ENOENT') {
 			console.log('English File not found')
 		} else {
 			console.log('Error opening english locale file: ', e)
@@ -71,7 +70,7 @@ function verifyLocale({ localeMeta }) {
 
 	if (extraItems.length) {
 		console.log('\nMissing from english locale:')
-		extraItems.forEach(function(key) {
+		extraItems.forEach(function (key) {
 			console.log(`  - [ ] ${key}`)
 		})
 	} else {
@@ -80,7 +79,7 @@ function verifyLocale({ localeMeta }) {
 
 	if (missingItems.length) {
 		console.log(`\nMissing:`)
-		missingItems.forEach(function(key) {
+		missingItems.forEach(function (key) {
 			console.log(`  - [ ] ${key}`)
 		})
 	} else {
@@ -92,6 +91,6 @@ function verifyLocale({ localeMeta }) {
 	}
 }
 
-function compareLocalesForMissingItems({ base, subject }) {
+function compareLocalesForMissingItems ({ base, subject }) {
 	return Object.keys(base).filter((key) => !subject[key])
 }

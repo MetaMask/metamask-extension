@@ -30,5 +30,5 @@ module.exports = [
     date: 'Wed Jun 13 2018',
     title: 'Phishing Warning',
     body: fs.readFileSync(__dirname + '/archive/notice_4.md', 'utf8'),
-  }
+  },
 ]

@@ -13,7 +13,7 @@ const mockState = {
     identities,
     conversionRate: 10,
     selectedAddress: 'abc',
-  }
+  },
 }
 
 describe('PendingTx', function () {

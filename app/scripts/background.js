@@ -378,7 +378,7 @@ function setupController (initState, initLangCode) {
   }
 
   // communication with page or other extension
-  function connectExternal(remotePort) {
+  function connectExternal (remotePort) {
     const originDomain = urlUtil.parse(remotePort.sender.url).hostname
     const portStream = new PortStream(remotePort)
     controller.setupUntrustedCommunication(portStream, originDomain)

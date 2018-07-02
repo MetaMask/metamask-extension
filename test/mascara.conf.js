@@ -1,6 +1,6 @@
 const getBaseConfig = require('./base.conf.js')
 
-module.exports = function(config) {
+module.exports = function (config) {
   const settings = getBaseConfig(config)
 
   // ui and tests
