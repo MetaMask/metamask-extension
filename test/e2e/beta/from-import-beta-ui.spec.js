@@ -23,6 +23,7 @@ describe('Using MetaMask with an existing account', function () {
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
+  const testPrivateKey2 = '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
   const waitingNewPageDelayMs = regularDelayMs * 10
@@ -109,27 +110,39 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
     })
 
-    it('clicks through the privacy notice', async () => {
-      const [nextScreen] = await findElements(driver, By.css('.tou button'))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-
+    it('clicks through the ToS', async () => {
+      // terms of use
       const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
       assert.equal(canClickThrough, false, 'disabled continue button')
-      const element = await findElement(driver, By.linkText('Attributions'))
-      await driver.executeScript('arguments[0].scrollIntoView(true)', element)
+      const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
+      await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
       await delay(regularDelayMs)
-
-      const acceptTos = await findElement(driver, By.xpath(`//button[contains(text(), 'Accept')]`))
+      const acceptTos = await findElement(driver, By.css('.tou button'))
       await acceptTos.click()
+      await delay(regularDelayMs)
+    })
+
+    it('clicks through the privacy notice', async () => {
+      // privacy notice
+      const nextScreen = await findElement(driver, By.css('.tou button'))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+    })
+
+    it('clicks through the phishing notice', async () => {
+      // phishing notice
+      const noticeElement = await driver.findElement(By.css('.markdown'))
+      await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
+      await delay(regularDelayMs)
+      const nextScreen = await findElement(driver, By.css('.tou button'))
+      await nextScreen.click()
       await delay(regularDelayMs)
     })
   })
 
   describe('Show account information', () => {
     it('shows the correct account address', async () => {
-      const detailsButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Details')]`))
-      detailsButton.click()
+      await driver.findElement(By.css('.wallet-view__details-button')).click()
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       await delay(regularDelayMs)
 
@@ -225,8 +238,10 @@ describe('Using MetaMask with an existing account', function () {
       await configureGas.click()
       await delay(regularDelayMs)
 
+      const gasModal = await driver.findElement(By.css('span .modal'))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
       await delay(regularDelayMs)
 
       // Continue to next screen
@@ -303,15 +318,8 @@ describe('Using MetaMask with an existing account', function () {
       await nextScreen.click()
       await delay(regularDelayMs)
 
-      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
-      await addTokens.click()
-      await delay(largeDelayMs)
-    })
-
-    it('renders the balance for the new token', async () => {
-      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
-      const tokenAmount = await balance.getText()
-      assert.equal(tokenAmount, '0BAT')
+      const [importAccount] = await findElements(driver, By.xpath(`//div[contains(text(), 'Import Account')]`))
+      await importAccount.click()
       await delay(regularDelayMs)
     })
   })
@@ -343,8 +351,9 @@ describe('Using MetaMask with an existing account', function () {
       await driver.get(extensionUri)
       await delay(regularDelayMs)
 
-      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
-      await confirmButton.click()
+    it('enter private key', async () => {
+      const privateKeyInput = await findElement(driver, By.css('#private-key-box'))
+      await privateKeyInput.sendKeys(testPrivateKey2)
       await delay(regularDelayMs)
 
       await driver.switchTo().window(tokenFactory)
@@ -357,36 +366,17 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
     })
 
-    it('clicks on the Add Token button', async () => {
-      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
-      await addToken.click()
+    it('should show the correct account name', async () => {
+      const [accountName] = await findElements(driver, By.css('.account-name'))
+      assert.equal(await accountName.getText(), 'Account 3')
       await delay(regularDelayMs)
     })
 
-    it('picks the new Test token', async () => {
-      const addCustomToken = await findElement(driver, By.xpath("//div[contains(text(), 'Custom Token')]"))
-      await addCustomToken.click()
-      await delay(regularDelayMs)
-
-      const newTokenAddress = await findElement(driver, By.css('#custom-address'))
-      await newTokenAddress.sendKeys(tokenAddress)
-      await delay(regularDelayMs)
-
-      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-
-      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
-      await addTokens.click()
-      await delay(regularDelayMs)
-    })
-
-    it('renders the balance for the new token', async () => {
-      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
-      await driver.wait(until.elementTextIs(balance, '100TST'))
-      const tokenAmount = await balance.getText()
-      assert.equal(tokenAmount, '100TST')
+    it('should show the imported label', async () => {
+      const [importedLabel] = await findElements(driver, By.css('.wallet-view__keyring-label'))
+      assert.equal(await importedLabel.getText(), 'IMPORTED')
       await delay(regularDelayMs)
     })
   })
+
 })

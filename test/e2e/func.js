@@ -57,7 +57,7 @@ async function setupBrowserAndExtension ({ browser, extPath }) {
 }
 
 function buildChromeWebDriver (extPath) {
-  const tmpProfile = path.join(os.tmpdir(), fs.mkdtempSync('mm-chrome-profile'));
+  const tmpProfile = fs.mkdtempSync(path.join(os.tmpdir(), 'mm-chrome-profile'))
   return new webdriver.Builder()
     .withCapabilities({
       chromeOptions: {

@@ -59,13 +59,6 @@ describe('Metamask popup page', function () {
     it('matches MetaMask title', async () => {
       const title = await driver.getTitle()
       assert.equal(title, 'MetaMask', 'title matches MetaMask')
-    })
-
-    it('shows privacy notice', async () => {
-      await delay(300)
-      const privacy = await driver.findElement(By.css('.terms-header')).getText()
-      assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
-      await driver.findElement(By.css('button')).click()
       await delay(300)
     })
 
@@ -86,6 +79,24 @@ describe('Metamask popup page', function () {
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
       await button.click()
+    })
+
+    it('shows privacy notice', async () => {
+      const privacy = await driver.findElement(By.css('.terms-header')).getText()
+      assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
+      await driver.findElement(By.css('button')).click()
+      await delay(300)
+    })
+
+    it('shows phishing notice', async () => {
+      await delay(300)
+      const noticeHeader = await driver.findElement(By.css('.terms-header')).getText()
+      assert.equal(noticeHeader, 'PHISHING WARNING', 'shows phishing warning')
+      const element = await driver.findElement(By.css('.markdown'))
+      await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', element)
+      await delay(300)
+      await driver.findElement(By.css('button')).click()
+      await delay(300)
     })
 
     it('accepts password with length of eight', async () => {
@@ -206,7 +217,11 @@ describe('Metamask popup page', function () {
 
     it('confirms transaction', async function () {
       await delay(300)
-      await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')).click()
+      const bySubmitButton = By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+      const submitButton = await driver.wait(until.elementLocated(bySubmitButton))
+
+      submitButton.click()
+
       await delay(500)
     })
 
@@ -246,7 +261,8 @@ describe('Metamask popup page', function () {
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-      const metamaskSubmit = await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'))
+      const byMetamaskSubmit = By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+      const metamaskSubmit = await driver.wait(until.elementLocated(byMetamaskSubmit))
       await metamaskSubmit.click()
       await delay(1000)
     })

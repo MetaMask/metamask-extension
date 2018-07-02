@@ -20,7 +20,7 @@ const {
   calcGasTotal,
   isBalanceSufficient,
 } = require('../send_/send.utils')
-const GasFeeDisplay = require('../send/gas-fee-display-v2')
+const GasFeeDisplay = require('../send_/send-content/send-gas-row/gas-fee-display/gas-fee-display.component').default
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
 const currencyFormatter = require('currency-formatter')
@@ -647,7 +647,7 @@ ConfirmSendEther.prototype.gatherTxMeta = function () {
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
 
-  const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
+  const { gasPrice: sendGasPrice, gasLimit: sendGasLimit } = props.send
   const {
     lastGasPrice,
     txParams: {

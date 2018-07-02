@@ -1,9 +1,11 @@
+const { delay } = require('../func')
 const { until } = require('selenium-webdriver')
 
 module.exports = {
   checkBrowserForConsoleErrors,
   findElement,
   findElements,
+  openNewPage,
 }
 
 async function checkBrowserForConsoleErrors (driver) {
@@ -30,4 +32,16 @@ async function findElement (driver, by, timeout = 10000) {
 
 async function findElements (driver, by, timeout = 10000) {
   return driver.wait(until.elementsLocated(by), timeout)
+}
+
+async function openNewPage (driver, url) {
+  await driver.executeScript('window.open()')
+  await delay(1000)
+
+  const handles = await driver.getAllWindowHandles()
+  const secondHandle = handles[1]
+  await driver.switchTo().window(secondHandle)
+
+  await driver.get(url)
+  await delay(1000)
 }

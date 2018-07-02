@@ -21,7 +21,7 @@ function reduceMetamask (state, action) {
     identities: {},
     unapprovedTxs: {},
     noActiveNotices: true,
-    lastUnreadNotice: undefined,
+    nextUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
     selectedTokenAddress: null,
@@ -65,7 +65,7 @@ function reduceMetamask (state, action) {
     case actions.SHOW_NOTICE:
       return extend(metamaskState, {
         noActiveNotices: false,
-        lastUnreadNotice: action.value,
+        nextUnreadNotice: action.value,
       })
 
     case actions.CLEAR_NOTICES:

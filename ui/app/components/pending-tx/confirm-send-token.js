@@ -11,7 +11,7 @@ abiDecoder.addABI(tokenAbi)
 const actions = require('../../actions')
 const clone = require('clone')
 const Identicon = require('../identicon')
-const GasFeeDisplay = require('../send/gas-fee-display-v2.js')
+const GasFeeDisplay = require('../send_/send-content/send-gas-row/gas-fee-display/gas-fee-display.component.js').default
 const NetworkDisplay = require('../network-display')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
@@ -651,7 +651,7 @@ ConfirmSendToken.prototype.gatherTxMeta = function () {
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
 
-  const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
+  const { gasPrice: sendGasPrice, gasLimit: sendGasLimit } = props.send
   const {
     lastGasPrice,
     txParams: {

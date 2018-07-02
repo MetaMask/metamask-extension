@@ -83,8 +83,8 @@ class NonceTracker {
 
   async _globalMutexFree () {
     const globalMutex = this._lookupMutex('global')
-    const release = await globalMutex.acquire()
-    release()
+    const releaseLock = await globalMutex.acquire()
+    releaseLock()
   }
 
   async _takeMutex (lockId) {

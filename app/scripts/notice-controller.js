@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter
 const semver = require('semver')
 const extend = require('xtend')
 const ObservableStore = require('obs-store')
-const hardCodedNotices = require('../../notices/notices.json')
+const hardCodedNotices = require('../../notices/notices.js')
 const uniqBy = require('lodash.uniqby')
 
 module.exports = class NoticeController extends EventEmitter {
@@ -16,8 +16,12 @@ module.exports = class NoticeController extends EventEmitter {
       noticesList: [],
     }, opts.initState)
     this.store = new ObservableStore(initState)
+    // setup memStore
     this.memStore = new ObservableStore({})
     this.store.subscribe(() => this._updateMemstore())
+    this._updateMemstore()
+    // pull in latest notices
+    this.updateNoticesList()
   }
 
   getNoticesList () {
@@ -29,9 +33,9 @@ module.exports = class NoticeController extends EventEmitter {
     return notices.filter((notice) => notice.read === false)
   }
 
-  getLatestUnreadNotice () {
+  getNextUnreadNotice () {
     const unreadNotices = this.getUnreadNotices()
-    return unreadNotices[unreadNotices.length - 1]
+    return unreadNotices[0]
   }
 
   async setNoticesList (noticesList) {
@@ -47,7 +51,7 @@ module.exports = class NoticeController extends EventEmitter {
       notices[index].read = true
       notices[index].body = ''
       this.setNoticesList(notices)
-      const latestNotice = this.getLatestUnreadNotice()
+      const latestNotice = this.getNextUnreadNotice()
       cb(null, latestNotice)
     } catch (err) {
       cb(err)
@@ -62,15 +66,6 @@ module.exports = class NoticeController extends EventEmitter {
     const result = this.setNoticesList(filteredNotices)
     this._updateMemstore()
     return result
-  }
-
-  startPolling () {
-    if (this.noticePoller) {
-      clearInterval(this.noticePoller)
-    }
-    this.noticePoller = setInterval(() => {
-      this.noticeController.updateNoticesList()
-    }, 300000)
   }
 
   _mergeNotices (oldNotices, newNotices) {
@@ -91,19 +86,15 @@ module.exports = class NoticeController extends EventEmitter {
     })
   }
 
-  _mapNoticeIds (notices) {
-    return notices.map((notice) => notice.id)
-  }
-
   async _retrieveNoticeData () {
-    // Placeholder for the API.
+    // Placeholder for remote notice API.
     return hardCodedNotices
   }
 
   _updateMemstore () {
-    const lastUnreadNotice = this.getLatestUnreadNotice()
-    const noActiveNotices = !lastUnreadNotice
-    this.memStore.updateState({ lastUnreadNotice, noActiveNotices })
+    const nextUnreadNotice = this.getNextUnreadNotice()
+    const noActiveNotices = !nextUnreadNotice
+    this.memStore.updateState({ nextUnreadNotice, noActiveNotices })
   }
 
 }

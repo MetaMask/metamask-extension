@@ -175,6 +175,8 @@ var actions = {
   CLEAR_SEND: 'CLEAR_SEND',
   OPEN_FROM_DROPDOWN: 'OPEN_FROM_DROPDOWN',
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
+  GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
+  GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
   setGasLimit,
   setGasPrice,
   updateGasData,
@@ -190,6 +192,8 @@ var actions = {
   updateSendErrors,
   clearSend,
   setSelectedAddress,
+  gasLoadingStarted,
+  gasLoadingFinished,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -740,8 +744,9 @@ function updateGasData ({
   to,
   value,
 }) {
-  const estimatedGasPrice = estimateGasPriceFromRecentBlocks(recentBlocks)
   return (dispatch) => {
+    dispatch(actions.gasLoadingStarted())
+    const estimatedGasPrice = estimateGasPriceFromRecentBlocks(recentBlocks)
     return Promise.all([
       Promise.resolve(estimatedGasPrice),
       estimateGas({
@@ -762,11 +767,25 @@ function updateGasData ({
     .then((gasEstimate) => {
       dispatch(actions.setGasTotal(gasEstimate))
       dispatch(updateSendErrors({ gasLoadingError: null }))
+      dispatch(actions.gasLoadingFinished())
     })
     .catch(err => {
       log.error(err)
       dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
+      dispatch(actions.gasLoadingFinished())
     })
+  }
+}
+
+function gasLoadingStarted () {
+  return {
+    type: actions.GAS_LOADING_STARTED,
+  }
+}
+
+function gasLoadingFinished () {
+  return {
+    type: actions.GAS_LOADING_FINISHED,
   }
 }
 
