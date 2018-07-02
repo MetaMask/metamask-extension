@@ -5,8 +5,6 @@ const {
   findAsync,
 } = require('../../lib/util')
 
-const PASSWORD = 'password123'
-
 QUnit.module('new ui send flow')
 
 QUnit.test('successful send flow', (assert) => {
