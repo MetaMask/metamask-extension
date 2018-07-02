@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
+const { removeLeadingZeroes } = require('../send_/send.utils')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
 const ethUtil = require('ethereumjs-util')
@@ -90,10 +91,6 @@ CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValu
       code: upperCaseCurrencyCode,
     })
     : convertedValue
-}
-
-function removeLeadingZeroes (str) {
-  return str.replace(/^0*(?=\d)/, '')
 }
 
 CurrencyDisplay.prototype.handleChange = function (newVal) {
