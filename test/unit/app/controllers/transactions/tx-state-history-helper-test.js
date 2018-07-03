@@ -2,16 +2,16 @@ const assert = require('assert')
 const txStateHistoryHelper = require('../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
 const testVault = require('../../../../data/v17-long-history.json')
 
-describe ('Transaction state history helper', function () {
+describe('Transaction state history helper', function () {
 
   describe('#snapshotFromTxMeta', function () {
     it('should clone deep', function () {
       const input = {
         foo: {
           bar: {
-            bam: 'baz'
-          }
-        }
+            bam: 'baz',
+          },
+        },
       }
       const output = txStateHistoryHelper.snapshotFromTxMeta(input)
       assert('foo' in output, 'has a foo key')
@@ -50,14 +50,14 @@ describe ('Transaction state history helper', function () {
     it('replaying history does not mutate the original obj', function () {
       const initialState = { test: true, message: 'hello', value: 1 }
       const diff1 = [{
-        "op": "replace",
-        "path": "/message",
-        "value": "haay",
+        'op': 'replace',
+        'path': '/message',
+        'value': 'haay',
       }]
       const diff2 = [{
-        "op": "replace",
-        "path": "/value",
-        "value": 2,
+        'op': 'replace',
+        'path': '/value',
+        'value': 2,
       }]
       const history = [initialState, diff1, diff2]
 
@@ -72,15 +72,15 @@ describe ('Transaction state history helper', function () {
 
   describe('#generateHistoryEntry', function () {
 
-    function generateHistoryEntryTest(note) {
+    function generateHistoryEntryTest (note) {
 
       const prevState = {
         someValue: 'value 1',
         foo: {
           bar: {
-            bam: 'baz'
-          }
-        }
+            bam: 'baz',
+          },
+        },
       }
 
       const nextState = {
@@ -89,9 +89,9 @@ describe ('Transaction state history helper', function () {
         foo: {
           newPropFirstLevel: 'new property - first level',
           bar: {
-            bam: 'baz'
-          }
-        }
+            bam: 'baz',
+          },
+        },
       }
 
       const before = new Date().getTime()
@@ -106,8 +106,7 @@ describe ('Transaction state history helper', function () {
       assert.equal(result[0].path, expectedEntry1.path)
       assert.equal(result[0].value, expectedEntry1.value)
       assert.equal(result[0].value, expectedEntry1.value)
-      if (note) 
-        assert.equal(result[0].note, note)
+      if (note) { assert.equal(result[0].note, note) }
 
       assert.ok(result[0].timestamp >= before && result[0].timestamp <= after)
 
@@ -124,6 +123,6 @@ describe ('Transaction state history helper', function () {
 
     it('should add note to first entry', function () {
       generateHistoryEntryTest('custom note')
-    })    
+    })
   })
 })

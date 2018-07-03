@@ -24,7 +24,7 @@ proxyquire('../send-amount-row.container.js', {
   '../../send.selectors': {
     getAmountConversionRate: (s) => `mockAmountConversionRate:${s}`,
     getConversionRate: (s) => `mockConversionRate:${s}`,
-    getConvertedCurrency: (s) => `mockConvertedCurrency:${s}`,
+    getCurrentCurrency: (s) => `mockConvertedCurrency:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
     getPrimaryCurrency: (s) => `mockPrimaryCurrency:${s}`,
     getSelectedToken: (s) => `mockSelectedToken:${s}`,

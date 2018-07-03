@@ -4,7 +4,7 @@ const promiseToCallback = require('promise-to-callback')
 module.exports = createStreamSink
 
 
-function createStreamSink(asyncWriteFn, _opts) {
+function createStreamSink (asyncWriteFn, _opts) {
   return new AsyncWritableStream(asyncWriteFn, _opts)
 }
 

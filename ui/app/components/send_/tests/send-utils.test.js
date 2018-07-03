@@ -2,6 +2,7 @@ import assert from 'assert'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 import {
+  BASE_TOKEN_GAS_COST,
   ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
 } from '../send.constants'
@@ -334,6 +335,11 @@ describe('send utils', () => {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
       const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123', selectedToken: { address: '' } }))
       assert.notEqual(result, SIMPLE_GAS_COST)
+    })
+
+    it(`should return ${BASE_TOKEN_GAS_COST} if passed a selectedToken but no to address`, async () => {
+      const result = await estimateGas(Object.assign({}, baseMockParams, { to: null, selectedToken: { address: '' } }))
+      assert.equal(result, BASE_TOKEN_GAS_COST)
     })
 
     it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async () => {

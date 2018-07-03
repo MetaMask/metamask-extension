@@ -118,6 +118,7 @@ CurrencyDisplay.prototype.render = function () {
     readOnly = false,
     inError = false,
     onBlur,
+    step,
   } = this.props
   const { valueToRender } = this.state
 
@@ -149,9 +150,10 @@ CurrencyDisplay.prototype.render = function () {
           } : {}),
           ref: input => { this.currencyInput = input },
           style: {
-            minWidth: this.getInputWidth(valueToRender, readOnly),
+            width: this.getInputWidth(valueToRender, readOnly),
           },
           min: 0,
+          step,
         }),
 
         h('span.currency-display__currency-symbol', primaryCurrency),

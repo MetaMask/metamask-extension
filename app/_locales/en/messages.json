@@ -265,6 +265,9 @@
   "encryptNewDen": {
     "message": "Encrypt your new DEN"
   },
+  "ensNameNotFound": {
+    "message": "ENS name not found"
+  },
   "enterPassword": {
     "message": "Enter password"
   },
