@@ -37,7 +37,7 @@ async function createModifiedTestBuild ({ browser, srcPath }) {
 }
 
 async function setupBrowserAndExtension ({ browser, extPath }) {
-  let drive, extensionId, extensionUri
+  let driver, extensionId, extensionUri
 
   if (browser === 'chrome') {
     driver = buildChromeWebDriver(extPath)

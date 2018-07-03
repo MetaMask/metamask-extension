@@ -111,9 +111,9 @@ class PreferencesController {
    * @returns {Promise<string>} selectedAddress the selected address.
    */
   syncAddresses (addresses) {
-    let { identities, lostIdentities } = this.store.getState()
+    const { identities, lostIdentities } = this.store.getState()
 
-    let newlyLost = {}
+    const newlyLost = {}
     Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
         newlyLost[identity] = identities[identity]
@@ -128,7 +128,7 @@ class PreferencesController {
       if (this.diagnostics) this.diagnostics.reportOrphans(newlyLost)
 
       // store lost accounts
-      for (let key in newlyLost) {
+      for (const key in newlyLost) {
         lostIdentities[key] = newlyLost[key]
       }
     }

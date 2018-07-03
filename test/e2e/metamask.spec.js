@@ -1,8 +1,5 @@
-const fs = require('fs-extra')
-const mkdirp = require('mkdirp')
 const path = require('path')
 const assert = require('assert')
-const pify = require('pify')
 const { By, Key, until } = require('selenium-webdriver')
 const { delay, createModifiedTestBuild, setupBrowserAndExtension, verboseReportOnFailure } = require('./func')
 
@@ -315,7 +312,7 @@ describe('Metamask popup page', function () {
     })
   })
 
-  async function checkBrowserForConsoleErrors() {
+  async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly

@@ -127,7 +127,7 @@ class RecentBlocksController {
    *
    * @returns {Promise<void>} Promises undefined
    */
-  async backfill() {
+  async backfill () {
     this.blockTracker.once('latest', async (blockNumberHex) => {
       const currentBlockNumber = Number.parseInt(blockNumberHex, 16)
       const blocksToFetch = Math.min(currentBlockNumber, this.historyLength)

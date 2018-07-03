@@ -19,7 +19,6 @@ describe('Using MetaMask with an existing account', function () {
   const browser = process.env.SELENIUM_BROWSER
   let driver
   let extensionUri
-  let tokenAddress
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
@@ -73,15 +72,16 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
 
       // Close all other tabs
-      let [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
-      newUi = newUi || infoPage
+      const [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
+
+      const newUiOrInfoPage = newUi || infoPage
       await driver.switchTo().window(oldUi)
       await driver.close()
-      if (infoPage !== newUi) {
+      if (infoPage !== newUiOrInfoPage) {
         await driver.switchTo().window(infoPage)
         await driver.close()
       }
-      await driver.switchTo().window(newUi)
+      await driver.switchTo().window(newUiOrInfoPage)
       await delay(regularDelayMs)
 
       const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
@@ -325,11 +325,16 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   describe('Add a custom token from TokenFactory', () => {
+    let extension, tokenFactory
+
     it('creates a new token', async () => {
       await driver.executeScript('window.open("https://tokenfactory.surge.sh/#/factory")')
       await delay(waitingNewPageDelayMs)
 
-      const [extension, tokenFactory] = await driver.getAllWindowHandles()
+      const windowHandles = await driver.getAllWindowHandles()
+      extension = windowHandles[0]
+      tokenFactory = windowHandles[1]
+
       await driver.switchTo().window(tokenFactory)
       const [
         totalSupply,
@@ -350,6 +355,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.switchTo().window(extension)
       await driver.get(extensionUri)
       await delay(regularDelayMs)
+    })
 
     it('enter private key', async () => {
       const privateKeyInput = await findElement(driver, By.css('#private-key-box'))
@@ -359,7 +365,7 @@ describe('Using MetaMask with an existing account', function () {
       await driver.switchTo().window(tokenFactory)
       await delay(regularDelayMs)
       const tokenContactAddress = await driver.findElement(By.css('div > div > div:nth-child(2) > span:nth-child(3)'))
-      tokenAddress = await tokenContactAddress.getText()
+      await tokenContactAddress.getText()
       await driver.close()
       await driver.switchTo().window(extension)
       await driver.get(extensionUri)

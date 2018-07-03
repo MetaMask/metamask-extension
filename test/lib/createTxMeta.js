@@ -2,7 +2,7 @@ const txStateHistoryHelper = require('../../app/scripts/controllers/transactions
 
 module.exports = createTxMeta
 
-function createTxMeta(partialMeta) {
+function createTxMeta (partialMeta) {
   const txMeta = Object.assign({
     status: 'unapproved',
     txParams: {},

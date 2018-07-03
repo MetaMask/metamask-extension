@@ -3,7 +3,7 @@
  * @param {Error} err - error
  * @returns {Error} Error with clean stack trace.
  */
-function cleanErrorStack(err){
+function cleanErrorStack (err) {
   var name = err.name
   name = (name === undefined) ? 'Error' : String(name)
 

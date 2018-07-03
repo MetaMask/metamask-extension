@@ -25,7 +25,6 @@ describe('MetaMask', function () {
   const tinyDelayMs = 1000
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
-  const waitingNewPageDelayMs = regularDelayMs * 30
 
   this.timeout(0)
   this.bail(true)
@@ -88,7 +87,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       // Close all other tabs
-      let [oldUi, tab1, tab2] = await driver.getAllWindowHandles()
+      const [oldUi, tab1, tab2] = await driver.getAllWindowHandles()
       await driver.switchTo().window(oldUi)
       await driver.close()
 
@@ -269,7 +268,7 @@ describe('MetaMask', function () {
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       await delay(regularDelayMs)
 
-      let accountModal = await driver.findElement(By.css('span .modal'))
+      const accountModal = await driver.findElement(By.css('span .modal'))
 
       await driver.executeScript("document.querySelector('.account-modal-close').click()")
 
@@ -487,7 +486,7 @@ describe('MetaMask', function () {
       await configureGas.click()
       await delay(regularDelayMs)
 
-      let gasModal = await driver.findElement(By.css('span .modal'))
+      const gasModal = await driver.findElement(By.css('span .modal'))
       await driver.wait(until.elementLocated(By.css('.send-v2__customize-gas__title')))
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
@@ -700,7 +699,7 @@ describe('MetaMask', function () {
     it('sends an already created token', async () => {
      openNewPage(driver, `https://tokenfactory.surge.sh/#/token/${tokenAddress}`)
 
-      const [extension, tokenFactory] = await driver.getAllWindowHandles()
+      const [extension] = await driver.getAllWindowHandles()
 
       const [
         transferToAddress,

@@ -455,7 +455,7 @@ class TransactionController extends EventEmitter {
     txStateManager.on('tx:status-update', updateSubscription)
     updateSubscription()
 
-    function updateSubscription() {
+    function updateSubscription () {
       const pendingTxs = txStateManager.getPendingTransactions()
       if (!listenersAreActive && pendingTxs.length > 0) {
         blockTracker.on('latest', latestBlockHandler)
