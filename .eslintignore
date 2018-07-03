@@ -1,6 +1,7 @@
 node_modules/**
 dist/**
 builds/**
+test-builds/**
 docs/**
 
 development/bundle.js
