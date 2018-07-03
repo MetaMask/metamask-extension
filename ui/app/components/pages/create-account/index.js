@@ -12,7 +12,7 @@ const ConnectHardwareForm = require('./connect-hardware')
 const {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
-  CONNECT_HARDWARE_ROUTE, 
+  CONNECT_HARDWARE_ROUTE,
 } = require('../../../routes')
 
 class CreateAccountPage extends Component {

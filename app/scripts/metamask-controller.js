@@ -532,10 +532,10 @@ module.exports = class MetamaskController extends EventEmitter {
           'Trezor Hardware'
         )[0]
         if (!keyring) {
-          keyring =  await this.keyringController.addNewKeyring('Trezor Hardware')
+          keyring = await this.keyringController.addNewKeyring('Trezor Hardware')
         }
 
-        const accounts = page === 1 ? await keyring.getNextPage() : await keyring.getPreviousPage() 
+        const accounts = page === 1 ? await keyring.getNextPage() : await keyring.getPreviousPage()
         this.accountTracker.syncWithAddresses(accounts.map(a => a.address))
         return accounts
 
