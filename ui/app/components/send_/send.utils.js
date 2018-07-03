@@ -33,6 +33,7 @@ module.exports = {
   getToAddressForGasUpdate,
   isBalanceSufficient,
   isTokenBalanceSufficient,
+  removeLeadingZeroes,
 }
 
 function calcGasTotal (gasLimit, gasPrice) {
@@ -275,4 +276,8 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
 
 function getToAddressForGasUpdate (...addresses) {
   return [...addresses, ''].find(str => str !== undefined && str !== null).toLowerCase()
+}
+
+function removeLeadingZeroes (str) {
+  return str.replace(/^0*(?=\d)/, '')
 }
