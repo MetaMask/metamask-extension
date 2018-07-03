@@ -12,7 +12,7 @@ const pngFileStream = require('png-file-stream')
 const sizeOfPng = require('image-size/lib/types/png')
 const By = webdriver.By
 const localesIndex = require('../../app/_locales/index.json')
-const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('../e2e/func')
+const { delay, buildChromeWebDriver, getExtensionIdChrome } = require('../e2e/func')
 
 const eth = new Ethjs(new Ethjs.HttpProvider('http://localhost:8545'))
 
@@ -43,9 +43,7 @@ captureAllScreens()
 
 async function captureAllScreens () {
   // common names
-  let button
   let tabs
-  let element
 
   await cleanScreenShotDir()
 
@@ -108,7 +106,7 @@ async function captureAllScreens () {
   await captureLanguageScreenShots('terms')
 
   await delay(300)
-  element = driver.findElement(By.linkText('Attributions'))
+  const element = driver.findElement(By.linkText('Attributions'))
   await driver.executeScript('arguments[0].scrollIntoView(true)', element)
   await delay(300)
   await captureLanguageScreenShots('terms-scrolled')
