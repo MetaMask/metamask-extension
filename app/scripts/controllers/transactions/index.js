@@ -10,6 +10,7 @@ const NonceTracker = require('./nonce-tracker')
 const txUtils = require('./lib/util')
 const cleanErrorStack = require('../../lib/cleanErrorStack')
 const log = require('loglevel')
+const recipientBlacklistChecker = require('./lib/recipient-blacklist-checker')
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -157,11 +158,14 @@ class TransactionController extends EventEmitter {
     let txMeta = this.txStateManager.generateTxMeta({ txParams: normalizedTxParams })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
-    // add default tx params
+
     try {
+      // check whether recipient account is blacklisted
+      recipientBlacklistChecker.checkAccount(txMeta.metamaskNetworkId, normalizedTxParams.to)
+      // add default tx params
       txMeta = await this.addTxGasDefaults(txMeta)
     } catch (error) {
-      console.log(error)
+      log.warn(error)
       this.txStateManager.setTxStatusFailed(txMeta.id, error)
       throw error
     }
@@ -260,7 +264,12 @@ class TransactionController extends EventEmitter {
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock()
     } catch (err) {
-      this.txStateManager.setTxStatusFailed(txId, err)
+      // this is try-catch wrapped so that we can guarantee that the nonceLock is released
+      try {
+        this.txStateManager.setTxStatusFailed(txId, err)
+      } catch (err) {
+        log.error(err)
+      }
       // must set transaction to submitted/failed before releasing lock
       if (nonceLock) nonceLock.releaseLock()
       // continue with error chain

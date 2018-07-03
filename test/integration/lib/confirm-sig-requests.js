@@ -1,10 +1,7 @@
 const reactTriggerChange = require('react-trigger-change')
 const {
-  timeout,
   queryAsync,
-  findAsync,
 } = require('../../lib/util')
-const PASSWORD = 'password123'
 
 QUnit.module('confirm sig requests')
 
@@ -16,8 +13,8 @@ QUnit.test('successful confirmation of sig requests', (assert) => {
   })
 })
 
-async function runConfirmSigRequestsTest(assert, done) {
-  let selectState = await queryAsync($, 'select')
+async function runConfirmSigRequestsTest (assert, done) {
+  const selectState = await queryAsync($, 'select')
   selectState.val('confirm sig requests')
   reactTriggerChange(selectState[0])
 
@@ -32,7 +29,7 @@ async function runConfirmSigRequestsTest(assert, done) {
   let confirmSigHeadline = await queryAsync($, '.request-signature__headline')
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
-  let confirmSigMessage = await queryAsync($, '.request-signature__notice')
+  const confirmSigMessage = await queryAsync($, '.request-signature__notice')
   assert.ok(confirmSigMessage[0].textContent.match(/^Signing\sthis\smessage/))
 
   let confirmSigRowValue = await queryAsync($, '.request-signature__row-value')
@@ -45,7 +42,7 @@ async function runConfirmSigRequestsTest(assert, done) {
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
   confirmSigRowValue = await queryAsync($, '.request-signature__row-value')
-  assert.ok(confirmSigRowValue[0].textContent.match(/^\#\sTerms\sof\sUse/))
+  assert.ok(confirmSigRowValue[0].textContent.match(/^#\sTerms\sof\sUse/))
 
   confirmSigSignButton = await queryAsync($, 'button.btn-primary.btn--large')
   confirmSigSignButton[0].click()

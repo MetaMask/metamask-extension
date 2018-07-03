@@ -21,6 +21,7 @@ module.exports = compose(
 function mapStateToProps (state) {
   return {
     error: state.appState.warning,
+    firstAddress: Object.keys(state.metamask.accounts)[0],
   }
 }
 
@@ -29,7 +30,8 @@ function mapDispatchToProps (dispatch) {
     importNewAccount: (strategy, [ privateKey ]) => {
       return dispatch(actions.importNewAccount(strategy, [ privateKey ]))
     },
-    displayWarning: () => dispatch(actions.displayWarning(null)),
+    displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
+    setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
   }
 }
 
@@ -40,7 +42,7 @@ function PrivateKeyImportView () {
 }
 
 PrivateKeyImportView.prototype.render = function () {
-  const { error } = this.props
+  const { error, displayWarning } = this.props
 
   return (
     h('div.new-account-import-form__private-key', [
@@ -60,7 +62,10 @@ PrivateKeyImportView.prototype.render = function () {
       h('div.new-account-import-form__buttons', {}, [
 
         h('button.btn-default.btn--large.new-account-create-form__button', {
-          onClick: () => this.props.history.push(DEFAULT_ROUTE),
+          onClick: () => {
+            displayWarning(null)
+            this.props.history.push(DEFAULT_ROUTE)
+          },
         }, [
           this.context.t('cancel'),
         ]),
@@ -88,10 +93,16 @@ PrivateKeyImportView.prototype.createKeyringOnEnter = function (event) {
 PrivateKeyImportView.prototype.createNewKeychain = function () {
   const input = document.getElementById('private-key-box')
   const privateKey = input.value
-  const { importNewAccount, history } = this.props
+  const { importNewAccount, history, displayWarning, setSelectedAddress, firstAddress } = this.props
 
   importNewAccount('Private Key', [ privateKey ])
-    // JS runtime requires caught rejections but failures are handled by Redux
-    .catch()
-    .then(() => history.push(DEFAULT_ROUTE))
+    .then(({ selectedAddress }) => {
+      if (selectedAddress) {
+        history.push(DEFAULT_ROUTE)
+      } else {
+        displayWarning('Error importing account.')
+        setSelectedAddress(firstAddress)
+      }
+    })
+    .catch(err => err && displayWarning(err.message || err))
 }

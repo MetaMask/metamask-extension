@@ -14,18 +14,6 @@ describe('notice-controller', function () {
   })
 
   describe('notices', function () {
-    describe('#getNoticesList', function () {
-      it('should return an empty array when new', function (done) {
-        // const testList = [{
-        //   id: 0,
-        //   read: false,
-        //   title: 'Futuristic Notice',
-        // }]
-        var result = noticeController.getNoticesList()
-        assert.equal(result.length, 0)
-        done()
-      })
-    })
 
     describe('#setNoticesList', function () {
       it('should set data appropriately', function (done) {
@@ -37,36 +25,6 @@ describe('notice-controller', function () {
         noticeController.setNoticesList(testList)
         var testListId = noticeController.getNoticesList()[0].id
         assert.equal(testListId, 0)
-        done()
-      })
-    })
-
-    describe('#updateNoticeslist', function () {
-      it('should integrate the latest changes from the source', function (done) {
-        var testList = [{
-          id: 55,
-          read: false,
-          title: 'Futuristic Notice',
-        }]
-        noticeController.setNoticesList(testList)
-        noticeController.updateNoticesList().then(() => {
-          var newList = noticeController.getNoticesList()
-          assert.ok(newList[0].id === 55)
-          assert.ok(newList[1])
-          done()
-        })
-      })
-      it('should not overwrite any existing fields', function (done) {
-        var testList = [{
-          id: 0,
-          read: false,
-          title: 'Futuristic Notice',
-        }]
-        noticeController.setNoticesList(testList)
-        var newList = noticeController.getNoticesList()
-        assert.equal(newList[0].id, 0)
-        assert.equal(newList[0].title, 'Futuristic Notice')
-        assert.equal(newList.length, 1)
         done()
       })
     })
@@ -86,7 +44,7 @@ describe('notice-controller', function () {
       })
     })
 
-    describe('#getLatestUnreadNotice', function () {
+    describe('#getNextUnreadNotice', function () {
       it('should retrieve the latest unread notice', function (done) {
         var testList = [
           {id: 0, read: true, title: 'Past Notice'},
@@ -94,8 +52,8 @@ describe('notice-controller', function () {
           {id: 2, read: false, title: 'Future Notice'},
         ]
         noticeController.setNoticesList(testList)
-        var latestUnread = noticeController.getLatestUnreadNotice()
-        assert.equal(latestUnread.id, 2)
+        var latestUnread = noticeController.getNextUnreadNotice()
+        assert.equal(latestUnread.id, 1)
         done()
       })
       it('should return undefined if no unread notices exist.', function (done) {
@@ -105,7 +63,7 @@ describe('notice-controller', function () {
           {id: 2, read: true, title: 'Future Notice'},
         ]
         noticeController.setNoticesList(testList)
-        var latestUnread = noticeController.getLatestUnreadNotice()
+        var latestUnread = noticeController.getNextUnreadNotice()
         assert.ok(!latestUnread)
         done()
       })

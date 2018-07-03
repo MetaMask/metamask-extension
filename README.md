@@ -27,7 +27,9 @@ If you're a web dapp developer, we've got two types of guides for you:
 ## Building locally
 
  - Install [Node.js](https://nodejs.org/en/) version 6.3.1 or later.
- - Install local dependencies with `npm install`.
+ - Install dependencies:
+   - For node versions up to and including 9, install local dependencies with `npm install`.
+   - For node versions 10 and later, install [Yarn](https://yarnpkg.com/lang/en/docs/install/) and use `yarn install`.
  - Install gulp globally with `npm install -g gulp-cli`.
  - Build the project to the `./dist/` folder with `gulp build`.
  - Optionally, to rebuild on file changes, run `gulp dev`.

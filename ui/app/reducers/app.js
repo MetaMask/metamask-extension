@@ -62,6 +62,7 @@ function reduceApp (state, action) {
     warning: null,
     buyView: {},
     isMouseUser: false,
+    gasIsLoading: false,
   }, state.appState)
 
   switch (action.type) {
@@ -673,6 +674,16 @@ function reduceApp (state, action) {
     case actions.SET_MOUSE_USER_STATE:
       return extend(appState, {
         isMouseUser: action.value,
+      })
+
+    case actions.GAS_LOADING_STARTED:
+      return extend(appState, {
+        gasIsLoading: true,
+      })
+
+    case actions.GAS_LOADING_FINISHED:
+      return extend(appState, {
+        gasIsLoading: false,
       })
 
     default:

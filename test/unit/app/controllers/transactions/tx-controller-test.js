@@ -1,20 +1,17 @@
 const assert = require('assert')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
-const EthjsQuery = require('ethjs-query')
 const ObservableStore = require('obs-store')
 const sinon = require('sinon')
 const TransactionController = require('../../../../../app/scripts/controllers/transactions')
-const TxGasUtils = require('../../../../../app/scripts/controllers/transactions/tx-gas-utils')
 const { createTestProviderTools, getTestAccounts } = require('../../../../stub/provider')
 
 const noop = () => true
 const currentNetworkId = 42
-const otherNetworkId = 36
 
 
 describe('Transaction Controller', function () {
-  let txController, provider, providerResultStub, query, fromAccount
+  let txController, provider, providerResultStub, fromAccount
 
   beforeEach(function () {
     providerResultStub = {
@@ -24,7 +21,6 @@ describe('Transaction Controller', function () {
       eth_getCode: '0x',
     }
     provider = createTestProviderTools({ scaffold: providerResultStub }).provider
-    query = new EthjsQuery(provider)
     fromAccount = getTestAccounts()[0]
 
     txController = new TransactionController({
@@ -185,6 +181,23 @@ describe('Transaction Controller', function () {
       .catch(done)
     })
 
+    it('should fail if recipient is public', function (done) {
+      txController.networkStore = new ObservableStore(1)
+      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d', to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
+      .catch((err) => {
+        if (err.message === 'Recipient is a public account') done()
+        else done(err)
+      })
+    })
+
+    it('should not fail if recipient is public but not on mainnet', function (done) {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
+        assert(txMetaFromEmit, 'txMeta is falsey')
+        done()
+      })
+      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d', to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
+      .catch(done)
+    })
   })
 
   describe('#addTxGasDefaults', function () {
@@ -371,7 +384,7 @@ describe('Transaction Controller', function () {
 
   describe('#retryTransaction', function () {
     it('should create a new txMeta with the same txParams as the original one', function (done) {
-      let txParams = {
+      const txParams = {
         nonce: '0x00',
         from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
         to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',

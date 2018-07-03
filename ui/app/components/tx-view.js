@@ -12,7 +12,7 @@ const { checksumAddress: toChecksumAddress } = require('../util')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
-const Identicon = require('./identicon')
+const SelectedAccount = require('./selected-account')
 
 module.exports = compose(
   withRouter,
@@ -103,7 +103,7 @@ TxView.prototype.renderButtons = function () {
 }
 
 TxView.prototype.render = function () {
-  const { selectedAddress, identity, network, isMascara } = this.props
+  const { isMascara } = this.props
 
   return h('div.tx-view.flex-column', {
     style: {},
@@ -111,10 +111,12 @@ TxView.prototype.render = function () {
 
     h('div.flex-row.phone-visible', {
       style: {
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         flex: '0 0 auto',
-        margin: '10px',
+        marginBottom: '16px',
+        padding: '5px',
+        borderBottom: '1px solid #e5e5e5',
       },
     }, [
 
@@ -127,23 +129,7 @@ TxView.prototype.render = function () {
         onClick: () => this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar(),
       }),
 
-      h('.identicon-wrapper.select-none', {
-        style: {
-          marginLeft: '0.9em',
-        },
-      }, [
-        h(Identicon, {
-          diameter: 24,
-          address: selectedAddress,
-          network,
-        }),
-      ]),
-
-      h('span.account-name', {
-        style: {},
-      }, [
-        identity.name,
-      ]),
+      h(SelectedAccount),
 
       !isMascara && h('div.open-in-browser', {
         onClick: () => global.platform.openExtensionInBrowser(),

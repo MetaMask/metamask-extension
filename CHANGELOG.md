@@ -2,6 +2,42 @@
 
 ## Current Master
 
+## 4.8.0 Thur Jun 14 2018
+
+- [#4513](https://github.com/MetaMask/metamask-extension/pull/4513): Attempting to import an empty private key will now show a clear error.
+- [#4570](https://github.com/MetaMask/metamask-extension/pull/4570): Fix bug where metamask data would stop being written to disk after prolonged use.
+- [#4523](https://github.com/MetaMask/metamask-extension/pull/4523): Fix bug where account reset did not work with custom RPC providers.
+- [#4524](https://github.com/MetaMask/metamask-extension/pull/4524): Fix for Brave i18n getAcceptLanguages.
+- [#4557](https://github.com/MetaMask/metamask-extension/pull/4557): Fix bug where nonce mutex was never released.
+- [#4566](https://github.com/MetaMask/metamask-extension/pull/4566): Add phishing notice.
+- [#4591](https://github.com/MetaMask/metamask-extension/pull/4591): Allow Copying Token Addresses and link to Token on Etherscan.
+
+## 4.7.4 Tue Jun 05 2018
+
+- Add diagnostic reporting for users with multiple HD keyrings
+- Throw explicit error when selected account is unset
+
+## 4.7.3 Mon Jun 04 2018
+
+- Hide token now uses new modal
+- Indicate the current selected account on the popup account view
+- Reduce height of notice container in onboarding
+- Fixes issue where old nicknames were kept around causing errors
+
+## 4.7.2 Sun Jun 03 2018
+
+- Fix bug preventing users from logging in. Internally accounts and identities were out of sync.
+- Fix support links to point to new support system (Zendesk)
+- Fix bug in migration #26 ( moving account nicknames to preferences )
+- Clears account nicknames on restore from seedPhrase
+
+## 4.7.1 Fri Jun 01 2018
+
+- Fix bug where errors were not returned to Dapps.
+
+## 4.7.0 Wed May 30 2018
+
+- Fix Brave support
 - Adds error messages when passwords don't match in onboarding flow.
 - Adds modal notification if a retry in the process of being confirmed is dropped.
 - New unlock screen design.

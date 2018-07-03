@@ -28,7 +28,7 @@ LoadingIndicator.prototype.render = function () {
         background: 'rgba(255, 255, 255, 0.8)',
       },
     }, [
-      canBypass ? h( 'i.fa.fa-close.cursor-pointer.close-loading', {
+      canBypass ? h('i.fa.fa-close.cursor-pointer.close-loading', {
         style: {
           position: 'absolute',
           top: '1px',

@@ -5,9 +5,6 @@ const {
   getNetworkDisplayName,
 } = require('../../../../app/scripts/controllers/network/util')
 
-const { createTestProviderTools } = require('../../../stub/provider')
-const providerResultStub = {}
-
 describe('# Network Controller', function () {
   let networkController
   const noop = () => {}
