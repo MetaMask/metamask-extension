@@ -82,7 +82,7 @@ class JsonImportSubview extends Component {
   }
 
   createNewKeychain () {
-    const { firstAddress, displayWarning, importNewJsonAccount, setSelectedAddress } = this.props
+    const { firstAddress, displayWarning, hideWarning, importNewJsonAccount, setSelectedAddress } = this.props
     const state = this.state
 
     if (!state) {
@@ -105,6 +105,7 @@ class JsonImportSubview extends Component {
       return displayWarning(message)
     }
 
+    hideWarning()
     importNewJsonAccount([ fileContents, password ])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
@@ -123,6 +124,7 @@ JsonImportSubview.propTypes = {
   error: PropTypes.string,
   goHome: PropTypes.func,
   displayWarning: PropTypes.func,
+  hideWarning: PropTypes.func,
   firstAddress: PropTypes.string,
   importNewJsonAccount: PropTypes.func,
   history: PropTypes.object,
@@ -141,6 +143,7 @@ const mapDispatchToProps = dispatch => {
   return {
     goHome: () => dispatch(actions.goHome()),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
+    hideWarning: () => dispatch(actions.hideWarning()),
     importNewJsonAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
     setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
   }
