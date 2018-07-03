@@ -105,7 +105,7 @@ class JsonImportSubview extends Component {
       return displayWarning(message)
     }
 
-    hideWarning();
+    hideWarning()
     importNewJsonAccount([ fileContents, password ])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {

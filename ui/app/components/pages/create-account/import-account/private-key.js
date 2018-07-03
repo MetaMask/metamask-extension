@@ -105,7 +105,7 @@ PrivateKeyImportView.prototype.createNewKeychain = function () {
   const privateKey = input.value
   const { importNewAccount, history, displayWarning, hideWarning, setSelectedAddress, firstAddress } = this.props
 
-  hideWarning();
+  hideWarning()
   importNewAccount('Private Key', [ privateKey ])
     .then(({ selectedAddress }) => {
       if (selectedAddress) {
