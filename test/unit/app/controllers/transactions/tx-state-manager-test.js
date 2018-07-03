@@ -57,12 +57,11 @@ describe('TransactionStateManager', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       const noop = function (err, txId) {
-        if (!err) {
+          if (err) {
+            console.log('Error: ', err)
+          }
           assert(true, 'event listener has been triggered and noop executed')
           done()
-        } else {
-          done(new Error(err.toString()))
-        }
       }
       txStateManager.on('1:rejected', noop)
       txStateManager.setTxStatusRejected(1)
