@@ -31,8 +31,6 @@ const {
 } = require('../../conversion-util')
 
 const {
-  getGasPrice,
-  getGasLimit,
   getGasIsLoading,
   getForceGasMin,
   conversionRateSelector,
@@ -43,6 +41,11 @@ const {
   getSelectedTokenToFiatRate,
   getSendMaxModeState,
 } = require('../../selectors')
+
+const {
+  getGasPrice,
+  getGasLimit,
+} = require('../send_/send.selectors')
 
 function mapStateToProps (state) {
   const selectedToken = getSelectedToken(state)
