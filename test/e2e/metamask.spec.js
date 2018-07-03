@@ -3,7 +3,7 @@ const mkdirp = require('mkdirp')
 const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
-const { By, Key } = require('selenium-webdriver')
+const { By, Key, until } = require('selenium-webdriver')
 const { delay, createModifiedTestBuild, setupBrowserAndExtension, verboseReportOnFailure } = require('./func')
 
 describe('Metamask popup page', function () {
