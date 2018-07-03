@@ -58,6 +58,7 @@ const {
   calcTokenBalance,
   isBalanceSufficient,
   isTokenBalanceSufficient,
+  removeLeadingZeroes,
 } = sendUtils
 
 describe('send utils', () => {
@@ -481,6 +482,31 @@ describe('send utils', () => {
     it('should return the first string that is not defined or null in lower case', () => {
       assert.equal(getToAddressForGasUpdate('A', null), 'a')
       assert.equal(getToAddressForGasUpdate(undefined, 'B'), 'b')
+    })
+  })
+
+  describe('removeLeadingZeroes()', () => {
+    it('should remove leading zeroes from int when user types', () => {
+      assert.equal(removeLeadingZeroes('0'), '0')
+      assert.equal(removeLeadingZeroes('1'), '1')
+      assert.equal(removeLeadingZeroes('00'), '0')
+      assert.equal(removeLeadingZeroes('01'), '1')
+    })
+
+    it('should remove leading zeroes from int when user copy/paste', () => {
+      assert.equal(removeLeadingZeroes('001'), '1')
+    })
+
+    it('should remove leading zeroes from float when user types', () => {
+      assert.equal(removeLeadingZeroes('0.'), '0.')
+      assert.equal(removeLeadingZeroes('0.0'), '0.0')
+      assert.equal(removeLeadingZeroes('0.00'), '0.00')
+      assert.equal(removeLeadingZeroes('0.001'), '0.001')
+      assert.equal(removeLeadingZeroes('0.10'), '0.10')
+    })
+
+    it('should remove leading zeroes from float when user copy/paste', () => {
+      assert.equal(removeLeadingZeroes('00.1'), '0.1')
     })
   })
 })
