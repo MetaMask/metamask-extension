@@ -1,6 +1,5 @@
 const assert = require('assert')
 const migration23 = require('../../../app/scripts/migrations/023')
-const properTime = (new Date()).getTime()
 const storage = {
   'meta': {},
   'data': {

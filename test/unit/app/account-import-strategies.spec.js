@@ -1,5 +1,4 @@
 const assert = require('assert')
-const path = require('path')
 const ethUtil = require('ethereumjs-util')
 const accountImporter = require('../../../app/scripts/account-import-strategies/index')
 const { assertRejects } = require('../test-utils')

@@ -1,6 +1,4 @@
 const assert = require('assert')
-const clone = require('clone')
-const ObservableStore = require('obs-store')
 const TxStateManager = require('../../../../../app/scripts/controllers/transactions/tx-state-manager')
 const txStateHistoryHelper = require('../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
 const noop = () => true
@@ -59,6 +57,7 @@ describe('TransactionStateManager', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       const noop = function (err, txId) {
+        assert(err, null)
         assert(true, 'event listener has been triggered and noop executed')
         done()
       }
@@ -165,8 +164,6 @@ describe('TransactionStateManager', function () {
           gasPrice: originalGasPrice,
         },
       }
-
-      const updatedMeta = clone(txMeta)
 
       txStateManager.addTx(txMeta)
       const updatedTx = txStateManager.getTx('1')

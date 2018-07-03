@@ -35,8 +35,8 @@ describe('EdgeEncryptor', function () {
         .then(function (encryptedData) {
           const encryptedObject = JSON.parse(encryptedData)
           assert.ok(encryptedObject.data, 'there is no data')
-          assert.ok(encryptedObject.iv && encryptedObject.iv.length != 0, 'there is no iv')
-          assert.ok(encryptedObject.salt && encryptedObject.salt.length != 0, 'there is no salt')
+          assert.ok(encryptedObject.iv && encryptedObject.iv.length !== 0, 'there is no iv')
+          assert.ok(encryptedObject.salt && encryptedObject.salt.length !== 0, 'there is no salt')
           done()
         }).catch(function (err) {
           done(err)
