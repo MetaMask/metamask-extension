@@ -3,12 +3,12 @@ const resolver = require('./resolver.js')
 
 module.exports = function (provider) {
     extension.webRequest.onBeforeRequest.addListener(details => {
-        const urlhttpreplace = details.url.replace(/\w+?:\/\//, "")
-        const url = urlhttpreplace.replace(/[\\\/].*/g, "")
-        let domainhtml = urlhttpreplace.match(/[\\\/].*/g)
+        const urlhttpreplace = details.url.replace(/\w+?:\/\//, '')
+        const url = urlhttpreplace.replace(/[\\/].*/g, '') // eslint-disable-line no-useless-escape
+        let domainhtml = urlhttpreplace.match(/[\\/].*/g) // eslint-disable-line no-useless-escape
         let clearTime = null
-        let name = url.replace(/\/$/g, "")
-        if (domainhtml === null) domainhtml = [""]
+        const name = url.replace(/\/$/g, '')
+        if (domainhtml === null) domainhtml = ['']
         extension.tabs.getSelected(null, tab => {
             extension.tabs.update(tab.id, { url: 'loading.html' })
 

@@ -69,7 +69,6 @@ initialize().catch(log.error)
 setupMetamaskMeshMetrics()
 
 
-
 /**
  * An object representing a transaction, in whatever state it is in.
  * @typedef TransactionMeta
