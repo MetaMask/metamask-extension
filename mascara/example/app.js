@@ -3,7 +3,7 @@ const EthQuery = require('ethjs-query')
 window.addEventListener('load', loadProvider)
 window.addEventListener('message', console.warn)
 
-async function loadProvider() {
+async function loadProvider () {
   const ethereumProvider = window.metamask.createDefaultProvider({ host: 'http://localhost:9001' })
   const ethQuery = new EthQuery(ethereumProvider)
   const accounts = await ethQuery.accounts()
@@ -13,7 +13,7 @@ async function loadProvider() {
 }
 
 
-function logToDom(message, context){
+function logToDom (message, context) {
   document.getElementById(context).innerText = message
   console.log(message)
 }

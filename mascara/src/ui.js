@@ -43,7 +43,7 @@ console.log('starting service worker')
 swController.startWorker()
 
 // Setup listener for when the service worker is read
-function connectApp() {
+function connectApp () {
   const connectionStream = SwStream({
     serviceWorker: swController.getWorker(),
     context: name,
