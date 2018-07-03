@@ -17,7 +17,6 @@ describe('Computed Balances Controller', function () {
   const provider = createTestProviderTools({ scaffold: {}}).provider
 
   const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
-  const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
 
   beforeEach(function () {
     computedBalances = new ComputedBalances({
