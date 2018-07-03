@@ -1,12 +1,6 @@
-const ObservableStore = require('obs-store')
-const { warn } = require('loglevel')
 const contracts = require('eth-contract-metadata')
 const {
-    ROPSTEN,
-    RINKEBY,
-    KOVAN,
     MAINNET,
-    OCALHOST,
     } = require('./network/enums')
 
 // By default, poll every 3 minutes
