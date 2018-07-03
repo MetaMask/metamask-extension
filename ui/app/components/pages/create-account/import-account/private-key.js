@@ -12,6 +12,15 @@ PrivateKeyImportView.contextTypes = {
   t: PropTypes.func,
 }
 
+PrivateKeyImportView.propTypes = {
+  error: PropTypes.string,
+  firstAddress: PropTypes.string,
+  displayWarning: PropTypes.func,
+  hideWarning: PropTypes.func,
+  importNewAccount: PropTypes.func,
+  setSelectedAddress: PropTypes.func,
+}
+
 module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
@@ -31,6 +40,7 @@ function mapDispatchToProps (dispatch) {
       return dispatch(actions.importNewAccount(strategy, [ privateKey ]))
     },
     displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
+    hideWarning: () => dispatch(actions.hideWarning()),
     setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
   }
 }
@@ -93,8 +103,9 @@ PrivateKeyImportView.prototype.createKeyringOnEnter = function (event) {
 PrivateKeyImportView.prototype.createNewKeychain = function () {
   const input = document.getElementById('private-key-box')
   const privateKey = input.value
-  const { importNewAccount, history, displayWarning, setSelectedAddress, firstAddress } = this.props
+  const { importNewAccount, history, displayWarning, hideWarning, setSelectedAddress, firstAddress } = this.props
 
+  hideWarning();
   importNewAccount('Private Key', [ privateKey ])
     .then(({ selectedAddress }) => {
       if (selectedAddress) {
