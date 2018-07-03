@@ -40,6 +40,12 @@ describe('send-to-row utils', () => {
         to: null,
       })
     })
+
+    it('should return the passed error if to is truthy but invalid if to is truthy and valid', () => {
+      assert.deepEqual(getToErrorObject('invalid #$ 345878', 'someExplicitError'), {
+        to: 'someExplicitError',
+      })
+    })
   })
 
 })

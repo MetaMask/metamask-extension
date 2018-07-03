@@ -54,7 +54,7 @@ TokenMenuDropdown.prototype.render = function () {
         showHideTokenConfirmationModal(this.props.token)
         this.props.onClose()
       },
-      text: this.context.t('hideToken'), 
+      text: this.context.t('hideToken'),
     }),
     h(Item, {
       onClick: (e) => {
@@ -62,7 +62,7 @@ TokenMenuDropdown.prototype.render = function () {
         copyToClipboard(this.props.token.address)
         this.props.onClose()
       },
-      text: this.context.t('copyContractAddress'), 
+      text: this.context.t('copyContractAddress'),
     }),
     h(Item, {
       onClick: (e) => {
@@ -71,7 +71,7 @@ TokenMenuDropdown.prototype.render = function () {
         global.platform.openWindow({ url })
         this.props.onClose()
       },
-      text: this.context.t('viewOnEtherscan'), 
+      text: this.context.t('viewOnEtherscan'),
     }),
   ])
 }

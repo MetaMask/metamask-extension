@@ -15,7 +15,7 @@ QUnit.test('renders localized currency', (assert) => {
   })
 })
 
-async function runCurrencyLocalizationTest(assert, done) {
+async function runCurrencyLocalizationTest (assert, done) {
   console.log('*** start runCurrencyLocalizationTest')
   const selectState = await queryAsync($, 'select')
   selectState.val('currency localization')

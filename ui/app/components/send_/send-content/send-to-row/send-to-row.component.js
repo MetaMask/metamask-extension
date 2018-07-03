@@ -19,9 +19,9 @@ export default class SendToRow extends Component {
     updateSendToError: PropTypes.func,
   };
 
-  handleToChange (to, nickname = '') {
+  handleToChange (to, nickname = '', toError) {
     const { updateSendTo, updateSendToError, updateGas } = this.props
-    const toErrorObject = getToErrorObject(to)
+    const toErrorObject = getToErrorObject(to, toError)
     updateSendTo(to, nickname)
     updateSendToError(toErrorObject)
     if (toErrorObject.to === null) {
@@ -53,7 +53,7 @@ export default class SendToRow extends Component {
           inError={inError}
           name={'address'}
           network={network}
-          onChange={(newTo, newNickname) => this.handleToChange(newTo, newNickname)}
+          onChange={({ toAddress, nickname, toError }) => this.handleToChange(toAddress, nickname, toError)}
           openDropdown={() => openToDropdown()}
           placeholder={this.context.t('recipientAddress')}
           to={to}

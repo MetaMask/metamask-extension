@@ -5,7 +5,7 @@ const VERSION = require('../dist/chrome/manifest.json').version
 
 start().catch(console.error)
 
-async function start(){
+async function start () {
   const authWorked = await checkIfAuthWorks()
   if (!authWorked) {
     console.log(`Sentry auth failed...`)
@@ -31,21 +31,21 @@ async function start(){
   console.log('all done!')
 }
 
-async function checkIfAuthWorks() {
+async function checkIfAuthWorks () {
   const itWorked = await doesNotFail(async () => {
     await exec(`sentry-cli releases --org 'metamask' --project 'metamask' list`)
   })
   return itWorked
 }
 
-async function checkIfVersionExists() {
+async function checkIfVersionExists () {
   const versionAlreadyExists = await doesNotFail(async () => {
     await exec(`sentry-cli releases --org 'metamask' --project 'metamask' info ${VERSION}`)
   })
   return versionAlreadyExists
 }
 
-async function doesNotFail(asyncFn) {
+async function doesNotFail (asyncFn) {
   try {
     await asyncFn()
     return true
