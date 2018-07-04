@@ -6,7 +6,7 @@ const actions = require('../../ui/app/actions')
 
 module.exports = connect(mapStateToProps)(AppSettingsPage)
 
-function mapStateToProps (state) {
+function mapStateToProps () {
   return {}
 }
 

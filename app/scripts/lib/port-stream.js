@@ -64,7 +64,7 @@ PortDuplexStream.prototype._read = noop
  * @param {string} encoding Encoding to use when writing payload
  * @param {Function} cb Called when writing is complete or an error occurs
  */
-PortDuplexStream.prototype._write = function (msg, encoding, cb) {
+PortDuplexStream.prototype._write = function (msg, _, cb) {
   try {
     if (Buffer.isBuffer(msg)) {
       var data = msg.toJSON()

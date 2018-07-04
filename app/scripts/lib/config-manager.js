@@ -47,7 +47,7 @@ ConfigManager.prototype.setPasswordForgotten = function (passwordForgottenState)
   this.setData(data)
 }
 
-ConfigManager.prototype.getPasswordForgotten = function (passwordForgottenState) {
+ConfigManager.prototype.getPasswordForgotten = function () {
   const data = this.getData()
   return data.forgottenPassword
 }

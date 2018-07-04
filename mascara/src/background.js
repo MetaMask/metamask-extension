@@ -58,7 +58,7 @@ async function loadStateFromPersistence () {
   return migratedData.data
 }
 
-async function setupController (initState, client) {
+async function setupController (initState) {
 
   //
   // MetaMask Controller

@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 
 module.exports = connect(mapStateToProps)(SeedImportSubview)
 
-function mapStateToProps (state) {
+function mapStateToProps () {
   return {}
 }
 

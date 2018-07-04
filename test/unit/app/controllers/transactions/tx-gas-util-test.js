@@ -11,7 +11,7 @@ describe('txUtils', function () {
 
   before(function () {
     txUtils = new TxUtils(new Proxy({}, {
-      get: (obj, name) => {
+      get: () => {
         return () => {}
       },
     }))

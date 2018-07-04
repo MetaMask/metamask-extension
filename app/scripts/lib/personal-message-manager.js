@@ -36,7 +36,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    * @property {array} messages Holds all messages that have been created by this PersonalMessageManager
    *
    */
-  constructor (opts) {
+  constructor () {
     super()
     this.memStore = new ObservableStore({
       unapprovedPersonalMsgs: {},

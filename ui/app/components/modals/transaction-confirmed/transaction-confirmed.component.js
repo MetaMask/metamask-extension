@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TransactionConfirmed = (props, context) => {
+const TransactionConfirmed = (_, context) => {
   const { t } = context
 
   return (

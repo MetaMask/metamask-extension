@@ -16,7 +16,7 @@ const menuItems = [
 
 module.exports = connect(mapStateToProps)(AccountImportSubview)
 
-function mapStateToProps (state) {
+function mapStateToProps () {
   return {
     menuItems,
   }
@@ -37,7 +37,7 @@ AccountImportSubview.prototype.render = function () {
     h('div', [
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: (event) => {
+          onClick: () => {
             props.dispatch(actions.goHome())
           },
         }),

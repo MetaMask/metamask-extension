@@ -17,8 +17,8 @@ const {
 } = require('../send.constants')
 
 const stubs = {
-  addCurrencies: sinon.stub().callsFake((a, b, obj) => a + b),
-  conversionUtil: sinon.stub().callsFake((val, obj) => parseInt(val, 16)),
+  addCurrencies: sinon.stub().callsFake((a, b) => a + b),
+  conversionUtil: sinon.stub().callsFake((val) => parseInt(val, 16)),
   conversionGTE: sinon.stub().callsFake((obj1, obj2) => obj1.value >= obj2.value),
   multiplyCurrencies: sinon.stub().callsFake((a, b) => `${a}x${b}`),
   calcTokenAmount: sinon.stub().callsFake((a, d) => 'calc:' + a + d),

@@ -90,7 +90,7 @@ UnlockScreen.prototype.componentDidMount = function () {
   document.getElementById('password-box').focus()
 }
 
-UnlockScreen.prototype.onSubmit = function (event) {
+UnlockScreen.prototype.onSubmit = function () {
   const input = document.getElementById('password-box')
   const password = input.value
   this.props.dispatch(actions.tryUnlockMetamask(password))

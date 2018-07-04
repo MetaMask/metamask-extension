@@ -109,7 +109,7 @@ HexAsDecimalInput.prototype.render = function () {
   )
 }
 
-HexAsDecimalInput.prototype.setValid = function (message) {
+HexAsDecimalInput.prototype.setValid = function () {
   this.setState({ invalid: null })
 }
 
@@ -150,7 +150,7 @@ function hexify (decimalString) {
   return '0x' + hexBN.toString('hex')
 }
 
-function decimalize (input, toEth) {
+function decimalize (input) {
   if (input === '') {
     return ''
   } else {

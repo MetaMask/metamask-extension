@@ -5,7 +5,7 @@ let mapStateToProps
 
 proxyquire('../account-list-item.container.js', {
   'react-redux': {
-    connect: (ms, md) => {
+    connect: (ms) => {
       mapStateToProps = ms
       return () => ({})
     },

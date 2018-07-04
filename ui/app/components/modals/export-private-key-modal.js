@@ -84,7 +84,7 @@ ExportPrivateKeyModal.prototype.renderButton = function (className, onClick, lab
   }, label)
 }
 
-ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, address, hideModal) {
+ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, _, address, hideModal) {
   return h('div.export-private-key-buttons', {}, [
     !privateKey && this.renderButton(
       'btn-default btn--large export-private-key__button export-private-key__button--cancel',

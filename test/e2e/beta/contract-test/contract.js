@@ -33,7 +33,7 @@ const deployButton = document.getElementById('deployButton')
 const depositButton = document.getElementById('depositButton')
 const withdrawButton = document.getElementById('withdrawButton')
 
-deployButton.addEventListener('click', async function (event) {
+deployButton.addEventListener('click', async function () {
 
     var piggybank = await piggybankContract.new(
        {
@@ -47,13 +47,13 @@ deployButton.addEventListener('click', async function (event) {
 
           console.log(`contract`, contract)
 
-          depositButton.addEventListener('click', function (event) {
+          depositButton.addEventListener('click', function () {
            contract.deposit({ from: web3.eth.accounts[0], value: '0x29a2241af62c0000' }, function (result) {
              console.log(result)
            })
           })
 
-          withdrawButton.addEventListener('click', function (event) {
+          withdrawButton.addEventListener('click', function () {
            contract.withdraw('0xde0b6b3a7640000', { from: web3.eth.accounts[0] }, function (result) {
              console.log(result)
            })

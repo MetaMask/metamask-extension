@@ -5,7 +5,7 @@ const {
   queryAsync,
 } = require('../../lib/util')
 
-async function runFirstTimeUsageTest (assert, done) {
+async function runFirstTimeUsageTest (assert) {
   await timeout(4000)
 
   const app = await queryAsync($, '#app-content')
@@ -58,7 +58,7 @@ async function runFirstTimeUsageTest (assert, done) {
   await timeout()
   const selectPhrase = text => {
     const option = $('.backup-phrase__confirm-seed-option')
-      .filter((i, d) => d.textContent === text)[0]
+      .filter((_, d) => d.textContent === text)[0]
     $(option).click()
   }
 

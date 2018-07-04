@@ -6,7 +6,7 @@ module.exports = {
 }
 
 function timeout (time) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(resolve, time || 1500)
   })
 }

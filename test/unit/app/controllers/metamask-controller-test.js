@@ -43,7 +43,7 @@ describe('MetaMaskController', function () {
       showUnapprovedTx: noop,
       showUnconfirmedMessage: noop,
       encryptor: {
-        encrypt: function (password, object) {
+        encrypt: function (_, object) {
           this.object = object
           return Promise.resolve('mock-encrypted')
         },
@@ -134,7 +134,7 @@ describe('MetaMaskController', function () {
   describe('#createNewVaultAndRestore', function () {
     it('should be able to call newVaultAndRestore despite a mistake.', async function () {
       const password = 'what-what-what'
-      await metamaskController.createNewVaultAndRestore(password, TEST_SEED.slice(0, -1)).catch((e) => null)
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED.slice(0, -1)).catch(() => null)
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
 
       assert(metamaskController.keyringController.createNewVaultAndRestore.calledTwice)
@@ -372,7 +372,7 @@ describe('MetaMaskController', function () {
 
     it('should clear config seed phrase', function () {
       metamaskController.configManager.setSeedWords('test words')
-      metamaskController.clearSeedWordCache((err, result) => {
+      metamaskController.clearSeedWordCache((err) => {
         if (err) console.log(err)
       })
       const getConfigSeed = metamaskController.configManager.getSeedWords()
@@ -523,7 +523,7 @@ describe('MetaMaskController', function () {
     it('sets up phishing stream for untrusted communication ', async function () {
       await metamaskController.blacklistController.updatePhishingList()
 
-      streamTest = createThoughStream((chunk, enc, cb) => {
+      streamTest = createThoughStream((chunk, _, cb) => {
         assert.equal(chunk.name, 'phishing')
         assert.equal(chunk.data.hostname, phishingUrl)
          cb()
@@ -541,7 +541,7 @@ describe('MetaMaskController', function () {
     })
 
     it('sets up controller dnode api for trusted communication', function (done) {
-      streamTest = createThoughStream((chunk, enc, cb) => {
+      streamTest = createThoughStream((chunk, _, cb) => {
         assert.equal(chunk.name, 'controller')
         cb()
         done()

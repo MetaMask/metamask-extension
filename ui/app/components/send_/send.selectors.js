@@ -244,7 +244,7 @@ function getSendToAccounts (state) {
   const addressBookAccounts = getAddressBook(state)
   const allAccounts = [...fromAccounts, ...addressBookAccounts]
   // TODO: figure out exactly what the below returns and put a descriptive variable name on it
-  return Object.entries(allAccounts).map(([key, account]) => account)
+  return Object.entries(allAccounts).map(([, account]) => account)
 }
 
 function getTokenBalance (state) {

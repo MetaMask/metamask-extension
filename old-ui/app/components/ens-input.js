@@ -117,7 +117,7 @@ EnsInput.prototype.lookupEnsName = function () {
   })
 }
 
-EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
+EnsInput.prototype.componentDidUpdate = function (_, prevState) {
   const state = this.state || {}
   const ensResolution = state.ensResolution
   // If an address is sent without a nickname, meaning not from ENS or from
@@ -141,7 +141,7 @@ EnsInput.prototype.ensIcon = function (recipient) {
   }, this.ensIconContents(recipient))
 }
 
-EnsInput.prototype.ensIconContents = function (recipient) {
+EnsInput.prototype.ensIconContents = function () {
   const { loadingEns, ensFailure, ensResolution } = this.state || { ensResolution: ZERO_ADDRESS}
 
   if (loadingEns) {

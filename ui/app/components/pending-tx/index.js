@@ -61,7 +61,7 @@ PendingTx.prototype.componentDidMount = function () {
   this.setTokenData()
 }
 
-PendingTx.prototype.componentDidUpdate = function (prevProps, prevState) {
+PendingTx.prototype.componentDidUpdate = function (_, prevState) {
   if (prevState.isFetching) {
     this.setTokenData()
   }

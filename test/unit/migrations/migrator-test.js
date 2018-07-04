@@ -61,7 +61,7 @@ describe('Migrator', () => {
     const migrator = new Migrator({ migrations: [{ version: 1, migrate: async () => { throw new Error('test') } } ] })
     migrator.on('error', () => done())
     migrator.migrateData({ meta: {version: 0} })
-    .then((migratedData) => {
+    .then(() => {
     }).catch(done)
   })
 

@@ -52,7 +52,7 @@ async function customizeGas (assert, price, limit, ethFee, usdFee) {
   )
 }
 
-async function runSendFlowTest (assert, done) {
+async function runSendFlowTest (assert) {
   console.log('*** start runSendFlowTest')
   const selectState = await queryAsync($, 'select')
   selectState.val('send new ui')

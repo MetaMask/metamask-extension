@@ -233,7 +233,7 @@ module.exports = class MetamaskController extends EventEmitter {
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
-        eth_sendTransaction: (payload, next, end) => {
+        eth_sendTransaction: (payload, _, end) => {
           const origin = payload.origin
           const txParams = payload.params[0]
           nodeify(this.txController.newUnapprovedTransaction, this.txController)(txParams, { origin }, end)
@@ -935,7 +935,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} txId - The ID of the transaction to speed up.
    * @param {Function} cb - The callback function called with a full state update.
    */
-  async retryTransaction (txId, cb) {
+  async retryTransaction (txId) {
     await this.txController.retryTransaction(txId)
     const state = await this.getState()
     return state

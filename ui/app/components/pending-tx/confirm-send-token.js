@@ -210,7 +210,7 @@ ConfirmSendToken.prototype.componentWillMount = function () {
   const { tokenContract, selectedAddress } = this.props
   tokenContract && tokenContract
     .balanceOf(selectedAddress)
-    .then(usersToken => {
+    .then(() => {
     })
   this.updateComponentSendErrors({})
 }
