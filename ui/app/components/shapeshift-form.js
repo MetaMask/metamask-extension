@@ -181,7 +181,7 @@ ShapeshiftForm.prototype.render = function () {
   return h('div.shapeshift-form-wrapper', [
     showQrCode
       ? this.renderQrCode()
-      : h('div.shapeshift-form', [
+      : h('div.modal-shapeshift-form', [
           h('div.shapeshift-form__selectors', [
 
             h('div.shapeshift-form__selector', [

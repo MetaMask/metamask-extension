@@ -146,6 +146,9 @@
   "copy": {
     "message": "Copy"
   },
+  "copyContractAddress": {
+    "message": "Copy Contract Address"
+  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
@@ -253,11 +256,17 @@
   "editAccountName": {
     "message": "Edit Account Name"
   },
+  "editingTransaction": {
+    "message": "Make changes to your transaction"
+  },
   "emailUs": {
     "message": "Email us!"
   },
   "encryptNewDen": {
     "message": "Encrypt your new DEN"
+  },
+  "ensNameNotFound": {
+    "message": "ENS name not found"
   },
   "enterPassword": {
     "message": "Enter password"
@@ -771,6 +780,10 @@
   "onlySendToEtherAddress": {
     "message": "Only send ETH to an Ethereum address."
   },
+  "onlySendTokensToAccountAddress": {
+    "message": "Only send $1 to an Ethereum account address.",
+    "description": "displays token symbol"
+  },
   "searchTokens": {
     "message": "Search Tokens"
   },
@@ -947,6 +960,9 @@
   },
   "viewAccount": {
     "message": "View Account"
+  },
+  "viewOnEtherscan": {
+    "message": "View on Etherscan"
   },
   "visitWebSite": {
     "message": "Visit our web site"

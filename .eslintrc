@@ -37,7 +37,9 @@
     "document": false,
     "navigator": false,
     "web3": true,
-    "window": false
+    "window": false,
+    "$": false,
+    "QUnit": false
   },
 
   "rules": {
@@ -142,6 +144,7 @@
     "operator-linebreak": [1, "after", { "overrides": { "?": "ignore", ":": "ignore" } }],
     "padded-blocks": "off",
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
+    "react/no-deprecated": 0,
     "semi": [2, "never"],
     "semi-spacing": [2, { "before": false, "after": true }],
     "space-before-blocks": [1, "always"],
@@ -158,5 +161,6 @@
     "yield-star-spacing": [2, "both"],
     "yoda": [2, "never"],
     "prefer-const": 1,
+    "mocha/no-exclusive-tests": "error"
   }
 }

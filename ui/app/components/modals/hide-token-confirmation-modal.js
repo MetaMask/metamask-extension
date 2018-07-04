@@ -9,7 +9,7 @@ const Identicon = require('../identicon')
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
-    token: state.appState.modal.modalState.token,
+    token: state.appState.modal.modalState.props.token,
   }
 }
 

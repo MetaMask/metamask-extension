@@ -4,14 +4,21 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-
+const genAccountLink = require('etherscan-link').createAccountLink
+const copyToClipboard = require('copy-to-clipboard')
+const { Menu, Item, CloseArea } = require('./components/menu')
 
 TokenMenuDropdown.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(null, mapDispatchToProps)(TokenMenuDropdown)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TokenMenuDropdown)
 
+function mapStateToProps (state) {
+  return {
+    network: state.metamask.network,
+  }
+}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -37,22 +44,34 @@ TokenMenuDropdown.prototype.onClose = function (e) {
 TokenMenuDropdown.prototype.render = function () {
   const { showHideTokenConfirmationModal } = this.props
 
-  return h('div.token-menu-dropdown', {}, [
-    h('div.token-menu-dropdown__close-area', {
+  return h(Menu, { className: 'token-menu-dropdown', isShowing: true }, [
+    h(CloseArea, {
       onClick: this.onClose,
     }),
-    h('div.token-menu-dropdown__container', {}, [
-      h('div.token-menu-dropdown__options', {}, [
-
-        h('div.token-menu-dropdown__option', {
-          onClick: (e) => {
-            e.stopPropagation()
-            showHideTokenConfirmationModal(this.props.token)
-            this.props.onClose()
-          },
-        }, this.context.t('hideToken')),
-
-      ]),
-    ]),
+    h(Item, {
+      onClick: (e) => {
+        e.stopPropagation()
+        showHideTokenConfirmationModal(this.props.token)
+        this.props.onClose()
+      },
+      text: this.context.t('hideToken'),
+    }),
+    h(Item, {
+      onClick: (e) => {
+        e.stopPropagation()
+        copyToClipboard(this.props.token.address)
+        this.props.onClose()
+      },
+      text: this.context.t('copyContractAddress'),
+    }),
+    h(Item, {
+      onClick: (e) => {
+        e.stopPropagation()
+        const url = genAccountLink(this.props.token.address, this.props.network)
+        global.platform.openWindow({ url })
+        this.props.onClose()
+      },
+      text: this.context.t('viewOnEtherscan'),
+    }),
   ])
 }

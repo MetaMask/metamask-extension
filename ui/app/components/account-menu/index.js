@@ -135,11 +135,12 @@ AccountMenu.prototype.renderAccounts = function () {
     showAccountDetail,
   } = this.props
 
-  return Object.keys(identities).map((key, index) => {
-    const identity = identities[key]
+  const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
+  return accountOrder.map((address) => {
+    const identity = identities[address]
     const isSelected = identity.address === selectedAddress
 
-    const balanceValue = accounts[key] ? accounts[key].balance : ''
+    const balanceValue = accounts[address] ? accounts[address].balance : ''
     const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
     const simpleAddress = identity.address.substring(2).toLowerCase()
 

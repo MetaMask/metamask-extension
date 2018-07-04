@@ -89,14 +89,21 @@ module.exports = class NetworkController extends EventEmitter {
       type: 'rpc',
       rpcTarget,
     }
-    this.providerStore.updateState(providerConfig)
-    this._switchNetwork(providerConfig)
+    this.providerConfig = providerConfig
   }
 
   async setProviderType (type) {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
     assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type }
+    this.providerConfig = providerConfig
+  }
+
+  resetConnection () {
+    this.providerConfig = this.getProviderConfig()
+  }
+
+  set providerConfig (providerConfig) {
     this.providerStore.updateState(providerConfig)
     this._switchNetwork(providerConfig)
   }
@@ -125,7 +132,7 @@ module.exports = class NetworkController extends EventEmitter {
     } else if (type === LOCALHOST) {
       this._configureStandardProvider({ rpcUrl: LOCALHOST_RPC_URL })
     // url-based rpc endpoints
-    } else if (type === 'rpc'){
+    } else if (type === 'rpc') {
       this._configureStandardProvider({ rpcUrl: rpcTarget })
     } else {
       throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)

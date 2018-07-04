@@ -7,7 +7,7 @@ const DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 module.exports = setupRaven
 
 // Setup raven / sentry remote error reporting
-function setupRaven(opts) {
+function setupRaven (opts) {
   const { release } = opts
   let ravenTarget
 
@@ -21,7 +21,7 @@ function setupRaven(opts) {
 
   const client = Raven.config(ravenTarget, {
     release,
-    transport: function(opts) {
+    transport: function (opts) {
       const report = opts.data
       try {
         // handle error-like non-error exceptions
@@ -42,7 +42,7 @@ function setupRaven(opts) {
   return Raven
 }
 
-function rewriteErrorLikeExceptions(report) {
+function rewriteErrorLikeExceptions (report) {
   // handle errors that lost their error-ness in serialization (e.g. dnode)
   rewriteErrorMessages(report, (errorMessage) => {
     if (!errorMessage.includes('Non-Error exception captured with keys:')) return errorMessage
@@ -51,7 +51,7 @@ function rewriteErrorLikeExceptions(report) {
   })
 }
 
-function simplifyErrorMessages(report) {
+function simplifyErrorMessages (report) {
   rewriteErrorMessages(report, (errorMessage) => {
     // simplify ethjs error messages
     errorMessage = extractEthjsErrorMessage(errorMessage)
@@ -64,9 +64,9 @@ function simplifyErrorMessages(report) {
   })
 }
 
-function rewriteErrorMessages(report, rewriteFn) {
+function rewriteErrorMessages (report, rewriteFn) {
   // rewrite top level message
-  report.message = rewriteFn(report.message)
+  if (report.message) report.message = rewriteFn(report.message)
   // rewrite each exception message
   if (report.exception && report.exception.values) {
     report.exception.values.forEach(item => {
@@ -75,7 +75,7 @@ function rewriteErrorMessages(report, rewriteFn) {
   }
 }
 
-function rewriteReportUrls(report) {
+function rewriteReportUrls (report) {
   // update request url
   report.request.url = toMetamaskUrl(report.request.url)
   // update exception stack trace
@@ -88,7 +88,7 @@ function rewriteReportUrls(report) {
   }
 }
 
-function toMetamaskUrl(origUrl) {
+function toMetamaskUrl (origUrl) {
   const filePath = origUrl.split(location.origin)[1]
   if (!filePath) return origUrl
   const metamaskUrl = `metamask${filePath}`

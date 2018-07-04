@@ -20,7 +20,7 @@ async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
   if (existingToken) {
     return existingToken
   }
-  
+
   let result = []
   try {
     const token = util.getContractAtAddress(tokenAddress)

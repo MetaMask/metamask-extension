@@ -73,7 +73,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     provider: state.metamask.provider,
     forgottenPassword: state.appState.forgottenPassword,
-    lastUnreadNotice: state.metamask.lastUnreadNotice,
+    nextUnreadNotice: state.metamask.nextUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
     featureFlags,
@@ -461,9 +461,9 @@ App.prototype.renderPrimary = function () {
     }, [
 
       h(NoticeScreen, {
-        notice: props.lastUnreadNotice,
+        notice: props.nextUnreadNotice,
         key: 'NoticeScreen',
-        onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
+        onConfirm: () => props.dispatch(actions.markNoticeRead(props.nextUnreadNotice)),
       }),
 
       !props.isInitialized && h('.flex-row.flex-center.flex-grow', [

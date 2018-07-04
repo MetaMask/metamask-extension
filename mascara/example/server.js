@@ -1,8 +1,8 @@
 const express = require('express')
+const path = require('path')
 const createMetamascaraServer = require('../server/')
 const createBundle = require('../server/util').createBundle
 const serveBundle = require('../server/util').serveBundle
-
 //
 // Iframe Server
 //
@@ -23,7 +23,7 @@ const dappServer = express()
 
 // serve dapp bundle
 serveBundle(dappServer, '/app.js', createBundle(require.resolve('./app.js')))
-dappServer.use(express.static(__dirname + '/app/'))
+dappServer.use(express.static(path.join(__dirname, '/app/')))
 
 // start the server
 const dappPort = '9002'

@@ -16,6 +16,7 @@ const ExtensionPlatform = require('./platforms/extension')
 const Migrator = require('./lib/migrator/')
 const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
+const createStreamSink = require('./lib/createStreamSink')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const firstTimeState = require('./first-time-state')
@@ -66,7 +67,6 @@ initialize().catch(log.error)
 
 // setup metamask mesh testing container
 setupMetamaskMeshMetrics()
-
 
 
 /**
@@ -279,7 +279,7 @@ function setupController (initState, initLangCode) {
     asStream(controller.store),
     debounce(1000),
     storeTransform(versionifyData),
-    storeTransform(persistData),
+    createStreamSink(persistData),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error)
     }
@@ -295,7 +295,7 @@ function setupController (initState, initLangCode) {
     return versionedData
   }
 
-  function persistData (state) {
+  async function persistData (state) {
     if (!state) {
       throw new Error('MetaMask - updated state is missing', state)
     }
@@ -303,12 +303,13 @@ function setupController (initState, initLangCode) {
       throw new Error('MetaMask - updated state does not have data', state)
     }
     if (localStore.isSupported) {
-      localStore.set(state)
-      .catch((err) => {
+      try {
+        await localStore.set(state)
+      } catch (err) {
+        // log error so we dont break the pipeline
         log.error('error setting state in local store:', err)
-      })
+      }
     }
-    return state
   }
 
   //
@@ -382,7 +383,7 @@ function setupController (initState, initLangCode) {
   }
 
   // communication with page or other extension
-  function connectExternal(remotePort) {
+  function connectExternal (remotePort) {
     const originDomain = urlUtil.parse(remotePort.sender.url).hostname
     const portStream = new PortStream(remotePort)
     controller.setupUntrustedCommunication(portStream, originDomain)
