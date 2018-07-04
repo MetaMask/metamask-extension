@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {Switch, Route, matchPath} from 'react-router-dom'
 import classnames from 'classnames'
-import NewAccountCreateForm from './new-account/new-account.component'
+import NewAccountCreateForm from './new-account'
 import NewAccountImportForm from './import-account'
 import {NEW_ACCOUNT_ROUTE, IMPORT_ACCOUNT_ROUTE} from '../../../routes'
 
