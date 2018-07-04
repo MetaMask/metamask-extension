@@ -745,26 +745,27 @@ function updateGasData ({
 }) {
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
-    let gasPrice
     return new Promise((resolve, reject) => {
       background.getGasPrice((err, data) => {
-        if (err !== null) return reject(err)
+        if (err) return reject(err)
         return resolve(data)
       })
     })
     .then(estimateGasPrice => {
-      gasPrice = estimateGasPrice
-      return estimateGas({
-        estimateGasMethod: background.estimateGas,
-        blockGasLimit,
-        selectedAddress,
-        selectedToken,
-        to,
-        value,
-        gasPrice,
-      })
+      return Promise.all([
+        Promise.resolve(estimateGasPrice),
+        estimateGas({
+          estimateGasMethod: background.estimateGas,
+          blockGasLimit,
+          selectedAddress,
+          selectedToken,
+          to,
+          value,
+          estimateGasPrice,
+        }),
+      ])
     })
-    .then(gas => {
+    .then(([gasPrice, gas]) => {
       dispatch(actions.setGasPrice(gasPrice))
       dispatch(actions.setGasLimit(gas))
       return calcGasTotal(gas, gasPrice)
