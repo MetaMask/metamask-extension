@@ -2,8 +2,8 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const actions = require('../../../actions')
-const { DEFAULT_ROUTE } = require('../../../routes')
+const actions = require('../../../../actions')
+const { DEFAULT_ROUTE } = require('../../../../routes')
 
 class NewAccountCreateForm extends Component {
   constructor (props, context) {
