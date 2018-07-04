@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import { checkExistingAddresses } from '../util'
 import TokenListPlaceholder from './token-list-placeholder'
 
+
 export default class InfoBox extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -16,8 +17,14 @@ export default class InfoBox extends Component {
     onToggleToken: PropTypes.func,
   }
 
+  static defaultProps = {
+    tokens: [],
+    results: [],
+    selectedTokens: {},
+  }
+
   render () {
-    const { results = [], selectedTokens = {}, onToggleToken, tokens = [] } = this.props
+    const { results, selectedTokens, onToggleToken, tokens } = this.props
 
     return results.length === 0
       ? <TokenListPlaceholder />
