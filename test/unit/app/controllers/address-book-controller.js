@@ -12,7 +12,7 @@ const stubPreferencesStore = {
       },
     }
   },
-};
+}
 
 describe('address-book-controller', function () {
   var addressBookController

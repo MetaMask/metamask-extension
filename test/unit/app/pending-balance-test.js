@@ -2,7 +2,6 @@ const assert = require('assert')
 const PendingBalanceCalculator = require('../../../app/scripts/lib/pending-balance-calculator')
 const MockTxGen = require('../../lib/mock-tx-gen')
 const BN = require('ethereumjs-util').BN
-let providerResultStub = {}
 
 const zeroBn = new BN(0)
 const etherBn = new BN(String(1e18))
@@ -20,7 +19,7 @@ describe('PendingBalanceCalculator', function () {
           value: ether,
           gasPrice: '0x0',
           gas: '0x0',
-        }
+        },
       }, { count: 1 })
 
       const balanceCalculator = generateBalanceCalcWith([], zeroBn)
@@ -36,7 +35,7 @@ describe('PendingBalanceCalculator', function () {
           value: '0x0',
           gasPrice: '0x2',
           gas: '0x3',
-        }
+        },
       }, { count: 1 })
 
       const balanceCalculator = generateBalanceCalcWith([], zeroBn)
@@ -66,7 +65,7 @@ describe('PendingBalanceCalculator', function () {
           value: ether,
           gasPrice: '0x0',
           gas: '0x0',
-        }
+        },
       }, { count: 1 })
 
       balanceCalculator = generateBalanceCalcWith(pendingTxs, etherBn)

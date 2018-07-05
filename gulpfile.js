@@ -13,27 +13,21 @@ const zip = require('gulp-zip')
 const assign = require('lodash.assign')
 const livereload = require('gulp-livereload')
 const del = require('del')
-const eslint = require('gulp-eslint')
 const fs = require('fs')
 const path = require('path')
 const manifest = require('./app/manifest.json')
-const replace = require('gulp-replace')
 const mkdirp = require('mkdirp')
-const asyncEach = require('async/each')
-const exec = require('child_process').exec
 const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
 const gulpStylelint = require('gulp-stylelint')
 const stylefmt = require('gulp-stylefmt')
 const uglify = require('gulp-uglify-es').default
-const babel = require('gulp-babel')
-const debug = require('gulp-debug')
 const pify = require('pify')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 
 function gulpParallel (...args) {
-  return function spawnGulpChildProcess(cb) {
+  return function spawnGulpChildProcess (cb) {
     return gulpMultiProcess(args, cb, true)
   }
 }
@@ -48,12 +42,12 @@ const commonPlatforms = [
   // browser webapp
   'mascara',
   // browser extensions
-  ...browserPlatforms
+  ...browserPlatforms,
 ]
 
 // browser reload
 
-gulp.task('dev:reload', function() {
+gulp.task('dev:reload', function () {
   livereload.listen({
     port: 35729,
   })
@@ -108,7 +102,7 @@ createCopyTasks('html:mascara', {
   destinations: [`./dist/mascara/`],
 })
 
-function createCopyTasks(label, opts) {
+function createCopyTasks (label, opts) {
   if (!opts.devOnly) {
     const copyTaskName = `copy:${label}`
     copyTask(copyTaskName, opts)
@@ -119,7 +113,7 @@ function createCopyTasks(label, opts) {
   copyDevTaskNames.push(copyDevTaskName)
 }
 
-function copyTask(taskName, opts){
+function copyTask (taskName, opts) {
   const source = opts.source
   const destination = opts.destination
   const destinations = opts.destinations || [destination]
@@ -137,12 +131,12 @@ function copyTask(taskName, opts){
     return performCopy()
   })
 
-  function performCopy() {
+  function performCopy () {
     // stream from source
     let stream = gulp.src(source + pattern, { base: source })
 
     // copy to destinations
-    destinations.forEach(function(destination) {
+    destinations.forEach(function (destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
 
@@ -152,40 +146,40 @@ function copyTask(taskName, opts){
 
 // manifest tinkering
 
-gulp.task('manifest:chrome', function() {
+gulp.task('manifest:chrome', function () {
   return gulp.src('./dist/chrome/manifest.json')
-  .pipe(jsoneditor(function(json) {
+  .pipe(jsoneditor(function (json) {
     delete json.applications
     return json
   }))
   .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
-gulp.task('manifest:opera', function() {
+gulp.task('manifest:opera', function () {
   return gulp.src('./dist/opera/manifest.json')
-  .pipe(jsoneditor(function(json) {
+  .pipe(jsoneditor(function (json) {
     json.permissions = [
-      "storage",
-      "tabs",
-      "clipboardWrite",
-      "clipboardRead",
-      "http://localhost:8545/"
+      'storage',
+      'tabs',
+      'clipboardWrite',
+      'clipboardRead',
+      'http://localhost:8545/',
     ]
     return json
   }))
   .pipe(gulp.dest('./dist/opera', { overwrite: true }))
 })
 
-gulp.task('manifest:production', function() {
+gulp.task('manifest:production', function () {
   return gulp.src([
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
     './dist/edge/manifest.json',
     './dist/opera/manifest.json',
-  ],{base: './dist/'})
+  ], {base: './dist/'})
 
   // Exclude chromereload script in production:
-  .pipe(jsoneditor(function(json) {
+  .pipe(jsoneditor(function (json) {
     json.background.scripts = json.background.scripts.filter((script) => {
       return !script.includes('chromereload')
     })
@@ -212,29 +206,6 @@ gulp.task('dev:copy',
   )
 )
 
-// lint js
-
-const lintTargets = ['app/**/*.json', 'app/**/*.js', '!app/scripts/vendor/**/*.js', 'ui/**/*.js', 'old-ui/**/*.js', 'mascara/src/*.js', 'mascara/server/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js', '!mascara/test/jquery-3.1.0.min.js']
-
-gulp.task('lint', function () {
-  // Ignoring node_modules, dist/firefox, and docs folders:
-  return gulp.src(lintTargets)
-    .pipe(eslint(fs.readFileSync(path.join(__dirname, '.eslintrc'))))
-    // eslint.format() outputs the lint results to the console.
-    // Alternatively use eslint.formatEach() (see Docs).
-    .pipe(eslint.format())
-    // To have the process exit with an error code (1) on
-    // lint error, return the stream and pipe to failAfterError last.
-    .pipe(eslint.failAfterError())
-});
-
-gulp.task('lint:fix', function () {
-  return gulp.src(lintTargets)
-    .pipe(eslint(Object.assign(fs.readFileSync(path.join(__dirname, '.eslintrc')), {fix: true})))
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
-});
-
 // scss compilation and autoprefixing tasks
 
 gulp.task('build:scss', createScssBuildTask({
@@ -250,7 +221,7 @@ gulp.task('dev:scss', createScssBuildTask({
   pattern: 'ui/app/**/*.scss',
 }))
 
-function createScssBuildTask({ src, dest, devMode, pattern }) {
+function createScssBuildTask ({ src, dest, devMode, pattern }) {
   return function () {
     if (devMode) {
       watch(pattern, async (event) => {
@@ -262,7 +233,7 @@ function createScssBuildTask({ src, dest, devMode, pattern }) {
     return buildScss()
   }
 
-  function buildScss() {
+  function buildScss () {
     return gulp.src(src)
       .pipe(sourcemaps.init())
       .pipe(sass().on('error', sass.logError))
@@ -272,22 +243,22 @@ function createScssBuildTask({ src, dest, devMode, pattern }) {
   }
 }
 
-gulp.task('lint-scss', function() {
+gulp.task('lint-scss', function () {
   return gulp
     .src('ui/app/css/itcss/**/*.scss')
     .pipe(gulpStylelint({
       reporters: [
-        { formatter: 'string', console: true }
+        { formatter: 'string', console: true },
       ],
       fix: true,
-    }));
-});
+    }))
+})
 
 gulp.task('fmt-scss', function () {
   return gulp.src('ui/app/css/itcss/**/*.scss')
     .pipe(stylefmt())
-    .pipe(gulp.dest('ui/app/css/itcss'));
-});
+    .pipe(gulp.dest('ui/app/css/itcss'))
+})
 
 // build js
 
@@ -300,11 +271,11 @@ const buildJsFiles = [
 
 // bundle tasks
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
-createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js'  })
+createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
 createTasksForBuildJsMascara({ taskPrefix: 'build:mascara:js' })
 createTasksForBuildJsMascara({ taskPrefix: 'dev:mascara:js', devMode: true })
 
-function createTasksForBuildJsExtension({ buildJsFiles, taskPrefix, devMode, bundleTaskOpts = {} }) {
+function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
   const rootDir = './app/scripts'
   const nonInpageFiles = buildJsFiles.filter(file => file !== 'inpage')
@@ -322,7 +293,7 @@ function createTasksForBuildJsExtension({ buildJsFiles, taskPrefix, devMode, bun
   createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1, buildPhase2 })
 }
 
-function createTasksForBuildJsMascara({ taskPrefix, devMode, bundleTaskOpts = {} }) {
+function createTasksForBuildJsMascara ({ taskPrefix, devMode, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
   const rootDir = './mascara/src/'
   const buildPhase1 = ['ui', 'proxy', 'background', 'metamascara']
@@ -338,7 +309,7 @@ function createTasksForBuildJsMascara({ taskPrefix, devMode, bundleTaskOpts = {}
   createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1 })
 }
 
-function createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1 = [], buildPhase2 = [] }) {
+function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1 = [], buildPhase2 = [] }) {
   // bundle task for each file
   const jsFiles = [].concat(buildPhase1, buildPhase2)
   jsFiles.forEach((jsFile) => {
@@ -367,7 +338,7 @@ gulp.task('disc', gulp.parallel(buildJsFiles.map(jsFile => `disc:${jsFile}`)))
 
 // clean dist
 
-gulp.task('clean', function clean() {
+gulp.task('clean', function clean () {
   return del(['./dist/*'])
 })
 
@@ -460,7 +431,7 @@ gulp.task('dist',
 
 // task generators
 
-function zipTask(target) {
+function zipTask (target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
     .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
@@ -468,7 +439,7 @@ function zipTask(target) {
   }
 }
 
-function generateBundler(opts, performBundle) {
+function generateBundler (opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
     entries: [opts.filepath],
     plugin: 'browserify-derequire',
@@ -497,7 +468,7 @@ function generateBundler(opts, performBundle) {
   return bundler
 }
 
-function discTask(opts) {
+function discTask (opts) {
   opts = Object.assign({
     buildWithFullPaths: true,
   }, opts)
@@ -508,7 +479,7 @@ function discTask(opts) {
 
   return performBundle
 
-  function performBundle(){
+  function performBundle () {
     // start "disc" build
     const discDir = path.join(__dirname, 'disc')
     mkdirp.sync(discDir)
@@ -523,14 +494,14 @@ function discTask(opts) {
 }
 
 
-function bundleTask(opts) {
+function bundleTask (opts) {
   const bundler = generateBundler(opts, performBundle)
   // output build logs to terminal
   bundler.on('log', gutil.log)
 
   return performBundle
 
-  function performBundle(){
+  function performBundle () {
     let buildStream = bundler.bundle()
 
     // handle errors
@@ -562,7 +533,7 @@ function bundleTask(opts) {
       buildStream = buildStream
       .pipe(uglify({
         mangle: {
-          reserved: [ 'MetamaskInpageProvider' ]
+          reserved: [ 'MetamaskInpageProvider' ],
         },
       }))
     }

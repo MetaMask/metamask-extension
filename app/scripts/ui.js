@@ -14,7 +14,7 @@ const log = require('loglevel')
 
 start().catch(log.error)
 
-async function start() {
+async function start () {
 
   // create platform global
   global.platform = new ExtensionPlatform()

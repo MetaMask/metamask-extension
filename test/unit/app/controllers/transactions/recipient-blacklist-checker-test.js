@@ -28,7 +28,7 @@ describe('Recipient Blacklist Checker', function () {
     it('does not fail on test networks', function () {
       let callCount = 0
       const networks = [ROPSTEN_CODE, RINKEYBY_CODE, KOVAN_CODE]
-      for (let networkId in networks) {
+      for (const networkId in networks) {
         publicAccounts.forEach((account) => {
            recipientBlackListChecker.checkAccount(networkId, account)
             callCount++
@@ -61,7 +61,7 @@ describe('Recipient Blacklist Checker', function () {
       } catch (err) {
         assert.equal(err.message, 'Recipient is a public account')
       }
-    }) 
+    })
 
     it('fails for public account - lowercase', async function () {
       const mainnetId = 1
@@ -72,6 +72,6 @@ describe('Recipient Blacklist Checker', function () {
       } catch (err) {
         assert.equal(err.message, 'Recipient is a public account')
       }
-    }) 
+    })
   })
 })

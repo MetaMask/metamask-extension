@@ -1,20 +1,17 @@
 const assert = require('assert')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
-const EthjsQuery = require('ethjs-query')
 const ObservableStore = require('obs-store')
 const sinon = require('sinon')
 const TransactionController = require('../../../../../app/scripts/controllers/transactions')
-const TxGasUtils = require('../../../../../app/scripts/controllers/transactions/tx-gas-utils')
 const { createTestProviderTools, getTestAccounts } = require('../../../../stub/provider')
 
 const noop = () => true
 const currentNetworkId = 42
-const otherNetworkId = 36
 
 
 describe('Transaction Controller', function () {
-  let txController, provider, providerResultStub, query, fromAccount
+  let txController, provider, providerResultStub, fromAccount
 
   beforeEach(function () {
     providerResultStub = {
@@ -24,7 +21,6 @@ describe('Transaction Controller', function () {
       eth_getCode: '0x',
     }
     provider = createTestProviderTools({ scaffold: providerResultStub }).provider
-    query = new EthjsQuery(provider)
     fromAccount = getTestAccounts()[0]
 
     txController = new TransactionController({
@@ -388,7 +384,7 @@ describe('Transaction Controller', function () {
 
   describe('#retryTransaction', function () {
     it('should create a new txMeta with the same txParams as the original one', function (done) {
-      let txParams = {
+      const txParams = {
         nonce: '0x00',
         from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
         to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',

@@ -1,20 +1,12 @@
 const assert = require('assert')
-const ethUtil = require('ethereumjs-util')
-const EthTx = require('ethereumjs-tx')
-const ObservableStore = require('obs-store')
-const clone = require('clone')
 const { createTestProviderTools } = require('../../../../stub/provider')
 const PendingTransactionTracker = require('../../../../../app/scripts/controllers/transactions/pending-tx-tracker')
 const MockTxGen = require('../../../../lib/mock-tx-gen')
 const sinon = require('sinon')
-const noop = () => true
-const currentNetworkId = 42
-const otherNetworkId = 36
-const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 
 
 describe('PendingTransactionTracker', function () {
-  let pendingTxTracker, txMeta, txMetaNoHash, txMetaNoRawTx, providerResultStub,
+  let pendingTxTracker, txMeta, txMetaNoHash, providerResultStub,
   provider, txMeta3, txList, knownErrors
   this.timeout(10000)
   beforeEach(function () {
@@ -34,11 +26,7 @@ describe('PendingTransactionTracker', function () {
       status: 'signed',
       txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d'},
     }
-    txMetaNoRawTx = {
-      hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-      status: 'signed',
-      txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d'},
-    }
+
     providerResultStub = {}
     provider = createTestProviderTools({ scaffold: providerResultStub }).provider
 
@@ -47,10 +35,10 @@ describe('PendingTransactionTracker', function () {
       nonceTracker: {
         getGlobalLock: async () => {
           return { releaseLock: () => {} }
-        }
+        },
       },
-      getPendingTransactions: () => {return []},
-      getCompletedTransactions: () => {return []},
+      getPendingTransactions: () => { return [] },
+      getCompletedTransactions: () => { return [] },
       publishTransaction: () => {},
     })
   })
@@ -133,22 +121,20 @@ describe('PendingTransactionTracker', function () {
   })
   describe('#queryPendingTxs', function () {
     it('should call #_checkPendingTxs if their is no oldBlock', function (done) {
-      let newBlock, oldBlock
-      newBlock = { number: '0x01' }
+      let oldBlock
+      const newBlock = { number: '0x01' }
       pendingTxTracker._checkPendingTxs = done
       pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
     })
     it('should call #_checkPendingTxs if oldBlock and the newBlock have a diff of greater then 1', function (done) {
-      let newBlock, oldBlock
-      oldBlock = { number: '0x01' }
-      newBlock = { number: '0x03' }
+      const oldBlock = { number: '0x01' }
+      const newBlock = { number: '0x03' }
       pendingTxTracker._checkPendingTxs = done
       pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
     })
     it('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less', function (done) {
-      let newBlock, oldBlock
-      oldBlock = { number: '0x1' }
-      newBlock = { number: '0x2' }
+      const oldBlock = { number: '0x1' }
+      const newBlock = { number: '0x2' }
       pendingTxTracker._checkPendingTxs = () => {
         const err = new Error('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less')
         done(err)
@@ -189,7 +175,7 @@ describe('PendingTransactionTracker', function () {
       txMeta2.id = 2
       txMeta3.id = 3
       txList = [txMeta, txMeta2, txMeta3].map((tx) => {
-        tx.processed = new Promise ((resolve) => { tx.resolve = resolve })
+        tx.processed = new Promise((resolve) => { tx.resolve = resolve })
         return tx
       })
     })
@@ -197,7 +183,6 @@ describe('PendingTransactionTracker', function () {
     it('should warp all txMeta\'s in #_checkPendingTx', function (done) {
       pendingTxTracker.getPendingTransactions = () => txList
       pendingTxTracker._checkPendingTx = (tx) => { tx.resolve(tx) }
-      const list = txList.map
       Promise.all(txList.map((tx) => tx.processed))
       .then((txCompletedList) => done())
       .catch(done)
@@ -207,11 +192,11 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#resubmitPendingTxs', function () {
-    const blockStub = { number: '0x0' };
+    const blockStub = { number: '0x0' }
     beforeEach(function () {
     const txMeta2 = txMeta3 = txMeta
     txList = [txMeta, txMeta2, txMeta3].map((tx) => {
-        tx.processed = new Promise ((resolve) => { tx.resolve = resolve })
+        tx.processed = new Promise((resolve) => { tx.resolve = resolve })
         return tx
       })
     })
@@ -228,7 +213,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.resubmitPendingTxs(blockStub)
     })
     it('should not emit \'tx:failed\' if the txMeta throws a known txError', function (done) {
-      knownErrors =[
+      knownErrors = [
         // geth
         '     Replacement transaction Underpriced            ',
         '       known transaction',
@@ -275,7 +260,7 @@ describe('PendingTransactionTracker', function () {
   })
   describe('#_resubmitTx', function () {
     const mockFirstRetryBlockNumber = '0x1'
-    let txMetaToTestExponentialBackoff
+    let txMetaToTestExponentialBackoff, enoughBalance
 
     beforeEach(() => {
       pendingTxTracker.getBalance = (address) => {
@@ -298,7 +283,7 @@ describe('PendingTransactionTracker', function () {
     })
 
     it('should publish the transaction', function (done) {
-      const enoughBalance = '0x100000'
+      enoughBalance = '0x100000'
 
       // Stubbing out current account state:
       // Adding the fake tx:
@@ -313,7 +298,7 @@ describe('PendingTransactionTracker', function () {
     })
 
     it('should not publish the transaction if the limit of retries has been exceeded', function (done) {
-      const enoughBalance = '0x100000'
+      enoughBalance = '0x100000'
       const mockLatestBlockNumber = '0x5'
 
       pendingTxTracker._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
@@ -327,7 +312,7 @@ describe('PendingTransactionTracker', function () {
     })
 
     it('should publish the transaction if the number of blocks since last retry exceeds the last set limit', function (done) {
-      const enoughBalance = '0x100000'
+      enoughBalance = '0x100000'
       const mockLatestBlockNumber = '0x11'
 
       pendingTxTracker._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
@@ -342,8 +327,8 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#_checkIfNonceIsTaken', function () {
-    beforeEach ( function () {
-      let confirmedTxList = [{
+    beforeEach(function () {
+      const confirmedTxList = [{
         id: 1,
         hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
         status: 'confirmed',

@@ -684,7 +684,7 @@ function reduceApp (state, action) {
     case actions.GAS_LOADING_FINISHED:
       return extend(appState, {
         gasIsLoading: false,
-      }) 
+      })
 
     default:
       return appState

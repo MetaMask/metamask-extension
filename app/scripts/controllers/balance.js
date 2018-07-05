@@ -60,7 +60,7 @@ class BalanceController {
    * Sets up listeners and subscriptions which should trigger an update of ethBalance. These updates include:
    * - when a transaction changes state to 'submitted', 'confirmed' or 'failed'
    * - when the current account changes (i.e. a new account is selected)
-   * - when there is a block update 
+   * - when there is a block update
    *
    * @private
    *
@@ -100,7 +100,7 @@ class BalanceController {
 
   /**
    * Gets the pending transactions (i.e. those with a 'submitted' status). These are accessed from the
-   * TransactionController passed to this BalanceController during construction. 
+   * TransactionController passed to this BalanceController during construction.
    *
    * @private
    * @returns {Promise<array>} Promises an array of transaction objects.

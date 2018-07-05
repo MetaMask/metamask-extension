@@ -1,6 +1,5 @@
 const reactTriggerChange = require('../../lib/react-trigger-change')
 const {
-  timeout,
   queryAsync,
   findAsync,
 } = require('../../lib/util')
@@ -15,7 +14,7 @@ QUnit.test('renders list items successfully', (assert) => {
   })
 })
 
-async function runTxListItemsTest(assert, done) {
+async function runTxListItemsTest (assert, done) {
   console.log('*** start runTxListItemsTest')
   const selectState = await queryAsync($, 'select')
   selectState.val('tx list items')
