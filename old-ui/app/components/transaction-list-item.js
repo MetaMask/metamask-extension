@@ -184,7 +184,7 @@ function domainField (txParams) {
   ])
 }
 
-function recipientField (txParams, transaction, isTx, isMsg) {
+function recipientField (txParams, transaction, _, isMsg) {
   let message
 
   if (isMsg) {

@@ -98,7 +98,7 @@ CurrencyDisplay.prototype.handleChange = function (newVal) {
   this.props.onChange(this.getAmount(newVal))
 }
 
-CurrencyDisplay.prototype.getInputWidth = function (valueToRender, readOnly) {
+CurrencyDisplay.prototype.getInputWidth = function (valueToRender) {
   const valueString = String(valueToRender)
   const valueLength = valueString.length || 1
   const decimalPointDeficit = valueString.match(/\./) ? -0.5 : 0

@@ -116,7 +116,7 @@ BnAsDecimalInput.prototype.render = function () {
   )
 }
 
-BnAsDecimalInput.prototype.setValid = function (message) {
+BnAsDecimalInput.prototype.setValid = function () {
   this.setState({ invalid: null })
 }
 

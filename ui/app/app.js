@@ -365,7 +365,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch) {
   return {
     dispatch,
     hideSidebar: () => dispatch(actions.hideSidebar()),

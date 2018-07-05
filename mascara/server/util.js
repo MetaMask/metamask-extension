@@ -8,7 +8,7 @@ module.exports = {
 
 
 function serveBundle (server, path, bundle) {
-  server.get(path, function (req, res) {
+  server.get(path, function (_, res) {
     res.setHeader('Content-Type', 'application/javascript; charset=UTF-8')
     res.send(bundle.latest)
   })

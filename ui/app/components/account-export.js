@@ -112,7 +112,7 @@ ExportAccountView.prototype.render = function () {
           webkitUserSelect: 'text',
           maxWidth: '275px',
         },
-        onClick: function (event) {
+        onClick: function () {
           copyToClipboard(ethUtil.stripHexPrefix(accountDetail.privateKey))
         },
       }, plainKey),

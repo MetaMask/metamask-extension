@@ -6,7 +6,7 @@ const actions = require('../../ui/app/actions')
 
 module.exports = connect(mapStateToProps)(InfoScreen)
 
-function mapStateToProps (state) {
+function mapStateToProps () {
   return {}
 }
 
@@ -29,7 +29,7 @@ InfoScreen.prototype.render = function () {
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: (event) => {
+          onClick: () => {
             state.dispatch(actions.goHome())
           },
         }),

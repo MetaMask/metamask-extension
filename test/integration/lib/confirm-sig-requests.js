@@ -13,7 +13,7 @@ QUnit.test('successful confirmation of sig requests', (assert) => {
   })
 })
 
-async function runConfirmSigRequestsTest (assert, done) {
+async function runConfirmSigRequestsTest (assert) {
   const selectState = await queryAsync($, 'select')
   selectState.val('confirm sig requests')
   reactTriggerChange(selectState[0])

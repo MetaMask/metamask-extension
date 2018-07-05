@@ -4,7 +4,7 @@ const TypedMessageManager = require('./lib/typed-message-manager')
 
 class UserActionController {
 
-  constructor (opts = {}) {
+  constructor () {
 
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()

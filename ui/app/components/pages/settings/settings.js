@@ -218,7 +218,7 @@ class Settings extends Component {
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.btn-primary.btn--large.settings__button', {
-              onClick (event) {
+              onClick () {
                 window.logStateString((err, result) => {
                   if (err) {
                     this.state.dispatch(actions.displayWarning(this.context.t('stateLogError')))

@@ -705,7 +705,7 @@ function signTypedMsg (msgData) {
 function signTx (txData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    global.ethQuery.sendTransaction(txData, (err, data) => {
+    global.ethQuery.sendTransaction(txData, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.hideWarning())
@@ -1038,7 +1038,7 @@ function cancelTypedMsg (msgData) {
 function cancelTx (txData) {
   return dispatch => {
     log.debug(`background.cancelTransaction`)
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       background.cancelTransaction(txData.id, () => {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
@@ -1495,7 +1495,7 @@ function retryTransaction (txId) {
 function setProviderType (type) {
   return (dispatch) => {
     log.debug(`background.setProviderType`, type)
-    background.setProviderType(type, (err, result) => {
+    background.setProviderType(type, (err) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
@@ -1517,7 +1517,7 @@ function updateProviderType (type) {
 function setRpcTarget (newRpc) {
   return (dispatch) => {
     log.debug(`background.setRpcTarget: ${newRpc}`)
-    background.setCustomRpc(newRpc, (err, result) => {
+    background.setCustomRpc(newRpc, (err) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
@@ -1531,7 +1531,7 @@ function setRpcTarget (newRpc) {
 function addToAddressBook (recipient, nickname = '') {
   log.debug(`background.addToAddressBook`)
   return (dispatch) => {
-    background.setAddressBook(recipient, nickname, (err, result) => {
+    background.setAddressBook(recipient, nickname, (err) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Address book failed to update'))
@@ -1764,7 +1764,7 @@ function pairUpdate (coin) {
   }
 }
 
-function shapeShiftSubview (network) {
+function shapeShiftSubview () {
   var pair = 'btc_eth'
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
@@ -1800,7 +1800,7 @@ function coinShiftRquest (data, marketData) {
 }
 
 function buyWithShapeShift (data) {
-  return dispatch => new Promise((resolve, reject) => {
+  return () => new Promise((resolve, reject) => {
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
       if (response.error) {
         return reject(response.error)
@@ -1847,7 +1847,7 @@ function shapeShiftRequest (query, options, cb) {
   !options ? options = {} : null
   options.method ? method = options.method : method = 'GET'
 
-  var requestListner = function (request) {
+  var requestListner = function () {
     try {
       queryResponse = JSON.parse(this.responseText)
       cb ? cb(queryResponse) : null

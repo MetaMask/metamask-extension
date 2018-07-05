@@ -43,7 +43,7 @@ AddTokenScreen.prototype.render = function () {
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: (event) => {
+          onClick: () => {
             props.dispatch(actions.goHome())
           },
         }),
@@ -150,7 +150,7 @@ AddTokenScreen.prototype.render = function () {
             style: {
               alignSelf: 'center',
             },
-            onClick: (event) => {
+            onClick: () => {
               const valid = this.validateInputs()
               if (!valid) return
 

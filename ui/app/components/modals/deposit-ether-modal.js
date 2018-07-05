@@ -41,7 +41,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 inherits(DepositEtherModal, Component)
-function DepositEtherModal (props, context) {
+function DepositEtherModal (_, context) {
   Component.call(this)
 
   // need to set after i18n locale has loaded

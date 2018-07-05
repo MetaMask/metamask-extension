@@ -258,7 +258,7 @@ function bnMultiplyByFraction (targetBN, numerator, denominator) {
   return targetBN.mul(numBN).div(denomBN)
 }
 
-function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimit) {
+function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16)) {
   const gasBn = hexToBn(gas)
   const gasPriceBn = hexToBn(gasPrice)
   const txFeeBn = gasBn.mul(gasPriceBn)
@@ -287,7 +287,7 @@ function exportAsFile (filename, data) {
 }
 
 function allNull (obj) {
-  return Object.entries(obj).every(([key, value]) => value === null)
+  return Object.entries(obj).every(([, value]) => value === null)
 }
 
 function getTokenAddressFromTokenObject (token) {

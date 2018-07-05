@@ -11,7 +11,7 @@ SeedImportSubview.contextTypes = {
 module.exports = connect(mapStateToProps)(SeedImportSubview)
 
 
-function mapStateToProps (state) {
+function mapStateToProps () {
   return {}
 }
 

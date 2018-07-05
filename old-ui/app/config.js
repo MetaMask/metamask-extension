@@ -120,7 +120,7 @@ ConfigScreen.prototype.render = function () {
               style: {
                 alignSelf: 'center',
               },
-              onClick (event) {
+              onClick () {
                 window.logStateString((err, result) => {
                   if (err) {
                     state.dispatch(actions.displayWarning('Error in retrieving state logs.'))

@@ -35,7 +35,7 @@ module.exports = class TypedMessageManager extends EventEmitter {
    * @property {array} messages Holds all messages that have been created by this TypedMessage
    *
    */
-  constructor (opts) {
+  constructor () {
     super()
     this.memStore = new ObservableStore({
       unapprovedTypedMessages: {},

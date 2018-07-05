@@ -42,7 +42,7 @@ describe('PendingTx', function () {
   const props = {
     txData,
     computedBalances,
-    sendTransaction: (txMeta, event) => {
+    sendTransaction: (txMeta) => {
       // Assert changes:
       const result = ethUtil.addHexPrefix(txMeta.txParams.gasPrice)
       assert.notEqual(result, gasPrice, 'gas price should change')

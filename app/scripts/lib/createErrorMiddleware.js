@@ -52,8 +52,8 @@ function sanitizeRPCError (error, override) {
  * @param {MiddlewareConfig} [config={override:true}] - Middleware configuration
  * @returns {Function} json-rpc-engine middleware function
  */
-function createErrorMiddleware ({ override = true } = {}) {
-  return (req, res, next) => {
+function createErrorMiddleware () {
+  return (_, res, next) => {
     next(done => {
       const { error } = res
       if (!error) { return done() }

@@ -30,7 +30,7 @@ RadioList.prototype.render = function () {
           marginRight: '5px',
         },
       },
-        labels.map((lable, i) => {
+        labels.map((lable) => {
           let isSelcted = (this.state !== null)
           isSelcted = isSelcted ? (this.state.selected === lable) : (defaultFocus === lable)
           return h(isSelcted ? activeClass : inactiveClass, {

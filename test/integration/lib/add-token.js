@@ -17,7 +17,7 @@ QUnit.test('successful add token flow', (assert) => {
     })
 })
 
-async function runAddTokenFlowTest (assert, done) {
+async function runAddTokenFlowTest (assert) {
   const selectState = await queryAsync($, 'select')
   selectState.val('add token')
   reactTriggerChange(selectState[0])

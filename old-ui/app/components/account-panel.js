@@ -69,7 +69,7 @@ AccountPanel.prototype.render = function () {
   )
 }
 
-function balanceOrFaucetingIndication (account, isFauceting) {
+function balanceOrFaucetingIndication (account) {
   // Temporarily deactivating isFauceting indication
   // because it shows fauceting for empty restored accounts.
   if (/* isFauceting*/ false) {

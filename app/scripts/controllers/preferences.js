@@ -155,7 +155,7 @@ class PreferencesController {
    *
    */
   setSelectedAddress (_address) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const address = normalizeAddress(_address)
       this.store.updateState({ selectedAddress: address })
       resolve()
@@ -198,7 +198,7 @@ class PreferencesController {
     const newEntry = { address, symbol, decimals }
 
     const tokens = this.store.getState().tokens
-    const previousEntry = tokens.find((token, index) => {
+    const previousEntry = tokens.find((token) => {
       return token.address === address
     })
     const previousIndex = tokens.indexOf(previousEntry)
@@ -279,7 +279,7 @@ class PreferencesController {
    *
    */
   setCurrentAccountTab (currentAccountTab) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.store.updateState({ currentAccountTab })
       resolve()
     })
