@@ -164,6 +164,8 @@ TokenList.prototype.updateBalances = function (tokens) {
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+  this.tracker.removeListener('update', this.balanceUpdater)
+  this.tracker.removeListener('error', this.showError)
 }
 
 // function uniqueMergeTokens (tokensA, tokensB = []) {

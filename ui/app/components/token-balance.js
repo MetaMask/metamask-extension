@@ -110,5 +110,7 @@ TokenBalance.prototype.updateBalance = function (tokens = []) {
 TokenBalance.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+  this.tracker.removeListener('update', this.balanceUpdater)
+  this.tracker.removeListener('error', this.showError)
 }
 
