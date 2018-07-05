@@ -664,6 +664,9 @@
   "restoreVault": {
     "message": "Restore Vault"
   },
+  "restoreAccountWithSeed": {
+    "message": "Restore your Account with Seed Phrase"
+  },
   "required": {
     "message": "Required"
   },
@@ -672,6 +675,9 @@
   },
   "walletSeed": {
     "message": "Wallet Seed"
+  },
+  "restore": {
+    "message": "Restore"
   },
   "revealSeedWords": {
     "message": "Reveal Seed Words"
@@ -776,6 +782,9 @@
   },
   "sendTokens": {
     "message": "Send Tokens"
+  },
+  "separateEachWord": {
+    "message": "Separate each word with a single space"
   },
   "onlySendToEtherAddress": {
     "message": "Only send ETH to an Ethereum address."
