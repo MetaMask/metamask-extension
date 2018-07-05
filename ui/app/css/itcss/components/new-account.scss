@@ -153,6 +153,19 @@
   }
 }
 
+.hw-unsupported-browser {
+  &__title {
+    padding-top: 10px;
+  }
+
+  &__msg {
+    font-size: 14px;
+    color: #9b9b9b;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+}
+
 .hw-account-list {
   display: flex;
   flex: 1;
