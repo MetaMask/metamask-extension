@@ -54,6 +54,8 @@ function TxListItem () {
     fiatTotal: null,
     isTokenTx: null,
   }
+
+  this.unmounted = false
 }
 
 TxListItem.prototype.componentDidMount = async function () {
@@ -67,7 +69,14 @@ TxListItem.prototype.componentDidMount = async function () {
     ? await this.getSendTokenTotal()
     : this.getSendEtherTotal()
 
+  if (this.unmounted) {
+    return
+  }
   this.setState({ total, fiatTotal, isTokenTx })
+}
+
+TxListItem.prototype.componentWillUnmount = function () {
+  this.unmounted = true
 }
 
 TxListItem.prototype.getAddressText = function () {
