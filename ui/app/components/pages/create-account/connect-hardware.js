@@ -179,17 +179,18 @@ class ConnectHardwareForm extends Component {
 
   renderUnsupportedBrowser () {
     return (
-      [h('div.hw-unsupported-browser', [
-        h('h3.hw-unsupported-browser__title', {}, 'Bummer! Your Browser is not supported...'),
-        h('p.hw-unsupported-browser__msg', {}, 'You need to use Metamask on Google Chrome in order to connect to your TREZOR device.'),
-      ]),
-      h(
-        'button.btn-primary.btn--large',
-        { onClick: () => global.platform.openWindow({
-          url: 'https://google.com/chrome',
-        }), style: { margin: 12 } },
-        'Download Google Chrome'
-      )]
+      [
+        h('div.hw-unsupported-browser', [
+          h('h3.hw-unsupported-browser__title', {}, this.context.t('browserNotSupported')),
+          h('p.hw-unsupported-browser__msg', {}, this.context.t('chromeRequiredForTrezor')),
+        ]),
+        h(
+          'button.btn-primary.btn--large',
+          { onClick: () => global.platform.openWindow({
+            url: 'https://google.com/chrome',
+          }), style: { margin: 12 } },
+          this.context.t('downloadGoogleChrome')
+        )]
     )
   }
 

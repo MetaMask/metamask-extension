@@ -80,6 +80,9 @@
   "borrowDharma": {
     "message": "Borrow With Dharma (Beta)"
   },
+  "browserNotSupported": {
+    "message": "Bummer! Your Browser is not supported..."
+  },
   "builtInCalifornia": {
     "message": "MetaMask is designed and built in California."
   },
@@ -106,6 +109,9 @@
   },
   "close": {
     "message": "Close"
+  },
+  "chromeRequiredForTrezor":{
+    "message": "You need to use Metamask on Google Chrome in order to connect to your TREZOR device."
   },
   "confirm": {
     "message": "Confirm"
@@ -258,6 +264,9 @@
   },
   "done": {
     "message": "Done"
+  },
+  "downloadGoogleChrome": {
+    "message": "Download Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Download State Logs"
