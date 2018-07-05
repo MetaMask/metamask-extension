@@ -2,26 +2,37 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import TextField from '../../text-field'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
+import getCaretCoordinates from 'textarea-caret'
+import { EventEmitter } from 'events'
+import Mascot from '../../mascot'
+import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../../routes'
 
-const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
-const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
-const getCaretCoordinates = require('textarea-caret')
-const EventEmitter = require('events').EventEmitter
-const Mascot = require('../../mascot')
-const { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } = require('../../../routes')
 
-class UnlockPage extends Component {
+export default class UnlockPage extends Component {
+
+  static propTypes = {
+    forgotPassword: PropTypes.func,
+    tryUnlockMetamask: PropTypes.func,
+    markPasswordForgotten: PropTypes.func,
+    history: PropTypes.object,
+    isUnlocked: PropTypes.bool,
+    t: PropTypes.func,
+    useOldInterface: PropTypes.func,
+  };
+
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
+
+  state = {
+    password: '',
+    error: null,
+  };
 
   constructor (props) {
     super(props)
-
-    this.state = {
-      password: '',
-      error: null,
-    }
 
     this.animationEventEmitter = new EventEmitter()
   }
@@ -70,6 +81,17 @@ class UnlockPage extends Component {
     })
   }
 
+  handleLinkClick () {
+    const { markPasswordForgotten, history } = this.props
+
+    markPasswordForgotten()
+    history.push(RESTORE_VAULT_ROUTE)
+
+    if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+      global.platform.openExtensionInBrowser()
+    }
+  }
+
   renderSubmitButton () {
     const style = {
       backgroundColor: '#f7861c',
@@ -98,7 +120,7 @@ class UnlockPage extends Component {
   }
 
   render () {
-    const { error } = this.state
+    const { error, password } = this.state
 
     return (
       <div className="unlock-page__container">
@@ -122,8 +144,8 @@ class UnlockPage extends Component {
               id="password"
               label={this.context.t('password')}
               type="password"
-              value={this.state.password}
-              onChange={event => this.handleInputChange(event)}
+              value={password}
+              onChange={this.handleInputChange.bind(this)}
               error={error}
               autoFocus
               autoComplete="current-password"
@@ -135,27 +157,13 @@ class UnlockPage extends Component {
           <div className="unlock-page__links">
             <div
               className="unlock-page__link"
-              onClick={() => {
-                this.props.markPasswordForgotten()
-                this.props.history.push(RESTORE_VAULT_ROUTE)
-
-                if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
-                  global.platform.openExtensionInBrowser()
-                }
-              }}
+              onClick={this.handleLinkClick.bind(this)}
             >
               { this.context.t('restoreFromSeed') }
             </div>
             <div
               className="unlock-page__link unlock-page__link--import"
-              onClick={() => {
-                this.props.markPasswordForgotten()
-                this.props.history.push(RESTORE_VAULT_ROUTE)
-
-                if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
-                  global.platform.openExtensionInBrowser()
-                }
-              }}
+              onClick={this.handleLinkClick.bind(this)}
             >
               { this.context.t('importUsingSeed') }
             </div>
@@ -165,15 +173,3 @@ class UnlockPage extends Component {
     )
   }
 }
-
-UnlockPage.propTypes = {
-  forgotPassword: PropTypes.func,
-  tryUnlockMetamask: PropTypes.func,
-  markPasswordForgotten: PropTypes.func,
-  history: PropTypes.object,
-  isUnlocked: PropTypes.bool,
-  t: PropTypes.func,
-  useOldInterface: PropTypes.func,
-}
-
-export default UnlockPage
