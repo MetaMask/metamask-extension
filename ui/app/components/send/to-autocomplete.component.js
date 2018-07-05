@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import AccountListItem from '../send_/account-list-item/account-list-item.component'
 
 
@@ -107,7 +108,9 @@ export default class ToAutoComplete extends Component {
     return (
       <div className={'send-v2__to-autocomplete'}>
         <input
-          className={'send-v2__to-autocomplete__input' + (inError ? `send-v2__error-border` : '')}
+          className={classnames('send-v2__to-autocomplete__input', {
+            'send-v2__error-border': inError,
+          })}
           placeholder={this.context.t('recipientAddress')}
           value={to}
           onChange={event => onChange(event.target.value)}
