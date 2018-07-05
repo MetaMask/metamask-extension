@@ -335,7 +335,7 @@ describe('Metamask popup page', function () {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
-  async function checkBrowserForConsoleErrors() {
+  async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly

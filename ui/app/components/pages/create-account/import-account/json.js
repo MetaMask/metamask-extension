@@ -109,12 +109,13 @@ class JsonImportSubview extends Component {
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
           history.push(DEFAULT_ROUTE)
+          displayWarning(null)
         } else {
           displayWarning('Error importing account.')
           setSelectedAddress(firstAddress)
         }
       })
-      .catch(err => displayWarning(err))
+      .catch(err => err && displayWarning(err.message || err))
   }
 }
 

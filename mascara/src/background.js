@@ -37,7 +37,7 @@ const dbController = new DbController({
 
 start().catch(log.error)
 
-async function start() {
+async function start () {
   log.debug('MetaMask initializing...')
   const initState = await loadStateFromPersistence()
   await setupController(initState)

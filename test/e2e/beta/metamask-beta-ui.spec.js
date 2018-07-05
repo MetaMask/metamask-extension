@@ -28,7 +28,6 @@ describe('MetaMask', function () {
   const tinyDelayMs = 1000
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
-  const waitingNewPageDelayMs = regularDelayMs * 30
 
   this.timeout(0)
   this.bail(true)
@@ -100,15 +99,21 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       // Close all other tabs
-      let [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
-      newUi = newUi || infoPage
+      const [oldUi, tab1, tab2] = await driver.getAllWindowHandles()
       await driver.switchTo().window(oldUi)
       await driver.close()
-      if (infoPage !== newUi) {
-        await driver.switchTo().window(infoPage)
+
+      await driver.switchTo().window(tab1)
+      const tab1Url = await driver.getCurrentUrl()
+      if (tab1Url.match(/metamask.io/)) {
+        await driver.switchTo().window(tab1)
         await driver.close()
+        await driver.switchTo().window(tab2)
+      } else if (tab2) {
+        await driver.switchTo().window(tab2)
+        await driver.close()
+        await driver.switchTo().window(tab1)
       }
-      await driver.switchTo().window(newUi)
       await delay(regularDelayMs)
 
       const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
@@ -239,7 +244,7 @@ describe('MetaMask', function () {
 
         await word10.click()
         await delay(tinyDelayMs)
-      
+
         const word11 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[11]}')]`), 10000)
         await word11.click()
         await delay(tinyDelayMs)
@@ -275,7 +280,7 @@ describe('MetaMask', function () {
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       await delay(regularDelayMs)
 
-      let accountModal = await driver.findElement(By.css('span .modal'))
+      const accountModal = await driver.findElement(By.css('span .modal'))
 
       await driver.executeScript("document.querySelector('.account-modal-close').click()")
 
@@ -493,7 +498,7 @@ describe('MetaMask', function () {
       await configureGas.click()
       await delay(regularDelayMs)
 
-      let gasModal = await driver.findElement(By.css('span .modal'))
+      const gasModal = await driver.findElement(By.css('span .modal'))
       await driver.wait(until.elementLocated(By.css('.send-v2__customize-gas__title')))
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
@@ -694,7 +699,7 @@ describe('MetaMask', function () {
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
         await driver.wait(until.elementTextMatches(txValues[0], /50\sTST/), 10000)
       }
-      
+
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed|Failed/), 10000)
       assert.equal(await tx.getText(), 'Confirmed')
@@ -706,7 +711,7 @@ describe('MetaMask', function () {
     it('sends an already created token', async () => {
      openNewPage(driver, `https://tokenfactory.surge.sh/#/token/${tokenAddress}`)
 
-      const [extension, tokenFactory] = await driver.getAllWindowHandles()
+      const [extension] = await driver.getAllWindowHandles()
 
       const [
         transferToAddress,
@@ -753,7 +758,7 @@ describe('MetaMask', function () {
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
 
       // Needed for different behaviour of input in different versions of firefox
-      const gasLimitInputValue = await gasLimitInput.getAttribute('value') 
+      const gasLimitInputValue = await gasLimitInput.getAttribute('value')
       if (gasLimitInputValue === '600001') {
         await gasLimitInput.sendKeys(Key.BACK_SPACE)
       }

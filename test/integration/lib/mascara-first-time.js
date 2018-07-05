@@ -42,7 +42,7 @@ async function runFirstTimeUsageTest (assert, done) {
   assert.equal(created.textContent, 'Your unique account image', 'unique image screen')
 
   // Agree button
-  let button = (await findAsync(app, 'button'))[0]
+  const button = (await findAsync(app, 'button'))[0]
   assert.ok(button, 'button present')
   button.click()
 

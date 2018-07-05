@@ -12,7 +12,6 @@ const {
 } = require('../func')
 const {
   checkBrowserForConsoleErrors,
-  loadExtension,
   verboseReportOnFailure,
   findElement,
   findElements,
@@ -22,14 +21,12 @@ const {
 describe('Using MetaMask with an existing account', function () {
   let extensionId
   let driver
-  let tokenAddress
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
   const testPrivateKey2 = '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
-  const waitingNewPageDelayMs = regularDelayMs * 10
 
   this.timeout(0)
   this.bail(true)
@@ -98,15 +95,16 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
 
       // Close all other tabs
-      let [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
-      newUi = newUi || infoPage
+      const [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
+
+      const newUiOrInfoPage = newUi || infoPage
       await driver.switchTo().window(oldUi)
       await driver.close()
-      if (infoPage !== newUi) {
+      if (infoPage !== newUiOrInfoPage) {
         await driver.switchTo().window(infoPage)
         await driver.close()
       }
-      await driver.switchTo().window(newUi)
+      await driver.switchTo().window(newUiOrInfoPage)
       await delay(regularDelayMs)
 
       const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
@@ -322,5 +320,5 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
     })
   })
-  
+
 })
