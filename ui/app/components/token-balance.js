@@ -98,6 +98,10 @@ TokenBalance.prototype.componentDidUpdate = function (nextProps) {
 }
 
 TokenBalance.prototype.updateBalance = function (tokens = []) {
+  if (!this.tracker.running) {
+    return
+  }
+
   const [{ string, symbol }] = tokens
 
   this.setState({

@@ -158,6 +158,9 @@ TokenList.prototype.componentDidUpdate = function (nextProps) {
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
+  if (!this.tracker.running) {
+    return
+  }
   this.setState({ tokens, isLoading: false })
 }
 
