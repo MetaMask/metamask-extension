@@ -33,7 +33,7 @@ const NoticeScreen = require('./components/pages/notice')
 const Loading = require('./components/loading-screen')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
-const AccountMenu = require('./components/account-menu')
+const AccountMenu = require('./components/account-menu').default
 
 // Global Modals
 const Modal = require('./components/modals/index').Modal

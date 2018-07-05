@@ -1,51 +1,98 @@
-const inherits = require('util').inherits
-const Component = require('react').Component
-const h = require('react-hyperscript')
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
-inherits(Menu, Component)
-function Menu () { Component.call(this) }
 
-Menu.prototype.render = function () {
-  const { className = '', children, isShowing } = this.props
-  return isShowing
-    ? h('div', { className: `menu ${className}` }, children)
-    : h('noscript')
+export class Menu extends Component {
+
+  static propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]),
+    isShowing: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    className: '',
+  };
+
+  render () {
+    const { className, children, isShowing } = this.props
+    return isShowing
+      ? <div className={classnames('menu', className)}>{children}</div>
+      : <noscript/>
+  }
+
 }
 
-inherits(Item, Component)
-function Item () { Component.call(this) }
+export class Item extends Component {
 
-Item.prototype.render = function () {
-  const {
-    icon,
-    children,
-    text,
-    className = '',
-    onClick,
-  } = this.props
-  const itemClassName = `menu__item ${className} ${onClick ? 'menu__item--clickable' : ''}`
-  const iconComponent = icon ? h('div.menu__item__icon', [icon]) : null
-  const textComponent = text ? h('div.menu__item__text', text) : null
+  static propTypes = {
+    className: PropTypes.string,
+    icon: PropTypes.object,
+    text: PropTypes.string,
+    onClick: PropTypes.func,
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]),
+  };
 
-  return children
-    ? h('div', { className: itemClassName, onClick }, children)
-    : h('div.menu__item', { className: itemClassName, onClick }, [ iconComponent, textComponent ]
-      .filter(d => Boolean(d))
+  static defaultProps = {
+    className: '',
+  };
+
+  render () {
+    const {
+      icon,
+      children,
+      text,
+      className,
+      onClick,
+    } = this.props
+
+    return (
+      <div
+        className={classnames(className, 'menu__item', {
+          'menu__item--clickable': onClick,
+        })}
+        onClick={onClick}>
+        {children || [
+          icon ? <div className={'menu__item__icon'} key={'icon'}>{icon}</div> : null,
+          text ? <div className={'menu__item__text'} key={'text'}>{text}</div> : null,
+        ].filter(Boolean)}
+      </div>
     )
+  }
+
 }
 
-inherits(Divider, Component)
-function Divider () { Component.call(this) }
+export class Divider extends Component {
 
-Divider.prototype.render = function () {
-  return h('div.menu__divider')
+  render () {
+    return (
+      <div className={'menu__divider'}/>
+    )
+  }
+
 }
 
-inherits(CloseArea, Component)
-function CloseArea () { Component.call(this) }
+export class CloseArea extends Component {
 
-CloseArea.prototype.render = function () {
-  return h('div.menu__close-area', { onClick: this.props.onClick })
+  static propTypes = {
+    onClick: PropTypes.func,
+  };
+
+  render () {
+    const {
+      onClick,
+    } = this.props
+
+    return (
+      <div className={'menu__close-area'} onClick={onClick}/>
+    )
+  }
+
 }
-
-module.exports = { Menu, Item, Divider, CloseArea }
