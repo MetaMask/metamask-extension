@@ -108,6 +108,11 @@ jobs:
             if [ ! -d node_modules ]; then
               sudo npm install -g npm@6
               npm install
+              # If the package-lock.json has changed, die with an error
+              CHANGED_FILES="$(git diff --name-only package-lock.json)"
+              echo "$CHANGED_FILES" | grep --quiet "package-lock.json" && 
+              echo "Looks like package-lock.json has changed. Did you forget to include it on your PR?" && 
+              exit
             fi
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
