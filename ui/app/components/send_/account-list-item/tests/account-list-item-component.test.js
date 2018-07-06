@@ -126,6 +126,8 @@ describe('AccountListItem Component', function () {
           primaryCurrency: 'ETH',
           readOnly: true,
           value: 'mockBalance',
+          inError: false,
+          selectedToken: {},
         }
       )
     })
