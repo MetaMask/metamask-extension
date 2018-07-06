@@ -11,16 +11,17 @@ import {
 export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
     action: PropTypes.string,
-    title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    titleComponent: PropTypes.func,
-    subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    hideSubtitle: PropTypes.bool,
-    errorMessage: PropTypes.string,
-    summaryComponent: PropTypes.node,
-    detailsComponent: PropTypes.node,
     dataComponent: PropTypes.node,
+    detailsComponent: PropTypes.node,
+    errorKey: PropTypes.string,
+    errorMessage: PropTypes.string,
+    hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
+    subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    summaryComponent: PropTypes.node,
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    titleComponent: PropTypes.func,
     warning: PropTypes.string,
   }
 
@@ -52,10 +53,11 @@ export default class ConfirmPageContainerContent extends Component {
   render () {
     const {
       action,
+      errorKey,
+      errorMessage,
       title,
       subtitle,
       hideSubtitle,
-      errorMessage,
       identiconAddress,
       nonce,
       summaryComponent,
@@ -88,9 +90,12 @@ export default class ConfirmPageContainerContent extends Component {
         }
         { this.renderContent() }
         {
-          errorMessage && (
+          (errorKey || errorMessage) && (
             <div className="confirm-page-container-content__error-container">
-              <ConfirmPageContainerError error={errorMessage} />
+              <ConfirmPageContainerError
+                errorMessage={errorMessage}
+                errorKey={errorKey}
+              />
             </div>
           )
         }

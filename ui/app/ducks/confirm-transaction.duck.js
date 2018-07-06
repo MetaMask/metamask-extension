@@ -356,9 +356,13 @@ export function setTransactionToConfirm (transactionId) {
         const tokenData = getTokenData(data)
         dispatch(updateTokenData(tokenData))
 
-        const tokenSymbolData = await getSymbolAndDecimals(tokenAddress, existingTokens) || {}
-        const { symbol: tokenSymbol = '', decimals: tokenDecimals = '' } = tokenSymbolData
-        dispatch(updateTokenProps({ tokenSymbol, tokenDecimals }))
+        try {
+          const tokenSymbolData = await getSymbolAndDecimals(tokenAddress, existingTokens) || {}
+          const { symbol: tokenSymbol = '', decimals: tokenDecimals = '' } = tokenSymbolData
+          dispatch(updateTokenProps({ tokenSymbol, tokenDecimals }))
+        } catch (error) {
+          dispatch(updateTokenProps({ tokenSymbol: '', tokenDecimals: '' }))
+        }
       }
 
       if (txParams.nonce) {

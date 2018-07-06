@@ -2,10 +2,18 @@ import { connect } from 'react-redux'
 import ConfirmTransactionSwitch from './confirm-transaction-switch.component'
 
 const mapStateToProps = state => {
-  const { confirmTransaction } = state
+  const {
+    confirmTransaction: {
+      txData,
+      methodData,
+      fetchingMethodData,
+    },
+  } = state
 
   return {
-    confirmTransaction,
+    txData,
+    methodData,
+    fetchingMethodData,
   }
 }
 

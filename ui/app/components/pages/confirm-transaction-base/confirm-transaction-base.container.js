@@ -8,6 +8,14 @@ import {
   updateGasAndCalculate,
 } from '../../../ducks/confirm-transaction.duck'
 import { clearSend, cancelTx, updateAndApproveTx, showModal } from '../../../actions'
+import {
+  INSUFFICIENT_FUNDS_ERROR_KEY,
+  GAS_LIMIT_TOO_LOW_ERROR_KEY,
+} from '../../../constants/error-keys'
+import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
+import { isBalanceSufficient } from '../../send_/send.utils'
+import { conversionGreaterThan } from '../../../conversion-util'
+import { MIN_GAS_LIMIT_DEC } from '../../send_/send.constants'
 
 const mapStateToProps = (state, props) => {
   const { toAddress: propsToAddress } = props
@@ -89,7 +97,73 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
+const getValidateEditGas = ({ balance, conversionRate, txData }) => {
+  const { txParams: { value: amount } = {} } = txData
+
+  return ({ gasLimit, gasPrice }) => {
+    const gasTotal = getHexGasTotal({ gasLimit, gasPrice })
+    const hasSufficientBalance = isBalanceSufficient({
+      amount,
+      gasTotal,
+      balance,
+      conversionRate,
+    })
+
+    if (!hasSufficientBalance) {
+      return {
+        valid: false,
+        errorKey: INSUFFICIENT_FUNDS_ERROR_KEY,
+      }
+    }
+
+    const gasLimitTooLow = gasLimit && conversionGreaterThan(
+      {
+        value: MIN_GAS_LIMIT_DEC,
+        fromNumericBase: 'dec',
+        conversionRate,
+      },
+      {
+        value: gasLimit,
+        fromNumericBase: 'hex',
+      },
+    )
+
+    if (gasLimitTooLow) {
+      return {
+        valid: false,
+        errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
+      }
+    }
+
+    return {
+      valid: true,
+    }
+  }
+}
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { balance, conversionRate, txData } = stateProps
+  const {
+    showCustomizeGasModal: dispatchShowCustomizeGasModal,
+    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
+    ...otherDispatchProps
+  } = dispatchProps
+
+  const validateEditGas = getValidateEditGas({ balance, conversionRate, txData })
+
+  return {
+    ...stateProps,
+    ...otherDispatchProps,
+    ...ownProps,
+    showCustomizeGasModal: () => dispatchShowCustomizeGasModal({
+      txData,
+      onSubmit: txData => dispatchUpdateGasAndCalculate(txData),
+      validate: validateEditGas,
+    }),
+  }
+}
+
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)
 )(ConfirmTransactionBase)

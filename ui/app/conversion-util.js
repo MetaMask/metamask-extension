@@ -28,8 +28,6 @@ const BN = ethUtil.BN
 const R = require('ramda')
 const { stripHexPrefix } = require('ethereumjs-util')
 
-global.BigNumber = BigNumber
-
 BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
 })

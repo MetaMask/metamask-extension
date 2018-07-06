@@ -26,7 +26,6 @@ export default class Tabs extends Component {
   }
 
   renderTabs () {
-    // const { children } = this.props
     const numberOfTabs = React.Children.count(this.props.children)
 
     return React.Children.map(this.props.children, (child, index) => {

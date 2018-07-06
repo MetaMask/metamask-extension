@@ -16,18 +16,19 @@ import { TOKEN_METHOD_TRANSFER, TOKEN_METHOD_APPROVE } from './confirm-transacti
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {
-    confirmTransaction: PropTypes.object,
+    txData: PropTypes.object,
+    methodData: PropTypes.object,
+    fetchingMethodData: PropTypes.bool,
   }
 
   redirectToTransaction () {
     const {
-      confirmTransaction: {
-        txData,
-        methodData: { name },
-        fetchingMethodData,
-      },
+      txData,
+      methodData: { name },
+      fetchingMethodData,
     } = this.props
     const { id } = txData
+
 
     if (isConfirmDeployContract(txData)) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_DEPLOY_CONTRACT_PATH}`
@@ -62,7 +63,7 @@ export default class ConfirmTransactionSwitch extends Component {
   }
 
   render () {
-    const { confirmTransaction: { txData } } = this.props
+    const { txData } = this.props
 
     if (txData.txParams) {
       return this.redirectToTransaction()

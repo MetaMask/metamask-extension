@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
-import R from 'ramda'
 import Loading from '../../loading-screen'
 import ConfirmTransactionSwitch from '../confirm-transaction-switch'
 import ConfirmTransactionBase from '../confirm-transaction-base'
@@ -30,6 +29,12 @@ export default class ConfirmTransaction extends Component {
     unconfirmedTransactions: PropTypes.array,
     setTransactionToConfirm: PropTypes.func,
     confirmTransaction: PropTypes.object,
+    clearConfirmTransaction: PropTypes.func,
+  }
+
+  getParamsTransactionId () {
+    const { match: { params: { id } = {} } } = this.props
+    return id || null
   }
 
   componentDidMount () {
@@ -52,13 +57,16 @@ export default class ConfirmTransaction extends Component {
 
   componentDidUpdate () {
     const {
-      match: { params: { id: paramsTransactionId } = {} },
       setTransactionToConfirm,
       confirmTransaction: { txData: { id: transactionId } = {} },
+      clearConfirmTransaction,
     } = this.props
+    const paramsTransactionId = this.getParamsTransactionId()
 
     if (paramsTransactionId && transactionId && paramsTransactionId !== transactionId + '') {
+      clearConfirmTransaction()
       setTransactionToConfirm(paramsTransactionId)
+      return
     }
 
     if (!transactionId) {
@@ -70,13 +78,13 @@ export default class ConfirmTransaction extends Component {
     const {
       history,
       unconfirmedTransactions,
-      match: { params: { id: paramsTransactionId } = {} },
       setTransactionToConfirm,
     } = this.props
+    const paramsTransactionId = this.getParamsTransactionId()
 
     if (paramsTransactionId) {
       // Check to make sure params ID is valid
-      const tx = R.find(({ id }) => id + '' === paramsTransactionId)(unconfirmedTransactions)
+      const tx = unconfirmedTransactions.find(({ id }) => id + '' === paramsTransactionId)
 
       if (!tx) {
         history.replace(DEFAULT_ROUTE)
@@ -96,8 +104,12 @@ export default class ConfirmTransaction extends Component {
 
   render () {
     const { confirmTransaction: { txData: { id } } = {} } = this.props
+    const paramsTransactionId = this.getParamsTransactionId()
 
-    return id
+    // Show routes when state.confirmTransaction has been set and when either the ID in the params
+    // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
+    // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
+    return id && (!paramsTransactionId || paramsTransactionId === id + '')
       ? (
         <Switch>
           <Route
@@ -130,7 +142,7 @@ export default class ConfirmTransaction extends Component {
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
             component={ConfTx}
           />
-          <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransactionSwitch} />
+          <Route path="*" component={ConfirmTransactionSwitch} />
         </Switch>
       )
       : <Loading />

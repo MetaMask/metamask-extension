@@ -10,25 +10,23 @@ export default class ConfirmPageContainer extends Component {
   }
 
   static propTypes = {
-    showEdit: PropTypes.bool,
-    onEdit: PropTypes.func,
-    // Sender to Recipient
-    fromName: PropTypes.string,
-    fromAddress: PropTypes.string,
-    toName: PropTypes.string,
-    toAddress: PropTypes.string,
-
-    valid: PropTypes.bool,
-    errorMessage: PropTypes.string,
     // Header
     action: PropTypes.string,
+    hideSubtitle: PropTypes.bool,
+    onEdit: PropTypes.func,
+    showEdit: PropTypes.bool,
+    subtitle: PropTypes.string,
     title: PropTypes.string,
     titleComponent: PropTypes.func,
-    subtitle: PropTypes.string,
-    hideSubtitle: PropTypes.bool,
+    // Sender to Recipient
+    fromAddress: PropTypes.string,
+    fromName: PropTypes.string,
+    toAddress: PropTypes.string,
+    toName: PropTypes.string,
     // Content
-    summaryComponent: PropTypes.node,
     contentComponent: PropTypes.node,
+    errorKey: PropTypes.string,
+    errorMessage: PropTypes.string,
     fiatTransactionAmount: PropTypes.string,
     fiatTransactionFee: PropTypes.string,
     fiatTransactionTotal: PropTypes.string,
@@ -36,14 +34,16 @@ export default class ConfirmPageContainer extends Component {
     ethTransactionFee: PropTypes.string,
     ethTransactionTotal: PropTypes.string,
     onEditGas: PropTypes.func,
-    detailsComponent: PropTypes.node,
     dataComponent: PropTypes.node,
+    detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
+    summaryComponent: PropTypes.node,
     warning: PropTypes.string,
     // Footer
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
+    valid: PropTypes.bool,
   }
 
   render () {
@@ -55,6 +55,7 @@ export default class ConfirmPageContainer extends Component {
       toName,
       toAddress,
       valid,
+      errorKey,
       errorMessage,
       contentComponent,
       action,
@@ -97,6 +98,7 @@ export default class ConfirmPageContainer extends Component {
               detailsComponent={detailsComponent}
               dataComponent={dataComponent}
               errorMessage={errorMessage}
+              errorKey={errorKey}
               identiconAddress={identiconAddress}
               nonce={nonce}
               warning={warning}

@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../confirm-page-container'
-import { formatCurrency, getHexGasTotal } from '../../../helpers/confirm-transaction/util'
+import { formatCurrency } from '../../../helpers/confirm-transaction/util'
 import { isBalanceSufficient } from '../../send_/send.utils'
 import { DEFAULT_ROUTE } from '../../../routes'
-import { conversionGreaterThan } from '../../../conversion-util'
-import { MIN_GAS_LIMIT_DEC } from '../../send_/send.constants'
+import {
+  INSUFFICIENT_FUNDS_ERROR_KEY,
+  TRANSACTION_ERROR_KEY,
+} from '../../../constants/error-keys'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -13,57 +15,58 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   static propTypes = {
+    // react-router props
     match: PropTypes.object,
     history: PropTypes.object,
     // Redux props
-    txData: PropTypes.object,
-    tokenData: PropTypes.object,
-    methodData: PropTypes.object,
-    tokenProps: PropTypes.object,
-    isTxReprice: PropTypes.bool,
-    nonce: PropTypes.string,
-    fromName: PropTypes.string,
-    fromAddress: PropTypes.string,
-    toName: PropTypes.string,
-    toAddress: PropTypes.string,
-    transactionStatus: PropTypes.string,
+    balance: PropTypes.string,
+    cancelTransaction: PropTypes.func,
+    clearConfirmTransaction: PropTypes.func,
+    clearSend: PropTypes.func,
+    conversionRate: PropTypes.number,
+    currentCurrency: PropTypes.string,
+    editTransaction: PropTypes.func,
     ethTransactionAmount: PropTypes.string,
     ethTransactionFee: PropTypes.string,
     ethTransactionTotal: PropTypes.string,
     fiatTransactionAmount: PropTypes.string,
     fiatTransactionFee: PropTypes.string,
     fiatTransactionTotal: PropTypes.string,
+    fromAddress: PropTypes.string,
+    fromName: PropTypes.string,
     hexGasTotal: PropTypes.string,
-    balance: PropTypes.string,
-    currentCurrency: PropTypes.string,
-    conversionRate: PropTypes.number,
-    clearConfirmTransaction: PropTypes.func,
-    cancelTransaction: PropTypes.func,
-    clearSend: PropTypes.func,
+    isTxReprice: PropTypes.bool,
+    methodData: PropTypes.object,
+    nonce: PropTypes.string,
     sendTransaction: PropTypes.func,
-    editTransaction: PropTypes.func,
     showCustomizeGasModal: PropTypes.func,
-    updateGasAndCalculate: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
+    toAddress: PropTypes.string,
+    tokenData: PropTypes.object,
+    tokenProps: PropTypes.object,
+    toName: PropTypes.string,
+    transactionStatus: PropTypes.string,
+    txData: PropTypes.object,
     // Component props
     action: PropTypes.string,
-    hideDetails: PropTypes.bool,
-    hideData: PropTypes.bool,
-    detailsComponent: PropTypes.node,
-    dataComponent: PropTypes.node,
-    summaryComponent: PropTypes.node,
     contentComponent: PropTypes.node,
-    title: PropTypes.string,
-    subtitle: PropTypes.string,
-    hideSubtitle: PropTypes.bool,
-    valid: PropTypes.bool,
+    dataComponent: PropTypes.node,
+    detailsComponent: PropTypes.node,
+    errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    warning: PropTypes.string,
+    hideData: PropTypes.bool,
+    hideDetails: PropTypes.bool,
+    hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
+    onCancel: PropTypes.func,
     onEdit: PropTypes.func,
     onEditGas: PropTypes.func,
-    onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
+    subtitle: PropTypes.string,
+    summaryComponent: PropTypes.node,
+    title: PropTypes.string,
+    valid: PropTypes.bool,
+    warning: PropTypes.string,
   }
 
   componentDidUpdate () {
@@ -86,9 +89,7 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
-  getError () {
-    const INSUFFICIENT_FUNDS_ERROR = this.context.t('insufficientFunds')
-    const TRANSACTION_ERROR = this.context.t('transactionError')
+  getErrorKey () {
     const {
       balance,
       conversionRate,
@@ -111,68 +112,14 @@ export default class ConfirmTransactionBase extends Component {
     if (insufficientBalance) {
       return {
         valid: false,
-        errorMessage: INSUFFICIENT_FUNDS_ERROR,
+        errorKey: INSUFFICIENT_FUNDS_ERROR_KEY,
       }
     }
 
     if (simulationFails) {
       return {
         valid: false,
-        errorMessage: TRANSACTION_ERROR,
-      }
-    }
-
-    return {
-      valid: true,
-    }
-  }
-
-  validateEditGas ({ gasLimit, gasPrice }) {
-    const { t } = this.context
-    const {
-      balance,
-      conversionRate,
-      txData: {
-        txParams: {
-          value: amount,
-        } = {},
-      } = {},
-    } = this.props
-
-    const INSUFFICIENT_FUNDS_ERROR = t('insufficientFunds')
-    const GAS_LIMIT_TOO_LOW_ERROR = t('gasLimitTooLow')
-
-    const gasTotal = getHexGasTotal({ gasLimit, gasPrice })
-    const hasSufficientBalance = isBalanceSufficient({
-      amount,
-      gasTotal,
-      balance,
-      conversionRate,
-    })
-
-    if (!hasSufficientBalance) {
-      return {
-        valid: false,
-        errorMessage: INSUFFICIENT_FUNDS_ERROR,
-      }
-    }
-
-    const gasLimitTooLow = gasLimit && conversionGreaterThan(
-      {
-        value: MIN_GAS_LIMIT_DEC,
-        fromNumericBase: 'dec',
-        conversionRate,
-      },
-      {
-        value: gasLimit,
-        fromNumericBase: 'hex',
-      },
-    )
-
-    if (gasLimitTooLow) {
-      return {
-        valid: false,
-        errorMessage: GAS_LIMIT_TOO_LOW_ERROR,
+        errorKey: TRANSACTION_ERROR_KEY,
       }
     }
 
@@ -182,16 +129,12 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleEditGas () {
-    const { onEditGas, showCustomizeGasModal, txData, updateGasAndCalculate } = this.props
+    const { onEditGas, showCustomizeGasModal } = this.props
 
     if (onEditGas) {
       onEditGas()
     } else {
-      showCustomizeGasModal({
-        txData,
-        onSubmit: txData => updateGasAndCalculate(txData),
-        validate: ({ gasLimit, gasPrice }) => this.validateEditGas({ gasLimit, gasPrice }),
-      })
+      showCustomizeGasModal()
     }
   }
 
@@ -328,7 +271,8 @@ export default class ConfirmTransactionBase extends Component {
       ethTransactionAmount,
       fiatTransactionAmount,
       valid: propsValid,
-      errorMessage: propsErrorMessage,
+      errorMessage,
+      errorKey: propsErrorKey,
       currentCurrency,
       action,
       title,
@@ -344,7 +288,7 @@ export default class ConfirmTransactionBase extends Component {
 
     const { name } = methodData
     const fiatConvertedAmount = formatCurrency(fiatTransactionAmount, currentCurrency)
-    const { valid, errorMessage } = this.getError()
+    const { valid, errorKey } = this.getErrorKey()
 
     return (
       <ConfirmPageContainer
@@ -363,7 +307,8 @@ export default class ConfirmTransactionBase extends Component {
         contentComponent={contentComponent}
         nonce={nonce}
         identiconAddress={identiconAddress}
-        errorMessage={propsErrorMessage || errorMessage}
+        errorMessage={errorMessage}
+        errorKey={propsErrorKey || errorKey}
         warning={warning}
         valid={propsValid || valid}
         onEdit={() => this.handleEdit()}

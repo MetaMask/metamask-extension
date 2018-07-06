@@ -1,7 +1,10 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
-import { setTransactionToConfirm } from '../../../ducks/confirm-transaction.duck'
+import {
+  setTransactionToConfirm,
+  clearConfirmTransaction,
+} from '../../../ducks/confirm-transaction.duck'
 import ConfirmTransaction from './confirm-transaction.component'
 import { getTotalUnapprovedCount } from '../../../selectors'
 import { unconfirmedTransactionsListSelector } from '../../../selectors/confirm-transaction'
@@ -20,7 +23,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setTransactionToConfirm: transactionId => dispatch(setTransactionToConfirm(transactionId)),
-
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
   }
 }
 

@@ -75,7 +75,7 @@ export default class CustomizeGas extends Component {
     const { t } = this.context
     const { hideModal } = this.props
     const { gasPrice, gasLimit } = this.state
-    const { valid, errorMessage } = this.validate()
+    const { valid, errorKey } = this.validate()
 
     return (
       <div className="customize-gas">
@@ -108,7 +108,7 @@ export default class CustomizeGas extends Component {
             />
           </div>
           <div className="customize-gas__footer">
-            { !valid && <div className="customize-gas__error-message">{ errorMessage }</div> }
+            { !valid && <div className="customize-gas__error-message">{ t(errorKey) }</div> }
             <div
               className="customize-gas__revert"
               onClick={() => this.handleRevert()}
