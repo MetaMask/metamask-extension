@@ -11,12 +11,15 @@ const {
   getExtensionIdFirefox,
 } = require('../func')
 const {
+  checkBrowserForConsoleErrors,
+  closeAllWindowHandlesExcept,
   findElement,
   findElements,
-  checkBrowserForConsoleErrors,
   loadExtension,
-  verboseReportOnFailure,
   openNewPage,
+  switchToWindowWithTitle,
+  verboseReportOnFailure,
+  waitUntilXWindowHandles,
 } = require('./helpers')
 
 describe('MetaMask', function () {
@@ -25,7 +28,7 @@ describe('MetaMask', function () {
   let tokenAddress
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
-  const tinyDelayMs = 1000
+  const tinyDelayMs = 200
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
 
@@ -94,6 +97,11 @@ describe('MetaMask', function () {
     })
 
     it('selects the new UI option', async () => {
+      try {
+        const overlay = await findElement(driver, By.css('.full-flex-height'))
+        await driver.wait(until.stalenessOf(overlay))
+      } catch (e) {}
+
       const button = await findElement(driver, By.xpath("//p[contains(text(), 'Try Beta Version')]"))
       await button.click()
       await delay(regularDelayMs)
@@ -324,10 +332,10 @@ describe('MetaMask', function () {
 
       const create = await findElement(driver, By.xpath(`//button[contains(text(), 'Create')]`))
       await create.click()
-      await delay(regularDelayMs)
+      await delay(largeDelayMs)
     })
 
-    it('should correct account name', async () => {
+    it('should display correct account name', async () => {
       const accountName = await findElement(driver, By.css('.account-name'))
       assert.equal(await accountName.getText(), '2nd account')
       await delay(regularDelayMs)
@@ -366,8 +374,7 @@ describe('MetaMask', function () {
 
     it('balance renders', async () => {
       const balance = await findElement(driver, By.css('.balance-display .token-amount'))
-      const tokenAmount = await balance.getText()
-      assert.equal(tokenAmount, '100.000 ETH')
+      await driver.wait(until.elementTextMatches(balance, /100.+ETH/))
       await delay(regularDelayMs)
     })
   })
@@ -404,59 +411,69 @@ describe('MetaMask', function () {
     it('confirms the transaction', async function () {
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
-      await delay(regularDelayMs)
+      await delay(largeDelayMs)
     })
 
     it('finds the transaction in the transactions list', async function () {
       const transactions = await findElements(driver, By.css('.tx-list-item'))
       assert.equal(transactions.length, 1)
 
-      const txValues = await findElement(driver, By.css('.tx-list-value'))
-      await driver.wait(until.elementTextMatches(txValues, /1\sETH/), 10000)
+      if (process.env.SELENIUM_BROWSER !== 'firefox') {
+        const txValues = await findElement(driver, By.css('.tx-list-value'))
+        await driver.wait(until.elementTextMatches(txValues, /1\sETH/), 10000)
+      }
     })
   })
 
-  describe('Send ETH from Faucet', () => {
-    it('starts a send transaction inside Faucet', async () => {
-      await openNewPage(driver, 'https://faucet.metamask.io')
-
-      const [extension, faucet] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(faucet)
-
-      const faucetPageTitle = await findElement(driver, By.css('.container-fluid'))
-      await driver.wait(until.elementTextMatches(faucetPageTitle, /MetaMask/))
+  describe('Send ETH from dapp', () => {
+    it('starts a send transaction inside the dapp', async () => {
+      await openNewPage(driver, 'http://127.0.0.1:8080/')
       await delay(regularDelayMs)
 
-      const send1eth = await findElement(driver, By.xpath(`//button[contains(text(), '10 ether')]`), 14000)
-      await send1eth.click()
+      await waitUntilXWindowHandles(driver, 2)
+      let windowHandles = await driver.getAllWindowHandles()
+      const extension = windowHandles[0]
+      const dapp = windowHandles[1]
+
+      await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
 
-      await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      const send3eth = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`), 10000)
+      await send3eth.click()
       await delay(regularDelayMs)
 
-      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 14000)
+      windowHandles = await driver.getAllWindowHandles()
+      await driver.switchTo().window(windowHandles[2])
+      await delay(regularDelayMs)
+
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      await driver.switchTo().window(faucet)
-      await delay(regularDelayMs)
-      await driver.close()
-      await delay(regularDelayMs)
+      await closeAllWindowHandlesExcept(driver, [extension, dapp])
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
-      await loadExtension(driver, extensionId)
-      await delay(regularDelayMs)
+    })
+
+    it('finds the transaction in the transactions list', async function () {
+      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      assert.equal(transactions.length, 2)
+
+      const txValues = await findElement(driver, By.css('.tx-list-value'))
+      await driver.wait(until.elementTextMatches(txValues, /3\sETH/), 10000)
     })
   })
 
   describe('Deploy contract and call contract methods', () => {
     let extension
-    let contractTestPage
+    let dapp
     it('confirms a deploy contract transaction', async () => {
-      await openNewPage(driver, 'http://127.0.0.1:8080/');
+      const windowHandles = await driver.getAllWindowHandles()
+      extension = windowHandles[0]
+      dapp = windowHandles[1]
+      await delay(tinyDelayMs)
 
-      [extension, contractTestPage] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
 
       const deployContractButton = await findElement(driver, By.css('#deployButton'))
@@ -466,7 +483,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
-      const txListItem = await findElement(driver, By.css('.tx-list-item'))
+      const txListItem = await findElement(driver, By.xpath(`//span[contains(text(), 'Contract Deployment')]`))
       await txListItem.click()
       await delay(regularDelayMs)
 
@@ -479,10 +496,11 @@ describe('MetaMask', function () {
 
       const txAccounts = await findElements(driver, By.css('.tx-list-account'))
       assert.equal(await txAccounts[0].getText(), 'Contract Deployment')
+      await delay(regularDelayMs)
     })
 
     it('calls and confirms a contract method where ETH is sent', async () => {
-      await driver.switchTo().window(contractTestPage)
+      await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
 
       const depositButton = await findElement(driver, By.css('#depositButton'))
@@ -492,7 +510,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
-      const txListItem = await findElement(driver, By.css('.tx-list-item'))
+      const txListItem = await findElement(driver, By.xpath(`//span[contains(text(), '4 ETH')]`))
       await txListItem.click()
       await delay(regularDelayMs)
 
@@ -524,7 +542,7 @@ describe('MetaMask', function () {
       await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
 
       const txValues = await findElement(driver, By.css('.tx-list-value'))
-      await driver.wait(until.elementTextMatches(txValues, /3\sETH/), 10000)
+      await driver.wait(until.elementTextMatches(txValues, /4\sETH/), 10000)
 
       const txAccounts = await findElements(driver, By.css('.tx-list-account'))
       const firstTxAddress = await txAccounts[0].getText()
@@ -532,7 +550,7 @@ describe('MetaMask', function () {
     })
 
     it('calls and confirms a contract method where ETH is received', async () => {
-      await driver.switchTo().window(contractTestPage)
+      await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
 
       const withdrawButton = await findElement(driver, By.css('#withdrawButton'))
@@ -556,38 +574,31 @@ describe('MetaMask', function () {
       const txValues = await findElement(driver, By.css('.tx-list-value'))
       await driver.wait(until.elementTextMatches(txValues, /0\sETH/), 10000)
 
-      await driver.switchTo().window(contractTestPage)
-      await driver.close()
+      await closeAllWindowHandlesExcept(driver, [extension, dapp])
       await driver.switchTo().window(extension)
     })
 
     it('renders the correct ETH balance', async () => {
       const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
-      await driver.wait(until.elementTextMatches(balance, /^86.*ETH.*$/), 10000)
-      const tokenAmount = await balance.getText()
-      assert.ok(/^86.*ETH.*$/.test(tokenAmount))
       await delay(regularDelayMs)
+      if (process.env.SELENIUM_BROWSER !== 'firefox') {
+        await driver.wait(until.elementTextMatches(balance, /^92.*ETH.*$/), 10000)
+        const tokenAmount = await balance.getText()
+        assert.ok(/^92.*ETH.*$/.test(tokenAmount))
+        await delay(regularDelayMs)
+      }
     })
   })
 
-  describe('Add a custom token from TokenFactory', () => {
+  describe('Add a custom token from a dapp', () => {
     it('creates a new token', async () => {
-      openNewPage(driver, 'https://tokenfactory.surge.sh/#/factory')
+      const windowHandles = await driver.getAllWindowHandles()
+      const extension = windowHandles[0]
+      const dapp = windowHandles[1]
+      await delay(regularDelayMs * 2)
 
-      await delay(regularDelayMs * 10)
-      const [extension, tokenFactory] = await driver.getAllWindowHandles()
-
-      const [
-        totalSupply,
-        tokenName,
-        tokenDecimal,
-        tokenSymbol,
-      ] = await findElements(driver, By.css('.form-control'))
-
-      await totalSupply.sendKeys('100')
-      await tokenName.sendKeys('Test')
-      await tokenDecimal.sendKeys('0')
-      await tokenSymbol.sendKeys('TST')
+      await driver.switchTo().window(dapp)
+      await delay(regularDelayMs)
 
       const createToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Create Token')]`))
       await createToken.click()
@@ -601,15 +612,16 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      await driver.switchTo().window(tokenFactory)
+      await driver.switchTo().window(dapp)
+      await delay(tinyDelayMs)
+
+      const tokenContractAddress = await driver.findElement(By.css('#tokenAddress'))
+      await driver.wait(until.elementTextMatches(tokenContractAddress, /0x/))
+      tokenAddress = await tokenContractAddress.getText()
+
       await delay(regularDelayMs)
-
-      const tokenContactAddress = await driver.findElement(By.css('div > div > div:nth-child(2) > span:nth-child(3)'))
-      tokenAddress = await tokenContactAddress.getText()
-
-      await driver.close()
-      await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      await closeAllWindowHandlesExcept(driver, [extension, dapp])
+      await delay(regularDelayMs)
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
@@ -709,32 +721,28 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Send a custom token from TokenFactory', () => {
+  describe('Send a custom token from dapp', () => {
     let gasModal
     it('sends an already created token', async () => {
-     openNewPage(driver, `https://tokenfactory.surge.sh/#/token/${tokenAddress}`)
-
-      const [extension] = await driver.getAllWindowHandles()
-
-      const [
-        transferToAddress,
-        transferToAmount,
-      ] = await findElements(driver, By.css('.form-control'))
-
-      await transferToAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
-      await transferToAmount.sendKeys('26')
-
-      const transferAmountButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Transfer Amount')]`))
-      await transferAmountButton.click()
+      const windowHandles = await driver.getAllWindowHandles()
+      const extension = windowHandles[0]
+      const dapp = await switchToWindowWithTitle(driver, 'E2E Test Dapp', windowHandles)
+      await closeAllWindowHandlesExcept(driver, [extension, dapp])
       await delay(regularDelayMs)
 
-      const [,, popup] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(popup)
-      await driver.close()
+      await driver.switchTo().window(dapp)
+      await delay(tinyDelayMs)
+
+      const transferTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Transfer Tokens')]`))
+      await transferTokens.click()
+
+      await closeAllWindowHandlesExcept(driver, extension)
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
       const [txListItem] = await findElements(driver, By.css('.tx-list-item'))
+      const [txListValue] = await findElements(driver, By.css('.tx-list-value'))
+      await driver.wait(until.elementTextMatches(txListValue, /7\sTST/))
       await txListItem.click()
       await delay(regularDelayMs)
 
@@ -785,7 +793,7 @@ describe('MetaMask', function () {
       assert.equal(transactions.length, 2)
 
       const txValues = await findElements(driver, By.css('.tx-list-value'))
-      await driver.wait(until.elementTextMatches(txValues[0], /26\sTST/))
+      await driver.wait(until.elementTextMatches(txValues[0], /7\sTST/))
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
 
@@ -799,7 +807,7 @@ describe('MetaMask', function () {
       // or possibly until we use latest version of firefox in the tests
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
         const tokenBalanceAmount = await findElement(driver, By.css('.token-balance__amount'))
-        assert.equal(await tokenBalanceAmount.getText(), '24')
+        assert.equal(await tokenBalanceAmount.getText(), '43')
       }
     })
   })

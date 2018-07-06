@@ -6,11 +6,14 @@ const { delay } = require('../func')
 
 module.exports = {
   checkBrowserForConsoleErrors,
-  loadExtension,
-  verboseReportOnFailure,
+  closeAllWindowHandlesExcept,
   findElement,
   findElements,
+  loadExtension,
   openNewPage,
+  switchToWindowWithTitle,
+  verboseReportOnFailure,
+  waitUntilXWindowHandles,
 }
 
 async function loadExtension (driver, extensionId) {
@@ -72,9 +75,46 @@ async function openNewPage (driver, url) {
   await delay(1000)
 
   const handles = await driver.getAllWindowHandles()
-  const secondHandle = handles[1]
-  await driver.switchTo().window(secondHandle)
+  const lastHandle = handles[handles.length - 1]
+  await driver.switchTo().window(lastHandle)
 
   await driver.get(url)
   await delay(1000)
+}
+
+async function waitUntilXWindowHandles (driver, x) {
+  const windowHandles = await driver.getAllWindowHandles()
+  if (windowHandles.length === x) return
+  await delay(1000)
+  return await waitUntilXWindowHandles(driver, x)
+}
+
+async function switchToWindowWithTitle (driver, title, windowHandles) {
+  if (!windowHandles) {
+    windowHandles = await driver.getAllWindowHandles()
+  } else if (windowHandles.length === 0) {
+    throw new Error('No window with title: ' + title)
+  }
+  const firstHandle = windowHandles[0]
+  await driver.switchTo().window(firstHandle)
+  const handleTitle = await driver.getTitle()
+
+  if (handleTitle === title) {
+    return firstHandle
+  } else {
+    return await switchToWindowWithTitle(driver, title, windowHandles.slice(1))
+  }
+}
+
+async function closeAllWindowHandlesExcept (driver, exceptions, windowHandles) {
+  exceptions = typeof exceptions === 'string' ? [ exceptions ] : exceptions
+  windowHandles = windowHandles || await driver.getAllWindowHandles()
+  const lastWindowHandle = windowHandles.pop()
+  if (!exceptions.includes(lastWindowHandle)) {
+    await driver.switchTo().window(lastWindowHandle)
+    await delay(1000)
+    await driver.close()
+    await delay(1000)
+  }
+  return windowHandles.length && await closeAllWindowHandlesExcept(driver, exceptions, windowHandles)
 }
