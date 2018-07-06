@@ -104,7 +104,7 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install npm 6
-          command: npm install -g npm@6
+          command: sudo npm install -g npm@6
       - run:
           name: Install deps via npm
           command: npm install
