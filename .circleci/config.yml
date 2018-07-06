@@ -120,7 +120,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: dependency-cache-firefox-
+          keys: dependency-cache-firefox-{{ .Revision }}
       - run:
           name: Download Firefox If needed
           command: ./.circleci/scripts/firefox-download.sh
