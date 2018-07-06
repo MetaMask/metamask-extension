@@ -105,10 +105,10 @@ jobs:
       - run:
           name: Install deps via npm
           command: |
-          if [ ! -d node_modules ]; then
-            sudo npm install -g npm@$NPM_VERSION
-            npm ci
-          fi
+            if [ ! -d node_modules ]; then
+              sudo npm install -g npm@$NPM_VERSION
+              npm ci
+            fi
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
