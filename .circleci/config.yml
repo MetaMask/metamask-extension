@@ -125,7 +125,7 @@ jobs:
           name: Download Firefox If needed
           command: ./.circleci/scripts/firefox-download.sh
       - save_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
+          key: dependency-cache-firefox-
           paths:
             - firefox
 
