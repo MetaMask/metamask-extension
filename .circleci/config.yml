@@ -107,7 +107,7 @@ jobs:
           command: |
             if [ ! -d node_modules ]; then
               sudo npm install -g npm@6
-              npm ci
+              npm install
             fi
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
