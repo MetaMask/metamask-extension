@@ -126,7 +126,7 @@ jobs:
           command: ./.circleci/scripts/firefox-download.sh
       - save_cache:
           key: dependency-cache-firefox-{{ .Revision }}
-          path:
+          paths:
             - firefox
 
   prep-build:
