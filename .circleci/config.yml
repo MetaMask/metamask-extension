@@ -110,7 +110,7 @@ jobs:
           command: |
            # Only run npm install if the package-lock.json or package.json was changed
            CHANGED_FILES="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
-	         echo "$CHANGED_FILES" | grep --quiet "package.*json" && 
+	   echo "$CHANGED_FILES" | grep --quiet "package.*json" && 
            sudo npm install -g npm@6 &&
            npm install
       - save_cache:
