@@ -101,7 +101,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - dependency-cache-
       - run:
           name: Install deps via npm
           command: |
