@@ -119,8 +119,8 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      # - restore_cache:
-      #    keys: dependency-cache-firefox-
+      - restore_cache:
+        keys: dependency-cache-firefox-
       - run:
           name: Download Firefox If needed
           command: ./.circleci/scripts/firefox-download.sh
