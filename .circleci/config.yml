@@ -232,6 +232,8 @@ jobs:
           command: ./.circleci/scripts/firefox-install.sh
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
       - run:
           name: test:e2e:firefox
           command: npm run test:e2e:firefox
