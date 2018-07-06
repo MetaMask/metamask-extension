@@ -2,9 +2,10 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const actions = require('../../../actions')
+const actions = require('../../../../actions')
 const ConnectScreen = require('./connect-screen')
 const AccountList = require('./account-list')
+const { DEFAULT_ROUTE } = require('../../../../routes')
 
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
@@ -13,7 +14,7 @@ class ConnectHardwareForm extends Component {
       error: null,
       response: null,
       btnText: context.t('connectToTrezor'),
-      selectedAccount: '',
+      selectedAccount: null,
       accounts: [],
     }
   }
@@ -23,11 +24,11 @@ class ConnectHardwareForm extends Component {
       return null
     }
     this.setState({ btnText: this.context.t('connecting')})
-    this.getPage(1)
+    this.getPage(0)
   }
 
   onAccountChange = (account) => {
-    this.setState({selectedAccount: account, error: null})
+    this.setState({selectedAccount: account.toString(), error: null})
   }
 
   getPage = (page) => {
@@ -35,7 +36,16 @@ class ConnectHardwareForm extends Component {
       .connectHardware('trezor', page)
       .then(accounts => {
         if (accounts.length) {
-          this.setState({ accounts: accounts })
+          const newState = { accounts: accounts }
+          // Default to the first account
+          if (this.state.selectedAccount === null) {
+            const firstAccount = accounts[0]
+            newState.selectedAccount = firstAccount.index.toString()
+          // If the page doesn't contain the selected account, let's deselect it
+          } else if (!accounts.filter(a => a.index.toString() === '').lenght) {
+            newState.selectedAccount = null
+          }
+          this.setState(newState)
         }
       })
       .catch(e => {
@@ -43,13 +53,23 @@ class ConnectHardwareForm extends Component {
       })
   }
 
-  unlockAccount () {
-    if (this.state.selectedAccount === '') {
-      return Promise.reject({ error: this.context.t('accountSelectionRequired') })
+  onUnlockAccount = () => {
+
+    if (this.state.selectedAccount === null) {
+      this.setState({ error: this.context.t('accountSelectionRequired') })
     }
-    return this.props.unlockTrezorAccount(this.state.selectedAccount)
+
+    this.props.unlockTrezorAccount(this.state.selectedAccount)
+    .then(_ => {
+      this.props.history.push(DEFAULT_ROUTE)
+    }).catch(e => {
+      this.setState({ error: e.toString() })
+    })
   }
 
+  onCancel = () => {
+    this.props.history.push(DEFAULT_ROUTE)
+  }
 
   renderError () {
     return this.state.error
@@ -67,10 +87,13 @@ class ConnectHardwareForm extends Component {
 
     return h(AccountList, {
       accounts: this.state.accounts,
+      selectedAccount: this.state.selectedAccount,
       onAccountChange: this.onAccountChange,
       network: this.props.network,
       getPage: this.getPage,
       history: this.props.history,
+      onUnlockAccount: this.onUnlockAccount,
+      onCancel: this.onCancel,
     })
   }
 
