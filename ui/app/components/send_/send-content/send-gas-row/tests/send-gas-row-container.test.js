@@ -22,7 +22,10 @@ proxyquire('../send-gas-row.container.js', {
     getCurrentCurrency: (s) => `mockConvertedCurrency:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
   },
-  './send-gas-row.selectors.js': { sendGasIsInError: (s) => `mockGasLoadingError:${s}` },
+  './send-gas-row.selectors.js': {
+    getGasLoadingError: (s) => `mockGasLoadingError:${s}`,
+    gasFeeIsInError: (s) => `mockGasFeeError:${s}`,
+  },
   '../../../../actions': actionSpies,
 })
 
@@ -35,6 +38,7 @@ describe('send-gas-row container', () => {
         conversionRate: 'mockConversionRate:mockState',
         convertedCurrency: 'mockConvertedCurrency:mockState',
         gasTotal: 'mockGasTotal:mockState',
+        gasFeeError: 'mockGasFeeError:mockState',
         gasLoadingError: 'mockGasLoadingError:mockState',
       })
     })

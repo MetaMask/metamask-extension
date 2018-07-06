@@ -112,19 +112,8 @@ async function runSendFlowTest (assert, done) {
   errorMessage = $('.send-v2__error')
   assert.equal(errorMessage.length, 0, 'send should stop rendering amount error message after amount is corrected')
 
-  const sendGasField = await queryAsync($, '.send-v2__gas-fee-display')
-  assert.equal(
-    sendGasField.find('.currency-display__input-wrapper > input').val(),
-    '0.000021',
-    'send gas field should show estimated gas total'
-  )
-  assert.equal(
-    sendGasField.find('.currency-display__converted-value')[0].textContent,
-    '$0.03 USD',
-    'send gas field should show estimated gas total converted to USD'
-  )
-
   await customizeGas(assert, 0, 21000, '0', '$0.00 USD')
+  await customizeGas(assert, 1, 21000, '0.000021', '$0.03 USD')
   await customizeGas(assert, 500, 60000, '0.03', '$36.03 USD')
 
   const sendButton = await queryAsync($, 'button.btn-primary.btn--large.page-container__footer-button')
