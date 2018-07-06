@@ -119,16 +119,15 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          keys: dependency-cache-firefox
+      # - restore_cache:
+      #    keys: dependency-cache-firefox-
       - run:
           name: Download Firefox If needed
           command: ./.circleci/scripts/firefox-download.sh
       - save_cache:
-          key: dependency-cache-firefox
-          paths:
+          key: dependency-cache-firefox-{{ .Revision }}
+          path:
             - firefox
-            - firefox-58.0.tar.bz2
 
   prep-build:
     docker:
@@ -227,14 +226,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox
+          key: dependency-cache-firefox-
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
       - run:
           name: test:e2e:firefox
           command: npm run test:e2e:firefox
@@ -264,7 +259,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox
+          key: dependency-cache-firefox-
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -365,7 +360,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox
+          key: dependency-cache-firefox-
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -408,7 +403,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox
+          key: dependency-cache-firefox-
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
