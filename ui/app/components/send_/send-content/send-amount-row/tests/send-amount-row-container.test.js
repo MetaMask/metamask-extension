@@ -33,7 +33,10 @@ proxyquire('../send-amount-row.container.js', {
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
   },
   './send-amount-row.selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
-  '../../send.utils': { getAmountErrorObject: (mockDataObject) => ({ ...mockDataObject, mockChange: true }) },
+  '../../send.utils': {
+    getAmountErrorObject: (mockDataObject) => ({ ...mockDataObject, mockChange: true }),
+    getGasFeeErrorObject: (mockDataObject) => ({ ...mockDataObject, mockGasFeeErrorChange: true }),
+  },
   '../../../../actions': actionSpies,
   '../../../../ducks/send.duck': duckActionSpies,
 })
@@ -66,6 +69,7 @@ describe('send-amount-row container', () => {
     beforeEach(() => {
       dispatchSpy = sinon.spy()
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
+      duckActionSpies.updateSendErrors.resetHistory()
     })
 
     describe('setMaxModeTo()', () => {
@@ -88,6 +92,18 @@ describe('send-amount-row container', () => {
         assert.equal(
           actionSpies.updateSendAmount.getCall(0).args[0],
           'mockAmount'
+        )
+      })
+    })
+
+    describe('updateGasFeeError()', () => {
+      it('should dispatch an action', () => {
+        mapDispatchToPropsObject.updateGasFeeError({ some: 'data' })
+        assert(dispatchSpy.calledOnce)
+        assert(duckActionSpies.updateSendErrors.calledOnce)
+        assert.deepEqual(
+          duckActionSpies.updateSendErrors.getCall(0).args[0],
+          { some: 'data', mockGasFeeErrorChange: true }
         )
       })
     })

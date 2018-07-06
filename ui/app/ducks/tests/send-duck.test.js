@@ -24,6 +24,7 @@ describe('Send Duck', () => {
   const OPEN_TO_DROPDOWN = 'metamask/send/OPEN_TO_DROPDOWN'
   const CLOSE_TO_DROPDOWN = 'metamask/send/CLOSE_TO_DROPDOWN'
   const UPDATE_SEND_ERRORS = 'metamask/send/UPDATE_SEND_ERRORS'
+  const RESET_SEND_STATE = 'metamask/send/RESET_SEND_STATE'
 
   describe('SendReducer()', () => {
     it('should initialize state', () => {
@@ -103,6 +104,15 @@ describe('Send Duck', () => {
             someOtherError: true,
           },
         })
+      )
+    })
+
+    it('should return the initial state in response to a RESET_SEND_STATE action', () => {
+      assert.deepEqual(
+        SendReducer(mockState, {
+          type: RESET_SEND_STATE,
+        }),
+        Object.assign({}, initState)
       )
     })
   })

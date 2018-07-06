@@ -8,6 +8,7 @@ export default class SendGasRow extends Component {
   static propTypes = {
     conversionRate: PropTypes.number,
     convertedCurrency: PropTypes.string,
+    gasFeeError: PropTypes.bool,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
     showCustomizeGasModal: PropTypes.func,
@@ -19,11 +20,16 @@ export default class SendGasRow extends Component {
       convertedCurrency,
       gasLoadingError,
       gasTotal,
+      gasFeeError,
       showCustomizeGasModal,
     } = this.props
 
     return (
-      <SendRowWrapper label={`${this.context.t('gasFee')}:`}>
+      <SendRowWrapper
+        label={`${this.context.t('gasFee')}:`}
+        showError={gasFeeError}
+        errorType={'gasFee'}
+      >
         <GasFeeDisplay
           conversionRate={conversionRate}
           convertedCurrency={convertedCurrency}

@@ -193,7 +193,9 @@
     "web3": "^0.20.1",
     "web3-provider-engine": "^14.0.5",
     "web3-stream-provider": "^3.0.1",
-    "xtend": "^4.0.1"
+    "xtend": "^4.0.1",
+    "multihashes": "^0.4.12",
+    "eth-ens-namehash": "^2.0.8"
   },
   "devDependencies": {
     "@sentry/cli": "^1.30.3",

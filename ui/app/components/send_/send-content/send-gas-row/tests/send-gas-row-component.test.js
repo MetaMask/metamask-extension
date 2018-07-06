@@ -18,6 +18,7 @@ describe('SendGasRow Component', function () {
     wrapper = shallow(<SendGasRow
       conversionRate={20}
       convertedCurrency={'mockConvertedCurrency'}
+      gasFeeError={'mockGasFeeError'}
       gasLoadingError={false}
       gasTotal={'mockGasTotal'}
       showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
@@ -36,9 +37,13 @@ describe('SendGasRow Component', function () {
     it('should pass the correct props to SendRowWrapper', () => {
       const {
         label,
+        showError,
+        errorType,
       } = wrapper.find(SendRowWrapper).props()
 
       assert.equal(label, 'gasFee_t:')
+      assert.equal(showError, 'mockGasFeeError')
+      assert.equal(errorType, 'gasFee')
     })
 
     it('should render a GasFeeDisplay as a child of the SendRowWrapper', () => {
