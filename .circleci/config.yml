@@ -128,6 +128,7 @@ jobs:
           key: dependency-cache-firefox
           paths:
             - firefox
+            - firefox-58.0.tar.bz2
 
   prep-build:
     docker:
