@@ -106,7 +106,7 @@ jobs:
           name: Install deps via npm
           command: |
             if [ ! -d node_modules ]; then
-              sudo npm install -g npm@$NPM_VERSION
+              sudo npm install -g npm@6
               npm ci
             fi
       - save_cache:
