@@ -44,7 +44,7 @@ describe('Send Component', function () {
       primaryCurrency={'mockPrimaryCurrency'}
       recentBlocks={['mockBlock']}
       selectedAddress={'mockSelectedAddress'}
-      selectedToken={ { address: 'mockTokenAddress' } }
+      selectedToken={'mockSelectedToken'}
       tokenBalance={'mockTokenBalance'}
       tokenContract={'mockTokenContract'}
       updateAndSetGasTotal={propsMethodSpies.updateAndSetGasTotal}
