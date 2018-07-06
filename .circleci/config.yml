@@ -119,11 +119,13 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
+      - restore_cache:
+          keys: dependency-cache-firefox
       - run:
-          name: Download Firefox
+          name: Download Firefox If needed
           command: ./.circleci/scripts/firefox-download.sh
       - save_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
+          key: dependency-cache-firefox
           paths:
             - firefox
 
@@ -224,7 +226,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
+          key: dependency-cache-firefox
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -261,7 +263,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
+          key: dependency-cache-firefox
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -362,7 +364,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
+          key: dependency-cache-firefox
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
@@ -405,7 +407,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
+          key: dependency-cache-firefox
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
