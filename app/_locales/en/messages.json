@@ -144,7 +144,7 @@
     "message": "Metamask is able to access your TREZOR ethereum accounts. First make sure your device is connected and unlocked."
   },
   "connectToTrezorTrouble": {
-    "message": "If you are having trouble, make sure you are using the latest version of the TREZOR firmware."
+    "message": "If you are having trouble, please make sure you are using the latest version of the TREZOR firmware."
   },
   "continue": {
     "message": "Continue"

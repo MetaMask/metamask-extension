@@ -33,7 +33,10 @@ class ConnectScreen extends Component {
                     h('p.hw-connect__msg', {}, this.context.t('connectToTrezorHelp')),
                     h('p.hw-connect__msg', {}, [
                         this.context.t('connectToTrezorTrouble'),
-                        h('a.___info-link', { url: 'https://support.metamask.io/', target: '_blank'}, this.context.t('learnMore')),
+                        h('a.hw-connect__link', {
+                            href: 'https://support.metamask.io/',
+                            target: '_blank',
+                        }, ` ${this.context.t('learnMore')}`),
                     ]),
                 ]),
                 h(
