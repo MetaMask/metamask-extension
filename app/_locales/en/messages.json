@@ -140,6 +140,12 @@
   "connectToTrezor": {
     "message": "Connect to Trezor"
   },
+  "connectToTrezorHelp": {
+    "message": "Metamask is able to access your TREZOR ethereum accounts. First make sure your device is connected and unlocked."
+  },
+  "connectToTrezorTrouble": {
+    "message": "If you are having trouble, make sure you are using the latest version of the TREZOR firmware."
+  },
   "continue": {
     "message": "Continue"
   },
@@ -943,6 +949,9 @@
   },
   "transfers": {
     "message": "Transfers"
+  },
+  "trezorHardwareWallet": {
+    "message": "TREZOR Hardware Wallet"
   },
   "troubleTokenBalances": {
     "message": "We had trouble loading your token balances. You can view them ",

@@ -10,9 +10,9 @@ class ConnectScreen extends Component {
     renderUnsupportedBrowser () {
         return (
             h('div', {}, [
-                h('div.hw-unsupported-browser', [
-                    h('h3.hw-unsupported-browser__title', {}, this.context.t('browserNotSupported')),
-                    h('p.hw-unsupported-browser__msg', {}, this.context.t('chromeRequiredForTrezor')),
+                h('div.hw-connect', [
+                    h('h3.hw-connect__title', {}, this.context.t('browserNotSupported')),
+                    h('p.hw-connect__msg', {}, this.context.t('chromeRequiredForTrezor')),
                 ]),
                 h(
                     'button.btn-primary.btn--large',
@@ -25,18 +25,30 @@ class ConnectScreen extends Component {
         )
     }
 
-    renderConnectButton () {
-        return h(
+    renderConnectScreen () {
+        return (
+            h('div', {}, [
+                h('div.hw-connect', [
+                    h('h3.hw-connect__title', {}, this.context.t('trezorHardwareWallet')),
+                    h('p.hw-connect__msg', {}, this.context.t('connectToTrezorHelp')),
+                    h('p.hw-connect__msg', {}, [
+                        this.context.t('connectToTrezorTrouble'),
+                        h('a.___info-link', { url: 'https://support.metamask.io/', target: '_blank'}, this.context.t('learnMore')),
+                    ]),
+                ]),
+                h(
                     'button.btn-primary.btn--large',
-                    { onClick: this.props.connectToTrezor.bind(this), style: { margin: 12 } },
+                    { onClick: this.props.connectToTrezor.bind(this) },
                     this.props.btnText
-                )
+                ),
+            ])
+        )
       }
 
     render () {
         const isChrome = window.navigator.userAgent.search('Chrome') !== -1
         if (isChrome) {
-            return this.renderConnectButton()
+            return this.renderConnectScreen()
         }
         return this.renderUnsupportedBrowser()
     }
