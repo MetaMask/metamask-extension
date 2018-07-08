@@ -287,6 +287,7 @@
     "react-addons-test-utils": "^15.5.1",
     "react-test-renderer": "^15.6.2",
     "react-testutils-additions": "^15.2.0",
+    "redux-mock-store": "^1.5.3",
     "redux-test-utils": "^0.2.2",
     "resolve-url-loader": "^2.3.0",
     "rimraf": "^2.6.2",
