@@ -529,17 +529,28 @@ module.exports = class MetamaskController extends EventEmitter {
     switch (deviceName) {
       case 'trezor':
         const keyringController = this.keyringController
+        const oldAccounts = await keyringController.getAccounts()
         let keyring = await keyringController.getKeyringsByType(
           'Trezor Hardware'
         )[0]
         if (!keyring) {
           keyring = await this.keyringController.addNewKeyring('Trezor Hardware')
         }
-        if (page === 0) {
-          keyring.page = 0
+        let accounts = []
+
+        switch (page) {
+            case -1:
+              accounts = await keyring.getPreviousPage()
+              break
+            case 1:
+              accounts = await keyring.getNextPage()
+              break
+            default:
+              accounts = await keyring.getFirstPage()
         }
-        const accounts = page === -1 ? await keyring.getPreviousPage() : await keyring.getNextPage()
-        this.accountTracker.syncWithAddresses(accounts.map(a => a.address))
+
+        // Merge with existing accounts
+        this.accountTracker.syncWithAddresses(oldAccounts.concat(accounts.map(a => a.address)))
         return accounts
 
       default:

@@ -2,19 +2,10 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const genAccountLink = require('../../../../../lib/account-link.js')
-const { formatBalance } = require('../../../../util')
 
 class AccountList extends Component {
     constructor (props, context) {
         super(props)
-    }
-
-    getBalance (address) {
-        // Get the balance
-        const { accounts } = this.props
-        const balanceValue = accounts && accounts[address] ? accounts[address].balance : ''
-        const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
-        return formattedBalance
     }
 
     renderAccounts () {
@@ -44,7 +35,7 @@ class AccountList extends Component {
                     `${a.address.slice(0, 4)}...${a.address.slice(-4)}`
                     ),
                 ]),
-                h('span.hw-account-list__item__balance', `${this.getBalance(a.address)}`),
+                h('span.hw-account-list__item__balance', `${a.balance}`),
                 h(
                     'a.hw-account-list__item__link',
                     {

@@ -6,6 +6,7 @@ const actions = require('../../../../actions')
 const ConnectScreen = require('./connect-screen')
 const AccountList = require('./account-list')
 const { DEFAULT_ROUTE } = require('../../../../routes')
+const { formatBalance } = require('../../../../util')
 
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
@@ -31,20 +32,42 @@ class ConnectHardwareForm extends Component {
     this.setState({selectedAccount: account.toString(), error: null})
   }
 
+  getBalance (address) {
+    // Get the balance
+    const { accounts } = this.props
+    const balanceValue = accounts && accounts[address.toLowerCase()] ? accounts[address.toLowerCase()].balance : ''
+    const formattedBalance = balanceValue !== null ? formatBalance(balanceValue, 6) : '...'
+    console.log('[TREZOR]: got balance', address, accounts, balanceValue, formattedBalance)
+    return formattedBalance
+  }
+
   getPage = (page) => {
     this.props
       .connectHardware('trezor', page)
       .then(accounts => {
+        console.log('[TREZOR]: GOT PAGE!', accounts)
         if (accounts.length) {
-          const newState = { accounts: accounts }
+          const newState = {}
           // Default to the first account
           if (this.state.selectedAccount === null) {
             const firstAccount = accounts[0]
-            newState.selectedAccount = firstAccount.index.toString()
+            newState.selectedAccount = firstAccount.index.toString() === '0' ? firstAccount.index.toString() : null
+            console.log('[TREZOR]: just defaulted to account', newState.selectedAccount)
           // If the page doesn't contain the selected account, let's deselect it
-          } else if (!accounts.filter(a => a.index.toString() === '').lenght) {
+          } else if (!accounts.filter(a => a.index.toString() === this.state.selectedAccount).length) {
             newState.selectedAccount = null
+            console.log('[TREZOR]: just removed default account', newState.selectedAccount)
           }
+
+          console.log('[TREZOR]: mapping balances')
+
+          // Map accounts with balances
+          newState.accounts = accounts.map(account => {
+            account.balance = this.getBalance(account.address)
+            return account
+          })
+
+          console.log('[TREZOR]: ABOUT TO RENDER ACCOUNTS: ', page, newState.accounts)
           this.setState(newState)
         }
       })
