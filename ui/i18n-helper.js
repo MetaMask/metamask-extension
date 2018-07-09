@@ -29,8 +29,7 @@ const getMessage = (locale, key, substitutions) => {
 async function fetchLocale (localeName) {
   try {
     const response = await fetch(`./_locales/${localeName}/messages.json`)
-    const locale = await response.json()
-    return locale
+    return await response.json()
   } catch (error) {
     log.error(`failed to fetch ${localeName} locale because of ${error}`)
     return {}
