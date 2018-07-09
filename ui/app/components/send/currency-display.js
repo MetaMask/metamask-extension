@@ -62,7 +62,7 @@ export default class CurrencyDisplay extends Component {
 
     const sendAmount = multiplyCurrencies(value || '0', multiplier, {toNumericBase: 'hex'})
 
-    return selectedToken
+    return Object.keys(selectedToken).length
       ? sendAmount
       : toHexWei(value)
   }
@@ -75,7 +75,7 @@ export default class CurrencyDisplay extends Component {
     const { decimals = 0, symbol } = selectedToken
     const multiplier = Math.pow(10, Number(decimals))
 
-    return selectedToken
+    return Object.keys(selectedToken).length
       ? conversionUtil(ethUtil.addHexPrefix(value), {
         fromNumericBase: 'hex',
         toNumericBase: 'dec',
@@ -147,7 +147,7 @@ export default class CurrencyDisplay extends Component {
       inError,
       step,
     } = this.props
-    const {valueToRender} = this.state
+    const { valueToRender } = this.state
 
     const convertedValueToRender = this.getConvertedValueToRender(valueToRender)
 
