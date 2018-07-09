@@ -1,2 +1,1 @@
-import UnlockPage from './unlock-page.container'
-module.exports = UnlockPage
+export { default } from './unlock-page.container'
