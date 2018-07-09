@@ -550,7 +550,9 @@ module.exports = class MetamaskController extends EventEmitter {
         }
 
         // Merge with existing accounts
-        this.accountTracker.syncWithAddresses(oldAccounts.concat(accounts.map(a => a.address)))
+        // and make sure addresses are not repeated
+        const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.address.toLowerCase())))]
+        this.accountTracker.syncWithAddresses(accountsToTrack)
         return accounts
 
       default:
