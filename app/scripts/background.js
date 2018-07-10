@@ -26,6 +26,8 @@ const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
+const ipfsContent = require('./lib/ipfsContent.js')
+
 const {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -65,6 +67,7 @@ initialize().catch(log.error)
 
 // setup metamask mesh testing container
 setupMetamaskMeshMetrics()
+
 
 /**
  * An object representing a transaction, in whatever state it is in.
@@ -155,6 +158,7 @@ async function initialize () {
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
+  ipfsContent(initState.NetworkController.provider)
 }
 
 //
@@ -257,6 +261,7 @@ function setupController (initState, initLangCode) {
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
   })
   global.metamaskController = controller
+
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
@@ -378,7 +383,7 @@ function setupController (initState, initLangCode) {
   }
 
   // communication with page or other extension
-  function connectExternal(remotePort) {
+  function connectExternal (remotePort) {
     const originDomain = urlUtil.parse(remotePort.sender.url).hostname
     const portStream = new PortStream(remotePort)
     controller.setupUntrustedCommunication(portStream, originDomain)

@@ -75,7 +75,7 @@ async function runAddTokenFlowTest (assert, done) {
   tokenWrapper[0].click()
 
   // Click Next button
-  let nextButton = await queryAsync($, 'button.btn-primary.btn--large')
+  const nextButton = await queryAsync($, 'button.btn-primary.btn--large')
   assert.equal(nextButton[0].textContent, 'Next', 'next button rendered')
   nextButton[0].click()
 

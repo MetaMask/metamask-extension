@@ -12,7 +12,7 @@ module.exports = initializePopup
 /**
  * Asynchronously initializes the MetaMask popup UI
  *
- * @param {{ container: Element, connectionStream: * }} config Popup configuration object 
+ * @param {{ container: Element, connectionStream: * }} config Popup configuration object
  * @param {Function} cb Called when initialization is complete
  */
 function initializePopup ({ container, connectionStream }, cb) {

@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {
   getAmountConversionRate,
   getConversionRate,
-  getConvertedCurrency,
+  getCurrentCurrency,
   getGasTotal,
   getPrimaryCurrency,
   getSelectedToken,
@@ -13,7 +13,7 @@ import {
 import {
   sendAmountIsInError,
 } from './send-amount-row.selectors'
-import { getAmountErrorObject } from '../../send.utils'
+import { getAmountErrorObject, getGasFeeErrorObject } from '../../send.utils'
 import {
   setMaxModeTo,
   updateSendAmount,
@@ -31,7 +31,7 @@ function mapStateToProps (state) {
     amountConversionRate: getAmountConversionRate(state),
     balance: getSendFromBalance(state),
     conversionRate: getConversionRate(state),
-    convertedCurrency: getConvertedCurrency(state),
+    convertedCurrency: getCurrentCurrency(state),
     gasTotal: getGasTotal(state),
     inError: sendAmountIsInError(state),
     primaryCurrency: getPrimaryCurrency(state),
@@ -44,6 +44,9 @@ function mapDispatchToProps (dispatch) {
   return {
     setMaxModeTo: bool => dispatch(setMaxModeTo(bool)),
     updateSendAmount: newAmount => dispatch(updateSendAmount(newAmount)),
+    updateGasFeeError: (amountDataObject) => {
+        dispatch(updateSendErrors(getGasFeeErrorObject(amountDataObject)))
+    },
     updateSendAmountError: (amountDataObject) => {
         dispatch(updateSendErrors(getAmountErrorObject(amountDataObject)))
     },

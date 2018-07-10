@@ -10,6 +10,7 @@ const {
   calcTokenAmount,
 } = require('../../token-util')
 const {
+  BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_ETH_ERROR,
@@ -29,9 +30,11 @@ module.exports = {
   estimateGasPriceFromRecentBlocks,
   generateTokenTransferData,
   getAmountErrorObject,
+  getGasFeeErrorObject,
   getToAddressForGasUpdate,
   isBalanceSufficient,
   isTokenBalanceSufficient,
+  removeLeadingZeroes,
 }
 
 function calcGasTotal (gasLimit, gasPrice) {
@@ -108,9 +111,9 @@ function getAmountErrorObject ({
   tokenBalance,
 }) {
   let insufficientFunds = false
-  if (gasTotal && conversionRate) {
+  if (gasTotal && conversionRate && !selectedToken) {
     insufficientFunds = !isBalanceSufficient({
-      amount: selectedToken ? '0x0' : amount,
+      amount,
       amountConversionRate,
       balance,
       conversionRate,
@@ -145,6 +148,34 @@ function getAmountErrorObject ({
   }
 
   return { amount: amountError }
+}
+
+function getGasFeeErrorObject ({
+  amount,
+  amountConversionRate,
+  balance,
+  conversionRate,
+  gasTotal,
+  primaryCurrency,
+}) {
+  let gasFeeError = null
+
+  if (gasTotal && conversionRate) {
+    const insufficientFunds = !isBalanceSufficient({
+      amount: '0x0',
+      amountConversionRate,
+      balance,
+      conversionRate,
+      gasTotal,
+      primaryCurrency,
+    })
+
+    if (insufficientFunds) {
+      gasFeeError = INSUFFICIENT_FUNDS_ERROR
+    }
+  }
+
+  return { gasFee: gasFeeError }
 }
 
 function calcTokenBalance ({ selectedToken, usersToken }) {
@@ -183,6 +214,8 @@ async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to,
     if (!code || code === '0x') {
       return SIMPLE_GAS_COST
     }
+  } else if (selectedToken && !to) {
+    return BASE_TOKEN_GAS_COST
   }
 
   paramsForGasEstimate.to = selectedToken ? selectedToken.address : to
@@ -272,4 +305,8 @@ function estimateGasPriceFromRecentBlocks (recentBlocks) {
 
 function getToAddressForGasUpdate (...addresses) {
   return [...addresses, ''].find(str => str !== undefined && str !== null).toLowerCase()
+}
+
+function removeLeadingZeroes (str) {
+  return str.replace(/^0*(?=\d)/, '')
 }

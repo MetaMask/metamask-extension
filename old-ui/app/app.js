@@ -183,6 +183,7 @@ App.prototype.renderAppBar = function () {
               this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
             },
           }),
+
         ]),
 
         props.isUnlocked && h('div', {

@@ -16,8 +16,7 @@ const selectors = {
   transactionsSelector,
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
-  getGasPrice,
-  getGasLimit,
+  getGasIsLoading,
   getForceGasMin,
   getAddressBook,
   getSendFrom,
@@ -117,12 +116,8 @@ function transactionsSelector (state) {
       .sort((a, b) => b.time - a.time)
 }
 
-function getGasPrice (state) {
-  return state.metamask.send.gasPrice
-}
-
-function getGasLimit (state) {
-  return state.metamask.send.gasLimit
+function getGasIsLoading (state) {
+  return state.appState.gasIsLoading
 }
 
 function getForceGasMin (state) {

@@ -6,7 +6,6 @@ const {
   calcGasTotal,
   calcTokenBalance,
   estimateGas,
-  estimateGasPriceFromRecentBlocks,
 } = require('./components/send_/send.utils')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
@@ -175,6 +174,8 @@ var actions = {
   CLEAR_SEND: 'CLEAR_SEND',
   OPEN_FROM_DROPDOWN: 'OPEN_FROM_DROPDOWN',
   CLOSE_FROM_DROPDOWN: 'CLOSE_FROM_DROPDOWN',
+  GAS_LOADING_STARTED: 'GAS_LOADING_STARTED',
+  GAS_LOADING_FINISHED: 'GAS_LOADING_FINISHED',
   setGasLimit,
   setGasPrice,
   updateGasData,
@@ -190,6 +191,8 @@ var actions = {
   updateSendErrors,
   clearSend,
   setSelectedAddress,
+  gasLoadingStarted,
+  gasLoadingFinished,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -740,20 +743,28 @@ function updateGasData ({
   to,
   value,
 }) {
-  const estimatedGasPrice = estimateGasPriceFromRecentBlocks(recentBlocks)
   return (dispatch) => {
-    return Promise.all([
-      Promise.resolve(estimatedGasPrice),
-      estimateGas({
-        estimateGasMethod: background.estimateGas,
-        blockGasLimit,
-        selectedAddress,
-        selectedToken,
-        to,
-        value,
-        gasPrice: estimatedGasPrice,
-      }),
-    ])
+    dispatch(actions.gasLoadingStarted())
+    return new Promise((resolve, reject) => {
+      background.getGasPrice((err, data) => {
+        if (err) return reject(err)
+        return resolve(data)
+      })
+    })
+    .then(estimateGasPrice => {
+      return Promise.all([
+        Promise.resolve(estimateGasPrice),
+        estimateGas({
+          estimateGasMethod: background.estimateGas,
+          blockGasLimit,
+          selectedAddress,
+          selectedToken,
+          to,
+          value,
+          estimateGasPrice,
+        }),
+      ])
+    })
     .then(([gasPrice, gas]) => {
       dispatch(actions.setGasPrice(gasPrice))
       dispatch(actions.setGasLimit(gas))
@@ -762,11 +773,25 @@ function updateGasData ({
     .then((gasEstimate) => {
       dispatch(actions.setGasTotal(gasEstimate))
       dispatch(updateSendErrors({ gasLoadingError: null }))
+      dispatch(actions.gasLoadingFinished())
     })
     .catch(err => {
       log.error(err)
       dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
+      dispatch(actions.gasLoadingFinished())
     })
+  }
+}
+
+function gasLoadingStarted () {
+  return {
+    type: actions.GAS_LOADING_STARTED,
+  }
+}
+
+function gasLoadingFinished () {
+  return {
+    type: actions.GAS_LOADING_FINISHED,
   }
 }
 

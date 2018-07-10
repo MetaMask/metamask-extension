@@ -13,6 +13,7 @@ const propsMethodSpies = {
   updateSendAmount: sinon.spy(),
   updateSendAmountError: sinon.spy(),
   updateGas: sinon.spy(),
+  updateGasFeeError: sinon.spy(),
 }
 
 sinon.spy(SendAmountRow.prototype, 'updateAmount')
@@ -36,6 +37,7 @@ describe('SendAmountRow Component', function () {
       selectedToken={ { address: 'mockTokenAddress' } }
       setMaxModeTo={propsMethodSpies.setMaxModeTo}
       tokenBalance={'mockTokenBalance'}
+      updateGasFeeError={propsMethodSpies.updateGasFeeError}
       updateSendAmount={propsMethodSpies.updateSendAmount}
       updateSendAmountError={propsMethodSpies.updateSendAmountError}
       updateGas={propsMethodSpies.updateGas}
@@ -47,6 +49,7 @@ describe('SendAmountRow Component', function () {
     propsMethodSpies.setMaxModeTo.resetHistory()
     propsMethodSpies.updateSendAmount.resetHistory()
     propsMethodSpies.updateSendAmountError.resetHistory()
+    propsMethodSpies.updateGasFeeError.resetHistory()
     SendAmountRow.prototype.validateAmount.resetHistory()
     SendAmountRow.prototype.updateAmount.resetHistory()
   })
@@ -70,6 +73,32 @@ describe('SendAmountRow Component', function () {
           tokenBalance: 'mockTokenBalance',
         }]
       )
+    })
+
+    it('should call updateGasFeeError if selectedToken is truthy', () => {
+      assert.equal(propsMethodSpies.updateGasFeeError.callCount, 0)
+      instance.validateAmount('someAmount')
+      assert.equal(propsMethodSpies.updateGasFeeError.callCount, 1)
+      assert.deepEqual(
+        propsMethodSpies.updateGasFeeError.getCall(0).args,
+        [{
+          amount: 'someAmount',
+          amountConversionRate: 'mockAmountConversionRate',
+          balance: 'mockBalance',
+          conversionRate: 7,
+          gasTotal: 'mockGasTotal',
+          primaryCurrency: 'mockPrimaryCurrency',
+          selectedToken: { address: 'mockTokenAddress' },
+          tokenBalance: 'mockTokenBalance',
+        }]
+      )
+    })
+
+    it('should call not updateGasFeeError if selectedToken is falsey', () => {
+      wrapper.setProps({ selectedToken: null })
+      assert.equal(propsMethodSpies.updateGasFeeError.callCount, 0)
+      instance.validateAmount('someAmount')
+      assert.equal(propsMethodSpies.updateGasFeeError.callCount, 0)
     })
 
   })

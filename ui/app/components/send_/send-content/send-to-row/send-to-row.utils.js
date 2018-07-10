@@ -4,12 +4,10 @@ const {
 } = require('../../send.constants')
 const { isValidAddress } = require('../../../../util')
 
-function getToErrorObject (to) {
-  let toError = null
-
+function getToErrorObject (to, toError = null) {
   if (!to) {
     toError = REQUIRED_ERROR
-  } else if (!isValidAddress(to)) {
+  } else if (!isValidAddress(to) && !toError) {
     toError = INVALID_RECIPIENT_ADDRESS_ERROR
   }
 

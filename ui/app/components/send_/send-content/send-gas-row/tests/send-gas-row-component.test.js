@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import SendGasRow from '../send-gas-row.component.js'
 
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
-import GasFeeDisplay from '../../../../send/gas-fee-display-v2'
+import GasFeeDisplay from '../gas-fee-display/gas-fee-display.component'
 
 const propsMethodSpies = {
   showCustomizeGasModal: sinon.spy(),
@@ -18,6 +18,7 @@ describe('SendGasRow Component', function () {
     wrapper = shallow(<SendGasRow
       conversionRate={20}
       convertedCurrency={'mockConvertedCurrency'}
+      gasFeeError={'mockGasFeeError'}
       gasLoadingError={false}
       gasTotal={'mockGasTotal'}
       showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
@@ -36,9 +37,13 @@ describe('SendGasRow Component', function () {
     it('should pass the correct props to SendRowWrapper', () => {
       const {
         label,
+        showError,
+        errorType,
       } = wrapper.find(SendRowWrapper).props()
 
       assert.equal(label, 'gasFee_t:')
+      assert.equal(showError, 'mockGasFeeError')
+      assert.equal(errorType, 'gasFee')
     })
 
     it('should render a GasFeeDisplay as a child of the SendRowWrapper', () => {

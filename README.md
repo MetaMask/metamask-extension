@@ -9,7 +9,7 @@ If you're a user seeking support, [here is our support site](https://metamask.he
 
 [Mission Statement](./MISSION.md)
 
-[Internal documentation](./docs/jsdocs)
+[Internal documentation](./docs#documentation)
 
 ## Developing Compatible Dapps
 
