@@ -579,7 +579,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyState = await keyringController.addNewAccount(keyring)
     const newAccounts = await keyringController.getAccounts()
     // Assuming the trezor account is the last one
-    const trezorAccount = newAccounts[newAccounts.length -1]
+    const trezorAccount = newAccounts[newAccounts.length - 1]
     this.preferencesController.setAddresses(newAccounts)
     newAccounts.forEach(address => {
       if (!oldAccounts.includes(address)) {
