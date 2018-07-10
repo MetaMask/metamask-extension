@@ -21,6 +21,7 @@ export default class SendAmountRow extends Component {
     selectedToken: PropTypes.object,
     setMaxModeTo: PropTypes.func,
     tokenBalance: PropTypes.string,
+    updateGasFeeError: PropTypes.func,
     updateSendAmount: PropTypes.func,
     updateSendAmountError: PropTypes.func,
     updateGas: PropTypes.func,
@@ -35,6 +36,7 @@ export default class SendAmountRow extends Component {
       primaryCurrency,
       selectedToken,
       tokenBalance,
+      updateGasFeeError,
       updateSendAmountError,
     } = this.props
 
@@ -48,6 +50,19 @@ export default class SendAmountRow extends Component {
       selectedToken,
       tokenBalance,
     })
+
+    if (selectedToken) {
+      updateGasFeeError({
+        amount,
+        amountConversionRate,
+        balance,
+        conversionRate,
+        gasTotal,
+        primaryCurrency,
+        selectedToken,
+        tokenBalance,
+      })
+    }
   }
 
   updateAmount (amount) {
@@ -95,6 +110,7 @@ export default class SendAmountRow extends Component {
           primaryCurrency={primaryCurrency || 'ETH'}
           selectedToken={selectedToken}
           value={amount}
+          step="any"
         />
       </SendRowWrapper>
     )
