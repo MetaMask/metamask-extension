@@ -43,14 +43,13 @@ describe('TransactionStateManager', function () {
   })
 
   describe('#setTxStatusRejected', function () {
-    it('sets the tx status to rejected', function () {
+     it('sets the tx status to rejected and removes it from history', function () {
       const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       txStateManager.setTxStatusRejected(1)
       const result = txStateManager.getTxList()
       assert.ok(Array.isArray(result))
-      assert.equal(result.length, 1)
-      assert.equal(result[0].status, 'rejected')
+      assert.equal(result.length, 0)
     })
 
     it('should emit a rejected event to signal the exciton of callback', (done) => {
@@ -285,6 +284,20 @@ describe('TransactionStateManager', function () {
       assert.equal(txsFromCurrentNetworkAndAddress.length, 0)
       assert.equal(txFromOtherNetworks.length, 2)
 
+    })
+  })
+
+  describe('#_removeTx', function () {
+    it('should remove the transaction from the storage', () => {
+      txStateManager._saveTxList([ {id: 1} ])
+      txStateManager._removeTx(1)
+      assert(!txStateManager.getFullTxList().length, 'txList should be empty')
+    })
+
+    it('should only remove the transaction with ID 1 from the storage', () => {
+      txStateManager._saveTxList([ {id: 1}, {id: 2} ])
+      txStateManager._removeTx(1)
+      assert.equal(txStateManager.getFullTxList()[0].id, 2, 'txList should have a id of 2')
     })
   })
 })
