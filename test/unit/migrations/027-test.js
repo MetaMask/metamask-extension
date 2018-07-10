@@ -2,11 +2,11 @@ const assert = require('assert')
 const migration27 = require('../../../app/scripts/migrations/027')
 
 const oldStorage = {
-  "meta": {},
-  "data": {
-    "TransactionController": {
-      "transactions": [
-      ]
+  'meta': {},
+  'data': {
+    'TransactionController': {
+      'transactions': [
+      ],
     },
   },
 }
