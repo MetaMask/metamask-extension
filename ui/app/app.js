@@ -22,7 +22,6 @@ const Home = require('./components/pages/home')
 const Authenticated = require('./components/pages/authenticated')
 const Initialized = require('./components/pages/initialized')
 const Settings = require('./components/pages/settings')
-const UnlockPage = require('./components/pages/unlock-page')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
@@ -39,6 +38,8 @@ const AccountMenu = require('./components/account-menu')
 const Modal = require('./components/modals/index').Modal
 
 const AppHeader = require('./components/app-header')
+
+import UnlockPage from './components/pages/unlock-page'
 
 // Routes
 const {
