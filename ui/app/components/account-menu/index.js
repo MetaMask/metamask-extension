@@ -187,16 +187,42 @@ AccountMenu.prototype.renderAccounts = function () {
           h('div.account-menu__balance', formattedBalance),
         ]),
 
-        this.indicateIfLoose(keyring),
+        this.renderKeyringType(keyring),
+        this.renderForgetAccount(keyring, identity.address),
       ],
     )
   })
 }
 
-AccountMenu.prototype.indicateIfLoose = function (keyring) {
+AccountMenu.prototype.renderForgetAccount = function (keyring, address) {
+  // Any account that's not form the HD wallet can be forgotten
+  const type = keyring.type
+  const isForgetable = type !== 'HD Key Tree'
+  return isForgetable ? h('a.forget-account-icon', { onClick: (e) => this.forgetAccount(e, address) }, '') : null
+}
+
+AccountMenu.prototype.forgetAccount = function (e, address) {
+  e.preventDefault()
+  e.stopPropagation()
+  console.log('should forget address: ', address)
+}
+
+AccountMenu.prototype.renderKeyringType = function (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
-    const isLoose = type !== 'HD Key Tree'
-    return isLoose ? h('.keyring-label.allcaps', this.context.t('imported')) : null
+    let label
+    switch (type) {
+      case 'Trezor Hardware':
+        label = this.context.t('hardware')
+      break
+      case 'Simple Key Pair':
+        label = this.context.t('imported')
+      break
+      default:
+        label = ''
+    }
+
+    return label !== '' ? h('.keyring-label.allcaps', label) : null
+
   } catch (e) { return }
 }

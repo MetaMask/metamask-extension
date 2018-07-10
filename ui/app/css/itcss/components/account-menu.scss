@@ -72,6 +72,7 @@
       background-color: $dusty-gray;
       color: $black;
       font-weight: normal;
+      letter-spacing: .5px;
     }
   }
 
@@ -83,6 +84,22 @@
 
     @media screen and (max-width: 575px) {
       padding: 12px 14px;
+    }
+
+    .forget-account-icon {
+      width: 25px;
+      margin-left: 10px;
+    }
+
+    &:hover {
+      .forget-account-icon::after {
+        content: '\00D7';
+        font-size: 25px;
+        color: $white;
+        cursor: pointer;
+        position: absolute;
+        margin-top: -5px;
+      }
     }
   }
 

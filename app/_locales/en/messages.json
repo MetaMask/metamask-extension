@@ -393,6 +393,9 @@
     "message": "must be greater than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
   },
+  "hardware": {
+    "message": "hardware"
+  },
   "here": {
     "message": "here",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
