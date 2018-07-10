@@ -17,6 +17,17 @@
     text-align: center;
     font-size: .875rem;
   }
+  
+  &__address {
+    text-align: center;
+    font-size: 1rem;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  &__link {
+    color: #2f9ae0;
+  }
 
   &__content {
     overflow-y: auto;

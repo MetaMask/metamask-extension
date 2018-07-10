@@ -68,6 +68,9 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
+    showForgetAccountConfirmationModal: (address) => {
+      return dispatch(actions.showModal({ name: 'CONFIRM_FORGET_ACCOUNT', address }))
+    },
   }
 }
 
@@ -204,7 +207,9 @@ AccountMenu.prototype.renderForgetAccount = function (keyring, address) {
 AccountMenu.prototype.forgetAccount = function (e, address) {
   e.preventDefault()
   e.stopPropagation()
+  const { showForgetAccountConfirmationModal } = this.props
   console.log('should forget address: ', address)
+  showForgetAccountConfirmationModal(address)
 }
 
 AccountMenu.prototype.renderKeyringType = function (keyring) {

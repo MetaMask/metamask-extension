@@ -1,4 +1,5 @@
-const Component = require('react').Component
+const React = require('react')
+const Component = React.Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
@@ -20,6 +21,7 @@ const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
 const ConfirmResetAccount = require('./confirm-reset-account')
+const ConfirmRemoveAccount = require('./confirm-remove-account')
 const TransactionConfirmed = require('./transaction-confirmed')
 const WelcomeBeta = require('./welcome-beta')
 const Notification = require('./notification')
@@ -241,6 +243,19 @@ const MODALS = {
     },
   },
 
+  CONFIRM_FORGET_ACCOUNT: {
+    contents: h(ConfirmRemoveAccount),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   NEW_ACCOUNT: {
     contents: [
       h(NewAccountModal, {}, []),
@@ -370,7 +385,7 @@ Modal.prototype.render = function () {
       backdropStyle: BACKDROPSTYLE,
       closeOnClick: !disableBackdropClick,
     },
-    children,
+    React.cloneElement(children, {...this.props.modalState.props}, null),
   )
 }
 
