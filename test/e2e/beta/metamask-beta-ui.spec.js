@@ -546,8 +546,9 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
-      const txListItem = await findElement(driver, By.xpath(`//span[contains(text(), '4 ETH')]`))
-      await txListItem.click()
+      const [txListValue] = await findElements(driver, By.css('.tx-list-value'))
+      await driver.wait(until.elementTextMatches(txListValue, /4\sETH/), 10000)
+      await txListValue.click()
       await delay(regularDelayMs)
 
       // Set the gas limit
@@ -796,12 +797,12 @@ describe('MetaMask', function () {
 
       const [txListItem] = await findElements(driver, By.css('.tx-list-item'))
       const [txListValue] = await findElements(driver, By.css('.tx-list-value'))
-      await driver.wait(until.elementTextMatches(txListValue, /7\sTST/))
-      await txListItem.click()
+      await driver.wait(until.elementTextMatches(txListValue, /7\sTST/), 10000)
+      await txListValue.click()
       await delay(regularDelayMs)
 
       // Set the gas limit
-      const configureGas = await driver.wait(until.elementLocated(By.css('.confirm-detail-row__header-text--edit')))
+      const configureGas = await driver.wait(until.elementLocated(By.css('.confirm-detail-row__header-text--edit')), 10000)
       await configureGas.click()
       await delay(regularDelayMs)
 
