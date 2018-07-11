@@ -84,15 +84,19 @@ describe('MetaMask', function () {
         networkSelector = await findElement(driver, By.css('#network_component'))
       } catch (e) {
         await loadExtension(driver, extensionId)
+        await delay(largeDelayMs * 2)
+        networkSelector = await findElement(driver, By.css('#network_component'))
       }
       await delay(regularDelayMs)
     })
 
-    it('use the local network', async function () {
+    it('uses the local network', async function () {
       await networkSelector.click()
       await delay(regularDelayMs)
 
-      const localhost = await findElement(driver, By.xpath(`//li[contains(text(), 'Localhost')]`))
+      const networks = await findElements(driver, By.css('.dropdown-menu-item'))
+      const localhost = networks[4]
+      await driver.wait(until.elementTextMatches(localhost, /Localhost/))
       await localhost.click()
       await delay(regularDelayMs)
     })
@@ -795,7 +799,6 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(largeDelayMs)
 
-      const [txListItem] = await findElements(driver, By.css('.tx-list-item'))
       const [txListValue] = await findElements(driver, By.css('.tx-list-value'))
       await driver.wait(until.elementTextMatches(txListValue, /7\sTST/), 10000)
       await txListValue.click()
