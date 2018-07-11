@@ -86,14 +86,14 @@
       padding: 12px 14px;
     }
 
-    .forget-account-icon {
+    .remove-account-icon {
       width: 25px;
       padding-left: 10px;
       height: 25px;
     }
 
     &:hover {
-      .forget-account-icon::after {
+      .remove-account-icon::after {
         content: '\00D7';
         font-size: 25px;
         color: $white;

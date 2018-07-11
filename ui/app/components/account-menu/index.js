@@ -69,7 +69,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.toggleAccountMenu())
     },
     showRemoveAccountConfirmationModal: (address) => {
-      return dispatch(actions.showModal({ name: 'CONFIRM_FORGET_ACCOUNT', address }))
+      return dispatch(actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', address }))
     },
   }
 }
@@ -199,10 +199,10 @@ AccountMenu.prototype.renderAccounts = function () {
 }
 
 AccountMenu.prototype.renderRemoveAccount = function (keyring, address) {
-  // Any account that's not form the HD wallet can be forgotten
+  // Any account that's not from the HD wallet Keyring can be removed
   const type = keyring.type
   const isRemovable = type !== 'HD Key Tree'
-  return isRemovable ? h('a.forget-account-icon', { onClick: (e) => this.removeAccount(e, address) }, '') : null
+  return isRemovable ? h('a.remove-account-icon', { onClick: (e) => this.removeAccount(e, address) }, '') : null
 }
 
 AccountMenu.prototype.removeAccount = function (e, address) {

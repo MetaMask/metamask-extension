@@ -242,7 +242,7 @@ const MODALS = {
     },
   },
 
-  CONFIRM_FORGET_ACCOUNT: {
+  CONFIRM_REMOVE_ACCOUNT: {
     contents: h(ConfirmRemoveAccount),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
