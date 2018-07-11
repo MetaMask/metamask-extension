@@ -57,4 +57,6 @@ async function runConfirmSigRequestsTest (assert, done) {
 
   confirmSigSignButton = await queryAsync($, 'button.btn-primary.btn--large')
   confirmSigSignButton[0].click()
+
+  await timeout(2000)
 }
