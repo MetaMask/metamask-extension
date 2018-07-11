@@ -82,16 +82,21 @@ CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValu
     numberOfDecimals: 2,
     conversionRate,
   })
-  convertedValue = Number(convertedValue).toFixed(2)
 
-  const upperCaseCurrencyCode = convertedCurrency.toUpperCase()
-
-  return currencies.find(currency => currency.code === upperCaseCurrencyCode)
-    ? currencyFormatter.format(Number(convertedValue), {
-      code: upperCaseCurrencyCode,
-    })
-    : convertedValue
-}
+  if (conversionRate == 0 && nonFormattedValue != 0) {
+    convertedValue = null
+    return convertedValue
+  }
+  else {
+    convertedValue == Number(convertedValue).toFixed(2)
+    const upperCaseCurrencyCode = convertedCurrency.toUpperCase()
+    return currencies.find(currency => currency.code === upperCaseCurrencyCode)
+      ? currencyFormatter.format(Number(convertedValue), {
+        code: upperCaseCurrencyCode,
+      })
+      : convertedValue
+    }
+  }
 
 CurrencyDisplay.prototype.handleChange = function (newVal) {
   this.setState({ valueToRender: removeLeadingZeroes(newVal) })
@@ -104,6 +109,7 @@ CurrencyDisplay.prototype.getInputWidth = function (valueToRender, readOnly) {
   const decimalPointDeficit = valueString.match(/\./) ? -0.5 : 0
   return (valueLength + decimalPointDeficit + 0.75) + 'ch'
 }
+
 
 CurrencyDisplay.prototype.render = function () {
   const {
@@ -120,6 +126,19 @@ CurrencyDisplay.prototype.render = function () {
   const { valueToRender } = this.state
 
   const convertedValueToRender = this.getConvertedValueToRender(valueToRender)
+
+  function onlyRenderConversions() {
+    if (convertedValueToRender == null) {
+      return h('div', {
+        className: convertedBalanceClassName,
+      }, 'No Conversion Rate')
+    }
+    else {
+      return h('div', {
+        className: convertedBalanceClassName,
+      }, `${convertedValueToRender} ${convertedCurrency.toUpperCase()}`)
+    }
+  }
 
   return h('div', {
     className,
@@ -157,11 +176,7 @@ CurrencyDisplay.prototype.render = function () {
 
       ]),
 
-    ]),
-
-    h('div', {
-      className: convertedBalanceClassName,
-    }, `${convertedValueToRender} ${convertedCurrency.toUpperCase()}`),
+    ]), onlyRenderConversions(),
 
   ])
 
