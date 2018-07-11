@@ -20,7 +20,6 @@ class DetectTokensController {
     this.preferences = preferences
     this.interval = interval
     this.network = network
-    this.contracts = contracts
   }
 
    /**
@@ -30,18 +29,16 @@ class DetectTokensController {
   async exploreNewTokens () {
     if (!this.isActive) { return }
     if (this._network.getState().provider.type !== MAINNET) { return }
-    let detectedTokenAddress, token
-    for (const address in this.contracts) {
-        const contract = this.contracts[address]
-        if (contract.erc20 && !(address in this.tokens)) {
-          detectedTokenAddress = await this.fetchContractAccountBalance(address) 
-          if (detectedTokenAddress) {
-            token = this.contracts[detectedTokenAddress]
-            this._preferences.addToken(detectedTokenAddress, token['symbol'], token['decimals'])
+    let detectedTokenBalance, token
+    for (const contractAddress in contracts) {
+        const contract = contracts[contractAddress]
+        if (contract.erc20 && !(contractAddress in this.tokens)) {
+          detectedTokenBalance = await this.detectTokenBalance(contractAddress)
+          if (detectedTokenBalance) {
+            token = contracts[contractAddress]
+            this._preferences.addToken(contractAddress, token['symbol'], token['decimals'])
           }
         }
-        // etherscan restriction, 5 request/second, lazy scan
-        setTimeout(() => {}, 200)
     }
   }
 
@@ -49,17 +46,17 @@ class DetectTokensController {
    * Find if selectedAddress has tokens with contract in contractAddress.
    *
    * @param {string} contractAddress Hex address of the token contract to explore.
-   * @returns {string} Contract address to be added to tokens.
+   * @returns {boolean} If balance is detected in token contract for address.
    *
    */
-  async fetchContractAccountBalance (contractAddress) {
+  async detectTokenBalance (contractAddress) {
     const address = this._preferences.store.getState().selectedAddress
     const response = await fetch(`https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=${contractAddress}&address=${address}&tag=latest&apikey=NCKS6GTY41KPHWRJB62ES1MDNRBIT174PV`)
     const parsedResponse = await response.json()
     if (parsedResponse.result !== '0') {
-      return contractAddress
+      return true
     }
-    return null
+    return false
   }
 
   /**
@@ -81,7 +78,7 @@ class DetectTokensController {
   
   }
 
-      /**
+    /**
    * @type {Object}
    */
   set network (network) {
