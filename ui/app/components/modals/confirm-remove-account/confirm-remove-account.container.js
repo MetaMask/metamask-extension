@@ -3,6 +3,12 @@ import ConfirmRemoveAccount from './confirm-remove-account.component'
 
 const { hideModal, removeAccount } = require('../../../actions')
 
+const mapStateToProps = state => {
+  return {
+    address: state.appState.modal.modalState.props.address,
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     hideModal: () => dispatch(hideModal()),
@@ -10,4 +16,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(ConfirmRemoveAccount)
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmRemoveAccount)

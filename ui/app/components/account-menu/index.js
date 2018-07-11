@@ -68,7 +68,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
-    showForgetAccountConfirmationModal: (address) => {
+    showRemoveAccountConfirmationModal: (address) => {
       return dispatch(actions.showModal({ name: 'CONFIRM_FORGET_ACCOUNT', address }))
     },
   }
@@ -156,7 +156,8 @@ AccountMenu.prototype.renderAccounts = function () {
   } = this.props
 
   const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
-  return accountOrder.map((address) => {
+  return accountOrder.filter(address => !!identities[address]).map((address) => {
+
     const identity = identities[address]
     const isSelected = identity.address === selectedAddress
 
@@ -191,25 +192,24 @@ AccountMenu.prototype.renderAccounts = function () {
         ]),
 
         this.renderKeyringType(keyring),
-        this.renderForgetAccount(keyring, identity.address),
+        this.renderRemoveAccount(keyring, identity.address),
       ],
     )
   })
 }
 
-AccountMenu.prototype.renderForgetAccount = function (keyring, address) {
+AccountMenu.prototype.renderRemoveAccount = function (keyring, address) {
   // Any account that's not form the HD wallet can be forgotten
   const type = keyring.type
-  const isForgetable = type !== 'HD Key Tree'
-  return isForgetable ? h('a.forget-account-icon', { onClick: (e) => this.forgetAccount(e, address) }, '') : null
+  const isRemovable = type !== 'HD Key Tree'
+  return isRemovable ? h('a.forget-account-icon', { onClick: (e) => this.removeAccount(e, address) }, '') : null
 }
 
-AccountMenu.prototype.forgetAccount = function (e, address) {
+AccountMenu.prototype.removeAccount = function (e, address) {
   e.preventDefault()
   e.stopPropagation()
-  const { showForgetAccountConfirmationModal } = this.props
-  console.log('should forget address: ', address)
-  showForgetAccountConfirmationModal(address)
+  const { showRemoveAccountConfirmationModal } = this.props
+  showRemoveAccountConfirmationModal(address)
 }
 
 AccountMenu.prototype.renderKeyringType = function (keyring) {

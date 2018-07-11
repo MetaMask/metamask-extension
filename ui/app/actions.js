@@ -83,6 +83,7 @@ var actions = {
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
   resetAccount,
+  removeAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
@@ -530,6 +531,26 @@ function resetAccount () {
         log.info('Transaction history reset for ' + account)
         dispatch(actions.showAccountsPage())
         resolve(account)
+      })
+    })
+  }
+}
+
+function removeAccount (address) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      background.removeAccount(address, (err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.info('Account removed: ' + account)
+        dispatch(actions.showAccountsPage())
+        resolve()
       })
     })
   }

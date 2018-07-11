@@ -354,6 +354,7 @@ module.exports = class MetamaskController extends EventEmitter {
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: nodeify(this.resetAccount, this),
+      removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // trezor
@@ -587,7 +588,8 @@ module.exports = class MetamaskController extends EventEmitter {
       }
     })
 
-    this.preferencesController.setAccountLabel(trezorAccount, `TREZOR #${index + 1}`)
+    this.preferencesController.setAccountLabel(trezorAccount, `TREZOR #${parseInt(index, 10) + 1}`)
+    this.preferencesController.setSelectedAddress(trezorAccount)
     const { identities } = this.preferencesController.store.getState()
     return { ...keyState, identities }
    }
@@ -704,6 +706,18 @@ module.exports = class MetamaskController extends EventEmitter {
 
     return selectedAddress
   }
+
+  /**
+   * Removes a "Loose" account from state.
+   *
+   * @param {string[]} address A hex address
+   *
+   */
+  async removeAccount (address) {
+    this.preferencesController.removeAddress(address)
+    return address
+  }
+
 
   /**
    * Imports an account with the specified import strategy.

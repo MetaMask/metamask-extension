@@ -1,5 +1,4 @@
-const React = require('react')
-const Component = React.Component
+const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
@@ -385,7 +384,7 @@ Modal.prototype.render = function () {
       backdropStyle: BACKDROPSTYLE,
       closeOnClick: !disableBackdropClick,
     },
-    React.cloneElement(children, {...this.props.modalState.props}, null),
+    children,
   )
 }
 
