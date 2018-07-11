@@ -550,6 +550,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
+      await findElements(driver, By.css('.tx-list-pending-item-container'))
       const [txListValue] = await findElements(driver, By.css('.tx-list-value'))
       await driver.wait(until.elementTextMatches(txListValue, /4\sETH/), 10000)
       await txListValue.click()
@@ -799,6 +800,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(largeDelayMs)
 
+      await findElements(driver, By.css('.tx-list-pending-item-container'))
       const [txListValue] = await findElements(driver, By.css('.tx-list-value'))
       await driver.wait(until.elementTextMatches(txListValue, /7\sTST/), 10000)
       await txListValue.click()
