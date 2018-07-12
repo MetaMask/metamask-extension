@@ -11,6 +11,7 @@ const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
 const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
+const Tooltip = require('../tooltip')
 
 
 const {
@@ -202,7 +203,17 @@ AccountMenu.prototype.renderRemoveAccount = function (keyring, address) {
   // Any account that's not from the HD wallet Keyring can be removed
   const type = keyring.type
   const isRemovable = type !== 'HD Key Tree'
-  return isRemovable ? h('a.remove-account-icon', { onClick: (e) => this.removeAccount(e, address) }, '') : null
+  if (isRemovable) {
+    return h(Tooltip, {
+      title: this.context.t('removeAccount'),
+      position: 'bottom',
+    }, [
+        h('a.remove-account-icon', {
+          onClick: (e) => this.removeAccount(e, address),
+        }, ''),
+      ])
+  }
+  return null
 }
 
 AccountMenu.prototype.removeAccount = function (e, address) {

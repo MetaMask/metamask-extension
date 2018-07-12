@@ -26,7 +26,7 @@ class ConfirmRemoveAccount extends Component {
       <div className="modal-container">
         <div className="modal-container__content">
           <div className="modal-container__title">
-            { `${t('removeAccount')}` }
+            { `${t('removeAccount')}` }?
           </div>
           <div className="modal-container__address">
             {addressSummary(this.props.address)}

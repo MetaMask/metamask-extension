@@ -740,7 +740,7 @@
     "message": "remove"
   },
   "removeAccount": {
-    "message": "Remove account?"
+    "message": "Remove account"
   },
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original seed phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
