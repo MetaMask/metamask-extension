@@ -90,11 +90,20 @@ class AccountList extends Component {
     ])
   }
 
+  renderForgetDevice () {
+    return h('div.hw-forget-device-container', {}, [
+      h('a', {
+        onClick: this.props.onForgetDevice.bind(this),
+      }, this.context.t('forgetDevice')),
+    ])
+  }
+
   render () {
     return h('div', {}, [
         this.renderAccounts(),
         this.renderPagination(),
         this.renderButtons(),
+        this.renderForgetDevice(),
     ])
   }
 
@@ -104,6 +113,7 @@ class AccountList extends Component {
 AccountList.propTypes = {
     accounts: PropTypes.array.isRequired,
     onAccountChange: PropTypes.func.isRequired,
+    onForgetDevice: PropTypes.func.isRequired,
     getPage: PropTypes.func.isRequired,
     network: PropTypes.string,
     selectedAccount: PropTypes.string,

@@ -79,6 +79,8 @@ var actions = {
   importNewAccount,
   addNewAccount,
   connectHardware,
+  checkHardwareStatus,
+  forgetDevice,
   unlockTrezorAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
@@ -617,6 +619,48 @@ function addNewAccount () {
 
         forceUpdateMetamaskState(dispatch)
         return resolve(newAccountAddress)
+      })
+    })
+  }
+}
+
+function checkHardwareStatus (deviceName) {
+  log.debug(`background.checkHardwareStatus`, deviceName)
+  return (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.checkHardwareStatus(deviceName, (err, unlocked) => {
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(unlocked)
+      })
+    })
+  }
+}
+
+function forgetDevice (deviceName) {
+  log.debug(`background.forgetDevice`, deviceName)
+  return (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.forgetDevice(deviceName, (err, response) => {
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve()
       })
     })
   }

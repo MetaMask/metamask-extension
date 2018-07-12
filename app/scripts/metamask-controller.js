@@ -357,8 +357,12 @@ module.exports = class MetamaskController extends EventEmitter {
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
-      // trezor
+      // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),
+      forgetDevice: nodeify(this.forgetDevice, this),
+      checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
+
+      // TREZOR
       unlockTrezorAccount: nodeify(this.unlockTrezorAccount, this),
 
       // vault management
@@ -558,6 +562,37 @@ module.exports = class MetamaskController extends EventEmitter {
 
       default:
         throw new Error('MetamaskController - Unknown device')
+    }
+  }
+
+  async checkHardwareStatus (deviceName) {
+
+    switch (deviceName) {
+      case 'trezor':
+        const keyringController = this.keyringController
+        const keyring = await keyringController.getKeyringsByType(
+          'Trezor Hardware'
+        )[0]
+        if (!keyring) {
+          return false
+        }
+        return keyring.isUnlocked()
+    }
+  }
+
+  async forgetDevice (deviceName) {
+
+    switch (deviceName) {
+      case 'trezor':
+        const keyringController = this.keyringController
+        const keyring = await keyringController.getKeyringsByType(
+          'Trezor Hardware'
+        )[0]
+        if (!keyring) {
+          return false
+        }
+        keyring.forgetDevice()
+        return true
     }
   }
 

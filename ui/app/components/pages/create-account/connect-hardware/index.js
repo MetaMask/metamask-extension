@@ -13,10 +13,16 @@ class ConnectHardwareForm extends Component {
     super(props)
     this.state = {
       error: null,
-      response: null,
       btnText: context.t('connectToTrezor'),
       selectedAccount: null,
       accounts: [],
+    }
+  }
+
+  async componentDidMount () {
+    const unlocked = await this.props.checkHardwareStatus('trezor')
+    if (unlocked) {
+      this.getPage(0)
     }
   }
 
@@ -70,6 +76,20 @@ class ConnectHardwareForm extends Component {
       })
   }
 
+  onForgetDevice = () => {
+    this.props.forgetDevice('trezor')
+    .then(_ => {
+      this.setState({
+        error: null,
+        btnText: this.context.t('connectToTrezor'),
+        selectedAccount: null,
+        accounts: [],
+      })
+    }).catch(e => {
+      this.setState({ error: e.toString() })
+    })
+  }
+
   onUnlockAccount = () => {
 
     if (this.state.selectedAccount === null) {
@@ -110,6 +130,7 @@ class ConnectHardwareForm extends Component {
       getPage: this.getPage,
       history: this.props.history,
       onUnlockAccount: this.onUnlockAccount,
+      onForgetDevice: this.onForgetDevice,
       onCancel: this.onCancel,
     })
   }
@@ -127,6 +148,8 @@ ConnectHardwareForm.propTypes = {
   showImportPage: PropTypes.func,
   showConnectPage: PropTypes.func,
   connectHardware: PropTypes.func,
+  checkHardwareStatus: PropTypes.func,
+  forgetDevice: PropTypes.func,
   unlockTrezorAccount: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
   history: PropTypes.object,
@@ -153,6 +176,12 @@ const mapDispatchToProps = dispatch => {
   return {
     connectHardware: (deviceName, page) => {
       return dispatch(actions.connectHardware(deviceName, page))
+    },
+    checkHardwareStatus: (deviceName) => {
+      return dispatch(actions.checkHardwareStatus(deviceName))
+    },
+    forgetDevice: (deviceName) => {
+      return dispatch(actions.forgetDevice(deviceName))
     },
     unlockTrezorAccount: index => {
       return dispatch(actions.unlockTrezorAccount(index))

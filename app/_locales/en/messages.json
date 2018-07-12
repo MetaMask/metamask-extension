@@ -339,6 +339,9 @@
   "followTwitter": {
     "message": "Follow us on Twitter"
   },
+  "forgetDevice": {
+    "message": "Forget this device"
+  },
   "from": {
     "message": "From"
   },
