@@ -87,7 +87,7 @@ function mapDispatchToProps (dispatch) {
         unapprovedTxs,
       })
 
-      dispatch(updateTransaction(editingTx))
+      return dispatch(updateTransaction(editingTx))
     },
     addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
       const hexPrefixedAddress = ethUtil.addHexPrefix(newAddress)

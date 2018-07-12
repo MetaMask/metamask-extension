@@ -48,6 +48,7 @@ export default class SendFooter extends Component {
       // updateTx,
       update,
       toAccounts,
+      history,
     } = this.props
 
     // Should not be needed because submit should be disabled if there are errors.
@@ -60,7 +61,7 @@ export default class SendFooter extends Component {
     // TODO: add nickname functionality
     addToAddressBookIfNew(to, toAccounts)
 
-    editingTransactionId
+    const promise = editingTransactionId
       ? update({
         amount,
         editingTransactionId,
@@ -73,7 +74,8 @@ export default class SendFooter extends Component {
       })
       : sign({ selectedToken, to, amount, from, gas, gasPrice })
 
-    this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
+    Promise.resolve(promise)
+      .then(() => history.push(CONFIRM_TRANSACTION_ROUTE))
   }
 
   formShouldBeDisabled () {

@@ -125,18 +125,18 @@ async function runSendFlowTest (assert, done) {
   reactTriggerChange(selectState[0])
 
   const confirmFromName = (await queryAsync($, '.sender-to-recipient__sender-name')).first()
-  assert.equal(confirmFromName[0].textContent, 'Send Account 2', 'confirm screen should show correct from name')
+  assert.equal(confirmFromName[0].textContent, 'Send Account 4', 'confirm screen should show correct from name')
 
   const confirmToName = (await queryAsync($, '.sender-to-recipient__recipient-name')).last()
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
 
-  const confirmScreenRows = await queryAsync($, '.confirm-screen-rows')
-  const confirmScreenGas = confirmScreenRows.find('.currency-display__converted-value')[0]
-  assert.equal(confirmScreenGas.textContent, '$3.60 USD', 'confirm screen should show correct gas')
-  const confirmScreenTotal = confirmScreenRows.find('.confirm-screen-row-info')[2]
-  assert.equal(confirmScreenTotal.textContent, '$2,405.36 USD', 'confirm screen should show correct total')
+  const confirmScreenRowFiats = await queryAsync($, '.confirm-detail-row__fiat')
+  const confirmScreenGas = confirmScreenRowFiats[0]
+  assert.equal(confirmScreenGas.textContent, '$3.60', 'confirm screen should show correct gas')
+  const confirmScreenTotal = confirmScreenRowFiats[1]
+  assert.equal(confirmScreenTotal.textContent, '$2,405.36', 'confirm screen should show correct total')
 
-  const confirmScreenBackButton = await queryAsync($, '.page-container__back-button')
+  const confirmScreenBackButton = await queryAsync($, '.confirm-page-container-header__back-button')
   confirmScreenBackButton[0].click()
 
   const sendFromFieldItemInEdit = await queryAsync($, '.account-list-item')
