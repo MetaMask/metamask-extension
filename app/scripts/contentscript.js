@@ -177,6 +177,7 @@ function blacklistedDomainCheck () {
     'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
     'adyen.com',
     'gravityforms.com',
+    'harbourair.com',
   ]
   var currentUrl = window.location.href
   var currentRegex
