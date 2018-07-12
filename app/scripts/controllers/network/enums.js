@@ -4,6 +4,7 @@ const KOVAN = 'kovan'
 const MAINNET = 'mainnet'
 const LOCALHOST = 'localhost'
 
+const MAINNET_CODE = 1
 const ROPSTEN_CODE = 3
 const RINKEYBY_CODE = 4
 const KOVAN_CODE = 42
@@ -18,13 +19,13 @@ const ROPSTEN_RPC_URL = 'https://ropsten.infura.io'
 const KOVAN_RPC_URL = 'https://kovan.infura.io'
 const RINKEBY_RPC_URL = 'https://rinkeby.infura.io'
 
-
 module.exports = {
   ROPSTEN,
   RINKEBY,
   KOVAN,
   MAINNET,
   LOCALHOST,
+  MAINNET_CODE,
   ROPSTEN_CODE,
   RINKEYBY_CODE,
   KOVAN_CODE,

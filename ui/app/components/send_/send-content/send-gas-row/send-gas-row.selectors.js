@@ -1,9 +1,14 @@
 const selectors = {
-  sendGasIsInError,
+  gasFeeIsInError,
+  getGasLoadingError,
 }
 
 module.exports = selectors
 
-function sendGasIsInError (state) {
+function getGasLoadingError (state) {
   return state.send.errors.gasLoading
+}
+
+function gasFeeIsInError (state) {
+  return Boolean(state.send.errors.gasFee)
 }

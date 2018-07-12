@@ -73,7 +73,7 @@
           "from": "0x0d0c7188d9c72b019a5da9bca0d127680c22e658"
         },
         "status": "unapproved",
-        "time": 1537889069339,
+        "time": 1537889070000,
         "type": "eth_sign"
       }
     },
@@ -86,11 +86,11 @@
           "from": "0x0d0c7188d9c72b019a5da9bca0d127680c22e659"
         },
         "status": "unapproved",
-        "time": 1517889069339,
+        "time": 1537889065000,
         "type": "personal_sign"
       }
     },
-    "unapprovedPersonalMsgCount": 0,
+    "unapprovedPersonalMsgCount": 1 ,
     "unapprovedTypedMessages": {
       "8997167822566869": {
         "id": 8997167822566869,
@@ -102,7 +102,7 @@
           "from": "0x0d0c7188d9c72b019a5da9bca0d127680c22e659"
         },
         "status": "unapproved",
-        "time": 1617889069339,
+        "time": 1537889060000,
         "type": "eth_signTypedData"
       }
     },
@@ -172,5 +172,32 @@
     "scrollToBottom": false,
     "forgottenPassword": null
   },
-  "identities": {}
+  "identities": {},
+  "confirmTransaction": {
+    "txData": {
+      "id": 8927167822566864,
+      "msgParams": {
+        "data": "0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0",
+        "from": "0x0d0c7188d9c72b019a5da9bca0d127680c22e658"
+      },
+      "status": "unapproved",
+      "time": 1537889069339,
+      "type": "eth_sign"
+    },
+    "tokenData": {},
+    "methodData": {},
+    "tokenProps": {
+      "tokenDecimals": "",
+      "tokenSymbol": ""
+    },
+    "fiatTransactionAmount": "",
+    "fiatTransactionFee": "",
+    "fiatTransactionTotal": "",
+    "ethTransactionAmount": "",
+    "ethTransactionFee": "",
+    "ethTransactionTotal": "",
+    "hexGasTotal": "",
+    "nonce": "",
+    "fetchingMethodData": false
+  }
 }

@@ -13,7 +13,7 @@ import {
 import {
   sendAmountIsInError,
 } from './send-amount-row.selectors'
-import { getAmountErrorObject } from '../../send.utils'
+import { getAmountErrorObject, getGasFeeErrorObject } from '../../send.utils'
 import {
   setMaxModeTo,
   updateSendAmount,
@@ -44,6 +44,9 @@ function mapDispatchToProps (dispatch) {
   return {
     setMaxModeTo: bool => dispatch(setMaxModeTo(bool)),
     updateSendAmount: newAmount => dispatch(updateSendAmount(newAmount)),
+    updateGasFeeError: (amountDataObject) => {
+        dispatch(updateSendErrors(getGasFeeErrorObject(amountDataObject)))
+    },
     updateSendAmountError: (amountDataObject) => {
         dispatch(updateSendErrors(getAmountErrorObject(amountDataObject)))
     },

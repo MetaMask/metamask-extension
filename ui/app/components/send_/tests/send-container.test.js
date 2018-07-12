@@ -12,6 +12,7 @@ const actionSpies = {
 }
 const duckActionSpies = {
   updateSendErrors: sinon.spy(),
+  resetSendState: sinon.spy(),
 }
 
 proxyquire('../send.container.js', {
@@ -148,6 +149,17 @@ describe('send container', () => {
         assert.equal(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
           'mockError'
+        )
+      })
+    })
+
+    describe('resetSendState()', () => {
+      it('should dispatch an action', () => {
+        mapDispatchToPropsObject.resetSendState()
+        assert(dispatchSpy.calledOnce)
+        assert.equal(
+          duckActionSpies.resetSendState.getCall(0).args.length,
+          0
         )
       })
     })

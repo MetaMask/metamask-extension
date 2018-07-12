@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import PersistentForm from '../../../lib/persistent-form'
 import {
   getAmountErrorObject,
+  getGasFeeErrorObject,
   getToAddressForGasUpdate,
   doesAmountErrorRequireUpdate,
 } from './send.utils'
@@ -112,7 +113,19 @@ export default class SendTransactionScreen extends PersistentForm {
         selectedToken,
         tokenBalance,
       })
-      updateSendErrors(amountErrorObject)
+      const gasFeeErrorObject = selectedToken
+        ? getGasFeeErrorObject({
+          amount,
+          amountConversionRate,
+          balance,
+          conversionRate,
+          gasTotal,
+          primaryCurrency,
+          selectedToken,
+          tokenBalance,
+        })
+        : { gasFee: null }
+      updateSendErrors(Object.assign(amountErrorObject, gasFeeErrorObject))
     }
 
     if (!uninitialized) {
@@ -141,6 +154,10 @@ export default class SendTransactionScreen extends PersistentForm {
       address,
     })
     this.updateGas()
+  }
+
+  componentWillUnmount () {
+    this.props.resetSendState()
   }
 
   render () {

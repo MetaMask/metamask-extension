@@ -105,7 +105,7 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
 
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
-  if (prevTx.status === 'dropped') {
+  if (prevTx && prevTx.status === 'dropped') {
     this.props.dispatch(actions.showModal({
       name: 'TRANSACTION_CONFIRMED',
       onHide: () => history.push(DEFAULT_ROUTE),
@@ -173,7 +173,6 @@ ConfirmTxScreen.prototype.render = function () {
       }) : null,
     ]),
   */
-
 
   return currentTxView({
     // Properties

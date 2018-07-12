@@ -28,6 +28,7 @@ import {
   setGasTotal,
 } from '../../actions'
 import {
+  resetSendState,
   updateSendErrors,
 } from '../../ducks/send.duck'
 import {
@@ -87,5 +88,6 @@ function mapDispatchToProps (dispatch) {
       }))
     },
     updateSendErrors: newError => dispatch(updateSendErrors(newError)),
+    resetSendState: () => dispatch(resetSendState()),
   }
 }

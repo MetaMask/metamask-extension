@@ -40,6 +40,9 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "approve": {
+    "message": "Approve"
+  },
   "approved": {
     "message": "Approved"
   },
@@ -88,6 +91,9 @@
   },
   "buyCoinbaseExplainer": {
     "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
+  },
+  "bytes": {
+    "message": "Bytes"
   },
   "ok": {
     "message": "Ok"
@@ -148,6 +154,9 @@
   },
   "copyContractAddress": {
     "message": "Copy Contract Address"
+  },
+  "copyAddress": {
+    "message": "Copy address to clipboard"
   },
   "copyToClipboard": {
     "message": "Copy to clipboard"
@@ -277,6 +286,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "parameters": {
+    "message": "Parameters"
+  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -317,6 +329,9 @@
   },
   "fromShapeShift": {
     "message": "From ShapeShift"
+  },
+  "functionType": {
+    "message": "Function Type"
   },
   "gas": {
     "message": "Gas",
@@ -369,6 +384,9 @@
   },
   "hereList": {
     "message": "Here's a list!!!!"
+  },
+  "hexData": {
+    "message": "Hex Data"
   },
   "hide": {
     "message": "Hide"
@@ -582,6 +600,9 @@
     "message": "or",
     "description": "choice between creating or importing a new account"
   },
+  "origin": {
+    "message": "Origin"
+  },
   "password": {
     "message": "Password"
   },
@@ -664,6 +685,9 @@
   "restoreVault": {
     "message": "Restore Vault"
   },
+  "restoreAccountWithSeed": {
+    "message": "Restore your Account with Seed Phrase"
+  },
   "required": {
     "message": "Required"
   },
@@ -672,6 +696,9 @@
   },
   "walletSeed": {
     "message": "Wallet Seed"
+  },
+  "restore": {
+    "message": "Restore"
   },
   "revealSeedWords": {
     "message": "Reveal Seed Words"
@@ -776,6 +803,9 @@
   },
   "sendTokens": {
     "message": "Send Tokens"
+  },
+  "separateEachWord": {
+    "message": "Separate each word with a single space"
   },
   "onlySendToEtherAddress": {
     "message": "Only send ETH to an Ethereum address."
@@ -901,6 +931,9 @@
   },
   "transactionNumber": {
     "message": "Transaction Number"
+  },
+  "transfer": {
+    "message": "Transfer"
   },
   "transfers": {
     "message": "Transfers"

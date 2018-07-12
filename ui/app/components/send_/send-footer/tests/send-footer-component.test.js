@@ -166,10 +166,13 @@ describe('SendFooter Component', function () {
       assert.equal(propsMethodSpies.update.callCount, 0)
     })
 
-    it('should call history.push', () => {
-      wrapper.instance().onSubmit(MOCK_EVENT)
-      assert.equal(historySpies.push.callCount, 1)
-      assert.equal(historySpies.push.getCall(0).args[0], CONFIRM_TRANSACTION_ROUTE)
+    it('should call history.push', done => {
+      Promise.resolve(wrapper.instance().onSubmit(MOCK_EVENT))
+        .then(() => {
+          assert.equal(historySpies.push.callCount, 1)
+          assert.equal(historySpies.push.getCall(0).args[0], CONFIRM_TRANSACTION_ROUTE)
+          done()
+        })
     })
   })
 

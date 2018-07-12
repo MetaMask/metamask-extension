@@ -4,7 +4,7 @@ import {
     getCurrentCurrency,
     getGasTotal,
 } from '../../send.selectors.js'
-import { sendGasIsInError } from './send-gas-row.selectors.js'
+import { getGasLoadingError, gasFeeIsInError } from './send-gas-row.selectors.js'
 import { showModal } from '../../../../actions'
 import SendGasRow from './send-gas-row.component'
 
@@ -15,7 +15,8 @@ function mapStateToProps (state) {
     conversionRate: getConversionRate(state),
     convertedCurrency: getCurrentCurrency(state),
     gasTotal: getGasTotal(state),
-    gasLoadingError: sendGasIsInError(state),
+    gasFeeError: gasFeeIsInError(state),
+    gasLoadingError: getGasLoadingError(state),
   }
 }
 

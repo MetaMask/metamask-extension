@@ -6,7 +6,6 @@ const {
   calcGasTotal,
   calcTokenBalance,
   estimateGas,
-  estimateGasPriceFromRecentBlocks,
 } = require('./components/send_/send.utils')
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
@@ -705,11 +704,10 @@ function signTypedMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
     global.ethQuery.sendTransaction(txData, (err, data) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.hideWarning())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
     })
     dispatch(actions.showConfTxPage({}))
   }
@@ -746,19 +744,26 @@ function updateGasData ({
 }) {
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
-    const estimatedGasPrice = estimateGasPriceFromRecentBlocks(recentBlocks)
-    return Promise.all([
-      Promise.resolve(estimatedGasPrice),
-      estimateGas({
-        estimateGasMethod: background.estimateGas,
-        blockGasLimit,
-        selectedAddress,
-        selectedToken,
-        to,
-        value,
-        gasPrice: estimatedGasPrice,
-      }),
-    ])
+    return new Promise((resolve, reject) => {
+      background.getGasPrice((err, data) => {
+        if (err) return reject(err)
+        return resolve(data)
+      })
+    })
+    .then(estimateGasPrice => {
+      return Promise.all([
+        Promise.resolve(estimateGasPrice),
+        estimateGas({
+          estimateGasMethod: background.estimateGas,
+          blockGasLimit,
+          selectedAddress,
+          selectedToken,
+          to,
+          value,
+          estimateGasPrice,
+        }),
+      ])
+    })
     .then(([gasPrice, gas]) => {
       dispatch(actions.setGasPrice(gasPrice))
       dispatch(actions.setGasLimit(gas))
@@ -904,29 +909,41 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
 
 function updateTransaction (txData) {
   log.info('actions: updateTx: ' + JSON.stringify(txData))
-  return (dispatch) => {
+  return dispatch => {
     log.debug(`actions calling background.updateTx`)
-    background.updateTransaction(txData, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
-      if (err) {
-        dispatch(actions.txError(err))
-        dispatch(actions.goHome())
-        return log.error(err.message)
-      }
-      dispatch(actions.showConfTxPage({ id: txData.id }))
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      background.updateTransaction(txData, (err) => {
+        dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+        if (err) {
+          dispatch(actions.txError(err))
+          dispatch(actions.goHome())
+          log.error(err.message)
+          return reject(err)
+        }
+
+        resolve(txData)
+      })
     })
+    .then(() => updateMetamaskStateFromBackground())
+    .then(newState => dispatch(actions.updateMetamaskState(newState)))
+    .then(() => {
+        dispatch(actions.showConfTxPage({ id: txData.id }))
+        dispatch(actions.hideLoadingIndication())
+        return txData
+      })
   }
 }
 
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
-  return (dispatch) => {
+  return dispatch => {
     log.debug(`actions calling background.updateAndApproveTx`)
+    dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, err => {
-        dispatch(actions.hideLoadingIndication())
         dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
         dispatch(actions.clearSend())
 
@@ -937,10 +954,17 @@ function updateAndApproveTx (txData) {
           reject(err)
         }
 
-        dispatch(actions.completedTx(txData.id))
         resolve(txData)
       })
     })
+      .then(() => updateMetamaskStateFromBackground())
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => {
+        dispatch(actions.clearSend())
+        dispatch(actions.completedTx(txData.id))
+        dispatch(actions.hideLoadingIndication())
+        return txData
+      })
   }
 }
 
@@ -1032,13 +1056,25 @@ function cancelTypedMsg (msgData) {
 function cancelTx (txData) {
   return dispatch => {
     log.debug(`background.cancelTransaction`)
+    dispatch(actions.showLoadingIndication())
+
     return new Promise((resolve, reject) => {
-      background.cancelTransaction(txData.id, () => {
-        dispatch(actions.clearSend())
-        dispatch(actions.completedTx(txData.id))
-        resolve(txData)
+      background.cancelTransaction(txData.id, err => {
+        if (err) {
+          return reject(err)
+        }
+
+        resolve()
       })
     })
+      .then(() => updateMetamaskStateFromBackground())
+      .then(newState => dispatch(actions.updateMetamaskState(newState)))
+      .then(() => {
+        dispatch(actions.clearSend())
+        dispatch(actions.completedTx(txData.id))
+        dispatch(actions.hideLoadingIndication())
+        return txData
+      })
   }
 }
 
