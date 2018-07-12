@@ -138,10 +138,14 @@ TxView.prototype.render = function () {
 
       h(SelectedAccount),
 
-      !isMascara && h('div.open-in-browser', {
-        onClick: () => global.platform.openExtensionInBrowser(),
-      }, [h('img', { src: 'images/popout.svg' })]),
-
+      !isMascara && h(Tooltip, {
+        title: t('openInTab'),
+        position: 'bottom',
+      }, [
+        h('div.open-in-browser', {
+          onClick: () => global.platform.openExtensionInBrowser(),
+        }, [h('img', { src: 'images/popout.svg' })]),
+      ]),
     ]),
 
     this.renderHeroBalance(),
