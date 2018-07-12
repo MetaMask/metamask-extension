@@ -129,19 +129,6 @@ class NonceTracker {
     return Number.isInteger(highest) ? highest + 1 : 0
   }
 
-  _reduceTxListToUniqueNonces (txList) {
-    const reducedTxList = txList.reduce((reducedList, txMeta, index) => {
-      if (!index) return [txMeta]
-      const nonceMatches = txList.filter((txData) => {
-        return txMeta.txParams.nonce === txData.txParams.nonce
-      })
-      if (nonceMatches.length > 1) return reducedList
-      reducedList.push(txMeta)
-      return reducedList
-    }, [])
-    return reducedTxList
-  }
-
   _getHighestNonce (txList) {
     const nonces = txList.map((txMeta) => {
       const nonce = txMeta.txParams.nonce
