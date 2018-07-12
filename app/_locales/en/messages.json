@@ -515,6 +515,9 @@
   "mainnet": {
     "message": "Main Ethereum Network"
   },
+  "menu": {
+    "message": "Menu"
+  },
   "message": {
     "message": "Message"
   },
@@ -595,6 +598,9 @@
   },
   "oldUIMessage": {
     "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
+  },
+  "openInTab": {
+    "message": "Open in tab"
   },
   "or": {
     "message": "or",
