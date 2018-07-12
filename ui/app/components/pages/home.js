@@ -1,6 +1,6 @@
 const { Component } = require('react')
+const { connect } = require('react-redux')
 const PropTypes = require('prop-types')
-const connect = require('../../metamask-connect')
 const { Redirect, withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
