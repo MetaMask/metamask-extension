@@ -10,6 +10,7 @@ export default class PageContainerFooter extends Component {
     onSubmit: PropTypes.func,
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
+    submitButtonType: PropTypes.string,
   }
 
   static contextTypes = {
@@ -23,6 +24,7 @@ export default class PageContainerFooter extends Component {
       onSubmit,
       submitText,
       disabled,
+      submitButtonType,
     } = this.props
 
     return (
@@ -30,16 +32,16 @@ export default class PageContainerFooter extends Component {
 
         <Button
           type="default"
-          large={true}
+          large
           className="page-container__footer-button"
-          onClick={() => onCancel()}
+          onClick={e => onCancel(e)}
         >
           { cancelText || this.context.t('cancel') }
         </Button>
 
         <Button
-          type="primary"
-          large={true}
+          type={submitButtonType || 'primary'}
+          large
           className="page-container__footer-button"
           disabled={disabled}
           onClick={e => onSubmit(e)}
