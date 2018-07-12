@@ -69,8 +69,8 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
-    showRemoveAccountConfirmationModal: (address) => {
-      return dispatch(actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', address }))
+    showRemoveAccountConfirmationModal: (identity) => {
+      return dispatch(actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))
     },
   }
 }
@@ -193,13 +193,13 @@ AccountMenu.prototype.renderAccounts = function () {
         ]),
 
         this.renderKeyringType(keyring),
-        this.renderRemoveAccount(keyring, identity.address),
+        this.renderRemoveAccount(keyring, identity),
       ],
     )
   })
 }
 
-AccountMenu.prototype.renderRemoveAccount = function (keyring, address) {
+AccountMenu.prototype.renderRemoveAccount = function (keyring, identity) {
   // Any account that's not from the HD wallet Keyring can be removed
   const type = keyring.type
   const isRemovable = type !== 'HD Key Tree'
@@ -209,18 +209,18 @@ AccountMenu.prototype.renderRemoveAccount = function (keyring, address) {
       position: 'bottom',
     }, [
         h('a.remove-account-icon', {
-          onClick: (e) => this.removeAccount(e, address),
+          onClick: (e) => this.removeAccount(e, identity),
         }, ''),
       ])
   }
   return null
 }
 
-AccountMenu.prototype.removeAccount = function (e, address) {
+AccountMenu.prototype.removeAccount = function (e, identity) {
   e.preventDefault()
   e.stopPropagation()
   const { showRemoveAccountConfirmationModal } = this.props
-  showRemoveAccountConfirmationModal(address)
+  showRemoveAccountConfirmationModal(identity)
 }
 
 AccountMenu.prototype.renderKeyringType = function (keyring) {

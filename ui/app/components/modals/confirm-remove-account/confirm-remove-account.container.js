@@ -5,7 +5,8 @@ const { hideModal, removeAccount } = require('../../../actions')
 
 const mapStateToProps = state => {
   return {
-    address: state.appState.modal.modalState.props.address,
+    identity: state.appState.modal.modalState.props.identity,
+    network: state.metamask.network,
   }
 }
 
