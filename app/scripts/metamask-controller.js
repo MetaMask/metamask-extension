@@ -708,13 +708,18 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Removes a "Loose" account from state.
+   * Removes an account from state / storage.
    *
    * @param {string[]} address A hex address
    *
    */
   async removeAccount (address) {
+    // Remove account from the preferences controller
     this.preferencesController.removeAddress(address)
+    // Remove account from the account tracker controller
+    this.accountTracker.removeAccount(address)
+    // Remove account from the keyring
+    await this.keyringController.removeAccount(address)
     return address
   }
 
