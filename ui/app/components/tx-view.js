@@ -11,6 +11,7 @@ const { SEND_ROUTE } = require('../routes')
 const { checksumAddress: toChecksumAddress } = require('../util')
 
 const BalanceComponent = require('./balance-component')
+const Tooltip = require('./tooltip')
 const TxList = require('./tx-list')
 const SelectedAccount = require('./selected-account')
 
@@ -103,7 +104,8 @@ TxView.prototype.renderButtons = function () {
 }
 
 TxView.prototype.render = function () {
-  const { isMascara } = this.props
+  const { hideSidebar, isMascara, showSidebar, sidebarOpen } = this.props
+  const { t } = this.context
 
   return h('div.tx-view.flex-column', {
     style: {},
@@ -120,14 +122,19 @@ TxView.prototype.render = function () {
       },
     }, [
 
-      h('div.fa.fa-bars', {
-        style: {
-          fontSize: '1.3em',
-          cursor: 'pointer',
-          padding: '10px',
-        },
-        onClick: () => this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar(),
-      }),
+      h(Tooltip, {
+        title: t('menu'),
+        position: 'bottom',
+      }, [
+        h('div.fa.fa-bars', {
+          style: {
+            fontSize: '1.3em',
+            cursor: 'pointer',
+            padding: '10px',
+          },
+          onClick: () => sidebarOpen ? hideSidebar() : showSidebar(),
+        }),
+      ]),
 
       h(SelectedAccount),
 

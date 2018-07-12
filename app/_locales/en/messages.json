@@ -515,6 +515,9 @@
   "mainnet": {
     "message": "Main Ethereum Network"
   },
+  "menu": {
+    "message": "Menu"
+  },
   "message": {
     "message": "Message"
   },
