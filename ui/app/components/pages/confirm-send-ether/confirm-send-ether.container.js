@@ -5,6 +5,14 @@ import { updateSend } from '../../../actions'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction.duck'
 import ConfirmSendEther from './confirm-send-ether.component'
 
+const mapStateToProps = state => {
+  const { confirmTransaction: { txData: { txParams } = {} } } = state
+
+  return {
+    txParams,
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     editTransaction: txData => {
@@ -33,5 +41,5 @@ const mapDispatchToProps = dispatch => {
 
 export default compose(
   withRouter,
-  connect(null, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps)
 )(ConfirmSendEther)
