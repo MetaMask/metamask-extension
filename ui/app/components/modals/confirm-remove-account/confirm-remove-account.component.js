@@ -25,25 +25,24 @@ class ConfirmRemoveAccount extends Component {
   renderSelectedAccount () {
     const { identity } = this.props
     return (
-      <div className="modal-container__address">
-        <div className="account_identicon">
+      <div className="modal-container__account">
+        <div className="modal-container__account__identicon">
           <Identicon
               address={identity.address}
               diameter={32}
-              style={{'marginLeft': '10px'}}
           />
         </div>
-        <div className="account_name">
-            <span className="account_label">Name</span>
+        <div className="modal-container__account__name">
+            <span className="modal-container__account__label">Name</span>
             <span className="account_value">{identity.name}</span>
         </div>
-        <div className="account_address">
-            <span className="account_label">Public Address</span>
-            <span className="account_value">{ addressSummary(identity.address) }</span>
+        <div className="modal-container__account__address">
+            <span className="modal-container__account__label">Public Address</span>
+            <span className="account_value">{ addressSummary(identity.address, 4, 4) }</span>
         </div>
-        <div className="account_link">
+        <div className="modal-container__account__link">
           <a
-            className="hw-account-list__item__link"
+            className=""
             href={genAccountLink(identity.address, this.props.network)}
             target={'_blank'}
             title={this.context.t('etherscanView')}
