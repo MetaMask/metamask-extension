@@ -242,7 +242,7 @@
 
   &__item__index {
     display: flex;
-    margin-right: 20px;
+    width: 28px;
   }
 
   &__item__radio {
@@ -336,5 +336,9 @@
   &__button {
     width: 150px;
     min-width: initial;
+  }
+
+  &__button.btn-primary--disabled {
+    cursor: 'not-allowed';
   }
 }

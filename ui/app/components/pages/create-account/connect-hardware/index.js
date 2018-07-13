@@ -59,8 +59,11 @@ class ConnectHardwareForm extends Component {
           const newState = {}
           // Default to the first account
           if (this.state.selectedAccount === null) {
-            const firstAccount = accounts[0]
-            newState.selectedAccount = firstAccount.index.toString() === '0' ? firstAccount.index.toString() : null
+            accounts.forEach((a, i) => {
+              if (a.address.toLowerCase() === this.props.address) {
+                newState.selectedAccount = a.index.toString()
+              }
+            })
           // If the page doesn't contain the selected account, let's deselect it
           } else if (!accounts.filter(a => a.index.toString() === this.state.selectedAccount).length) {
             newState.selectedAccount = null
@@ -167,6 +170,7 @@ ConnectHardwareForm.propTypes = {
   t: PropTypes.func,
   network: PropTypes.string,
   accounts: PropTypes.object,
+  address: PropTypes.string,
 }
 
 const mapStateToProps = state => {
