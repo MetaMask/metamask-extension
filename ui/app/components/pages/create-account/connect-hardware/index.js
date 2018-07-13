@@ -16,6 +16,7 @@ class ConnectHardwareForm extends Component {
       btnText: context.t('connectToTrezor'),
       selectedAccount: null,
       accounts: [],
+      browserSupported: true,
     }
   }
 
@@ -78,6 +79,9 @@ class ConnectHardwareForm extends Component {
         }
       })
       .catch(e => {
+        if (e === 'Window blocked') {
+          this.setState({ browserSupported: false })
+        }
         this.setState({ btnText: this.context.t('connectToTrezor') })
       })
   }
@@ -125,6 +129,7 @@ class ConnectHardwareForm extends Component {
       return h(ConnectScreen, {
         connectToTrezor: this.connectToTrezor,
         btnText: this.state.btnText,
+        browserSupported: this.state.browserSupported,
       })
     }
 

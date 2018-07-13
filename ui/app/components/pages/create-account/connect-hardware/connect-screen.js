@@ -16,9 +16,11 @@ class ConnectScreen extends Component {
                 ]),
                 h(
                     'button.btn-primary.btn--large',
-                    { onClick: () => global.platform.openWindow({
-                    url: 'https://google.com/chrome',
-                    }), style: { margin: 12 } },
+                    {
+                      onClick: () => global.platform.openWindow({
+                        url: 'https://google.com/chrome',
+                      }),
+                    },
                     this.context.t('downloadGoogleChrome')
                 ),
             ])
@@ -49,8 +51,7 @@ class ConnectScreen extends Component {
       }
 
     render () {
-        const isChrome = window.navigator.userAgent.search('Chrome') !== -1
-        if (isChrome) {
+        if (this.props.browserSupported) {
             return this.renderConnectScreen()
         }
         return this.renderUnsupportedBrowser()
@@ -59,7 +60,8 @@ class ConnectScreen extends Component {
 
 ConnectScreen.propTypes = {
     connectToTrezor: PropTypes.func.isRequired,
-    btnText: PropTypes.string,
+    btnText: PropTypes.string.isRequired,
+    browserSupported: PropTypes.bool.isRequired,
 }
 
 ConnectScreen.contextTypes = {
