@@ -75,6 +75,10 @@ CurrencyDisplay.prototype.getValueToRender = function ({ selectedToken, conversi
 CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValue) {
   const { primaryCurrency, convertedCurrency, conversionRate } = this.props
 
+  if (conversionRate == 0 || conversionRate == null || converstionRate == undefined && nonFormattedValue != 0) {
+    return null
+  }
+
   let convertedValue = conversionUtil(nonFormattedValue, {
     fromNumericBase: 'dec',
     fromCurrency: primaryCurrency,
@@ -83,19 +87,13 @@ CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValu
     conversionRate,
   })
 
-  if (conversionRate == 0 && nonFormattedValue != 0) {
-    convertedValue = null
-    return convertedValue
-  }
-  else {
-    convertedValue == Number(convertedValue).toFixed(2)
-    const upperCaseCurrencyCode = convertedCurrency.toUpperCase()
-    return currencies.find(currency => currency.code === upperCaseCurrencyCode)
-      ? currencyFormatter.format(Number(convertedValue), {
-        code: upperCaseCurrencyCode,
-      })
+  convertedValue == Number(convertedValue).toFixed(2)
+  const upperCaseCurrencyCode = convertedCurrency.toUpperCase()
+  return currencies.find(currency => currency.code === upperCaseCurrencyCode)
+    ? currencyFormatter.format(Number(convertedValue), {
+      code: upperCaseCurrencyCode,
+    })
       : convertedValue
-    }
   }
 
 CurrencyDisplay.prototype.handleChange = function (newVal) {
@@ -110,6 +108,19 @@ CurrencyDisplay.prototype.getInputWidth = function (valueToRender, readOnly) {
   return (valueLength + decimalPointDeficit + 0.75) + 'ch'
 }
 
+CurrencyDisplay.prototype.onlyRenderConversions = function (convertedValueToRender) {
+  const{
+    convertedBalanceClassName = 'currency-display__converted-value',
+    convertedCurrency,
+  } = this.props
+    
+    return h('div', {
+    className: convertedBalanceClassName,
+    }, convertedValueToRender == null
+      ? 'No Conversion Rate'
+      : `${convertedValueToRender} ${convertedCurrency.toUpperCase()}`
+)
+  }
 
 CurrencyDisplay.prototype.render = function () {
   const {
@@ -126,19 +137,6 @@ CurrencyDisplay.prototype.render = function () {
   const { valueToRender } = this.state
 
   const convertedValueToRender = this.getConvertedValueToRender(valueToRender)
-
-  function onlyRenderConversions() {
-    if (convertedValueToRender == null) {
-      return h('div', {
-        className: convertedBalanceClassName,
-      }, 'No Conversion Rate')
-    }
-    else {
-      return h('div', {
-        className: convertedBalanceClassName,
-      }, `${convertedValueToRender} ${convertedCurrency.toUpperCase()}`)
-    }
-  }
 
   return h('div', {
     className,
@@ -176,7 +174,7 @@ CurrencyDisplay.prototype.render = function () {
 
       ]),
 
-    ]), onlyRenderConversions(),
+    ]), this.onlyRenderConversions(convertedValueToRender),
 
   ])
 
