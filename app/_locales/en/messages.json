@@ -135,7 +135,7 @@
     "message": "Confirm Transaction"
   },
   "connectHardware": {
-    "message": "Connect Hardware"
+    "message": "Connect Hardware Wallet"
   },
   "connect": {
     "message": "Connect"
