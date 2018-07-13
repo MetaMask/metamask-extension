@@ -46,6 +46,12 @@ class ConnectScreen extends Component {
                     { onClick: this.props.connectToTrezor.bind(this) },
                     this.props.btnText
                 ),
+                h('div.hw-connect__get-trezor', {}, [
+                  h('a', {
+                    href: 'https://shop.trezor.io/?a=metamask',
+                    target: '_blank',
+                  }, this.context.t('getYourTrezor')),
+                ]),
             ])
         )
       }

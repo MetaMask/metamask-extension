@@ -407,6 +407,9 @@
     "message": "Get Ether from a faucet for the $1",
     "description": "Displays network name for Ether faucet"
   },
+  "getYourTrezor": {
+    "message": "Don't have a TREZOR hardware wallet? Order yours now!"
+  },
   "greaterThanMin": {
     "message": "must be greater than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
