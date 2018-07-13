@@ -19,6 +19,18 @@ class ConnectHardwareForm extends Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    const { accounts } = nextProps
+    const newAccounts = this.state.accounts.map(a => {
+      const normalizedAddress = a.address.toLowerCase()
+      const balanceValue = accounts[normalizedAddress] && accounts[normalizedAddress].balance || null
+      a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
+      return a
+    })
+    this.setState({accounts: newAccounts})
+  }
+
+
   async componentDidMount () {
     const unlocked = await this.props.checkHardwareStatus('trezor')
     if (unlocked) {
@@ -36,14 +48,6 @@ class ConnectHardwareForm extends Component {
 
   onAccountChange = (account) => {
     this.setState({selectedAccount: account.toString(), error: null})
-  }
-
-  getBalance (address) {
-    // Get the balance
-    const { accounts } = this.props
-    const balanceValue = accounts && accounts[address.toLowerCase()] ? accounts[address.toLowerCase()].balance : ''
-    const formattedBalance = balanceValue !== null ? formatBalance(balanceValue, 6) : '...'
-    return formattedBalance
   }
 
   getPage = (page) => {
@@ -64,7 +68,9 @@ class ConnectHardwareForm extends Component {
 
           // Map accounts with balances
           newState.accounts = accounts.map(account => {
-            account.balance = this.getBalance(account.address)
+            const normalizedAddress = account.address.toLowerCase()
+            const balanceValue = this.props.accounts[normalizedAddress] && this.props.accounts[normalizedAddress].balance || null
+            account.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
             return account
           })
 
