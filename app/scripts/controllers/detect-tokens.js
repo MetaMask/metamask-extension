@@ -1,10 +1,12 @@
+const Web3 = require('web3')
 const contracts = require('eth-contract-metadata')
+const { warn } = require('loglevel')
 const {
     MAINNET,
     } = require('./network/enums')
-
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
+const ERC20_ABI = [{'constant': true, 'inputs': [{'name': '_owner', 'type': 'address'}], 'name': 'balanceOf', 'outputs': [{'name': 'balance', 'type': 'uint256'}], 'payable': false, 'type': 'function'}]
 
 /**
  * A controller that polls for token exchange
@@ -28,17 +30,12 @@ class DetectTokensController {
    */
   async exploreNewTokens () {
     if (!this.isActive) { return }
-    if (this._network.getState().provider.type !== MAINNET) { return }
-    let detectedTokenBalance, token
+    if (this._network.store.getState().provider.type !== MAINNET) { return }
+    this.web3.setProvider(this._network._provider)
     for (const contractAddress in contracts) {
-        const contract = contracts[contractAddress]
-        if (contract.erc20 && !(contractAddress in this.tokens)) {
-          detectedTokenBalance = await this.detectTokenBalance(contractAddress)
-          if (detectedTokenBalance) {
-            token = contracts[contractAddress]
-            this._preferences.addToken(contractAddress, token['symbol'], token['decimals'])
-          }
-        }
+      if (contracts[contractAddress].erc20 && !(this.tokenAddresses.includes(contractAddress.toLowerCase()))) {
+        this.detectTokenBalance(contractAddress)
+      }
     }
   }
 
@@ -46,17 +43,20 @@ class DetectTokensController {
    * Find if selectedAddress has tokens with contract in contractAddress.
    *
    * @param {string} contractAddress Hex address of the token contract to explore.
-   * @returns {boolean} If balance is detected in token contract for address.
+   * @returns {boolean} If balance is detected, token is added.
    *
    */
   async detectTokenBalance (contractAddress) {
-    const address = this._preferences.store.getState().selectedAddress
-    const response = await fetch(`https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=${contractAddress}&address=${address}&tag=latest&apikey=NCKS6GTY41KPHWRJB62ES1MDNRBIT174PV`)
-    const parsedResponse = await response.json()
-    if (parsedResponse.result !== '0') {
-      return true
-    }
-    return false
+    const ethContract = this.web3.eth.contract(ERC20_ABI).at(contractAddress)
+    ethContract.balanceOf(this.selectedAddress, (error, result) => {
+      if (!error) {
+        if (!result.isZero()) {
+          this._preferences.addToken(contractAddress, contracts[contractAddress].symbol, contracts[contractAddress].decimals)
+        }
+      } else {
+        warn(`MetaMask - DetectTokensController balance fetch failed for ${contractAddress}.`, error)
+      }
+    })
   }
 
   /**
@@ -74,8 +74,10 @@ class DetectTokensController {
   set preferences (preferences) {
     if (!preferences) { return }
     this._preferences = preferences
-    this.tokens = preferences.store.getState().tokens
-  
+    this.tokenAddresses = preferences.store.getState().tokens.map((obj) => { return obj.address })
+    this.selectedAddress = preferences.store.getState().selectedAddress
+    preferences.store.subscribe(({ tokens = [] }) => { this.tokenAddresses = tokens.map((obj) => { return obj.address }) })
+    preferences.store.subscribe(({ selectedAddress = [] }) => { this.selectedAddress = selectedAddress })
   }
 
     /**
@@ -84,6 +86,7 @@ class DetectTokensController {
   set network (network) {
     if (!network) { return }
     this._network = network
+    this.web3 = new Web3(network._provider)
   }
 }
 

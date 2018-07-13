@@ -116,7 +116,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // detect tokens controller
     this.detectTokensController = new DetectTokensController({
       preferences: this.preferencesController,
-      network: this.networkController.store,
+      network: this.networkController,
     })
 
     this.recentBlocksController = new RecentBlocksController({
