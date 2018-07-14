@@ -27,6 +27,10 @@ export default class SendFooter extends Component {
     update: PropTypes.func,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   onCancel () {
     this.props.clearSend()
     this.props.history.push(DEFAULT_ROUTE)
@@ -94,8 +98,4 @@ export default class SendFooter extends Component {
     )
   }
 
-}
-
-SendFooter.contextTypes = {
-  t: PropTypes.func,
 }

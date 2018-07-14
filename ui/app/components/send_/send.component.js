@@ -40,6 +40,10 @@ export default class SendTransactionScreen extends PersistentForm {
     updateSendTokenBalance: PropTypes.func,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   updateGas ({ to: updatedToAddress, amount: value } = {}) {
     const {
       amount,
@@ -172,8 +176,4 @@ export default class SendTransactionScreen extends PersistentForm {
     )
   }
 
-}
-
-SendTransactionScreen.contextTypes = {
-  t: PropTypes.func,
 }

@@ -14,6 +14,10 @@ export default class GasFeeDisplay extends Component {
     onClick: PropTypes.func,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   render () {
     const {
       conversionRate,
@@ -54,8 +58,4 @@ export default class GasFeeDisplay extends Component {
       </div>
     )
   }
-}
-
-GasFeeDisplay.contextTypes = {
-  t: PropTypes.func,
 }

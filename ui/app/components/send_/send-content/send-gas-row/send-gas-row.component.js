@@ -14,6 +14,10 @@ export default class SendGasRow extends Component {
     showCustomizeGasModal: PropTypes.func,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   render () {
     const {
       conversionRate,
@@ -41,8 +45,4 @@ export default class SendGasRow extends Component {
     )
   }
 
-}
-
-SendGasRow.contextTypes = {
-  t: PropTypes.func,
 }

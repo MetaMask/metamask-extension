@@ -14,6 +14,10 @@ export default class FromDropdown extends Component {
     selectedAccount: PropTypes.object,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   render () {
     const {
       accounts,
@@ -39,8 +43,4 @@ export default class FromDropdown extends Component {
     </div>
   }
 
-}
-
-FromDropdown.contextTypes = {
-  t: PropTypes.func,
 }

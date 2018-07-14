@@ -12,6 +12,10 @@ export default class SendHeader extends Component {
     subtitleParams: PropTypes.array,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   onClose () {
     this.props.clearSend()
     this.props.history.push(DEFAULT_ROUTE)
@@ -27,8 +31,4 @@ export default class SendHeader extends Component {
     )
   }
 
-}
-
-SendHeader.contextTypes = {
-  t: PropTypes.func,
 }
