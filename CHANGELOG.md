@@ -2,7 +2,9 @@
 
 ## Current Master
 
-  - Remove rejected transactions from transaction history
+- Remove rejected transactions from transaction history
+- Add Trezor Support
+- Allow to remove accounts (Imported and Hardware Wallets)
 
 ## 4.8.0 Thur Jun 14 2018
 
