@@ -40,6 +40,10 @@ const Modal = require('./components/modals/index').Modal
 const AppHeader = require('./components/app-header')
 
 import UnlockPage from './components/pages/unlock-page'
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+} from '../../app/scripts/lib/enums'
 
 // Routes
 const {
@@ -60,10 +64,31 @@ const {
 class App extends Component {
   componentWillMount () {
     const { currentCurrency, setCurrentCurrencyToUSD } = this.props
-
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
     }
+
+
+    console.log('aaahhh', window.navigator.userAgent)
+    console.log('aaahhh', window.navigator)
+    console.log('aaahhh', window)
+
+    // snap firefox version are for all linux distribution, no only one as apt version that contains 'ubuntu'
+    
+    /*
+    if (window.METAMASK_UI_TYPE !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      window.METAMASK_UI_TYPE !== ENVIRONMENT_TYPE_POPUP && window.navigator.userAgent.indexOf('Ubuntu') > -1 &&
+        window.navigator.userAgent.indexOf('Firefox') > -1 && window.os === 'linux') {
+      global.platform.openExtensionInBrowser()
+    }
+
+    global.platform.getPlatformInfo((error, res) => {
+      if (!error) {
+        console.log('aaa', res)
+      }
+    })
+    */
+
   }
 
   renderRoutes () {
