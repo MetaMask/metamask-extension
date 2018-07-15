@@ -803,6 +803,8 @@ module.exports = class MetamaskController extends EventEmitter {
           return cb(null, data.rawSig)
         case 'rejected':
           return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
+        case 'errored':
+          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: ${data.error}`)))
         default:
           return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
@@ -824,13 +826,19 @@ module.exports = class MetamaskController extends EventEmitter {
     return this.typedMessageManager.approveMessage(msgParams)
       .then((cleanMsgParams) => {
         // signs the message
-        return this.keyringController.signTypedMessage(cleanMsgParams)
+        return this.keyringController.signTypedMessage({
+          ...cleanMsgParams,
+          ...{ data: JSON.parse(cleanMsgParams.data) },
+        })
       })
       .then((rawSig) => {
         // tells the listener that the message has been signed
         // and can be returned to the dapp
         this.typedMessageManager.setMsgStatusSigned(msgId, rawSig)
         return this.getState()
+      })
+      .catch((error) => {
+        this.typedMessageManager.errorMessage(msgId, error)
       })
   }
 

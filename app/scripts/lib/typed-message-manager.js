@@ -2,8 +2,10 @@ const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const createId = require('./random-id')
 const assert = require('assert')
-const sigUtil = require('eth-sig-util')
 const log = require('loglevel')
+const Validator = require('jsonschema').Validator
+const jsonschema = new Validator()
+const { TYPED_MESSAGE_SCHEMA } = require('eth-sig-util')
 
 /**
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
@@ -17,7 +19,7 @@ const log = require('loglevel')
  * @property {Object} msgParams.from The address that is making the signature request.
  * @property {string} msgParams.data A hex string conversion of the raw buffer data of the signature request
  * @property {number} time The epoch time at which the this message was created
- * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed' or 'rejected'
+ * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed', 'rejected', or 'errored'
  * @property {string} type The json-prc signing method for which a signature request has been made. A 'Message' will
  * always have a 'eth_signTypedData' type.
  *
@@ -103,14 +105,16 @@ module.exports = class TypedMessageManager extends EventEmitter {
    *
    */
   validateParams (params) {
-    assert.equal(typeof params, 'object', 'Params should ben an object.')
+    let data
+    assert.equal(typeof params, 'object', 'Params should be an object.')
     assert.ok('data' in params, 'Params must include a data field.')
     assert.ok('from' in params, 'Params must include a from field.')
-    assert.ok(Array.isArray(params.data), 'Data should be an array.')
     assert.equal(typeof params.from, 'string', 'From field must be a string.')
-    assert.doesNotThrow(() => {
-      sigUtil.typedSignatureHash(params.data)
-    }, 'Expected EIP712 typed data')
+    assert.equal(typeof params.data, 'string', 'Data must be passed as a valid JSON string.')
+    assert.doesNotThrow(() => { data = JSON.parse(params.data) }, 'Data must be passed as a valid JSON string.')
+    const validation = jsonschema.validate(data, TYPED_MESSAGE_SCHEMA)
+    assert.ok(data.primaryType in data.types, `Primary type of "${data.primaryType}" has no type definition.`)
+    assert.equal(validation.errors.length, 0, 'Data must conform to EIP-712 schema. See https://git.io/fNtcx.')
   }
 
   /**
@@ -198,6 +202,19 @@ module.exports = class TypedMessageManager extends EventEmitter {
     this._setMsgStatus(msgId, 'rejected')
   }
 
+  /**
+   * Sets a TypedMessage status to 'errored' via a call to this._setMsgStatus.
+   *
+   * @param {number} msgId The id of the TypedMessage to error
+   *
+   */
+  errorMessage (msgId, error) {
+    const msg = this.getMsg(msgId)
+    msg.error = error
+    this._updateMsg(msg)
+    this._setMsgStatus(msgId, 'errored')
+  }
+
   //
   // PRIVATE METHODS
   //
@@ -221,7 +238,7 @@ module.exports = class TypedMessageManager extends EventEmitter {
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)
-    if (status === 'rejected' || status === 'signed') {
+    if (status === 'rejected' || status === 'signed' || status === 'errored') {
       this.emit(`${msgId}:finished`, msg)
     }
   }
