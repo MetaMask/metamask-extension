@@ -2,7 +2,7 @@ const extension = require('extensionizer')
 const resolver = require('./resolver.js')
 
 module.exports = function (provider) {
-    function ipfsContent(details) {
+    function ipfsContent (details) {
       const name = details.url.substring(7, details.url.length - 1)
       let clearTime = null
       extension.tabs.getSelected(null, tab => {
