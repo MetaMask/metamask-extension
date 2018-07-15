@@ -50,9 +50,9 @@ async function runConfirmSigRequestsTest (assert, done) {
   confirmSigHeadline = await queryAsync($, '.request-signature__headline')
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
-  confirmSigRowValue = await queryAsync($, '.request-signature__row-value')
-  assert.equal(confirmSigRowValue[0].textContent, 'Hi, Alice!')
-  assert.equal(confirmSigRowValue[1].textContent, '1337')
+  const confirmSigRowHeadings = await queryAsync($, '.request-signature__typed-container h1')
+  assert.equal(confirmSigRowHeadings[0].textContent, 'Domain')
+  assert.equal(confirmSigRowHeadings[1].textContent, 'Message')
 
   confirmSigSignButton = await queryAsync($, 'button.btn-primary.btn--large')
   confirmSigSignButton[0].click()

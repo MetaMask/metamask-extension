@@ -95,10 +95,7 @@
       "8997167822566869": {
         "id": 8997167822566869,
         "msgParams": {
-          "data": [
-            {"type": "string", "name": "Message", "value": "Hi, Alice!"},
-            {"type": "uint32", "name": "A number", "value": "1337"}
-          ],
+          "data": "{\"types\":{\"foo\":[]},\"message\":{},\"primaryType\":\"foo\",\"domain\":{}}",
           "from": "0x0d0c7188d9c72b019a5da9bca0d127680c22e659"
         },
         "status": "unapproved",
