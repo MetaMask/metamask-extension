@@ -2,39 +2,43 @@ const extension = require('extensionizer')
 const resolver = require('./resolver.js')
 
 module.exports = function (provider) {
-    extension.webRequest.onBeforeRequest.addListener(details => {
-        const urlhttpreplace = details.url.replace(/\w+?:\/\//, '')
-        const url = urlhttpreplace.replace(/[\\/].*/g, '') // eslint-disable-line no-useless-escape
-        let domainhtml = urlhttpreplace.match(/[\\/].*/g) // eslint-disable-line no-useless-escape
-        let clearTime = null
-        const name = url.replace(/\/$/g, '')
-        if (domainhtml === null) domainhtml = ['']
-        extension.tabs.getSelected(null, tab => {
-            extension.tabs.update(tab.id, { url: 'loading.html' })
+    function ipfsContent(details) {
+      const name = details.url.substring(7, details.url.length - 1)
+      let clearTime = null
+      extension.tabs.getSelected(null, tab => {
+          extension.tabs.update(tab.id, { url: 'loading.html' })
 
-            clearTime = setTimeout(() => {
-                return extension.tabs.update(tab.id, { url: '404.html' })
-            }, 60000)
+          clearTime = setTimeout(() => {
+              return extension.tabs.update(tab.id, { url: '404.html' })
+          }, 60000)
 
-            resolver.resolve(name, provider).then(ipfsHash => {
-                clearTimeout(clearTime)
-                let url = 'https://ipfs.infura.io/ipfs/' + ipfsHash + domainhtml[0]
-                return fetch(url, { method: 'HEAD' }).then(response => response.status).then(statusCode => {
-                    if (statusCode !== 200) return extension.tabs.update(tab.id, { url: '404.html' })
-                    extension.tabs.update(tab.id, { url: url })
-                })
-                .catch(err => {
-                    url = 'https://ipfs.infura.io/ipfs/' + ipfsHash + domainhtml[0]
-                    extension.tabs.update(tab.id, {url: url})
-                    return err
-                })
-            })
-            .catch(err => {
-                clearTimeout(clearTime)
-                const url = err === 'unsupport' ? 'unsupport' : 'error'
-                extension.tabs.update(tab.id, {url: `${url}.html?name=${name}`})
-            })
-        })
-        return { cancel: true }
-    }, {urls: ['*://*.eth/', '*://*.eth/*']})
+          resolver.resolve(name, provider).then(ipfsHash => {
+              clearTimeout(clearTime)
+              let url = 'https://ipfs.infura.io/ipfs/' + ipfsHash
+              return fetch(url, { method: 'HEAD' }).then(response => response.status).then(statusCode => {
+                  if (statusCode !== 200) return extension.tabs.update(tab.id, { url: '404.html' })
+                  extension.tabs.update(tab.id, { url: url })
+              })
+              .catch(err => {
+                  url = 'https://ipfs.infura.io/ipfs/' + ipfsHash
+                  extension.tabs.update(tab.id, {url: url})
+                  return err
+              })
+          })
+          .catch(err => {
+              clearTimeout(clearTime)
+              const url = err === 'unsupport' ? 'unsupport' : 'error'
+              extension.tabs.update(tab.id, {url: `${url}.html?name=${name}`})
+          })
+      })
+      return { cancel: true }
+    }
+
+    extension.webRequest.onBeforeRequest.addListener(ipfsContent, {urls: ['*://*.eth/', '*://*.test/']})
+
+    return {
+      remove () {
+        extension.webRequest.onBeforeRequest.removeListener(ipfsContent)
+      },
+    }
 }
