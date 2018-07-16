@@ -222,6 +222,76 @@ describe('MetaMaskController', function () {
     })
   })
 
+  describe('connectHardware', function () {
+
+    it('should throw if it receives an unknown device name', async function () {
+      try {
+        await metamaskController.connectHardware('Some random device name', 0)
+      } catch (e) {
+        assert.equal(e, 'Error: MetamaskController:connectHardware - Unknown device')
+      }
+    })
+
+    it('should add the Trezor Hardware keyring', async function () {
+      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      const keyrings = await metamaskController.keyringController.getKeyringsByType(
+        'Trezor Hardware'
+      )
+      assert.equal(keyrings.length, 1)
+    })
+
+  })
+
+  describe('checkHardwareStatus', function () {
+    it('should throw if it receives an unknown device name', async function () {
+      try {
+        await metamaskController.checkHardwareStatus('Some random device name')
+      } catch (e) {
+        assert.equal(e, 'Error: MetamaskController:checkHardwareStatus - Unknown device')
+      }
+    })
+
+    it('should be locked by default', async function () {
+      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      const status = await metamaskController.checkHardwareStatus('trezor')
+      assert.equal(status, false)
+    })
+  })
+
+  describe('forgetDevice', function () {
+    it('should throw if it receives an unknown device name', async function () {
+      try {
+        await metamaskController.forgetDevice('Some random device name')
+      } catch (e) {
+        assert.equal(e, 'Error: MetamaskController:forgetDevice - Unknown device')
+      }
+    })
+
+    it('should wipe all the keyring info', async function () {
+      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      await metamaskController.forgetDevice('trezor')
+      const keyrings = await metamaskController.keyringController.getKeyringsByType(
+        'Trezor Hardware'
+      )
+
+      assert.deepEqual(keyrings[0].accounts, [])
+      assert.deepEqual(keyrings[0].page, 0)
+      assert.deepEqual(keyrings[0].isUnlocked(), false)
+    })
+  })
+
+  describe('unlockTrezorAccount', function () {
+    it('should set accountToUnlock in the keyring', async function () {
+      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      const accountToUnlock = 10
+      await metamaskController.unlockTrezorAccount(accountToUnlock).catch((e) => null)
+      const keyrings = await metamaskController.keyringController.getKeyringsByType(
+        'Trezor Hardware'
+      )
+      assert.equal(keyrings[0].unlockedAccount, accountToUnlock)
+    })
+  })
+
   describe('#setCustomRpc', function () {
     const customRPC = 'https://custom.rpc/'
     let rpcTarget

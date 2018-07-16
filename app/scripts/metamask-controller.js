@@ -561,10 +561,15 @@ module.exports = class MetamaskController extends EventEmitter {
         return accounts
 
       default:
-        throw new Error('MetamaskController - Unknown device')
+        throw new Error('MetamaskController:connectHardware - Unknown device')
     }
   }
 
+  /**
+   * Check if the device is unlocked
+   *
+   * @returns {Promise<boolean>}
+   */
   async checkHardwareStatus (deviceName) {
 
     switch (deviceName) {
@@ -574,12 +579,19 @@ module.exports = class MetamaskController extends EventEmitter {
           'Trezor Hardware'
         )[0]
         if (!keyring) {
-          return false
+          throw new Error('MetamaskController:checkHardwareStatus - Trezor Hardware keyring not found')
         }
         return keyring.isUnlocked()
+      default:
+        throw new Error('MetamaskController:checkHardwareStatus - Unknown device')
     }
   }
 
+  /**
+   * Clear
+   *
+   * @returns {Promise<boolean>}
+   */
   async forgetDevice (deviceName) {
 
     switch (deviceName) {
@@ -589,10 +601,12 @@ module.exports = class MetamaskController extends EventEmitter {
           'Trezor Hardware'
         )[0]
         if (!keyring) {
-          return false
+          throw new Error('MetamaskController:forgetDevice - Trezor Hardware keyring not found')
         }
         keyring.forgetDevice()
         return true
+      default:
+        throw new Error('MetamaskController:forgetDevice - Unknown device')
     }
   }
 
