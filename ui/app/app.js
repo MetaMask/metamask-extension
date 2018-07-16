@@ -11,7 +11,7 @@ const log = require('loglevel')
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
 // accounts
-const SendTransactionScreen = require('./components/send_/send.container')
+const SendTransactionScreen = require('./components/send/send.container')
 const ConfirmTransaction = require('./components/pages/confirm-transaction')
 
 // slideout menu

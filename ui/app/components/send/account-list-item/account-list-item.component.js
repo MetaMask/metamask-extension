@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { checksumAddress } from '../../../util'
 import Identicon from '../../identicon'
-import CurrencyDisplay from '../../send/currency-display'
+import CurrencyDisplay from '../currency-display'
 
 export default class AccountListItem extends Component {
 

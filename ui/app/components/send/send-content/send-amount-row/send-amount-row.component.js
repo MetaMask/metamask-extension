@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
 import AmountMaxButton from './amount-max-button/'
-import CurrencyDisplay from '../../../send/currency-display'
+import CurrencyDisplay from '../../currency-display'
 
 export default class SendAmountRow extends Component {
 
