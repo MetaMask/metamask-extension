@@ -58,7 +58,7 @@ function getSelectedToken (state) {
   const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
   const sendToken = state.metamask.send.token
 
-  return selectedToken || sendToken || null
+  return selectedToken || sendToken || void 0
 }
 
 function getSelectedTokenExchangeRate (state) {
