@@ -18,6 +18,7 @@ import {
   getSendFromObject,
   getSendTo,
   getSendToAccounts,
+  getSendHexData,
   getTokenBalance,
   getUnapprovedTxs,
 } from '../send.selectors'
@@ -35,6 +36,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(SendFooter)
 function mapStateToProps (state) {
   return {
     amount: getSendAmount(state),
+    data: getSendHexData(state),
     editingTransactionId: getSendEditingTransactionId(state),
     from: getSendFromObject(state),
     gasLimit: getGasLimit(state),
@@ -52,9 +54,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     clearSend: () => dispatch(clearSend()),
-    sign: ({ selectedToken, to, amount, from, gas, gasPrice }) => {
+    sign: ({ selectedToken, to, amount, from, gas, gasPrice, data }) => {
       const txParams = constructTxParams({
         amount,
+        data,
         from,
         gas,
         gasPrice,
@@ -68,6 +71,7 @@ function mapDispatchToProps (dispatch) {
     },
     update: ({
       amount,
+      data,
       editingTransactionId,
       from,
       gas,
@@ -78,6 +82,7 @@ function mapDispatchToProps (dispatch) {
     }) => {
       const editingTx = constructUpdatedTx({
         amount,
+        data,
         editingTransactionId,
         from,
         gas,

@@ -8,6 +8,7 @@ export default class SendFooter extends Component {
   static propTypes = {
     addToAddressBookIfNew: PropTypes.func,
     amount: PropTypes.string,
+    data: PropTypes.string,
     clearSend: PropTypes.func,
     disabled: PropTypes.bool,
     editingTransactionId: PropTypes.string,
@@ -41,6 +42,7 @@ export default class SendFooter extends Component {
     const {
       addToAddressBookIfNew,
       amount,
+      data,
       editingTransactionId,
       from: {address: from},
       gasLimit: gas,
@@ -68,6 +70,7 @@ export default class SendFooter extends Component {
     const promise = editingTransactionId
       ? update({
         amount,
+        data,
         editingTransactionId,
         from,
         gas,
@@ -76,7 +79,7 @@ export default class SendFooter extends Component {
         to,
         unapprovedTxs,
       })
-      : sign({ selectedToken, to, amount, from, gas, gasPrice })
+      : sign({ data, selectedToken, to, amount, from, gas, gasPrice })
 
     Promise.resolve(promise)
       .then(() => history.push(CONFIRM_TRANSACTION_ROUTE))
