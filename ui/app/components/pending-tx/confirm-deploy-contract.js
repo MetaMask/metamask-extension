@@ -11,7 +11,7 @@ const { conversionUtil } = require('../../conversion-util')
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
 
-const { MIN_GAS_PRICE_HEX } = require('../send_/send.constants')
+const { MIN_GAS_PRICE_HEX } = require('../send/send.constants')
 
 class ConfirmDeployContract extends Component {
   constructor (props) {

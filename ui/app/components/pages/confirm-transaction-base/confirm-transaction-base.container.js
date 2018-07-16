@@ -13,9 +13,9 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../../constants/error-keys'
 import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
-import { isBalanceSufficient } from '../../send_/send.utils'
+import { isBalanceSufficient } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
-import { MIN_GAS_LIMIT_DEC } from '../../send_/send.constants'
+import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
 
 const mapStateToProps = (state, props) => {
   const { toAddress: propsToAddress } = props
