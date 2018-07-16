@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import GasModalCard from '../../customize-gas-modal/gas-modal-card'
-import { MIN_GAS_PRICE_GWEI } from '../../send_/send.constants'
+import { MIN_GAS_PRICE_GWEI } from '../../send/send.constants'
 
 import {
   getDecimalGasLimit,
