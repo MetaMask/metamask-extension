@@ -6,6 +6,11 @@ const { removeLeadingZeroes } = require('../send.utils')
 const currencyFormatter = require('currency-formatter')
 const currencies = require('currency-formatter/currencies')
 const ethUtil = require('ethereumjs-util')
+const PropTypes = require('prop-types')
+
+CurrencyDisplay.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = CurrencyDisplay
 
@@ -75,11 +80,13 @@ CurrencyDisplay.prototype.getValueToRender = function ({ selectedToken, conversi
 CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValue) {
   const { primaryCurrency, convertedCurrency, conversionRate } = this.props
 
-  if (conversionRate == 0 || conversionRate == null || converstionRate == undefined && nonFormattedValue != 0) {
-    return null
+  if (conversionRate == 0 || conversionRate == null || conversionRate == undefined) {
+    if (nonFormattedValue != 0) {
+      return null
+    }
   }
 
-  let convertedValue = conversionUtil(nonFormattedValue, {
+  const convertedValue = conversionUtil(nonFormattedValue, {
     fromNumericBase: 'dec',
     fromCurrency: primaryCurrency,
     toCurrency: convertedCurrency,
@@ -109,15 +116,14 @@ CurrencyDisplay.prototype.getInputWidth = function (valueToRender, readOnly) {
 }
 
 CurrencyDisplay.prototype.onlyRenderConversions = function (convertedValueToRender) {
-  const{
+  const {
     convertedBalanceClassName = 'currency-display__converted-value',
     convertedCurrency,
   } = this.props
-    
     return h('div', {
     className: convertedBalanceClassName,
     }, convertedValueToRender == null
-      ? 'No Conversion Rate'
+      ? this.context.t('noConversionRateAvailable')
       : `${convertedValueToRender} ${convertedCurrency.toUpperCase()}`
 )
   }
