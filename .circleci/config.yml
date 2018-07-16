@@ -100,6 +100,11 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - dependency-cache-
       - run:
           name: Install npm 6 + deps via npm
           command: |
