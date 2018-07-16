@@ -6,6 +6,7 @@ export default class SendHexDataRow extends Component {
   static propTypes = {
     data: PropTypes.string,
     inError: PropTypes.bool,
+    updateSendHexData: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -13,17 +14,18 @@ export default class SendHexDataRow extends Component {
   };
 
   onInput = (event) => {
+    const {updateSendHexData} = this.props
     event.target.value = event.target.value.replace(/\n/g, '')
+    updateSendHexData(event.target.value)
   }
 
   render () {
-    const {
-      inError,
-    } = this.props
+    const {inError} = this.props
+    const {t} = this.context
 
     return (
       <SendRowWrapper
-        label={`${this.context.t('hexData')}:`}
+        label={`${t('hexData')}:`}
         showError={inError}
         errorType={'amount'}
       >
