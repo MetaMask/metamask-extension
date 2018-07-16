@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../confirm-page-container'
 import { formatCurrency } from '../../../helpers/confirm-transaction/util'
-import { isBalanceSufficient } from '../../send_/send.utils'
+import { isBalanceSufficient } from '../../send/send.utils'
 import { DEFAULT_ROUTE } from '../../../routes'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
