@@ -156,6 +156,11 @@
     width: 100%;
     justify-content: space-between;
   }
+
+  &__button {
+    width: 150px;
+    min-width: initial;
+  }
 }
 
 .new-account-create-form {
