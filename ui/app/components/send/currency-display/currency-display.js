@@ -80,13 +80,13 @@ CurrencyDisplay.prototype.getValueToRender = function ({ selectedToken, conversi
 CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValue) {
   const { primaryCurrency, convertedCurrency, conversionRate } = this.props
 
-  if (conversionRate == 0 || conversionRate == null || conversionRate == undefined) {
-    if (nonFormattedValue != 0) {
+  if (conversionRate === 0 || conversionRate === null || conversionRate === undefined) {
+    if (nonFormattedValue !== 0) {
       return null
     }
   }
 
-  const convertedValue = conversionUtil(nonFormattedValue, {
+  let convertedValue = conversionUtil(nonFormattedValue, {
     fromNumericBase: 'dec',
     fromCurrency: primaryCurrency,
     toCurrency: convertedCurrency,
@@ -94,7 +94,7 @@ CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValu
     conversionRate,
   })
 
-  convertedValue == Number(convertedValue).toFixed(2)
+  convertedValue = Number(convertedValue).toFixed(2)
   const upperCaseCurrencyCode = convertedCurrency.toUpperCase()
   return currencies.find(currency => currency.code === upperCaseCurrencyCode)
     ? currencyFormatter.format(Number(convertedValue), {
@@ -132,9 +132,7 @@ CurrencyDisplay.prototype.render = function () {
   const {
     className = 'currency-display',
     primaryBalanceClassName = 'currency-display__input',
-    convertedBalanceClassName = 'currency-display__converted-value',
     primaryCurrency,
-    convertedCurrency,
     readOnly = false,
     inError = false,
     onBlur,
