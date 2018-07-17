@@ -225,6 +225,8 @@ class App extends Component {
 
     if (providerName === 'mainnet') {
       name = this.context.t('connectingToMainnet')
+    } else if (providerName === 'classic') {
+      name = this.context.t('connectingToClassic')
     } else if (providerName === 'ropsten') {
       name = this.context.t('connectingToRopsten')
     } else if (providerName === 'kovan') {
@@ -246,6 +248,8 @@ class App extends Component {
 
     if (providerName === 'mainnet') {
       name = this.context.t('mainnet')
+    } else if (providerName === 'classic') {
+      name = this.context.t('classic')
     } else if (providerName === 'ropsten') {
       name = this.context.t('ropsten')
     } else if (providerName === 'kovan') {

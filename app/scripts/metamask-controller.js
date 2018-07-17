@@ -172,6 +172,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
+      var currentCurrency = this.currencyController.getCurrentCurrency()
+      this.setCurrentCurrency(currentCurrency, function() {})
     })
     this.balancesController.updateAllBalances()
 
@@ -1167,10 +1169,13 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb - A callback function returning currency info.
    */
   setCurrentCurrency (currencyCode, cb) {
+    const { ticker } = this.networkController.getNetworkConfig()
     try {
+      this.currencyController.setFromCurrency(ticker)
       this.currencyController.setCurrentCurrency(currencyCode)
       this.currencyController.updateConversionRate()
       const data = {
+        fromCurrency: ticker,
         conversionRate: this.currencyController.getConversionRate(),
         currentCurrency: this.currencyController.getCurrentCurrency(),
         conversionDate: this.currencyController.getConversionDate(),
@@ -1211,8 +1216,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} rpcTarget - A URL for a valid Ethereum RPC API.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  async setCustomRpc (rpcTarget) {
-    this.networkController.setRpcTarget(rpcTarget)
+  async setCustomRpc (rpcTarget, chainId) {
+    this.networkController.setRpcTarget(rpcTarget, chainId)
     await this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
   }

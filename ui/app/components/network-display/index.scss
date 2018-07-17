@@ -23,6 +23,10 @@
     &--rinkeby {
       background-color: lighten($tulip-tree, 35%);
     }
+
+    &--classic {
+      background-color: lighten($lime-green, 45%);
+    }
   }
 
   &__name {
@@ -49,6 +53,10 @@
 
     &--rinkeby {
       background-color: $tulip-tree;
+    }
+
+    &--classic {
+      background-color: $lime-green;
     }
   }
 }

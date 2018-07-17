@@ -19,6 +19,7 @@ function mapStateToProps (state) {
     contractExchangeRates: state.metamask.contractExchangeRates,
     conversionRate: state.metamask.conversionRate,
     sidebarOpen: state.appState.sidebarOpen,
+    settings: state.metamask.settings,
   }
 }
 
@@ -143,7 +144,11 @@ TokenCell.prototype.send = function (address, event) {
 }
 
 TokenCell.prototype.view = function (address, userAddress, network, event) {
-  const url = etherscanLinkFor(address, userAddress, network)
+  let url
+  if (this.props.settings && this.props.settings.blockExplorerToken) {
+    url = this.props.settings.blockExplorerToken
+  }
+  url = etherscanLinkFor(address, userAddress, network, url)
   if (url) {
     navigateTo(url)
   }
@@ -153,7 +158,11 @@ function navigateTo (url) {
   global.platform.openWindow({ url })
 }
 
-function etherscanLinkFor (tokenAddress, address, network) {
+function etherscanLinkFor (tokenAddress, address, network, url) {
+  if (url) {
+    return url.replace('[[tokenAddress]]', tokenAddress).replace('[[address]]', address)
+  }
+
   const prefix = prefixForNetwork(network)
   return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
 }

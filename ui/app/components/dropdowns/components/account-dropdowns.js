@@ -26,15 +26,18 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, accounts, selected, menuItemStyles, actions, keyrings } = this.props
+    const { identities, accounts, selected, menuItemStyles, actions, keyrings, ticker } = this.props
 
     return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
       const isSelected = identity.address === selected
 
       const balanceValue = accounts[key].balance
-      const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
       const simpleAddress = identity.address.substring(2).toLowerCase()
+      let formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
+      if (ticker !== 'ETH') {
+        formattedBalance = formattedBalance.replace(/ETH/, ticker)
+      }
 
       const keyring = keyrings.find((kr) => {
         return kr.accounts.includes(simpleAddress) ||
@@ -253,6 +256,11 @@ class AccountDropdowns extends Component {
       padding: '8px',
     }
 
+    let link
+    if (this.props.settings && this.props.settings.blockExplorerAddr) {
+      link = this.props.settings.blockExplorerAddr
+    }
+
     return h(
       Dropdown,
       {
@@ -295,7 +303,7 @@ class AccountDropdowns extends Component {
             closeMenu: () => {},
             onClick: () => {
               const { selected, network } = this.props
-              const url = genAccountLink(selected, network)
+              const url = genAccountLink(selected, network, link)
               global.platform.openWindow({ url })
             },
             style: Object.assign(
@@ -421,6 +429,8 @@ AccountDropdowns.propTypes = {
   network: PropTypes.number,
   // actions.showExportPrivateKeyModal: ,
   style: PropTypes.object,
+  settings: PropTypes.object,
+  ticker: PropTypes.string,
   enableAccountsSelector: PropTypes.bool,
   enableAccountOption: PropTypes.bool,
   enableAccountOptions: PropTypes.bool,
@@ -458,8 +468,10 @@ const mapDispatchToProps = (dispatch) => {
 
 function mapStateToProps (state) {
   return {
+    ticker: state.metamask.settings && state.metamask.settings.ticker || 'ETH',
     keyrings: state.metamask.keyrings,
     sidebarOpen: state.appState.sidebarOpen,
+    settings: state.metamask.settings,
   }
 }
 

@@ -2,7 +2,7 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../../../ui/app/actions')
-const genAccountLink = require('etherscan-link').createAccountLink
+const genAccountLink = require('../../../ui/lib/account-link.js')
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
@@ -189,11 +189,15 @@ class AccountDropdowns extends Component {
             closeMenu: () => {},
             onClick: () => {
               const { selected, network } = this.props
-              const url = genAccountLink(selected, network)
+              let url
+              if (this.props.settings && this.props.settings.blockExplorerAddr) {
+                url = this.props.settings.blockExplorerAddr
+              }
+              url = genAccountLink(selected, network, url)
               global.platform.openWindow({ url })
             },
           },
-          'View account on Etherscan',
+          'View account on Explorer',
         ),
         h(
           DropdownMenuItem,
@@ -298,6 +302,7 @@ AccountDropdowns.propTypes = {
   keyrings: PropTypes.array,
   actions: PropTypes.objectOf(PropTypes.func),
   network: PropTypes.string,
+  settings: PropTypes.object,
   style: PropTypes.object,
   enableAccountOptions: PropTypes.bool,
   enableAccountsSelector: PropTypes.bool,
@@ -316,6 +321,12 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+function mapStateToProps (state) {
+  return {
+    settings: state.metamask.settings,
+  }
+}
+
 module.exports = {
-  AccountDropdowns: connect(null, mapDispatchToProps)(AccountDropdowns),
+  AccountDropdowns: connect(mapStateToProps, mapDispatchToProps)(AccountDropdowns),
 }
