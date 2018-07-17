@@ -7,6 +7,7 @@ const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
 const log = require('loglevel')
+const { detect } = require('detect-browser')
 
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
@@ -40,10 +41,7 @@ const Modal = require('./components/modals/index').Modal
 const AppHeader = require('./components/app-header')
 
 import UnlockPage from './components/pages/unlock-page'
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-} from '../../app/scripts/lib/enums'
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../app/scripts/lib/enums'
 
 // Routes
 const {
@@ -71,23 +69,7 @@ class App extends Component {
 
     console.log('aaahhh', window.navigator.userAgent)
     console.log('aaahhh', window.navigator)
-    console.log('aaahhh', window)
 
-    // snap firefox version are for all linux distribution, no only one as apt version that contains 'ubuntu'
-    
-    /*
-    if (window.METAMASK_UI_TYPE !== ENVIRONMENT_TYPE_NOTIFICATION &&
-      window.METAMASK_UI_TYPE !== ENVIRONMENT_TYPE_POPUP && window.navigator.userAgent.indexOf('Ubuntu') > -1 &&
-        window.navigator.userAgent.indexOf('Firefox') > -1 && window.os === 'linux') {
-      global.platform.openExtensionInBrowser()
-    }
-
-    global.platform.getPlatformInfo((error, res) => {
-      if (!error) {
-        console.log('aaa', res)
-      }
-    })
-    */
 
   }
 
@@ -130,6 +112,17 @@ class App extends Component {
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
+
+    const browser = detect()
+
+    if (browser) {
+      console.log('browser ', browser)
+      if (browser.name === 'firefox' && browser.os === 'Linux' && window.METAMASK_UI_TYPE !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      window.METAMASK_UI_TYPE !== 'fullscreen') {
+        global.platform.openExtensionInBrowser()
+        return null
+      }
+    }
 
     return (
       h('.flex-column.full-height', {

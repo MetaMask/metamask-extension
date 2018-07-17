@@ -4,6 +4,7 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../ui/app/actions')
 const log = require('loglevel')
+const { detect } = require('detect-browser')
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
@@ -35,6 +36,8 @@ const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../app/scripts/lib/enums'
+
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -92,6 +95,17 @@ App.prototype.render = function () {
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
   log.debug('Main ui render function')
+
+  const browser = detect()
+  if (browser) {
+    console.log('browser ', browser)
+    if (browser.name === 'firefox' && browser.os === 'Linux' && window.METAMASK_UI_TYPE !== ENVIRONMENT_TYPE_NOTIFICATION &&
+    window.METAMASK_UI_TYPE !== 'fullscreen') {
+      global.platform.openExtensionInBrowser()
+      return null
+    }
+  }
+
 
   return (
     h('.flex-column.full-height', {
