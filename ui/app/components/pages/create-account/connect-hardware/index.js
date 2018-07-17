@@ -150,7 +150,7 @@ class ConnectHardwareForm extends Component {
   }
 
   render () {
-    return h('div.new-account-create-form', [
+    return h('div', [
       this.renderError(),
       this.renderContent(),
     ])

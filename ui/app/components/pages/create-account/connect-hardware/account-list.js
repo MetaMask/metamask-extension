@@ -8,16 +8,20 @@ class AccountList extends Component {
         super(props)
     }
 
+    renderHeader () {
+      return (
+        h('div.hw-connect', [
+          h('h3.hw-connect__title', {}, this.context.t('selectAnAccount')),
+          h('p.hw-connect__msg', {}, this.context.t('selectAnAccountHelp')),
+        ])
+      )
+    }
+
     renderAccounts () {
         return h('div.hw-account-list', [
-            h('div.hw-account-list__title_wrapper', [
-                h('div.hw-account-list__title', {}, [this.context.t('selectAnAddress')]),
-                h('div.hw-account-list__device', {}, ['Trezor - ETH']),
-            ]),
             this.props.accounts.map((a, i) => {
 
                 return h('div.hw-account-list__item', { key: a.address }, [
-                h('span.hw-account-list__item__index', a.index + 1),
                 h('div.hw-account-list__item__radio', [
                     h('input', {
                         type: 'radio',
@@ -32,10 +36,12 @@ class AccountList extends Component {
                     {
                         htmlFor: `address-${i}`,
                     },
-                    `${a.address.slice(0, 4)}...${a.address.slice(-4)}`
-                    ),
+                    [
+                      h('span.hw-account-list__item__index', a.index + 1),
+                      `${a.address.slice(0, 4)}...${a.address.slice(-4)}`,
+                      h('span.hw-account-list__item__balance', `${a.balance}`),
+                    ]),
                 ]),
-                h('span.hw-account-list__item__balance', `${a.balance}`),
                 h(
                     'a.hw-account-list__item__link',
                     {
@@ -71,9 +77,15 @@ class AccountList extends Component {
   }
 
   renderButtons () {
-    return h('div.new-account-create-form__buttons', {}, [
+    const disabled = this.props.selectedAccount === null
+    const buttonProps = {}
+    if (disabled) {
+      buttonProps.disabled = true
+    }
+
+    return h('div.new-account-connect-form__buttons', {}, [
       h(
-        'button.btn-default.btn--large.new-account-create-form__button',
+        'button.btn-default.btn--large.new-account-connect-form__button',
         {
           onClick: this.props.onCancel.bind(this),
         },
@@ -81,9 +93,10 @@ class AccountList extends Component {
       ),
 
       h(
-        `button.btn-primary.btn--large.new-account-create-form__button ${this.props.selectedAccount === null ? '.btn-primary--disabled' : ''}`,
+        `button.btn-primary.btn--large.new-account-connect-form__button ${disabled ? '.btn-primary--disabled' : ''}`,
         {
           onClick: this.props.onUnlockAccount.bind(this),
+          ...buttonProps,
         },
         [this.context.t('unlock')]
       ),
@@ -99,7 +112,8 @@ class AccountList extends Component {
   }
 
   render () {
-    return h('div', {}, [
+    return h('div.new-account-connect-form', {}, [
+        this.renderHeader(),
         this.renderAccounts(),
         this.renderPagination(),
         this.renderButtons(),

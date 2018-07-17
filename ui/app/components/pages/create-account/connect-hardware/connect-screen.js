@@ -29,7 +29,7 @@ class ConnectScreen extends Component {
 
     renderConnectScreen () {
         return (
-            h('div', {}, [
+            h('div.new-account-connect-form', {}, [
                 h('div.hw-connect', [
                     h('h3.hw-connect__title', {}, this.context.t('trezorHardwareWallet')),
                     h('p.hw-connect__msg', {}, this.context.t('connectToTrezorHelp')),

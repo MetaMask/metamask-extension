@@ -877,6 +877,12 @@
   "selectAnAddress": {
     "message": "Select an Address"
   },
+  "selectAnAccount": {
+    "message": "Select an Account"
+  },
+  "selectAnAccountHelp": {
+    "message": "These are the accounts available in your hardware wallet. Select the one you’d like to use in MetaMask."
+  },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
   },

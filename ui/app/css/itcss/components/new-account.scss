@@ -157,13 +157,14 @@
   &__title {
     padding-top: 10px;
     font-weight: 500;
+    font-size: 18px;
   }
 
   &__msg {
     font-size: 14px;
     color: #9b9b9b;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 10px;
+    margin-bottom: 20px;
   }
 
   &__link {
@@ -242,12 +243,16 @@
 
   &__item__index {
     display: flex;
-    width: 28px;
+    width: 24px;
   }
 
   &__item__radio {
     display: flex;
     flex: 1;
+
+    input {
+      margin-right: 9px;
+    }
   }
 
   &__item__label {
@@ -264,6 +269,7 @@
 
   &__item__link {
     display: flex;
+    margin-top: 3px;
   }
 
   &__item__link img {
@@ -278,11 +284,55 @@
   margin-top: 10px;
 
   &__button {
-    height: 25px;
-    flex: initial;
-    min-width: 90px;
-    font-size: 12px;
+    height: 19px;
+    display: flex;
+    width: 47px;
+    color: #33a4e7;
+    font-size: 14px;
+    line-height: 19px;
+    border: none;
+    min-width: 46px;
+    margin-right: 0px;
+    margin-left: 16px;
+    padding: 0px;
   }
+}
+
+.new-account-connect-form {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  padding: 15px 30px 0;
+
+  &__buttons {
+    margin-top: 39px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  &__button {
+    width: 150px;
+    min-width: initial;
+  }
+
+  &__button.btn-primary {
+    background-color: #259DE5;
+  }
+
+  &__button.btn-primary {
+    background-color: #259DE5;
+    color: #FFFFFF;
+  }
+
+  &__button.btn-primary--disabled {
+    cursor: not-allowed;
+    opacity: .5;
+  }
+
+
+  
+
 }
 
 .hw-forget-device-container {
@@ -336,9 +386,5 @@
   &__button {
     width: 150px;
     min-width: initial;
-  }
-
-  &__button.btn-primary--disabled {
-    cursor: 'not-allowed';
   }
 }
