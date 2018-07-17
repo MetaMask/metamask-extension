@@ -22,9 +22,7 @@ function constructTxParams ({ selectedToken, data, to, amount, from, gas, gasPri
     txParams.to = to
   }
 
-  const hexPrefixedTxParams = addHexPrefixToObjectValues(txParams)
-
-  return hexPrefixedTxParams
+  return addHexPrefixToObjectValues(txParams)
 }
 
 function constructUpdatedTx ({
