@@ -233,10 +233,12 @@ describe('MetaMaskController', function () {
     })
 
     it('should add the Trezor Hardware keyring', async function () {
+      sinon.spy(metamaskController.keyringController, 'addNewKeyring')
       await metamaskController.connectHardware('trezor', 0).catch((e) => null)
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Trezor Hardware'
       )
+      assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args, 'Trezor Hardware')
       assert.equal(keyrings.length, 1)
     })
 
@@ -281,15 +283,66 @@ describe('MetaMaskController', function () {
   })
 
   describe('unlockTrezorAccount', function () {
-    it('should set accountToUnlock in the keyring', async function () {
+    let accountToUnlock
+    let windowOpenStub
+    let addNewAccountStub
+    let getAccountsStub
+    beforeEach(async function () {
+      accountToUnlock = 10
+      windowOpenStub = sinon.stub(window, 'open')
+      windowOpenStub.returns(noop)
+
+      addNewAccountStub = sinon.stub(metamaskController.keyringController, 'addNewAccount')
+      addNewAccountStub.returns({})
+
+      getAccountsStub = sinon.stub(metamaskController.keyringController, 'getAccounts')
+      // Need to return different address to mock the behavior of
+      // adding a new account from the keyring
+      getAccountsStub.onCall(0).returns(Promise.resolve(['0x1']))
+      getAccountsStub.onCall(1).returns(Promise.resolve(['0x2']))
+      getAccountsStub.onCall(2).returns(Promise.resolve(['0x3']))
+      getAccountsStub.onCall(3).returns(Promise.resolve(['0x4']))
+      sinon.spy(metamaskController.preferencesController, 'setAddresses')
+      sinon.spy(metamaskController.preferencesController, 'setSelectedAddress')
+      sinon.spy(metamaskController.preferencesController, 'setAccountLabel')
       await metamaskController.connectHardware('trezor', 0).catch((e) => null)
-      const accountToUnlock = 10
       await metamaskController.unlockTrezorAccount(accountToUnlock).catch((e) => null)
+    })
+
+    afterEach(function () {
+      metamaskController.keyringController.addNewAccount.restore()
+      window.open.restore()
+    })
+
+    it('should set accountToUnlock in the keyring', async function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Trezor Hardware'
       )
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock)
     })
+
+
+    it('should call  keyringController.addNewAccount', async function () {
+      assert(metamaskController.keyringController.addNewAccount.calledOnce)
+    })
+
+    it('should call keyringController.getAccounts ', async function () {
+      assert(metamaskController.keyringController.getAccounts.called)
+    })
+
+    it('should call preferencesController.setAddresses', async function () {
+      assert(metamaskController.preferencesController.setAddresses.calledOnce)
+    })
+
+    it('should call preferencesController.setSelectedAddress', async function () {
+      assert(metamaskController.preferencesController.setSelectedAddress.calledOnce)
+    })
+
+    it('should call preferencesController.setAccountLabel', async function () {
+      assert(metamaskController.preferencesController.setAccountLabel.calledOnce)
+    })
+
+
   })
 
   describe('#setCustomRpc', function () {
