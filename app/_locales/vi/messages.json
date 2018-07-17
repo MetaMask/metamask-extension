@@ -29,7 +29,7 @@
   },
   "appName": {
     "description": "Tên phần mềm",
-    "message": "MetaMask"
+    "message": "Nifty Wallet"
   },
   "attemptingConnect": {
     "message": "Đang kết nối đến blockchain."
@@ -139,7 +139,7 @@
     "message": "Mạng lưới mặc định dùng cho các giao dịch Ether là Main Net (tiền ETH thật)."
   },
   "denExplainer": {
-    "message": "Số DEN của bạn là mật khẩu đã được mã hóa và lưu trữ trong MetaMask"
+    "message": "Số DEN của bạn là mật khẩu đã được mã hóa và lưu trữ trong Nifty Wallet"
   },
   "deposit": {
     "message": "Ký gửi/nạp tiền"
@@ -167,7 +167,7 @@
     "message": "Ký gửi với ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Nếu bạn sở hữu các đồng tiền điện tử khác, bạn có thể giao dịch và ký gửi Ether trực tiếp vào ví MetaMask của bạn. Không cần tạo thêm tài khoản."
+    "message": "Nếu bạn sở hữu các đồng tiền điện tử khác, bạn có thể giao dịch và ký gửi Ether trực tiếp vào ví Nifty Wallet của bạn. Không cần tạo thêm tài khoản."
   },
   "details": {
     "message": "Chi tiết"
@@ -354,7 +354,7 @@
     "message": "Tài khoản của tôi"
   },
   "needEtherInWallet": {
-    "message": "Để tương tác với các ứng dụng phân tán bằng MetaMask, bạn sẽ phải cần có Ether trong ví của bạn."
+    "message": "Để tương tác với các ứng dụng phân tán bằng Nifty Wallet, bạn sẽ phải cần có Ether trong ví của bạn."
   },
   "needImportFile": {
     "description": "Người dùng đang nhập một tài khoản và cần thêm tập tin để tiếp tục",
@@ -570,7 +570,7 @@
     "message": "Chào mừng bạn đến với giao diện mới (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Bạn đang sử dụng giao diện mới của Metamask. Chúng tôi khuyến khích bạn thử nghiệm và khám phá các tính năng mới như gửi token, và nếu bạn có gặp phải vấn đề gì khó khăn, xin hãy liên hệ ngay để chúng tôi có thể giúp đỡ bạn."
+    "message": "Bạn đang sử dụng giao diện mới của Nifty Wallet. Chúng tôi khuyến khích bạn thử nghiệm và khám phá các tính năng mới như gửi token, và nếu bạn có gặp phải vấn đề gì khó khăn, xin hãy liên hệ ngay để chúng tôi có thể giúp đỡ bạn."
   },
   "unavailable": {
     "message": "Không có sẵn"

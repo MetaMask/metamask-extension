@@ -33,17 +33,19 @@ UnlockScreen.prototype.render = function () {
     }, [
       h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
-        h(Mascot, {
+        //disable fox's animation
+        /*h(Mascot, {
           animationEventEmitter: this.animationEventEmitter,
-        }),
+        }),*/
 
         h('h1', {
           style: {
+            paddingTop: '50px',
             fontSize: '1.4em',
             textTransform: 'uppercase',
             color: '#7F8082',
           },
-        }, 'MetaMask'),
+        }, 'Nifty Wallet'),
 
         h('input.large-input', {
           type: 'password',

@@ -127,7 +127,7 @@ class BuyEtherScreen extends Component {
           <div className="buy-ether__action-content-wrapper">
             <div dangerouslySetInnerHTML={{ __html: qrImage.createTableTag(4) }} />
             <div className="buy-ether__body-text">Deposit Ether directly into your account.</div>
-            <div className="buy-ether__small-body-text">(This is the account address that MetaMask created for you to recieve funds.)</div>
+            <div className="buy-ether__small-body-text">(This is the account address that Nifty Wallet created for you to recieve funds.)</div>
             <div className="buy-ether__buttons">
               <button
                 className="first-time-flow__button"
@@ -153,7 +153,7 @@ class BuyEtherScreen extends Component {
         <Identicon address={this.props.address} diameter={70} />
         <div className="buy-ether__title">Deposit Ether</div>
         <div className="buy-ether__body-text">
-          MetaMask works best if you have Ether in your account to pay for transaction gas fees and more. To get Ether, choose from one of these methods.
+          Nifty Wallet works best if you have Ether in your account to pay for transaction gas fees and more. To get Ether, choose from one of these methods.
         </div>
         <div className="buy-ether__content-wrapper">
           <div className="buy-ether__content-headline-wrapper">

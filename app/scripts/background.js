@@ -157,7 +157,7 @@ async function initialize () {
   const initState = await loadStateFromPersistence()
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
-  log.debug('MetaMask initialization complete.')
+  log.debug('Nifty Wallet initialization complete.')
   ipfsContent(initState.NetworkController.provider)
 }
 
@@ -191,14 +191,14 @@ async function loadStateFromPersistence () {
       // we were able to recover (though it might be old)
       versionedData = diskStoreState
       const vaultStructure = getObjStructure(versionedData)
-      raven.captureMessage('MetaMask - Empty vault found - recovered from diskStore', {
+      raven.captureMessage('Nifty Wallet - Empty vault found - recovered from diskStore', {
         // "extra" key is required by Sentry
         extra: { vaultStructure },
       })
     } else {
       // unable to recover, clear state
       versionedData = migrator.generateInitialState(firstTimeState)
-      raven.captureMessage('MetaMask - Empty vault found - unable to recover')
+      raven.captureMessage('Nifty Wallet - Empty vault found - unable to recover')
     }
   }
 
@@ -215,7 +215,7 @@ async function loadStateFromPersistence () {
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
   if (!versionedData) {
-    throw new Error('MetaMask - migrator returned undefined')
+    throw new Error('Nifty Wallet - migrator returned undefined')
   }
 
   // write to disk
@@ -224,7 +224,7 @@ async function loadStateFromPersistence () {
   } else {
     // throw in setTimeout so as to not block boot
     setTimeout(() => {
-      throw new Error('MetaMask - Localstore not supported')
+      throw new Error('Nifty Wallet - Localstore not supported')
     })
   }
 
@@ -281,7 +281,7 @@ function setupController (initState, initLangCode) {
     storeTransform(versionifyData),
     createStreamSink(persistData),
     (error) => {
-      log.error('MetaMask - Persistence pipeline failed', error)
+      log.error('Nifty Wallet - Persistence pipeline failed', error)
     }
   )
 
@@ -297,10 +297,10 @@ function setupController (initState, initLangCode) {
 
   async function persistData (state) {
     if (!state) {
-      throw new Error('MetaMask - updated state is missing', state)
+      throw new Error('Nifty Wallet - updated state is missing', state)
     }
     if (!state.data) {
-      throw new Error('MetaMask - updated state does not have data', state)
+      throw new Error('Nifty Wallet - updated state does not have data', state)
     }
     if (localStore.isSupported) {
       try {

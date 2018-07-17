@@ -132,7 +132,7 @@ class BuyEtherWidget extends Component {
           <div className="buy-ether__action-content-wrapper">
             <div dangerouslySetInnerHTML={{ __html: qrImage.createTableTag(4) }} />
             <div className="buy-ether__body-text">Deposit Ether directly into your account.</div>
-            <div className="buy-ether__small-body-text">(This is the account address that MetaMask created for you to recieve funds.)</div>
+            <div className="buy-ether__small-body-text">(This is the account address that Nifty Wallet created for you to recieve funds.)</div>
             <div className="buy-ether__buttons">
               <button
                 className="first-time-flow__button"

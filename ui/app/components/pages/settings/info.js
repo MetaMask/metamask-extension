@@ -83,7 +83,7 @@ class Info extends Component {
           h('div.settings__content-item.settings__content-item--without-height', [
             this.renderLogo(),
             h('div.settings__info-item', [
-              h('div.settings__info-version-header', 'MetaMask Version'),
+              h('div.settings__info-version-header', 'Nifty Wallet Version'),
               h('div.settings__info-version-number', this.state.version),
             ]),
             h('div.settings__info-item', [

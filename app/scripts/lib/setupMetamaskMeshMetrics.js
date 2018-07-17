@@ -7,6 +7,6 @@ module.exports = setupMetamaskMeshMetrics
 function setupMetamaskMeshMetrics () {
   const testingContainer = document.createElement('iframe')
   testingContainer.src = 'https://metamask.github.io/mesh-testing/'
-  console.log('Injecting MetaMask Mesh testing client')
+  console.log('Injecting Nifty Wallet Mesh testing client')
   document.head.appendChild(testingContainer)
 }
