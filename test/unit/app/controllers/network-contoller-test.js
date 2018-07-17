@@ -74,6 +74,9 @@ describe('Network utils', () => {
         input: 61,
         expected: 'Ethereum Classic',
       }, {
+        input: 20,
+        expected: 'EOS Classic',
+      }, {
         input: 3,
         expected: 'Ropsten',
       }, {
@@ -88,6 +91,9 @@ describe('Network utils', () => {
       }, {
         input: 'classic',
         expected: 'Ethereum Classic',
+      }, {
+        input: 'eosclassic',
+        expected: 'EOS Classic',
       }, {
         input: 'ropsten',
         expected: 'Ropsten',

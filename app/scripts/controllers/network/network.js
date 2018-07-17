@@ -14,6 +14,7 @@ const networks = require('./networks')
 const {
   MAINNET,
   CLASSIC,
+  EOSCLASSIC,
   ROPSTEN,
   RINKEBY,
   KOVAN,
@@ -21,7 +22,7 @@ const {
 } = require('./enums')
 const LOCALHOST_RPC_URL = 'http://localhost:8545'
 const INFURA_PROVIDER_TYPES = [MAINNET, ROPSTEN, RINKEBY, KOVAN]
-const ALL_PROVIDER_TYPES = [MAINNET, CLASSIC, ROPSTEN, RINKEBY, KOVAN]
+const ALL_PROVIDER_TYPES = [MAINNET, CLASSIC, EOSCLASSIC, ROPSTEN, RINKEBY, KOVAN]
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG

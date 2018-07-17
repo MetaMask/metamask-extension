@@ -196,6 +196,11 @@ hr.horizontal-line {
   background: #32CD32;
 }
 
+.brown-diamond {
+  transform: rotate(45deg);
+  background: #AD8888;
+}
+
 .golden-square {
   background: #EBB33F;
 }

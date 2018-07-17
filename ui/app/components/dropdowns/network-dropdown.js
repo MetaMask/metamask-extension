@@ -160,6 +160,28 @@ NetworkDropdown.prototype.render = function () {
     h(
       DropdownMenuItem,
       {
+        key: 'eosclassic',
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => props.setProviderType('eosclassic'),
+        style: dropdownMenuItemStyle,
+      },
+      [
+        providerType === 'eosclassic' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#926565',
+          isSelected: providerType === 'eosclassic',
+        }),
+        h('span.network-name-item', {
+          style: {
+            color: providerType === 'eosclassic' ? '#ffffff' : '#9b9b9b',
+          },
+        }, this.context.t('eosclassic')),
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
         key: 'ropsten',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => props.setProviderType('ropsten'),
@@ -283,6 +305,8 @@ NetworkDropdown.prototype.getNetworkName = function () {
     name = this.context.t('mainnet')
   } else if (providerName === 'classic') {
     name = this.context.t('classic')
+  } else if (providerName === 'eosclassic') {
+    name = this.context.t('eosclassic')
   } else if (providerName === 'ropsten') {
     name = this.context.t('ropsten')
   } else if (providerName === 'kovan') {
