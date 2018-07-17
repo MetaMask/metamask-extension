@@ -98,11 +98,9 @@ App.prototype.render = function () {
 
   const browser = detect()
   if (browser) {
-    console.log('browser ', browser)
     if (browser.name === 'firefox' && browser.os === 'Linux' && window.METAMASK_UI_TYPE !== ENVIRONMENT_TYPE_NOTIFICATION &&
     window.METAMASK_UI_TYPE !== 'fullscreen') {
       global.platform.openExtensionInBrowser()
-      return null
     }
   }
 

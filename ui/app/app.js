@@ -65,12 +65,6 @@ class App extends Component {
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
     }
-
-
-    console.log('aaahhh', window.navigator.userAgent)
-    console.log('aaahhh', window.navigator)
-
-
   }
 
   renderRoutes () {
@@ -116,11 +110,9 @@ class App extends Component {
     const browser = detect()
 
     if (browser) {
-      console.log('browser ', browser)
       if (browser.name === 'firefox' && browser.os === 'Linux' && window.METAMASK_UI_TYPE !== ENVIRONMENT_TYPE_NOTIFICATION &&
       window.METAMASK_UI_TYPE !== 'fullscreen') {
         global.platform.openExtensionInBrowser()
-        return null
       }
     }
 
