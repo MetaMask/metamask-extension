@@ -65,6 +65,7 @@ input:focus, textarea:focus {
   height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 button, input[type="submit"] {
