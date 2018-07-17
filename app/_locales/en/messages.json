@@ -581,9 +581,6 @@
   "noAddressForName": {
     "message": "No address has been set for this name."
   },
-  "noConversionRate": {
-    "message": "No Conversion Rate"
-  },
   "noDeposits": {
     "message": "No deposits received"
   },

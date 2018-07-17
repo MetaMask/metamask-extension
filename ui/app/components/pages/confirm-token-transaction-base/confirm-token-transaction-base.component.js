@@ -39,7 +39,7 @@ export default class ConfirmTokenTransactionBase extends Component {
     const { currentCurrency, contractExchangeRate } = this.props
 
     if (typeof contractExchangeRate === 'undefined') {
-      return this.context.t('noConversionRate')
+      return this.context.t('noConversionRateAvailable')
     } else {
       const fiatTransactionAmount = this.getFiatTransactionAmount()
       return formatCurrency(fiatTransactionAmount, currentCurrency)
