@@ -629,10 +629,8 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyState = await keyringController.addNewAccount(keyring)
     const newAccounts = await keyringController.getAccounts()
     this.preferencesController.setAddresses(newAccounts)
-    console.log('new vs old', newAccounts, oldAccounts)
     newAccounts.forEach(address => {
       if (!oldAccounts.includes(address)) {
-        console.log('new address found', address)
         this.preferencesController.setAccountLabel(address, `TREZOR #${parseInt(index, 10) + 1}`)
         this.preferencesController.setSelectedAddress(address)
       }

@@ -485,6 +485,39 @@ describe('MetaMaskController', function () {
     })
   })
 
+  describe('#removeAccount', function () {
+    let ret
+    const addressToRemove = '0x1'
+
+    beforeEach(async function () {
+      sinon.stub(metamaskController.preferencesController, 'removeAddress')
+      sinon.stub(metamaskController.accountTracker, 'removeAccount')
+      sinon.stub(metamaskController.keyringController, 'removeAccount')
+
+      ret = await metamaskController.removeAccount(addressToRemove)
+
+    })
+
+    afterEach(function () {
+      metamaskController.keyringController.removeAccount.restore()
+      metamaskController.accountTracker.removeAccount.restore()
+      metamaskController.preferencesController.removeAddress.restore()
+    })
+
+    it('should call preferencesController.removeAddress', async function () {
+      assert(metamaskController.preferencesController.removeAddress.calledWith(addressToRemove))
+    })
+    it('should call accountTracker.removeAccount', async function () {
+      assert(metamaskController.accountTracker.removeAccount.calledWith(addressToRemove))
+    })
+    it('should call keyringController.removeAccount', async function () {
+      assert(metamaskController.keyringController.removeAccount.calledWith(addressToRemove))
+    })
+    it('should return address', async function () {
+      assert.equal(ret, '0x1')
+    })
+  })
+
   describe('#clearSeedWordCache', function () {
 
     it('should have set seed words', function () {
