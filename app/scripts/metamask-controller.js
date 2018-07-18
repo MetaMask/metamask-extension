@@ -579,7 +579,7 @@ module.exports = class MetamaskController extends EventEmitter {
           'Trezor Hardware'
         )[0]
         if (!keyring) {
-          throw new Error('MetamaskController:checkHardwareStatus - Trezor Hardware keyring not found')
+          return false
         }
         return keyring.isUnlocked()
       default:
