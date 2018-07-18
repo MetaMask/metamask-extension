@@ -162,9 +162,21 @@ class AccountDropdowns extends Component {
     )
   }
 
+  genPOAEplorerAccountLink (selected, network) {
+    const isSokol = network == 77
+    if (isSokol) {
+      return `https://sokol.poaexplorer.com/address/search/${selected}`
+    }
+
+    return ''
+  }
+
   renderAccountOptions () {
-    const { actions } = this.props
+    const { actions, network } = this.props
     const { optionsMenuActive } = this.state
+
+    const isSokol = network == 77
+    const explorerStr = isSokol ? 'POA explorer' : 'Etherscan'
 
     return h(
       Dropdown,
@@ -189,11 +201,11 @@ class AccountDropdowns extends Component {
             closeMenu: () => {},
             onClick: () => {
               const { selected, network } = this.props
-              const url = genAccountLink(selected, network)
+              const url = isSokol ? this.genPOAEplorerAccountLink(selected, network) : genAccountLink(selected, network)
               global.platform.openWindow({ url })
             },
           },
-          'View account on Etherscan',
+          `View account on ${explorerStr}`,
         ),
         h(
           DropdownMenuItem,

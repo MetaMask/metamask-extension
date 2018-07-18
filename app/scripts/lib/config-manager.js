@@ -5,6 +5,7 @@ const {
   ROPSTEN_RPC_URL,
   KOVAN_RPC_URL,
   RINKEBY_RPC_URL,
+  POA_SOKOL_RPC_URL,
 } = require('../controllers/network/enums')
 
 /* The config-manager is a convenience object
@@ -155,6 +156,9 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
     case 'mainnet':
       return MAINNET_RPC_URL
 
+    case 'sokol':
+      return POA_SOKOL_RPC_URL
+
     case 'ropsten':
       return ROPSTEN_RPC_URL
 
@@ -165,7 +169,7 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
       return RINKEBY_RPC_URL
 
     default:
-      return provider && provider.rpcTarget ? provider.rpcTarget : RINKEBY_RPC_URL
+      return provider && provider.rpcTarget ? provider.rpcTarget : POA_SOKOL_RPC_URL
   }
 }
 

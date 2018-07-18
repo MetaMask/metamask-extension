@@ -94,6 +94,7 @@
     "eslint-plugin-react": "^7.4.0",
     "eth-bin-to-ops": "^1.0.1",
     "eth-contract-metadata": "github:MetaMask/eth-contract-metadata#master",
+    "eth-ens-namehash": "^2.0.8",
     "eth-hd-keyring": "^1.2.1",
     "eth-json-rpc-filters": "^1.2.6",
     "eth-json-rpc-infura": "^3.0.0",
@@ -141,6 +142,7 @@
     "metamascara": "^2.0.0",
     "metamask-logo": "^2.1.4",
     "mkdirp": "^0.5.1",
+    "multihashes": "^0.4.12",
     "multiplex": "^6.7.0",
     "number-to-bn": "^1.7.0",
     "obj-multiplex": "^1.0.0",
@@ -194,9 +196,7 @@
     "web3": "^0.20.1",
     "web3-provider-engine": "^14.0.5",
     "web3-stream-provider": "^3.0.1",
-    "xtend": "^4.0.1",
-    "multihashes": "^0.4.12",
-    "eth-ens-namehash": "^2.0.8"
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "@sentry/cli": "^1.30.3",
