@@ -63,6 +63,9 @@ Network.prototype.render = function () {
   } else if (providerName === 'rinkeby') {
     hoverText = context.t('rinkeby')
     iconName = 'rinkeby-test-network'
+  } else if (providerName === 'poa') {
+    hoverText = context.t('poa')
+    iconName = 'poa-network'
   } else {
     hoverText = context.t('unknownNetwork')
     iconName = 'unknown-private-network'
@@ -76,6 +79,7 @@ Network.prototype.render = function () {
         'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
         'kovan-test-network': providerName === 'kovan',
         'rinkeby-test-network': providerName === 'rinkeby',
+        'poa-network': providerName === 'poa',
       }),
       title: hoverText,
       onClick: (event) => {
@@ -120,6 +124,15 @@ Network.prototype.render = function () {
                 nonSelectBackgroundColor: '#ecb23e',
               }),
               h('.network-name', context.t('rinkeby')),
+              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+            ])
+          case 'poa-network':
+            return h('.network-indicator', [
+              h(NetworkDropdownIcon, {
+                backgroundColor: '#5c34a2', // $tulip-tree
+                nonSelectBackgroundColor: '#5c34a2',
+              }),
+              h('.network-name', context.t('poa')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           default:

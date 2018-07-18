@@ -231,6 +231,8 @@ class App extends Component {
       name = this.context.t('connectingToRopsten')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('connectingToRinkeby')
+    } else if (providerName === 'poa') {
+      name = this.context.t('connectingToPOA')
     } else {
       name = this.context.t('connectingToUnknown')
     }
@@ -252,6 +254,8 @@ class App extends Component {
       name = this.context.t('kovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('rinkeby')
+    } else if (providerName === 'poa') {
+      name = this.context.t('poa')
     } else {
       name = this.context.t('unknownNetwork')
     }
