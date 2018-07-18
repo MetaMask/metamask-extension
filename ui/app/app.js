@@ -7,7 +7,6 @@ const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
 const log = require('loglevel')
-const { detect } = require('detect-browser')
 
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
@@ -41,7 +40,6 @@ const Modal = require('./components/modals/index').Modal
 const AppHeader = require('./components/app-header')
 
 import UnlockPage from './components/pages/unlock-page'
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../app/scripts/lib/enums'
 
 // Routes
 const {
@@ -62,6 +60,7 @@ const {
 class App extends Component {
   componentWillMount () {
     const { currentCurrency, setCurrentCurrencyToUSD } = this.props
+
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
     }
@@ -106,15 +105,6 @@ class App extends Component {
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
-
-    const browser = detect()
-
-    if (browser) {
-      if (browser.name === 'firefox' && browser.os === 'Linux' && window.METAMASK_UI_TYPE !== ENVIRONMENT_TYPE_NOTIFICATION &&
-      window.METAMASK_UI_TYPE !== 'fullscreen') {
-        global.platform.openExtensionInBrowser()
-      }
-    }
 
     return (
       h('.flex-column.full-height', {
