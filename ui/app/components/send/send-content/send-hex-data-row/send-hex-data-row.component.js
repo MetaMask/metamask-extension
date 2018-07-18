@@ -16,7 +16,7 @@ export default class SendHexDataRow extends Component {
   onInput = (event) => {
     const {updateSendHexData} = this.props
     event.target.value = event.target.value.replace(/\n/g, '')
-    updateSendHexData(event.target.value)
+    updateSendHexData(event.target.value || null)
   }
 
   render () {
