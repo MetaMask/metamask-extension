@@ -47,31 +47,7 @@ class Info extends Component {
             h('span.settings__info-link', this.context.t('attributions')),
           ]),
         ]),
-        h('hr.settings__info-separator'),
-        h('div.settings__info-link-item', [
-          h('a', {
-            href: 'https://support.metamask.io',
-            target: '_blank',
-          }, [
-            h('span.settings__info-link', this.context.t('supportCenter')),
-          ]),
-        ]),
-        h('div.settings__info-link-item', [
-          h('a', {
-            href: 'https://metamask.io/',
-            target: '_blank',
-          }, [
-            h('span.settings__info-link', this.context.t('visitWebSite')),
-          ]),
-        ]),
-        h('div.settings__info-link-item', [
-          h('a', {
-            target: '_blank',
-            href: 'mailto:help@metamask.io?subject=Feedback',
-          }, [
-            h('span.settings__info-link', this.context.t('emailUs')),
-          ]),
-        ]),
+        //h('hr.settings__info-separator'),
       ])
     )
   }

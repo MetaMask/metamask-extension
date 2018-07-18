@@ -6,7 +6,7 @@ const actions = require('../../ui/app/actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
 
-const Mascot = require('./components/mascot')
+//const Mascot = require('./components/mascot')
 
 module.exports = connect(mapStateToProps)(UnlockScreen)
 
