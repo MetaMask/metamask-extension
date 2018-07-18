@@ -84,7 +84,7 @@
     "message": "Borrow With Dharma (Beta)"
   },
   "browserNotSupported": {
-    "message": "Bummer! Your Browser is not supported..."
+  "message": "Your Browser is not supported..."
   },
   "builtInCalifornia": {
     "message": "MetaMask is designed and built in California."

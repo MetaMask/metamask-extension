@@ -347,7 +347,7 @@ describe('Using MetaMask with an existing account', function () {
 
     it('should show the "Browser not supported" screen for non Chrome browsers', async () => {
       if (process.env.SELENIUM_BROWSER !== 'chrome') {
-        const title = await findElements(driver, By.xpath(`//h3[contains(text(), 'Bummer! Your Browser is not supported...')]`))
+        const title = await findElements(driver, By.xpath(`//h3[contains(text(), 'Your Browser is not supported...')]`))
         assert.equal(title.length, 1)
 
         const downloadChromeButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Download Google Chrome')]`))
