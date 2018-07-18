@@ -1665,10 +1665,10 @@ function updateProviderType (type) {
   }
 }
 
-function setRpcTarget (newRpc, chainId) {
+function setRpcTarget (newRpc, chainId, explorerUrl, symbol) {
   return (dispatch) => {
-    log.debug(`background.setRpcTarget: ${newRpc}`)
-    background.setCustomRpc(newRpc, chainId, (err, result) => {
+    log.debug(`background.setRpcTarget: ${newRpc}, ${chainId}, ${explorerUrl}, ${symbol} `)
+    background.setCustomRpc(newRpc, chainId, explorerUrl, symbol, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))

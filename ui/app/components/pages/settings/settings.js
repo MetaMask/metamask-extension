@@ -173,7 +173,7 @@ class Settings extends Component {
               onChange: event => this.setState({ newRpc: event.target.value }),
               onKeyPress: event => {
                 if (event.key === 'Enter') {
-                  this.validateRpc(this.state.newRpc, this.state.chainId)
+                  this.validateRpc(this.state.newRpc, this.state.chainId, this.state.explorerUrl, this.state.symbol)
                 }
               },
             }),
@@ -182,14 +182,32 @@ class Settings extends Component {
               onChange: event => this.setState({ chainId: event.target.value }),
               onKeyPress: event => {
                 if (event.key === 'Enter') {
-                  this.validateRpc(this.state.newRpc, this.state.chainId)
+                  this.validateRpc(this.state.newRpc, this.state.chainId, this.state.explorerUrl, this.state.symbol)
+                }
+              },
+            }),
+            h('input.settings__input', {
+              placeholder: this.context.t('optionalBlockExplorer'),
+              onChange: event => this.setState({ explorerUrl: event.target.value }),
+              onKeyPress: event => {
+                if (event.key === 'Enter') {
+                  this.validateRpc(this.state.newRpc, this.state.chainId, this.state.explorerUrl, this.state.symbol)
+                }
+              },
+            }),
+            h('input.settings__input', {
+              placeholder: this.context.t('optionalSymbol'),
+              onChange: event => this.setState({ symbol: event.target.value }),
+              onKeyPress: event => {
+                if (event.key === 'Enter') {
+                  this.validateRpc(this.state.newRpc, this.state.chainId, this.state.explorerUrl, this.state.symbol)
                 }
               },
             }),
             h('div.settings__rpc-save-button', {
               onClick: event => {
                 event.preventDefault()
-                this.validateRpc(this.state.newRpc, this.state.chainId)
+                this.validateRpc(this.state.newRpc, this.state.chainId, this.state.explorerUrl, this.state.symbol)
               },
             }, this.context.t('save')),
           ]),
@@ -198,11 +216,11 @@ class Settings extends Component {
     )
   }
 
-  validateRpc (newRpc, chainId) {
+  validateRpc (newRpc, chainId, explorerUrl, symbol) {
     const { setRpcTarget, displayWarning } = this.props
 
     if (validUrl.isWebUri(newRpc)) {
-      setRpcTarget(newRpc, chainId)
+      setRpcTarget(newRpc, chainId, explorerUrl, symbol)
     } else {
       const appendedRpc = `http://${newRpc}`
 
@@ -350,7 +368,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setCurrentCurrency: currency => dispatch(actions.setCurrentCurrency(currency)),
-    setRpcTarget: (newRpc, chainId) => dispatch(actions.setRpcTarget(newRpc, chainId)),
+    setRpcTarget: (newRpc, chainId, explorer, symbol) => dispatch(actions.setRpcTarget(newRpc, chainId, explorer, symbol)),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),

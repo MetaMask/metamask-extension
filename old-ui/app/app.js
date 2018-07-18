@@ -642,13 +642,13 @@ App.prototype.toggleMetamaskActive = function () {
 }
 
 App.prototype.renderCustomOption = function (provider) {
-  const { rpcTarget, type } = provider
+  const { rpcTarget, type, explorerUrl, symbol } = provider
   const props = this.props
 
   if (type !== 'rpc') return null
 
   // Concatenate long URLs
-  let label = rpcTarget
+  let label = symbol ? symbol + ' Network' : rpcTarget
   if (rpcTarget.length > 31) {
     label = label.substr(0, 34) + '...'
   }
@@ -663,7 +663,7 @@ App.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
-          onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget)),
+          onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget, type, explorerUrl, symbol)),
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         },
         [

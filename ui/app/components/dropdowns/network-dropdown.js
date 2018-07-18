@@ -41,8 +41,8 @@ function mapDispatchToProps (dispatch) {
     setDefaultRpcTarget: type => {
       dispatch(actions.setDefaultRpcTarget(type))
     },
-    setRpcTarget: (target, network) => {
-      dispatch(actions.setRpcTarget(target, network))
+    setRpcTarget: (target, network, explorerUrl, symbol) => {
+      dispatch(actions.setRpcTarget(target, network, explorerUrl, symbol))
     },
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
@@ -333,7 +333,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
 }
 
 NetworkDropdown.prototype.renderCustomOption = function (provider) {
-  const { rpcTarget, type } = provider
+  const { rpcTarget, type, explorerUrl, symbol } = provider
   const props = this.props
   const network = props.network
 
@@ -349,7 +349,7 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
-          onClick: () => props.setRpcTarget(rpcTarget, network),
+          onClick: () => props.setRpcTarget(rpcTarget, network, explorerUrl, symbol),
           closeMenu: () => this.props.hideNetworkDropdown(),
           style: {
             fontFamily: 'DIN OT',
@@ -365,7 +365,7 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
             style: {
               color: '#ffffff',
             },
-          }, rpcTarget),
+          }, symbol ? symbol + ' Network' : rpcTarget),
         ]
       )
   }

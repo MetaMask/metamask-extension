@@ -134,7 +134,7 @@ Network.prototype.render = function () {
                 style: {
                   color: '#AEAEAE',
                 }},
-              'Private Network'),
+              props.provider.symbol ? props.provider.symbol + ' Network' : 'Private Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
         }

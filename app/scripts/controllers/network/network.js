@@ -55,8 +55,8 @@ module.exports = class NetworkController extends EventEmitter {
 
   initializeProvider (_providerParams) {
     this._baseProviderParams = _providerParams
-    const { type, rpcTarget, chainId } = this.providerStore.getState()
-    this._configureProvider({ type, rpcTarget, chainId })
+    const { type, rpcTarget, chainId, explorerUrl, symbol } = this.providerStore.getState()
+    this._configureProvider({ type, rpcTarget, chainId, explorerUrl, symbol })
     this._proxy.on('block', this._logBlock.bind(this))
     this._proxy.on('error', this.verifyNetwork.bind(this))
     this.ethQuery = new EthQuery(this._proxy)
@@ -114,11 +114,13 @@ module.exports = class NetworkController extends EventEmitter {
     })
   }
 
-  setRpcTarget (rpcTarget, chainId) {
+  setRpcTarget (rpcTarget, chainId, explorerUrl, symbol) {
     const providerConfig = {
       type: 'rpc',
       rpcTarget,
       chainId,
+      explorerUrl,
+      symbol,
     }
     this.providerConfig = providerConfig
   }
@@ -154,7 +156,7 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureProvider (opts) {
-    const { type, rpcTarget, chainId } = opts
+    const { type, rpcTarget, chainId, explorerUrl, symbol } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
@@ -167,7 +169,7 @@ module.exports = class NetworkController extends EventEmitter {
       this._configureStandardProvider({ rpcUrl: LOCALHOST_RPC_URL })
     // url-based rpc endpoints
     } else if (type === 'rpc') {
-      this._configureStandardProvider({ rpcUrl: rpcTarget, chainId })
+      this._configureStandardProvider({ rpcUrl: rpcTarget, chainId, explorerUrl, symbol })
     } else {
       throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
     }
@@ -216,7 +218,7 @@ module.exports = class NetworkController extends EventEmitter {
     this._setProvider(provider)
   }
 
-  _configureStandardProvider ({ rpcUrl, chainId }) {
+  _configureStandardProvider ({ rpcUrl, chainId, explorerUrl, symbol }) {
     const providerParams = extend(this._baseProviderParams, {
       rpcUrl,
       engineParams: {
@@ -227,12 +229,18 @@ module.exports = class NetworkController extends EventEmitter {
     networks.networkList['rpc'] = {
       chainId: chainId,
       rpcUrl,
-      ticker: 'ETH',
+      ticker: symbol || 'ETH',
     }
     // setup networkConfig
     var settings = {
       type: 'rpc',
       network: chainId,
+      ticker: symbol || 'ETH',
+    }
+    if (explorerUrl) {
+      settings.blockExplorerTx = explorerUrl + '/tx/[[txHash]]'
+      settings.blockExplorerAddr = explorerUrl + '/addr/[[address]]'
+      settings.blockExplorerToken = explorerUrl + '/token/[[tokenAddress]]/[[address]]'
     }
     settings = extend(settings, networks.networkList['rpc'])
     this.networkConfig.putState(settings)

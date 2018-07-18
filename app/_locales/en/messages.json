@@ -632,6 +632,12 @@
   "optionalChainId": {
     "message": "ChainId (optional)"
   },
+  "optionalBlockExplorer": {
+    "message": "BlockExploer Url (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
   "next": {
     "message": "Next"
   },
