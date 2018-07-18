@@ -643,6 +643,9 @@
   "rinkeby": {
     "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்"
   },
@@ -660,6 +663,9 @@
   },
   "connectingToRinkeby": {
     "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
+  },
+  "connectingToPOA": {
+    "message": "[Not translated]"
   },
   "connectingToUnknown": {
     "message": "தெரியாத நெட்வொர்க்குடன் இணைக்கிறது"

@@ -472,6 +472,9 @@
   "rinkeby": {
     "message": "Rinkeby 테스트넷"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "Ropsten 테스트넷"
   },

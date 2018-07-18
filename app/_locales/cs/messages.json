@@ -643,6 +643,9 @@
   "rinkeby": {
     "message": "Rinkeby Test Network"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "Ropsten Test Network"
   },
@@ -660,6 +663,9 @@
   },
   "connectingToRinkeby": {
     "message": "Připojuji se k Rinkeby Test Network"
+  },
+  "connectingToPOA": {
+    "message": "[Not translated]"
   },
   "connectingToUnknown": {
     "message": "Připojuji se k neznámé síti"
