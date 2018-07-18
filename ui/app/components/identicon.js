@@ -20,14 +20,21 @@ function IdenticonComponent () {
 
 function mapStateToProps (state) {
   return {
+    ticker: state.metamask.settings && state.metamask.settings.ticker || 'ETH',
     useBlockie: state.metamask.useBlockie,
   }
 }
 
 IdenticonComponent.prototype.render = function () {
   var props = this.props
-  const { className = '', address } = props
+  const { className = '', address, ticker } = props
   var diameter = props.diameter || this.defaultDiameter
+
+  // default logo
+  var logo = './images/eth_logo.svg'
+  if (ticker !== 'ETH') {
+    logo = `./images/${ticker.toLowerCase()}_logo.svg`
+  }
 
   return address
     ? (
@@ -48,7 +55,7 @@ IdenticonComponent.prototype.render = function () {
     )
     : (
       h('img.balance-icon', {
-        src: './images/eth_logo.svg',
+        src: logo,
         style: {
           height: diameter,
           width: diameter,

@@ -19,6 +19,7 @@ function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     address: state.metamask.selectedAddress,
+    settings: state.metamask.settings,
   }
 }
 
@@ -36,7 +37,7 @@ function mapDispatchToProps (dispatch) {
     showAccountDetailModal: () => {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
-    toFaucet: network => dispatch(actions.buyEth({ network })),
+    toFaucet: (network, address, link) => dispatch(actions.buyEth({ network, address, amount: 0, link })),
   }
 }
 
@@ -119,9 +120,25 @@ DepositEtherModal.prototype.renderRow = function ({
 
 DepositEtherModal.prototype.render = function () {
   const { network, toCoinbase, address, toFaucet } = this.props
-  const { buyingWithShapeshift } = this.state
+  let { buyingWithShapeshift } = this.state
+  let isTestNetwork = ['3', '4', '42'].find(n => n === network)
+  let noCoinbase = false
+  let noShapeShift = false
 
-  const isTestNetwork = ['3', '4', '42'].find(n => n === network)
+  if (this.props.settings && this.props.settings.exchanges) {
+    if (this.props.settings.exchanges.indexOf('Coinbase') === -1) {
+      noCoinbase = true
+    }
+    if (this.props.settings.exchanges.indexOf('ShapeShift') === -1) {
+      noShapeShift = true
+    }
+  }
+  let link
+  if (this.props.settings && this.props.settings.isTestNet) {
+    isTestNetwork = true
+    link = this.props.settings.buyUrl
+  }
+
   const networkName = getNetworkDisplayName(network)
 
   return h('div.page-container.page-container--full-width.page-container--full-height', {}, [
@@ -164,7 +181,7 @@ DepositEtherModal.prototype.render = function () {
           title: FAUCET_ROW_TITLE,
           text: this.facuetRowText(networkName),
           buttonLabel: this.context.t('getEther'),
-          onButtonClick: () => toFaucet(network),
+          onButtonClick: () => toFaucet(network, address, link),
           hide: !isTestNetwork || buyingWithShapeshift,
         }),
 
@@ -179,7 +196,7 @@ DepositEtherModal.prototype.render = function () {
           text: COINBASE_ROW_TEXT,
           buttonLabel: this.context.t('continueToCoinbase'),
           onButtonClick: () => toCoinbase(address),
-          hide: isTestNetwork || buyingWithShapeshift,
+          hide: noCoinbase || isTestNetwork || buyingWithShapeshift,
         }),
 
         this.renderRow({
@@ -192,7 +209,7 @@ DepositEtherModal.prototype.render = function () {
           text: SHAPESHIFT_ROW_TEXT,
           buttonLabel: this.context.t('shapeshiftBuy'),
           onButtonClick: () => this.setState({ buyingWithShapeshift: true }),
-          hide: isTestNetwork,
+          hide: noShapeShift || isTestNetwork,
           hideButton: buyingWithShapeshift,
           hideTitle: buyingWithShapeshift,
           onBackClick: () => this.setState({ buyingWithShapeshift: false }),

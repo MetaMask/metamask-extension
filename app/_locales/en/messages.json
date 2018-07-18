@@ -296,7 +296,7 @@
     "message": "Passwords Don't Match"
   },
   "etherscanView": {
-    "message": "View account on Etherscan"
+    "message": "View account on Explorer"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
@@ -575,6 +575,9 @@
   "newRPC": {
     "message": "New RPC URL"
   },
+  "optionalChainId": {
+    "message": "ChainId (optional)"
+  },
   "next": {
     "message": "Next"
   },
@@ -730,6 +733,12 @@
   "revert": {
     "message": "Revert"
   },
+  "classic": {
+    "message": "Ethereum Classic Network"
+  },
+  "eosclassic": {
+    "message": "EOS Classic Network"
+  },
   "rinkeby": {
     "message": "Rinkeby Test Network"
   },
@@ -744,6 +753,12 @@
   },
   "connectingToMainnet": {
     "message": "Connecting to Main Ethereum Network"
+  },
+  "connectingToClassic": {
+    "message": "Connecting to Ethereum Classic Network"
+  },
+  "connectingToEOSClassic": {
+    "message": "Connecting to EOS Classic Network"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -1010,7 +1025,7 @@
     "message": "View Account"
   },
   "viewOnEtherscan": {
-    "message": "View on Etherscan"
+    "message": "View on Explorer"
   },
   "visitWebSite": {
     "message": "Visit our web site"

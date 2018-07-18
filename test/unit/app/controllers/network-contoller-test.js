@@ -46,7 +46,7 @@ describe('# Network Controller', function () {
 
     describe('#setNetworkState', function () {
       it('should update the network', function () {
-        networkController.setNetworkState(1)
+        networkController.setNetworkState(1, 'rpc')
         const networkState = networkController.getNetworkState()
         assert.equal(networkState, 1, 'network is 1')
       })
@@ -71,6 +71,12 @@ describe('Network utils', () => {
   it('getNetworkDisplayName should return the correct network name', () => {
     const tests = [
       {
+        input: 61,
+        expected: 'Ethereum Classic',
+      }, {
+        input: 20,
+        expected: 'EOS Classic',
+      }, {
         input: 3,
         expected: 'Ropsten',
       }, {
@@ -80,6 +86,15 @@ describe('Network utils', () => {
         input: 42,
         expected: 'Kovan',
       }, {
+        input: 'mainnet',
+        expected: 'Main Ethereum Network',
+      }, {
+        input: 'classic',
+        expected: 'Ethereum Classic',
+      }, {
+        input: 'eosclassic',
+        expected: 'EOS Classic',
+      }, {
         input: 'ropsten',
         expected: 'Ropsten',
       }, {
@@ -88,9 +103,6 @@ describe('Network utils', () => {
       }, {
         input: 'kovan',
         expected: 'Kovan',
-      }, {
-        input: 'mainnet',
-        expected: 'Main Ethereum Network',
       },
     ]
 

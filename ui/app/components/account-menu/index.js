@@ -34,6 +34,7 @@ function mapStateToProps (state) {
     selectedAddress: state.metamask.selectedAddress,
     isAccountMenuOpen: state.metamask.isAccountMenuOpen,
     keyrings: state.metamask.keyrings,
+    ticker: state.metamask.settings && state.metamask.settings.ticker || 'ETH',
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
   }
@@ -131,6 +132,7 @@ AccountMenu.prototype.renderAccounts = function () {
     identities,
     accounts,
     selectedAddress,
+    ticker,
     keyrings,
     showAccountDetail,
   } = this.props
@@ -141,8 +143,11 @@ AccountMenu.prototype.renderAccounts = function () {
     const isSelected = identity.address === selectedAddress
 
     const balanceValue = accounts[address] ? accounts[address].balance : ''
-    const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
     const simpleAddress = identity.address.substring(2).toLowerCase()
+    let formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
+    if (ticker !== 'ETH') {
+      formattedBalance = formattedBalance.replace(/ETH/, ticker)
+    }
 
     const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(simpleAddress) ||

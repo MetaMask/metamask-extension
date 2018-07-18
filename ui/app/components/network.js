@@ -51,6 +51,12 @@ Network.prototype.render = function () {
   } else if (providerName === 'mainnet') {
     hoverText = context.t('mainnet')
     iconName = 'ethereum-network'
+  } else if (providerName === 'classic') {
+    hoverText = context.t('classic')
+    iconName = 'ethereum-classic-network'
+  } else if (providerName === 'eosclassic') {
+    hoverText = context.t('eosclassic')
+    iconName = 'eos-classic-network'
   } else if (providerName === 'ropsten') {
     hoverText = context.t('ropsten')
     iconName = 'ropsten-test-network'
@@ -73,6 +79,8 @@ Network.prototype.render = function () {
       className: classnames({
         'network-component--disabled': this.props.disabled,
         'ethereum-network': providerName === 'mainnet',
+        'ethereum-classic-network': providerName === 'classic',
+        'eos-classic-network': providerName === 'eosclassic',
         'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
         'kovan-test-network': providerName === 'kovan',
         'rinkeby-test-network': providerName === 'rinkeby',
@@ -93,6 +101,24 @@ Network.prototype.render = function () {
                 nonSelectBackgroundColor: '#15afb2',
               }),
               h('.network-name', context.t('mainnet')),
+              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+            ])
+          case 'ethereum-classic-network':
+            return h('.network-indicator', [
+              h(NetworkDropdownIcon, {
+                backgroundColor: '#228B22', // green
+                nonSelectBackgroundColor: '#46893D',
+              }),
+              h('.network-name', context.t('classic')),
+              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+            ])
+          case 'eos-classic-network':
+            return h('.network-indicator', [
+              h(NetworkDropdownIcon, {
+                backgroundColor: '#926565',
+                nonSelectBackgroundColor: '#AD8888',
+              }),
+              h('.network-name', context.t('eosclassic')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'ropsten-test-network':

@@ -173,14 +173,23 @@ class Settings extends Component {
               onChange: event => this.setState({ newRpc: event.target.value }),
               onKeyPress: event => {
                 if (event.key === 'Enter') {
-                  this.validateRpc(this.state.newRpc)
+                  this.validateRpc(this.state.newRpc, this.state.chainId)
+                }
+              },
+            }),
+            h('input.settings__input', {
+              placeholder: this.context.t('optionalChainId'),
+              onChange: event => this.setState({ chainId: event.target.value }),
+              onKeyPress: event => {
+                if (event.key === 'Enter') {
+                  this.validateRpc(this.state.newRpc, this.state.chainId)
                 }
               },
             }),
             h('div.settings__rpc-save-button', {
               onClick: event => {
                 event.preventDefault()
-                this.validateRpc(this.state.newRpc)
+                this.validateRpc(this.state.newRpc, this.state.chainId)
               },
             }, this.context.t('save')),
           ]),
@@ -189,11 +198,11 @@ class Settings extends Component {
     )
   }
 
-  validateRpc (newRpc) {
+  validateRpc (newRpc, chainId) {
     const { setRpcTarget, displayWarning } = this.props
 
     if (validUrl.isWebUri(newRpc)) {
-      setRpcTarget(newRpc)
+      setRpcTarget(newRpc, chainId)
     } else {
       const appendedRpc = `http://${newRpc}`
 
@@ -341,7 +350,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setCurrentCurrency: currency => dispatch(actions.setCurrentCurrency(currency)),
-    setRpcTarget: newRpc => dispatch(actions.setRpcTarget(newRpc)),
+    setRpcTarget: (newRpc, chainId) => dispatch(actions.setRpcTarget(newRpc, chainId)),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),

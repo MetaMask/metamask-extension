@@ -1553,10 +1553,10 @@ function updateProviderType (type) {
   }
 }
 
-function setRpcTarget (newRpc) {
+function setRpcTarget (newRpc, chainId) {
   return (dispatch) => {
     log.debug(`background.setRpcTarget: ${newRpc}`)
-    background.setCustomRpc(newRpc, (err, result) => {
+    background.setCustomRpc(newRpc, chainId, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
@@ -1786,11 +1786,17 @@ function coinBaseSubview () {
   }
 }
 
-function pairUpdate (coin) {
+function pairUpdate (coin, ticker) {
+  if (!ticker) {
+    ticker = 'eth'
+  } else {
+    ticker = ticker.toLowerCase()
+  }
+
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     dispatch(actions.hideWarning())
-    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
+    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_${ticker}`}, (mktResponse) => {
       dispatch(actions.hideSubLoadingIndication())
       if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
       dispatch({
@@ -1803,8 +1809,11 @@ function pairUpdate (coin) {
   }
 }
 
-function shapeShiftSubview (network) {
+function shapeShiftSubview (network, ticker) {
   var pair = 'btc_eth'
+  if (ticker) {
+    pair = `btc_${ticker.toLowerCase()}`
+  }
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
@@ -1859,10 +1868,10 @@ function showQrView (data, message) {
     },
   }
 }
-function reshowQrCode (data, coin) {
+function reshowQrCode (data, coin, ticker) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
+    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_${ticker.toLowerCase()}`}, (mktResponse) => {
       if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
 
       var message = [

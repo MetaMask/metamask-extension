@@ -277,6 +277,40 @@ App.prototype.renderNetworkDropdown = function () {
     h(
       DropdownMenuItem,
       {
+        key: 'classic',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('classic')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.green-diamond'),
+        'Ethereum Classic Network',
+        providerType === 'classic' ? h('.check', '✓') : null,
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
+        key: 'eosclassic',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('eosclassic')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.brown-diamond'),
+        'EOS Classic Network',
+        providerType === 'eosclassic' ? h('.check', '✓') : null,
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
         key: 'ropsten',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('ropsten')),
@@ -666,6 +700,10 @@ App.prototype.getNetworkName = function () {
 
   if (providerName === 'mainnet') {
     name = 'Main Ethereum Network'
+  } else if (providerName === 'classic') {
+    name = 'Ethereum Classic Network'
+  } else if (providerName === 'eosclassic') {
+    name = 'EOS Classic Network'
   } else if (providerName === 'ropsten') {
     name = 'Ropsten Test Network'
   } else if (providerName === 'kovan') {

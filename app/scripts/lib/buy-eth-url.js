@@ -11,7 +11,7 @@ module.exports = getBuyEthUrl
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
-function getBuyEthUrl ({ network, amount, address }) {
+function getBuyEthUrl ({ network, amount, address, link }) {
   let url
   switch (network) {
     case '1':
@@ -28,6 +28,14 @@ function getBuyEthUrl ({ network, amount, address }) {
 
     case '42':
       url = 'https://github.com/kovan-testnet/faucet'
+      break
+
+    default:
+      if (link) {
+        url = link.replace('[[amount]]', amount).replace('[[address]]', address)
+      } else {
+        url = ''
+      }
       break
   }
   return url

@@ -1,10 +1,16 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const connect = require('react-redux').connect
 const inherits = require('util').inherits
 const Identicon = require('./identicon')
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 
-module.exports = TokenCell
+module.exports = connect(mapStateToProps)(TokenCell)
+function mapStateToProps (state) {
+  return {
+    settings: state.metamask.settings,
+  }
+}
 
 inherits(TokenCell, Component)
 function TokenCell () {
@@ -44,14 +50,22 @@ TokenCell.prototype.render = function () {
 TokenCell.prototype.send = function (address, event) {
   event.preventDefault()
   event.stopPropagation()
-  const url = tokenFactoryFor(address)
+  let url
+  if (this.props.settings && this.props.settings.blockExplorerTokenFactory) {
+    url = this.props.settings.blockExplorerTokenFactory
+  }
+  url = tokenFactoryFor(address, url)
   if (url) {
     navigateTo(url)
   }
 }
 
 TokenCell.prototype.view = function (address, userAddress, network, event) {
-  const url = etherscanLinkFor(address, userAddress, network)
+  let url
+  if (this.props.settings && this.props.settings.blockExplorerToken) {
+    url = this.props.settings.blockExplorerToken
+  }
+  url = etherscanLinkFor(address, userAddress, network, url)
   if (url) {
     navigateTo(url)
   }
@@ -61,12 +75,20 @@ function navigateTo (url) {
   global.platform.openWindow({ url })
 }
 
-function etherscanLinkFor (tokenAddress, address, network) {
+function etherscanLinkFor (tokenAddress, address, network, url) {
+  if (url) {
+    return url.replace('[[tokenAddress]]', tokenAddress).replace('[[address]]', address)
+  }
+
   const prefix = prefixForNetwork(network)
   return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
 }
 
-function tokenFactoryFor (tokenAddress) {
+function tokenFactoryFor (tokenAddress, url) {
+  if (url) {
+    return url.replace('[[tokenAddress]]', tokenAddress)
+  }
+
   return `https://tokenfactory.surge.sh/#/token/${tokenAddress}`
 }
 
