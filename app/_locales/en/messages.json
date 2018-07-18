@@ -623,6 +623,9 @@
   "noDeposits": {
     "message": "No deposits received"
   },
+  "noConversionRateAvailable":{
+    "message": "No Conversion Rate Available"
+  },
   "noTransactionHistory": {
     "message": "No transaction history."
   },
