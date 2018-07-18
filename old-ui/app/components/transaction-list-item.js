@@ -47,7 +47,7 @@ TransactionListItem.prototype.showRetryButton = function () {
 }
 
 const poaExplorerTxLink = (hash, network) => {
-  const isSokol = network === 777
+  const isSokol = network === 77
   if (isSokol) {
     return `https://sokol.poaexplorer.com/txid/search/${hash}`
   }
@@ -91,7 +91,7 @@ TransactionListItem.prototype.render = function () {
         const isSokol = numericNet === 77
         let url
         if (isSokol) {
-          url = this.poaExplorerTxLink(transaction.hash, numericNet)
+          url = poaExplorerTxLink(transaction.hash, numericNet)
         } else {
           url = explorerLink(transaction.hash, numericNet)
         }
