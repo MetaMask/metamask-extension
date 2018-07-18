@@ -114,3 +114,20 @@ export function formatCurrency (value, currencyCode) {
     ? currencyFormatter.format(Number(value), { code: upperCaseCurrencyCode })
     : value
 }
+
+export function convertTokenToFiat ({
+  value,
+  toCurrency,
+  conversionRate,
+  contractExchangeRate,
+}) {
+  const totalExchangeRate = conversionRate * contractExchangeRate
+
+  return conversionUtil(value, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    toCurrency,
+    numberOfDecimals: 2,
+    conversionRate: totalExchangeRate,
+  })
+}

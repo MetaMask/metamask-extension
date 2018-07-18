@@ -9,7 +9,7 @@
     height: 25px;
 
     &--mainnet {
-      background-color: lighten($blue-lagoon, 45%);
+      background-color: lighten($blue-lagoon, 68%);
     }
 
     &--ropsten {
@@ -17,11 +17,11 @@
     }
 
     &--kovan {
-      background-color: lighten($purple, 45%);
+      background-color: lighten($purple, 65%);
     }
 
     &--rinkeby {
-      background-color: lighten($tulip-tree, 45%);
+      background-color: lighten($tulip-tree, 35%);
     }
   }
 
