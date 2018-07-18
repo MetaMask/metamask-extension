@@ -65,6 +65,28 @@ describe('send-footer utils', () => {
   })
 
   describe('constructTxParams()', () => {
+    it('should return a new txParams object with data if there data is given', () => {
+      assert.deepEqual(
+        constructTxParams({
+          data: 'someData',
+          selectedToken: false,
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+        }),
+        {
+          data: '0xsomeData',
+          to: '0xmockTo',
+          value: '0xmockAmount',
+          from: '0xmockFrom',
+          gas: '0xmockGas',
+          gasPrice: '0xmockGasPrice',
+        }
+      )
+    })
+
     it('should return a new txParams object with value and to properties if there is no selectedToken', () => {
       assert.deepEqual(
         constructTxParams({
@@ -76,6 +98,7 @@ describe('send-footer utils', () => {
           gasPrice: 'mockGasPrice',
         }),
         {
+          data: undefined,
           to: '0xmockTo',
           value: '0xmockAmount',
           from: '0xmockFrom',
@@ -96,6 +119,7 @@ describe('send-footer utils', () => {
           gasPrice: 'mockGasPrice',
         }),
         {
+          data: undefined,
           value: '0x0',
           from: '0xmockFrom',
           gas: '0xmockGas',

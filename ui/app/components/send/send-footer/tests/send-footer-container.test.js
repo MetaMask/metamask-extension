@@ -38,6 +38,7 @@ proxyquire('../send-footer.container.js', {
     getSendTo: (s) => `mockTo:${s}`,
     getSendToAccounts: (s) => `mockToAccounts:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
+    getSendHexData: (s) => `mockHexData:${s}`,
     getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
   },
   './send-footer.selectors': { isSendFormInError: (s) => `mockInError:${s}` },
@@ -51,6 +52,7 @@ describe('send-footer container', () => {
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         amount: 'mockAmount:mockState',
+        data: 'mockHexData:mockState',
         selectedToken: 'mockSelectedToken:mockState',
         editingTransactionId: 'mockEditingTransactionId:mockState',
         from: 'mockFromObject:mockState',
@@ -100,6 +102,7 @@ describe('send-footer container', () => {
         assert.deepEqual(
           utilsStubs.constructTxParams.getCall(0).args[0],
           {
+            data: undefined,
             selectedToken: {
               address: '0xabc',
             },
@@ -129,6 +132,7 @@ describe('send-footer container', () => {
         assert.deepEqual(
           utilsStubs.constructTxParams.getCall(0).args[0],
           {
+            data: undefined,
             selectedToken: undefined,
             to: 'mockTo',
             amount: 'mockAmount',
@@ -160,6 +164,7 @@ describe('send-footer container', () => {
         assert.deepEqual(
           utilsStubs.constructUpdatedTx.getCall(0).args[0],
           {
+            data: undefined,
             to: 'mockTo',
             amount: 'mockAmount',
             from: 'mockFrom',
