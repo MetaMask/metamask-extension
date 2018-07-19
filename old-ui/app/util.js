@@ -104,7 +104,8 @@ function parseBalance (balance) {
 // Its "formatted" property is what we generally use to render values.
 function formatBalance (balance, decimalsToKeep, needsParse = true, network) {
   const isSokol = parseInt(network) === 77
-  const coinName = isSokol ? 'SPOA' : 'ETH'
+  const isPOA = parseInt(network) === 99
+  const coinName = isPOA ? 'POA' : isSokol ? 'SPOA' : 'ETH'
   var parsed = needsParse ? parseBalance(balance) : balance.split('.')
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]

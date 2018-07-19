@@ -384,7 +384,7 @@
   "infoHelp": {
     "message": "Info & Hilfe"
   },
-  "insufficientFunds": { 
+  "insufficientFunds": {
     "message": "Nicht genügend Guthaben."
   },
   "insufficientTokens": {
@@ -572,7 +572,7 @@
     "description": "Wähle diesen Dateityp um damit einen Account zu importieren"
   },
   "privateKeyWarning": {
-    "message": "Warnung: Niemals jemanden deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."  
+    "message": "Warnung: Niemals jemanden deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."
   },
   "privateNetwork": {
     "message": "Privates Netzwerk"
@@ -631,6 +631,9 @@
   "rinkeby": {
     "message": "Rinkeby Testnetzwerk"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "Ropsten Testnetzwerk"
   },
@@ -648,6 +651,9 @@
   },
   "connectingToRinkeby": {
     "message": " Verbinde zum Rinkeby Testnetzwerk"
+  },
+  "connectingToPOA": {
+    "message": "[Not translated]"
   },
   "connectingToUnknown": {
     "message": "Verbinde zu einem unbekanntem Netzwerk"

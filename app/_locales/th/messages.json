@@ -601,6 +601,9 @@
   "rinkeby": {
     "message": "เครือข่ายทดสอบ Rinkeby"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "เครือข่ายทดสอบ Ropsten"
   },

@@ -472,6 +472,9 @@
   "rinkeby": {
     "message": "Mạng thử nghiệm Rinkeby"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "Mạng thử nghiệm Ropsten"
   },

@@ -29,6 +29,10 @@
   &.rinkeby-test-network .menu-icon-circle div {
     background-color: rgba(235, 179, 63, .7) !important;
   }
+
+  &.poa-network .menu-icon-circle div {
+    background-color: #5c34a2 !important;
+  }
 }
 
 .dropdown-menu-item {

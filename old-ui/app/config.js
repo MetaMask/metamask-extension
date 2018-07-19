@@ -254,6 +254,11 @@ function currentProviderDisplay (metamaskState) {
       value = 'Rinkeby Test Network'
       break
 
+    case 'poa':
+      title = 'Current Network'
+      value = 'POA Network'
+      break
+
     default:
       title = 'Current RPC'
       value = metamaskState.provider.rpcTarget

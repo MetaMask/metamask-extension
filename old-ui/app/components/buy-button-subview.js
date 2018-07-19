@@ -48,7 +48,8 @@ BuyButtonSubview.prototype.headerSubview = function () {
   const { network } = props
   const isLoading = props.isSubLoading
   const isSokol = parseInt(network) === 77
-  const coinName = isSokol ? 'SPOA' : 'ETH'
+  const isPOA = parseInt(network) === 99
+  const coinName = isPOA ? 'POA' : isSokol ? 'SPOA' : 'ETH'
   return (
 
     h('.flex-column', {
@@ -142,13 +143,14 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '1':
       return this.mainnetSubview()
 
-    // Ropsten, Rinkeby, Kovan
+    // Ropsten, Rinkeby, Kovan, Sokol, POA
     case '3':
     case '4':
     case '42':
     case '77':
+    case '99':
       const networkName = getNetworkDisplayName(network)
-      const label = `${networkName} Test Faucet`
+      const label = network === '99' ? 'POA Network' : `${networkName} Test Faucet`
       return (
         h('div.flex-column', {
           style: {

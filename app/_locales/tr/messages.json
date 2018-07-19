@@ -643,6 +643,9 @@
     "rinkeby": {
       "message": "Rinkeby Test Ağı"
     },
+    "poa": {
+      "message": "[Not translated]"
+    },
     "ropsten": {
       "message": "Ropsten Test Ağı"
     },
@@ -660,6 +663,9 @@
     },
     "connectingToRinkeby": {
       "message": "Rinkeby Test Ağına bağlanıyor"
+    },
+    "connectingToPOA": {
+      "message": "[Not translated]"
     },
     "connectingToUnknown": {
       "message": "Bilinmeyen Ağa bağlanıyor"
