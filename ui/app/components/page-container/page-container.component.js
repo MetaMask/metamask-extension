@@ -5,26 +5,93 @@ import PageContainerHeader from './page-container-header'
 import PageContainerFooter from './page-container-footer'
 
 export default class PageContainer extends Component {
-
   static propTypes = {
     // PageContainerHeader props
-    title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string,
+    backButtonString: PropTypes.string,
+    backButtonStyles: PropTypes.object,
+    onBackButtonClick: PropTypes.func,
     onClose: PropTypes.func,
     showBackButton: PropTypes.bool,
-    onBackButtonClick: PropTypes.func,
-    backButtonStyles: PropTypes.object,
-    backButtonString: PropTypes.string,
+    subtitle: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    // Tabs-related props
+    defaultActiveTabIndex: PropTypes.number,
+    tabsComponent: PropTypes.node,
     // Content props
-    ContentComponent: PropTypes.func,
-    contentComponentProps: PropTypes.object,
+    contentComponent: PropTypes.node,
     // PageContainerFooter props
-    onCancel: PropTypes.func,
     cancelText: PropTypes.string,
+    disabled: PropTypes.bool,
+    onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     submitText: PropTypes.string,
-    disabled: PropTypes.bool,
-  };
+  }
+
+  state = {
+    activeTabIndex: 0,
+  }
+
+  componentDidMount () {
+    const { defaultActiveTabIndex } = this.props
+
+    if (defaultActiveTabIndex) {
+      this.setState({ activeTabIndex: defaultActiveTabIndex })
+    }
+  }
+
+  handleTabClick (tabIndex) {
+    const { activeTabIndex } = this.state
+
+    if (tabIndex !== activeTabIndex) {
+      this.setState({
+        activeTabIndex: tabIndex,
+      })
+    }
+  }
+
+  renderTabs () {
+    const { tabsComponent } = this.props
+
+    if (!tabsComponent) {
+      return
+    }
+
+    const numberOfTabs = React.Children.count(tabsComponent.props.children)
+
+    return React.Children.map(tabsComponent.props.children, (child, index) => {
+      return child && React.cloneElement(child, {
+        onClick: index => this.handleTabClick(index),
+        tabIndex: index,
+        isActive: numberOfTabs > 1 && index === this.state.activeTabIndex,
+        key: index,
+        className: 'page-container__tab',
+        activeClassName: 'page-container__tab--selected',
+      })
+    })
+  }
+
+  renderActiveTabContent () {
+    const { tabsComponent } = this.props
+    const { children } = tabsComponent.props
+    const { activeTabIndex } = this.state
+
+    return children[activeTabIndex]
+      ? children[activeTabIndex].props.children
+      : children.props.children
+  }
+
+  renderContent () {
+    const { contentComponent, tabsComponent } = this.props
+
+    switch (true) {
+      case Boolean(contentComponent):
+        return contentComponent
+      case Boolean(tabsComponent):
+        return this.renderActiveTabContent()
+      default:
+        return null
+    }
+  }
 
   render () {
     const {
@@ -35,8 +102,6 @@ export default class PageContainer extends Component {
       onBackButtonClick,
       backButtonStyles,
       backButtonString,
-      ContentComponent,
-      contentComponentProps,
       onCancel,
       cancelText,
       onSubmit,
@@ -54,9 +119,10 @@ export default class PageContainer extends Component {
           onBackButtonClick={onBackButtonClick}
           backButtonStyles={backButtonStyles}
           backButtonString={backButtonString}
+          tabs={this.renderTabs()}
         />
         <div className="page-container__content">
-          <ContentComponent { ...contentComponentProps } />
+          { this.renderContent() }
         </div>
         <PageContainerFooter
           onCancel={onCancel}
@@ -68,5 +134,4 @@ export default class PageContainer extends Component {
       </div>
     )
   }
-
 }
