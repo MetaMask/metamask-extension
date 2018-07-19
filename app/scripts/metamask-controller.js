@@ -50,6 +50,7 @@ const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const BraveKeyring = require('eth-brave-keyring')
 const { getPlatform } = require('./lib/util')
+const { PLATFORM_BRAVE } = require('./lib/enums')
 
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -135,8 +136,8 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
-    
-    if(getPlatform() === PLATFORM_BRAVE){
+
+    if (getPlatform() === PLATFORM_BRAVE) {
       this.getAccountsFromBraveWallet()
     }
 
@@ -364,7 +365,7 @@ module.exports = class MetamaskController extends EventEmitter {
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
-      // Brave 
+      // Brave
       getAccountsFromBraveWallet: nodeify(this.getAccountsFromBraveWallet, this),
 
       // hardware wallets
@@ -543,7 +544,7 @@ module.exports = class MetamaskController extends EventEmitter {
       const accounts = await keyring.getAccounts()
       this.accountTracker.syncWithAddresses(accounts)
       return accounts
-    } catch (e){
+    } catch (e) {
       // Here we should catch the exception instead
       return []
     }
