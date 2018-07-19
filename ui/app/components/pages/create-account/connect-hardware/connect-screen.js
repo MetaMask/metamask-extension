@@ -27,34 +27,97 @@ class ConnectScreen extends Component {
         )
     }
 
-    renderConnectScreen () {
+    renderHeader () {
         return (
-            h('div.new-account-connect-form', {}, [
-                h('div.hw-connect', [
-                    h('h3.hw-connect__title', {}, this.context.t('trezorHardwareWallet')),
-                    h('p.hw-connect__msg', {}, this.context.t('connectToTrezorHelp')),
-                    h('p.hw-connect__msg', {}, [
-                        this.context.t('connectToTrezorTrouble'),
-                        h('a.hw-connect__link', {
-                            href: 'https://support.metamask.io/',
-                            target: '_blank',
-                        }, ` ${this.context.t('learnMore')}`),
-                    ]),
-                ]),
-                h(
-                    'button.btn-primary.btn--large',
-                    { onClick: this.props.connectToTrezor.bind(this) },
-                    this.props.btnText
-                ),
-                h('div.hw-connect__get-trezor', {}, [
-                  h('a', {
-                    href: 'https://shop.trezor.io/?a=metamask',
-                    target: '_blank',
-                  }, this.context.t('getYourTrezor')),
+            h('div.hw-connect__header', {}, [
+                h('h3.hw-connect__header__title', {}, this.context.t(`hardwareSupport`)),
+                h('p.hw-connect__header__msg', {}, this.context.t(`hardwareSupportMsg`)),
+            ])
+        )
+    }
+
+    renderTrezorAffiliateLink () {
+        return h('div.hw-connect__get-trezor', {}, [
+            h('p.hw-connect__get-trezor__msg', {}, this.context.t(`dontHaveATrezorWallet`)),
+            h('a.hw-connect__get-trezor__link', {
+              href: 'https://shop.trezor.io/?a=metamask',
+              target: '_blank',
+            }, this.context.t('orderOneHere')),
+          ])
+    }
+
+    renderConnectToTrezorButton () {
+        return h(
+            'button.btn-primary.btn--large',
+            { onClick: this.props.connectToTrezor.bind(this) },
+            this.props.btnText
+        )
+    }
+
+    renderLearnMore () {
+        return (
+            h('p.hw-connect__learn-more', {}, [
+                this.context.t('learnMore'),
+                h('img.hw-connect__learn-more__arrow', { src: 'images/caret-right.svg'}),
+            ])
+        )
+    }
+
+    renderTutorialSteps () {
+        const steps = [
+            {
+                asset: 'hardware-wallet-step-1',
+                dimensions: {width: '225px', height: '75px'},
+             },
+             {
+                asset: 'hardware-wallet-step-2',
+                dimensions: {width: '300px', height: '100px'},
+             },
+             {
+                asset: 'hardware-wallet-step-3',
+                dimensions: {width: '120px', height: '90px'},
+             },
+        ]
+
+        return h('.hw-tutorial', {},
+            steps.map((step, i) => (
+            h('div.hw-connect', [
+                h('h3.hw-connect__title', {}, this.context.t(`step${i + 1}HardwareWallet`)),
+                h('p.hw-connect__msg', {}, this.context.t(`step${i + 1}HardwareWalletMsg`)),
+                h('img.hw-connect__step-asset', { src: `images/${step.asset}.svg`, ...step.dimensions }),
+            ])
+            ))
+        )
+    }
+
+    renderFooter () {
+        return (
+            h('div.hw-connect__footer', {}, [
+                h('h3.hw-connect__footer__title', {}, this.context.t(`readyToConnect`)),
+                this.renderConnectToTrezorButton(),
+                h('p.hw-connect__footer__msg', {}, [
+                    this.context.t(`havingTroubleConnecting`),
+                    h('a.hw-connect__footer__link', {
+                        href: '#',
+                        target: '_blank',
+                      }, this.context.t('getHelp')),
                 ]),
             ])
         )
-      }
+    }
+
+    renderConnectScreen () {
+        return (
+            h('div.new-account-connect-form', {}, [
+                this.renderHeader(),
+                this.renderTrezorAffiliateLink(),
+                this.renderConnectToTrezorButton(),
+                this.renderLearnMore(),
+                this.renderTutorialSteps(),
+                this.renderFooter(),
+            ])
+        )
+    }
 
     render () {
         if (this.props.browserSupported) {

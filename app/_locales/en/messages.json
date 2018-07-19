@@ -134,7 +134,7 @@
   "confirmTransaction": {
     "message": "Confirm Transaction"
   },
-  "connectHardware": {
+  "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
   },
   "connect": {
@@ -286,6 +286,9 @@
   "downloadStateLogs": {
     "message": "Download State Logs"
   },
+  "dontHaveATrezorWallet": {
+    "message": "Don't have a TREZOR hardware wallet?"
+  },
   "dropped": {
     "message": "Dropped"
   },
@@ -407,8 +410,8 @@
     "message": "Get Ether from a faucet for the $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getYourTrezor": {
-    "message": "Don't have a TREZOR hardware wallet? Order yours now!"
+  "getHelp": {
+    "message": "Get Help."
   },
   "greaterThanMin": {
     "message": "must be greater than or equal to $1.",
@@ -416,6 +419,15 @@
   },
   "hardware": {
     "message": "hardware"
+  },
+  "hardwareSupport": {
+    "message": "Hardware Support"
+  },
+  "hardwareSupportMsg": {
+    "message": "You can now view your Hardware accounts in MetaMask!  Scroll down and read how it works."
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
   },
   "here": {
     "message": "here",
@@ -515,7 +527,7 @@
     "message": "Max"
   },
   "learnMore": {
-    "message": "Learn more."
+    "message": "Learn more"
   },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
@@ -778,6 +790,9 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original seed phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
   "rinkeby": {
     "message": "Rinkeby Test Network"
   },
@@ -874,6 +889,9 @@
     "message": "Only send $1 to an Ethereum account address.",
     "description": "displays token symbol"
   },
+  "orderOneHere": {
+    "message": "Order one here."
+  },
   "searchTokens": {
     "message": "Search Tokens"
   },
@@ -891,6 +909,24 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "step1HardwareWallet": {
+    "message": "1. Connect Hardware Wallet"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Connect your hardware wallet directly to your computer."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Select an Account"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Select the account you want to view. You can only choose one at a time."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Start using dApps and more!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
   },
   "info": {
   "message": "Info"

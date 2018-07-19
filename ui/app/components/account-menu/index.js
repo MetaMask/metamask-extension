@@ -125,7 +125,7 @@ AccountMenu.prototype.render = function () {
         }
       },
       icon: h('img.account-menu__item-icon', { src: 'images/connect-icon.svg' }),
-      text: this.context.t('connectHardware'),
+      text: this.context.t('connectHardwareWallet'),
     }),
     h(Divider),
     h(Item, {
