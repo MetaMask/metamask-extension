@@ -132,7 +132,7 @@ Network.prototype.render = function () {
                 style: {
                   color: '#5c34a2',
                 }},
-              'POA Net'),
+              'POA Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           default:
