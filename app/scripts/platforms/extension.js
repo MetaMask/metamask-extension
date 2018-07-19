@@ -17,8 +17,11 @@ class ExtensionPlatform {
     return extension.runtime.getManifest().version
   }
 
-  openExtensionInBrowser () {
-    const extensionURL = extension.runtime.getURL('home.html')
+  openExtensionInBrowser (route = null) {
+    let extensionURL = extension.runtime.getURL('home.html')
+    if (route) {
+      extensionURL += `#${route}`
+    }
     this.openWindow({ url: extensionURL })
   }
 
