@@ -1129,11 +1129,14 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {string} A hex representation of the suggested wei gas price.
    */
   getGasPrice () {
-    const { recentBlocksController } = this
+    const { networkController, recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
 
-    // Return 1 gwei if no blocks have been observed:
-    if (recentBlocks.length === 0) {
+    const networkId = networkController.store.getState().network
+    const isPOA = networkId === '77' || networkId === '99'
+
+    // Return 1 gwei if using a POA network of if there are no blocks have been observed:
+    if (isPOA || recentBlocks.length === 0) {
       return '0x' + GWEI_BN.toString(16)
     }
 
