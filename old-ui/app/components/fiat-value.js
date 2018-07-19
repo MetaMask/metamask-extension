@@ -15,7 +15,7 @@ FiatValue.prototype.render = function () {
   const { conversionRate, currentCurrency } = props
   const renderedCurrency = currentCurrency || ''
 
-  const value = formatBalance(props.value, 6)
+  const value = formatBalance(props.value, 6, undefined, props.network)
 
   if (value === 'None') return value
   var fiatDisplayNumber, fiatTooltipNumber

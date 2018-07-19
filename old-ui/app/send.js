@@ -133,6 +133,7 @@ SendTransactionScreen.prototype.render = function () {
               value: account && account.balance,
               conversionRate,
               currentCurrency,
+              network,
             }),
 
           ]),

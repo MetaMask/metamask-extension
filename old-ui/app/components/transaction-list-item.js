@@ -143,6 +143,7 @@ TransactionListItem.prototype.render = function () {
           width: '55px',
           shorten: true,
           showFiat: false,
+          network,
           style: {fontSize: '15px'},
         }) : h('.flex-column'),
       ]),
