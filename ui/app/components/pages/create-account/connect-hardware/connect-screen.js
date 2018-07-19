@@ -9,7 +9,7 @@ class ConnectScreen extends Component {
 
     renderUnsupportedBrowser () {
         return (
-            h('div.new-account-connect-form', {}, [
+            h('div.new-account-connect-form.unsupported-browser', {}, [
                 h('div.hw-connect', [
                     h('h3.hw-connect__title', {}, this.context.t('browserNotSupported')),
                     h('p.hw-connect__msg', {}, this.context.t('chromeRequiredForTrezor')),

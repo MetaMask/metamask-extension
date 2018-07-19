@@ -63,7 +63,7 @@
   display: flex;
   flex-flow: column;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 30px 30px;
 
   &__select-section {
     display: flex;
@@ -378,6 +378,10 @@
   padding: 15px 30px 0;
   height: 710px;
   overflow: auto;
+
+  &.unsupported-browser {
+    height: 210px;
+  }
 
   &__buttons {
     margin-top: 39px;
