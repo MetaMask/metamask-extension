@@ -27,7 +27,6 @@ const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
 const ipfsContent = require('./lib/ipfsContent.js')
-const assert = require('assert')
 
 const {
   ENVIRONMENT_TYPE_POPUP,
@@ -47,7 +46,6 @@ global.METAMASK_NOTIFIER = notificationManager
 // setup sentry error reporting
 const releaseVersion = platform.getVersion()
 const raven = setupRaven({ releaseVersion })
-assert.equal('test', 'notest')
 
 // browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
 // Internet Explorer 6-11

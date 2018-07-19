@@ -28,7 +28,6 @@ function setupRaven (opts) {
       const report = opts.data
 
       try {
-        console.log('testing opts in transport sentry')
         // handle error-like non-error exceptions
         rewriteErrorLikeExceptions(report)
         // simplify certain complex error messages (e.g. Ethjs)
