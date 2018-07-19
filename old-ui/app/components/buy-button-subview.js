@@ -48,7 +48,8 @@ BuyButtonSubview.prototype.headerSubview = function () {
   const { network } = props
   const isLoading = props.isSubLoading
   const isSokol = parseInt(network) === 77
-  const coinName = isSokol ? 'SPOA' : 'ETH'
+  const isPOA = parseInt(network) === 99
+  const coinName = isPOA ? 'POA' : isSokol ? 'SPOA' : 'ETH'
   return (
 
     h('.flex-column', {
