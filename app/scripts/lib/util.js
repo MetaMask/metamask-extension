@@ -37,6 +37,22 @@ const getEnvironmentType = (url = window.location.href) => {
   }
 }
 
+
+const getPlatform = _ => {
+  const ua = navigator.userAgent
+  if (ua.search('Firefox') !== -1) {
+    return 'Firefox'
+  } else if (ua.search('Chrome') !== -1) {
+    if (window.chrome.ipcRenderer) {
+      return 'Brave'
+    } else if (ua.search('Edge') !== -1) {
+      return 'Edge'
+    } else {
+      return 'Chrome'
+    }
+  }
+}
+
 /**
  * Checks whether a given balance of ETH, represented as a hex string, is sufficient to pay a value plus a gas fee
  *
@@ -100,6 +116,7 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
 }
 
 module.exports = {
+  getPlatform,
   getStack,
   getEnvironmentType,
   sufficientBalance,

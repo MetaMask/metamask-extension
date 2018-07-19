@@ -48,6 +48,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
+const BraveKeyring = require('eth-brave-keyring')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -125,7 +126,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring]
+    const additionalKeyrings = [TrezorKeyring, BraveKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -519,6 +520,22 @@ module.exports = class MetamaskController extends EventEmitter {
     const address = Object.keys(identities)[0]
     this.preferencesController.setSelectedAddress(address)
   }
+
+  // Brave
+  async getAccountsFromBraveWallet () {
+    const keyringController = this.keyringController
+    let keyring = await keyringController.getKeyringsByType(
+      BraveKeyring.type
+    )[0]
+    if (!keyring) {
+      keyring = await this.keyringController.addNewKeyring(BraveKeyring.type)
+    }
+
+    const accounts = await keyring.getPreviousPage()
+    this.accountTracker.syncWithAddresses(accounts)
+    return accounts
+  }
+
 
   //
   // Hardware
