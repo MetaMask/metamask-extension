@@ -34,7 +34,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Nifty Wallet",
     "description": "The name of the application"
   },
   "attemptingConnect": {
@@ -730,7 +730,7 @@
     "message": "おかえりなさい!"
   },
   "welcomeBeta": {
-    "message": "MetaMask ベータ版へようこそ!"
+    "message": "Nifty Wallet ベータ版へようこそ!"
   },
   "whatsThis": {
     "message": "この機能について"

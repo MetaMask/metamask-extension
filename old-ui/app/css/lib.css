@@ -181,6 +181,10 @@ hr.horizontal-line {
   border-radius: 10px;
 }
 
+.green-square {
+  background: #62c9ba;
+}
+
 .diamond {
   transform: rotate(45deg);
   background: #038789;

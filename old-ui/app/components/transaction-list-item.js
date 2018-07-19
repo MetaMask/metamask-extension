@@ -46,6 +46,15 @@ TransactionListItem.prototype.showRetryButton = function () {
   return currentTxIsLatestWithNonce && Date.now() - submittedTime > 30000
 }
 
+const poaExplorerTxLink = (hash, network) => {
+  const isSokol = network === 77
+  if (isSokol) {
+    return `https://sokol.poaexplorer.com/txid/search/${hash}`
+  }
+
+  return ''
+}
+
 TransactionListItem.prototype.render = function () {
   const { transaction, network, conversionRate, currentCurrency } = this.props
   const { status } = transaction
@@ -56,7 +65,7 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42 || numericNet === 99
+  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42 || numericNet === 77 || numericNet === 99
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -79,7 +88,13 @@ TransactionListItem.prototype.render = function () {
         }
         event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
-        var url = explorerLink(transaction.hash, parseInt(network))
+        const isSokol = numericNet === 77
+        let url
+        if (isSokol) {
+          url = poaExplorerTxLink(transaction.hash, numericNet)
+        } else {
+          url = explorerLink(transaction.hash, numericNet)
+        }
         global.platform.openWindow({ url })
       },
       style: {
@@ -128,6 +143,7 @@ TransactionListItem.prototype.render = function () {
           width: '55px',
           shorten: true,
           showFiat: false,
+          network,
           style: {fontSize: '15px'},
         }) : h('.flex-column'),
       ]),

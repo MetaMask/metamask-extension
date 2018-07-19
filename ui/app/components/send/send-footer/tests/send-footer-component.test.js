@@ -129,6 +129,7 @@ describe('SendFooter Component', function () {
       assert.deepEqual(
         propsMethodSpies.update.getCall(0).args[0],
         {
+          data: undefined,
           amount: 'mockAmount',
           editingTransactionId: 'mockEditingTransactionId',
           from: 'mockAddress',
@@ -152,6 +153,7 @@ describe('SendFooter Component', function () {
       assert.deepEqual(
         propsMethodSpies.sign.getCall(0).args[0],
         {
+          data: undefined,
           amount: 'mockAmount',
           from: 'mockAddress',
           gas: 'mockGasLimit',

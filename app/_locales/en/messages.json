@@ -24,7 +24,7 @@
     "message": "Add Tokens"
   },
   "addAcquiredTokens": {
-    "message": "Add the tokens you've acquired using MetaMask"
+    "message": "Add the tokens you've acquired using Nifty Wallet"
   },
   "amount": {
     "message": "Amount"
@@ -37,7 +37,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Nifty Wallet",
     "description": "The name of the application"
   },
   "approve": {
@@ -81,7 +81,7 @@
     "message": "Borrow With Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "MetaMask is designed and built in California."
+    "message": "Nifty Wallet is designed and built in California."
   },
   "buy": {
     "message": "Buy"
@@ -208,7 +208,7 @@
     "message": "The default network for Ether transactions is Main Net."
   },
   "denExplainer": {
-    "message": "Your DEN is your password-encrypted storage within MetaMask."
+    "message": "Your DEN is your password-encrypted storage within Nifty Wallet."
   },
   "deposit": {
     "message": "Deposit"
@@ -236,7 +236,7 @@
     "message": "Deposit with ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your Nifty Wallet wallet. No Account Needed."
   },
   "details": {
     "message": "Details"
@@ -411,7 +411,7 @@
     "message": "Import Account"
   },
   "importAccountMsg": {
-    "message":" Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
+    "message":" Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase. Learn more about imported accounts "
   },
   "importAnAccount": {
     "message": "Import an account"
@@ -464,7 +464,7 @@
     "description": "format for importing an account"
   },
   "keepTrackTokens": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account."
+    "message": "Keep track of the tokens you’ve bought with your Nifty Wallet account."
   },
   "kovan": {
     "message": "Kovan Test Network"
@@ -522,10 +522,10 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "MetaMask is a secure identity vault for Ethereum."
+    "message": "Nifty Wallet is a secure identity vault for Ethereum."
   },
   "metamaskSeedWords": {
-    "message": "MetaMask Seed Words"
+    "message": "Nifty Wallet Seed Words"
   },
   "min": {
     "message": "Minimum"
@@ -537,7 +537,7 @@
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+    "message": "To interact with decentralized applications using Nifty Wallet, you’ll need Ether in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -584,11 +584,17 @@
   "noDeposits": {
     "message": "No deposits received"
   },
+  "noConversionRateAvailable":{
+    "message": "No Conversion Rate Available"
+  },
   "noTransactionHistory": {
     "message": "No transaction history."
   },
   "noTransactions": {
     "message": "No Transactions"
+  },
+  "notFound": {
+    "message": "Not Found"
   },
   "notStarted": {
     "message": "Not Started"
@@ -927,7 +933,7 @@
     "message": "Token Symbol"
   },
   "tokenWarning1": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account. If you bought tokens using a different account, those tokens will not appear here."
+    "message": "Keep track of the tokens you’ve bought with your Nifty Wallet account. If you bought tokens using a different account, those tokens will not appear here."
   },
   "total": {
     "message": "Total"
@@ -955,7 +961,7 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
-    "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
+    "message": "These 12 words are the only way to restore your Nifty Wallet accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
     "message": "Type Your Password"
@@ -964,7 +970,7 @@
     "message": "Welcome to the New UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI."
+    "message": "You are now using the new Nifty Wallet UI."
   },
   "unapproved": {
     "message": "Unapproved"
@@ -974,6 +980,9 @@
   },
   "unknown": {
     "message": "Unknown"
+  },
+  "unknownFunction": {
+    "message": "Unknown Function"
   },
   "unknownNetwork": {
     "message": "Unknown Private Network"
@@ -1019,7 +1028,7 @@
     "message": "Welcome Back!"
   },
   "welcomeBeta": {
-    "message": "Welcome to MetaMask Beta"
+    "message": "Welcome to Nifty Wallet Beta"
   },
   "whatsThis": {
     "message": "What's this?"

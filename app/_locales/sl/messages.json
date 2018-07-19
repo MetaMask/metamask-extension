@@ -34,7 +34,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Nifty Wallet",
     "description": "The name of the application"
   },
   "attemptingConnect": {
@@ -72,7 +72,7 @@
     "message": "Izposoja z Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "MetaMask je ustvarjen v Kaliforniji."
+    "message": "Nifty Wallet je ustvarjen v Kaliforniji."
   },
   "buy": {
     "message": "Kupi"
@@ -178,7 +178,7 @@
     "message": "Privzeto omrežje za transakcije je Main Net."
   },
   "denExplainer": {
-    "message": "DEN je vaša šifrirana shramba v MetaMasku."
+    "message": "DEN je vaša šifrirana shramba v Nifty Walletu."
   },
   "deposit": {
     "message": "Vplačaj"
@@ -206,7 +206,7 @@
     "message": "Vplačilo z ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Če imate druge kriptovalute, lahko vpačate ether neposredno v MetaMask. Brez računov."
+    "message": "Če imate druge kriptovalute, lahko vpačate ether neposredno v Nifty Wallet. Brez računov."
   },
   "details": {
     "message": "Podrobnosti"
@@ -218,7 +218,7 @@
     "message": "Direktno vplačilo ehera"
   },
   "directDepositEtherExplainer": {
-    "message": "Če že imate ether, ga lahko najhitreje dobite v MetaMask z direktnim vplačilom."
+    "message": "Če že imate ether, ga lahko najhitreje dobite v Nifty Wallet z direktnim vplačilom."
   },
   "done": {
     "message": "Končano"
@@ -441,7 +441,7 @@
     "message": "Sporočilo"
   },
   "metamaskDescription": {
-    "message": "MetaMask je varen identitetni sklad za Ethereum."
+    "message": "Nifty Wallet je varen identitetni sklad za Ethereum."
   },
   "min": {
     "message": "Najmanj"
@@ -453,7 +453,7 @@
     "message": "Izbran mora biti vsaj 1 žeton."
   },
   "needEtherInWallet": {
-    "message": "Za interakcijo z decentraliziranimi aplikacijami, ki uporabljajo MetaMask, boste v svoji denarnici potrebovali eter."
+    "message": "Za interakcijo z decentraliziranimi aplikacijami, ki uporabljajo Nifty Wallet, boste v svoji denarnici potrebovali eter."
   },
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
@@ -734,7 +734,7 @@
     "message": "Simbol žetona"
   },
   "tokenWarning1": {
-    "message": "Spremljajte žetone, ki ste jih kupili s svojim MetaMask računom. Če ste kupili žetone z drugačnim računom, ti žetoni ne bodo prikazani tukaj."
+    "message": "Spremljajte žetone, ki ste jih kupili s svojim Nifty Wallet računom. Če ste kupili žetone z drugačnim računom, ti žetoni ne bodo prikazani tukaj."
   },
   "total": {
     "message": "Skupno"
@@ -756,7 +756,7 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
-    "message": "Edini način za obnovitev MetaMask računa, je teh 12 besed.\nShranite jih na varno in skrivno mesto."
+    "message": "Edini način za obnovitev Nifty Wallet računa, je teh 12 besed.\nShranite jih na varno in skrivno mesto."
   },
   "typePassword": {
     "message": "Vpišite vaše geslo"
@@ -765,7 +765,7 @@
     "message": "Dobrodošli v nov UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Zdaj uporabljate novi MetaMask uporabniški vmesnik. Razglejte se, preizkusite nove funkcije, kot so pošiljanje žetonov, in nas obvestite, če imate kakšne težave."
+    "message": "Zdaj uporabljate novi Nifty Wallet uporabniški vmesnik. Razglejte se, preizkusite nove funkcije, kot so pošiljanje žetonov, in nas obvestite, če imate kakšne težave."
   },
   "unavailable": {
     "message": "Ni na voljo"
@@ -808,7 +808,7 @@
     "message": "Opozorilo"
   },
   "welcomeBeta": {
-    "message": "Dobrodošli v MetaMask Beta"
+    "message": "Dobrodošli v Nifty Wallet Beta"
   },
   "whatsThis": {
     "message": "Kaj je to?"

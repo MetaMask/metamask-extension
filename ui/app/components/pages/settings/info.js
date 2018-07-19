@@ -47,31 +47,7 @@ class Info extends Component {
             h('span.settings__info-link', this.context.t('attributions')),
           ]),
         ]),
-        h('hr.settings__info-separator'),
-        h('div.settings__info-link-item', [
-          h('a', {
-            href: 'https://support.metamask.io',
-            target: '_blank',
-          }, [
-            h('span.settings__info-link', this.context.t('supportCenter')),
-          ]),
-        ]),
-        h('div.settings__info-link-item', [
-          h('a', {
-            href: 'https://metamask.io/',
-            target: '_blank',
-          }, [
-            h('span.settings__info-link', this.context.t('visitWebSite')),
-          ]),
-        ]),
-        h('div.settings__info-link-item', [
-          h('a', {
-            target: '_blank',
-            href: 'mailto:help@metamask.io?subject=Feedback',
-          }, [
-            h('span.settings__info-link', this.context.t('emailUs')),
-          ]),
-        ]),
+        // h('hr.settings__info-separator'),
       ])
     )
   }
@@ -83,7 +59,7 @@ class Info extends Component {
           h('div.settings__content-item.settings__content-item--without-height', [
             this.renderLogo(),
             h('div.settings__info-item', [
-              h('div.settings__info-version-header', 'MetaMask Version'),
+              h('div.settings__info-version-header', 'Nifty Wallet Version'),
               h('div.settings__info-version-number', this.state.version),
             ]),
             h('div.settings__info-item', [

@@ -30,6 +30,10 @@ function getBuyEthUrl ({ network, amount, address }) {
       url = 'https://github.com/kovan-testnet/faucet'
       break
 
+    case '77':
+      url = 'https://faucet-sokol.herokuapp.com/'
+      break
+
     case '99':
       url = 'https://poa.network/'
       break

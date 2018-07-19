@@ -175,7 +175,7 @@ WalletView.prototype.render = function () {
           this.setState({ copyToClipboardPressed: false })
         },
       }, [
-        `${checksummedAddress.slice(0, 4)}...${checksummedAddress.slice(-4)}`,
+        `${checksummedAddress.slice(0, 6)}...${checksummedAddress.slice(-4)}`,
         h('i.fa.fa-clipboard', { style: { marginLeft: '8px' } }),
       ]),
     ]),

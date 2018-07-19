@@ -125,7 +125,7 @@ ConfigScreen.prototype.render = function () {
                   if (err) {
                     state.dispatch(actions.displayWarning('Error in retrieving state logs.'))
                   } else {
-                    exportAsFile('MetaMask State Logs.json', result)
+                    exportAsFile('Nifty Wallet State Logs.json', result)
                   }
                 })
               },
@@ -232,6 +232,11 @@ function currentProviderDisplay (metamaskState) {
     case 'mainnet':
       title = 'Current Network'
       value = 'Main Ethereum Network'
+      break
+
+    case 'sokol':
+      title = 'Current Network'
+      value = 'POA Sokol Test Network'
       break
 
     case 'ropsten':
