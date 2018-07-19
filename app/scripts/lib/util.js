@@ -48,7 +48,7 @@ const getPlatform = _ => {
   if (ua.search('Firefox') !== -1) {
     return PLATFORM_FIREFOX
   } else {
-    if (window.chrome.ipcRenderer) {
+    if (window && window.chrome && window.chrome.ipcRenderer) {
       return PLATFORM_BRAVE
     } else if (ua.search('Edge') !== -1) {
       return PLATFORM_EDGE
