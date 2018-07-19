@@ -106,7 +106,7 @@ class ConnectScreen extends Component {
                 h('p.hw-connect__footer__msg', {}, [
                     this.context.t(`havingTroubleConnecting`),
                     h('a.hw-connect__footer__link', {
-                        href: '#',
+                        href: 'https://support.metamask.io/',
                         target: '_blank',
                       }, this.context.t('getHelp')),
                 ]),
