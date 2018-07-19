@@ -333,6 +333,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // etc
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
+      setCurrentCoin: this.setCurrentCoin.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
@@ -1172,6 +1173,27 @@ module.exports = class MetamaskController extends EventEmitter {
       this.currencyController.updateConversionRate()
       const data = {
         conversionRate: this.currencyController.getConversionRate(),
+        currentCurrency: this.currencyController.getCurrentCurrency(),
+        conversionDate: this.currencyController.getConversionDate(),
+      }
+      cb(null, data)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * A method for setting the network coin.
+   * @param {string} coinCode - The code of the coin.
+   * @param {Function} cb - A callback function returning currency info.
+   */
+  async setCurrentCoin (coinCode, cb) {
+    try {
+      this.currencyController.setCurrentCoin(coinCode)
+      await this.currencyController.updateConversionRate()
+      const data = {
+        conversionRate: this.currencyController.getConversionRate(),
+        currentCoin: this.currencyController.getCurrentCoin(),
         currentCurrency: this.currencyController.getCurrentCurrency(),
         conversionDate: this.currencyController.getConversionDate(),
       }

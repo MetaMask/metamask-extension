@@ -1543,6 +1543,22 @@ function setProviderType (type) {
       dispatch(actions.setSelectedToken())
     })
 
+    const newCoin = type === 'poa' || type === 'sokol' ? 'poa' : 'eth'
+    background.setCurrentCoin(newCoin, (err, data) => {
+      if (err) {
+        log.error(err.stack)
+        return dispatch(actions.displayWarning(err.message))
+      }
+      dispatch({
+        type: actions.SET_CURRENT_FIAT,
+        value: {
+          currentCurrency: data.currentCurrency,
+          conversionRate: data.conversionRate,
+          conversionDate: data.conversionDate,
+        },
+      })
+    })
+
   }
 }
 
