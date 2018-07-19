@@ -676,7 +676,7 @@ describe('MetaMask', function () {
     })
 
     it('picks the newly created Test token', async () => {
-      const addCustomToken = await findElement(driver, By.xpath("//div[contains(text(), 'Custom Token')]"))
+      const addCustomToken = await findElement(driver, By.xpath("//li[contains(text(), 'Custom Token')]"))
       await addCustomToken.click()
       await delay(regularDelayMs)
 
