@@ -26,6 +26,11 @@ var actions = {
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
   showSidebar: showSidebar,
   hideSidebar: hideSidebar,
+  // sidebar state
+  ALERT_OPEN: 'UI_ALERT_OPEN',
+  ALERT_CLOSE: 'UI_ALERT_CLOSE',
+  showAlert: showAlert,
+  hideAlert: hideAlert,
   // network dropdown open
   NETWORK_DROPDOWN_OPEN: 'UI_NETWORK_DROPDOWN_OPEN',
   NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
@@ -1721,6 +1726,19 @@ function showSidebar () {
 function hideSidebar () {
   return {
     type: actions.SIDEBAR_CLOSE,
+  }
+}
+
+function showAlert (msg) {
+  return {
+    type: actions.ALERT_OPEN,
+    value: msg,
+  }
+}
+
+function hideAlert () {
+  return {
+    type: actions.ALERT_CLOSE,
   }
 }
 
