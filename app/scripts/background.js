@@ -44,8 +44,8 @@ const notificationManager = new NotificationManager()
 global.METAMASK_NOTIFIER = notificationManager
 
 // setup sentry error reporting
-const release = platform.getVersion()
-const raven = setupRaven({ release })
+const releaseVersion = platform.getVersion()
+const raven = setupRaven({ releaseVersion })
 
 // browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
 // Internet Explorer 6-11
