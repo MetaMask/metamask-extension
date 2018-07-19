@@ -1,9 +1,8 @@
 .new-account {
-  width: 376px;
+  width: 375px;
   background-color: #FFFFFF;
   box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
   z-index: 25;
-  padding-bottom: 31px;
 
   &__header {
     display: flex;
@@ -28,7 +27,6 @@
 
     &__tab {
       height: 54px;
-      width: 75px;
       padding: 15px 10px;
       color: $dusty-gray;
       font-family: Roboto;
@@ -36,10 +34,6 @@
       line-height: 24px;
       text-align: center;
       cursor: pointer;
-    }
-
-    &__tab:first-of-type {
-      margin-right: 20px;
     }
 
     &__tab:hover {
@@ -69,7 +63,7 @@
   display: flex;
   flex-flow: column;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 30px 30px;
 
   &__select-section {
     display: flex;
@@ -158,11 +152,296 @@
   }
 }
 
+.hw-tutorial {
+  width: 375px;
+  border-top: 1px solid #D2D8DD;
+  border-bottom: 1px solid #D2D8DD;
+  overflow: visible;
+  display: block;
+  padding: 15px 30px;
+}
+
+.hw-connect {
+  &__header {
+    &__title {
+      margin-top: 5px;
+      margin-bottom: 15px;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    &__msg {
+      font-size: 14px;
+      color: #9b9b9b;
+      margin-top: 10px;
+      margin-bottom: 0px;
+    }
+  }
+
+  &__learn-more {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #5B5D67;
+    line-height: 19px;
+    text-align: center;
+    cursor: pointer;
+
+    &__arrow {
+      transform: rotate(90deg);
+      display: block;
+      text-align: center;
+      height: 30px;
+      margin: 0px auto 10px;
+    }
+  }
+
+  &__title {
+    padding-top: 10px;
+    font-weight: 400;
+    font-size: 18px;
+  }
+
+  &__msg {
+    font-size: 14px;
+    color: #9b9b9b;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+
+  &__link {
+    color: #2f9ae0;
+  }
+
+  &__footer {
+    width: 100%;
+
+    &__title {
+      padding-top: 15px;
+      padding-bottom: 12px;
+      font-weight: 400;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    &__msg {
+      font-size: 14px;
+      color: #9b9b9b;
+      margin-top: 12px;
+      margin-bottom: 27px;
+    }
+
+    &__link {
+      color: #2f9ae0;
+      margin-left: 5px;
+    }
+  }
+
+  &__get-trezor {
+    width: 100%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+
+    &__msg {
+      font-size: 14px;
+      color: #9b9b9b;
+    }
+
+    &__link {
+      font-size: 14px;
+      text-align: center;
+      color: #2f9ae0;
+      cursor: pointer;
+    }
+  }
+
+  &__step-asset {
+    margin: 0px auto 20px;
+    display: flex;
+  }
+}
+
+.hw-account-list {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  width: 100%;
+
+  &__title_wrapper {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+  }
+
+  &__title {
+    margin-bottom: 23px;
+    align-self: flex-start;
+    color: $scorpion;
+    font-family: Roboto;
+    font-size: 16px;
+    line-height: 21px;
+    font-weight: bold;
+    display: flex;
+    flex: 1;
+  }
+
+  &__device {
+    margin-bottom: 23px;
+    align-self: flex-end;
+    color: $scorpion;
+    font-family: Roboto;
+    font-size: 16px;
+    line-height: 21px;
+    font-weight: normal;
+    display: flex;
+  }
+
+  &__item {
+    font-size: 15px;
+    flex-direction: row;
+    display: flex;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  &__item:nth-of-type(even) {
+    background-color: #fbfbfb;
+  }
+
+  &__item:nth-of-type(odd) {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  &__item:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  &__item__index {
+    display: flex;
+    width: 24px;
+  }
+
+  &__item__radio {
+    display: flex;
+    flex: 1;
+
+    input {
+      padding: 10px;
+      margin-top: 13px;
+    }
+  }
+
+  &__item__label {
+    display: flex;
+    flex: 1;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  &__item__balance {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+  }
+
+  &__item__link {
+    display: flex;
+    margin-top: 13px;
+  }
+
+  &__item__link img {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.hw-list-pagination {
+  display: flex;
+  align-self: flex-end;
+  margin-top: 10px;
+
+  &__button {
+    height: 19px;
+    display: flex;
+    color: #33a4e7;
+    font-size: 14px;
+    line-height: 19px;
+    border: none;
+    min-width: 46px;
+    margin-right: 0px;
+    margin-left: 16px;
+    padding: 0px;
+    text-transform: uppercase;
+    font-family: Roboto;
+  }
+}
+
+.new-account-connect-form {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  padding: 15px 30px 0;
+  height: 710px;
+  overflow: auto;
+
+  &.unsupported-browser {
+    height: 210px;
+  }
+
+  &.account-list {
+    height: auto;
+  }
+
+  &__buttons {
+    margin-top: 39px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  &__button {
+    width: 150px;
+    min-width: initial;
+  }
+
+  .btn-primary {
+    background-color: #259DE5;
+    color: #FFFFFF;
+    border: none;
+    width: 100%;
+    min-height: 54px;
+    font-weight: 300;
+    font-size: 14px;
+  }
+
+  &__button.unlock {
+    width: 50%;
+  }
+
+  &__button.btn-primary--disabled {
+    cursor: not-allowed;
+    opacity: .5;
+  }
+}
+
+.hw-forget-device-container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  padding: 22px;
+
+  a {
+    color: #2f9ae0;
+    font-size: 14px;
+    cursor: pointer;
+  }
+}
+
 .new-account-create-form {
   display: flex;
   flex-flow: column;
   align-items: center;
-  padding: 30px 30px 0;
+  padding: 30px;
 
   &__input-label {
     color: $scorpion;

@@ -28,7 +28,7 @@ function getStack () {
  *
  */
 const getEnvironmentType = (url = window.location.href) => {
-  if (url.match(/popup.html(?:\?.+)*$/)) {
+  if (url.match(/popup.html(?:#.*)*$/)) {
     return ENVIRONMENT_TYPE_POPUP
   } else if (url.match(/home.html(?:\?.+)*$/) || url.match(/home.html(?:#.*)*$/)) {
     return ENVIRONMENT_TYPE_FULLSCREEN

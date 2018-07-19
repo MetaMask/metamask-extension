@@ -138,7 +138,7 @@ Notwithstanding the parties' decision to resolve all disputes through arbitratio
 
 ### 13.6 30-Day Right to Opt Out ###
 
-You have the right to opt-out and not be bound by the arbitration and class action waiver provisions set forth above by sending written notice of your decision to opt-out to the following address: MetaMask ℅ ConsenSys, 49 Bogart Street, Brooklyn NY 11206 and via email at legal-opt@metamask.io. The notice must be sent within 30 days of September 6, 2016 or your first use of the Service, whichever is later, otherwise you shall be bound to arbitrate disputes in accordance with the terms of those paragraphs. If you opt-out of these arbitration provisions, MetaMask also will not be bound by them.
+You have the right to opt-out and not be bound by the arbitration and class action waiver provisions set forth above by sending written notice of your decision to opt-out to the following address: MetaMask ℅ ConsenSys, 49 Bogart Street, Brooklyn NY 11206 and via email at support@metamask.io. The notice must be sent within 30 days of September 6, 2016 or your first use of the Service, whichever is later, otherwise you shall be bound to arbitrate disputes in accordance with the terms of those paragraphs. If you opt-out of these arbitration provisions, MetaMask also will not be bound by them.
 
 ### 13.7 Changes to This Section ###
 
@@ -177,4 +177,3 @@ Users with questions, complaints or claims with respect to the Service may conta
 **[Privacy](https://metamask.io/privacy.html)**
 
 **[Attributions](https://metamask.io/attributions.html)**
-

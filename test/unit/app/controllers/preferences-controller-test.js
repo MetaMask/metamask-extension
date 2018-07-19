@@ -52,6 +52,31 @@ describe('preferences controller', function () {
     })
   })
 
+  describe('removeAddress', function () {
+    it('should remove an address from state', function () {
+      preferencesController.setAddresses([
+        '0xda22le',
+        '0x7e57e2',
+      ])
+
+      preferencesController.removeAddress('0xda22le')
+
+      assert.equal(preferencesController.store.getState().identities['0xda22le'], undefined)
+    })
+
+    it('should switch accounts if the selected address is removed', function () {
+      preferencesController.setAddresses([
+        '0xda22le',
+        '0x7e57e2',
+      ])
+
+      preferencesController.setSelectedAddress('0x7e57e2')
+      preferencesController.removeAddress('0x7e57e2')
+
+      assert.equal(preferencesController.getSelectedAddress(), '0xda22le')
+    })
+  })
+
   describe('setAccountLabel', function () {
     it('should update a label for the given account', function () {
       preferencesController.setAddresses([

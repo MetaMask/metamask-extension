@@ -10,7 +10,7 @@ module.exports = {
     signPersonalMessage: (msgData, cb) => {
       const stateUpdate = {
         unapprovedPersonalMsgs: {},
-        unapprovedPersonalMsgsCount: 0,
+        unapprovedPersonalMsgCount: 0,
       }
       return cb(null, stateUpdate)
     },
