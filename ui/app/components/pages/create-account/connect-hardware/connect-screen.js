@@ -54,9 +54,15 @@ class ConnectScreen extends Component {
         )
     }
 
+    scrollToTutorial = (e) => {
+      if (this.referenceNode) this.referenceNode.scrollIntoView({behavior: 'smooth'})
+    }
+
     renderLearnMore () {
         return (
-            h('p.hw-connect__learn-more', {}, [
+            h('p.hw-connect__learn-more', {
+                onClick: this.scrollToTutorial,
+            }, [
                 this.context.t('learnMore'),
                 h('img.hw-connect__learn-more__arrow', { src: 'images/caret-right.svg'}),
             ])
@@ -79,9 +85,11 @@ class ConnectScreen extends Component {
              },
         ]
 
-        return h('.hw-tutorial', {},
+        return h('.hw-tutorial',  {
+          ref: node => { this.referenceNode = node },
+        },
             steps.map((step, i) => (
-            h('div.hw-connect', [
+            h('div.hw-connect', {}, [
                 h('h3.hw-connect__title', {}, this.context.t(`step${i + 1}HardwareWallet`)),
                 h('p.hw-connect__msg', {}, this.context.t(`step${i + 1}HardwareWalletMsg`)),
                 h('img.hw-connect__step-asset', { src: `images/${step.asset}.svg`, ...step.dimensions }),
