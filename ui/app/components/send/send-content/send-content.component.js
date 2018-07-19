@@ -4,6 +4,7 @@ import PageContainerContent from '../../page-container/page-container-content.co
 import SendAmountRow from './send-amount-row/'
 import SendFromRow from './send-from-row/'
 import SendGasRow from './send-gas-row/'
+import SendHexDataRow from './send-hex-data-row'
 import SendToRow from './send-to-row/'
 
 export default class SendContent extends Component {
@@ -20,6 +21,7 @@ export default class SendContent extends Component {
           <SendToRow updateGas={(updateData) => this.props.updateGas(updateData)} />
           <SendAmountRow updateGas={(updateData) => this.props.updateGas(updateData)} />
           <SendGasRow />
+          <SendHexDataRow />
         </div>
       </PageContainerContent>
     )

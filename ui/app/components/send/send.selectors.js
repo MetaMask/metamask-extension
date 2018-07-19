@@ -33,6 +33,7 @@ const selectors = {
   getSelectedTokenExchangeRate,
   getSelectedTokenToFiatRate,
   getSendAmount,
+  getSendHexData,
   getSendEditingTransactionId,
   getSendErrors,
   getSendFrom,
@@ -208,6 +209,10 @@ function getSelectedTokenToFiatRate (state) {
 
 function getSendAmount (state) {
   return state.metamask.send.amount
+}
+
+function getSendHexData (state) {
+  return state.metamask.send.data
 }
 
 function getSendEditingTransactionId (state) {

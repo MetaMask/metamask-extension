@@ -8,8 +8,9 @@ function addHexPrefixToObjectValues (obj) {
   }, {})
 }
 
-function constructTxParams ({ selectedToken, to, amount, from, gas, gasPrice }) {
+function constructTxParams ({ selectedToken, data, to, amount, from, gas, gasPrice }) {
   const txParams = {
+    data,
     from,
     value: '0',
     gas,
@@ -21,13 +22,12 @@ function constructTxParams ({ selectedToken, to, amount, from, gas, gasPrice }) 
     txParams.to = to
   }
 
-  const hexPrefixedTxParams = addHexPrefixToObjectValues(txParams)
-
-  return hexPrefixedTxParams
+  return addHexPrefixToObjectValues(txParams)
 }
 
 function constructUpdatedTx ({
   amount,
+  data,
   editingTransactionId,
   from,
   gas,
@@ -36,9 +36,21 @@ function constructUpdatedTx ({
   to,
   unapprovedTxs,
 }) {
+  const unapprovedTx = unapprovedTxs[editingTransactionId]
+  const txParamsData = unapprovedTx.txParams.data ? unapprovedTx.txParams.data : data
   const editingTx = {
-    ...unapprovedTxs[editingTransactionId],
-    txParams: addHexPrefixToObjectValues({ from, gas, gasPrice }),
+    ...unapprovedTx,
+    txParams: Object.assign(
+      unapprovedTx.txParams,
+      addHexPrefixToObjectValues({
+        data: txParamsData,
+        to,
+        from,
+        gas,
+        gasPrice,
+        value: amount,
+      })
+    ),
   }
 
   if (selectedToken) {
@@ -52,18 +64,10 @@ function constructUpdatedTx ({
       to: selectedToken.address,
       data,
     }))
-  } else {
-    const { data } = unapprovedTxs[editingTransactionId].txParams
+  }
 
-    Object.assign(editingTx.txParams, addHexPrefixToObjectValues({
-      value: amount,
-      to,
-      data,
-    }))
-
-    if (typeof editingTx.txParams.data === 'undefined') {
-      delete editingTx.txParams.data
-    }
+  if (typeof editingTx.txParams.data === 'undefined') {
+    delete editingTx.txParams.data
   }
 
   return editingTx

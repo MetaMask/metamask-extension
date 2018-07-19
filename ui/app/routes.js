@@ -26,6 +26,7 @@ const CONFIRM_SEND_ETHER_PATH = '/send-ether'
 const CONFIRM_SEND_TOKEN_PATH = '/send-token'
 const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract'
 const CONFIRM_APPROVE_PATH = '/approve'
+const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from'
 const CONFIRM_TOKEN_METHOD_PATH = '/token-method'
 const SIGNATURE_REQUEST_PATH = '/signature-request'
 
@@ -57,6 +58,7 @@ module.exports = {
   CONFIRM_SEND_TOKEN_PATH,
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_APPROVE_PATH,
+  CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
 }
