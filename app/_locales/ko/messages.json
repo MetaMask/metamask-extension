@@ -139,7 +139,7 @@
     "message": "이더리움 트랜잭션의 기본 네트워크는 메인넷입니다."
   },
   "denExplainer": {
-    "message": "DEN은 비밀번호가 암호화 된 MetaMask의 스토리지입니다."
+    "message": "DEN은 비밀번호가 암호화 된 Nifty Wallet의 스토리지입니다."
   },
   "deposit": {
     "message": "입금"

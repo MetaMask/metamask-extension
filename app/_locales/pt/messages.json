@@ -34,7 +34,7 @@
     "description": "A descrição da aplicação"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Nifty Wallet",
     "description": "Nome da aplicação"
   },
   "attemptingConnect": {
@@ -72,7 +72,7 @@
     "message": "Pedir Empréstimo Com Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "MetaMask é desenhada e construída na California."
+    "message": "Nifty Wallet é desenhada e construída na California."
   },
   "buy": {
     "message": "Comprar"
@@ -178,7 +178,7 @@
     "message": "A rede pré definida para transações em Ether é a Main Net."
   },
   "denExplainer": {
-    "message": " DEN é o armazenamento encriptado da sua palavra-passe no MetaMask."
+    "message": " DEN é o armazenamento encriptado da sua palavra-passe no Nifty Wallet."
   },
   "deposit": {
     "message": "Depósito"
@@ -206,7 +206,7 @@
     "message": "Depositar com ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Se tem criptomoedas, pode trocar e depositar Ether diretamente na sua carteira MetaMask. Não precisa de conta."
+    "message": "Se tem criptomoedas, pode trocar e depositar Ether diretamente na sua carteira Nifty Wallet. Não precisa de conta."
   },
   "details": {
     "message": "Detalhes"
@@ -351,7 +351,7 @@
     "message": "Importar Conta"
   },
   "importAccountMsg": {
-    "message":"Contas importadas não irão ser associadas com a frase seed da conta criada originalmente pelo MetaMask. Saiba mais sobre contas importadas."
+    "message":"Contas importadas não irão ser associadas com a frase seed da conta criada originalmente pelo Nifty Wallet. Saiba mais sobre contas importadas."
   },
   "importAnAccount": {
     "message": "Importar uma conta"
@@ -441,7 +441,7 @@
     "message": "Mensagem"
   },
   "metamaskDescription": {
-    "message": "O MetaMask é um lugar seguro para guardar a sua identidade em em Ethereum."
+    "message": "O Nifty Wallet é um lugar seguro para guardar a sua identidade em em Ethereum."
   },
   "min": {
     "message": "Mínimo"
@@ -453,7 +453,7 @@
     "message": "Deve escolher no mínimo 1 token."
   },
   "needEtherInWallet": {
-    "message": "Para interagir com applicações descentralizadas usando MetaMask tem de ter Ether na sua carteira."
+    "message": "Para interagir com applicações descentralizadas usando Nifty Wallet tem de ter Ether na sua carteira."
   },
   "needImportFile": {
     "message": "Deve selecionar um ficheiro para importar.",
@@ -731,7 +731,7 @@
     "message": "Símbolo do Token"
   },
   "tokenWarning1": {
-    "message": "Registe os tokens que comprou com a sua conta MetaMask. Se comprou tokens utilizando uma conta diferente, esses tokens não irão aparecer aqui."
+    "message": "Registe os tokens que comprou com a sua conta Nifty Wallet. Se comprou tokens utilizando uma conta diferente, esses tokens não irão aparecer aqui."
   },
   "total": {
     "message": "Total"
@@ -753,7 +753,7 @@
     "description": "Seguido de um link (aqui) para ver o balanço dos seus tokens"
   },
   "twelveWords": {
-    "message": "Estas 12 palavras são a única forma de recuperar as suas contas na MetaMask.\nGuarde-as num local seguro e secreto."
+    "message": "Estas 12 palavras são a única forma de recuperar as suas contas na Nifty Wallet.\nGuarde-as num local seguro e secreto."
   },
   "typePassword": {
     "message": "Digite a sua Palavra-passe"
@@ -762,7 +762,7 @@
     "message": "Bem-vindo ao seu Novo UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Está agora a usar o novo UI da MetaMask. Dê uma vista de olhos, experimenta as novas funcionalidades como enviar tokens e diga-nos se tiver algum problema."
+    "message": "Está agora a usar o novo UI da Nifty Wallet. Dê uma vista de olhos, experimenta as novas funcionalidades como enviar tokens e diga-nos se tiver algum problema."
   },
   "unavailable": {
     "message": "Indisponível"
@@ -805,7 +805,7 @@
     "message": "Aviso"
   },
   "welcomeBeta": {
-    "message": "Bem-vindo ao MetaMask Beta"
+    "message": "Bem-vindo ao Nifty Wallet Beta"
   },
   "whatsThis": {
     "message": "O que é isto?"

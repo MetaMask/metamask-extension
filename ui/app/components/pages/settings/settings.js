@@ -223,7 +223,7 @@ class Settings extends Component {
                   if (err) {
                     this.state.dispatch(actions.displayWarning(this.context.t('stateLogError')))
                   } else {
-                    exportAsFile('MetaMask State Logs.json', result)
+                    exportAsFile('Nifty Wallet State Logs.json', result)
                   }
                 })
               },

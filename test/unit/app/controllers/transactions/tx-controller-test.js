@@ -148,7 +148,7 @@ describe('Transaction Controller', function () {
 
       txController.newUnapprovedTransaction(txParams)
       .catch((err) => {
-        if (err.message === 'MetaMask Tx Signature: User denied transaction signature.') done()
+        if (err.message === 'Nifty Wallet Tx Signature: User denied transaction signature.') done()
         else done(err)
       })
     })

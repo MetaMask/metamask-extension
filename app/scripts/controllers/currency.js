@@ -112,7 +112,7 @@ class CurrencyController {
       this.setConversionRate(Number(parsedResponse.bid))
       this.setConversionDate(Number(parsedResponse.timestamp))
     } catch (err) {
-      log.warn(`MetaMask - Failed to query currency conversion:`, currentCurrency, err)
+      log.warn(`Nifty Wallet - Failed to query currency conversion:`, currentCurrency, err)
       this.setConversionRate(0)
       this.setConversionDate('N/A')
     }
