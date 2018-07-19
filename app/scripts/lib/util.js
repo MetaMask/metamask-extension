@@ -42,11 +42,13 @@ const getPlatform = _ => {
   const ua = navigator.userAgent
   if (ua.search('Firefox') !== -1) {
     return 'Firefox'
-  } else if (ua.search('Chrome') !== -1) {
+  } else {
     if (window.chrome.ipcRenderer) {
       return 'Brave'
     } else if (ua.search('Edge') !== -1) {
       return 'Edge'
+    } else if (ua.search('OPR') !== -1) {
+      return 'Opera'
     } else {
       return 'Chrome'
     }
