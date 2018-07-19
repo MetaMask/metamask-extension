@@ -88,8 +88,8 @@ Network.prototype.render = function () {
                 style: {
                   color: '#62c9ba',
                 }},
-              [ h('div','Sokol'),
-                h('div','Test Net') ]),
+              [ h('div', 'Sokol'),
+                h('div', 'Test Net') ]),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'ropsten-test-network':

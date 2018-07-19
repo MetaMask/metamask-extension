@@ -163,7 +163,7 @@ class AccountDropdowns extends Component {
   }
 
   genPOAEplorerAccountLink (selected, network) {
-    const isSokol = network == 77
+    const isSokol = parseInt(network) === 77
     if (isSokol) {
       return `https://sokol.poaexplorer.com/address/search/${selected}`
     }
@@ -175,7 +175,7 @@ class AccountDropdowns extends Component {
     const { actions, network } = this.props
     const { optionsMenuActive } = this.state
 
-    const isSokol = network == 77
+    const isSokol = parseInt(network) === 77
     const explorerStr = isSokol ? 'POA explorer' : 'Etherscan'
 
     return h(
