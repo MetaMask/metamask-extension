@@ -260,17 +260,17 @@ App.prototype.renderNetworkDropdown = function () {
     h(
       DropdownMenuItem,
       {
-        key: 'main',
+        key: 'poa',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('mainnet')),
+        onClick: () => props.dispatch(actions.setProviderType('poa')),
         style: {
           fontSize: '18px',
         },
       },
       [
-        h('.menu-icon.diamond'),
-        'Main Ethereum Network',
-        providerType === 'mainnet' ? h('.check', '✓') : null,
+        h('.menu-icon.purple-square'),
+        'POA Network',
+        providerType === 'poa' ? h('.check', '✓') : null,
       ]
     ),
 
@@ -288,6 +288,23 @@ App.prototype.renderNetworkDropdown = function () {
         h('.menu-icon.green-square'),
         'POA Sokol Test Network',
         providerType === 'sokol' ? h('.check', '✓') : null,
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
+        key: 'main',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('mainnet')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.diamond'),
+        'Main Ethereum Network',
+        providerType === 'mainnet' ? h('.check', '✓') : null,
       ]
     ),
 
@@ -339,23 +356,6 @@ App.prototype.renderNetworkDropdown = function () {
         h('.menu-icon.golden-square'),
         'Rinkeby Test Network',
         providerType === 'rinkeby' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    h(
-      DropdownMenuItem,
-      {
-        key: 'poa',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('poa')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.purple-square'),
-        'POA Network',
-        providerType === 'poa' ? h('.check', '✓') : null,
       ]
     ),
 
