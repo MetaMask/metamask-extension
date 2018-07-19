@@ -49,7 +49,7 @@ const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const BraveKeyring = require('eth-brave-keyring')
-const { getPlatform } = require('./lib/utils.js')
+const { getPlatform } = require('./lib/util')
 
 
 module.exports = class MetamaskController extends EventEmitter {
