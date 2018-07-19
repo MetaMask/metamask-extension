@@ -6,6 +6,7 @@ import {
   ROPSTEN_CODE,
   RINKEYBY_CODE,
   KOVAN_CODE,
+  POA_CODE,
 } from '../../../../app/scripts/controllers/network/enums'
 
 const networkToClassHash = {
@@ -13,6 +14,7 @@ const networkToClassHash = {
   [ROPSTEN_CODE]: 'ropsten',
   [RINKEYBY_CODE]: 'rinkeby',
   [KOVAN_CODE]: 'kovan',
+  [POA_CODE]: 'poa',
 }
 
 export default class NetworkDisplay extends Component {

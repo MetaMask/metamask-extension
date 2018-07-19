@@ -736,6 +736,9 @@
   "ropsten": {
     "message": "Ropsten Test Network"
   },
+  "poa": {
+    "message": "POA Network"
+  },
   "rpc": {
     "message": "Custom RPC"
   },
@@ -753,6 +756,9 @@
   },
   "connectingToRinkeby": {
     "message": "Connecting to Rinkeby Test Network"
+  },
+  "connectingToPOA": {
+    "message": "Connecting to POA Network"
   },
   "connectingToUnknown": {
     "message": "Connecting to Unknown Network"

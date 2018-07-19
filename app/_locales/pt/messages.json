@@ -173,7 +173,7 @@
   },
   "decimal": {
     "message": "Precisão em Decimais"
-  }, 
+  },
   "defaultNetwork": {
     "message": "A rede pré definida para transações em Ether é a Main Net."
   },
@@ -601,6 +601,9 @@
   "rinkeby": {
     "message": "Rede de Teste Rinkeby"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "Rede de Teste Ropsten"
   },
@@ -800,7 +803,7 @@
   },
   "visitWebSite": {
     "message": "Visite o nosso site"
-  }, 
+  },
   "warning": {
     "message": "Aviso"
   },

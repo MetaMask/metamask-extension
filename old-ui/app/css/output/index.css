@@ -662,6 +662,9 @@ hr.horizontal-line {
 .golden-square {
   background: #ebb33f; }
 
+.purple-square {
+  background: #5c34a2; }
+
 .pending-dot {
   background: #f00;
   left: 14px;
@@ -1184,6 +1187,10 @@ h2.page-subtitle {
     border-color: #ebb33f; }
     .network-component.pointer.rinkeby-test-network .menu-icon-circle div {
       background-color: rgba(235, 179, 63, 0.7) !important; }
+  .network-component.pointer.poa-network {
+    border-color: #5c34a2; }
+    .network-component.pointer.poa-network .menu-icon-circle div {
+      background-color: #5c34a2 !important; }
 
 .dropdown-menu-item .menu-icon-circle,
 .dropdown-menu-item .menu-icon-circle--active {

@@ -15,8 +15,10 @@ const {
   KOVAN,
   MAINNET,
   LOCALHOST,
+  POA,
 } = require('./enums')
 const LOCALHOST_RPC_URL = 'http://localhost:8545'
+const POA_RPC_URL = 'https://core.poa.network'
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
 const env = process.env.METAMASK_ENV
@@ -24,7 +26,7 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const testMode = (METAMASK_DEBUG || env === 'test')
 
 const defaultProviderConfig = {
-  type: testMode ? RINKEBY : MAINNET,
+  type: testMode ? RINKEBY : POA,
 }
 
 module.exports = class NetworkController extends EventEmitter {
@@ -94,7 +96,7 @@ module.exports = class NetworkController extends EventEmitter {
 
   async setProviderType (type) {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST, `NetworkController - Unknown rpc type "${type}"`)
+    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST || type === POA, `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type }
     this.providerConfig = providerConfig
   }
@@ -129,6 +131,9 @@ module.exports = class NetworkController extends EventEmitter {
     if (isInfura) {
       this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
+    } else if (type === POA) {
+      this._configureStandardProvider({ rpcUrl: POA_RPC_URL })
+    // url-based rpc endpoints
     } else if (type === LOCALHOST) {
       this._configureStandardProvider({ rpcUrl: LOCALHOST_RPC_URL })
     // url-based rpc endpoints

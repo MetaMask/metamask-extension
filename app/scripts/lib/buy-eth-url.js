@@ -29,6 +29,10 @@ function getBuyEthUrl ({ network, amount, address }) {
     case '42':
       url = 'https://github.com/kovan-testnet/faucet'
       break
+
+    case '99':
+      url = 'https://poa.network/'
+      break
   }
   return url
 }

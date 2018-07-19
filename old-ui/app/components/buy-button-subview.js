@@ -138,10 +138,11 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '1':
       return this.mainnetSubview()
 
-    // Ropsten, Rinkeby, Kovan
+    // Ropsten, Rinkeby, Kovan, POA
     case '3':
     case '4':
     case '42':
+    case '99':
       const networkName = getNetworkDisplayName(network)
       const label = `${networkName} Test Faucet`
       return (

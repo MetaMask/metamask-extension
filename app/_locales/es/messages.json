@@ -122,6 +122,9 @@
   "connectingToRinkeby": {
     "message": "Conectando a la red de test Rinkeby"
   },
+  "connectingToPOA": {
+    "message": "Conectando a la red POA"
+  },
   "connectingToUnknown": {
     "message": "Conectando a una red desconocida"
   },
@@ -654,6 +657,9 @@
   },
   "rinkeby": {
     "message": "Red privada Rinkeby"
+  },
+  "poa": {
+    "message": "Red POA"
   },
   "ropsten": {
     "message": "Red privada Ropsten"
