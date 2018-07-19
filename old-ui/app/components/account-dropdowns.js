@@ -164,8 +164,12 @@ class AccountDropdowns extends Component {
 
   genPOAEplorerAccountLink (selected, network) {
     const isSokol = parseInt(network) === 77
+    const isPOA = parseInt(network) === 99
     if (isSokol) {
       return `https://sokol.poaexplorer.com/address/search/${selected}`
+    }
+    if (isPOA) {
+      return `https://poaexplorer.com/address/search/${selected}`
     }
 
     return ''
@@ -176,7 +180,8 @@ class AccountDropdowns extends Component {
     const { optionsMenuActive } = this.state
 
     const isSokol = parseInt(network) === 77
-    const explorerStr = isSokol ? 'POA explorer' : 'Etherscan'
+    const isPOA = parseInt(network) === 99
+    const explorerStr = (isSokol || isPOA) ? 'POA explorer' : 'Etherscan'
 
     return h(
       Dropdown,
@@ -201,7 +206,7 @@ class AccountDropdowns extends Component {
             closeMenu: () => {},
             onClick: () => {
               const { selected, network } = this.props
-              const url = isSokol ? this.genPOAEplorerAccountLink(selected, network) : genAccountLink(selected, network)
+              const url = (isSokol || isPOA) ? this.genPOAEplorerAccountLink(selected, network) : genAccountLink(selected, network)
               global.platform.openWindow({ url })
             },
           },
