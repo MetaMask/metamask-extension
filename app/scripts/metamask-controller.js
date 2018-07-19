@@ -540,7 +540,7 @@ module.exports = class MetamaskController extends EventEmitter {
       keyring = await this.keyringController.addNewKeyring(BraveKeyring.type)
     }
     try {
-      const accounts = await keyring.getPreviousPage()
+      const accounts = await keyring.getAccounts()
       this.accountTracker.syncWithAddresses(accounts)
       return accounts
     } catch (e){
