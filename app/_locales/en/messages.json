@@ -420,6 +420,9 @@
   "hardware": {
     "message": "hardware"
   },
+  "hardwareWalletConnected": {
+    "message": "Hardware wallet connected"
+  },
   "hardwareSupport": {
     "message": "Hardware Support"
   },

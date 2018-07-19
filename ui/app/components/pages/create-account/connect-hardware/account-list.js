@@ -59,7 +59,7 @@ class AccountList extends Component {
   renderPagination () {
     return h('div.hw-list-pagination', [
       h(
-        'button.btn-primary.hw-list-pagination__button',
+        'button.hw-list-pagination__button',
         {
           onClick: () => this.props.getPage(-1),
         },
@@ -67,7 +67,7 @@ class AccountList extends Component {
       ),
 
       h(
-        'button.btn-primary.hw-list-pagination__button',
+        'button.hw-list-pagination__button',
         {
           onClick: () => this.props.getPage(1),
         },
@@ -93,7 +93,7 @@ class AccountList extends Component {
       ),
 
       h(
-        `button.btn-primary.btn--large.new-account-connect-form__button ${disabled ? '.btn-primary--disabled' : ''}`,
+        `button.btn-primary.btn--large.new-account-connect-form__button.unlock ${disabled ? '.btn-primary--disabled' : ''}`,
         {
           onClick: this.props.onUnlockAccount.bind(this),
           ...buttonProps,
@@ -112,7 +112,7 @@ class AccountList extends Component {
   }
 
   render () {
-    return h('div.new-account-connect-form', {}, [
+    return h('div.new-account-connect-form.account-list', {}, [
         this.renderHeader(),
         this.renderAccounts(),
         this.renderPagination(),

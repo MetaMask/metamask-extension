@@ -51,11 +51,26 @@ class ConnectHardwareForm extends Component {
     this.setState({selectedAccount: account.toString(), error: null})
   }
 
+  showTemporaryAlert () {
+    this.props.showAlert(this.context.t('hardwareWalletConnected'))
+    // Autohide the alert after 5 seconds
+    setTimeout(_ => {
+      this.props.hideAlert()
+    }, 5000)
+  }
+
   getPage = (page) => {
     this.props
       .connectHardware('trezor', page)
       .then(accounts => {
         if (accounts.length) {
+
+          // If we just loaded the accounts for the first time
+          // show the global alert
+          if (this.state.accounts.length === 0) {
+            this.showTemporaryAlert()
+          }
+
           const newState = {}
           // Default to the first account
           if (this.state.selectedAccount === null) {
@@ -164,6 +179,8 @@ ConnectHardwareForm.propTypes = {
   connectHardware: PropTypes.func,
   checkHardwareStatus: PropTypes.func,
   forgetDevice: PropTypes.func,
+  showAlert: PropTypes.func,
+  hideAlert: PropTypes.func,
   unlockTrezorAccount: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
   history: PropTypes.object,
@@ -203,6 +220,8 @@ const mapDispatchToProps = dispatch => {
     },
     showImportPage: () => dispatch(actions.showImportPage()),
     showConnectPage: () => dispatch(actions.showConnectPage()),
+    showAlert: (msg) => dispatch(actions.showAlert(msg)),
+    hideAlert: () => dispatch(actions.hideAlert()),
   }
 }
 
