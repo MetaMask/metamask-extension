@@ -5,6 +5,11 @@ const {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  PLATFORM_FIREFOX,
+  PLATFORM_OPERA,
+  PLATFORM_CHROME,
+  PLATFORM_EDGE,
+  PLATFORM_BRAVE,
 } = require('./enums')
 
 /**
@@ -41,16 +46,16 @@ const getEnvironmentType = (url = window.location.href) => {
 const getPlatform = _ => {
   const ua = navigator.userAgent
   if (ua.search('Firefox') !== -1) {
-    return 'Firefox'
+    return PLATFORM_FIREFOX
   } else {
     if (window.chrome.ipcRenderer) {
-      return 'Brave'
+      return PLATFORM_BRAVE
     } else if (ua.search('Edge') !== -1) {
-      return 'Edge'
+      return PLATFORM_EDGE
     } else if (ua.search('OPR') !== -1) {
-      return 'Opera'
+      return PLATFORM_OPERA
     } else {
-      return 'Chrome'
+      return PLATFORM_CHROME
     }
   }
 }

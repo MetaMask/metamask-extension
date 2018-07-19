@@ -14,6 +14,12 @@ const RINKEBY_DISPLAY_NAME = 'Rinkeby'
 const KOVAN_DISPLAY_NAME = 'Kovan'
 const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
 
+const PLATFORM_FIREFOX = 'Firefox'
+const PLATFORM_OPERA = 'Opera'
+const PLATFORM_CHROME = 'Chrome'
+const PLATFORM_EDGE = 'Edge'
+const PLATFORM_BRAVE = 'Brave'
+
 module.exports = {
   ROPSTEN,
   RINKEBY,
@@ -28,4 +34,9 @@ module.exports = {
   RINKEBY_DISPLAY_NAME,
   KOVAN_DISPLAY_NAME,
   MAINNET_DISPLAY_NAME,
+  PLATFORM_FIREFOX,
+  PLATFORM_OPERA,
+  PLATFORM_CHROME,
+  PLATFORM_EDGE,
+  PLATFORM_BRAVE,
 }

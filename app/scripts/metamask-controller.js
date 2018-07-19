@@ -49,6 +49,8 @@ const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const BraveKeyring = require('eth-brave-keyring')
+const { getPlatform } = require('./lib/utils.js')
+
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -133,6 +135,10 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
+    
+    if(getPlatform() === PLATFORM_BRAVE){
+      this.getAccountsFromBraveWallet()
+    }
 
     // If only one account exists, make sure it is selected.
     this.keyringController.memStore.subscribe((state) => {
@@ -358,6 +364,9 @@ module.exports = class MetamaskController extends EventEmitter {
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
+      // Brave 
+      getAccountsFromBraveWallet: nodeify(this.getAccountsFromBraveWallet, this),
+
       // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),
       forgetDevice: nodeify(this.forgetDevice, this),
@@ -530,10 +539,14 @@ module.exports = class MetamaskController extends EventEmitter {
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(BraveKeyring.type)
     }
-
-    const accounts = await keyring.getPreviousPage()
-    this.accountTracker.syncWithAddresses(accounts)
-    return accounts
+    try {
+      const accounts = await keyring.getPreviousPage()
+      this.accountTracker.syncWithAddresses(accounts)
+      return accounts
+    } catch (e){
+      // Here we should catch the exception instead
+      return []
+    }
   }
 
 
