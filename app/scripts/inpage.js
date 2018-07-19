@@ -15,8 +15,8 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 // setup background connection
 var metamaskStream = new LocalMessageDuplexStream({
-  name: 'inpage',
-  target: 'contentscript',
+  name: 'nifty-inpage',
+  target: 'nifty-contentscript',
 })
 
 // compose the inpage provider
@@ -26,13 +26,6 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // setup web3
 //
 
-if (typeof window.web3 !== 'undefined') {
-  throw new Error(`Nifty Wallet detected another web3.
-     Nifty Wallet will not work reliably with another web3 extension.
-     This usually happens if you have two MetaMasks installed,
-     or Nifty Wallet and another web3 extension. Please remove one
-     and try again.`)
-}
 var web3 = new Web3(inpageProvider)
 web3.setProvider = function () {
   log.debug('Nifty Wallet - overrode web3.setProvider')
