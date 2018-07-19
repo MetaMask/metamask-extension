@@ -85,7 +85,7 @@ class ConnectScreen extends Component {
              },
         ]
 
-        return h('.hw-tutorial',  {
+        return h('.hw-tutorial', {
           ref: node => { this.referenceNode = node },
         },
             steps.map((step, i) => (
