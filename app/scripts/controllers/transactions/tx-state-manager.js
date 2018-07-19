@@ -5,6 +5,7 @@ const ethUtil = require('ethereumjs-util')
 const log = require('loglevel')
 const txStateHistoryHelper = require('./lib/tx-state-history-helper')
 const createId = require('../../lib/random-id')
+const transactionNotificationManager = require('./lib/transaction-notification-manager')
 const { getFinalStates } = require('./lib/util')
 /**
   TransactionStateManager is responsible for the state of a transaction and
@@ -332,6 +333,8 @@ class TransactionStateManager extends EventEmitter {
   */
   setTxStatusConfirmed (txId) {
     this._setTxStatus(txId, 'confirmed')
+    const txMeta = this.getTx(txId)
+    transactionNotificationManager.showConfirmedNotification(txMeta)
   }
 
   /**
