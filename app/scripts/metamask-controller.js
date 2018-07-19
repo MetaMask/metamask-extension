@@ -113,12 +113,6 @@ module.exports = class MetamaskController extends EventEmitter {
       preferences: this.preferencesController.store,
     })
 
-    // detect tokens controller
-    this.detectTokensController = new DetectTokensController({
-      preferences: this.preferencesController,
-      network: this.networkController,
-    })
-
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
       provider: this.provider,
@@ -149,6 +143,13 @@ module.exports = class MetamaskController extends EventEmitter {
       // ensure preferences + identities controller know about all addresses
       this.preferencesController.addAddresses(addresses)
       this.accountTracker.syncWithAddresses(addresses)
+    })
+
+    // detect tokens controller
+    this.detectTokensController = new DetectTokensController({
+      preferences: this.preferencesController,
+      network: this.networkController,
+      keyringMemStore: this.keyringController.memStore,
     })
 
     // address book controller
@@ -1276,7 +1277,8 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for activating the retrieval of price data, which should only be fetched when the UI is visible.
+   * A method for activating the retrieval of price data and auto detect tokens, 
+   * which should only be fetched when the UI is visible.
    * @private
    * @param {boolean} active - True if price data should be getting fetched.
    */

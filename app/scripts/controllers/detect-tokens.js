@@ -16,11 +16,11 @@ class DetectTokensController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ interval = DEFAULT_INTERVAL, preferences, network } = {}) {
+  constructor ({ interval = DEFAULT_INTERVAL, preferences, network, keyringMemStore } = {}) {
     this.preferences = preferences
     this.interval = interval
     this.network = network
-    this._isActive = false
+    this.keyringMemStore = keyringMemStore
   }
 
   /**
@@ -28,7 +28,7 @@ class DetectTokensController {
    *
    */
   async detectNewTokens () {
-    if (!this._isActive) { return }
+    if (!this.isActive) { return }
     if (this._network.store.getState().provider.type !== MAINNET) { return }
     this.web3.setProvider(this._network._provider)
     for (const contractAddress in contracts) {
@@ -64,7 +64,7 @@ class DetectTokensController {
    *
    */
   restartTokenDetection () {
-    if (this._isActive && this.selectedAddress) {
+    if (this.isActive && this.selectedAddress) {
       this.detectNewTokens()
       this.interval = DEFAULT_INTERVAL
     }
@@ -105,15 +105,19 @@ class DetectTokensController {
   }
 
   /**
-  * In setter, when _isActive is changed, detectNewTokens and restart polling
-  * @type {Object}
-  */
-  set isActive (active) {
-    if (this._isActive !== active) {
-        this._isActive = active
-        this.restartTokenDetection()
+   * In setter when isUnlocked is updated to true, detectNewTokens and restart polling
+   * @type {Object}
+   */
+  set keyringMemStore (keyringMemStore) {
+    if (!keyringMemStore) { return }
+    this._keyringMemStore = keyringMemStore
+    this._keyringMemStore.subscribe(({ isUnlocked }) => {
+      if (this.isUnlocked !== isUnlocked) {
+        if (isUnlocked) { this.restartTokenDetection() }
+        this.isUnlocked = isUnlocked
       }
-    }
+    })
+  }
 }
 
 module.exports = DetectTokensController

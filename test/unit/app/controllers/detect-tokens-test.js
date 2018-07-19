@@ -1,14 +1,17 @@
 const assert = require('assert')
 const sinon = require('sinon')
+const ObservableStore = require('obs-store')
 const DetectTokensController = require('../../../../app/scripts/controllers/detect-tokens')
 const NetworkController = require('../../../../app/scripts/controllers/network/network')
 const PreferencesController = require('../../../../app/scripts/controllers/preferences')
 
 describe('DetectTokensController', () => {
-    const sandbox = sinon.createSandbox()   
+    const sandbox = sinon.createSandbox()
     let clock
+    let keyringMemStore
     before(async () => {
-    }) 
+      keyringMemStore = new ObservableStore({ isUnlocked: false})
+    })
       after(() => {
         sandbox.restore()
   })
@@ -25,7 +28,7 @@ describe('DetectTokensController', () => {
     const network = new NetworkController()
     network.setProviderType('mainnet')
     const preferences = new PreferencesController()
-    const controller = new DetectTokensController({preferences: preferences, network: network})
+    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isActive = true
 
     var stub = sandbox.stub(controller, 'detectNewTokens')
@@ -44,7 +47,7 @@ describe('DetectTokensController', () => {
     const network = new NetworkController()
     network.setProviderType('rinkeby')
     const preferences = new PreferencesController()
-    const controller = new DetectTokensController({preferences: preferences, network: network})
+    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isActive = true
 
     var stub = sandbox.stub(controller, 'detectTokenBalance')
@@ -59,7 +62,7 @@ describe('DetectTokensController', () => {
     const network = new NetworkController()
     network.setProviderType('mainnet')
     const preferences = new PreferencesController()
-    const controller = new DetectTokensController({preferences: preferences, network: network})
+    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isActive = true
 
     sandbox.stub(controller, 'detectTokenBalance')
@@ -78,7 +81,7 @@ describe('DetectTokensController', () => {
     network.setProviderType('mainnet')
     const preferences = new PreferencesController()
     preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8)
-    const controller = new DetectTokensController({preferences: preferences, network: network})
+    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isActive = true
 
     sandbox.stub(controller, 'detectTokenBalance')
@@ -90,5 +93,28 @@ describe('DetectTokensController', () => {
     await controller.detectNewTokens()
     assert.deepEqual(preferences.store.getState().tokens, [{address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T'},
         {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK'}])
+  })
+
+  it('should trigger detect new tokens when change address', async () => {
+    const network = new NetworkController()
+    network.setProviderType('mainnet')
+    const preferences = new PreferencesController()
+    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
+    controller.isActive = true
+    var stub = sandbox.stub(controller, 'detectNewTokens')
+    await preferences.setSelectedAddress('0xbc86727e770de68b1060c91f6bb6945c73e10388')
+    sandbox.assert.called(stub)
+  })
+
+  it('should trigger detect new tokens when submit password', async () => {
+    const network = new NetworkController()
+    network.setProviderType('mainnet')
+    const preferences = new PreferencesController()
+    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
+    controller.isActive = true
+    controller.selectedAddress = '0x0'
+    var stub = sandbox.stub(controller, 'detectNewTokens')
+    await controller._keyringMemStore.updateState({ isUnlocked: true })
+    sandbox.assert.called(stub)
   })
 })
