@@ -8,8 +8,10 @@ module.exports = setupRaven
 
 // Setup raven / sentry remote error reporting
 function setupRaven (opts) {
-  const { release } = opts
+  const { releaseVersion } = opts
   let ravenTarget
+  // detect brave
+  const isBrave = Boolean(window.chrome.ipcRenderer)
 
   if (METAMASK_DEBUG) {
     console.log('Setting up Sentry Remote Error Reporting: DEV')
@@ -20,10 +22,13 @@ function setupRaven (opts) {
   }
 
   const client = Raven.config(ravenTarget, {
-    release,
+    releaseVersion,
     transport: function (opts) {
+      opts.data.extra.isBrave = isBrave
       const report = opts.data
+
       try {
+        console.log('testing opts in transport sentry')
         // handle error-like non-error exceptions
         rewriteErrorLikeExceptions(report)
         // simplify certain complex error messages (e.g. Ethjs)
