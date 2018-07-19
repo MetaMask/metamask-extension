@@ -584,11 +584,17 @@
   "noDeposits": {
     "message": "No deposits received"
   },
+  "noConversionRateAvailable":{
+    "message": "No Conversion Rate Available"
+  },
   "noTransactionHistory": {
     "message": "No transaction history."
   },
   "noTransactions": {
     "message": "No Transactions"
+  },
+  "notFound": {
+    "message": "Not Found"
   },
   "notStarted": {
     "message": "Not Started"
@@ -968,6 +974,9 @@
   },
   "unknown": {
     "message": "Unknown"
+  },
+  "unknownFunction": {
+    "message": "Unknown Function"
   },
   "unknownNetwork": {
     "message": "Unknown Private Network"

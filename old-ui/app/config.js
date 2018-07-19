@@ -234,6 +234,11 @@ function currentProviderDisplay (metamaskState) {
       value = 'Main Ethereum Network'
       break
 
+    case 'sokol':
+      title = 'Current Network'
+      value = 'POA Sokol Test Network'
+      break
+
     case 'ropsten':
       title = 'Current Network'
       value = 'Ropsten Test Network'

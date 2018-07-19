@@ -47,7 +47,7 @@ class Info extends Component {
             h('span.settings__info-link', this.context.t('attributions')),
           ]),
         ]),
-        //h('hr.settings__info-separator'),
+        // h('hr.settings__info-separator'),
       ])
     )
   }

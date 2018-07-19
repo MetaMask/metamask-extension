@@ -2,36 +2,16 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import ConfirmSendToken from './confirm-send-token.component'
-import { calcTokenAmount } from '../../../token-util'
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction.duck'
 import { setSelectedToken, updateSend, showSendTokenPage } from '../../../actions'
 import { conversionUtil } from '../../../conversion-util'
+import { sendTokenTokenAmountAndToAddressSelector } from '../../../selectors/confirm-transaction'
 
 const mapStateToProps = state => {
-  const { confirmTransaction } = state
-  const {
-    tokenData = {},
-    tokenProps: { tokenSymbol, tokenDecimals } = {},
-    txData: { txParams: { to: tokenAddress } = {} } = {},
-  } = confirmTransaction
-  const { params = [] } = tokenData
-
-  let toAddress = ''
-  let tokenAmount = ''
-
-  if (params && params.length === 2) {
-    [{ value: toAddress }, { value: tokenAmount }] = params
-  }
-
-  const numberOfTokens = tokenAmount && tokenDecimals
-    ? calcTokenAmount(tokenAmount, tokenDecimals)
-    : 0
+  const { tokenAmount } = sendTokenTokenAmountAndToAddressSelector(state)
 
   return {
-    toAddress,
-    tokenAddress,
-    tokenSymbol,
-    numberOfTokens,
+    tokenAmount,
   }
 }
 

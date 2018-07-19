@@ -5,16 +5,6 @@ const {
   findAsync,
 } = require('../../lib/util')
 
-QUnit.module('new ui send flow')
-
-QUnit.test('successful send flow', (assert) => {
-  const done = assert.async()
-  runSendFlowTest(assert).then(done).catch((err) => {
-    assert.notOk(err, `Error was thrown: ${err.stack}`)
-    done()
-  })
-})
-
 global.ethQuery = {
   sendTransaction: () => {},
 }

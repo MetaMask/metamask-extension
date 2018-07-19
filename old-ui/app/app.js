@@ -277,6 +277,23 @@ App.prototype.renderNetworkDropdown = function () {
     h(
       DropdownMenuItem,
       {
+        key: 'sokol',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('sokol')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.green-square'),
+        'POA Sokol Test Network',
+        providerType === 'sokol' ? h('.check', '✓') : null,
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
         key: 'ropsten',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('ropsten')),
@@ -644,6 +661,8 @@ App.prototype.getNetworkName = function () {
 
   if (providerName === 'mainnet') {
     name = 'Main Ethereum Network'
+  } else if (providerName === 'sokol') {
+    name = 'POA Sokol Test Network'
   } else if (providerName === 'ropsten') {
     name = 'Ropsten Test Network'
   } else if (providerName === 'kovan') {

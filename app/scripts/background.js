@@ -297,10 +297,10 @@ function setupController (initState, initLangCode) {
 
   async function persistData (state) {
     if (!state) {
-      throw new Error('Nifty Wallet - updated state is missing', state)
+      throw new Error('Nifty Wallet - updated state is missing')
     }
     if (!state.data) {
-      throw new Error('Nifty Wallet - updated state does not have data', state)
+      throw new Error('Nifty Wallet - updated state does not have data')
     }
     if (localStore.isSupported) {
       try {

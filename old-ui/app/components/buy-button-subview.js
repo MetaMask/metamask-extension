@@ -45,7 +45,10 @@ BuyButtonSubview.prototype.render = function () {
 
 BuyButtonSubview.prototype.headerSubview = function () {
   const props = this.props
+  const { network } = props
   const isLoading = props.isSubLoading
+  const isSokol = parseInt(network) === 77
+  const coinName = isSokol ? 'SPOA' : 'ETH'
   return (
 
     h('.flex-column', {
@@ -76,7 +79,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, 'Buy Eth'),
+        }, `Buy ${coinName}`),
       ]),
 
       // loading indication
@@ -100,6 +103,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
           showFullAddress: true,
           identity: props.identity,
           account: props.account,
+          network: props.network,
         }),
       ]),
 
@@ -142,6 +146,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '3':
     case '4':
     case '42':
+    case '77':
       const networkName = getNetworkDisplayName(network)
       const label = `${networkName} Test Faucet`
       return (

@@ -68,9 +68,9 @@ describe('Metamask popup page', function () {
 
   describe('Account Creation', () => {
 
-    it('matches MetaMask title', async () => {
+    it('matches Nifty Wallet title', async () => {
       const title = await driver.getTitle()
-      assert.equal(title, 'MetaMask', 'title matches MetaMask')
+      assert.equal(title, 'Nifty Wallet', 'title matches Nifty Wallet')
       await delay(300)
     })
 
