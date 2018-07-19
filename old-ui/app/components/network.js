@@ -86,7 +86,7 @@ Network.prototype.render = function () {
               h('.menu-icon.green-square'),
               h('.network-name', {
                 style: {
-                  color: '#ff6666',
+                  color: '#62c9ba',
                 }},
               [ h('div','Sokol'),
                 h('div','Test Net') ]),
