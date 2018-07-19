@@ -46,7 +46,13 @@ function ConfirmTxScreen () {
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
   const { network, provider, unapprovedTxs, currentCurrency, computedBalances,
-    unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, conversionRate, blockGasLimit } = props
+    unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, blockGasLimit } = props
+  let { conversionRate } = props
+
+  const isSokol = parseInt(network) === 77
+  if (isSokol) {
+    conversionRate = 0
+  }
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
 
@@ -119,6 +125,7 @@ ConfirmTxScreen.prototype.render = function () {
         blockGasLimit,
         unconfTxListLength,
         computedBalances,
+        network,
         // Actions
         buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
         sendTransaction: this.sendTransaction.bind(this),

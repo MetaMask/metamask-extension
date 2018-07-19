@@ -12,7 +12,12 @@ function FiatValue () {
 
 FiatValue.prototype.render = function () {
   const props = this.props
-  const { conversionRate, currentCurrency } = props
+  let { conversionRate } = props
+  const { currentCurrency, network } = props
+  const isSokol = parseInt(network) === 77
+  if (isSokol) {
+    conversionRate = 0
+  }
   const renderedCurrency = currentCurrency || ''
 
   const value = formatBalance(props.value, 6, undefined, props.network)
@@ -21,13 +26,8 @@ FiatValue.prototype.render = function () {
   var fiatDisplayNumber, fiatTooltipNumber
   var splitBalance = value.split(' ')
 
-  if (conversionRate !== 0) {
-    fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
-    fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
-  } else {
-    fiatDisplayNumber = 'N/A'
-    fiatTooltipNumber = 'Unknown'
-  }
+  fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
+  fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
 
   return fiatDisplay(fiatDisplayNumber, renderedCurrency.toUpperCase())
 }
