@@ -40,8 +40,6 @@ class ExtensionPlatform {
       this._showConfirmedTransaction(txMeta)
     } else if (status === 'failed') {
       this._showFailedTransaction(txMeta)
-    } else if (status === 'dropped') {
-      this._showDroppedTransaction(txMeta)
     }
   }
 
@@ -62,14 +60,6 @@ class ExtensionPlatform {
     const nonce = parseInt(txMeta.txParams.nonce, 16)
     const title = 'Failed transaction'
     const message = `Transaction ${nonce} failed! ${txMeta.err.message}`
-    this._showNotification(title, message)
-  }
-
-  _showDroppedTransaction (txMeta) {
-
-    const nonce = parseInt(txMeta.txParams.nonce, 16)
-    const title = 'Dropped transaction'
-    const message = `Transaction ${nonce} was dropped, because another transaction with that number was successfully processed.`
     this._showNotification(title, message)
   }
 
