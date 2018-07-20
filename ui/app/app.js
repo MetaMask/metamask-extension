@@ -36,6 +36,8 @@ const AccountMenu = require('./components/account-menu')
 
 // Global Modals
 const Modal = require('./components/modals/index').Modal
+// Global Alert
+const Alert = require('./components/alert')
 
 const AppHeader = require('./components/app-header')
 
@@ -93,6 +95,7 @@ class App extends Component {
   render () {
     const {
       isLoading,
+      alertMessage,
       loadingMessage,
       network,
       isMouseUser,
@@ -126,6 +129,9 @@ class App extends Component {
         // global modal
         h(Modal, {}, []),
 
+        // global alert
+        h(Alert, {visible: this.props.alertOpen, msg: alertMessage}),
+
         h(AppHeader),
 
         // sidebar
@@ -147,14 +153,6 @@ class App extends Component {
         this.renderRoutes(),
       ])
     )
-  }
-
-  renderGlobalModal () {
-    return h(Modal, {
-      ref: 'modalRef',
-    }, [
-      // h(BuyOptions, {}, []),
-    ])
   }
 
   renderSidebar () {
@@ -265,11 +263,13 @@ App.propTypes = {
   setCurrentCurrencyToUSD: PropTypes.func,
   isLoading: PropTypes.bool,
   loadingMessage: PropTypes.string,
+  alertMessage: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
   frequentRpcList: PropTypes.array,
   currentView: PropTypes.object,
   sidebarOpen: PropTypes.bool,
+  alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
   isMascara: PropTypes.bool,
   isOnboarding: PropTypes.bool,
@@ -305,6 +305,8 @@ function mapStateToProps (state) {
   const {
     networkDropdownOpen,
     sidebarOpen,
+    alertOpen,
+    alertMessage,
     isLoading,
     loadingMessage,
   } = appState
@@ -330,6 +332,8 @@ function mapStateToProps (state) {
     // state from plugin
     networkDropdownOpen,
     sidebarOpen,
+    alertOpen,
+    alertMessage,
     isLoading,
     loadingMessage,
     noActiveNotices,
