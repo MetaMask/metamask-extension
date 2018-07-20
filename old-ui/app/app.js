@@ -649,7 +649,7 @@ App.prototype.renderCustomOption = function (provider) {
 
   // Concatenate long URLs
   let label = symbol ? symbol + ' Network' : rpcTarget
-  if (rpcTarget.length > 31) {
+  if (rpcTarget && rpcTarget.length > 31) {
     label = label.substr(0, 34) + '...'
   }
 
@@ -702,7 +702,17 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
   const rpcTarget = provider.rpcTarget
 
-  return rpcList.map((rpc) => {
+  return rpcList.map((entry) => {
+    var rpc, chainid, explorer, symbol
+    if (typeof entry === 'object') {
+      rpc = entry.url
+      chainid = entry.chainid
+      explorer = entry.explorer
+      symbol = entry.symbol
+    } else {
+      rpc = entry
+      chainid = explorer = symbol = null
+    }
     if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
       return null
     } else {
@@ -711,11 +721,11 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
         {
           key: `common${rpc}`,
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-          onClick: () => props.dispatch(actions.setRpcTarget(rpc)),
+          onClick: () => props.dispatch(actions.setRpcTarget(rpc, chainid, explorer, symbol)),
         },
         [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-          rpc,
+          symbol ? symbol + ' Network' : rpc,
           rpcTarget === rpc ? h('.check', '✓') : null,
         ]
       )

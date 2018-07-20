@@ -287,8 +287,8 @@ class PreferencesController {
    * @returns {Promise<void>} Promise resolves with undefined
    *
    */
-  updateFrequentRpcList (_url) {
-    return this.addToFrequentRpcList(_url)
+  updateFrequentRpcList (url, chainid, explorer, symbol) {
+    return this.addToFrequentRpcList(url, chainid, explorer, symbol)
       .then((rpcList) => {
         this.store.updateState({ frequentRpcList: rpcList })
         return Promise.resolve()
@@ -318,16 +318,16 @@ class PreferencesController {
    * @returns {Promise<array>} The updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (_url) {
+  addToFrequentRpcList (url, chainid, explorer, symbol) {
     const rpcList = this.getFrequentRpcList()
-    const index = rpcList.findIndex((element) => { return element === _url })
+    const index = rpcList.findIndex((element) => { return typeof element === 'object' ? element.url === url : element === url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
-    if (_url !== 'http://localhost:8545') {
-      rpcList.push(_url)
+    if (url !== 'http://localhost:8545') {
+      rpcList.push({ url, chainid, explorer, symbol })
     }
-    if (rpcList.length > 2) {
+    if (rpcList.length > 3) {
       rpcList.shift()
     }
     return Promise.resolve(rpcList)

@@ -299,9 +299,18 @@ NetworkDropdown.prototype.getNetworkName = function () {
 NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
   const rpcTarget = provider.rpcTarget
-  const network = props.network
 
-  return rpcList.map((rpc) => {
+  return rpcList.map((entry) => {
+    var rpc, chainid, explorer, symbol
+    if (typeof entry === 'object') {
+      rpc = entry.url
+      chainid = entry.chainid
+      explorer = entry.explorer
+      symbol = entry.symbol
+    } else {
+      rpc = entry
+      chainid = explorer = symbol = null
+    }
     if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
       return null
     } else {
@@ -310,7 +319,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
         {
           key: `common${rpc}`,
           closeMenu: () => this.props.hideNetworkDropdown(),
-          onClick: () => props.setRpcTarget(rpc, network),
+          onClick: () => props.setRpcTarget(rpc, chainid, explorer, symbol),
           style: {
             fontFamily: 'DIN OT',
             fontSize: '16px',
@@ -325,7 +334,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
             style: {
               color: rpcTarget === rpc ? '#ffffff' : '#9b9b9b',
             },
-          }, rpc),
+          }, symbol ? this.context.t('networkName', [symbol]) : rpc),
         ]
       )
     }
@@ -335,7 +344,6 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
 NetworkDropdown.prototype.renderCustomOption = function (provider) {
   const { rpcTarget, type, explorerUrl, symbol } = provider
   const props = this.props
-  const network = props.network
 
   if (type !== 'rpc') return null
 
@@ -349,7 +357,7 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
-          onClick: () => props.setRpcTarget(rpcTarget, network, explorerUrl, symbol),
+          onClick: () => props.setRpcTarget(rpcTarget, type, explorerUrl, symbol),
           closeMenu: () => this.props.hideNetworkDropdown(),
           style: {
             fontFamily: 'DIN OT',

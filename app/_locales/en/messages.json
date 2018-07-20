@@ -604,6 +604,9 @@
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
   },
+  "networkName": {
+    "message": "$1 Network"
+  },
   "networks": {
     "message": "Networks"
   },
