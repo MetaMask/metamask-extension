@@ -1,178 +1,189 @@
-const { withRouter } = require('react-router-dom')
-const PropTypes = require('prop-types')
-const { compose } = require('recompose')
-const PersistentForm = require('../../../../lib/persistent-form')
-const connect = require('../../../metamask-connect')
-const h = require('react-hyperscript')
-const { createNewVaultAndRestore, unMarkPasswordForgotten } = require('../../../actions')
-const { DEFAULT_ROUTE } = require('../../../routes')
-const log = require('loglevel')
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
+import {
+  createNewVaultAndRestore,
+  unMarkPasswordForgotten,
+} from '../../../actions'
+import { DEFAULT_ROUTE } from '../../../routes'
+import TextField from '../../text-field'
 
-class RestoreVaultPage extends PersistentForm {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      error: null,
-    }
+class RestoreVaultPage extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
   }
 
-  createOnEnter (event) {
-    if (event.key === 'Enter') {
-      this.createNewVaultAndRestore()
-    }
+  static propTypes = {
+    warning: PropTypes.string,
+    createNewVaultAndRestore: PropTypes.func.isRequired,
+    leaveImportSeedScreenState: PropTypes.func,
+    history: PropTypes.object,
+    isLoading: PropTypes.bool,
+  };
+
+  state = {
+    seedPhrase: '',
+    password: '',
+    confirmPassword: '',
+    seedPhraseError: null,
+    passwordError: null,
+    confirmPasswordError: null,
   }
 
-  cancel () {
-    this.props.unMarkPasswordForgotten()
-      .then(this.props.history.push(DEFAULT_ROUTE))
+  parseSeedPhrase = (seedPhrase) => {
+    return seedPhrase
+      .match(/\w+/g)
+      .join(' ')
   }
 
-  createNewVaultAndRestore () {
-    this.setState({ error: null })
+  handleSeedPhraseChange (seedPhrase) {
+    let seedPhraseError = null
 
-    // check password
-    var passwordBox = document.getElementById('password-box')
-    var password = passwordBox.value
-    var passwordConfirmBox = document.getElementById('password-box-confirm')
-    var passwordConfirm = passwordConfirmBox.value
-
-    if (password.length < 8) {
-      this.setState({ error: 'Password not long enough' })
-      return
+    if (seedPhrase && this.parseSeedPhrase(seedPhrase).split(' ').length !== 12) {
+      seedPhraseError = this.context.t('seedPhraseReq')
     }
 
-    if (password !== passwordConfirm) {
-      this.setState({ error: 'Passwords don\'t match' })
-      return
+    this.setState({ seedPhrase, seedPhraseError })
+  }
+
+  handlePasswordChange (password) {
+    const { confirmPassword } = this.state
+    let confirmPasswordError = null
+    let passwordError = null
+
+    if (password && password.length < 8) {
+      passwordError = this.context.t('passwordNotLongEnough')
     }
 
-    // check seed
-    var seedBox = document.querySelector('textarea.twelve-word-phrase')
-    var seed = seedBox.value.trim()
-    if (seed.split(' ').length !== 12) {
-      this.setState({ error: 'Seed phrases are 12 words long' })
-      return
+    if (confirmPassword && password !== confirmPassword) {
+      confirmPasswordError = this.context.t('passwordsDontMatch')
     }
 
-    // submit
-    this.props.createNewVaultAndRestore(password, seed)
-      .then(() => this.props.history.push(DEFAULT_ROUTE))
-      .catch(({ message }) => {
-        this.setState({ error: message })
-        log.error(message)
-      })
+    this.setState({ password, passwordError, confirmPasswordError })
+  }
+
+  handleConfirmPasswordChange (confirmPassword) {
+    const { password } = this.state
+    let confirmPasswordError = null
+
+    if (password !== confirmPassword) {
+      confirmPasswordError = this.context.t('passwordsDontMatch')
+    }
+
+    this.setState({ confirmPassword, confirmPasswordError })
+  }
+
+  onClick = () => {
+    const { password, seedPhrase } = this.state
+    const {
+      createNewVaultAndRestore,
+      leaveImportSeedScreenState,
+      history,
+    } = this.props
+
+    leaveImportSeedScreenState()
+    createNewVaultAndRestore(password, this.parseSeedPhrase(seedPhrase))
+      .then(() => history.push(DEFAULT_ROUTE))
+  }
+
+  hasError () {
+    const { passwordError, confirmPasswordError, seedPhraseError } = this.state
+    return passwordError || confirmPasswordError || seedPhraseError
   }
 
   render () {
-    const { error } = this.state
-    this.persistentFormParentId = 'restore-vault-form'
+    const {
+      seedPhrase,
+      password,
+      confirmPassword,
+      seedPhraseError,
+      passwordError,
+      confirmPasswordError,
+    } = this.state
+    const { t } = this.context
+    const { isLoading } = this.props
+    const disabled = !seedPhrase || !password || !confirmPassword || isLoading || this.hasError()
 
     return (
-      h('.initialize-screen.flex-column.flex-center.flex-grow', [
-
-        h('h3.flex-center.text-transform-uppercase', {
-          style: {
-            background: '#EBEBEB',
-            color: '#AEAEAE',
-            marginBottom: 24,
-            width: '100%',
-            fontSize: '20px',
-            padding: 6,
-          },
-        }, [
-          this.props.t('restoreVault'),
-        ]),
-
-        // wallet seed entry
-        h('h3', 'Wallet Seed'),
-        h('textarea.twelve-word-phrase.letter-spacey', {
-          dataset: {
-            persistentFormId: 'wallet-seed',
-          },
-          placeholder: this.props.t('secretPhrase'),
-        }),
-
-        // password
-        h('input.large-input.letter-spacey', {
-          type: 'password',
-          id: 'password-box',
-          placeholder: this.props.t('newPassword8Chars'),
-          dataset: {
-            persistentFormId: 'password',
-          },
-          style: {
-            width: 260,
-            marginTop: 12,
-          },
-        }),
-
-        // confirm password
-        h('input.large-input.letter-spacey', {
-          type: 'password',
-          id: 'password-box-confirm',
-          placeholder: this.props.t('confirmPassword'),
-          onKeyPress: this.createOnEnter.bind(this),
-          dataset: {
-            persistentFormId: 'password-confirmation',
-          },
-          style: {
-            width: 260,
-            marginTop: 16,
-          },
-        }),
-
-        error && (
-          h('span.error.in-progress-notification', error)
-        ),
-
-        // submit
-        h('.flex-row.flex-space-between', {
-          style: {
-            marginTop: 30,
-            width: '50%',
-          },
-        }, [
-
-          // cancel
-          h('button.primary', {
-            onClick: () => this.cancel(),
-          }, this.props.t('cancel')),
-
-          // submit
-          h('button.primary', {
-            onClick: this.createNewVaultAndRestore.bind(this),
-          }, this.props.t('ok')),
-
-        ]),
-      ])
+      <div className="first-view-main-wrapper">
+        <div className="first-view-main">
+          <div className="import-account">
+            <a
+              className="import-account__back-button"
+              onClick={e => {
+                e.preventDefault()
+                this.props.history.goBack()
+              }}
+              href="#"
+            >
+              {`< Back`}
+            </a>
+            <div className="import-account__title">
+              { this.context.t('restoreAccountWithSeed') }
+            </div>
+            <div className="import-account__selector-label">
+              { this.context.t('secretPhrase') }
+            </div>
+            <div className="import-account__input-wrapper">
+              <label className="import-account__input-label">Wallet Seed</label>
+              <textarea
+                className="import-account__secret-phrase"
+                onChange={e => this.handleSeedPhraseChange(e.target.value)}
+                value={this.state.seedPhrase}
+                placeholder={this.context.t('separateEachWord')}
+              />
+            </div>
+            <span className="error">
+              { seedPhraseError }
+            </span>
+            <TextField
+              id="password"
+              label={t('newPassword')}
+              type="password"
+              className="first-time-flow__input"
+              value={this.state.password}
+              onChange={event => this.handlePasswordChange(event.target.value)}
+              error={passwordError}
+              autoComplete="new-password"
+              margin="normal"
+              largeLabel
+            />
+            <TextField
+              id="confirm-password"
+              label={t('confirmPassword')}
+              type="password"
+              className="first-time-flow__input"
+              value={this.state.confirmPassword}
+              onChange={event => this.handleConfirmPasswordChange(event.target.value)}
+              error={confirmPasswordError}
+              autoComplete="confirm-password"
+              margin="normal"
+              largeLabel
+            />
+            <button
+              className="first-time-flow__button"
+              onClick={() => !disabled && this.onClick()}
+              disabled={disabled}
+            >
+              {this.context.t('restore')}
+            </button>
+          </div>
+        </div>
+      </div>
     )
   }
 }
 
-RestoreVaultPage.propTypes = {
-  history: PropTypes.object,
+RestoreVaultPage.contextTypes = {
+  t: PropTypes.func,
 }
 
-const mapStateToProps = state => {
-  const { appState: { warning, forgottenPassword } } = state
-
-  return {
-    warning,
-    forgottenPassword,
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    createNewVaultAndRestore: (password, seed) => {
-      return dispatch(createNewVaultAndRestore(password, seed))
+export default connect(
+  ({ appState: { warning, isLoading } }) => ({ warning, isLoading }),
+  dispatch => ({
+    leaveImportSeedScreenState: () => {
+      dispatch(unMarkPasswordForgotten())
     },
-    unMarkPasswordForgotten: () => dispatch(unMarkPasswordForgotten()),
-  }
-}
-
-module.exports = compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps)
+    createNewVaultAndRestore: (pw, seed) => dispatch(createNewVaultAndRestore(pw, seed)),
+  })
 )(RestoreVaultPage)

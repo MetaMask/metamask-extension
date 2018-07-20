@@ -321,4 +321,51 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
+  describe('Connects to a Hardware wallet', () => {
+    it('choose Connect Hardware Wallet from the account menu', async () => {
+      await driver.findElement(By.css('.account-menu__icon')).click()
+      await delay(regularDelayMs)
+
+      const [connectAccount] = await findElements(driver, By.xpath(`//div[contains(text(), 'Connect Hardware Wallet')]`))
+      await connectAccount.click()
+      await delay(regularDelayMs)
+    })
+
+    it('should open the TREZOR Connect popup', async () => {
+      const connectButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Connect to Trezor')]`))
+      await connectButtons[0].click()
+      await delay(regularDelayMs)
+      const allWindows = await driver.getAllWindowHandles()
+      switch (process.env.SELENIUM_BROWSER) {
+        case 'chrome':
+          assert.equal(allWindows.length, 2)
+          break
+        default:
+          assert.equal(allWindows.length, 1)
+      }
+    })
+
+    it('should show the "Browser not supported" screen for non Chrome browsers', async () => {
+      if (process.env.SELENIUM_BROWSER !== 'chrome') {
+        const title = await findElements(driver, By.xpath(`//h3[contains(text(), 'Your Browser is not supported...')]`))
+        assert.equal(title.length, 1)
+
+        const downloadChromeButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Download Google Chrome')]`))
+        assert.equal(downloadChromeButtons.length, 1)
+
+        await downloadChromeButtons[0].click()
+        await delay(regularDelayMs)
+
+        const [newUITab, downloadChromeTab] = await driver.getAllWindowHandles()
+
+        await driver.switchTo().window(downloadChromeTab)
+        await delay(regularDelayMs)
+        const tabUrl = await driver.getCurrentUrl()
+        assert.equal(tabUrl, 'https://www.google.com/chrome/')
+        await driver.close()
+        await delay(regularDelayMs)
+        await driver.switchTo().window(newUITab)
+      }
+    })
+  })
 })

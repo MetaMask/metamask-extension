@@ -11,6 +11,9 @@
   "accountName": {
     "message": "Account Name"
   },
+  "accountSelectionRequired": {
+    "message": "You need to select an account!"
+  },
   "address": {
     "message": "Address"
   },
@@ -39,6 +42,9 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Approve"
   },
   "approved": {
     "message": "Approved"
@@ -77,6 +83,9 @@
   "borrowDharma": {
     "message": "Borrow With Dharma (Beta)"
   },
+  "browserNotSupported": {
+  "message": "Your Browser is not supported..."
+  },
   "builtInCalifornia": {
     "message": "MetaMask is designed and built in California."
   },
@@ -88,6 +97,9 @@
   },
   "buyCoinbaseExplainer": {
     "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
+  },
+  "bytes": {
+    "message": "Bytes"
   },
   "ok": {
     "message": "Ok"
@@ -104,6 +116,9 @@
   "close": {
     "message": "Close"
   },
+  "chromeRequiredForTrezor":{
+    "message": "You need to use Metamask on Google Chrome in order to connect to your TREZOR device."
+  },
   "confirm": {
     "message": "Confirm"
   },
@@ -118,6 +133,24 @@
   },
   "confirmTransaction": {
     "message": "Confirm Transaction"
+  },
+  "connectHardwareWallet": {
+    "message": "Connect Hardware Wallet"
+  },
+  "connect": {
+    "message": "Connect"
+  },
+  "connecting": {
+    "message": "Connecting..."
+  },
+  "connectToTrezor": {
+    "message": "Connect to Trezor"
+  },
+  "connectToTrezorHelp": {
+    "message": "Metamask is able to access your TREZOR ethereum accounts. First make sure your device is connected and unlocked."
+  },
+  "connectToTrezorTrouble": {
+    "message": "If you are having trouble, please make sure you are using the latest version of the TREZOR firmware."
   },
   "continue": {
     "message": "Continue"
@@ -148,6 +181,9 @@
   },
   "copyContractAddress": {
     "message": "Copy Contract Address"
+  },
+  "copyAddress": {
+    "message": "Copy address to clipboard"
   },
   "copyToClipboard": {
     "message": "Copy to clipboard"
@@ -244,8 +280,14 @@
   "done": {
     "message": "Done"
   },
+  "downloadGoogleChrome": {
+    "message": "Download Google Chrome"
+  },
   "downloadStateLogs": {
     "message": "Download State Logs"
+  },
+  "dontHaveATrezorWallet": {
+    "message": "Don't have a TREZOR hardware wallet?"
   },
   "dropped": {
     "message": "Dropped"
@@ -276,6 +318,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "parameters": {
+    "message": "Parameters"
   },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
@@ -309,6 +354,9 @@
   "followTwitter": {
     "message": "Follow us on Twitter"
   },
+  "forgetDevice": {
+    "message": "Forget this device"
+  },
   "from": {
     "message": "From"
   },
@@ -317,6 +365,9 @@
   },
   "fromShapeShift": {
     "message": "From ShapeShift"
+  },
+  "functionType": {
+    "message": "Function Type"
   },
   "gas": {
     "message": "Gas",
@@ -359,9 +410,27 @@
     "message": "Get Ether from a faucet for the $1",
     "description": "Displays network name for Ether faucet"
   },
+  "getHelp": {
+    "message": "Get Help."
+  },
   "greaterThanMin": {
     "message": "must be greater than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware wallet connected"
+  },
+  "hardwareSupport": {
+    "message": "Hardware Support"
+  },
+  "hardwareSupportMsg": {
+    "message": "You can now view your Hardware accounts in MetaMask!  Scroll down and read how it works."
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
   },
   "here": {
     "message": "here",
@@ -369,6 +438,9 @@
   },
   "hereList": {
     "message": "Here's a list!!!!"
+  },
+  "hexData": {
+    "message": "Hex Data"
   },
   "hide": {
     "message": "Hide"
@@ -458,7 +530,7 @@
     "message": "Max"
   },
   "learnMore": {
-    "message": "Learn more."
+    "message": "Learn more"
   },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
@@ -496,6 +568,9 @@
   },
   "mainnet": {
     "message": "Main Ethereum Network"
+  },
+  "menu": {
+    "message": "Menu"
   },
   "message": {
     "message": "Message"
@@ -563,11 +638,17 @@
   "noDeposits": {
     "message": "No deposits received"
   },
+  "noConversionRateAvailable":{
+    "message": "No Conversion Rate Available"
+  },
   "noTransactionHistory": {
     "message": "No transaction history."
   },
   "noTransactions": {
     "message": "No Transactions"
+  },
+  "notFound": {
+    "message": "Not Found"
   },
   "notStarted": {
     "message": "Not Started"
@@ -578,9 +659,15 @@
   "oldUIMessage": {
     "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
   },
+  "openInTab": {
+    "message": "Open in tab"
+  },
   "or": {
     "message": "or",
     "description": "choice between creating or importing a new account"
+  },
+  "origin": {
+    "message": "Origin"
   },
   "password": {
     "message": "Password"
@@ -611,6 +698,9 @@
   },
   "popularTokens": {
     "message": "Popular Tokens"
+  },
+  "prev": {
+    "message": "Prev"
   },
   "privacyMsg": {
     "message": "Privacy Policy"
@@ -664,6 +754,9 @@
   "restoreVault": {
     "message": "Restore Vault"
   },
+  "restoreAccountWithSeed": {
+    "message": "Restore your Account with Seed Phrase"
+  },
   "required": {
     "message": "Required"
   },
@@ -672,6 +765,9 @@
   },
   "walletSeed": {
     "message": "Wallet Seed"
+  },
+  "restore": {
+    "message": "Restore"
   },
   "revealSeedWords": {
     "message": "Reveal Seed Words"
@@ -690,6 +786,18 @@
   },
   "revert": {
     "message": "Revert"
+  },
+  "remove": {
+    "message": "remove"
+  },
+  "removeAccount": {
+    "message": "Remove account"
+  },
+  "removeAccountDescription": {
+    "message": "This account will be removed from your wallet. Please make sure you have the original seed phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
@@ -777,6 +885,9 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "separateEachWord": {
+    "message": "Separate each word with a single space"
+  },
   "onlySendToEtherAddress": {
     "message": "Only send ETH to an Ethereum address."
   },
@@ -784,14 +895,44 @@
     "message": "Only send $1 to an Ethereum account address.",
     "description": "displays token symbol"
   },
+  "orderOneHere": {
+    "message": "Order one here."
+  },
   "searchTokens": {
     "message": "Search Tokens"
+  },
+  "selectAnAddress": {
+    "message": "Select an Address"
+  },
+  "selectAnAccount": {
+    "message": "Select an Account"
+  },
+  "selectAnAccountHelp": {
+    "message": "These are the accounts available in your hardware wallet. Select the one you’d like to use in MetaMask."
   },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
   },
   "settings": {
     "message": "Settings"
+  },
+  "step1HardwareWallet": {
+    "message": "1. Connect Hardware Wallet"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Connect your hardware wallet directly to your computer."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Select an Account"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Select the account you want to view. You can only choose one at a time."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Start using dApps and more!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
   },
   "info": {
   "message": "Info"
@@ -902,8 +1043,14 @@
   "transactionNumber": {
     "message": "Transaction Number"
   },
+  "transfer": {
+    "message": "Transfer"
+  },
   "transfers": {
     "message": "Transfers"
+  },
+  "trezorHardwareWallet": {
+    "message": "TREZOR Hardware Wallet"
   },
   "troubleTokenBalances": {
     "message": "We had trouble loading your token balances. You can view them ",
@@ -930,11 +1077,17 @@
   "unknown": {
     "message": "Unknown"
   },
+  "unknownFunction": {
+    "message": "Unknown Function"
+  },
   "unknownNetwork": {
     "message": "Unknown Private Network"
   },
   "unknownNetworkId": {
     "message": "Unknown network ID"
+  },
+  "unlock": {
+    "message": "Unlock"
   },
   "unlockMessage": {
     "message": "The decentralized web awaits"
