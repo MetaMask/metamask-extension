@@ -1274,16 +1274,15 @@ module.exports = class MetamaskController extends EventEmitter {
   set isClientOpen (open) {
     this._isClientOpen = open
     this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+    this.detectTokensController.isOpen = open
   }
 
   /**
-   * A method for activating the retrieval of price data and auto detect tokens, 
-   * which should only be fetched when the UI is visible.
+   * A method for activating the retrieval of price data, which should only be fetched when the UI is visible.
    * @private
    * @param {boolean} active - True if price data should be getting fetched.
    */
   set isClientOpenAndUnlocked (active) {
     this.tokenRatesController.isActive = active
-    this.detectTokensController.isActive = active
   }
 }
