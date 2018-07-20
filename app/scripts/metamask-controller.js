@@ -35,6 +35,7 @@ const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
+const DetectTokensController = require('./controllers/detect-tokens')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -145,6 +146,13 @@ module.exports = class MetamaskController extends EventEmitter {
       // ensure preferences + identities controller know about all addresses
       this.preferencesController.addAddresses(addresses)
       this.accountTracker.syncWithAddresses(addresses)
+    })
+
+    // detect tokens controller
+    this.detectTokensController = new DetectTokensController({
+      preferences: this.preferencesController,
+      network: this.networkController,
+      keyringMemStore: this.keyringController.memStore,
     })
 
     // address book controller
@@ -1420,11 +1428,13 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for activating the retrieval of price data, which should only be fetched when the UI is visible.
+   * A method for activating the retrieval of price data and auto detect tokens, 
+   * which should only be fetched when the UI is visible.
    * @private
    * @param {boolean} active - True if price data should be getting fetched.
    */
   set isClientOpenAndUnlocked (active) {
     this.tokenRatesController.isActive = active
+    this.detectTokensController.isActive = active
   }
 }

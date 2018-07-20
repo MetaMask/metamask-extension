@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add new tokens auto detection
 - Remove rejected transactions from transaction history
 - Add Trezor Support
 - Allow to remove accounts (Imported and Hardware Wallets)
