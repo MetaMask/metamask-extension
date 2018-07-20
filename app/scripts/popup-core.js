@@ -6,6 +6,10 @@ const EthQuery = require('eth-query')
 const launchMetamaskUi = require('../../ui')
 const StreamProvider = require('web3-stream-provider')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const { detect } = require('detect-browser')
+import { 
+  ENVIRONMENT_TYPE_POPUP,
+ } from '../../app/scripts/lib/enums'
 
 module.exports = initializePopup
 
@@ -21,6 +25,14 @@ function initializePopup ({ container, connectionStream }, cb) {
     (cb) => connectToAccountManager(connectionStream, cb),
     (accountManager, cb) => launchMetamaskUi({ container, accountManager }, cb),
   ], cb)
+  // firefox/ubuntu workaround, input password issue, https://github.com/MetaMask/metamask-extension/issues/4791
+  // open extension in fullscreen
+  const browser = detect()
+  const isLinuxFirefox = browser && browser.name === 'firefox' && browser.os === 'Linux'
+  const isPopup = window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP
+  if (isLinuxFirefox && isPopup) {
+    global.platform.openExtensionInBrowser()
+  }
 }
 
 /**
