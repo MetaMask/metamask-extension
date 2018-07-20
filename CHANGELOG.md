@@ -3,6 +3,7 @@
 ## Current Master
 
   - Remove rejected transactions from transaction history
+  - [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
 
 ## 4.8.0 Thur Jun 14 2018
 
