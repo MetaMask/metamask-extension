@@ -63,7 +63,8 @@
     "activeTab",
     "webRequest",
     "*://*.eth/",
-    "*://*.test/"
+    "*://*.test/",
+    "notifications"
   ],
   "web_accessible_resources": [
     "inpage.js"
