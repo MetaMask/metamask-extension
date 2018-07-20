@@ -47,7 +47,7 @@ export default class PageContainerHeader extends Component {
       <div className={
         classnames(
           'page-container__header',
-          tabs && 'page-container__header--no-padding-bottom'
+          { 'page-container__header--no-padding-bottom': Boolean(tabs) }
         )
       }>
 

@@ -8,8 +8,8 @@ const Tab = props => {
   return (
     <li
       className={classnames(
-        className || 'tab',
-        isActive && (activeClassName || 'tab--active'),
+        className,
+        { [activeClassName]: isActive },
       )}
       onClick={event => {
         event.preventDefault()
@@ -28,6 +28,11 @@ Tab.propTypes = {
   tabIndex: PropTypes.number,
   className: PropTypes.string,
   activeClassName: PropTypes.string,
+}
+
+Tab.defaultProps = {
+  className: 'tab',
+  activeClassName: 'tab--active',
 }
 
 export default Tab
