@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import PageContainerHeader from './page-container-header'
 import PageContainerFooter from './page-container-footer'
 
-export default class PageContainer extends Component {
+export default class PageContainer extends PureComponent {
   static propTypes = {
     // PageContainerHeader props
     backButtonString: PropTypes.string,
@@ -28,25 +28,11 @@ export default class PageContainer extends Component {
   }
 
   state = {
-    activeTabIndex: 0,
+    activeTabIndex: this.props.defaultActiveTabIndex || 0,
   }
 
-  componentDidMount () {
-    const { defaultActiveTabIndex } = this.props
-
-    if (defaultActiveTabIndex) {
-      this.setState({ activeTabIndex: defaultActiveTabIndex })
-    }
-  }
-
-  handleTabClick (tabIndex) {
-    const { activeTabIndex } = this.state
-
-    if (tabIndex !== activeTabIndex) {
-      this.setState({
-        activeTabIndex: tabIndex,
-      })
-    }
+  handleTabClick (activeTabIndex) {
+    this.setState({ activeTabIndex })
   }
 
   renderTabs () {
@@ -58,12 +44,12 @@ export default class PageContainer extends Component {
 
     const numberOfTabs = React.Children.count(tabsComponent.props.children)
 
-    return React.Children.map(tabsComponent.props.children, (child, index) => {
+    return React.Children.map(tabsComponent.props.children, (child, tabIndex) => {
       return child && React.cloneElement(child, {
         onClick: index => this.handleTabClick(index),
-        tabIndex: index,
-        isActive: numberOfTabs > 1 && index === this.state.activeTabIndex,
-        key: index,
+        tabIndex,
+        isActive: numberOfTabs > 1 && tabIndex === this.state.activeTabIndex,
+        key: tabIndex,
         className: 'page-container__tab',
         activeClassName: 'page-container__tab--selected',
       })
@@ -83,13 +69,12 @@ export default class PageContainer extends Component {
   renderContent () {
     const { contentComponent, tabsComponent } = this.props
 
-    switch (true) {
-      case Boolean(contentComponent):
-        return contentComponent
-      case Boolean(tabsComponent):
-        return this.renderActiveTabContent()
-      default:
-        return null
+    if (contentComponent) {
+      return contentComponent
+    } else if (tabsComponent) {
+      return this.renderActiveTabContent()
+    } else {
+      return null
     }
   }
 
