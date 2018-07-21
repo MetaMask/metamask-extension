@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import AccountListItem from '../send_/account-list-item/account-list-item.component'
+import AccountListItem from '../send/account-list-item/account-list-item.component'
 
 
 export default class ToAutoComplete extends Component {

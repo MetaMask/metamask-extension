@@ -129,12 +129,14 @@
 .tx-list-item-retry-container {
   background: #d1edff;
   width: 100%;
-  border-radius: 4px;
-  font-size: 0.8em;
+  border-radius: 12px;
+  font-size: .75rem;
   display: flex;
   justify-content: center;
   margin-left: 44px;
   width: calc(100% - 44px);
+  padding: 4px;
+  cursor: pointer;
 
   @media screen and (min-width: 576px) and (max-width: 679px) {
     flex-flow: column;
@@ -149,10 +151,6 @@
     flex-flow: column;
     align-items: center;
   }
-}
-
-.tx-list-item-retry-copy {
-  font-family: Roboto;
 }
 
 .tx-list-item-retry-link {

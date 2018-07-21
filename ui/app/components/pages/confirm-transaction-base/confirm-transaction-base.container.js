@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import R from 'ramda'
+import contractMap from 'eth-contract-metadata'
 import ConfirmTransactionBase from './confirm-transaction-base.component'
 import {
   clearConfirmTransaction,
@@ -13,9 +14,17 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../../constants/error-keys'
 import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
-import { isBalanceSufficient } from '../../send_/send.utils'
+import { isBalanceSufficient } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
-import { MIN_GAS_LIMIT_DEC } from '../../send_/send.constants'
+import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
+import { addressSlicer } from '../../../util'
+
+const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
+  return {
+    ...acc,
+    [base.toLowerCase()]: contractMap[base],
+  }
+}, {})
 
 const mapStateToProps = (state, props) => {
   const { toAddress: propsToAddress } = props
@@ -48,7 +57,10 @@ const mapStateToProps = (state, props) => {
   const { balance } = accounts[selectedAddress]
   const { name: fromName } = identities[selectedAddress]
   const toAddress = propsToAddress || txParamsToAddress
-  const toName = identities[toAddress] && identities[toAddress].name
+  const toName = identities[toAddress]
+    ? identities[toAddress].name
+    : casedContractMap[toAddress] ? casedContractMap[toAddress].name : addressSlicer(toAddress)
+
   const isTxReprice = Boolean(lastGasPrice)
 
   const transaction = R.find(({ id }) => id === transactionId)(selectedAddressTxList)
