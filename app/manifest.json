@@ -59,7 +59,12 @@
     "unlimitedStorage",
     "clipboardWrite",
     "http://localhost:8545/",
-    "https://*.infura.io/"
+    "https://*.infura.io/",
+    "activeTab",
+    "webRequest",
+    "*://*.eth/",
+    "*://*.test/",
+    "notifications"
   ],
   "web_accessible_resources": [
     "inpage.js"

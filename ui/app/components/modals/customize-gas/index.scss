@@ -1,0 +1,110 @@
+.customize-gas {
+  border: 1px solid #D8D8D8;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.14);
+  font-family: Roboto;
+  display: flex;
+  flex-flow: column;
+
+  @media screen and (max-width: $break-small) {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  &__header {
+    height: 52px;
+    border-bottom: 1px solid $alto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 22px;
+
+    @media screen and (max-width: $break-small) {
+      flex: 0 0 auto;
+    }
+  }
+
+  &__title {
+    margin-left: 19.25px;
+  }
+
+  &__close::after {
+    content: '\00D7';
+    font-size: 1.8em;
+    color: $dusty-gray;
+    font-family: sans-serif;
+    cursor: pointer;
+    margin-right: 19.25px;
+  }
+
+  &__content {
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+  }
+
+  &__body {
+    display: flex;
+    margin-bottom: 24px;
+
+    @media screen and (max-width: $break-small) {
+      flex-flow: column;
+      flex: 1 1 auto;
+    }
+  }
+
+  &__footer {
+    height: 75px;
+    border-top: 1px solid $alto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 22px;
+    position: relative;
+
+    @media screen and (max-width: $break-small) {
+      flex: 0 0 auto;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 21.25px;
+  }
+
+  &__revert, &__cancel, &__save, &__save__error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 3px;
+    cursor: pointer;
+  }
+
+  &__revert {
+    color: $silver-chalice;
+    font-size: 16px;
+    margin-left: 21.25px;
+  }
+
+  &__cancel, &__save, &__save__error {
+    width: 85.74px;
+    min-width: initial;
+  }
+
+  &__save__error {
+    opacity: 0.5;
+    cursor: auto;
+  }
+
+  &__error-message {
+    display: block;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 12px;
+    line-height: 12px;
+    color: $red;
+  }
+}

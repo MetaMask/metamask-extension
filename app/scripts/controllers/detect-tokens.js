@@ -117,7 +117,11 @@ class DetectTokensController {
       }
     })
   }
-
+  
+  /**
+   * Internal isActive state
+   * @type {Object}
+   */
   get isActive () {
     return this.isOpen && this.isUnlocked
   }
