@@ -117,7 +117,7 @@ class DetectTokensController {
       }
     })
   }
-  
+
   /**
    * Internal isActive state
    * @type {Object}
