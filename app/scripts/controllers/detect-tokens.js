@@ -64,10 +64,9 @@ class DetectTokensController {
    *
    */
   restartTokenDetection () {
-    if (this.isActive && this.selectedAddress) {
-      this.detectNewTokens()
-      this.interval = DEFAULT_INTERVAL
-    }
+    if (!(this.isActive && this.selectedAddress)) { return }
+    this.detectNewTokens()
+    this.interval = DEFAULT_INTERVAL
   }
 
   /**
@@ -113,10 +112,18 @@ class DetectTokensController {
     this._keyringMemStore = keyringMemStore
     this._keyringMemStore.subscribe(({ isUnlocked }) => {
       if (this.isUnlocked !== isUnlocked) {
-        if (isUnlocked) { this.restartTokenDetection() }
         this.isUnlocked = isUnlocked
+        if (isUnlocked) { this.restartTokenDetection() }
       }
     })
+  }
+  
+  /**
+   * Internal isActive state
+   * @type {Object}
+   */
+  get isActive () {
+    return this.isOpen && this.isUnlocked
   }
 }
 

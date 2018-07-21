@@ -1432,6 +1432,7 @@ module.exports = class MetamaskController extends EventEmitter {
   set isClientOpen (open) {
     this._isClientOpen = open
     this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+    this.detectTokensController.isOpen = open
   }
 
   /**
@@ -1442,6 +1443,5 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   set isClientOpenAndUnlocked (active) {
     this.tokenRatesController.isActive = active
-    this.detectTokensController.isActive = active
   }
 }
