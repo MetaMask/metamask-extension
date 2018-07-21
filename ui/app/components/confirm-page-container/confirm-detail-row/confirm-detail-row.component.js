@@ -5,10 +5,10 @@ import classnames from 'classnames'
 const ConfirmDetailRow = props => {
   const {
     label,
-    fiatFee,
-    ethFee,
+    fiatText,
+    ethText,
     onHeaderClick,
-    fiatFeeColor,
+    fiatTextColor,
     headerText,
     headerTextClassName,
   } = props
@@ -27,12 +27,12 @@ const ConfirmDetailRow = props => {
         </div>
         <div
           className="confirm-detail-row__fiat"
-          style={{ color: fiatFeeColor }}
+          style={{ color: fiatTextColor }}
         >
-          { fiatFee }
+          { fiatText }
         </div>
         <div className="confirm-detail-row__eth">
-          { `\u2666 ${ethFee}` }
+          { ethText }
         </div>
       </div>
     </div>
@@ -41,9 +41,9 @@ const ConfirmDetailRow = props => {
 
 ConfirmDetailRow.propTypes = {
   label: PropTypes.string,
-  fiatFee: PropTypes.string,
-  ethFee: PropTypes.string,
-  fiatFeeColor: PropTypes.string,
+  fiatText: PropTypes.string,
+  ethText: PropTypes.string,
+  fiatTextColor: PropTypes.string,
   onHeaderClick: PropTypes.func,
   headerText: PropTypes.string,
   headerTextClassName: PropTypes.string,

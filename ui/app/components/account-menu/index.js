@@ -9,11 +9,17 @@ const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
+const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
+const Tooltip = require('../tooltip')
+
+
 const {
   SETTINGS_ROUTE,
   INFO_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
 } = require('../../routes')
 
@@ -63,6 +69,9 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
+    showRemoveAccountConfirmationModal: (identity) => {
+      return dispatch(actions.showModal({ name: 'CONFIRM_REMOVE_ACCOUNT', identity }))
+    },
   }
 }
 
@@ -106,6 +115,18 @@ AccountMenu.prototype.render = function () {
       icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
       text: this.context.t('importAccount'),
     }),
+    h(Item, {
+      onClick: () => {
+        toggleAccountMenu()
+        if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+          global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
+        } else {
+          history.push(CONNECT_HARDWARE_ROUTE)
+        }
+      },
+      icon: h('img.account-menu__item-icon', { src: 'images/connect-icon.svg' }),
+      text: this.context.t('connectHardwareWallet'),
+    }),
     h(Divider),
     h(Item, {
       onClick: () => {
@@ -136,7 +157,8 @@ AccountMenu.prototype.renderAccounts = function () {
   } = this.props
 
   const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
-  return accountOrder.map((address) => {
+  return accountOrder.filter(address => !!identities[address]).map((address) => {
+
     const identity = identities[address]
     const isSelected = identity.address === selectedAddress
 
@@ -170,16 +192,53 @@ AccountMenu.prototype.renderAccounts = function () {
           h('div.account-menu__balance', formattedBalance),
         ]),
 
-        this.indicateIfLoose(keyring),
+        this.renderKeyringType(keyring),
+        this.renderRemoveAccount(keyring, identity),
       ],
     )
   })
 }
 
-AccountMenu.prototype.indicateIfLoose = function (keyring) {
+AccountMenu.prototype.renderRemoveAccount = function (keyring, identity) {
+  // Any account that's not from the HD wallet Keyring can be removed
+  const type = keyring.type
+  const isRemovable = type !== 'HD Key Tree'
+  if (isRemovable) {
+    return h(Tooltip, {
+      title: this.context.t('removeAccount'),
+      position: 'bottom',
+    }, [
+        h('a.remove-account-icon', {
+          onClick: (e) => this.removeAccount(e, identity),
+        }, ''),
+      ])
+  }
+  return null
+}
+
+AccountMenu.prototype.removeAccount = function (e, identity) {
+  e.preventDefault()
+  e.stopPropagation()
+  const { showRemoveAccountConfirmationModal } = this.props
+  showRemoveAccountConfirmationModal(identity)
+}
+
+AccountMenu.prototype.renderKeyringType = function (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
-    const isLoose = type !== 'HD Key Tree'
-    return isLoose ? h('.keyring-label.allcaps', this.context.t('imported')) : null
+    let label
+    switch (type) {
+      case 'Trezor Hardware':
+        label = this.context.t('hardware')
+      break
+      case 'Simple Key Pair':
+        label = this.context.t('imported')
+      break
+      default:
+        label = ''
+    }
+
+    return label !== '' ? h('.keyring-label.allcaps', label) : null
+
   } catch (e) { return }
 }
