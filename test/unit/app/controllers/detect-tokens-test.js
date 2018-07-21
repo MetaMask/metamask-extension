@@ -29,7 +29,8 @@ describe('DetectTokensController', () => {
     network.setProviderType('mainnet')
     const preferences = new PreferencesController()
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
-    controller.isActive = true
+    controller.isOpen = true
+    controller.isUnlocked = true
 
     var stub = sandbox.stub(controller, 'detectNewTokens')
 
@@ -48,7 +49,8 @@ describe('DetectTokensController', () => {
     network.setProviderType('rinkeby')
     const preferences = new PreferencesController()
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
-    controller.isActive = true
+    controller.isOpen = true
+    controller.isUnlocked = true
 
     var stub = sandbox.stub(controller, 'detectTokenBalance')
         .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4').returns(true)
@@ -63,7 +65,8 @@ describe('DetectTokensController', () => {
     network.setProviderType('mainnet')
     const preferences = new PreferencesController()
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
-    controller.isActive = true
+    controller.isOpen = true
+    controller.isUnlocked = true
 
     sandbox.stub(controller, 'detectTokenBalance')
         .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4')
@@ -82,7 +85,8 @@ describe('DetectTokensController', () => {
     const preferences = new PreferencesController()
     preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8)
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
-    controller.isActive = true
+    controller.isOpen = true
+    controller.isUnlocked = true
 
     sandbox.stub(controller, 'detectTokenBalance')
       .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4')
@@ -100,7 +104,8 @@ describe('DetectTokensController', () => {
     network.setProviderType('mainnet')
     const preferences = new PreferencesController()
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
-    controller.isActive = true
+    controller.isOpen = true
+    controller.isUnlocked = true
     var stub = sandbox.stub(controller, 'detectNewTokens')
     await preferences.setSelectedAddress('0xbc86727e770de68b1060c91f6bb6945c73e10388')
     sandbox.assert.called(stub)
@@ -111,10 +116,26 @@ describe('DetectTokensController', () => {
     network.setProviderType('mainnet')
     const preferences = new PreferencesController()
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
-    controller.isActive = true
+    controller.isOpen = true
     controller.selectedAddress = '0x0'
     var stub = sandbox.stub(controller, 'detectNewTokens')
     await controller._keyringMemStore.updateState({ isUnlocked: true })
     sandbox.assert.called(stub)
+  })
+
+  it('should not trigger detect new tokens when not open or not unlocked', async () => {
+    const network = new NetworkController()
+    network.setProviderType('mainnet')
+    const preferences = new PreferencesController()
+    const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
+    controller.isOpen = true
+    controller.isUnlocked = false
+    var stub = sandbox.stub(controller, 'detectTokenBalance')
+    clock.tick(180000)
+    sandbox.assert.notCalled(stub)
+    controller.isOpen = false
+    controller.isUnlocked = true
+    clock.tick(180000)
+    sandbox.assert.notCalled(stub)
   })
 })
