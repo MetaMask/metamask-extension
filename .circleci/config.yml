@@ -108,22 +108,12 @@ jobs:
       - run:
           name: Install npm 6 + deps via npm
           command: |
-           sudo npm install -g npm@6.1.0 && npm install
-      - run:
-          name: Check status of package-lock.json
-          command: |
-            if git status | grep "package-lock.json"  > /dev/null; then
-              echo "Looks like the package-lock.json was modified after running npm i. See the diff below:"
-              git diff package-lock.json | grep ""
-              echo "---------------------------------------------------------------------"
-              echo "Please make sure you run npm install (using node 8.11.3 + npm 6.1.0), then commit and push the latest changes in your package-lock.json"
-              exit 1;
-            fi
+           sudo npm install -g npm@6.1.0 && npm ci
       - save_cache:
           key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-
+            - "$HOME/.npm"
   prep-deps-firefox:
     docker:
       - image: circleci/node:8.11.3-browsers
