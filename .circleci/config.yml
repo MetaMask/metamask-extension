@@ -102,15 +102,25 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-{{ checksum "package-lock.json" }}
+            - v4-dependency-cache-{{ checksum "package-lock.json" }}
             # fallback to using the latest cache if no exact match is found
-            - dependency-cache-
+            - v4-dependency-cache-
       - run:
           name: Install npm 6 + deps via npm
           command: |
            sudo npm install -g npm@6.1.0 && npm install
+      - run:
+          name: Check status of package-lock.json
+          command: |
+            if git status | grep "package-lock.json"  > /dev/null; then
+              echo "Looks like the package-lock.json was modified after running npm i. See the diff below:"
+              git diff package-lock.json | grep ""
+              echo "---------------------------------------------------------------------"
+              echo "Please make sure you run npm install (using node 8.11.3 + npm 6.1.0), then commit and push the latest changes in your package-lock.json"
+              exit 1;
+            fi
       - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
 
@@ -120,12 +130,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox-
+          key: v4-dependency-cache-firefox-
       - run:
           name: Download Firefox If needed
           command: ./.circleci/scripts/firefox-download.sh
       - save_cache:
-          key: dependency-cache-firefox-
+          key: v4-dependency-cache-firefox-
           paths:
             - firefox
 
@@ -135,7 +145,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: build:dist
           command: npm run dist
@@ -154,7 +164,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: build:dist
           command: npm run doc
@@ -169,7 +179,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
@@ -188,7 +198,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Test
           command: npm run lint
@@ -199,7 +209,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Test
           command: npx nsp check
@@ -210,7 +220,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - run:
@@ -226,12 +236,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox-
+          key: v4-dependency-cache-firefox-
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - run:
@@ -247,7 +257,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - run:
@@ -263,12 +273,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox-
+          key: v4-dependency-cache-firefox-
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - run:
@@ -284,7 +294,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - run:
@@ -301,7 +311,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - restore_cache:
@@ -328,7 +338,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - restore_cache:
@@ -351,7 +361,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: test:coverage
           command: npm run test:coverage
@@ -364,12 +374,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox-
+          key: v4-dependency-cache-firefox-
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
@@ -388,7 +398,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
@@ -407,12 +417,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-firefox-
+          key: v4-dependency-cache-firefox-
       - run:
           name: Install firefox
           command: ./.circleci/scripts/firefox-install.sh
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
@@ -431,7 +441,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: v4-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
