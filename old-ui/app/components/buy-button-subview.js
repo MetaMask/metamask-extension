@@ -150,7 +150,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '77':
     case '99':
       const networkName = getNetworkDisplayName(network)
-      const label = network === '99' ? 'POA Network' : `${networkName} Test Faucet`
+      const label = `${networkName} Test Faucet`
       return (
         h('div.flex-column', {
           style: {
@@ -158,12 +158,30 @@ BuyButtonSubview.prototype.primarySubview = function () {
             margin: '20px 50px',
           },
         }, [
-          h('button.text-transform-uppercase', {
+          network !== '99' ? h('button.text-transform-uppercase', {
             onClick: () => this.props.dispatch(actions.buyEth({ network })),
             style: {
               marginTop: '15px',
             },
-          }, label),
+          }, label) : null,
+          network === '99' ? h('button.text-transform-uppercase', {
+            onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'binance' })),
+            style: {
+              marginTop: '15px',
+            },
+          }, 'Binance') : null,
+          network === '99' ? h('button.text-transform-uppercase', {
+            onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'bibox' })),
+            style: {
+              marginTop: '15px',
+            },
+          }, 'BiBox') : null,
+          network === '99' ? h('button.text-transform-uppercase', {
+            onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'cex.plus' })),
+            style: {
+              marginTop: '15px',
+            },
+          }, 'CEX Plus') : null,
           // Kovan only: Dharma loans beta
           network === '42' ? (
             h('button.text-transform-uppercase', {
