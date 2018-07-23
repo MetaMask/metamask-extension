@@ -17,6 +17,7 @@ class ConnectHardwareForm extends Component {
       selectedAccount: null,
       accounts: [],
       browserSupported: true,
+      unlocked: false,
     }
   }
 
@@ -32,9 +33,14 @@ class ConnectHardwareForm extends Component {
   }
 
 
-  async componentDidMount () {
+  componentDidMount () {
+    this.checkIfUnlocked()
+  }
+
+  async checkIfUnlocked () {
     const unlocked = await this.props.checkHardwareStatus('trezor')
     if (unlocked) {
+      this.setState({unlocked: true})
       this.getPage(0)
     }
   }
@@ -66,12 +72,12 @@ class ConnectHardwareForm extends Component {
         if (accounts.length) {
 
           // If we just loaded the accounts for the first time
-          // show the global alert
-          if (this.state.accounts.length === 0) {
+          // (device previously locked) show the global alert
+          if (this.state.accounts.length === 0 && !this.state.unlocked) {
             this.showTemporaryAlert()
           }
 
-          const newState = {}
+          const newState = { unlocked: true }
           // Default to the first account
           if (this.state.selectedAccount === null) {
             accounts.forEach((a, i) => {
@@ -112,6 +118,7 @@ class ConnectHardwareForm extends Component {
         btnText: this.context.t('connectToTrezor'),
         selectedAccount: null,
         accounts: [],
+        unlocked: false,
       })
     }).catch(e => {
       this.setState({ error: e.toString() })
