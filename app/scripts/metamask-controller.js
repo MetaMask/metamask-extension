@@ -1213,10 +1213,10 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} address - The address to fund.
    * @param {string} amount - The amount of ether desired, as a base 10 string.
    */
-  buyEth (address, amount) {
+  buyEth (address, amount, exchange) {
     if (!amount) amount = '5'
     const network = this.networkController.getNetworkState()
-    const url = getBuyEthUrl({ network, address, amount })
+    const url = getBuyEthUrl({ network, address, amount, exchange })
     if (url) this.platform.openWindow({ url })
   }
 
