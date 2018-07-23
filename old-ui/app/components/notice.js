@@ -15,7 +15,7 @@ function Notice () {
 Notice.prototype.render = function () {
   const { notice, onConfirm } = this.props
   const { title, date, body } = notice
-  const state = this.state || { disclaimerDisabled: true }
+  const state = this.state || { disclaimerDisabled: false }
   const disabled = state.disclaimerDisabled
 
   return (
@@ -105,7 +105,7 @@ Notice.prototype.render = function () {
       h('button', {
         disabled,
         onClick: () => {
-          this.setState({disclaimerDisabled: true})
+          this.setState({disclaimerDisabled: false})
           onConfirm()
         },
         style: {
