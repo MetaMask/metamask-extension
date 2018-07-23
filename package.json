@@ -257,6 +257,7 @@
     "gulp-watch": "^5.0.0",
     "gulp-zip": "^4.0.0",
     "http-server": "^0.11.1",
+    "instascan": "github:brunobar79/instascan#141f7b2aa12c9e833de41ba3daf37a1c1b7c070e",
     "image-size": "^0.6.2",
     "isomorphic-fetch": "^2.2.1",
     "jsdoc": "^3.5.5",
