@@ -44,7 +44,7 @@ async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
 
 function calcTokenAmount (value, decimals) {
   const multiplier = Math.pow(10, Number(decimals || 0))
-  return new BigNumber(value).div(multiplier).toString()
+  return new BigNumber(value).div(multiplier).toNumber()
 }
 
 
