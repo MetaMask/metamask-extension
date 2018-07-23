@@ -4,13 +4,53 @@ const h = require('react-hyperscript')
 
 class Alert extends Component {
 
+    constructor (props) {
+      super(props)
+
+      this.state = {
+        visble: false,
+        msg: false,
+        className: '',
+      }
+    }
+
+    componentWillReceiveProps (nextProps) {
+      if (!this.props.visible && nextProps.visible) {
+        this.animateIn(nextProps)
+      } else if (this.props.visible && !nextProps.visible) {
+        this.animateOut(nextProps)
+      }
+    }
+
+    animateIn (props) {
+      this.setState({
+        msg: props.msg,
+        visible: true,
+        className: '.visible',
+      })
+    }
+
+    animateOut (props) {
+      this.setState({
+        msg: null,
+        className: '.hidden',
+      })
+
+      setTimeout(_ => {
+        this.setState({visible: false})
+      }, 500)
+
+    }
+
     render () {
-        const className = `.global-alert${this.props.visible ? '.visible' : '.hidden'}`
-        return (
-            h(`div${className}`, {},
-              h('a.msg', {}, this.props.msg)
-            )
-        )
+        if (this.state.visible) {
+          return (
+              h(`div.global-alert${this.state.className}`, {},
+                h('a.msg', {}, this.state.msg)
+              )
+          )
+        }
+        return null
     }
 }
 
