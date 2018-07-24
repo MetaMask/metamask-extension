@@ -472,7 +472,7 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      await closeAllWindowHandlesExcept(driver, [extension, dapp])
+      await waitUntilXWindowHandles(driver, 2)
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
     })
