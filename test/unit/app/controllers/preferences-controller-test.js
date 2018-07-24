@@ -158,5 +158,31 @@ describe('preferences controller', function () {
       assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5})
     })
   })
+
+  describe('frequentRpcList', function () {
+    it('should return an empty list initially', function () {
+      const rpcList = preferencesController.getFrequentRpcList()
+      assert.equal(rpcList.length, 0, 'empty list of rpc url')
+    })
+
+    it('should add a rpc url', function () {
+      preferencesController.updateFrequentRpcList('http://test1.com')
+
+      const rpcList = preferencesController.getFrequentRpcList()
+      assert.equal(rpcList.length, 1, 'one rpc url added')
+    })
+
+    it('should remove a rpc url', function () {
+      preferencesController.updateFrequentRpcList('http://test1.com')
+
+      const rpcList = preferencesController.getFrequentRpcList()
+      assert.equal(rpcList.length, 1, 'one rpc url on store')
+
+      preferencesController.removeRpcUrl('http://test1.com')
+
+      const updatedRpcList = preferencesController.getFrequentRpcList()
+      assert.equal(updatedRpcList.length, 0, 'one rpc url removed')
+    })
+  })
 })
 
