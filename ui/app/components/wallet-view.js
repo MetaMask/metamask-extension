@@ -26,6 +26,10 @@ WalletView.contextTypes = {
   t: PropTypes.func,
 }
 
+WalletView.defaultProps = {
+  responsiveDisplayClassname: '',
+}
+
 function mapStateToProps (state) {
 
   return {
@@ -121,8 +125,9 @@ WalletView.prototype.render = function () {
   const type = keyring.type
   const isLoose = type !== 'HD Key Tree'
 
-  return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
+  return h('div.wallet-view.flex-column', {
     style: {},
+    className: responsiveDisplayClassname,
   }, [
 
     // TODO: Separate component: wallet account details

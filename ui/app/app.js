@@ -18,7 +18,7 @@ const ConfirmTransaction = require('./components/pages/confirm-transaction')
 const WalletView = require('./components/wallet-view')
 
 // other views
-const Home = require('./components/pages/home')
+import Home from './components/pages/home'
 const Authenticated = require('./components/pages/authenticated')
 const Initialized = require('./components/pages/initialized')
 const Settings = require('./components/pages/settings')
@@ -183,7 +183,7 @@ class App extends Component {
       }, [
         // A second instance of Walletview is used for non-mobile viewports
         this.props.sidebarOpen ? h(WalletView, {
-          responsiveDisplayClassname: '.sidebar',
+          responsiveDisplayClassname: 'sidebar',
           style: {},
         }) : undefined,
 
