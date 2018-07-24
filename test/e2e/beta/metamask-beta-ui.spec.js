@@ -516,7 +516,7 @@ describe('MetaMask', function () {
 
     it('displays the contract creation data', async () => {
       const dataTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Data')]`))
-      dataTab.click()
+      await dataTab.click()
       await delay(regularDelayMs)
 
       await findElement(driver, By.xpath(`//div[contains(text(), '127.0.0.1')]`))
@@ -526,7 +526,7 @@ describe('MetaMask', function () {
       assert.equal(confirmDataText.match(/0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff/))
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
-      detailsTab.click()
+      await detailsTab.click()
       await delay(regularDelayMs)
     })
 
@@ -547,9 +547,15 @@ describe('MetaMask', function () {
       await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
 
+      let contractStatus = await driver.findElement(By.css('#contractStatus'))
+      await driver.wait(until.elementTextMatches(contractStatus, /Deployed/))
+
       const depositButton = await findElement(driver, By.css('#depositButton'))
       await depositButton.click()
-      await delay(regularDelayMs)
+      await delay(largeDelayMs)
+
+      contractStatus = await driver.findElement(By.css('#contractStatus'))
+      await driver.wait(until.elementTextMatches(contractStatus, /Deposit\sinitiated/))
 
       await driver.switchTo().window(extension)
       await delay(largeDelayMs)
