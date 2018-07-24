@@ -68,7 +68,7 @@ ConfigScreen.prototype.render = function () {
 
           currentProviderDisplay(metamaskState),
 
-          h('div', { style: {display: 'flex'} }, [
+          h('div', { style: {display: 'block'} }, [
             h('input#new_rpc', {
               placeholder: 'New RPC URL',
               style: {
@@ -81,7 +81,70 @@ ConfigScreen.prototype.render = function () {
                 if (event.key === 'Enter') {
                   var element = event.target
                   var newRpc = element.value
-                  rpcValidation(newRpc, state)
+                  var chainid = document.querySelector('input#chainid')
+                  var explorer = document.querySelector('input#explorer')
+                  var symbol = document.querySelector('input#symbol')
+                  rpcValidation(newRpc, chainid.value, explorer.value, symbol.value, state)
+                }
+              },
+            }),
+            h('br'),
+            h('input#chainid', {
+              placeholder: 'ChainId (optional)',
+              style: {
+                width: 'inherit',
+                flex: '1 0 auto',
+                height: '30px',
+                margin: '8px',
+              },
+              onKeyPress (event) {
+                if (event.key === 'Enter') {
+                  var element = document.querySelector('input#new_rpc')
+                  var newRpc = element.value
+                  var chainid = document.querySelector('input#chainid')
+                  var explorer = document.querySelector('input#explorer')
+                  var symbol = document.querySelector('input#symbol')
+                  rpcValidation(newRpc, chainid.value, explorer.value, symbol.value, state)
+                }
+              },
+            }),
+            h('br'),
+            h('input#explorer', {
+              placeholder: 'Block Explorer (optional)',
+              style: {
+                width: 'inherit',
+                flex: '1 0 auto',
+                height: '30px',
+                margin: '8px',
+              },
+              onKeyPress (event) {
+                if (event.key === 'Enter') {
+                  var element = document.querySelector('input#new_rpc')
+                  var newRpc = element.value
+                  var chainid = document.querySelector('input#chainid')
+                  var explorer = document.querySelector('input#explorer')
+                  var symbol = document.querySelector('input#symbol')
+                  rpcValidation(newRpc, chainid.value, explorer.value, symbol.value, state)
+                }
+              },
+            }),
+            h('br'),
+            h('input#symbol', {
+              placeholder: 'Symbol (optional)',
+              style: {
+                width: 'inherit',
+                flex: '1 0 auto',
+                height: '30px',
+                margin: '8px',
+              },
+              onKeyPress (event) {
+                if (event.key === 'Enter') {
+                  var element = document.querySelector('input#new_rpc')
+                  var newRpc = element.value
+                  var chainid = document.querySelector('input#chainid')
+                  var explorer = document.querySelector('input#explorer')
+                  var symbol = document.querySelector('input#symbol')
+                  rpcValidation(newRpc, chainid.value, explorer.value, symbol.value, state)
                 }
               },
             }),
@@ -93,7 +156,10 @@ ConfigScreen.prototype.render = function () {
                 event.preventDefault()
                 var element = document.querySelector('input#new_rpc')
                 var newRpc = element.value
-                rpcValidation(newRpc, state)
+                var chainid = document.querySelector('input#chainid')
+                var explorer = document.querySelector('input#explorer')
+                var symbol = document.querySelector('input#symbol')
+                rpcValidation(newRpc, chainid.value, explorer.value, symbol.value, state)
               },
             }, 'Save'),
           ]),
@@ -189,9 +255,9 @@ ConfigScreen.prototype.render = function () {
   )
 }
 
-function rpcValidation (newRpc, state) {
+function rpcValidation (newRpc, chainid, explorer, symbol, state) {
   if (validUrl.isWebUri(newRpc)) {
-    state.dispatch(actions.setRpcTarget(newRpc))
+    state.dispatch(actions.setRpcTarget(newRpc, chainid, explorer, symbol))
   } else {
     var appendedRpc = `http://${newRpc}`
     if (validUrl.isWebUri(appendedRpc)) {
@@ -247,6 +313,11 @@ function currentProviderDisplay (metamaskState) {
     case 'rinkeby':
       title = 'Current Network'
       value = 'Rinkeby Test Network'
+      break
+
+    case 'classic':
+      title = 'Current Network'
+      value = 'Ethereum Classic Network'
       break
 
     default:

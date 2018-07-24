@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 
 const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
-const explorerLink = require('etherscan-link').createExplorerLink
+const explorerLink = require('../../../ui/lib/explorer-link.js')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
@@ -15,13 +15,19 @@ const actions = require('../../../ui/app/actions')
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
 
+function mapStateToProps (state) {
+  return {
+    settings: state.metamask.settings,
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     retryTransaction: transactionId => dispatch(actions.retryTransaction(transactionId)),
   }
 }
 
-module.exports = connect(null, mapDispatchToProps)(TransactionListItem)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TransactionListItem)
 
 inherits(TransactionListItem, Component)
 function TransactionListItem () {
@@ -79,7 +85,11 @@ TransactionListItem.prototype.render = function () {
         }
         event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
-        var url = explorerLink(transaction.hash, parseInt(network))
+        let url
+        if (this.props.settings && this.props.settings.blockExplorerTx) {
+          url = this.props.settings.blockExplorerTx
+        }
+        url = explorerLink(transaction.hash, parseInt(network), url)
         global.platform.openWindow({ url })
       },
       style: {

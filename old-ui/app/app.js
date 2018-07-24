@@ -328,6 +328,23 @@ App.prototype.renderNetworkDropdown = function () {
     h(
       DropdownMenuItem,
       {
+        key: 'classic',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('classic')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.diamond'),
+        'Ethereum Classic Network',
+        providerType === 'classic' ? h('.check', '✓') : null,
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('localhost')),
@@ -625,14 +642,14 @@ App.prototype.toggleMetamaskActive = function () {
 }
 
 App.prototype.renderCustomOption = function (provider) {
-  const { rpcTarget, type } = provider
+  const { rpcTarget, type, explorerUrl, symbol } = provider
   const props = this.props
 
   if (type !== 'rpc') return null
 
   // Concatenate long URLs
-  let label = rpcTarget
-  if (rpcTarget.length > 31) {
+  let label = symbol ? symbol + ' Network' : rpcTarget
+  if (rpcTarget && rpcTarget.length > 31) {
     label = label.substr(0, 34) + '...'
   }
 
@@ -646,7 +663,7 @@ App.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
-          onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget)),
+          onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget, type, explorerUrl, symbol)),
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         },
         [
@@ -672,6 +689,8 @@ App.prototype.getNetworkName = function () {
     name = 'Kovan Test Network'
   } else if (providerName === 'rinkeby') {
     name = 'Rinkeby Test Network'
+  } else if (providerName === 'classic') {
+    name = 'Ethereum Classic Network'
   } else {
     name = 'Unknown Private Network'
   }
@@ -683,7 +702,17 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
   const rpcTarget = provider.rpcTarget
 
-  return rpcList.map((rpc) => {
+  return rpcList.map((entry) => {
+    var rpc, chainid, explorer, symbol
+    if (typeof entry === 'object') {
+      rpc = entry.url
+      chainid = entry.chainid
+      explorer = entry.explorer
+      symbol = entry.symbol
+    } else {
+      rpc = entry
+      chainid = explorer = symbol = null
+    }
     if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
       return null
     } else {
@@ -692,11 +721,11 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
         {
           key: `common${rpc}`,
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-          onClick: () => props.dispatch(actions.setRpcTarget(rpc)),
+          onClick: () => props.dispatch(actions.setRpcTarget(rpc, chainid, explorer, symbol)),
         },
         [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-          rpc,
+          symbol ? symbol + ' Network' : rpc,
           rpcTarget === rpc ? h('.check', '✓') : null,
         ]
       )

@@ -604,6 +604,9 @@
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
   },
+  "networkName": {
+    "message": "$1 Network"
+  },
   "networks": {
     "message": "Networks"
   },
@@ -628,6 +631,15 @@
   },
   "newRPC": {
     "message": "New RPC URL"
+  },
+  "optionalChainId": {
+    "message": "ChainId (optional)"
+  },
+  "optionalBlockExplorer": {
+    "message": "BlockExploer Url (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
   },
   "next": {
     "message": "Next"
@@ -805,6 +817,9 @@
   "ropsten": {
     "message": "Ropsten Test Network"
   },
+  "classic": {
+    "message": "Ethereum Classic Network"
+  },
   "rpc": {
     "message": "Custom RPC"
   },
@@ -822,6 +837,9 @@
   },
   "connectingToRinkeby": {
     "message": "Connecting to Rinkeby Test Network"
+  },
+  "connectingToClassic": {
+    "message": "Connecting to Ethereum Classic Network"
   },
   "connectingToUnknown": {
     "message": "Connecting to Unknown Network"
