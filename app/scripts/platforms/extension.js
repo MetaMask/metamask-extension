@@ -14,7 +14,7 @@ class ExtensionPlatform {
     extension.tabs.create({ url })
   }
 
-  closeCurrentWindow (cb) {
+  closeCurrentWindow () {
     return extension.windows.getCurrent((windowDetails) => {
       return extension.windows.remove(windowDetails.id)
     })

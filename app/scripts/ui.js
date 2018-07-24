@@ -64,7 +64,6 @@ async function start () {
         css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
         deleteInjectedCss = injectCss(css)
       }
-      // if (state.appState.shouldClose) notificationManager.closePopup()
     })
   })
 
