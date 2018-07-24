@@ -292,6 +292,9 @@ var actions = {
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
   setPendingTokens,
   clearPendingTokens,
+  SHOW_DELETE_RPC: 'SHOW_DELETE_RPC',
+  showDeleteRPC,
+  removeCustomRPC,
 }
 
 module.exports = actions
@@ -2083,5 +2086,29 @@ function setPendingTokens (pendingTokens) {
 function clearPendingTokens () {
   return {
     type: actions.CLEAR_PENDING_TOKENS,
+  }
+}
+
+function showDeleteRPC (transitionForward = true) {
+  return {
+    type: actions.SHOW_DELETE_RPC,
+    value: transitionForward,
+  }
+}
+
+function removeCustomRPC (url) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeRpcUrl(url, (err, url) => {
+        dispatch(actions.setProviderType('poa'))
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        resolve(url)
+      })
+    })
   }
 }

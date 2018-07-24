@@ -35,6 +35,7 @@ const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+const DeleteRpc = require('./components/delete-rpc')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -88,7 +89,7 @@ function mapStateToProps (state) {
 App.prototype.render = function () {
   var props = this.props
   const { isLoading, loadingMessage, transForward, network } = props
-  const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
+  const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config' && props.currentView.name !== 'delete-rpc'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
   log.debug('Main ui render function')
@@ -617,6 +618,9 @@ App.prototype.renderPrimary = function () {
           h(QrView, {key: 'qr'}),
         ]),
       ])
+    case 'delete-rpc':
+      log.debug('rendering delete rpc confirmation screen')
+      return h(DeleteRpc, {key: 'delete-rpc'})
 
     default:
       log.debug('rendering default, account detail screen')

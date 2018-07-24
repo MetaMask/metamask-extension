@@ -66,7 +66,7 @@ ConfigScreen.prototype.render = function () {
           },
         }, [
 
-          currentProviderDisplay(metamaskState),
+          currentProviderDisplay(metamaskState, state),
 
           h('div', { style: {display: 'flex'} }, [
             h('input#new_rpc', {
@@ -223,7 +223,7 @@ function currentConversionInformation (metamaskState, state) {
   ])
 }
 
-function currentProviderDisplay (metamaskState) {
+function currentProviderDisplay (metamaskState, state) {
   var provider = metamaskState.provider
   var title, value
 
@@ -267,5 +267,11 @@ function currentProviderDisplay (metamaskState) {
   return h('div', [
     h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, title),
     h('span', value),
+    provider.type === 'rpc' && h('button', {
+      onClick (event) {
+        event.preventDefault()
+        state.dispatch(actions.showDeleteRPC())
+      },
+    }, 'Delete'),
   ])
 }
