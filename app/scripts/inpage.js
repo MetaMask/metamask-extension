@@ -5,7 +5,6 @@ const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
-const Instascan = require('instascan')
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
@@ -98,40 +97,3 @@ function restoreContextAfterImports () {
   }
 }
 
-function initCameraScanner () {
-  // Append preview div
-  const preview = document.createElement('div')
-  preview.id = 'metamask-preview-wrapper'
-  preview.style = 'position:absolute; top: 20px; left: 20px; width: 300px; height: 300px; overflow: hidden; z-index: 999999999;'
-  const previewVideo = document.createElement('video')
-  previewVideo.id = 'metamask-preview-video'
-  previewVideo.style = 'width: 100%; height: 100%; object-fit: none; margin-left: -10%; margin-top: 10%;'
-  preview.appendChild(previewVideo)
-  document.body.appendChild(preview)
-  console.log('injected')
-  const scanner = new Instascan.Scanner({
-    video: document.getElementById('metamask-preview-video'),
-    backgroundScan: false,
-    continuous: true,
-  })
-  scanner.addListener('scan', function (content) {
-    alert(content)
-    scanner.stop().then(_ => {
-      document.getElementById('metamask-preview-wrapper').parentElement.removeChild(document.getElementById('metamask-preview-wrapper'))
-    })
-  })
-  Instascan.Camera.getCameras().then(function (cameras) {
-    if (cameras.length > 0) {
-      scanner.start(cameras[0])
-    } else {
-      console.error('No cameras found.')
-    }
-  }).catch(function (e) {
-    console.error(e)
-  })
-}
-
-setTimeout(_ => {
-  console.log('injecting...')
-  initCameraScanner()
-}, 3000)

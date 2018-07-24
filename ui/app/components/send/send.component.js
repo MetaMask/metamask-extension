@@ -38,11 +38,18 @@ export default class SendTransactionScreen extends PersistentForm {
     updateAndSetGasTotal: PropTypes.func,
     updateSendErrors: PropTypes.func,
     updateSendTokenBalance: PropTypes.func,
+    scanQrCode: PropTypes.func,
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
+
+  scanQrCode = async () => {
+    const scannedAddress = await this.props.scanQrCode()
+    console.log('QR-SCANNER: Got address (UI)', scannedAddress)
+    this.updateGas({ to: scannedAddress })
+  }
 
   updateGas ({ to: updatedToAddress, amount: value } = {}) {
     const {
@@ -170,7 +177,10 @@ export default class SendTransactionScreen extends PersistentForm {
     return (
       <div className="page-container">
         <SendHeader history={history}/>
-        <SendContent updateGas={(updateData) => this.updateGas(updateData)}/>
+        <SendContent
+          updateGas={(updateData) => this.updateGas(updateData)}
+          scanQrCode={_ => this.scanQrCode()}
+        />
         <SendFooter history={history}/>
       </div>
     )

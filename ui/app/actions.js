@@ -302,6 +302,7 @@ var actions = {
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
   setPendingTokens,
   clearPendingTokens,
+  scanQrCode,
 }
 
 module.exports = actions
@@ -2192,5 +2193,25 @@ function setPendingTokens (pendingTokens) {
 function clearPendingTokens () {
   return {
     type: actions.CLEAR_PENDING_TOKENS,
+  }
+}
+
+function scanQrCode () {
+  log.debug(`background.scanQrCode`)
+  return (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.scanQrCode((err, data) => {
+        log.debug(`background.scanQrCode resolved!`, err, data)
+        if (err) {
+          log.error(err)
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.hideLoadingIndication())
+        return resolve(data)
+      })
+    })
   }
 }

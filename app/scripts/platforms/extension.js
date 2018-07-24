@@ -1,5 +1,4 @@
 const extension = require('extensionizer')
-const explorerLink = require('etherscan-link').createExplorerLink
 
 class ExtensionPlatform {
 
@@ -18,11 +17,8 @@ class ExtensionPlatform {
     return extension.runtime.getManifest().version
   }
 
-  openExtensionInBrowser (route = null) {
-    let extensionURL = extension.runtime.getURL('home.html')
-    if (route) {
-      extensionURL += `#${route}`
-    }
+  openExtensionInBrowser () {
+    const extensionURL = extension.runtime.getURL('home.html')
     this.openWindow({ url: extensionURL })
   }
 
@@ -36,57 +32,16 @@ class ExtensionPlatform {
     }
   }
 
-  showTransactionNotification (txMeta) {
-
-    const status = txMeta.status
-    if (status === 'confirmed') {
-      this._showConfirmedTransaction(txMeta)
-    } else if (status === 'failed') {
-      this._showFailedTransaction(txMeta)
-    }
+  addMessageListener (cb) {
+    extension.runtime.onMessage.addListener(cb)
   }
 
-  _showConfirmedTransaction (txMeta) {
-
-    this._subscribeToNotificationClicked()
-
-    const url = explorerLink(txMeta.hash, parseInt(txMeta.metamaskNetworkId))
-    const nonce = parseInt(txMeta.txParams.nonce, 16)
-
-    const title = 'Confirmed transaction'
-    const message = `Transaction ${nonce} confirmed! View on EtherScan`
-    this._showNotification(title, message, url)
-  }
-
-  _showFailedTransaction (txMeta) {
-
-    const nonce = parseInt(txMeta.txParams.nonce, 16)
-    const title = 'Failed transaction'
-    const message = `Transaction ${nonce} failed! ${txMeta.err.message}`
-    this._showNotification(title, message)
-  }
-
-  _showNotification (title, message, url) {
-    extension.notifications.create(
-      url,
-      {
-      'type': 'basic',
-      'title': title,
-      'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
-      'message': message,
-      })
-  }
-
-  _subscribeToNotificationClicked () {
-    if (!extension.notifications.onClicked.hasListener(this._viewOnEtherScan)) {
-      extension.notifications.onClicked.addListener(this._viewOnEtherScan)
-    }
-  }
-
-  _viewOnEtherScan (txId) {
-    if (txId.startsWith('http://')) {
-      global.metamaskController.platform.openWindow({ url: txId })
-    }
+  sendMessage (message, query = {}) {
+    extension.tabs.query(query, tabs => {
+      const activeTab = tabs.filter(tab => tab.active)[0]
+      extension.tabs.sendMessage(activeTab.id, message)
+      console.log('QR-SCANNER: message sent to tab', message, activeTab)
+    })
   }
 }
 

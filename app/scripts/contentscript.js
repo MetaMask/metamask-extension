@@ -6,6 +6,7 @@ const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('./lib/port-stream.js')
+const Instascan = require('instascan')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
@@ -199,3 +200,49 @@ function redirectToPhishingWarning () {
   console.log('MetaMask - redirecting to phishing warning')
   window.location.href = 'https://metamask.io/phishing.html'
 }
+
+function initQrCodeScanner () {
+  // Append preview div
+  const preview = document.createElement('div')
+  preview.id = 'metamask-preview-wrapper'
+  preview.style = 'position:absolute; top: 20px; left: 20px; width: 300px; height: 300px; overflow: hidden; z-index: 999999999;'
+  const previewVideo = document.createElement('video')
+  previewVideo.id = 'metamask-preview-video'
+  previewVideo.style = 'width: 100%; height: 100%; object-fit: none; margin-left: -10%; margin-top: 10%;'
+  preview.appendChild(previewVideo)
+  document.body.appendChild(preview)
+  console.log('injected')
+  const scanner = new Instascan.Scanner({
+    video: document.getElementById('metamask-preview-video'),
+    backgroundScan: false,
+    continuous: true,
+  })
+  scanner.addListener('scan', function (content) {
+    console.log('QR-SCANNER: got code (IN-PAGE)', content)
+    scanner.stop().then(_ => {
+      console.log('QR-SCANNER: stopped scanner and sending msg (IN-PAGE)', content)
+      extension.runtime.sendMessage({
+        action: 'qr-code-scanner-data',
+        data: content,
+      })
+      console.log('QR-SCANNER: message sent (IN-PAGE)', content)
+      document.getElementById('metamask-preview-wrapper').parentElement.removeChild(document.getElementById('metamask-preview-wrapper'))
+    })
+  })
+  Instascan.Camera.getCameras().then(function (cameras) {
+    if (cameras.length > 0) {
+      scanner.start(cameras[0])
+    } else {
+      console.error('No cameras found.')
+    }
+  }).catch(function (e) {
+    console.error(e)
+  })
+}
+
+extension.runtime.onMessage.addListener(({ action }) => {
+  console.log('QR-SCANNER: message received (IN-PAGE)', action)
+  initQrCodeScanner()
+})
+console.log('QR-SCANNER: now listening (IN-PAGE)')
+

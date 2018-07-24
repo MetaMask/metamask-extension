@@ -26,6 +26,7 @@ import {
   updateSendTokenBalance,
   updateGasData,
   setGasTotal,
+  scanQrCode,
 } from '../../actions'
 import {
   resetSendState,
@@ -89,5 +90,6 @@ function mapDispatchToProps (dispatch) {
     },
     updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
+    scanQrCode: () => dispatch(scanQrCode()),
   }
 }
