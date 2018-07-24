@@ -36,11 +36,10 @@ class ExtensionPlatform {
     extension.runtime.onMessage.addListener(cb)
   }
 
-  sendMessage (message, query = {}) {
+  sendMessageToActiveTab (message, query = {}) {
     extension.tabs.query(query, tabs => {
       const activeTab = tabs.filter(tab => tab.active)[0]
       extension.tabs.sendMessage(activeTab.id, message)
-      console.log('QR-SCANNER: message sent to tab', message, activeTab)
     })
   }
 }

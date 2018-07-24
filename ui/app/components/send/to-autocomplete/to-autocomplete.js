@@ -94,11 +94,12 @@ ToAutoComplete.prototype.render = function () {
     dropdownOpen,
     onChange,
     inError,
+    qrScanner,
   } = this.props
 
   return h('div.send-v2__to-autocomplete', {}, [
 
-    h('input.send-v2__to-autocomplete__input', {
+    h(`input.send-v2__to-autocomplete__input${qrScanner?'.with-qr':''}`, {
       placeholder: this.context.t('recipientAddress'),
       className: inError ? `send-v2__error-border` : '',
       value: to,
@@ -108,7 +109,10 @@ ToAutoComplete.prototype.render = function () {
         borderColor: inError ? 'red' : null,
       },
     }),
-
+    qrScanner && h(`i.fa.fa-qrcode.fa-lg.send-v2__to-autocomplete__qr-code`, {
+      style: { color: '#33333' },
+      onClick: () => this.props.scanQrCode(),
+    }),
     !to && h(`i.fa.fa-caret-down.fa-lg.send-v2__to-autocomplete__down-caret`, {
       style: { color: '#dedede' },
       onClick: () => this.handleInputEvent(),

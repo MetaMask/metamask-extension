@@ -626,6 +626,16 @@
       top: 18px;
       right: 12px;
     }
+
+    &__qr-code {
+      position: absolute;
+      top: 21px;
+      left: 13px;
+    }
+
+    &__input.with-qr {
+      padding-left: 40px;
+    }
   }
 
   &__to-autocomplete, &__memo-text-area, &__hex-data {

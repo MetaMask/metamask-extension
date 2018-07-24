@@ -660,20 +660,15 @@ module.exports = class MetamaskController extends EventEmitter {
 
   scanQrCode () {
     return new Promise((resolve, reject) => {
-      console.log('QR-SCANNER: intializing QR code scanner feature (MM controller)')
       // Tell contentscript to inject the QR reader
-      this.platform.sendMessage('qr-code-scanner-init')
-      console.log('QR-SCANNER: message to initialize has been sent (MM controller)')
+      this.platform.sendMessageToActiveTab('qr-code-scanner-init')
       // Wait for the scanner to send something back
       this.platform.addMessageListener(({ action, data }) => {
-        console.log('QR-SCANNER: message received (MM controller)', action, data)
         if (action && action === 'qr-code-scanner-data') {
           const normalizedAddress = data.replace('ethereum:', '')
-          console.log('QR-SCANNER: resolving promise!', normalizedAddress)
-          return Promise.resolve(normalizedAddress)
+          resolve(normalizedAddress)
         }
       })
-      console.log('QR-SCANNER: now listening (MM controller)')
     })
   }
 

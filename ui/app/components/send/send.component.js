@@ -47,7 +47,7 @@ export default class SendTransactionScreen extends PersistentForm {
 
   scanQrCode = async () => {
     const scannedAddress = await this.props.scanQrCode()
-    console.log('QR-SCANNER: Got address (UI)', scannedAddress)
+    this.props.updateSendTo(scannedAddress)
     this.updateGas({ to: scannedAddress })
   }
 

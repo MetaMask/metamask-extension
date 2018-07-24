@@ -19,8 +19,10 @@ export default class SendContent extends Component {
       <PageContainerContent>
         <div className="send-v2__form">
           <SendFromRow />
-          <SendToRow updateGas={(updateData) => this.props.updateGas(updateData)} />
-          <button onClick={_ => this.props.scanQrCode() }>or scan a QR code</button>
+          <SendToRow
+            updateGas={(updateData) => this.props.updateGas(updateData)} 
+            scanQrCode={ _ => this.props.scanQrCode()}
+          />
           <SendAmountRow updateGas={(updateData) => this.props.updateGas(updateData)} />
           <SendGasRow />
           <SendHexDataRow />

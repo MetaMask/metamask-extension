@@ -205,7 +205,7 @@ function initQrCodeScanner () {
   // Append preview div
   const preview = document.createElement('div')
   preview.id = 'metamask-preview-wrapper'
-  preview.style = 'position:absolute; top: 20px; left: 20px; width: 300px; height: 300px; overflow: hidden; z-index: 999999999;'
+  preview.style = 'position:fixed; top: 20px; left: 20px; width: 300px; height: 300px; overflow: hidden; z-index: 999999999;'
   const previewVideo = document.createElement('video')
   previewVideo.id = 'metamask-preview-video'
   previewVideo.style = 'width: 100%; height: 100%; object-fit: none; margin-left: -10%; margin-top: 10%;'
@@ -218,14 +218,11 @@ function initQrCodeScanner () {
     continuous: true,
   })
   scanner.addListener('scan', function (content) {
-    console.log('QR-SCANNER: got code (IN-PAGE)', content)
     scanner.stop().then(_ => {
-      console.log('QR-SCANNER: stopped scanner and sending msg (IN-PAGE)', content)
       extension.runtime.sendMessage({
         action: 'qr-code-scanner-data',
         data: content,
       })
-      console.log('QR-SCANNER: message sent (IN-PAGE)', content)
       document.getElementById('metamask-preview-wrapper').parentElement.removeChild(document.getElementById('metamask-preview-wrapper'))
     })
   })
@@ -241,8 +238,6 @@ function initQrCodeScanner () {
 }
 
 extension.runtime.onMessage.addListener(({ action }) => {
-  console.log('QR-SCANNER: message received (IN-PAGE)', action)
   initQrCodeScanner()
 })
-console.log('QR-SCANNER: now listening (IN-PAGE)')
 

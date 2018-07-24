@@ -23,6 +23,7 @@ import {
   getTokenBalance,
 } from './send.selectors'
 import {
+  updateSendTo,
   updateSendTokenBalance,
   updateGasData,
   setGasTotal,
@@ -91,5 +92,6 @@ function mapDispatchToProps (dispatch) {
     updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
     scanQrCode: () => dispatch(scanQrCode()),
+    updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
   }
 }

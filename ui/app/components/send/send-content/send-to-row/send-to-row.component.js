@@ -51,6 +51,7 @@ export default class SendToRow extends Component {
         showError={inError}
       >
         <EnsInput
+          scanQrCode={_ => this.props.scanQrCode()}
           accounts={toAccounts}
           closeDropdown={() => closeToDropdown()}
           dropdownOpen={toDropdownOpen}
