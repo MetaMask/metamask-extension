@@ -16,6 +16,8 @@ import {
   conversionGreaterThan,
 } from '../../conversion-util'
 
+import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
+
 export function getTokenData (data = {}) {
   return abiDecoder.decodeMethod(data)
 }
@@ -130,4 +132,8 @@ export function convertTokenToFiat ({
     numberOfDecimals: 2,
     conversionRate: totalExchangeRate,
   })
+}
+
+export function hasUnconfirmedTransactions (state) {
+  return unconfirmedTransactionsCountSelector(state) > 0
 }

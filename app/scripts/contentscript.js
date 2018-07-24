@@ -179,6 +179,7 @@ function blacklistedDomainCheck () {
     'gravityforms.com',
     'harbourair.com',
     'ani.gamer.com.tw',
+    'blueskybooking.com',
   ]
   var currentUrl = window.location.href
   var currentRegex

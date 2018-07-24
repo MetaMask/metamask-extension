@@ -62,6 +62,7 @@ class NewAccountCreateForm extends Component {
 NewAccountCreateForm.propTypes = {
   hideModal: PropTypes.func,
   showImportPage: PropTypes.func,
+  showConnectPage: PropTypes.func,
   createAccount: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
   history: PropTypes.object,
@@ -92,6 +93,7 @@ const mapDispatchToProps = dispatch => {
         })
     },
     showImportPage: () => dispatch(actions.showImportPage()),
+    showConnectPage: () => dispatch(actions.showConnectPage()),
   }
 }
 
