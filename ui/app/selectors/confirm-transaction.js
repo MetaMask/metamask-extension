@@ -62,6 +62,34 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   }
 )
 
+const unapprovedMsgCountSelector = state => state.metamask.unapprovedMsgCount
+const unapprovedPersonalMsgCountSelector = state => state.metamask.unapprovedPersonalMsgCount
+const unapprovedTypedMessagesCountSelector = state => state.metamask.unapprovedTypedMessagesCount
+
+export const unconfirmedTransactionsCountSelector = createSelector(
+  unapprovedTxsSelector,
+  unapprovedMsgCountSelector,
+  unapprovedPersonalMsgCountSelector,
+  unapprovedTypedMessagesCountSelector,
+  networkSelector,
+  (
+    unapprovedTxs = {},
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+    network
+  ) => {
+    const filteredUnapprovedTxIds = Object.keys(unapprovedTxs).filter(txId => {
+      const { metamaskNetworkId } = unapprovedTxs[txId]
+      return metamaskNetworkId === network
+    })
+
+    return filteredUnapprovedTxIds.length + unapprovedTypedMessagesCount + unapprovedMsgCount +
+      unapprovedPersonalMsgCount
+  }
+)
+
+
 export const currentCurrencySelector = state => state.metamask.currentCurrency
 export const conversionRateSelector = state => state.metamask.conversionRate
 
@@ -155,7 +183,6 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
     }
   }
 )
-
 
 export const contractExchangeRateSelector = createSelector(
   contractExchangeRatesSelector,

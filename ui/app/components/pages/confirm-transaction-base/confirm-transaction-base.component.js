@@ -8,9 +8,6 @@ import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
 } from '../../../constants/error-keys'
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-} from '../../../../../app/scripts/lib/enums'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -253,12 +250,8 @@ export default class ConfirmTransactionBase extends Component {
     } else {
       cancelTransaction(txData)
         .then(() => {
-          if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
-            return global.platform.closeCurrentWindow()
-          } else {
-            clearConfirmTransaction()
-            history.push(DEFAULT_ROUTE)
-          }
+          clearConfirmTransaction()
+          history.push(DEFAULT_ROUTE)
         })
     }
   }
@@ -271,12 +264,8 @@ export default class ConfirmTransactionBase extends Component {
     } else {
       sendTransaction(txData)
         .then(() => {
-          if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
-            return global.platform.closeCurrentWindow()
-          } else {
-            clearConfirmTransaction()
-            history.push(DEFAULT_ROUTE)
-          }
+          clearConfirmTransaction()
+          history.push(DEFAULT_ROUTE)
         })
     }
   }
