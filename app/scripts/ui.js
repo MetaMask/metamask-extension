@@ -64,16 +64,16 @@ async function start () {
         css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
         deleteInjectedCss = injectCss(css)
       }
-      if (state.appState.shouldClose) notificationManager.closePopup()
+      // if (state.appState.shouldClose) notificationManager.closePopup()
     })
   })
 
 
   function closePopupIfOpen (windowType) {
-    if (windowType !== ENVIRONMENT_TYPE_NOTIFICATION) {
+    // if (windowType !== ENVIRONMENT_TYPE_NOTIFICATION) {
       // should close only chrome popup
-      notificationManager.closePopup()
-    }
+    //   notificationManager.closePopup()
+    // }
   }
 
   function displayCriticalError (err) {
