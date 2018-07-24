@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import WalletView from '../../wallet-view'
 import TxView from '../../tx-view'
@@ -64,7 +65,10 @@ export default class Home extends PureComponent {
     return (
       <div className="main-container">
         <div className="account-and-transaction-details">
-          <WalletView responsiveDisplayClassname="lap-visible" />
+          <Media
+            query="(min-width: 576px)"
+            render={() => <WalletView />}
+          />
           <TxView />
         </div>
       </div>
