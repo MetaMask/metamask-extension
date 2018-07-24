@@ -70,10 +70,10 @@ async function start () {
 
 
   function closePopupIfOpen (windowType) {
-    // if (windowType !== ENVIRONMENT_TYPE_NOTIFICATION) {
+    if (windowType !== ENVIRONMENT_TYPE_NOTIFICATION) {
       // should close only chrome popup
-    //   notificationManager.closePopup()
-    // }
+      notificationManager.closePopup()
+    }
   }
 
   function displayCriticalError (err) {
