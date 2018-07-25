@@ -9,9 +9,8 @@ const ADD_TOKEN_ROUTE = '/add-token'
 const CONFIRM_ADD_TOKEN_ROUTE = '/confirm-add-token'
 const NEW_ACCOUNT_ROUTE = '/new-account'
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
+const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
 const SEND_ROUTE = '/send'
-const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction'
-const SIGNATURE_REQUEST_ROUTE = '/confirm-transaction/signature-request'
 const NOTICE_ROUTE = '/notice'
 const WELCOME_ROUTE = '/welcome'
 const INITIALIZE_ROUTE = '/initialize'
@@ -22,6 +21,15 @@ const INITIALIZE_UNIQUE_IMAGE_ROUTE = '/initialize/unique-image'
 const INITIALIZE_NOTICE_ROUTE = '/initialize/notice'
 const INITIALIZE_BACKUP_PHRASE_ROUTE = '/initialize/backup-phrase'
 const INITIALIZE_CONFIRM_SEED_ROUTE = '/initialize/confirm-phrase'
+
+const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction'
+const CONFIRM_SEND_ETHER_PATH = '/send-ether'
+const CONFIRM_SEND_TOKEN_PATH = '/send-token'
+const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract'
+const CONFIRM_APPROVE_PATH = '/approve'
+const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from'
+const CONFIRM_TOKEN_METHOD_PATH = '/token-method'
+const SIGNATURE_REQUEST_PATH = '/signature-request'
 
 module.exports = {
   DEFAULT_ROUTE,
@@ -35,10 +43,9 @@ module.exports = {
   CONFIRM_ADD_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
-  CONFIRM_TRANSACTION_ROUTE,
   NOTICE_ROUTE,
-  SIGNATURE_REQUEST_ROUTE,
   WELCOME_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_CREATE_PASSWORD_ROUTE,
@@ -48,4 +55,12 @@ module.exports = {
   INITIALIZE_NOTICE_ROUTE,
   INITIALIZE_BACKUP_PHRASE_ROUTE,
   INITIALIZE_CONFIRM_SEED_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_SEND_ETHER_PATH,
+  CONFIRM_SEND_TOKEN_PATH,
+  CONFIRM_DEPLOY_CONTRACT_PATH,
+  CONFIRM_APPROVE_PATH,
+  CONFIRM_TRANSFER_FROM_PATH,
+  CONFIRM_TOKEN_METHOD_PATH,
+  SIGNATURE_REQUEST_PATH,
 }

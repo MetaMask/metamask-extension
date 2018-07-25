@@ -14,7 +14,7 @@ const log = require('loglevel')
 
 start().catch(log.error)
 
-async function start() {
+async function start () {
 
   // create platform global
   global.platform = new ExtensionPlatform()
@@ -64,7 +64,6 @@ async function start() {
         css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
         deleteInjectedCss = injectCss(css)
       }
-      if (state.appState.shouldClose) notificationManager.closePopup()
     })
   })
 

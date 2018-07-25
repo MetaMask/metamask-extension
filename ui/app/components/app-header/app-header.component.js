@@ -91,7 +91,6 @@ class AppHeader extends Component {
       network,
       provider,
       history,
-      location,
       isUnlocked,
     } = this.props
 
@@ -126,7 +125,7 @@ class AppHeader extends Component {
                 network={network}
                 provider={provider}
                 onClick={event => this.handleNetworkIndicatorClick(event)}
-                disabled={location.pathname === CONFIRM_TRANSACTION_ROUTE}
+                disabled={this.isConfirming()}
               />
             </div>
             { this.renderAccountMenu() }

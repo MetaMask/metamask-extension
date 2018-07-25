@@ -1,14 +1,21 @@
 const fs = require('fs')
 const mkdirp = require('mkdirp')
 const pify = require('pify')
+const assert = require('assert')
 const {until} = require('selenium-webdriver')
+const { delay } = require('../func')
 
 module.exports = {
+  assertElementNotPresent,
   checkBrowserForConsoleErrors,
-  loadExtension,
-  verboseReportOnFailure,
+  closeAllWindowHandlesExcept,
   findElement,
   findElements,
+  loadExtension,
+  openNewPage,
+  switchToWindowWithTitle,
+  verboseReportOnFailure,
+  waitUntilXWindowHandles,
 }
 
 async function loadExtension (driver, extensionId) {
@@ -63,4 +70,64 @@ async function findElement (driver, by, timeout = 10000) {
 
 async function findElements (driver, by, timeout = 10000) {
   return driver.wait(until.elementsLocated(by), timeout)
+}
+
+async function openNewPage (driver, url) {
+  await driver.executeScript('window.open()')
+  await delay(1000)
+
+  const handles = await driver.getAllWindowHandles()
+  const lastHandle = handles[handles.length - 1]
+  await driver.switchTo().window(lastHandle)
+
+  await driver.get(url)
+  await delay(1000)
+}
+
+async function waitUntilXWindowHandles (driver, x) {
+  const windowHandles = await driver.getAllWindowHandles()
+  if (windowHandles.length === x) return
+  await delay(1000)
+  return await waitUntilXWindowHandles(driver, x)
+}
+
+async function switchToWindowWithTitle (driver, title, windowHandles) {
+  if (!windowHandles) {
+    windowHandles = await driver.getAllWindowHandles()
+  } else if (windowHandles.length === 0) {
+    throw new Error('No window with title: ' + title)
+  }
+  const firstHandle = windowHandles[0]
+  await driver.switchTo().window(firstHandle)
+  const handleTitle = await driver.getTitle()
+
+  if (handleTitle === title) {
+    return firstHandle
+  } else {
+    return await switchToWindowWithTitle(driver, title, windowHandles.slice(1))
+  }
+}
+
+async function closeAllWindowHandlesExcept (driver, exceptions, windowHandles) {
+  exceptions = typeof exceptions === 'string' ? [ exceptions ] : exceptions
+  windowHandles = windowHandles || await driver.getAllWindowHandles()
+  const lastWindowHandle = windowHandles.pop()
+  if (!exceptions.includes(lastWindowHandle)) {
+    await driver.switchTo().window(lastWindowHandle)
+    await delay(1000)
+    await driver.close()
+    await delay(1000)
+  }
+  return windowHandles.length && await closeAllWindowHandlesExcept(driver, exceptions, windowHandles)
+}
+
+async function assertElementNotPresent (webdriver, driver, by) {
+  try {
+    const dataTab = await findElement(driver, by, 4000)
+    if (dataTab) {
+      assert(false, 'Data tab should not be present')
+    }
+  } catch (err) {
+    assert(err instanceof webdriver.error.NoSuchElementError)
+  }
 }

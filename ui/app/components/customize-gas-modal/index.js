@@ -16,11 +16,11 @@ const {
   MIN_GAS_PRICE_DEC,
   MIN_GAS_LIMIT_DEC,
   MIN_GAS_PRICE_GWEI,
-} = require('../send_/send.constants')
+} = require('../send/send.constants')
 
 const {
   isBalanceSufficient,
-} = require('../send_/send.utils')
+} = require('../send/send.utils')
 
 const {
   conversionUtil,
@@ -31,8 +31,7 @@ const {
 } = require('../../conversion-util')
 
 const {
-  getGasPrice,
-  getGasLimit,
+  getGasIsLoading,
   getForceGasMin,
   conversionRateSelector,
   getSendAmount,
@@ -43,6 +42,11 @@ const {
   getSendMaxModeState,
 } = require('../../selectors')
 
+const {
+  getGasPrice,
+  getGasLimit,
+} = require('../send/send.selectors')
+
 function mapStateToProps (state) {
   const selectedToken = getSelectedToken(state)
   const currentAccount = getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state)
@@ -51,6 +55,7 @@ function mapStateToProps (state) {
   return {
     gasPrice: getGasPrice(state),
     gasLimit: getGasLimit(state),
+    gasIsLoading: getGasIsLoading(state),
     forceGasMin: getForceGasMin(state),
     conversionRate,
     amount: getSendAmount(state),
@@ -73,7 +78,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function getOriginalState (props) {
+function getFreshState (props) {
   const gasPrice = props.gasPrice || MIN_GAS_PRICE_DEC
   const gasLimit = props.gasLimit || MIN_GAS_LIMIT_DEC
 
@@ -97,7 +102,11 @@ inherits(CustomizeGasModal, Component)
 function CustomizeGasModal (props) {
   Component.call(this)
 
-  this.state = getOriginalState(props)
+  const originalState = getFreshState(props)
+  this.state = {
+    ...originalState,
+    originalState,
+  }
 }
 
 CustomizeGasModal.contextTypes = {
@@ -106,6 +115,36 @@ CustomizeGasModal.contextTypes = {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(CustomizeGasModal)
 
+CustomizeGasModal.prototype.componentWillReceiveProps = function (nextProps) {
+  const currentState = getFreshState(this.props)
+  const {
+    gasPrice: currentGasPrice,
+    gasLimit: currentGasLimit,
+  } = currentState
+  const newState = getFreshState(nextProps)
+  const {
+    gasPrice: newGasPrice,
+    gasLimit: newGasLimit,
+    gasTotal: newGasTotal,
+  } = newState
+  const gasPriceChanged = currentGasPrice !== newGasPrice
+  const gasLimitChanged = currentGasLimit !== newGasLimit
+
+  if (gasPriceChanged) {
+    this.setState({
+      gasPrice: newGasPrice,
+      gasTotal: newGasTotal,
+      priceSigZeros: '',
+      priceSigDec: '',
+    })
+  }
+  if (gasLimitChanged) {
+    this.setState({ gasLimit: newGasLimit, gasTotal: newGasTotal })
+  }
+  if (gasLimitChanged || gasPriceChanged) {
+    this.validate({ gasLimit: newGasLimit, gasTotal: newGasTotal })
+  }
+}
 
 CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
   const {
@@ -137,7 +176,7 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
 }
 
 CustomizeGasModal.prototype.revert = function () {
-  this.setState(getOriginalState(this.props))
+  this.setState(this.state.originalState)
 }
 
 CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
@@ -233,7 +272,7 @@ CustomizeGasModal.prototype.convertAndSetGasPrice = function (newGasPrice) {
 }
 
 CustomizeGasModal.prototype.render = function () {
-  const { hideModal, forceGasMin } = this.props
+  const { hideModal, forceGasMin, gasIsLoading } = this.props
   const { gasPrice, gasLimit, gasTotal, error, priceSigZeros, priceSigDec } = this.state
 
   let convertedGasPrice = conversionUtil(gasPrice, {
@@ -266,7 +305,7 @@ CustomizeGasModal.prototype.render = function () {
     toNumericBase: 'dec',
   })
 
-  return h('div.send-v2__customize-gas', {}, [
+  return !gasIsLoading && h('div.send-v2__customize-gas', {}, [
     h('div.send-v2__customize-gas__content', {
     }, [
       h('div.send-v2__customize-gas__header', {}, [
@@ -288,6 +327,7 @@ CustomizeGasModal.prototype.render = function () {
           onChange: value => this.convertAndSetGasPrice(value),
           title: this.context.t('gasPrice'),
           copy: this.context.t('gasPriceCalculation'),
+          gasIsLoading,
         }),
 
         h(GasModalCard, {
@@ -297,6 +337,7 @@ CustomizeGasModal.prototype.render = function () {
           onChange: value => this.convertAndSetGasLimit(value),
           title: this.context.t('gasLimit'),
           copy: this.context.t('gasLimitCalculation'),
+          gasIsLoading,
         }),
 
       ]),

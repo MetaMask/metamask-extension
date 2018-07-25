@@ -9,6 +9,7 @@ const extend = require('xtend')
 const EthQuery = require('eth-query')
 const createEventEmitterProxy = require('../../lib/events-proxy.js')
 const log = require('loglevel')
+const urlUtil = require('url')
 const {
   ROPSTEN,
   RINKEBY,
@@ -132,7 +133,7 @@ module.exports = class NetworkController extends EventEmitter {
     } else if (type === LOCALHOST) {
       this._configureStandardProvider({ rpcUrl: LOCALHOST_RPC_URL })
     // url-based rpc endpoints
-    } else if (type === 'rpc'){
+    } else if (type === 'rpc') {
       this._configureStandardProvider({ rpcUrl: rpcTarget })
     } else {
       throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
@@ -155,6 +156,8 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureStandardProvider ({ rpcUrl }) {
+    // urlUtil handles malformed urls
+    rpcUrl = urlUtil.parse(rpcUrl).format()
     const providerParams = extend(this._baseProviderParams, {
       rpcUrl,
       engineParams: {

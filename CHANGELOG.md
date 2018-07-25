@@ -1,6 +1,17 @@
 # Changelog
 
-## Current Master
+## Current Develop
+
+## 4.9.0 Thur July 25 2018
+
+- [#4844](https://github.com/MetaMask/metamask-extension/pull/4844): Add new tokens auto detection
+- [#4667](https://github.com/MetaMask/metamask-extension/pull/4667): Remove rejected transactions from transaction history
+- [#4625](https://github.com/MetaMask/metamask-extension/pull/4625): Add Trezor Support
+- [#4625](https://github.com/MetaMask/metamask-extension/pull/4625/commits/523cf9ad33d88719520ae5e7293329d133b64d4d): Allow to remove accounts (Imported and Hardware Wallets)
+- [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
+- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): Allow the use of lowercase http prefix for custom rpc urls.
+- [#4814](https://github.com/MetaMask/metamask-extension/pull/4814): Add hex data input to send screen.
+- [#4691](https://github.com/MetaMask/metamask-extension/pull/4691): Redesign of the Confirm Transaction Screen.
 
 ## 4.8.0 Thur Jun 14 2018
 
@@ -9,7 +20,6 @@
 - [#4523](https://github.com/MetaMask/metamask-extension/pull/4523): Fix bug where account reset did not work with custom RPC providers.
 - [#4524](https://github.com/MetaMask/metamask-extension/pull/4524): Fix for Brave i18n getAcceptLanguages.
 - [#4557](https://github.com/MetaMask/metamask-extension/pull/4557): Fix bug where nonce mutex was never released.
-- [#4558](https://github.com/MetaMask/metamask-extension/pull/4558): Stop reloading browser page on Ethereum network change.
 - [#4566](https://github.com/MetaMask/metamask-extension/pull/4566): Add phishing notice.
 - [#4591](https://github.com/MetaMask/metamask-extension/pull/4591): Allow Copying Token Addresses and link to Token on Etherscan.
 

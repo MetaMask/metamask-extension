@@ -222,6 +222,129 @@ describe('MetaMaskController', function () {
     })
   })
 
+  describe('connectHardware', function () {
+
+    it('should throw if it receives an unknown device name', async function () {
+      try {
+        await metamaskController.connectHardware('Some random device name', 0)
+      } catch (e) {
+        assert.equal(e, 'Error: MetamaskController:connectHardware - Unknown device')
+      }
+    })
+
+    it('should add the Trezor Hardware keyring', async function () {
+      sinon.spy(metamaskController.keyringController, 'addNewKeyring')
+      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      const keyrings = await metamaskController.keyringController.getKeyringsByType(
+        'Trezor Hardware'
+      )
+      assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args, 'Trezor Hardware')
+      assert.equal(keyrings.length, 1)
+    })
+
+  })
+
+  describe('checkHardwareStatus', function () {
+    it('should throw if it receives an unknown device name', async function () {
+      try {
+        await metamaskController.checkHardwareStatus('Some random device name')
+      } catch (e) {
+        assert.equal(e, 'Error: MetamaskController:checkHardwareStatus - Unknown device')
+      }
+    })
+
+    it('should be locked by default', async function () {
+      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      const status = await metamaskController.checkHardwareStatus('trezor')
+      assert.equal(status, false)
+    })
+  })
+
+  describe('forgetDevice', function () {
+    it('should throw if it receives an unknown device name', async function () {
+      try {
+        await metamaskController.forgetDevice('Some random device name')
+      } catch (e) {
+        assert.equal(e, 'Error: MetamaskController:forgetDevice - Unknown device')
+      }
+    })
+
+    it('should wipe all the keyring info', async function () {
+      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      await metamaskController.forgetDevice('trezor')
+      const keyrings = await metamaskController.keyringController.getKeyringsByType(
+        'Trezor Hardware'
+      )
+
+      assert.deepEqual(keyrings[0].accounts, [])
+      assert.deepEqual(keyrings[0].page, 0)
+      assert.deepEqual(keyrings[0].isUnlocked(), false)
+    })
+  })
+
+  describe('unlockTrezorAccount', function () {
+    let accountToUnlock
+    let windowOpenStub
+    let addNewAccountStub
+    let getAccountsStub
+    beforeEach(async function () {
+      accountToUnlock = 10
+      windowOpenStub = sinon.stub(window, 'open')
+      windowOpenStub.returns(noop)
+
+      addNewAccountStub = sinon.stub(metamaskController.keyringController, 'addNewAccount')
+      addNewAccountStub.returns({})
+
+      getAccountsStub = sinon.stub(metamaskController.keyringController, 'getAccounts')
+      // Need to return different address to mock the behavior of
+      // adding a new account from the keyring
+      getAccountsStub.onCall(0).returns(Promise.resolve(['0x1']))
+      getAccountsStub.onCall(1).returns(Promise.resolve(['0x2']))
+      getAccountsStub.onCall(2).returns(Promise.resolve(['0x3']))
+      getAccountsStub.onCall(3).returns(Promise.resolve(['0x4']))
+      sinon.spy(metamaskController.preferencesController, 'setAddresses')
+      sinon.spy(metamaskController.preferencesController, 'setSelectedAddress')
+      sinon.spy(metamaskController.preferencesController, 'setAccountLabel')
+      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
+      await metamaskController.unlockTrezorAccount(accountToUnlock).catch((e) => null)
+    })
+
+    afterEach(function () {
+      metamaskController.keyringController.addNewAccount.restore()
+      window.open.restore()
+    })
+
+    it('should set accountToUnlock in the keyring', async function () {
+      const keyrings = await metamaskController.keyringController.getKeyringsByType(
+        'Trezor Hardware'
+      )
+      assert.equal(keyrings[0].unlockedAccount, accountToUnlock)
+    })
+
+
+    it('should call  keyringController.addNewAccount', async function () {
+      assert(metamaskController.keyringController.addNewAccount.calledOnce)
+    })
+
+    it('should call keyringController.getAccounts ', async function () {
+      assert(metamaskController.keyringController.getAccounts.called)
+    })
+
+    it('should call preferencesController.setAddresses', async function () {
+      assert(metamaskController.preferencesController.setAddresses.calledOnce)
+    })
+
+    it('should call preferencesController.setSelectedAddress', async function () {
+      assert(metamaskController.preferencesController.setSelectedAddress.calledOnce)
+    })
+
+    it('should call preferencesController.setAccountLabel', async function () {
+      assert(metamaskController.preferencesController.setAccountLabel.calledOnce)
+    })
+
+
+  })
+
   describe('#setCustomRpc', function () {
     const customRPC = 'https://custom.rpc/'
     let rpcTarget
@@ -359,6 +482,39 @@ describe('MetaMaskController', function () {
     it('wipes transactions from only the correct network id and with the selected address', async function () {
       await metamaskController.resetAccount()
       assert.equal(metamaskController.txController.txStateManager.getTx(1), undefined)
+    })
+  })
+
+  describe('#removeAccount', function () {
+    let ret
+    const addressToRemove = '0x1'
+
+    beforeEach(async function () {
+      sinon.stub(metamaskController.preferencesController, 'removeAddress')
+      sinon.stub(metamaskController.accountTracker, 'removeAccount')
+      sinon.stub(metamaskController.keyringController, 'removeAccount')
+
+      ret = await metamaskController.removeAccount(addressToRemove)
+
+    })
+
+    afterEach(function () {
+      metamaskController.keyringController.removeAccount.restore()
+      metamaskController.accountTracker.removeAccount.restore()
+      metamaskController.preferencesController.removeAddress.restore()
+    })
+
+    it('should call preferencesController.removeAddress', async function () {
+      assert(metamaskController.preferencesController.removeAddress.calledWith(addressToRemove))
+    })
+    it('should call accountTracker.removeAccount', async function () {
+      assert(metamaskController.accountTracker.removeAccount.calledWith(addressToRemove))
+    })
+    it('should call keyringController.removeAccount', async function () {
+      assert(metamaskController.keyringController.removeAccount.calledWith(addressToRemove))
+    })
+    it('should return address', async function () {
+      assert.equal(ret, '0x1')
     })
   })
 

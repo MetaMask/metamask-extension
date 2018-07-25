@@ -4,7 +4,7 @@ const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
 const webdriver = require('selenium-webdriver')
-const { By, Key } = webdriver
+const { By, Key, until } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 
 describe('Metamask popup page', function () {
@@ -229,8 +229,12 @@ describe('Metamask popup page', function () {
 
     it('confirms transaction', async function () {
       await delay(300)
-      await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')).click()
-      await delay(500)
+      const bySubmitButton = By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+      const submitButton = await driver.wait(until.elementLocated(bySubmitButton))
+
+      submitButton.click()
+
+      await delay(1500)
     })
 
     it('finds the transaction in the transactions list', async function () {
@@ -269,7 +273,8 @@ describe('Metamask popup page', function () {
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-      const metamaskSubmit = await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'))
+      const byMetamaskSubmit = By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+      const metamaskSubmit = await driver.wait(until.elementLocated(byMetamaskSubmit))
       await metamaskSubmit.click()
       await delay(1000)
     })
@@ -330,7 +335,7 @@ describe('Metamask popup page', function () {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
-  async function checkBrowserForConsoleErrors() {
+  async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly

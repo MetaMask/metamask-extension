@@ -58,7 +58,7 @@ PortDuplexStream.prototype._read = noop
 /**
  * Called internally when data should be written to
  * this writable stream.
- * 
+ *
  * @private
  * @param {*} msg Arbitrary object to write
  * @param {string} encoding Encoding to use when writing payload
