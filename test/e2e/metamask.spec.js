@@ -219,7 +219,7 @@ describe('Metamask popup page', function () {
 
       submitButton.click()
 
-      await delay(500)
+      await delay(1500)
     })
 
     it('finds the transaction in the transactions list', async function () {

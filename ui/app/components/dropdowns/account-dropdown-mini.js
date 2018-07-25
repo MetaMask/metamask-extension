@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const AccountListItem = require('../send_/account-list-item/account-list-item.component').default
+const AccountListItem = require('../send/account-list-item/account-list-item.component').default
 
 module.exports = AccountDropdownMini
 

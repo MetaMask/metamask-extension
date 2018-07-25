@@ -5,11 +5,11 @@ import copyToClipboard from 'copy-to-clipboard'
 const Tooltip = require('../tooltip-v2.js')
 
 const addressStripper = (address = '') => {
-  if (address.length < 4) {
+  if (address.length < 11) {
     return address
   }
 
-  return `${address.slice(0, 4)}...${address.slice(-4)}`
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
 class SelectedAccount extends Component {
