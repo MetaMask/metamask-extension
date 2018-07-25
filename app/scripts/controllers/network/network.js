@@ -9,6 +9,7 @@ const extend = require('xtend')
 const EthQuery = require('eth-query')
 const createEventEmitterProxy = require('../../lib/events-proxy.js')
 const log = require('loglevel')
+const urlUtil = require('url')
 const {
   ROPSTEN,
   RINKEBY,
@@ -163,6 +164,8 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureStandardProvider ({ rpcUrl }) {
+    // urlUtil handles malformed urls
+    rpcUrl = urlUtil.parse(rpcUrl).format()
     const providerParams = extend(this._baseProviderParams, {
       rpcUrl,
       engineParams: {
