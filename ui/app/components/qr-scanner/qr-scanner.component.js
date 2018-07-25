@@ -44,8 +44,11 @@ class QrScanner extends Component {
       Instascan.Camera.getCameras().then((cameras) => {
         if (cameras.length > 0) {
           this.scanner.start(cameras[0])
-          this.setState({ ready: true })
-          this.setState({ msg: 'Place the QR code in front of your camera so we can read it...'})
+          setTimeout(_ => {
+            this.setState({
+              ready: true,
+              msg: 'Place the QR code in front of your camera so we can read it...'})
+          }, 2000)
           console.log('QR-SCANNER: started scanning with camera', cameras[0])
         } else {
           this.setState({ msg: 'No camera found :('})
