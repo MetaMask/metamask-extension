@@ -49,6 +49,8 @@ function reduceApp (state, action) {
       },
     },
     sidebarOpen: false,
+    alertOpen: false,
+    alertMessage: null,
     networkDropdownOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
@@ -86,6 +88,19 @@ function reduceApp (state, action) {
     case actions.SIDEBAR_CLOSE:
       return extend(appState, {
         sidebarOpen: false,
+      })
+
+    // sidebar methods
+    case actions.ALERT_OPEN:
+      return extend(appState, {
+        alertOpen: true,
+        alertMessage: action.value,
+      })
+
+    case actions.ALERT_CLOSE:
+      return extend(appState, {
+        alertOpen: false,
+        alertMessage: null,
       })
 
     // modal methods:

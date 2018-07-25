@@ -27,19 +27,17 @@ const {
   NOTICE_ROUTE,
 } = require('../../routes')
 
+const { unconfirmedTransactionsCountSelector } = require('../../selectors/confirm-transaction')
+
 class Home extends Component {
   componentDidMount () {
     const {
       history,
-      unapprovedTxs = {},
-      unapprovedMsgCount = 0,
-      unapprovedPersonalMsgCount = 0,
-      unapprovedTypedMessagesCount = 0,
+      unconfirmedTransactionsCount = 0,
     } = this.props
 
     // unapprovedTxs and unapproved messages
-    if (Object.keys(unapprovedTxs).length ||
-      unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount > 0) {
+    if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE)
     }
   }
@@ -167,6 +165,7 @@ Home.propTypes = {
   isPopup: PropTypes.bool,
   isMouseUser: PropTypes.bool,
   t: PropTypes.func,
+  unconfirmedTransactionsCount: PropTypes.number,
 }
 
 function mapStateToProps (state) {
@@ -230,6 +229,7 @@ function mapStateToProps (state) {
 
     // state needed to get account dropdown temporarily rendering from app bar
     selected,
+    unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
   }
 }
 

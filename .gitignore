@@ -10,6 +10,10 @@ package
 .idea
 .vscode
 
+# VIM
+*.swp
+*.swo
+
 temp
 .tmp
 .sass-cache
