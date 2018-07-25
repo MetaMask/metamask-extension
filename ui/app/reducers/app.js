@@ -710,6 +710,15 @@ function reduceApp (state, action) {
         gasIsLoading: false,
       })
 
+    case actions.SHOW_DELETE_RPC:
+      return extend(appState, {
+        currentView: {
+          name: 'delete-rpc',
+          context: appState.currentView.context,
+        },
+        transForward: action.value,
+      })
+
     default:
       return appState
   }

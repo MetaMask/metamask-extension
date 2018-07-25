@@ -27,6 +27,13 @@ describe('config view actions', function () {
     })
   })
 
+  describe('SHOW_DELETE_RPC', function () {
+    it('should set appState.currentView.name to delete-rpc', function () {
+      const result = reducers(initialState, actions.showDeleteRPC())
+      assert.equal(result.appState.currentView.name, 'delete-rpc')
+    })
+  })
+
   describe('SET_RPC_TARGET', function () {
     it('sets the state.metamask.rpcTarget property of the state to the action.value', function () {
       const action = {

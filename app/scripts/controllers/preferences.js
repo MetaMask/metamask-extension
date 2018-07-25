@@ -344,6 +344,21 @@ class PreferencesController {
   }
 
   /**
+   * Removes a specified rpc url from the list.
+   *
+   * @param {string} url
+   * @returns {Promise<array>} The new array of updated RpcList objects
+   *
+   */
+  removeRpcUrl (_url) {
+    const rpcList = this.getFrequentRpcList()
+    const updatedRpcList = rpcList.filter(rpcUrl => rpcUrl !== _url)
+    this.store.updateState({ frequentRpcList: updatedRpcList })
+
+    return Promise.resolve(updatedRpcList)
+  }
+
+  /**
    * Updates the `featureFlags` property, which is an object. One property within that object will be set to a boolean.
    *
    * @param {string} feature A key that corresponds to a UI feature.
