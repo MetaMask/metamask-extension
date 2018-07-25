@@ -221,7 +221,9 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
+  SHOW_REMOVE_TOKEN_PAGE: 'SHOW_REMOVE_TOKEN_PAGE',
   showAddTokenPage,
+  showRemoveTokenPage,
   addToken,
   addTokens,
   removeToken,
@@ -1555,6 +1557,14 @@ function showAddTokenPage (transitionForward = true) {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
     value: transitionForward,
+  }
+}
+
+function showRemoveTokenPage (token, transitionForward = true) {
+  return {
+    type: actions.SHOW_REMOVE_TOKEN_PAGE,
+    value: transitionForward,
+    token,
   }
 }
 

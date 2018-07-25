@@ -269,6 +269,7 @@ AccountDetailScreen.prototype.tabSwitchView = function () {
         network,
         tokens,
         addToken: () => this.props.dispatch(actions.showAddTokenPage()),
+        removeToken: (token) => this.props.dispatch(actions.showRemoveTokenPage(token)),
       })
     default:
       return this.transactionList()
