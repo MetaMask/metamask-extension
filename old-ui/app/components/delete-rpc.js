@@ -18,7 +18,12 @@ function DeleteRpc () {
 }
 
 DeleteRpc.prototype.render = function () {
-  return h('.flex-column.flex-grow', [
+  return h('.flex-column.flex-grow', {
+    style: {
+      overflowX: 'auto',
+      overflowY: 'hidden',
+    }
+  }, [
     // subtitle and nav
     h('.section-title.flex-row.flex-center', [
       h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
