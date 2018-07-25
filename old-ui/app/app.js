@@ -704,7 +704,7 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
   const rpcTarget = provider.rpcTarget
 
   return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
+    if ((rpc === 'http://localhost:8545') || (provider.type === 'rpc' && rpc === rpcTarget)) {
       return null
     } else {
       return h(
@@ -717,7 +717,6 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
         [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
           rpc,
-          rpcTarget === rpc ? h('.check', '✓') : null,
         ]
       )
     }
