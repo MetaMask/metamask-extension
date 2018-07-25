@@ -20,6 +20,7 @@ const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
 const ConfirmResetAccount = require('./confirm-reset-account')
+const ConfirmRemoveAccount = require('./confirm-remove-account')
 const TransactionConfirmed = require('./transaction-confirmed')
 const WelcomeBeta = require('./welcome-beta')
 const Notification = require('./notification')
@@ -232,6 +233,19 @@ const MODALS = {
 
   CONFIRM_RESET_ACCOUNT: {
     contents: h(ConfirmResetAccount),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CONFIRM_REMOVE_ACCOUNT: {
+    contents: h(ConfirmRemoveAccount),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

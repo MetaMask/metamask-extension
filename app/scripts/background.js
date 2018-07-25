@@ -44,8 +44,8 @@ const notificationManager = new NotificationManager()
 global.METAMASK_NOTIFIER = notificationManager
 
 // setup sentry error reporting
-const release = platform.getVersion()
-const raven = setupRaven({ release })
+const releaseVersion = platform.getVersion()
+const raven = setupRaven({ releaseVersion })
 
 // browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
 // Internet Explorer 6-11
@@ -53,6 +53,7 @@ const isIE = !!document.documentMode
 // Edge 20+
 const isEdge = !isIE && !!window.StyleMedia
 
+let ipfsHandle
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
@@ -158,7 +159,7 @@ async function initialize () {
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
   log.debug('Nifty Wallet initialization complete.')
-  ipfsContent(initState.NetworkController.provider)
+  ipfsHandle = ipfsContent(initState.NetworkController.provider)
 }
 
 //
@@ -262,6 +263,10 @@ function setupController (initState, initLangCode) {
   })
   global.metamaskController = controller
 
+  controller.networkController.on('networkDidChange', () => {
+    ipfsHandle && ipfsHandle.remove()
+    ipfsHandle = ipfsContent(controller.networkController.providerStore.getState())
+  })
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
