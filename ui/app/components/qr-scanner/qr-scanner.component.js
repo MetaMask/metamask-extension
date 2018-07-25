@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { hideQrScanner, qrCodeDetected} from '../../actions'
 import Instascan from 'instascan'
+import Spinner from '../spinner'
 
 class QrScanner extends Component {
   static propTypes = {
@@ -13,9 +14,47 @@ class QrScanner extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      msg: 'Place the QR code in front of your camera so we can read it...',
+      ready: false,
+      msg: 'Accesing your camera...',
     }
     this.scanning = false
+  }
+
+  componentDidUpdate () {
+    if (this.props.visible && this.camera && !this.scanning) {
+      this.scanner = new Instascan.Scanner({
+        video: this.camera,
+        backgroundScan: false,
+        continuous: true,
+      })
+      this.scanner.addListener('scan', (content) => {
+        this.scanner.stop().then(_ => {
+          const result = this.parseContent(content)
+          if (result.type !== 'unknown') {
+            console.log('QR-SCANNER: CODE DETECTED', result)
+            this.props.qrCodeDetected(result)
+            this.props.hideQrScanner()
+            this.setState({ ready: false })
+          } else {
+            this.setState({msg: 'Error: We couldn\'t identify that QR code'})
+          }
+          this.scanning = false
+        })
+      })
+      Instascan.Camera.getCameras().then((cameras) => {
+        if (cameras.length > 0) {
+          this.scanner.start(cameras[0])
+          this.setState({ ready: true })
+          this.setState({ msg: 'Place the QR code in front of your camera so we can read it...'})
+          console.log('QR-SCANNER: started scanning with camera', cameras[0])
+        } else {
+          this.setState({ msg: 'No camera found :('})
+        }
+      }).catch(function (e) {
+        console.error(e)
+      })
+      this.scanning = true
+    }
   }
 
   parseContent (content) {
@@ -32,37 +71,13 @@ class QrScanner extends Component {
     return {type, values}
   }
 
-  componentDidUpdate () {
-    if (this.props.visible && this.camera && !this.scanning) {
-      const scanner = new Instascan.Scanner({
-        video: this.camera,
-        backgroundScan: false,
-        continuous: true,
-      })
-      scanner.addListener('scan', (content) => {
-        scanner.stop().then(_ => {
-          const result = this.parseContent(content)
-          if (result.type !== 'unknown') {
-            console.log('QR-SCANNER: CODE DETECTED', result)
-            this.props.qrCodeDetected(result)
-            this.props.hideQrScanner()
-          } else {
-            this.setState({msg: 'Error: We couldn\'t identify that QR code'})
-          }
-        })
-      })
-      Instascan.Camera.getCameras().then((cameras) => {
-        if (cameras.length > 0) {
-          scanner.start(cameras[0])
-          console.log('QR-SCANNER: started scanning with camera', cameras[0])
-        } else {
-          console.log('QR-SCANNER: no cameras found')
-        }
-      }).catch(function (e) {
-        console.error(e)
-      })
-      this.scanning = true
-    }
+
+  stopAndClose = () => {
+    this.scanner.stop().then(_ => {
+      this.scanning = false
+      this.props.hideQrScanner()
+      this.setState({ ready: false })
+    })
   }
 
   render () {
@@ -92,6 +107,8 @@ class QrScanner extends Component {
           <h3 style={{
             textAlign: 'center',
             marginBottom: '20px',
+            fontSize: '1.5rem',
+            fontWeight: '500',
           }}>
             Scan QR code
           </h3>
@@ -101,17 +118,22 @@ class QrScanner extends Component {
                 overflow: 'hidden',
                 width: '100%',
                 height: '275px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
               <video
                 style={{
                   width: 'auto',
                   height: '275px',
                   marginLeft: '-15%',
+                  display: this.state.ready ? 'block' : 'none',
                 }}
                 ref={(cam) => {
                   this.camera = cam
                 }}
               />
+             { !this.state.ready ? <Spinner color={'#F7C06C'} /> : null}
             </div>
           <div className={'qr-code-help'} style={{textAlign: 'center', fontSize: '12px', padding: '15px'}}>
             {this.state.msg}
@@ -132,7 +154,7 @@ class QrScanner extends Component {
             animationName: 'anim_171532470906313',
             animationTimingFunction: 'ease-out',
           }}
-          onClick={_ => this.props.hideQrScanner() }
+          onClick={this.stopAndClose}
         />
       </div>
     )
