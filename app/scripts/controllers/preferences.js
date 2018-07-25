@@ -24,6 +24,7 @@ class PreferencesController {
     const initState = extend({
       frequentRpcList: [],
       currentAccountTab: 'history',
+      addressTokens: {},
       tokens: [],
       useBlockie: false,
       featureFlags: {},
@@ -35,6 +36,16 @@ class PreferencesController {
     this.diagnostics = opts.diagnostics
 
     this.store = new ObservableStore(initState)
+
+    Object.defineProperty(this.store._state, 'tokens', {
+      get: () => {
+        const selectedAddress = this.store.getState().selectedAddress
+        const tokens = this.store.getState().addressTokens
+        // TODO when create vault
+        if (!(selectedAddress in tokens)) return []
+        return tokens[selectedAddress]
+      },
+    })
   }
 // PUBLIC METHODS
 
@@ -117,14 +128,16 @@ class PreferencesController {
    */
   addAddresses (addresses) {
     const identities = this.store.getState().identities
+    const addressTokens = this.store.getState().addressTokens
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) return
       // add missing identity
       const identityCount = Object.keys(identities).length
+      if (!(address in addressTokens)) addressTokens[address] = []
       identities[address] = { name: `Account ${identityCount + 1}`, address }
     })
-    this.store.updateState({ identities })
+    this.store.updateState({ identities, addressTokens })
   }
 
   /*
@@ -181,7 +194,8 @@ class PreferencesController {
   setSelectedAddress (_address) {
     return new Promise((resolve, reject) => {
       const address = normalizeAddress(_address)
-      this.store.updateState({ selectedAddress: address })
+      const tokens = this.store.getState().addressTokens[_address]
+      this.store.updateState({ selectedAddress: address, tokens: tokens })
       resolve()
     })
   }
@@ -233,7 +247,10 @@ class PreferencesController {
       tokens.push(newEntry)
     }
 
-    this.store.updateState({ tokens })
+    const selectedAddress = this.store.getState().selectedAddress
+    const addressTokens = this.store.getState().addressTokens
+    addressTokens[selectedAddress] = tokens
+    this.store.updateState({ addressTokens })
 
     return Promise.resolve(tokens)
   }
@@ -246,11 +263,13 @@ class PreferencesController {
    *
    */
   removeToken (rawAddress) {
-    const tokens = this.store.getState().tokens
+    const addressTokens = this.store.getState().addressTokens
+    const selectedAddress = this.store.getState().selectedAddress
+    
+    const updatedTokens = addressTokens[selectedAddress].filter(token => token.address !== rawAddress)
+    addressTokens[selectedAddress] = updatedTokens
+    this.store.updateState({ addressTokens, tokens: updatedTokens })
 
-    const updatedTokens = tokens.filter(token => token.address !== rawAddress)
-
-    this.store.updateState({ tokens: updatedTokens })
     return Promise.resolve(updatedTokens)
   }
 
