@@ -380,9 +380,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // TREZOR
       unlockTrezorAccount: nodeify(this.unlockTrezorAccount, this),
 
-      // QR code scanner
-      scanQrCode: nodeify(this.scanQrCode, this),
-
       // vault management
       submitPassword: nodeify(this.submitPassword, this),
 
@@ -657,21 +654,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const { identities } = this.preferencesController.store.getState()
     return { ...keyState, identities }
   }
-
-  scanQrCode () {
-    return new Promise((resolve, reject) => {
-      // Tell contentscript to inject the QR reader
-      this.platform.sendMessageToActiveTab('qr-code-scanner-init')
-      // Wait for the scanner to send something back
-      this.platform.addMessageListener(({ action, data }) => {
-        if (action && action === 'qr-code-scanner-data') {
-          const normalizedAddress = data.replace('ethereum:', '')
-          resolve(normalizedAddress)
-        }
-      })
-    })
-  }
-
 
   //
   // Account Management

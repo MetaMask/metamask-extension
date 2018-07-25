@@ -31,6 +31,12 @@ var actions = {
   ALERT_CLOSE: 'UI_ALERT_CLOSE',
   showAlert: showAlert,
   hideAlert: hideAlert,
+  QR_SCANNER_OPEN: 'UI_QR_SCANNER_OPEN',
+  QR_SCANNER_CLOSE: 'UI_QR_SCANNER_CLOSE',
+  QR_CODE_DETECTED: 'UI_QR_CODE_DETECTED',
+  showQrScanner,
+  hideQrScanner,
+  qrCodeDetected,
   // network dropdown open
   NETWORK_DROPDOWN_OPEN: 'UI_NETWORK_DROPDOWN_OPEN',
   NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
@@ -1752,6 +1758,25 @@ function hideAlert () {
   }
 }
 
+function showQrScanner () {
+  return {
+    type: actions.QR_SCANNER_OPEN,
+  }
+}
+
+function qrCodeDetected (qrCodeData) {
+  return {
+    type: actions.QR_CODE_DETECTED,
+    value: qrCodeData,
+  }
+}
+
+function hideQrScanner () {
+  return {
+    type: actions.QR_SCANNER_CLOSE,
+  }
+}
+
 
 function showLoadingIndication (message) {
   return {
@@ -2197,21 +2222,7 @@ function clearPendingTokens () {
 }
 
 function scanQrCode () {
-  log.debug(`background.scanQrCode`)
   return (dispatch, getState) => {
-    dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.scanQrCode((err, data) => {
-        log.debug(`background.scanQrCode resolved!`, err, data)
-        if (err) {
-          log.error(err)
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.hideLoadingIndication())
-        return resolve(data)
-      })
-    })
+    dispatch(actions.showQrScanner())
   }
 }

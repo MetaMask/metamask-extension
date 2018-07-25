@@ -39,16 +39,26 @@ export default class SendTransactionScreen extends PersistentForm {
     updateSendErrors: PropTypes.func,
     updateSendTokenBalance: PropTypes.func,
     scanQrCode: PropTypes.func,
+    qrCodeData: PropTypes.object,
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  scanQrCode = async () => {
-    const scannedAddress = await this.props.scanQrCode()
-    this.props.updateSendTo(scannedAddress)
-    this.updateGas({ to: scannedAddress })
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.qrCodeData) {
+      if (nextProps.qrCodeData.type === 'address') {
+        const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()
+        const currentAddress = this.props.to && this.props.to.toLowerCase()
+        if (currentAddress !== scannedAddress) {
+          this.props.updateSendTo(scannedAddress)
+          this.updateGas({ to: scannedAddress })
+
+          // Here we should clear props.qrCodeData
+        }
+      }
+    }
   }
 
   updateGas ({ to: updatedToAddress, amount: value } = {}) {
@@ -179,7 +189,7 @@ export default class SendTransactionScreen extends PersistentForm {
         <SendHeader history={history}/>
         <SendContent
           updateGas={(updateData) => this.updateGas(updateData)}
-          scanQrCode={_ => this.scanQrCode()}
+          scanQrCode={_ => this.props.scanQrCode()}
         />
         <SendFooter history={history}/>
       </div>

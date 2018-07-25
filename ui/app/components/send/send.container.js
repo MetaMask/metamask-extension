@@ -21,6 +21,7 @@ import {
   getSendFromObject,
   getSendTo,
   getTokenBalance,
+  getQrCodeData,
 } from './send.selectors'
 import {
   updateSendTo,
@@ -62,6 +63,7 @@ function mapStateToProps (state) {
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
     tokenToFiatRate: getSelectedTokenToFiatRate(state),
+    qrCodeData: getQrCodeData(state),
   }
 }
 

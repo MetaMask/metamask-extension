@@ -36,12 +36,6 @@ class ExtensionPlatform {
     extension.runtime.onMessage.addListener(cb)
   }
 
-  sendMessageToActiveTab (message, query = {}) {
-    extension.tabs.query(query, tabs => {
-      const activeTab = tabs.filter(tab => tab.active)[0]
-      extension.tabs.sendMessage(activeTab.id, message)
-    })
-  }
 }
 
 module.exports = ExtensionPlatform

@@ -39,6 +39,8 @@ const Modal = require('./components/modals/index').Modal
 // Global Alert
 const Alert = require('./components/alert')
 
+const QrScanner = require('./components/qr-scanner')
+
 const AppHeader = require('./components/app-header')
 
 import UnlockPage from './components/pages/unlock-page'
@@ -131,6 +133,8 @@ class App extends Component {
 
         // global alert
         h(Alert, {visible: this.props.alertOpen, msg: alertMessage}),
+
+        h(QrScanner, {visible: this.props.qrScannerOpen}),
 
         h(AppHeader),
 
@@ -270,6 +274,7 @@ App.propTypes = {
   currentView: PropTypes.object,
   sidebarOpen: PropTypes.bool,
   alertOpen: PropTypes.bool,
+  qrScannerOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
   isMascara: PropTypes.bool,
   isOnboarding: PropTypes.bool,
@@ -306,6 +311,7 @@ function mapStateToProps (state) {
     networkDropdownOpen,
     sidebarOpen,
     alertOpen,
+    qrScannerOpen,
     alertMessage,
     isLoading,
     loadingMessage,
@@ -333,6 +339,7 @@ function mapStateToProps (state) {
     networkDropdownOpen,
     sidebarOpen,
     alertOpen,
+    qrScannerOpen,
     alertMessage,
     isLoading,
     loadingMessage,

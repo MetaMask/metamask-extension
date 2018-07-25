@@ -50,7 +50,9 @@ function reduceApp (state, action) {
     },
     sidebarOpen: false,
     alertOpen: false,
+    qrScannerOpen: false,
     alertMessage: null,
+    qrCodeData: null,
     networkDropdownOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
@@ -90,7 +92,7 @@ function reduceApp (state, action) {
         sidebarOpen: false,
       })
 
-    // sidebar methods
+    // alert methods
     case actions.ALERT_OPEN:
       return extend(appState, {
         alertOpen: true,
@@ -102,6 +104,22 @@ function reduceApp (state, action) {
         alertOpen: false,
         alertMessage: null,
       })
+    // qr scanner methods
+    case actions.QR_SCANNER_OPEN:
+      return extend(appState, {
+        qrScannerOpen: true,
+      })
+
+    case actions.QR_SCANNER_CLOSE:
+      return extend(appState, {
+        qrScannerOpen: false,
+      })
+
+    case actions.QR_CODE_DETECTED:
+      return extend(appState, {
+        qrCodeData: action.value,
+      })
+
 
     // modal methods:
     case actions.MODAL_OPEN:
