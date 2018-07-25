@@ -8,7 +8,7 @@ const propsMethodSpies = {
   onHeaderClick: sinon.spy(),
 }
 
-describe.only('Confirm Detail Row Component', function () {
+describe('Confirm Detail Row Component', function () {
   let wrapper
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe.only('Confirm Detail Row Component', function () {
     />)
   })
 
-	describe.only('render', () => {
+	describe('render', () => {
     it('should render a div with a confirm-detail-row class', () => {
       assert.equal(wrapper.find('div.confirm-detail-row').length, 1)
     })
