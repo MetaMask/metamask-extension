@@ -79,7 +79,7 @@ describe('Metamask popup page', function () {
       assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
       delay(300)
     })
-
+/*  Should enable this test after Term of Use updated
     it('checks if the TOU button is disabled', async () => {
       const button = await driver.findElement(By.css('button')).isEnabled()
       assert.equal(button, false, 'disabled continue button')
@@ -87,7 +87,7 @@ describe('Metamask popup page', function () {
       await driver.executeScript('arguments[0].scrollIntoView(true)', element)
       await delay(700)
     })
-
+*/
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
       await button.click()
@@ -328,6 +328,40 @@ describe('Metamask popup page', function () {
     it('checks the token balance', async function () {
       const tokenBalance = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > h3'))
       assert.equal(await tokenBalance.getText(), '100 TST')
+    })
+  })
+
+  describe('Custom Rpc', function () {
+    it('switches to settings screen', async function () {
+      await driver.findElement(By.css('.sandwich-expando')).click()
+      await delay(200)
+      const settings = await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(2)'))
+      assert.equal(await settings.getText(), 'Settings')
+      await settings.click()
+      await delay(300)
+    })
+
+    it('add custom rpc', async function () {
+      const customUrl = 'http://test.com'
+      const input = await driver.findElement(By.id('new_rpc'))
+      input.sendKeys(customUrl)
+      await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(2) > button')).click()
+      await delay(400)
+      const customUrlElement = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'))
+      assert.equal(await customUrlElement.getText(), customUrl)
+    })
+
+    it('delete custom rpc', async function () {
+      await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button')).click()
+      await delay(300)
+      const titleConfirmPage = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
+      assert.equal(await titleConfirmPage.getText(), 'DELETE CUSTOM RPC')
+      const yesButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(3) > button:nth-child(1)'))
+      assert.equal(await yesButton.getText(), 'Yes')
+      await yesButton.click()
+      await delay(300)
+      const urlElement = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'))
+      assert.equal(await urlElement.getText(), 'POA Network')
     })
   })
 

@@ -31,7 +31,7 @@ DeleteRpc.prototype.render = function () {
     h('h3', {
         style: {
           textAlign: 'center',
-          padding: '10px'
+          padding: '10px',
         },
       },
       `Are you sure to delete ${this.props.url} ?`),
