@@ -178,6 +178,7 @@ function blacklistedDomainCheck () {
     'adyen.com',
     'gravityforms.com',
     'harbourair.com',
+    'ani.gamer.com.tw',
     'blueskybooking.com',
   ]
   var currentUrl = window.location.href
