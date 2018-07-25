@@ -1,13 +1,17 @@
 # Changelog
 
-## Current Master
+## Current Develop
 
-- Add new tokens auto detection
-- Remove rejected transactions from transaction history
-- Add Trezor Support
-- Allow to remove accounts (Imported and Hardware Wallets)
+## 4.9.0 Thur July 25 2018
+
+- [#4844](https://github.com/MetaMask/metamask-extension/pull/4844): Add new tokens auto detection
+- [#4667](https://github.com/MetaMask/metamask-extension/pull/4667): Remove rejected transactions from transaction history
+- [#4625](https://github.com/MetaMask/metamask-extension/pull/4625): Add Trezor Support
+- [#4625](https://github.com/MetaMask/metamask-extension/pull/4625/commits/523cf9ad33d88719520ae5e7293329d133b64d4d): Allow to remove accounts (Imported and Hardware Wallets)
 - [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
-- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): network.js: convert rpc protocol to lower case.
+- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): Allow the use of lowercase http prefix for custom rpc urls.
+- [#4814](https://github.com/MetaMask/metamask-extension/pull/4814): Add hex data input to send screen.
+- [#4691](https://github.com/MetaMask/metamask-extension/pull/4691): Redesign of the Confirm Transaction Screen.
 
 ## 4.8.0 Thur Jun 14 2018
 
