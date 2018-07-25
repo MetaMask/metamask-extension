@@ -720,7 +720,11 @@ div.message-container > div:first-child {
     transform: scale(1.1);
 }
 
-//Notification Modal
+.app-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
 .notification-modal-wrapper {
   display: flex;
