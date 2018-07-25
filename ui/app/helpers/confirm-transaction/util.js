@@ -16,6 +16,8 @@ import {
   conversionGreaterThan,
 } from '../../conversion-util'
 
+import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
+
 export function getTokenData (data = {}) {
   return abiDecoder.decodeMethod(data)
 }
@@ -113,4 +115,25 @@ export function formatCurrency (value, currencyCode) {
   return currencies.find(currency => currency.code === upperCaseCurrencyCode)
     ? currencyFormatter.format(Number(value), { code: upperCaseCurrencyCode })
     : value
+}
+
+export function convertTokenToFiat ({
+  value,
+  toCurrency,
+  conversionRate,
+  contractExchangeRate,
+}) {
+  const totalExchangeRate = conversionRate * contractExchangeRate
+
+  return conversionUtil(value, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    toCurrency,
+    numberOfDecimals: 2,
+    conversionRate: totalExchangeRate,
+  })
+}
+
+export function hasUnconfirmedTransactions (state) {
+  return unconfirmedTransactionsCountSelector(state) > 0
 }

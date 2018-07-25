@@ -472,7 +472,7 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      await closeAllWindowHandlesExcept(driver, [extension, dapp])
+      await waitUntilXWindowHandles(driver, 2)
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
     })
@@ -513,7 +513,7 @@ describe('MetaMask', function () {
     it('displays the contract creation data', async () => {
       const dataTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Data')]`))
       dataTab.click()
-      await (regularDelayMs)
+      await delay(regularDelayMs)
 
       await findElement(driver, By.xpath(`//div[contains(text(), '127.0.0.1')]`))
 
@@ -523,7 +523,7 @@ describe('MetaMask', function () {
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
       detailsTab.click()
-      await (regularDelayMs)
+      await delay(regularDelayMs)
     })
 
     it('confirms a deploy contract transaction', async () => {
@@ -548,7 +548,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       await driver.switchTo().window(extension)
-      await delay(regularDelayMs)
+      await delay(largeDelayMs)
 
       await findElements(driver, By.css('.tx-list-pending-item-container'))
       const [txListValue] = await findElements(driver, By.css('.tx-list-value'))
@@ -741,7 +741,7 @@ describe('MetaMask', function () {
     it('displays the token transfer data', async () => {
       const dataTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Data')]`))
       dataTab.click()
-      await (regularDelayMs)
+      await delay(regularDelayMs)
 
       const functionType = await findElement(driver, By.css('.confirm-page-container-content__function-type'))
       const functionTypeText = await functionType.getText()
@@ -753,7 +753,7 @@ describe('MetaMask', function () {
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
       detailsTab.click()
-      await (regularDelayMs)
+      await delay(regularDelayMs)
     })
 
     it('submits the transaction', async function () {
@@ -901,7 +901,7 @@ describe('MetaMask', function () {
     it('displays the token approval data', async () => {
       const dataTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Data')]`))
       dataTab.click()
-      await (regularDelayMs)
+      await delay(regularDelayMs)
 
       const functionType = await findElement(driver, By.css('.confirm-page-container-content__function-type'))
       const functionTypeText = await functionType.getText()
@@ -913,12 +913,12 @@ describe('MetaMask', function () {
 
       const detailsTab = await findElement(driver, By.xpath(`//li[contains(text(), 'Details')]`))
       detailsTab.click()
-      await (regularDelayMs)
+      await delay(regularDelayMs)
 
       const approvalWarning = await findElement(driver, By.css('.confirm-page-container-warning__warning'))
       const approvalWarningText = await approvalWarning.getText()
       assert(approvalWarningText.match(/By approving this/))
-      await (regularDelayMs)
+      await delay(regularDelayMs)
     })
 
     it('opens the gas edit modal', async () => {

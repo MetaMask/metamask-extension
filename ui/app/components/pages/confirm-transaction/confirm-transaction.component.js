@@ -8,6 +8,7 @@ import ConfirmSendEther from '../confirm-send-ether'
 import ConfirmSendToken from '../confirm-send-token'
 import ConfirmDeployContract from '../confirm-deploy-contract'
 import ConfirmApprove from '../confirm-approve'
+import ConfirmTokenTransactionBase from '../confirm-token-transaction-base'
 import ConfTx from '../../../conf-tx'
 import {
   DEFAULT_ROUTE,
@@ -16,6 +17,7 @@ import {
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_SEND_TOKEN_PATH,
   CONFIRM_APPROVE_PATH,
+  CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../routes'
@@ -136,6 +138,11 @@ export default class ConfirmTransaction extends Component {
             exact
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_APPROVE_PATH}`}
             component={ConfirmApprove}
+          />
+          <Route
+            exact
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TRANSFER_FROM_PATH}`}
+            component={ConfirmTokenTransactionBase}
           />
           <Route
             exact

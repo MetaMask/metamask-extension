@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../confirm-page-container'
 import { formatCurrency } from '../../../helpers/confirm-transaction/util'
-import { isBalanceSufficient } from '../../send_/send.utils'
+import { isBalanceSufficient } from '../../send/send.utils'
 import { DEFAULT_ROUTE } from '../../../routes'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
@@ -54,6 +54,8 @@ export default class ConfirmTransactionBase extends Component {
     detailsComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
+    ethTotalTextOverride: PropTypes.string,
+    fiatTotalTextOverride: PropTypes.string,
     hideData: PropTypes.bool,
     hideDetails: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
@@ -146,6 +148,8 @@ export default class ConfirmTransactionBase extends Component {
       currentCurrency,
       fiatTransactionTotal,
       ethTransactionTotal,
+      fiatTotalTextOverride,
+      ethTotalTextOverride,
       hideDetails,
     } = this.props
 
@@ -153,14 +157,16 @@ export default class ConfirmTransactionBase extends Component {
       return null
     }
 
+    const formattedCurrency = formatCurrency(fiatTransactionTotal, currentCurrency)
+
     return (
       detailsComponent || (
         <div className="confirm-page-container-content__details">
           <div className="confirm-page-container-content__gas-fee">
             <ConfirmDetailRow
               label="Gas Fee"
-              fiatFee={formatCurrency(fiatTransactionFee, currentCurrency)}
-              ethFee={ethTransactionFee}
+              fiatText={formatCurrency(fiatTransactionFee, currentCurrency)}
+              ethText={`\u2666 ${ethTransactionFee}`}
               headerText="Edit"
               headerTextClassName="confirm-detail-row__header-text--edit"
               onHeaderClick={() => this.handleEditGas()}
@@ -169,11 +175,11 @@ export default class ConfirmTransactionBase extends Component {
           <div>
             <ConfirmDetailRow
               label="Total"
-              fiatFee={formatCurrency(fiatTransactionTotal, currentCurrency)}
-              ethFee={ethTransactionTotal}
+              fiatText={fiatTotalTextOverride || formattedCurrency}
+              ethText={ethTotalTextOverride || `\u2666 ${ethTransactionTotal}`}
               headerText="Amount + Gas Fee"
               headerTextClassName="confirm-detail-row__header-text--total"
-              fiatFeeColor="#2f9ae0"
+              fiatTextColor="#2f9ae0"
             />
           </div>
         </div>
@@ -206,17 +212,21 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-page-container-content__data-box-label">
           {`${t('functionType')}:`}
           <span className="confirm-page-container-content__function-type">
-            { name }
+            { name || t('notFound') }
           </span>
         </div>
-        <div className="confirm-page-container-content__data-box">
-          <div className="confirm-page-container-content__data-field-label">
-            { `${t('parameters')}:` }
-          </div>
-          <div>
-            <pre>{ JSON.stringify(params, null, 2) }</pre>
-          </div>
-        </div>
+        {
+          params && (
+            <div className="confirm-page-container-content__data-box">
+              <div className="confirm-page-container-content__data-field-label">
+                { `${t('parameters')}:` }
+              </div>
+              <div>
+                <pre>{ JSON.stringify(params, null, 2) }</pre>
+              </div>
+            </div>
+          )
+        }
         <div className="confirm-page-container-content__data-box-label">
           {`${t('hexData')}:`}
         </div>
@@ -297,7 +307,7 @@ export default class ConfirmTransactionBase extends Component {
         toName={toName}
         toAddress={toAddress}
         showEdit={onEdit && !isTxReprice}
-        action={action || name}
+        action={action || name || this.context.t('unknownFunction')}
         title={title || `${fiatConvertedAmount} ${currentCurrency.toUpperCase()}`}
         subtitle={subtitle || `\u2666 ${ethTransactionAmount}`}
         hideSubtitle={hideSubtitle}
