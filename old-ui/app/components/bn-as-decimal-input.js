@@ -55,7 +55,9 @@ BnAsDecimalInput.prototype.render = function () {
             display: 'block',
             textAlign: 'right',
             backgroundColor: 'transparent',
-            border: '1px solid #bdbdbd',
+            height: '32px',
+            borderRadius: '3px',
+            border: '1px solid #e2e2e2',
 
           }, style),
           value: newValue,

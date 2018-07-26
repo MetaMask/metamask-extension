@@ -141,12 +141,16 @@ SendTransactionScreen.prototype.render = function () {
       h('h3.flex-center', {
         style: {
           color: '#333333',
-          marginTop: '15px',
-          marginBottom: '16px',
+          marginTop: '18px',
+          marginBottom: '14px',
         },
       }, [
         // back button
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+          style: {
+            position: 'absolute',
+            left: '30px',
+          },
           onClick: this.back.bind(this),
         }),
         h('h2.page-subtitle', 'Send Transaction'),

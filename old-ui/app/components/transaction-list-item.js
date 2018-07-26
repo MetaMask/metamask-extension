@@ -84,6 +84,20 @@ TransactionListItem.prototype.render = function () {
   const nonce = txParams.nonce ? numberToBN(txParams.nonce).toString(10) : ''
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
+  const valueStyle = {
+    fontFamily: 'Nunito-Bold',
+    width: '100%',
+    textAlign: 'right',
+    fontSize: '14px',
+    color: '#333333',
+  }
+
+  const dimStyle = {
+    fontFamily: 'Nunito-Regular',
+    color: '#333333',
+    marginLeft: '5px',
+    fontSize: '14px',
+  }
   return (
     h('.transaction-list-item.flex-column', {
       onClick: (event) => {
@@ -140,8 +154,10 @@ TransactionListItem.prototype.render = function () {
 
         // Places a copy button if tx is successful, else places a placeholder empty div.
         transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
-
+        
         isTx ? h(EthBalance, {
+          valueStyle,
+          dimStyle,
           value: txParams.value,
           conversionRate,
           currentCurrency,

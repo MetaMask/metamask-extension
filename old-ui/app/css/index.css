@@ -36,6 +36,7 @@ html {
 .app-primary {
   display: flex;
   background: #ffffff;
+  width: 100%;
 }
 
 input:focus, textarea:focus {
@@ -82,7 +83,7 @@ button, input[type="submit"] {
   font-size: 14px;
   /* default green */
   background: #8fdc97;
-  box-shadow: 0px 5px 10px 0px rgba(92, 52, 162, 0.3);
+  /*box-shadow: 0px 5px 10px 0px rgba(92, 52, 162, 0.3);*/
 }
 
 .btn-green, input[type="submit"].btn-green {
@@ -186,6 +187,10 @@ h2.page-subtitle {
   background-size: cover;
   border-radius: 100%;
   border: 3px solid gray;
+}
+
+textarea {
+  border: 1px solid #e2e2e2;
 }
 
 textarea.twelve-word-phrase {
@@ -347,7 +352,7 @@ input.large-input, textarea.large-input {
 }
 
 input.large-input {
-  height: 36px;
+  height: 32px;
 }
 
 .letter-spacey {
@@ -363,7 +368,7 @@ input.large-input {
 }
 
 .accounts-section .horizontal-line {
-  margin: 0px 18px;
+  margin: 0px 20px;
 }
 
 .accounts-list-option {
@@ -514,12 +519,14 @@ input.large-input {
 }
 
 .send-screen section {
-  margin: 8px 16px;
+  margin: 10px 30px;
 }
 
 .send-screen input {
   width: 100%;
-  font-size: 12px;
+  font-size: 14px;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
 }
 
 /* Ether Balance Widget */
@@ -704,13 +711,15 @@ input.large-input {
   text-overflow: ellipsis;
   width: 5em;
   font-size: 14px;
-  font-family: "Montserrat Light";
+  font-family: "Nunito Regular";
   margin-left: 5px;
+  color: #777777;
 }
 
 .qr-header {
-    font-size: 25px;
-    margin-top: 40px;
+  font-family: "Nunito SemiBold";
+  font-size: 16px;
+  margin-top: 30px;
 }
 
 .qr-message {

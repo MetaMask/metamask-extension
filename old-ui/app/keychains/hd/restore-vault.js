@@ -26,13 +26,14 @@ RestoreVaultScreen.prototype.render = function () {
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
+          fontFamily: 'Nunito SemiBold',
+          background: '#ffffff',
+          color: '#333333',
           marginBottom: 24,
           width: '100%',
-          fontSize: '20px',
+          fontSize: '16px',
           padding: 6,
         },
       }, [
@@ -40,7 +41,13 @@ RestoreVaultScreen.prototype.render = function () {
       ]),
 
       // wallet seed entry
-      h('h3', 'Wallet Seed'),
+      h('h3.flex-left', {
+        style: {
+          width: '100%',
+          marginBottom: '20px',
+          marginLeft: '60px',
+        }
+      }, 'Wallet Seed'),
       h('textarea.twelve-word-phrase.letter-spacey', {
         placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
       }),
@@ -54,8 +61,8 @@ RestoreVaultScreen.prototype.render = function () {
           persistentFormId: 'password',
         },
         style: {
-          width: 260,
-          marginTop: 12,
+          width: 300,
+          marginTop: 20,
         },
       }),
 
@@ -69,8 +76,8 @@ RestoreVaultScreen.prototype.render = function () {
           persistentFormId: 'password-confirmation',
         },
         style: {
-          width: 260,
-          marginTop: 16,
+          width: 300,
+          marginTop: 20,
         },
       }),
 
@@ -80,16 +87,20 @@ RestoreVaultScreen.prototype.render = function () {
 
       // submit
 
-      h('.flex-row.flex-space-between', {
+      h('.flex-row.flex-space-between.flex-right', {
         style: {
-          marginTop: 30,
-          width: '50%',
+          marginTop: 20,
+          width: '100%',
+          marginRight: '60px',
         },
       }, [
 
         // cancel
         h('button.btn-violet', {
           onClick: this.showInitializeMenu.bind(this),
+          style: {
+            marginRight: '10px',
+          }
         }, 'Cancel'),
 
         // submit

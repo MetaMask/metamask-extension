@@ -379,6 +379,13 @@
 }
 
 @font-face {
+  font-family: 'Nunito SemiBold';
+    src: url('/fonts/Nunito/Nunito-SemiBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Nunito Bold';
     src: url('/fonts/Nunito/Nunito-Bold.ttf') format('truetype');
   font-weight: normal;

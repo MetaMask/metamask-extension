@@ -74,8 +74,8 @@ ConfigScreen.prototype.render = function () {
               style: {
                 width: 'inherit',
                 flex: '1 0 auto',
-                height: '30px',
-                margin: '8px',
+                height: '32px',
+                margin: '20px 20px 0 0',
               },
               onKeyPress (event) {
                 if (event.key === 'Enter') {
@@ -88,6 +88,7 @@ ConfigScreen.prototype.render = function () {
             h('button', {
               style: {
                 alignSelf: 'center',
+                marginTop: '20px',
               },
               onClick (event) {
                 event.preventDefault()
@@ -102,7 +103,11 @@ ConfigScreen.prototype.render = function () {
 
           currentConversionInformation(metamaskState, state),
 
-          h('hr.horizontal-line'),
+          h('hr.horizontal-line', {
+            style: {
+              marginTop: '20px',
+            }
+          }),
 
           h('div', {
             style: {
@@ -132,7 +137,11 @@ ConfigScreen.prototype.render = function () {
             }, 'Download State Logs'),
           ]),
 
-          h('hr.horizontal-line'),
+          h('hr.horizontal-line', {
+            style: {
+              marginTop: '20px',
+            }
+          }),
 
           h('div', {
             style: {
@@ -150,7 +159,11 @@ ConfigScreen.prototype.render = function () {
             }, 'Reveal Seed Words'),
           ]),
 
-          h('hr.horizontal-line'),
+          h('hr.horizontal-line', {
+            style: {
+              marginTop: '20px',
+            }
+          }),
 
           h('div', {
             style: {

@@ -113,11 +113,7 @@ App.prototype.render = function () {
       this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
       // panel content
-      h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
-        style: {
-          width: '100%',
-        },
-      }, [
+      h('.app-primary' + (transForward ? '.from-right' : '.from-left'), [
         this.renderPrimary(),
       ]),
     ])
@@ -605,15 +601,35 @@ App.prototype.renderPrimary = function () {
           height: '100%',
           top: '0px',
           left: '0px',
+          width: '100%',
         },
       }, [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
-          onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAddress)),
-          style: {
-            marginLeft: '10px',
-            marginTop: '50px',
-          },
-        }),
+            onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAddress)),
+            style: {
+              marginLeft: '10px',
+              marginTop: '50px',
+              position: 'absolute',
+              left: '0',
+            },
+          }),
+        h('.section-title.flex-row.flex-center', [
+          /*h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+            onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAddress)),
+            style: {
+              marginLeft: '10px',
+              marginTop: '50px',
+            },
+          }),*/
+          h('h2.page-subtitle', {
+            style: {
+              fontFamily: 'Nunito SemiBold',
+              marginTop: '50px',
+              marginBottom: '0px',
+              textAlign: 'center',
+            }
+          }, 'QR Code'),
+        ]),
         h('div', {
           style: {
             position: 'absolute',

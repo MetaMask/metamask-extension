@@ -12,7 +12,7 @@ class Dropdown extends Component {
 
     const innerStyleDefaults = extend({
       borderRadius: '4px',
-      padding: '8px 16px',
+      padding: '15px 30px',
       background: 'rgba(71, 28, 115, 0.95)',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     }, innerStyle)
@@ -70,7 +70,7 @@ class DropdownMenuItem extends Component {
         },
         style: Object.assign({
           listStyle: 'none',
-          padding: '8px 0px 8px 0px',
+          padding: '15px 0px 15px 0px',
           fontSize: '16px',
           fontStyle: 'normal',
           fontFamily: 'Nunito Regular',
