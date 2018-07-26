@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const request = require('request-promise')
 const VERSION = require('../dist/chrome/manifest.json').version;
@@ -14,6 +12,7 @@ async function start () {
   console.log('CIRCLE_ARTIFACTS', CIRCLE_ARTIFACTS)
   const CIRCLE_BUILD_NUM = process.env.CIRCLE_BUILD_NUM
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM)
+  let releaseId;
 
   const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7)
   const CREATE_RELEASE_URI = `https://api.github.com/repos/Natalya11444/metamask-extension/releases?tag_name=v` + VERSION
@@ -27,5 +26,12 @@ async function start () {
     headers: {
       'Authorization': `token ${GITHUB_TOKEN}`,
     },
+  }).then(function (response) {
+    releaseId =  response.id
+    console.log('releaseId: ' + releaseId );
+
   })
+    .catch(function (err) {
+      console.error('error in request:' + err);
+    });
 }

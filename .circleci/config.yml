@@ -343,7 +343,7 @@ jobs:
          destination: test-artifacts
      - run:
          name: build:announce
-         command: ./development/publish-release.js
+         command: node ./development/publish-release.js
 
     job-publish-postrelease:
       docker:
