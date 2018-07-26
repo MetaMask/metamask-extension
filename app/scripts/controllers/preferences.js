@@ -204,20 +204,18 @@ class PreferencesController {
    *
    */
   setSelectedAddress (_address) {
-    return new Promise((resolve, reject) => {
-      const address = normalizeAddress(_address)
-      const addressTokens = this.store.getState().addressTokens
-      const providerType = this.network.providerStore.getState().type
+    const address = normalizeAddress(_address)
+    const addressTokens = this.store.getState().addressTokens
+    const providerType = this.network.providerStore.getState().type
 
-      if (!(providerType in addressTokens)) addressTokens[providerType] = {}
+    if (!(providerType in addressTokens)) addressTokens[providerType] = {}
 
-      if (!(address in addressTokens[providerType])) addressTokens[providerType][address] = []
+    if (!(address in addressTokens[providerType])) addressTokens[providerType][address] = []
 
-      const tokens = addressTokens[providerType][address]
+    const tokens = addressTokens[providerType][address]
 
-      this.store.updateState({ selectedAddress: address, tokens })
-      resolve()
-    })
+    this.store.updateState({ selectedAddress: address, tokens })
+    return Promise.resolve(tokens)
   }
 
   /**
