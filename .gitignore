@@ -11,6 +11,10 @@ package
 .vscode
 .sublime-project
 
+# VIM
+*.swp
+*.swo
+
 temp
 .tmp
 .sass-cache

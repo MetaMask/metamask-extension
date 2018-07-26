@@ -59,6 +59,7 @@ module.exports = {
   allNull,
   getTokenAddressFromTokenObject,
   checksumAddress,
+  addressSlicer,
 }
 
 function valuesFor (obj) {
@@ -302,4 +303,12 @@ function getTokenAddressFromTokenObject (token) {
  */
 function checksumAddress (address) {
   return address ? ethUtil.toChecksumAddress(address) : ''
+}
+
+function addressSlicer (address = '') {
+  if (address.length < 11) {
+    return address
+  }
+
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
 }

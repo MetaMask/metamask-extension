@@ -79,7 +79,7 @@ class AccountTracker {
     })
 
     this.addAccounts(accountsToAdd)
-    this.removeAccounts(accountsToRemove)
+    this.removeAccount(accountsToRemove)
   }
 
   /**
@@ -108,7 +108,7 @@ class AccountTracker {
    * @param {array} an array of hex addresses to stop tracking
    *
    */
-  removeAccounts (addresses) {
+  removeAccount (addresses) {
     const accounts = this.store.getState().accounts
     // remove each state object
     addresses.forEach(address => {
