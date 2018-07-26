@@ -27,6 +27,11 @@ async function runFirstTimeUsageTest(assert, done) {
 
   const app = $('#app-content')
 
+  // Selects new ui
+  const tryNewUIButton = (await findAsync(app, 'button.negative'))[0]
+  tryNewUIButton.click()
+  await timeout()
+
   // recurse notices
   while (true) {
     const button = await findAsync(app, 'button')
