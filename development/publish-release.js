@@ -1,6 +1,7 @@
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const request = require('request-promise')
+const request = require('request-promise');
 const VERSION = require('../dist/chrome/manifest.json').version;
+const fs = require('fs');
 
 start().catch(console.error);
 
@@ -25,10 +26,28 @@ async function start () {
     body: "New release",
     headers: {
       'Authorization': `token ${GITHUB_TOKEN}`,
-    },
-  }).then(function (response) {
+      'User-Agent': 'Nifty Wallet'
+    }
+  }).then(async function (response) {
     releaseId =  response.id
     console.log('releaseId: ' + releaseId );
+
+    const UPLOAD_ASSET_URL = "https://api.github.com/repos/Natalya11444/metamask-extension/releases/" + releaseId + "/assets?name=";
+    await request({
+      method: 'POST',
+      uri: UPLOAD_ASSET_URL + `metamask-chrome-${VERSION}.zip`,
+      body: fs.readFileSync('./builds/metamask-chrome-${VERSION}.zip'),
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        "Content-Type" : "application/zip",
+        'User-Agent': 'Nifty Wallet'
+      }
+    })
+
+    const CHROME = `${BUILD_LINK_BASE}/builds/metamask-chrome-${VERSION}.zip`
+    const FIREFOX = `${BUILD_LINK_BASE}/builds/metamask-firefox-${VERSION}.zip`
+    const EDGE = `${BUILD_LINK_BASE}/builds/metamask-edge-${VERSION}.zip`
+    const OPERA = `${BUILD_LINK_BASE}/builds/metamask-opera-${VERSION}.zip`
 
   })
     .catch(function (err) {
