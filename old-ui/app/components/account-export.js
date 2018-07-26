@@ -35,37 +35,46 @@ ExportAccountView.prototype.render = function () {
   if (notExporting) return h('div')
 
   if (exportRequested) {
-    const warning = `Export private keys at your own risk.`
+    const warning = `Export private keys at your own risk`
     return (
       h('div', {
         style: {
           display: 'inline-block',
-          textAlign: 'center',
+          textAlign: 'right',
+          width: '100%',
         },
       },
         [
           h('div', {
             key: 'exporting',
             style: {
-              margin: '0 20px',
+              margin: '0 30px',
             },
           }, [
-            h('p.error', warning),
+            h('p.error',{
+              style: {
+                color: '#333333',
+                marginBottom: '0px',
+                marginTop: '30px',
+                textAlign: 'center',
+              }
+            }, warning),
             h('input#exportAccount.sizing-input', {
               type: 'password',
-              placeholder: 'confirm password',
+              placeholder: 'Confirm Password',
               onKeyPress: this.onExportKeyPress.bind(this),
               style: {
                 position: 'relative',
-                top: '1.5px',
-                marginBottom: '7px',
+                top: '27px',
+                marginBottom: '20px',
+                width: '100%',
               },
             }),
           ]),
           h('div', {
             key: 'buttons',
             style: {
-              margin: '0 20px',
+              margin: '25px 30px',
             },
           },
             [
@@ -95,30 +104,47 @@ ExportAccountView.prototype.render = function () {
 
     return h('div.privateKey', {
       style: {
-        margin: '0 20px',
+        margin: '30px 30px',
+        width: '100%',
+        textAlign: 'center',
       },
     }, [
-      h('label', 'Your private key (click to copy):'),
+      h('label', {
+        style: {
+          textAlign: 'center',
+        }
+      }, 'Your private key (click to copy)'),
       h('p.error.cursor-pointer', {
         style: {
+          paddingTop: '25px',
           textOverflow: 'ellipsis',
           overflow: 'hidden',
           webkitUserSelect: 'text',
           maxWidth: '275px',
+          color: '#333333',
+          textAlign: 'center',
+          marginBottom: '0px',
         },
         onClick: function (event) {
           copyToClipboard(ethUtil.stripHexPrefix(accountDetail.privateKey))
         },
       }, plainKey),
-      h('button.btn-violet', {
-        onClick: () => exportAsFile(`Nifty Wallet ${nickname} Private Key`, plainKey),
-      }, 'Save as File'),
-      h('button', {
+      h('div', {
         style: {
-          marginLeft: '10px',
-        },
-        onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-      }, 'Done'),
+          textAlign: 'right',
+          marginTop: '30px',
+        }
+      }, [
+        h('button.btn-violet', {
+          onClick: () => exportAsFile(`Nifty Wallet ${nickname} Private Key`, plainKey),
+        }, 'Save as File'),
+        h('button', {
+          style: {
+            marginLeft: '10px',
+          },
+          onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
+        }, 'Done'),
+      ])
     ])
   }
 }
