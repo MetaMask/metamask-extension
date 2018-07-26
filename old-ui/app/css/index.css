@@ -726,6 +726,22 @@ div.message-container > div:first-child {
   flex-direction: column;
 }
 
+.app-bar__new-ui-banner {
+  background: #33A4E7;
+  color: white;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 8px;
+  font-family: Roboto, Arial, sans-serif;
+  font-weight: 400;
+  width: 100%;
+}
+
+.banner__link {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .notification-modal-wrapper {
   display: flex;
   flex-direction: column;

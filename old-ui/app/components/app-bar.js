@@ -28,6 +28,16 @@ module.exports = class AppBar extends Component {
     provider: PropTypes.any.isRequired,
   }
 
+  static renderSpace () {
+    return (
+      h('span', {
+        dangerouslySetInnerHTML: {
+          __html: '&nbsp;',
+        },
+      })
+    )
+  }
+
   state = {
     isNetworkMenuOpen: false,
   }
@@ -52,7 +62,43 @@ module.exports = class AppBar extends Component {
 
     return (
       h('div.app-bar', [
+        this.renderAppBarNewUiNotice(),
         this.renderAppBarAppHeader(),
+      ])
+    )
+  }
+
+  renderAppBarNewUiNotice () {
+    const {dispatch} = this.props
+
+    return (
+      h('div.app-bar__new-ui-banner', {
+        style: {
+          height: '28px',
+          zIndex: 12,
+        },
+      }, [
+        'Try the New MetaMask',
+        AppBar.renderSpace(),
+        h('span.banner__link', {
+          onClick () {
+            dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
+          },
+        }, [
+          'Now',
+        ]),
+        AppBar.renderSpace(),
+        'or',
+        AppBar.renderSpace(),
+        h('span.banner__link', {
+          onClick () {
+            global.platform.openWindow({
+              url: 'https://medium.com/metamask/74dba32cc7f7',
+            })
+          },
+        }, [
+          'Learn More',
+        ]),
       ])
     )
   }
@@ -178,7 +224,7 @@ module.exports = class AppBar extends Component {
       style: {
         position: 'absolute',
         left: '2px',
-        top: '36px',
+        top: '64px',
       },
       innerStyle: {
         padding: '2px 16px 2px 0px',
@@ -347,7 +393,7 @@ module.exports = class AppBar extends Component {
       style: {
         position: 'absolute',
         right: '2px',
-        top: '38px',
+        top: '66px',
       },
       innerStyle: {},
     }, [
