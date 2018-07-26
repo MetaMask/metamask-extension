@@ -17,7 +17,12 @@ TokenCell.prototype.render = function () {
 
   return (
     h('li.token-cell', {
-      style: { cursor: network === '1' ? 'pointer' : 'default' },
+      style: { 
+        cursor: network === '1' ? 'pointer' : 'default',
+        borderBottom: props.isLastTokenCell ? 'none' : '1px solid #e2e2e2',
+        padding: '20px 0',
+        margin: '0 20px',
+      },
       onClick: this.view.bind(this, address, userAddress, network),
     }, [
 
@@ -27,7 +32,12 @@ TokenCell.prototype.render = function () {
         network,
       }),
 
-      h('h3', `${string || 0} ${symbol}`),
+      h('h3', {
+        style: {
+          fontFamily: 'Nunito Bold',
+          fontSize: '14px',
+        }
+      }, `${string || 0} ${symbol}`),
 
       h('span', { style: { flex: '1 0 auto' } }),
 
@@ -38,6 +48,8 @@ TokenCell.prototype.render = function () {
           this.props.removeToken({ address, symbol, string, network, userAddress })
         },
       }, ''),
+
+      h('hr')
 
       /*
       h('button', {

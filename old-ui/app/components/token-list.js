@@ -48,11 +48,13 @@ TokenList.prototype.render = function () {
     ])
   }
 
-  const tokenViews = tokens.map((tokenData) => {
+  const tokenViews = tokens.map((tokenData, ind) => {
     tokenData.network = network
     tokenData.userAddress = userAddress
+    const isLastTokenCell = ind === (tokens.length - 1)
     return h(TokenCell, {
       ...tokenData,
+      isLastTokenCell,
       removeToken: this.props.removeToken,
     })
   })
