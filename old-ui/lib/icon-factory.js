@@ -2,6 +2,7 @@ var iconFactory
 const isValidAddress = require('ethereumjs-util').isValidAddress
 const toChecksumAddress = require('ethereumjs-util').toChecksumAddress
 const contractMap = require('eth-contract-metadata')
+const colors = require('../../colors')
 
 module.exports = function (jazzicon) {
   if (!iconFactory) {
@@ -37,7 +38,8 @@ IconFactory.prototype.generateIdenticonSvg = function (address, diameter) {
 // creates a new identicon
 IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
   var numericRepresentation = jsNumberForAddress(address)
-  var identicon = this.jazzicon(diameter, numericRepresentation)
+  this.jazzicon.setColorsPalette(colors)
+  var identicon = this.jazzicon.generateIdenticon(diameter, numericRepresentation)
   return identicon
 }
 
