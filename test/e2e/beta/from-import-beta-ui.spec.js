@@ -229,6 +229,16 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   describe('Add an account', () => {
+    it('switches to localhost', async () => {
+      const networkDropdown = await findElement(driver, By.css('.network-name'))
+      await networkDropdown.click()
+      await delay(regularDelayMs)
+
+      const [localhost] = await findElements(driver, By.xpath(`//span[contains(text(), 'Localhost')]`))
+      await localhost.click()
+      await delay(largeDelayMs * 2)
+    })
+    
     it('choose Create Account from the account menu', async () => {
       await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)
