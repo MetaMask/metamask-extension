@@ -20,10 +20,17 @@ async function start() {
     + "&target_commitish=" + SHORT_SHA1 + "&name=v" + VERSION;
   console.log(`Posting to: ${CREATE_RELEASE_URI}`)
 
+  const releaseBody = `
+  <details>
+    <summary>
+      New release
+    </summary>
+  </details>
+  `
   await request({
     method: 'POST',
     uri: CREATE_RELEASE_URI,
-    body: "New release",
+    body: releaseBody,
     headers: {
       'Authorization': `token ${GITHUB_TOKEN}`,
       'User-Agent': 'Nifty Wallet'
