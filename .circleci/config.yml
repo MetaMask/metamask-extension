@@ -84,9 +84,9 @@ workflows:
             - job-screens
 #            - all-tests-pass
       - job-publish-release:
-          filters:
-            branches:
-              only: master
+#          filters:
+#            branches:
+#              only: master
           requires:
             - prep-deps-npm
             - prep-build
@@ -343,7 +343,7 @@ jobs:
          destination: test-artifacts
      - run:
          name: build:announce
-         command: ./development/metamaskbot-build-announce.js
+         command: ./development/publish-release.js
 
     job-publish-postrelease:
       docker:
