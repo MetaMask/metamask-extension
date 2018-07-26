@@ -38,7 +38,7 @@ function fiatDisplay (fiatDisplayNumber, fiatSuffix) {
       style: {
         alignItems: 'flex-end',
         lineHeight: '13px',
-        fontFamily: 'Montserrat Light',
+        fontFamily: 'Nunito Light',
         textRendering: 'geometricPrecision',
       },
     }, [

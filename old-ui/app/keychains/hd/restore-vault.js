@@ -88,14 +88,14 @@ RestoreVaultScreen.prototype.render = function () {
       }, [
 
         // cancel
-        h('button.primary', {
+        h('button.btn-violet', {
           onClick: this.showInitializeMenu.bind(this),
-        }, 'CANCEL'),
+        }, 'Cancel'),
 
         // submit
-        h('button.primary', {
+        h('button', {
           onClick: this.createNewVaultAndRestore.bind(this),
-        }, 'OK'),
+        }, 'Ok'),
 
       ]),
     ])

@@ -185,11 +185,8 @@ SendTransactionScreen.prototype.render = function () {
           },
         }),
 
-        h('button.primary', {
+        h('button', {
           onClick: this.onSubmit.bind(this),
-          style: {
-            textTransform: 'uppercase',
-          },
         }, 'Next'),
 
       ]),

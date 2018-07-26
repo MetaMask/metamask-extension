@@ -129,7 +129,7 @@ TokenList.prototype.renderTokenStatusBar = function () {
         alignItems: 'center',
       },
     }, [
-      'ADD TOKEN',
+      'Add Token',
     ]),
   ])
 }

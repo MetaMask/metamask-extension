@@ -66,7 +66,7 @@ UnlockScreen.prototype.render = function () {
           },
         }, warning),
 
-        h('button.primary.cursor-pointer', {
+        h('button.cursor-pointer', {
           onClick: this.onSubmit.bind(this),
           style: {
             margin: 10,

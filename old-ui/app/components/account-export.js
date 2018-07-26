@@ -69,15 +69,15 @@ ExportAccountView.prototype.render = function () {
             },
           },
             [
-              h('button', {
-                onClick: () => this.onExportKeyPress({ key: 'Enter', preventDefault: () => {} }),
+              h('button.btn-violet', {
+                onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
                 style: {
                   marginRight: '10px',
                 },
-              }, 'Submit'),
-              h('button', {
-                onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
               }, 'Cancel'),
+              h('button', {
+                onClick: () => this.onExportKeyPress({ key: 'Enter', preventDefault: () => {} }),
+              }, 'Submit'),
             ]),
           (this.props.warning) && (
           h('span.error', {
@@ -110,15 +110,15 @@ ExportAccountView.prototype.render = function () {
           copyToClipboard(ethUtil.stripHexPrefix(accountDetail.privateKey))
         },
       }, plainKey),
-      h('button', {
-        onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-      }, 'Done'),
+      h('button.btn-violet', {
+        onClick: () => exportAsFile(`Nifty Wallet ${nickname} Private Key`, plainKey),
+      }, 'Save as File'),
       h('button', {
         style: {
           marginLeft: '10px',
         },
-        onClick: () => exportAsFile(`Nifty Wallet ${nickname} Private Key`, plainKey),
-      }, 'Save as File'),
+        onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
+      }, 'Done'),
     ])
   }
 }

@@ -111,7 +111,7 @@ ConfigScreen.prototype.render = function () {
           }, [
             h('p', {
               style: {
-                fontFamily: 'Montserrat Light',
+                fontFamily: 'Nunito Light',
                 fontSize: '13px',
               },
             }, `State logs contain your public account addresses and sent transactions.`),
@@ -160,7 +160,7 @@ ConfigScreen.prototype.render = function () {
 
             h('p', {
               style: {
-                fontFamily: 'Montserrat Light',
+                fontFamily: 'Nunito Light',
                 fontSize: '13px',
               },
             }, [

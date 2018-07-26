@@ -73,7 +73,7 @@ class DropdownMenuItem extends Component {
           padding: '8px 0px 8px 0px',
           fontSize: '18px',
           fontStyle: 'normal',
-          fontFamily: 'Montserrat Regular',
+          fontFamily: 'Nunito Regular',
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'flex-start',

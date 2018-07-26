@@ -111,7 +111,7 @@ PendingTx.prototype.render = function () {
             }, [
               h('span.font-small', {
                 style: {
-                  fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
+                  fontFamily: 'Nunito Bold, Nunito, sans-serif',
                 },
               }, identity.name),
 
@@ -120,14 +120,14 @@ PendingTx.prototype.render = function () {
               }, [
                 h('span.font-small', {
                   style: {
-                    fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+                    fontFamily: 'Nunito Light, Nunito, sans-serif',
                   },
                 }, addressSummary(address, 6, 4, false)),
               ]),
 
               h('span.font-small', {
                 style: {
-                  fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+                  fontFamily: 'Nunito Light, Nunito, sans-serif',
                 },
               }, [
                 h(EthBalance, {
@@ -156,12 +156,12 @@ PendingTx.prototype.render = function () {
               background: rgb(236,236,236);
               display: flex;
               justify-content: space-between;
-              font-family: Montserrat Light, sans-serif;
+              font-family: Nunito Light, sans-serif;
               font-size: 13px;
               padding: 5px 25px;
             }
             .table-box .row .value {
-              font-family: Montserrat Regular;
+              font-family: Nunito Regular;
             }
           `),
 
@@ -230,7 +230,7 @@ PendingTx.prototype.render = function () {
 
             h('.cell.row', {
               style: {
-                fontFamily: 'Montserrat Regular',
+                fontFamily: 'Nunito Regular',
                 background: 'white',
                 padding: '10px 25px',
               },
@@ -264,7 +264,7 @@ PendingTx.prototype.render = function () {
               h('.cell.label'),
               h('.cell.value', {
                 style: {
-                  fontFamily: 'Montserrat Light',
+                  fontFamily: 'Nunito Light',
                   fontSize: '11px',
                 },
               }, `Data included: ${dataLength} bytes`),
@@ -276,7 +276,6 @@ PendingTx.prototype.render = function () {
         h('style', `
           .conf-buttons button {
             margin-left: 10px;
-            text-transform: uppercase;
           }
         `),
         h('.cell.row', {
@@ -326,7 +325,7 @@ PendingTx.prototype.render = function () {
             margin: '14px 25px',
           },
         }, [
-          h('button', {
+          h('button.btn-violet', {
             onClick: (event) => {
               this.resetGasFields()
               event.preventDefault()
@@ -335,9 +334,9 @@ PendingTx.prototype.render = function () {
 
           // Accept Button or Buy Button
           insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy Ether') :
-            h('input.confirm.btn-green', {
+            h('input.confirm', {
               type: 'submit',
-              value: 'SUBMIT',
+              value: 'Submit',
               style: { marginLeft: '10px' },
               disabled: buyDisabled,
             }),
@@ -377,7 +376,7 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 
       h('span.font-small', {
         style: {
-          fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
+          fontFamily: 'Nunito Bold, Nunito, sans-serif',
         },
       }, nameForAddress(txParams.to, props.identities)),
 
@@ -386,7 +385,7 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
       }, [
         h('span.font-small', {
           style: {
-            fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+            fontFamily: 'Nunito Light, Nunito, sans-serif',
           },
         }, addressSummary(txParams.to, 6, 4, false)),
       ]),
@@ -399,7 +398,7 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 
       h('span.font-small', {
         style: {
-          fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
+          fontFamily: 'Nunito Bold, Nunito, sans-serif',
         },
       }, 'New Contract'),
 

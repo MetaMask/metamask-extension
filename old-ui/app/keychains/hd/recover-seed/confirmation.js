@@ -70,15 +70,15 @@ RevealSeedConfirmation.prototype.render = function () {
           },
         }, [
           // cancel
-          h('button.primary', {
+          h('button.btn-violet', {
             onClick: this.goHome.bind(this),
-          }, 'CANCEL'),
+          }, 'Cancel'),
 
           // submit
-          h('button.primary', {
+          h('button', {
             style: { marginLeft: '10px' },
             onClick: this.revealSeedWords.bind(this),
-          }, 'OK'),
+          }, 'Ok'),
 
         ]),
 

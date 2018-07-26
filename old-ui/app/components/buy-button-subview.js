@@ -158,25 +158,25 @@ BuyButtonSubview.prototype.primarySubview = function () {
             margin: '20px 50px',
           },
         }, [
-          network !== '99' ? h('button.text-transform-uppercase', {
+          network !== '99' ? h('button', {
             onClick: () => this.props.dispatch(actions.buyEth({ network })),
             style: {
               marginTop: '15px',
             },
           }, label) : null,
-          network === '99' ? h('button.text-transform-uppercase', {
+          network === '99' ? h('button', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'binance' })),
             style: {
               marginTop: '15px',
             },
           }, 'Binance') : null,
-          network === '99' ? h('button.text-transform-uppercase', {
+          network === '99' ? h('button', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'bibox' })),
             style: {
               marginTop: '15px',
             },
           }, 'BiBox') : null,
-          network === '99' ? h('button.text-transform-uppercase', {
+          network === '99' ? h('button', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'cex.plus' })),
             style: {
               marginTop: '15px',
@@ -184,7 +184,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
           }, 'CEX Plus') : null,
           // Kovan only: Dharma loans beta
           network === '42' ? (
-            h('button.text-transform-uppercase', {
+            h('button', {
               onClick: () => this.navigateTo('https://borrow.dharma.io/'),
               style: {
                 marginTop: '15px',
@@ -238,7 +238,7 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
       h('h3.text-transform-uppercase', {
         style: {
           paddingLeft: '15px',
-          fontFamily: 'Montserrat Light',
+          fontFamily: 'Nunito Light',
           width: '100vw',
           background: 'rgb(235, 235, 235)',
           color: 'rgb(174, 174, 174)',

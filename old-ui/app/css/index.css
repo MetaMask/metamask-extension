@@ -14,7 +14,7 @@ application specific styles
 }
 
 html, body {
-  font-family: 'Montserrat Regular', Arial;
+  font-family: 'Nunito Regular';
   color: #4D4D4D;
   font-weight: 300;
   line-height: 1.4em;
@@ -68,17 +68,19 @@ input:focus, textarea:focus {
 }
 
 button, input[type="submit"] {
-  font-family: 'Montserrat Bold';
+  font-family: 'Nunito Bold';
   outline: none;
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 8px 15px;
   border: none;
   color: white;
   transform-origin: center center;
   transition: transform 50ms ease-in;
-  /* default orange */
-  background: rgba(247, 134, 28, 1);
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  border-radius: 3px;
+  font-size: 14px;
+  /* default green */
+  background: #8fdc97;
+  box-shadow: 0px 5px 10px 0px rgba(92, 52, 162, 0.3);
 }
 
 .btn-green, input[type="submit"].btn-green {
@@ -87,8 +89,11 @@ button, input[type="submit"] {
 }
 
 .btn-red {
-  background: rgba(254, 35, 17, 1);
-  box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
+  background: #df2265;
+}
+
+.btn-violet {
+  background: #6729a8;
 }
 
 button[disabled], input[type="submit"][disabled] {
@@ -136,7 +141,7 @@ button.primary {
   color: white;
   font-size: 1.1em;
   font-family: 'Montserrat Regular';
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 button.btn-thin {
