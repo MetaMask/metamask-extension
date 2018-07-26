@@ -12,6 +12,7 @@ module.exports = function (jazzicon) {
 }
 
 function IconFactory (jazzicon) {
+  jazzicon.setColorsPalette(colors)
   this.jazzicon = jazzicon
   this.cache = {}
 }
@@ -38,7 +39,6 @@ IconFactory.prototype.generateIdenticonSvg = function (address, diameter) {
 // creates a new identicon
 IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
   var numericRepresentation = jsNumberForAddress(address)
-  this.jazzicon.setColorsPalette(colors)
   var identicon = this.jazzicon(diameter, numericRepresentation)
   return identicon
 }
