@@ -81,8 +81,8 @@ module.exports = class AppBar extends Component {
         'Try the New MetaMask',
         AppBar.renderSpace(),
         h('span.banner__link', {
-          onClick () {
-            dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
+          async onClick () {
+            await dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
           },
         }, [
           'Now',

@@ -24,6 +24,7 @@ const ConfigScreen = require('./config')
 const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
+const NewUiAnnouncement = require('./new-ui-annoucement')
 const AppBar = require('./components/app-bar')
 const Loading = require('./components/loading')
 const BuyView = require('./components/buy-button-subview')
@@ -82,12 +83,28 @@ function mapStateToProps (state) {
 }
 
 App.prototype.render = function () {
-  var props = this.props
-  const { isLoading, loadingMessage, transForward, network } = props
-  const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
-  const loadMessage = loadingMessage || isLoadingNetwork ?
-    `Connecting to ${this.getNetworkName()}` : null
+  const {
+    currentView,
+    dispatch,
+    isLoading,
+    loadingMessage,
+    transForward,
+    network,
+    featureFlags,
+  } = this.props
+  const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
+  const loadMessage = loadingMessage || isLoadingNetwork
+    ? `Connecting to ${this.getNetworkName()}`
+    : null
   log.debug('Main ui render function')
+
+  if (!featureFlags.skipAnnounceBetaUI) {
+    return (
+      h(NewUiAnnouncement, {
+        dispatch,
+      })
+    )
+  }
 
   return (
     h('.flex-column.full-height', {
@@ -99,7 +116,7 @@ App.prototype.render = function () {
       },
     }, [
       h(AppBar, {
-        ...props,
+        ...this.props,
       }),
       this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
