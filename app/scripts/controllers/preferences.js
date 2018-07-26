@@ -34,16 +34,17 @@ class PreferencesController {
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
-
+    this.network = opts.network
     this.store = new ObservableStore(initState)
-
-    Object.defineProperty(this.store._state, 'tokens', {
-      get: () => {
+    this._defineTokensGetter(this.store._state)
+    this.network.providerStore.subscribe(({ type }) => {
         const selectedAddress = this.store.getState().selectedAddress
         const addressTokens = this.store.getState().addressTokens
-        if (!(selectedAddress in addressTokens)) return []
-        return addressTokens[selectedAddress]
-      },
+      if (!(type in addressTokens)) addressTokens[type] = {}
+      if (!(selectedAddress in addressTokens[type])) addressTokens[type][selectedAddress] = []
+      const tokens = addressTokens[type][selectedAddress]
+      this.store.updateState({ tokens })
+
     })
   }
 // PUBLIC METHODS
@@ -88,13 +89,15 @@ class PreferencesController {
   setAddresses (addresses) {
     const oldIdentities = this.store.getState().identities
     const addressTokens = this.store.getState().addressTokens
+    const providerType = this.network.providerStore.getState().type
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {}
       ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
       return ids
     }, {})
     for (const address in identities) {
-      if (!(address in addressTokens)) addressTokens[address] = []
+      if (!(providerType in addressTokens)) addressTokens[providerType] = {}
+      if (!(address in addressTokens[providerType])) addressTokens[providerType][address] = []
     }
     this.store.updateState({ identities, addressTokens })
   }
@@ -134,12 +137,16 @@ class PreferencesController {
   addAddresses (addresses) {
     const identities = this.store.getState().identities
     const addressTokens = this.store.getState().addressTokens
+    const providerType = this.network.providerStore.getState().type
+
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) return
       // add missing identity
       const identityCount = Object.keys(identities).length
-      if (!(address in addressTokens)) addressTokens[address] = []
+
+      if (!(providerType in addressTokens)) addressTokens[providerType] = {}
+      if (!(address in addressTokens[providerType])) addressTokens[providerType][address] = []
       identities[address] = { name: `Account ${identityCount + 1}`, address }
     })
     this.store.updateState({ identities, addressTokens })
@@ -200,8 +207,14 @@ class PreferencesController {
     return new Promise((resolve, reject) => {
       const address = normalizeAddress(_address)
       const addressTokens = this.store.getState().addressTokens
-      if (!(address in addressTokens)) addressTokens[address] = []
-      const tokens = addressTokens[address]
+      const providerType = this.network.providerStore.getState().type
+
+      if (!(providerType in addressTokens)) addressTokens[providerType] = {}
+
+      if (!(address in addressTokens[providerType])) addressTokens[providerType][address] = []
+
+      const tokens = addressTokens[providerType][address]
+
       this.store.updateState({ selectedAddress: address, tokens })
       resolve()
     })
@@ -256,7 +269,10 @@ class PreferencesController {
 
     const selectedAddress = this.store.getState().selectedAddress
     const addressTokens = this.store.getState().addressTokens
-    addressTokens[selectedAddress] = tokens
+    const providerType = this.network.providerStore.getState().type
+
+    if (!(providerType in addressTokens)) addressTokens[providerType] = {}
+    addressTokens[providerType][selectedAddress] = tokens
     this.store.updateState({ addressTokens })
 
     return Promise.resolve(tokens)
@@ -272,9 +288,9 @@ class PreferencesController {
   removeToken (rawAddress) {
     const addressTokens = this.store.getState().addressTokens
     const selectedAddress = this.store.getState().selectedAddress
-
-    const updatedTokens = addressTokens[selectedAddress].filter(token => token.address !== rawAddress)
-    addressTokens[selectedAddress] = updatedTokens
+    const providerType = this.network.providerStore.getState().type
+    const updatedTokens = addressTokens[providerType][selectedAddress].filter(token => token.address !== rawAddress)
+    addressTokens[providerType][selectedAddress] = updatedTokens
     this.store.updateState({ addressTokens, tokens: updatedTokens })
 
     return Promise.resolve(updatedTokens)
@@ -402,6 +418,26 @@ class PreferencesController {
   //
   // PRIVATE METHODS
   //
+
+  /**
+   * Getter definition for the `tokens` property of store
+   *
+   * @param {object} object Store state
+   *
+   */
+
+  _defineTokensGetter (object) {
+    Object.defineProperty(object, 'tokens', {
+      get: () => {
+        const selectedAddress = this.store.getState().selectedAddress
+        const addressTokens = this.store.getState().addressTokens
+        const providerType = this.network.providerStore.getState().type
+        if (!(providerType in addressTokens)) addressTokens[providerType] = {}
+        if (!(selectedAddress in addressTokens[providerType])) return []
+        return addressTokens[providerType][selectedAddress]
+      },
+    })
+  }
 }
 
 module.exports = PreferencesController
