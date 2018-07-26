@@ -323,27 +323,27 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
      - checkout
-          - restore_cache:
-              key: dependency-cache-{{ .Revision }}
-          - restore_cache:
-              key: build-cache-{{ .Revision }}
-          - restore_cache:
-              key: job-screens-{{ .Revision }}
-          - store_artifacts:
-              path: dist/mascara
-              destination: builds/mascara
-          - store_artifacts:
-              path: dist/sourcemaps
-              destination: builds/sourcemaps
-          - store_artifacts:
-              path: builds
-              destination: builds
-          - store_artifacts:
-              path: test-artifacts
-              destination: test-artifacts
-          - run:
-              name: build:publish
-              command:  echo "publish"
+     - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+     - restore_cache:
+        key: build-cache-{{ .Revision }}
+     - restore_cache:
+        key: job-screens-{{ .Revision }}
+     - store_artifacts:
+        path: dist/mascara
+        destination: builds/mascara
+     - store_artifacts:
+         path: dist/sourcemaps
+         destination: builds/sourcemaps
+     - store_artifacts:
+         path: builds
+         destination: builds
+     - store_artifacts:
+         path: test-artifacts
+         destination: test-artifacts
+     - run:
+         name: build:announce
+         command: ./development/metamaskbot-build-announce.js
 
     job-publish-postrelease:
       docker:
