@@ -83,7 +83,7 @@ BnAsDecimalInput.prototype.render = function () {
         }),
         h('div', {
           style: {
-            color: ' #AEAEAE',
+            color: ' #333333',
             fontSize: '12px',
             marginLeft: '5px',
             marginRight: '6px',

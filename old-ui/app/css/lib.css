@@ -4,6 +4,15 @@
   color: #F7861C;
 }
 
+.color-green {
+  color: #8fdc97;
+}
+
+.color-violet {
+  color: #6729a8;
+}
+
+
 .color-forest {
   color: #0A5448;
 }
@@ -253,7 +262,7 @@ hr.horizontal-line {
 }
 
 i.fa.fa-question-circle.fa-lg.menu-icon {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .ether-icon {

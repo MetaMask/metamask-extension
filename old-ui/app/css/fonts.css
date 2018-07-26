@@ -373,7 +373,6 @@
 
 @font-face {
   font-family: 'Nunito Regular';
-    src: url('/fonts/Nunito/Nunito-Regular.woff') format('woff');
     src: url('/fonts/Nunito/Nunito-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
@@ -381,7 +380,6 @@
 
 @font-face {
   font-family: 'Nunito Bold';
-    src: url('/fonts/Nunito/Nunito-Bold.woff') format('woff');
     src: url('/fonts/Nunito/Nunito-Bold.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
@@ -389,8 +387,7 @@
 
 @font-face {
   font-family: 'Nunito Light';
-    src: url('/fonts/Montserrat/Nunito-Light.woff') format('woff');
-    src: url('/fonts/Montserrat/Nunito-Light.ttf') format('truetype');
+    src: url('/fonts/Nunito/Nunito-Light.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }

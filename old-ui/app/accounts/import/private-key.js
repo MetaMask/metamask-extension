@@ -41,7 +41,7 @@ PrivateKeyImportView.prototype.render = function () {
         },
       }),
 
-      h('button.primary', {
+      h('button', {
         onClick: this.createNewKeychain.bind(this),
         style: {
           margin: 12,

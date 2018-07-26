@@ -15,7 +15,7 @@ application specific styles
 
 html, body {
   font-family: 'Nunito Regular';
-  color: #4D4D4D;
+  color: #333333;
   font-weight: 300;
   line-height: 1.4em;
   background: #F7F7F7;
@@ -35,6 +35,7 @@ html {
 
 .app-primary {
   display: flex;
+  background: #ffffff;
 }
 
 input:focus, textarea:focus {
@@ -65,6 +66,7 @@ input:focus, textarea:focus {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: #ffffff;
 }
 
 button, input[type="submit"] {
@@ -84,8 +86,7 @@ button, input[type="submit"] {
 }
 
 .btn-green, input[type="submit"].btn-green {
-  background: rgba(106, 195, 96, 1);
-  box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);
+  background: #8fdc97;
 }
 
 .btn-red {
@@ -123,7 +124,7 @@ a {
 }
 
 a:hover{
-  color: #df6b0e;
+  color: rgba(143, 220, 151, 0.5);
 }
 
 /*
@@ -161,15 +162,15 @@ button.btn-thin {
 }
 
 .app-header h1 {
-  font-family: 'Montserrat Regular';
+  font-family: 'Nunito Regular';
   text-transform: uppercase;
   color: #AEAEAE;
+  background: #ffffff;
 }
 
 h2.page-subtitle {
-  font-family: 'Montserrat Regular';
-  text-transform: uppercase;
-  color: #AEAEAE;
+  font-family: 'Nunito Regular';
+  color: #333333;
   font-size: 1em;
   margin: 12px;
 }
@@ -211,7 +212,7 @@ textarea.twelve-word-phrase {
 
 .check {
   margin-left: 12px;
-  color: #F7861C;
+  color: #8fdc97;
   flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;
@@ -244,12 +245,12 @@ app sections
 
 /* unlock */
 .error {
-  color: #f7861c;
+  color: #60db97;
   margin-bottom: 9px;
 }
 
 .warning {
-  color: #FFAE00;
+  color: #8fdc97;
 }
 
 .dropped {
@@ -487,7 +488,7 @@ input.large-input {
   margin-bottom: 2px;
   font-size: 11px;
   text-rendering: geometricPrecision;
-  color: #F7861C;
+  color: #60db97;
 }
 .name-label:hover .edit-text {
   visibility: visible;
@@ -630,21 +631,21 @@ input.large-input {
 }
 
 .activeForm {
-  background: #F7F7F7;
+  background: #ffffff;
+  color: #333333;
   border: none;
   border-radius: 8px 8px 0px 0px;
   width: 50%;
   text-align: center;
-  padding-bottom: 4px;
-
 }
 
 .inactiveForm {
+  background: #60269c;
+  color: #ffffff;
   border: none;
   border-radius: 8px 8px 0px 0px;
   width: 50%;
   text-align: center;
-  padding-bottom: 4px;
 }
 
 .ex-coins {

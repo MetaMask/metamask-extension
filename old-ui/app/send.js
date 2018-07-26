@@ -64,20 +64,13 @@ SendTransactionScreen.prototype.render = function () {
 
       h('.account-data-subsection.flex-row.flex-grow', {
         style: {
-          margin: '0 20px',
+          background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
+          padding: '20px 20px',
         },
       }, [
 
         // header - identicon + nav
-        h('.flex-row.flex-space-between', {
-          style: {
-            marginTop: '15px',
-          },
-        }, [
-          // back button
-          h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
-            onClick: this.back.bind(this),
-          }),
+        h('.flex-row.flex-space-between', [
 
           // large identicon
           h('.identicon-wrapper.flex-column.flex-center.select-none', [
@@ -100,12 +93,12 @@ SendTransactionScreen.prototype.render = function () {
 
         h('.flex-column', {
           style: {
-            marginTop: '10px',
             alignItems: 'flex-start',
           },
         }, [
-          h('h2.font-medium.color-forest.flex-center', {
+          h('h2.font-medium.flex-center', {
             style: {
+              color: '#ffffff',
               paddingTop: '8px',
               marginBottom: '8px',
             },
@@ -114,6 +107,7 @@ SendTransactionScreen.prototype.render = function () {
           // address and getter actions
           h('.flex-row.flex-center', {
             style: {
+              color: 'rgba(255, 255, 255, 0.7)',
               marginBottom: '8px',
             },
           }, [
@@ -144,15 +138,18 @@ SendTransactionScreen.prototype.render = function () {
       // Required Fields
       //
 
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
+          color: '#333333',
           marginTop: '15px',
           marginBottom: '16px',
         },
       }, [
-        'Send Transaction',
+        // back button
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+          onClick: this.back.bind(this),
+        }),
+        h('h2.page-subtitle', 'Send Transaction'),
       ]),
 
       // error message
@@ -194,10 +191,10 @@ SendTransactionScreen.prototype.render = function () {
       //
       // Optional Fields
       //
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
+          background: '#ffffff',
+          color: '#333333',
           marginTop: '16px',
           marginBottom: '16px',
         },

@@ -65,18 +65,18 @@ BuyButtonSubview.prototype.headerSubview = function () {
           justifyContent: 'center',
         },
       }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
           onClick: this.backButtonContext.bind(this),
           style: {
             position: 'absolute',
             left: '10px',
           },
         }),
-        h('h2.text-transform-uppercase.flex-center', {
+        h('h2.flex-center', {
           style: {
             width: '100vw',
-            background: 'rgb(235, 235, 235)',
-            color: 'rgb(174, 174, 174)',
+            background: '#ffffff',
+            color: '#333333',
             paddingTop: '4px',
             paddingBottom: '4px',
           },
@@ -97,7 +97,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
       // account panel
       h('div', {
         style: {
-          width: '80%',
+          width: '100%',
         },
       }, [
         h(AccountPanel, {
@@ -114,12 +114,12 @@ BuyButtonSubview.prototype.headerSubview = function () {
           justifyContent: 'center',
         },
       }, [
-        h('h3.text-transform-uppercase.flex-center', {
+        h('h3.flex-center', {
           style: {
             paddingLeft: '15px',
             width: '100vw',
-            background: 'rgb(235, 235, 235)',
-            color: 'rgb(174, 174, 174)',
+            background: '#ffffff',
+            color: '#333333',
             paddingTop: '4px',
             paddingBottom: '4px',
           },
@@ -235,7 +235,7 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
         }),
       ]),
 
-      h('h3.text-transform-uppercase', {
+      h('h3', {
         style: {
           paddingLeft: '15px',
           fontFamily: 'Nunito Light',

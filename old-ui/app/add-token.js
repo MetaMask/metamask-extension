@@ -42,7 +42,7 @@ AddTokenScreen.prototype.render = function () {
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
           onClick: (event) => {
             props.dispatch(actions.goHome())
           },
@@ -62,7 +62,7 @@ AddTokenScreen.prototype.render = function () {
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-space-around', {
           style: {
-            padding: '20px',
+            padding: '30px',
           },
         }, [
 

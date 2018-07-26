@@ -13,7 +13,7 @@ class Dropdown extends Component {
     const innerStyleDefaults = extend({
       borderRadius: '4px',
       padding: '8px 16px',
-      background: 'rgba(0, 0, 0, 0.8)',
+      background: 'rgba(71, 28, 115, 0.95)',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     }, innerStyle)
 
@@ -31,8 +31,8 @@ class Dropdown extends Component {
         h(
           'style',
           `
-          li.dropdown-menu-item:hover { color:rgb(225, 225, 225); }
-          li.dropdown-menu-item { color: rgb(185, 185, 185); position: relative }
+          li.dropdown-menu-item:hover { color:#ffffff; }
+          li.dropdown-menu-item { color: rgba(255, 255, 255, 0.5); position: relative }
           `
         ),
         ...children,
@@ -71,7 +71,7 @@ class DropdownMenuItem extends Component {
         style: Object.assign({
           listStyle: 'none',
           padding: '8px 0px 8px 0px',
-          fontSize: '18px',
+          fontSize: '16px',
           fontStyle: 'normal',
           fontFamily: 'Nunito Regular',
           cursor: 'pointer',

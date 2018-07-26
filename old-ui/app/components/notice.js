@@ -32,23 +32,10 @@ Notice.prototype.render = function () {
           fontSize: '20px',
           textAlign: 'center',
           padding: 6,
+          marginBottom: 24,
         },
       }, [
         title,
-      ]),
-
-      h('h5.flex-center.text-transform-uppercase.terms-header', {
-        style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginBottom: 24,
-          width: '100%',
-          fontSize: '20px',
-          textAlign: 'center',
-          padding: 6,
-        },
-      }, [
-        date,
       ]),
 
       h('style', `
@@ -74,7 +61,7 @@ Notice.prototype.render = function () {
         }
 
         .markdown a {
-          color: #df6b0e;
+          color: #8fdc97;
         }
 
       `),

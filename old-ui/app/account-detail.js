@@ -56,8 +56,9 @@ AccountDetailScreen.prototype.render = function () {
     // identicon, label, balance, etc
       h('.account-data-subsection', {
         style: {
-          margin: '0 20px',
+          padding: '0 20px',
           flex: '1 0 auto',
+          background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
         },
       }, [
 
@@ -122,6 +123,7 @@ AccountDetailScreen.prototype.render = function () {
                           textOverflow: 'ellipsis',
                           padding: '5px 0px',
                           lineHeight: '25px',
+                          color: '#ffffff',
                         },
                       }, [
                         identity && identity.name,
@@ -166,12 +168,12 @@ AccountDetailScreen.prototype.render = function () {
                   fontFamily: 'Nunito Light',
                   textRendering: 'geometricPrecision',
                   marginBottom: '15px',
-                  color: '#AEAEAE',
+                  color: 'rgba(255, 255, 255, 0.7)',
                 },
               }, checksumAddress),
             ]),
 
-            // account ballence
+            // account ballance
 
           ]),
         ]),
@@ -240,7 +242,9 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.tabSections = function () {
   const { currentAccountTab } = this.props
 
-  return h('section.tabSection.full-flex-height.grow-tenx', [
+  return h('section.tabSection.full-flex-height.grow-tenx', {
+    background: '#60269c',
+  }, [
 
     h(TabBar, {
       tabs: [

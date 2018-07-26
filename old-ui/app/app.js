@@ -154,7 +154,7 @@ App.prototype.renderAppBar = function () {
         style: {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
-          background: props.isUnlocked ? 'white' : 'none',
+          background: 'white',
           height: '38px',
           position: 'relative',
           zIndex: 12,
@@ -266,11 +266,11 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('poa')),
         style: {
-          fontSize: '18px',
+          paddingLeft: '20px',
+          fontSize: '16px',
         },
       },
       [
-        h('.menu-icon.purple-square'),
         'POA Network',
         providerType === 'poa' ? h('.check', '✓') : null,
       ]
@@ -283,11 +283,11 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('sokol')),
         style: {
-          fontSize: '18px',
+          paddingLeft: '20px',
+          fontSize: '16px',
         },
       },
       [
-        h('.menu-icon.green-square'),
         'POA Sokol Test Network',
         providerType === 'sokol' ? h('.check', '✓') : null,
       ]
@@ -300,11 +300,11 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('mainnet')),
         style: {
-          fontSize: '18px',
+          paddingLeft: '20px',
+          fontSize: '16px',
         },
       },
       [
-        h('.menu-icon.diamond'),
         'Main Ethereum Network',
         providerType === 'mainnet' ? h('.check', '✓') : null,
       ]
@@ -317,11 +317,11 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('ropsten')),
         style: {
-          fontSize: '18px',
+          paddingLeft: '20px',
+          fontSize: '16px',
         },
       },
       [
-        h('.menu-icon.red-dot'),
         'Ropsten Test Network',
         providerType === 'ropsten' ? h('.check', '✓') : null,
       ]
@@ -334,11 +334,11 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('kovan')),
         style: {
-          fontSize: '18px',
+          paddingLeft: '20px',
+          fontSize: '16px',
         },
       },
       [
-        h('.menu-icon.hollow-diamond'),
         'Kovan Test Network',
         providerType === 'kovan' ? h('.check', '✓') : null,
       ]
@@ -351,11 +351,11 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
         style: {
-          fontSize: '18px',
+          paddingLeft: '20px',
+          fontSize: '16px',
         },
       },
       [
-        h('.menu-icon.golden-square'),
         'Rinkeby Test Network',
         providerType === 'rinkeby' ? h('.check', '✓') : null,
       ]
@@ -368,11 +368,11 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('localhost')),
         style: {
-          fontSize: '18px',
+          paddingLeft: '20px',
+          fontSize: '16px',
         },
       },
       [
-        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
         'Localhost 8545',
         activeNetwork === 'http://localhost:8545' ? h('.check', '✓') : null,
       ]
@@ -387,11 +387,12 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => this.props.dispatch(actions.showConfigPage()),
         style: {
-          fontSize: '18px',
+          paddingLeft: '20px',
+          fontSize: '16px',
+          color: '#8fdc97',
         },
       },
       [
-        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
         'Custom RPC',
         activeNetwork === 'custom' ? h('.check', '✓') : null,
       ]
@@ -606,7 +607,7 @@ App.prototype.renderPrimary = function () {
           left: '0px',
         },
       }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
           onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAddress)),
           style: {
             marginLeft: '10px',
@@ -669,9 +670,12 @@ App.prototype.renderCustomOption = function (provider) {
           key: rpcTarget,
           onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget)),
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+          style: {
+            paddingLeft: '20px',
+            fontSize: '16px',
+          },
         },
         [
-          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
           label,
           h('.check', '✓'),
         ]
@@ -718,9 +722,12 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
           key: `common${rpc}`,
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
           onClick: () => props.dispatch(actions.setRpcTarget(rpc)),
+          style: {
+            paddingLeft: '20px',
+            fontSize: '16px',
+          },
         },
         [
-          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
           rpc,
         ]
       )

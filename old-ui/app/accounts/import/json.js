@@ -56,7 +56,7 @@ class JsonImportSubview extends Component {
           },
         }),
 
-        h('button.primary', {
+        h('button', {
           onClick: this.createNewKeychain.bind(this),
           style: {
             margin: 12,

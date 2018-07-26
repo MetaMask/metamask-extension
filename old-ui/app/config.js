@@ -41,7 +41,7 @@ ConfigScreen.prototype.render = function () {
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
           onClick: () => {
             state.dispatch(actions.goHome())
           },

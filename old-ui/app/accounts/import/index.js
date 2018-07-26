@@ -36,7 +36,7 @@ AccountImportSubview.prototype.render = function () {
   return (
     h('div', [
       h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
           onClick: (event) => {
             props.dispatch(actions.goHome())
           },
@@ -53,7 +53,7 @@ AccountImportSubview.prototype.render = function () {
         h('span', 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase. Learn more about imported accounts '),
         h('span', {
           style: {
-            color: 'rgba(247, 134, 28, 1)',
+            color: '#60db97',
             cursor: 'pointer',
             textDecoration: 'underline',
           },
@@ -67,11 +67,10 @@ AccountImportSubview.prototype.render = function () {
       h('div', {
         style: {
           padding: '10px',
-          color: 'rgb(174, 174, 174)',
         },
       }, [
 
-        h('h3', { style: { padding: '3px' } }, 'SELECT TYPE'),
+        h('h3', { style: { padding: '3px' } }, 'Select Type'),
 
         h('style', `
           .has-value.Select--single > .Select-control .Select-value .Select-value-label, .Select-value-label {

@@ -45,7 +45,7 @@ class AccountDropdowns extends Component {
           },
           style: {
             marginTop: index === 0 ? '5px' : '',
-            fontSize: '24px',
+            fontSize: '16px',
           },
         },
         [
@@ -63,14 +63,14 @@ class AccountDropdowns extends Component {
           h('span', {
             style: {
               marginLeft: '20px',
-              fontSize: '24px',
+              fontSize: '16px',
               maxWidth: '145px',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             },
           }, identity.name || ''),
-          h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
+          h('span', { style: { marginLeft: '20px', fontSize: '16px' } }, isSelected ? h('.check', '✓') : null),
         ]
       )
     })
@@ -93,12 +93,12 @@ class AccountDropdowns extends Component {
       {
         useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
         style: {
-          marginLeft: '-238px',
+          marginLeft: '-158px',
           marginTop: '38px',
           minWidth: '180px',
           overflowY: 'auto',
           maxHeight: '300px',
-          width: '300px',
+          width: '220px',
         },
         innerStyle: {
           padding: '8px 25px',
@@ -121,16 +121,7 @@ class AccountDropdowns extends Component {
             onClick: () => actions.addNewAccount(),
           },
           [
-            h(
-              Identicon,
-              {
-                style: {
-                  marginLeft: '10px',
-                },
-                diameter: 32,
-              },
-            ),
-            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, 'Create Account'),
+            h('span', { style: { fontSize: '16px', color: '#8fdc97', } }, 'Create Account'),
           ],
         ),
         h(
@@ -140,20 +131,11 @@ class AccountDropdowns extends Component {
             onClick: () => actions.showImportPage(),
           },
           [
-            h(
-              Identicon,
-              {
-                style: {
-                  marginLeft: '10px',
-                },
-                diameter: 32,
-              },
-            ),
             h('span', {
               style: {
-                marginLeft: '20px',
-                fontSize: '24px',
+                fontSize: '16px',
                 marginBottom: '5px',
+                color: '#8fdc97',
               },
             }, 'Import Account'),
           ]
@@ -262,7 +244,7 @@ class AccountDropdowns extends Component {
       [
         enableAccountsSelector && h(
           // 'i.fa.fa-angle-down',
-          'div.cursor-pointer.color-orange.accounts-selector',
+          'div.cursor-pointer.color-green.accounts-selector',
           {
             style: {
               // fontSize: '1.8em',
@@ -286,6 +268,7 @@ class AccountDropdowns extends Component {
           'i.fa.fa-ellipsis-h',
           {
             style: {
+              color: '#8fdc97',
               margin: '0.5em',
               fontSize: '1.8em',
             },
