@@ -39,11 +39,17 @@ TransactionListItem.prototype.showRetryButton = function () {
   const currentNonce = txParams.nonce
   const currentNonceTxs = transactions.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
+  const currentSubmittedTxs = transactions.filter(tx => tx.status === 'submitted')  
   const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[0]
   const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce &&
     lastSubmittedTxWithCurrentNonce.id === transaction.id
+  const lastTx = currentSubmittedTxs.reduce((tx1, tx2) => {
+    if (tx1.id < tx2.id) return tx1
+    return tx2
+  })
 
-  return currentTxIsLatestWithNonce && Date.now() - submittedTime > 30000
+  const currentTxIsLatest = lastTx.id === transaction.id
+  return currentTxIsLatestWithNonce && Date.now() - submittedTime > 30000 && currentTxIsLatest
 }
 
 TransactionListItem.prototype.render = function () {
