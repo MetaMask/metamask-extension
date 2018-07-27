@@ -14,6 +14,7 @@ const NewKeyChainScreen = require('./new-keychain')
 const UnlockScreen = require('./unlock')
 // accounts
 const AccountDetailScreen = require('./account-detail')
+const AccountQrScreen = require('./account-qr')
 const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
@@ -28,7 +29,6 @@ const NewUiAnnouncement = require('./new-ui-annoucement')
 const AppBar = require('./components/app-bar')
 const Loading = require('./components/loading')
 const BuyView = require('./components/buy-button-subview')
-const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
@@ -262,31 +262,10 @@ App.prototype.renderPrimary = function () {
 
     case 'qr':
       log.debug('rendering show qr screen')
-      return h('div', {
-        style: {
-          position: 'absolute',
-          height: '100%',
-          top: '0px',
-          left: '0px',
-        },
-      }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
-          onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAddress)),
-          style: {
-            marginLeft: '10px',
-            marginTop: '50px',
-          },
-        }),
-        h('div', {
-          style: {
-            position: 'absolute',
-            left: '44px',
-            width: '285px',
-          },
-        }, [
-          h(QrView, {key: 'qr'}),
-        ]),
-      ])
+      return h(AccountQrScreen, {
+        key: 'account-qr',
+        selectedAddress: props.selectedAddress,
+      })
 
     default:
       log.debug('rendering default, account detail screen')
