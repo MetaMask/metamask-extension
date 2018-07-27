@@ -194,4 +194,3 @@ function getTotalUnapprovedCount ({ metamask }) {
   return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
     unapprovedTypedMessagesCount
 }
-

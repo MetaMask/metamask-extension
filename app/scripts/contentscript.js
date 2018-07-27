@@ -200,4 +200,3 @@ function redirectToPhishingWarning () {
   console.log('MetaMask - redirecting to phishing warning')
   window.location.href = 'https://metamask.io/phishing.html'
 }
-

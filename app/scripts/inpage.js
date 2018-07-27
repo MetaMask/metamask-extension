@@ -96,4 +96,3 @@ function restoreContextAfterImports () {
     console.warn('MetaMask - global.define could not be overwritten.')
   }
 }
-

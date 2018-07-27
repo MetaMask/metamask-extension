@@ -655,6 +655,7 @@ module.exports = class MetamaskController extends EventEmitter {
     return { ...keyState, identities }
   }
 
+
   //
   // Account Management
   //
