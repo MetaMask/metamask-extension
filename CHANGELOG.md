@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.8.7 Fri Jul 27 2018
+
 ## 4.8.6 Fri Jul 27 2018
 
 ## 4.8.5 Fri Jul 27 2018
