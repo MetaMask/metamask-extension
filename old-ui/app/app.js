@@ -102,6 +102,7 @@ App.prototype.render = function () {
         overflow: 'hidden',
         position: 'relative',
         alignItems: 'center',
+        background: (props.isUnlocked || props.currentView.name == 'restoreVault') ? 'white' : 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
       },
     }, [
 
@@ -113,7 +114,11 @@ App.prototype.render = function () {
       this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
       // panel content
-      h('.app-primary' + (transForward ? '.from-right' : '.from-left'), [
+      h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
+        style: {
+          background: (props.isUnlocked || props.currentView.name == 'restoreVault') ? 'white' : 'transparent',
+        }
+      }, [
         this.renderPrimary(),
       ]),
     ])
@@ -264,11 +269,11 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
+          color: providerType === 'poa' ? 'white' : '',
         },
       },
       [
-        'POA Network',
-        providerType === 'poa' ? h('.check', '✓') : null,
+        'POA Network'
       ]
     ),
 
@@ -281,11 +286,11 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
+          color: providerType === 'sokol' ? 'white' : '',
         },
       },
       [
         'POA Sokol Test Network',
-        providerType === 'sokol' ? h('.check', '✓') : null,
       ]
     ),
 
@@ -298,11 +303,11 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
+          color: providerType === 'mainnet' ? 'white' : '',
         },
       },
       [
-        'Main Ethereum Network',
-        providerType === 'mainnet' ? h('.check', '✓') : null,
+        'Main Ethereum Network'
       ]
     ),
 
@@ -315,11 +320,11 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
+          color: providerType === 'ropsten' ? 'white' : '',
         },
       },
       [
-        'Ropsten Test Network',
-        providerType === 'ropsten' ? h('.check', '✓') : null,
+        'Ropsten Test Network'
       ]
     ),
 
@@ -332,11 +337,11 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
+          color: providerType === 'kovan' ? 'white' : '',
         },
       },
       [
-        'Kovan Test Network',
-        providerType === 'kovan' ? h('.check', '✓') : null,
+        'Kovan Test Network'
       ]
     ),
 
@@ -349,11 +354,11 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
+          color: providerType === 'rinkeby' ? 'white' : '',
         },
       },
       [
-        'Rinkeby Test Network',
-        providerType === 'rinkeby' ? h('.check', '✓') : null,
+        'Rinkeby Test Network'
       ]
     ),
 
@@ -366,11 +371,11 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
+          color: activeNetwork === 'http://localhost:8545' ? 'white' : '',
         },
       },
       [
-        'Localhost 8545',
-        activeNetwork === 'http://localhost:8545' ? h('.check', '✓') : null,
+        'Localhost 8545'
       ]
     ),
 
@@ -689,11 +694,11 @@ App.prototype.renderCustomOption = function (provider) {
           style: {
             paddingLeft: '20px',
             fontSize: '16px',
+            color: 'white',
           },
         },
         [
-          label,
-          h('.check', '✓'),
+          label
         ]
       )
   }

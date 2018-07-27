@@ -53,6 +53,7 @@ class JsonImportSubview extends Component {
           style: {
             width: 260,
             marginTop: 12,
+            border: '1px solid #e2e2e2',
           },
         }),
 

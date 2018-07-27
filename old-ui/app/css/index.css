@@ -191,6 +191,7 @@ h2.page-subtitle {
 
 textarea {
   border: 1px solid #e2e2e2;
+  border-radius: 3px;
 }
 
 textarea.twelve-word-phrase {
@@ -309,7 +310,9 @@ app sections
 }
 
 .unlock-screen input[type=password] {
-  width: 260px;
+  width: 210px;
+  border-radius: 3px;
+  border: none;
   /*height: 36px;
   margin-bottom: 24px;
   padding: 8px;*/
@@ -349,6 +352,7 @@ app sections
 input.large-input, textarea.large-input {
   /*margin-bottom: 24px;*/
   padding: 8px;
+  border-radius: 3px;
 }
 
 input.large-input {
@@ -359,7 +363,9 @@ input.large-input {
   letter-spacing: 0.1em;
 }
 
-
+.in-progress-notification {
+  color: #ffffff;
+}
 
 /* accounts */
 

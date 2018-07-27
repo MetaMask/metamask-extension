@@ -63,6 +63,7 @@ RestoreVaultScreen.prototype.render = function () {
         style: {
           width: 300,
           marginTop: 20,
+          border: '1px solid #e2e2e2',
         },
       }),
 
@@ -78,6 +79,7 @@ RestoreVaultScreen.prototype.render = function () {
         style: {
           width: 300,
           marginTop: 20,
+          border: '1px solid #e2e2e2',
         },
       }),
 

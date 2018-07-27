@@ -42,35 +42,38 @@ UnlockScreen.prototype.render = function () {
           style: {
             paddingTop: '50px',
             fontSize: '30px',
-            color: '#7F8082',
+            color: '#ffffff',
           },
         }, 'Nifty Wallet'),
 
-        h('input.large-input', {
-          type: 'password',
-          id: 'password-box',
-          placeholder: 'Enter password',
-          style: {
+        h('div', [
+          h('input.large-input', {
+            type: 'password',
+            id: 'password-box',
+            placeholder: 'Enter password',
+            style: {
 
-          },
-          onKeyPress: this.onKeyPress.bind(this),
-          onInput: this.inputChanged.bind(this),
-        }),
+            },
+            onKeyPress: this.onKeyPress.bind(this),
+            onInput: this.inputChanged.bind(this),
+          }),
 
-        h('.error', {
-          style: {
-            display: warning ? 'block' : 'none',
-            padding: '0 20px',
-            textAlign: 'center',
-          },
-        }, warning),
+          h('button.cursor-pointer', {
+            onClick: this.onSubmit.bind(this),
+            style: {
+              margin: '10px 0 10px 10px',
+            },
+          }, 'Log In'),
 
-        h('button.cursor-pointer', {
-          onClick: this.onSubmit.bind(this),
-          style: {
-            margin: 10,
-          },
-        }, 'Log In'),
+          h('.error', {
+            style: {
+              display: warning ? 'block' : 'none',
+              padding: '0 20px',
+              textAlign: 'center',
+            },
+          }, warning),
+        ])
+
       ]),
 
       h('.flex-row.flex-center.flex-grow', [
@@ -78,7 +81,7 @@ UnlockScreen.prototype.render = function () {
           onClick: () => this.props.dispatch(actions.forgotPassword()),
           style: {
             fontSize: '14px',
-            color: '#60db97',
+            color: '#8fdc97',
           },
         }, 'Restore from seed phrase'),
       ]),

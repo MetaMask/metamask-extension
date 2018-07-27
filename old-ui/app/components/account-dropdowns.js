@@ -49,6 +49,15 @@ class AccountDropdowns extends Component {
           },
         },
         [
+          isSelected ? h('div', {
+            style: {
+              width: '4px',
+              height: '32px',
+              background: '#8fdc97',
+              position: 'absolute',
+              left: '-25px',
+            }
+          }) : null,
           h(
             Identicon,
             {
@@ -63,14 +72,14 @@ class AccountDropdowns extends Component {
           h('span', {
             style: {
               marginLeft: '20px',
-              fontSize: '16px',
+              fontSize: '20px',
               maxWidth: '145px',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
+              color: isSelected ? 'white' : ''
             },
           }, identity.name || ''),
-          h('span', { style: { marginLeft: '20px', fontSize: '16px' } }, isSelected ? h('.check', '✓') : null),
         ]
       )
     })
@@ -121,7 +130,7 @@ class AccountDropdowns extends Component {
             onClick: () => actions.addNewAccount(),
           },
           [
-            h('span', { style: { fontSize: '16px', color: '#8fdc97', } }, 'Create Account'),
+            h('span', { style: { fontSize: '20px', color: '#8fdc97', } }, 'Create Account'),
           ],
         ),
         h(
@@ -133,7 +142,7 @@ class AccountDropdowns extends Component {
           [
             h('span', {
               style: {
-                fontSize: '16px',
+                fontSize: '20px',
                 marginBottom: '5px',
                 color: '#8fdc97',
               },

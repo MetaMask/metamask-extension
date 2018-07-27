@@ -24,12 +24,12 @@ Notice.prototype.render = function () {
         width: '100%',
       },
     }, [
-      h('h3.flex-center.text-transform-uppercase.terms-header', {
+      h('h3.flex-center.terms-header', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
+          background: '#ffffff',
+          color: '#333333',
           width: '100%',
-          fontSize: '20px',
+          fontSize: '16px',
           textAlign: 'center',
           padding: 6,
           marginBottom: 24,
@@ -74,12 +74,13 @@ Notice.prototype.render = function () {
           }
         },
         style: {
-          background: 'rgb(235, 235, 235)',
+          background: '#ffffff',
           height: '310px',
           padding: '6px',
           width: '90%',
           overflowY: 'scroll',
           scroll: 'auto',
+          borderRadius: '3px',
         },
       }, [
         h(ReactMarkdown, {
