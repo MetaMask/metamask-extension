@@ -83,6 +83,7 @@ module.exports = class AppBar extends Component {
         h('span.banner__link', {
           async onClick () {
             await dispatch(actions.setFeatureFlag('betaUI', true))
+            global.platform.openExtensionInBrowser()
           },
         }, [
           'Now',

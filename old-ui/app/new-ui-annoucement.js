@@ -20,6 +20,7 @@ module.exports = class NewUiAnnouncement extends PureComponent {
       enabled,
     ))
     await this.close()
+    global.platform.openExtensionInBrowser()
   }
 
   render () {
