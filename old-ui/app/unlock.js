@@ -74,7 +74,7 @@ UnlockScreen.prototype.render = function () {
               textAlign: 'center',
             },
           }, warning),
-        ])
+        ]),
 
       ]),
 

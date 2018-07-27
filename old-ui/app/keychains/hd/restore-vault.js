@@ -46,7 +46,7 @@ RestoreVaultScreen.prototype.render = function () {
           width: '100%',
           marginBottom: '20px',
           marginLeft: '60px',
-        }
+        },
       }, 'Wallet Seed'),
       h('textarea.twelve-word-phrase.letter-spacey', {
         placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
@@ -102,7 +102,7 @@ RestoreVaultScreen.prototype.render = function () {
           onClick: this.showInitializeMenu.bind(this),
           style: {
             marginRight: '10px',
-          }
+          },
         }, 'Cancel'),
 
         // submit

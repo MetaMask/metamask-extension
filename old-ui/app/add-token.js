@@ -49,7 +49,7 @@ AddTokenScreen.prototype.render = function () {
           style: {
             position: 'absolute',
             left: '30px',
-          }
+          },
         }),
         h('h2.page-subtitle', 'Add Token'),
       ]),

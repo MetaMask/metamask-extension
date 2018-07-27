@@ -35,7 +35,7 @@ InfoScreen.prototype.render = function () {
           style: {
             position: 'absolute',
             left: '33px',
-          }
+          },
         }),
         h('h2.page-subtitle', 'Info'),
       ]),

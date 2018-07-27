@@ -217,7 +217,7 @@ PendingTx.prototype.render = function () {
                 style: {
                   position: 'absolute',
                   left: '33px',
-                }
+                },
               }) : null,
               h('h2.page-subtitle', 'Confirm Transaction'),
               isNotification ? h(NetworkIndicator, {

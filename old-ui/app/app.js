@@ -117,7 +117,7 @@ App.prototype.render = function () {
       h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
         style: {
           background: (props.isUnlocked || props.currentView.name == 'restoreVault') ? 'white' : 'transparent',
-        }
+        },
       }, [
         this.renderPrimary(),
       ]),
@@ -217,7 +217,7 @@ App.prototype.renderAppBar = function () {
             onClick: () => {
               this.setState({
                 isMainMenuOpen: !state.isMainMenuOpen,
-                sandwichClass: state.isMainMenuOpen ? 'sandwich-expando2' : 'sandwich-expando'
+                sandwichClass: state.isMainMenuOpen ? 'sandwich-expando2' : 'sandwich-expando',
               })
             },
           }),
@@ -274,7 +274,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'poa' ? 'div.selected-network' : ''),
-        'POA Network'
+        'POA Network',
       ]
     ),
 
@@ -308,7 +308,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'mainnet' ? 'div.selected-network' : ''),
-        'Main Ethereum Network'
+        'Main Ethereum Network',
       ]
     ),
 
@@ -325,7 +325,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'ropsten' ? 'div.selected-network' : ''),
-        'Ropsten Test Network'
+        'Ropsten Test Network',
       ]
     ),
 
@@ -342,7 +342,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'kovan' ? 'div.selected-network' : ''),
-        'Kovan Test Network'
+        'Kovan Test Network',
       ]
     ),
 
@@ -359,7 +359,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'rinkeby' ? 'div.selected-network' : ''),
-        'Rinkeby Test Network'
+        'Rinkeby Test Network',
       ]
     ),
 
@@ -376,7 +376,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(activeNetwork === 'http://localhost:8545' ? 'div.selected-network' : ''),
-        'Localhost 8545'
+        'Localhost 8545',
       ]
     ),
 
@@ -395,7 +395,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [
-        'Custom RPC'
+        'Custom RPC',
       ]
     ),
 
@@ -418,7 +418,7 @@ App.prototype.renderDropdown = function () {
         parentClassList.contains('sandwich-expando')
 
       if (isOpen && !isToggleElement) {
-        this.setState({ 
+        this.setState({
           isMainMenuOpen: false,
         })
       }
@@ -627,7 +627,7 @@ App.prototype.renderPrimary = function () {
               marginTop: '50px',
               marginBottom: '0px',
               textAlign: 'center',
-            }
+            },
           }, 'QR Code'),
         ]),
         h('div', {
@@ -693,7 +693,7 @@ App.prototype.renderCustomOption = function (provider) {
           },
         },
         [h('div.selected-network'),
-          label
+          label,
         ]
       )
   }

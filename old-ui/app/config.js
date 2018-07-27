@@ -48,7 +48,7 @@ ConfigScreen.prototype.render = function () {
           style: {
             position: 'absolute',
             left: '28px',
-          }
+          },
         }),
         h('h2.page-subtitle', 'Settings'),
       ]),
@@ -110,7 +110,7 @@ ConfigScreen.prototype.render = function () {
           h('hr.horizontal-line', {
             style: {
               marginTop: '20px',
-            }
+            },
           }),
 
           h('div', {
@@ -144,7 +144,7 @@ ConfigScreen.prototype.render = function () {
           h('hr.horizontal-line', {
             style: {
               marginTop: '20px',
-            }
+            },
           }),
 
           h('div', {
@@ -166,7 +166,7 @@ ConfigScreen.prototype.render = function () {
           h('hr.horizontal-line', {
             style: {
               marginTop: '20px',
-            }
+            },
           }),
 
           h('div', {

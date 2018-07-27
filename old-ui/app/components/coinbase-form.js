@@ -39,7 +39,7 @@ CoinbaseForm.prototype.render = function () {
         onClick: this.toCoinbase.bind(this),
         style: {
           marginRight: '10px',
-        }
+        },
       }, 'Continue to Coinbase'),
 
       h('button.btn-red', {

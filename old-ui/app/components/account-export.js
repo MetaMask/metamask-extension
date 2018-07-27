@@ -51,13 +51,13 @@ ExportAccountView.prototype.render = function () {
               margin: '0 30px',
             },
           }, [
-            h('p.error',{
+            h('p.error', {
               style: {
                 color: '#333333',
                 marginBottom: '0px',
                 marginTop: '30px',
                 textAlign: 'center',
-              }
+              },
             }, warning),
             h('input#exportAccount.sizing-input', {
               type: 'password',
@@ -112,7 +112,7 @@ ExportAccountView.prototype.render = function () {
       h('label', {
         style: {
           textAlign: 'center',
-        }
+        },
       }, 'Your private key (click to copy)'),
       h('p.error.cursor-pointer', {
         style: {
@@ -133,7 +133,7 @@ ExportAccountView.prototype.render = function () {
         style: {
           textAlign: 'right',
           marginTop: '30px',
-        }
+        },
       }, [
         h('button.btn-violet', {
           onClick: () => exportAsFile(`Nifty Wallet ${nickname} Private Key`, plainKey),
@@ -144,7 +144,7 @@ ExportAccountView.prototype.render = function () {
           },
           onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
         }, 'Done'),
-      ])
+      ]),
     ])
   }
 }

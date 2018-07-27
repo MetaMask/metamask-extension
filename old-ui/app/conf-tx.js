@@ -66,7 +66,7 @@ ConfirmTxScreen.prototype.render = function () {
     h('.flex-column.flex-grow', {
       style: {
         width: '100%',
-      }
+      },
     }, [
 
       h(LoadingIndicator, {

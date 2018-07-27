@@ -53,7 +53,7 @@ AccountPanel.prototype.render = function () {
         h('span.font-small', {
           style: {
             color: '#ffffff',
-          }
+          },
         }, panelState.identiconLabel.substring(0, 7) + '...'),
       ]),
 
@@ -67,12 +67,12 @@ AccountPanel.prototype.render = function () {
             h('label.font-small.no-select', {
               style: {
                 color: '#ffffff',
-              }
+              },
             }, attr.key),
             h('span.font-small', {
               style: {
                 color: '#ffffff',
-              }
+              },
             }, attr.value),
           ])
         }),
