@@ -1,11 +1,14 @@
 const assert = require('assert')
+const ObservableStore = require('obs-store')
 const PreferencesController = require('../../../../app/scripts/controllers/preferences')
 
 describe('preferences controller', function () {
   let preferencesController
+  let network
 
   beforeEach(() => {
-    preferencesController = new PreferencesController()
+    network = {providerStore: new ObservableStore({ type: 'mainnet' })}
+    preferencesController = new PreferencesController({ network })
   })
 
   describe('setAddresses', function () {
