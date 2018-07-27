@@ -49,6 +49,8 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         animationEventEmitter: this.animationEventEmitter,
       }),*/
 
+      h('.logo'),
+
       h('h1', {
         style: {
           paddingTop: '50px',

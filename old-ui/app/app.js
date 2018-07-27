@@ -208,7 +208,7 @@ App.prototype.renderAppBar = function () {
 
           // hamburger
           props.isUnlocked && h(SandwichExpando, {
-            className: 'sandwich-expando',
+            className: state.sandwichClass,
             width: 16,
             barHeight: 2,
             padding: 0,
@@ -217,6 +217,7 @@ App.prototype.renderAppBar = function () {
             onClick: () => {
               this.setState({
                 isMainMenuOpen: !state.isMainMenuOpen,
+                sandwichClass: state.isMainMenuOpen ? 'sandwich-expando2' : 'sandwich-expando'
               })
             },
           }),
@@ -417,7 +418,9 @@ App.prototype.renderDropdown = function () {
         parentClassList.contains('sandwich-expando')
 
       if (isOpen && !isToggleElement) {
-        this.setState({ isMainMenuOpen: false })
+        this.setState({ 
+          isMainMenuOpen: false,
+        })
       }
     },
     style: {

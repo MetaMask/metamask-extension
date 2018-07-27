@@ -38,6 +38,8 @@ UnlockScreen.prototype.render = function () {
           animationEventEmitter: this.animationEventEmitter,
         }),*/
 
+        h('.logo'),
+
         h('h1', {
           style: {
             paddingTop: '50px',
