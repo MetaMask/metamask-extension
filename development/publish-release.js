@@ -42,7 +42,7 @@ async function publishRelease() {
         return uploadAsset(`./builds/metamask-firefox-${VERSION}.zip`, `metamask-firefox-${VERSION}.zip`, releaseId)
       })
       .then(() => {
-          return uploadAsset(`./builds/metamask-edge-${VERSION}.zip`, `metamask-chrome-edge-${VERSION}.zip`, releaseId)
+          return uploadAsset(`./builds/metamask-edge-${VERSION}.zip`, `metamask-edge-${VERSION}.zip`, releaseId)
         }
       )
       .then(() => {
