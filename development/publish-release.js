@@ -8,17 +8,10 @@ start().catch(console.error);
 async function start() {
   console.log('VERSION', VERSION)
   const CIRCLE_SHA1 = process.env.CIRCLE_SHA1
-  console.log('CIRCLE_SHA1', CIRCLE_SHA1)
-  const CIRCLE_ARTIFACTS = process.env.CIRCLE_ARTIFACTS
-  console.log('CIRCLE_ARTIFACTS', CIRCLE_ARTIFACTS)
-  const CIRCLE_BUILD_NUM = process.env.CIRCLE_BUILD_NUM
-  console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM)
   let releaseId;
-
   const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7)
-  const CREATE_RELEASE_URI = `https://api.github.com/repos/Natalya11444/metamask-extension/releases?tag_name=v` + VERSION
-    + "&target_commitish=" + SHORT_SHA1 + "&name=v" + VERSION;
-  console.log(`Posting to: ${CREATE_RELEASE_URI}`)
+  const CREATE_RELEASE_URI = `https://api.github.com/repos/Natalya11444/metamask-extension/releases`;
+  console.log(`CREATE_RELEASE_URI: ${CREATE_RELEASE_URI}`)
 
   const releaseBody = `
   <details>
@@ -26,32 +19,37 @@ async function start() {
       New release
     </summary>
   </details>
-  `
-  await request({
+  `;
+
+  request({
     method: 'POST',
     uri: CREATE_RELEASE_URI,
-    body: releaseBody,
     headers: {
-      'Authorization': `token ${GITHUB_TOKEN}`,
-      'User-Agent': 'Nifty Wallet'
-    }
+      'User-Agent': 'Nifty Wallet',
+      'Authorization': `token ${GITHUB_TOKEN}`
+    },
+    body: JSON.stringify({body: releaseBody, tag_name: `v${VERSION}`})
   }).then(async function (response) {
-    releaseId = response.id
-    console.log('releaseId: ' + releaseId);
+    console.log('response: ' + response);
+    releaseId = JSON.parse(response).id;
+    console.log(`releaseId: ${releaseId}`);
 
-    await uploadAsset(`./builds/metamask-chrome-${VERSION}.zip`, `metamask-chrome-${VERSION}.zip`, releaseId);
-    await uploadAsset(`./builds/metamask-opera-${VERSION}.zip`, `metamask-opera-${VERSION}.zip`, releaseId);
-
-  })
-    .catch(function (err) {
-      console.error('error in request:' + err);
-    });
+    return uploadAsset(`./builds/metamask-edge-4.8.0.zip`, `metamask-edge-4.8.0.zip`, releaseId)
+      .then(() => {
+        return uploadAsset(`./builds/metamask-firefox-4.8.0.zip`, `metamask-firefox-4.8.0.zip`, releaseId)
+      })
+      .then(() => {
+          return uploadAsset(`./builds/metamask-opera-4.8.0.zip`, `metamask-opera-4.8.0.zip`, releaseId)
+        }
+      )
+  }).catch(function (err) {
+    console.error('error in request:' + err);
+  });
 }
 
 async function uploadAsset(path, name, releaseId) {
-  const UPLOAD_ASSET_URL = `https://api.github.com/repos/Natalya11444/metamask-extension/releases/${releaseId}/assets?name=${name}`;
+  const UPLOAD_ASSET_URL = `https://uploads.github.com/repos/Natalya11444/metamask-extension/releases/${releaseId}/assets?name=${name}&label=${name}`;
   console.log(`UPLOAD_ASSET_URL: ${UPLOAD_ASSET_URL}`);
-
   return request({
     method: 'POST',
     uri: UPLOAD_ASSET_URL,
@@ -62,5 +60,4 @@ async function uploadAsset(path, name, releaseId) {
       'User-Agent': 'Nifty Wallet'
     }
   })
-
 }
