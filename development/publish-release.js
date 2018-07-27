@@ -29,7 +29,7 @@ async function publishRelease() {
     body: JSON.stringify({
       body: "Description",
       tag_name: `v${VERSION}`,
-      name: "New release",
+      name: `v${VERSION}. New release`,
       target_commitish: CIRCLE_SHA1
     })
   }).then(async function (response) {
