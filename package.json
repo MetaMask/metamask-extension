@@ -198,6 +198,7 @@
     "web3": "^0.20.1",
     "web3-provider-engine": "^14.0.5",
     "web3-stream-provider": "^3.0.1",
+    "webrtc-adapter": "^6.3.0",
     "xtend": "^4.0.1"
   },
   "devDependencies": {

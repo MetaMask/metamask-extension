@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
 import EnsInput from '../../../ens-input'
 import { getToErrorObject } from './send-to-row.utils.js'
+import adapter from 'webrtc-adapter'
 
 export default class SendToRow extends Component {
 
