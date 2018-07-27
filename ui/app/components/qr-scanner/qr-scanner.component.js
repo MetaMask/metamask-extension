@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import adapter from 'webrtc-adapter' // eslint-disable-line import/no-nodejs-modules, no-unused-vars
 import { BrowserQRCodeReader } from '@zxing/library'
+import adapter from 'webrtc-adapter' // eslint-disable-line import/no-nodejs-modules, no-unused-vars
 import { hideQrScanner, qrCodeDetected} from '../../actions'
 import Spinner from '../spinner'
 
