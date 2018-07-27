@@ -12,14 +12,12 @@ async function start () {
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST)
   const CIRCLE_SHA1 = process.env.CIRCLE_SHA1
   console.log('CIRCLE_SHA1', CIRCLE_SHA1)
-  const CIRCLE_ARTIFACTS = process.env.CIRCLE_ARTIFACTS
-  console.log('CIRCLE_ARTIFACTS', CIRCLE_ARTIFACTS)
   const CIRCLE_BUILD_NUM = process.env.CIRCLE_BUILD_NUM
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM)
 
   if (!CIRCLE_PULL_REQUEST) {
     console.warn(`No pull request detected for commit "${CIRCLE_SHA1}"`)
-    //return
+    return
   }
 
   const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop()
