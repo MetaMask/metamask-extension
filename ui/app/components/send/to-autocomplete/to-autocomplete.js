@@ -99,7 +99,7 @@ ToAutoComplete.prototype.render = function () {
 
   return h('div.send-v2__to-autocomplete', {}, [
 
-    h(`input.send-v2__to-autocomplete__input${qrScanner?'.with-qr':''}`, {
+    h(`input.send-v2__to-autocomplete__input${qrScanner ? '.with-qr' : ''}`, {
       placeholder: this.context.t('recipientAddress'),
       className: inError ? `send-v2__error-border` : '',
       value: to,

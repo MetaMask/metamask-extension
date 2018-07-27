@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^1.0.0",
-    "@zxing/library": "^0.7.0",
+    "@zxing/library": "github:zxing-js/library#a1a3481f456b93df4182ab867ad5cf9a092e32b9",
     "abi-decoder": "^1.0.9",
     "asmcrypto.js": "0.22.0",
     "async": "^2.5.0",

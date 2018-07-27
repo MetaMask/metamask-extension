@@ -17,6 +17,7 @@ export default class SendToRow extends Component {
     updateGas: PropTypes.func,
     updateSendTo: PropTypes.func,
     updateSendToError: PropTypes.func,
+    scanQrCode: PropTypes.func,
   };
 
   static contextTypes = {
