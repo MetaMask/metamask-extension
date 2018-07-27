@@ -13,6 +13,12 @@ class ExtensionPlatform {
     extension.tabs.create({ url })
   }
 
+  closeCurrentWindow () {
+    return extension.windows.getCurrent((windowDetails) => {
+      return extension.windows.remove(windowDetails.id)
+    })
+  }
+
   getVersion () {
     return extension.runtime.getManifest().version
   }
