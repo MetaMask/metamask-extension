@@ -23,7 +23,12 @@ async function publishRelease() {
       'User-Agent': 'Nifty Wallet',
       'Authorization': `token ${GITHUB_TOKEN}`
     },
-    body: JSON.stringify({body: "Description", tag_name: `v${VERSION}`, name: "New release"})
+    body: JSON.stringify({
+      body: "Description",
+      tag_name: `v${VERSION}`,
+      name: "New release",
+      target_commitish: CIRCLE_SHA1
+    })
   }).then(async function (response) {
     console.log('response: ' + response);
     releaseId = JSON.parse(response).id;

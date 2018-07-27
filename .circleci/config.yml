@@ -330,11 +330,6 @@ jobs:
         key: dependency-cache-{{ .Revision }}
      - restore_cache:
         key: build-cache-{{ .Revision }}
-     - restore_cache:
-        key: job-screens-{{ .Revision }}
-     - run:
-         name: bump version
-         command: npm run version:bump minor
      - run:
          name: build:release
          command: node ./development/publish-release.js
