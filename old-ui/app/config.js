@@ -45,6 +45,10 @@ ConfigScreen.prototype.render = function () {
           onClick: () => {
             state.dispatch(actions.goHome())
           },
+          style: {
+            position: 'absolute',
+            left: '28px',
+          }
         }),
         h('h2.page-subtitle', 'Settings'),
       ]),

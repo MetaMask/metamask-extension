@@ -63,7 +63,11 @@ ConfirmTxScreen.prototype.render = function () {
 
   return (
 
-    h('.flex-column.flex-grow', [
+    h('.flex-column.flex-grow', {
+      style: {
+        width: '100%',
+      }
+    }, [
 
       h(LoadingIndicator, {
         isLoading: this.state ? !this.state.bypassLoadingScreen : txData.loadingDefaults,

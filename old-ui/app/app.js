@@ -272,7 +272,7 @@ App.prototype.renderNetworkDropdown = function () {
           color: providerType === 'poa' ? 'white' : '',
         },
       },
-      [
+      [h(providerType === 'poa' ? 'div.selected-network' : ''),
         'POA Network'
       ]
     ),
@@ -289,7 +289,7 @@ App.prototype.renderNetworkDropdown = function () {
           color: providerType === 'sokol' ? 'white' : '',
         },
       },
-      [
+      [h(providerType === 'sokol' ? 'div.selected-network' : ''),
         'POA Sokol Test Network',
       ]
     ),
@@ -306,7 +306,7 @@ App.prototype.renderNetworkDropdown = function () {
           color: providerType === 'mainnet' ? 'white' : '',
         },
       },
-      [
+      [h(providerType === 'mainnet' ? 'div.selected-network' : ''),
         'Main Ethereum Network'
       ]
     ),
@@ -323,7 +323,7 @@ App.prototype.renderNetworkDropdown = function () {
           color: providerType === 'ropsten' ? 'white' : '',
         },
       },
-      [
+      [h(providerType === 'ropsten' ? 'div.selected-network' : ''),
         'Ropsten Test Network'
       ]
     ),
@@ -340,7 +340,7 @@ App.prototype.renderNetworkDropdown = function () {
           color: providerType === 'kovan' ? 'white' : '',
         },
       },
-      [
+      [h(providerType === 'kovan' ? 'div.selected-network' : ''),
         'Kovan Test Network'
       ]
     ),
@@ -357,7 +357,7 @@ App.prototype.renderNetworkDropdown = function () {
           color: providerType === 'rinkeby' ? 'white' : '',
         },
       },
-      [
+      [h(providerType === 'rinkeby' ? 'div.selected-network' : ''),
         'Rinkeby Test Network'
       ]
     ),
@@ -374,7 +374,7 @@ App.prototype.renderNetworkDropdown = function () {
           color: activeNetwork === 'http://localhost:8545' ? 'white' : '',
         },
       },
-      [
+      [h(activeNetwork === 'http://localhost:8545' ? 'div.selected-network' : ''),
         'Localhost 8545'
       ]
     ),
@@ -394,8 +394,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [
-        'Custom RPC',
-        activeNetwork === 'custom' ? h('.check', '✓') : null,
+        'Custom RPC'
       ]
     ),
 
@@ -619,13 +618,6 @@ App.prototype.renderPrimary = function () {
             },
           }),
         h('.section-title.flex-row.flex-center', [
-          /*h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
-            onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAddress)),
-            style: {
-              marginLeft: '10px',
-              marginTop: '50px',
-            },
-          }),*/
           h('h2.page-subtitle', {
             style: {
               fontFamily: 'Nunito SemiBold',
@@ -697,7 +689,7 @@ App.prototype.renderCustomOption = function (provider) {
             color: 'white',
           },
         },
-        [
+        [h('div.selected-network'),
           label
         ]
       )

@@ -32,6 +32,10 @@ InfoScreen.prototype.render = function () {
           onClick: (event) => {
             state.dispatch(actions.goHome())
           },
+          style: {
+            position: 'absolute',
+            left: '33px',
+          }
         }),
         h('h2.page-subtitle', 'Info'),
       ]),

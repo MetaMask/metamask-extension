@@ -214,6 +214,10 @@ PendingTx.prototype.render = function () {
             h('.section-title.flex-row.flex-center', [
               !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
                 onClick: this.goHome.bind(this),
+                style: {
+                  position: 'absolute',
+                  left: '33px',
+                }
               }) : null,
               h('h2.page-subtitle', 'Confirm Transaction'),
               isNotification ? h(NetworkIndicator, {

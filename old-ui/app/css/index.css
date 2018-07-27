@@ -296,6 +296,22 @@ app sections
   background: #c3c3c3;
 }
 
+.fa-arrow-left {
+  content: url('../images/icon-back.svg');
+}
+
+.fa-clipboard {
+  content: url('../images/copy.svg');
+}
+
+.selected-network {
+  width: 4px;
+  height: 26px;
+  background: #8fdc97;
+  position: absolute;
+  left: 0;
+}
+
 .section-title .fa-arrow-left {
   margin: -2px 8px 0px -8px;
 }

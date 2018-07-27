@@ -46,6 +46,10 @@ AddTokenScreen.prototype.render = function () {
           onClick: (event) => {
             props.dispatch(actions.goHome())
           },
+          style: {
+            position: 'absolute',
+            left: '30px',
+          }
         }),
         h('h2.page-subtitle', 'Add Token'),
       ]),
@@ -91,7 +95,9 @@ AddTokenScreen.prototype.render = function () {
                 width: 'inherit',
                 flex: '1 0 auto',
                 height: '30px',
-                margin: '8px',
+                margin: '10px 0',
+                borderRadius: '3px',
+                border: '1px solid #e2e2e2',
               },
             }),
           ]),
@@ -110,7 +116,9 @@ AddTokenScreen.prototype.render = function () {
                 width: 'inherit',
                 flex: '1 0 auto',
                 height: '30px',
-                margin: '8px',
+                margin: '10px 0',
+                borderRadius: '3px',
+                border: '1px solid #e2e2e2',
               },
               onChange: (event) => {
                 var element = event.target
@@ -136,7 +144,9 @@ AddTokenScreen.prototype.render = function () {
                 width: 'inherit',
                 flex: '1 0 auto',
                 height: '30px',
-                margin: '8px',
+                margin: '10px 0',
+                borderRadius: '3px',
+                border: '1px solid #e2e2e2',
               },
               onChange: (event) => {
                 var element = event.target
@@ -149,6 +159,7 @@ AddTokenScreen.prototype.render = function () {
           h('button', {
             style: {
               alignSelf: 'center',
+              float: 'right',
             },
             onClick: (event) => {
               const valid = this.validateInputs()
