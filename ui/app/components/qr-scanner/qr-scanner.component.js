@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { hideQrScanner, qrCodeDetected} from '../../actions'
-import Instascan from 'instascan'
 import Spinner from '../spinner'
+import { BrowserQRCodeReader } from '@zxing/library'
 
 class QrScanner extends Component {
   static propTypes = {
@@ -18,18 +18,36 @@ class QrScanner extends Component {
       msg: 'Accesing your camera...',
     }
     this.scanning = false
+    this.codeReader = null
   }
 
   componentDidUpdate () {
     if (this.props.visible && this.camera && !this.scanning) {
-      this.scanner = new Instascan.Scanner({
-        video: this.camera,
-        backgroundScan: false,
-        continuous: true,
-      })
-      this.scanner.addListener('scan', (content) => {
-        this.scanner.stop().then(_ => {
-          const result = this.parseContent(content)
+      this.scanning = true
+      this.initCamera()
+    }
+  }
+
+  initCamera () {
+    console.log('QR-SCANNER: initCamera ')
+    this.codeReader = new BrowserQRCodeReader()
+    this.codeReader.getVideoInputDevices()
+      .then(videoInputDevices => {
+        console.log('QR-SCANNER: getVideoInputDevices ', videoInputDevices)
+        setTimeout(_ => {
+          this.setState({
+            ready: true,
+            msg: 'Place the QR code in front of your camera so we can read it...'})
+            console.log('QR-SCANNER: this.state.ready = true')
+        }, 2000)
+
+        console.log('QR-SCANNER: started scanning...')
+        this.codeReader.decodeFromInputVideoDevice(videoInputDevices[0].deviceId, 'video')
+        .then(content => {
+          console.log('QR-SCANNER: content found!', content)
+          this.codeReader.reset()
+          console.log('QR-SCANNER: stopped scanning...')
+          const result = this.parseContent(content.text)
           if (result.type !== 'unknown') {
             console.log('QR-SCANNER: CODE DETECTED', result)
             this.props.qrCodeDetected(result)
@@ -37,27 +55,15 @@ class QrScanner extends Component {
             this.setState({ ready: false })
           } else {
             this.setState({msg: 'Error: We couldn\'t identify that QR code'})
+            console.log('QR-SCANNER: Unknown code')
           }
-          this.scanning = false
         })
+        .catch(err => {
+          console.log('QR-SCANNER: decodeFromInputVideoDevice threw an exception: ', err)
+        })
+      }).catch(err => {
+        console.log('QR-SCANNER: getVideoInputDevices threw an exception: ', err)
       })
-      Instascan.Camera.getCameras().then((cameras) => {
-        if (cameras.length > 0) {
-          this.scanner.start(cameras[0])
-          setTimeout(_ => {
-            this.setState({
-              ready: true,
-              msg: 'Place the QR code in front of your camera so we can read it...'})
-          }, 2000)
-          console.log('QR-SCANNER: started scanning with camera', cameras[0])
-        } else {
-          this.setState({ msg: 'No camera found :('})
-        }
-      }).catch(function (e) {
-        console.error(e)
-      })
-      this.scanning = true
-    }
   }
 
   parseContent (content) {
@@ -76,11 +82,11 @@ class QrScanner extends Component {
 
 
   stopAndClose = () => {
-    this.scanner.stop().then(_ => {
-      this.scanning = false
-      this.props.hideQrScanner()
-      this.setState({ ready: false })
-    })
+    console.log('QR-SCANNER: stopping scanner...')
+    this.codeReader.reset()
+    this.scanning = false
+    this.props.hideQrScanner()
+    this.setState({ ready: false })
   }
 
   render () {
@@ -126,11 +132,13 @@ class QrScanner extends Component {
                 justifyContent: 'center',
               }}>
               <video
+                id="video"
                 style={{
-                  width: 'auto',
-                  height: '275px',
-                  marginLeft: '-15%',
-                  display: this.state.ready ? 'block' : 'none',
+                   width: 'auto',
+                   height: '275px',
+                   marginLeft: '-15%',
+                   display: this.state.ready ? 'block' : 'none',
+                   transform: 'scaleX(-1)',
                 }}
                 ref={(cam) => {
                   this.camera = cam
