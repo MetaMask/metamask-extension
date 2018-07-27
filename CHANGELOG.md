@@ -33,6 +33,8 @@
 - [#4691](https://github.com/MetaMask/metamask-extension/pull/4691): Redesign of the Confirm Transaction Screen.
 - [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
 - [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): Allow the use of HTTP prefix for custom rpc urls.
+- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): network.js: convert rpc protocol to lower case.
+- [#4898](https://github.com/MetaMask/metamask-extension/pull/4898): Restore multiple consecutive accounts with balances.
 
 ## 4.8.0 Thur Jun 14 2018
 
