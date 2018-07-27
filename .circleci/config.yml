@@ -341,7 +341,7 @@ jobs:
          name: build:release
          command: node ./development/publish-release.js
 
-    job-publish-postrelease:
+  job-publish-postrelease:
       docker:
         - image: circleci/node:8.11.3-browsers
       steps:
