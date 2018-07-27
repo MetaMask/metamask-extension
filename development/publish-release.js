@@ -5,20 +5,15 @@ const fs = require('fs');
 
 publishRelease().then(function () {
   console.log("Published");
-}).catch(function (err) {
-  console.error('error in publishRelease:' + err);
-  throw err;
 });
 
 async function publishRelease() {
   console.log('VERSION', VERSION)
   const CIRCLE_SHA1 = process.env.CIRCLE_SHA1
   let releaseId;
-  const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7)
   const CREATE_RELEASE_URI = `https://api.github.com/repos/Natalya11444/metamask-extension/releases`;
   console.log(`CREATE_RELEASE_URI: ${CREATE_RELEASE_URI}`)
 
-  // todo check title, release notes
   request({
     method: 'POST',
     uri: CREATE_RELEASE_URI,
@@ -27,9 +22,9 @@ async function publishRelease() {
       'Authorization': `token ${GITHUB_TOKEN}`
     },
     body: JSON.stringify({
-      body: "Description",
+      body: "Release is ready",
       tag_name: `v${VERSION}`,
-      name: `v${VERSION}. New release`,
+      name: `Version ${VERSION}`,
       target_commitish: CIRCLE_SHA1
     })
   }).then(async function (response) {

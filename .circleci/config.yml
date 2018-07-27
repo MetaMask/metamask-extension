@@ -76,26 +76,33 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
-#            - all-tests-pass
+#           - all-tests-pass
       - job-publish-prerelease:
-          # filters:
-          #            branches:
-          #              only: master
           requires:
             - prep-deps-npm
             - prep-build
             - job-screens
-#            - all-tests-pass
+#           - all-tests-pass
       - job-publish-release:
-#          filters:
-#            branches:
-#              only: master
+          filters:
+             branches:
+               only: master
           requires:
             - prep-deps-npm
             - prep-build
             - prep-docs
             - job-screens
-#            - all-tests-pass
+#           - all-tests-pass
+      - job-publish-postrelease:
+                filters:
+                  branches:
+                    only: master
+                requires:
+                  - prep-deps-npm
+                  - prep-build
+                  - prep-docs
+                  - job-screens
+#                 - all-tests-pass
 
 jobs:
   prep-deps-npm:
