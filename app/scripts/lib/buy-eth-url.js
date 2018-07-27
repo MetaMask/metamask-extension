@@ -11,7 +11,7 @@ module.exports = getBuyEthUrl
  * network does not match any of the specified cases, or if no network is given, returns undefined.
  *
  */
-function getBuyEthUrl ({ network, amount, address }) {
+function getBuyEthUrl ({ network, amount, address, exchange }) {
   let url
   switch (network) {
     case '1':
@@ -29,6 +29,25 @@ function getBuyEthUrl ({ network, amount, address }) {
     case '42':
       url = 'https://github.com/kovan-testnet/faucet'
       break
+
+    case '77':
+      url = 'https://faucet-sokol.herokuapp.com/'
+      break
+
+    case '99': {
+      switch (exchange) {
+        case 'binance':
+          url = 'https://www.binance.com/en/trade/POA_ETH'
+          break
+        case 'bibox':
+          url = 'https://www.bibox.com/exchange?coinPair=POA_ETH'
+          break
+        case 'cex.plus':
+          url = 'http://cex.plus/market/poa_eth'
+          break
+      }
+      break
+    }
   }
   return url
 }

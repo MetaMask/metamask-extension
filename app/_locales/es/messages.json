@@ -34,7 +34,7 @@
     "description": "La descripción de la aplicación"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Nifty Wallet",
     "description": "El nombre de la aplicación"
   },
   "approved": {
@@ -75,7 +75,7 @@
     "message": "Pedir prestado con Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "Metamask fue diseñado y construido en California"
+    "message": "Nifty Wallet fue diseñado y construido en California"
   },
   "buy": {
     "message": "Comprar"
@@ -121,6 +121,9 @@
   },
   "connectingToRinkeby": {
     "message": "Conectando a la red de test Rinkeby"
+  },
+  "connectingToPOA": {
+    "message": "Conectando a la red POA"
   },
   "connectingToUnknown": {
     "message": "Conectando a una red desconocida"
@@ -202,7 +205,7 @@
     "message": "La red por defecto para las transacciones de Ether es MainNet (red principal)"
   },
   "denExplainer": {
-    "message": "El DEN es tu contraseña encriptada almacenada dentro de MetaMask"
+    "message": "El DEN es tu contraseña encriptada almacenada dentro de Nifty Wallet"
   },
   "deposit": {
     "message": "Depositar"
@@ -230,7 +233,7 @@
     "message": "Depositar con ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Si posees otras criptomonedas, puedes intercambiar y depositar Ether directamente en tu billetera de MetaMask. No necesitas tener una cuenta."
+    "message": "Si posees otras criptomonedas, puedes intercambiar y depositar Ether directamente en tu billetera de Nifty Wallet. No necesitas tener una cuenta."
   },
   "details": {
     "message": "Detalles"
@@ -388,7 +391,7 @@
     "description": "Estado que muestra que una cuenta ha sido completamente cargada en el llavero"
   },
   "importAccountMsg": {
-    "message": "Las cuentas importadas no serán asociadas con tu cuenta original creada con tu MetaMask. Aprende más acerca de importar cuentas."
+    "message": "Las cuentas importadas no serán asociadas con tu cuenta original creada con tu Nifty Wallet. Aprende más acerca de importar cuentas."
   },
   "info": {
     "message": "Información"
@@ -477,7 +480,7 @@
     "message": "Mensaje"
   },
   "metamaskDescription": {
-    "message": "MetaMask es una identidad segura en Ethereum"
+    "message": "Nifty Wallet es una identidad segura en Ethereum"
   },
   "min": {
     "message": "Mínimo"
@@ -489,7 +492,7 @@
     "message": "Mis cuentas"
   },
   "needEtherInWallet": {
-    "message": "Para interactuar con una aplicación descentralizada usando MetaMask, necesitas tener Ether en tu billetera"
+    "message": "Para interactuar con una aplicación descentralizada usando Nifty Wallet, necesitas tener Ether en tu billetera"
   },
   "needImportFile": {
     "message": "Debes seleccionar un archivo para importar",
@@ -655,6 +658,9 @@
   "rinkeby": {
     "message": "Red privada Rinkeby"
   },
+  "poa": {
+    "message": "Red POA"
+  },
   "ropsten": {
     "message": "Red privada Ropsten"
   },
@@ -794,7 +800,7 @@
     "message": "Símbolo del token"
   },
   "tokenWarning1": {
-    "message": "Mantén un registro de los tokens que has comprado con tu cuenta de MetaMask. Si compraste tokens usando una cuenta diferente, esos tokens no aparecerán aquí."
+    "message": "Mantén un registro de los tokens que has comprado con tu cuenta de Nifty Wallet. Si compraste tokens usando una cuenta diferente, esos tokens no aparecerán aquí."
   },
   "total": {
     "message": "Total"
@@ -816,7 +822,7 @@
     "description": "Seguidos por un enlace (aquí) para ver los saldos de token"
   },
   "twelveWords": {
-    "message": "Estas 12 palabras son la única forma de restablecer tus cuentas de MetaMask. \nGuárdalas en un lugar seguro y secreto."
+    "message": "Estas 12 palabras son la única forma de restablecer tus cuentas de Nifty Wallet. \nGuárdalas en un lugar seguro y secreto."
   },
   "typePassword": {
     "message": "Escribe tu contraseña"
@@ -825,7 +831,7 @@
     "message": "Bienvenido a la nueva UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Estás usando la nueva UI de MetaMask. Echa un vistazo alrededor, prueba las nuevas características, tales como mandar tokens, y háznos saber si tienes algún problema"
+    "message": "Estás usando la nueva UI de Nifty Wallet. Echa un vistazo alrededor, prueba las nuevas características, tales como mandar tokens, y háznos saber si tienes algún problema"
   },
   "unavailable": {
     "message": "No disponible"
@@ -874,7 +880,7 @@
     "message": "Advertencia"
   },
   "welcomeBeta": {
-    "message": "Bienvenido a Metamask Beta"
+    "message": "Bienvenido a Nifty Wallet Beta"
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

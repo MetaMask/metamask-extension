@@ -29,6 +29,10 @@
   &.rinkeby-test-network .menu-icon-circle div {
     background-color: rgba(235, 179, 63, .7) !important;
   }
+
+  &.poa-network .menu-icon-circle div {
+    background-color: #5c34a2 !important;
+  }
 }
 
 .dropdown-menu-item {
@@ -158,16 +162,4 @@
 
 .network-caret {
   margin: 0 8px 2px;
-}
-
-.network-display {
-  &__container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    @media screen and (min-width: 576px) {
-      display: none;
-    }
-  }
 }

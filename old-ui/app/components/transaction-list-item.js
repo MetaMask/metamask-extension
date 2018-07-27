@@ -40,10 +40,23 @@ TransactionListItem.prototype.showRetryButton = function () {
   const currentNonceTxs = transactions.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
   const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[0]
-  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce
-    && lastSubmittedTxWithCurrentNonce.id === transaction.id
+  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce &&
+    lastSubmittedTxWithCurrentNonce.id === transaction.id
 
   return currentTxIsLatestWithNonce && Date.now() - submittedTime > 30000
+}
+
+const poaExplorerTxLink = (hash, network) => {
+  const isSokol = network === 77
+  const isPOA = network === 99
+  if (isSokol) {
+    return `https://sokol.poaexplorer.com/txid/search/${hash}`
+  }
+  if (isPOA) {
+    return `https://poaexplorer.com/txid/search/${hash}`
+  }
+
+  return ''
 }
 
 TransactionListItem.prototype.render = function () {
@@ -56,7 +69,7 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42
+  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42 || numericNet === 77 || numericNet === 99
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -79,7 +92,14 @@ TransactionListItem.prototype.render = function () {
         }
         event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
-        var url = explorerLink(transaction.hash, parseInt(network))
+        const isSokol = numericNet === 77
+        const isPOA = numericNet === 99
+        let url
+        if (isSokol || isPOA) {
+          url = poaExplorerTxLink(transaction.hash, numericNet)
+        } else {
+          url = explorerLink(transaction.hash, numericNet)
+        }
         global.platform.openWindow({ url })
       },
       style: {
@@ -128,6 +148,7 @@ TransactionListItem.prototype.render = function () {
           width: '55px',
           shorten: true,
           showFiat: false,
+          network,
           style: {fontSize: '15px'},
         }) : h('.flex-column'),
       ]),

@@ -22,6 +22,7 @@ const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
 const AddTokenScreen = require('./add-token')
+const RemoveTokenScreen = require('./remove-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const Loading = require('./components/loading')
@@ -35,6 +36,7 @@ const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+const DeleteRpc = require('./components/delete-rpc')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -88,7 +90,7 @@ function mapStateToProps (state) {
 App.prototype.render = function () {
   var props = this.props
   const { isLoading, loadingMessage, transForward, network } = props
-  const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
+  const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config' && props.currentView.name !== 'delete-rpc'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
   log.debug('Main ui render function')
@@ -183,6 +185,7 @@ App.prototype.renderAppBar = function () {
               this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
             },
           }),
+
         ]),
 
         props.isUnlocked && h('div', {
@@ -255,6 +258,40 @@ App.prototype.renderNetworkDropdown = function () {
       padding: '2px 16px 2px 0px',
     },
   }, [
+
+    h(
+      DropdownMenuItem,
+      {
+        key: 'poa',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('poa')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.purple-square'),
+        'POA Network',
+        providerType === 'poa' ? h('.check', '✓') : null,
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
+        key: 'sokol',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('sokol')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.green-square'),
+        'POA Sokol Test Network',
+        providerType === 'sokol' ? h('.check', '✓') : null,
+      ]
+    ),
 
     h(
       DropdownMenuItem,
@@ -403,13 +440,6 @@ App.prototype.renderDropdown = function () {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       onClick: () => { this.props.dispatch(actions.showInfoPage()) },
     }, 'Info/Help'),
-
-    h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => {
-        this.props.dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
-      },
-    }, 'Try Beta!'),
   ])
 }
 
@@ -464,21 +494,6 @@ App.prototype.renderPrimary = function () {
         key: 'NoticeScreen',
         onConfirm: () => props.dispatch(actions.markNoticeRead(props.nextUnreadNotice)),
       }),
-
-      !props.isInitialized && h('.flex-row.flex-center.flex-grow', [
-        h('p.pointer', {
-          onClick: () => {
-            global.platform.openExtensionInBrowser()
-            props.dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
-          },
-          style: {
-            fontSize: '0.8em',
-            color: '#aeaeae',
-            textDecoration: 'underline',
-            marginTop: '32px',
-          },
-        }, 'Try Beta Version'),
-      ]),
 
     ])
   } else if (props.lostAccounts && props.lostAccounts.length > 0) {
@@ -553,6 +568,10 @@ App.prototype.renderPrimary = function () {
       log.debug('rendering add-token screen from unlock screen.')
       return h(AddTokenScreen, {key: 'add-token'})
 
+    case 'remove-token':
+      log.debug('rendering remove-token screen from unlock screen.')
+      return h(RemoveTokenScreen, {key: 'remove-token', ...props.currentView.context })
+
     case 'config':
       log.debug('rendering config screen')
       return h(ConfigScreen, {key: 'config'})
@@ -604,6 +623,9 @@ App.prototype.renderPrimary = function () {
           h(QrView, {key: 'qr'}),
         ]),
       ])
+    case 'delete-rpc':
+      log.debug('rendering delete rpc confirmation screen')
+      return h(DeleteRpc, {key: 'delete-rpc'})
 
     default:
       log.debug('rendering default, account detail screen')
@@ -665,12 +687,16 @@ App.prototype.getNetworkName = function () {
 
   if (providerName === 'mainnet') {
     name = 'Main Ethereum Network'
+  } else if (providerName === 'sokol') {
+    name = 'POA Sokol Test Network'
   } else if (providerName === 'ropsten') {
     name = 'Ropsten Test Network'
   } else if (providerName === 'kovan') {
     name = 'Kovan Test Network'
   } else if (providerName === 'rinkeby') {
     name = 'Rinkeby Test Network'
+  } else if (providerName === 'poa') {
+    name = 'POA Network'
   } else {
     name = 'Unknown Private Network'
   }
@@ -683,7 +709,7 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
   const rpcTarget = provider.rpcTarget
 
   return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
+    if ((rpc === 'http://localhost:8545') || (provider.type === 'rpc' && rpc === rpcTarget)) {
       return null
     } else {
       return h(
@@ -696,7 +722,6 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
         [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
           rpc,
-          rpcTarget === rpc ? h('.check', '✓') : null,
         ]
       )
     }

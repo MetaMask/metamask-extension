@@ -3,7 +3,7 @@ const EventEmitter = require('events').EventEmitter
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const Mascot = require('../components/mascot')
+// const Mascot = require('../components/mascot')
 const actions = require('../../../ui/app/actions')
 const Tooltip = require('../components/tooltip')
 const getCaretCoordinates = require('textarea-caret')
@@ -44,18 +44,20 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      h(Mascot, {
+      // disable fox's animation
+      /* h(Mascot, {
         animationEventEmitter: this.animationEventEmitter,
-      }),
+      }),*/
 
       h('h1', {
         style: {
+          paddingTop: '50px',
           fontSize: '1.3em',
           textTransform: 'uppercase',
           color: '#7F8082',
           marginBottom: 10,
         },
-      }, 'MetaMask'),
+      }, 'Nifty Wallet'),
 
 
       h('div', [
@@ -68,7 +70,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         }, 'Encrypt your new DEN'),
 
         h(Tooltip, {
-          title: 'Your DEN is your password-encrypted storage within MetaMask.',
+          title: 'Your DEN is your password-encrypted storage within Nifty Wallet.',
         }, [
           h('i.fa.fa-question-circle.pointer', {
             style: {

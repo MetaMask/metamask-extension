@@ -7,6 +7,9 @@ describe('', function () {
     amount: 5,
     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   }
+  const sokol = {
+    network: '77',
+  }
   const ropsten = {
     network: '3',
   }
@@ -27,6 +30,11 @@ describe('', function () {
     assert.equal(amount[0], 'amount=5')
     assert.equal(address[0], 'address=0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
 
+  })
+
+  it('returns POA Sokol faucet for network 77', function () {
+    const ropstenUrl = getBuyEthUrl(sokol)
+    assert.equal(ropstenUrl, 'https://faucet-sokol.herokuapp.com/')
   })
 
   it('returns metamask ropsten faucet for network 3', function () {

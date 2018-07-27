@@ -22,6 +22,8 @@ const {
   conversionRateSelector,
 } = require('../selectors.js')
 
+import { clearConfirmTransaction } from '../ducks/confirm-transaction.duck'
+
 const { DEFAULT_ROUTE } = require('../routes')
 
 function mapStateToProps (state) {
@@ -39,6 +41,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     goHome: () => dispatch(actions.goHome()),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
   }
 }
 
@@ -204,6 +207,9 @@ SignatureRequest.prototype.renderBody = function () {
     h('div.request-signature__rows', [
 
       ...rows.map(({ name, value }) => {
+        if (typeof value === 'boolean') {
+          value = value.toString()
+        }
         return h('div.request-signature__row', [
           h('div.request-signature__row-title', [`${name}:`]),
           h('div.request-signature__row-value', value),
@@ -244,12 +250,18 @@ SignatureRequest.prototype.renderFooter = function () {
   return h('div.request-signature__footer', [
     h('button.btn-default.btn--large.request-signature__footer__cancel-button', {
       onClick: event => {
-        cancel(event).then(() => this.props.history.push(DEFAULT_ROUTE))
+        cancel(event).then(() => {
+          this.props.clearConfirmTransaction()
+          this.props.history.push(DEFAULT_ROUTE)
+        })
       },
     }, this.context.t('cancel')),
     h('button.btn-primary.btn--large', {
       onClick: event => {
-        sign(event).then(() => this.props.history.push(DEFAULT_ROUTE))
+        sign(event).then(() => {
+          this.props.clearConfirmTransaction()
+          this.props.history.push(DEFAULT_ROUTE)
+        })
       },
     }, this.context.t('sign')),
   ])

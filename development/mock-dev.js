@@ -12,7 +12,6 @@
  * To use, run `npm run mock`.
  */
 
-const extend = require('xtend')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const Root = require('../ui/app/root')
@@ -24,7 +23,6 @@ const Selector = require('./selector')
 const MetamaskController = require('../app/scripts/metamask-controller')
 const firstTimeState = require('../app/scripts/first-time-state')
 const ExtensionPlatform = require('../app/scripts/platforms/extension')
-const extension = require('./mockExtension')
 const noop = function () {}
 
 const log = require('loglevel')
@@ -81,14 +79,14 @@ const controller = new MetamaskController({
   initState: firstTimeState,
 })
 global.metamaskController = controller
-global.platform = new ExtensionPlatform
+global.platform = new ExtensionPlatform()
 
 //
 // User Interface
 //
 
 actions._setBackgroundConnection(controller.getApi())
-actions.update = function(stateName) {
+actions.update = function (stateName) {
   selectedView = stateName
   updateQueryParams(stateName)
   const newState = states[selectedView]
@@ -98,7 +96,7 @@ actions.update = function(stateName) {
   }
 }
 
-function modifyBackgroundConnection(backgroundConnectionModifier) {
+function modifyBackgroundConnection (backgroundConnectionModifier) {
   const modifiedBackgroundConnection = Object.assign({}, controller.getApi(), backgroundConnectionModifier)
   actions._setBackgroundConnection(modifiedBackgroundConnection)
 }
@@ -112,7 +110,7 @@ var store = configureStore(firstState)
 // start app
 startApp()
 
-function startApp(){
+function startApp () {
   const body = document.body
   const container = document.createElement('div')
   container.id = 'test-container'

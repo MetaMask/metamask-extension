@@ -34,7 +34,7 @@
     "description": "La descrizione dell'applicazione"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Nifty Wallet",
     "description": "Il nome dell'applicazione"
   },
   "attemptingConnect": {
@@ -72,7 +72,7 @@
     "message": "Prendi in presisito con Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "MetaMask è progettato e costruito in California."
+    "message": "Nifty Wallet è progettato e costruito in California."
   },
   "buy": {
     "message": "Compra"
@@ -178,7 +178,7 @@
     "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
   },
   "denExplainer": {
-    "message": "Il DEN è il tuo archivio crittato con password dentro Metamask."
+    "message": "Il DEN è il tuo archivio crittato con password dentro Nifty Wallet."
   },
   "deposit": {
     "message": "Deposita"
@@ -206,7 +206,7 @@
     "message": "Deposita con ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Se possiedi altre criptomonete, puoi scambiare e depositare Ether direttamente nel tuo portafoglio MetaMask. Nessun account richiesto."
+    "message": "Se possiedi altre criptomonete, puoi scambiare e depositare Ether direttamente nel tuo portafoglio Nifty Wallet. Nessun account richiesto."
   },
   "details": {
     "message": "Dettagli"
@@ -351,7 +351,7 @@
     "message": "Importa Account"
   },
   "importAccountMsg": {
-    "message":" Gli account importati non saranno associati alla frase seed originariamente creata con MetaMask. Impara di più sugli account importati "    
+    "message":" Gli account importati non saranno associati alla frase seed originariamente creata con Nifty Wallet. Impara di più sugli account importati "    
   },
   "importAnAccount": {
     "message": "Importa un account"
@@ -441,7 +441,7 @@
     "message": "Messaggio"
   },
   "metamaskDescription": {
-    "message": "MetaMask è una cassaforte sicura per identità su Ethereum."
+    "message": "Nifty Wallet è una cassaforte sicura per identità su Ethereum."
   },
   "min": {
     "message": "Minimo"
@@ -453,7 +453,7 @@
     "message": "Devi selezionare almeno un token."
   },
   "needEtherInWallet": {
-    "message": "Per interagire con applicazioni decentralizzate con MetaMask, devi possedere Ether nel tuo portafoglio."
+    "message": "Per interagire con applicazioni decentralizzate con Nifty Wallet, devi possedere Ether nel tuo portafoglio."
   },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
@@ -601,6 +601,9 @@
   "rinkeby": {
     "message": "Rete di test Rinkeby"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "Rete di test Ropsten"
   },
@@ -731,7 +734,7 @@
     "message": "Simbolo Token"
   },
   "tokenWarning1": {
-    "message": "Tieni traccia dei token che hai acquistato con il tuo account MetaMask. Se hai acquistato token con un account diverso, quei token non appariranno qui."
+    "message": "Tieni traccia dei token che hai acquistato con il tuo account Nifty Wallet. Se hai acquistato token con un account diverso, quei token non appariranno qui."
   },
   "total": {
     "message": "Totale"
@@ -753,7 +756,7 @@
     "description": "Seguito da un link (qui) per vedere il bilancio dei token"
   },
   "twelveWords": {    
-    "message": "Queste 12 parole sono l'unico modo per ripristinare i tuoi account MetaMask. \nSalvale in un posto sicuro e segreto."
+    "message": "Queste 12 parole sono l'unico modo per ripristinare i tuoi account Nifty Wallet. \nSalvale in un posto sicuro e segreto."
   },
   "typePassword": {
     "message": "Inserisci Password"
@@ -762,7 +765,7 @@
     "message": "Benvenuto alla nuova interfaccia (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Stai utilizzanto la nuova interfaccia di MetaMask. Guarda in giro, prova nuove funzionalità come inviare token, e facci sapere se hai dei problemi."    
+    "message": "Stai utilizzanto la nuova interfaccia di Nifty Wallet. Guarda in giro, prova nuove funzionalità come inviare token, e facci sapere se hai dei problemi."    
   },
   "unavailable": {
     "message": "Non Disponibile"
@@ -805,7 +808,7 @@
     "message": "Attenzione"
   },
   "welcomeBeta": {
-    "message": "Benvenuto nella Beta di MetaMask"
+    "message": "Benvenuto nella Beta di Nifty Wallet"
   },
   "whatsThis": {
     "message": "Cos'è questo?"

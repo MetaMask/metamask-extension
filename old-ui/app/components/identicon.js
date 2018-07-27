@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const isNode = require('detect-node')
 const findDOMNode = require('react-dom').findDOMNode
-const jazzicon = require('jazzicon')
+const jazzicon = require('rockicon')
 const iconFactoryGen = require('../../lib/icon-factory')
 const iconFactory = iconFactoryGen(jazzicon)
 

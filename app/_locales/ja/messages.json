@@ -16,7 +16,7 @@
   },
   "addCustomToken": {
     "message": "カスタムトークンを追加"
-  },  
+  },
   "addToken": {
     "message": "トークンを追加"
   },
@@ -34,7 +34,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Nifty Wallet",
     "description": "The name of the application"
   },
   "attemptingConnect": {
@@ -161,7 +161,7 @@
   },
   "decimal": {
     "message": "小数点桁数"
-  }, 
+  },
   "defaultNetwork": {
     "message": "デフォルトのEther送受信ネットワークはメインネットです。"
   },
@@ -553,6 +553,9 @@
   "rinkeby": {
     "message": "Rinkebyテストネットワーク"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "Ropstenテストネットワーク"
   },
@@ -727,7 +730,7 @@
     "message": "おかえりなさい!"
   },
   "welcomeBeta": {
-    "message": "MetaMask ベータ版へようこそ!"
+    "message": "Nifty Wallet ベータ版へようこそ!"
   },
   "whatsThis": {
     "message": "この機能について"

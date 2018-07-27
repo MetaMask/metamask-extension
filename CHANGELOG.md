@@ -2,6 +2,25 @@
 
 ## Current Master
 
+## 4.8.8 Fri Jul 27 2018
+
+## 4.8.7 Fri Jul 27 2018
+
+## 4.8.6 Fri Jul 27 2018
+
+## 4.8.5 Fri Jul 27 2018
+
+## 4.8.4 Fri Jul 27 2018
+
+## 4.8.3 Thu Jul 26 2018
+
+- Add new tokens auto detection
+- Remove rejected transactions from transaction history
+- Add Trezor Support
+- Allow to remove accounts (Imported and Hardware Wallets)
+- [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
+- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): network.js: convert rpc protocol to lower case.
+
 ## 4.8.0 Thur Jun 14 2018
 
 - [#4513](https://github.com/MetaMask/metamask-extension/pull/4513): Attempting to import an empty private key will now show a clear error.
@@ -9,7 +28,6 @@
 - [#4523](https://github.com/MetaMask/metamask-extension/pull/4523): Fix bug where account reset did not work with custom RPC providers.
 - [#4524](https://github.com/MetaMask/metamask-extension/pull/4524): Fix for Brave i18n getAcceptLanguages.
 - [#4557](https://github.com/MetaMask/metamask-extension/pull/4557): Fix bug where nonce mutex was never released.
-- [#4558](https://github.com/MetaMask/metamask-extension/pull/4558): Stop reloading browser page on Ethereum network change.
 - [#4566](https://github.com/MetaMask/metamask-extension/pull/4566): Add phishing notice.
 - [#4591](https://github.com/MetaMask/metamask-extension/pull/4591): Allow Copying Token Addresses and link to Token on Etherscan.
 

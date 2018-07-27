@@ -34,7 +34,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Nifty Wallet",
     "description": "The name of the application"
   },
   "approved": {
@@ -75,7 +75,7 @@
     "message": "透過 Dharma (Beta) 借用"
   },
   "builtInCalifornia": {
-    "message": "MetaMask 是在加州設計製造."
+    "message": "Nifty Wallet 是在加州設計製造."
   },
   "buy": {
     "message": "購買"
@@ -190,7 +190,7 @@
     "message": "預設 Ether 交易網路為主網路（Main Net）。"
   },
   "denExplainer": {
-    "message": "你的 DEN 是在你的 MetaMask 中的加密密碼儲存庫。"
+    "message": "你的 DEN 是在你的 Nifty Wallet 中的加密密碼儲存庫。"
   },
   "deposit": {
     "message": "存入"
@@ -218,7 +218,7 @@
     "message": "從 ShapeShift 存入"
   },
   "depositShapeShiftExplainer": {
-    "message": "如果你擁有其他加密貨幣，你可以直接交易並存入 Ether 到你的 MetaMask 錢包。不需要開帳戶。"
+    "message": "如果你擁有其他加密貨幣，你可以直接交易並存入 Ether 到你的 Nifty Wallet 錢包。不需要開帳戶。"
   },
   "details": {
     "message": "詳情"
@@ -362,7 +362,7 @@
     "message": "你想怎麼存入 Ether？"
   },
   "holdEther": {
-    "message": "Metamask 讓您能保存 ether 和代幣, 並成為您接觸分散式應用程式的途徑."
+    "message": "Nifty Wallet 讓您能保存 ether 和代幣, 並成為您接觸分散式應用程式的途徑."
   },
   "import": {
     "message": "導入",
@@ -372,7 +372,7 @@
     "message": "導入帳戶"
   },
   "importAccountMsg": {
-    "message":" 匯入的帳戶與您原有 MetaMask 帳戶的助憶詞並無關聯. 請查看與導入帳戶相關的資料 "
+    "message":" 匯入的帳戶與您原有 Nifty Wallet 帳戶的助憶詞並無關聯. 請查看與導入帳戶相關的資料 "
   },
   "importAnAccount": {
     "message": "導入一個帳戶"
@@ -419,7 +419,7 @@
     "description": "format for importing an account"
   },
   "keepTrackTokens": {
-    "message": "持續追蹤您 MetaMask 帳戶中的代幣。"
+    "message": "持續追蹤您 Nifty Wallet 帳戶中的代幣。"
   },
   "kovan": {
     "message": "Kovan 測試網路"
@@ -462,7 +462,7 @@
     "message": "登出"
   },
   "loose": {
-    "message": "非 MetaMask 帳號"
+    "message": "非 Nifty Wallet 帳號"
   },
   "loweCaseWords": {
     "message": "助憶詞僅包含小寫字元"
@@ -474,7 +474,7 @@
     "message": "訊息"
   },
   "metamaskDescription": {
-    "message": "MetaMask 是Ethereum的安全身份識別金庫."
+    "message": "Nifty Wallet 是Ethereum的安全身份識別金庫."
   },
   "min": {
     "message": "最小"
@@ -486,7 +486,7 @@
     "message": "必須選擇至少 1 代幣."
   },
   "needEtherInWallet": {
-    "message": "要使用 MetaMask 存取 DAPP 時，您的錢包中需要有 Ether。"
+    "message": "要使用 Nifty Wallet 存取 DAPP 時，您的錢包中需要有 Ether。"
   },
   "needImportFile": {
     "message": "您必須選擇一個檔案來導入。",
@@ -643,6 +643,9 @@
   "rinkeby": {
     "message": "Rinkeby 測試網路"
   },
+  "poa": {
+    "message": "[Not translated]"
+  },
   "ropsten": {
     "message": "Ropsten 測試網路"
   },
@@ -660,6 +663,9 @@
   },
   "connectingToRinkeby": {
     "message": "連線到 Rinkeby 測試網路"
+  },
+  "connectingToPOA": {
+    "message": "[Not translated]"
   },
   "connectingToUnknown": {
     "message": "連線到未知網路"
@@ -812,7 +818,7 @@
     "message": "代幣代號"
   },
   "tokenWarning1": {
-    "message": "使用 MetaMask 帳戶追蹤你已購得的代幣。如果你使用不同的帳戶保存購得的代幣，那些代幣就不會出現在這裡。"
+    "message": "使用 Nifty Wallet 帳戶追蹤你已購得的代幣。如果你使用不同的帳戶保存購得的代幣，那些代幣就不會出現在這裡。"
   },
   "total": {
     "message": "總量"
@@ -834,7 +840,7 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
-    "message": "這 12 個單詞是唯一回復你的 MetaMask 帳號的方法。\n將它們儲存到那些安全且隱密的地方吧。"
+    "message": "這 12 個單詞是唯一回復你的 Nifty Wallet 帳號的方法。\n將它們儲存到那些安全且隱密的地方吧。"
   },
   "typePassword": {
     "message": "請輸入密碼"
@@ -843,7 +849,7 @@
     "message": "歡迎使用新版界面 （Beta）"
   },
   "uiWelcomeMessage": {
-    "message": "你現在正在使用新版 MetaMask 界面。試試諸如發送代幣等新功能吧，有任何問題請告知我們。"
+    "message": "你現在正在使用新版 Nifty Wallet 界面。試試諸如發送代幣等新功能吧，有任何問題請告知我們。"
   },
   "unapproved": {
     "message": "未同意"
@@ -889,7 +895,7 @@
     "message": "警告"
   },
   "welcomeBeta": {
-    "message": "歡迎到 MetaMask Beta"
+    "message": "歡迎到 Nifty Wallet Beta"
   },
   "whatsThis": {
     "message": "這是什麼？"

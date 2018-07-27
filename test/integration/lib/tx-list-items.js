@@ -1,6 +1,5 @@
 const reactTriggerChange = require('../../lib/react-trigger-change')
 const {
-  timeout,
   queryAsync,
   findAsync,
 } = require('../../lib/util')
@@ -15,7 +14,7 @@ QUnit.test('renders list items successfully', (assert) => {
   })
 })
 
-async function runTxListItemsTest(assert, done) {
+async function runTxListItemsTest (assert, done) {
   console.log('*** start runTxListItemsTest')
   const selectState = await queryAsync($, 'select')
   selectState.val('tx list items')
@@ -32,8 +31,8 @@ async function runTxListItemsTest(assert, done) {
   assert.equal($(unapprovedTx).hasClass('tx-list-pending-item-container'), true, 'unapprovedTx has the correct class')
 
   const retryTx = txListItems[1]
-  const retryTxLink = await findAsync($(retryTx), '.tx-list-item-retry-link')
-  assert.equal(retryTxLink[0].textContent, 'Increase the gas price on your transaction', 'retryTx has expected link')
+  const retryTxLink = await findAsync($(retryTx), '.tx-list-item-retry-container span')
+  assert.equal(retryTxLink[0].textContent, 'Taking too long? Increase the gas price on your transaction', 'retryTx has expected link')
 
   const approvedTx = txListItems[2]
   const approvedTxRenderedStatus = await findAsync($(approvedTx), '.tx-list-status')

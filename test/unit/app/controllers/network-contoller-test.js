@@ -5,9 +5,6 @@ const {
   getNetworkDisplayName,
 } = require('../../../../app/scripts/controllers/network/util')
 
-const { createTestProviderTools } = require('../../../stub/provider')
-const providerResultStub = {}
-
 describe('# Network Controller', function () {
   let networkController
   const noop = () => {}
@@ -83,6 +80,9 @@ describe('Network utils', () => {
         input: 42,
         expected: 'Kovan',
       }, {
+        input: 77,
+        expected: 'Sokol',
+      }, {
         input: 'ropsten',
         expected: 'Ropsten',
       }, {
@@ -91,6 +91,9 @@ describe('Network utils', () => {
       }, {
         input: 'kovan',
         expected: 'Kovan',
+      }, {
+        input: 'sokol',
+        expected: 'Sokol',
       }, {
         input: 'mainnet',
         expected: 'Main Ethereum Network',

@@ -203,6 +203,28 @@ NetworkDropdown.prototype.render = function () {
     h(
       DropdownMenuItem,
       {
+        key: 'poa',
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => props.setProviderType('poa'),
+        style: dropdownMenuItemStyle,
+      },
+      [
+        providerType === 'poa' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#5c34a2', // $saffron
+          isSelected: providerType === 'poa',
+        }),
+        h('span.network-name-item', {
+          style: {
+            color: providerType === 'poa' ? '#ffffff' : '#9b9b9b',
+          },
+        }, this.context.t('poa')),
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
         key: 'default',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => props.setProviderType('localhost'),
@@ -264,6 +286,8 @@ NetworkDropdown.prototype.getNetworkName = function () {
     name = this.context.t('kovan')
   } else if (providerName === 'rinkeby') {
     name = this.context.t('rinkeby')
+  } else if (providerName === 'poa') {
+    name = this.context.t('poa')
   } else {
     name = this.context.t('unknownNetwork')
   }

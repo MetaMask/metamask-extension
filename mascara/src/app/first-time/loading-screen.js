@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Spinner from './spinner'
 
-export default function LoadingScreen({ className = '', loadingMessage }) {
+export default function LoadingScreen ({ className = '', loadingMessage }) {
   return (
     <div className={`${className} loading-screen`}>
       <Spinner color="#1B344D" />

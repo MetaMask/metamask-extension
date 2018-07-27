@@ -2,9 +2,7 @@ const reactTriggerChange = require('react-trigger-change')
 const {
   timeout,
   queryAsync,
-  findAsync,
 } = require('../../lib/util')
-const PASSWORD = 'password123'
 
 QUnit.module('confirm sig requests')
 
@@ -16,12 +14,10 @@ QUnit.test('successful confirmation of sig requests', (assert) => {
   })
 })
 
-async function runConfirmSigRequestsTest(assert, done) {
-  let selectState = await queryAsync($, 'select')
+async function runConfirmSigRequestsTest (assert, done) {
+  const selectState = await queryAsync($, 'select')
   selectState.val('confirm sig requests')
   reactTriggerChange(selectState[0])
-
-  // await timeout(1000000)
 
   const pendingRequestItem = $.find('.tx-list-item.tx-list-pending-item-container.tx-list-clickable')
 
@@ -29,10 +25,12 @@ async function runConfirmSigRequestsTest(assert, done) {
     pendingRequestItem[0].click()
   }
 
+  await timeout(1000)
+
   let confirmSigHeadline = await queryAsync($, '.request-signature__headline')
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
-  let confirmSigMessage = await queryAsync($, '.request-signature__notice')
+  const confirmSigMessage = await queryAsync($, '.request-signature__notice')
   assert.ok(confirmSigMessage[0].textContent.match(/^Signing\sthis\smessage/))
 
   let confirmSigRowValue = await queryAsync($, '.request-signature__row-value')
@@ -40,16 +38,16 @@ async function runConfirmSigRequestsTest(assert, done) {
 
   let confirmSigSignButton = await queryAsync($, 'button.btn-primary.btn--large')
   confirmSigSignButton[0].click()
-
+  await timeout(1000)
   confirmSigHeadline = await queryAsync($, '.request-signature__headline')
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
   confirmSigRowValue = await queryAsync($, '.request-signature__row-value')
-  assert.ok(confirmSigRowValue[0].textContent.match(/^\#\sTerms\sof\sUse/))
+  assert.ok(confirmSigRowValue[0].textContent.match(/^#\sTerms\sof\sUse/))
 
   confirmSigSignButton = await queryAsync($, 'button.btn-primary.btn--large')
   confirmSigSignButton[0].click()
-
+  await timeout(1000)
   confirmSigHeadline = await queryAsync($, '.request-signature__headline')
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
@@ -60,6 +58,5 @@ async function runConfirmSigRequestsTest(assert, done) {
   confirmSigSignButton = await queryAsync($, 'button.btn-primary.btn--large')
   confirmSigSignButton[0].click()
 
-  const txView = await queryAsync($, '.tx-view')
-  assert.ok(txView[0], 'Should return to the account details screen after confirming')
+  await timeout(2000)
 }

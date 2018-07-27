@@ -5,18 +5,6 @@ const {
   findAsync,
 } = require('../../lib/util')
 
-const PASSWORD = 'password123'
-
-QUnit.module('new ui send flow')
-
-QUnit.test('successful send flow', (assert) => {
-  const done = assert.async()
-  runSendFlowTest(assert).then(done).catch((err) => {
-    assert.notOk(err, `Error was thrown: ${err.stack}`)
-    done()
-  })
-})
-
 global.ethQuery = {
   sendTransaction: () => {},
 }
@@ -54,7 +42,7 @@ async function customizeGas (assert, price, limit, ethFee, usdFee) {
   )
 }
 
-async function runSendFlowTest(assert, done) {
+async function runSendFlowTest (assert, done) {
   console.log('*** start runSendFlowTest')
   const selectState = await queryAsync($, 'select')
   selectState.val('send new ui')
@@ -87,7 +75,7 @@ async function runSendFlowTest(assert, done) {
   sendFromFieldItemAddress = await queryAsync($, '.account-list-item__account-name')
   assert.equal(sendFromFieldItemAddress[0].textContent, 'Send Account 2', 'send from field dropdown changes account name')
 
-  let sendToFieldInput = await queryAsync($, '.send-v2__to-autocomplete__input')
+  const sendToFieldInput = await queryAsync($, '.send-v2__to-autocomplete__input')
   sendToFieldInput[0].focus()
 
   const sendToDropdownList = await queryAsync($, '.send-v2__from-dropdown__list')
@@ -114,19 +102,8 @@ async function runSendFlowTest(assert, done) {
   errorMessage = $('.send-v2__error')
   assert.equal(errorMessage.length, 0, 'send should stop rendering amount error message after amount is corrected')
 
-  const sendGasField = await queryAsync($, '.send-v2__gas-fee-display')
-  assert.equal(
-    sendGasField.find('.currency-display__input-wrapper > input').val(),
-    '0.000021',
-    'send gas field should show estimated gas total'
-  )
-  assert.equal(
-    sendGasField.find('.currency-display__converted-value')[0].textContent,
-    '$0.03 USD',
-    'send gas field should show estimated gas total converted to USD'
-  )
-
   await customizeGas(assert, 0, 21000, '0', '$0.00 USD')
+  await customizeGas(assert, 1, 21000, '0.000021', '$0.03 USD')
   await customizeGas(assert, 500, 60000, '0.03', '$36.03 USD')
 
   const sendButton = await queryAsync($, 'button.btn-primary.btn--large.page-container__footer-button')
@@ -138,18 +115,18 @@ async function runSendFlowTest(assert, done) {
   reactTriggerChange(selectState[0])
 
   const confirmFromName = (await queryAsync($, '.sender-to-recipient__sender-name')).first()
-  assert.equal(confirmFromName[0].textContent, 'Send Account 2', 'confirm screen should show correct from name')
+  assert.equal(confirmFromName[0].textContent, 'Send Account 4', 'confirm screen should show correct from name')
 
   const confirmToName = (await queryAsync($, '.sender-to-recipient__recipient-name')).last()
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
 
-  const confirmScreenRows = await queryAsync($, '.confirm-screen-rows')
-  const confirmScreenGas = confirmScreenRows.find('.currency-display__converted-value')[0]
-  assert.equal(confirmScreenGas.textContent, '$3.60 USD', 'confirm screen should show correct gas')
-  const confirmScreenTotal = confirmScreenRows.find('.confirm-screen-row-info')[2]
-  assert.equal(confirmScreenTotal.textContent, '$2,405.36 USD', 'confirm screen should show correct total')
+  const confirmScreenRowFiats = await queryAsync($, '.confirm-detail-row__fiat')
+  const confirmScreenGas = confirmScreenRowFiats[0]
+  assert.equal(confirmScreenGas.textContent, '$3.60', 'confirm screen should show correct gas')
+  const confirmScreenTotal = confirmScreenRowFiats[1]
+  assert.equal(confirmScreenTotal.textContent, '$2,405.36', 'confirm screen should show correct total')
 
-  const confirmScreenBackButton = await queryAsync($, '.page-container__back-button')
+  const confirmScreenBackButton = await queryAsync($, '.confirm-page-container-header__back-button')
   confirmScreenBackButton[0].click()
 
   const sendFromFieldItemInEdit = await queryAsync($, '.account-list-item')

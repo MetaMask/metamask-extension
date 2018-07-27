@@ -52,6 +52,31 @@ describe('preferences controller', function () {
     })
   })
 
+  describe('removeAddress', function () {
+    it('should remove an address from state', function () {
+      preferencesController.setAddresses([
+        '0xda22le',
+        '0x7e57e2',
+      ])
+
+      preferencesController.removeAddress('0xda22le')
+
+      assert.equal(preferencesController.store.getState().identities['0xda22le'], undefined)
+    })
+
+    it('should switch accounts if the selected address is removed', function () {
+      preferencesController.setAddresses([
+        '0xda22le',
+        '0x7e57e2',
+      ])
+
+      preferencesController.setSelectedAddress('0x7e57e2')
+      preferencesController.removeAddress('0x7e57e2')
+
+      assert.equal(preferencesController.getSelectedAddress(), '0xda22le')
+    })
+  })
+
   describe('setAccountLabel', function () {
     it('should update a label for the given account', function () {
       preferencesController.setAddresses([
@@ -156,6 +181,32 @@ describe('preferences controller', function () {
 
       const [token1] = tokens
       assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5})
+    })
+  })
+
+  describe('frequentRpcList', function () {
+    it('should return an empty list initially', function () {
+      const rpcList = preferencesController.getFrequentRpcList()
+      assert.equal(rpcList.length, 0, 'empty list of rpc url')
+    })
+
+    it('should add a rpc url', function () {
+      preferencesController.updateFrequentRpcList('http://test1.com')
+
+      const rpcList = preferencesController.getFrequentRpcList()
+      assert.equal(rpcList.length, 1, 'one rpc url added')
+    })
+
+    it('should remove a rpc url', function () {
+      preferencesController.updateFrequentRpcList('http://test1.com')
+
+      const rpcList = preferencesController.getFrequentRpcList()
+      assert.equal(rpcList.length, 1, 'one rpc url on store')
+
+      preferencesController.removeRpcUrl('http://test1.com')
+
+      const updatedRpcList = preferencesController.getFrequentRpcList()
+      assert.equal(updatedRpcList.length, 0, 'one rpc url removed')
     })
   })
 })

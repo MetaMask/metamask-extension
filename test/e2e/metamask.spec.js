@@ -4,7 +4,7 @@ const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
 const webdriver = require('selenium-webdriver')
-const { By, Key } = webdriver
+const { By, Key, until } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 
 describe('Metamask popup page', function () {
@@ -68,9 +68,9 @@ describe('Metamask popup page', function () {
 
   describe('Account Creation', () => {
 
-    it('matches MetaMask title', async () => {
+    it('matches Nifty Wallet title', async () => {
       const title = await driver.getTitle()
-      assert.equal(title, 'MetaMask', 'title matches MetaMask')
+      assert.equal(title, 'Nifty Wallet', 'title matches Nifty Wallet')
       await delay(300)
     })
 
@@ -79,7 +79,7 @@ describe('Metamask popup page', function () {
       assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
       delay(300)
     })
-
+/*  Should enable this test after Term of Use updated
     it('checks if the TOU button is disabled', async () => {
       const button = await driver.findElement(By.css('button')).isEnabled()
       assert.equal(button, false, 'disabled continue button')
@@ -87,7 +87,7 @@ describe('Metamask popup page', function () {
       await driver.executeScript('arguments[0].scrollIntoView(true)', element)
       await delay(700)
     })
-
+*/
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
       await button.click()
@@ -229,8 +229,12 @@ describe('Metamask popup page', function () {
 
     it('confirms transaction', async function () {
       await delay(300)
-      await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')).click()
-      await delay(500)
+      const bySubmitButton = By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+      const submitButton = await driver.wait(until.elementLocated(bySubmitButton))
+
+      submitButton.click()
+
+      await delay(1500)
     })
 
     it('finds the transaction in the transactions list', async function () {
@@ -269,7 +273,8 @@ describe('Metamask popup page', function () {
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-      const metamaskSubmit = await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'))
+      const byMetamaskSubmit = By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+      const metamaskSubmit = await driver.wait(until.elementLocated(byMetamaskSubmit))
       await metamaskSubmit.click()
       await delay(1000)
     })
@@ -326,11 +331,45 @@ describe('Metamask popup page', function () {
     })
   })
 
+  describe('Custom Rpc', function () {
+    it('switches to settings screen', async function () {
+      await driver.findElement(By.css('.sandwich-expando')).click()
+      await delay(200)
+      const settings = await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(2)'))
+      assert.equal(await settings.getText(), 'Settings')
+      await settings.click()
+      await delay(300)
+    })
+
+    it('add custom rpc', async function () {
+      const customUrl = 'http://test.com'
+      const input = await driver.findElement(By.id('new_rpc'))
+      input.sendKeys(customUrl)
+      await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(2) > button')).click()
+      await delay(400)
+      const customUrlElement = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'))
+      assert.equal(await customUrlElement.getText(), customUrl)
+    })
+
+    it('delete custom rpc', async function () {
+      await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button')).click()
+      await delay(300)
+      const titleConfirmPage = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
+      assert.equal(await titleConfirmPage.getText(), 'DELETE CUSTOM RPC')
+      const yesButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(3) > button:nth-child(1)'))
+      assert.equal(await yesButton.getText(), 'Yes')
+      await yesButton.click()
+      await delay(300)
+      const urlElement = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'))
+      assert.equal(await urlElement.getText(), 'POA Network')
+    })
+  })
+
   async function setProviderType (type) {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
-  async function checkBrowserForConsoleErrors() {
+  async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly

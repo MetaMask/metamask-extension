@@ -36,7 +36,7 @@ function setupInjection () {
     // append as first child
     container.insertBefore(scriptTag, container.children[0])
   } catch (e) {
-    console.error('Metamask injection failed.', e)
+    console.error('Nifty Wallet injection failed.', e)
   }
 }
 
@@ -47,8 +47,8 @@ function setupInjection () {
 function setupStreams () {
   // setup communication to page and plugin
   const pageStream = new LocalMessageDuplexStream({
-    name: 'contentscript',
-    target: 'inpage',
+    name: 'nifty-contentscript',
+    target: 'nifty-inpage',
   })
   const pluginPort = extension.runtime.connect({ name: 'contentscript' })
   const pluginStream = new PortStream(pluginPort)
@@ -58,7 +58,7 @@ function setupStreams () {
     pageStream,
     pluginStream,
     pageStream,
-    (err) => logStreamDisconnectWarning('MetaMask Contentscript Forwarding', err)
+    (err) => logStreamDisconnectWarning('Nifty Wallet Contentscript Forwarding', err)
   )
 
   // setup local multistream channels
@@ -69,13 +69,13 @@ function setupStreams () {
     mux,
     pageStream,
     mux,
-    (err) => logStreamDisconnectWarning('MetaMask Inpage', err)
+    (err) => logStreamDisconnectWarning('Nifty Wallet Inpage', err)
   )
   pump(
     mux,
     pluginStream,
     mux,
-    (err) => logStreamDisconnectWarning('MetaMask Background', err)
+    (err) => logStreamDisconnectWarning('Nifty Wallet Background', err)
   )
 
   // connect ping stream
@@ -84,7 +84,7 @@ function setupStreams () {
     mux,
     pongStream,
     mux,
-    (err) => logStreamDisconnectWarning('MetaMask PingPongStream', err)
+    (err) => logStreamDisconnectWarning('Nifty Wallet PingPongStream', err)
   )
 
   // connect phishing warning stream
@@ -115,8 +115,8 @@ function logStreamDisconnectWarning (remoteLabel, err) {
  * @returns {boolean} {@code true} if Web3 should be injected
  */
 function shouldInjectWeb3 () {
-  return doctypeCheck() && suffixCheck()
-    && documentElementCheck() && !blacklistedDomainCheck()
+  return doctypeCheck() && suffixCheck() &&
+    documentElementCheck() && !blacklistedDomainCheck()
 }
 
 /**
@@ -177,6 +177,9 @@ function blacklistedDomainCheck () {
     'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
     'adyen.com',
     'gravityforms.com',
+    'harbourair.com',
+    'ani.gamer.com.tw',
+    'blueskybooking.com',
   ]
   var currentUrl = window.location.href
   var currentRegex
@@ -194,6 +197,6 @@ function blacklistedDomainCheck () {
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning () {
-  console.log('MetaMask - redirecting to phishing warning')
+  console.log('Nifty Wallet - redirecting to phishing warning')
   window.location.href = 'https://metamask.io/phishing.html'
 }

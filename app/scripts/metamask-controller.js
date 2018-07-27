@@ -35,6 +35,7 @@ const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
+const DetectTokensController = require('./controllers/detect-tokens')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -47,6 +48,7 @@ const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
+const TrezorKeyring = require('eth-trezor-keyring')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -124,7 +126,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
+    const additionalKeyrings = [TrezorKeyring]
     this.keyringController = new KeyringController({
+      keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
@@ -142,6 +146,13 @@ module.exports = class MetamaskController extends EventEmitter {
       // ensure preferences + identities controller know about all addresses
       this.preferencesController.addAddresses(addresses)
       this.accountTracker.syncWithAddresses(addresses)
+    })
+
+    // detect tokens controller
+    this.detectTokensController = new DetectTokensController({
+      preferences: this.preferencesController,
+      network: this.networkController,
+      keyringMemStore: this.keyringController.memStore,
     })
 
     // address book controller
@@ -163,6 +174,13 @@ module.exports = class MetamaskController extends EventEmitter {
       getGasPrice: this.getGasPrice.bind(this),
     })
     this.txController.on('newUnapprovedTx', opts.showUnapprovedTx.bind(opts))
+
+    this.txController.on(`tx:status-update`, (txId, status) => {
+      if (status === 'confirmed' || status === 'failed') {
+        const txMeta = this.txController.txStateManager.getTx(txId)
+        this.platform.showTransactionNotification(txMeta)
+      }
+    })
 
     // computed balances (accounting for pending transactions)
     this.balancesController = new BalancesController({
@@ -333,11 +351,13 @@ module.exports = class MetamaskController extends EventEmitter {
       // etc
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
+      setCurrentCoin: this.setCurrentCoin.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
+      getGasPrice: (cb) => cb(null, this.getGasPrice()),
 
       // coinbase
       buyEth: this.buyEth.bind(this),
@@ -350,7 +370,16 @@ module.exports = class MetamaskController extends EventEmitter {
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: nodeify(this.resetAccount, this),
+      removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
+
+      // hardware wallets
+      connectHardware: nodeify(this.connectHardware, this),
+      forgetDevice: nodeify(this.forgetDevice, this),
+      checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
+
+      // TREZOR
+      unlockTrezorAccount: nodeify(this.unlockTrezorAccount, this),
 
       // vault management
       submitPassword: nodeify(this.submitPassword, this),
@@ -363,6 +392,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
       addToken: nodeify(preferencesController.addToken, preferencesController),
       removeToken: nodeify(preferencesController.removeToken, preferencesController),
+      removeRpcUrl: nodeify(preferencesController.removeRpcUrl, preferencesController),
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
@@ -403,7 +433,6 @@ module.exports = class MetamaskController extends EventEmitter {
       markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
     }
   }
-
 
 
 //=============================================================================
@@ -507,6 +536,127 @@ module.exports = class MetamaskController extends EventEmitter {
     const address = Object.keys(identities)[0]
     this.preferencesController.setSelectedAddress(address)
   }
+
+  //
+  // Hardware
+  //
+
+  /**
+   * Fetch account list from a trezor device.
+   *
+   * @returns [] accounts
+   */
+  async connectHardware (deviceName, page) {
+
+    switch (deviceName) {
+      case 'trezor':
+        const keyringController = this.keyringController
+        const oldAccounts = await keyringController.getAccounts()
+        let keyring = await keyringController.getKeyringsByType(
+          'Trezor Hardware'
+        )[0]
+        if (!keyring) {
+          keyring = await this.keyringController.addNewKeyring('Trezor Hardware')
+        }
+        let accounts = []
+
+        switch (page) {
+            case -1:
+              accounts = await keyring.getPreviousPage()
+              break
+            case 1:
+              accounts = await keyring.getNextPage()
+              break
+            default:
+              accounts = await keyring.getFirstPage()
+        }
+
+        // Merge with existing accounts
+        // and make sure addresses are not repeated
+        const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.address.toLowerCase())))]
+        this.accountTracker.syncWithAddresses(accountsToTrack)
+        return accounts
+
+      default:
+        throw new Error('MetamaskController:connectHardware - Unknown device')
+    }
+  }
+
+  /**
+   * Check if the device is unlocked
+   *
+   * @returns {Promise<boolean>}
+   */
+  async checkHardwareStatus (deviceName) {
+
+    switch (deviceName) {
+      case 'trezor':
+        const keyringController = this.keyringController
+        const keyring = await keyringController.getKeyringsByType(
+          'Trezor Hardware'
+        )[0]
+        if (!keyring) {
+          return false
+        }
+        return keyring.isUnlocked()
+      default:
+        throw new Error('MetamaskController:checkHardwareStatus - Unknown device')
+    }
+  }
+
+  /**
+   * Clear
+   *
+   * @returns {Promise<boolean>}
+   */
+  async forgetDevice (deviceName) {
+
+    switch (deviceName) {
+      case 'trezor':
+        const keyringController = this.keyringController
+        const keyring = await keyringController.getKeyringsByType(
+          'Trezor Hardware'
+        )[0]
+        if (!keyring) {
+          throw new Error('MetamaskController:forgetDevice - Trezor Hardware keyring not found')
+        }
+        keyring.forgetDevice()
+        return true
+      default:
+        throw new Error('MetamaskController:forgetDevice - Unknown device')
+    }
+  }
+
+  /**
+   * Imports an account from a trezor device.
+   *
+   * @returns {} keyState
+   */
+  async unlockTrezorAccount (index) {
+    const keyringController = this.keyringController
+    const keyring = await keyringController.getKeyringsByType(
+      'Trezor Hardware'
+    )[0]
+    if (!keyring) {
+      throw new Error('MetamaskController - No Trezor Hardware Keyring found')
+    }
+
+    keyring.setAccountToUnlock(index)
+    const oldAccounts = await keyringController.getAccounts()
+    const keyState = await keyringController.addNewAccount(keyring)
+    const newAccounts = await keyringController.getAccounts()
+    this.preferencesController.setAddresses(newAccounts)
+    newAccounts.forEach(address => {
+      if (!oldAccounts.includes(address)) {
+        this.preferencesController.setAccountLabel(address, `TREZOR #${parseInt(index, 10) + 1}`)
+        this.preferencesController.setSelectedAddress(address)
+      }
+    })
+
+    const { identities } = this.preferencesController.store.getState()
+    return { ...keyState, identities }
+   }
+
 
   //
   // Account Management
@@ -621,6 +771,23 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Removes an account from state / storage.
+   *
+   * @param {string[]} address A hex address
+   *
+   */
+  async removeAccount (address) {
+    // Remove account from the preferences controller
+    this.preferencesController.removeAddress(address)
+    // Remove account from the account tracker controller
+    this.accountTracker.removeAccount(address)
+    // Remove account from the keyring
+    await this.keyringController.removeAccount(address)
+    return address
+  }
+
+
+  /**
    * Imports an account with the specified import strategy.
    * These are defined in app/scripts/account-import-strategies
    * Each strategy represents a different way of serializing an Ethereum key pair.
@@ -663,9 +830,9 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
+          return cb(cleanErrorStack(new Error('Nifty Wallet Message Signature: User denied message signature.')))
         default:
-          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
+          return cb(cleanErrorStack(new Error(`Nifty Wallet Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
     })
   }
@@ -723,7 +890,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   newUnsignedPersonalMessage (msgParams, cb) {
     if (!msgParams.from) {
-      return cb(cleanErrorStack(new Error('MetaMask Message Signature: from field is required.')))
+      return cb(cleanErrorStack(new Error('Nifty Wallet Message Signature: from field is required.')))
     }
 
     const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
@@ -734,9 +901,9 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
+          return cb(cleanErrorStack(new Error('Nifty Wallet Message Signature: User denied message signature.')))
         default:
-          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
+          return cb(cleanErrorStack(new Error(`Nifty Wallet Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
     })
   }
@@ -802,9 +969,9 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
+          return cb(cleanErrorStack(new Error('Nifty Wallet Message Signature: User denied message signature.')))
         default:
-          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
+          return cb(cleanErrorStack(new Error(`Nifty Wallet Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
       }
     })
   }
@@ -962,7 +1129,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Allows a user to begin the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
-  markPasswordForgotten(cb) {
+  markPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(true)
     this.sendUpdate()
     cb()
@@ -972,7 +1139,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Allows a user to end the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
-  unMarkPasswordForgotten(cb) {
+  unMarkPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(false)
     this.sendUpdate()
     cb()
@@ -992,7 +1159,7 @@ module.exports = class MetamaskController extends EventEmitter {
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
     if (this.blacklistController.checkForPhishing(originDomain)) {
-      log.debug('MetaMask - sending phishing warning for', originDomain)
+      log.debug('Nifty Wallet - sending phishing warning for', originDomain)
       this.sendPhishingWarning(connectionStream, originDomain)
       return
     }
@@ -1129,11 +1296,15 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {string} A hex representation of the suggested wei gas price.
    */
   getGasPrice () {
-    const { recentBlocksController } = this
+    const { networkController, recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
 
-    // Return 1 gwei if no blocks have been observed:
-    if (recentBlocks.length === 0) {
+    const networkIdStr = networkController.store.getState().network
+    const networkId = parseInt(networkIdStr)
+    const isPOA = networkId === 77 || networkId === 99
+
+    // Return 1 gwei if using a POA network of if there are no blocks have been observed:
+    if (isPOA || recentBlocks.length === 0) {
       return '0x' + GWEI_BN.toString(16)
     }
 
@@ -1182,16 +1353,37 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
+   * A method for setting the network coin.
+   * @param {string} coinCode - The code of the coin.
+   * @param {Function} cb - A callback function returning currency info.
+   */
+  async setCurrentCoin (coinCode, cb) {
+    try {
+      this.currencyController.setCurrentCoin(coinCode)
+      await this.currencyController.updateConversionRate()
+      const data = {
+        conversionRate: this.currencyController.getConversionRate(),
+        currentCoin: this.currencyController.getCurrentCoin(),
+        currentCurrency: this.currencyController.getCurrentCurrency(),
+        conversionDate: this.currencyController.getConversionDate(),
+      }
+      cb(null, data)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
    * A method for forwarding the user to the easiest way to obtain ether,
    * or the network "gas" currency, for the current selected network.
    *
    * @param {string} address - The address to fund.
    * @param {string} amount - The amount of ether desired, as a base 10 string.
    */
-  buyEth (address, amount) {
+  buyEth (address, amount, exchange) {
     if (!amount) amount = '5'
     const network = this.networkController.getNetworkState()
-    const url = getBuyEthUrl({ network, address, amount })
+    const url = getBuyEthUrl({ network, address, amount, exchange })
     if (url) this.platform.openWindow({ url })
   }
 
@@ -1267,10 +1459,12 @@ module.exports = class MetamaskController extends EventEmitter {
   set isClientOpen (open) {
     this._isClientOpen = open
     this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+    this.detectTokensController.isOpen = open
   }
 
   /**
-   * A method for activating the retrieval of price data, which should only be fetched when the UI is visible.
+   * A method for activating the retrieval of price data and auto detect tokens,
+   * which should only be fetched when the UI is visible.
    * @private
    * @param {boolean} active - True if price data should be getting fetched.
    */

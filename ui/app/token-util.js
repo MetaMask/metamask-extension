@@ -1,5 +1,6 @@
 const log = require('loglevel')
 const util = require('./util')
+const BigNumber = require('bignumber.js')
 
 function tokenInfoGetter () {
   const tokens = {}
@@ -20,7 +21,7 @@ async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
   if (existingToken) {
     return existingToken
   }
-  
+
   let result = []
   try {
     const token = util.getContractAtAddress(tokenAddress)
@@ -43,9 +44,7 @@ async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
 
 function calcTokenAmount (value, decimals) {
   const multiplier = Math.pow(10, Number(decimals || 0))
-  const amount = Number(value / multiplier)
-
-  return amount
+  return new BigNumber(value).div(multiplier).toNumber()
 }
 
 
