@@ -13,6 +13,7 @@ class PreferencesController {
 	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
+   * @property {object} store.accountTokens The tokens stored per account and then per network type
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
@@ -24,7 +25,7 @@ class PreferencesController {
     const initState = extend({
       frequentRpcList: [],
       currentAccountTab: 'history',
-      addressTokens: {},
+      accountTokens: {},
       tokens: [],
       useBlockie: false,
       featureFlags: {},
@@ -36,16 +37,8 @@ class PreferencesController {
     this.diagnostics = opts.diagnostics
     this.network = opts.network
     this.store = new ObservableStore(initState)
-    this._defineTokensGetter(this.store._state)
-    this.network.providerStore.subscribe(({ type }) => {
-        const selectedAddress = this.store.getState().selectedAddress
-        const addressTokens = this.store.getState().addressTokens
-      if (!(type in addressTokens)) addressTokens[type] = {}
-      if (!(selectedAddress in addressTokens[type])) addressTokens[type][selectedAddress] = []
-      const tokens = addressTokens[type][selectedAddress]
-      this.store.updateState({ tokens })
-
-    })
+    this._defineTokens()
+    this._subscribeProviderType()
   }
 // PUBLIC METHODS
 
@@ -88,18 +81,17 @@ class PreferencesController {
    */
   setAddresses (addresses) {
     const oldIdentities = this.store.getState().identities
-    const addressTokens = this.store.getState().addressTokens
-    const providerType = this.network.providerStore.getState().type
+    const accountTokens = this.store.getState().accountTokens
+
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {}
       ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
       return ids
     }, {})
     for (const address in identities) {
-      if (!(providerType in addressTokens)) addressTokens[providerType] = {}
-      if (!(address in addressTokens[providerType])) addressTokens[providerType][address] = []
+      if (!(address in accountTokens)) accountTokens[address] = {}
     }
-    this.store.updateState({ identities, addressTokens })
+    this.store.updateState({ identities, accountTokens })
   }
 
   /**
@@ -110,13 +102,13 @@ class PreferencesController {
    */
   removeAddress (address) {
     const identities = this.store.getState().identities
-    const addressTokens = this.store.getState().addressTokens
+    const accountTokens = this.store.getState().accountTokens
     if (!identities[address]) {
       throw new Error(`${address} can't be deleted cause it was not found`)
     }
     delete identities[address]
-    delete addressTokens[address]
-    this.store.updateState({ identities, addressTokens })
+    delete accountTokens[address]
+    this.store.updateState({ identities, accountTokens })
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
@@ -136,20 +128,17 @@ class PreferencesController {
    */
   addAddresses (addresses) {
     const identities = this.store.getState().identities
-    const addressTokens = this.store.getState().addressTokens
-    const providerType = this.network.providerStore.getState().type
-
+    const accountTokens = this.store.getState().accountTokens
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) return
       // add missing identity
       const identityCount = Object.keys(identities).length
 
-      if (!(providerType in addressTokens)) addressTokens[providerType] = {}
-      if (!(address in addressTokens[providerType])) addressTokens[providerType][address] = []
+      if (!(address in accountTokens)) accountTokens[address] = {}
       identities[address] = { name: `Account ${identityCount + 1}`, address }
     })
-    this.store.updateState({ identities, addressTokens })
+    this.store.updateState({ identities, accountTokens })
   }
 
   /*
@@ -205,16 +194,14 @@ class PreferencesController {
    */
   setSelectedAddress (_address) {
     const address = normalizeAddress(_address)
-    const addressTokens = this.store.getState().addressTokens
+    const accountTokens = this.store.getState().accountTokens
     const providerType = this.network.providerStore.getState().type
 
-    if (!(providerType in addressTokens)) addressTokens[providerType] = {}
-
-    if (!(address in addressTokens[providerType])) addressTokens[providerType][address] = []
-
-    const tokens = addressTokens[providerType][address]
-
+    if (!(address in accountTokens)) accountTokens[address] = {}
+    if (!(providerType in accountTokens[address])) accountTokens[address][providerType] = []
+    const tokens = accountTokens[address][providerType]
     this.store.updateState({ selectedAddress: address, tokens })
+
     return Promise.resolve(tokens)
   }
 
@@ -266,12 +253,10 @@ class PreferencesController {
     }
 
     const selectedAddress = this.store.getState().selectedAddress
-    const addressTokens = this.store.getState().addressTokens
+    const accountTokens = this.store.getState().accountTokens
     const providerType = this.network.providerStore.getState().type
-
-    if (!(providerType in addressTokens)) addressTokens[providerType] = {}
-    addressTokens[providerType][selectedAddress] = tokens
-    this.store.updateState({ addressTokens })
+    accountTokens[selectedAddress][providerType] = tokens
+    this.store.updateState({ accountTokens, tokens })
 
     return Promise.resolve(tokens)
   }
@@ -284,12 +269,12 @@ class PreferencesController {
    *
    */
   removeToken (rawAddress) {
-    const addressTokens = this.store.getState().addressTokens
+    const accountTokens = this.store.getState().accountTokens
     const selectedAddress = this.store.getState().selectedAddress
     const providerType = this.network.providerStore.getState().type
-    const updatedTokens = addressTokens[providerType][selectedAddress].filter(token => token.address !== rawAddress)
-    addressTokens[providerType][selectedAddress] = updatedTokens
-    this.store.updateState({ addressTokens, tokens: updatedTokens })
+    const updatedTokens = accountTokens[selectedAddress][providerType].filter(token => token.address !== rawAddress)
+    accountTokens[selectedAddress][providerType] = updatedTokens
+    this.store.updateState({ accountTokens, tokens: updatedTokens })
 
     return Promise.resolve(updatedTokens)
   }
@@ -418,22 +403,31 @@ class PreferencesController {
   //
 
   /**
-   * Getter definition for the `tokens` property of store
+   * Getter definition for the `tokens` property of store when controller is initialized
    *
-   * @param {object} object Store state
    *
    */
+  _defineTokens () {
+    const selectedAddress = this.store.getState().selectedAddress
+    const accountTokens = this.store.getState().accountTokens
+    const providerType = this.network.providerStore.getState().type
+    if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
+    if (!(providerType in accountTokens[selectedAddress])) return []
+    this.tokens = accountTokens[selectedAddress][providerType]
+  }
 
-  _defineTokensGetter (object) {
-    Object.defineProperty(object, 'tokens', {
-      get: () => {
-        const selectedAddress = this.store.getState().selectedAddress
-        const addressTokens = this.store.getState().addressTokens
-        const providerType = this.network.providerStore.getState().type
-        if (!(providerType in addressTokens)) addressTokens[providerType] = {}
-        if (!(selectedAddress in addressTokens[providerType])) return []
-        return addressTokens[providerType][selectedAddress]
-      },
+  /**
+   * Subscription to network provider type
+   *
+   *
+   */
+  _subscribeProviderType () {
+    this.network.providerStore.subscribe(({ type }) => {
+      const selectedAddress = this.store.getState().selectedAddress
+      const accountTokens = this.store.getState().accountTokens
+      if (!(type in accountTokens[selectedAddress])) accountTokens[selectedAddress][type] = []
+      const tokens = accountTokens[selectedAddress][type]
+      this.store.updateState({ tokens })
     })
   }
 }

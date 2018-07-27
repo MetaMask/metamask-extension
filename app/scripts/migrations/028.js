@@ -29,7 +29,7 @@ function transformState (state) {
       const tokens = newState.TransactionController.tokens
       const selectedAddress = newState.PreferencesController.selectedAddress
       newState.PreferencesController.tokens = []
-      newState.PreferencesController.addressTokens = {'mainnet': {selectedAddress: tokens}}
+      newState.PreferencesController.accountTokens = {selectedAddress: {'mainnet': tokens}}
     }
   }
 
