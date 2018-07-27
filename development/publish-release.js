@@ -13,14 +13,6 @@ async function start() {
   const CREATE_RELEASE_URI = `https://api.github.com/repos/Natalya11444/metamask-extension/releases`;
   console.log(`CREATE_RELEASE_URI: ${CREATE_RELEASE_URI}`)
 
-  const releaseBody = `
-  <details>
-    <summary>
-      New release
-    </summary>
-  </details>
-  `;
-
   request({
     method: 'POST',
     uri: CREATE_RELEASE_URI,
@@ -28,22 +20,23 @@ async function start() {
       'User-Agent': 'Nifty Wallet',
       'Authorization': `token ${GITHUB_TOKEN}`
     },
-    body: JSON.stringify({body: releaseBody, tag_name: `v${VERSION}`})
+    body: JSON.stringify({body: "Description", tag_name: `v${VERSION}`, name: "New release"})
   }).then(async function (response) {
     console.log('response: ' + response);
     releaseId = JSON.parse(response).id;
     console.log(`releaseId: ${releaseId}`);
 
-    return uploadAsset(`./builds/metamask-edge-4.8.0.zip`, `metamask-edge-4.8.0.zip`, releaseId)
+    return uploadAsset(`./builds/metamask-edge-${VERSION}.zip`, `metamask-edge-${VERSION}.zip`, releaseId)
       .then(() => {
-        return uploadAsset(`./builds/metamask-firefox-4.8.0.zip`, `metamask-firefox-4.8.0.zip`, releaseId)
+        return uploadAsset(`./builds/metamask-firefox-${VERSION}.zip`, `metamask-firefox-${VERSION}.zip`, releaseId)
       })
       .then(() => {
-          return uploadAsset(`./builds/metamask-opera-4.8.0.zip`, `metamask-opera-4.8.0.zip`, releaseId)
+          return uploadAsset(`./builds/metamask-opera-${VERSION}.zip`, `metamask-opera-${VERSION}.zip`, releaseId)
         }
       )
   }).catch(function (err) {
     console.error('error in request:' + err);
+    throw err;
   });
 }
 
