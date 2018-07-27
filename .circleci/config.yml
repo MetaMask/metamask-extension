@@ -78,6 +78,9 @@ workflows:
             - prep-build
 #            - all-tests-pass
       - job-publish-prerelease:
+          # filters:
+          #            branches:
+          #              only: master
           requires:
             - prep-deps-npm
             - prep-build
@@ -329,20 +332,11 @@ jobs:
         key: build-cache-{{ .Revision }}
      - restore_cache:
         key: job-screens-{{ .Revision }}
-     - store_artifacts:
-        path: dist/mascara
-        destination: builds/mascara
-     - store_artifacts:
-         path: dist/sourcemaps
-         destination: builds/sourcemaps
-     - store_artifacts:
-         path: builds
-         destination: builds
-     - store_artifacts:
-         path: test-artifacts
-         destination: test-artifacts
      - run:
-         name: build:announce
+         name: bump version
+         command: npm run version:bump minor
+     - run:
+         name: build:release
          command: node ./development/publish-release.js
 
     job-publish-postrelease:
