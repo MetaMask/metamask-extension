@@ -5,6 +5,9 @@ const fs = require('fs');
 
 publishRelease().then(function () {
   console.log("Published");
+}).catch(function (err) {
+  console.error('error in publishRelease:' + err);
+  throw err;
 });
 
 async function publishRelease() {
