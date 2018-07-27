@@ -178,8 +178,9 @@ class AccountDropdowns extends Component {
       Dropdown,
       {
         style: {
-          marginLeft: '-215px',
+          marginLeft: '-275px',
           minWidth: '180px',
+          marginTop: '30px',
         },
         isOpen: optionsMenuActive,
         onClickOutside: (event) => {
@@ -274,12 +275,12 @@ class AccountDropdowns extends Component {
           this.renderAccountSelector(),
         ),
         enableAccountOptions && h(
-          'i.fa.fa-ellipsis-h',
+          'div',
           {
             style: {
-              color: '#8fdc97',
-              margin: '0.5em',
-              fontSize: '1.8em',
+              backgroundImage: 'url(../images/more.svg)',
+              width: '4px',
+              height: '24px',
             },
             onClick: (event) => {
               event.stopPropagation()
