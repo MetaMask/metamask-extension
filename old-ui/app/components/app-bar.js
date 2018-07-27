@@ -82,7 +82,7 @@ module.exports = class AppBar extends Component {
         AppBar.renderSpace(),
         h('span.banner__link', {
           async onClick () {
-            await dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
+            await dispatch(actions.setFeatureFlag('betaUI', true))
           },
         }, [
           'Now',

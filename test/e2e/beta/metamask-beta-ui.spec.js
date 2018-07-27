@@ -120,10 +120,6 @@ describe('MetaMask', function () {
       await driver.switchTo().window(appTab)
       await delay(tinyDelayMs)
 
-      const okayBtn = await findElement(driver, By.xpath("//button[contains(text(), 'Ok')]"))
-      await okayBtn.click()
-      await delay(regularDelayMs)
-
       await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 

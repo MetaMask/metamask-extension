@@ -121,10 +121,6 @@ describe('Using MetaMask with an existing account', function () {
       await driver.switchTo().window(appTab)
       await delay(tinyDelayMs)
 
-      const okayBtn = await findElement(driver, By.xpath("//button[contains(text(), 'Ok')]"))
-      await okayBtn.click()
-      await delay(regularDelayMs)
-
       await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
@@ -238,7 +234,7 @@ describe('Using MetaMask with an existing account', function () {
       await localhost.click()
       await delay(largeDelayMs * 2)
     })
-    
+
     it('choose Create Account from the account menu', async () => {
       await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)

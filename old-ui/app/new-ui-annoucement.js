@@ -15,11 +15,9 @@ module.exports = class NewUiAnnouncement extends PureComponent {
   switchToNewUi = async () => {
     const flag = 'betaUI'
     const enabled = true
-    const notificationType = 'BETA_UI_NOTIFICATION_MODAL'
     await this.props.dispatch(actions.setFeatureFlag(
       flag,
       enabled,
-      notificationType,
     ))
     await this.close()
   }
