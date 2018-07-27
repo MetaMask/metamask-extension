@@ -7,6 +7,11 @@ publishRelease().then(function () {
   console.log("Published");
 });
 
+/**
+ * Creates release. Adds tag from the current commit, current version is used as part of the tag name.
+ * Then uploads assets that were created while building.
+ * @returns {Promise.<void>}
+ */
 async function publishRelease() {
   const CIRCLE_SHA1 = process.env.CIRCLE_SHA1
   console.log(`VERSION: ${VERSION}, CIRCLE_SHA1: ${CIRCLE_SHA1}`);
@@ -25,7 +30,8 @@ async function publishRelease() {
       body: "Release is ready",
       tag_name: `v${VERSION}`,
       name: `Version ${VERSION}`,
-      target_commitish: CIRCLE_SHA1
+      target_commitish: CIRCLE_SHA1,
+      draft: true
     })
   }).then(async function (response) {
     console.log('response: ' + response);
@@ -50,6 +56,13 @@ async function publishRelease() {
   });
 }
 
+/**
+ * Uploads asset to the created release
+ * @param path - where file is located
+ * @param name - will be displayed on the release page
+ * @param releaseId - id or the release obtained after release creation
+ * @returns {Promise.<*>}
+ */
 async function uploadAsset(path, name, releaseId) {
   const UPLOAD_ASSET_URL = `https://uploads.github.com/repos/natlg/metamask-extension/releases/${releaseId}/assets?name=${name}&label=${name}`;
   console.log(`UPLOAD_ASSET_URL: ${UPLOAD_ASSET_URL}`);
