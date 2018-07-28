@@ -29,10 +29,7 @@ If you're a web dapp developer, we've got two types of guides for you:
  - Install [Node.js](https://nodejs.org/en/) version 8.11.3 and npm version 6.1.0
    - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
    - Update npm to 6.1.0: ```npm install -g npm@6.1.0```
- - Install dependencies:
- ```bash
-npm install
- ```
+ - Install dependencies: ```npm install```
  - Install gulp globally with `npm install -g gulp-cli`.
  - Build the project to the `./dist/` folder with `gulp build`.
  - Optionally, to rebuild on file changes, run `gulp dev`.
