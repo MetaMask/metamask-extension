@@ -2,8 +2,6 @@
 
 ## Current Master
 
-## 4.8.3 Fri Jul 27 2018
-
 ## 4.8.2 Thu Jul 26 2018
 
 - Add new tokens auto detection
