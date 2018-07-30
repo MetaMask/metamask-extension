@@ -50,7 +50,6 @@ function reduceApp (state, action) {
     },
     sidebarOpen: false,
     alertOpen: false,
-    qrScannerOpen: false,
     alertMessage: null,
     qrCodeData: null,
     networkDropdownOpen: false,
@@ -104,17 +103,8 @@ function reduceApp (state, action) {
         alertOpen: false,
         alertMessage: null,
       })
+
     // qr scanner methods
-    case actions.QR_SCANNER_OPEN:
-      return extend(appState, {
-        qrScannerOpen: true,
-      })
-
-    case actions.QR_SCANNER_CLOSE:
-      return extend(appState, {
-        qrScannerOpen: false,
-      })
-
     case actions.QR_CODE_DETECTED:
       return extend(appState, {
         qrCodeData: action.value,

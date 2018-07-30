@@ -198,6 +198,6 @@ function blacklistedDomainCheck () {
  */
 function redirectToPhishingWarning () {
   console.log('MetaMask - routing to Phishing Warning component')
-  let extensionURL = extension.runtime.getURL('phishing.html')
+  const extensionURL = extension.runtime.getURL('phishing.html')
   window.location.href = extensionURL
 }

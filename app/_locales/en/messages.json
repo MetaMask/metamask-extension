@@ -2,6 +2,9 @@
   "accept": {
     "message": "Accept"
   },
+  "accessingYourCamera": {
+    "message": "Accesing your camera..."
+  },
   "account": {
     "message": "Account"
   },
@@ -937,6 +940,12 @@
   "info": {
   "message": "Info"
   },
+  "scanInstructions": {
+    "message": "Place the QR code in front of your camera so we can read it..."
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
+  },
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
   },
@@ -1085,6 +1094,9 @@
   },
   "unknownNetworkId": {
     "message": "Unknown network ID"
+  },
+  "unknownQrCode": {
+    "message": "Error: We couldn't identify that QR code"
   },
   "unlock": {
     "message": "Unlock"
