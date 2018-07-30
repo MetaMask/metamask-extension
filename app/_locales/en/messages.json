@@ -941,7 +941,7 @@
   "message": "Info"
   },
   "scanInstructions": {
-    "message": "Place the QR code in front of your camera so we can read it..."
+    "message": "Place the QR code in front of your camera"
   },
   "scanQrCode": {
     "message": "Scan QR Code"
