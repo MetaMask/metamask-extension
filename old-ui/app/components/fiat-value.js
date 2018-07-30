@@ -51,8 +51,7 @@ function fiatDisplay (fiatDisplayNumber, valueStyle, dimStyle, fiatSuffix) {
     return h('.flex-row', {
       style: {
         alignItems: 'flex-end',
-        lineHeight: '13px',
-        fontFamily: 'Nunito Light',
+        lineHeight: '14px',
         textRendering: 'geometricPrecision',
       },
     }, [

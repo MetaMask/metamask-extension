@@ -546,6 +546,16 @@ input.large-input {
   border-radius: 13px;
 }
 
+.cell.label {
+  font-family: 'Nunito Regular';
+  font-size: 14px;
+}
+
+.cell.value {
+  font-family: 'Nunito Bold';
+  font-size: 14px;
+}
+
 .edit-text {
   height: 100%;
   visibility: hidden;
@@ -592,10 +602,6 @@ input.large-input {
 }
 
 /* Ether Balance Widget */
-
-.ether-balance-amount {
-  color: #F7861C;
-}
 
 .ether-balance-label {
   color: #ABA9AA;

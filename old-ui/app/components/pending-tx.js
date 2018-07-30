@@ -112,7 +112,7 @@ PendingTx.prototype.render = function () {
   this.inputs = []
 
   const valueStyle = {
-    fontFamily: 'Nunito-Bold',
+    fontFamily: 'Nunito Bold',
     width: '100%',
     textAlign: 'right',
     fontSize: '14px',
@@ -147,41 +147,44 @@ PendingTx.prototype.render = function () {
             },
           }, [
 
-            h(MiniAccountPanel, {
-              imageSeed: address,
-              picOrder: 'right',
-            }, [
-              h('span.font-small', {
-                style: {
-                  fontFamily: 'Nunito Bold, Nunito, sans-serif',
-                  color: '#ffffff',
-                },
-              }, identity.name),
+            h('div', [
+              h(MiniAccountPanel, {
+                imageSeed: address,
+                picOrder: 'left',
+              }),
+              h('div', [
+                h('div.font-medium', {
+                  style: {
+                    fontFamily: 'Nunito SemiBold',
+                    color: '#ffffff',
+                  },
+                }, identity.name),
 
-              h(Copyable, {
-                value: ethUtil.toChecksumAddress(address),
-              }, [
+                h(Copyable, {
+                  value: ethUtil.toChecksumAddress(address),
+                }, [
+                  h('span.font-small', {
+                    style: {
+                      fontFamily: 'Nunito Regular',
+                      color: 'rgba(255, 255, 255, 0.7)',
+                    },
+                  }, addressSummary(address, 6, 4, false)),
+                ]),
+
                 h('span.font-small', {
                   style: {
-                    fontFamily: 'Nunito Light, Nunito, sans-serif',
-                    color: 'rgba(255, 255, 255, 0.7)',
+                    fontFamily: 'Nunito Regular',
                   },
-                }, addressSummary(address, 6, 4, false)),
-              ]),
-
-              h('span.font-small', {
-                style: {
-                  fontFamily: 'Nunito Light, Nunito, sans-serif',
-                },
-              }, [
-                h(EthBalance, {
-                  value: balance,
-                  conversionRate,
-                  currentCurrency,
-                  network,
-                  inline: true,
-                  labelColor: '#F7861C',
-                }),
+                }, [
+                  h(EthBalance, {
+                    value: balance,
+                    conversionRate,
+                    currentCurrency,
+                    network,
+                    inline: true,
+                    labelColor: '#F7861C',
+                  }),
+                ]),
               ]),
             ]),
 
@@ -200,8 +203,8 @@ PendingTx.prototype.render = function () {
               background: #ffffff;
               display: flex;
               justify-content: space-between;
-              font-family: Nunito Light, sans-serif;
-              font-size: 13px;
+              font-family: Nunito Regular;
+              font-size: 14px;
               padding: 5px 25px;
             }
             .table-box .row .value {
@@ -250,7 +253,6 @@ PendingTx.prototype.render = function () {
                   suffix: 'UNITS',
                   style: {
                     position: 'relative',
-                    top: '5px',
                   },
                   onChange: this.gasLimitChanged.bind(this),
 
@@ -273,7 +275,6 @@ PendingTx.prototype.render = function () {
                   min: forceGasMin || MIN_GAS_PRICE_BN,
                   style: {
                     position: 'relative',
-                    top: '5px',
                   },
                   onChange: this.gasPriceChanged.bind(this),
                   ref: (hexInput) => { this.inputs.push(hexInput) },
@@ -325,8 +326,8 @@ PendingTx.prototype.render = function () {
               h('.cell.label'),
               h('.cell.value', {
                 style: {
-                  fontFamily: 'Nunito Light',
-                  fontSize: '11px',
+                  fontFamily: 'Nunito Bold',
+                  fontSize: '14px',
                 },
               }, `Data included: ${dataLength} bytes`),
             ]),
@@ -430,29 +431,35 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 
   // If it's not a contract deploy, send to the account
   if (!isContractDeploy) {
-    return h(MiniAccountPanel, {
-      imageSeed: txParams.to,
-      picOrder: 'left',
-    }, [
+    return h('div', [
+      h(MiniAccountPanel, {
+        imageSeed: txParams.to,
+        picOrder: 'left',
+      }),
 
-      h('span.font-small', {
-        style: {
-          fontFamily: 'Nunito Bold, Nunito, sans-serif',
-          color: '#ffffff',
-        },
-      }, nameForAddress(txParams.to, props.identities)),
-
-      h(Copyable, {
-        value: ethUtil.toChecksumAddress(txParams.to),
-      }, [
-        h('span.font-small', {
+        h('div.font-medium', {
           style: {
-            fontFamily: 'Nunito Light, Nunito, sans-serif',
-            color: 'rgba(255, 255, 255, 0.7)',
+            fontFamily: 'Nunito SemiBold',
+            color: '#ffffff',
           },
-        }, addressSummary(txParams.to, 6, 4, false)),
-      ]),
+        }, nameForAddress(txParams.to, props.identities)),
 
+        h(Copyable, {
+          value: ethUtil.toChecksumAddress(txParams.to),
+        }, [
+          h('span.font-small', {
+            style: {
+              fontFamily: 'Nunito Regular',
+              color: 'rgba(255, 255, 255, 0.7)',
+            },
+          }, addressSummary(txParams.to, 6, 4, false)),
+        ]),
+
+        h('div', {
+          style: {
+            height: 34
+          }
+        })
     ])
   } else {
     return h(MiniAccountPanel, {
@@ -461,7 +468,7 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 
       h('span.font-small', {
         style: {
-          fontFamily: 'Nunito Bold, Nunito, sans-serif',
+          fontFamily: 'Nunito Bold',
         },
       }, 'New Contract'),
 
@@ -578,8 +585,8 @@ function forwardCarrat () {
     h('img', {
       src: 'images/forward-carrat.svg',
       style: {
-        padding: '5px 6px 0px 10px',
-        height: '37px',
+        padding: '5px 30px 0px 30px',
+        height: '64px',
       },
     })
   )

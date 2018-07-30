@@ -74,8 +74,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
       h('.flex-row', {
         style: {
           alignItems: 'flex-end',
-          lineHeight: '13px',
-          fontFamily: 'Nunito Light',
+          lineHeight: '20px',
           textRendering: 'geometricPrecision',
         },
       }, [

@@ -38,8 +38,8 @@ HexAsDecimalInput.prototype.render = function () {
       h('.flex-row', {
         style: {
           alignItems: 'flex-end',
-          lineHeight: '13px',
-          fontFamily: 'Nunito Light',
+          lineHeight: '14px',
+          fontFamily: 'Nunito Bold',
           textRendering: 'geometricPrecision',
         },
       }, [
