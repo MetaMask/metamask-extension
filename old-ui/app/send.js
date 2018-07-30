@@ -153,7 +153,7 @@ SendTransactionScreen.prototype.render = function () {
           },
           onClick: this.back.bind(this),
         }),
-        h('h2.page-subtitle', 'Send Transaction'),
+        'Send Transaction',
       ]),
 
       // error message

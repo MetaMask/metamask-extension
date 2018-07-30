@@ -242,9 +242,7 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.tabSections = function () {
   const { currentAccountTab } = this.props
 
-  return h('section.tabSection.full-flex-height.grow-tenx', {
-    background: '#60269c',
-  }, [
+  return h('section.tabSection.full-flex-height.grow-tenx', [
 
     h(TabBar, {
       tabs: [
