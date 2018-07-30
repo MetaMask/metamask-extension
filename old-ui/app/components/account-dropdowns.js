@@ -18,7 +18,7 @@ class AccountDropdowns extends Component {
       optionsMenuActive: false,
     }
     this.accountSelectorToggleClassName = 'accounts-selector'
-    this.optionsMenuToggleClassName = 'fa-ellipsis-h'
+    this.optionsMenuToggleClassName = 'account-dropdown'
   }
 
   renderAccounts () {
@@ -275,7 +275,7 @@ class AccountDropdowns extends Component {
           this.renderAccountSelector(),
         ),
         enableAccountOptions && h(
-          'div',
+          'div.account-dropdown',
           {
             style: {
               backgroundImage: 'url(../images/more.svg)',

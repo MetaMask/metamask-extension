@@ -37,7 +37,6 @@ EthBalanceComponent.prototype.render = function () {
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
   var props = this.props
-  console.log('props1:', props)
   const { conversionRate, shorten, incoming, currentCurrency } = props
   if (value === 'None') return value
   if (value === '...') return value
