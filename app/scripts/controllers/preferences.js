@@ -87,8 +87,10 @@ class PreferencesController {
       ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
       return ids
     }, {})
-    const accountTokens = addresses.reduce((address) => {
-      return oldAccountTokens[address] || {}
+    const accountTokens = addresses.reduce((tokens, address) => {
+      const oldTokens = oldAccountTokens[address] || {}
+      tokens[address] = oldTokens
+      return tokens
     }, {})
     this.store.updateState({ identities, accountTokens })
   }
