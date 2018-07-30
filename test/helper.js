@@ -1,6 +1,10 @@
 const Ganache = require('ganache-core')
+const nock = require('nock')
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
+
+nock.disableNetConnect()
+nock.enableNetConnect('localhost')
 
 Enzyme.configure({ adapter: new Adapter() })
 // disallow promises from swallowing errors
