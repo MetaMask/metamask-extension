@@ -85,8 +85,8 @@ workflows:
 #           - all-tests-pass
       - job-publish-release:
           filters:
-             branches:
-               only: master
+            branches:
+              only: master
           requires:
             - prep-deps-npm
             - prep-build
@@ -94,15 +94,15 @@ workflows:
             - job-screens
 #           - all-tests-pass
       - job-publish-postrelease:
-                filters:
-                  branches:
-                    only: master
-                requires:
-                  - prep-deps-npm
-                  - prep-build
-                  - prep-docs
-                  - job-screens
-#                 - all-tests-pass
+          filters:
+            branches:
+              only: master
+          requires:
+             - prep-deps-npm
+             - prep-build
+             - prep-docs
+             - job-screens
+#            - all-tests-pass
 
 jobs:
   prep-deps-npm:
