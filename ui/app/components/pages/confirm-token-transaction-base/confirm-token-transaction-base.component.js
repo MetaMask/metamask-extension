@@ -5,6 +5,7 @@ import {
   formatCurrency,
   convertTokenToFiat,
   addFiat,
+  roundExponential,
 } from '../../../helpers/confirm-transaction/util'
 
 export default class ConfirmTokenTransactionBase extends Component {
@@ -42,7 +43,8 @@ export default class ConfirmTokenTransactionBase extends Component {
       return this.context.t('noConversionRateAvailable')
     } else {
       const fiatTransactionAmount = this.getFiatTransactionAmount()
-      return formatCurrency(fiatTransactionAmount, currentCurrency)
+      const roundedFiatTransactionAmount = roundExponential(fiatTransactionAmount)
+      return formatCurrency(roundedFiatTransactionAmount, currentCurrency)
     }
   }
 
@@ -54,7 +56,8 @@ export default class ConfirmTokenTransactionBase extends Component {
     } else {
       const fiatTransactionAmount = this.getFiatTransactionAmount()
       const fiatTotal = addFiat(fiatTransactionAmount, fiatTransactionTotal)
-      return formatCurrency(fiatTotal, currentCurrency)
+      const roundedFiatTotal = roundExponential(fiatTotal)
+      return formatCurrency(roundedFiatTotal, currentCurrency)
     }
   }
 
