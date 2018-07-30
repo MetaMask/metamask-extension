@@ -22,7 +22,7 @@ DeleteRpc.prototype.render = function () {
     style: {
       overflowX: 'auto',
       overflowY: 'hidden',
-    }
+    },
   }, [
     // subtitle and nav
     h('.section-title.flex-row.flex-center', [

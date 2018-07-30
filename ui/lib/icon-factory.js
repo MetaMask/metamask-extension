@@ -39,7 +39,7 @@ IconFactory.prototype.generateIdenticonSvg = function (address, diameter) {
 // creates a new identicon
 IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
   var numericRepresentation = jsNumberForAddress(address)
-  var identicon = this.jazzicon(diameter, numericRepresentation)
+  var identicon = this.jazzicon.generateIdenticon(diameter, numericRepresentation)
   return identicon
 }
 
