@@ -93,39 +93,23 @@ export default class QrScanner extends Component {
     const { t } = this.context
 
     return (
-      <div className="modal-container">
-       <div className="modal-container__content">
-          <div className="modal-container__title">
-            { `${t('scanQrCode')}?` }
-          </div>
-          <div className="modal-container__description">
-            <div
-              className={'qr-code-video-wrapper'}
+      <div className="qr-scanner">
+        <div className="qr-scanner__title">
+          { `${t('scanQrCode')}?` }
+        </div>
+        <div className="qr-scanner__content">
+          <div className={'qr-scanner__content__video-wrapper'}>
+            <video
+              id="video"
               style={{
-                overflow: 'hidden',
-                width: '100%',
-                height: '275px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }
-            }>
-              <video
-                id="video"
-                style={{
-                  width: 'auto',
-                  height: '275px',
-                  marginLeft: '-15%',
-                  display: this.state.ready ? 'block' : 'none',
-                  transform: 'scaleX(-1)',
-                }}
-              />
-              { !this.state.ready ? <Spinner color={'#F7C06C'} /> : null}
-            </div>
+                display: this.state.ready ? 'block' : 'none',
+              }}
+            />
+            { !this.state.ready ? <Spinner color={'#F7C06C'} /> : null}
           </div>
         </div>
-        <div className="modal-container__footer">
-            {this.state.msg}
+        <div className="qr-scanner__status">
+          {this.state.msg}
         </div>
       </div>
     )
