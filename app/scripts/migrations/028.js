@@ -26,10 +26,13 @@ function transformState (state) {
 
   if (newState.PreferencesController) {
     if (newState.PreferencesController.tokens) {
-      const tokens = newState.TransactionController.tokens
-      const selectedAddress = newState.PreferencesController.selectedAddress
+      const identities = newState.TransactionController.identities
+      const tokens = newState.PreferencesController.tokens
+      newState.PreferencesController.accountTokens = {}
+      for (const identity in identities) {
+        newState.PreferencesController.accountTokens[identity] = {'mainnet': tokens}
+      }
       newState.PreferencesController.tokens = []
-      newState.PreferencesController.accountTokens = {[selectedAddress]: {'mainnet': tokens}}
     }
   }
 
