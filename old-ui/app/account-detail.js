@@ -134,7 +134,7 @@ AccountDetailScreen.prototype.render = function () {
                     AccountDropdowns,
                     {
                       style: {
-                        marginRight: '8px',
+                        marginRight: '-7px',
                         marginLeft: 'auto',
                         cursor: 'pointer',
                       },

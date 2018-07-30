@@ -178,7 +178,7 @@ class AccountDropdowns extends Component {
       Dropdown,
       {
         style: {
-          marginLeft: '-275px',
+          marginLeft: '-237px',
           minWidth: '180px',
           marginTop: '30px',
         },
@@ -279,8 +279,10 @@ class AccountDropdowns extends Component {
           {
             style: {
               backgroundImage: 'url(../images/more.svg)',
-              width: '4px',
+              width: '30px',
               height: '24px',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
             },
             onClick: (event) => {
               event.stopPropagation()

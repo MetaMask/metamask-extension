@@ -24,7 +24,7 @@ class JsonImportSubview extends Component {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          padding: '5px 15px 0px 15px',
+          padding: '5px 30px 0px 30px',
         },
       }, [
 

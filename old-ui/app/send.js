@@ -73,7 +73,11 @@ SendTransactionScreen.prototype.render = function () {
         h('.flex-row.flex-space-between', [
 
           // large identicon
-          h('.identicon-wrapper.flex-column.flex-center.select-none', [
+          h('.identicon-wrapper.flex-column.flex-center.select-none', {
+            style: {
+              display: 'inline-block',
+            }
+          }, [
             h(Identicon, {
               diameter: 62,
               address: address,
@@ -108,13 +112,14 @@ SendTransactionScreen.prototype.render = function () {
           h('.flex-row.flex-center', {
             style: {
               color: 'rgba(255, 255, 255, 0.7)',
-              marginBottom: '8px',
+              marginBottom: '30px',
             },
           }, [
 
             h('div', {
               style: {
                 lineHeight: '16px',
+                fontSize: '14px',
               },
             }, addressSummary(address)),
 

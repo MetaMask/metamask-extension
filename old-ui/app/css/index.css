@@ -530,10 +530,6 @@ input.large-input {
   flex-direction: inherit;
 }
 
-.account-detail-section .name-label {
-  margin-left: 15px;
-}
-
 .grow-tenx {
   flex-grow: 10;
 }
