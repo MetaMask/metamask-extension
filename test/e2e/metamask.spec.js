@@ -331,6 +331,46 @@ describe('Metamask popup page', function () {
     })
   })
 
+  describe('Remove Token', function () {
+    it('navigates to the remove token screen and goes back', async function () {
+      // Click to remove first token
+      const removeTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > .fa.fa-trash'))
+      await removeTokenButton.click()
+      const removeTokenTitle = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
+
+      // Check that the correct page is opened
+      assert.equal(await removeTokenTitle.getText(), 'REMOVE TOKEN')
+
+      // Go back
+      await driver.findElement(By.css('.fa-arrow-left')).click()
+      await delay(300)
+
+      // Check that the token was not deleted
+      const tokens = await driver.findElements(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li'))
+      assert.equal(tokens.length, 1, 'There should be 1 token')
+    })
+
+    it('navigates to the remove token screen and removes the token', async function () {
+      // Click to remove first token
+      const removeTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > .fa.fa-trash'))
+      await removeTokenButton.click()
+      const removeTokenTitle = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
+
+      // Check that the correct page is opened
+      assert.equal(await removeTokenTitle.getText(), 'REMOVE TOKEN')
+
+      // Confirm the removal
+      const confirmRemoveTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button'))
+      assert.equal(await confirmRemoveTokenButton.getText(), 'Remove')
+      await confirmRemoveTokenButton.click()
+      await delay(300)
+
+      // Check that the token was deleted
+      const tokens = await driver.findElements(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li'))
+      assert.equal(tokens.length, 0, 'There should be no tokens')
+    })
+  })
+
   describe('Custom Rpc', function () {
     it('switches to settings screen', async function () {
       await driver.findElement(By.css('.sandwich-expando')).click()
