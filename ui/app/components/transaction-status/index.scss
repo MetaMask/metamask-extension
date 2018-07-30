@@ -1,0 +1,22 @@
+.transaction-status {
+  height: 26px;
+  width: 81px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  color: #5e6064;
+  font-size: .625rem;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &--confirmed {
+    background-color: #eafad7;
+    color: #609a1c;
+  }
+
+  &--approved {
+    background-color: #FFF2DB;
+    color: #CA810A;
+  }
+}
