@@ -33,6 +33,10 @@ export default class QrScanner extends Component {
     }
   }
 
+  componentWillUnmount () {
+    this.codeReader.reset()
+  }
+
   initCamera () {
     console.log('[QR-SCANNER]: initCamera')
     this.codeReader = new BrowserQRCodeReader()
@@ -50,7 +54,6 @@ export default class QrScanner extends Component {
         this.codeReader.decodeFromInputVideoDevice(videoInputDevices[0].deviceId, 'video')
         .then(content => {
           console.log('[QR-SCANNER]: initCamera::decodeFromInputVideoDevice callback', content)
-          this.codeReader.reset()
           const result = this.parseContent(content.text)
           if (result.type !== 'unknown') {
             this.props.qrCodeDetected(result)
