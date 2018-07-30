@@ -23,8 +23,7 @@ CoinbaseForm.prototype.render = function () {
 
   return h('.flex-column', {
     style: {
-      marginTop: '35px',
-      padding: '25px',
+      marginTop: '30px',
       width: '100%',
     },
   }, [

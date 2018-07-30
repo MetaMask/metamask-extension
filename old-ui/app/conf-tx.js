@@ -42,7 +42,7 @@ function ConfirmTxScreen () {
 
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
-  const { network, provider, unapprovedTxs, currentCurrency, computedBalances,
+  const { network, unapprovedTxs, currentCurrency, computedBalances,
     unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, blockGasLimit } = props
   let { conversionRate } = props
 

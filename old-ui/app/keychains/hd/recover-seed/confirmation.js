@@ -27,14 +27,14 @@ RevealSeedConfirmation.prototype.render = function () {
       style: { maxWidth: '420px' },
     }, [
 
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginBottom: 24,
+          background: '#ffffff',
+          color: '#333333',
           width: '100%',
-          fontSize: '20px',
+          fontSize: '16px',
           padding: 6,
+          fontFamily: 'Nunito  Semibold',
         },
       }, [
         'Reveal Seed Words',
@@ -44,7 +44,7 @@ RevealSeedConfirmation.prototype.render = function () {
         style: {
           display: 'flex',
           flexDirection: 'column',
-          padding: '20px',
+          padding: '30px',
           justifyContent: 'center',
         },
       }, [
@@ -58,15 +58,26 @@ RevealSeedConfirmation.prototype.render = function () {
           placeholder: 'Enter your password to confirm',
           onKeyPress: this.checkConfirmation.bind(this),
           style: {
-            width: 260,
-            marginTop: '12px',
+            marginTop: '20px',
           },
         }),
 
-        h('.flex-row.flex-start', {
+        (props.warning) && (
+          h('span.error', {
+            style: {
+              margin: '20px',
+            },
+          }, props.warning.split('-'))
+        ),
+
+        props.inProgress && (
+          h('span.in-progress-notification', 'Generating Seed...')
+        ),
+
+        h('.flex-row.flex-start.flex-right', {
           style: {
-            marginTop: 30,
-            width: '50%',
+            marginTop: 20,
+            width: '100%',
           },
         }, [
           // cancel
@@ -81,18 +92,6 @@ RevealSeedConfirmation.prototype.render = function () {
           }, 'Ok'),
 
         ]),
-
-        (props.warning) && (
-          h('span.error', {
-            style: {
-              margin: '20px',
-            },
-          }, props.warning.split('-'))
-        ),
-
-        props.inProgress && (
-          h('span.in-progress-notification', 'Generating Seed...')
-        ),
       ]),
     ])
   )

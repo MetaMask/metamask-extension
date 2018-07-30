@@ -49,7 +49,7 @@ InfoScreen.prototype.render = function () {
         }, [
           // current version number
 
-          h('.info.info-gray', [
+          h('.info', [
             h('div', 'Nifty Wallet'),
             h('div', {
               style: {

@@ -34,7 +34,11 @@ AccountImportSubview.prototype.render = function () {
   const { type } = state
 
   return (
-    h('div', [
+    h('div', {
+      style: {
+        width: '100%',
+      },
+    }, [
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
           onClick: (event) => {
@@ -47,26 +51,14 @@ AccountImportSubview.prototype.render = function () {
         style: {
           display: 'inline-block',
           alignItems: 'center',
-          padding: '5px 15px 0px 15px',
+          padding: '5px 30px 0px 30px',
         },
       }, [
-        h('span', 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase. Learn more about imported accounts '),
-        h('span', {
-          style: {
-            color: '#60db97',
-            cursor: 'pointer',
-            textDecoration: 'underline',
-          },
-          onClick: () => {
-            global.platform.openWindow({
-              url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
-            })
-          },
-        }, 'here.'),
+        h('span', 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.'),
       ]),
       h('div', {
         style: {
-          padding: '10px',
+          padding: '10px 30px',
         },
       }, [
 

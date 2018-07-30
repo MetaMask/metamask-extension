@@ -68,6 +68,7 @@ ExportAccountView.prototype.render = function () {
                 top: '27px',
                 marginBottom: '20px',
                 width: '100%',
+                padding: '10px',
               },
             }),
           ]),

@@ -26,7 +26,7 @@ PrivateKeyImportView.prototype.render = function () {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '5px 15px 0px 15px',
+        padding: '5px 30px 0px 30px',
       },
     }, [
       h('span', 'Paste your private key string here'),
@@ -36,7 +36,7 @@ PrivateKeyImportView.prototype.render = function () {
         id: 'private-key-box',
         onKeyPress: this.createKeyringOnEnter.bind(this),
         style: {
-          width: 260,
+          width: '100%',
           marginTop: 12,
           border: '1px solid #e2e2e2',
         },
@@ -45,7 +45,7 @@ PrivateKeyImportView.prototype.render = function () {
       h('button', {
         onClick: this.createNewKeychain.bind(this),
         style: {
-          margin: 12,
+          margin: 20,
         },
       }, 'Import'),
 

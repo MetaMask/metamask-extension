@@ -14,7 +14,7 @@ function Notice () {
 
 Notice.prototype.render = function () {
   const { notice, onConfirm } = this.props
-  const { title, date, body } = notice
+  const { title, body } = notice
   const state = this.state || { disclaimerDisabled: false }
   const disabled = state.disclaimerDisabled
 

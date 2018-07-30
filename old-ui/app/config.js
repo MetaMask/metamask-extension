@@ -80,6 +80,9 @@ ConfigScreen.prototype.render = function () {
                 flex: '1 0 auto',
                 height: '32px',
                 margin: '20px 20px 0 0',
+                borderRadius: '3px',
+                border: '1px solid #e2e2e2',
+                padding: '10px',
               },
               onKeyPress (event) {
                 if (event.key === 'Enter') {
@@ -120,8 +123,9 @@ ConfigScreen.prototype.render = function () {
           }, [
             h('p', {
               style: {
-                fontFamily: 'Nunito Light',
-                fontSize: '13px',
+                fontFamily: 'Nunito Regular',
+                fontSize: '14px',
+                lineHeight: '18px',
               },
             }, `State logs contain your public account addresses and sent transactions.`),
             h('br'),
@@ -177,8 +181,9 @@ ConfigScreen.prototype.render = function () {
 
             h('p', {
               style: {
-                fontFamily: 'Nunito Light',
-                fontSize: '13px',
+                fontFamily: 'Nunito Regular',
+                fontSize: '14px',
+                lineHeight: '18px',
               },
             }, [
               'Resetting is for developer use only. ',

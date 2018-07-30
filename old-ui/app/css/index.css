@@ -74,7 +74,9 @@ button, input[type="submit"] {
   font-family: 'Nunito Bold';
   outline: none;
   cursor: pointer;
-  padding: 8px 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  height: 32px;
   border: none;
   color: white;
   transform-origin: center center;
@@ -142,7 +144,7 @@ button.primary {
   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
   color: white;
   font-size: 1.1em;
-  font-family: 'Montserrat Regular';
+  font-family: 'Nunito Regular';
   text-transform: none;
 }
 
@@ -378,6 +380,10 @@ app sections
 }
 .editable-label{
   display: flex;
+  margin-bottom: 10px;
+}
+.editable-button{
+  margin-left: 10px;
 }
 /* Webkit */
 .unlock-screen input::-webkit-input-placeholder {
@@ -402,8 +408,11 @@ app sections
 
 input.large-input, textarea.large-input {
   /*margin-bottom: 24px;*/
-  padding: 8px;
+  padding: 10px;
   border-radius: 3px;
+  border: 1px solid #e2e2e2;
+  font-family: 'Nunito Regular';
+  font-size: 14px;
 }
 
 input.large-input {
@@ -596,19 +605,12 @@ input.large-input {
   color: #ABA9AA;
 }
 
-/* Info screen */
-.info-gray{
-  font-family: 'Montserrat Regular';
-  text-transform: uppercase;
-  color: #AEAEAE;
-}
-
 .icon-size{
   width: 20px;
 }
 
 .info{
-  font-family: 'Montserrat Regular', Arial;
+  font-family: 'Nunito Regular';
   padding-bottom: 10px;
   display: inline-block;
   padding-left: 5px;
@@ -670,7 +672,7 @@ input.large-input {
 }
 
 .buy-inputs{
-  font-family: 'Montserrat Light';
+  font-family: 'Nunito Light';
   font-size: 13px;
   height: 20px;
   background: transparent;
@@ -715,7 +717,7 @@ input.large-input {
 }
 
 .ex-coins {
-  font-family: 'Montserrat Regular';
+  font-family: 'Nunito Regular';
   text-transform: uppercase;
   text-align: center;
   font-size: 33px;
@@ -726,7 +728,7 @@ input.large-input {
 }
 
 .marketinfo{
-  font-family: 'Montserrat light';
+  font-family: 'Nunito light';
   color: #AEAEAE;
   font-size: 15px;
   line-height: 17px;

@@ -125,8 +125,6 @@ TokenList.prototype.renderTokenStatusBar = function () {
       },
       style: {
         display: 'flex',
-        height: '40px',
-        padding: '10px',
         justifyContent: 'center',
         alignItems: 'center',
       },
