@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import withTokenTracker from '../../../../helpers/with-token-tracker'
+import withTokenTracker from '../../higher-order-components/with-token-tracker'
 import TokenBalance from './token-balance.component'
-import selectors from '../../../../selectors'
+import selectors from '../../selectors'
 
 const mapStateToProps = state => {
   return {
