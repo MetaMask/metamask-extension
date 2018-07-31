@@ -35,11 +35,17 @@
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
+  "advanced": {
+    "message": "Advanced"
+  },
   "amount": {
     "message": "Amount"
   },
   "amountPlusGas": {
     "message": "Amount + Gas"
+  },
+  "amountPlusTxFee": {
+    "message": "Amount + TX Fee"
   },
   "appDescription": {
     "message": "Ethereum Browser Extension",
@@ -75,6 +81,9 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
+  },
+  "basic": {
+    "message": "Basic"
   },
   "beta": {
     "message": "BETA"
@@ -218,6 +227,9 @@
   },
   "customGas": {
     "message": "Customize Gas"
+  },
+  "customGasSubTitle": {
+    "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
   "customToken": {
     "message": "Custom Token"
@@ -641,6 +653,9 @@
   "newRPC": {
     "message": "New RPC URL"
   },
+  "newTotal": {
+    "message": "New Total"
+  },
   "next": {
     "message": "Next"
   },
@@ -686,6 +701,9 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "originalTotal": {
+    "message": "Original Total"
   },
   "password": {
     "message": "Password"
