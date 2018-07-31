@@ -13,21 +13,20 @@ class WebcamUtils {
       const isBrave = !!window.chrome.ipcRenderer
       const isFirefoxOrBrave = isFirefox || isBrave
       try {
-        reject({type: 'NO_WEBCAM_FOUND'})
-        // DetectRTC.load(_ => {
-        //   if (DetectRTC.hasWebcam) {
-        //       let environmentReady = true
-        //       if ((isFirefoxOrBrave && isPopup) || (isPopup && !DetectRTC.isWebsiteHasWebcamPermissions)) {
-        //         environmentReady = false
-        //       }
-        //       resolve({
-        //         permissions: DetectRTC.isWebsiteHasWebcamPermissions,
-        //         environmentReady,
-        //       })
-        //   } else {
-        //       reject({type: 'NO_WEBCAM_FOUND'})
-        //   }
-        // })
+        DetectRTC.load(_ => {
+          if (DetectRTC.hasWebcam) {
+              let environmentReady = true
+              if ((isFirefoxOrBrave && isPopup) || (isPopup && !DetectRTC.isWebsiteHasWebcamPermissions)) {
+                environmentReady = false
+              }
+              resolve({
+                permissions: DetectRTC.isWebsiteHasWebcamPermissions,
+                environmentReady,
+              })
+          } else {
+              reject({type: 'NO_WEBCAM_FOUND'})
+          }
+        })
       } catch (e) {
         reject({type: 'UNKNOWN_ERROR'})
       }
