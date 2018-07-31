@@ -116,7 +116,7 @@ const mapDispatchToProps = dispatch => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }))
     },
     showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
-      return dispatch(showModal({ name: 'CONFIRM_CUSTOMIZE_GAS', txData, onSubmit, validate }))
+      return dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData, onSubmit, validate }))
     },
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
       return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
