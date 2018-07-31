@@ -24,6 +24,10 @@ AppSettingsPage.prototype.render = function () {
       h('.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.navigateToAccounts.bind(this),
+          style: {
+            position: 'absolute',
+            left: '30px',
+          },
         }),
         h('h2.page-subtitle', 'Settings'),
       ]),

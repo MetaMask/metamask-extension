@@ -65,11 +65,11 @@ BuyButtonSubview.prototype.headerSubview = function () {
           justifyContent: 'center',
         },
       }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.backButtonContext.bind(this),
           style: {
             position: 'absolute',
-            left: '10px',
+            left: '30px',
           },
         }),
         h('h2.flex-center', {

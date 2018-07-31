@@ -41,13 +41,13 @@ ConfigScreen.prototype.render = function () {
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: () => {
             state.dispatch(actions.goHome())
           },
           style: {
             position: 'absolute',
-            left: '28px',
+            left: '30px',
           },
         }),
         h('h2.page-subtitle', 'Settings'),
@@ -65,7 +65,7 @@ ConfigScreen.prototype.render = function () {
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-space-around', {
           style: {
-            padding: '20px',
+            padding: '30px',
             overflow: 'auto',
           },
         }, [

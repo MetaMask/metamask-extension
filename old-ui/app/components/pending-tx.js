@@ -245,15 +245,15 @@ PendingTx.prototype.render = function () {
 
           h('.table-box', [
 
-            h('.section-title.flex-row.flex-center', [
-              !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+            h('.flex-row.flex-center', [
+              !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
                 onClick: this.goHome.bind(this),
                 style: {
                   position: 'absolute',
-                  left: '33px',
+                  left: '30px',
                 },
               }) : null,
-              h('h2.page-subtitle', 'Confirm Transaction'),
+              'Confirm Transaction',
               isNotification ? h(NetworkIndicator, {
                 network: network,
                 provider: provider,

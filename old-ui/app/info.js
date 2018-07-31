@@ -34,7 +34,7 @@ InfoScreen.prototype.render = function () {
           },
           style: {
             position: 'absolute',
-            left: '33px',
+            left: '30px',
           },
         }),
         h('h2.page-subtitle', 'Info'),
@@ -44,7 +44,7 @@ InfoScreen.prototype.render = function () {
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-space-around', {
           style: {
-            padding: '20px',
+            padding: '30px',
           },
         }, [
           // current version number

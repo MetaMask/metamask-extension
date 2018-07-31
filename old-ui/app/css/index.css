@@ -352,8 +352,12 @@ app sections
   left: 0;
 }
 
+.section-title {
+  border-top: 1px solid #e2e2e2;
+}
+
 .section-title .fa-arrow-left {
-  margin: -2px 8px 0px -8px;
+  /*margin: -2px 8px 0px -8px;*/
 }
 
 .unlock-screen #metamask-mascot-container {

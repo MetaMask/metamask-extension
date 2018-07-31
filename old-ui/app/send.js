@@ -151,7 +151,7 @@ SendTransactionScreen.prototype.render = function () {
         },
       }, [
         // back button
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           style: {
             position: 'absolute',
             left: '30px',

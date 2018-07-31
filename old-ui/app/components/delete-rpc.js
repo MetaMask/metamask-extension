@@ -30,6 +30,10 @@ DeleteRpc.prototype.render = function () {
         onClick: () => {
           this.props.dispatch(actions.showConfigPage())
         },
+        style: {
+          position: 'absolute',
+          left: '30px',
+        },
       }),
       h('h2.page-subtitle', 'Delete Custom RPC'),
     ]),

@@ -165,7 +165,7 @@ App.prototype.renderAppBar = function () {
           height: '38px',
           position: 'relative',
           zIndex: 12,
-          borderBottom: (
+          /*borderBottom: (
             props.currentView.name === 'config' ||
             props.currentView.name === 'add-token' ||
             props.currentView.name === 'info' ||
@@ -174,7 +174,7 @@ App.prototype.renderAppBar = function () {
             props.currentView.name === 'createVaultComplete' ||
             props.currentView.name === 'restoreVault' ||
             props.currentView.name === 'import-menu'
-          ) ? '1px solid #e2e2e2' : 'none',
+          ) ? '1px solid #e2e2e2' : 'none',*/
         },
       }, [
 
@@ -617,27 +617,26 @@ App.prototype.renderPrimary = function () {
       log.debug('rendering show qr screen')
       return h('div', {
         style: {
-          position: 'absolute',
           height: '100%',
           top: '0px',
           left: '0px',
           width: '100%',
         },
       }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+        h('.section-title.flex-row.flex-center', [
+          h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
             onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAddress)),
             style: {
-              marginLeft: '10px',
-              marginTop: '50px',
+              marginLeft: '30px',
+              marginTop: '5px',
               position: 'absolute',
               left: '0',
             },
           }),
-        h('.section-title.flex-row.flex-center', [
           h('h2.page-subtitle', {
             style: {
               fontFamily: 'Nunito SemiBold',
-              marginTop: '50px',
+              marginTop: '10px',
               marginBottom: '0px',
               textAlign: 'center',
             },

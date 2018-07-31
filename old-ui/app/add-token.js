@@ -42,7 +42,7 @@ AddTokenScreen.prototype.render = function () {
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: (event) => {
             props.dispatch(actions.goHome())
           },

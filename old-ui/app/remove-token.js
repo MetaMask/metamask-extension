@@ -30,6 +30,10 @@ RemoveTokenScreen.prototype.render = function () {
           onClick: (event) => {
             props.dispatch(actions.goHome())
           },
+          style: {
+            position: 'absolute',
+            left: '30px',
+          },
         }),
         h('h2.page-subtitle', 'Remove Token'),
       ]),
@@ -44,9 +48,9 @@ RemoveTokenScreen.prototype.render = function () {
       ]),
 
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
-        h('.flex-space-around', {
+        h('.flex-space-around.flex-right', {
           style: {
-            padding: '20px',
+            padding: '30px',
           },
         }, [
           h('button', {

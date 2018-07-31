@@ -40,9 +40,13 @@ AccountImportSubview.prototype.render = function () {
       },
     }, [
       h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-violet', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: (event) => {
             props.dispatch(actions.goHome())
+          },
+          style: {
+            position: 'absolute',
+            left: '30px',
           },
         }),
         h('h2.page-subtitle', 'Import Accounts'),
