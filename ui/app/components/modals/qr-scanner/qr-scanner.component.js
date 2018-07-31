@@ -53,11 +53,9 @@ export default class QrScanner extends Component {
           msg: this.context.t('scanInstructions'),
         })
       }, 2000)
-      
     } else {
       // Keep checking for permissions
       this.permissionChecker = setTimeout(_ => {
-        console.log('[QR-SCANNER]: time to check again!')
         this.checkPermisisions()
       }, 1000)
     }
