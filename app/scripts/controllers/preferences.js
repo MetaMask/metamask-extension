@@ -190,13 +190,14 @@ class PreferencesController {
    * Setter for the `selectedAddress` property
    *
    * @param {string} _address A new hex address for an account
-   * @returns {Promise<void>} Promise resolves with undefined
+   * @returns {Promise<void>} Promise resolves with tokens
    *
    */
   setSelectedAddress (_address) {
     const address = normalizeAddress(_address)
-    const tokens = this._updateTokens(address)
-    this.store.updateState({ selectedAddress: address, tokens })
+    this._updateTokens(address)
+    this.store.updateState({ selectedAddress: address })
+    const tokens = this.store.getState().tokens
     return Promise.resolve(tokens)
   }
 
@@ -392,12 +393,8 @@ class PreferencesController {
    *
    */
   _subscribeProviderType () {
-    this.network.providerStore.subscribe(({ type }) => {
-      const selectedAddress = this.store.getState().selectedAddress
-      const accountTokens = this.store.getState().accountTokens
-      if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
-      if (!(type in accountTokens[selectedAddress])) accountTokens[selectedAddress][type] = []
-      const tokens = accountTokens[selectedAddress][type]
+    this.network.providerStore.subscribe(() => {
+      const { tokens } = this._getTokenRelatedStates()
       this.store.updateState({ tokens })
     })
   }
@@ -409,11 +406,7 @@ class PreferencesController {
    *
    */
   _updateAccountTokens (tokens) {
-    const accountTokens = this.store.getState().accountTokens
-    const selectedAddress = this.store.getState().selectedAddress
-    const providerType = this.network.providerStore.getState().type
-    if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
-    if (!(providerType in accountTokens[selectedAddress])) accountTokens[selectedAddress][providerType] = []
+    const { accountTokens, providerType, selectedAddress } = this._getTokenRelatedStates()
     accountTokens[selectedAddress][providerType] = tokens
     this.store.updateState({ accountTokens, tokens })
   }
@@ -421,15 +414,29 @@ class PreferencesController {
   /**
    * Updates `tokens` of current account and network.
    *
+   * @param {string} selectedAddress Account address to be updated with.
    *
    */
   _updateTokens (selectedAddress) {
+    const { tokens } = this._getTokenRelatedStates(selectedAddress)
+    this.store.updateState({ tokens })
+  }
+
+  /**
+   * A getter for `tokens` and `accountTokens` related states.
+   *
+   * @param {string} selectedAddress A new hex address for an account
+   * @returns {array, object, string, string} States to interact with tokens in `accountTokens`
+   *
+   */
+  _getTokenRelatedStates (selectedAddress) {
     const accountTokens = this.store.getState().accountTokens
+    if (!selectedAddress) selectedAddress = this.store.getState().selectedAddress
     const providerType = this.network.providerStore.getState().type
     if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
     if (!(providerType in accountTokens[selectedAddress])) accountTokens[selectedAddress][providerType] = []
     const tokens = accountTokens[selectedAddress][providerType]
-    return tokens
+    return { tokens, accountTokens, providerType, selectedAddress }
   }
 }
 
