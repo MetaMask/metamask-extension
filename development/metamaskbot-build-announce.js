@@ -6,6 +6,7 @@ start().catch(console.error)
 
 async function start () {
 
+  console.log('VERSION', VERSION)
   const GITHUB_COMMENT_TOKEN = process.env.GITHUB_COMMENT_TOKEN
   const CIRCLE_PULL_REQUEST = process.env.CIRCLE_PULL_REQUEST
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST)
