@@ -426,7 +426,7 @@ class PreferencesController {
    * A getter for `tokens` and `accountTokens` related states.
    *
    * @param {string} selectedAddress A new hex address for an account
-   * @returns {array, object, string, string} States to interact with tokens in `accountTokens`
+   * @returns {Object.<array, object, string, string>} States to interact with tokens in `accountTokens`
    *
    */
   _getTokenRelatedStates (selectedAddress) {
