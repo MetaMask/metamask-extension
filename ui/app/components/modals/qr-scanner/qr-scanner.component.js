@@ -35,7 +35,7 @@ export default class QrScanner extends Component {
     }
     this.codeReader = null
     this.permissionChecker = null
-    this.notAllowed = false
+    this.needsToReinit = false
   }
 
   componentDidMount () {
@@ -52,6 +52,10 @@ export default class QrScanner extends Component {
           ready: true,
           msg: this.context.t('scanInstructions'),
         })
+        if (this.needsToReinit) {
+          this.initCamera()
+          this.needsToReinit = false
+        }
       }, 2000)
     } else {
       // Keep checking for permissions
@@ -88,6 +92,7 @@ export default class QrScanner extends Component {
           if (err && err.name === 'NotAllowedError') {
             this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
             clearTimeout(this.permissionChecker)
+            this.needsToReinit = true
             this.checkPermisisions()
           }
         })
