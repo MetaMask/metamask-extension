@@ -546,6 +546,18 @@ input.large-input {
   border-radius: 13px;
 }
 
+.tx-warning {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background: #6729a8;
+  background-image: url('../images/invalid-name.svg');
+  background-size: 2px 18px;
+  background-position: center;
+  background-repeat: no-repeat;
+  line-height: 60px;
+}
+
 .cell.label {
   font-family: 'Nunito Regular';
   font-size: 14px;

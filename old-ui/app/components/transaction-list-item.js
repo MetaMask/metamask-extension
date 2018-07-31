@@ -85,7 +85,7 @@ TransactionListItem.prototype.render = function () {
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
   const valueStyle = {
-    fontFamily: 'Nunito-Bold',
+    fontFamily: 'Nunito Bold',
     width: '100%',
     textAlign: 'right',
     fontSize: '14px',
@@ -93,7 +93,7 @@ TransactionListItem.prototype.render = function () {
   }
 
   const dimStyle = {
-    fontFamily: 'Nunito-Regular',
+    fontFamily: 'Nunito Regular',
     color: '#333333',
     marginLeft: '5px',
     fontSize: '14px',
@@ -136,6 +136,7 @@ TransactionListItem.prototype.render = function () {
         }, [
           h('span', {
             style: {
+              fontFamily: 'Nunito Bold',
               display: 'flex',
               cursor: 'normal',
               flexDirection: 'column',
@@ -146,14 +147,25 @@ TransactionListItem.prototype.render = function () {
           }, nonce),
         ]),
 
-        h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
+        h('.flex-column', {
+          style: {
+            overflow: 'hidden',
+            textAlign: 'left',
+          }
+        }, [
           domainField(txParams),
-          h('div', date),
-          recipientField(txParams, transaction, isTx, isMsg),
+          h('div.flex-row', [
+            recipientField(txParams, transaction, isTx, isMsg),
+            // Places a copy button if tx is successful, else places a placeholder empty div.
+            transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
+          ]),
+          h('div', {
+            style: {
+              fontSize: '12px',
+              color: '#777777'
+            }
+          }, date),
         ]),
-
-        // Places a copy button if tx is successful, else places a placeholder empty div.
-        transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
 
         isTx ? h(EthBalance, {
           valueStyle,
@@ -165,7 +177,9 @@ TransactionListItem.prototype.render = function () {
           shorten: true,
           showFiat: false,
           network,
-          style: {fontSize: '15px'},
+          style: {
+            margin: '0 auto',
+          },
         }) : h('.flex-column'),
       ]),
 
@@ -234,8 +248,8 @@ function recipientField (txParams, transaction, isTx, isMsg) {
 
   return h('div', {
     style: {
-      fontSize: 'x-small',
-      color: '#ABA9AA',
+      fontSize: '14px',
+      color: '#333333',
     },
   }, [
     message,

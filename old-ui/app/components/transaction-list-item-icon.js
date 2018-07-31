@@ -19,18 +19,8 @@ TransactionIcon.prototype.render = function () {
       return h(!isMsg ? '.unapproved-tx-icon' : 'i.fa.fa-certificate.fa-lg')
 
     case 'rejected':
-      return h('i.fa.fa-exclamation-triangle.fa-lg.warning', {
-        style: {
-          width: '24px',
-        },
-      })
-
     case 'failed':
-      return h('i.fa.fa-exclamation-triangle.fa-lg.error', {
-        style: {
-          width: '24px',
-        },
-      })
+      return h('i.tx-warning')
 
     case 'submitted':
       return h(Tooltip, {
@@ -48,20 +38,20 @@ TransactionIcon.prototype.render = function () {
   if (isMsg) {
     return h('i.fa.fa-certificate.fa-lg', {
       style: {
-        width: '24px',
+        width: '40px',
       },
     })
   }
 
   if (txParams.to) {
     return h(Identicon, {
-      diameter: 24,
+      diameter: 40,
       address: txParams.to || transaction.hash,
     })
   } else {
     return h('i.fa.fa-file-text-o.fa-lg', {
       style: {
-        width: '24px',
+        width: '40px',
       },
     })
   }
