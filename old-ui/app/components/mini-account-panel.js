@@ -66,6 +66,7 @@ AccountPanel.prototype.genIcon = function (seed, picOrder) {
     },
   }, [
     h(Identicon, {
+      diameter: 60,
       address: seed,
       imageify: props.imageifyIdenticons,
     }),

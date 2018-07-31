@@ -75,7 +75,7 @@ AccountDetailScreen.prototype.render = function () {
           // large identicon and addresses
           h('.identicon-wrapper.select-none', [
             h(Identicon, {
-              diameter: 62,
+              diameter: 60,
               address: selected,
             }),
           ]),

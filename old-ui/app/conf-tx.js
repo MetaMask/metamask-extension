@@ -80,27 +80,6 @@ ConfirmTxScreen.prototype.render = function () {
 
       // subtitle and nav
 
-      h('h3', {
-        style: {
-          alignSelf: 'center',
-          display: unconfTxList.length > 1 ? 'block' : 'none',
-        },
-      }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          style: {
-            display: props.index === 0 ? 'none' : 'inline-block',
-          },
-          onClick: () => props.dispatch(actions.previousTx()),
-        }),
-        ` ${props.index + 1} of ${unconfTxList.length} `,
-        h('i.fa.fa-arrow-right.fa-lg.cursor-pointer', {
-          style: {
-            display: props.index + 1 === unconfTxList.length ? 'none' : 'inline-block',
-          },
-          onClick: () => props.dispatch(actions.nextTx()),
-        }),
-      ]),
-
       warningIfExists(props.warning),
 
       currentTxView({

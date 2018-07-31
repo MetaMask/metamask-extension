@@ -139,10 +139,41 @@ PendingTx.prototype.render = function () {
         // tx info
         h('div', [
 
+          h('div', {
+            style: {
+              position: 'absolute',
+              top: '45px',
+              width: '100%',
+              textAlign: 'center',
+              color: '#ffffff',
+            }
+          }, [ 
+            h('h3', {
+              style: {
+                alignSelf: 'center',
+                display: props.unconfTxListLength > 1 ? 'block' : 'none',
+              },
+            }, [
+              h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+                style: {
+                  display: props.index === 0 ? 'none' : 'inline-block',
+                },
+                onClick: () => props.dispatch(actions.previousTx()),
+              }),
+              ` ${props.index + 1} of ${props.unconfTxListLength} `,
+              h('i.fa.fa-arrow-right.fa-lg.cursor-pointer', {
+                style: {
+                  display: props.index + 1 === props.unconfTxListLength ? 'none' : 'inline-block',
+                },
+                onClick: () => props.dispatch(actions.nextTx()),
+              }),
+            ]),]
+          ),
+
           h('.flex-row.flex-center', {
             style: {
               maxWidth: '100%',
-              padding: '20px 20px',
+              padding: '0 20px 20px 20px',
               background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
             },
           }, [
