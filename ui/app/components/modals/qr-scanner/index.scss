@@ -38,5 +38,10 @@
     font-size: 14px;
     padding: 15px;
   }
+
+  &__status.error {
+    padding: 60px 45px 80px;
+    font-size: 16px;
+  }
 }
 

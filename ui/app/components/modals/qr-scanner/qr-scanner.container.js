@@ -3,6 +3,13 @@ import QrScanner from './qr-scanner.component'
 
 const { hideModal, qrCodeDetected } = require('../../../actions')
 
+const mapStateToProps = state => {
+  return {
+    error: state.appState.modal.modalState.props.error,
+    errorType: state.appState.modal.modalState.props.errorType,
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     hideModal: () => dispatch(hideModal()),
@@ -10,4 +17,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(QrScanner)
+export default connect(mapStateToProps, mapDispatchToProps)(QrScanner)

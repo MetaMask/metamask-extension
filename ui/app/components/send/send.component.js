@@ -179,6 +179,11 @@ export default class SendTransactionScreen extends PersistentForm {
     // Show QR Scanner modal  if ?scan=true
     if (window.location.search === '?scan=true') {
       this.props.scanQrCode()
+
+      // Clear the queryString param after showing the modal
+      const cleanUrl = location.href.split('?')[0]
+      history.pushState({}, null, `${cleanUrl}`)
+      window.location.hash = '#send'
     }
   }
 

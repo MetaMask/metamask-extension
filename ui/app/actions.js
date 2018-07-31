@@ -12,6 +12,7 @@ const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
+const WebcamUtils = require('../lib/webcam-utils')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -127,7 +128,8 @@ var actions = {
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
-  setCurrentCurrency: setCurrentCurrency,
+  showQrScanner,
+  setCurrentCurrency,
   setCurrentAccountTab,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
@@ -720,6 +722,28 @@ function unlockTrezorAccount (index) {
 function showInfoPage () {
   return {
     type: actions.SHOW_INFO_PAGE,
+  }
+}
+
+function showQrScanner (ROUTE) {
+  return (dispatch, getState) => {
+    return WebcamUtils.checkStatus()
+    .then(status => {
+      if (!status.environmentReady) {
+         // We need to switch to fullscreen mode to ask for permission
+         global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
+      } else {
+        dispatch(actions.showModal({
+          name: 'QR_SCANNER',
+        }))
+      }
+    }).catch(e => {
+      dispatch(actions.showModal({
+        name: 'QR_SCANNER',
+        error: true,
+        errorType: e.type,
+      }))
+    })
   }
 }
 

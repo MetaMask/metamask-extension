@@ -28,7 +28,7 @@ import {
   updateSendTokenBalance,
   updateGasData,
   setGasTotal,
-  showModal,
+  showQrScanner,
 } from '../../actions'
 import {
   resetSendState,
@@ -37,6 +37,10 @@ import {
 import {
   calcGasTotal,
 } from './send.utils.js'
+
+import {
+  SEND_ROUTE,
+} from '../../routes'
 
 module.exports = compose(
   withRouter,
@@ -93,7 +97,7 @@ function mapDispatchToProps (dispatch) {
     },
     updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
-    scanQrCode: () => dispatch(showModal({ name: 'QR_SCANNER' })),
+    scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
   }
 }

@@ -3,16 +3,14 @@ import PropTypes from 'prop-types'
 import { BrowserQRCodeReader } from '@zxing/library'
 import adapter from 'webrtc-adapter' // eslint-disable-line import/no-nodejs-modules, no-unused-vars
 import Spinner from '../../spinner'
-const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
-const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
-const {
-  SEND_ROUTE,
-} = require('../../../routes')
+import WebcamUtils from '../../../../lib/webcam-utils'
 
 export default class QrScanner extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     qrCodeDetected: PropTypes.func,
+    error: PropTypes.bool,
+    errorType: PropTypes.string,
   }
 
   static contextTypes = {
@@ -21,46 +19,65 @@ export default class QrScanner extends Component {
 
   constructor (props, context) {
     super(props)
+
+    let initialMsg = context.t('accessingYourCamera')
+    if (props.error) {
+      if (props.errorType === 'NO_WEBCAM_FOUND') {
+        initialMsg = context.t('noWebcamFound')
+      } else {
+        initialMsg = context.t('unknownCameraError')
+      }
+    }
+
     this.state = {
       ready: false,
-      msg: context.t('accessingYourCamera'),
+      msg: initialMsg,
     }
-    this.scanning = false
     this.codeReader = null
+    this.permissionChecker = null
     this.notAllowed = false
   }
 
   componentDidMount () {
+    this.initCamera()
+  }
 
-    if (!this.scanning) {
-      this.scanning = true
-
-      this.initCamera()
+  async checkPermisisions () {
+    const { permissions } = await WebcamUtils.checkStatus()
+    if (permissions) {
+      clearTimeout(this.permissionChecker)
+      // Let the video stream load first...
+      setTimeout(_ => {
+        this.setState({
+          ready: true,
+          msg: this.context.t('scanInstructions'),
+        })
+      }, 2000)
+      
+    } else {
+      // Keep checking for permissions
+      this.permissionChecker = setTimeout(_ => {
+        console.log('[QR-SCANNER]: time to check again!')
+        this.checkPermisisions()
+      }, 1000)
     }
   }
 
   componentWillUnmount () {
-    this.codeReader.reset()
+    clearTimeout(this.permissionChecker)
+    if (this.codeReader) {
+      this.codeReader.reset()
+    }
   }
 
   initCamera () {
-
     this.codeReader = new BrowserQRCodeReader()
     this.codeReader.getVideoInputDevices()
       .then(videoInputDevices => {
-
-        setTimeout(_ => {
-          if (!this.notAllowed) {
-            this.setState({
-              ready: true,
-              msg: this.context.t('scanInstructions')})
-          }
-        }, 2000)
-
-
-        this.codeReader.decodeFromInputVideoDevice(videoInputDevices[0].deviceId, 'video')
+        clearTimeout(this.permissionChecker)
+        this.checkPermisisions()
+        this.codeReader.decodeFromInputVideoDevice(undefined, 'video')
         .then(content => {
-
           const result = this.parseContent(content.text)
           if (result.type !== 'unknown') {
             this.props.qrCodeDetected(result)
@@ -70,18 +87,14 @@ export default class QrScanner extends Component {
           }
         })
         .catch(err => {
-          this.notAllowed = true
           if (err && err.name === 'NotAllowedError') {
-            if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
-              global.platform.openExtensionInBrowser(`${SEND_ROUTE}`, `scan=true`)
-            } else {
-              this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
-            }
+            this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
+            clearTimeout(this.permissionChecker)
+            this.checkPermisisions()
           }
-          console.error('QR-SCANNER: decodeFromInputVideoDevice threw an exception: ', err)
         })
       }).catch(err => {
-        console.error('QR-SCANNER: getVideoInputDevices threw an exception: ', err)
+        console.error('[QR-SCANNER]: getVideoInputDevices threw an exception: ', err)
       })
   }
 
@@ -103,9 +116,22 @@ export default class QrScanner extends Component {
 
   stopAndClose = () => {
     this.codeReader.reset()
-    this.scanning = false
     this.setState({ ready: false })
     this.props.hideModal()
+  }
+
+  renderVideo () {
+    return (
+      <div className={'qr-scanner__content__video-wrapper'}>
+        <video
+          id="video"
+          style={{
+            display: this.state.ready ? 'block' : 'none',
+          }}
+        />
+        { !this.state.ready ? <Spinner color={'#F7C06C'} /> : null}
+      </div>
+    )
   }
 
   render () {
@@ -114,20 +140,12 @@ export default class QrScanner extends Component {
     return (
       <div className="qr-scanner">
         <div className="qr-scanner__title">
-          { `${t('scanQrCode')}?` }
+          { `${t('scanQrCode')}` }
         </div>
         <div className="qr-scanner__content">
-          <div className={'qr-scanner__content__video-wrapper'}>
-            <video
-              id="video"
-              style={{
-                display: this.state.ready ? 'block' : 'none',
-              }}
-            />
-            { !this.state.ready ? <Spinner color={'#F7C06C'} /> : null}
-          </div>
+          { !this.props.error ? this.renderVideo() : null}
         </div>
-        <div className="qr-scanner__status">
+        <div className={`qr-scanner__status ${this.props.error ? 'error' : ''}`}>
           {this.state.msg}
         </div>
       </div>
