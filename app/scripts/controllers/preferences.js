@@ -195,8 +195,8 @@ class PreferencesController {
    */
   setSelectedAddress (_address) {
     const address = normalizeAddress(_address)
-    this.store.updateState({ selectedAddress: address })
-    const tokens = this._updateTokens()
+    const tokens = this._updateTokens(address)
+    this.store.updateState({ selectedAddress: address, tokens })
     return Promise.resolve(tokens)
   }
 
@@ -421,14 +421,12 @@ class PreferencesController {
    *
    *
    */
-  _updateTokens () {
+  _updateTokens (selectedAddress) {
     const accountTokens = this.store.getState().accountTokens
-    const selectedAddress = this.store.getState().selectedAddress
     const providerType = this.network.providerStore.getState().type
     if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
     if (!(providerType in accountTokens[selectedAddress])) accountTokens[selectedAddress][providerType] = []
     const tokens = accountTokens[selectedAddress][providerType]
-    this.store.updateState({ tokens })
     return tokens
   }
 }
