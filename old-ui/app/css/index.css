@@ -312,15 +312,17 @@ app sections
 }
 
 .sandwich-expando {
-  content: url('../images/menu.svg');
-  width: 14px;
-  height: 12px;
+  background-image: url('../images/menu.svg');
+  background-size: 14px 12px;
+  background-repeat: no-repeat;
+  background-position: right;
 }
 
-.sandwich-expando2 {
-  content: url('../images/close.svg');
-  width: 12px !important;
-  height: 12px !important;
+.sandwich-expando.expanded {
+  background-image: url('../images/close.svg');
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position: right;
 }
 
 @media (min--moz-device-pixel-ratio: 1.3),

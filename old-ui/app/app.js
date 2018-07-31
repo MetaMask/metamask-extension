@@ -26,7 +26,6 @@ const RemoveTokenScreen = require('./remove-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const Loading = require('./components/loading')
-const SandwichExpando = require('sandwich-expando')
 const Dropdown = require('./components/dropdown').Dropdown
 const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkIndicator = require('./components/network')
@@ -125,6 +124,13 @@ App.prototype.render = function () {
   )
 }
 
+App.prototype.changeState = function (isMainMenuOpen) {
+  this.setState({
+    isMainMenuOpen,
+    sandwichClass: isMainMenuOpen ? 'sandwich-expando expanded' : 'sandwich-expando',
+  })
+}
+
 App.prototype.renderAppBar = function () {
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
@@ -144,8 +150,6 @@ App.prototype.renderAppBar = function () {
   if (isMascara && props.currentView.name === 'buyEth') {
     return null
   }
-
-  console.log('props.currentView.name:', props.currentView.name)
 
   return (
 
@@ -219,19 +223,14 @@ App.prototype.renderAppBar = function () {
           }, []),
 
           // hamburger
-          props.isUnlocked && h(SandwichExpando, {
-            className: state.sandwichClass,
-            width: 16,
-            barHeight: 2,
-            padding: 0,
-            isOpen: state.isMainMenuOpen,
-            color: 'rgb(247,146,30)',
-            onClick: () => {
-              this.setState({
-                isMainMenuOpen: !state.isMainMenuOpen,
-                sandwichClass: state.isMainMenuOpen ? 'sandwich-expando2' : 'sandwich-expando',
-              })
+          props.isUnlocked && h('div', {
+            className: state.sandwichClass || 'sandwich-expando',
+            style: {
+              width: 16,
+              height: 16,
+              padding: 0,
             },
+            onClick: () => this.changeState(!state.isMainMenuOpen),
           }),
         ]),
       ]),
@@ -417,6 +416,7 @@ App.prototype.renderNetworkDropdown = function () {
 App.prototype.renderDropdown = function () {
   const state = this.state || {}
   const isOpen = state.isMainMenuOpen
+  const isMainMenuOpen = !isOpen
 
   return h(Dropdown, {
     useCssTransition: true,
@@ -432,6 +432,7 @@ App.prototype.renderDropdown = function () {
       if (isOpen && !isToggleElement) {
         this.setState({
           isMainMenuOpen: false,
+          sandwichClass: 'sandwich-expando',
         })
       }
     },
@@ -443,17 +444,17 @@ App.prototype.renderDropdown = function () {
     innerStyle: {},
   }, [
     h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
+      closeMenu: () => this.changeState(isMainMenuOpen),
       onClick: () => { this.props.dispatch(actions.showConfigPage()) },
     }, 'Settings'),
 
     h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
+      closeMenu: () => this.changeState(isMainMenuOpen),
       onClick: () => { this.props.dispatch(actions.lockMetamask()) },
     }, 'Log Out'),
 
     h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
+      closeMenu: () => this.changeState(isMainMenuOpen),
       onClick: () => { this.props.dispatch(actions.showInfoPage()) },
     }, 'Info/Help'),
   ])

@@ -61,6 +61,7 @@ class AccountDropdowns extends Component {
           h(
             Identicon,
             {
+              overflow: 'none',
               address: identity.address,
               diameter: 32,
               style: {
@@ -72,7 +73,7 @@ class AccountDropdowns extends Component {
           h('span', {
             style: {
               marginLeft: '20px',
-              fontSize: '20px',
+              fontSize: '16px',
               maxWidth: '145px',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -102,8 +103,8 @@ class AccountDropdowns extends Component {
       {
         useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
         style: {
-          marginLeft: '-158px',
-          marginTop: '38px',
+          marginLeft: '-168px',
+          marginTop: '32px',
           minWidth: '180px',
           overflowY: 'auto',
           maxHeight: '300px',
@@ -130,7 +131,7 @@ class AccountDropdowns extends Component {
             onClick: () => actions.addNewAccount(),
           },
           [
-            h('span', { style: { fontSize: '20px', color: '#8fdc97' } }, 'Create Account'),
+            h('span', { style: { fontSize: '16px', color: '#8fdc97' } }, 'Create Account'),
           ],
         ),
         h(
@@ -142,7 +143,7 @@ class AccountDropdowns extends Component {
           [
             h('span', {
               style: {
-                fontSize: '20px',
+                fontSize: '16px',
                 marginBottom: '5px',
                 color: '#8fdc97',
               },
@@ -254,14 +255,13 @@ class AccountDropdowns extends Component {
       [
         enableAccountsSelector && h(
           // 'i.fa.fa-angle-down',
-          'div.cursor-pointer.color-green.accounts-selector',
+          'div.accounts-selector',
           {
             style: {
               // fontSize: '1.8em',
               background: 'url(images/switch_acc.svg) white center center no-repeat',
               height: '25px',
               width: '25px',
-              transform: 'scale(0.75)',
               marginRight: '3px',
             },
             onClick: (event) => {
