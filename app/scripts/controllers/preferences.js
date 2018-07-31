@@ -405,13 +405,15 @@ class PreferencesController {
   /**
    * Updates `accountTokens` and `tokens` of current account and network according to it.
    *
-   * @param {[array]} tokens Array of tokens to be updated.
+   * @param {array} tokens Array of tokens to be updated.
    *
    */
   _updateAccountTokens (tokens) {
     const accountTokens = this.store.getState().accountTokens
     const selectedAddress = this.store.getState().selectedAddress
     const providerType = this.network.providerStore.getState().type
+    if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
+    if (!(providerType in accountTokens[selectedAddress])) accountTokens[selectedAddress][providerType] = []
     accountTokens[selectedAddress][providerType] = tokens
     this.store.updateState({ accountTokens, tokens })
   }
