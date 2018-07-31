@@ -5,7 +5,7 @@ const nock = require('nock')
 const createThoughStream = require('through2').obj
 const blacklistJSON = require('eth-phishing-detect/src/config')
 const MetaMaskController = require('../../../../app/scripts/metamask-controller')
-const firstTimeState = require('../../../../app/scripts/first-time-state')
+const firstTimeState = require('../../../unit/localhostState')
 const createTxMeta = require('../../../lib/createTxMeta')
 
 const currentNetworkId = 42

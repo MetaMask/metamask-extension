@@ -382,8 +382,9 @@ describe('Transaction Controller', function () {
     })
 
     it('should publish a tx, updates the rawTx when provided a one', async function () {
+      const rawTx = '0x477b2e6553c917af0db0388ae3da62965ff1a184558f61b749d1266b2e6d024c'
       txController.txStateManager.addTx(txMeta)
-      await txController.publishTransaction(txMeta.id)
+      await txController.publishTransaction(txMeta.id, rawTx)
       const publishedTx = txController.txStateManager.getTx(1)
       assert.equal(publishedTx.hash, hash)
       assert.equal(publishedTx.status, 'submitted')
