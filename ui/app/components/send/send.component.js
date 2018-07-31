@@ -175,6 +175,11 @@ export default class SendTransactionScreen extends PersistentForm {
       address,
     })
     this.updateGas()
+
+    // Show QR Scanner modal  if ?scan=true
+    if (window.location.search === '?scan=true') {
+      this.props.scanQrCode()
+    }
   }
 
   componentWillUnmount () {

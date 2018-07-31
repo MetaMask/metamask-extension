@@ -3,6 +3,11 @@ import PropTypes from 'prop-types'
 import { BrowserQRCodeReader } from '@zxing/library'
 import adapter from 'webrtc-adapter' // eslint-disable-line import/no-nodejs-modules, no-unused-vars
 import Spinner from '../../spinner'
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
+const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
+const {
+  SEND_ROUTE,
+} = require('../../../routes')
 
 export default class QrScanner extends Component {
   static propTypes = {
@@ -22,13 +27,14 @@ export default class QrScanner extends Component {
     }
     this.scanning = false
     this.codeReader = null
+    this.notAllowed = false
   }
 
   componentDidMount () {
-    console.log('[QR-SCANNER]: componentDidUpdate', this.scanning)
+
     if (!this.scanning) {
       this.scanning = true
-      console.log('[QR-SCANNER]: componentDidUpdate - about to call initCamera')
+
       this.initCamera()
     }
   }
@@ -38,22 +44,23 @@ export default class QrScanner extends Component {
   }
 
   initCamera () {
-    console.log('[QR-SCANNER]: initCamera')
+
     this.codeReader = new BrowserQRCodeReader()
     this.codeReader.getVideoInputDevices()
       .then(videoInputDevices => {
-        console.log('[QR-SCANNER]: initCamera::getVideoInputDevices', videoInputDevices)
+
         setTimeout(_ => {
-          this.setState({
-            ready: true,
-            msg: this.context.t('scanInstructions')})
-            console.log('[QR-SCANNER]: initCamera::ready')
+          if (!this.notAllowed) {
+            this.setState({
+              ready: true,
+              msg: this.context.t('scanInstructions')})
+          }
         }, 2000)
 
-        console.log('[QR-SCANNER]: initCamera::started decoding...')
+
         this.codeReader.decodeFromInputVideoDevice(videoInputDevices[0].deviceId, 'video')
         .then(content => {
-          console.log('[QR-SCANNER]: initCamera::decodeFromInputVideoDevice callback', content)
+
           const result = this.parseContent(content.text)
           if (result.type !== 'unknown') {
             this.props.qrCodeDetected(result)
@@ -63,6 +70,14 @@ export default class QrScanner extends Component {
           }
         })
         .catch(err => {
+          this.notAllowed = true
+          if (err && err.name === 'NotAllowedError') {
+            if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+              global.platform.openExtensionInBrowser(`${SEND_ROUTE}`, `scan=true`)
+            } else {
+              this.setState({msg: this.context.t('youNeedToAllowCameraAccess')})
+            }
+          }
           console.error('QR-SCANNER: decodeFromInputVideoDevice threw an exception: ', err)
         })
       }).catch(err => {
@@ -75,7 +90,8 @@ export default class QrScanner extends Component {
     let values = {}
 
     // Here we could add more cases
-    // To parse other codes (transactions for ex.)
+    // To parse other type of links
+    // For ex. EIP-681 (https://eips.ethereum.org/EIPS/eip-681)
 
     if (content.split('ethereum:').length > 1) {
       type = 'address'

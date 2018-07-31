@@ -1144,6 +1144,9 @@
   "whatsThis": {
     "message": "What's this?"
   },
+  "youNeedToAllowCameraAccess": {
+    "message": "You need to allow camera access to use this feature."
+  },
   "yourSigRequested": {
     "message": "Your signature is being requested"
   },
