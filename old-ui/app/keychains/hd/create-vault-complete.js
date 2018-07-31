@@ -50,6 +50,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
         style: {
           fontSize: '1em',
           marginTop: '10px',
+          marginBottom: '10px',
           textAlign: 'center',
         },
       }, [

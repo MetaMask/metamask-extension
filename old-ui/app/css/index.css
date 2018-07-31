@@ -197,10 +197,11 @@ textarea {
 }
 
 textarea.twelve-word-phrase {
+  font-family: 'Nunito Regular';
   padding: 12px;
   width: 300px;
   height: 140px;
-  font-size: 16px;
+  font-size: 14px;
   background: white;
   resize: none;
 }
@@ -424,7 +425,7 @@ input.large-input {
 }
 
 .in-progress-notification {
-  color: #ffffff;
+  color: #db60a4;
 }
 
 /* accounts */

@@ -145,6 +145,8 @@ App.prototype.renderAppBar = function () {
     return null
   }
 
+  console.log('props.currentView.name:', props.currentView.name)
+
   return (
 
     h('.full-width', {
@@ -159,6 +161,16 @@ App.prototype.renderAppBar = function () {
           height: '38px',
           position: 'relative',
           zIndex: 12,
+          borderBottom: (
+            props.currentView.name === 'config' ||
+            props.currentView.name === 'add-token' ||
+            props.currentView.name === 'info' ||
+            props.currentView.name === 'qr' ||
+            props.currentView.name === 'reveal-seed-conf' ||
+            props.currentView.name === 'createVaultComplete' ||
+            props.currentView.name === 'restoreVault' ||
+            props.currentView.name === 'import-menu'
+          ) ? '1px solid #e2e2e2' : 'none',
         },
       }, [
 

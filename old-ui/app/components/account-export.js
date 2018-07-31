@@ -2,10 +2,10 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const exportAsFile = require('../util').exportAsFile
-const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../../../ui/app/actions')
 const ethUtil = require('ethereumjs-util')
 const connect = require('react-redux').connect
+const CopyButton = require('./copyButton')
 
 module.exports = connect(mapStateToProps)(ExportAccountView)
 
@@ -114,22 +114,29 @@ ExportAccountView.prototype.render = function () {
         style: {
           textAlign: 'center',
         },
-      }, 'Your private key (click to copy)'),
-      h('p.error.cursor-pointer', {
-        style: {
-          paddingTop: '25px',
-          textOverflow: 'ellipsis',
-          overflow: 'hidden',
-          webkitUserSelect: 'text',
-          maxWidth: '275px',
-          color: '#333333',
-          textAlign: 'center',
-          marginBottom: '0px',
-        },
-        onClick: function (event) {
-          copyToClipboard(ethUtil.stripHexPrefix(accountDetail.privateKey))
-        },
-      }, plainKey),
+      }, 'Your private key'),
+      h('div.flex-row', [
+        h('p.error', {
+          style: {
+            paddingTop: '25px',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            webkitUserSelect: 'text',
+            maxWidth: '275px',
+            color: '#333333',
+            textAlign: 'center',
+            marginBottom: '0px',
+          },
+        }, plainKey),
+        h('div', {
+            style: {
+              paddingTop: '25px',
+            },
+          }, h(CopyButton, {
+            value: accountDetail.privateKey,
+          })
+        ),
+      ]),
       h('div', {
         style: {
           textAlign: 'right',
