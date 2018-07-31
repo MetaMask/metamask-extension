@@ -76,7 +76,7 @@ SendTransactionScreen.prototype.render = function () {
           h('.identicon-wrapper.flex-column.flex-center.select-none', {
             style: {
               display: 'inline-block',
-            }
+            },
           }, [
             h(Identicon, {
               diameter: 62,

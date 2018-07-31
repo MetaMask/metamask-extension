@@ -151,7 +151,7 @@ TransactionListItem.prototype.render = function () {
           style: {
             overflow: 'hidden',
             textAlign: 'left',
-          }
+          },
         }, [
           domainField(txParams),
           h('div.flex-row', [
@@ -162,8 +162,8 @@ TransactionListItem.prototype.render = function () {
           h('div', {
             style: {
               fontSize: '12px',
-              color: '#777777'
-            }
+              color: '#777777',
+            },
           }, date),
         ]),
 

@@ -146,8 +146,8 @@ PendingTx.prototype.render = function () {
               width: '100%',
               textAlign: 'center',
               color: '#ffffff',
-            }
-          }, [ 
+            },
+          }, [
             h('h3', {
               style: {
                 alignSelf: 'center',
@@ -167,7 +167,7 @@ PendingTx.prototype.render = function () {
                 },
                 onClick: () => props.dispatch(actions.nextTx()),
               }),
-            ]),]
+            ])]
           ),
 
           h('.flex-row.flex-center', {
@@ -488,9 +488,9 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 
         h('div', {
           style: {
-            height: 34
-          }
-        })
+            height: 34,
+          },
+        }),
     ])
   } else {
     return h(MiniAccountPanel, {

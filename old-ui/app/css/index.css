@@ -253,7 +253,7 @@ app sections
 
 /* unlock */
 .error {
-  color: #60db97;
+  color: #db60a4;
   margin-bottom: 9px;
 }
 
@@ -387,23 +387,23 @@ app sections
 }
 /* Webkit */
 .unlock-screen input::-webkit-input-placeholder {
-  text-align: center;
-  font-size: 1.2em;
+  text-align: left;
+  font-size: 14px;
 }
 /* Firefox 18- */
 .unlock-screen input:-moz-placeholder {
-  text-align: center;
-  font-size: 1.2em;
+  text-align: left;
+  font-size: 14pxm;
 }
 /* Firefox 19+ */
 .unlock-screen input::-moz-placeholder {
-  text-align: center;
-  font-size: 1.2em;
+  text-align: left;
+  font-size: 14px;
 }
 /* IE */
 .unlock-screen input:-ms-input-placeholder {
-  text-align: center;
-  font-size: 1.2em;
+  text-align: left;
+  font-size: 14px;
 }
 
 input.large-input, textarea.large-input {
