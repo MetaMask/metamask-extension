@@ -75,29 +75,10 @@ describe('MetaMask', function () {
   })
 
   describe('New UI setup', async function () {
-    let networkSelector
     it('switches to first tab', async function () {
+      await delay(tinyDelayMs)
       const [firstTab] = await driver.getAllWindowHandles()
       await driver.switchTo().window(firstTab)
-      await delay(regularDelayMs)
-      try {
-        networkSelector = await findElement(driver, By.css('#network_component'))
-      } catch (e) {
-        await loadExtension(driver, extensionId)
-        await delay(largeDelayMs * 2)
-        networkSelector = await findElement(driver, By.css('#network_component'))
-      }
-      await delay(regularDelayMs)
-    })
-
-    it('uses the local network', async function () {
-      await networkSelector.click()
-      await delay(regularDelayMs)
-
-      const networks = await findElements(driver, By.css('.dropdown-menu-item'))
-      const localhost = networks[4]
-      await driver.wait(until.elementTextMatches(localhost, /Localhost/))
-      await localhost.click()
       await delay(regularDelayMs)
     })
 
@@ -107,26 +88,39 @@ describe('MetaMask', function () {
         await driver.wait(until.stalenessOf(overlay))
       } catch (e) {}
 
-      const button = await findElement(driver, By.xpath("//p[contains(text(), 'Try Beta Version')]"))
+      const button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
       await button.click()
       await delay(regularDelayMs)
 
       // Close all other tabs
-      const [oldUi, tab1, tab2] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(oldUi)
-      await driver.close()
+      const [tab0, tab1, tab2] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(tab0)
+      await delay(tinyDelayMs)
 
-      await driver.switchTo().window(tab1)
-      const tab1Url = await driver.getCurrentUrl()
-      if (tab1Url.match(/metamask.io/)) {
+      let selectedUrl = await driver.getCurrentUrl()
+      await delay(tinyDelayMs)
+      if (tab0 && selectedUrl.match(/popup.html/)) {
+        await closeAllWindowHandlesExcept(driver, tab0)
+      } else if (tab1) {
         await driver.switchTo().window(tab1)
-        await driver.close()
-        await driver.switchTo().window(tab2)
-      } else if (tab2) {
-        await driver.switchTo().window(tab2)
-        await driver.close()
-        await driver.switchTo().window(tab1)
+        selectedUrl = await driver.getCurrentUrl()
+        await delay(tinyDelayMs)
+        if (selectedUrl.match(/popup.html/)) {
+          await closeAllWindowHandlesExcept(driver, tab1)
+        } else if (tab2) {
+          await driver.switchTo().window(tab2)
+          selectedUrl = await driver.getCurrentUrl()
+          selectedUrl.match(/popup.html/) && await closeAllWindowHandlesExcept(driver, tab2)
+        }
+      } else {
+        throw new Error('popup.html not found')
       }
+      await delay(regularDelayMs)
+      const [appTab] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(appTab)
+      await delay(tinyDelayMs)
+
+      await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
       const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
@@ -387,6 +381,16 @@ describe('MetaMask', function () {
       passwordInputs[1].sendKeys('correct horse battery staple')
       await driver.findElement(By.css('.first-time-flow__button')).click()
       await delay(regularDelayMs)
+    })
+
+    it('switches to localhost', async () => {
+      const networkDropdown = await findElement(driver, By.css('.network-name'))
+      await networkDropdown.click()
+      await delay(regularDelayMs)
+
+      const [localhost] = await findElements(driver, By.xpath(`//span[contains(text(), 'Localhost')]`))
+      await localhost.click()
+      await delay(largeDelayMs * 2)
     })
 
     it('balance renders', async () => {
