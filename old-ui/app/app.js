@@ -102,7 +102,7 @@ App.prototype.render = function () {
         overflow: 'hidden',
         position: 'relative',
         alignItems: 'center',
-        background: (props.isUnlocked || props.currentView.name === 'restoreVault') ? 'white' : 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
+        background: (props.isUnlocked || props.currentView.name === 'restoreVault' || props.currentView.name === 'config') ? 'white' : 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
       },
     }, [
 
@@ -116,7 +116,7 @@ App.prototype.render = function () {
       // panel content
       h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
         style: {
-          background: (props.isUnlocked || props.currentView.name === 'restoreVault') ? 'white' : 'transparent',
+          background: (props.isUnlocked || props.currentView.name === 'restoreVault' || props.currentView.name === 'config') ? 'white' : 'transparent',
         },
       }, [
         this.renderPrimary(),
