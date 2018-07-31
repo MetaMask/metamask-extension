@@ -10,6 +10,12 @@
   justify-content: center;
   align-items: center;
 
+  @media screen and (max-width: $break-small) {
+    height: 24px;
+    width: 74px;
+    font-size: .5rem;
+  }
+
   &--confirmed {
     background-color: #eafad7;
     color: #609a1c;

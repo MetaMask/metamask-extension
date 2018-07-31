@@ -13,6 +13,9 @@ class I18nProvider extends Component {
       t (key, ...args) {
         return t(current, key, ...args) || t(en, key, ...args) || `[${key}]`
       },
+      tOrDefault (key, ...args) {
+        return t(current, key, ...args) || t(en, key, ...args) || key
+      },
     }
   }
 
@@ -28,6 +31,7 @@ I18nProvider.propTypes = {
 
 I18nProvider.childContextTypes = {
   t: PropTypes.func,
+  tOrDefault: PropTypes.func,
 }
 
 const mapStateToProps = state => {

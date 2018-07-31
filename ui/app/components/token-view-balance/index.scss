@@ -1,0 +1,66 @@
+.token-view-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  height: 54px;
+
+  &__balance {
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (max-width: $break-small) {
+      align-items: center;
+      margin: 16px 0;
+    }
+  }
+
+  &__primary-balance {
+    font-size: 1.5rem;
+
+    @media screen and (max-width: $break-small) {
+      margin-bottom: 12px;
+      font-size: 1.75rem;
+    }
+  }
+
+  &__secondary-balance {
+    font-size: 1.15rem;
+    color: #a0a0a0;
+  }
+
+  &__balance-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    @media screen and (max-width: $break-small) {
+      flex-direction: column;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+
+    @media screen and (max-width: $break-small) {
+      margin-bottom: 16px;
+    }
+  }
+
+  &__button {
+    min-width: initial;
+    width: 100px;
+
+    &:not(:last-child) {
+      margin-right: 12px;
+    }
+  }
+
+  @media screen and (max-width: $break-small) {
+    flex-direction: column;
+    height: initial
+  }
+}

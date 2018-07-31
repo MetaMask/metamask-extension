@@ -6,8 +6,7 @@ import {
 
 import {
   getTokenData,
-  getMethodData,
-  getTransactionAmount,
+  getValueFromWeiHex,
   getTransactionFee,
   getHexGasTotal,
   addFiat,
@@ -17,6 +16,7 @@ import {
   isSmartContractAddress,
 } from '../helpers/confirm-transaction/util'
 
+import { getMethodData } from '../helpers/transactions.util'
 import { getSymbolAndDecimals } from '../token-util'
 import { conversionUtil } from '../conversion-util'
 
@@ -301,10 +301,10 @@ export function updateTxDataAndCalculate (txData) {
 
     const { txParams: { value, gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
 
-    const fiatTransactionAmount = getTransactionAmount({
+    const fiatTransactionAmount = getValueFromWeiHex({
       value, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
     })
-    const ethTransactionAmount = getTransactionAmount({
+    const ethTransactionAmount = getValueFromWeiHex({
       value, toCurrency: 'ETH', conversionRate, numberOfDecimals: 6,
     })
 
