@@ -17,18 +17,17 @@ const ExportPrivateKeyModal = require('./export-private-key-modal')
 const NewAccountModal = require('./new-account-modal')
 const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
-const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
 const QRScanner = require('./qr-scanner')
 
 import ConfirmRemoveAccount from './confirm-remove-account'
 import ConfirmResetAccount from './confirm-reset-account'
 import TransactionConfirmed from './transaction-confirmed'
-import ConfirmCustomizeGasModal from './customize-gas'
 import CancelTransaction from './cancel-transaction'
 import WelcomeBeta from './welcome-beta'
 import TransactionDetails from './transaction-details'
 import RejectTransactions from './reject-transactions'
+import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -282,7 +281,7 @@ const MODALS = {
 
   CUSTOMIZE_GAS: {
     contents: [
-      h(CustomizeGasModal),
+      h(ConfirmCustomizeGasModal),
     ],
     mobileModalStyle: {
       width: '100vw',
@@ -294,35 +293,16 @@ const MODALS = {
       margin: '0 auto',
     },
     laptopModalStyle: {
-      width: '720px',
-      height: '377px',
+      width: 'auto',
+      height: '0px',
       top: '80px',
+      left: '0px',
       transform: 'none',
-      left: '0',
-      right: '0',
       margin: '0 auto',
+      position: 'relative',
     },
-  },
-
-  CONFIRM_CUSTOMIZE_GAS: {
-    contents: h(ConfirmCustomizeGasModal),
-    mobileModalStyle: {
-      width: '100vw',
-      height: '100vh',
-      top: '0',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: '720px',
-      height: '377px',
-      top: '80px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 
