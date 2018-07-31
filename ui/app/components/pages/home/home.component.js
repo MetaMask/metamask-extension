@@ -4,6 +4,7 @@ import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import WalletView from '../../wallet-view'
 import TxView from '../../tx-view'
+import TokenView from '../../token-view'
 import {
   INITIALIZE_BACKUP_PHRASE_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -14,28 +15,17 @@ import {
 export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
-    unapprovedTxs: PropTypes.object,
-    unapprovedMsgCount: PropTypes.number,
-    unapprovedPersonalMsgCount: PropTypes.number,
-    unapprovedTypedMessagesCount: PropTypes.number,
     noActiveNotices: PropTypes.bool,
     lostAccounts: PropTypes.array,
     forgottenPassword: PropTypes.bool,
     seedWords: PropTypes.string,
+    unconfirmedTransactionsCount: PropTypes.number,
   }
 
   componentDidMount () {
-    const {
-      history,
-      unapprovedTxs = {},
-      unapprovedMsgCount = 0,
-      unapprovedPersonalMsgCount = 0,
-      unapprovedTypedMessagesCount = 0,
-    } = this.props
+    const { history, unconfirmedTransactionsCount = 0 } = this.props
 
-    // unapprovedTxs and unapproved messages
-    if (Object.keys(unapprovedTxs).length ||
-      unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount > 0) {
+    if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE)
     }
   }
@@ -69,7 +59,8 @@ export default class Home extends PureComponent {
             query="(min-width: 576px)"
             render={() => <WalletView />}
           />
-          <TxView />
+          <TokenView />
+          {/* <TxView /> */}
         </div>
       </div>
     )

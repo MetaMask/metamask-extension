@@ -1,0 +1,40 @@
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: hidden;
+
+  &__header {
+    flex: 0 0 auto;
+    font-size: .875rem;
+    color: $dusty-gray;
+    border-bottom: 1px solid $geyser;
+    padding: 16px 0 8px 20px;
+
+    @media screen and (max-width: $break-small) {
+      padding: 8px 0 8px 16px;
+    }
+  }
+
+  &__transactions {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  &__pending-transactions {
+    margin-bottom: 16px;
+  }
+
+  &__empty {
+    flex: 1;
+    display: grid;
+    grid-template-rows: 35% 1fr;
+  }
+
+  &__empty-text {
+    grid-row-start: 2;
+    display: flex;
+    justify-content: center;
+    color: $silver;
+  }
+}

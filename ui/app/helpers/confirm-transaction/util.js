@@ -7,9 +7,6 @@ import BigNumber from 'bignumber.js'
 
 abiDecoder.addABI(abi)
 
-import MethodRegistry from 'eth-method-registry'
-const registry = new MethodRegistry({ provider: global.ethereumProvider })
-
 import {
   conversionUtil,
   addCurrencies,
@@ -21,18 +18,6 @@ import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-tr
 
 export function getTokenData (data = {}) {
   return abiDecoder.decodeMethod(data)
-}
-
-export async function getMethodData (data = {}) {
-  const prefixedData = ethUtil.addHexPrefix(data)
-  const fourBytePrefix = prefixedData.slice(0, 10)
-  const sig = await registry.lookup(fourBytePrefix)
-  const parsedResult = registry.parse(sig)
-
-  return {
-    name: parsedResult.name,
-    params: parsedResult.args,
-  }
 }
 
 export function increaseLastGasPrice (lastGasPrice) {
@@ -76,7 +61,7 @@ export function addFiat (...args) {
   })
 }
 
-export function getTransactionAmount ({
+export function getValueFromWeiHex ({
   value,
   toCurrency,
   conversionRate,

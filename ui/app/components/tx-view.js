@@ -15,6 +15,9 @@ const Tooltip = require('./tooltip')
 const TxList = require('./tx-list')
 const SelectedAccount = require('./selected-account')
 
+import Media from 'react-media'
+import MenuBar from './menu-bar'
+
 module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
@@ -104,49 +107,11 @@ TxView.prototype.renderButtons = function () {
 }
 
 TxView.prototype.render = function () {
-  const { hideSidebar, isMascara, showSidebar, sidebarOpen } = this.props
-  const { t } = this.context
-
-  return h('div.tx-view.flex-column', {
-    style: {},
-  }, [
-
-    h('div.flex-row.phone-visible', {
-      style: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: '0 0 auto',
-        marginBottom: '16px',
-        padding: '5px',
-        borderBottom: '1px solid #e5e5e5',
-      },
-    }, [
-
-      h(Tooltip, {
-        title: t('menu'),
-        position: 'bottom',
-      }, [
-        h('div.fa.fa-bars', {
-          style: {
-            fontSize: '1.3em',
-            cursor: 'pointer',
-            padding: '10px',
-          },
-          onClick: () => sidebarOpen ? hideSidebar() : showSidebar(),
-        }),
-      ]),
-
-      h(SelectedAccount),
-
-      !isMascara && h(Tooltip, {
-        title: t('openInTab'),
-        position: 'bottom',
-      }, [
-        h('div.open-in-browser', {
-          onClick: () => global.platform.openExtensionInBrowser(),
-        }, [h('img', { src: 'images/popout.svg' })]),
-      ]),
-    ]),
+  return h('div.tx-view.flex-column', [
+    h(Media, {
+      query: '(max-width: 575px)',
+      render: () => h(MenuBar),
+    }),
 
     this.renderHeroBalance(),
 

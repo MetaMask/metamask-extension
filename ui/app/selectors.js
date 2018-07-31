@@ -1,5 +1,9 @@
-const valuesFor = require('./util').valuesFor
 const abi = require('human-standard-token-abi')
+import { createSelector } from 'reselect'
+
+import {
+  transactionsSelector,
+} from './selectors/transactions'
 
 const {
   multiplyCurrencies,
@@ -101,21 +105,49 @@ function getCurrentAccountWithSendEtherInfo (state) {
   return accounts.find(({ address }) => address === currentAddress)
 }
 
-function transactionsSelector (state) {
-  const { network, selectedTokenAddress } = state.metamask
-  const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
-  const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
-  const transactions = state.metamask.selectedAddressTxList || []
-  const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
+// // function shapeShiftTxListSelector (state) {
+// //   return state.metamask.shapeShiftTxList || []
+// // }
 
-  // console.log({txsToRender, selectedTokenAddress})
-  return selectedTokenAddress
-    ? txsToRender
-      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-      .sort((a, b) => b.time - a.time)
-    : txsToRender
-      .sort((a, b) => b.time - a.time)
-}
+// const transactionsSelector = createSelector(
+//   selectedTokenAddressSelector,
+//   unapprovedMsgsSelector,
+//   shapeShiftTxListSelector,
+//   selectedAddressTxListSelector,
+//   (selectedTokenAddress, unapprovedMsgs = {}, shapeShiftTxList = [], transactions = []) => {
+//     const unapprovedMsgsList = valuesFor(unapprovedMsgs)
+//     const txsToRender = transactions.concat(unapprovedMsgsList, shapeShiftTxList)
+
+//     return selectedTokenAddress
+//       ? txsToRender
+//         .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
+//         .sort((a, b) => b.time - a.time)
+//       : txsToRender
+//         .sort((a, b) => b.time - a.time)
+//   }
+// )
+
+// // function transactionsSelector (state) {
+// //   const { selectedTokenAddress } = state.metamask
+// //   const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
+// //   const shapeShiftTxList = shapeShiftTxListSelector(state)
+// //   const transactions = state.metamask.selectedAddressTxList || []
+// //   const txsToRender = transactions.concat(unapprovedMsgs, shapeShiftTxList)
+
+// //   return selectedTokenAddress
+// //     ? txsToRender
+// //       .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
+// //       .sort((a, b) => b.time - a.time)
+// //     : txsToRender
+// //       .sort((a, b) => b.time - a.time)
+// // }
+
+export const pendingTransactionsSelector = createSelector(
+  transactionsSelector,
+  transactions => {
+
+  }
+)
 
 function getGasIsLoading (state) {
   return state.appState.gasIsLoading

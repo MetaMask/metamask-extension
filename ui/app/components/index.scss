@@ -1,21 +1,33 @@
 @import './button-group/index';
 
-@import './export-text-container/index';
+@import './confirm-page-container/index';
 
-@import './selected-account/index';
+@import './export-text-container/index';
 
 @import './info-box/index';
 
-@import './network-display/index';
+@import './menu-bar/index';
 
-@import './confirm-page-container/index';
+@import './modals/index';
+
+@import './network-display/index';
 
 @import './page-container/index';
 
 @import './pages/index';
 
-@import './modals/index';
+@import './selected-account/index';
 
 @import './sender-to-recipient/index';
 
 @import './tabs/index';
+
+@import './token-view/index';
+
+@import './token-view-balance/index';
+
+@import './transaction-list/index';
+
+@import './transaction-list-item/index';
+
+@import './transaction-status/index';

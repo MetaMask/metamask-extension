@@ -1,0 +1,71 @@
+.transaction-list-item {
+  box-sizing: border-box;
+  height: 74px;
+  padding: 0 21px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid $geyser;
+  cursor: pointer;
+
+  @media screen and (max-width: $break-small) {
+    padding: 0 12px;
+  }
+
+  &__identicon-wrapper {
+    padding-top: 2px;
+  }
+
+  &__action-block {
+    padding: 0 8px 0 12px;
+    width: 180px;
+
+    @media screen and (max-width: $break-small) {
+      padding: 0 8px;
+      width: 160px;
+    }
+  }
+
+  &__action {
+    text-transform: capitalize;
+    padding-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media screen and (max-width: $break-small) {
+      padding-bottom: 0;
+      font-size: .875rem;
+    }
+  }
+
+  &__nonce {
+    font-size: .75rem;
+    color: #5e6064;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__transaction-amounts {
+    flex: 1;
+  }
+
+  &__primary-transaction-amount {
+    text-align: end;
+
+    @media screen and (max-width: $break-small) {
+      font-size: .75rem;
+    }
+  }
+
+  &__secondary-transaction-amount {
+    text-align: end;
+    font-size: .75rem;
+    color: #5e6064;
+  }
+
+  &:hover {
+    background: rgba($alto, .2);
+  }
+}
