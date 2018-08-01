@@ -519,6 +519,7 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
       h('span.font-small', {
         style: {
           fontFamily: 'Nunito Bold',
+          color: '#ffffff',
         },
       }, 'New Contract'),
 
