@@ -6,6 +6,7 @@ docs/**
 
 development/bundle.js
 development/states.js
+development/publish-release.js
 
 app/scripts/lib/extension-instance.js
 app/scripts/chromereload.js
