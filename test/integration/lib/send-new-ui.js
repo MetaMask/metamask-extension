@@ -9,6 +9,16 @@ global.ethQuery = {
   sendTransaction: () => {},
 }
 
+QUnit.module('new ui send flow')
+
+QUnit.skip('successful send flow', (assert) => {
+  const done = assert.async()
+  runSendFlowTest(assert).then(done).catch((err) => {
+    assert.notOk(err, `Error was thrown: ${err.stack}`)
+    done()
+  })
+})
+
 global.ethereumProvider = {}
 
 async function customizeGas (assert, price, limit, ethFee, usdFee) {

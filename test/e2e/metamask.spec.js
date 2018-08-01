@@ -124,7 +124,8 @@ describe('Metamask popup page', function () {
 
     it('shows value was created and seed phrase', async () => {
       await delay(300)
-      const seedPhrase = await driver.findElement(By.css('.twelve-word-phrase')).getText()
+      const element = await driver.findElement(By.css('.twelve-word-phrase'))
+      const seedPhrase = await element.getText()
       assert.equal(seedPhrase.split(' ').length, 12)
       const continueAfterSeedPhrase = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > button:nth-child(4)'))
       assert.equal(await continueAfterSeedPhrase.getText(), `I'VE COPIED IT SOMEWHERE SAFE`)
@@ -386,6 +387,9 @@ describe('Metamask popup page', function () {
       const input = await driver.findElement(By.id('new_rpc'))
       input.sendKeys(customUrl)
       await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(2) > button')).click()
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        input.sendKeys(Key.ENTER)
+      }
       await delay(400)
       const customUrlElement = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'))
       assert.equal(await customUrlElement.getText(), customUrl)
