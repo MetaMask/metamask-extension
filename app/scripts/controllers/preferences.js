@@ -23,7 +23,7 @@ class PreferencesController {
    */
   constructor (opts = {}) {
     const initState = extend({
-      frequentRpcList: [],
+      frequentRpcListDetail: [],
       currentAccountTab: 'history',
       accountTokens: {},
       tokens: [],
@@ -298,10 +298,10 @@ class PreferencesController {
    * @returns {Promise<void>} Promise resolves with undefined
    *
    */
-  updateFrequentRpcList (_url) {
-    return this.addToFrequentRpcList(_url)
+  updateFrequentRpcList (_url, chainId) {
+    return this.addToFrequentRpcList(_url, chainId)
       .then((rpcList) => {
-        this.store.updateState({ frequentRpcList: rpcList })
+        this.store.updateState({ frequentRpcListDetail: rpcList })
         return Promise.resolve()
       })
   }
@@ -329,29 +329,29 @@ class PreferencesController {
    * @returns {Promise<array>} The updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (_url) {
-    const rpcList = this.getFrequentRpcList()
-    const index = rpcList.findIndex((element) => { return element === _url })
+  addToFrequentRpcList (_url, chainId) {
+    const rpcList = this.getFrequentRpcListDetail()
+    const index = rpcList.findIndex((element) => { return element.rpcUrl === _url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
     if (_url !== 'http://localhost:8545') {
-      rpcList.push(_url)
+      rpcList.push({rpcUrl : _url, chainId })
     }
-    if (rpcList.length > 2) {
+    if (rpcList.length > 3) {
       rpcList.shift()
     }
     return Promise.resolve(rpcList)
   }
 
   /**
-   * Getter for the `frequentRpcList` property.
+   * Getter for the `frequentRpcListDetail` property.
    *
-   * @returns {array<string>} An array of one or two rpc urls.
+   * @returns {array<array>} An array of rpc urls.
    *
    */
-  getFrequentRpcList () {
-    return this.store.getState().frequentRpcList
+  getFrequentRpcListDetail () {
+    return this.store.getState().frequentRpcListDetail
   }
 
   /**

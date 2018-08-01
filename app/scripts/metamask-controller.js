@@ -1381,7 +1381,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async setCustomRpc (rpcTarget, chainId) {
     this.networkController.setRpcTarget(rpcTarget, chainId)
-    await this.preferencesController.updateFrequentRpcList(rpcTarget)
+    await this.preferencesController.updateFrequentRpcList(rpcTarget, chainId)
     return rpcTarget
   }
 

@@ -24,7 +24,7 @@ const notToggleElementClassnames = [
 function mapStateToProps (state) {
   return {
     provider: state.metamask.provider,
-    frequentRpcList: state.metamask.frequentRpcList || [],
+    frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
     network: state.metamask.network,
   }
@@ -69,7 +69,7 @@ module.exports = compose(
 NetworkDropdown.prototype.render = function () {
   const props = this.props
   const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
-  const rpcList = props.frequentRpcList
+  const rpcListDetail = props.frequentRpcListDetail
   const isOpen = this.props.networkDropdownOpen
   const dropdownMenuItemStyle = {
     fontSize: '16px',
@@ -245,7 +245,7 @@ NetworkDropdown.prototype.render = function () {
     ),
 
     this.renderCustomOption(props.provider),
-    this.renderCommonRpc(rpcList, props.provider),
+    this.renderCommonRpc(rpcListDetail, props.provider),
 
     h(
       DropdownMenuItem,
@@ -295,21 +295,24 @@ NetworkDropdown.prototype.getNetworkName = function () {
   return name
 }
 
-NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
+NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
   const props = this.props
-  const rpcTarget = provider.rpcTarget
+  const { rpcTarget, type } = provider
   const network = props.network
 
-  return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
+  return rpcListDetail.map((entry) => {
+    const rpc = entry.rpcUrl
+    const selected = type === 'rpc' && rpcTarget === rpc
+    if ((rpc === 'http://localhost:8545') || selected) {
       return null
     } else {
+      const chainId = entry.chainId || network
       return h(
         DropdownMenuItem,
         {
           key: `common${rpc}`,
           closeMenu: () => this.props.hideNetworkDropdown(),
-          onClick: () => props.setRpcTarget(rpc, network),
+          onClick: () => props.setRpcTarget(rpc, chainId),
           style: {
             fontSize: '16px',
             lineHeight: '20px',
@@ -317,11 +320,11 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
           },
         },
         [
-          rpcTarget === rpc ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+          selected ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
           h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
           h('span.network-name-item', {
             style: {
-              color: rpcTarget === rpc ? '#ffffff' : '#9b9b9b',
+              color: selected ? '#ffffff' : '#9b9b9b',
             },
           }, rpc),
         ]
