@@ -12,7 +12,6 @@ import { hexToDecimal } from '../../helpers/conversions.util'
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
-    methodData: PropTypes.object,
     transaction: PropTypes.object,
     ethTransactionAmount: PropTypes.string,
     fiatDisplayValue: PropTypes.string,
@@ -32,11 +31,7 @@ export default class TransactionListItem extends PureComponent {
   }
 
   render () {
-    const {
-      transaction,
-      ethTransactionAmount,
-      fiatDisplayValue,
-    } = this.props
+    const { transaction, ethTransactionAmount, fiatDisplayValue } = this.props
     const { txParams = {} } = transaction
     const nonce = hexToDecimal(txParams.nonce)
 
