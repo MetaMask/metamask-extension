@@ -49,6 +49,18 @@ describe('Metamask popup page', function () {
       await driver.switchTo().window(windowHandles[0])
     })
 
+    it('does not select the new UI option', async () => {
+      await delay(300)
+      const button = await driver.findElement(By.xpath("//button[contains(text(), 'No thanks, maybe later')]"))
+      await button.click()
+      await delay(1000)
+    })
+
+    it('sets provider type to localhost', async function () {
+      await delay(300)
+      await setProviderType('localhost')
+    })
+
   })
 
   describe('Account Creation', () => {
@@ -118,9 +130,9 @@ describe('Metamask popup page', function () {
     })
 
     it('adds a second account', async function () {
-      await driver.findElement(By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div')).click()
+      await driver.findElement(By.css('div.full-width > div > div:nth-child(2) > span > div')).click()
       await delay(300)
-      await driver.findElement(By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span')).click()
+      await driver.findElement(By.css('div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span')).click()
     })
 
     it('shows account address', async function () {
@@ -131,7 +143,7 @@ describe('Metamask popup page', function () {
     it('logs out of the vault', async () => {
       await driver.findElement(By.css('.sandwich-expando')).click()
       await delay(500)
-      const logoutButton = await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)'))
+      const logoutButton = await driver.findElement(By.css('.menu-droppo > li:nth-child(3)'))
       assert.equal(await logoutButton.getText(), 'Log Out')
       await logoutButton.click()
     })
@@ -163,7 +175,7 @@ describe('Metamask popup page', function () {
     it('logs out', async function () {
       await driver.findElement(By.css('.sandwich-expando')).click()
       await delay(200)
-      const logOut = await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)'))
+      const logOut = await driver.findElement(By.css('.menu-droppo > li:nth-child(3)'))
       assert.equal(await logOut.getText(), 'Log Out')
       await logOut.click()
       await delay(300)
@@ -311,6 +323,10 @@ describe('Metamask popup page', function () {
       assert.equal(await tokenBalance.getText(), '100 TST')
     })
   })
+
+  async function setProviderType (type) {
+    await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
+  }
 
   async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']

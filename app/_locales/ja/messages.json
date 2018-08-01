@@ -122,6 +122,9 @@
   "copy": {
     "message": "コピー"
   },
+  "copyContractAddress": {
+    "message": "コントラクトアドレスをコピー"
+  },
   "copyToClipboard": {
     "message": "クリップボードへコピー"
   },
@@ -395,6 +398,9 @@
   "mainnet": {
     "message": "Ethereumメインネットワーク"
   },
+  "menu": {
+    "message": "メニュー"
+  },
   "message": {
     "message": "メッセージ"
   },
@@ -463,6 +469,9 @@
   },
   "oldUIMessage": {
     "message": "旧UIを表示しています。右上のドロップダウンメニューのオプションより、新UIへ切り替えが可能です。"
+  },
+  "openInTab": {
+    "message": "タブを開く"
   },
   "or": {
     "message": "または",
@@ -573,6 +582,15 @@
   "searchResults": {
     "message": "検索結果"
   },
+  "newPassword8Chars": {
+    "message": "新しいパスワード (8桁以上)"
+  },
+  "select": {
+    "message": "選択"
+  },
+  "selectCurrency": {
+    "message": "通貨を選択"
+  },
   "selectService": {
     "message": "サービスを選択"
   },
@@ -586,10 +604,14 @@
     "message": "ETHの送信"
   },
   "sendTokens": {
-    "message": "トークンを送る"
+    "message": "トークンを送信"
   },
   "onlySendToEtherAddress": {
-    "message": "ETHはイーサリウムアカウントのみに送信できます。"
+    "message": "ETH はイーサリウムアカウントのみに送信できます。"
+  },
+  "onlySendTokensToAccountAddress": {
+    "message": "$1 はイーサリアムアカウントのみに送信できます。",
+    "description": "displays token symbol"
   },
   "searchTokens": {
     "message": "トークンの検索"
@@ -690,10 +712,10 @@
     "message": "パスワードの入力"
   },
   "uiWelcome": {
-    "message": "新UIへようこそ！(ベータ版)"
+    "message": "新UIへようこそ! (ベータ版)"
   },
   "uiWelcomeMessage": {
-    "message": "現在Metamaskの新しいUIをお使いになっています。トークン送信など、新たな機能を試してみましょう！何か問題があればご報告ください。"
+    "message": "現在、MetaMask の新しいUIをお使いになっています。トークン送信など、新たな機能を試してみましょう! 何か問題があればご報告ください。"
   },
   "unavailable": {
     "message": "有効ではありません。"
@@ -719,6 +741,9 @@
   },
   "viewAccount": {
     "message": "アカウントを見る"
+  },
+  "viewOnEtherscan": {
+    "message": "Etherscan で見る"
   },
   "warning": {
     "message": "警告"

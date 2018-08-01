@@ -9,9 +9,12 @@ const {
   verboseReportOnFailure,
 } = require('../func')
 const {
+  checkBrowserForConsoleErrors,
+  closeAllWindowHandlesExcept,
+  verboseReportOnFailure,
   findElement,
   findElements,
-  checkBrowserForConsoleErrors,
+  loadExtension,
 } = require('./helpers')
 
 
@@ -23,6 +26,7 @@ describe('Using MetaMask with an existing account', function () {
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
   const testPrivateKey2 = '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
+  const tinyDelayMs = 500
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
   const waitingNewPageDelayMs = regularDelayMs * 10
@@ -61,27 +65,51 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('New UI setup', async function () {
     it('switches to first tab', async function () {
+      await delay(tinyDelayMs)
       const [firstTab] = await driver.getAllWindowHandles()
       await driver.switchTo().window(firstTab)
       await delay(regularDelayMs)
     })
 
     it('selects the new UI option', async () => {
-      const button = await findElement(driver, By.xpath("//p[contains(text(), 'Try Beta Version')]"))
+      try {
+        const overlay = await findElement(driver, By.css('.full-flex-height'))
+        await driver.wait(until.stalenessOf(overlay))
+      } catch (e) {}
+
+      const button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
       await button.click()
       await delay(regularDelayMs)
 
       // Close all other tabs
-      const [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
+      const [tab0, tab1, tab2] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(tab0)
+      await delay(tinyDelayMs)
 
-      const newUiOrInfoPage = newUi || infoPage
-      await driver.switchTo().window(oldUi)
-      await driver.close()
-      if (infoPage !== newUiOrInfoPage) {
-        await driver.switchTo().window(infoPage)
-        await driver.close()
+      let selectedUrl = await driver.getCurrentUrl()
+      await delay(tinyDelayMs)
+      if (tab0 && selectedUrl.match(/popup.html/)) {
+        await closeAllWindowHandlesExcept(driver, tab0)
+      } else if (tab1) {
+        await driver.switchTo().window(tab1)
+        selectedUrl = await driver.getCurrentUrl()
+        await delay(tinyDelayMs)
+        if (selectedUrl.match(/popup.html/)) {
+          await closeAllWindowHandlesExcept(driver, tab1)
+        } else if (tab2) {
+          await driver.switchTo().window(tab2)
+          selectedUrl = await driver.getCurrentUrl()
+          selectedUrl.match(/popup.html/) && await closeAllWindowHandlesExcept(driver, tab2)
+        }
+      } else {
+        throw new Error('popup.html not found')
       }
-      await driver.switchTo().window(newUiOrInfoPage)
+      await delay(regularDelayMs)
+      const [appTab] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(appTab)
+      await delay(tinyDelayMs)
+
+      await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
       const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
@@ -185,6 +213,16 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   describe('Add an account', () => {
+    it('switches to localhost', async () => {
+      const networkDropdown = await findElement(driver, By.css('.network-name'))
+      await networkDropdown.click()
+      await delay(regularDelayMs)
+
+      const [localhost] = await findElements(driver, By.xpath(`//span[contains(text(), 'Localhost')]`))
+      await localhost.click()
+      await delay(largeDelayMs * 2)
+    })
+
     it('choose Create Account from the account menu', async () => {
       await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)
