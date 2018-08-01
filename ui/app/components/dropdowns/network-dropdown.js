@@ -24,7 +24,7 @@ const notToggleElementClassnames = [
 function mapStateToProps (state) {
   return {
     provider: state.metamask.provider,
-    frequentRpcList: state.metamask.frequentRpcList || [],
+    frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
     network: state.metamask.network,
   }
@@ -69,7 +69,7 @@ module.exports = compose(
 NetworkDropdown.prototype.render = function () {
   const props = this.props
   const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
-  const rpcList = props.frequentRpcList
+  const rpcListDetail = props.frequentRpcListDetail
   const isOpen = this.props.networkDropdownOpen
   const dropdownMenuItemStyle = {
     fontSize: '16px',
@@ -245,7 +245,7 @@ NetworkDropdown.prototype.render = function () {
     ),
 
     this.renderCustomOption(props.provider),
-    this.renderCommonRpc(rpcList, props.provider),
+    this.renderCommonRpc(rpcListDetail, props.provider),
 
     h(
       DropdownMenuItem,
@@ -295,24 +295,25 @@ NetworkDropdown.prototype.getNetworkName = function () {
   return name
 }
 
-NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
+NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
   const props = this.props
-  const reversedRpcList = rpcList.slice().reverse()
-  const rpcTarget = provider.rpcTarget
+  const reversedRpcListDetail = rpcListDetail.slice().reverse()
   const network = props.network
 
-  return reversedRpcList.map((rpc) => {
+  return reversedRpcListDetail.map((entry) => {
+    const rpc = entry.rpcUrl
     const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
 
     if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
       return null
     } else {
+      const chainId = entry.chainId || network
       return h(
         DropdownMenuItem,
         {
           key: `common${rpc}`,
           closeMenu: () => this.props.hideNetworkDropdown(),
-          onClick: () => props.setRpcTarget(rpc, network),
+          onClick: () => props.setRpcTarget(rpc, chainId),
           style: {
             fontSize: '16px',
             lineHeight: '20px',
