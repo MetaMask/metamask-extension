@@ -705,9 +705,6 @@
   "pasteSeed": {
     "message": "Paste your seed phrase here!"
   },
-  "pending": {
-    "message": "Pending"
-  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -735,6 +732,9 @@
   },
   "qrCode": {
     "message": "Show QR Code"
+  },
+  "queue": {
+    "message": "Queue"
   },
   "readdToken": {
     "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
@@ -900,9 +900,6 @@
   "sendETH": {
     "message": "Send ETH"
   },
-  "sendEther": {
-    "message": "Send Ether"
-  },
   "sendTokens": {
     "message": "Send Tokens"
   },
@@ -918,6 +915,9 @@
   },
   "orderOneHere": {
     "message": "Order one here."
+  },
+  "outgoing": {
+    "message": "Outgoing"
   },
   "searchTokens": {
     "message": "Search Tokens"

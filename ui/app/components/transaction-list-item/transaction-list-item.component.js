@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Media from 'react-media'
 import Identicon from '../identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
@@ -46,35 +45,33 @@ export default class TransactionListItem extends PureComponent {
         className="transaction-list-item"
         onClick={this.handleClick}
       >
-        <div className="transaction-list-item__identicon-wrapper">
-          <Media query="(max-width: 575px)">
-            {
-              matches => (
-                <Identicon
-                  address={txParams.to}
-                  diameter={matches ? 26 : 34}
-                />
-              )
-            }
-          </Media>
+        <Identicon
+          className="transaction-list-item__identicon"
+          address={txParams.to}
+          diameter={34}
+        />
+        <TransactionAction
+          transaction={transaction}
+          className="transaction-list-item__action"
+        />
+        <div className="transaction-list-item__nonce">
+          { `#${nonce} - ${formatDate(transaction.time)}` }
         </div>
-        <div className="transaction-list-item__action-block">
-          <TransactionAction
-            transaction={transaction}
-            className="transaction-list-item__action"
-          />
-          <div className="transaction-list-item__nonce">
-            { `#${nonce} - ${formatDate(transaction.time)}` }
-          </div>
+        <TransactionStatus
+          className="transaction-list-item__status"
+          status={transaction.status}
+        />
+        <div
+          className="transaction-list-item__amount transaction-list-item__amount--primary"
+          title={`-${fiatDisplayValue}`}
+        >
+          { `-${fiatDisplayValue}` }
         </div>
-        <TransactionStatus status={transaction.status} />
-        <div className="transaction-list-item__transaction-amounts">
-          <div className="transaction-list-item__primary-transaction-amount">
-            { `-${fiatDisplayValue}` }
-          </div>
-          <div className="transaction-list-item__secondary-transaction-amount">
-            { `-${ethTransactionAmount} ETH` }
-          </div>
+        <div
+          className="transaction-list-item__amount transaction-list-item__amount--secondary"
+          title={`-${ethTransactionAmount} ETH`}
+        >
+          { `-${ethTransactionAmount} ETH` }
         </div>
       </div>
     )

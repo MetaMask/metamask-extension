@@ -27,7 +27,7 @@ export default class TransactionList extends PureComponent {
           pendingTransactions.length > 0 && (
             <div className="transaction-list__pending-transactions">
               <div className="transaction-list__header">
-                { `${t('pending')} (${pendingTransactions.length})` }
+                { `${t('queue')} (${pendingTransactions.length})` }
               </div>
               {
                 pendingTransactions.map(transaction => {

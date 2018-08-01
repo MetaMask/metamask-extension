@@ -1,41 +1,51 @@
 .transaction-list-item {
   box-sizing: border-box;
-  height: 74px;
-  padding: 0 21px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  min-height: 74px;
+  padding: 8px 20px;
+  display: grid;
+  grid-template-columns: 45px 1fr 1fr 1fr;
+  grid-template-areas:
+    "identicon action status primary-amount"
+    "identicon nonce status secondary-amount";
   border-bottom: 1px solid $geyser;
   cursor: pointer;
 
   @media screen and (max-width: $break-small) {
-    padding: 0 12px;
+    padding: 8px 20px 12px;
+    grid-template-columns: 45px 5fr 3fr;
+    grid-template-areas:
+      "nonce nonce nonce"
+      "identicon action primary-amount"
+      "identicon status secondary-amount";
   }
 
-  &__identicon-wrapper {
-    padding-top: 2px;
-  }
-
-  &__action-block {
-    padding: 0 8px 0 12px;
-    width: 180px;
+  &__identicon {
+    grid-area: identicon;
+    grid-row: 1 / span 2;
+    align-self: center;
 
     @media screen and (max-width: $break-small) {
-      padding: 0 8px;
-      width: 160px;
+      grid-row: 2 / span 2;
     }
   }
 
   &__action {
     text-transform: capitalize;
-    padding-bottom: 2px;
+    padding: 0 8px 2px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    grid-area: action;
+    align-self: end;
+  }
+
+  &__status {
+    grid-area: status;
+    grid-row: 1 / span 2;
+    align-self: center;
 
     @media screen and (max-width: $break-small) {
-      padding-bottom: 0;
-      font-size: .875rem;
+      grid-row: 3;
     }
   }
 
@@ -45,25 +55,38 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  &__transaction-amounts {
-    flex: 1;
-  }
-
-  &__primary-transaction-amount {
-    text-align: end;
+    grid-area: nonce;
+    align-self: start;
 
     @media screen and (max-width: $break-small) {
-      font-size: .75rem;
+      padding-bottom: 4px;
     }
   }
 
-  &__secondary-transaction-amount {
-    text-align: end;
-    font-size: .75rem;
-    color: #5e6064;
+  &__amount {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--primary {
+      text-align: end;
+      grid-area: primary-amount;
+      align-self: end;
+
+      @media screen and (max-width: $break-small) {
+        padding-bottom: 2px;
+      }
+    }
+
+    &--secondary {
+      text-align: end;
+      font-size: .75rem;
+      color: #5e6064;
+      grid-area: secondary-amount;
+      align-self: start;
+    }
   }
+
 
   &:hover {
     background: rgba($alto, .2);
