@@ -26,7 +26,7 @@ RestoreVaultScreen.prototype.render = function () {
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      h('h3.flex-center', {
+      h('h3.flex-center.section-title', {
         style: {
           fontFamily: 'Nunito SemiBold',
           background: '#ffffff',
@@ -37,7 +37,7 @@ RestoreVaultScreen.prototype.render = function () {
           padding: 6,
         },
       }, [
-        'Restore Vault',
+        h('h2.page-subtitle', 'Restore Vault'),
       ]),
 
       // wallet seed entry

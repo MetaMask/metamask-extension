@@ -15,7 +15,7 @@ function Notice () {
 Notice.prototype.render = function () {
   const { notice, onConfirm } = this.props
   const { title, body } = notice
-  const state = this.state || { disclaimerDisabled: false }
+  const state = this.state || { disclaimerDisabled: true }
   const disabled = state.disclaimerDisabled
 
   return (
@@ -24,7 +24,7 @@ Notice.prototype.render = function () {
         width: '100%',
       },
     }, [
-      h('h3.flex-center.terms-header', {
+      h('h3.flex-center.terms-header.section-title', {
         style: {
           background: '#ffffff',
           color: '#333333',
@@ -93,7 +93,7 @@ Notice.prototype.render = function () {
       h('button', {
         disabled,
         onClick: () => {
-          this.setState({disclaimerDisabled: false})
+          this.setState({disclaimerDisabled: true})
           onConfirm()
         },
         style: {
