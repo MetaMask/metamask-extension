@@ -165,7 +165,7 @@ App.prototype.renderAppBar = function () {
           height: '38px',
           position: 'relative',
           zIndex: 12,
-          /*borderBottom: (
+          /* borderBottom: (
             props.currentView.name === 'config' ||
             props.currentView.name === 'add-token' ||
             props.currentView.name === 'info' ||

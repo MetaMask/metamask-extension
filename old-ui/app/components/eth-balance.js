@@ -57,12 +57,12 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
   const valueStyle = props.valueStyle ? props.valueStyle : {
     color: '#ffffff',
     width: '100%',
-    fontSize: '14px',
+    fontSize: props.fontSize || '14px',
     textAlign: 'right',
   }
   const dimStyle = props.dimStyle ? props.dimStyle : {
     color: ' #60db97',
-    fontSize: '14px',
+    fontSize: props.fontSize || '14px',
     marginLeft: '5px',
   }
 

@@ -27,7 +27,7 @@ RevealSeedConfirmation.prototype.render = function () {
       style: { maxWidth: '420px' },
     }, [
 
-      h('h3.flex-center', {
+      h('h3.flex-center.section-title', {
         style: {
           background: '#ffffff',
           color: '#333333',
@@ -37,7 +37,7 @@ RevealSeedConfirmation.prototype.render = function () {
           fontFamily: 'Nunito  Semibold',
         },
       }, [
-        'Reveal Seed Words',
+        h('h2.page-subtitle', 'Reveal Seed Words'),
       ]),
 
       h('.div', {

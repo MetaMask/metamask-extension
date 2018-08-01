@@ -461,6 +461,18 @@ input.large-input {
   margin: 0px -8px 0px 8px;
 }
 
+.white-arrow-left {
+  content: url('../images/arrow-left-white.svg');
+  width: 14px;
+  height: 14px;
+}
+
+.white-arrow-right {
+  content: url('../images/arrow-right-white.svg');
+  width: 14px;
+  height: 14px;
+}
+
 /* identity panel */
 
 .identity-panel {
@@ -469,7 +481,7 @@ input.large-input {
 
 .identity-panel .identicon-wrapper {
   margin-bottom: 10px;
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
   align-items: center;
 }
@@ -568,6 +580,7 @@ input.large-input {
 .cell.label {
   font-family: 'Nunito Regular';
   font-size: 14px;
+  white-space: nowrap;
 }
 
 .cell.value {
