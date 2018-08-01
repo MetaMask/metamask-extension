@@ -41,7 +41,7 @@ TokenCell.prototype.render = function () {
 
       h('span', { style: { flex: '1 0 auto' } }),
 
-      h('span.fa.fa-trash', {
+      h('span.trash', {
         style: { cursor: 'pointer' },
         onClick: (event) => {
           event.stopPropagation()

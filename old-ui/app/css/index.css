@@ -356,6 +356,12 @@ app sections
   border-top: 1px solid #e2e2e2;
 }
 
+.trash {
+  content: url('../images/close.svg');
+  width: 12px;
+  height: 12px;
+}
+
 .section-title .fa-arrow-left {
   /*margin: -2px 8px 0px -8px;*/
 }

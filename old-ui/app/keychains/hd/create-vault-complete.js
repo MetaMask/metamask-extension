@@ -32,15 +32,14 @@ CreateVaultCompleteScreen.prototype.render = function () {
       //   h('h2.page-subtitle', 'Vault Created'),
       // ]),
 
-      h('h3.flex-center', {
+      h('h3.flex-center.section-title', {
         style: {
           background: '#ffffff',
           color: '#333333',
-          marginTop: 36,
           marginBottom: 8,
           width: '100%',
           fontSize: '20px',
-          padding: 6,
+          padding: '30px 6px 6px 6px',
         },
       }, [
         'Vault Created',
