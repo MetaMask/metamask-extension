@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#55](https://github.com/poanetwork/metamask-extension/pull/55): Tests fix.
 - [#50](https://github.com/poanetwork/metamask-extension/pull/50): Update sentry links.
 - [#45](https://github.com/poanetwork/metamask-extension/pull/45): Automate release publish.
 
