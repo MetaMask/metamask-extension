@@ -30,14 +30,12 @@ export default class TransactionList extends PureComponent {
                 { `${t('queue')} (${pendingTransactions.length})` }
               </div>
               {
-                pendingTransactions.map(transaction => {
-                  return (
-                    <TransactionListItem
-                      transaction={transaction}
-                      key={transaction.id}
-                    />
-                  )
-                })
+                pendingTransactions.map(transaction => (
+                  <TransactionListItem
+                    transaction={transaction}
+                    key={transaction.id}
+                  />
+                ))
               }
             </div>
           )
@@ -48,16 +46,12 @@ export default class TransactionList extends PureComponent {
           </div>
           {
             completedTransactions.length > 0
-              ? (
-                completedTransactions.map(transaction => {
-                  return (
-                    <TransactionListItem
-                      transaction={transaction}
-                      key={transaction.id}
-                    />
-                  )
-                })
-              )
+              ? completedTransactions.map(transaction => (
+                  <TransactionListItem
+                    transaction={transaction}
+                    key={transaction.id}
+                  />
+                ))
               : this.renderEmpty()
           }
         </div>
@@ -78,12 +72,7 @@ export default class TransactionList extends PureComponent {
   render () {
     return (
       <div className="transaction-list">
-        {
-          this.renderTransactions()
-          // pendingTransactions.length + completedTransactions.length > 0
-          //   ? this.renderTransactions()
-          //   : this.renderEmpty()
-        }
+        { this.renderTransactions() }
       </div>
     )
   }
