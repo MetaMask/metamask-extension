@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainer from '../../page-container'
 import { Tabs, Tab } from '../../tabs'
+import AdvancedTabContent from './advanced-tab-content'
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
@@ -10,6 +11,10 @@ export default class GasModalPageContainer extends Component {
 
   static propTypes = {
     hideModal: PropTypes.func,
+    updateCustomGasPrice: PropTypes.func,
+    updateCustomGasLimit: PropTypes.func,
+    customGasPrice: PropTypes.number,
+    customGasLimit: PropTypes.number,
   }
 
   state = {}
@@ -20,9 +25,22 @@ export default class GasModalPageContainer extends Component {
     )
   }
 
-  renderAdvancedTabContent () {
+  renderAdvancedTabContent = () => {
+    const {
+      updateCustomGasPrice,
+      updateCustomGasLimit,
+      customGasPrice,
+      customGasLimit,
+    } = this.props
+
     return (
-      <div className="gas-modal-content__advanced-tab"/>
+      <AdvancedTabContent
+        updateCustomGasPrice={updateCustomGasPrice}
+        updateCustomGasLimit={updateCustomGasLimit}
+        customGasPrice={customGasPrice}
+        customGasLimit={customGasLimit}
+        millisecondsRemaining={91000}
+      />
     )
   }
 
@@ -68,14 +86,16 @@ export default class GasModalPageContainer extends Component {
     const { hideModal } = this.props
 
     return (
-      <PageContainer
-        title={this.context.t('customGas')}
-        subtitle={this.context.t('customGasSubTitle')}
-        tabsComponent={this.renderTabs()}
-        disabled={false}
-        onCancel={() => hideModal()}
-        onClose={() => hideModal()}
-      />
+      <div className="gas-modal-page-container">
+        <PageContainer
+          title={this.context.t('customGas')}
+          subtitle={this.context.t('customGasSubTitle')}
+          tabsComponent={this.renderTabs()}
+          disabled={false}
+          onCancel={() => hideModal()}
+          onClose={() => hideModal()}
+        />
+      </div>
     )
   }
 }
