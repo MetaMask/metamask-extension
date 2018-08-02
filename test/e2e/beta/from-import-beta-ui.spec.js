@@ -4,11 +4,9 @@ const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
 const {
   delay,
-  buildChromeWebDriver,
-  buildFirefoxWebdriver,
-  installWebExt,
-  getExtensionIdChrome,
-  getExtensionIdFirefox,
+  createModifiedTestBuild,
+  setupBrowserAndExtension,
+  verboseReportOnFailure,
 } = require('../func')
 const {
   checkBrowserForConsoleErrors,
@@ -21,8 +19,9 @@ const {
 
 
 describe('Using MetaMask with an existing account', function () {
-  let extensionId
+  const browser = process.env.SELENIUM_BROWSER
   let driver
+  let extensionUri
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
@@ -30,35 +29,24 @@ describe('Using MetaMask with an existing account', function () {
   const tinyDelayMs = 500
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
+  const waitingNewPageDelayMs = regularDelayMs * 10
 
   this.timeout(0)
   this.bail(true)
 
   before(async function () {
-    switch (process.env.SELENIUM_BROWSER) {
-      case 'chrome': {
-        const extensionPath = path.resolve('dist/chrome')
-        driver = buildChromeWebDriver(extensionPath)
-        extensionId = await getExtensionIdChrome(driver)
-        await driver.get(`chrome-extension://${extensionId}/popup.html`)
-        await delay(regularDelayMs)
-        break
-      }
-      case 'firefox': {
-        const extensionPath = path.resolve('dist/firefox')
-        driver = buildFirefoxWebdriver()
-        await installWebExt(driver, extensionPath)
-        await delay(regularDelayMs)
-        extensionId = await getExtensionIdFirefox(driver)
-        await driver.get(`moz-extension://${extensionId}/popup.html`)
-        await delay(regularDelayMs)
-        break
-      }
-    }
+    const srcPath = path.resolve(`dist/${browser}`)
+    const { extPath } = await createModifiedTestBuild({ browser, srcPath })
+    const installResult = await setupBrowserAndExtension({ browser, extPath })
+    driver = installResult.driver
+    extensionUri = installResult.extensionUri
+
+    await driver.get(extensionUri)
+    await delay(300)
   })
 
   afterEach(async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (browser === 'chrome') {
       const errors = await checkBrowserForConsoleErrors(driver)
       if (errors.length) {
         const errorReports = errors.map(err => err.message)
@@ -67,7 +55,7 @@ describe('Using MetaMask with an existing account', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(driver, this.currentTest)
+      await verboseReportOnFailure({ browser, driver, title: this.currentTest.title })
     }
   })
 
@@ -316,13 +304,94 @@ describe('Using MetaMask with an existing account', function () {
     })
   })
 
-  describe('Imports an account with private key', () => {
-    it('choose Create Account from the account menu', async () => {
-      await driver.findElement(By.css('.account-menu__icon')).click()
+  describe('Send ETH from Faucet', () => {
+    it('starts a send transaction inside Faucet', async () => {
+      await driver.executeScript('window.open("https://faucet.metamask.io")')
+      await delay(waitingNewPageDelayMs)
+
+      const [extension, faucet] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(faucet)
+      await delay(regularDelayMs)
+
+      const send1eth = await findElement(driver, By.xpath(`//button[contains(text(), '10 ether')]`), 14000)
+      await send1eth.click()
+      await delay(regularDelayMs)
+
+      await driver.switchTo().window(extension)
+      await driver.get(extensionUri)
+      await delay(regularDelayMs)
+
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 14000)
+      await confirmButton.click()
+      await delay(regularDelayMs)
+
+      await driver.switchTo().window(faucet)
+      await delay(regularDelayMs)
+      await driver.close()
+      await delay(regularDelayMs)
+      await driver.switchTo().window(extension)
+      await delay(regularDelayMs)
+      await driver.get(extensionUri)
+      await delay(regularDelayMs)
+    })
+  })
+
+  describe('Add existing token using search', () => {
+    it('clicks on the Add Token button', async () => {
+      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
+      await addToken.click()
+      await delay(regularDelayMs)
+    })
+
+    it('picks an existing token', async () => {
+      const tokenSearch = await findElement(driver, By.css('#search-tokens'))
+      await tokenSearch.sendKeys('BAT')
+      await delay(regularDelayMs)
+
+      const token = await findElement(driver, By.xpath("//span[contains(text(), 'BAT')]"))
+      await token.click()
+      await delay(regularDelayMs)
+
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await nextScreen.click()
       await delay(regularDelayMs)
 
       const [importAccount] = await findElements(driver, By.xpath(`//div[contains(text(), 'Import Account')]`))
       await importAccount.click()
+      await delay(regularDelayMs)
+    })
+  })
+
+  describe('Add a custom token from TokenFactory', () => {
+    let extension, tokenFactory
+
+    it('creates a new token', async () => {
+      await driver.executeScript('window.open("https://tokenfactory.surge.sh/#/factory")')
+      await delay(waitingNewPageDelayMs)
+
+      const windowHandles = await driver.getAllWindowHandles()
+      extension = windowHandles[0]
+      tokenFactory = windowHandles[1]
+
+      await driver.switchTo().window(tokenFactory)
+      const [
+        totalSupply,
+        tokenName,
+        tokenDecimal,
+        tokenSymbol,
+      ] = await findElements(driver, By.css('.form-control'))
+
+      await totalSupply.sendKeys('100')
+      await tokenName.sendKeys('Test')
+      await tokenDecimal.sendKeys('0')
+      await tokenSymbol.sendKeys('TST')
+
+      const createToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Create Token')]`))
+      await createToken.click()
+      await delay(regularDelayMs)
+
+      await driver.switchTo().window(extension)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
     })
 
@@ -330,8 +399,14 @@ describe('Using MetaMask with an existing account', function () {
       const privateKeyInput = await findElement(driver, By.css('#private-key-box'))
       await privateKeyInput.sendKeys(testPrivateKey2)
       await delay(regularDelayMs)
-      const importButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Import')]`))
-      await importButtons[0].click()
+
+      await driver.switchTo().window(tokenFactory)
+      await delay(regularDelayMs)
+      const tokenContactAddress = await driver.findElement(By.css('div > div > div:nth-child(2) > span:nth-child(3)'))
+      await tokenContactAddress.getText()
+      await driver.close()
+      await driver.switchTo().window(extension)
+      await driver.get(extensionUri)
       await delay(regularDelayMs)
     })
 

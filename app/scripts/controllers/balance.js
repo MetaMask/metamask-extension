@@ -80,7 +80,7 @@ class BalanceController {
       }
     })
     this.accountTracker.store.subscribe(update)
-    this.blockTracker.on('block', update)
+    this.blockTracker.on('latest', update)
   }
 
   /**
