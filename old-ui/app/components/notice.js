@@ -14,8 +14,8 @@ function Notice () {
 
 Notice.prototype.render = function () {
   const { notice, onConfirm } = this.props
-  const { title, date, body } = notice
-  const state = this.state || { disclaimerDisabled: false }
+  const { title, body } = notice
+  const state = this.state || { disclaimerDisabled: true }
   const disabled = state.disclaimerDisabled
 
   return (
@@ -24,31 +24,18 @@ Notice.prototype.render = function () {
         width: '100%',
       },
     }, [
-      h('h3.flex-center.text-transform-uppercase.terms-header', {
+      h('h3.flex-center.terms-header.section-title', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
+          background: '#ffffff',
+          color: '#333333',
           width: '100%',
-          fontSize: '20px',
+          fontSize: '16px',
           textAlign: 'center',
           padding: 6,
+          marginBottom: 24,
         },
       }, [
         title,
-      ]),
-
-      h('h5.flex-center.text-transform-uppercase.terms-header', {
-        style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginBottom: 24,
-          width: '100%',
-          fontSize: '20px',
-          textAlign: 'center',
-          padding: 6,
-        },
-      }, [
-        date,
       ]),
 
       h('style', `
@@ -74,7 +61,7 @@ Notice.prototype.render = function () {
         }
 
         .markdown a {
-          color: #df6b0e;
+          color: #8fdc97;
         }
 
       `),
@@ -87,12 +74,13 @@ Notice.prototype.render = function () {
           }
         },
         style: {
-          background: 'rgb(235, 235, 235)',
+          background: '#ffffff',
           height: '310px',
           padding: '6px',
           width: '90%',
           overflowY: 'scroll',
           scroll: 'auto',
+          borderRadius: '3px',
         },
       }, [
         h(ReactMarkdown, {
@@ -105,7 +93,7 @@ Notice.prototype.render = function () {
       h('button', {
         disabled,
         onClick: () => {
-          this.setState({disclaimerDisabled: false})
+          this.setState({disclaimerDisabled: true})
           onConfirm()
         },
         style: {
@@ -120,7 +108,7 @@ Notice.prototype.componentDidMount = function () {
   // eslint-disable-next-line react/no-find-dom-node
   var node = findDOMNode(this)
   linker.setupListener(node)
-  if (document.getElementsByClassName('notice-box')[0].clientHeight < 310) {
+  if (document.getElementsByClassName('notice-box')[0].clientHeight < 300) {
     this.setState({disclaimerDisabled: false})
   }
 }

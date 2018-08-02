@@ -4,6 +4,15 @@
   color: #F7861C;
 }
 
+.color-green {
+  color: #8fdc97;
+}
+
+.color-violet {
+  color: #6729a8;
+}
+
+
 .color-forest {
   color: #0A5448;
 }
@@ -158,8 +167,12 @@
   font-size: 12px;
 }
 
+.font-pre-medium {
+  font-size: 14px;
+}
+
 .font-medium {
-  font-size: 1.2em;
+  font-size: 20px;
 }
 
 hr.horizontal-line {
@@ -253,7 +266,7 @@ hr.horizontal-line {
 }
 
 i.fa.fa-question-circle.fa-lg.menu-icon {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .ether-icon {

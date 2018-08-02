@@ -32,6 +32,10 @@ InfoScreen.prototype.render = function () {
           onClick: (event) => {
             state.dispatch(actions.goHome())
           },
+          style: {
+            position: 'absolute',
+            left: '30px',
+          },
         }),
         h('h2.page-subtitle', 'Info'),
       ]),
@@ -40,12 +44,12 @@ InfoScreen.prototype.render = function () {
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-space-around', {
           style: {
-            padding: '20px',
+            padding: '30px',
           },
         }, [
           // current version number
 
-          h('.info.info-gray', [
+          h('.info', [
             h('div', 'Nifty Wallet'),
             h('div', {
               style: {

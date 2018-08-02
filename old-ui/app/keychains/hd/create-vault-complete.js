@@ -32,15 +32,14 @@ CreateVaultCompleteScreen.prototype.render = function () {
       //   h('h2.page-subtitle', 'Vault Created'),
       // ]),
 
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center.section-title', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginTop: 36,
+          background: '#ffffff',
+          color: '#333333',
           marginBottom: 8,
           width: '100%',
           fontSize: '20px',
-          padding: 6,
+          padding: '30px 6px 6px 6px',
         },
       }, [
         'Vault Created',
@@ -49,7 +48,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
       h('div', {
         style: {
           fontSize: '1em',
-          marginTop: '10px',
+          margin: '10px 30px',
           textAlign: 'center',
         },
       }, [
@@ -61,7 +60,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
         value: seed,
       }),
 
-      h('button.primary', {
+      h('button', {
         onClick: () => this.confirmSeedWords()
           .then(account => this.showAccountDetail(account)),
         style: {
@@ -71,7 +70,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
         },
       }, 'I\'ve copied it somewhere safe'),
 
-      h('button.primary', {
+      h('button', {
         onClick: () => exportAsFile(`Nifty Wallet Seed Words`, seed),
         style: {
           margin: '10px',

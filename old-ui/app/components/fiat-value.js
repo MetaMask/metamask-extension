@@ -29,33 +29,37 @@ FiatValue.prototype.render = function () {
   fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
   fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
 
-  return fiatDisplay(fiatDisplayNumber, renderedCurrency.toUpperCase())
+  const valueStyle = props.valueStyle ? props.valueStyle : {
+    width: '100%',
+    textAlign: 'right',
+    fontSize: '14px',
+    color: '#ffffff',
+  }
+
+  const dimStyle = props.dimStyle ? props.dimStyle : {
+    color: '#60db97',
+    marginLeft: '5px',
+    fontSize: '14px',
+  }
+
+  return fiatDisplay(fiatDisplayNumber, valueStyle, dimStyle, renderedCurrency.toUpperCase())
 }
 
-function fiatDisplay (fiatDisplayNumber, fiatSuffix) {
+function fiatDisplay (fiatDisplayNumber, valueStyle, dimStyle, fiatSuffix) {
+
   if (fiatDisplayNumber !== 'N/A') {
     return h('.flex-row', {
       style: {
         alignItems: 'flex-end',
-        lineHeight: '13px',
-        fontFamily: 'Montserrat Light',
+        lineHeight: '14px',
         textRendering: 'geometricPrecision',
       },
     }, [
       h('div', {
-        style: {
-          width: '100%',
-          textAlign: 'right',
-          fontSize: '12px',
-          color: '#333333',
-        },
+        style: valueStyle,
       }, fiatDisplayNumber),
       h('div', {
-        style: {
-          color: '#AEAEAE',
-          marginLeft: '5px',
-          fontSize: '12px',
-        },
+        style: dimStyle,
       }, fiatSuffix),
     ])
   } else {

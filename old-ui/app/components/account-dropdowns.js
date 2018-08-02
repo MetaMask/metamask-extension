@@ -18,7 +18,7 @@ class AccountDropdowns extends Component {
       optionsMenuActive: false,
     }
     this.accountSelectorToggleClassName = 'accounts-selector'
-    this.optionsMenuToggleClassName = 'fa-ellipsis-h'
+    this.optionsMenuToggleClassName = 'account-dropdown'
   }
 
   renderAccounts () {
@@ -45,13 +45,23 @@ class AccountDropdowns extends Component {
           },
           style: {
             marginTop: index === 0 ? '5px' : '',
-            fontSize: '24px',
+            fontSize: '16px',
           },
         },
         [
+          isSelected ? h('div', {
+            style: {
+              width: '4px',
+              height: '32px',
+              background: '#8fdc97',
+              position: 'absolute',
+              left: '-25px',
+            },
+          }) : null,
           h(
             Identicon,
             {
+              overflow: 'none',
               address: identity.address,
               diameter: 32,
               style: {
@@ -63,14 +73,14 @@ class AccountDropdowns extends Component {
           h('span', {
             style: {
               marginLeft: '20px',
-              fontSize: '24px',
+              fontSize: '16px',
               maxWidth: '145px',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
+              color: isSelected ? 'white' : '',
             },
           }, identity.name || ''),
-          h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
         ]
       )
     })
@@ -93,12 +103,12 @@ class AccountDropdowns extends Component {
       {
         useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
         style: {
-          marginLeft: '-238px',
-          marginTop: '38px',
+          marginLeft: '-168px',
+          marginTop: '32px',
           minWidth: '180px',
           overflowY: 'auto',
           maxHeight: '300px',
-          width: '300px',
+          width: '220px',
         },
         innerStyle: {
           padding: '8px 25px',
@@ -121,16 +131,7 @@ class AccountDropdowns extends Component {
             onClick: () => actions.addNewAccount(),
           },
           [
-            h(
-              Identicon,
-              {
-                style: {
-                  marginLeft: '10px',
-                },
-                diameter: 32,
-              },
-            ),
-            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, 'Create Account'),
+            h('span', { style: { fontSize: '16px', color: '#8fdc97' } }, 'Create Account'),
           ],
         ),
         h(
@@ -140,20 +141,11 @@ class AccountDropdowns extends Component {
             onClick: () => actions.showImportPage(),
           },
           [
-            h(
-              Identicon,
-              {
-                style: {
-                  marginLeft: '10px',
-                },
-                diameter: 32,
-              },
-            ),
             h('span', {
               style: {
-                marginLeft: '20px',
-                fontSize: '24px',
+                fontSize: '16px',
                 marginBottom: '5px',
+                color: '#8fdc97',
               },
             }, 'Import Account'),
           ]
@@ -187,8 +179,9 @@ class AccountDropdowns extends Component {
       Dropdown,
       {
         style: {
-          marginLeft: '-215px',
+          marginLeft: '-237px',
           minWidth: '180px',
+          marginTop: '30px',
         },
         isOpen: optionsMenuActive,
         onClickOutside: (event) => {
@@ -262,14 +255,13 @@ class AccountDropdowns extends Component {
       [
         enableAccountsSelector && h(
           // 'i.fa.fa-angle-down',
-          'div.cursor-pointer.color-orange.accounts-selector',
+          'div.accounts-selector',
           {
             style: {
               // fontSize: '1.8em',
               background: 'url(images/switch_acc.svg) white center center no-repeat',
               height: '25px',
               width: '25px',
-              transform: 'scale(0.75)',
               marginRight: '3px',
             },
             onClick: (event) => {
@@ -283,11 +275,14 @@ class AccountDropdowns extends Component {
           this.renderAccountSelector(),
         ),
         enableAccountOptions && h(
-          'i.fa.fa-ellipsis-h',
+          'div.account-dropdown',
           {
             style: {
-              margin: '0.5em',
-              fontSize: '1.8em',
+              backgroundImage: 'url(../images/more.svg)',
+              width: '30px',
+              height: '24px',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
             },
             onClick: (event) => {
               event.stopPropagation()

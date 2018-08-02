@@ -56,11 +56,11 @@ class ExtensionPlatform {
 
     this._subscribeToNotificationClicked()
 
-    const url = explorerLink(txMeta.hash, parseInt(txMeta.metamaskNetworkId))
+    const { url, explorerName } = this._getExplorer(txMeta.hash, parseInt(txMeta.metamaskNetworkId))
     const nonce = parseInt(txMeta.txParams.nonce, 16)
 
     const title = 'Confirmed transaction'
-    const message = `Transaction ${nonce} confirmed! View on EtherScan`
+    const message = `Transaction ${nonce} confirmed! View on ${explorerName}`
     this._showNotification(title, message, url)
   }
 
@@ -90,10 +90,30 @@ class ExtensionPlatform {
   }
 
   _viewOnEtherScan (txId) {
-    if (txId.startsWith('http://')) {
+    if (txId.startsWith('http://') || txId.startsWith('https://')) {
       global.metamaskController.platform.openWindow({ url: txId })
     }
   }
+
+  _getExplorer (hash, networkId) {
+    if (networkId === 99) {
+      return {
+        explorerName: 'POA explorer',
+        url: `https://poaexplorer.com/txid/search/${hash}`,
+      }
+    } else if (networkId === 77) {
+      return {
+        explorerName: 'POA explorer',
+        url: `https://sokol.poaexplorer.com/txid/search/${hash}`,
+      }
+    } else {
+      return {
+        explorerName: 'Etherscan',
+        url: explorerLink(hash, networkId),
+      }
+    }
+  }
+
 }
 
 module.exports = ExtensionPlatform

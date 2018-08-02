@@ -56,8 +56,9 @@ AccountDetailScreen.prototype.render = function () {
     // identicon, label, balance, etc
       h('.account-data-subsection', {
         style: {
-          margin: '0 20px',
+          padding: '0 20px',
           flex: '1 0 auto',
+          background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
         },
       }, [
 
@@ -74,7 +75,7 @@ AccountDetailScreen.prototype.render = function () {
           // large identicon and addresses
           h('.identicon-wrapper.select-none', [
             h(Identicon, {
-              diameter: 62,
+              diameter: 60,
               address: selected,
             }),
           ]),
@@ -122,6 +123,7 @@ AccountDetailScreen.prototype.render = function () {
                           textOverflow: 'ellipsis',
                           padding: '5px 0px',
                           lineHeight: '25px',
+                          color: '#ffffff',
                         },
                       }, [
                         identity && identity.name,
@@ -132,7 +134,7 @@ AccountDetailScreen.prototype.render = function () {
                     AccountDropdowns,
                     {
                       style: {
-                        marginRight: '8px',
+                        marginRight: '-7px',
                         marginLeft: 'auto',
                         cursor: 'pointer',
                       },
@@ -162,16 +164,16 @@ AccountDetailScreen.prototype.render = function () {
                   paddingTop: '3px',
                   width: '5em',
                   height: '15px',
-                  fontSize: '13px',
-                  fontFamily: 'Montserrat Light',
+                  fontSize: '14px',
+                  fontFamily: 'Nunito Bold',
                   textRendering: 'geometricPrecision',
                   marginBottom: '15px',
-                  color: '#AEAEAE',
+                  color: 'rgba(255, 255, 255, 0.7)',
                 },
               }, checksumAddress),
             ]),
 
-            // account ballence
+            // account ballance
 
           ]),
         ]),
@@ -198,7 +200,7 @@ AccountDetailScreen.prototype.render = function () {
           h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: { marginRight: '10px' },
-          }, 'BUY'),
+          }, 'Buy'),
 
           h('button', {
             onClick: () => props.dispatch(actions.showSendPage()),
@@ -206,7 +208,7 @@ AccountDetailScreen.prototype.render = function () {
               marginBottom: '20px',
               marginRight: '8px',
             },
-          }, 'SEND'),
+          }, 'Send'),
 
         ]),
       ]),

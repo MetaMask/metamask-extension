@@ -3,6 +3,8 @@
 ## Current Master
 
 - [#55](https://github.com/poanetwork/metamask-extension/pull/55): Tests fix.
+- [#52](https://github.com/poanetwork/metamask-extension/pull/52): Nifty Wallet restyling.
+- [#54](https://github.com/poanetwork/metamask-extension/pull/54): Fix explorer url for POA network on confirmed transaction.
 - [#50](https://github.com/poanetwork/metamask-extension/pull/50): Update sentry links.
 - [#45](https://github.com/poanetwork/metamask-extension/pull/45): Automate release publish.
 

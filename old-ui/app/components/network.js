@@ -76,77 +76,71 @@ Network.prototype.render = function () {
         switch (iconName) {
           case 'ethereum-network':
             return h('.network-indicator', [
-              h('.menu-icon.diamond'),
               h('.network-name', {
                 style: {
-                  color: '#039396',
+                  paddingLeft: '9px',
+                  color: '#6729a8',
                 }},
               'Main Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'sokol-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.green-square'),
               h('.network-name', {
                 style: {
-                  color: '#62c9ba',
+                  paddingLeft: '9px',
+                  color: '#6729a8',
                 }},
-              [ h('div', 'Sokol'),
-                h('div', 'Test Net') ]),
+              'Sokol Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'ropsten-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.red-dot'),
               h('.network-name', {
                 style: {
-                  color: '#ff6666',
+                  paddingLeft: '9px',
+                  color: '#6729a8',
                 }},
               'Ropsten Test Net'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'kovan-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.hollow-diamond'),
               h('.network-name', {
                 style: {
-                  color: '#690496',
+                  paddingLeft: '9px',
+                  color: '#6729a8',
                 }},
               'Kovan Test Net'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'rinkeby-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.golden-square'),
               h('.network-name', {
                 style: {
-                  color: '#e7a218',
+                  paddingLeft: '9px',
+                  color: '#6729a8',
                 }},
               'Rinkeby Test Net'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'poa-network':
             return h('.network-indicator', [
-              h('.menu-icon.purple-square'),
               h('.network-name', {
                 style: {
-                  color: '#5c34a2',
+                  paddingLeft: '9px',
+                  color: '#6729a8',
                 }},
               'POA Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           default:
             return h('.network-indicator', [
-              h('i.fa.fa-question-circle.fa-lg', {
-                style: {
-                  margin: '10px',
-                  color: 'rgb(125, 128, 130)',
-                },
-              }),
 
               h('.network-name', {
                 style: {
-                  color: '#AEAEAE',
+                  paddingLeft: '9px',
+                  color: '#6729a8',
                 }},
               'Private Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),

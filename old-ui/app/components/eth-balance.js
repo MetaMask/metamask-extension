@@ -54,6 +54,17 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
   }
 
   var label = balanceObj.label
+  const valueStyle = props.valueStyle ? props.valueStyle : {
+    color: '#ffffff',
+    width: '100%',
+    fontSize: props.fontSize || '14px',
+    textAlign: 'right',
+  }
+  const dimStyle = props.dimStyle ? props.dimStyle : {
+    color: ' #60db97',
+    fontSize: props.fontSize || '14px',
+    marginLeft: '5px',
+  }
 
   return (
     h(Tooltip, {
@@ -63,27 +74,19 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
       h('.flex-row', {
         style: {
           alignItems: 'flex-end',
-          lineHeight: '13px',
-          fontFamily: 'Montserrat Light',
+          lineHeight: '20px',
           textRendering: 'geometricPrecision',
         },
       }, [
         h('div', {
-          style: {
-            width: '100%',
-            textAlign: 'right',
-          },
+          style: valueStyle,
         }, incoming ? `+${balance}` : balance),
         h('div', {
-          style: {
-            color: ' #AEAEAE',
-            fontSize: '12px',
-            marginLeft: '5px',
-          },
+          style: dimStyle,
         }, label),
       ]),
 
-      showFiat ? h(FiatValue, { value: props.value, conversionRate, currentCurrency, network: props.network }) : null,
+      showFiat ? h(FiatValue, { valueStyle, dimStyle, value: props.value, conversionRate, currentCurrency, network: props.network }) : null,
     ]))
   )
 }

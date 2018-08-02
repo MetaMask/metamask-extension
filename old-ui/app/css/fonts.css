@@ -370,3 +370,31 @@
     font-weight: normal;
     font-style: normal;
 }
+
+@font-face {
+  font-family: 'Nunito Regular';
+    src: url('/fonts/Nunito/Nunito-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nunito SemiBold';
+    src: url('/fonts/Nunito/Nunito-SemiBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nunito Bold';
+    src: url('/fonts/Nunito/Nunito-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nunito Light';
+    src: url('/fonts/Nunito/Nunito-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
