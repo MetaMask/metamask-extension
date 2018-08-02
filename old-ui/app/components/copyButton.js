@@ -20,13 +20,14 @@ CopyButton.prototype.render = function () {
   const state = this.state || {}
 
   const value = props.value
+  const display = props.display
   const copied = state.copied
 
   const message = copied ? 'Copied' : props.title || ' Copy '
 
   return h('.copy-button', {
     style: {
-      display: 'flex',
+      display: display || 'flex',
       alignItems: 'center',
     },
   }, [
