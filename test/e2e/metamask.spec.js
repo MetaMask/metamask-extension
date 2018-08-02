@@ -83,7 +83,7 @@ describe('Metamask popup page', function () {
     it('checks if the TOU button is disabled', async () => {
       const button = await driver.findElement(By.css('button')).isEnabled()
       assert.equal(button, false, 'disabled continue button')
-      const element = await driver.findElement(By.linkText('Attributions'))
+      const element = await driver.findElement(By.linkText('Terms of Service'))
       await driver.executeScript('arguments[0].scrollIntoView(true)', element)
       await delay(700)
     })
