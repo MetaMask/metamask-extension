@@ -37,7 +37,7 @@ RestoreVaultScreen.prototype.render = function () {
           padding: 6,
         },
       }, [
-        h('h2.page-subtitle', 'Restore Vault'),
+        h('.page-subtitle', 'Restore Vault'),
       ]),
 
       // wallet seed entry

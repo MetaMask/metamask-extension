@@ -37,7 +37,7 @@ RevealSeedConfirmation.prototype.render = function () {
           fontFamily: 'Nunito  Semibold',
         },
       }, [
-        h('h2.page-subtitle', 'Reveal Seed Words'),
+        h('.page-subtitle', 'Reveal Seed Words'),
       ]),
 
       h('.div', {
