@@ -108,7 +108,7 @@ Notice.prototype.componentDidMount = function () {
   // eslint-disable-next-line react/no-find-dom-node
   var node = findDOMNode(this)
   linker.setupListener(node)
-  if (document.getElementsByClassName('notice-box')[0].clientHeight < 310) {
+  if (document.getElementsByClassName('notice-box')[0].clientHeight < 300) {
     this.setState({disclaimerDisabled: false})
   }
 }
