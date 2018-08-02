@@ -34,11 +34,19 @@ AccountImportSubview.prototype.render = function () {
   const { type } = state
 
   return (
-    h('div', [
+    h('div', {
+      style: {
+        width: '100%',
+      },
+    }, [
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: (event) => {
             props.dispatch(actions.goHome())
+          },
+          style: {
+            position: 'absolute',
+            left: '30px',
           },
         }),
         h('h2.page-subtitle', 'Import Accounts'),
@@ -47,31 +55,18 @@ AccountImportSubview.prototype.render = function () {
         style: {
           display: 'inline-block',
           alignItems: 'center',
-          padding: '5px 15px 0px 15px',
+          padding: '5px 30px 0px 30px',
         },
       }, [
-        h('span', 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase. Learn more about imported accounts '),
-        h('span', {
-          style: {
-            color: 'rgba(247, 134, 28, 1)',
-            cursor: 'pointer',
-            textDecoration: 'underline',
-          },
-          onClick: () => {
-            global.platform.openWindow({
-              url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
-            })
-          },
-        }, 'here.'),
+        h('span', 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.'),
       ]),
       h('div', {
         style: {
-          padding: '10px',
-          color: 'rgb(174, 174, 174)',
+          padding: '10px 30px',
         },
       }, [
 
-        h('h3', { style: { padding: '3px' } }, 'SELECT TYPE'),
+        h('h3', { style: { padding: '3px' } }, 'Select Type'),
 
         h('style', `
           .has-value.Select--single > .Select-control .Select-value .Select-value-label, .Select-value-label {

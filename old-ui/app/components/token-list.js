@@ -48,11 +48,13 @@ TokenList.prototype.render = function () {
     ])
   }
 
-  const tokenViews = tokens.map((tokenData) => {
+  const tokenViews = tokens.map((tokenData, ind) => {
     tokenData.network = network
     tokenData.userAddress = userAddress
+    const isLastTokenCell = ind === (tokens.length - 1)
     return h(TokenCell, {
       ...tokenData,
+      isLastTokenCell,
       removeToken: this.props.removeToken,
     })
   })
@@ -123,13 +125,11 @@ TokenList.prototype.renderTokenStatusBar = function () {
       },
       style: {
         display: 'flex',
-        height: '40px',
-        padding: '10px',
         justifyContent: 'center',
         alignItems: 'center',
       },
     }, [
-      'ADD TOKEN',
+      'Add Token',
     ]),
   ])
 }

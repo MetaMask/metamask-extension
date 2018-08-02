@@ -52,7 +52,7 @@ QrCodeView.prototype.render = function () {
 
     h('#qr-container.flex-column', {
       style: {
-        marginTop: '25px',
+        marginTop: '15px',
         marginBottom: '15px',
       },
       dangerouslySetInnerHTML: {

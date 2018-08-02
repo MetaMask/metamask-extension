@@ -5,8 +5,6 @@ const actions = require('../../../../ui/app/actions')
 const FileInput = require('react-simple-file-input').default
 const PropTypes = require('prop-types')
 
-const HELP_LINK = 'https://github.com/MetaMask/faq/blob/master/README.md#q-i-cant-use-the-import-feature-for-uploading-a-json-file-the-window-keeps-closing-when-i-try-to-select-a-file'
-
 class JsonImportSubview extends Component {
   constructor (props) {
     super(props)
@@ -26,15 +24,11 @@ class JsonImportSubview extends Component {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          padding: '5px 15px 0px 15px',
+          padding: '5px 30px 0px 30px',
         },
       }, [
 
         h('p', 'Used by a variety of different clients'),
-        h('a.warning', {
-          href: HELP_LINK,
-          target: '_blank',
-        }, 'File import not working? Click here!'),
 
         h(FileInput, {
           readAs: 'text',
@@ -51,15 +45,16 @@ class JsonImportSubview extends Component {
           id: 'json-password-box',
           onKeyPress: this.createKeyringOnEnter.bind(this),
           style: {
-            width: 260,
+            width: '100%',
             marginTop: 12,
+            border: '1px solid #e2e2e2',
           },
         }),
 
-        h('button.primary', {
+        h('button', {
           onClick: this.createNewKeychain.bind(this),
           style: {
-            margin: 12,
+            margin: 20,
           },
         }, 'Import'),
 

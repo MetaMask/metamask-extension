@@ -14,8 +14,8 @@ application specific styles
 }
 
 html, body {
-  font-family: 'Montserrat Regular', Arial;
-  color: #4D4D4D;
+  font-family: 'Nunito Regular';
+  color: #333333;
   font-weight: 300;
   line-height: 1.4em;
   background: #F7F7F7;
@@ -35,6 +35,8 @@ html {
 
 .app-primary {
   display: flex;
+  background: #ffffff;
+  width: 100%;
 }
 
 input:focus, textarea:focus {
@@ -65,30 +67,37 @@ input:focus, textarea:focus {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: #ffffff;
 }
 
 button, input[type="submit"] {
-  font-family: 'Montserrat Bold';
+  font-family: 'Nunito Bold';
   outline: none;
   cursor: pointer;
-  padding: 8px 12px;
+  padding-left: 15px;
+  padding-right: 15px;
+  height: 32px;
   border: none;
   color: white;
   transform-origin: center center;
   transition: transform 50ms ease-in;
-  /* default orange */
-  background: rgba(247, 134, 28, 1);
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  border-radius: 3px;
+  font-size: 14px;
+  /* default green */
+  background: #8fdc97;
+  /*box-shadow: 0px 5px 10px 0px rgba(92, 52, 162, 0.3);*/
 }
 
 .btn-green, input[type="submit"].btn-green {
-  background: rgba(106, 195, 96, 1);
-  box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);
+  background: #8fdc97;
 }
 
 .btn-red {
-  background: rgba(254, 35, 17, 1);
-  box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
+  background: #df2265;
+}
+
+.btn-violet {
+  background: #6729a8;
 }
 
 button[disabled], input[type="submit"][disabled] {
@@ -118,7 +127,7 @@ a {
 }
 
 a:hover{
-  color: #df6b0e;
+  color: rgba(143, 220, 151, 0.5);
 }
 
 /*
@@ -135,8 +144,8 @@ button.primary {
   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
   color: white;
   font-size: 1.1em;
-  font-family: 'Montserrat Regular';
-  text-transform: uppercase;
+  font-family: 'Nunito Regular';
+  text-transform: none;
 }
 
 button.btn-thin {
@@ -156,15 +165,15 @@ button.btn-thin {
 }
 
 .app-header h1 {
-  font-family: 'Montserrat Regular';
+  font-family: 'Nunito Regular';
   text-transform: uppercase;
   color: #AEAEAE;
+  background: #ffffff;
 }
 
 h2.page-subtitle {
-  font-family: 'Montserrat Regular';
-  text-transform: uppercase;
-  color: #AEAEAE;
+  font-family: 'Nunito Regular';
+  color: #333333;
   font-size: 1em;
   margin: 12px;
 }
@@ -182,11 +191,17 @@ h2.page-subtitle {
   border: 3px solid gray;
 }
 
+textarea {
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+}
+
 textarea.twelve-word-phrase {
+  font-family: 'Nunito Regular';
   padding: 12px;
   width: 300px;
   height: 140px;
-  font-size: 16px;
+  font-size: 14px;
   background: white;
   resize: none;
 }
@@ -206,7 +221,7 @@ textarea.twelve-word-phrase {
 
 .check {
   margin-left: 12px;
-  color: #F7861C;
+  color: #8fdc97;
   flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;
@@ -239,12 +254,12 @@ app sections
 
 /* unlock */
 .error {
-  color: #f7861c;
+  color: #db60a4;
   margin-bottom: 9px;
 }
 
 .warning {
-  color: #FFAE00;
+  color: #8fdc97;
 }
 
 .dropped {
@@ -284,8 +299,71 @@ app sections
   background: #c3c3c3;
 }
 
+.fa-arrow-left {
+  content: url('../images/icon-back.svg');
+  width: 14px;
+  height: 14px;
+}
+
+.fa-clipboard {
+  content: url('../images/copy.svg');
+  width: 14px;
+  height: 14px;
+}
+
+.sandwich-expando {
+  background-image: url('../images/menu.svg');
+  background-size: 14px 12px;
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+.sandwich-expando.expanded {
+  background-image: url('../images/close.svg');
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+@media (min--moz-device-pixel-ratio: 1.3),
+         (-o-min-device-pixel-ratio: 2.6/2),
+         (-webkit-min-device-pixel-ratio: 1.3),
+         (min-device-pixel-ratio: 1.3),
+         (min-resolution: 1.3dppx) {
+  .logo {
+    background-image: url(../images/logo-1@2x.png);
+    background-size: 146px 134px;
+  }
+}
+
+.logo {
+  background-image: url(../images/logo-1.png);
+  background-repeat: no-repeat;
+  width: 146px;
+  height: 134px;
+  margin-top: 30px;
+}
+
+.selected-network {
+  width: 4px;
+  height: 26px;
+  background: #8fdc97;
+  position: absolute;
+  left: 0;
+}
+
+.section-title {
+  border-top: 1px solid #e2e2e2;
+}
+
+.trash {
+  content: url('../images/close.svg');
+  width: 12px;
+  height: 12px;
+}
+
 .section-title .fa-arrow-left {
-  margin: -2px 8px 0px -8px;
+  /*margin: -2px 8px 0px -8px;*/
 }
 
 .unlock-screen #metamask-mascot-container {
@@ -298,7 +376,9 @@ app sections
 }
 
 .unlock-screen input[type=password] {
-  width: 260px;
+  width: 210px;
+  border-radius: 3px;
+  border: none;
   /*height: 36px;
   margin-bottom: 24px;
   padding: 8px;*/
@@ -306,47 +386,59 @@ app sections
 
 .sizing-input{
   font-size: 14px;
-  height: 30px;
+  height: 32px;
   padding-left: 5px;
+  border-radius: 3px;
+  border: 1px solid #e2e2e2;
 }
 .editable-label{
   display: flex;
+  margin-bottom: 10px;
+}
+.editable-button{
+  margin-left: 10px;
 }
 /* Webkit */
 .unlock-screen input::-webkit-input-placeholder {
-  text-align: center;
-  font-size: 1.2em;
+  text-align: left;
+  font-size: 14px;
 }
 /* Firefox 18- */
 .unlock-screen input:-moz-placeholder {
-  text-align: center;
-  font-size: 1.2em;
+  text-align: left;
+  font-size: 14pxm;
 }
 /* Firefox 19+ */
 .unlock-screen input::-moz-placeholder {
-  text-align: center;
-  font-size: 1.2em;
+  text-align: left;
+  font-size: 14px;
 }
 /* IE */
 .unlock-screen input:-ms-input-placeholder {
-  text-align: center;
-  font-size: 1.2em;
+  text-align: left;
+  font-size: 14px;
 }
 
 input.large-input, textarea.large-input {
   /*margin-bottom: 24px;*/
-  padding: 8px;
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid #e2e2e2;
+  font-family: 'Nunito Regular';
+  font-size: 14px;
 }
 
 input.large-input {
-  height: 36px;
+  height: 32px;
 }
 
 .letter-spacey {
   letter-spacing: 0.1em;
 }
 
-
+.in-progress-notification {
+  color: #db60a4;
+}
 
 /* accounts */
 
@@ -355,7 +447,7 @@ input.large-input {
 }
 
 .accounts-section .horizontal-line {
-  margin: 0px 18px;
+  margin: 0px 20px;
 }
 
 .accounts-list-option {
@@ -375,6 +467,18 @@ input.large-input {
   margin: 0px -8px 0px 8px;
 }
 
+.white-arrow-left {
+  content: url('../images/arrow-left-white.svg');
+  width: 14px;
+  height: 14px;
+}
+
+.white-arrow-right {
+  content: url('../images/arrow-right-white.svg');
+  width: 14px;
+  height: 14px;
+}
+
 /* identity panel */
 
 .identity-panel {
@@ -382,8 +486,8 @@ input.large-input {
 }
 
 .identity-panel .identicon-wrapper {
-  margin: 4px;
-  margin-top: 8px;
+  margin-bottom: 10px;
+  margin-top: 10px;
   display: flex;
   align-items: center;
 }
@@ -399,7 +503,7 @@ input.large-input {
 .identity-panel i {
   margin-top: 32px;
   margin-right: 6px;
-  color: #B9B9B9;
+  color: #ffffff;
 }
 
 .identity-panel .arrow-right {
@@ -451,10 +555,6 @@ input.large-input {
   flex-direction: inherit;
 }
 
-.account-detail-section .name-label {
-  margin-left: 15px;
-}
-
 .grow-tenx {
   flex-grow: 10;
 }
@@ -471,6 +571,29 @@ input.large-input {
   border-radius: 13px;
 }
 
+.tx-warning {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background: #6729a8;
+  background-image: url('../images/invalid-name.svg');
+  background-size: 2px 18px;
+  background-position: center;
+  background-repeat: no-repeat;
+  line-height: 60px;
+}
+
+.cell.label {
+  font-family: 'Nunito Regular';
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.cell.value {
+  font-family: 'Nunito Bold';
+  font-size: 14px;
+}
+
 .edit-text {
   height: 100%;
   visibility: hidden;
@@ -482,7 +605,7 @@ input.large-input {
   margin-bottom: 2px;
   font-size: 11px;
   text-rendering: geometricPrecision;
-  color: #F7861C;
+  color: #60db97;
 }
 .name-label:hover .edit-text {
   visibility: visible;
@@ -506,29 +629,20 @@ input.large-input {
 }
 
 .send-screen section {
-  margin: 8px 16px;
+  margin: 10px 30px;
 }
 
 .send-screen input {
   width: 100%;
-  font-size: 12px;
+  font-size: 14px;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
 }
 
 /* Ether Balance Widget */
 
-.ether-balance-amount {
-  color: #F7861C;
-}
-
 .ether-balance-label {
   color: #ABA9AA;
-}
-
-/* Info screen */
-.info-gray{
-  font-family: 'Montserrat Regular';
-  text-transform: uppercase;
-  color: #AEAEAE;
 }
 
 .icon-size{
@@ -536,7 +650,7 @@ input.large-input {
 }
 
 .info{
-  font-family: 'Montserrat Regular', Arial;
+  font-family: 'Nunito Regular';
   padding-bottom: 10px;
   display: inline-block;
   padding-left: 5px;
@@ -556,7 +670,7 @@ input.large-input {
   border-style: double;
   border-radius: 15px;
   border-width: 5px;
-  background: rgba(247, 134, 28, 1);
+  background: #8fdc97;
   border-color: #F7F7F7;
 }
 
@@ -570,7 +684,7 @@ input.large-input {
 }
 
 .radio-titles {
-  color: rgba(247, 134, 28, 1);
+  color: #8fdc97;
 }
 
 .radio-titles-subtext {
@@ -598,7 +712,7 @@ input.large-input {
 }
 
 .buy-inputs{
-  font-family: 'Montserrat Light';
+  font-family: 'Nunito Light';
   font-size: 13px;
   height: 20px;
   background: transparent;
@@ -625,25 +739,25 @@ input.large-input {
 }
 
 .activeForm {
-  background: #F7F7F7;
+  background: #ffffff;
+  color: #333333;
   border: none;
   border-radius: 8px 8px 0px 0px;
   width: 50%;
   text-align: center;
-  padding-bottom: 4px;
-
 }
 
 .inactiveForm {
+  background: #60269c;
+  color: #ffffff;
   border: none;
   border-radius: 8px 8px 0px 0px;
   width: 50%;
   text-align: center;
-  padding-bottom: 4px;
 }
 
 .ex-coins {
-  font-family: 'Montserrat Regular';
+  font-family: 'Nunito Regular';
   text-transform: uppercase;
   text-align: center;
   font-size: 33px;
@@ -654,7 +768,7 @@ input.large-input {
 }
 
 .marketinfo{
-  font-family: 'Montserrat light';
+  font-family: 'Nunito light';
   color: #AEAEAE;
   font-size: 15px;
   line-height: 17px;
@@ -696,13 +810,15 @@ input.large-input {
   text-overflow: ellipsis;
   width: 5em;
   font-size: 14px;
-  font-family: "Montserrat Light";
+  font-family: "Nunito Regular";
   margin-left: 5px;
+  color: #777777;
 }
 
 .qr-header {
-    font-size: 25px;
-    margin-top: 40px;
+  font-family: "Nunito SemiBold";
+  font-size: 16px;
+  margin-top: 30px;
 }
 
 .qr-message {

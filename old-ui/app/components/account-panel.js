@@ -36,6 +36,8 @@ AccountPanel.prototype.render = function () {
 
     h('.identity-panel.flex-row.flex-space-between', {
       style: {
+        background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
+        padding: '20px 20px',
         flex: '1 0 auto',
         cursor: panelState.onClick ? 'pointer' : undefined,
       },
@@ -48,7 +50,11 @@ AccountPanel.prototype.render = function () {
           address: panelState.identiconKey,
           imageify: state.imageifyIdenticons,
         }),
-        h('span.font-small', panelState.identiconLabel.substring(0, 7) + '...'),
+        h('span.font-small', {
+          style: {
+            color: '#ffffff',
+          },
+        }, panelState.identiconLabel.substring(0, 7) + '...'),
       ]),
 
       // account address, balance
@@ -58,8 +64,16 @@ AccountPanel.prototype.render = function () {
           return h('.flex-row.flex-space-between', {
             key: '' + Math.round(Math.random() * 1000000),
           }, [
-            h('label.font-small.no-select', attr.key),
-            h('span.font-small', attr.value),
+            h('label.font-small.no-select', {
+              style: {
+                color: '#ffffff',
+              },
+            }, attr.key),
+            h('span.font-small', {
+              style: {
+                color: '#ffffff',
+              },
+            }, attr.value),
           ])
         }),
       ]),

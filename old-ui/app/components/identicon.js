@@ -29,7 +29,7 @@ IdenticonComponent.prototype.render = function () {
         height: diameter,
         width: diameter,
         borderRadius: diameter / 2,
-        overflow: 'hidden',
+        overflow: (props.overflow || 'hidden'),
       },
     })
   )

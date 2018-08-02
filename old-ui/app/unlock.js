@@ -38,49 +38,52 @@ UnlockScreen.prototype.render = function () {
           animationEventEmitter: this.animationEventEmitter,
         }),*/
 
+        h('.logo'),
+
         h('h1', {
           style: {
             paddingTop: '50px',
-            fontSize: '1.4em',
-            textTransform: 'uppercase',
-            color: '#7F8082',
+            fontSize: '30px',
+            color: '#ffffff',
           },
         }, 'Nifty Wallet'),
 
-        h('input.large-input', {
-          type: 'password',
-          id: 'password-box',
-          placeholder: 'enter password',
-          style: {
+        h('div', [
+          h('input.large-input', {
+            type: 'password',
+            id: 'password-box',
+            placeholder: 'Enter password',
+            style: {
 
-          },
-          onKeyPress: this.onKeyPress.bind(this),
-          onInput: this.inputChanged.bind(this),
-        }),
+            },
+            onKeyPress: this.onKeyPress.bind(this),
+            onInput: this.inputChanged.bind(this),
+          }),
 
-        h('.error', {
-          style: {
-            display: warning ? 'block' : 'none',
-            padding: '0 20px',
-            textAlign: 'center',
-          },
-        }, warning),
+          h('button.cursor-pointer', {
+            onClick: this.onSubmit.bind(this),
+            style: {
+              margin: '10px 0 10px 10px',
+            },
+          }, 'Log In'),
 
-        h('button.primary.cursor-pointer', {
-          onClick: this.onSubmit.bind(this),
-          style: {
-            margin: 10,
-          },
-        }, 'Log In'),
+          h('.error', {
+            style: {
+              display: warning ? 'block' : 'none',
+              padding: '0 20px',
+              textAlign: 'center',
+            },
+          }, warning),
+        ]),
+
       ]),
 
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
           onClick: () => this.props.dispatch(actions.forgotPassword()),
           style: {
-            fontSize: '0.8em',
-            color: 'rgb(247, 134, 28)',
-            textDecoration: 'underline',
+            fontSize: '14px',
+            color: '#8fdc97',
           },
         }, 'Restore from seed phrase'),
       ]),

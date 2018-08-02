@@ -49,12 +49,13 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         animationEventEmitter: this.animationEventEmitter,
       }),*/
 
+      h('.logo'),
+
       h('h1', {
         style: {
           paddingTop: '50px',
           fontSize: '1.3em',
-          textTransform: 'uppercase',
-          color: '#7F8082',
+          color: '#ffffff',
           marginBottom: 10,
         },
       }, 'Nifty Wallet'),
@@ -64,7 +65,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         h('h3', {
           style: {
             fontSize: '0.8em',
-            color: '#7F8082',
+            color: '#ffffff',
             display: 'inline',
           },
         }, 'Encrypt your new DEN'),
@@ -76,7 +77,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
             style: {
               fontSize: '18px',
               position: 'relative',
-              color: 'rgb(247, 134, 28)',
+              color: '#8fdc97',
               top: '2px',
               marginLeft: '4px',
             },
@@ -95,6 +96,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         style: {
           width: 260,
           marginTop: 12,
+          border: 'none',
         },
       }),
 
@@ -108,11 +110,12 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         style: {
           width: 260,
           marginTop: 16,
+          border: 'none',
         },
       }),
 
 
-      h('button.primary', {
+      h('button', {
         onClick: this.createNewVaultAndKeychain.bind(this),
         style: {
           margin: 12,
@@ -124,7 +127,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
           onClick: this.showRestoreVault.bind(this),
           style: {
             fontSize: '0.8em',
-            color: 'rgb(247, 134, 28)',
+            color: '#8fdc97',
             textDecoration: 'underline',
           },
         }, 'Import Existing DEN'),

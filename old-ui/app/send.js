@@ -64,23 +64,20 @@ SendTransactionScreen.prototype.render = function () {
 
       h('.account-data-subsection.flex-row.flex-grow', {
         style: {
-          margin: '0 20px',
+          background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
+          padding: '20px 20px',
         },
       }, [
 
         // header - identicon + nav
-        h('.flex-row.flex-space-between', {
-          style: {
-            marginTop: '15px',
-          },
-        }, [
-          // back button
-          h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
-            onClick: this.back.bind(this),
-          }),
+        h('.flex-row.flex-space-between', [
 
           // large identicon
-          h('.identicon-wrapper.flex-column.flex-center.select-none', [
+          h('.identicon-wrapper.flex-column.flex-center.select-none', {
+            style: {
+              display: 'inline-block',
+            },
+          }, [
             h(Identicon, {
               diameter: 62,
               address: address,
@@ -100,12 +97,12 @@ SendTransactionScreen.prototype.render = function () {
 
         h('.flex-column', {
           style: {
-            marginTop: '10px',
             alignItems: 'flex-start',
           },
         }, [
-          h('h2.font-medium.color-forest.flex-center', {
+          h('h2.font-medium.flex-center', {
             style: {
+              color: '#ffffff',
               paddingTop: '8px',
               marginBottom: '8px',
             },
@@ -114,13 +111,15 @@ SendTransactionScreen.prototype.render = function () {
           // address and getter actions
           h('.flex-row.flex-center', {
             style: {
-              marginBottom: '8px',
+              color: 'rgba(255, 255, 255, 0.7)',
+              marginBottom: '30px',
             },
           }, [
 
             h('div', {
               style: {
                 lineHeight: '16px',
+                fontSize: '14px',
               },
             }, addressSummary(address)),
 
@@ -144,14 +143,21 @@ SendTransactionScreen.prototype.render = function () {
       // Required Fields
       //
 
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginTop: '15px',
-          marginBottom: '16px',
+          color: '#333333',
+          marginTop: '18px',
+          marginBottom: '14px',
         },
       }, [
+        // back button
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+          style: {
+            position: 'absolute',
+            left: '30px',
+          },
+          onClick: this.back.bind(this),
+        }),
         'Send Transaction',
       ]),
 
@@ -185,11 +191,8 @@ SendTransactionScreen.prototype.render = function () {
           },
         }),
 
-        h('button.primary', {
+        h('button', {
           onClick: this.onSubmit.bind(this),
-          style: {
-            textTransform: 'uppercase',
-          },
         }, 'Next'),
 
       ]),
@@ -197,10 +200,10 @@ SendTransactionScreen.prototype.render = function () {
       //
       // Optional Fields
       //
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
+          background: '#ffffff',
+          color: '#333333',
           marginTop: '16px',
           marginBottom: '16px',
         },

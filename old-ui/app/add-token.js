@@ -46,6 +46,10 @@ AddTokenScreen.prototype.render = function () {
           onClick: (event) => {
             props.dispatch(actions.goHome())
           },
+          style: {
+            position: 'absolute',
+            left: '30px',
+          },
         }),
         h('h2.page-subtitle', 'Add Token'),
       ]),
@@ -62,23 +66,16 @@ AddTokenScreen.prototype.render = function () {
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-space-around', {
           style: {
-            padding: '20px',
+            padding: '30px',
           },
         }, [
 
           h('div', [
             h(Tooltip, {
               position: 'top',
-              title: 'The contract of the actual token contract. Click for more info.',
+              title: 'The contract of the actual token contract.',
             }, [
-              h('a', {
-                style: { fontWeight: 'bold', paddingRight: '10px'},
-                href: 'https://support.metamask.io/kb/article/24-what-is-a-token-contract-address',
-                target: '_blank',
-              }, [
-                h('span', 'Token Contract Address  '),
-                h('i.fa.fa-question-circle'),
-              ]),
+              h('span', 'Token Contract Address  '),
             ]),
           ]),
 
@@ -91,7 +88,10 @@ AddTokenScreen.prototype.render = function () {
                 width: 'inherit',
                 flex: '1 0 auto',
                 height: '30px',
-                margin: '8px',
+                margin: '10px 0',
+                borderRadius: '3px',
+                border: '1px solid #e2e2e2',
+                padding: '10px',
               },
             }),
           ]),
@@ -110,7 +110,10 @@ AddTokenScreen.prototype.render = function () {
                 width: 'inherit',
                 flex: '1 0 auto',
                 height: '30px',
-                margin: '8px',
+                margin: '10px 0',
+                borderRadius: '3px',
+                border: '1px solid #e2e2e2',
+                padding: '10px',
               },
               onChange: (event) => {
                 var element = event.target
@@ -136,7 +139,10 @@ AddTokenScreen.prototype.render = function () {
                 width: 'inherit',
                 flex: '1 0 auto',
                 height: '30px',
-                margin: '8px',
+                margin: '10px 0',
+                borderRadius: '3px',
+                border: '1px solid #e2e2e2',
+                padding: '10px',
               },
               onChange: (event) => {
                 var element = event.target
@@ -149,6 +155,8 @@ AddTokenScreen.prototype.render = function () {
           h('button', {
             style: {
               alignSelf: 'center',
+              float: 'right',
+              marginTop: '10px',
             },
             onClick: (event) => {
               const valid = this.validateInputs()

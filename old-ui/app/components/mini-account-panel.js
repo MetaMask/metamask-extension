@@ -18,7 +18,7 @@ AccountPanel.prototype.render = function () {
 
   return (
 
-    h('.identity-panel.flex-row.flex-left', {
+    h('.identity-panel.flex-row.flex-center.flex-left', {
       style: {
         cursor: props.onClick ? 'pointer' : undefined,
       },
@@ -66,6 +66,7 @@ AccountPanel.prototype.genIcon = function (seed, picOrder) {
     },
   }, [
     h(Identicon, {
+      diameter: 40,
       address: seed,
       imageify: props.imageifyIdenticons,
     }),
