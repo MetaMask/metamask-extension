@@ -317,7 +317,7 @@ describe('Metamask popup page', function () {
   describe('Remove Token', function () {
     it('navigates to the remove token screen and goes back', async function () {
       // Click to remove first token
-      const removeTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > .fa.fa-trash'))
+      const removeTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > .trash'))
       await removeTokenButton.click()
       const removeTokenTitle = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
 
@@ -335,7 +335,7 @@ describe('Metamask popup page', function () {
 
     it('navigates to the remove token screen and removes the token', async function () {
       // Click to remove first token
-      const removeTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > .fa.fa-trash'))
+      const removeTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > .trash'))
       await removeTokenButton.click()
       const removeTokenTitle = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
 
