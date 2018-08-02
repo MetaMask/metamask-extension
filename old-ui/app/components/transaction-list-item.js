@@ -156,8 +156,6 @@ TransactionListItem.prototype.render = function () {
           domainField(txParams),
           h('div.flex-row', [
             recipientField(txParams, transaction, isTx, isMsg),
-            // Places a copy button if tx is successful, else places a placeholder empty div.
-            transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
           ]),
           h('div', {
             style: {
@@ -253,6 +251,8 @@ function recipientField (txParams, transaction, isTx, isMsg) {
     },
   }, [
     message,
+    // Places a copy button if tx is successful, else places a placeholder empty div.
+    transaction.hash ? h(CopyButton, { value: transaction.hash, display: 'inline-flex' }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
     renderErrorOrWarning(transaction),
   ])
 }
@@ -266,12 +266,12 @@ function renderErrorOrWarning (transaction) {
 
   // show dropped
   if (status === 'dropped') {
-    return h('span.dropped', ' (Dropped)')
+    return h('div.dropped', ' (Dropped)')
   }
 
   // show rejected
   if (status === 'rejected') {
-    return h('span.error', ' (Rejected)')
+    return h('div.error', ' (Rejected)')
   }
 
   // show error
@@ -282,7 +282,7 @@ function renderErrorOrWarning (transaction) {
           title: message,
           position: 'bottom',
         }, [
-          h(`span.error`, ` (Failed)`),
+          h(`div.error`, ` (Failed)`),
         ])
     )
   }
@@ -294,7 +294,7 @@ function renderErrorOrWarning (transaction) {
       title: message,
       position: 'bottom',
     }, [
-      h(`span.warning`, ` (Warning)`),
+      h(`div.warning`, ` (Warning)`),
     ])
   }
 }
