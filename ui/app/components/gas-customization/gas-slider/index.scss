@@ -1,0 +1,54 @@
+.gas-slider {
+  position: relative;
+  width: 322px;
+
+  &__input {
+    width: 322px;
+    margin-left: -2px;
+    z-index: 2;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none !important;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    height: 34px;
+    width: 34px;
+    background-color: $curious-blue;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+    border-radius: 50%;
+    position: relative;
+    z-index: 10;
+  }
+
+  &__bar {
+    height: 6px;
+    width: 322px;
+    background: $alto;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 16px;
+    z-index: 0;
+    border-radius: 4px;
+  }
+
+  &__colored {
+    height: 6px;
+    border-radius: 4px;
+    margin-left: 102px; 
+    width: 322px;
+    z-index: 1;
+    background-color: $blizzard-blue;
+  }
+
+  &__labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: -6px;
+    color: $mid-gray;
+  }
+}

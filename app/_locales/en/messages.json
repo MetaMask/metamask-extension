@@ -596,6 +596,9 @@
   "min": {
     "message": "Minimum"
   },
+  "minutesShorthand": {
+    "message": "Min"
+  },
   "myAccounts": {
     "message": "My Accounts"
   },
@@ -878,6 +881,9 @@
   },
   "newPassword8Chars": {
     "message": "New Password (min 8 chars)"
+  },
+  "secondsShorthand": {
+    "message": "Sec"
   },
   "seedPhraseReq": {
     "message": "Seed phrases are 12 words long"

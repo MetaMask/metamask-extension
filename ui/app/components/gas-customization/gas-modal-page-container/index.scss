@@ -1,3 +1,11 @@
+@import './advanced-tab-content/index';
+
+.gas-modal-page-container {
+  .page-container {
+    width: 391px;
+  }
+}
+
 .gas-modal-content {
   &__basic-tab {
     height: 219px;
