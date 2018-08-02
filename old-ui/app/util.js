@@ -61,7 +61,7 @@ function accountSummary (acc, firstSegLength = 6, lastSegLength = 4) {
   if (acc.length < 12) return acc
   let posOfLastPart = acc.length - lastSegLength
   if (posOfLastPart < (firstSegLength + 1)) posOfLastPart += (firstSegLength + 1) - posOfLastPart
-  return acc ? acc.slice(0, firstSegLength) + '...' + acc.slice(posOfLastPart) : '...'
+  return acc.slice(0, firstSegLength) + '...' + acc.slice(posOfLastPart)
 }
 
 function miniAddressSummary (address) {
