@@ -1,0 +1,13 @@
+.time-remaining {
+  .minutes-num, .seconds-num {
+    font-size: 26px;
+  }
+
+  .seconds-num {
+    margin-left: 7px;
+  }
+
+  .minutes-label, .seconds-label {
+    font-size: 14px;
+  }
+}
