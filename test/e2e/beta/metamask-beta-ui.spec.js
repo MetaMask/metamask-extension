@@ -414,12 +414,12 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
       assert.equal(transactions.length, 1)
 
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        const txValues = await findElement(driver, By.css('.tx-list-value'))
-        await driver.wait(until.elementTextMatches(txValues, /1\sETH/), 10000)
+        const txValues = await findElement(driver, By.css('.transaction-list-item__amount--secondary'))
+        await driver.wait(until.elementTextMatches(txValues, /-1\sETH/), 10000)
       }
     })
   })
@@ -457,16 +457,11 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
       assert.equal(transactions.length, 2)
 
-      await findElement(driver, By.xpath(`//span[contains(text(), 'Submitted')]`))
-
-      const txStatuses = await findElements(driver, By.css('.tx-list-status'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
-
-      const txValues = await findElement(driver, By.css('.tx-list-value'))
-      await driver.wait(until.elementTextMatches(txValues, /3\sETH/), 10000)
+      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--secondary'))
+      await driver.wait(until.elementTextMatches(txValues, /-3\sETH/), 10000)
     })
   })
 
