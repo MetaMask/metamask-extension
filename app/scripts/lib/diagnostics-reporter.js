@@ -5,7 +5,7 @@ class DiagnosticsReporter {
     this.version = version
   }
 
-  async reportOrphans(orphans) {
+  async reportOrphans (orphans) {
     try {
       return await this.submit({
         accounts: Object.keys(orphans),
@@ -19,7 +19,7 @@ class DiagnosticsReporter {
     }
   }
 
-  async reportMultipleKeyrings(rawKeyrings) {
+  async reportMultipleKeyrings (rawKeyrings) {
     try {
       const keyrings = await Promise.all(rawKeyrings.map(async (keyring, index) => {
         return {
@@ -55,7 +55,7 @@ class DiagnosticsReporter {
 
 }
 
-function postData(data) {
+function postData (data) {
   const uri = 'https://diagnostics.metamask.io/v1/orphanedAccounts'
   return fetch(uri, {
     body: JSON.stringify(data), // must match 'Content-Type' header

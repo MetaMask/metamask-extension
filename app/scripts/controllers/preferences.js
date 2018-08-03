@@ -127,6 +127,30 @@ class PreferencesController {
   }
 
   /**
+   * Removes an address from state
+   *
+   * @param {string} address A hex address
+   * @returns {string} the address that was removed
+   */
+  removeAddress (address) {
+    const identities = this.store.getState().identities
+    if (!identities[address]) {
+      throw new Error(`${address} can't be deleted cause it was not found`)
+    }
+    delete identities[address]
+    this.store.updateState({ identities })
+
+    // If the selected account is no longer valid,
+    // select an arbitrary other account:
+    if (address === this.getSelectedAddress()) {
+      const selected = Object.keys(identities)[0]
+      this.setSelectedAddress(selected)
+    }
+    return address
+  }
+
+
+  /**
    * Adds addresses to the identities object without removing identities
    *
    * @param {string[]} addresses An array of hex addresses
@@ -152,9 +176,9 @@ class PreferencesController {
    * @returns {Promise<string>} selectedAddress the selected address.
    */
   syncAddresses (addresses) {
-    let { identities, lostIdentities } = this.store.getState()
+    const { identities, lostIdentities } = this.store.getState()
 
-    let newlyLost = {}
+    const newlyLost = {}
     Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
         newlyLost[identity] = identities[identity]
@@ -169,7 +193,7 @@ class PreferencesController {
       if (this.diagnostics) this.diagnostics.reportOrphans(newlyLost)
 
       // store lost accounts
-      for (let key in newlyLost) {
+      for (const key in newlyLost) {
         lostIdentities[key] = newlyLost[key]
       }
     }

@@ -11,8 +11,8 @@ const log = require('loglevel')
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
 // accounts
-const SendTransactionScreen = require('./components/send_/send.container')
-const ConfirmTxScreen = require('./conf-tx')
+const SendTransactionScreen = require('./components/send/send.container')
+const ConfirmTransaction = require('./components/pages/confirm-transaction')
 
 // slideout menu
 const WalletView = require('./components/wallet-view')
@@ -22,8 +22,7 @@ const Home = require('./components/pages/home')
 const Authenticated = require('./components/pages/authenticated')
 const Initialized = require('./components/pages/initialized')
 const Settings = require('./components/pages/settings')
-const UnlockPage = require('./components/pages/unlock-page')
-const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
+const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
 const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
@@ -37,8 +36,12 @@ const AccountMenu = require('./components/account-menu')
 
 // Global Modals
 const Modal = require('./components/modals/index').Modal
+// Global Alert
+const Alert = require('./components/alert')
 
 const AppHeader = require('./components/app-header')
+
+import UnlockPage from './components/pages/unlock-page'
 
 // Routes
 const {
@@ -76,7 +79,10 @@ class App extends Component {
         h(Authenticated, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedConfirmation }),
         h(Authenticated, { path: SETTINGS_ROUTE, component: Settings }),
         h(Authenticated, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
-        h(Authenticated, { path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`, component: ConfirmTxScreen }),
+        h(Authenticated, {
+          path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`,
+          component: ConfirmTransaction,
+        }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
@@ -89,6 +95,7 @@ class App extends Component {
   render () {
     const {
       isLoading,
+      alertMessage,
       loadingMessage,
       network,
       isMouseUser,
@@ -122,6 +129,9 @@ class App extends Component {
         // global modal
         h(Modal, {}, []),
 
+        // global alert
+        h(Alert, {visible: this.props.alertOpen, msg: alertMessage}),
+
         h(AppHeader),
 
         // sidebar
@@ -143,14 +153,6 @@ class App extends Component {
         this.renderRoutes(),
       ])
     )
-  }
-
-  renderGlobalModal () {
-    return h(Modal, {
-      ref: 'modalRef',
-    }, [
-      // h(BuyOptions, {}, []),
-    ])
   }
 
   renderSidebar () {
@@ -261,11 +263,13 @@ App.propTypes = {
   setCurrentCurrencyToUSD: PropTypes.func,
   isLoading: PropTypes.bool,
   loadingMessage: PropTypes.string,
+  alertMessage: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
   frequentRpcList: PropTypes.array,
   currentView: PropTypes.object,
   sidebarOpen: PropTypes.bool,
+  alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
   isMascara: PropTypes.bool,
   isOnboarding: PropTypes.bool,
@@ -301,6 +305,8 @@ function mapStateToProps (state) {
   const {
     networkDropdownOpen,
     sidebarOpen,
+    alertOpen,
+    alertMessage,
     isLoading,
     loadingMessage,
   } = appState
@@ -326,6 +332,8 @@ function mapStateToProps (state) {
     // state from plugin
     networkDropdownOpen,
     sidebarOpen,
+    alertOpen,
+    alertMessage,
     isLoading,
     loadingMessage,
     noActiveNotices,

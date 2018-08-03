@@ -54,6 +54,8 @@ function TxListItem () {
     fiatTotal: null,
     isTokenTx: null,
   }
+
+  this.unmounted = false
 }
 
 TxListItem.prototype.componentDidMount = async function () {
@@ -67,7 +69,14 @@ TxListItem.prototype.componentDidMount = async function () {
     ? await this.getSendTokenTotal()
     : this.getSendEtherTotal()
 
+  if (this.unmounted) {
+    return
+  }
   this.setState({ total, fiatTotal, isTokenTx })
+}
+
+TxListItem.prototype.componentWillUnmount = function () {
+  this.unmounted = true
 }
 
 TxListItem.prototype.getAddressText = function () {
@@ -204,14 +213,23 @@ TxListItem.prototype.showRetryButton = function () {
   if (!txParams) {
     return false
   }
+  let currentTxIsLatest = false
   const currentNonce = txParams.nonce
   const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
+  const currentSubmittedTxs = selectedAddressTxList.filter(tx => tx.status === 'submitted')
   const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[currentNonceSubmittedTxs.length - 1]
   const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce &&
     lastSubmittedTxWithCurrentNonce.id === transactionId
+  if (currentSubmittedTxs.length > 0) {
+    const lastTx = currentSubmittedTxs.reduce((tx1, tx2) => {
+      if (tx1.submittedTime < tx2.submittedTime) return tx1
+      return tx2
+    })
+    currentTxIsLatest = lastTx.id === transactionId
+  }
 
-  return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
+  return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000 && currentTxIsLatest
 }
 
 TxListItem.prototype.setSelectedToken = function (tokenAddress) {
@@ -298,20 +316,16 @@ TxListItem.prototype.render = function () {
         ]),
       ]),
 
-      this.showRetryButton() && h('div.tx-list-item-retry-container', [
-
-        h('span.tx-list-item-retry-copy', 'Taking too long?'),
-
-        h('span.tx-list-item-retry-link', {
-          onClick: (event) => {
-            event.stopPropagation()
-            if (isTokenTx) {
-              this.setSelectedToken(txParams.to)
-            }
-            this.resubmit()
-          },
-        }, 'Increase the gas price on your transaction'),
-
+      this.showRetryButton() && h('.tx-list-item-retry-container', {
+        onClick: (event) => {
+          event.stopPropagation()
+          if (isTokenTx) {
+            this.setSelectedToken(txParams.to)
+          }
+          this.resubmit()
+        },
+      }, [
+        h('span', 'Taking too long? Increase the gas price on your transaction'),
       ]),
 
     ]), // holding on icon from design

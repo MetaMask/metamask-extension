@@ -158,12 +158,17 @@ TokenList.prototype.componentDidUpdate = function (nextProps) {
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
+  if (!this.tracker.running) {
+    return
+  }
   this.setState({ tokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+  this.tracker.removeListener('update', this.balanceUpdater)
+  this.tracker.removeListener('error', this.showError)
 }
 
 // function uniqueMergeTokens (tokensA, tokensB = []) {

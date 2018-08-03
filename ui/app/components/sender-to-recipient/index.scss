@@ -1,0 +1,74 @@
+.sender-to-recipient {
+  &__container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-bottom: 1px solid $geyser;
+    position: relative;
+    flex: 0 0 auto;
+    height: 42px;
+  }
+
+  &__tooltip-wrapper {
+    min-width: 0;
+  }
+
+  &__tooltip-container {
+    max-width: 100%;
+  }
+
+  &__sender,
+  &__recipient {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+    padding: 0 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__sender {
+    padding-right: 30px;
+    cursor: pointer;
+  }
+
+  &__recipient {
+    padding-left: 30px;
+    border-left: 1px solid $geyser;
+
+    &--with-address {
+      cursor: pointer;
+    }
+  }
+
+  &__arrow-container {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__arrow-circle {
+    background: $white;
+    padding: 5px;
+    border: 1px solid $geyser;
+    border-radius: 20px;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__name {
+    padding-left: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .875rem;
+  }
+}
