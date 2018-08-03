@@ -83,6 +83,7 @@ Notice.prototype.render = function () {
           title,
         ]),
         h('div.markdown', {
+          key: 'notice-div-key',
           onScroll: (e) => {
             var object = e.currentTarget
             if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
@@ -108,6 +109,7 @@ Notice.prototype.render = function () {
         ]),
 
         h('button', {
+          key: 'notice-button-key',
           disabled,
           onClick: () => {
             this.setState({disclaimerDisabled: true})
