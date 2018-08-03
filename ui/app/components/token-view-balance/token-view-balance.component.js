@@ -30,7 +30,7 @@ export default class TokenViewBalance extends PureComponent {
         <TokenBalance
           token={selectedToken}
           withSymbol
-          className="token-view-balance__primary-balance"
+          className="token-view-balance__token-balance"
         />
       ) : (
         <div className="token-view-balance__balance">

@@ -6,7 +6,7 @@ import TransactionAction from '../transaction-action'
 import { formatDate } from '../../util'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
-import { UNAPPROVED_STATUS } from '../../constants/transactions'
+import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
 import { hexToDecimal } from '../../helpers/conversions.util'
 
 export default class TransactionListItem extends PureComponent {
@@ -15,6 +15,10 @@ export default class TransactionListItem extends PureComponent {
     transaction: PropTypes.object,
     ethTransactionAmount: PropTypes.string,
     fiatDisplayValue: PropTypes.string,
+    methodData: PropTypes.object,
+    showRetry: PropTypes.bool,
+    retryTransaction: PropTypes.func,
+    setSelectedToken: PropTypes.func,
   }
 
   handleClick = () => {
@@ -30,44 +34,92 @@ export default class TransactionListItem extends PureComponent {
     }
   }
 
+  handleRetryClick = event => {
+    event.stopPropagation()
+
+    const {
+      transaction: { txParams: { to } = {} },
+      methodData: { name } = {},
+      setSelectedToken,
+    } = this.props
+
+    if (name === TOKEN_METHOD_TRANSFER) {
+      setSelectedToken(to)
+    }
+
+    this.resubmit()
+  }
+
+  resubmit () {
+    const { transaction: { id }, retryTransaction, history } = this.props
+    retryTransaction(id)
+      .then(id => history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`))
+  }
+
   render () {
-    const { transaction, ethTransactionAmount, fiatDisplayValue } = this.props
+    const {
+      transaction,
+      ethTransactionAmount,
+      fiatDisplayValue,
+      methodData,
+      showRetry,
+    } = this.props
     const { txParams = {} } = transaction
     const nonce = hexToDecimal(txParams.nonce)
+
+    const nonceAndDateText = `#${nonce} - ${formatDate(transaction.time)}`
+    const fiatDisplayText = `-${fiatDisplayValue}`
+    const ethDisplayText = `-${ethTransactionAmount} ETH`
 
     return (
       <div
         className="transaction-list-item"
         onClick={this.handleClick}
       >
-        <Identicon
-          className="transaction-list-item__identicon"
-          address={txParams.to}
-          diameter={34}
-        />
-        <TransactionAction
-          transaction={transaction}
-          className="transaction-list-item__action"
-        />
-        <div className="transaction-list-item__nonce">
-          { `#${nonce} - ${formatDate(transaction.time)}` }
+        <div className="transaction-list-item__grid">
+          <Identicon
+            className="transaction-list-item__identicon"
+            address={txParams.to}
+            diameter={34}
+          />
+          <TransactionAction
+            transaction={transaction}
+            methodData={methodData}
+            className="transaction-list-item__action"
+          />
+          <div
+            className="transaction-list-item__nonce"
+            title={nonceAndDateText}
+          >
+            { nonceAndDateText }
+          </div>
+          <TransactionStatus
+            className="transaction-list-item__status"
+            status={transaction.status}
+          />
+          <div
+            className="transaction-list-item__amount transaction-list-item__amount--primary"
+            title={fiatDisplayText}
+          >
+            { fiatDisplayText }
+          </div>
+          <div
+            className="transaction-list-item__amount transaction-list-item__amount--secondary"
+            title={ethDisplayText}
+          >
+            { ethDisplayText }
+          </div>
         </div>
-        <TransactionStatus
-          className="transaction-list-item__status"
-          status={transaction.status}
-        />
-        <div
-          className="transaction-list-item__amount transaction-list-item__amount--primary"
-          title={`-${fiatDisplayValue}`}
-        >
-          { `-${fiatDisplayValue}` }
-        </div>
-        <div
-          className="transaction-list-item__amount transaction-list-item__amount--secondary"
-          title={`-${ethTransactionAmount} ETH`}
-        >
-          { `-${ethTransactionAmount} ETH` }
-        </div>
+        {
+          showRetry && !methodData.isFetching && (
+            <div
+              className="transaction-list-item__retry"
+              onClick={this.handleRetryClick}
+            >
+              <span>Taking too long? Increase the gas price on your transaction</span>
+            </div>
+          )
+        }
       </div>
     )
   }
