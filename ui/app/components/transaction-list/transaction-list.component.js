@@ -10,16 +10,24 @@ export default class TransactionList extends PureComponent {
   static defaultProps = {
     pendingTransactions: [],
     completedTransactions: [],
+    transactionToRetry: {},
   }
 
   static propTypes = {
     pendingTransactions: PropTypes.array,
     completedTransactions: PropTypes.array,
+    transactionToRetry: PropTypes.object,
+  }
+
+  shouldShowRetry = transaction => {
+    const { transactionToRetry } = this.props
+    const { id, submittedTime } = transaction
+    return id === transactionToRetry.id && Date.now() - submittedTime > 30000
   }
 
   renderTransactions () {
     const { t } = this.context
-    const { pendingTransactions, completedTransactions } = this.props
+    const { pendingTransactions = [], completedTransactions = [] } = this.props
 
     return (
       <div className="transaction-list__transactions">
@@ -34,6 +42,7 @@ export default class TransactionList extends PureComponent {
                   <TransactionListItem
                     transaction={transaction}
                     key={transaction.id}
+                    showRetry={this.shouldShowRetry(transaction)}
                   />
                 ))
               }

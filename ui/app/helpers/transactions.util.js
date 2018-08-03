@@ -2,6 +2,8 @@ import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
 const registry = new MethodRegistry({ provider: global.ethereumProvider })
 
+import { hexToDecimal } from './conversions.util'
+
 import {
   TOKEN_METHOD_TRANSFER,
   TOKEN_METHOD_APPROVE,
@@ -54,4 +56,23 @@ export async function getMethodData (data = {}) {
     name: parsedResult.name,
     params: parsedResult.args,
   }
+}
+
+export function getLatestSubmittedTxWithEarliestNonce (transactions = []) {
+  if (!transactions.length) {
+    return {}
+  }
+
+  return transactions.reduce((acc, current) => {
+    const accNonce = hexToDecimal(acc.nonce)
+    const currentNonce = hexToDecimal(current.nonce)
+
+    if (currentNonce < accNonce) {
+      return current
+    } else if (currentNonce === accNonce) {
+      return current.submittedTime > acc.submittedTime ? current : acc
+    } else {
+      return acc
+    }
+  })
 }

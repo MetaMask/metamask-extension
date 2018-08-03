@@ -6,11 +6,15 @@ import {
   pendingTransactionsSelector,
   completedTransactionsSelector,
 } from '../../selectors/transactions'
+import { getLatestSubmittedTxWithEarliestNonce } from '../../helpers/transactions.util'
 
 const mapStateToProps = state => {
+  const pendingTransactions = pendingTransactionsSelector(state)
+
   return {
-    pendingTransactions: pendingTransactionsSelector(state),
     completedTransactions: completedTransactionsSelector(state),
+    pendingTransactions,
+    transactionToRetry: getLatestSubmittedTxWithEarliestNonce(pendingTransactions),
   }
 }
 

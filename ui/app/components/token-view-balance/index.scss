@@ -16,6 +16,16 @@
     }
   }
 
+  &__token-balance {
+    margin-left: 12px;
+    font-size: 1.5rem;
+
+    @media screen and (max-width: $break-small) {
+      margin-bottom: 12px;
+      font-size: 1.75rem;
+    }
+  }
+
   &__primary-balance {
     font-size: 1.5rem;
 

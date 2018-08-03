@@ -2,21 +2,36 @@
   box-sizing: border-box;
   min-height: 74px;
   padding: 8px 20px;
-  display: grid;
-  grid-template-columns: 45px 1fr 1fr 1fr;
-  grid-template-areas:
-    "identicon action status primary-amount"
-    "identicon nonce status secondary-amount";
   border-bottom: 1px solid $geyser;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
   @media screen and (max-width: $break-small) {
     padding: 8px 20px 12px;
-    grid-template-columns: 45px 5fr 3fr;
+  }
+
+  &:hover {
+    background: rgba($alto, .2);
+  }
+
+  &__grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 45px 1fr 1fr 1fr;
     grid-template-areas:
-      "nonce nonce nonce"
-      "identicon action primary-amount"
-      "identicon status secondary-amount";
+      "identicon action status primary-amount"
+      "identicon nonce status secondary-amount";
+
+      @media screen and (max-width: $break-small) {
+        grid-template-columns: 45px 5fr 3fr;
+        grid-template-areas:
+          "nonce nonce nonce"
+          "identicon action primary-amount"
+          "identicon status secondary-amount";
+      }
   }
 
   &__identicon {
@@ -87,8 +102,16 @@
     }
   }
 
+  &__retry {
+    background: #d1edff;
+    border-radius: 12px;
+    font-size: .75rem;
+    padding: 4px 12px;
+    cursor: pointer;
+    margin-top: 8px;
 
-  &:hover {
-    background: rgba($alto, .2);
+    @media screen and (max-width: $break-small) {
+      font-size: .5rem;
+    }
   }
 }
