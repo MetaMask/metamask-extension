@@ -57,7 +57,7 @@ class PreferencesController {
   addSuggestedToken (tokenOpts) {
     // TODO: Validate params
     const suggested = this.getSuggestedTokens()
-    suggested[tokenOpts.address] = suggested
+    suggested[tokenOpts.address] = tokenOpts
     this.store.updateState({ suggestedTokens: suggested })
   }
 
@@ -69,11 +69,10 @@ class PreferencesController {
    * @param {Function} - next
    * @param {Function} - end
    */
-  requestAddToken(req, res, next, end) {
+  requestAddToken (req, res, next, end) {
     if (req.method === 'eth_watchToken') {
       // TODO: Validate params!
       const [ rawAddress, symbol, decimals ] = req.params
-
       const tokenOpts = {
         address: rawAddress,
         decimals,
@@ -82,8 +81,8 @@ class PreferencesController {
 
       this.addSuggestedToken(tokenOpts)
       this.showAddTokenUi()
-
-      return end(rawAddress)
+      res.result = rawAddress
+      return end()
     } else {
       return next()
     }

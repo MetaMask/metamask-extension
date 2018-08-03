@@ -40,7 +40,6 @@ class Home extends Component {
       unapprovedTypedMessagesCount = 0,
       suggestedTokens = {},
       unconfirmedTransactionsCount = 0,
-
     } = this.props
 
     // suggested new tokens
@@ -177,11 +176,8 @@ Home.propTypes = {
   isPopup: PropTypes.bool,
   isMouseUser: PropTypes.bool,
   t: PropTypes.func,
-<<<<<<< HEAD
   suggestedTokens: PropTypes.object,
-=======
   unconfirmedTransactionsCount: PropTypes.number,
->>>>>>> develop
 }
 
 function mapStateToProps (state) {
