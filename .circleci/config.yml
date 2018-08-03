@@ -125,6 +125,8 @@ jobs:
             - firefox
 
   prep-build:
+    environment:
+      NODE_ENV: 'production'
     docker:
       - image: circleci/node:8.11.3-browsers
     steps:
