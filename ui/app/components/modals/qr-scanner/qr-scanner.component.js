@@ -28,6 +28,9 @@ export default class QrScanner extends Component {
     this.codeReader = null
     this.permissionChecker = null
     this.needsToReinit = false
+
+    // Clear pre-existing qr code data before scanning
+    this.props.qrCodeDetected(null)
   }
 
   componentDidMount () {
