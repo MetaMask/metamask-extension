@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#59](https://github.com/poanetwork/metamask-extension/pull/59): Update e2e test of Terms of Use page
 - [#58](https://github.com/poanetwork/metamask-extension/pull/58): Update Terms of Use page style
 - [#57](https://github.com/poanetwork/metamask-extension/pull/57): Optimized images for release.
 - [#55](https://github.com/poanetwork/metamask-extension/pull/55): Tests fix.
