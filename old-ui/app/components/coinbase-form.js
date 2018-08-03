@@ -23,8 +23,7 @@ CoinbaseForm.prototype.render = function () {
 
   return h('.flex-column', {
     style: {
-      marginTop: '35px',
-      padding: '25px',
+      marginTop: '30px',
       width: '100%',
     },
   }, [
@@ -37,6 +36,9 @@ CoinbaseForm.prototype.render = function () {
     }, [
       h('button.btn-green', {
         onClick: this.toCoinbase.bind(this),
+        style: {
+          marginRight: '10px',
+        },
       }, 'Continue to Coinbase'),
 
       h('button.btn-red', {

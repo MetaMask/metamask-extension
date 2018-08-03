@@ -16,12 +16,13 @@ TabBar.prototype.render = function () {
   const { subview = defaultTab } = state
 
   return (
-    h('.flex-row.space-around.text-transform-uppercase', {
+    h('.flex-row.space-around', {
       style: {
-        background: '#EBEBEB',
+        background: '#60269c',
         color: '#AEAEAE',
-        paddingTop: '4px',
-        minHeight: '30px',
+        paddingTop: '10px',
+        minHeight: '45px',
+        lineHeight: '45px',
       },
     }, tabs.map((tab) => {
       const { key, content } = tab

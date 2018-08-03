@@ -45,6 +45,10 @@ ConfigScreen.prototype.render = function () {
           onClick: () => {
             state.dispatch(actions.goHome())
           },
+          style: {
+            position: 'absolute',
+            left: '30px',
+          },
         }),
         h('h2.page-subtitle', 'Settings'),
       ]),
@@ -61,12 +65,12 @@ ConfigScreen.prototype.render = function () {
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-space-around', {
           style: {
-            padding: '20px',
+            padding: '30px',
             overflow: 'auto',
           },
         }, [
 
-          currentProviderDisplay(metamaskState),
+          currentProviderDisplay(metamaskState, state),
 
           h('div', { style: {display: 'flex'} }, [
             h('input#new_rpc', {
@@ -74,8 +78,11 @@ ConfigScreen.prototype.render = function () {
               style: {
                 width: 'inherit',
                 flex: '1 0 auto',
-                height: '30px',
-                margin: '8px',
+                height: '32px',
+                margin: '20px 20px 0 0',
+                borderRadius: '3px',
+                border: '1px solid #e2e2e2',
+                padding: '10px',
               },
               onKeyPress (event) {
                 if (event.key === 'Enter') {
@@ -88,6 +95,7 @@ ConfigScreen.prototype.render = function () {
             h('button', {
               style: {
                 alignSelf: 'center',
+                marginTop: '20px',
               },
               onClick (event) {
                 event.preventDefault()
@@ -102,7 +110,11 @@ ConfigScreen.prototype.render = function () {
 
           currentConversionInformation(metamaskState, state),
 
-          h('hr.horizontal-line'),
+          h('hr.horizontal-line', {
+            style: {
+              marginTop: '20px',
+            },
+          }),
 
           h('div', {
             style: {
@@ -111,8 +123,9 @@ ConfigScreen.prototype.render = function () {
           }, [
             h('p', {
               style: {
-                fontFamily: 'Montserrat Light',
-                fontSize: '13px',
+                fontFamily: 'Nunito Regular',
+                fontSize: '14px',
+                lineHeight: '18px',
               },
             }, `State logs contain your public account addresses and sent transactions.`),
             h('br'),
@@ -132,7 +145,11 @@ ConfigScreen.prototype.render = function () {
             }, 'Download State Logs'),
           ]),
 
-          h('hr.horizontal-line'),
+          h('hr.horizontal-line', {
+            style: {
+              marginTop: '20px',
+            },
+          }),
 
           h('div', {
             style: {
@@ -150,7 +167,11 @@ ConfigScreen.prototype.render = function () {
             }, 'Reveal Seed Words'),
           ]),
 
-          h('hr.horizontal-line'),
+          h('hr.horizontal-line', {
+            style: {
+              marginTop: '20px',
+            },
+          }),
 
           h('div', {
             style: {
@@ -160,8 +181,9 @@ ConfigScreen.prototype.render = function () {
 
             h('p', {
               style: {
-                fontFamily: 'Montserrat Light',
-                fontSize: '13px',
+                fontFamily: 'Nunito Regular',
+                fontSize: '14px',
+                lineHeight: '18px',
               },
             }, [
               'Resetting is for developer use only. ',
@@ -223,7 +245,7 @@ function currentConversionInformation (metamaskState, state) {
   ])
 }
 
-function currentProviderDisplay (metamaskState) {
+function currentProviderDisplay (metamaskState, state) {
   var provider = metamaskState.provider
   var title, value
 
@@ -267,5 +289,11 @@ function currentProviderDisplay (metamaskState) {
   return h('div', [
     h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, title),
     h('span', value),
+    provider.type === 'rpc' && h('button', {
+      onClick (event) {
+        event.preventDefault()
+        state.dispatch(actions.showDeleteRPC())
+      },
+    }, 'Delete'),
   ])
 }

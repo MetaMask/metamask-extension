@@ -3,12 +3,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const NetworkIndicator = require('./components/network')
 const LoadingIndicator = require('./components/loading')
 const txHelper = require('../lib/tx-helper')
 const log = require('loglevel')
-const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
-const { getEnvironmentType } = require('../../app/scripts/lib/util')
 
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
@@ -45,7 +42,7 @@ function ConfirmTxScreen () {
 
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
-  const { network, provider, unapprovedTxs, currentCurrency, computedBalances,
+  const { network, unapprovedTxs, currentCurrency, computedBalances,
     unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, blockGasLimit } = props
   let { conversionRate } = props
 
@@ -58,7 +55,6 @@ ConfirmTxScreen.prototype.render = function () {
 
   var txData = unconfTxList[props.index] || {}
   var txParams = txData.params || {}
-  var isNotification = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
@@ -67,7 +63,11 @@ ConfirmTxScreen.prototype.render = function () {
 
   return (
 
-    h('.flex-column.flex-grow', [
+    h('.flex-column.flex-grow', {
+      style: {
+        width: '100%',
+      },
+    }, [
 
       h(LoadingIndicator, {
         isLoading: this.state ? !this.state.bypassLoadingScreen : txData.loadingDefaults,
@@ -79,37 +79,6 @@ ConfirmTxScreen.prototype.render = function () {
       }),
 
       // subtitle and nav
-      h('.section-title.flex-row.flex-center', [
-        !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: this.goHome.bind(this),
-        }) : null,
-        h('h2.page-subtitle', 'Confirm Transaction'),
-        isNotification ? h(NetworkIndicator, {
-          network: network,
-          provider: provider,
-        }) : null,
-      ]),
-
-      h('h3', {
-        style: {
-          alignSelf: 'center',
-          display: unconfTxList.length > 1 ? 'block' : 'none',
-        },
-      }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          style: {
-            display: props.index === 0 ? 'none' : 'inline-block',
-          },
-          onClick: () => props.dispatch(actions.previousTx()),
-        }),
-        ` ${props.index + 1} of ${unconfTxList.length} `,
-        h('i.fa.fa-arrow-right.fa-lg.cursor-pointer', {
-          style: {
-            display: props.index + 1 === unconfTxList.length ? 'none' : 'inline-block',
-          },
-          onClick: () => props.dispatch(actions.nextTx()),
-        }),
-      ]),
 
       warningIfExists(props.warning),
 
@@ -234,11 +203,6 @@ ConfirmTxScreen.prototype.cancelTypedMessage = function (msgData, event) {
   log.info('canceling typed message')
   this.stopPropagation(event)
   this.props.dispatch(actions.cancelTypedMsg(msgData))
-}
-
-ConfirmTxScreen.prototype.goHome = function (event) {
-  this.stopPropagation(event)
-  this.props.dispatch(actions.goHome())
 }
 
 function warningIfExists (warning) {

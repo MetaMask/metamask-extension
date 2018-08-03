@@ -27,24 +27,24 @@ RevealSeedConfirmation.prototype.render = function () {
       style: { maxWidth: '420px' },
     }, [
 
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center.section-title', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginBottom: 24,
+          background: '#ffffff',
+          color: '#333333',
           width: '100%',
-          fontSize: '20px',
+          fontSize: '16px',
           padding: 6,
+          fontFamily: 'Nunito  Semibold',
         },
       }, [
-        'Reveal Seed Words',
+        h('.page-subtitle', 'Reveal Seed Words'),
       ]),
 
       h('.div', {
         style: {
           display: 'flex',
           flexDirection: 'column',
-          padding: '20px',
+          padding: '30px',
           justifyContent: 'center',
         },
       }, [
@@ -58,29 +58,9 @@ RevealSeedConfirmation.prototype.render = function () {
           placeholder: 'Enter your password to confirm',
           onKeyPress: this.checkConfirmation.bind(this),
           style: {
-            width: 260,
-            marginTop: '12px',
+            marginTop: '20px',
           },
         }),
-
-        h('.flex-row.flex-start', {
-          style: {
-            marginTop: 30,
-            width: '50%',
-          },
-        }, [
-          // cancel
-          h('button.primary', {
-            onClick: this.goHome.bind(this),
-          }, 'CANCEL'),
-
-          // submit
-          h('button.primary', {
-            style: { marginLeft: '10px' },
-            onClick: this.revealSeedWords.bind(this),
-          }, 'OK'),
-
-        ]),
 
         (props.warning) && (
           h('span.error', {
@@ -93,6 +73,25 @@ RevealSeedConfirmation.prototype.render = function () {
         props.inProgress && (
           h('span.in-progress-notification', 'Generating Seed...')
         ),
+
+        h('.flex-row.flex-start.flex-right', {
+          style: {
+            marginTop: 20,
+            width: '100%',
+          },
+        }, [
+          // cancel
+          h('button.btn-violet', {
+            onClick: this.goHome.bind(this),
+          }, 'Cancel'),
+
+          // submit
+          h('button', {
+            style: { marginLeft: '10px' },
+            onClick: this.revealSeedWords.bind(this),
+          }, 'Ok'),
+
+        ]),
       ]),
     ])
   )

@@ -6,6 +6,7 @@ docs/**
 
 development/bundle.js
 development/states.js
+development/publish-release.js
 
 app/scripts/lib/extension-instance.js
 app/scripts/chromereload.js
@@ -19,3 +20,4 @@ test/integration/bundle.js
 test/integration/jquery-3.1.0.min.js
 test/integration/helpers.js
 test/integration/lib/first-time.js
+test/integration/lib/send-new-ui.js

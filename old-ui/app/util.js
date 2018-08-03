@@ -21,6 +21,7 @@ for (var currency in valueTable) {
 module.exports = {
   valuesFor: valuesFor,
   addressSummary: addressSummary,
+  accountSummary: accountSummary,
   miniAddressSummary: miniAddressSummary,
   isAllOneCase: isAllOneCase,
   isValidAddress: isValidAddress,
@@ -53,6 +54,14 @@ function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includ
     checked = ethUtil.stripHexPrefix(checked)
   }
   return checked ? checked.slice(0, firstSegLength) + '...' + checked.slice(checked.length - lastSegLength) : '...'
+}
+
+function accountSummary (acc, firstSegLength = 6, lastSegLength = 4) {
+  if (!acc) return ''
+  if (acc.length < 12) return acc
+  let posOfLastPart = acc.length - lastSegLength
+  if (posOfLastPart < (firstSegLength + 1)) posOfLastPart += (firstSegLength + 1) - posOfLastPart
+  return acc.slice(0, firstSegLength) + '...' + acc.slice(posOfLastPart)
 }
 
 function miniAddressSummary (address) {

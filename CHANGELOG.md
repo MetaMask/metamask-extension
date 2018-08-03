@@ -2,6 +2,20 @@
 
 ## Current Master
 
+## 4.8.3 Fri Aug 03 2018
+
+- [#59](https://github.com/poanetwork/metamask-extension/pull/59): Update e2e test of Terms of Use page
+- [#58](https://github.com/poanetwork/metamask-extension/pull/58): Update Terms of Use page style
+- [#57](https://github.com/poanetwork/metamask-extension/pull/57): Optimized images for release.
+- [#55](https://github.com/poanetwork/metamask-extension/pull/55): Tests fix.
+- [#52](https://github.com/poanetwork/metamask-extension/pull/52): Nifty Wallet restyling.
+- [#54](https://github.com/poanetwork/metamask-extension/pull/54): Fix explorer url for POA network on confirmed transaction.
+- [#50](https://github.com/poanetwork/metamask-extension/pull/50): Update sentry links.
+- [#45](https://github.com/poanetwork/metamask-extension/pull/45): Automate release publish.
+- [#39](https://github.com/poanetwork/metamask-extension/pull/39): Swap npm Jazzicon dependency to Rockicon with changed palette for identicon
+
+## 4.8.2 Thu Jul 26 2018
+
 - Add new tokens auto detection
 - Remove rejected transactions from transaction history
 - Add Trezor Support

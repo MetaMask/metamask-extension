@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const isNode = require('detect-node')
 const findDOMNode = require('react-dom').findDOMNode
-const jazzicon = require('jazzicon')
+const jazzicon = require('rockicon')
 const iconFactoryGen = require('../../lib/icon-factory')
 const iconFactory = iconFactoryGen(jazzicon)
 
@@ -29,7 +29,7 @@ IdenticonComponent.prototype.render = function () {
         height: diameter,
         width: diameter,
         borderRadius: diameter / 2,
-        overflow: 'hidden',
+        overflow: (props.overflow || 'hidden'),
       },
     })
   )

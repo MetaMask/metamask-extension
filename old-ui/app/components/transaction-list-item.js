@@ -84,6 +84,20 @@ TransactionListItem.prototype.render = function () {
   const nonce = txParams.nonce ? numberToBN(txParams.nonce).toString(10) : ''
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
+  const valueStyle = {
+    fontFamily: 'Nunito Bold',
+    width: '100%',
+    textAlign: 'right',
+    fontSize: '14px',
+    color: '#333333',
+  }
+
+  const dimStyle = {
+    fontFamily: 'Nunito Regular',
+    color: '#333333',
+    marginLeft: '5px',
+    fontSize: '14px',
+  }
   return (
     h('.transaction-list-item.flex-column', {
       onClick: (event) => {
@@ -122,6 +136,7 @@ TransactionListItem.prototype.render = function () {
         }, [
           h('span', {
             style: {
+              fontFamily: 'Nunito Bold',
               display: 'flex',
               cursor: 'normal',
               flexDirection: 'column',
@@ -132,16 +147,27 @@ TransactionListItem.prototype.render = function () {
           }, nonce),
         ]),
 
-        h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
+        h('.flex-column', {
+          style: {
+            overflow: 'hidden',
+            textAlign: 'left',
+          },
+        }, [
           domainField(txParams),
-          h('div', date),
-          recipientField(txParams, transaction, isTx, isMsg),
+          h('div.flex-row', [
+            recipientField(txParams, transaction, isTx, isMsg),
+          ]),
+          h('div', {
+            style: {
+              fontSize: '12px',
+              color: '#777777',
+            },
+          }, date),
         ]),
 
-        // Places a copy button if tx is successful, else places a placeholder empty div.
-        transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
-
         isTx ? h(EthBalance, {
+          valueStyle,
+          dimStyle,
           value: txParams.value,
           conversionRate,
           currentCurrency,
@@ -149,7 +175,9 @@ TransactionListItem.prototype.render = function () {
           shorten: true,
           showFiat: false,
           network,
-          style: {fontSize: '15px'},
+          style: {
+            margin: '0 auto',
+          },
         }) : h('.flex-column'),
       ]),
 
@@ -218,11 +246,13 @@ function recipientField (txParams, transaction, isTx, isMsg) {
 
   return h('div', {
     style: {
-      fontSize: 'x-small',
-      color: '#ABA9AA',
+      fontSize: '14px',
+      color: '#333333',
     },
   }, [
     message,
+    // Places a copy button if tx is successful, else places a placeholder empty div.
+    transaction.hash ? h(CopyButton, { value: transaction.hash, display: 'inline-flex' }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
     renderErrorOrWarning(transaction),
   ])
 }
@@ -236,12 +266,12 @@ function renderErrorOrWarning (transaction) {
 
   // show dropped
   if (status === 'dropped') {
-    return h('span.dropped', ' (Dropped)')
+    return h('div.dropped', ' (Dropped)')
   }
 
   // show rejected
   if (status === 'rejected') {
-    return h('span.error', ' (Rejected)')
+    return h('div.error', ' (Rejected)')
   }
 
   // show error
@@ -252,7 +282,7 @@ function renderErrorOrWarning (transaction) {
           title: message,
           position: 'bottom',
         }, [
-          h(`span.error`, ` (Failed)`),
+          h(`div.error`, ` (Failed)`),
         ])
     )
   }
@@ -264,7 +294,7 @@ function renderErrorOrWarning (transaction) {
       title: message,
       position: 'bottom',
     }, [
-      h(`span.warning`, ` (Warning)`),
+      h(`div.warning`, ` (Warning)`),
     ])
   }
 }

@@ -13,13 +13,18 @@ const MiniAccountPanel = require('./mini-account-panel')
 const Copyable = require('./copyable')
 const EthBalance = require('./eth-balance')
 const addressSummary = util.addressSummary
+const accountSummary = util.accountSummary
 const nameForAddress = require('../../lib/contract-namer')
 const BNInput = require('./bn-as-decimal-input')
+const { getEnvironmentType } = require('../../../app/scripts/lib/util')
+const NetworkIndicator = require('../components/network')
+const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enums')
+const connect = require('react-redux').connect
 
 const MIN_GAS_PRICE_BN = new BN('0')
 const MIN_GAS_LIMIT_BN = new BN('21000')
 
-module.exports = PendingTx
+module.exports = connect(mapStateToProps)(PendingTx)
 inherits(PendingTx, Component)
 function PendingTx () {
   Component.call(this)
@@ -30,9 +35,29 @@ function PendingTx () {
   }
 }
 
+function mapStateToProps (state) {
+  return {
+    identities: state.metamask.identities,
+    accounts: state.metamask.accounts,
+    selectedAddress: state.metamask.selectedAddress,
+    unapprovedTxs: state.metamask.unapprovedTxs,
+    unapprovedMsgs: state.metamask.unapprovedMsgs,
+    unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
+    unapprovedTypedMessages: state.metamask.unapprovedTypedMessages,
+    index: state.appState.currentView.context,
+    warning: state.appState.warning,
+    network: state.metamask.network,
+    provider: state.metamask.provider,
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
+    blockGasLimit: state.metamask.currentBlockGasLimit,
+    computedBalances: state.metamask.computedBalances,
+  }
+}
+
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { currentCurrency, blockGasLimit, network } = props
+  const { currentCurrency, blockGasLimit, network, provider } = props
 
   const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
@@ -83,7 +108,25 @@ PendingTx.prototype.render = function () {
   const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
   const showRejectAll = props.unconfTxListLength > 1
 
+  var isNotification = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
+
   this.inputs = []
+
+  const valueStyle = {
+    fontFamily: 'Nunito Bold',
+    width: '100%',
+    textAlign: 'right',
+    fontSize: '14px',
+    color: '#333333',
+  }
+
+  const dimStyle = {
+    color: '#333333',
+    marginLeft: '5px',
+    fontSize: '14px',
+  }
+
+  const isError = txMeta.simulationFails || !isValidAddress || insufficientBalance || (dangerousGasLimit && !gasLimitSpecified)
 
   return (
 
@@ -102,42 +145,87 @@ PendingTx.prototype.render = function () {
           h('.flex-row.flex-center', {
             style: {
               maxWidth: '100%',
+              padding: showRejectAll ? '20px 20px 50px 20px' : '20px 20px 20px 20px',
+              background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
+              position: 'relative',
             },
           }, [
 
+            h('div', {
+              style: {
+                position: 'absolute',
+                bottom: '20px',
+                width: '100%',
+                textAlign: 'center',
+                color: '#ffffff',
+              },
+            }, [
+              h('h3', {
+                style: {
+                  alignSelf: 'center',
+                  display: props.unconfTxListLength > 1 ? 'block' : 'none',
+                  fontSize: '14px',
+                },
+              }, [
+                h('i.fa.white-arrow-left.fa-lg.cursor-pointer', {
+                  style: {
+                    display: props.index === 0 ? 'none' : 'inline-block',
+                  },
+                  onClick: () => props.dispatch(actions.previousTx()),
+                }),
+                ` ${props.index + 1} of ${props.unconfTxListLength} `,
+                h('i.fa.white-arrow-right.fa-lg.cursor-pointer', {
+                  style: {
+                    display: props.index + 1 === props.unconfTxListLength ? 'none' : 'inline-block',
+                  },
+                  onClick: () => props.dispatch(actions.nextTx()),
+                }),
+              ])]
+            ),
+
             h(MiniAccountPanel, {
               imageSeed: address,
-              picOrder: 'right',
+              picOrder: 'left',
             }, [
-              h('span.font-small', {
+              h('div', {
                 style: {
-                  fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
+                  marginLeft: '10px',
                 },
-              }, identity.name),
-
-              h(Copyable, {
-                value: ethUtil.toChecksumAddress(address),
               }, [
+                h('div.font-pre-medium', {
+                  style: {
+                    fontFamily: 'Nunito SemiBold',
+                    color: '#ffffff',
+                    whiteSpace: 'nowrap',
+                  },
+                }, accountSummary(identity.name, 6, 4)),
+
+                h(Copyable, {
+                  value: ethUtil.toChecksumAddress(address),
+                }, [
+                  h('span.font-small', {
+                    style: {
+                      fontFamily: 'Nunito Regular',
+                      color: 'rgba(255, 255, 255, 0.7)',
+                    },
+                  }, addressSummary(address, 6, 4, false)),
+                ]),
+
                 h('span.font-small', {
                   style: {
-                    fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+                    fontFamily: 'Nunito Regular',
                   },
-                }, addressSummary(address, 6, 4, false)),
-              ]),
-
-              h('span.font-small', {
-                style: {
-                  fontFamily: 'Montserrat Light, Montserrat, sans-serif',
-                },
-              }, [
-                h(EthBalance, {
-                  value: balance,
-                  conversionRate,
-                  currentCurrency,
-                  network,
-                  inline: true,
-                  labelColor: '#F7861C',
-                }),
+                }, [
+                  h(EthBalance, {
+                    fontSize: '12px',
+                    value: balance,
+                    conversionRate,
+                    currentCurrency,
+                    network,
+                    inline: true,
+                    labelColor: '#F7861C',
+                  }),
+                ]),
               ]),
             ]),
 
@@ -150,29 +238,93 @@ PendingTx.prototype.render = function () {
             .table-box {
               margin: 7px 0px 0px 0px;
               width: 100%;
+              position: relative;
             }
             .table-box .row {
               margin: 0px;
-              background: rgb(236,236,236);
+              background: #ffffff;
               display: flex;
               justify-content: space-between;
-              font-family: Montserrat Light, sans-serif;
-              font-size: 13px;
-              padding: 5px 25px;
+              font-family: Nunito Regular;
+              font-size: 14px;
+              padding: 5px 30px;
             }
             .table-box .row .value {
-              font-family: Montserrat Regular;
+              font-family: Nunito Regular;
             }
           `),
 
           h('.table-box', [
+
+            h('.flex-row.flex-center', {
+              style: {
+                marginTop: '20px',
+                marginBottom: '30px',
+              },
+            }, [
+              !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+                onClick: this.goHome.bind(this),
+                style: {
+                  position: 'absolute',
+                  left: '30px',
+                },
+              }) : null,
+              'Confirm Transaction',
+              isNotification ? h(NetworkIndicator, {
+                network: network,
+                provider: provider,
+              }) : null,
+            ]),
+
+            isError ? h('div', {
+              style: {
+                textAlign: 'center',
+                position: 'absolute',
+                top: '25px',
+                background: 'rgba(255, 255, 255, 0.85)',
+                border: '2px solid rgb(226, 2, 2)',
+                width: '100%',
+              },
+            }, [
+              txMeta.simulationFails ?
+                h('.error', {
+                  style: {
+                    fontSize: '12px',
+                  },
+                }, 'Transaction Error. Exception thrown in contract code.')
+              : null,
+
+              !isValidAddress ?
+                h('.error', {
+                  style: {
+                    fontSize: '12px',
+                  },
+                }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH. ')
+              : null,
+
+              insufficientBalance ?
+                h('span.error', {
+                  style: {
+                    fontSize: '12px',
+                  },
+                }, 'Insufficient balance for transaction. ')
+              : null,
+
+              (dangerousGasLimit && !gasLimitSpecified) ?
+                h('span.error', {
+                  style: {
+                    fontSize: '12px',
+                  },
+                }, 'Gas limit set dangerously high. Approving this transaction is liable to fail. ')
+              : null,
+            ]) : null,
 
             // Ether Value
             // Currently not customizable, but easily modified
             // in the way that gas and gasLimit currently are.
             h('.row', [
               h('.cell.label', 'Amount'),
-              h(EthBalance, { value: txParams.value, currentCurrency, conversionRate, network }),
+              h(EthBalance, { valueStyle, dimStyle, value: txParams.value, currentCurrency, conversionRate, network }),
             ]),
 
             // Gas Limit (customizable)
@@ -191,7 +343,6 @@ PendingTx.prototype.render = function () {
                   suffix: 'UNITS',
                   style: {
                     position: 'relative',
-                    top: '5px',
                   },
                   onChange: this.gasLimitChanged.bind(this),
 
@@ -214,7 +365,6 @@ PendingTx.prototype.render = function () {
                   min: forceGasMin || MIN_GAS_PRICE_BN,
                   style: {
                     position: 'relative',
-                    top: '5px',
                   },
                   onChange: this.gasPriceChanged.bind(this),
                   ref: (hexInput) => { this.inputs.push(hexInput) },
@@ -225,14 +375,12 @@ PendingTx.prototype.render = function () {
             // Max Transaction Fee (calculated)
             h('.cell.row', [
               h('.cell.label', 'Max Transaction Fee'),
-              h(EthBalance, { value: txFeeBn.toString(16), currentCurrency, conversionRate, network }),
+              h(EthBalance, { valueStyle, dimStyle, value: txFeeBn.toString(16), currentCurrency, conversionRate, network }),
             ]),
 
             h('.cell.row', {
               style: {
-                fontFamily: 'Montserrat Regular',
-                background: 'white',
-                padding: '10px 25px',
+                fontFamily: 'Nunito Regular',
               },
             }, [
               h('.cell.label', 'Max Total'),
@@ -243,6 +391,8 @@ PendingTx.prototype.render = function () {
                 },
               }, [
                 h(EthBalance, {
+                  valueStyle,
+                  dimStyle,
                   value: maxCost.toString(16),
                   currentCurrency,
                   conversionRate,
@@ -257,15 +407,15 @@ PendingTx.prototype.render = function () {
             // Data size row:
             h('.cell.row', {
               style: {
-                background: '#f7f7f7',
+                background: '#ffffff',
                 paddingBottom: '0px',
               },
             }, [
               h('.cell.label'),
               h('.cell.value', {
                 style: {
-                  fontFamily: 'Montserrat Light',
-                  fontSize: '11px',
+                  fontFamily: 'Nunito Regular',
+                  fontSize: '14px',
                 },
               }, `Data included: ${dataLength} bytes`),
             ]),
@@ -276,57 +426,18 @@ PendingTx.prototype.render = function () {
         h('style', `
           .conf-buttons button {
             margin-left: 10px;
-            text-transform: uppercase;
           }
         `),
-        h('.cell.row', {
-          style: {
-            textAlign: 'center',
-          },
-        }, [
-          txMeta.simulationFails ?
-            h('.error', {
-              style: {
-                fontSize: '0.9em',
-              },
-            }, 'Transaction Error. Exception thrown in contract code.')
-          : null,
-
-          !isValidAddress ?
-            h('.error', {
-              style: {
-                fontSize: '0.9em',
-              },
-            }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
-          : null,
-
-          insufficientBalance ?
-            h('span.error', {
-              style: {
-                fontSize: '0.9em',
-              },
-            }, 'Insufficient balance for transaction')
-          : null,
-
-          (dangerousGasLimit && !gasLimitSpecified) ?
-            h('span.error', {
-              style: {
-                fontSize: '0.9em',
-              },
-            }, 'Gas limit set dangerously high. Approving this transaction is liable to fail.')
-          : null,
-        ]),
-
 
         // send + cancel
         h('.flex-row.flex-space-around.conf-buttons', {
           style: {
             display: 'flex',
             justifyContent: 'flex-end',
-            margin: '14px 25px',
+            margin: '14px 30px',
           },
         }, [
-          h('button', {
+          h('button.btn-violet', {
             onClick: (event) => {
               this.resetGasFields()
               event.preventDefault()
@@ -335,9 +446,9 @@ PendingTx.prototype.render = function () {
 
           // Accept Button or Buy Button
           insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy Ether') :
-            h('input.confirm.btn-green', {
+            h('input.confirm', {
               type: 'submit',
-              value: 'SUBMIT',
+              value: 'Submit',
               style: { marginLeft: '10px' },
               disabled: buyDisabled,
             }),
@@ -350,7 +461,7 @@ PendingTx.prototype.render = function () {
           style: {
             display: 'flex',
             justifyContent: 'flex-end',
-            margin: '14px 25px',
+            margin: '14px 30px',
           },
         }, [
           h('button.cancel.btn-red', {
@@ -371,27 +482,35 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
   // If it's not a contract deploy, send to the account
   if (!isContractDeploy) {
     return h(MiniAccountPanel, {
-      imageSeed: txParams.to,
-      picOrder: 'left',
-    }, [
-
-      h('span.font-small', {
-        style: {
-          fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
-        },
-      }, nameForAddress(txParams.to, props.identities)),
-
-      h(Copyable, {
-        value: ethUtil.toChecksumAddress(txParams.to),
+        imageSeed: txParams.to,
+        picOrder: 'right',
       }, [
-        h('span.font-small', {
+        h('div', {
           style: {
-            fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+            marginRight: '10px',
           },
-        }, addressSummary(txParams.to, 6, 4, false)),
-      ]),
+        }, [
+          h('span.font-pre-medium', {
+            style: {
+              fontFamily: 'Nunito SemiBold',
+              color: '#ffffff',
+              display: 'inline-block',
+              whiteSpace: 'nowrap',
+            },
+          }, accountSummary(nameForAddress(txParams.to, props.identities)), 6, 4),
 
-    ])
+          h(Copyable, {
+            value: ethUtil.toChecksumAddress(txParams.to),
+          }, [
+            h('span.font-small', {
+              style: {
+                fontFamily: 'Nunito Regular',
+                color: 'rgba(255, 255, 255, 0.7)',
+              },
+            }, addressSummary(txParams.to, 6, 4, false)),
+          ]),
+        ]),
+      ])
   } else {
     return h(MiniAccountPanel, {
       picOrder: 'left',
@@ -399,7 +518,8 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 
       h('span.font-small', {
         style: {
-          fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
+          fontFamily: 'Nunito Bold',
+          color: '#ffffff',
         },
       }, 'New Contract'),
 
@@ -500,13 +620,24 @@ PendingTx.prototype.bnMultiplyByFraction = function (targetBN, numerator, denomi
   return targetBN.mul(numBN).div(denomBN)
 }
 
+PendingTx.prototype.goHome = function (event) {
+  this.stopPropagation(event)
+  this.props.dispatch(actions.goHome())
+}
+
+PendingTx.prototype.stopPropagation = function (event) {
+  if (event.stopPropagation) {
+    event.stopPropagation()
+  }
+}
+
 function forwardCarrat () {
   return (
     h('img', {
-      src: 'images/forward-carrat.svg',
+      src: 'images/forward-carrat-light.svg',
       style: {
-        padding: '5px 6px 0px 10px',
-        height: '37px',
+        padding: '5px 30px 0px 30px',
+        height: '62px',
       },
     })
   )

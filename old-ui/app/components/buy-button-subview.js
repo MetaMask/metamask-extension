@@ -65,18 +65,18 @@ BuyButtonSubview.prototype.headerSubview = function () {
           justifyContent: 'center',
         },
       }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.backButtonContext.bind(this),
           style: {
             position: 'absolute',
-            left: '10px',
+            left: '30px',
           },
         }),
-        h('h2.text-transform-uppercase.flex-center', {
+        h('h2.flex-center', {
           style: {
             width: '100vw',
-            background: 'rgb(235, 235, 235)',
-            color: 'rgb(174, 174, 174)',
+            background: '#ffffff',
+            color: '#333333',
             paddingTop: '4px',
             paddingBottom: '4px',
           },
@@ -97,7 +97,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
       // account panel
       h('div', {
         style: {
-          width: '80%',
+          width: '100%',
         },
       }, [
         h(AccountPanel, {
@@ -114,13 +114,13 @@ BuyButtonSubview.prototype.headerSubview = function () {
           justifyContent: 'center',
         },
       }, [
-        h('h3.text-transform-uppercase.flex-center', {
+        h('h3.flex-center', {
           style: {
             paddingLeft: '15px',
             width: '100vw',
-            background: 'rgb(235, 235, 235)',
-            color: 'rgb(174, 174, 174)',
-            paddingTop: '4px',
+            background: '#ffffff',
+            color: '#333333',
+            paddingTop: '30px',
             paddingBottom: '4px',
           },
         }, 'Select Service'),
@@ -158,25 +158,25 @@ BuyButtonSubview.prototype.primarySubview = function () {
             margin: '20px 50px',
           },
         }, [
-          network !== '99' ? h('button.text-transform-uppercase', {
+          network !== '99' ? h('button', {
             onClick: () => this.props.dispatch(actions.buyEth({ network })),
             style: {
               marginTop: '15px',
             },
           }, label) : null,
-          network === '99' ? h('button.text-transform-uppercase', {
+          network === '99' ? h('button', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'binance' })),
             style: {
               marginTop: '15px',
             },
           }, 'Binance') : null,
-          network === '99' ? h('button.text-transform-uppercase', {
+          network === '99' ? h('button', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'bibox' })),
             style: {
               marginTop: '15px',
             },
           }, 'BiBox') : null,
-          network === '99' ? h('button.text-transform-uppercase', {
+          network === '99' ? h('button', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'cex.plus' })),
             style: {
               marginTop: '15px',
@@ -184,7 +184,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
           }, 'CEX Plus') : null,
           // Kovan only: Dharma loans beta
           network === '42' ? (
-            h('button.text-transform-uppercase', {
+            h('button', {
               onClick: () => this.navigateTo('https://borrow.dharma.io/'),
               style: {
                 marginTop: '15px',
@@ -235,13 +235,13 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
         }),
       ]),
 
-      h('h3.text-transform-uppercase', {
+      h('h3', {
         style: {
           paddingLeft: '15px',
-          fontFamily: 'Montserrat Light',
+          fontFamily: 'Nunito Light',
           width: '100vw',
-          background: 'rgb(235, 235, 235)',
-          color: 'rgb(174, 174, 174)',
+          background: '#6729a8',
+          color: '#ffffff',
           paddingTop: '4px',
           paddingBottom: '4px',
         },
