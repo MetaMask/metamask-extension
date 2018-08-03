@@ -171,6 +171,10 @@ button.btn-thin {
   background: #ffffff;
 }
 
+.notice-box {
+  margin: 20px;
+}
+
 h2.page-subtitle {
   font-family: 'Nunito Regular';
   color: #333333;
