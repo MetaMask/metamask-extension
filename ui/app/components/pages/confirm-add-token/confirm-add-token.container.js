@@ -3,7 +3,7 @@ import ConfirmAddToken from './confirm-add-token.component'
 
 const extend = require('xtend')
 
-const { addTokens, clearPendingTokens } = require('../../../actions')
+const { addTokens, clearPendingTokens, removeSuggestedTokens } = require('../../../actions')
 
 const mapStateToProps = ({ metamask }) => {
   const { pendingTokens, suggestedTokens } = metamask
@@ -18,6 +18,7 @@ const mapDispatchToProps = dispatch => {
   return {
     addTokens: tokens => dispatch(addTokens(tokens)),
     clearPendingTokens: () => dispatch(clearPendingTokens()),
+    removeSuggestedTokens: () => dispatch(removeSuggestedTokens()),
   }
 }
 

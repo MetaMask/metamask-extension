@@ -226,6 +226,7 @@ var actions = {
   addTokens,
   removeToken,
   updateTokens,
+  removeSuggestedTokens,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
@@ -1609,6 +1610,29 @@ function addTokens (tokens) {
         ))
       )
     }
+  }
+}
+
+function removeSuggestedTokens () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeSuggestedTokens((err) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.clearPendingTokens())
+        resolve()
+      })
+    })
+  }
+}
+
+function clearPendingTokens () {
+  return {
+    type: actions.CLEAR_PENDING_TOKENS,
   }
 }
 

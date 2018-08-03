@@ -211,6 +211,13 @@ class PreferencesController {
     return selected
   }
 
+  removeSuggestedTokens () {
+    return new Promise((resolve, reject) => {
+      this.store.updateState({ suggestedTokens: {} })
+      resolve()
+    })
+  }
+
   /**
    * Setter for the `selectedAddress` property
    *
