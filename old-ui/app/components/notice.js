@@ -15,29 +15,16 @@ function Notice () {
 Notice.prototype.render = function () {
   const { notice, onConfirm } = this.props
   const { title, body } = notice
-  const state = this.state || { disclaimerDisabled: true }
+  const state = this.state || { disclaimerDisabled: false }
   const disabled = state.disclaimerDisabled
 
   return (
     h('.flex-column.flex-center.flex-grow', {
       style: {
         width: '100%',
+        fontFamily: 'Nunito SemiBold',
       },
     }, [
-      h('h3.flex-center.terms-header.section-title', {
-        style: {
-          background: '#ffffff',
-          color: '#333333',
-          width: '100%',
-          fontSize: '16px',
-          textAlign: 'center',
-          padding: 6,
-          marginBottom: 24,
-        },
-      }, [
-        title,
-      ]),
-
       h('style', `
 
         .markdown {
@@ -45,61 +32,92 @@ Notice.prototype.render = function () {
         }
 
         .markdown h1, .markdown h2, .markdown h3 {
-          margin: 10px 0;
-          font-weight: bold;
+          margin: 20px 0;
+          line-height: 18px;
+          font-weight: normal;
         }
 
         .markdown strong {
-          font-weight: bold;
+          font-weight: normal;
         }
         .markdown em {
           font-style: italic;
         }
 
         .markdown p {
-          margin: 10px 0;
+          margin: 20px 0;
+          line-height: 18px;
+          font-weight: normal;
         }
 
         .markdown a {
           color: #8fdc97;
         }
 
-      `),
+        .markdown::-webkit-scrollbar {
+            width: 16px;
+        }
+         
+        .markdown::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+         
+        .markdown::-webkit-scrollbar-thumb {
+          background-color: #411a6a;
+          border-radius: 2px;
+          border: 6px solid transparent;
+          background-clip: content-box;
+        }
 
-      h('div.markdown', {
-        onScroll: (e) => {
-          var object = e.currentTarget
-          if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
-            this.setState({disclaimerDisabled: false})
-          }
-        },
-        style: {
-          background: '#ffffff',
-          height: '310px',
-          padding: '6px',
-          width: '90%',
-          overflowY: 'scroll',
-          scroll: 'auto',
-          borderRadius: '3px',
-        },
-      }, [
-        h(ReactMarkdown, {
-          className: 'notice-box',
-          source: body,
-          skipHtml: true,
-        }),
-      ]),
+      `), [
+        h('h3.flex-center.terms-header', {
+          key: 'notice-key',
+          style: {
+            color: '#ffffff',
+            width: '100%',
+            fontSize: '16px',
+            textAlign: 'center',
+            margin: '20px 0px',
+          },
+        }, [
+          title,
+        ]),
+        h('div.markdown', {
+          onScroll: (e) => {
+            var object = e.currentTarget
+            if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
+              this.setState({disclaimerDisabled: false})
+            }
+          },
+          style: {
+            background: '#542289',
+            color: '#ffffff',
+            height: '310px',
+            width: '90%',
+            overflowY: 'scroll',
+            scroll: 'auto',
+            borderRadius: '3px',
+            fontSize: '14px',
+          },
+        }, [
+          h(ReactMarkdown, {
+            className: 'notice-box',
+            source: body,
+            skipHtml: true,
+          }),
+        ]),
 
-      h('button', {
-        disabled,
-        onClick: () => {
-          this.setState({disclaimerDisabled: true})
-          onConfirm()
-        },
-        style: {
-          marginTop: '18px',
-        },
-      }, 'Accept'),
+        h('button', {
+          disabled,
+          onClick: () => {
+            this.setState({disclaimerDisabled: true})
+            onConfirm()
+          },
+          style: {
+            marginTop: '18px',
+          },
+        }, 'Accept'),
+      ],
     ])
   )
 }
