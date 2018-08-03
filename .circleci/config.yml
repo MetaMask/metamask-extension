@@ -125,8 +125,6 @@ jobs:
             - firefox
 
   prep-build:
-    environment:
-      NODE_ENV: 'production'
     docker:
       - image: circleci/node:8.11.3-browsers
     steps:
@@ -135,7 +133,7 @@ jobs:
           key: dependency-cache-{{ .Revision }}
       - run:
           name: build:dist
-          command: npm run dist
+          command: NODE_ENV='production' npm run dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
