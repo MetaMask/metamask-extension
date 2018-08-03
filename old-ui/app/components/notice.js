@@ -15,7 +15,7 @@ function Notice () {
 Notice.prototype.render = function () {
   const { notice, onConfirm } = this.props
   const { title, body } = notice
-  const state = this.state || { disclaimerDisabled: false }
+  const state = this.state || { disclaimerDisabled: true }
   const disabled = state.disclaimerDisabled
 
   return (
@@ -26,8 +26,8 @@ Notice.prototype.render = function () {
     }, [
       h('h3.flex-center.terms-header.section-title', {
         style: {
-          background: '#542289',
-          color: '#ffffff',
+          background: '#ffffff',
+          color: '#333333',
           width: '100%',
           fontSize: '16px',
           textAlign: 'center',
@@ -74,8 +74,7 @@ Notice.prototype.render = function () {
           }
         },
         style: {
-          background: '#542289',
-          color: '#ffffff',
+          background: '#ffffff',
           height: '310px',
           padding: '6px',
           width: '90%',
