@@ -34,16 +34,12 @@ class Home extends Component {
   componentDidMount () {
     const {
       history,
-      unapprovedTxs = {},
-      unapprovedMsgCount = 0,
-      unapprovedPersonalMsgCount = 0,
-      unapprovedTypedMessagesCount = 0,
       suggestedTokens = {},
       unconfirmedTransactionsCount = 0,
     } = this.props
 
     // suggested new tokens
-    if (suggestedTokens.length > 0) {
+    if (Object.keys(suggestedTokens).length > 0) {
       history.push(CONFIRM_ADD_TOKEN_ROUTE)
     }
 
@@ -238,7 +234,7 @@ function mapStateToProps (state) {
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,
     Qr: state.appState.Qr,
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,
-
+    suggestedTokens: state.metamask.suggestedTokens,
     // state needed to get account dropdown temporarily rendering from app bar
     selected,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
