@@ -30,15 +30,6 @@ workflows:
             - prep-deps-npm
             - prep-deps-firefox
             - prep-build
-      - test-e2e-beta-chrome:
-          requires:
-            - prep-deps-npm
-            - prep-build
-      - test-e2e-beta-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-deps-firefox
-            - prep-build
       - test-unit:
           requires:
             - prep-deps-npm
@@ -66,8 +57,6 @@ workflows:
             - test-unit
             - test-e2e-chrome
             - test-e2e-firefox
-            - test-e2e-beta-chrome
-            - test-e2e-beta-firefox
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
