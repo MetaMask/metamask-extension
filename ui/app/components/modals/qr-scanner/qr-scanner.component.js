@@ -9,6 +9,7 @@ export default class QrScanner extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     qrCodeDetected: PropTypes.func,
+    scanQrCode: PropTypes.func,
     error: PropTypes.bool,
     errorType: PropTypes.string,
   }
@@ -20,18 +21,9 @@ export default class QrScanner extends Component {
   constructor (props, context) {
     super(props)
 
-    let initialMsg = context.t('accessingYourCamera')
-    if (props.error) {
-      if (props.errorType === 'NO_WEBCAM_FOUND') {
-        initialMsg = context.t('noWebcamFound')
-      } else {
-        initialMsg = context.t('unknownCameraError')
-      }
-    }
-
     this.state = {
       ready: false,
-      msg: initialMsg,
+      msg: context.t('accessingYourCamera'),
     }
     this.codeReader = null
     this.permissionChecker = null
@@ -118,9 +110,20 @@ export default class QrScanner extends Component {
 
 
   stopAndClose = () => {
-    this.codeReader.reset()
+    if (this.codeReader) {
+      this.codeReader.reset()
+    }
     this.setState({ ready: false })
     this.props.hideModal()
+  }
+
+  tryAgain = () => {
+    // close the modal
+    this.stopAndClose()
+    // wait for the animation and try again
+    setTimeout(_ => {
+      this.props.scanQrCode()
+    }, 1000)
   }
 
   renderVideo () {
@@ -137,18 +140,61 @@ export default class QrScanner extends Component {
     )
   }
 
-  render () {
-    const { t } = this.context
+  renderErrorModal () {
+    let title, msg
+
+    if (this.props.error) {
+      if (this.props.errorType === 'NO_WEBCAM_FOUND') {
+        title = this.context.t('noWebcamFoundTitle')
+        msg = this.context.t('noWebcamFound')
+      } else {
+        title = this.context.t('unknownCameraErrorTitle')
+        msg = this.context.t('unknownCameraError')
+      }
+    }
 
     return (
       <div className="qr-scanner">
+        <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
+
+        <div className="qr-scanner__image">
+          <img src={'images/webcam.svg'} width={70} height={70} />
+        </div>
+        <div className="qr-scanner__title">
+          { title }
+        </div>
+        <div className={'qr-scanner__error'}>
+          {msg}
+        </div>
+        <div className={'qr-scanner__footer'}>
+          <button className="btn-default btn--large" onClick={this.stopAndClose}>
+            CANCEL
+          </button>
+          <button className="btn-primary btn--large" onClick={this.tryAgain}>
+            TRY AGAIN
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  render () {
+    const { t } = this.context
+
+    if (this.props.error) {
+      return this.renderErrorModal()
+    }
+
+    return (
+      <div className="qr-scanner">
+        <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
         <div className="qr-scanner__title">
           { `${t('scanQrCode')}` }
         </div>
         <div className="qr-scanner__content">
-          { !this.props.error ? this.renderVideo() : null}
+          { this.renderVideo() }
         </div>
-        <div className={`qr-scanner__status ${this.props.error ? 'error' : ''}`}>
+        <div className={'qr-scanner__status'}>
           {this.state.msg}
         </div>
       </div>

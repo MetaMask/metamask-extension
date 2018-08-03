@@ -1,7 +1,10 @@
 import { connect } from 'react-redux'
 import QrScanner from './qr-scanner.component'
 
-const { hideModal, qrCodeDetected } = require('../../../actions')
+const { hideModal, qrCodeDetected, showQrScanner } = require('../../../actions')
+import {
+  SEND_ROUTE,
+} from '../../../routes'
 
 const mapStateToProps = state => {
   return {
@@ -14,6 +17,7 @@ const mapDispatchToProps = dispatch => {
   return {
     hideModal: () => dispatch(hideModal()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
+    scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
   }
 }
 

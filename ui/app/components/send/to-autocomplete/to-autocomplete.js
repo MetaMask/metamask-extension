@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const AccountListItem = require('../account-list-item/account-list-item.component').default
 const connect = require('react-redux').connect
+const Tooltip = require('../../tooltip')
 
 ToAutoComplete.contextTypes = {
   t: PropTypes.func,
@@ -109,10 +110,13 @@ ToAutoComplete.prototype.render = function () {
         borderColor: inError ? 'red' : null,
       },
     }),
-    qrScanner && h(`i.fa.fa-qrcode.fa-lg.send-v2__to-autocomplete__qr-code`, {
+    qrScanner && h(Tooltip, {
+      title: this.context.t('scanQrCode'),
+      position: 'bottom',
+    }, h(`i.fa.fa-qrcode.fa-lg.send-v2__to-autocomplete__qr-code`, {
       style: { color: '#33333' },
       onClick: () => this.props.scanQrCode(),
-    }),
+    })),
     !to && h(`i.fa.fa-caret-down.fa-lg.send-v2__to-autocomplete__down-caret`, {
       style: { color: '#dedede' },
       onClick: () => this.handleInputEvent(),

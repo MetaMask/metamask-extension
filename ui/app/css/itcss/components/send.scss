@@ -629,13 +629,19 @@
 
     &__qr-code {
       position: absolute;
-      top: 21px;
-      left: 13px;
+      top: 13px;
+      right: 33px;
       cursor: pointer;
+      padding: 8px 5px 5px;
+      border-radius: 4px;
+    }
+
+    &__qr-code:hover {
+      background: #f1f1f1;
     }
 
     &__input.with-qr {
-      padding-left: 40px;
+      padding-right: 65px;
     }
   }
 

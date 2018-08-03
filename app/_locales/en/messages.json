@@ -656,8 +656,11 @@
   "notStarted": {
     "message": "Not Started"
   },
+  "noWebcamFoundTitle": {
+    "message": "Webcam not found"
+  },
   "noWebcamFound": {
-    "message": "We couldn't find any webcam available on your computer. Make sure the device is connected and configured correctly."
+    "message": "Your computer's webcam was not found. Please try again."
   },
   "oldUI": {
     "message": "Old UI"
@@ -1101,8 +1104,11 @@
   "unknownQrCode": {
     "message": "Error: We couldn't identify that QR code"
   },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Something went wrong...."
+  },
   "unknownCameraError": {
-    "message": "Ooops! Something went wrong while trying to access you camera. Please try again..."
+    "message": "There was an error while trying to access you camera. Please try again..."
   },
   "unlock": {
     "message": "Unlock"

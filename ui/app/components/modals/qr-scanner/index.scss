@@ -39,9 +39,45 @@
     padding: 15px;
   }
 
-  &__status.error {
-    padding: 60px 45px 80px;
+  &__image {
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 16px 0 0;
+    text-align: center;
+  }
+
+  &__error {
+    text-align: center;
     font-size: 16px;
+    padding: 15px;
+  }
+
+  &__footer {
+    padding: 20px;
+    flex-direction: row;
+    display: flex;
+
+    button {
+      margin-right: 15px;
+    }
+
+    button:last-of-type {
+      margin-right: 0;
+      background-color: #009eec;
+      border: none;
+      color: #fff;
+    }
+  }
+
+  &__close::after {
+    content: '\00D7';
+    font-size: 35px;
+    color: #9b9b9b;
+    position: absolute;
+    top: 4px;
+    right: 20px;
+    cursor: pointer;
+    font-weight: 300;
   }
 }
 
