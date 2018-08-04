@@ -38,6 +38,7 @@ const AccountMenu = require('./components/account-menu')
 const Modal = require('./components/modals/index').Modal
 // Global Alert
 const Alert = require('./components/alert')
+
 const AppHeader = require('./components/app-header')
 
 import UnlockPage from './components/pages/unlock-page'
@@ -362,6 +363,7 @@ function mapStateToProps (state) {
     isMouseUser: state.appState.isMouseUser,
     betaUI: state.metamask.featureFlags.betaUI,
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,
+    Qr: state.appState.Qr,
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,
 
     // state needed to get account dropdown temporarily rendering from app bar
