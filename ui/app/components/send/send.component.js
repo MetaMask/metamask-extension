@@ -39,6 +39,7 @@ export default class SendTransactionScreen extends PersistentForm {
     updateSendErrors: PropTypes.func,
     updateSendTokenBalance: PropTypes.func,
     scanQrCode: PropTypes.func,
+    qrCodeDetected: PropTypes.func,
     qrCodeData: PropTypes.object,
   };
 
@@ -54,8 +55,8 @@ export default class SendTransactionScreen extends PersistentForm {
         if (currentAddress !== scannedAddress) {
           this.props.updateSendTo(scannedAddress)
           this.updateGas({ to: scannedAddress })
-
-          // Here we should clear props.qrCodeData
+          // Clean up QR code data after handling
+          this.props.qrCodeDetected(null)
         }
       }
     }

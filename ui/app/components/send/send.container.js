@@ -29,6 +29,7 @@ import {
   updateGasData,
   setGasTotal,
   showQrScanner,
+  qrCodeDetected,
 } from '../../actions'
 import {
   resetSendState,
@@ -98,6 +99,7 @@ function mapDispatchToProps (dispatch) {
     updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
     scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
+    qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
   }
 }

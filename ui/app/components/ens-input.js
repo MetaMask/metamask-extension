@@ -27,6 +27,7 @@ function EnsInput () {
 }
 
 EnsInput.prototype.onChange = function (recipient) {
+  debugger
   const network = this.props.network
   const networkHasEnsSupport = getNetworkEnsSupport(network)
 
