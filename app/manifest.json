@@ -28,7 +28,8 @@
   "background": {
     "scripts": [
       "chromereload.js",
-      "background.js"
+      "background.js",
+      "vendor/trezor/connect.js"
     ],
     "persistent": true
   },
@@ -52,6 +53,14 @@
       ],
       "run_at": "document_start",
       "all_frames": true
+    },
+    {
+      "matches": [
+        "*://connect.trezor.io/5/popup.html"
+      ],
+      "js": [
+        "vendor/trezor/content-script.js"
+      ]
     }
   ],
   "permissions": [
@@ -60,6 +69,7 @@
     "clipboardWrite",
     "http://localhost:8545/",
     "https://*.infura.io/",
+    "*://connect.trezor.io/5/*",
     "activeTab",
     "webRequest",
     "*://*.eth/",
