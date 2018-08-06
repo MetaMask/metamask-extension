@@ -68,7 +68,7 @@ export default class GasModalPageContainer extends Component {
     return (
       <PageContainer
         title={this.context.t('customGas')}
-        subtitle={this.context.t('customGasSpeedUp')}
+        subtitle={this.context.t('customGasSubTitle')}
         tabsComponent={this.renderTabs()}
         disabled={false}
         onCancel={() => hideModal()}
