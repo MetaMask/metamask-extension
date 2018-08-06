@@ -6,7 +6,6 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
  */
 
 // Component Colors
-$tx-view-bg: $white;
 $wallet-view-bg: $alabaster;
 
 // Main container
@@ -28,25 +27,6 @@ $wallet-view-bg: $alabaster;
   display: flex;
   flex: 1 1 auto;
   min-width: 0;
-}
-
-// tx view
-
-.tx-view {
-  flex: 1 1 66.5%;
-  background: $tx-view-bg;
-  min-width: 0;
-
-  // No title on mobile
-  @media screen and (max-width: 575px) {
-    .identicon-wrapper {
-      display: none;
-    }
-
-    .account-name {
-      display: none;
-    }
-  }
 }
 
 // wallet view and sidebar

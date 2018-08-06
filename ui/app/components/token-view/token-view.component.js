@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Media from 'react-media'
 import MenuBar from '../menu-bar'
 import TokenViewBalance from '../token-view-balance'
-// import TransactionList from '../tx-list'
 import TransactionList from '../transaction-list'
 
 export default class TokenView extends PureComponent {

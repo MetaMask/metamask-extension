@@ -4,6 +4,12 @@
   flex: 1;
   overflow-y: hidden;
 
+  &__completed-transactions {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
   &__header {
     flex: 0 0 auto;
     font-size: .875rem;
