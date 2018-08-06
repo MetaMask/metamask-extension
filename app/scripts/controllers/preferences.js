@@ -1,5 +1,6 @@
 const ObservableStore = require('obs-store')
 const normalizeAddress = require('eth-sig-util').normalize
+const isValidAddress = require('ethereumjs-util').isValidAddress
 const extend = require('xtend')
 
 
@@ -55,9 +56,12 @@ class PreferencesController {
   }
 
   addSuggestedToken (tokenOpts) {
-    // TODO: Validate params
+    this._validateSuggestedTokenParams(tokenOpts)
     const suggested = this.getSuggestedTokens()
-    suggested[tokenOpts.address] = tokenOpts
+    const { rawAddress, symbol, decimals } = tokenOpts
+    const address = normalizeAddress(rawAddress)
+    const newEntry = { address, symbol, decimals }
+    suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
   }
 
@@ -71,10 +75,10 @@ class PreferencesController {
    */
   requestAddToken (req, res, next, end) {
     if (req.method === 'eth_watchToken') {
-      // TODO: Validate params!
       const [ rawAddress, symbol, decimals ] = req.params
+      this._validateSuggestedTokenParams({ rawAddress, symbol, decimals })
       const tokenOpts = {
-        address: rawAddress,
+        rawAddress,
         decimals,
         symbol,
       }
@@ -423,6 +427,23 @@ class PreferencesController {
   //
   // PRIVATE METHODS
   //
+
+  /**
+   * Validates that the passed options for suggested token have all required properties.
+   *
+   * @param {Object} opts The options object to validate
+   * @throws {string} Throw a custom error indicating that address, symbol and/or decimals
+   * doesn't fulfill requirements
+   *
+   */
+  _validateSuggestedTokenParams (opts) {
+    const { rawAddress, symbol, decimals } = opts
+    if (!rawAddress || !symbol || !decimals) throw new Error(`Cannot suggest token without address, symbol, and decimals`)
+    if (!(symbol.length < 5)) throw new Error(`Invalid symbol ${symbol} more than four characters`)
+    const numDecimals = parseInt(decimals, 10)
+    if (isNaN(numDecimals) || numDecimals > 18 || numDecimals < 0) throw new Error(`Invalid decimals ${decimals}`)
+    if (!isValidAddress(rawAddress)) throw new Error(`Invalid address ${rawAddress}`)
+  }
 }
 
 module.exports = PreferencesController
