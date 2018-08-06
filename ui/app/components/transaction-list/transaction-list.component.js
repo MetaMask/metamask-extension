@@ -17,6 +17,7 @@ export default class TransactionList extends PureComponent {
     pendingTransactions: PropTypes.array,
     completedTransactions: PropTypes.array,
     transactionToRetry: PropTypes.object,
+    selectedToken: PropTypes.object,
   }
 
   shouldShowRetry = transaction => {
@@ -27,7 +28,11 @@ export default class TransactionList extends PureComponent {
 
   renderTransactions () {
     const { t } = this.context
-    const { pendingTransactions = [], completedTransactions = [] } = this.props
+    const {
+      pendingTransactions = [],
+      completedTransactions = [],
+      selectedToken,
+    } = this.props
 
     return (
       <div className="transaction-list__transactions">
@@ -43,6 +48,7 @@ export default class TransactionList extends PureComponent {
                     transaction={transaction}
                     key={transaction.id}
                     showRetry={this.shouldShowRetry(transaction)}
+                    token={selectedToken}
                   />
                 ))
               }
@@ -59,6 +65,7 @@ export default class TransactionList extends PureComponent {
                   <TransactionListItem
                     transaction={transaction}
                     key={transaction.id}
+                    token={selectedToken}
                   />
                 ))
               : this.renderEmpty()

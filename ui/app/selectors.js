@@ -1,5 +1,4 @@
 const abi = require('human-standard-token-abi')
-import { createSelector } from 'reselect'
 
 import {
   transactionsSelector,
@@ -104,50 +103,6 @@ function getCurrentAccountWithSendEtherInfo (state) {
 
   return accounts.find(({ address }) => address === currentAddress)
 }
-
-// // function shapeShiftTxListSelector (state) {
-// //   return state.metamask.shapeShiftTxList || []
-// // }
-
-// const transactionsSelector = createSelector(
-//   selectedTokenAddressSelector,
-//   unapprovedMsgsSelector,
-//   shapeShiftTxListSelector,
-//   selectedAddressTxListSelector,
-//   (selectedTokenAddress, unapprovedMsgs = {}, shapeShiftTxList = [], transactions = []) => {
-//     const unapprovedMsgsList = valuesFor(unapprovedMsgs)
-//     const txsToRender = transactions.concat(unapprovedMsgsList, shapeShiftTxList)
-
-//     return selectedTokenAddress
-//       ? txsToRender
-//         .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-//         .sort((a, b) => b.time - a.time)
-//       : txsToRender
-//         .sort((a, b) => b.time - a.time)
-//   }
-// )
-
-// // function transactionsSelector (state) {
-// //   const { selectedTokenAddress } = state.metamask
-// //   const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
-// //   const shapeShiftTxList = shapeShiftTxListSelector(state)
-// //   const transactions = state.metamask.selectedAddressTxList || []
-// //   const txsToRender = transactions.concat(unapprovedMsgs, shapeShiftTxList)
-
-// //   return selectedTokenAddress
-// //     ? txsToRender
-// //       .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-// //       .sort((a, b) => b.time - a.time)
-// //     : txsToRender
-// //       .sort((a, b) => b.time - a.time)
-// // }
-
-export const pendingTransactionsSelector = createSelector(
-  transactionsSelector,
-  transactions => {
-
-  }
-)
 
 function getGasIsLoading (state) {
   return state.appState.gasIsLoading

@@ -69,7 +69,7 @@ export default class TransactionListItem extends PureComponent {
 
     const nonceAndDateText = `#${nonce} - ${formatDate(transaction.time)}`
     const fiatDisplayText = `-${fiatDisplayValue}`
-    const ethDisplayText = `-${ethTransactionAmount} ETH`
+    const ethDisplayText = ethTransactionAmount && `-${ethTransactionAmount} ETH`
 
     return (
       <div

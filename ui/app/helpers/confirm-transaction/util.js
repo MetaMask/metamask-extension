@@ -1,11 +1,7 @@
 import currencyFormatter from 'currency-formatter'
 import currencies from 'currency-formatter/currencies'
-import abi from 'human-standard-token-abi'
-import abiDecoder from 'abi-decoder'
 import ethUtil from 'ethereumjs-util'
 import BigNumber from 'bignumber.js'
-
-abiDecoder.addABI(abi)
 
 import {
   conversionUtil,
@@ -15,10 +11,6 @@ import {
 } from '../../conversion-util'
 
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
-
-export function getTokenData (data = {}) {
-  return abiDecoder.decodeMethod(data)
-}
 
 export function increaseLastGasPrice (lastGasPrice) {
   return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {

@@ -6,8 +6,9 @@ import {
   SUBMITTED_STATUS,
 } from '../constants/transactions'
 
+import { selectedTokenAddressSelector } from './tokens'
+
 export const shapeShiftTxListSelector = state => state.metamask.shapeShiftTxList
-export const selectedTokenAddressSelector = state => state.metamask.selectedTokenAddress
 export const unapprovedMsgsSelector = state => state.metamask.unapprovedMsgs
 export const selectedAddressTxListSelector = state => state.metamask.selectedAddressTxList
 

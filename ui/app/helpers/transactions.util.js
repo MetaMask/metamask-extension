@@ -1,7 +1,7 @@
 import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
-const registry = new MethodRegistry({ provider: global.ethereumProvider })
-
+import abi from 'human-standard-token-abi'
+import abiDecoder from 'abi-decoder'
 import { hexToDecimal } from './conversions.util'
 
 import {
@@ -14,6 +14,26 @@ import {
   SEND_TOKEN_ACTION_KEY,
   TRANSFER_FROM_ACTION_KEY,
 } from '../constants/transactions'
+
+abiDecoder.addABI(abi)
+
+export function getTokenData (data = {}) {
+  return abiDecoder.decodeMethod(data)
+}
+
+const registry = new MethodRegistry({ provider: global.ethereumProvider })
+
+export async function getMethodData (data = {}) {
+  const prefixedData = ethUtil.addHexPrefix(data)
+  const fourBytePrefix = prefixedData.slice(0, 10)
+  const sig = await registry.lookup(fourBytePrefix)
+  const parsedResult = registry.parse(sig)
+
+  return {
+    name: parsedResult.name,
+    params: parsedResult.args,
+  }
+}
 
 export function isConfirmDeployContract (txData = {}) {
   const { txParams = {} } = txData
@@ -43,18 +63,6 @@ export function getTransactionActionKey (transaction, methodData) {
     }
   } else {
     return SEND_ETHER_ACTION_KEY
-  }
-}
-
-export async function getMethodData (data = {}) {
-  const prefixedData = ethUtil.addHexPrefix(data)
-  const fourBytePrefix = prefixedData.slice(0, 10)
-  const sig = await registry.lookup(fourBytePrefix)
-  const parsedResult = registry.parse(sig)
-
-  return {
-    name: parsedResult.name,
-    params: parsedResult.args,
   }
 }
 
