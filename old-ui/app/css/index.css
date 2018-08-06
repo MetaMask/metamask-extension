@@ -221,6 +221,8 @@ textarea.twelve-word-phrase {
   width: 5.2em;
   line-height: 9px;
   text-rendering: geometricPrecision;
+  padding-left: 9px;
+  color: #6729a8;
 }
 
 .check {
@@ -258,8 +260,18 @@ app sections
 
 /* unlock */
 .error {
-  color: #db60a4;
   margin-bottom: 9px;
+  border: 1px solid #ff1345 !important;
+  color: #ff1345 !important;
+  font-size: 12px;
+  background: rgba(255,19,69, 0.1);
+  border-radius: 3px;
+  text-align: left;
+  padding: 10px 10px 10px 34px;
+  background-image: url('../images/warning.svg');
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 100%;
 }
 
 .warning {
@@ -751,6 +763,14 @@ input.large-input {
   text-align: center;
 }
 
+.activeForm.left {
+  border-radius: 0px 8px 0px 0px;
+}
+
+.activeForm.right {
+  border-radius: 8px 0px 0px 0px;
+}
+
 .inactiveForm {
   background: #60269c;
   color: #ffffff;
@@ -822,7 +842,7 @@ input.large-input {
 .qr-header {
   font-family: "Nunito SemiBold";
   font-size: 16px;
-  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .qr-message {

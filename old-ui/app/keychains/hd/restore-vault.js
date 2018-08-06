@@ -24,7 +24,12 @@ RestoreVaultScreen.prototype.render = function () {
 
   return (
 
-    h('.initialize-screen.flex-column.flex-center.flex-grow', [
+    h('.initialize-screen.flex-column.flex-center.flex-grow', {
+      style: {
+        paddingLeft: '30px',
+        paddingRight: '30px',
+      },
+    }, [
 
       h('h3.flex-center.section-title', {
         style: {
@@ -45,15 +50,14 @@ RestoreVaultScreen.prototype.render = function () {
         style: {
           width: '100%',
           marginBottom: '20px',
-          marginLeft: '60px',
         },
       }, 'Wallet Seed'),
-      h('textarea.twelve-word-phrase.letter-spacey', {
+      h('textarea.twelve-word-phrase', {
         placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
       }),
 
       // password
-      h('input.large-input.letter-spacey', {
+      h('input.large-input', {
         type: 'password',
         id: 'password-box',
         placeholder: 'New Password (min 8 chars)',
@@ -61,14 +65,14 @@ RestoreVaultScreen.prototype.render = function () {
           persistentFormId: 'password',
         },
         style: {
-          width: 300,
+          width: '100%',
           marginTop: 20,
           border: '1px solid #e2e2e2',
         },
       }),
 
       // confirm password
-      h('input.large-input.letter-spacey', {
+      h('input.large-input', {
         type: 'password',
         id: 'password-box-confirm',
         placeholder: 'Confirm Password',
@@ -77,14 +81,21 @@ RestoreVaultScreen.prototype.render = function () {
           persistentFormId: 'password-confirmation',
         },
         style: {
-          width: 300,
+          width: '100%',
           marginTop: 20,
           border: '1px solid #e2e2e2',
         },
       }),
 
       (state.warning) && (
-        h('span.error.in-progress-notification', state.warning)
+        h('div', {
+          style: {
+            padding: '20px 0 0',
+            width: '100%',
+          },
+        }, [
+          h('div.error.in-progress-notification', state.warning),
+        ])
       ),
 
       // submit
@@ -93,7 +104,6 @@ RestoreVaultScreen.prototype.render = function () {
         style: {
           marginTop: 20,
           width: '100%',
-          marginRight: '60px',
         },
       }, [
 

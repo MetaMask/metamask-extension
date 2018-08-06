@@ -56,7 +56,6 @@ ExportAccountView.prototype.render = function () {
                 color: '#333333',
                 marginBottom: '0px',
                 marginTop: '30px',
-                textAlign: 'center',
               },
             }, warning),
             h('input#exportAccount.sizing-input', {
@@ -116,7 +115,7 @@ ExportAccountView.prototype.render = function () {
         },
       }, 'Your private key'),
       h('div.flex-row', [
-        h('p.error', {
+        h('p', {
           style: {
             paddingTop: '25px',
             textOverflow: 'ellipsis',

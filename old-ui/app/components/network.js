@@ -76,72 +76,44 @@ Network.prototype.render = function () {
         switch (iconName) {
           case 'ethereum-network':
             return h('.network-indicator', [
-              h('.network-name', {
-                style: {
-                  paddingLeft: '9px',
-                  color: '#6729a8',
-                }},
+              h('.network-name',
               'Main Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'sokol-test-network':
             return h('.network-indicator', [
-              h('.network-name', {
-                style: {
-                  paddingLeft: '9px',
-                  color: '#6729a8',
-                }},
+              h('.network-name',
               'Sokol Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'ropsten-test-network':
             return h('.network-indicator', [
-              h('.network-name', {
-                style: {
-                  paddingLeft: '9px',
-                  color: '#6729a8',
-                }},
+              h('.network-name',
               'Ropsten Test Net'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'kovan-test-network':
             return h('.network-indicator', [
-              h('.network-name', {
-                style: {
-                  paddingLeft: '9px',
-                  color: '#6729a8',
-                }},
+              h('.network-name',
               'Kovan Test Net'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'rinkeby-test-network':
             return h('.network-indicator', [
-              h('.network-name', {
-                style: {
-                  paddingLeft: '9px',
-                  color: '#6729a8',
-                }},
+              h('.network-name',
               'Rinkeby Test Net'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'poa-network':
             return h('.network-indicator', [
-              h('.network-name', {
-                style: {
-                  paddingLeft: '9px',
-                  color: '#6729a8',
-                }},
+              h('.network-name',
               'POA Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           default:
             return h('.network-indicator', [
 
-              h('.network-name', {
-                style: {
-                  paddingLeft: '9px',
-                  color: '#6729a8',
-                }},
+              h('.network-name',
               'Private Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])

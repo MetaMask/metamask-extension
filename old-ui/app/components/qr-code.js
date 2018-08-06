@@ -39,7 +39,6 @@ QrCodeView.prototype.render = function () {
       alignItems: 'center',
     },
   }, [
-    Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('.qr-header', Qr.message),
 
     this.props.warning ? this.props.warning && h('span.error.flex-center', {
       style: {
@@ -59,6 +58,7 @@ QrCodeView.prototype.render = function () {
         __html: qrImage.createTableTag(4),
       },
     }),
+    Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('.qr-header', Qr.message),
     h('.flex-row', [
       h('h3.ellip-address', {
         style: {

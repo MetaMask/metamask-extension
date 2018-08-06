@@ -37,6 +37,8 @@ AccountImportSubview.prototype.render = function () {
     h('div', {
       style: {
         width: '100%',
+        paddingLeft: '30px',
+        paddingRight: '30px',
       },
     }, [
       h('.section-title.flex-row.flex-center', [
@@ -55,14 +57,13 @@ AccountImportSubview.prototype.render = function () {
         style: {
           display: 'inline-block',
           alignItems: 'center',
-          padding: '5px 30px 0px 30px',
         },
       }, [
         h('span', 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.'),
       ]),
       h('div', {
         style: {
-          padding: '10px 30px',
+          padding: '10px 0',
         },
       }, [
 

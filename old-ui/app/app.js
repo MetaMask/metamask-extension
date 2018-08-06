@@ -642,13 +642,7 @@ App.prototype.renderPrimary = function () {
             },
           }, 'QR Code'),
         ]),
-        h('div', {
-          style: {
-            position: 'absolute',
-            left: '44px',
-            width: '285px',
-          },
-        }, [
+        h('div', [
           h(QrView, {key: 'qr'}),
         ]),
       ])

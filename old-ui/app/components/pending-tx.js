@@ -282,8 +282,9 @@ PendingTx.prototype.render = function () {
                 position: 'absolute',
                 top: '25px',
                 background: 'rgba(255, 255, 255, 0.85)',
-                border: '2px solid rgb(226, 2, 2)',
                 width: '100%',
+                paddingLeft: '30px',
+                paddingRight: '30px',
               },
             }, [
               txMeta.simulationFails ?
@@ -303,7 +304,7 @@ PendingTx.prototype.render = function () {
               : null,
 
               insufficientBalance ?
-                h('span.error', {
+                h('.error', {
                   style: {
                     fontSize: '12px',
                   },
@@ -311,7 +312,7 @@ PendingTx.prototype.render = function () {
               : null,
 
               (dangerousGasLimit && !gasLimitSpecified) ?
-                h('span.error', {
+                h('.error', {
                   style: {
                     fontSize: '12px',
                   },

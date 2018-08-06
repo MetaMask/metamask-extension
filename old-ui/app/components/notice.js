@@ -93,7 +93,7 @@ Notice.prototype.render = function () {
           style: {
             background: '#542289',
             color: '#ffffff',
-            height: '310px',
+            height: '430px',
             width: '90%',
             overflowY: 'scroll',
             scroll: 'auto',
