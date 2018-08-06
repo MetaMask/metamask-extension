@@ -60,9 +60,7 @@ class ComposableObservableStore extends ObservableStore {
         nextState = {}
       } else if (key === 'TxController') {
         const state = this.config[key].getState()
-        const txList = state.selectedAddressTxList.map(
-          item => ({...item, history: null, nonceDetails: null})
-        )
+        const txList = state.selectedAddressTxList.map(item => ({...item, history: null, nonceDetails: null}))
         nextState = {
           ...state,
           selectedAddressTxList: txList,
