@@ -8,7 +8,9 @@ module.exports = connect(mapStateToProps)(DeleteRpc)
 
 function mapStateToProps (state) {
   return {
-    url: state.metamask.provider.rpcTarget,
+    metamask: state.metamask,
+    url: state.appState.RPC_URL ? state.appState.RPC_URL : state.metamask.provider.rpcTarget,
+    provider: state.metamask.provider,
   }
 }
 
@@ -51,7 +53,7 @@ DeleteRpc.prototype.render = function () {
             margin: '20px',
           },
           onClick: () => {
-            this.props.dispatch(actions.removeCustomRPC(this.props.url))
+            this.props.dispatch(actions.removeCustomRPC(this.props.url, this.props.provider))
               .then(() => {
                 this.props.dispatch(actions.showConfigPage())
               })
