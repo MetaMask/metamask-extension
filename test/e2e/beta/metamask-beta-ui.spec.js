@@ -195,7 +195,16 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
-    async function retypeSeedPhrase (words, wasReloaded) {
+    async function clickWordAndWait (word) {
+      const xpathClass = 'backup-phrase__confirm-seed-option backup-phrase__confirm-seed-option--unselected'
+      const xpath = `//button[@class='${xpathClass}' and contains(text(), '${word}')]`
+      const word0 = await findElement(driver, By.xpath(xpath), 10000)
+
+      await word0.click()
+      await delay(tinyDelayMs)
+    }
+
+    async function retypeSeedPhrase (words, wasReloaded, count = 0) {
       try {
         if (wasReloaded) {
           const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
@@ -209,67 +218,26 @@ describe('MetaMask', function () {
           await delay(regularDelayMs)
         }
 
-        const word0 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[0]}')]`), 10000)
+        await clickWordAndWait(words[0])
+        await clickWordAndWait(words[1])
+        await clickWordAndWait(words[2])
+        await clickWordAndWait(words[3])
+        await clickWordAndWait(words[4])
+        await clickWordAndWait(words[5])
+        await clickWordAndWait(words[6])
+        await clickWordAndWait(words[7])
+        await clickWordAndWait(words[8])
+        await clickWordAndWait(words[9])
+        await clickWordAndWait(words[10])
+        await clickWordAndWait(words[11])
 
-        await word0.click()
-        await delay(tinyDelayMs)
-
-        const word1 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[1]}')]`), 10000)
-
-        await word1.click()
-        await delay(tinyDelayMs)
-
-        const word2 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[2]}')]`), 10000)
-
-        await word2.click()
-        await delay(tinyDelayMs)
-
-        const word3 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[3]}')]`), 10000)
-
-        await word3.click()
-        await delay(tinyDelayMs)
-
-        const word4 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[4]}')]`), 10000)
-
-        await word4.click()
-        await delay(tinyDelayMs)
-
-        const word5 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[5]}')]`), 10000)
-
-        await word5.click()
-        await delay(tinyDelayMs)
-
-        const word6 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[6]}')]`), 10000)
-
-        await word6.click()
-        await delay(tinyDelayMs)
-
-        const word7 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[7]}')]`), 10000)
-
-        await word7.click()
-        await delay(tinyDelayMs)
-
-        const word8 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[8]}')]`), 10000)
-
-        await word8.click()
-        await delay(tinyDelayMs)
-
-        const word9 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[9]}')]`), 10000)
-
-        await word9.click()
-        await delay(tinyDelayMs)
-
-        const word10 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[10]}')]`), 10000)
-
-        await word10.click()
-        await delay(tinyDelayMs)
-
-        const word11 = await findElement(driver, By.xpath(`//button[contains(text(), '${words[11]}')]`), 10000)
-        await word11.click()
-        await delay(tinyDelayMs)
       } catch (e) {
-        await loadExtension(driver, extensionId)
-        await retypeSeedPhrase(words, true)
+        if (count > 2) {
+          throw e
+        } else {
+          await loadExtension(driver, extensionId)
+          await retypeSeedPhrase(words, true, count + 1)
+        }
       }
     }
 
