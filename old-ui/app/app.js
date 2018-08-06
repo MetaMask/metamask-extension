@@ -713,8 +713,8 @@ App.prototype.renderCustomOption = function (provider) {
               event.stopPropagation()
               this.setState({ isNetworkMenuOpen: false })
               props.dispatch(actions.showDeleteRPC(label))
-            }
-          })
+            },
+          }),
         ]
       )
   }
@@ -772,8 +772,8 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
               event.stopPropagation()
               this.setState({ isNetworkMenuOpen: false })
               props.dispatch(actions.showDeleteRPC(rpc))
-            }
-          })
+            },
+          }),
         ]
       )
     }

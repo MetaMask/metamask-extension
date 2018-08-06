@@ -10,7 +10,7 @@ function mapStateToProps (state) {
   return {
     metamask: state.metamask,
     url: state.appState.RPC_URL ? state.appState.RPC_URL : state.metamask.provider.rpcTarget,
-    provider: state.metamask.provider
+    provider: state.metamask.provider,
   }
 }
 

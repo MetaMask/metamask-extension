@@ -2292,7 +2292,7 @@ function removeCustomRPC (url, provider) {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.removeRpcUrl(url, (err, _url) => {
-        if ( provider.type === 'rpc' && url === provider.rpcTarget ) {
+        if (provider.type === 'rpc' && url === provider.rpcTarget) {
           dispatch(actions.setProviderType('poa'))
         }
         dispatch(actions.hideLoadingIndication())
