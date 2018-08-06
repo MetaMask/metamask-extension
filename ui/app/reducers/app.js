@@ -717,6 +717,7 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: action.value,
+        RPC_URL: action.RPC_URL,
       })
 
     default:

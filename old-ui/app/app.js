@@ -266,6 +266,7 @@ App.prototype.renderNetworkDropdown = function () {
       position: 'absolute',
       left: '2px',
       top: '36px',
+      width: '270px',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',
@@ -706,6 +707,14 @@ App.prototype.renderCustomOption = function (provider) {
         },
         [h('div.selected-network'),
           label,
+          h('.remove-rpc', {
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.setState({ isNetworkMenuOpen: false })
+              props.dispatch(actions.showDeleteRPC(label))
+            }
+          })
         ]
       )
   }
@@ -757,6 +766,14 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
         },
         [
           rpc,
+          h('.remove-rpc', {
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.setState({ isNetworkMenuOpen: false })
+              props.dispatch(actions.showDeleteRPC(rpc))
+            }
+          })
         ]
       )
     }
