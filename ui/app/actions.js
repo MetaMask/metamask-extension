@@ -2267,9 +2267,3 @@ function setPendingTokens (pendingTokens) {
     payload: tokens,
   }
 }
-
-function clearPendingTokens () {
-  return {
-    type: actions.CLEAR_PENDING_TOKENS,
-  }
-}
