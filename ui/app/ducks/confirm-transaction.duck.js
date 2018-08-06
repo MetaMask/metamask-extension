@@ -5,7 +5,6 @@ import {
 } from '../selectors/confirm-transaction'
 
 import {
-  getTokenData,
   getValueFromWeiHex,
   getTransactionFee,
   getHexGasTotal,
@@ -15,7 +14,7 @@ import {
   hexGreaterThan,
 } from '../helpers/confirm-transaction/util'
 
-import { getMethodData } from '../helpers/transactions.util'
+import { getTokenData, getMethodData } from '../helpers/transactions.util'
 import { getSymbolAndDecimals } from '../token-util'
 import { conversionUtil } from '../conversion-util'
 
