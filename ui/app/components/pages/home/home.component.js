@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import WalletView from '../../wallet-view'
-import TxView from '../../tx-view'
 import TokenView from '../../token-view'
 import {
   INITIALIZE_BACKUP_PHRASE_ROUTE,
@@ -60,7 +59,6 @@ export default class Home extends PureComponent {
             render={() => <WalletView />}
           />
           <TokenView />
-          {/* <TxView /> */}
         </div>
       </div>
     )

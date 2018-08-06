@@ -16,3 +16,5 @@ export const DEPLOY_CONTRACT_ACTION_KEY = 'contractDeployment'
 export const APPROVE_ACTION_KEY = 'approve'
 export const SEND_TOKEN_ACTION_KEY = 'outgoing'
 export const TRANSFER_FROM_ACTION_KEY = 'transferFrom'
+
+export const TRANSACTION_TYPE_SHAPESHIFT = 'shapeshift'
