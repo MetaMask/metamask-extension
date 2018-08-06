@@ -587,7 +587,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
-      const txListItem = await findElement(driver, By.css('.tx-list-item'))
+      const txListItem = await findElement(driver, By.css('.transaction-list-item'))
       await txListItem.click()
       await delay(regularDelayMs)
 
@@ -749,21 +749,21 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
       assert.equal(transactions.length, 1)
 
-      const txValues = await findElements(driver, By.css('.tx-list-value'))
+      const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       assert.equal(txValues.length, 1)
 
       // test cancelled on firefox until https://github.com/mozilla/geckodriver/issues/906 is resolved,
       // or possibly until we use latest version of firefox in the tests
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        await driver.wait(until.elementTextMatches(txValues[0], /50\sTST/), 10000)
+        await driver.wait(until.elementTextMatches(txValues[0], /-50\sTST/), 10000)
       }
 
-      const txStatuses = await findElements(driver, By.css('.tx-list-status'))
-      const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed|Failed/), 10000)
-      assert.equal(await tx.getText(), 'Confirmed')
+      const txStatuses = await findElements(driver, By.css('.transaction-list-item__status'))
+      const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Outgoing|Failed/), 10000)
+      assert.equal(await tx.getText(), 'Outgoing')
     })
   })
 
