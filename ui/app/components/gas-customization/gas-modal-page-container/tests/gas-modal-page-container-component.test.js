@@ -36,7 +36,7 @@ describe('GasModalPageContainer Component', function () {
         disabled,
       } = wrapper.find(PageContainer).props()
       assert.equal(title, 'customGas')
-      assert.equal(subtitle, 'customGasSpeedUp')
+      assert.equal(subtitle, 'customGasSubTitle')
       assert.equal(disabled, false)
     })
 
@@ -112,8 +112,8 @@ describe('GasModalPageContainer Component', function () {
 
       const renderTabContentResult = wrapper.instance().renderTabContent(() => <span>Mock content</span>)
       const renderedTabContent = shallow(renderTabContentResult)
-      assert.equal(renderedTabContent.childAt(1).text(), 'info-row--fade,originalTotal,$20.02 USD,0.06685 ETH')
-      assert.equal(renderedTabContent.childAt(2).text(), 'info-row,newTotal,$20.02 USD,0.06685 ETH')
+      assert.equal(renderedTabContent.childAt(1).text(), 'gas-modal-content__info-row--fade,originalTotal,$20.02 USD,0.06685 ETH')
+      assert.equal(renderedTabContent.childAt(2).text(), 'gas-modal-content__info-row,newTotal,$20.02 USD,0.06685 ETH')
 
       GP.renderInfoRow.restore()
     })
@@ -128,8 +128,8 @@ describe('GasModalPageContainer Component', function () {
       const firstChild = renderedInfoRow.childAt(0)
       const secondhild = renderedInfoRow.childAt(1)
 
-      assert.equal(firstChild.props().className, 'total-info')
-      assert.equal(secondhild.props().className, 'sum-info')
+      assert.equal(firstChild.props().className, 'mockClassName__total-info')
+      assert.equal(secondhild.props().className, 'mockClassName__sum-info')
 
       assert.equal(firstChild.childAt(0).text(), 'mockLabelKey:')
       assert.equal(firstChild.childAt(1).text(), 'mockFiatAmount')
@@ -142,7 +142,7 @@ describe('GasModalPageContainer Component', function () {
     it('should render', () => {
       const renderBasicTabContentResult = wrapper.instance().renderBasicTabContent()
       const renderedBasicTabContent = shallow(renderBasicTabContentResult)
-      assert.equal(renderedBasicTabContent.props().className, 'basic-tab')
+      assert.equal(renderedBasicTabContent.props().className, 'gas-modal-content__basic-tab')
     })
   })
 
@@ -150,7 +150,7 @@ describe('GasModalPageContainer Component', function () {
     it('should render', () => {
       const renderAdvancedTabContentResult = wrapper.instance().renderAdvancedTabContent()
       const renderedAdvancedTabContent = shallow(renderAdvancedTabContentResult)
-      assert.equal(renderedAdvancedTabContent.props().className, 'advanced-tab')
+      assert.equal(renderedAdvancedTabContent.props().className, 'gas-modal-content__advanced-tab')
     })
   })
 })
