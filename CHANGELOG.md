@@ -1,6 +1,8 @@
 # Changelog
 
-## Current Master
+## Current Develop Branch
+
+## 4.9.0 Mon Aug 06 2018
 
 - [#4926](https://github.com/MetaMask/metamask-extension/pull/4926): Show retry button on the latest tx of the earliest nonce.
 - [#4888](https://github.com/MetaMask/metamask-extension/pull/4888): Suggest using the new user interface.
