@@ -1,13 +1,13 @@
 .gas-modal-content {
-  .basic-tab {
+  &__basic-tab {
     height: 219px;
   }
 
-  .advanced-tab {
+  &__advanced-tab {
     height: 475px;
   }
 
-  .info-row, .info-row--fade {
+  &__info-row, &__info-row--fade {
     width: 100%;
     background: $polar;
     padding: 15px 21px;
@@ -15,35 +15,35 @@
     flex-flow: column;
     color: $scorpion;
 
-    .total-info, .sum-info {
+    &__total-info, &__sum-info {
       display: flex;
       flex-flow: row;
       justify-content: space-between;
     }
 
-    .total-info {
-      .total-label {
+    &__total-info {
+      &__total-label {
         font-size: 16px;
       }
 
-      .total-value {
+      &__total-value {
         font-size: 16px;
         font-weight: bold;
       }
     }
 
-    .sum-info {
-      .sum-label {
+    &__sum-info {
+      &__sum-label {
         font-size: 12px;
       }
 
-      .sum-value {
+      &__sum-value {
         font-size: 14px;
       }
     }
   }
 
-  .info-row--fade {
+  &__info-row--fade {
     background: white;
     color: $dusty-gray;
   }
