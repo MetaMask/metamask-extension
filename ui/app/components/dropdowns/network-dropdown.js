@@ -71,7 +71,6 @@ NetworkDropdown.prototype.render = function () {
   const rpcList = props.frequentRpcList
   const isOpen = this.props.networkDropdownOpen
   const dropdownMenuItemStyle = {
-    fontFamily: 'DIN OT',
     fontSize: '16px',
     lineHeight: '20px',
     padding: '12px 0',
@@ -286,7 +285,6 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
           closeMenu: () => this.props.hideNetworkDropdown(),
           onClick: () => props.setRpcTarget(rpc),
           style: {
-            fontFamily: 'DIN OT',
             fontSize: '16px',
             lineHeight: '20px',
             padding: '12px 0',
@@ -325,7 +323,6 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
           onClick: () => props.setRpcTarget(rpcTarget),
           closeMenu: () => this.props.hideNetworkDropdown(),
           style: {
-            fontFamily: 'DIN OT',
             fontSize: '16px',
             lineHeight: '20px',
             padding: '12px 0',
