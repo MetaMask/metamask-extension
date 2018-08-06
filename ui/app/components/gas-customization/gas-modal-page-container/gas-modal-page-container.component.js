@@ -16,24 +16,26 @@ export default class GasModalPageContainer extends Component {
 
   renderBasicTabContent () {
     return (
-      <div className="basic-tab"/>
+      <div className="gas-modal-content__basic-tab"/>
     )
   }
 
   renderAdvancedTabContent () {
     return (
-      <div className="advanced-tab"/>
+      <div className="gas-modal-content__advanced-tab"/>
     )
   }
 
   renderInfoRow (className, totalLabelKey, fiatTotal, cryptoTotal) {
     return (
       <div className={className}>
-        <div className="total-info">
-          <span className="total-label">{`${this.context.t(totalLabelKey)}:`}</span><span className="total-value">{fiatTotal}</span>
+        <div className={`${className}__total-info`}>
+          <span className={`${className}__total-info__total-label`}>{`${this.context.t(totalLabelKey)}:`}</span>
+          <span className={`${className}__total-info__total-value`}>{fiatTotal}</span>
         </div>
-        <div className="sum-info">
-          <span className="sum-label">{`${this.context.t('amountPlusTxFee')}`}</span><span className="sum-value">{cryptoTotal}</span>
+        <div className={`${className}__sum-info`}>
+          <span className={`${className}__sum-info__sum-label`}>{`${this.context.t('amountPlusTxFee')}`}</span>
+          <span className={`${className}__sum-info__sum-value`}>{cryptoTotal}</span>
         </div>
       </div>
     )
@@ -43,8 +45,8 @@ export default class GasModalPageContainer extends Component {
     return (
       <div className="gas-modal-content">
         { mainTabContent() }
-        { this.renderInfoRow('info-row--fade', 'originalTotal', '$20.02 USD', '0.06685 ETH') }
-        { this.renderInfoRow('info-row', 'newTotal', '$20.02 USD', '0.06685 ETH') }
+        { this.renderInfoRow('gas-modal-content__info-row--fade', 'originalTotal', '$20.02 USD', '0.06685 ETH') }
+        { this.renderInfoRow('gas-modal-content__info-row', 'newTotal', '$20.02 USD', '0.06685 ETH') }
       </div>
     )
   }
