@@ -1,0 +1,50 @@
+.gas-modal-content {
+  &__basic-tab {
+    height: 219px;
+  }
+
+  &__advanced-tab {
+    height: 475px;
+  }
+
+  &__info-row, &__info-row--fade {
+    width: 100%;
+    background: $polar;
+    padding: 15px 21px;
+    display: flex;
+    flex-flow: column;
+    color: $scorpion;
+
+    &__total-info, &__sum-info {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
+    }
+
+    &__total-info {
+      &__total-label {
+        font-size: 16px;
+      }
+
+      &__total-value {
+        font-size: 16px;
+        font-weight: bold;
+      }
+    }
+
+    &__sum-info {
+      &__sum-label {
+        font-size: 12px;
+      }
+
+      &__sum-value {
+        font-size: 14px;
+      }
+    }
+  }
+
+  &__info-row--fade {
+    background: white;
+    color: $dusty-gray;
+  }
+}
