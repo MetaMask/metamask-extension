@@ -42,9 +42,10 @@ RemoveTokenScreen.prototype.render = function () {
         style: {
           display: 'inline-block',
           textAlign: 'center',
+          padding: '0 30px',
         },
       }, [
-        h('p.error', warning),
+        h('p', warning),
       ]),
 
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
