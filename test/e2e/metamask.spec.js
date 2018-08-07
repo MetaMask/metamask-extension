@@ -181,7 +181,7 @@ describe('Metamask popup page', function () {
 
       await driver.findElement(By.id('password-box')).sendKeys('123456789')
       await driver.findElement(By.id('password-box-confirm')).sendKeys('123456789')
-      await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div > button:nth-child(2)')).click()
+      await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div.initialize-screen.flex-column.flex-center.flex-grow > div > button:nth-child(2)')).click()
       await delay(500)
     })
 
