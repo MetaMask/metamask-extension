@@ -4,6 +4,7 @@ import { compose } from 'recompose'
 import TransactionList from './transaction-list.component'
 import {
   pendingTransactionsSelector,
+  submittedPendingTransactionsSelector,
   completedTransactionsSelector,
 } from '../../selectors/transactions'
 import { selectedTokenSelector } from '../../selectors/tokens'
@@ -11,11 +12,12 @@ import { getLatestSubmittedTxWithEarliestNonce } from '../../helpers/transaction
 
 const mapStateToProps = state => {
   const pendingTransactions = pendingTransactionsSelector(state)
+  const submittedPendingTransactions = submittedPendingTransactionsSelector(state)
 
   return {
     completedTransactions: completedTransactionsSelector(state),
     pendingTransactions,
-    transactionToRetry: getLatestSubmittedTxWithEarliestNonce(pendingTransactions),
+    transactionToRetry: getLatestSubmittedTxWithEarliestNonce(submittedPendingTransactions),
     selectedToken: selectedTokenSelector(state),
   }
 }

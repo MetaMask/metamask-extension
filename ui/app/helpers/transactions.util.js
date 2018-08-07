@@ -13,6 +13,7 @@ import {
   APPROVE_ACTION_KEY,
   SEND_TOKEN_ACTION_KEY,
   TRANSFER_FROM_ACTION_KEY,
+  SIGNATURE_REQUEST_KEY,
 } from '../constants/transactions'
 
 abiDecoder.addABI(abi)
@@ -41,7 +42,11 @@ export function isConfirmDeployContract (txData = {}) {
 }
 
 export function getTransactionActionKey (transaction, methodData) {
-  const { txParams: { data } = {} } = transaction
+  const { txParams: { data } = {}, msgParams } = transaction
+
+  if (msgParams) {
+    return SIGNATURE_REQUEST_KEY
+  }
 
   if (isConfirmDeployContract(transaction)) {
     return DEPLOY_CONTRACT_ACTION_KEY
