@@ -1,0 +1,15 @@
+.tab {
+  color: #8C8E94;
+  font-size: .75rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 8px 0;
+  margin: 0 8px;
+  min-width: 50px;
+  text-align: center;
+
+  &--active {
+    color: $black;
+    border-bottom: 2px solid $curious-blue;
+  }
+}

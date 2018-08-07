@@ -76,7 +76,6 @@
 }
 
 .network-name-item {
-  font-weight: 100;
   flex: 1;
   color: $dusty-gray;
   text-overflow: ellipsis;
@@ -158,16 +157,4 @@
 
 .network-caret {
   margin: 0 8px 2px;
-}
-
-.network-display {
-  &__container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    @media screen and (min-width: 576px) {
-      display: none;
-    }
-  }
 }

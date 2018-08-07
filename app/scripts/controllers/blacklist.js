@@ -87,7 +87,7 @@ class BlacklistController {
    *
    * @private
    * @param {object} config A config object like that found at {@link https://github.com/MetaMask/eth-phishing-detect/blob/master/src/config.json}
-   * 
+   *
    */
   _setupPhishingDetector (config) {
     this._phishingDetector = new PhishingDetector(config)

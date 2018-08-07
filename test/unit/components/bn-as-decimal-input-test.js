@@ -52,13 +52,13 @@ describe('BnInput', function () {
   it('can tolerate wei precision', function (done) {
     const renderer = ReactTestUtils.createRenderer()
 
-    let valueStr = '1000000000'
+    const valueStr = '1000000000'
 
     const value = new BN(valueStr, 10)
     const inputStr = '1.000000001'
 
 
-    let targetStr = '1000000001'
+    const targetStr = '1000000001'
 
     const target = new BN(targetStr, 10)
 

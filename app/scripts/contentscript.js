@@ -115,8 +115,8 @@ function logStreamDisconnectWarning (remoteLabel, err) {
  * @returns {boolean} {@code true} if Web3 should be injected
  */
 function shouldInjectWeb3 () {
-  return doctypeCheck() && suffixCheck()
-    && documentElementCheck() && !blacklistedDomainCheck()
+  return doctypeCheck() && suffixCheck() &&
+    documentElementCheck() && !blacklistedDomainCheck()
 }
 
 /**
@@ -177,6 +177,9 @@ function blacklistedDomainCheck () {
     'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
     'adyen.com',
     'gravityforms.com',
+    'harbourair.com',
+    'ani.gamer.com.tw',
+    'blueskybooking.com',
   ]
   var currentUrl = window.location.href
   var currentRegex
@@ -194,6 +197,7 @@ function blacklistedDomainCheck () {
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning () {
-  console.log('MetaMask - redirecting to phishing warning')
-  window.location.href = 'https://metamask.io/phishing.html'
+  console.log('MetaMask - routing to Phishing Warning component')
+  let extensionURL = extension.runtime.getURL('phishing.html')
+  window.location.href = extensionURL
 }
