@@ -58,31 +58,6 @@ BuyButtonSubview.prototype.headerSubview = function () {
       },
     }, [
 
-      // header bar (back button, label)
-      h('.flex-row.section-title', {
-        style: {
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-      }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: this.backButtonContext.bind(this),
-          style: {
-            position: 'absolute',
-            left: '30px',
-          },
-        }),
-        h('h2.flex-center', {
-          style: {
-            width: '100vw',
-            background: '#ffffff',
-            color: '#333333',
-            paddingTop: '4px',
-            paddingBottom: '4px',
-          },
-        }, `Buy ${coinName}`),
-      ]),
-
       // loading indication
       h('div', {
         style: {
@@ -108,19 +83,45 @@ BuyButtonSubview.prototype.headerSubview = function () {
         }),
       ]),
 
-      h('.flex-row', {
+      // header bar (back button, label)
+      h('.flex-row.section-title', {
         style: {
           alignItems: 'center',
           justifyContent: 'center',
         },
       }, [
-        h('h3.flex-center', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+          onClick: this.backButtonContext.bind(this),
+          style: {
+            position: 'absolute',
+            left: '30px',
+          },
+        }),
+        h('h2.flex-center', {
           style: {
             width: '100vw',
             background: '#ffffff',
             color: '#333333',
-            paddingTop: '30px',
+            paddingTop: '4px',
             paddingBottom: '4px',
+          },
+        }, `Buy ${coinName}`),
+      ]),
+
+      h('.flex-row', {
+        style: {
+          alignItems: 'center',
+          width: '100%',
+        },
+      }, [
+        h('h3.flex-center', {
+          style: {
+            width: '100%',
+            background: '#ffffff',
+            color: '#333333',
+            paddingBottom: '4px',
+            paddingLeft: '30px',
+            justifyContent: 'left',
           },
         }, 'Select Service'),
       ]),
@@ -206,16 +207,12 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
 
   return (
 
-    h('.flex-column', {
-      style: {
-        alignItems: 'center',
-      },
-    }, [
+    h('.flex-column', [
 
       h('.flex-row.selected-exchange', {
         style: {
           position: 'relative',
-          right: '35px',
+          marginLeft: '30px',
           marginTop: '20px',
           marginBottom: '20px',
         },

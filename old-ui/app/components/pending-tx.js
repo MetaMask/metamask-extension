@@ -641,7 +641,7 @@ function forwardCarrat () {
     h('img', {
       src: 'images/forward-carrat-light.svg',
       style: {
-        padding: '5px 30px 0px 30px',
+        padding: '0px 20px 0px',
         height: '62px',
       },
     })

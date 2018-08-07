@@ -632,7 +632,6 @@ input.large-input {
   display: flex;
   justify-content: flex-start;
   margin-left: 50px;
-  margin-bottom: 2px;
   font-size: 11px;
   text-rendering: geometricPrecision;
   color: #60db97;
@@ -693,13 +692,13 @@ input.large-input {
 
 
 .custom-radio-selected {
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
   border: solid;
   border-style: double;
-  border-radius: 15px;
+  border-radius: 4px;
   border-width: 5px;
-  background: #8fdc97;
+  background: #6729a8;
   border-color: #F7F7F7;
 }
 
@@ -708,12 +707,12 @@ input.large-input {
   height: 14px;
   border: solid;
   border-width: 1px;
-  border-radius: 24px;
-  border-color: #AEAEAE;
+  border-radius: 4px;
+  border-color: #e2e2e2;
 }
 
 .radio-titles {
-  color: #8fdc97;
+  color: #6729a8;
 }
 
 .radio-titles-subtext {

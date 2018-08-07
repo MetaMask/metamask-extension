@@ -65,7 +65,7 @@ SendTransactionScreen.prototype.render = function () {
       h('.account-data-subsection.flex-row.flex-grow', {
         style: {
           background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
-          padding: '20px 20px',
+          padding: '30px',
         },
       }, [
 

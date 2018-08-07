@@ -56,16 +56,16 @@ AccountDetailScreen.prototype.render = function () {
     // identicon, label, balance, etc
       h('.account-data-subsection', {
         style: {
-          padding: '0 20px',
+          padding: '30px',
           flex: '1 0 auto',
           background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
+          width: '100%',
         },
       }, [
 
         // header - identicon + nav
         h('div', {
           style: {
-            paddingTop: '20px',
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
@@ -82,7 +82,7 @@ AccountDetailScreen.prototype.render = function () {
           h('flex-column', {
             style: {
               lineHeight: '10px',
-              marginLeft: '15px',
+              marginLeft: '20px',
               width: '100%',
             },
           }, [
@@ -134,7 +134,7 @@ AccountDetailScreen.prototype.render = function () {
                     AccountDropdowns,
                     {
                       style: {
-                        marginRight: '-7px',
+                        marginRight: '10px',
                         marginLeft: 'auto',
                         cursor: 'pointer',
                       },
@@ -191,7 +191,6 @@ AccountDetailScreen.prototype.render = function () {
             network,
             style: {
               lineHeight: '7px',
-              marginTop: '10px',
             },
           }),
 
@@ -204,10 +203,6 @@ AccountDetailScreen.prototype.render = function () {
 
           h('button', {
             onClick: () => props.dispatch(actions.showSendPage()),
-            style: {
-              marginBottom: '20px',
-              marginRight: '8px',
-            },
           }, 'Send'),
 
         ]),
