@@ -342,6 +342,18 @@ app sections
   background-position: right;
 }
 
+.remove-rpc {
+  background-image: url('../images/remove.svg');
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  right: 0;
+}
+
+
 @media (min--moz-device-pixel-ratio: 1.3),
          (-o-min-device-pixel-ratio: 2.6/2),
          (-webkit-min-device-pixel-ratio: 1.3),

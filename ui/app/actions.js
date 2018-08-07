@@ -2279,19 +2279,22 @@ function clearPendingTokens () {
   }
 }
 
-function showDeleteRPC (transitionForward = true) {
+function showDeleteRPC (RPC_URL, transitionForward = true) {
   return {
     type: actions.SHOW_DELETE_RPC,
     value: transitionForward,
+    RPC_URL,
   }
 }
 
-function removeCustomRPC (url) {
+function removeCustomRPC (url, provider) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.removeRpcUrl(url, (err, url) => {
-        dispatch(actions.setProviderType('poa'))
+      background.removeRpcUrl(url, (err, _url) => {
+        if (provider.type === 'rpc' && url === provider.rpcTarget) {
+          dispatch(actions.setProviderType('poa'))
+        }
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
