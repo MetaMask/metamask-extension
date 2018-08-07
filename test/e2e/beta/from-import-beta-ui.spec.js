@@ -11,7 +11,6 @@ const {
 const {
   checkBrowserForConsoleErrors,
   closeAllWindowHandlesExcept,
-  verboseReportOnFailure,
   findElement,
   findElements,
   loadExtension,
@@ -22,6 +21,7 @@ describe('Using MetaMask with an existing account', function () {
   const browser = process.env.SELENIUM_BROWSER
   let driver
   let extensionUri
+  let extensionId
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
@@ -40,7 +40,7 @@ describe('Using MetaMask with an existing account', function () {
     const installResult = await setupBrowserAndExtension({ browser, extPath })
     driver = installResult.driver
     extensionUri = installResult.extensionUri
-
+    extensionId = installResult.extensionId
     await driver.get(extensionUri)
     await delay(300)
   })
