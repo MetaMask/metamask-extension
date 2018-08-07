@@ -18,6 +18,7 @@ export default class AdvancedTabContent extends Component {
     customGasPrice: PropTypes.number,
     customGasLimit: PropTypes.number,
     millisecondsRemaining: PropTypes.number,
+    totalFee: PropTypes.string,
   }
 
   gasInput (value, onChange, min, precision, showGWEI) {
@@ -40,6 +41,46 @@ export default class AdvancedTabContent extends Component {
     return <i className="fa info-circle" onClick={onClick} />
   }
 
+  renderDataSummary (totalFee, millisecondsRemaining) {
+    return (
+      <div className="advanced-tab__transaction-data-summary">
+        <div className="advanced-tab__transaction-data-summary__titles">
+          <span>{ this.context.t('newTransactionFee') }</span>
+          <span>~{ this.context.t('transactionTime') }</span>
+        </div>
+        <div className="advanced-tab__transaction-data-summary__container">
+          <div className="advanced-tab__transaction-data-summary__fee">
+            {totalFee}
+          </div>
+          <TimeRemaining
+            milliseconds={millisecondsRemaining}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  renderGasEditRows (customGasPrice, updateCustomGasPrice, customGasLimit, updateCustomGasLimit) {
+    return (
+      <div className="advanced-tab__gas-edit-rows">
+        <div className="advanced-tab__gas-edit-row">
+          <div className="advanced-tab__gas-edit-row__label">
+            { this.context.t('gasPriceNoDenom') }
+            { this.infoButton(() => {}) }
+          </div>
+          { this.gasInput(customGasPrice, updateCustomGasPrice, MIN_GAS_PRICE_DEC, 9, true) }
+        </div>
+        <div className="advanced-tab__gas-edit-row">
+          <div className="advanced-tab__gas-edit-row__label">
+            { this.context.t('gasLimit') }
+            { this.infoButton(() => {}) }
+          </div>
+          { this.gasInput(customGasLimit, updateCustomGasLimit, MIN_GAS_LIMIT_DEC, 0) }
+        </div>
+      </div>
+    )
+  }
+
   render () {
     const {
       updateCustomGasPrice,
@@ -47,26 +88,14 @@ export default class AdvancedTabContent extends Component {
       millisecondsRemaining,
       customGasPrice,
       customGasLimit,
+      totalFee,
     } = this.props
 
     return (
       <div className="advanced-tab">
-        <div className="advanced-tab__transaction-data-summary">
-          <div className="advanced-tab__transaction-data-summary__titles">
-            <span>New Transaction Fee</span>
-            <span>~Transaction Time</span>
-          </div>
-          <div className="advanced-tab__transaction-data-summary__container">
-            <div className="advanced-tab__transaction-data-summary__fee">
-              $0.30
-            </div>
-            <TimeRemaining
-              milliseconds={millisecondsRemaining}
-            />
-          </div>
-        </div>
+        { this.renderDataSummary(totalFee, millisecondsRemaining) }
         <div className="advanced-tab__fee-chart-title">
-          Live Transaction Fee Predictions
+          { this.context.t('feeChartTitle') }
         </div>
         <div className="advanced-tab__fee-chart" />
         <div className="advanced-tab__slider-container">
@@ -83,22 +112,12 @@ export default class AdvancedTabContent extends Component {
             coloredStart={{}}
           />
         </div>
-        <div className="advanced-tab__gas-edit-rows">
-          <div className="advanced-tab__gas-edit-row">
-            <div className="advanced-tab__gas-edit-row__label">
-              Gas Price
-              { this.infoButton(() => {}) }
-            </div>
-            { this.gasInput(customGasPrice, updateCustomGasPrice, MIN_GAS_PRICE_DEC, 9, true) }
-          </div>
-          <div className="advanced-tab__gas-edit-row">
-            <div className="advanced-tab__gas-edit-row__label">
-              Gas Limit
-              { this.infoButton(() => {}) }
-            </div>
-            { this.gasInput(customGasLimit, updateCustomGasLimit, MIN_GAS_LIMIT_DEC, 0) }
-          </div>
-        </div>
+        { this.renderGasEditRows(
+            customGasPrice,
+            updateCustomGasPrice,
+            customGasLimit,
+            updateCustomGasLimit
+        ) }
       </div>
     )
   }

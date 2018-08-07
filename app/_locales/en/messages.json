@@ -391,6 +391,9 @@
   "failed": {
     "message": "Failed"
   },
+  "feeChartTitle": {
+    "message": "Live Transaction Fee Predictions"
+  },
   "fiat": {
     "message": "FIAT",
     "description": "Exchange type"
@@ -441,6 +444,9 @@
   },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas Price"
   },
   "gasPriceCalculation": {
     "message": "We calculate the suggested gas prices based on network success rates."
@@ -700,6 +706,9 @@
   },
   "newTotal": {
     "message": "New Total"
+  },
+  "newTransactionFee": {
+    "message": "New Transaction Fee"
   },
   "next": {
     "message": "Next"
@@ -1189,6 +1198,9 @@
   },
   "transactionNumber": {
     "message": "Transaction Number"
+  },
+  "transactionTime": {
+    "message": "Transaction Time"
   },
   "transfer": {
     "message": "Transfer"
