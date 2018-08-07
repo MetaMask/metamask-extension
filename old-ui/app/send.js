@@ -162,7 +162,12 @@ SendTransactionScreen.prototype.render = function () {
       ]),
 
       // error message
-      props.error && h('span.error.flex-center', props.error),
+      props.error && h('div', {style: {
+        marginLeft: '30px',
+        marginRight: '30px',
+      }}, [
+        h('div.error.flex-center', props.error),
+      ]),
 
       // 'to' field
       h('section.flex-row.flex-center', [

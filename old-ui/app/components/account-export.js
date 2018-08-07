@@ -89,11 +89,13 @@ ExportAccountView.prototype.render = function () {
               }, 'Submit'),
             ]),
           (this.props.warning) && (
-          h('span.error', {
-            style: {
-              margin: '20px',
-            },
-          }, this.props.warning.split('-'))
+          h('div', {style: {
+              margin: '0 30px',
+            }},
+            [
+              h('div.error', this.props.warning.split('-')),
+            ]
+          )
         ),
         ])
     )

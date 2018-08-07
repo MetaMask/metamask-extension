@@ -334,6 +334,7 @@ PendingTx.prototype.render = function () {
               h('.cell.value', {
               }, [
                 h(BNInput, {
+                  id: 'gas_limit',
                   name: 'Gas Limit',
                   value: gasBn,
                   precision: 0,
@@ -344,6 +345,7 @@ PendingTx.prototype.render = function () {
                   suffix: 'UNITS',
                   style: {
                     position: 'relative',
+                    width: '91px',
                   },
                   onChange: this.gasLimitChanged.bind(this),
 
@@ -358,6 +360,7 @@ PendingTx.prototype.render = function () {
               h('.cell.value', {
               }, [
                 h(BNInput, {
+                  id: 'gas_price',
                   name: 'Gas Price',
                   value: gasPriceBn,
                   precision: 9,
@@ -366,6 +369,7 @@ PendingTx.prototype.render = function () {
                   min: forceGasMin || MIN_GAS_PRICE_BN,
                   style: {
                     position: 'relative',
+                    width: '91px',
                   },
                   onChange: this.gasPriceChanged.bind(this),
                   ref: (hexInput) => { this.inputs.push(hexInput) },

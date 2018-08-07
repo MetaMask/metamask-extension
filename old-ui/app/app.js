@@ -196,6 +196,7 @@ App.prototype.renderAppBar = function () {
           h(NetworkIndicator, {
             network: this.props.network,
             provider: this.props.provider,
+            isUnlocked: this.props.isUnlocked,
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()

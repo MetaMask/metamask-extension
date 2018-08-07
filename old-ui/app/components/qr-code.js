@@ -52,7 +52,6 @@ QrCodeView.prototype.render = function () {
     h('#qr-container.flex-column', {
       style: {
         marginTop: '15px',
-        marginBottom: '15px',
       },
       dangerouslySetInnerHTML: {
         __html: qrImage.createTableTag(4),

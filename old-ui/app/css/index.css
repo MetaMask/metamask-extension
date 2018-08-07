@@ -272,6 +272,7 @@ app sections
   background-position: 10px 10px;
   background-repeat: no-repeat;
   width: 100%;
+  line-height: 14px;
 }
 
 .warning {
@@ -669,7 +670,6 @@ input.large-input {
   font-family: 'Nunito Regular';
   padding-bottom: 10px;
   display: inline-block;
-  padding-left: 5px;
 }
 
 /* buy eth warning screen */
@@ -952,4 +952,8 @@ div.message-container > div:first-child {
 
 .notification-modal__link {
   color: #2f9ae0;
+}
+
+.hidden {
+  visibility: hidden;
 }

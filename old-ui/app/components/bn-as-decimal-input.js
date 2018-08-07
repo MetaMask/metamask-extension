@@ -101,14 +101,13 @@ BnAsDecimalInput.prototype.render = function () {
           paddingRight: '30px',
           background: 'rgba(255, 255, 255, 0.85)',
           position: 'absolute',
-          top: '130px',
+          top: props.id === 'gas_limit' ? '180px' : '250px',
           left: '0px',
         },
       }, [
         h('div.error', {
           style: {
-            transform: 'translateY(26px)',
-            zIndex: '1',
+            zIndex: props.id === 'gas_limit' ? '1' : '2',
           },
         }, state.invalid),
       ]) : null,
