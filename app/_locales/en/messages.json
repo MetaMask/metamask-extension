@@ -513,6 +513,9 @@
   "invalidRPC": {
     "message": "Invalid RPC URI"
   },
+  "invalidSeedPhrase": {
+    "message": "Invalid seed phrase"
+  },
   "jsonFail": {
     "message": "Something went wrong. Please make sure your JSON file is properly formatted."
   },
