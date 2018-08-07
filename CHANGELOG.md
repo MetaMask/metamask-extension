@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.9.0 Tue Aug 07 2018
+
 - Add new tokens auto detection
 - Remove rejected transactions from transaction history
 - Add Trezor Support
