@@ -14,6 +14,7 @@ import {
   SEND_TOKEN_ACTION_KEY,
   TRANSFER_FROM_ACTION_KEY,
   SIGNATURE_REQUEST_KEY,
+  UNKNOWN_FUNCTION_KEY,
 } from '../constants/transactions'
 
 abiDecoder.addABI(abi)
@@ -55,6 +56,10 @@ export function getTransactionActionKey (transaction, methodData) {
   if (data) {
     const { name } = methodData
     const methodName = name && name.toLowerCase()
+
+    if (!methodName) {
+      return UNKNOWN_FUNCTION_KEY
+    }
 
     switch (methodName) {
       case TOKEN_METHOD_TRANSFER:

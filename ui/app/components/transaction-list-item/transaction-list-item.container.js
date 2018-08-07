@@ -4,16 +4,16 @@ import { compose } from 'recompose'
 import withMethodData from '../../higher-order-components/with-method-data'
 import TransactionListItem from './transaction-list-item.component'
 import { setSelectedToken, retryTransaction } from '../../actions'
-import { getEthFromWeiHex, getValueFromWeiHex } from '../../helpers/conversions.util'
+import { getEthFromWeiHex, getValueFromWeiHex, hexToDecimal } from '../../helpers/conversions.util'
 import { getTokenData } from '../../helpers/transactions.util'
 import { formatCurrency } from '../../helpers/confirm-transaction/util'
 import { calcTokenAmount } from '../../token-util'
-import { TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
+import { formatDate } from '../../util'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state
   const { currentCurrency, conversionRate } = metamask
-  const { transaction: { txParams: { value, data } = {} } = {}, token } = ownProps
+  const { transaction: { txParams: { value, data, nonce } = {}, time } = {}, token } = ownProps
 
   let ethTransactionAmount, fiatDisplayValue
 
@@ -22,13 +22,9 @@ const mapStateToProps = (state, ownProps) => {
     const tokenData = getTokenData(data)
 
     if (tokenData.params && tokenData.params.length === 2) {
-      const tokenDataName = tokenData.name || ''
       const tokenValue = tokenData.params[1].value
-      const tokenAmount = tokenDataName.toLowerCase() === TOKEN_METHOD_TRANSFER
-        ? calcTokenAmount(tokenValue, decimals)
-        : tokenValue
-
-        fiatDisplayValue = `${tokenAmount} ${symbol}`
+      const tokenAmount = calcTokenAmount(tokenValue, decimals)
+      fiatDisplayValue = `${tokenAmount} ${symbol}`
     }
   } else {
     ethTransactionAmount = getEthFromWeiHex({ value, conversionRate })
@@ -39,9 +35,12 @@ const mapStateToProps = (state, ownProps) => {
     fiatDisplayValue = `${fiatFormattedAmount} ${currentCurrency.toUpperCase()}`
   }
 
+  const nonceAndDate = nonce ? `#${hexToDecimal(nonce)} - ${formatDate(time)}` : formatDate(time)
+
   return {
     ethTransactionAmount,
     fiatDisplayValue,
+    nonceAndDate,
   }
 }
 

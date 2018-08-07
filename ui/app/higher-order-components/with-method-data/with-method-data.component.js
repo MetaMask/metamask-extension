@@ -13,10 +13,8 @@ export default function withMethodData (WrappedComponent) {
     }
 
     state = {
-      methodData: {
-        data: {},
-      },
-      isFetching: false,
+      methodData: {},
+      done: false,
       error: null,
     }
 
@@ -29,24 +27,24 @@ export default function withMethodData (WrappedComponent) {
       const { txParams: { data = '' } = {} } = transaction
 
       if (data) {
-        this.setState({ isFetching: true })
-
         try {
           const methodData = await getMethodData(data)
-          this.setState({ methodData, isFetching: false })
+          this.setState({ methodData, done: true })
         } catch (error) {
-          this.setState({ isFetching: false, error })
+          this.setState({ done: true, error })
         }
+      } else {
+        this.setState({ done: true })
       }
     }
 
     render () {
-      const { methodData, isFetching, error } = this.state
+      const { methodData, done, error } = this.state
 
       return (
         <WrappedComponent
           { ...this.props }
-          methodData={{ data: methodData, isFetching, error }}
+          methodData={{ data: methodData, done, error }}
         />
       )
     }
