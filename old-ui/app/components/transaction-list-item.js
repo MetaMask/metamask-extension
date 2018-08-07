@@ -181,22 +181,19 @@ TransactionListItem.prototype.render = function () {
         }) : h('.flex-column'),
       ]),
 
-      this.showRetryButton() && h('.transition-list-item__retry.grow-on-hover', {
+      this.showRetryButton() && h('.transition-list-item__retry.grow-on-hover.error', {
         onClick: event => {
           event.stopPropagation()
           this.resubmit()
         },
         style: {
           height: '22px',
-          borderRadius: '22px',
-          color: '#F9881B',
-          padding: '0 20px',
-          backgroundColor: '#FFE3C9',
           display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center',
           fontSize: '8px',
           cursor: 'pointer',
+          width: 'auto',
+          backgroundPosition: '10px center',
         },
       }, [
         h('div', {
