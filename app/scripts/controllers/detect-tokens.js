@@ -85,7 +85,7 @@ class DetectTokensController {
   set preferences (preferences) {
     if (!preferences) { return }
     this._preferences = preferences
-    preferences.store.subscribe(({ tokens }) => { this.tokenAddresses = tokens.map((obj) => { return obj.address }) })
+    preferences.store.subscribe(({ tokens = [] }) => { this.tokenAddresses = tokens.map((obj) => { return obj.address }) })
     preferences.store.subscribe(({ selectedAddress }) => {
       if (this.selectedAddress !== selectedAddress) {
         this.selectedAddress = selectedAddress
