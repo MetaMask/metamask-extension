@@ -59,7 +59,7 @@ module.exports = class NetworkController extends EventEmitter {
   // return the proxies so the references will always be good
   getProviderAndBlockTracker () {
     const provider = this._providerProxy
-    const blockTracker = this._blockTracker
+    const blockTracker = this._blockTrackerProxy
     return { provider, blockTracker }
   }
 
