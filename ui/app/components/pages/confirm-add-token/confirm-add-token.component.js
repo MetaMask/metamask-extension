@@ -90,9 +90,7 @@ export default class ConfirmAddToken extends Component {
             type="default"
             large
             className="page-container__footer-button"
-            onClick={() => {
-              history.push(ADD_TOKEN_ROUTE)
-            }}
+            onClick={() => history.push(ADD_TOKEN_ROUTE)}
           >
             { this.context.t('back') }
           </Button>

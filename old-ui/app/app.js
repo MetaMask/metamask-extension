@@ -239,7 +239,7 @@ App.prototype.renderPrimary = function () {
       return h(AddTokenScreen, {key: 'add-token'})
 
     case 'add-suggested-token':
-      log.debug('rendering add-token screen from unlock screen.')
+      log.debug('rendering add-suggested-token screen from unlock screen.')
       return h(AddSuggestedTokenScreen, {key: 'add-suggested-token'})
 
     case 'config':

@@ -1639,16 +1639,16 @@ function removeSuggestedTokens () {
   }
 }
 
-function clearPendingTokens () {
-  return {
-    type: actions.CLEAR_PENDING_TOKENS,
-  }
-}
-
 function updateTokens (newTokens) {
   return {
     type: actions.UPDATE_TOKENS,
     newTokens,
+  }
+}
+
+function clearPendingTokens () {
+  return {
+    type: actions.CLEAR_PENDING_TOKENS,
   }
 }
 

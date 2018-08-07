@@ -452,10 +452,12 @@ class PreferencesController {
     if (!rawAddress || !symbol || !decimals) throw new Error(`Cannot suggest token without address, symbol, and decimals`)
     if (!(symbol.length < 5)) throw new Error(`Invalid symbol ${symbol} more than four characters`)
     const numDecimals = parseInt(decimals, 10)
-    if (isNaN(numDecimals) || numDecimals > 18 || numDecimals < 0) throw new Error(`Invalid decimals ${decimals}`)
+    if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
+      throw new Error(`Invalid decimals ${decimals} must be at least 0, and not over 36`)
+    }
     if (!isValidAddress(rawAddress)) throw new Error(`Invalid address ${rawAddress}`)
   }
-    
+
   /**
    * Subscription to network provider type.
    *

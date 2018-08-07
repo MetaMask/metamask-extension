@@ -29,7 +29,6 @@ function reduceMetamask (state, action) {
     tokenExchangeRates: {},
     tokens: [],
     pendingTokens: {},
-    suggestedTokens: {},
     send: {
       gasLimit: null,
       gasPrice: null,
