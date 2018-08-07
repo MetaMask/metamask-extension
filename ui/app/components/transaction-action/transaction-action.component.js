@@ -28,9 +28,9 @@ export default class TransactionAction extends PureComponent {
   getTransactionAction () {
     const { transactionAction } = this.state
     const { transaction, methodData } = this.props
-    const { data, isFetching } = methodData
+    const { data, done } = methodData
 
-    if (isFetching || transactionAction) {
+    if (!done || transactionAction) {
       return
     }
 
@@ -40,12 +40,12 @@ export default class TransactionAction extends PureComponent {
   }
 
   render () {
-    const { className } = this.props
+    const { className, methodData: { isFetching } } = this.props
     const { transactionAction } = this.state
 
     return (
       <div className={className}>
-        { transactionAction || '--' }
+        { (!isFetching && transactionAction) || '--' }
       </div>
     )
   }

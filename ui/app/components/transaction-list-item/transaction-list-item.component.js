@@ -3,11 +3,9 @@ import PropTypes from 'prop-types'
 import Identicon from '../identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
-import { formatDate } from '../../util'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
-import { hexToDecimal } from '../../helpers/conversions.util'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
@@ -19,6 +17,7 @@ export default class TransactionListItem extends PureComponent {
     showRetry: PropTypes.bool,
     retryTransaction: PropTypes.func,
     setSelectedToken: PropTypes.func,
+    nonceAndDate: PropTypes.string,
   }
 
   handleClick = () => {
@@ -63,14 +62,9 @@ export default class TransactionListItem extends PureComponent {
       fiatDisplayValue,
       methodData,
       showRetry,
+      nonceAndDate,
     } = this.props
     const { txParams = {} } = transaction
-    const nonce = hexToDecimal(txParams.nonce)
-
-    const nonceAndDateText = nonce
-      ? `#${nonce} - ${formatDate(transaction.time)}`
-      : formatDate(transaction.time)
-
     const fiatDisplayText = `-${fiatDisplayValue}`
     const ethDisplayText = ethTransactionAmount && `-${ethTransactionAmount} ETH`
 
@@ -92,9 +86,9 @@ export default class TransactionListItem extends PureComponent {
           />
           <div
             className="transaction-list-item__nonce"
-            title={nonceAndDateText}
+            title={nonceAndDate}
           >
-            { nonceAndDateText }
+            { nonceAndDate }
           </div>
           <TransactionStatus
             className="transaction-list-item__status"
