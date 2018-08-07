@@ -86,7 +86,7 @@ async function runAddTokenFlowTest (assert, done) {
   $('button.btn-primary.btn--large')[0].click()
 
   // Verify added token image
-  let heroBalance = await queryAsync($, '.hero-balance')
+  let heroBalance = await queryAsync($, '.token-view-balance__balance-container')
   assert.ok(heroBalance, 'rendered hero balance')
   assert.ok(tokenImageUrl.indexOf(heroBalance.find('img').attr('src')) > -1, 'token added')
 
@@ -134,7 +134,7 @@ async function runAddTokenFlowTest (assert, done) {
   // $('button.btn-primary--lg')[0].click()
 
   // Verify added token image
-  heroBalance = await queryAsync($, '.hero-balance')
+  heroBalance = await queryAsync($, '.token-view-balance__balance-container')
   assert.ok(heroBalance, 'rendered hero balance')
   assert.ok(heroBalance.find('.identicon')[0], 'token added')
 }

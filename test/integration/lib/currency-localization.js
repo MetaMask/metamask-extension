@@ -22,8 +22,8 @@ async function runCurrencyLocalizationTest (assert, done) {
   await timeout(1000)
   reactTriggerChange(selectState[0])
   await timeout(1000)
-  const txView = await queryAsync($, '.tx-view')
-  const heroBalance = await findAsync($(txView), '.hero-balance')
-  const fiatAmount = await findAsync($(heroBalance), '.fiat-amount')
+  const txView = await queryAsync($, '.token-view')
+  const heroBalance = await findAsync($(txView), '.token-view-balance__balance')
+  const fiatAmount = await findAsync($(heroBalance), '.token-view-balance__secondary-balance')
   assert.equal(fiatAmount[0].textContent, '₱102,707.97')
 }

@@ -19,7 +19,7 @@ async function runConfirmSigRequestsTest (assert, done) {
   selectState.val('confirm sig requests')
   reactTriggerChange(selectState[0])
 
-  const pendingRequestItem = $.find('.tx-list-item.tx-list-pending-item-container.tx-list-clickable')
+  const pendingRequestItem = $.find('.transaction-list-item')
 
   if (pendingRequestItem[0]) {
     pendingRequestItem[0].click()

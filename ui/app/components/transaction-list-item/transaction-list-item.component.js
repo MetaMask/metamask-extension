@@ -67,7 +67,10 @@ export default class TransactionListItem extends PureComponent {
     const { txParams = {} } = transaction
     const nonce = hexToDecimal(txParams.nonce)
 
-    const nonceAndDateText = `#${nonce} - ${formatDate(transaction.time)}`
+    const nonceAndDateText = nonce
+      ? `#${nonce} - ${formatDate(transaction.time)}`
+      : formatDate(transaction.time)
+
     const fiatDisplayText = `-${fiatDisplayValue}`
     const ethDisplayText = ethTransactionAmount && `-${ethTransactionAmount} ETH`
 

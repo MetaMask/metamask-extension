@@ -43,6 +43,13 @@ export const pendingTransactionsSelector = createSelector(
   )
 )
 
+export const submittedPendingTransactionsSelector = createSelector(
+  transactionsSelector,
+  (transactions = []) => (
+    transactions.filter(transaction => transaction.status === SUBMITTED_STATUS)
+  )
+)
+
 export const completedTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => (

@@ -58,7 +58,7 @@ async function runSendFlowTest (assert, done) {
   selectState.val('send new ui')
   reactTriggerChange(selectState[0])
 
-  const sendScreenButton = await queryAsync($, 'button.btn-primary.hero-balance-button')
+  const sendScreenButton = await queryAsync($, 'button.btn-primary.token-view-balance__button')
   assert.ok(sendScreenButton[1], 'send screen button present')
   sendScreenButton[1].click()
 
