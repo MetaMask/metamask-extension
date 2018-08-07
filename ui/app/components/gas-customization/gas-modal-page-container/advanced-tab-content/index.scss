@@ -4,6 +4,7 @@
   display: flex;
   flex-flow: column;
   border-bottom: 1px solid $alto;
+  height: 430px;
 
   &__transaction-data-summary,
   &__fee-chart-title,
