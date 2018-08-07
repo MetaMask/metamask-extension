@@ -111,7 +111,7 @@ class BackupPhraseScreen extends Component {
         <div className="backup-phrase__tips">
           <div className="backup-phrase__tips-text">Tips:</div>
           <div className="backup-phrase__tips-text">
-            Store this phrase in a password manager like 1password.
+            Store this phrase in a password manager like 1Password.
           </div>
           <div className="backup-phrase__tips-text">
             Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations.
