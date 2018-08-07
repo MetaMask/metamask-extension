@@ -454,6 +454,7 @@ class PreferencesController {
     const numDecimals = parseInt(decimals, 10)
     if (isNaN(numDecimals) || numDecimals > 18 || numDecimals < 0) throw new Error(`Invalid decimals ${decimals}`)
     if (!isValidAddress(rawAddress)) throw new Error(`Invalid address ${rawAddress}`)
+  }
     
   /**
    * Subscription to network provider type.
