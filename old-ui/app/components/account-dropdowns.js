@@ -46,13 +46,14 @@ class AccountDropdowns extends Component {
           style: {
             marginTop: index === 0 ? '5px' : '',
             fontSize: '16px',
+            padding: '8px 0px',
           },
         },
         [
           isSelected ? h('div', {
             style: {
               width: '4px',
-              height: '32px',
+              height: '26px',
               background: '#8fdc97',
               position: 'absolute',
               left: '-25px',
@@ -63,24 +64,24 @@ class AccountDropdowns extends Component {
             {
               overflow: 'none',
               address: identity.address,
-              diameter: 32,
+              diameter: 24,
               style: {
                 marginLeft: '10px',
               },
             },
           ),
-          this.indicateIfLoose(keyring),
           h('span', {
             style: {
-              marginLeft: '20px',
+              marginLeft: '10px',
               fontSize: '16px',
-              maxWidth: '145px',
+              maxWidth: '95px',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               color: isSelected ? 'white' : '',
             },
           }, identity.name || ''),
+          this.indicateIfLoose(keyring),
         ]
       )
     })
@@ -103,12 +104,12 @@ class AccountDropdowns extends Component {
       {
         useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
         style: {
-          marginLeft: '-168px',
+          marginLeft: '-198px',
           marginTop: '32px',
           minWidth: '180px',
           overflowY: 'auto',
           maxHeight: '300px',
-          width: '220px',
+          width: '250px',
         },
         innerStyle: {
           padding: '8px 25px',
@@ -127,6 +128,9 @@ class AccountDropdowns extends Component {
         h(
           DropdownMenuItem,
           {
+            style: {
+              padding: '8px 0px',
+            },
             closeMenu: () => {},
             onClick: () => actions.addNewAccount(),
           },
@@ -137,6 +141,9 @@ class AccountDropdowns extends Component {
         h(
           DropdownMenuItem,
           {
+            style: {
+              padding: '8px 0px',
+            },
             closeMenu: () => {},
             onClick: () => actions.showImportPage(),
           },

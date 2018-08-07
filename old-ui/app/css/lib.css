@@ -235,18 +235,17 @@ hr.horizontal-line {
 .keyring-label {
   z-index: 1;
   font-size: 11px;
-  background: rgba(255,0,0,0.8);
+  background: #8fdc97;
   color: white;
-  bottom: 0px;
-  left: -18px;
-  border-radius: 10px;
+  border-radius: 3px;
   height: 20px;
   min-width: 20px;
-  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px;
+  position: absolute;
+  right: 0;
 }
 
 .ether-balance {
