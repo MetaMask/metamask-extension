@@ -21,7 +21,7 @@ TokenCell.prototype.render = function () {
         cursor: network === '1' ? 'pointer' : 'default',
         borderBottom: props.isLastTokenCell ? 'none' : '1px solid #e2e2e2',
         padding: '20px 0',
-        margin: '0 20px',
+        margin: '0 30px',
       },
       onClick: this.view.bind(this, address, userAddress, network),
     }, [

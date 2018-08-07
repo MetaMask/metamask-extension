@@ -113,7 +113,7 @@ TokenList.prototype.renderTokenStatusBar = function () {
       justifyContent: 'space-between',
       alignItems: 'center',
       minHeight: '70px',
-      padding: '10px',
+      padding: '30px',
     },
   }, [
     h('span', msg),

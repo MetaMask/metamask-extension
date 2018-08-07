@@ -176,7 +176,7 @@ describe('Metamask popup page', function () {
 
     it('adds seed phrase', async function () {
       const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
-      const seedTextArea = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > textarea'))
+      const seedTextArea = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.initialize-screen.flex-column.flex-center.flex-grow > textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
 
       await driver.findElement(By.id('password-box')).sendKeys('123456789')
