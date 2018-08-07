@@ -221,7 +221,9 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
+  SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
   showAddTokenPage,
+  showAddSuggestedTokenPage,
   addToken,
   addTokens,
   removeToken,
@@ -1555,6 +1557,13 @@ function showConfigPage (transitionForward = true) {
 function showAddTokenPage (transitionForward = true) {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
+    value: transitionForward,
+  }
+}
+
+function showAddSuggestedTokenPage (transitionForward = true) {
+  return {
+    type: actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE,
     value: transitionForward,
   }
 }

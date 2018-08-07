@@ -50,6 +50,10 @@ AccountDetailScreen.prototype.render = function () {
   var account = props.accounts[selected]
   const { network, conversionRate, currentCurrency } = props
 
+  if (Object.keys(props.suggestedTokens).length > 0) {
+    this.props.dispatch(actions.showAddSuggestedTokenPage())
+  }
+
   return (
 
     h('.account-detail-section.full-flex-height', [
