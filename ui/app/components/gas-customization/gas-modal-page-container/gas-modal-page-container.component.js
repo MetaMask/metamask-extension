@@ -40,6 +40,7 @@ export default class GasModalPageContainer extends Component {
         customGasPrice={customGasPrice}
         customGasLimit={customGasLimit}
         millisecondsRemaining={91000}
+        totalFee={'$0.30'}
       />
     )
   }
