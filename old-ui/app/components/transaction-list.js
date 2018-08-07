@@ -44,7 +44,7 @@ TransactionList.prototype.render = function () {
         style: {
           overflowY: 'auto',
           height: '100%',
-          padding: '0 20px 0 20px',
+          padding: '0 30px',
           textAlign: 'center',
         },
       }, [

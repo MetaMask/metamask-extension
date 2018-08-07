@@ -383,6 +383,7 @@ app sections
 
 .section-title {
   border-top: 1px solid #e2e2e2;
+  height: 80px;
 }
 
 .trash {
@@ -964,6 +965,14 @@ div.message-container > div:first-child {
 
 .notification-modal__link {
   color: #2f9ae0;
+}
+
+.confirm-label {
+  padding: 20px 50px;
+  color: #6729a8;
+  border: solid 1px #6729a8;
+  border-radius: 5px;
+  background-color: rgba(103,41,168, 0.2);
 }
 
 .hidden {

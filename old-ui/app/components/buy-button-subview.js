@@ -52,14 +52,14 @@ BuyButtonSubview.prototype.headerSubview = function () {
   const coinName = isPOA ? 'POA' : isSokol ? 'SPOA' : 'ETH'
   return (
 
-    h('.flex-column.section-title', {
+    h('.flex-column', {
       style: {
         alignItems: 'center',
       },
     }, [
 
       // header bar (back button, label)
-      h('.flex-row', {
+      h('.flex-row.section-title', {
         style: {
           alignItems: 'center',
           justifyContent: 'center',

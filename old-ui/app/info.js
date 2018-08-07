@@ -44,7 +44,7 @@ InfoScreen.prototype.render = function () {
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-space-around', {
           style: {
-            padding: '30px',
+            padding: '0 30px',
           },
         }, [
           // current version number

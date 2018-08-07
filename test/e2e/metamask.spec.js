@@ -343,8 +343,8 @@ describe('Metamask popup page', function () {
       assert.equal(await removeTokenTitle.getText(), 'Remove Token')
 
       // Confirm the removal
-      const confirmRemoveTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button'))
-      assert.equal(await confirmRemoveTokenButton.getText(), 'Remove')
+      const confirmRemoveTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button:nth-child(2)'))
+      assert.equal(await confirmRemoveTokenButton.getText(), 'Yes')
       await confirmRemoveTokenButton.click()
       await delay(300)
 
@@ -382,7 +382,7 @@ describe('Metamask popup page', function () {
       await delay(300)
       const titleConfirmPage = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
       assert.equal(await titleConfirmPage.getText(), 'Delete Custom RPC')
-      const yesButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(3) > button:nth-child(1)'))
+      const yesButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'))
       assert.equal(await yesButton.getText(), 'Yes')
       await yesButton.click()
       await delay(300)

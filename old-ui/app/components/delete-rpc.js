@@ -39,19 +39,30 @@ DeleteRpc.prototype.render = function () {
       }),
       h('h2.page-subtitle', 'Delete Custom RPC'),
     ]),
-    h('h3', {
+    h('p.confirm-label', {
         style: {
           textAlign: 'center',
-          padding: '10px',
+          margin: '0px 30px 20px ',
         },
       },
       `Are you sure to delete ${this.props.url} ?`),
-    h('.flex-row.flex-center', [
-      h('button',
+    h('.flex-row.flex-right', {
+      style: {
+        marginRight: '30px',
+      },
+    }, [
+      h('button.btn-violet',
         {
           style: {
-            margin: '20px',
+            marginRight: '10px',
           },
+          onClick: () => {
+            this.props.dispatch(actions.showConfigPage())
+          },
+        },
+        'No'),
+      h('button',
+        {
           onClick: () => {
             this.props.dispatch(actions.removeCustomRPC(this.props.url, this.props.provider))
               .then(() => {
@@ -60,16 +71,6 @@ DeleteRpc.prototype.render = function () {
           },
         },
         'Yes'),
-      h('button',
-        {
-          style: {
-            margin: '20px',
-          },
-          onClick: () => {
-            this.props.dispatch(actions.showConfigPage())
-          },
-        },
-        'No'),
     ]),
   ])
 }
