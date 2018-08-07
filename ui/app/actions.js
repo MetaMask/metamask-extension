@@ -1616,16 +1616,15 @@ function addTokens (tokens) {
 function removeSuggestedTokens () {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.removeSuggestedTokens((err) => {
-        dispatch(actions.hideLoadingIndication())
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          reject(err)
-        }
-        dispatch(actions.clearPendingTokens())
-        resolve()
-      })
+    background.removeSuggestedTokens((err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        dispatch(actions.displayWarning(err.message))
+      }
+      dispatch(actions.clearPendingTokens())
+      if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+        return global.platform.closeCurrentWindow()
+      }
     })
   }
 }

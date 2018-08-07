@@ -25,7 +25,7 @@ const {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   NOTICE_ROUTE,
-  CONFIRM_ADD_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
 } = require('../../routes')
 
 const { unconfirmedTransactionsCountSelector } = require('../../selectors/confirm-transaction')
@@ -40,7 +40,7 @@ class Home extends Component {
 
     // suggested new tokens
     if (Object.keys(suggestedTokens).length > 0) {
-      history.push(CONFIRM_ADD_TOKEN_ROUTE)
+      history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
     }
 
     // unapprovedTxs and unapproved messages
