@@ -11,11 +11,8 @@
     height: 219px;
   }
 
-  &__advanced-tab {
-    height: 475px;
-  }
 
-  &__info-row, &__info-row--fade {
+  .info-row, .info-row--fade {
     width: 100%;
     background: $polar;
     padding: 15px 21px;
