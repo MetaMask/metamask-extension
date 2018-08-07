@@ -15,7 +15,6 @@ export default class ConfirmAddToken extends Component {
     clearPendingTokens: PropTypes.func,
     addTokens: PropTypes.func,
     pendingTokens: PropTypes.object,
-    removeSuggestedTokens: PropTypes.func,
   }
 
   componentDidMount () {
@@ -33,7 +32,7 @@ export default class ConfirmAddToken extends Component {
   }
 
   render () {
-    const { history, addTokens, clearPendingTokens, pendingTokens, removeSuggestedTokens } = this.props
+    const { history, addTokens, clearPendingTokens, pendingTokens } = this.props
 
     return (
       <div className="page-container">
@@ -92,8 +91,6 @@ export default class ConfirmAddToken extends Component {
             large
             className="page-container__footer-button"
             onClick={() => {
-              // TODO find the right pace to removeSuggestedTokens
-              removeSuggestedTokens()
               history.push(ADD_TOKEN_ROUTE)
             }}
           >
