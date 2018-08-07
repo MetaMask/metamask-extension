@@ -4,7 +4,6 @@ import {
   MIN_GAS_PRICE_DEC,
   MIN_GAS_LIMIT_DEC,
 } from '../../../send/send.constants'
-import GasSlider from '../../gas-slider'
 import TimeRemaining from './time-remaining'
 
 export default class AdvancedTabContent extends Component {
@@ -98,20 +97,6 @@ export default class AdvancedTabContent extends Component {
           { this.context.t('feeChartTitle') }
         </div>
         <div className="advanced-tab__fee-chart" />
-        <div className="advanced-tab__slider-container">
-          <GasSlider
-            onChange={value => {
-              updateCustomGasPrice(Number(value))
-            }}
-            lowLabel={'Cheaper'}
-            highLabel={'Faster'}
-            value={customGasPrice}
-            step={0.1}
-            max={200}
-            min={0}
-            coloredStart={{}}
-          />
-        </div>
         { this.renderGasEditRows(
             customGasPrice,
             updateCustomGasPrice,
