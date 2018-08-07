@@ -3,26 +3,29 @@
 <html>
 
   <head>
-    <title>Phishing Warning</title>
+    <title>Dangerous Website Warning</title>
 
     <style>
-body {
-  background: #c50000;
-  padding: 50px;
-  display: flex;
-  justify-content: center;
-  font-family: sans-serif;
-}
-.centered {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  color: white;
-  max-width: 600px;
-}
-a {
-  color: white;
-}
+      body {
+        background: #c50000;
+        padding: 50px;
+        display: flex;
+        justify-content: center;
+        font-family: sans-serif;
+      }
+
+      .centered {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: white;
+        max-width: 600px;
+      }
+
+      a {
+        color: white;
+      }
+
     </style>
 
     <script>
@@ -50,10 +53,10 @@ a {
 
       <img src="/images/ethereum-metamask-chrome.png" style="width:100%">
       <h3>ATTENTION</h3>
-      <p>MetaMask believes this domain to have malicious intent and has prevented you from interacting with it.</p>
-      <p>This is because the site tested positive on the <a href="https://github.com/metamask/eth-phishing-detect">Ethereum Phishing Detector</a>.</p>
-      <p>You can turn MetaMask off to interact with this site, but it's advised not to.</p>
-      <p>If you think this domain is incorrectly flagged, <a href="https://github.com/metamask/eth-phishing-detect/issues/new">please file an issue</a>.</p>
+      <p>MetaMask believes this domain could currently compromise your security and has prevented you from interacting with it.</p>
+      <p>This is because the site tested positive on the <a href="https://github.com/metamask/eth-phishing-detect">Ethereum Phishing Detector</a>. This includes outright malicious websites and legitimate websites that have been compromised by a malicious actor.</p>
+      <p>You can turn MetaMask off to interact with this site, but it is advised not to.</p>
+      <p>If you think this domain is incorrectly flagged or if a blocked legitimate website has resolved its security issues, <a href="https://github.com/metamask/eth-phishing-detect/issues/new">please file an issue</a>.</p>
 
     </div>
   </body>

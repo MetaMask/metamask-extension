@@ -50,15 +50,20 @@ deployButton.addEventListener('click', async function (event) {
 
         console.log(`contract`, contract)
 
+        document.getElementById('contractStatus').innerHTML = 'Deployed'
+
         depositButton.addEventListener('click', function (event) {
+          document.getElementById('contractStatus').innerHTML = 'Deposit initiated'
           contract.deposit({ from: web3.eth.accounts[0], value: '0x3782dace9d900000' }, function (result) {
             console.log(result)
+            document.getElementById('contractStatus').innerHTML = 'Deposit completed'
           })
         })
 
         withdrawButton.addEventListener('click', function (event) {
           contract.withdraw('0xde0b6b3a7640000', { from: web3.eth.accounts[0] }, function (result) {
             console.log(result)
+            document.getElementById('contractStatus').innerHTML = 'Withdrawn'
           })
         })
       }

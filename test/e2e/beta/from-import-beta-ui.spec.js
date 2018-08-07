@@ -220,7 +220,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const [localhost] = await findElements(driver, By.xpath(`//span[contains(text(), 'Localhost')]`))
       await localhost.click()
-      await delay(largeDelayMs * 2)
+      await delay(largeDelayMs)
     })
 
     it('choose Create Account from the account menu', async () => {
