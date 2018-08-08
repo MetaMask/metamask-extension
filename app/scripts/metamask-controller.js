@@ -48,7 +48,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
-const BraveKeyring = require('eth-brave-keyring')
+const PassthroughKeyring = require('eth-passthrough-keyring')
 const { getPlatform } = require('./lib/util')
 const { PLATFORM_BRAVE } = require('./lib/enums')
 
@@ -129,7 +129,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring, BraveKeyring]
+    const additionalKeyrings = [TrezorKeyring, PassthroughKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -138,7 +138,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     if (getPlatform() === PLATFORM_BRAVE) {
-      this.getAccountsFromBraveWallet()
+      this.getAccountsFromPassthroughKeyring()
     }
 
     // If only one account exists, make sure it is selected.
@@ -365,8 +365,8 @@ module.exports = class MetamaskController extends EventEmitter {
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
-      // Brave
-      getAccountsFromBraveWallet: nodeify(this.getAccountsFromBraveWallet, this),
+      // Passthrough Keyring
+      getAccountsFromPassthroughKeyring: nodeify(this.getAccountsFromPassthroughKeyring, this),
 
       // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),
@@ -531,14 +531,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController.setSelectedAddress(address)
   }
 
-  // Brave
-  async getAccountsFromBraveWallet () {
+  // PassthroughKeyring
+  async getAccountsFromPassthroughKeyring () {
     const keyringController = this.keyringController
     let keyring = await keyringController.getKeyringsByType(
-      BraveKeyring.type
+      PassthroughKeyring.type
     )[0]
     if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(BraveKeyring.type)
+      keyring = await this.keyringController.addNewKeyring(PassthroughKeyring.type)
     }
     try {
       const accounts = await keyring.getAccounts()

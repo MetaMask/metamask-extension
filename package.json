@@ -93,7 +93,7 @@
     "ensnare": "^1.0.0",
     "eslint-plugin-react": "^7.4.0",
     "eth-bin-to-ops": "^1.0.1",
-    "eth-brave-keyring": "github:MetaMask/eth-brave-keyring#master",
+    "eth-passthrough-keyring": "github:MetaMask/eth-passthrough-keyring#master",
     "eth-contract-metadata": "github:MetaMask/eth-contract-metadata#master",
     "eth-hd-keyring": "^2.0.0",
     "eth-json-rpc-filters": "^1.2.6",
