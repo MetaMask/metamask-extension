@@ -120,7 +120,7 @@
     "message": "Close"
   },
   "chromeRequiredForTrezor":{
-    "message": "You need to use Metamask on Google Chrome in order to connect to your TREZOR device."
+    "message": "You need to use MetaMask on Google Chrome in order to connect to your TREZOR device."
   },
   "confirm": {
     "message": "Confirm"
@@ -150,7 +150,7 @@
     "message": "Connect to Trezor"
   },
   "connectToTrezorHelp": {
-    "message": "Metamask is able to access your TREZOR ethereum accounts. First make sure your device is connected and unlocked."
+    "message": "MetaMask is able to access your TREZOR ethereum accounts. First make sure your device is connected and unlocked."
   },
   "connectToTrezorTrouble": {
     "message": "If you are having trouble, please make sure you are using the latest version of the TREZOR firmware."
@@ -1087,7 +1087,7 @@
     "message": "Welcome to the New UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI."
+    "message": "You are now using the new MetaMask UI."
   },
   "unapproved": {
     "message": "Unapproved"
