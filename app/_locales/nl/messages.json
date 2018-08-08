@@ -81,7 +81,7 @@
     "message": "Koop op Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase is 's werelds populairste manier om bitcoin, ethereum en litecoin te kopen en verkopen."
+    "message": "Coinbase is 's werelds populairste manier om Bitcoin, Ethereum en Litecoin te kopen en verkopen."
   },
   "cancel": {
     "message": "Annuleer"
@@ -435,7 +435,7 @@
     "message": "back-up woorden hebben alleen kleine letters"
   },
   "mainnet": {
-    "message": "belangrijkste ethereum-netwerk"
+    "message": "belangrijkste Ethereum-netwerk"
   },
   "message": {
     "message": "Bericht"
