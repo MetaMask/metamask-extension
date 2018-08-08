@@ -4,6 +4,7 @@ import { BrowserQRCodeReader } from '@zxing/library'
 import adapter from 'webrtc-adapter' // eslint-disable-line import/no-nodejs-modules, no-unused-vars
 import Spinner from '../../spinner'
 import WebcamUtils from '../../../../lib/webcam-utils'
+import PageContainerFooter from '../../page-container/page-container-footer/page-container-footer.component';
 
 export default class QrScanner extends Component {
   static propTypes = {
@@ -104,9 +105,19 @@ export default class QrScanner extends Component {
     // To parse other type of links
     // For ex. EIP-681 (https://eips.ethereum.org/EIPS/eip-681)
 
+
+    // Ethereum address links - fox ex. ethereum:0x.....1111
     if (content.split('ethereum:').length > 1) {
+
       type = 'address'
       values = {'address': content.split('ethereum:')[1] }
+
+    // Regular ethereum addresses - fox ex. 0x.....1111
+    } else if (content.substring(0, 2).toLowerCase() === '0x') {
+
+      type = 'address'
+      values = {'address': content }
+
     }
     return {type, values}
   }
@@ -169,14 +180,12 @@ export default class QrScanner extends Component {
         <div className={'qr-scanner__error'}>
           {msg}
         </div>
-        <div className={'qr-scanner__footer'}>
-          <button className="btn-default btn--large" onClick={this.stopAndClose}>
-            CANCEL
-          </button>
-          <button className="btn-primary btn--large" onClick={this.tryAgain}>
-            TRY AGAIN
-          </button>
-        </div>
+        <PageContainerFooter
+          onCancel={this.stopAndClose}
+          onSubmit={this.tryAgain}
+          cancelText={this.context.t('cancel')}
+          submitText={this.context.t('tryAgain')}
+        />
       </div>
     )
   }

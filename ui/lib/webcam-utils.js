@@ -2,16 +2,15 @@
 
 import DetectRTC from 'detectrtc'
 const { ENVIRONMENT_TYPE_POPUP } = require('../../app/scripts/lib/enums')
-const { getEnvironmentType } = require('../../app/scripts/lib/util')
+const { getEnvironmentType, getPlatform } = require('../../app/scripts/lib/util')
+const { PLATFORM_BRAVE, PLATFORM_FIREFOX } = require('../../app/scripts/lib/enums')
 
 class WebcamUtils {
 
   static checkStatus () {
     return new Promise((resolve, reject) => {
       const isPopup = getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP
-      const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1
-      const isBrave = !!window.chrome.ipcRenderer
-      const isFirefoxOrBrave = isFirefox || isBrave
+      const isFirefoxOrBrave = getPlatform() === (PLATFORM_FIREFOX || PLATFORM_BRAVE)
       try {
         DetectRTC.load(_ => {
           if (DetectRTC.hasWebcam) {

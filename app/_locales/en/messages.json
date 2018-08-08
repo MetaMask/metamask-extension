@@ -1074,6 +1074,9 @@
     "message": "We had trouble loading your token balances. You can view them ",
     "description": "Followed by a link (here) to view token balances"
   },
+  "tryAgain": {
+    "message": "Try again"
+  },
   "twelveWords": {
     "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
   },
