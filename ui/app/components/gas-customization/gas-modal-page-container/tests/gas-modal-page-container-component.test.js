@@ -1,6 +1,6 @@
 import React from 'react'
 import assert from 'assert'
-import { shallow } from 'enzyme'
+import shallow from '../../../../../lib/shallow-with-context'
 import sinon from 'sinon'
 import GasModalPageContainer from '../gas-modal-page-container.component.js'
 
@@ -17,6 +17,10 @@ describe('GasModalPageContainer Component', function () {
   beforeEach(() => {
     wrapper = shallow(<GasModalPageContainer
       hideModal={propsMethodSpies.hideModal}
+      updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
+      updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
+      customGasPrice={21}
+      customGasLimit={54321}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 
@@ -147,10 +151,16 @@ describe('GasModalPageContainer Component', function () {
   })
 
   describe('renderAdvancedTabContent', () => {
-    it('should render', () => {
+    it('should render with the correct props', () => {
       const renderAdvancedTabContentResult = wrapper.instance().renderAdvancedTabContent()
-      const renderedAdvancedTabContent = shallow(renderAdvancedTabContentResult)
-      assert.equal(renderedAdvancedTabContent.props().className, 'gas-modal-content__advanced-tab')
+      const advancedTabContentProps = renderAdvancedTabContentResult.props
+      assert.equal(advancedTabContentProps.updateCustomGasPrice(), 'mockupdateCustomGasPrice')
+      assert.equal(advancedTabContentProps.updateCustomGasLimit(), 'mockupdateCustomGasLimit')
+      assert.equal(advancedTabContentProps.customGasPrice, 21)
+      assert.equal(advancedTabContentProps.customGasLimit, 54321)
+      assert.equal(advancedTabContentProps.millisecondsRemaining, 91000)
+      assert.equal(advancedTabContentProps.totalFee, '$0.30')
+      assert(shallow(renderAdvancedTabContentResult).hasClass('advanced-tab'))
     })
   })
 })
