@@ -47,7 +47,7 @@ RadioList.prototype.render = function () {
           if (props.subtext) {
             return h('.flex-row', {}, [
               h('.radio-titles.font-pre-medium', label),
-              h('.radio-titles-subtext', `- ${props.subtext[label]}`),
+              h('.radio-titles-subtext.font-pre-medium', ` - ${props.subtext[label]}`),
             ])
           } else {
             return h('.radio-titles.font-pre-medium', label)

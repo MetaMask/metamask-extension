@@ -138,16 +138,6 @@ app
   color: #909090;
 }
 
-button.primary {
-  padding: 8px 12px;
-  background: #F7861C;
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
-  color: white;
-  font-size: 1.1em;
-  font-family: 'Nunito Regular';
-  text-transform: none;
-}
-
 button.btn-thin {
   border: 1px solid;
   border-color: #4D4D4D;
@@ -322,6 +312,12 @@ app sections
   height: 14px;
 }
 
+.arrow-right {
+  content: url('../images/arrow-right.svg');
+  width: 14px;
+  height: 14px;
+}
+
 .fa-clipboard {
   content: url('../images/copy.svg');
   width: 14px;
@@ -384,6 +380,7 @@ app sections
 .section-title {
   border-top: 1px solid #e2e2e2;
   height: 80px;
+  font-family: 'Nunito Semibold';
 }
 
 .trash {
@@ -716,7 +713,8 @@ input.large-input {
 }
 
 .radio-titles-subtext {
-
+  color: #777777;
+  font-family: 'Nunito SemiBold';
 }
 
 .selected-exchange {

@@ -60,7 +60,11 @@ AccountImportSubview.prototype.render = function () {
               left: '30px',
             },
           }),
-          h('h2.page-subtitle', 'Import Accounts'),
+          h('h2.page-subtitle', {
+            style: {
+              fontFamily: 'Nunito SemiBold',
+            },
+          }, 'Import Accounts'),
         ]),
         h('.error', {
           style: {

@@ -114,6 +114,7 @@ ExportAccountView.prototype.render = function () {
       h('label', {
         style: {
           textAlign: 'center',
+          fontFamily: 'Nunito Semibold',
         },
       }, 'Your private key'),
       h('div.flex-row', [

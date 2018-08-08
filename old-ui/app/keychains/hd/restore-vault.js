@@ -44,10 +44,9 @@ RestoreVaultScreen.prototype.render = function () {
             fontFamily: 'Nunito SemiBold',
             background: '#ffffff',
             color: '#333333',
-            marginBottom: 24,
             width: '100%',
             fontSize: '16px',
-            padding: 6,
+            padding: 30,
           },
         }, [
           h('.page-subtitle', 'Restore Vault'),
@@ -58,6 +57,7 @@ RestoreVaultScreen.prototype.render = function () {
           style: {
             width: '100%',
             marginBottom: '20px',
+            fontFamily: 'Nunito SemiBold',
           },
         }, 'Wallet Seed'),
         h('textarea.twelve-word-phrase', {

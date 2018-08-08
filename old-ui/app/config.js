@@ -50,7 +50,7 @@ ConfigScreen.prototype.render = function () {
             left: '30px',
           },
         }),
-        h('h2.page-subtitle', 'Settings'),
+        h('h2', 'Settings'),
       ]),
 
       h('div', {

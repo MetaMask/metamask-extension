@@ -40,13 +40,7 @@ QrCodeView.prototype.render = function () {
     },
   }, [
 
-    this.props.warning ? this.props.warning && h('span.error.flex-center', {
-      style: {
-        textAlign: 'center',
-        width: '229px',
-        height: '82px',
-      },
-    },
+    this.props.warning ? this.props.warning && h('span.error.flex-center',
     this.props.warning) : null,
 
     h('#qr-container.flex-column', {

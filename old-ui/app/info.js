@@ -37,7 +37,7 @@ InfoScreen.prototype.render = function () {
             left: '30px',
           },
         }),
-        h('h2.page-subtitle', 'Info'),
+        h('h2', 'Info'),
       ]),
 
       // main view

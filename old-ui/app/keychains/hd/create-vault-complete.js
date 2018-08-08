@@ -38,7 +38,6 @@ CreateVaultCompleteScreen.prototype.render = function () {
           color: '#333333',
           marginBottom: 8,
           width: '100%',
-          fontSize: '20px',
           padding: '30px 6px 6px 6px',
         },
       }, [

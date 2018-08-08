@@ -366,7 +366,7 @@ describe('Metamask popup page', function () {
 
     it('add custom rpc', async function () {
       const customUrl = 'http://test.com'
-      const input = await driver.findElement(By.id('new_rpc'))
+      const input = await driver.findElement(By.css('#new_rpc'))
       input.sendKeys(customUrl)
       await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(2) > button')).click()
       if (process.env.SELENIUM_BROWSER === 'firefox') {
