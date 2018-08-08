@@ -35,6 +35,7 @@ const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
+const DetectTokensController = require('./controllers/detect-tokens')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -90,6 +91,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
+      network: this.networkController,
     })
 
     // currency controller
@@ -155,6 +157,13 @@ module.exports = class MetamaskController extends EventEmitter {
       this.accountTracker.syncWithAddresses(addresses)
     })
 
+    // detect tokens controller
+    this.detectTokensController = new DetectTokensController({
+      preferences: this.preferencesController,
+      network: this.networkController,
+      keyringMemStore: this.keyringController.memStore,
+    })
+
     // address book controller
     this.addressBookController = new AddressBookController({
       initState: initState.AddressBookController,
@@ -174,6 +183,13 @@ module.exports = class MetamaskController extends EventEmitter {
       getGasPrice: this.getGasPrice.bind(this),
     })
     this.txController.on('newUnapprovedTx', opts.showUnapprovedTx.bind(opts))
+
+    this.txController.on(`tx:status-update`, (txId, status) => {
+      if (status === 'confirmed' || status === 'failed') {
+        const txMeta = this.txController.txStateManager.getTx(txId)
+        this.platform.showTransactionNotification(txMeta)
+      }
+    })
 
     // computed balances (accounting for pending transactions)
     this.balancesController = new BalancesController({
@@ -1448,10 +1464,12 @@ module.exports = class MetamaskController extends EventEmitter {
   set isClientOpen (open) {
     this._isClientOpen = open
     this.isClientOpenAndUnlocked = this.getState().isUnlocked && open
+    this.detectTokensController.isOpen = open
   }
 
   /**
-   * A method for activating the retrieval of price data, which should only be fetched when the UI is visible.
+   * A method for activating the retrieval of price data,
+   * which should only be fetched when the UI is visible.
    * @private
    * @param {boolean} active - True if price data should be getting fetched.
    */

@@ -213,14 +213,23 @@ TxListItem.prototype.showRetryButton = function () {
   if (!txParams) {
     return false
   }
+  let currentTxSharesEarliestNonce = false
   const currentNonce = txParams.nonce
   const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
+  const currentSubmittedTxs = selectedAddressTxList.filter(tx => tx.status === 'submitted')
   const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[currentNonceSubmittedTxs.length - 1]
   const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce &&
     lastSubmittedTxWithCurrentNonce.id === transactionId
+  if (currentSubmittedTxs.length > 0) {
+    const earliestSubmitted = currentSubmittedTxs.reduce((tx1, tx2) => {
+      if (tx1.submittedTime < tx2.submittedTime) return tx1
+      return tx2
+    })
+    currentTxSharesEarliestNonce = currentNonce === earliestSubmitted.txParams.nonce
+  }
 
-  return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
+  return currentTxSharesEarliestNonce && currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
 }
 
 TxListItem.prototype.setSelectedToken = function (tokenAddress) {

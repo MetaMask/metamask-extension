@@ -10,6 +10,8 @@ const {
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
+const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
+const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -743,7 +745,7 @@ function setCurrentCurrency (currencyCode) {
 
 function signMsg (msgData) {
   log.debug('action - signMsg')
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -760,6 +762,12 @@ function signMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
+
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+          !hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeCurrentWindow()
+        }
+
         return resolve(msgData)
       })
     })
@@ -768,7 +776,7 @@ function signMsg (msgData) {
 
 function signPersonalMsg (msgData) {
   log.debug('action - signPersonalMsg')
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -785,6 +793,12 @@ function signPersonalMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
+
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+          !hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeCurrentWindow()
+        }
+
         return resolve(msgData)
       })
     })
@@ -793,7 +807,7 @@ function signPersonalMsg (msgData) {
 
 function signTypedMsg (msgData) {
   log.debug('action - signTypedMsg')
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -810,6 +824,12 @@ function signTypedMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.metamaskId))
+
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+          !hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeCurrentWindow()
+        }
+
         return resolve(msgData)
       })
     })
@@ -1003,7 +1023,7 @@ function clearSend () {
 
 function sendTx (txData) {
   log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
-  return (dispatch) => {
+  return (dispatch, getState) => {
     log.debug(`actions calling background.approveTransaction`)
     background.approveTransaction(txData.id, (err) => {
       if (err) {
@@ -1011,6 +1031,11 @@ function sendTx (txData) {
         return log.error(err.message)
       }
       dispatch(actions.completedTx(txData.id))
+
+      if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+        !hasUnconfirmedTransactions(getState())) {
+        return global.platform.closeCurrentWindow()
+      }
     })
   }
 }
@@ -1059,7 +1084,7 @@ function updateTransaction (txData) {
 
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
-  return dispatch => {
+  return (dispatch, getState) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     dispatch(actions.showLoadingIndication())
 
@@ -1084,6 +1109,12 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
+
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+          !hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeCurrentWindow()
+        }
+
         return txData
       })
   }
@@ -1112,7 +1143,7 @@ function txError (err) {
 }
 
 function cancelMsg (msgData) {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -1126,6 +1157,12 @@ function cancelMsg (msgData) {
         }
 
         dispatch(actions.completedTx(msgData.id))
+
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+          !hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeCurrentWindow()
+        }
+
         return resolve(msgData)
       })
     })
@@ -1133,7 +1170,7 @@ function cancelMsg (msgData) {
 }
 
 function cancelPersonalMsg (msgData) {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -1147,6 +1184,12 @@ function cancelPersonalMsg (msgData) {
         }
 
         dispatch(actions.completedTx(id))
+
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+          !hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeCurrentWindow()
+        }
+
         return resolve(msgData)
       })
     })
@@ -1154,7 +1197,7 @@ function cancelPersonalMsg (msgData) {
 }
 
 function cancelTypedMsg (msgData) {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
@@ -1168,6 +1211,12 @@ function cancelTypedMsg (msgData) {
         }
 
         dispatch(actions.completedTx(id))
+
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+          !hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeCurrentWindow()
+        }
+
         return resolve(msgData)
       })
     })
@@ -1175,7 +1224,7 @@ function cancelTypedMsg (msgData) {
 }
 
 function cancelTx (txData) {
-  return dispatch => {
+  return (dispatch, getState) => {
     log.debug(`background.cancelTransaction`)
     dispatch(actions.showLoadingIndication())
 
@@ -1194,6 +1243,12 @@ function cancelTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
+
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
+          !hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeCurrentWindow()
+        }
+
         return txData
       })
   }
@@ -1428,11 +1483,12 @@ function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
-    background.setSelectedAddress(address, (err) => {
+    background.setSelectedAddress(address, (err, tokens) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
+      dispatch(updateTokens(tokens))
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,

@@ -2,9 +2,16 @@
 
 ## Current Master
 
+- [#4884](https://github.com/MetaMask/metamask-extension/pull/4884): Allow to have tokens per account and network.
+
+## 4.9.0 Tue Aug 07 2018
+
+- Add new tokens auto detection
 - Remove rejected transactions from transaction history
 - Add Trezor Support
 - Allow to remove accounts (Imported and Hardware Wallets)
+- [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
+- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): network.js: convert rpc protocol to lower case.
 
 ## 4.8.0 Thur Jun 14 2018
 

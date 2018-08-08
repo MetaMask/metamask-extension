@@ -3,6 +3,7 @@ import currencies from 'currency-formatter/currencies'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
 import ethUtil from 'ethereumjs-util'
+import BigNumber from 'bignumber.js'
 
 abiDecoder.addABI(abi)
 
@@ -15,6 +16,8 @@ import {
   multiplyCurrencies,
   conversionGreaterThan,
 } from '../../conversion-util'
+
+import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
 
 export function getTokenData (data = {}) {
   return abiDecoder.decodeMethod(data)
@@ -130,4 +133,16 @@ export function convertTokenToFiat ({
     numberOfDecimals: 2,
     conversionRate: totalExchangeRate,
   })
+}
+
+export function hasUnconfirmedTransactions (state) {
+  return unconfirmedTransactionsCountSelector(state) > 0
+}
+
+export function roundExponential (value) {
+  const PRECISION = 4
+  const bigNumberValue = new BigNumber(value)
+
+  // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
+  return bigNumberValue.e > 20 ? Number(bigNumberValue.toPrecision(PRECISION)) : value
 }

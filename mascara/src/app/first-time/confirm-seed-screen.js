@@ -106,6 +106,7 @@ class ConfirmSeedScreen extends Component {
                               key={i}
                               className={classnames('backup-phrase__confirm-seed-option', {
                                 'backup-phrase__confirm-seed-option--selected': isSelected,
+                                'backup-phrase__confirm-seed-option--unselected': !isSelected,
                               })}
                               onClick={() => {
                                 if (!isSelected) {

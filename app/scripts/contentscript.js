@@ -178,6 +178,7 @@ function blacklistedDomainCheck () {
     'adyen.com',
     'gravityforms.com',
     'harbourair.com',
+    'ani.gamer.com.tw',
     'blueskybooking.com',
   ]
   var currentUrl = window.location.href
@@ -196,6 +197,7 @@ function blacklistedDomainCheck () {
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning () {
-  console.log('MetaMask - redirecting to phishing warning')
-  window.location.href = 'https://metamask.io/phishing.html'
+  console.log('MetaMask - routing to Phishing Warning component')
+  let extensionURL = extension.runtime.getURL('phishing.html')
+  window.location.href = extensionURL
 }
