@@ -1509,11 +1509,12 @@ function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
-    background.setSelectedAddress(address, (err) => {
+    background.setSelectedAddress(address, (err, tokens) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
+      dispatch(updateTokens(tokens))
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
