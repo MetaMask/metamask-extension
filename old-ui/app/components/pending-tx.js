@@ -223,7 +223,6 @@ PendingTx.prototype.render = function () {
                     currentCurrency,
                     network,
                     inline: true,
-                    labelColor: '#F7861C',
                   }),
                 ]),
               ]),
@@ -282,8 +281,9 @@ PendingTx.prototype.render = function () {
                 position: 'absolute',
                 top: '25px',
                 background: 'rgba(255, 255, 255, 0.85)',
-                border: '2px solid rgb(226, 2, 2)',
                 width: '100%',
+                paddingLeft: '30px',
+                paddingRight: '30px',
               },
             }, [
               txMeta.simulationFails ?
@@ -303,7 +303,7 @@ PendingTx.prototype.render = function () {
               : null,
 
               insufficientBalance ?
-                h('span.error', {
+                h('.error', {
                   style: {
                     fontSize: '12px',
                   },
@@ -311,7 +311,7 @@ PendingTx.prototype.render = function () {
               : null,
 
               (dangerousGasLimit && !gasLimitSpecified) ?
-                h('span.error', {
+                h('.error', {
                   style: {
                     fontSize: '12px',
                   },
@@ -333,6 +333,7 @@ PendingTx.prototype.render = function () {
               h('.cell.value', {
               }, [
                 h(BNInput, {
+                  id: 'gas_limit',
                   name: 'Gas Limit',
                   value: gasBn,
                   precision: 0,
@@ -343,6 +344,7 @@ PendingTx.prototype.render = function () {
                   suffix: 'UNITS',
                   style: {
                     position: 'relative',
+                    width: '91px',
                   },
                   onChange: this.gasLimitChanged.bind(this),
 
@@ -357,6 +359,7 @@ PendingTx.prototype.render = function () {
               h('.cell.value', {
               }, [
                 h(BNInput, {
+                  id: 'gas_price',
                   name: 'Gas Price',
                   value: gasPriceBn,
                   precision: 9,
@@ -365,6 +368,7 @@ PendingTx.prototype.render = function () {
                   min: forceGasMin || MIN_GAS_PRICE_BN,
                   style: {
                     position: 'relative',
+                    width: '91px',
                   },
                   onChange: this.gasPriceChanged.bind(this),
                   ref: (hexInput) => { this.inputs.push(hexInput) },
@@ -636,7 +640,7 @@ function forwardCarrat () {
     h('img', {
       src: 'images/forward-carrat-light.svg',
       style: {
-        padding: '5px 30px 0px 30px',
+        padding: '0px 20px 0px',
         height: '62px',
       },
     })

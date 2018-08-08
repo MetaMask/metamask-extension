@@ -49,10 +49,10 @@ RevealSeedConfirmation.prototype.render = function () {
         },
       }, [
 
-        h('h4', 'Do not recover your seed words in a public place! These words can be used to steal all your accounts.'),
+        h('.error', 'Do not recover your seed words in a public place! These words can be used to steal all your accounts.'),
 
         // confirmation
-        h('input.large-input.letter-spacey', {
+        h('input.large-input', {
           type: 'password',
           id: 'password-box',
           placeholder: 'Enter your password to confirm',
@@ -65,7 +65,7 @@ RevealSeedConfirmation.prototype.render = function () {
         (props.warning) && (
           h('span.error', {
             style: {
-              margin: '20px',
+              margin: '20px 0',
             },
           }, props.warning.split('-'))
         ),

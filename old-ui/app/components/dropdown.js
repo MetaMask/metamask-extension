@@ -70,7 +70,7 @@ class DropdownMenuItem extends Component {
         },
         style: Object.assign({
           listStyle: 'none',
-          padding: '15px 0px 15px 0px',
+          padding: (style && style.padding) ? style.padding : '15px 0px',
           fontSize: '16px',
           fontStyle: 'normal',
           fontFamily: 'Nunito Regular',

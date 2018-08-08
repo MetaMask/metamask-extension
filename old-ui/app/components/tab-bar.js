@@ -26,7 +26,7 @@ TabBar.prototype.render = function () {
       },
     }, tabs.map((tab) => {
       const { key, content } = tab
-      return h(subview === key ? '.activeForm' : '.inactiveForm.pointer', {
+      return h(subview === key ? subview === 'history' ? '.activeForm.left' : '.activeForm.right' : '.inactiveForm.pointer', {
         onClick: () => {
           this.setState({ subview: key })
           tabSelected(key)

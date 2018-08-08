@@ -56,7 +56,6 @@ ExportAccountView.prototype.render = function () {
                 color: '#333333',
                 marginBottom: '0px',
                 marginTop: '30px',
-                textAlign: 'center',
               },
             }, warning),
             h('input#exportAccount.sizing-input', {
@@ -90,11 +89,13 @@ ExportAccountView.prototype.render = function () {
               }, 'Submit'),
             ]),
           (this.props.warning) && (
-          h('span.error', {
-            style: {
-              margin: '20px',
-            },
-          }, this.props.warning.split('-'))
+          h('div', {style: {
+              margin: '0 30px',
+            }},
+            [
+              h('div.error', this.props.warning.split('-')),
+            ]
+          )
         ),
         ])
     )
@@ -113,10 +114,11 @@ ExportAccountView.prototype.render = function () {
       h('label', {
         style: {
           textAlign: 'center',
+          fontFamily: 'Nunito Semibold',
         },
       }, 'Your private key'),
       h('div.flex-row', [
-        h('p.error', {
+        h('p', {
           style: {
             paddingTop: '25px',
             textOverflow: 'ellipsis',

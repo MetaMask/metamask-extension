@@ -19,31 +19,21 @@ function CoinbaseForm () {
 }
 
 CoinbaseForm.prototype.render = function () {
-  var props = this.props
 
   return h('.flex-column', {
     style: {
-      marginTop: '30px',
       width: '100%',
     },
   }, [
     h('.flex-row', {
       style: {
-        justifyContent: 'space-around',
-        margin: '33px',
+        margin: '30px',
         marginTop: '0px',
       },
     }, [
-      h('button.btn-green', {
+      h('p.cursor-pointer', {
         onClick: this.toCoinbase.bind(this),
-        style: {
-          marginRight: '10px',
-        },
-      }, 'Continue to Coinbase'),
-
-      h('button.btn-red', {
-        onClick: () => props.dispatch(actions.goHome()),
-      }, 'Cancel'),
+      }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'Continue to Coinbase'), h('i.arrow-right')]),
     ]),
   ])
 }

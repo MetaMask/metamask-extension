@@ -65,7 +65,7 @@ SendTransactionScreen.prototype.render = function () {
       h('.account-data-subsection.flex-row.flex-grow', {
         style: {
           background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
-          padding: '20px 20px',
+          padding: '30px',
         },
       }, [
 
@@ -162,7 +162,12 @@ SendTransactionScreen.prototype.render = function () {
       ]),
 
       // error message
-      props.error && h('span.error.flex-center', props.error),
+      props.error && h('div', {style: {
+        marginLeft: '30px',
+        marginRight: '30px',
+      }}, [
+        h('div.error.flex-center', props.error),
+      ]),
 
       // 'to' field
       h('section.flex-row.flex-center', [

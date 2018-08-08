@@ -149,7 +149,6 @@ TransactionListItem.prototype.render = function () {
 
         h('.flex-column', {
           style: {
-            overflow: 'hidden',
             textAlign: 'left',
           },
         }, [
@@ -176,27 +175,24 @@ TransactionListItem.prototype.render = function () {
           showFiat: false,
           network,
           style: {
-            margin: '0 auto',
+            margin: '0px auto 0px 5px',
           },
         }) : h('.flex-column'),
       ]),
 
-      this.showRetryButton() && h('.transition-list-item__retry.grow-on-hover', {
+      this.showRetryButton() && h('.transition-list-item__retry.grow-on-hover.error', {
         onClick: event => {
           event.stopPropagation()
           this.resubmit()
         },
         style: {
           height: '22px',
-          borderRadius: '22px',
-          color: '#F9881B',
-          padding: '0 20px',
-          backgroundColor: '#FFE3C9',
           display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center',
           fontSize: '8px',
           cursor: 'pointer',
+          width: 'auto',
+          backgroundPosition: '10px center',
         },
       }, [
         h('div', {
@@ -250,9 +246,9 @@ function recipientField (txParams, transaction, isTx, isMsg) {
       color: '#333333',
     },
   }, [
-    message,
+    h('span', (!txParams.to ? {style: {whiteSpace: 'nowrap'}} : null), message),
     // Places a copy button if tx is successful, else places a placeholder empty div.
-    transaction.hash ? h(CopyButton, { value: transaction.hash, display: 'inline-flex' }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
+    transaction.hash ? h(CopyButton, { value: transaction.hash, display: 'inline' }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
     renderErrorOrWarning(transaction),
   ])
 }
@@ -266,12 +262,12 @@ function renderErrorOrWarning (transaction) {
 
   // show dropped
   if (status === 'dropped') {
-    return h('div.dropped', ' (Dropped)')
+    return h('div', ' (Dropped)')
   }
 
   // show rejected
   if (status === 'rejected') {
-    return h('div.error', ' (Rejected)')
+    return h('div', ' (Rejected)')
   }
 
   // show error
@@ -282,7 +278,7 @@ function renderErrorOrWarning (transaction) {
           title: message,
           position: 'bottom',
         }, [
-          h(`div.error`, ` (Failed)`),
+          h(`div`, ` (Failed)`),
         ])
     )
   }
@@ -294,7 +290,7 @@ function renderErrorOrWarning (transaction) {
       title: message,
       position: 'bottom',
     }, [
-      h(`div.warning`, ` (Warning)`),
+      h(`div`, ` (Warning)`),
     ])
   }
 }

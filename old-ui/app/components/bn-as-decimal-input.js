@@ -95,19 +95,22 @@ BnAsDecimalInput.prototype.render = function () {
         }, suffix),
       ]),
 
-      state.invalid ? h('span.error', {
+      state.invalid ? h('div', {
         style: {
+          paddingLeft: '30px',
+          paddingRight: '30px',
+          background: 'rgba(255, 255, 255, 0.85)',
           position: 'absolute',
-          right: '0px',
-          textAlign: 'right',
-          transform: 'translateY(26px)',
-          padding: '3px',
-          background: 'rgba(255,255,255,0.85)',
-          zIndex: '1',
-          textTransform: 'capitalize',
-          border: '2px solid #E20202',
+          top: props.id === 'gas_limit' ? '180px' : '250px',
+          left: '0px',
         },
-      }, state.invalid) : null,
+      }, [
+        h('div.error', {
+          style: {
+            zIndex: props.id === 'gas_limit' ? '1' : '2',
+          },
+        }, state.invalid),
+      ]) : null,
     ])
   )
 }

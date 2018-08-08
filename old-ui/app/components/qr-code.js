@@ -39,26 +39,19 @@ QrCodeView.prototype.render = function () {
       alignItems: 'center',
     },
   }, [
-    Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('.qr-header', Qr.message),
 
-    this.props.warning ? this.props.warning && h('span.error.flex-center', {
-      style: {
-        textAlign: 'center',
-        width: '229px',
-        height: '82px',
-      },
-    },
+    this.props.warning ? this.props.warning && h('span.error.flex-center',
     this.props.warning) : null,
 
     h('#qr-container.flex-column', {
       style: {
         marginTop: '15px',
-        marginBottom: '15px',
       },
       dangerouslySetInnerHTML: {
         __html: qrImage.createTableTag(4),
       },
     }),
+    Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('.qr-header', Qr.message),
     h('.flex-row', [
       h('h3.ellip-address', {
         style: {
