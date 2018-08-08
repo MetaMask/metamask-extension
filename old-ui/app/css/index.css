@@ -28,6 +28,19 @@ html {
   min-height: 500px;
 }
 
+.account-detail-section::-webkit-scrollbar {
+    width: 0;
+}
+ 
+.account-detail-section::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+ 
+.account-detail-section::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
 .app-root {
   overflow: hidden;
   position: relative
