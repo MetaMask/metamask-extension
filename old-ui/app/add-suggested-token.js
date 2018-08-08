@@ -5,6 +5,9 @@ const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
 const Tooltip = require('./components/tooltip.js')
 const ethUtil = require('ethereumjs-util')
+const Copyable = require('./components/copyable')
+const addressSummary = require('./util').addressSummary
+
 
 module.exports = connect(mapStateToProps)(AddSuggestedTokenScreen)
 
@@ -70,16 +73,22 @@ AddSuggestedTokenScreen.prototype.render = function () {
             ]),
           ]),
 
-          h('section.flex-row.flex-center', [
-            h('p#token-address', {
-              name: 'address',
-              style: {
-                width: 'inherit',
-                flex: '1 0 auto',
-                height: '30px',
-                margin: '8px',
-              },
-            }, address),
+          h('div', {
+            style: { display: 'flex' },
+          }, [
+            h(Copyable, {
+            value: ethUtil.toChecksumAddress(address),
+            }, [
+              h('span#token-address', {
+                style: {
+                  width: 'inherit',
+                  flex: '1 0 auto',
+                  height: '30px',
+                  margin: '8px',
+                  display: 'flex',
+                },
+              }, addressSummary(address, 24, 4, false)),
+            ]),
           ]),
 
           h('div', [
