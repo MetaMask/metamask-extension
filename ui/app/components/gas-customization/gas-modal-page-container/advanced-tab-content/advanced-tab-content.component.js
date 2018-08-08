@@ -27,6 +27,8 @@ export default class AdvancedTabContent extends Component {
           className="advanced-tab__gas-edit-row__input"
           type="number"
           value={value}
+          min={min}
+          precision={precision}
           onChange={event => onChange(Number(event.target.value))}
         />
         {showGWEI
@@ -59,23 +61,23 @@ export default class AdvancedTabContent extends Component {
     )
   }
 
+  renderGasEditRow (labelKey, ...gasInputArgs) {
+    return (
+      <div className="advanced-tab__gas-edit-row">
+        <div className="advanced-tab__gas-edit-row__label">
+          { this.context.t(labelKey) }
+          { this.infoButton(() => {}) }
+        </div>
+        { this.gasInput(...gasInputArgs) }
+      </div>
+    )
+  }
+
   renderGasEditRows (customGasPrice, updateCustomGasPrice, customGasLimit, updateCustomGasLimit) {
     return (
       <div className="advanced-tab__gas-edit-rows">
-        <div className="advanced-tab__gas-edit-row">
-          <div className="advanced-tab__gas-edit-row__label">
-            { this.context.t('gasPriceNoDenom') }
-            { this.infoButton(() => {}) }
-          </div>
-          { this.gasInput(customGasPrice, updateCustomGasPrice, MIN_GAS_PRICE_DEC, 9, true) }
-        </div>
-        <div className="advanced-tab__gas-edit-row">
-          <div className="advanced-tab__gas-edit-row__label">
-            { this.context.t('gasLimit') }
-            { this.infoButton(() => {}) }
-          </div>
-          { this.gasInput(customGasLimit, updateCustomGasLimit, MIN_GAS_LIMIT_DEC, 0) }
-        </div>
+        { this.renderGasEditRow('gasPriceNoDenom', customGasPrice, updateCustomGasPrice, MIN_GAS_PRICE_DEC, 9, true) }
+        { this.renderGasEditRow('gasLimit', customGasLimit, updateCustomGasLimit, MIN_GAS_LIMIT_DEC, 0) }
       </div>
     )
   }
