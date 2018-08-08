@@ -138,11 +138,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
-
-    if (getPlatform() === PLATFORM_BRAVE) {
-      this.getAccountsFromPassthroughKeyring()
-    }
-
+    
     // If only one account exists, make sure it is selected.
     this.keyringController.memStore.subscribe((state) => {
       const addresses = state.keyrings.reduce((res, keyring) => {
@@ -475,6 +471,9 @@ module.exports = class MetamaskController extends EventEmitter {
         const accounts = await this.keyringController.getAccounts()
         this.preferencesController.setAddresses(accounts)
         this.selectFirstIdentity()
+        if (getPlatform() === PLATFORM_BRAVE) {
+          this.getAccountsFromPassthroughKeyring()
+        }
       }
       releaseLock()
       return vault
@@ -527,6 +526,9 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     await this.preferencesController.syncAddresses(accounts)
+    if (getPlatform() === PLATFORM_BRAVE) {
+      this.getAccountsFromPassthroughKeyring()
+    }
     return this.keyringController.fullUpdate()
   }
 
@@ -558,8 +560,15 @@ module.exports = class MetamaskController extends EventEmitter {
     }
     try {
       const accounts = await keyring.getAccounts()
-      this.accountTracker.syncWithAddresses(accounts)
+      const allAccounts = await keyringController.getAccounts()
+      this.preferencesController.setAddresses(allAccounts)
+      accounts.forEach((address, index) => {
+          this.preferencesController.setAccountLabel(address, `Brave #${parseInt(index, 10) + 1}`)
+          this.preferencesController.setSelectedAddress(address)
+      })
+
       return accounts
+
     } catch (e) {
       // Here we should catch the exception instead
       return []
