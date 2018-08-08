@@ -35,7 +35,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id })),
-    updateNetworkNonce: (address) => dispatch(updateNetworkNonce(address))
+    updateNetworkNonce: (address) => dispatch(updateNetworkNonce(address)),
   }
 }
 
