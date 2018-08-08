@@ -153,7 +153,7 @@
     "metamascara": "^2.0.0",
     "metamask-logo": "^2.1.4",
     "mkdirp": "^0.5.1",
-    "multihashes": "^0.4.12",
+    "multihashes": "0.4.13",
     "multiplex": "^6.7.0",
     "number-to-bn": "^1.7.0",
     "obj-multiplex": "^1.0.0",
