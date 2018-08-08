@@ -4,6 +4,7 @@
 
 - [#69](https://github.com/poanetwork/metamask-extension/pull/69): Restyling: fix page headers, redesigned warnings, fix paddings, update some icons, redesigned page for buying, redesigned confirm screens, redesigned account menu
 - [#67](https://github.com/poanetwork/metamask-extension/pull/67): Improve performance when big list of sent transactions from account
+- [#66](https://github.com/poanetwork/metamask-extension/pull/66): Added possibility to remove custom RPC from the list of networks
 
 ## 4.8.3 Fri Aug 03 2018
 
