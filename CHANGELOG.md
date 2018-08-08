@@ -2,6 +2,10 @@
 
 ## Current Master
 
+- [#4884](https://github.com/MetaMask/metamask-extension/pull/4884): Allow to have tokens per account and network.
+
+## 4.9.0 Tue Aug 07 2018
+
 - Add new tokens auto detection
 - Remove rejected transactions from transaction history
 - Add Trezor Support
