@@ -96,7 +96,7 @@ ShapeshiftForm.prototype.renderMain = function () {
         //   style: {
         //     bottom: '5px',
         //     left: '5px',
-        //     color: '#F7861C',
+        //     color: '#6729a8',
         //   },
         //   onClick: this.updateCoin.bind(this),
         // }),

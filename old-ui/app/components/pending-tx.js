@@ -223,7 +223,6 @@ PendingTx.prototype.render = function () {
                     currentCurrency,
                     network,
                     inline: true,
-                    labelColor: '#F7861C',
                   }),
                 ]),
               ]),

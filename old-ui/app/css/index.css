@@ -231,7 +231,7 @@ app sections
 .initialize-screen hr {
   width: 60px;
   margin: 12px;
-  border-color: #F7861C;
+  border-color: #6729a8;
   border-style: solid;
 }
 
@@ -855,7 +855,7 @@ input.large-input {
 
 .qr-message {
   font-size: 12px;
-  color: #F7861C;
+  color: #6729a8;
 }
 
 div.message-container > div:first-child {
