@@ -752,14 +752,14 @@ input.large-input {
 .input-container:hover .buy-inputs{
   box-sizing: inherit;
   border: solid;
-  border-color: #F7861C;
+  border-color: #6729a8;
   border-width: 0.5px;
   border-radius: 2px;
 }
 
 .buy-inputs:focus{
   border: solid;
-  border-color: #F7861C;
+  border-color: #6729a8;
   border-width: 0.5px;
   border-radius: 2px;
 }
@@ -791,20 +791,18 @@ input.large-input {
 }
 
 .ex-coins {
-  font-family: 'Nunito Regular';
-  text-transform: uppercase;
+  font-family: 'Nunito SemiBold';
   text-align: center;
-  font-size: 33px;
-  width: 118px;
-  height: 42px;
+  font-size: 16px;
+  width: 70px;
   padding: 1px;
-  color: #4D4D4D;
+  color: #333333;
 }
 
 .marketinfo{
-  font-family: 'Nunito light';
-  color: #AEAEAE;
-  font-size: 15px;
+  font-family: 'Nunito SemiBold';
+  color: #777777;
+  font-size: 14px;
   line-height: 17px;
 }
 

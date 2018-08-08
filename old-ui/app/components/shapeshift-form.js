@@ -34,33 +34,32 @@ ShapeshiftForm.prototype.renderMain = function () {
   return h('.flex-column', {
     style: {
       position: 'relative',
-      padding: '25px',
-      paddingTop: '5px',
-      width: '90%',
+      padding: '30px',
+      paddingTop: '0px',
       minHeight: '215px',
-      alignItems: 'center',
       overflowY: 'auto',
     },
   }, [
     h('.flex-row', {
       style: {
         justifyContent: 'center',
-        alignItems: 'baseline',
-        height: '42px',
+        alignItems: 'center',
+        marginBottom: '20px',
       },
     }, [
       h('img', {
         src: coinOptions[coin].image,
-        width: '25px',
-        height: '25px',
+        width: '36px',
+        height: '36px',
         style: {
           marginRight: '5px',
         },
       }),
 
-      h('.input-container', {
+      h('.input-container', { style: {
         position: 'relative',
-      }, [
+        marginRight: '30px',
+      }}, [
         h('input#fromCoin.buy-inputs.ex-coins', {
           type: 'text',
           list: 'coinList',
@@ -80,7 +79,7 @@ ShapeshiftForm.prototype.renderMain = function () {
         h('i.fa.fa-pencil-square-o.edit-text', {
           style: {
             fontSize: '12px',
-            color: '#F7861C',
+            color: '#6729a8',
             position: 'absolute',
           },
         }),
@@ -101,14 +100,9 @@ ShapeshiftForm.prototype.renderMain = function () {
         //   },
         //   onClick: this.updateCoin.bind(this),
         // }),
-        h('i.fa.fa-chevron-right.fa-4.orange', {
-          style: {
-            position: 'absolute',
-            bottom: '35%',
-            left: '0%',
-            color: '#F7861C',
-          },
+        h('i.arrow-right.cursor-pointer', {
           onClick: this.updateCoin.bind(this),
+          style: {marginRight: '30px'},
         }),
       ]),
 
@@ -116,8 +110,8 @@ ShapeshiftForm.prototype.renderMain = function () {
 
       h('img', {
         src: coinOptions[marketinfo.pair.split('_')[1].toUpperCase()].image,
-        width: '25px',
-        height: '25px',
+        width: '36px',
+        height: '36px',
         style: {
           marginLeft: '5px',
         },
@@ -126,19 +120,12 @@ ShapeshiftForm.prototype.renderMain = function () {
 
     h('.flex-column', {
       style: {
-        marginTop: '1%',
         alignItems: 'flex-start',
       },
     }, [
       this.props.warning ?
         this.props.warning &&
-        h('span.error.flex-center', {
-          style: {
-            textAlign: 'center',
-            width: '229px',
-            height: '82px',
-          },
-        }, this.props.warning + '')
+        h('span.error.flex-center', this.props.warning + '')
         : this.renderInfo(),
 
       this.renderRefundAddressForCoin(coin),
@@ -154,7 +141,11 @@ ShapeshiftForm.prototype.renderRefundAddressForCoin = function (coin) {
     },
   }, [
 
-    h('div', `${coin} Address:`),
+    h('div', {
+      style: {
+        marginTop: '10px',
+      },
+    }, `${coin} Address:`),
 
     h('input#fromCoinAddress.buy-inputs', {
       type: 'text',
@@ -174,7 +165,7 @@ ShapeshiftForm.prototype.renderRefundAddressForCoin = function (coin) {
     h('i.fa.fa-pencil-square-o.edit-text', {
       style: {
         fontSize: '12px',
-        color: '#F7861C',
+        color: '#6729a8',
         position: 'absolute',
       },
     }),
@@ -186,7 +177,7 @@ ShapeshiftForm.prototype.renderRefundAddressForCoin = function (coin) {
       h('button', {
         onClick: this.shift.bind(this),
         style: {
-          marginTop: '1%',
+          marginTop: '20px',
         },
       },
       'Submit'),
@@ -264,15 +255,16 @@ ShapeshiftForm.prototype.renderInfo = function () {
     style: {
     },
   }, [
-    h('h3.flex-row.text-transform-uppercase', {
+    h('h3.flex-row', {
       style: {
-        color: '#868686',
-        paddingTop: '4px',
+        color: '#333333',
+        paddingBottom: '20px',
         justifyContent: 'space-around',
         textAlign: 'center',
-        fontSize: '17px',
+        fontSize: '16px',
+        fontFamily: 'Nunito SemiBold',
       },
-    }, `Market Info for ${marketinfo.pair.replace('_', ' to ').toUpperCase()}:`),
+    }, `Market Info for ${marketinfo.pair.replace('_', ' to ')}:`),
     h('.marketinfo', ['Status : ', `${coinOptions[coin].status}`]),
     h('.marketinfo', ['Exchange Rate: ', `${marketinfo.rate}`]),
     h('.marketinfo', ['Limit: ', `${marketinfo.limit}`]),
