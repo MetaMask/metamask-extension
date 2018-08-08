@@ -67,9 +67,14 @@
       color: $mid-gray;
       font-size: 16px;
       
-      .info-circle {
+      .fa-info-circle {
         color: $silver;
         margin-left: 10px;
+        cursor: pointer;
+      }
+
+      .fa-info-circle:hover {
+        color: $mid-gray;
       }
     }
 
@@ -85,7 +90,8 @@
       font-size: 16px;
       height: 37px;
       width: 163px;
-      padding: 8px 10px 10px 10px;
+      padding-left: 8px;
+      padding-top: 2px;
     }
 
     input[type="number"]::-webkit-inner-spin-button {
