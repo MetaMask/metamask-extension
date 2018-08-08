@@ -39,7 +39,7 @@ export default class AdvancedTabContent extends Component {
   }
 
   infoButton (onClick) {
-    return <i className="fa info-circle" onClick={onClick} />
+    return <i className="fas fa-info-circle" onClick={onClick} />
   }
 
   renderDataSummary (totalFee, millisecondsRemaining) {

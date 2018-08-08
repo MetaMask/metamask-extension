@@ -101,7 +101,7 @@ describe('AdvancedTabContent Component', function () {
       const gasRowLabelChildren = gasEditRow.children().at(0).children()
       assert.equal(gasRowLabelChildren.length, 2)
       assert(gasRowLabelChildren.at(0), 'mockLabelKey')
-      assert(gasRowLabelChildren.at(1).hasClass('info-circle'))
+      assert(gasRowLabelChildren.at(1).hasClass('fa-info-circle'))
     })
 
     it('should call this.gasInput with the correct args', () => {
@@ -155,7 +155,7 @@ describe('AdvancedTabContent Component', function () {
     })
 
     it('should render the i element', () => {
-      assert(infoButton.hasClass('info-circle'))
+      assert(infoButton.hasClass('fa-info-circle'))
     })
 
     it('should pass the onClick argument to the i tag onClick prop', () => {
