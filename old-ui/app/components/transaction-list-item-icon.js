@@ -27,9 +27,9 @@ TransactionIcon.prototype.render = function () {
         title: 'Pending',
         position: 'right',
       }, [
-        h('i.fa.fa-ellipsis-h', {
+        h('i.new-tx', {
           style: {
-            fontSize: '27px',
+            marginLeft: '10px',
           },
         }),
       ])
@@ -49,9 +49,9 @@ TransactionIcon.prototype.render = function () {
       address: txParams.to || transaction.hash,
     })
   } else {
-    return h('i.fa.fa-file-text-o.fa-lg', {
+    return h('i.contract-small', {
       style: {
-        width: '40px',
+        marginLeft: '11px',
       },
     })
   }

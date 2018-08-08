@@ -269,8 +269,14 @@ app sections
   color: #8fdc97;
 }
 
-.dropped {
-  color: #6195ED;
+p.exchanges {
+  margin-bottom: 10px;
+}
+
+.new-tx {
+  background-image: url('../images/new-tx.svg');
+  width: 21px;
+  height: 5px;
 }
 
 .lock {
@@ -596,12 +602,13 @@ input.large-input {
   background: rgb(47, 174, 244);
   border-color: #AEAEAE;
   border-radius: 13px;
+  margin-left: 10px;
 }
 
 .tx-warning {
-  width: 60px;
-  height: 60px;
-  border-radius: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
   background: #6729a8;
   background-image: url('../images/invalid-name.svg');
   background-size: 2px 18px;
@@ -968,6 +975,18 @@ div.message-container > div:first-child {
   border: solid 1px #6729a8;
   border-radius: 5px;
   background-color: rgba(103,41,168, 0.2);
+}
+
+.contract {
+  content: url('../images/contract.svg');
+  width: 36px;
+  height: 42px;
+}
+
+.contract-small {
+  content: url('../images/contract-small.svg');
+  width: 19px;
+  height: 22px;
 }
 
 .hidden {

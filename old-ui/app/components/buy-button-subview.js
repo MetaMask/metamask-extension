@@ -157,29 +157,24 @@ BuyButtonSubview.prototype.primarySubview = function () {
             margin: '20px 30px',
           },
         }, [
-          network !== '99' ? h('p.cursor-pointer', {
-            style: {marginBottom: '10px'},
+          network !== '99' ? h('p.exchanges.cursor-pointer', {
             onClick: () => this.props.dispatch(actions.buyEth({ network })),
           },
-            [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, label), h('i.arrow-right')]) : null,
-          network === '99' ? h('p.cursor-pointer', {
-            style: {marginBottom: '10px'},
+            [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, label)]) : null,
+          network === '99' ? h('p.exchanges.cursor-pointer', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'binance' })),
-          }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'Binance'), h('i.arrow-right')]) : null,
-          network === '99' ? h('p.cursor-pointer', {
-            style: {marginBottom: '10px'},
+          }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'Binance')]) : null,
+          network === '99' ? h('p.exchanges.cursor-pointer', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'bibox' })),
-          }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'BiBox'), h('i.arrow-right')]) : null,
-          network === '99' ? h('p.cursor-pointer', {
-            style: {marginBottom: '10px'},
+          }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'BiBox')]) : null,
+          network === '99' ? h('p.exchanges.cursor-pointer', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'cex.plus' })),
-          }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'CEX Plus'), h('i.arrow-right')]) : null,
+          }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'CEX Plus')]) : null,
           // Kovan only: Dharma loans beta
           network === '42' ? (
-            h('p.cursor-pointer', {
-              style: {marginBottom: '10px'},
+            h('p.exchanges.cursor-pointer', {
               onClick: () => this.navigateTo('https://borrow.dharma.io/'),
-            }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'Borrow With Dharma (Beta)'), h('i.arrow-right')])
+            }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'Borrow With Dharma (Beta)')])
           ) : null,
       ])
     )

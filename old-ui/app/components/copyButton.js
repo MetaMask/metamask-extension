@@ -37,7 +37,7 @@ CopyButton.prototype.render = function () {
     }, [
       h('i.fa.fa-clipboard.cursor-pointer.color-violet', {
         style: {
-          margin: '5px',
+          marginLeft: '5px',
         },
         onClick: (event) => {
           event.preventDefault()
