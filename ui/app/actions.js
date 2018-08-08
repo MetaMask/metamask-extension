@@ -1833,6 +1833,11 @@ function hideAlert () {
   }
 }
 
+/**
+ * This action will receive two types of values via qrCodeData
+ * an object with the following structure {type, values}
+ * or null (used to clear the previous value)
+ */
 function qrCodeDetected (qrCodeData) {
   return {
     type: actions.QR_CODE_DETECTED,
