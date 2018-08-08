@@ -124,7 +124,7 @@ export default class ConfirmTransactionBase extends Component {
 
     if (simulationFails) {
       return {
-        valid: false,
+        valid: true,
         errorKey: TRANSACTION_ERROR_KEY,
       }
     }
