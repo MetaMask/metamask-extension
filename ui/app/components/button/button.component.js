@@ -20,7 +20,11 @@ export default class Button extends Component {
     type: PropTypes.string,
     large: PropTypes.bool,
     className: PropTypes.string,
-    children: PropTypes.string,
+    children: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.array,
+      PropTypes.element,
+    ]),
   }
 
   render () {

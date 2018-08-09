@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import PageContainer from '../../page-container'
 import { Tabs, Tab } from '../../tabs'
 import AdvancedTabContent from './advanced-tab-content'
+import BasicTabContent from './basic-tab-content'
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
@@ -15,13 +16,14 @@ export default class GasModalPageContainer extends Component {
     updateCustomGasLimit: PropTypes.func,
     customGasPrice: PropTypes.number,
     customGasLimit: PropTypes.number,
+    gasPriceButtonGroupProps: PropTypes.object,
   }
 
   state = {}
 
   renderBasicTabContent () {
     return (
-      <div className="gas-modal-content__basic-tab"/>
+      <BasicTabContent gasPriceButtonGroupProps={this.props.gasPriceButtonGroupProps} />
     )
   }
 
@@ -63,7 +65,7 @@ export default class GasModalPageContainer extends Component {
   renderTabContent (mainTabContent) {
     return (
       <div className="gas-modal-content">
-        { mainTabContent() }
+        { mainTabContent }
         { this.renderInfoRow('gas-modal-content__info-row--fade', 'originalTotal', '$20.02 USD', '0.06685 ETH') }
         { this.renderInfoRow('gas-modal-content__info-row', 'newTotal', '$20.02 USD', '0.06685 ETH') }
       </div>
@@ -74,10 +76,10 @@ export default class GasModalPageContainer extends Component {
     return (
       <Tabs>
         <Tab name={this.context.t('basic')}>
-          { this.renderTabContent(this.renderBasicTabContent) }
+          { this.renderTabContent(this.renderBasicTabContent()) }
         </Tab>
         <Tab name={this.context.t('advanced')}>
-          { this.renderTabContent(this.renderAdvancedTabContent) }
+          { this.renderTabContent(this.renderAdvancedTabContent()) }
         </Tab>
       </Tabs>
     )
