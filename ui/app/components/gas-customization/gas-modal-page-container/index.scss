@@ -1,4 +1,5 @@
 @import './advanced-tab-content/index';
+@import './basic-tab-content/index';
 
 .gas-modal-page-container {
   .page-container {
@@ -12,7 +13,7 @@
   }
 
 
-  .info-row, .info-row--fade {
+  &__info-row, &__info-row--fade {
     width: 100%;
     background: $polar;
     padding: 15px 21px;
@@ -51,5 +52,7 @@
   &__info-row--fade {
     background: white;
     color: $dusty-gray;
+    border-top: 1px solid $mischka;
+    margin-top: 22px;
   }
 }
