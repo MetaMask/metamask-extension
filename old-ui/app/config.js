@@ -50,16 +50,20 @@ ConfigScreen.prototype.render = function () {
             left: '30px',
           },
         }),
-        h('h2.page-subtitle', 'Settings'),
+        h('h2', 'Settings'),
       ]),
 
-      h('.error', {
+      h('div', {
         style: {
-          display: warning ? 'block' : 'none',
-          padding: '0 20px',
-          textAlign: 'center',
+          margin: '0 30px',
         },
-      }, warning),
+      }, [
+        h('.error', {
+          style: {
+            display: warning ? 'block' : 'none',
+          },
+        }, warning),
+      ]),
 
       // conf view
       h('.flex-column.flex-justify-center.flex-grow.select-none', [

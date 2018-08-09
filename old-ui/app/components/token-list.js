@@ -30,13 +30,13 @@ TokenList.prototype.render = function () {
     log.error(error)
     return h('.hotFix', {
       style: {
-        padding: '80px',
+        padding: '30px',
       },
     }, [
       'We had trouble loading your token balances. You can view them ',
       h('span.hotFix', {
         style: {
-          color: 'rgba(247, 134, 28, 1)',
+          color: '#8fdc97',
           cursor: 'pointer',
         },
         onClick: () => {
@@ -113,7 +113,7 @@ TokenList.prototype.renderTokenStatusBar = function () {
       justifyContent: 'space-between',
       alignItems: 'center',
       minHeight: '70px',
-      padding: '10px',
+      padding: '30px 30px 10px',
     },
   }, [
     h('span', msg),

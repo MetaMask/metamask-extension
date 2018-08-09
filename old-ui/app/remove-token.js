@@ -42,17 +42,28 @@ RemoveTokenScreen.prototype.render = function () {
         style: {
           display: 'inline-block',
           textAlign: 'center',
+          padding: '0 30px',
         },
       }, [
-        h('p.error', warning),
+        h('p.confirm-label', warning),
       ]),
 
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-space-around.flex-right', {
           style: {
-            padding: '30px',
+            padding: '20px 30px',
           },
         }, [
+          h('button.btn-violet',
+          {
+            style: {
+              marginRight: '10px',
+            },
+            onClick: () => {
+              this.props.dispatch(actions.goHome())
+            },
+          },
+          'No'),
           h('button', {
             style: {
               alignSelf: 'center',
@@ -63,7 +74,7 @@ RemoveTokenScreen.prototype.render = function () {
                   this.props.dispatch(actions.goHome())
                 })
             },
-          }, 'Remove'),
+          }, 'Yes'),
         ]),
       ]),
     ])

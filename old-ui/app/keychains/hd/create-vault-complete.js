@@ -38,7 +38,6 @@ CreateVaultCompleteScreen.prototype.render = function () {
           color: '#333333',
           marginBottom: 8,
           width: '100%',
-          fontSize: '20px',
           padding: '30px 6px 6px 6px',
         },
       }, [
@@ -52,7 +51,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
           textAlign: 'center',
         },
       }, [
-        h('span.error', 'These 12 words are the only way to restore your Nifty Wallet accounts.\nSave them somewhere safe and secret.'),
+        h('div.error', 'These 12 words are the only way to restore your Nifty Wallet accounts.\nSave them somewhere safe and secret.'),
       ]),
 
       h('textarea.twelve-word-phrase', {

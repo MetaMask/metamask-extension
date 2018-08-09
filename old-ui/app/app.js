@@ -196,6 +196,7 @@ App.prototype.renderAppBar = function () {
           h(NetworkIndicator, {
             network: this.props.network,
             provider: this.props.provider,
+            isUnlocked: this.props.isUnlocked,
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -240,7 +241,7 @@ App.prototype.renderAppBar = function () {
 
 App.prototype.renderNetworkDropdown = function () {
   const props = this.props
-  const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
+  const { provider: { type: providerType } } = props
   const rpcList = props.frequentRpcList
   const state = this.state || {}
   const isOpen = state.isNetworkMenuOpen
@@ -266,6 +267,7 @@ App.prototype.renderNetworkDropdown = function () {
       position: 'absolute',
       left: '2px',
       top: '36px',
+      width: '270px',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',
@@ -383,10 +385,10 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
-          color: activeNetwork === 'http://localhost:8545' ? 'white' : '',
+          color: providerType === 'localhost' ? 'white' : '',
         },
       },
-      [h(activeNetwork === 'http://localhost:8545' ? 'div.selected-network' : ''),
+      [h(providerType === 'localhost' ? 'div.selected-network' : ''),
         'Localhost 8545',
       ]
     ),
@@ -642,13 +644,7 @@ App.prototype.renderPrimary = function () {
             },
           }, 'QR Code'),
         ]),
-        h('div', {
-          style: {
-            position: 'absolute',
-            left: '44px',
-            width: '285px',
-          },
-        }, [
+        h('div', [
           h(QrView, {key: 'qr'}),
         ]),
       ])
@@ -706,6 +702,14 @@ App.prototype.renderCustomOption = function (provider) {
         },
         [h('div.selected-network'),
           label,
+          h('.remove-rpc', {
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.setState({ isNetworkMenuOpen: false })
+              props.dispatch(actions.showDeleteRPC(label))
+            },
+          }),
         ]
       )
   }
@@ -757,6 +761,14 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
         },
         [
           rpc,
+          h('.remove-rpc', {
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.setState({ isNetworkMenuOpen: false })
+              props.dispatch(actions.showDeleteRPC(rpc))
+            },
+          }),
         ]
       )
     }

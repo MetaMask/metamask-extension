@@ -28,6 +28,19 @@ html {
   min-height: 500px;
 }
 
+.account-detail-section::-webkit-scrollbar {
+    width: 0;
+}
+ 
+.account-detail-section::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+ 
+.account-detail-section::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
 .app-root {
   overflow: hidden;
   position: relative
@@ -138,16 +151,6 @@ app
   color: #909090;
 }
 
-button.primary {
-  padding: 8px 12px;
-  background: #F7861C;
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
-  color: white;
-  font-size: 1.1em;
-  font-family: 'Nunito Regular';
-  text-transform: none;
-}
-
 button.btn-thin {
   border: 1px solid;
   border-color: #4D4D4D;
@@ -221,6 +224,8 @@ textarea.twelve-word-phrase {
   width: 5.2em;
   line-height: 9px;
   text-rendering: geometricPrecision;
+  padding-left: 9px;
+  color: #6729a8;
 }
 
 .check {
@@ -239,7 +244,7 @@ app sections
 .initialize-screen hr {
   width: 60px;
   margin: 12px;
-  border-color: #F7861C;
+  border-color: #6729a8;
   border-style: solid;
 }
 
@@ -258,16 +263,33 @@ app sections
 
 /* unlock */
 .error {
-  color: #db60a4;
   margin-bottom: 9px;
+  border: 1px solid #ff1345 !important;
+  color: #ff1345 !important;
+  font-size: 12px;
+  background: rgba(255,19,69, 0.1);
+  border-radius: 3px;
+  text-align: left;
+  padding: 10px 10px 10px 34px;
+  background-image: url('../images/warning.svg');
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 100%;
+  line-height: 14px;
 }
 
 .warning {
   color: #8fdc97;
 }
 
-.dropped {
-  color: #6195ED;
+p.exchanges {
+  margin-bottom: 10px;
+}
+
+.new-tx {
+  background-image: url('../images/new-tx.svg');
+  width: 21px;
+  height: 5px;
 }
 
 .lock {
@@ -309,6 +331,12 @@ app sections
   height: 14px;
 }
 
+.arrow-right {
+  content: url('../images/arrow-right.svg');
+  width: 14px;
+  height: 14px;
+}
+
 .fa-clipboard {
   content: url('../images/copy.svg');
   width: 14px;
@@ -328,6 +356,18 @@ app sections
   background-repeat: no-repeat;
   background-position: right;
 }
+
+.remove-rpc {
+  background-image: url('../images/remove.svg');
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  right: 0;
+}
+
 
 @media (min--moz-device-pixel-ratio: 1.3),
          (-o-min-device-pixel-ratio: 2.6/2),
@@ -358,6 +398,8 @@ app sections
 
 .section-title {
   border-top: 1px solid #e2e2e2;
+  height: 80px;
+  font-family: 'Nunito Semibold';
 }
 
 .trash {
@@ -573,12 +615,13 @@ input.large-input {
   background: rgb(47, 174, 244);
   border-color: #AEAEAE;
   border-radius: 13px;
+  margin-left: 10px;
 }
 
 .tx-warning {
-  width: 60px;
-  height: 60px;
-  border-radius: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
   background: #6729a8;
   background-image: url('../images/invalid-name.svg');
   background-size: 2px 18px;
@@ -606,7 +649,6 @@ input.large-input {
   display: flex;
   justify-content: flex-start;
   margin-left: 50px;
-  margin-bottom: 2px;
   font-size: 11px;
   text-rendering: geometricPrecision;
   color: #60db97;
@@ -657,7 +699,6 @@ input.large-input {
   font-family: 'Nunito Regular';
   padding-bottom: 10px;
   display: inline-block;
-  padding-left: 5px;
 }
 
 /* buy eth warning screen */
@@ -668,13 +709,13 @@ input.large-input {
 
 
 .custom-radio-selected {
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
   border: solid;
   border-style: double;
-  border-radius: 15px;
+  border-radius: 6px;
   border-width: 5px;
-  background: #8fdc97;
+  background: #6729a8;
   border-color: #F7F7F7;
 }
 
@@ -683,16 +724,17 @@ input.large-input {
   height: 14px;
   border: solid;
   border-width: 1px;
-  border-radius: 24px;
-  border-color: #AEAEAE;
+  border-radius: 4px;
+  border-color: #e2e2e2;
 }
 
 .radio-titles {
-  color: #8fdc97;
+  color: #6729a8;
 }
 
 .radio-titles-subtext {
-
+  color: #777777;
+  font-family: 'Nunito SemiBold';
 }
 
 .selected-exchange {
@@ -730,14 +772,14 @@ input.large-input {
 .input-container:hover .buy-inputs{
   box-sizing: inherit;
   border: solid;
-  border-color: #F7861C;
+  border-color: #6729a8;
   border-width: 0.5px;
   border-radius: 2px;
 }
 
 .buy-inputs:focus{
   border: solid;
-  border-color: #F7861C;
+  border-color: #6729a8;
   border-width: 0.5px;
   border-radius: 2px;
 }
@@ -751,6 +793,14 @@ input.large-input {
   text-align: center;
 }
 
+.activeForm.left {
+  border-radius: 0px 8px 0px 0px;
+}
+
+.activeForm.right {
+  border-radius: 8px 0px 0px 0px;
+}
+
 .inactiveForm {
   background: #60269c;
   color: #ffffff;
@@ -761,20 +811,18 @@ input.large-input {
 }
 
 .ex-coins {
-  font-family: 'Nunito Regular';
-  text-transform: uppercase;
+  font-family: 'Nunito SemiBold';
   text-align: center;
-  font-size: 33px;
-  width: 118px;
-  height: 42px;
+  font-size: 16px;
+  width: 70px;
   padding: 1px;
-  color: #4D4D4D;
+  color: #333333;
 }
 
 .marketinfo{
-  font-family: 'Nunito light';
-  color: #AEAEAE;
-  font-size: 15px;
+  font-family: 'Nunito SemiBold';
+  color: #777777;
+  font-size: 14px;
   line-height: 17px;
 }
 
@@ -822,12 +870,12 @@ input.large-input {
 .qr-header {
   font-family: "Nunito SemiBold";
   font-size: 16px;
-  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .qr-message {
   font-size: 12px;
-  color: #F7861C;
+  color: #6729a8;
 }
 
 div.message-container > div:first-child {
@@ -932,4 +980,28 @@ div.message-container > div:first-child {
 
 .notification-modal__link {
   color: #2f9ae0;
+}
+
+.confirm-label {
+  padding: 20px 50px;
+  color: #6729a8;
+  border: solid 1px #6729a8;
+  border-radius: 5px;
+  background-color: rgba(103,41,168, 0.2);
+}
+
+.contract {
+  content: url('../images/contract.svg');
+  width: 36px;
+  height: 42px;
+}
+
+.contract-small {
+  content: url('../images/contract-small.svg');
+  width: 19px;
+  height: 22px;
+}
+
+.hidden {
+  visibility: hidden;
 }

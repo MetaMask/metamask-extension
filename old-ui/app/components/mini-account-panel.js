@@ -50,7 +50,7 @@ AccountPanel.prototype.genIcon = function (seed, picOrder) {
         order: picOrder === 'left' ? 1 : 3,
       },
     }, [
-      h('i.fa.fa-file-text-o.fa-lg', {
+      h('i.contract', {
         style: {
           fontSize: '42px',
           transform: 'translate(0px, -16px)',

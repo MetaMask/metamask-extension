@@ -85,10 +85,17 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         ]),
       ]),
 
-      h('span.in-progress-notification', state.warning),
+      state.warning ? h('div', {
+        style: {
+          width: '260px',
+          padding: '20px 0 0',
+        },
+      }, [
+        h('div.error', state.warning),
+      ]) : null,
 
       // password
-      h('input.large-input.letter-spacey', {
+      h('input.large-input', {
         type: 'password',
         id: 'password-box',
         placeholder: 'New Password (min 8 chars)',
@@ -101,7 +108,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
       }),
 
       // confirm password
-      h('input.large-input.letter-spacey', {
+      h('input.large-input', {
         type: 'password',
         id: 'password-box-confirm',
         placeholder: 'Confirm Password',
@@ -128,7 +135,6 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
           style: {
             fontSize: '0.8em',
             color: '#8fdc97',
-            textDecoration: 'underline',
           },
         }, 'Import Existing DEN'),
       ]),

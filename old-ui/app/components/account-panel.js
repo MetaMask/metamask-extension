@@ -25,7 +25,7 @@ AccountPanel.prototype.render = function () {
     identiconLabel: identity.name || '',
     attributes: [
       {
-        key: 'ADDRESS',
+        key: 'Address',
         value: addressSummary(identity.address),
       },
       balanceOrFaucetingIndication(account, isFauceting, state.network),
@@ -37,7 +37,7 @@ AccountPanel.prototype.render = function () {
     h('.identity-panel.flex-row.flex-space-between', {
       style: {
         background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
-        padding: '20px 20px',
+        padding: '30px',
         flex: '1 0 auto',
         cursor: panelState.onClick ? 'pointer' : undefined,
       },
@@ -49,29 +49,34 @@ AccountPanel.prototype.render = function () {
         h(Identicon, {
           address: panelState.identiconKey,
           imageify: state.imageifyIdenticons,
+          diameter: 60,
         }),
-        h('span.font-small', {
-          style: {
-            color: '#ffffff',
-          },
-        }, panelState.identiconLabel.substring(0, 7) + '...'),
       ]),
 
       // account address, balance
       h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', [
-
-        panelState.attributes.map((attr) => {
+        h('h2.font-medium', {
+          style: {
+            color: '#ffffff',
+            marginBottom: '20px',
+            lineHeight: '16px',
+          },
+        }, panelState.identiconLabel),
+        panelState.attributes.map((attr, i) => {
           return h('.flex-row.flex-space-between', {
             key: '' + Math.round(Math.random() * 1000000),
           }, [
-            h('label.font-small.no-select', {
+            h('label.font-pre-medium.no-select', {
               style: {
                 color: '#ffffff',
+                marginBottom: i === 0 ? '10px' : '0px',
+                lineHeight: '14px',
               },
             }, attr.key),
-            h('span.font-small', {
+            h('span.font-pre-medium', {
               style: {
                 color: '#ffffff',
+                lineHeight: '14px',
               },
             }, attr.value),
           ])
@@ -93,7 +98,7 @@ function balanceOrFaucetingIndication (account, isFauceting, network) {
     }
   } else {
     return {
-      key: 'BALANCE',
+      key: 'Balance',
       value: formatBalance(account.balance, undefined, undefined, network),
     }
   }

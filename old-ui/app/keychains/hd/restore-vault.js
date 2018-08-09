@@ -24,95 +24,113 @@ RestoreVaultScreen.prototype.render = function () {
 
   return (
 
-    h('.initialize-screen.flex-column.flex-center.flex-grow', [
-
-      h('h3.flex-center.section-title', {
+    h('div', {
+      style: {
+        width: '100%',
+      },
+    }, [
+      h('.section-title', { style: {
+        height: '1px',
+        width: '100%',
+      }}),
+      h('.initialize-screen.flex-column.flex-center.flex-grow', {
         style: {
-          fontFamily: 'Nunito SemiBold',
-          background: '#ffffff',
-          color: '#333333',
-          marginBottom: 24,
-          width: '100%',
-          fontSize: '16px',
-          padding: 6,
+          paddingLeft: '30px',
+          paddingRight: '30px',
         },
       }, [
-        h('.page-subtitle', 'Restore Vault'),
-      ]),
-
-      // wallet seed entry
-      h('h3.flex-left', {
-        style: {
-          width: '100%',
-          marginBottom: '20px',
-          marginLeft: '60px',
-        },
-      }, 'Wallet Seed'),
-      h('textarea.twelve-word-phrase.letter-spacey', {
-        placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
-      }),
-
-      // password
-      h('input.large-input.letter-spacey', {
-        type: 'password',
-        id: 'password-box',
-        placeholder: 'New Password (min 8 chars)',
-        dataset: {
-          persistentFormId: 'password',
-        },
-        style: {
-          width: 300,
-          marginTop: 20,
-          border: '1px solid #e2e2e2',
-        },
-      }),
-
-      // confirm password
-      h('input.large-input.letter-spacey', {
-        type: 'password',
-        id: 'password-box-confirm',
-        placeholder: 'Confirm Password',
-        onKeyPress: this.createOnEnter.bind(this),
-        dataset: {
-          persistentFormId: 'password-confirmation',
-        },
-        style: {
-          width: 300,
-          marginTop: 20,
-          border: '1px solid #e2e2e2',
-        },
-      }),
-
-      (state.warning) && (
-        h('span.error.in-progress-notification', state.warning)
-      ),
-
-      // submit
-
-      h('.flex-row.flex-space-between.flex-right', {
-        style: {
-          marginTop: 20,
-          width: '100%',
-          marginRight: '60px',
-        },
-      }, [
-
-        // cancel
-        h('button.btn-violet', {
-          onClick: this.showInitializeMenu.bind(this),
+        h('h3.flex-center', {
           style: {
-            marginRight: '10px',
+            fontFamily: 'Nunito SemiBold',
+            background: '#ffffff',
+            color: '#333333',
+            width: '100%',
+            fontSize: '16px',
+            padding: 30,
           },
-        }, 'Cancel'),
+        }, [
+          h('.page-subtitle', 'Restore Vault'),
+        ]),
+
+        // wallet seed entry
+        h('h3.flex-left', {
+          style: {
+            width: '100%',
+            marginBottom: '20px',
+            fontFamily: 'Nunito SemiBold',
+          },
+        }, 'Wallet Seed'),
+        h('textarea.twelve-word-phrase', {
+          placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
+        }),
+
+        // password
+        h('input.large-input', {
+          type: 'password',
+          id: 'password-box',
+          placeholder: 'New Password (min 8 chars)',
+          dataset: {
+            persistentFormId: 'password',
+          },
+          style: {
+            width: '100%',
+            marginTop: 20,
+            border: '1px solid #e2e2e2',
+          },
+        }),
+
+        // confirm password
+        h('input.large-input', {
+          type: 'password',
+          id: 'password-box-confirm',
+          placeholder: 'Confirm Password',
+          onKeyPress: this.createOnEnter.bind(this),
+          dataset: {
+            persistentFormId: 'password-confirmation',
+          },
+          style: {
+            width: '100%',
+            marginTop: 20,
+            border: '1px solid #e2e2e2',
+          },
+        }),
+
+        (state.warning) && (
+          h('div', {
+            style: {
+              padding: '20px 0 0',
+              width: '100%',
+            },
+          }, [
+            h('div.error.in-progress-notification', state.warning),
+          ])
+        ),
 
         // submit
-        h('button', {
-          onClick: this.createNewVaultAndRestore.bind(this),
-        }, 'Ok'),
 
+        h('.flex-row.flex-space-between.flex-right', {
+          style: {
+            marginTop: 20,
+            width: '100%',
+          },
+        }, [
+
+          // cancel
+          h('button.btn-violet', {
+            onClick: this.showInitializeMenu.bind(this),
+            style: {
+              marginRight: '10px',
+            },
+          }, 'Cancel'),
+
+          // submit
+          h('button', {
+            onClick: this.createNewVaultAndRestore.bind(this),
+          }, 'Ok'),
+
+        ]),
       ]),
     ])
-
   )
 }
 

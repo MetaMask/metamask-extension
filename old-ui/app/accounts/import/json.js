@@ -24,7 +24,7 @@ class JsonImportSubview extends Component {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          padding: '5px 30px 0px 30px',
+          padding: '5px 0px 0px 0px',
         },
       }, [
 
@@ -39,7 +39,7 @@ class JsonImportSubview extends Component {
           },
         }),
 
-        h('input.large-input.letter-spacey', {
+        h('input.large-input', {
           type: 'password',
           placeholder: 'Enter password',
           id: 'json-password-box',

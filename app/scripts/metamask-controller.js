@@ -322,7 +322,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     return {
       ...{ isInitialized },
-      ...this.memStore.getFlatState(),
+      ...this.memStore.getFilteredFlatState(),
       ...this.configManager.getConfig(),
       ...{
         lostAccounts: this.configManager.getLostAccounts(),

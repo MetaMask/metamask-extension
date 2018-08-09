@@ -58,31 +58,6 @@ BuyButtonSubview.prototype.headerSubview = function () {
       },
     }, [
 
-      // header bar (back button, label)
-      h('.flex-row', {
-        style: {
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-      }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: this.backButtonContext.bind(this),
-          style: {
-            position: 'absolute',
-            left: '30px',
-          },
-        }),
-        h('h2.flex-center', {
-          style: {
-            width: '100vw',
-            background: '#ffffff',
-            color: '#333333',
-            paddingTop: '4px',
-            paddingBottom: '4px',
-          },
-        }, `Buy ${coinName}`),
-      ]),
-
       // loading indication
       h('div', {
         style: {
@@ -108,20 +83,45 @@ BuyButtonSubview.prototype.headerSubview = function () {
         }),
       ]),
 
-      h('.flex-row', {
+      // header bar (back button, label)
+      h('.flex-row.section-title', {
         style: {
           alignItems: 'center',
           justifyContent: 'center',
         },
       }, [
-        h('h3.flex-center', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+          onClick: this.backButtonContext.bind(this),
           style: {
-            paddingLeft: '15px',
+            position: 'absolute',
+            left: '30px',
+          },
+        }),
+        h('h2.flex-center', {
+          style: {
             width: '100vw',
             background: '#ffffff',
             color: '#333333',
-            paddingTop: '30px',
+            paddingTop: '4px',
             paddingBottom: '4px',
+          },
+        }, `Buy ${coinName}`),
+      ]),
+
+      h('.flex-row', {
+        style: {
+          alignItems: 'center',
+          width: '100%',
+        },
+      }, [
+        h('h3.flex-center', {
+          style: {
+            width: '100%',
+            background: '#ffffff',
+            color: '#333333',
+            paddingLeft: '30px',
+            justifyContent: 'left',
+            fontFamily: 'Nunito Semibold',
           },
         }, 'Select Service'),
       ]),
@@ -154,49 +154,39 @@ BuyButtonSubview.prototype.primarySubview = function () {
       return (
         h('div.flex-column', {
           style: {
-            alignItems: 'center',
-            margin: '20px 50px',
+            margin: '20px 30px',
           },
         }, [
-          network !== '99' ? h('button', {
+          network !== '99' ? h('p.exchanges.cursor-pointer', {
             onClick: () => this.props.dispatch(actions.buyEth({ network })),
-            style: {
-              marginTop: '15px',
-            },
-          }, label) : null,
-          network === '99' ? h('button', {
+          },
+            [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, label)]) : null,
+          network === '99' ? h('p.exchanges.cursor-pointer', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'binance' })),
-            style: {
-              marginTop: '15px',
-            },
-          }, 'Binance') : null,
-          network === '99' ? h('button', {
+          }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'Binance')]) : null,
+          network === '99' ? h('p.exchanges.cursor-pointer', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'bibox' })),
-            style: {
-              marginTop: '15px',
-            },
-          }, 'BiBox') : null,
-          network === '99' ? h('button', {
+          }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'BiBox')]) : null,
+          network === '99' ? h('p.exchanges.cursor-pointer', {
             onClick: () => this.props.dispatch(actions.buyEth({ network, exchange: 'cex.plus' })),
-            style: {
-              marginTop: '15px',
-            },
-          }, 'CEX Plus') : null,
+          }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'CEX Plus')]) : null,
           // Kovan only: Dharma loans beta
           network === '42' ? (
-            h('button', {
+            h('p.exchanges.cursor-pointer', {
               onClick: () => this.navigateTo('https://borrow.dharma.io/'),
-              style: {
-                marginTop: '15px',
-              },
-            }, 'Borrow With Dharma (Beta)')
+            }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'Borrow With Dharma (Beta)')])
           ) : null,
       ])
     )
 
     default:
       return (
-        h('h2.error', 'Unknown network ID')
+        h('div', {
+          style: {
+            padding: '20px 30px',
+          }},
+          h('h2.error', 'Unknown network ID')
+        )
       )
 
   }
@@ -207,16 +197,12 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
 
   return (
 
-    h('.flex-column', {
-      style: {
-        alignItems: 'center',
-      },
-    }, [
+    h('.flex-column', [
 
       h('.flex-row.selected-exchange', {
         style: {
           position: 'relative',
-          right: '35px',
+          marginLeft: '30px',
           marginTop: '20px',
           marginBottom: '20px',
         },
@@ -237,13 +223,12 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
 
       h('h3', {
         style: {
-          paddingLeft: '15px',
-          fontFamily: 'Nunito Light',
-          width: '100vw',
-          background: '#6729a8',
-          color: '#ffffff',
-          paddingTop: '4px',
-          paddingBottom: '4px',
+          padding: '20px 30px',
+          fontFamily: 'Nunito Semibold',
+          color: '#333333',
+          paddingTop: '20px',
+          paddingBottom: '20px',
+          borderTop: '1px solid #e2e2e2',
         },
       }, props.buyView.subview),
 

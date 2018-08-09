@@ -26,12 +26,12 @@ PrivateKeyImportView.prototype.render = function () {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '5px 30px 0px 30px',
+        padding: '5px 0px 0px 0px',
       },
     }, [
       h('span', 'Paste your private key string here'),
 
-      h('input.large-input.letter-spacey', {
+      h('input.large-input', {
         type: 'password',
         id: 'private-key-box',
         onKeyPress: this.createKeyringOnEnter.bind(this),

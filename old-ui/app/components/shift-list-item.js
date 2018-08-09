@@ -69,12 +69,24 @@ ShiftListItem.prototype.renderUtilComponents = function () {
   var props = this.props
   const { conversionRate, currentCurrency, network } = props
 
+  const valueStyle = {
+    fontFamily: 'Nunito Bold',
+    width: '100%',
+    textAlign: 'right',
+    fontSize: '14px',
+    color: '#333333',
+  }
+
+  const dimStyle = {
+    fontFamily: 'Nunito Regular',
+    color: '#333333',
+    marginLeft: '5px',
+    fontSize: '14px',
+  }
+
   switch (props.response.status) {
     case 'no_deposits':
       return h('.flex-row', [
-        h(CopyButton, {
-          value: this.props.depositAddress,
-        }),
         h(Tooltip, {
           title: 'QR Code',
         }, [
@@ -85,7 +97,7 @@ ShiftListItem.prototype.renderUtilComponents = function () {
               marginLeft: '23px',
               marginRight: '12px',
               fontSize: '20px',
-              color: '#F7861C',
+              color: '#6729a8',
             },
           }),
         ]),
@@ -95,10 +107,9 @@ ShiftListItem.prototype.renderUtilComponents = function () {
 
     case 'complete':
       return h('.flex-row', [
-        h(CopyButton, {
-          value: this.props.response.transaction,
-        }),
         h(EthBalance, {
+          valueStyle,
+          dimStyle,
           value: `${props.response.outgoingCoin}`,
           conversionRate,
           currentCurrency,
@@ -123,52 +134,72 @@ ShiftListItem.prototype.renderUtilComponents = function () {
 
 ShiftListItem.prototype.renderInfo = function () {
   var props = this.props
+
   switch (props.response.status) {
     case 'no_deposits':
       return h('.flex-column', {
         style: {
-          width: '200px',
           overflow: 'hidden',
+          paddingLeft: '29px',
+          textAlign: 'left',
         },
       }, [
         h('div', {
           style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
+            fontSize: 'x-pre-medium',
+            color: '#333333',
             width: '100%',
+            display: 'inline-flex',
           },
-        }, `${props.depositType} to ETH via ShapeShift`),
-        h('div', 'No deposits received'),
+        }, [
+          `${props.depositType} to ETH via ShapeShift`,
+            h(CopyButton, {
+            value: this.props.depositAddress,
+          })]),
         h('div', {
           style: {
             fontSize: 'x-small',
-            color: '#ABA9AA',
+            color: '#777777',
             width: '100%',
           },
         }, formatDate(props.time)),
+        h('div', {
+          style: {
+            fontSize: 'x-small',
+            color: '#777777',
+            width: '100%',
+          },
+        }, 'No deposits received'),
       ])
     case 'received':
       return h('.flex-column', {
         style: {
-          width: '200px',
           overflow: 'hidden',
+          paddingLeft: '29px',
+          textAlign: 'left',
         },
       }, [
         h('div', {
           style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
+            fontSize: 'x-pre-medium',
+            color: '#333333',
             width: '100%',
           },
         }, `${props.depositType} to ETH via ShapeShift`),
-        h('div', 'Conversion in progress'),
         h('div', {
           style: {
             fontSize: 'x-small',
-            color: '#ABA9AA',
+            color: '#777777',
             width: '100%',
           },
         }, formatDate(props.time)),
+        h('div', {
+          style: {
+            fontSize: 'x-small',
+            color: '#777777',
+            width: '100%',
+          },
+        }, 'Conversion in progress'),
       ])
     case 'complete':
       var url = explorerLink(props.response.transaction, parseInt('1'))
@@ -177,29 +208,50 @@ ShiftListItem.prototype.renderInfo = function () {
         style: {
           width: '200px',
           overflow: 'hidden',
+          paddingLeft: '29px',
+          textAlign: 'left',
         },
         onClick: () => global.platform.openWindow({ url }),
       }, [
         h('div', {
           style: {
-            fontSize: 'x-small',
-            color: '#ABA9AA',
+            fontSize: 'x-pre-medium',
+            color: '#333333',
             width: '100%',
+            display: 'inline-flex',
           },
-        }, 'From ShapeShift'),
-        h('div', formatDate(props.time)),
+        }, [
+          addressSummary(props.response.transaction),
+          h(CopyButton, {
+            value: this.props.response.transaction,
+          }),
+        ]),
         h('div', {
           style: {
             fontSize: 'x-small',
-            color: '#ABA9AA',
+            color: '#777777',
+          },
+        }, formatDate(props.time)),
+        h('div', {
+          style: {
+            fontSize: 'x-small',
+            color: '#777777',
             width: '100%',
           },
-        }, addressSummary(props.response.transaction)),
+        }, 'From ShapeShift'),
       ])
 
     case 'failed':
-      return h('span.error', '(Failed)')
+      return h('span.error', {
+        style: {
+          marginLeft: '30px',
+        },
+      }, '(Failed)')
     default:
-      return ''
+      return h('span.error', {
+        style: {
+          marginLeft: '30px',
+        },
+      }, 'Transaction was not created')
   }
 }
