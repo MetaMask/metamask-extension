@@ -91,7 +91,7 @@ ShapeshiftForm.prototype.onBuyWithShapeShift = function () {
     pair,
     returnAddress,
     //  Public api key
-    'apiKey': '803d1f5df2ed1b1476e4b9e6bcd089e34d8874595dda6a23b67d93c56ea9cc2445e98a6748b219b2b6ad654d9f075f1f1db139abfa93158c04e825db122c14b6',
+    'apiKey': '5efdee9e7d3c99e7c7e8a0f788d6e52205bf00a0e24575fe59df86421f63c477d018840c94f6596cf8946990216073c68144394c384b0ddcbe782351d80d61d7',
   }
 
   if (isValidAddress(withdrawal)) {
