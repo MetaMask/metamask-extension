@@ -87,6 +87,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
+      network: this.networkController,
     })
 
     // currency controller
@@ -1436,7 +1437,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for activating the retrieval of price data and auto detect tokens,
+   * A method for activating the retrieval of price data,
    * which should only be fetched when the UI is visible.
    * @private
    * @param {boolean} active - True if price data should be getting fetched.
