@@ -33,7 +33,7 @@ CoinbaseForm.prototype.render = function () {
     }, [
       h('p.cursor-pointer', {
         onClick: this.toCoinbase.bind(this),
-      }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'Continue to Coinbase'), h('i.arrow-right')]),
+      }, [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, 'Continue to Coinbase')]),
     ]),
   ])
 }

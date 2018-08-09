@@ -186,9 +186,10 @@ class AccountDropdowns extends Component {
       Dropdown,
       {
         style: {
-          marginLeft: '-233px',
+          marginLeft: '-234px',
           minWidth: '180px',
           marginTop: '30px',
+          width: '280px',
         },
         isOpen: optionsMenuActive,
         onClickOutside: (event) => {
