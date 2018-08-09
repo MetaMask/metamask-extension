@@ -14,6 +14,11 @@ const RINKEBY_DISPLAY_NAME = 'Rinkeby'
 const KOVAN_DISPLAY_NAME = 'Kovan'
 const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
 
+const MAINNET_RPC_URL = 'https://mainnet.infura.io'
+const ROPSTEN_RPC_URL = 'https://ropsten.infura.io'
+const KOVAN_RPC_URL = 'https://kovan.infura.io'
+const RINKEBY_RPC_URL = 'https://rinkeby.infura.io'
+
 module.exports = {
   ROPSTEN,
   RINKEBY,
@@ -28,4 +33,8 @@ module.exports = {
   RINKEBY_DISPLAY_NAME,
   KOVAN_DISPLAY_NAME,
   MAINNET_DISPLAY_NAME,
+  MAINNET_RPC_URL,
+  ROPSTEN_RPC_URL,
+  KOVAN_RPC_URL,
+  RINKEBY_RPC_URL,
 }

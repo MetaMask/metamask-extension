@@ -2,6 +2,7 @@ const assert = require('assert')
 const sinon = require('sinon')
 const clone = require('clone')
 const nock = require('nock')
+const ethUtil = require('ethereumjs-util')
 const createThoughStream = require('through2').obj
 const MetaMaskController = require('../../../../app/scripts/metamask-controller')
 const blacklistJSON = require('eth-phishing-detect/src/config')
@@ -63,6 +64,79 @@ describe('MetaMaskController', function () {
   afterEach(function () {
     nock.cleanAll()
     sandbox.restore()
+  })
+
+  describe('#eth_sendTransaction', function () {
+
+    let unapproveTxList, txId, unapprovedTx
+
+    const testPayload = {
+      id: 3329466748,
+      jsonrpc: 2.0,
+      method: 'eth_sendTransaction',
+      origin: 'test.io',
+      params: [{
+        from: TEST_ADDRESS,
+        to: TEST_ADDRESS_ALT,
+      }],
+    }
+
+    beforeEach(function () {
+      metamaskController.networkController._baseProviderParams.static.eth_sendTransaction(testPayload)
+      unapproveTxList = metamaskController.txController.txStateManager.getUnapprovedTxList()
+      txId = Object.keys(unapproveTxList)[0]
+      unapprovedTx = unapproveTxList[txId]
+    })
+
+    it('adds newUnapprovedTx when using metamask provider', function () {
+      assert.equal(unapprovedTx.txParams.from, TEST_ADDRESS)
+      assert.equal(unapprovedTx.txParams.to, TEST_ADDRESS_ALT)
+    })
+  })
+
+  describe('#getAccounts', function () {
+
+    beforeEach(async function () {
+      const password = 'a-fake-password'
+
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
+    })
+
+    it('returns first address when dapp calls web3.eth.getAccounts', function () {
+      metamaskController.networkController._baseProviderParams.getAccounts((err, res) => {
+        assert.ifError(err)
+        assert.equal(res.length, 1)
+        assert.equal(res[0], '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc')
+      })
+    })
+  })
+
+  describe('#importAccountWithStrategy', function () {
+
+    const importPrivkey = '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553'
+
+    beforeEach(async function () {
+      const password = 'a-fake-password'
+
+      await metamaskController.createNewVaultAndRestore(password, TEST_SEED)
+      await metamaskController.importAccountWithStrategy('Private Key', [ importPrivkey ])
+    })
+
+    it('adds private key to keyrings in KeyringController', async function () {
+      const simpleKeyrings = metamaskController.keyringController.getKeyringsByType('Simple Key Pair')
+      const privKeyBuffer = simpleKeyrings[0].wallets[0]._privKey
+      const pubKeyBuffer = simpleKeyrings[0].wallets[0]._pubKey
+      const addressBuffer = ethUtil.pubToAddress(pubKeyBuffer)
+      const privKey = ethUtil.bufferToHex(privKeyBuffer)
+      const pubKey = ethUtil.bufferToHex(addressBuffer)
+      assert.equal(privKey, ethUtil.addHexPrefix(importPrivkey))
+      assert.equal(pubKey, '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+    })
+
+    it('adds private key to keyrings in KeyringController', async function () {
+      const keyringAccounts = await metamaskController.keyringController.getAccounts()
+      assert.equal(keyringAccounts[keyringAccounts.length - 1], '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc')
+    })
   })
 
   describe('submitPassword', function () {
@@ -407,6 +481,13 @@ describe('MetaMaskController', function () {
       assert.equal(shapeShiftTxList[0].depositAddress, depositAddress)
     })
 
+    it('removes shapeshift tx', () => {
+      metamaskController.createShapeShiftTx(depositAddress, depositType)
+      assert.equal(shapeShiftTxList.length, 1)
+      metamaskController.shapeshiftController.removeShapeShiftTx(shapeShiftTxList[0])
+      assert.equal(shapeShiftTxList.length, 0)
+    })
+
   })
 
   describe('#addNewAccount', function () {
@@ -444,14 +525,11 @@ describe('MetaMaskController', function () {
 
     it('#placeSeedWords should match the initially created vault seed', function () {
 
-      metamaskController.placeSeedWords((err, result) => {
-        if (err) {
-         console.log(err)
-        } else {
-          getConfigSeed = metamaskController.configManager.getSeedWords()
-          assert.equal(result, seedPhrase)
-          assert.equal(result, getConfigSeed)
-        }
+      metamaskController.placeSeedWords((err, res) => {
+        assert.ifError(err)
+        getConfigSeed = metamaskController.configManager.getSeedWords()
+        assert.equal(res, seedPhrase)
+        assert.equal(res, getConfigSeed)
       })
       assert.equal(getConfigSeed, undefined)
     })
@@ -528,8 +606,8 @@ describe('MetaMaskController', function () {
 
     it('should clear config seed phrase', function () {
       metamaskController.configManager.setSeedWords('test words')
-      metamaskController.clearSeedWordCache((err, result) => {
-        if (err) console.log(err)
+      metamaskController.clearSeedWordCache((err, res) => {
+        assert.ifError(err)
       })
       const getConfigSeed = metamaskController.configManager.getSeedWords()
       assert.equal(getConfigSeed, null)
@@ -667,25 +745,112 @@ describe('MetaMaskController', function () {
     })
   })
 
+  describe('#newUnsignedTypedMessage', function () {
+
+    it('errors with no from in msgParams', function () {
+      const msgParams = {
+        data: [],
+      }
+      metamaskController.newUnsignedTypedMessage(msgParams, function (error) {
+        assert.equal(error.message, 'Params must include a from field.')
+      })
+    })
+
+    let msgParams, typedMsgs, messages, msgId
+
+    const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
+
+    beforeEach(async function () {
+
+      await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
+
+      msgParams = {
+        from: address,
+        data: [
+          {
+            type: 'string',
+            name: 'unit test',
+            value: 'hello there',
+          },
+          {
+            type: 'uint32',
+            name: 'A number, but not really a number',
+            value: '$$$',
+          },
+        ]}
+
+      metamaskController.newUnsignedTypedMessage(msgParams, noop)
+      typedMsgs = metamaskController.typedMessageManager.getUnapprovedMsgs()
+      messages = metamaskController.typedMessageManager.messages
+      msgId = Object.keys(typedMsgs)[0]
+      messages[0].msgParams.metamaskId = parseInt(msgId)
+    })
+
+    it('persists address from msg params', function () {
+      assert.equal(typedMsgs[msgId].msgParams.from, address)
+    })
+
+        it('persists data from msg params', function () {
+      assert.equal(typedMsgs[msgId].msgParams, msgParams)
+    })
+
+    it('sets the status to unapproved', function () {
+      assert.equal(typedMsgs[msgId].status, 'unapproved')
+    })
+
+    it('sets the type to personal_sign', function () {
+      assert.equal(typedMsgs[msgId].type, 'eth_signTypedData')
+    })
+
+    it('rejects the message', function () {
+      const msgIdInt = parseInt(msgId)
+      metamaskController.cancelTypedMessage(msgIdInt, noop)
+      assert.equal(messages[0].status, 'rejected')
+    })
+
+    it('errors when signing a message', async function () {
+      await metamaskController.signTypedMessage(messages[0].msgParams)
+      assert.equal(typedMsgs[msgId].status, 'signed')
+      assert.equal(typedMsgs[msgId].rawSig, '0x08a1dd1648a9fa4b2d30e48e711bf00476927d24e2ab38c7a9e00bcb4888385a7c705f83b7b6f697410de6a259958cff214fec538bba24e0648e82641190865d1b')
+    })
+  })
+
   describe('#setupUntrustedCommunication', function () {
     let streamTest
 
-    const phishingUrl = 'decentral.market'
+    beforeEach(async function () {
+      await metamaskController.blacklistController.updatePhishingList()
+    })
 
     afterEach(function () {
       streamTest.end()
     })
 
-    it('sets up phishing stream for untrusted communication ', async function () {
-      await metamaskController.blacklistController.updatePhishingList()
+    it('sets up phishing stream for untrusted communication ', function (done) {
+
+      const phishingUrl = 'kinkik.in'
 
       streamTest = createThoughStream((chunk, enc, cb) => {
         assert.equal(chunk.name, 'phishing')
         assert.equal(chunk.data.hostname, phishingUrl)
-         cb()
-        })
-      // console.log(streamTest)
-       metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+        cb()
+        done()
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+    })
+
+    it('returns publicConfig instead of phishing stream', function (done) {
+
+      const goodUrl = 'metabase.com'
+
+      streamTest = createThoughStream((chunk, enc, cb) => {
+        assert.equal(chunk.name, 'publicConfig')
+        cb()
+        done()
+      })
+
+      metamaskController.setupUntrustedCommunication(streamTest, goodUrl)
     })
   })
 

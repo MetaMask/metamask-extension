@@ -138,11 +138,11 @@ class ShapeshiftController {
    */
   removeShapeShiftTx (tx) {
     const { shapeShiftTxList } = this.store.getState()
-    const index = shapeShiftTxList.indexOf(index)
+    const index = shapeShiftTxList.indexOf(tx)
     if (index !== -1) {
       shapeShiftTxList.splice(index, 1)
     }
-    this.updateState({ shapeShiftTxList })
+    this.store.updateState({ shapeShiftTxList })
   }
 
   /**

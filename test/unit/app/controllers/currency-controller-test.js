@@ -76,6 +76,15 @@ describe('currency-controller', function () {
           done(err)
         })
       })
+
+      it('tests error in update conversion rate', async () => {
+        currencyController.setCurrentCurrency('test')
+        await currencyController.updateConversionRate()
+        const currencyState = currencyController.store.getState()
+        assert.equal(currencyState.currentCurrency, 'test')
+        assert.equal(currencyState.conversionRate, 0)
+        assert.equal(currencyState.conversionDate, 'N/A')
+      })
     })
   })
 })
