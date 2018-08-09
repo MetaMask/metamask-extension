@@ -5,7 +5,7 @@ module.exports = function (provider) {
     function ipfsContent (details) {
       const name = details.url.substring(7, details.url.length - 1)
       let clearTime = null
-      extension.tabs.getSelected(null, tab => {
+      extension.tabs.query({active: true}, tab => {
           extension.tabs.update(tab.id, { url: 'loading.html' })
 
           clearTime = setTimeout(() => {
@@ -34,11 +34,11 @@ module.exports = function (provider) {
       return { cancel: true }
     }
 
-    extension.webRequest.onBeforeRequest.addListener(ipfsContent, {urls: ['*://*.eth/', '*://*.test/']})
+    extension.webRequest.onErrorOccurred.addListener(ipfsContent, {urls: ['*://*.eth/', '*://*.test/']})
 
     return {
       remove () {
-        extension.webRequest.onBeforeRequest.removeListener(ipfsContent)
+        extension.webRequest.onErrorOccurred.removeListener(ipfsContent)
       },
     }
 }

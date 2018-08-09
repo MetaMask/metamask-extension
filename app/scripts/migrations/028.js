@@ -25,8 +25,8 @@ function transformState (state) {
   const newState = state
 
   if (newState.PreferencesController) {
-    if (newState.PreferencesController.tokens) {
-      const identities = newState.TransactionController.identities
+    if (newState.PreferencesController.tokens && newState.PreferencesController.identities) {
+      const identities = newState.PreferencesController.identities
       const tokens = newState.PreferencesController.tokens
       newState.PreferencesController.accountTokens = {}
       for (const identity in identities) {

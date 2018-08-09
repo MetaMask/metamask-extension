@@ -65,6 +65,7 @@ function reduceApp (state, action) {
     buyView: {},
     isMouseUser: false,
     gasIsLoading: false,
+    networkNonce: null,
   }, state.appState)
 
   switch (action.type) {
@@ -699,6 +700,11 @@ function reduceApp (state, action) {
     case actions.GAS_LOADING_FINISHED:
       return extend(appState, {
         gasIsLoading: false,
+      })
+
+    case actions.SET_NETWORK_NONCE:
+      return extend(appState, {
+        networkNonce: action.value,
       })
 
     default:

@@ -143,6 +143,8 @@ var actions = {
   exportAccountComplete,
   SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
   setAccountLabel,
+  updateNetworkNonce,
+  SET_NETWORK_NONCE: 'SET_NETWORK_NONCE',
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
@@ -2113,6 +2115,24 @@ function updateFeatureFlags (updatedFeatureFlags) {
   return {
     type: actions.UPDATE_FEATURE_FLAGS,
     value: updatedFeatureFlags,
+  }
+}
+
+function setNetworkNonce (networkNonce) {
+  return {
+    type: actions.SET_NETWORK_NONCE,
+    value: networkNonce,
+  }
+}
+
+function updateNetworkNonce (address) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      global.ethQuery.getTransactionCount(address, (err, data) => {
+        dispatch(setNetworkNonce(data))
+        resolve(data)
+      })
+    })
   }
 }
 
