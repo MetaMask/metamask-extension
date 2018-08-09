@@ -518,6 +518,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(popup)
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
+      await delay(regularDelayMs)
     })
 
     it('calls and confirms a contract method where ETH is sent', async () => {
