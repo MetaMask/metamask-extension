@@ -34,11 +34,11 @@ module.exports = function (provider) {
       return { cancel: true }
     }
 
-    extension.webRequest.onBeforeRequest.addListener(ipfsContent, {urls: ['*://*.eth/', '*://*.test/']})
+    extension.webRequest.onErrorOccurred.addListener(ipfsContent, {urls: ['*://*.eth/', '*://*.test/']})
 
     return {
       remove () {
-        extension.webRequest.onBeforeRequest.removeListener(ipfsContent)
+        extension.webRequest.onErrorOccurred.removeListener(ipfsContent)
       },
     }
 }
