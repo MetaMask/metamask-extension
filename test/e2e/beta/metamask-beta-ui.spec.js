@@ -511,6 +511,15 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
+    it('confirms a deploy contract transaction in the popup', async () => {
+      const windowHandles = await driver.getAllWindowHandles()
+      extension = windowHandles[0]
+      const popup = windowHandles[2]
+      await driver.switchTo().window(popup)
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+    })
+
     it('calls and confirms a contract method where ETH is sent', async () => {
       await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
