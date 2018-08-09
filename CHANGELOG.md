@@ -2,7 +2,13 @@
 
 ## Current Develop Branch
 
+## 4.9.1 Mon Aug 09 2018
+
 - [#4884](https://github.com/MetaMask/metamask-extension/pull/4884): Allow to have tokens per account and network.
+- [#4989](https://github.com/MetaMask/metamask-extension/pull/4989): Continue to use original signedTypedData.
+- [#5010](https://github.com/MetaMask/metamask-extension/pull/5010): Fix ENS resolution issues.
+- [#5000](https://github.com/MetaMask/metamask-extension/pull/5000): Show error while allowing confirmation of tx where simulation fails.
+- [#4995](https://github.com/MetaMask/metamask-extension/pull/4995): Shows retry button on dApp initialized transactions.
 
 ## 4.9.0 Mon Aug 07 2018
 
