@@ -5,7 +5,7 @@ module.exports = function (provider) {
     function ipfsContent (details) {
       const name = details.url.substring(7, details.url.length - 1)
       let clearTime = null
-      extension.tabs.getSelected(null, tab => {
+      extension.tabs.query({active: true}, tab => {
           extension.tabs.update(tab.id, { url: 'loading.html' })
 
           clearTime = setTimeout(() => {
