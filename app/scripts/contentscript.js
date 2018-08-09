@@ -19,18 +19,25 @@ const inpageBundle = inpageContent + inpageSuffix
 // MetaMask will be much faster loading and performant on Firefox.
 
 if (shouldInjectWeb3()) {
-  setupInjection()
+  setupInjection(inpageBundle)
+  // add a hook here to let the user add metamask "plugins" (which get injected)
+  // that turn on compatibility with IPFS, GUN, STEEM, Ident.fi,
+  // hopefully even "migration" tools that scrape Twitter/Facebook/Gmail data
+  // into an encrypted local database.
+  // When this is working in the future, then users could
+  // login with MetaMask into other "dApps"
+  // and grant those dApps access to their Twitter/Facebook/Gmail data.
   setupStreams()
 }
 
 /**
  * Creates a script tag that injects inpage.js
  */
-function setupInjection () {
+function setupInjection (bundle) {
   try {
     // inject in-page script
     var scriptTag = document.createElement('script')
-    scriptTag.textContent = inpageBundle
+    scriptTag.textContent = bundle
     scriptTag.onload = function () { this.parentNode.removeChild(this) }
     var container = document.head || document.documentElement
     // append as first child
