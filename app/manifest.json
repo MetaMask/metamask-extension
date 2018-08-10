@@ -28,8 +28,7 @@
   "background": {
     "scripts": [
       "chromereload.js",
-      "background.js",
-      "vendor/trezor/connect.js"
+      "background.js"
     ],
     "persistent": true
   },
