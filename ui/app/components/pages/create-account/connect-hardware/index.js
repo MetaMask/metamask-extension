@@ -77,7 +77,7 @@ class ConnectHardwareForm extends Component {
             this.showTemporaryAlert()
           }
 
-          const newState = { unlocked: true }
+          const newState = { unlocked: true, error: null }
           // Default to the first account
           if (this.state.selectedAccount === null) {
             accounts.forEach((a, i) => {
@@ -105,6 +105,8 @@ class ConnectHardwareForm extends Component {
       .catch(e => {
         if (e === 'Window blocked') {
           this.setState({ browserSupported: false })
+        } else {
+          this.setState({ error: e.toString() })
         }
         this.setState({ btnText: this.context.t('connectToTrezor') })
       })
@@ -145,7 +147,7 @@ class ConnectHardwareForm extends Component {
 
   renderError () {
     return this.state.error
-      ? h('span.error', { style: { marginBottom: 40 } }, this.state.error)
+      ? h('span.error', { style: { margin: '20px 20px 10px', display: 'block', textAlign: 'center' } }, this.state.error)
       : null
   }
 
