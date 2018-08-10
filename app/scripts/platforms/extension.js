@@ -78,6 +78,12 @@ class ExtensionPlatform {
   }
 
   _showNotification (title, message, url) {
+    // This is currently breaking on Brave,
+    // so we're disabling it for now
+    if (window && window.chrome && window.chrome.ipcRenderer) {
+      return true
+    }
+
     extension.notifications.create(
       url,
       {

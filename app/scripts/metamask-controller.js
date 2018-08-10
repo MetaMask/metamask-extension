@@ -564,7 +564,6 @@ module.exports = class MetamaskController extends EventEmitter {
       this.preferencesController.setAddresses(allAccounts)
       accounts.forEach((address, index) => {
           this.preferencesController.setAccountLabel(address, `Brave #${parseInt(index, 10) + 1}`)
-          this.preferencesController.setSelectedAddress(address)
       })
 
       return accounts
