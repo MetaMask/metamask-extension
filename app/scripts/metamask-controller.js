@@ -49,6 +49,10 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
+const PassthroughKeyring = require('eth-passthrough-keyring')
+const { getPlatform } = require('./lib/util')
+const { PLATFORM_BRAVE } = require('./lib/enums')
+
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -127,14 +131,14 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring]
+    const additionalKeyrings = [TrezorKeyring, PassthroughKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
-
+    
     // If only one account exists, make sure it is selected.
     this.keyringController.memStore.subscribe((state) => {
       const addresses = state.keyrings.reduce((res, keyring) => {
@@ -373,6 +377,9 @@ module.exports = class MetamaskController extends EventEmitter {
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
+      // Passthrough Keyring
+      getAccountsFromPassthroughKeyring: nodeify(this.getAccountsFromPassthroughKeyring, this),
+
       // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),
       forgetDevice: nodeify(this.forgetDevice, this),
@@ -464,6 +471,9 @@ module.exports = class MetamaskController extends EventEmitter {
         const accounts = await this.keyringController.getAccounts()
         this.preferencesController.setAddresses(accounts)
         this.selectFirstIdentity()
+        if (getPlatform() === PLATFORM_BRAVE) {
+          this.getAccountsFromPassthroughKeyring()
+        }
       }
       releaseLock()
       return vault
@@ -516,6 +526,9 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     await this.preferencesController.syncAddresses(accounts)
+    if (getPlatform() === PLATFORM_BRAVE) {
+      this.getAccountsFromPassthroughKeyring()
+    }
     return this.keyringController.fullUpdate()
   }
 
@@ -535,6 +548,32 @@ module.exports = class MetamaskController extends EventEmitter {
     const address = Object.keys(identities)[0]
     this.preferencesController.setSelectedAddress(address)
   }
+
+  // PassthroughKeyring
+  async getAccountsFromPassthroughKeyring () {
+    const keyringController = this.keyringController
+    let keyring = await keyringController.getKeyringsByType(
+      PassthroughKeyring.type
+    )[0]
+    if (!keyring) {
+      keyring = await this.keyringController.addNewKeyring(PassthroughKeyring.type)
+    }
+    try {
+      const accounts = await keyring.getAccounts()
+      const allAccounts = await keyringController.getAccounts()
+      this.preferencesController.setAddresses(allAccounts)
+      accounts.forEach((address, index) => {
+          this.preferencesController.setAccountLabel(address, `Brave #${parseInt(index, 10) + 1}`)
+      })
+
+      return accounts
+
+    } catch (e) {
+      // Here we should catch the exception instead
+      return []
+    }
+  }
+
 
   //
   // Hardware
