@@ -68,7 +68,6 @@
     "clipboardWrite",
     "http://localhost:8545/",
     "https://*.infura.io/",
-    "*://connect.trezor.io/5/*",
     "activeTab",
     "webRequest",
     "*://*.eth/",
