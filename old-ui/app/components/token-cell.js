@@ -71,7 +71,7 @@ TokenCell.prototype.send = function (address, event) {
 }
 
 TokenCell.prototype.view = function (address, userAddress, network, event) {
-  const url = etherscanLinkFor(address, userAddress, network)
+  const url = explorerLinkFor(address, userAddress, network)
   if (url) {
     navigateTo(url)
   }
@@ -81,9 +81,14 @@ function navigateTo (url) {
   global.platform.openWindow({ url })
 }
 
-function etherscanLinkFor (tokenAddress, address, network) {
+function explorerLinkFor (tokenAddress, address, network) {
   const prefix = prefixForNetwork(network)
-  return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
+  const POAnetwokIDs = [77, 99]
+  if (POAnetwokIDs.includes(parseInt(network))) {
+    return `https://${prefix}poaexplorer.com/address/search/${tokenAddress}`
+  } else {
+    return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
+  }
 }
 
 function tokenFactoryFor (tokenAddress) {

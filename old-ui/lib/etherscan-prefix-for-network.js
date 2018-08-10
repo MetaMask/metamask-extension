@@ -14,6 +14,9 @@ module.exports = function (network) {
     case 42: // kovan test net
       prefix = 'kovan.'
       break
+    case 77: // Sokol test net
+      prefix = 'sokol.'
+      break
     case 99: // poa net
       console.warn('Do not use etherscan for POA Network')
       prefix = ''
