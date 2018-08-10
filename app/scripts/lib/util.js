@@ -61,6 +61,29 @@ const getPlatform = _ => {
 }
 
 /**
+ * Returns the platform (browser) where the extension is running.
+ *
+ * @returns {string} the platform ENUM
+ *
+ */
+const getPlatform = _ => {
+  const ua = navigator.userAgent
+  if (ua.search('Firefox') !== -1) {
+    return PLATFORM_FIREFOX
+  } else {
+    if (window && window.chrome && window.chrome.ipcRenderer) {
+      return PLATFORM_BRAVE
+    } else if (ua.search('Edge') !== -1) {
+      return PLATFORM_EDGE
+    } else if (ua.search('OPR') !== -1) {
+      return PLATFORM_OPERA
+    } else {
+      return PLATFORM_CHROME
+    }
+  }
+}
+
+/**
  * Checks whether a given balance of ETH, represented as a hex string, is sufficient to pay a value plus a gas fee
  *
  * @param {object} txParams Contains data about a transaction

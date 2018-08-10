@@ -51,6 +51,7 @@ function reduceApp (state, action) {
     sidebarOpen: false,
     alertOpen: false,
     alertMessage: null,
+    qrCodeData: null,
     networkDropdownOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
@@ -65,6 +66,7 @@ function reduceApp (state, action) {
     buyView: {},
     isMouseUser: false,
     gasIsLoading: false,
+    networkNonce: null,
   }, state.appState)
 
   switch (action.type) {
@@ -90,7 +92,7 @@ function reduceApp (state, action) {
         sidebarOpen: false,
       })
 
-    // sidebar methods
+    // alert methods
     case actions.ALERT_OPEN:
       return extend(appState, {
         alertOpen: true,
@@ -102,6 +104,13 @@ function reduceApp (state, action) {
         alertOpen: false,
         alertMessage: null,
       })
+
+    // qr scanner methods
+    case actions.QR_CODE_DETECTED:
+      return extend(appState, {
+        qrCodeData: action.value,
+      })
+
 
     // modal methods:
     case actions.MODAL_OPEN:
@@ -699,6 +708,11 @@ function reduceApp (state, action) {
     case actions.GAS_LOADING_FINISHED:
       return extend(appState, {
         gasIsLoading: false,
+      })
+
+    case actions.SET_NETWORK_NONCE:
+      return extend(appState, {
+        networkNonce: action.value,
       })
 
     default:

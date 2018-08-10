@@ -2,6 +2,9 @@
   "accept": {
     "message": "Accept"
   },
+  "accessingYourCamera": {
+    "message": "Accesing your camera..."
+  },
   "account": {
     "message": "Account"
   },
@@ -656,6 +659,12 @@
   "notStarted": {
     "message": "Not Started"
   },
+  "noWebcamFoundTitle": {
+    "message": "Webcam not found"
+  },
+  "noWebcamFound": {
+    "message": "Your computer's webcam was not found. Please try again."
+  },
   "oldUI": {
     "message": "Old UI"
   },
@@ -940,6 +949,12 @@
   "info": {
   "message": "Info"
   },
+  "scanInstructions": {
+    "message": "Place the QR code in front of your camera"
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
+  },
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
   },
@@ -1059,6 +1074,9 @@
     "message": "We had trouble loading your token balances. You can view them ",
     "description": "Followed by a link (here) to view token balances"
   },
+  "tryAgain": {
+    "message": "Try again"
+  },
   "twelveWords": {
     "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
   },
@@ -1088,6 +1106,15 @@
   },
   "unknownNetworkId": {
     "message": "Unknown network ID"
+  },
+  "unknownQrCode": {
+    "message": "Error: We couldn't identify that QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Something went wrong...."
+  },
+  "unknownCameraError": {
+    "message": "There was an error while trying to access you camera. Please try again..."
   },
   "unlock": {
     "message": "Unlock"
@@ -1134,6 +1161,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "You need to allow camera access to use this feature."
   },
   "yourSigRequested": {
     "message": "Your signature is being requested"
