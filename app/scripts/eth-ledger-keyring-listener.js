@@ -9,7 +9,7 @@ const Transaction = require('ethereumjs-tx')
 // HD path differs from eth-hd-keyring - MEW, Parity, Geth and Official Ledger clients use same unusual derivation for Ledger
 const hdPathString = `44'/60'/0'`
 const type = 'Ledger Hardware'
-const ORIGIN  = 'https://localhost:3000'
+const ORIGIN = 'https://localhost:3000'
 const pathBase = 'm'
 const MAX_INDEX = 1000
 
@@ -27,21 +27,18 @@ class LedgerKeyring extends EventEmitter {
     this.deserialize(opts)
   }
 
-  setupIframe(){
+  setupIframe () {
     this.iframe = document.createElement('iframe')
     this.iframe.src = ORIGIN
     console.log('Injecting ledger iframe')
     document.head.appendChild(this.iframe)
-
-    console.log('[LEDGER]: LEDGER FROM-IFRAME LISTENER READY')
-    
   }
 
-  sendMessage(msg, cb) {
+  sendMessage (msg, cb) {
     console.log('[LEDGER]: SENDING MESSAGE TO IFRAME', msg)
     this.iframe.contentWindow.postMessage({...msg, target: 'LEDGER-IFRAME'}, '*')
     window.addEventListener('message', ({ origin, data }) => {
-      if(origin !== ORIGIN) return false
+      if (origin !== ORIGIN) return false
       if (data && data.action && data.action === `${msg.action}-reply`) {
         console.log('[LEDGER]: GOT MESAGE FROM IFRAME', data)
         cb(data)
@@ -79,7 +76,7 @@ class LedgerKeyring extends EventEmitter {
           hdPath: this.hdPath,
         },
       },
-      ({action, success, payload}) => {  
+      ({action, success, payload}) => {
         if (success) {
           this.hdk.publicKey = new Buffer(payload.publicKey, 'hex')
           this.hdk.chainCode = new Buffer(payload.chainCode, 'hex')
@@ -177,12 +174,10 @@ class LedgerKeyring extends EventEmitter {
 
   // tx is an instance of the ethereumjs-transaction class.
   async signTransaction (address, tx) {
-    
+
     return new Promise((resolve, reject) => {
       this.unlock()
         .then(_ => {
-          console.log('[LEDGER]: sending message ', 'ledger-sign-transaction')
-          
           this.sendMessage({
             action: 'ledger-sign-transaction',
             params: {
@@ -196,26 +191,22 @@ class LedgerKeyring extends EventEmitter {
                 gasLimit: this._normalize(tx.gasLimit),
                 gasPrice: this._normalize(tx.gasPrice),
               },
-              path: this._pathFromAddress(address)
+              path: this._pathFromAddress(address),
             },
           },
           ({action, success, payload}) => {
             if (success) {
-              console.log('[LEDGER]: got tx signed!', payload.txData)
               const signedTx = new Transaction(payload.txData)
               // Validate that the signature matches the right address
               const addressSignedWith = ethUtil.toChecksumAddress(`0x${signedTx.from.toString('hex')}`)
               const correctAddress = ethUtil.toChecksumAddress(address)
               if (addressSignedWith !== correctAddress) {
                 reject('signature doesnt match the right address')
-              }
-              console.log('[LEDGER]: all good!', signedTx.toJSON())
-              console.log('[LEDGER]: signedTX', `0x${signedTx.serialize().toString('hex')}`)
-              
+              }              
               resolve(signedTx)
             } else {
               reject(payload)
-            }        
+            }
           })
       })
     })
@@ -230,7 +221,6 @@ class LedgerKeyring extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.unlock()
         .then(_ => {
-          console.log('[LEDGER]: sending message ', 'ledger-sign-personal-message')
           this.sendMessage({
             action: 'ledger-sign-personal-message',
             params: {
@@ -243,7 +233,7 @@ class LedgerKeyring extends EventEmitter {
               resolve(payload)
             } else {
               reject(payload)
-            }        
+            }
           })
       })
     })
@@ -315,8 +305,8 @@ class LedgerKeyring extends EventEmitter {
       return str
   }
 
-  _fixNonce(nonce){
-    if(nonce === '0x'){
+  _fixNonce (nonce) {
+    if (nonce === '0x') {
       return `${nonce}0`
     }
     return nonce
