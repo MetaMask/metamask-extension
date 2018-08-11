@@ -187,6 +187,7 @@ class LedgerKeyring extends EventEmitter {
             action: 'ledger-sign-transaction',
             params: {
               tx: {
+                from: this._normalize(address),
                 to: this._normalize(tx.to),
                 value: this._normalize(tx.value),
                 data: this._normalize(tx.data),
