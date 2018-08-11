@@ -8,7 +8,7 @@ const Transaction = require('ethereumjs-tx')
 
 // HD path differs from eth-hd-keyring - MEW, Parity, Geth and Official Ledger clients use same unusual derivation for Ledger
 const hdPathString = `m/44'/60'/0'`
-const type = 'Ledger Hardware Keyring'
+const type = 'Ledger Hardware'
 const ORIGIN  = 'https://localhost:3000'
 const pathBase = 'm'
 
