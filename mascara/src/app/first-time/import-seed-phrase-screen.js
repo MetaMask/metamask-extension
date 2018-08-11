@@ -1,29 +1,34 @@
+import {validateMnemonic} from 'bip39'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import classnames from 'classnames'
 import {
   createNewVaultAndRestore,
-  hideWarning,
-  displayWarning,
   unMarkPasswordForgotten,
 } from '../../../../ui/app/actions'
+import { INITIALIZE_NOTICE_ROUTE } from '../../../../ui/app/routes'
+import TextField from '../../../../ui/app/components/text-field'
 
 class ImportSeedPhraseScreen extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   static propTypes = {
     warning: PropTypes.string,
-    back: PropTypes.func.isRequired,
-    next: PropTypes.func.isRequired,
     createNewVaultAndRestore: PropTypes.func.isRequired,
-    hideWarning: PropTypes.func.isRequired,
-    displayWarning: PropTypes.func,
     leaveImportSeedScreenState: PropTypes.func,
+    history: PropTypes.object,
+    isLoading: PropTypes.bool,
   };
 
   state = {
     seedPhrase: '',
     password: '',
     confirmPassword: '',
+    seedPhraseError: null,
+    passwordError: null,
+    confirmPasswordError: null,
   }
 
   parseSeedPhrase = (seedPhrase) => {
@@ -32,52 +37,78 @@ class ImportSeedPhraseScreen extends Component {
       .join(' ')
   }
 
-  onChange = ({ seedPhrase, password, confirmPassword }) => {
-    const {
-      password: prevPassword,
-      confirmPassword: prevConfirmPassword,
-    } = this.state
-    const { displayWarning, hideWarning } = this.props
+  handleSeedPhraseChange (seedPhrase) {
+    let seedPhraseError = null
 
-    let warning = null
-
-    if (seedPhrase && this.parseSeedPhrase(seedPhrase).split(' ').length !== 12) {
-      warning = 'Seed Phrases are 12 words long'
-    } else if (password && password.length < 8) {
-      warning = 'Passwords require a mimimum length of 8'
-    } else if ((password || prevPassword) !== (confirmPassword || prevConfirmPassword)) {
-      warning = 'Confirmed password does not match'
+    if (seedPhrase) {
+      if (this.parseSeedPhrase(seedPhrase).split(' ').length !== 12) {
+        seedPhraseError = this.context.t('seedPhraseReq')
+      } else if (!validateMnemonic(seedPhrase)) {
+        seedPhraseError = this.context.t('invalidSeedPhrase')
+      }
     }
 
-    if (warning) {
-      displayWarning(warning)
-    } else {
-      hideWarning()
+    this.setState({ seedPhrase, seedPhraseError })
+  }
+
+  handlePasswordChange (password) {
+    const { confirmPassword } = this.state
+    let confirmPasswordError = null
+    let passwordError = null
+
+    if (password && password.length < 8) {
+      passwordError = this.context.t('passwordNotLongEnough')
     }
 
-    seedPhrase && this.setState({ seedPhrase })
-    password && this.setState({ password })
-    confirmPassword && this.setState({ confirmPassword })
+    if (confirmPassword && password !== confirmPassword) {
+      confirmPasswordError = this.context.t('passwordsDontMatch')
+    }
+
+    this.setState({ password, passwordError, confirmPasswordError })
+  }
+
+  handleConfirmPasswordChange (confirmPassword) {
+    const { password } = this.state
+    let confirmPasswordError = null
+
+    if (password !== confirmPassword) {
+      confirmPasswordError = this.context.t('passwordsDontMatch')
+    }
+
+    this.setState({ confirmPassword, confirmPasswordError })
   }
 
   onClick = () => {
     const { password, seedPhrase } = this.state
     const {
       createNewVaultAndRestore,
-      next,
-      displayWarning,
       leaveImportSeedScreenState,
+      history,
     } = this.props
 
     leaveImportSeedScreenState()
     createNewVaultAndRestore(password, this.parseSeedPhrase(seedPhrase))
-      .then(next)
+      .then(() => history.push(INITIALIZE_NOTICE_ROUTE))
+  }
+
+  hasError () {
+    const { passwordError, confirmPasswordError, seedPhraseError } = this.state
+    return passwordError || confirmPasswordError || seedPhraseError
   }
 
   render () {
-    const { seedPhrase, password, confirmPassword } = this.state
-    const { warning } = this.props
-    const importDisabled = warning || !seedPhrase || !password || !confirmPassword
+    const {
+      seedPhrase,
+      password,
+      confirmPassword,
+      seedPhraseError,
+      passwordError,
+      confirmPasswordError,
+    } = this.state
+    const { t } = this.context
+    const { isLoading } = this.props
+    const disabled = !seedPhrase || !password || !confirmPassword || isLoading || this.hasError()
+
     return (
       <div className="first-view-main-wrapper">
         <div className="first-view-main">
@@ -86,7 +117,7 @@ class ImportSeedPhraseScreen extends Component {
               className="import-account__back-button"
               onClick={e => {
                 e.preventDefault()
-                this.props.back()
+                this.props.history.goBack()
               }}
               href="#"
             >
@@ -102,45 +133,42 @@ class ImportSeedPhraseScreen extends Component {
               <label className="import-account__input-label">Wallet Seed</label>
               <textarea
                 className="import-account__secret-phrase"
-                onChange={e => this.onChange({seedPhrase: e.target.value})}
+                onChange={e => this.handleSeedPhraseChange(e.target.value)}
                 value={this.state.seedPhrase}
                 placeholder="Separate each word with a single space"
               />
             </div>
-            <span
-              className="error"
-            >
-              {this.props.warning}
+            <span className="error">
+              { seedPhraseError }
             </span>
-            <div className="import-account__input-wrapper">
-              <label className="import-account__input-label">New Password</label>
-              <input
-                className="first-time-flow__input"
-                type="password"
-                placeholder="New Password (min 8 characters)"
-                onChange={e => this.onChange({password: e.target.value})}
-              />
-            </div>
-            <div className="import-account__input-wrapper">
-              <label
-                className={classnames('import-account__input-label', {
-                  'import-account__input-label__disabled': password.length < 8,
-                })}
-              >Confirm Password</label>
-              <input
-                className={classnames('first-time-flow__input', {
-                  'first-time-flow__input__disabled': password.length < 8,
-                })}
-                type="password"
-                placeholder="Confirm Password"
-                onChange={e => this.onChange({confirmPassword: e.target.value})}
-                disabled={password.length < 8}
-              />
-            </div>
+            <TextField
+              id="password"
+              label={t('newPassword')}
+              type="password"
+              className="first-time-flow__input"
+              value={this.state.password}
+              onChange={event => this.handlePasswordChange(event.target.value)}
+              error={passwordError}
+              autoComplete="new-password"
+              margin="normal"
+              largeLabel
+            />
+            <TextField
+              id="confirm-password"
+              label={t('confirmPassword')}
+              type="password"
+              className="first-time-flow__input"
+              value={this.state.confirmPassword}
+              onChange={event => this.handleConfirmPasswordChange(event.target.value)}
+              error={confirmPasswordError}
+              autoComplete="confirm-password"
+              margin="normal"
+              largeLabel
+            />
             <button
               className="first-time-flow__button"
-              onClick={() => !importDisabled && this.onClick()}
-              disabled={importDisabled}
+              onClick={() => !disabled && this.onClick()}
+              disabled={disabled}
             >
               Import
             </button>
@@ -152,13 +180,11 @@ class ImportSeedPhraseScreen extends Component {
 }
 
 export default connect(
-  ({ appState: { warning } }) => ({ warning }),
+  ({ appState: { warning, isLoading } }) => ({ warning, isLoading }),
   dispatch => ({
     leaveImportSeedScreenState: () => {
       dispatch(unMarkPasswordForgotten())
     },
     createNewVaultAndRestore: (pw, seed) => dispatch(createNewVaultAndRestore(pw, seed)),
-    displayWarning: (warning) => dispatch(displayWarning(warning)),
-    hideWarning: () => dispatch(hideWarning()),
   })
 )(ImportSeedPhraseScreen)

@@ -16,7 +16,7 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     selectedTokenAddress: state.metamask.selectedTokenAddress,
     userAddress: selectors.getSelectedAddress(state),
-    tokenExchangeRates: state.metamask.tokenExchangeRates,
+    contractExchangeRates: state.metamask.contractExchangeRates,
     conversionRate: state.metamask.conversionRate,
     sidebarOpen: state.appState.sidebarOpen,
   }
@@ -25,7 +25,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     setSelectedToken: address => dispatch(actions.setSelectedToken(address)),
-    updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
     hideSidebar: () => dispatch(actions.hideSidebar()),
   }
 }
@@ -41,15 +40,6 @@ function TokenCell () {
   }
 }
 
-TokenCell.prototype.componentWillMount = function () {
-  const {
-    updateTokenExchangeRate,
-    symbol,
-  } = this.props
-
-  updateTokenExchangeRate(symbol)
-}
-
 TokenCell.prototype.render = function () {
   const { tokenMenuOpen } = this.state
   const props = this.props
@@ -60,7 +50,7 @@ TokenCell.prototype.render = function () {
     network,
     setSelectedToken,
     selectedTokenAddress,
-    tokenExchangeRates,
+    contractExchangeRates,
     conversionRate,
     hideSidebar,
     sidebarOpen,
@@ -68,15 +58,13 @@ TokenCell.prototype.render = function () {
     // userAddress,
   } = props
 
-  const pair = `${symbol.toLowerCase()}_eth`
-
   let currentTokenToFiatRate
   let currentTokenInFiat
   let formattedFiat = ''
 
-  if (tokenExchangeRates[pair]) {
+  if (contractExchangeRates[address]) {
     currentTokenToFiatRate = multiplyCurrencies(
-      tokenExchangeRates[pair].rate,
+      contractExchangeRates[address],
       conversionRate
     )
     currentTokenInFiat = conversionUtil(string, {
@@ -113,8 +101,8 @@ TokenCell.prototype.render = function () {
 
       h('div.token-list-item__balance-ellipsis', null, [
         h('div.token-list-item__balance-wrapper', null, [
-          h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
-
+          h('div.token-list-item__token-balance', `${string || 0}`),
+          h('div.token-list-item__token-symbol', symbol),
           showFiat && h('div.token-list-item__fiat-amount', {
             style: {},
           }, formattedFiat),

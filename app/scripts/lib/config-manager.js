@@ -1,12 +1,11 @@
 const ethUtil = require('ethereumjs-util')
 const normalize = require('eth-sig-util').normalize
-const MetamaskConfig = require('../config.js')
-
-
-const MAINNET_RPC = MetamaskConfig.network.mainnet
-const ROPSTEN_RPC = MetamaskConfig.network.ropsten
-const KOVAN_RPC = MetamaskConfig.network.kovan
-const RINKEBY_RPC = MetamaskConfig.network.rinkeby
+const {
+  MAINNET_RPC_URL,
+  ROPSTEN_RPC_URL,
+  KOVAN_RPC_URL,
+  RINKEBY_RPC_URL,
+} = require('../controllers/network/enums')
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -154,19 +153,19 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
   switch (provider.type) {
 
     case 'mainnet':
-      return MAINNET_RPC
+      return MAINNET_RPC_URL
 
     case 'ropsten':
-      return ROPSTEN_RPC
+      return ROPSTEN_RPC_URL
 
     case 'kovan':
-      return KOVAN_RPC
+      return KOVAN_RPC_URL
 
     case 'rinkeby':
-      return RINKEBY_RPC
+      return RINKEBY_RPC_URL
 
     default:
-      return provider && provider.rpcTarget ? provider.rpcTarget : RINKEBY_RPC
+      return provider && provider.rpcTarget ? provider.rpcTarget : RINKEBY_RPC_URL
   }
 }
 

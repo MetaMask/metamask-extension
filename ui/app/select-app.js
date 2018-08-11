@@ -2,11 +2,11 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
+const { HashRouter } = require('react-router-dom')
 const App = require('./app')
 const OldApp = require('../../old-ui/app/app')
 const { autoAddToBetaUI } = require('./selectors')
-const { setFeatureFlag, setNetworkEndpoints } = require('./actions')
-const { BETA_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
+const { setFeatureFlag } = require('./actions')
 const I18nProvider = require('./i18n-provider')
 
 function mapStateToProps (state) {
@@ -23,11 +23,9 @@ function mapDispatchToProps (dispatch) {
   return {
     setFeatureFlagWithModal: () => {
       return dispatch(setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
-        .then(() => dispatch(setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
     },
     setFeatureFlagWithoutModal: () => {
       return dispatch(setFeatureFlag('betaUI', true))
-        .then(() => dispatch(setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
     },
   }
 }
@@ -63,7 +61,12 @@ SelectedApp.prototype.render = function () {
   // const Selected = betaUI || isMascara || firstTime ? App : OldApp
 
   const { betaUI, isMascara } = this.props
-  const Selected = betaUI || isMascara ? h(I18nProvider, [ h(App) ]) : h(OldApp)
 
-  return Selected
+  return betaUI || isMascara
+  ? h(HashRouter, {
+      hashType: 'noslash',
+    }, [
+      h(I18nProvider, [ h(App) ]),
+    ])
+  : h(OldApp)
 }

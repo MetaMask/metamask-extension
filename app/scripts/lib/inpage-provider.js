@@ -1,5 +1,6 @@
 const pump = require('pump')
 const RpcEngine = require('json-rpc-engine')
+const createErrorMiddleware = require('./createErrorMiddleware')
 const createIdRemapMiddleware = require('json-rpc-engine/src/idRemapMiddleware')
 const createStreamMiddleware = require('json-rpc-middleware-stream')
 const LocalStorageStore = require('obs-store')
@@ -44,6 +45,7 @@ function MetamaskInpageProvider (connectionStream) {
   // handle sendAsync requests via dapp-side rpc engine
   const rpcEngine = new RpcEngine()
   rpcEngine.push(createIdRemapMiddleware())
+  rpcEngine.push(createErrorMiddleware())
   rpcEngine.push(streamMiddleware)
   self.rpcEngine = rpcEngine
 }
@@ -52,6 +54,11 @@ function MetamaskInpageProvider (connectionStream) {
 // also remap ids inbound and outbound
 MetamaskInpageProvider.prototype.sendAsync = function (payload, cb) {
   const self = this
+
+  if (payload.method === 'eth_signTypedData') {
+    console.warn('MetaMask: This experimental version of eth_signTypedData will be deprecated in the next release in favor of the standard as defined in EIP-712. See https://git.io/fNzPl for more information on the new standard.')
+  }
+
   self.rpcEngine.handle(payload, cb)
 }
 

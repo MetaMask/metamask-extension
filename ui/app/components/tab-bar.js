@@ -4,31 +4,17 @@ const PropTypes = require('prop-types')
 const classnames = require('classnames')
 
 class TabBar extends Component {
-  constructor (props) {
-    super(props)
-    const { defaultTab, tabs } = props
-
-    this.state = {
-      subview: defaultTab || tabs[0].key,
-    }
-  }
-
   render () {
-    const { tabs = [], tabSelected } = this.props
-    const { subview } = this.state
+    const { tabs = [], onSelect, isActive } = this.props
 
     return (
       h('.tab-bar', {}, [
-        tabs.map((tab) => {
-          const { key, content } = tab
+        tabs.map(({ key, content }) => {
           return h('div', {
             className: classnames('tab-bar__tab pointer', {
-              'tab-bar__tab--active': subview === key,
+              'tab-bar__tab--active': isActive(key, content),
             }),
-            onClick: () => {
-              this.setState({ subview: key })
-              tabSelected(key)
-            },
+            onClick: () => onSelect(key),
             key,
           }, content)
         }),
@@ -39,9 +25,9 @@ class TabBar extends Component {
 }
 
 TabBar.propTypes = {
-  defaultTab: PropTypes.string,
+  isActive: PropTypes.func.isRequired,
   tabs: PropTypes.array,
-  tabSelected: PropTypes.func,
+  onSelect: PropTypes.func,
 }
 
 module.exports = TabBar

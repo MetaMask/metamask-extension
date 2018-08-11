@@ -2,6 +2,9 @@
   "accept": {
     "message": "Accept"
   },
+  "accessingYourCamera": {
+    "message": "Accesing your camera..."
+  },
   "account": {
     "message": "Account"
   },
@@ -10,6 +13,9 @@
   },
   "accountName": {
     "message": "Account Name"
+  },
+  "accountSelectionRequired": {
+    "message": "You need to select an account!"
   },
   "address": {
     "message": "Address"
@@ -22,6 +28,9 @@
   },
   "addTokens": {
     "message": "Add Tokens"
+  },
+  "addAcquiredTokens": {
+    "message": "Add the tokens you've acquired using MetaMask"
   },
   "amount": {
     "message": "Amount"
@@ -36,6 +45,9 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Approve"
   },
   "approved": {
     "message": "Approved"
@@ -53,7 +65,7 @@
     "message": "Back"
   },
   "balance": {
-    "message": "Balance:"
+    "message": "Balance"
   },
   "balances": {
     "message": "Token balance(s)"
@@ -74,6 +86,9 @@
   "borrowDharma": {
     "message": "Borrow With Dharma (Beta)"
   },
+  "browserNotSupported": {
+  "message": "Your Browser is not supported..."
+  },
   "builtInCalifornia": {
     "message": "MetaMask is designed and built in California."
   },
@@ -86,6 +101,9 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
   },
+  "bytes": {
+    "message": "Bytes"
+  },
   "ok": {
     "message": "Ok"
   },
@@ -97,6 +115,12 @@
   },
   "clickCopy": {
     "message": "Click to Copy"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "chromeRequiredForTrezor":{
+    "message": "You need to use Metamask on Google Chrome in order to connect to your TREZOR device."
   },
   "confirm": {
     "message": "Confirm"
@@ -112,6 +136,24 @@
   },
   "confirmTransaction": {
     "message": "Confirm Transaction"
+  },
+  "connectHardwareWallet": {
+    "message": "Connect Hardware Wallet"
+  },
+  "connect": {
+    "message": "Connect"
+  },
+  "connecting": {
+    "message": "Connecting..."
+  },
+  "connectToTrezor": {
+    "message": "Connect to Trezor"
+  },
+  "connectToTrezorHelp": {
+    "message": "Metamask is able to access your TREZOR ethereum accounts. First make sure your device is connected and unlocked."
+  },
+  "connectToTrezorTrouble": {
+    "message": "If you are having trouble, please make sure you are using the latest version of the TREZOR firmware."
   },
   "continue": {
     "message": "Continue"
@@ -139,6 +181,12 @@
   },
   "copy": {
     "message": "Copy"
+  },
+  "copyContractAddress": {
+    "message": "Copy Contract Address"
+  },
+  "copyAddress": {
+    "message": "Copy address to clipboard"
   },
   "copyToClipboard": {
     "message": "Copy to clipboard"
@@ -235,8 +283,14 @@
   "done": {
     "message": "Done"
   },
+  "downloadGoogleChrome": {
+    "message": "Download Google Chrome"
+  },
   "downloadStateLogs": {
     "message": "Download State Logs"
+  },
+  "dontHaveATrezorWallet": {
+    "message": "Don't have a TREZOR hardware wallet?"
   },
   "dropped": {
     "message": "Dropped"
@@ -247,17 +301,29 @@
   "editAccountName": {
     "message": "Edit Account Name"
   },
+  "editingTransaction": {
+    "message": "Make changes to your transaction"
+  },
   "emailUs": {
     "message": "Email us!"
   },
   "encryptNewDen": {
     "message": "Encrypt your new DEN"
   },
+  "ensNameNotFound": {
+    "message": "ENS name not found"
+  },
   "enterPassword": {
     "message": "Enter password"
   },
   "enterPasswordConfirm": {
     "message": "Enter your password to confirm"
+  },
+  "enterPasswordContinue": {
+    "message": "Enter password to continue"
+  },
+  "parameters": {
+    "message": "Parameters"
   },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
@@ -291,6 +357,9 @@
   "followTwitter": {
     "message": "Follow us on Twitter"
   },
+  "forgetDevice": {
+    "message": "Forget this device"
+  },
   "from": {
     "message": "From"
   },
@@ -299,6 +368,9 @@
   },
   "fromShapeShift": {
     "message": "From ShapeShift"
+  },
+  "functionType": {
+    "message": "Function Type"
   },
   "gas": {
     "message": "Gas",
@@ -331,6 +403,9 @@
   "gasPriceRequired": {
     "message": "Gas Price Required"
   },
+  "generatingTransaction": {
+    "message": "Generating transaction"
+  },
   "getEther": {
     "message": "Get Ether"
   },
@@ -338,9 +413,27 @@
     "message": "Get Ether from a faucet for the $1",
     "description": "Displays network name for Ether faucet"
   },
+  "getHelp": {
+    "message": "Get Help."
+  },
   "greaterThanMin": {
     "message": "must be greater than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware wallet connected"
+  },
+  "hardwareSupport": {
+    "message": "Hardware Support"
+  },
+  "hardwareSupportMsg": {
+    "message": "You can now view your Hardware accounts in MetaMask!  Scroll down and read how it works."
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
   },
   "here": {
     "message": "here",
@@ -348,6 +441,9 @@
   },
   "hereList": {
     "message": "Here's a list!!!!"
+  },
+  "hexData": {
+    "message": "Hex Data"
   },
   "hide": {
     "message": "Hide"
@@ -384,8 +480,14 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "importUsingSeed": {
+    "message": "Import using account seed phrase"
+  },
   "infoHelp": {
     "message": "Info & Help"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
   "insufficientFunds": {
     "message": "Insufficient funds."
@@ -411,6 +513,9 @@
   "invalidRPC": {
     "message": "Invalid RPC URI"
   },
+  "invalidSeedPhrase": {
+    "message": "Invalid seed phrase"
+  },
   "jsonFail": {
     "message": "Something went wrong. Please make sure your JSON file is properly formatted."
   },
@@ -431,7 +536,7 @@
     "message": "Max"
   },
   "learnMore": {
-    "message": "Learn more."
+    "message": "Learn more"
   },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
@@ -470,11 +575,17 @@
   "mainnet": {
     "message": "Main Ethereum Network"
   },
+  "menu": {
+    "message": "Menu"
+  },
   "message": {
     "message": "Message"
   },
   "metamaskDescription": {
     "message": "MetaMask is a secure identity vault for Ethereum."
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Seed Words"
   },
   "min": {
     "message": "Minimum"
@@ -501,6 +612,9 @@
   },
   "networks": {
     "message": "Networks"
+  },
+  "nevermind": {
+    "message": "Nevermind"
   },
   "newAccount": {
     "message": "New Account"
@@ -530,14 +644,26 @@
   "noDeposits": {
     "message": "No deposits received"
   },
+  "noConversionRateAvailable":{
+    "message": "No Conversion Rate Available"
+  },
   "noTransactionHistory": {
     "message": "No transaction history."
   },
   "noTransactions": {
     "message": "No Transactions"
   },
+  "notFound": {
+    "message": "Not Found"
+  },
   "notStarted": {
     "message": "Not Started"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam not found"
+  },
+  "noWebcamFound": {
+    "message": "Your computer's webcam was not found. Please try again."
   },
   "oldUI": {
     "message": "Old UI"
@@ -545,9 +671,18 @@
   "oldUIMessage": {
     "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
   },
+  "openInTab": {
+    "message": "Open in tab"
+  },
   "or": {
     "message": "or",
     "description": "choice between creating or importing a new account"
+  },
+  "origin": {
+    "message": "Origin"
+  },
+  "password": {
+    "message": "Password"
   },
   "passwordCorrect": {
     "message": "Please make sure your password is correct."
@@ -575,6 +710,9 @@
   },
   "popularTokens": {
     "message": "Popular Tokens"
+  },
+  "prev": {
+    "message": "Prev"
   },
   "privacyMsg": {
     "message": "Privacy Policy"
@@ -613,14 +751,23 @@
   "rejected": {
     "message": "Rejected"
   },
+  "reset": {
+    "message": "Reset"
+  },
   "resetAccount": {
     "message": "Reset Account"
   },
+  "resetAccountDescription": {
+    "message": "Resetting your account will clear your transaction history."
+  },
   "restoreFromSeed": {
-    "message": "Restore from seed phrase"
+    "message": "Restore account?"
   },
   "restoreVault": {
     "message": "Restore Vault"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Restore your Account with Seed Phrase"
   },
   "required": {
     "message": "Required"
@@ -631,20 +778,47 @@
   "walletSeed": {
     "message": "Wallet Seed"
   },
+  "restore": {
+    "message": "Restore"
+  },
   "revealSeedWords": {
     "message": "Reveal Seed Words"
   },
+  "revealSeedWordsTitle": {
+    "message": "Seed Phrase"
+  },
+  "revealSeedWordsDescription": {
+    "message": "If you ever change browsers or move computers, you will need this seed phrase to access your accounts. Save them somewhere safe and secret."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "DO NOT share this phrase with anyone!"
+  },
   "revealSeedWordsWarning": {
-    "message": "Do not recover your seed words in a public place! These words can be used to steal all your accounts."
+    "message": "These words can be used to steal all your accounts."
   },
   "revert": {
     "message": "Revert"
+  },
+  "remove": {
+    "message": "remove"
+  },
+  "removeAccount": {
+    "message": "Remove account"
+  },
+  "removeAccountDescription": {
+    "message": "This account will be removed from your wallet. Please make sure you have the original seed phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
   },
   "ropsten": {
     "message": "Ropsten Test Network"
+  },
+  "rpc": {
+    "message": "Custom RPC"
   },
   "currentRpc": {
     "message": "Current RPC"
@@ -671,11 +845,14 @@
   "save": {
     "message": "Save"
   },
-  "reprice_title": {
-    "message": "Reprice Transaction"
+  "speedUpTitle": {
+    "message": "Speed Up Transaction"
   },
-  "reprice_subtitle": {
+  "speedUpSubtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
+  },
+  "saveAsCsvFile": {
+    "message": "Save as CSV File"
   },
   "saveAsFile": {
     "message": "Save as File",
@@ -687,6 +864,9 @@
   "search": {
     "message": "Search"
   },
+  "searchResults": {
+    "message": "Search Results"
+  },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
   },
@@ -694,7 +874,7 @@
     "message": "New Password (min 8 chars)"
   },
   "seedPhraseReq": {
-    "message": "seed phrases are 12 words long"
+    "message": "Seed phrases are 12 words long"
   },
   "select": {
     "message": "Select"
@@ -717,11 +897,30 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "separateEachWord": {
+    "message": "Separate each word with a single space"
+  },
   "onlySendToEtherAddress": {
     "message": "Only send ETH to an Ethereum address."
   },
+  "onlySendTokensToAccountAddress": {
+    "message": "Only send $1 to an Ethereum account address.",
+    "description": "displays token symbol"
+  },
+  "orderOneHere": {
+    "message": "Order one here."
+  },
   "searchTokens": {
     "message": "Search Tokens"
+  },
+  "selectAnAddress": {
+    "message": "Select an Address"
+  },
+  "selectAnAccount": {
+    "message": "Select an Account"
+  },
+  "selectAnAccountHelp": {
+    "message": "These are the accounts available in your hardware wallet. Select the one you’d like to use in MetaMask."
   },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
@@ -729,8 +928,32 @@
   "settings": {
     "message": "Settings"
   },
+  "step1HardwareWallet": {
+    "message": "1. Connect Hardware Wallet"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Connect your hardware wallet directly to your computer."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Select an Account"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Select the account you want to view. You can only choose one at a time."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Start using dApps and more!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+  },
   "info": {
   "message": "Info"
+  },
+  "scanInstructions": {
+    "message": "Place the QR code in front of your camera"
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
   },
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
@@ -802,6 +1025,9 @@
     "message": "$1 to ETH via ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
+  "token": {
+    "message": "Token"
+  },
   "tokenAddress": {
     "message": "Token Address"
   },
@@ -835,12 +1061,21 @@
   "transactionNumber": {
     "message": "Transaction Number"
   },
+  "transfer": {
+    "message": "Transfer"
+  },
   "transfers": {
     "message": "Transfers"
+  },
+  "trezorHardwareWallet": {
+    "message": "TREZOR Hardware Wallet"
   },
   "troubleTokenBalances": {
     "message": "We had trouble loading your token balances. You can view them ",
     "description": "Followed by a link (here) to view token balances"
+  },
+  "tryAgain": {
+    "message": "Try again"
   },
   "twelveWords": {
     "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
@@ -852,7 +1087,7 @@
     "message": "Welcome to the New UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+    "message": "You are now using the new Metamask UI."
   },
   "unapproved": {
     "message": "Unapproved"
@@ -863,11 +1098,29 @@
   "unknown": {
     "message": "Unknown"
   },
+  "unknownFunction": {
+    "message": "Unknown Function"
+  },
   "unknownNetwork": {
     "message": "Unknown Private Network"
   },
   "unknownNetworkId": {
     "message": "Unknown network ID"
+  },
+  "unknownQrCode": {
+    "message": "Error: We couldn't identify that QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Something went wrong...."
+  },
+  "unknownCameraError": {
+    "message": "There was an error while trying to access you camera. Please try again..."
+  },
+  "unlock": {
+    "message": "Unlock"
+  },
+  "unlockMessage": {
+    "message": "The decentralized web awaits"
   },
   "uriErrorMsg": {
     "message": "URIs require the appropriate HTTP/HTTPS prefix."
@@ -891,11 +1144,17 @@
   "viewAccount": {
     "message": "View Account"
   },
+  "viewOnEtherscan": {
+    "message": "View on Etherscan"
+  },
   "visitWebSite": {
     "message": "Visit our web site"
   },
   "warning": {
     "message": "Warning"
+  },
+  "welcomeBack": {
+    "message": "Welcome Back!"
   },
   "welcomeBeta": {
     "message": "Welcome to MetaMask Beta"
@@ -903,10 +1162,16 @@
   "whatsThis": {
     "message": "What's this?"
   },
+  "youNeedToAllowCameraAccess": {
+    "message": "You need to allow camera access to use this feature."
+  },
   "yourSigRequested": {
     "message": "Your signature is being requested"
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Your private seed phrase"
   }
 }

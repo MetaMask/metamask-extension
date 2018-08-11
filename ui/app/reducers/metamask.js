@@ -1,8 +1,9 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
-const environmentType = require('../../../app/scripts/lib/environment-type')
-const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
+const { getEnvironmentType } = require('../../../app/scripts/lib/util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../app/scripts/lib/enums')
+const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/controllers/network/enums')
 
 module.exports = reduceMetamask
 
@@ -15,17 +16,19 @@ function reduceMetamask (state, action) {
     isUnlocked: false,
     isAccountMenuOpen: false,
     isMascara: window.platform instanceof MetamascaraPlatform,
-    isPopup: environmentType() === 'popup',
+    isPopup: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
     noActiveNotices: true,
-    lastUnreadNotice: undefined,
+    nextUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
     selectedTokenAddress: null,
+    contractExchangeRates: {},
     tokenExchangeRates: {},
     tokens: [],
+    pendingTokens: {},
     send: {
       gasLimit: null,
       gasPrice: null,
@@ -62,7 +65,7 @@ function reduceMetamask (state, action) {
     case actions.SHOW_NOTICE:
       return extend(metamaskState, {
         noActiveNotices: false,
-        lastUnreadNotice: action.value,
+        nextUnreadNotice: action.value,
       })
 
     case actions.CLEAR_NOTICES:
@@ -161,7 +164,7 @@ function reduceMetamask (state, action) {
         selectedTokenAddress: action.value,
       })
 
-    case actions.SAVE_ACCOUNT_LABEL:
+    case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label
       const id = {}
@@ -174,15 +177,6 @@ function reduceMetamask (state, action) {
         currentCurrency: action.value.currentCurrency,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
-      })
-
-    case actions.UPDATE_TOKEN_EXCHANGE_RATE:
-      const { payload: { pair, marketinfo } } = action
-      return extend(metamaskState, {
-        tokenExchangeRates: {
-          ...metamaskState.tokenExchangeRates,
-          [pair]: marketinfo,
-        },
       })
 
     case actions.UPDATE_TOKENS:
@@ -228,6 +222,14 @@ function reduceMetamask (state, action) {
         },
       })
 
+    case actions.UPDATE_SEND_HEX_DATA:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          data: action.value,
+        },
+      })
+
     case actions.UPDATE_SEND_FROM:
       return extend(metamaskState, {
         send: {
@@ -258,17 +260,6 @@ function reduceMetamask (state, action) {
         send: {
           ...metamaskState.send,
           memo: action.value,
-        },
-      })
-
-    case actions.UPDATE_SEND_ERRORS:
-      return extend(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          errors: {
-            ...metamaskState.send.errors,
-            ...action.value,
-          },
         },
       })
 
@@ -358,10 +349,21 @@ function reduceMetamask (state, action) {
         welcomeScreenSeen: true,
       })
 
-    case action.SET_CURRENT_LOCALE:
+    case actions.SET_CURRENT_LOCALE:
       return extend(metamaskState, {
         currentLocale: action.value,
       })
+
+    case actions.SET_PENDING_TOKENS:
+      return extend(metamaskState, {
+        pendingTokens: { ...action.payload },
+      })
+
+    case actions.CLEAR_PENDING_TOKENS: {
+      return extend(metamaskState, {
+        pendingTokens: {},
+      })
+    }
 
     default:
       return metamaskState

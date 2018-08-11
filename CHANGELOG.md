@@ -1,6 +1,115 @@
 # Changelog
 
-## Current Master
+## Current Develop Branch
+
+## 4.9.1 Mon Aug 09 2018
+
+- [#4884](https://github.com/MetaMask/metamask-extension/pull/4884): Allow to have tokens per account and network.
+- [#4989](https://github.com/MetaMask/metamask-extension/pull/4989): Continue to use original signedTypedData.
+- [#5010](https://github.com/MetaMask/metamask-extension/pull/5010): Fix ENS resolution issues.
+- [#5000](https://github.com/MetaMask/metamask-extension/pull/5000): Show error while allowing confirmation of tx where simulation fails.
+- [#4995](https://github.com/MetaMask/metamask-extension/pull/4995): Shows retry button on dApp initialized transactions.
+
+## 4.9.0 Mon Aug 07 2018
+
+- [#4926](https://github.com/MetaMask/metamask-extension/pull/4926): Show retry button on the latest tx of the earliest nonce.
+- [#4888](https://github.com/MetaMask/metamask-extension/pull/4888): Suggest using the new user interface.
+- [#4947](https://github.com/MetaMask/metamask-extension/pull/4947): Prevent sending multiple transasctions on multiple confirm clicks.
+- [#4844](https://github.com/MetaMask/metamask-extension/pull/4844): Add new tokens auto detection.
+- [#4667](https://github.com/MetaMask/metamask-extension/pull/4667): Remove rejected transactions from transaction history.
+- [#4625](https://github.com/MetaMask/metamask-extension/pull/4625): Add Trezor Support.
+- [#4625](https://github.com/MetaMask/metamask-extension/pull/4625/commits/523cf9ad33d88719520ae5e7293329d133b64d4d): Allow to remove accounts (Imported and Hardware Wallets)
+- [#4814](https://github.com/MetaMask/metamask-extension/pull/4814): Add hex data input to send screen.
+- [#4691](https://github.com/MetaMask/metamask-extension/pull/4691): Redesign of the Confirm Transaction Screen.
+- [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
+- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): Allow the use of HTTP prefix for custom rpc urls.
+
+## 4.8.0 Thur Jun 14 2018
+
+- [#4513](https://github.com/MetaMask/metamask-extension/pull/4513): Attempting to import an empty private key will now show a clear error.
+- [#4570](https://github.com/MetaMask/metamask-extension/pull/4570): Fix bug where metamask data would stop being written to disk after prolonged use.
+- [#4523](https://github.com/MetaMask/metamask-extension/pull/4523): Fix bug where account reset did not work with custom RPC providers.
+- [#4524](https://github.com/MetaMask/metamask-extension/pull/4524): Fix for Brave i18n getAcceptLanguages.
+- [#4557](https://github.com/MetaMask/metamask-extension/pull/4557): Fix bug where nonce mutex was never released.
+- [#4566](https://github.com/MetaMask/metamask-extension/pull/4566): Add phishing notice.
+- [#4591](https://github.com/MetaMask/metamask-extension/pull/4591): Allow Copying Token Addresses and link to Token on Etherscan.
+
+## 4.7.4 Tue Jun 05 2018
+
+- Add diagnostic reporting for users with multiple HD keyrings
+- Throw explicit error when selected account is unset
+
+## 4.7.3 Mon Jun 04 2018
+
+- Hide token now uses new modal
+- Indicate the current selected account on the popup account view
+- Reduce height of notice container in onboarding
+- Fixes issue where old nicknames were kept around causing errors
+
+## 4.7.2 Sun Jun 03 2018
+
+- Fix bug preventing users from logging in. Internally accounts and identities were out of sync.
+- Fix support links to point to new support system (Zendesk)
+- Fix bug in migration #26 ( moving account nicknames to preferences )
+- Clears account nicknames on restore from seedPhrase
+
+## 4.7.1 Fri Jun 01 2018
+
+- Fix bug where errors were not returned to Dapps.
+
+## 4.7.0 Wed May 30 2018
+
+- Fix Brave support
+- Adds error messages when passwords don't match in onboarding flow.
+- Adds modal notification if a retry in the process of being confirmed is dropped.
+- New unlock screen design.
+- Design improvements to the add token screen.
+- Fix inconsistencies in confirm screen between extension and browser window modes.
+- Fix scrolling in deposit ether modal.
+- Fix styling of app spinner.
+- Font weight changed from 300 to 400.
+- New reveal screen design.
+- Styling improvements to labels in first time flow and signature request headers.
+
+## 4.6.1 Mon Apr 30 2018
+
+- Fix bug where sending a transaction resulted in an infinite spinner
+- Allow transactions with a 0 gwei gas price
+- Handle encoding errors in ERC20 symbol + digits
+- Fix ShapeShift forms (new + old ui)
+- Fix sourcemaps
+
+## 4.6.0 Thu Apr 26 2018
+
+- Correctly format currency conversion for locally selected preferred currency.
+- Improved performance of 3D fox logo.
+- Fetch token prices based on contract address, not symbol
+- Fix bug that prevents setting language locale in settings.
+- Show checksum addresses throughout the UI
+- Allow transactions with a 0 gwei gas price
+- Made provider RPC errors contain useful messages
+
+## 4.5.5 Fri Apr 06 2018
+
+- Graceful handling of unknown keys in txParams
+- Fixes buggy handling of historical transactions with unknown keys in txParams
+- Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
+- Fix Download State Logs button [#3791](https://github.com/MetaMask/metamask-extension/issues/3791)
+- Enhanced migration error handling + reporting
+
+## 4.5.4 (aborted) Thu Apr 05 2018
+
+- Graceful handling of unknown keys in txParams
+- Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
+- Fix Download State Logs button [#3791](https://github.com/MetaMask/metamask-extension/issues/3791)
+- Fix migration error reporting
+
+## 4.5.3 Wed Apr 04 2018
+
+- Fix bug where checksum address are messing with balance issue [#3843](https://github.com/MetaMask/metamask-extension/issues/3843)
+- new ui: fix the confirm transaction screen
+
+## 4.5.2 Wed Apr 04 2018
 
 - Fix overly strict validation where transactions were rejected with hex encoded "chainId"
 

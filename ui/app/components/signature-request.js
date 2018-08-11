@@ -6,6 +6,8 @@ const Identicon = require('./identicon')
 const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')
+const { compose } = require('recompose')
+const { withRouter } = require('react-router-dom')
 
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 
@@ -19,6 +21,10 @@ const {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
 } = require('../selectors.js')
+
+import { clearConfirmTransaction } from '../ducks/confirm-transaction.duck'
+
+const { DEFAULT_ROUTE } = require('../routes')
 
 function mapStateToProps (state) {
   return {
@@ -35,6 +41,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     goHome: () => dispatch(actions.goHome()),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
   }
 }
 
@@ -42,7 +49,10 @@ SignatureRequest.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SignatureRequest)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(SignatureRequest)
 
 
 inherits(SignatureRequest, Component)
@@ -108,7 +118,7 @@ SignatureRequest.prototype.renderBalance = function () {
 
   return h('div.request-signature__balance', [
 
-    h('div.request-signature__balance-text', [this.context.t('balance')]),
+    h('div.request-signature__balance-text', `${this.context.t('balance')}:`),
 
     h('div.request-signature__balance-value', `${balanceInEther} ETH`),
 
@@ -171,7 +181,14 @@ SignatureRequest.prototype.renderBody = function () {
     rows = data
   } else if (type === 'eth_sign') {
     rows = [{ name: this.context.t('message'), value: data }]
-    notice = this.context.t('signNotice')
+    notice = [this.context.t('signNotice'),
+      h('span.request-signature__help-link', {
+        onClick: () => {
+          global.platform.openWindow({
+            url: 'https://consensys.zendesk.com/hc/en-us/articles/360004427792',
+          })
+        },
+    }, this.context.t('learnMore'))]
   }
 
   return h('div.request-signature__body', {}, [
@@ -190,6 +207,9 @@ SignatureRequest.prototype.renderBody = function () {
     h('div.request-signature__rows', [
 
       ...rows.map(({ name, value }) => {
+        if (typeof value === 'boolean') {
+          value = value.toString()
+        }
         return h('div.request-signature__row', [
           h('div.request-signature__row-title', [`${name}:`]),
           h('div.request-signature__row-value', value),
@@ -228,11 +248,21 @@ SignatureRequest.prototype.renderFooter = function () {
   }
 
   return h('div.request-signature__footer', [
-    h('button.btn-secondary--lg.request-signature__footer__cancel-button', {
-      onClick: cancel,
+    h('button.btn-default.btn--large.request-signature__footer__cancel-button', {
+      onClick: event => {
+        cancel(event).then(() => {
+          this.props.clearConfirmTransaction()
+          this.props.history.push(DEFAULT_ROUTE)
+        })
+      },
     }, this.context.t('cancel')),
-    h('button.btn-primary--lg', {
-      onClick: sign,
+    h('button.btn-primary.btn--large', {
+      onClick: event => {
+        sign(event).then(() => {
+          this.props.clearConfirmTransaction()
+          this.props.history.push(DEFAULT_ROUTE)
+        })
+      },
     }, this.context.t('sign')),
   ])
 }

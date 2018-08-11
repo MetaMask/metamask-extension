@@ -43,12 +43,9 @@
   }
 
   &__header__text {
-    height: 29px;
-    width: 179px;
     color: #5B5D67;
     font-family: Roboto;
     font-size: 22px;
-    font-weight: 300;
     line-height: 29px;
     z-index: 3;
   }
@@ -125,7 +122,6 @@
     color: $tundora;
     font-family: Roboto;
     font-size: 18px;
-    font-weight: 300;
     line-height: 24px;
     text-align: center;
     margin-top: 20px;
@@ -185,6 +181,13 @@
     overflow-wrap: break-word;
     border-bottom: 1px solid #d2d8dd;
     padding: 6px 18px 15px;
+    white-space: pre-line;
+  }
+
+  &__help-link {
+    cursor: pointer;
+    text-decoration: underline;
+    color: $curious-blue;
   }
 
   &__footer {

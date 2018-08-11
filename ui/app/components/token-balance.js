@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
+const log = require('loglevel')
 
 function mapStateToProps (state) {
   return {
@@ -33,7 +34,7 @@ TokenBalance.prototype.render = function () {
   return isLoading
     ? h('span', '')
     : h('span.token-balance', [
-      h('span.token-balance__amount', string),
+      h('span.hide-text-overflow.token-balance__amount', string),
       !balanceOnly && h('span.token-balance__symbol', symbol),
     ])
 }
@@ -97,6 +98,10 @@ TokenBalance.prototype.componentDidUpdate = function (nextProps) {
 }
 
 TokenBalance.prototype.updateBalance = function (tokens = []) {
+  if (!this.tracker.running) {
+    return
+  }
+
   const [{ string, symbol }] = tokens
 
   this.setState({
@@ -109,5 +114,7 @@ TokenBalance.prototype.updateBalance = function (tokens = []) {
 TokenBalance.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+  this.tracker.removeListener('update', this.balanceUpdater)
+  this.tracker.removeListener('error', this.showError)
 }
 

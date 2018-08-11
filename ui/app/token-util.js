@@ -1,14 +1,8 @@
-const abi = require('human-standard-token-abi')
-const Eth = require('ethjs-query')
-const EthContract = require('ethjs-contract')
+const log = require('loglevel')
+const util = require('./util')
+const BigNumber = require('bignumber.js')
 
-const tokenInfoGetter = function () {
-  if (typeof global.ethereumProvider === 'undefined') return
-
-  const eth = new Eth(global.ethereumProvider)
-  const contract = new EthContract(eth)
-  const TokenContract = contract(abi)
-
+function tokenInfoGetter () {
   const tokens = {}
 
   return async (address) => {
@@ -16,30 +10,46 @@ const tokenInfoGetter = function () {
       return tokens[address]
     }
 
-    const contract = TokenContract.at(address)
-
-    const result = await Promise.all([
-      contract.symbol(),
-      contract.decimals(),
-    ])
-
-    const [ symbol = [], decimals = [] ] = result
-
-    tokens[address] = { symbol: symbol[0], decimals: decimals[0] }
+    tokens[address] = await getSymbolAndDecimals(address)
 
     return tokens[address]
   }
 }
 
+async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
+  const existingToken = existingTokens.find(({ address }) => tokenAddress === address)
+  if (existingToken) {
+    return existingToken
+  }
+
+  let result = []
+  try {
+    const token = util.getContractAtAddress(tokenAddress)
+
+    result = await Promise.all([
+      token.symbol(),
+      token.decimals(),
+    ])
+  } catch (err) {
+    log.warn(`symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`, err)
+  }
+
+  const [ symbol = [], decimals = [] ] = result
+
+  return {
+    symbol: symbol[0] || null,
+    decimals: decimals[0] && decimals[0].toString() || null,
+  }
+}
+
 function calcTokenAmount (value, decimals) {
   const multiplier = Math.pow(10, Number(decimals || 0))
-  const amount = Number(value / multiplier)
-
-  return amount
+  return new BigNumber(value).div(multiplier).toNumber()
 }
 
 
 module.exports = {
   tokenInfoGetter,
   calcTokenAmount,
+  getSymbolAndDecimals,
 }

@@ -20,6 +20,9 @@
   "addToken": {
     "message": "トークンを追加"
   },
+  "addTokens": {
+    "message": "トークンを追加"
+  },
   "amount": {
     "message": "金額"
   },
@@ -46,6 +49,9 @@
   "balance": {
     "message": "残高:"
   },
+  "balances": {
+    "message": "トークン残高"
+  },
   "balanceIsInsufficientGas": {
     "message": "現在のガス総量に対して残高が不足しています"
   },
@@ -56,6 +62,9 @@
     "message": " $1以上 $2以下にして下さい。",
     "description": "helper for inputting hex as decimal input"
   },
+  "blockiesIdenticon": {
+    "message": "Blockies Identicon を使用"
+  },
   "borrowDharma": {
     "message": "Dharmaで借りる(ベータ版)"
   },
@@ -63,10 +72,10 @@
     "message": "購入"
   },
   "buyCoinbase": {
-    "message": "Coinbaseで購入"
+    "message": "Coinbaseのサイトで購入"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbaseは、世界的なBitcoin、Ethereum、そしてLitecoinの取引所です。"
+    "message": "Etherを購入できます。Coinbaseは、世界的なBitcoin、Ethereum、そしてLitecoinの取引所です。"
   },
   "cancel": {
     "message": "キャンセル"
@@ -89,8 +98,11 @@
   "confirmTransaction": {
     "message": "トランザクションの確認"
   },
+  "continue": {
+    "message": "続行"
+  },
   "continueToCoinbase": {
-    "message": "Coinbaseで続行"
+    "message": "Coinbaseを開く"
   },
   "contractDeployment": {
     "message": "コントラクトのデプロイ"
@@ -109,6 +121,9 @@
   },
   "copy": {
     "message": "コピー"
+  },
+  "copyContractAddress": {
+    "message": "コントラクトアドレスをコピー"
   },
   "copyToClipboard": {
     "message": "クリップボードへコピー"
@@ -138,6 +153,9 @@
   "customGas": {
     "message": "ガスのカスタマイズ"
   },
+  "customToken": {
+    "message": "カスタムトークン"
+  },
   "customize": {
     "message": "カスタマイズ"
   },
@@ -154,20 +172,20 @@
     "message": "DENとは、あなたのパスワードが暗号化されたMetaMask内のストレージです。"
   },
   "deposit": {
-    "message": "受取り"
+    "message": "振込"
   },
   "depositBTC": {
-    "message": "あなたのBTCを次のアドレスへデポジット:"
+    "message": "BTCを下記のアドレスへ振込んでください:"
   },
   "depositCoin": {
-    "message": "あなたの $1を次のアドレスへデポジット",
+    "message": "$1を下記のアドレスへ振込んでください",
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "ETHをデポジット"
+    "message": "ETHを入金"
   },
   "depositEther": {
-    "message": "Etherをデポジット"
+    "message": "Etherを振込"
   },
   "depositFiat": {
     "message": "法定通貨でデポジット"
@@ -176,10 +194,10 @@
     "message": "別のアカウントから入金"
   },
   "depositShapeShift": {
-    "message": "ShapeShiftで入金"
+    "message": "ShapeShiftで交換"
   },
   "depositShapeShiftExplainer": {
-    "message": "他の暗号通貨をEtherと交換してMetaMaskのウォレットへ入金できます。アカウント作成は不要です。"
+    "message": "他の暗号通貨とEtherを交換して、MetaMaskのウォレットへ入金できます。アカウント作成は不要です。"
   },
   "details": {
     "message": "詳細"
@@ -188,10 +206,10 @@
     "message": "ダイレクトデポジット"
   },
   "directDepositEther": {
-    "message": "Etherを直接受け取り"
+    "message": "Etherを直接入金"
   },
   "directDepositEtherExplainer": {
-    "message": "Etherをすでにお持ちなら、MetaMaskの新しいウォレットにEtherを送信することができます。"
+    "message": "既にEtherをお持ちなら、MetaMaskの新しいウォレットにEtherを送信することができます。"
   },
   "done": {
     "message": "完了"
@@ -209,7 +227,7 @@
     "message": "パスワードを入力"
   },
   "etherscanView": {
-    "message": "Etherscanでアカウントを参照"
+    "message": "Etherscanでアカウントを確認"
   },
   "exchangeRate": {
     "message": "交換レート"
@@ -266,7 +284,7 @@
     "message": "必要ガスプライス"
   },
   "getEther": {
-    "message": "Etherをゲット"
+    "message": "Etherを取得する"
   },
   "getEtherFromFaucet": {
     "message": "フォーセットで $1のEtherを得ることができます。",
@@ -287,7 +305,7 @@
     "message": "トークンを隠す"
   },
   "hideTokenPrompt": {
-    "message": "トークンを隠しますか？?"
+    "message": "トークンを隠しますか?"
   },
   "howToDeposit": {
     "message": "どのようにEtherをデポジットしますか?"
@@ -300,7 +318,7 @@
     "message": "アカウントのインポート"
   },
   "importAccountMsg": {
-    "message":"追加したアカウントはMetaMaskのアカウントシードフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
+    "message":"追加したアカウントはMetaMaskのアカウントパスフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
   },
   "importAnAccount": {
     "message": "アカウントをインポート"
@@ -334,12 +352,24 @@
     "message": "JSONファイル",
     "description": "format for importing an account"
   },
+  "keepTrackTokens": {
+    "message": "MetaMaskアカウントで入手したトークンを検索できます。"
+  },
   "kovan": {
     "message": "Kovanテストネットワーク"
+  },
+  "learnMore": {
+    "message": "詳細"
   },
   "lessThanMax": {
     "message": " $1以下にして下さい。",
     "description": "helper for inputting hex as decimal input"
+  },
+  "likeToAddTokens": {
+    "message": "トークンを追加しますか?"
+  },
+  "links": {
+    "message": "リンク"
   },
   "limit": {
     "message": "リミット"
@@ -353,14 +383,23 @@
   "localhost": {
     "message": "Localhost 8545"
   },
+  "login": {
+    "message": "ログイン"
+  },
   "logout": {
     "message": "ログアウト"
   },
   "loose": {
     "message": "外部秘密鍵"
   },
+  "max": {
+    "message": "最大"
+  },
   "mainnet": {
     "message": "Ethereumメインネットワーク"
+  },
+  "menu": {
+    "message": "メニュー"
   },
   "message": {
     "message": "メッセージ"
@@ -371,8 +410,11 @@
   "myAccounts": {
     "message": "マイアカウント"
   },
+  "mustSelectOne": {
+    "message": "一つ以上のトークンを選択してください。"
+  },
   "needEtherInWallet": {
-    "message": "MetaMaskを使って分散型アプリケーションを使用するためには、このウォレットにEtherが必要です。"
+    "message": "MetaMaskで分散型アプリケーションを使用するためには、このウォレットにEtherが必要です。"
   },
   "needImportFile": {
     "message": "インポートするファイルを選択してください。",
@@ -396,7 +438,7 @@
     "message": "新規コントラクト"
   },
   "newPassword": {
-    "message": "新規パスワード(最低８文字)"
+    "message": "新規パスワード(最低8文字)"
   },
   "newRecipient": {
     "message": "新規受取人"
@@ -411,7 +453,7 @@
     "message": "この名前にはアドレスが設定されていません。"
   },
   "noDeposits": {
-    "message": "デポジットがありません。"
+    "message": "振込みがありません。"
   },
   "noTransactionHistory": {
     "message": "トランザクション履歴がありません。"
@@ -428,9 +470,15 @@
   "oldUIMessage": {
     "message": "旧UIを表示しています。右上のドロップダウンメニューのオプションより、新UIへ切り替えが可能です。"
   },
+  "openInTab": {
+    "message": "タブを開く"
+  },
   "or": {
     "message": "または",
     "description": "choice between creating or importing a new account"
+  },
+  "password": {
+    "message": "パスワード"
   },
   "passwordMismatch": {
     "message": "パスワードが一致しません。",
@@ -445,10 +493,16 @@
     "description": "For importing an account from a private key"
   },
   "pasteSeed": {
-    "message": "シードをここにペーストして下さい!"
+    "message": "パスフレーズをここにペーストして下さい!"
   },
   "pleaseReviewTransaction": {
-    "message": "トランザクションをレビューして下さい。"
+    "message": "トランザクションを確認して下さい。"
+  },
+  "popularTokens": {
+    "message": "人気のトークン"
+  },
+  "privacyMsg": {
+    "message": "プライバシーポリシー"
   },
   "privateKey": {
     "message": "秘密鍵",
@@ -470,13 +524,13 @@
     "message": "もっと読む"
   },
   "receive": {
-    "message": "受け取る"
+    "message": "受取"
   },
   "recipientAddress": {
     "message": "受取人アドレス"
   },
   "refundAddress": {
-    "message": "あなたの返金先アドレス"
+    "message": "受取アドレス"
   },
   "rejected": {
     "message": "拒否されました"
@@ -487,11 +541,17 @@
   "restoreFromSeed": {
     "message": "パスフレーズから復元する"
   },
+  "restoreVault": {
+    "message": "ウォレットを復元する"
+  },
   "required": {
     "message": "必要です。"
   },
   "retryWithMoreGas": {
     "message": "より高いガスプライスで再度試して下さい。"
+  },
+  "walletSeed": {
+    "message": "ウォレットのパスフレーズ"
   },
   "revealSeedWords": {
     "message": "パスフレーズを表示"
@@ -516,17 +576,45 @@
     "message": "ファイルとして保存",
     "description": "Account export process"
   },
+  "search": {
+    "message": "検索"
+  },
+  "searchResults": {
+    "message": "検索結果"
+  },
+  "newPassword8Chars": {
+    "message": "新しいパスワード (8桁以上)"
+  },
+  "select": {
+    "message": "選択"
+  },
+  "selectCurrency": {
+    "message": "通貨を選択"
+  },
   "selectService": {
     "message": "サービスを選択"
+  },
+  "selectType": {
+    "message": "キーの種類"
   },
   "send": {
     "message": "送信"
   },
+  "sendETH": {
+    "message": "ETHの送信"
+  },
   "sendTokens": {
-    "message": "トークンを送る"
+    "message": "トークンを送信"
   },
   "onlySendToEtherAddress": {
-    "message": "ETHはイーサリウムアカウントのみに送信できます。"
+    "message": "ETH はイーサリウムアカウントのみに送信できます。"
+  },
+  "onlySendTokensToAccountAddress": {
+    "message": "$1 はイーサリアムアカウントのみに送信できます。",
+    "description": "displays token symbol"
+  },
+  "searchTokens": {
+    "message": "トークンの検索"
   },
   "sendTokensAnywhere": {
     "message": "イーサリアムアカウントを持っている人にトークンを送る"
@@ -534,8 +622,11 @@
   "settings": {
     "message": "設定"
   },
+  "info": {
+    "message": "情報"
+  },
   "shapeshiftBuy": {
-    "message": "Shapeshiftで買う"
+    "message": "Shapeshiftで交換"
   },
   "showPrivateKeys": {
     "message": "秘密鍵を表示"
@@ -565,17 +656,23 @@
     "message": "送信"
   },
   "takesTooLong": {
-    "message": "長くかかりすぎていますか?"
+    "message": "送信に時間がかかりますか?"
+  },
+  "terms": {
+    "message": "利用規約"
   },
   "testFaucet": {
     "message": "Faucetをテスト"
   },
   "to": {
-    "message": "宛先"
+    "message": "送信先"
   },
   "toETHviaShapeShift": {
     "message": "ShapeShiftで $1をETHにする",
     "description": "system will fill in deposit type in start of message"
+  },
+  "token": {
+    "message": "トークン"
   },
   "tokenAddress": {
     "message": "トークンアドレス"
@@ -595,6 +692,9 @@
   "total": {
     "message": "合計"
   },
+  "transactions": {
+    "message": "トランザクション"
+  },
   "transactionMemo": {
     "message": "トランザクションメモ (オプション)"
   },
@@ -609,13 +709,13 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "typePassword": {
-    "message": "パスワードタイプ"
+    "message": "パスワードの入力"
   },
   "uiWelcome": {
-    "message": "新UIへようこそ！(ベータ版)"
+    "message": "新UIへようこそ! (ベータ版)"
   },
   "uiWelcomeMessage": {
-    "message": "現在Metamaskの新しいUIをお使いになっています。トークン送信など、新たな機能を試してみましょう！何か問題があればご報告ください。"
+    "message": "現在、MetaMask の新しいUIをお使いになっています。トークン送信など、新たな機能を試してみましょう! 何か問題があればご報告ください。"
   },
   "unavailable": {
     "message": "有効ではありません。"
@@ -642,11 +742,20 @@
   "viewAccount": {
     "message": "アカウントを見る"
   },
+  "viewOnEtherscan": {
+    "message": "Etherscan で見る"
+  },
   "warning": {
     "message": "警告"
   },
+  "welcomeBack": {
+    "message": "おかえりなさい!"
+  },
+  "welcomeBeta": {
+    "message": "MetaMask ベータ版へようこそ!"
+  },
   "whatsThis": {
-    "message": "これは何でしょう?"
+    "message": "この機能について"
   },
   "yourSigRequested": {
     "message": "あなたの署名がリクエストされています。"

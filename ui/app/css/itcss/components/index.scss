@@ -8,6 +8,8 @@
 
 @import './modal.scss';
 
+@import './alert.scss';
+
 @import './newui-sections.scss';
 
 @import './account-dropdown.scss';
@@ -30,8 +32,6 @@
 
 @import './token-list.scss';
 
-@import './add-token.scss';
-
 @import './currency-display.scss';
 
 @import './account-menu.scss';
@@ -52,10 +52,12 @@
 
 @import './editable-label.scss';
 
+@import './pages/index.scss';
+
 @import './new-account.scss';
 
 @import './tooltip.scss';
 
 @import './welcome-screen.scss';
 
-@import './sender-to-recipient.scss';
+@import '../../../components/index';

@@ -6,6 +6,7 @@ const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
+const log = require('loglevel')
 
 function mapStateToProps (state) {
   return {
@@ -157,12 +158,17 @@ TokenList.prototype.componentDidUpdate = function (nextProps) {
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
+  if (!this.tracker.running) {
+    return
+  }
   this.setState({ tokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+  this.tracker.removeListener('update', this.balanceUpdater)
+  this.tracker.removeListener('error', this.showError)
 }
 
 // function uniqueMergeTokens (tokensA, tokensB = []) {

@@ -5,7 +5,8 @@ const connect = require('react-redux').connect
 const FadeModal = require('boron').FadeModal
 const actions = require('../../actions')
 const isMobileView = require('../../../lib/is-mobile-view')
-const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-notification')
+const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
+const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
 
 // Modal Components
 const BuyOptions = require('./buy-options-modal')
@@ -18,7 +19,34 @@ const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
-const ConfirmResetAccount = require('./notification-modals/confirm-reset-account')
+const ConfirmResetAccount = require('./confirm-reset-account')
+const ConfirmRemoveAccount = require('./confirm-remove-account')
+const QRScanner = require('./qr-scanner')
+const TransactionConfirmed = require('./transaction-confirmed')
+const WelcomeBeta = require('./welcome-beta')
+const Notification = require('./notification')
+
+import ConfirmCustomizeGasModal from './customize-gas'
+
+const modalContainerBaseStyle = {
+  transform: 'translate3d(-50%, 0, 0px)',
+  border: '1px solid #CCCFD1',
+  borderRadius: '8px',
+  backgroundColor: '#FFFFFF',
+  boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
+}
+
+const modalContainerLaptopStyle = {
+  ...modalContainerBaseStyle,
+  width: '344px',
+  top: '15%',
+}
+
+const modalContainerMobileStyle = {
+  ...modalContainerBaseStyle,
+  width: '309px',
+  top: '12.5%',
+}
 
 const accountModalStyle = {
   mobileModalStyle: {
@@ -162,7 +190,7 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '95%',
-      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -172,18 +200,18 @@ const MODALS = {
 
   BETA_UI_NOTIFICATION_MODAL: {
     contents: [
-      h(NotifcationModal, {
-        header: 'uiWelcome',
-        message: 'uiWelcomeMessage',
-      }),
+      h(Notification, [
+        h(WelcomeBeta),
+      ]),
     ],
     mobileModalStyle: {
-      width: '95%',
-      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+      ...modalContainerMobileStyle,
     },
     laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 
@@ -196,7 +224,7 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '95%',
-      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
       width: '449px',
@@ -207,12 +235,26 @@ const MODALS = {
   CONFIRM_RESET_ACCOUNT: {
     contents: h(ConfirmResetAccount),
     mobileModalStyle: {
-      width: '95%',
-      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+      ...modalContainerMobileStyle,
     },
     laptopModalStyle: {
-      width: '473px',
-      top: 'calc(33% + 45px)',
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CONFIRM_REMOVE_ACCOUNT: {
+    contents: h(ConfirmRemoveAccount),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 
@@ -242,7 +284,7 @@ const MODALS = {
 
   CUSTOMIZE_GAS: {
     contents: [
-      h(CustomizeGasModal, {}, []),
+      h(CustomizeGasModal),
     ],
     mobileModalStyle: {
       width: '100vw',
@@ -261,6 +303,60 @@ const MODALS = {
       left: '0',
       right: '0',
       margin: '0 auto',
+    },
+  },
+
+  CONFIRM_CUSTOMIZE_GAS: {
+    contents: [
+      h(ConfirmCustomizeGasModal),
+    ],
+    mobileModalStyle: {
+      width: '100vw',
+      height: '100vh',
+      top: '0',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: '720px',
+      height: '377px',
+      top: '80px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+  },
+
+  TRANSACTION_CONFIRMED: {
+    disableBackdropClick: true,
+    contents: [
+      h(Notification, [
+        h(TransactionConfirmed),
+      ]),
+    ],
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+  QR_SCANNER: {
+    contents: h(QRScanner),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 
@@ -305,7 +401,7 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 Modal.prototype.render = function () {
   const modal = MODALS[this.props.modalState.name || 'DEFAULT']
 
-  const children = modal.contents
+  const { contents: children, disableBackdropClick = false } = modal
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
   const contentStyle = modal.contentStyle || {}
 
@@ -325,6 +421,7 @@ Modal.prototype.render = function () {
       modalStyle,
       contentStyle,
       backdropStyle: BACKDROPSTYLE,
+      closeOnClick: !disableBackdropClick,
     },
     children,
   )

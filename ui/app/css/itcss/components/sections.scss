@@ -17,6 +17,12 @@ textarea.twelve-word-phrase {
   resize: none;
 }
 
+.initialize-screen {
+  width: 100%;
+  z-index: $main-container-z-index;
+  background: #f7f7f7;
+}
+
 .initialize-screen hr {
   width: 60px;
   margin: 12px;
@@ -89,19 +95,6 @@ textarea.twelve-word-phrase {
   margin: -2px 8px 0px -8px;
 }
 
-.unlock-screen #metamask-mascot-container {
-  margin-top: 24px;
-}
-
-.unlock-screen h1 {
-  margin-top: -28px;
-  margin-bottom: 42px;
-}
-
-.unlock-screen input[type=password] {
-  width: 260px;
-}
-
 .sizing-input {
   font-size: 14px;
   height: 30px;
@@ -110,34 +103,6 @@ textarea.twelve-word-phrase {
 
 .editable-label {
   display: flex;
-}
-
-/* Webkit */
-
-.unlock-screen input::-webkit-input-placeholder {
-  text-align: center;
-  font-size: 1.2em;
-}
-
-/* Firefox 18- */
-
-.unlock-screen input:-moz-placeholder {
-  text-align: center;
-  font-size: 1.2em;
-}
-
-/* Firefox 19+ */
-
-.unlock-screen input::-moz-placeholder {
-  text-align: center;
-  font-size: 1.2em;
-}
-
-/* IE */
-
-.unlock-screen input:-ms-input-placeholder {
-  text-align: center;
-  font-size: 1.2em;
 }
 
 /* accounts */

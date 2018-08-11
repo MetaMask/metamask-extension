@@ -23,6 +23,9 @@ if (shouldInjectWeb3()) {
   setupStreams()
 }
 
+/**
+ * Creates a script tag that injects inpage.js
+ */
 function setupInjection () {
   try {
     // inject in-page script
@@ -37,6 +40,10 @@ function setupInjection () {
   }
 }
 
+/**
+ * Sets up two-way communication streams between the
+ * browser extension and local per-page browser context
+ */
 function setupStreams () {
   // setup communication to page and plugin
   const pageStream = new LocalMessageDuplexStream({
@@ -89,17 +96,34 @@ function setupStreams () {
   mux.ignoreStream('publicConfig')
 }
 
+
+/**
+ * Error handler for page to plugin stream disconnections
+ *
+ * @param {string} remoteLabel Remote stream name
+ * @param {Error} err Stream connection error
+ */
 function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
   if (err) warningMsg += '\n' + err.stack
   console.warn(warningMsg)
 }
 
+/**
+ * Determines if Web3 should be injected
+ *
+ * @returns {boolean} {@code true} if Web3 should be injected
+ */
 function shouldInjectWeb3 () {
-  return doctypeCheck() && suffixCheck()
-    && documentElementCheck() && !blacklistedDomainCheck()
+  return doctypeCheck() && suffixCheck() &&
+    documentElementCheck() && !blacklistedDomainCheck()
 }
 
+/**
+ * Checks the doctype of the current document if it exists
+ *
+ * @returns {boolean} {@code true} if the doctype is html or if none exists
+ */
 function doctypeCheck () {
   const doctype = window.document.doctype
   if (doctype) {
@@ -109,6 +133,11 @@ function doctypeCheck () {
   }
 }
 
+/**
+ * Checks the current document extension
+ *
+ * @returns {boolean} {@code true} if the current extension is not prohibited
+ */
 function suffixCheck () {
   var prohibitedTypes = ['xml', 'pdf']
   var currentUrl = window.location.href
@@ -122,6 +151,11 @@ function suffixCheck () {
   return true
 }
 
+/**
+ * Checks the documentElement of the current document
+ *
+ * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
+ */
 function documentElementCheck () {
   var documentElement = document.documentElement.nodeName
   if (documentElement) {
@@ -130,11 +164,22 @@ function documentElementCheck () {
   return true
 }
 
+/**
+ * Checks if the current domain is blacklisted
+ *
+ * @returns {boolean} {@code true} if the current domain is blacklisted
+ */
 function blacklistedDomainCheck () {
   var blacklistedDomains = [
     'uscourts.gov',
     'dropbox.com',
     'webbyawards.com',
+    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
+    'adyen.com',
+    'gravityforms.com',
+    'harbourair.com',
+    'ani.gamer.com.tw',
+    'blueskybooking.com',
   ]
   var currentUrl = window.location.href
   var currentRegex
@@ -148,7 +193,11 @@ function blacklistedDomainCheck () {
   return false
 }
 
+/**
+ * Redirects the current page to a phishing information page
+ */
 function redirectToPhishingWarning () {
-  console.log('MetaMask - redirecting to phishing warning')
-  window.location.href = 'https://metamask.io/phishing.html'
+  console.log('MetaMask - routing to Phishing Warning component')
+  const extensionURL = extension.runtime.getURL('phishing.html')
+  window.location.href = extensionURL
 }

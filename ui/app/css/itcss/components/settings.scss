@@ -3,8 +3,6 @@
   background: $white;
   display: flex;
   flex-flow: column nowrap;
-  height: auto;
-  overflow: auto;
 }
 
 .settings__header {
@@ -29,6 +27,8 @@
 
 .settings__content {
   padding: 0 25px;
+  height: auto;
+  overflow: auto;
 }
 
 .settings__content-row {

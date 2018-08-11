@@ -1,10 +1,13 @@
 // Karma configuration
 // Generated on Mon Sep 11 2017 18:45:48 GMT-0700 (PDT)
 
-module.exports = function(config) {
+module.exports = function (config) {
   return {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: process.cwd(),
+
+    // Uncomment to allow for longer timeouts
+    // browserNoActivityTimeout: 100000000,
 
     browserConsoleLogOptions: {
       terminal: false,

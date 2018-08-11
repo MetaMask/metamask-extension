@@ -16,8 +16,7 @@ const selectors = {
   transactionsSelector,
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
-  getGasPrice,
-  getGasLimit,
+  getGasIsLoading,
   getForceGasMin,
   getAddressBook,
   getSendFrom,
@@ -28,6 +27,7 @@ const selectors = {
   autoAddToBetaUI,
   getSendMaxModeState,
   getCurrentViewContext,
+  getTotalUnapprovedCount,
 }
 
 module.exports = selectors
@@ -62,22 +62,15 @@ function getSelectedToken (state) {
 }
 
 function getSelectedTokenExchangeRate (state) {
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
+  const contractExchangeRates = state.metamask.contractExchangeRates
   const selectedToken = getSelectedToken(state) || {}
-  const { symbol = '' } = selectedToken
-
-  const pair = `${symbol.toLowerCase()}_eth`
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
-
-  return tokenExchangeRate
+  const { address } = selectedToken
+  return contractExchangeRates[address] || 0
 }
 
-function getTokenExchangeRate (state, tokenSymbol) {
-  const pair = `${tokenSymbol.toLowerCase()}_eth`
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
-
-  return tokenExchangeRate
+function getTokenExchangeRate (state, address) {
+  const contractExchangeRates = state.metamask.contractExchangeRates
+  return contractExchangeRates[address] || 0
 }
 
 function conversionRateSelector (state) {
@@ -124,12 +117,8 @@ function transactionsSelector (state) {
       .sort((a, b) => b.time - a.time)
 }
 
-function getGasPrice (state) {
-  return state.metamask.send.gasPrice
-}
-
-function getGasLimit (state) {
-  return state.metamask.send.gasLimit
+function getGasIsLoading (state) {
+  return state.appState.gasIsLoading
 }
 
 function getForceGasMin (state) {
@@ -192,4 +181,16 @@ function autoAddToBetaUI (state) {
 function getCurrentViewContext (state) {
   const { currentView = {} } = state.appState
   return currentView.context
+}
+
+function getTotalUnapprovedCount ({ metamask }) {
+  const {
+    unapprovedTxs = {},
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
+    unapprovedTypedMessagesCount,
+  } = metamask
+
+  return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
+    unapprovedTypedMessagesCount
 }

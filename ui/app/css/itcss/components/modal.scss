@@ -368,7 +368,6 @@
   resize: none;
   padding: 9px 13px 8px;
   text-transform: uppercase;
-  font-weight: 300;
 }
 
 
@@ -567,7 +566,6 @@
     padding: 30px;
     font-size: 22px;
     color: $nile-blue;
-    height: 79px;
   }
 
   &__message {
@@ -644,9 +642,30 @@
     display: flex;
     flex-flow: column nowrap;
     flex: 1;
+    align-items: center;
 
     @media screen and (max-width: 575px) {
       height: 0;
+    }
+
+    .shapeshift-form-wrapper {
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      align-items: center;
+      flex: 1 0 auto;
+
+      .shapeshift-form, .modal-shapeshift-form {
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, .05);
+        padding: 17px 15px;
+        margin-bottom: 10px;
+
+        &__caret {
+          width: auto;
+          flex: 1;
+        }
+      }
     }
   }
 
@@ -775,16 +794,14 @@
     margin-top: 28px;
     flex: 1 0 auto;
 
-    .shapeshift-form {
-      width: auto;
+    .shapeshift-form, .modal-shapeshift-form {
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, .05);
+      padding: 17px 15px;
 
       &__caret {
         width: auto;
         flex: 1;
-      }
-
-      @media screen and (max-width: 575px) {
-        width: auto;
       }
     }
   }
@@ -796,7 +813,6 @@
   .simple-dropdown {
     color: #5B5D67;
     font-size: 16px;
-    font-weight: 300;
     line-height: 21px;
     border: 1px solid #D8D8D8;
     background-color: #FFFFFF;
@@ -834,7 +850,6 @@
   padding: 30px;
   font-size: 22px;
   color: $nile-blue;
-  height: 79px;
 }
 
 .notification-modal-message {

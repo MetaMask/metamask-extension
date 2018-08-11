@@ -8,27 +8,34 @@ const selectors = require('../selectors')
 const TxListItem = require('./tx-list-item')
 const ShiftListItem = require('./shift-list-item')
 const { formatDate } = require('../util')
-const { showConfTxPage } = require('../actions')
+const { showConfTxPage, updateNetworkNonce } = require('../actions')
 const classnames = require('classnames')
 const { tokenInfoGetter } = require('../token-util')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
+const { CONFIRM_TRANSACTION_ROUTE } = require('../routes')
+
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(TxList)
 
 TxList.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
-
-
 function mapStateToProps (state) {
   return {
     txsToRender: selectors.transactionsSelector(state),
     conversionRate: selectors.conversionRateSelector(state),
+    selectedAddress: selectors.getSelectedAddress(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id })),
+    updateNetworkNonce: (address) => dispatch(updateNetworkNonce(address)),
   }
 }
 
@@ -39,6 +46,20 @@ function TxList () {
 
 TxList.prototype.componentWillMount = function () {
   this.tokenInfoGetter = tokenInfoGetter()
+  this.props.updateNetworkNonce(this.props.selectedAddress)
+}
+
+TxList.prototype.componentDidUpdate = function (prevProps) {
+  const oldTxsToRender = prevProps.txsToRender
+  const {
+    txsToRender: newTxsToRender,
+    selectedAddress,
+    updateNetworkNonce,
+  } = this.props
+
+  if (newTxsToRender.length > oldTxsToRender.length) {
+    updateNetworkNonce(selectedAddress)
+  }
 }
 
 TxList.prototype.render = function () {
@@ -96,7 +117,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionNetworkId,
     transactionSubmittedTime,
   } = props
-  const { showConfTxPage } = this.props
+  const { history } = this.props
 
   const opts = {
     key: transactionId || transactionHash,
@@ -116,7 +137,10 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   const isUnapproved = transactionStatus === 'unapproved'
 
   if (isUnapproved) {
-    opts.onClick = () => showConfTxPage({ id: transactionId })
+    opts.onClick = () => {
+      this.props.showConfTxPage({ id: transactionId })
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    }
     opts.transactionStatus = this.context.t('notStarted')
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)

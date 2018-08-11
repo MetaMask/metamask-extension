@@ -2,21 +2,27 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const actions = require('../actions')
 const selectors = require('../selectors')
+const { SEND_ROUTE } = require('../routes')
+const { checksumAddress: toChecksumAddress } = require('../util')
 
 const BalanceComponent = require('./balance-component')
+const Tooltip = require('./tooltip')
 const TxList = require('./tx-list')
-const Identicon = require('./identicon')
+const SelectedAccount = require('./selected-account')
+
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(TxView)
 
 TxView.contextTypes = {
   t: PropTypes.func,
 }
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
-
 
 function mapStateToProps (state) {
   const sidebarOpen = state.appState.sidebarOpen
@@ -27,7 +33,7 @@ function mapStateToProps (state) {
   const network = state.metamask.network
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
-  const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
+  const checksumAddress = toChecksumAddress(selectedAddress)
   const identity = identities[selectedAddress]
 
   return {
@@ -69,7 +75,7 @@ TxView.prototype.renderHeroBalance = function () {
 }
 
 TxView.prototype.renderButtons = function () {
-  const {selectedToken, showModal, showSendPage, showSendTokenPage } = this.props
+  const {selectedToken, showModal, history } = this.props
 
   return !selectedToken
     ? (
@@ -84,21 +90,22 @@ TxView.prototype.renderButtons = function () {
           style: {
             marginLeft: '0.8em',
           },
-          onClick: showSendPage,
+          onClick: () => history.push(SEND_ROUTE),
         }, this.context.t('send')),
       ])
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
         h('button.btn-primary.hero-balance-button', {
-          onClick: showSendTokenPage,
+          onClick: () => history.push(SEND_ROUTE),
         }, this.context.t('send')),
       ])
     )
 }
 
 TxView.prototype.render = function () {
-  const { selectedAddress, identity, network, isMascara } = this.props
+  const { hideSidebar, isMascara, showSidebar, sidebarOpen } = this.props
+  const { t } = this.context
 
   return h('div.tx-view.flex-column', {
     style: {},
@@ -106,44 +113,39 @@ TxView.prototype.render = function () {
 
     h('div.flex-row.phone-visible', {
       style: {
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         flex: '0 0 auto',
-        margin: '10px',
+        marginBottom: '16px',
+        padding: '5px',
+        borderBottom: '1px solid #e5e5e5',
       },
     }, [
 
-      h('div.fa.fa-bars', {
-        style: {
-          fontSize: '1.3em',
-          cursor: 'pointer',
-          padding: '10px',
-        },
-        onClick: () => this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar(),
-      }),
-
-      h('.identicon-wrapper.select-none', {
-        style: {
-          marginLeft: '0.9em',
-        },
+      h(Tooltip, {
+        title: t('menu'),
+        position: 'bottom',
       }, [
-        h(Identicon, {
-          diameter: 24,
-          address: selectedAddress,
-          network,
+        h('div.fa.fa-bars', {
+          style: {
+            fontSize: '1.3em',
+            cursor: 'pointer',
+            padding: '10px',
+          },
+          onClick: () => sidebarOpen ? hideSidebar() : showSidebar(),
         }),
       ]),
 
-      h('span.account-name', {
-        style: {},
+      h(SelectedAccount),
+
+      !isMascara && h(Tooltip, {
+        title: t('openInTab'),
+        position: 'bottom',
       }, [
-        identity.name,
+        h('div.open-in-browser', {
+          onClick: () => global.platform.openExtensionInBrowser(),
+        }, [h('img', { src: 'images/popout.svg' })]),
       ]),
-
-      !isMascara && h('div.open-in-browser', {
-        onClick: () => global.platform.openExtensionInBrowser(),
-      }, [h('img', { src: 'images/popout.svg' })]),
-
     ]),
 
     this.renderHeroBalance(),

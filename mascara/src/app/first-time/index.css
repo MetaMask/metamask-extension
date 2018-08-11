@@ -21,6 +21,7 @@
   display: flex;
   justify-content: center;
   background: #f7861c;
+  flex: 0 0 auto;
 }
 
 .alpha-warning,
@@ -122,10 +123,6 @@
     width: calc(100vw - 80px);
   }
 
-  .unique-image {
-    width: auto;
-  }
-
   .create-password__title,
   .unique-image__title,
   .tou__title,
@@ -147,7 +144,7 @@
     height: 100%;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     margin-top: 12px;
   }
 
@@ -173,17 +170,13 @@
   }
 
   .first-time-flow__input {
-    width: initial !important;
-    font-size: 14px !important;
-    line-height: 18px !important;
-    padding: 12px !important;
+    width: 100%;
   }
 
   .tou__body {
     margin: 0 !important;
     padding: 16px 20px !important;
     height: 30vh !important;
-    width: calc(100% - 48px) !important;
   }
 
   .backup-phrase__content-wrapper {
@@ -247,7 +240,7 @@
 }
 
 .create-password__confirm-input {
-  margin-top: 15px;
+  margin-top: 16px;
 }
 
 .create-password__import-link {
@@ -282,6 +275,12 @@
   width: 335px;
 }
 
+@media only screen and (max-width: 575px) {
+  .unique-image__body-text {
+    width: initial;
+  }
+}
+
 .unique-image__body-text +
 .unique-image__body-text,
 .backup-phrase__body-text +
@@ -296,7 +295,7 @@
   border-radius: 8px;
   background-color: #FFFFFF;
   margin: 0 142px 0 0;
-  height: 334px;
+  height: 200px;
   overflow-y: auto;
   color: #757575;
   font-family: Roboto;
@@ -519,10 +518,6 @@ button.backup-phrase__confirm-seed-option:hover {
   margin-top: 30px;
 }
 
-.first-time-flow__input--error {
-  border: 1px solid #FF001F !important;
-}
-
 .import-account__input-error-message {
   margin-top: 10px;
   width: 422px;
@@ -543,7 +538,13 @@ button.backup-phrase__confirm-seed-option:hover {
 }
 
 .import-account__input {
-  width: 325px !important;
+  width: 350px;
+}
+
+@media only screen and (max-width: 575px) {
+  .import-account__input {
+    width: 100%;
+  }
 }
 
 .import-account__file-input {
@@ -679,21 +680,7 @@ button.backup-phrase__confirm-seed-option:hover {
 }
 
 .first-time-flow__input {
-  width: 350px;
-  font-size: 18px;
-  line-height: 24px;
-  padding: 15px;
-  border: 1px solid #CDCDCD;
-  background-color: #FFFFFF;
-}
-
-.first-time-flow__input__disabled {
-  opacity: 0.5;
-}
-
-.first-time-flow__input::placeholder {
-  color: #9B9B9B;
-  font-weight: 200;
+  max-width: 350px;
 }
 
 .first-time-flow__button {

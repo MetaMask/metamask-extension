@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const networkNames = require('../../../../app/scripts/config.js').networkNames
+const { getNetworkDisplayName } = require('../../../../app/scripts/controllers/network/util')
 const ShapeshiftForm = require('../shapeshift-form')
 
 let DIRECT_DEPOSIT_ROW_TITLE
@@ -109,7 +109,7 @@ DepositEtherModal.prototype.renderRow = function ({
       ]),
 
       !hideButton && h('div.deposit-ether-modal__buy-row__button', [
-        h('button.btn-primary--lg.deposit-ether-modal__deposit-button', {
+        h('button.btn-primary.btn--large.deposit-ether-modal__deposit-button', {
           onClick: onButtonClick,
         }, [buttonLabel]),
       ]),
@@ -122,7 +122,7 @@ DepositEtherModal.prototype.render = function () {
   const { buyingWithShapeshift } = this.state
 
   const isTestNetwork = ['3', '4', '42'].find(n => n === network)
-  const networkName = networkNames[network]
+  const networkName = getNetworkDisplayName(network)
 
   return h('div.page-container.page-container--full-width.page-container--full-height', {}, [
 

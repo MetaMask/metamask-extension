@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
+const log = require('loglevel')
 
 module.exports = reduceApp
 
@@ -41,12 +42,16 @@ function reduceApp (state, action) {
       open: false,
       modalState: {
         name: null,
+        props: {},
       },
       previousModalState: {
         name: null,
       },
     },
     sidebarOpen: false,
+    alertOpen: false,
+    alertMessage: null,
+    qrCodeData: null,
     networkDropdownOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
@@ -60,6 +65,8 @@ function reduceApp (state, action) {
     warning: null,
     buyView: {},
     isMouseUser: false,
+    gasIsLoading: false,
+    networkNonce: null,
   }, state.appState)
 
   switch (action.type) {
@@ -85,15 +92,39 @@ function reduceApp (state, action) {
         sidebarOpen: false,
       })
 
+    // alert methods
+    case actions.ALERT_OPEN:
+      return extend(appState, {
+        alertOpen: true,
+        alertMessage: action.value,
+      })
+
+    case actions.ALERT_CLOSE:
+      return extend(appState, {
+        alertOpen: false,
+        alertMessage: null,
+      })
+
+    // qr scanner methods
+    case actions.QR_CODE_DETECTED:
+      return extend(appState, {
+        qrCodeData: action.value,
+      })
+
+
     // modal methods:
     case actions.MODAL_OPEN:
+      const { name, ...modalProps } = action.payload
+
       return extend(appState, {
-        modal: Object.assign(
-          state.appState.modal,
-          { open: true },
-          { modalState: action.payload },
-          { previousModalState: appState.modal.modalState},
-        ),
+        modal: {
+          open: true,
+          modalState: {
+            name: name,
+            props: { ...modalProps },
+          },
+          previousModalState: { ...appState.modal.modalState },
+        },
       })
 
     case actions.MODAL_CLOSE:
@@ -101,7 +132,7 @@ function reduceApp (state, action) {
         modal: Object.assign(
           state.appState.modal,
           { open: false },
-          { modalState: { name: null } },
+          { modalState: { name: null, props: {} } },
           { previousModalState: appState.modal.modalState},
         ),
       })
@@ -667,6 +698,21 @@ function reduceApp (state, action) {
     case actions.SET_MOUSE_USER_STATE:
       return extend(appState, {
         isMouseUser: action.value,
+      })
+
+    case actions.GAS_LOADING_STARTED:
+      return extend(appState, {
+        gasIsLoading: true,
+      })
+
+    case actions.GAS_LOADING_FINISHED:
+      return extend(appState, {
+        gasIsLoading: false,
+      })
+
+    case actions.SET_NETWORK_NONCE:
+      return extend(appState, {
+        networkNonce: action.value,
       })
 
     default:

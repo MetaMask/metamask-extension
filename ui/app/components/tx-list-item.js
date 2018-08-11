@@ -1,5 +1,7 @@
 const Component = require('react').Component
 const PropTypes = require('prop-types')
+const { compose } = require('recompose')
+const { withRouter } = require('react-router-dom')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const inherits = require('util').inherits
@@ -9,26 +11,31 @@ const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(abi)
 const Identicon = require('./identicon')
 const contractMap = require('eth-contract-metadata')
+const { checksumAddress } = require('../util')
 
 const actions = require('../actions')
 const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
+const { CONFIRM_TRANSACTION_ROUTE } = require('../routes')
 
 TxListItem.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TxListItem)
-
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(TxListItem)
 
 function mapStateToProps (state) {
   return {
     tokens: state.metamask.tokens,
     currentCurrency: getCurrentCurrency(state),
-    tokenExchangeRates: state.metamask.tokenExchangeRates,
+    contractExchangeRates: state.metamask.contractExchangeRates,
     selectedAddressTxList: state.metamask.selectedAddressTxList,
+    networkNonce: state.appState.networkNonce,
   }
 }
 
@@ -48,6 +55,8 @@ function TxListItem () {
     fiatTotal: null,
     isTokenTx: null,
   }
+
+  this.unmounted = false
 }
 
 TxListItem.prototype.componentDidMount = async function () {
@@ -61,7 +70,14 @@ TxListItem.prototype.componentDidMount = async function () {
     ? await this.getSendTokenTotal()
     : this.getSendEtherTotal()
 
+  if (this.unmounted) {
+    return
+  }
   this.setState({ total, fiatTotal, isTokenTx })
+}
+
+TxListItem.prototype.componentWillUnmount = function () {
+  this.unmounted = true
 }
 
 TxListItem.prototype.getAddressText = function () {
@@ -74,10 +90,12 @@ TxListItem.prototype.getAddressText = function () {
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   const { name: txDataName, params = [] } = decodedData || {}
   const { value } = params[0] || {}
+  const checksummedAddress = checksumAddress(address)
+  const checksummedValue = checksumAddress(value)
 
   let addressText
   if (txDataName === 'transfer' || address) {
-    const addressToRender = txDataName === 'transfer' ? value : address
+    const addressToRender = txDataName === 'transfer' ? checksummedValue : checksummedAddress
     addressText = `${addressToRender.slice(0, 10)}...${addressToRender.slice(-4)}`
   } else if (isMsg) {
     addressText = this.context.t('sigRequest')
@@ -142,31 +160,29 @@ TxListItem.prototype.getTokenInfo = async function () {
     ({ decimals, symbol } = await tokenInfoGetter(toAddress))
   }
 
-  return { decimals, symbol }
+  return { decimals, symbol, address: toAddress }
 }
 
 TxListItem.prototype.getSendTokenTotal = async function () {
   const {
     txParams = {},
     conversionRate,
-    tokenExchangeRates,
+    contractExchangeRates,
     currentCurrency,
   } = this.props
 
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   const { params = [] } = decodedData || {}
   const { value } = params[1] || {}
-  const { decimals, symbol } = await this.getTokenInfo()
+  const { decimals, symbol, address } = await this.getTokenInfo()
   const total = calcTokenAmount(value, decimals)
-
-  const pair = symbol && `${symbol.toLowerCase()}_eth`
 
   let tokenToFiatRate
   let totalInFiat
 
-  if (tokenExchangeRates[pair]) {
+  if (contractExchangeRates[address]) {
     tokenToFiatRate = multiplyCurrencies(
-      tokenExchangeRates[pair].rate,
+      contractExchangeRates[address],
       conversionRate
     )
 
@@ -194,18 +210,24 @@ TxListItem.prototype.showRetryButton = function () {
     selectedAddressTxList,
     transactionId,
     txParams,
+    networkNonce,
   } = this.props
   if (!txParams) {
     return false
   }
+  let currentTxSharesEarliestNonce = false
   const currentNonce = txParams.nonce
   const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
+  const currentSubmittedTxs = selectedAddressTxList.filter(tx => tx.status === 'submitted')
   const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[currentNonceSubmittedTxs.length - 1]
-  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce
-    && lastSubmittedTxWithCurrentNonce.id === transactionId
+  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce &&
+    lastSubmittedTxWithCurrentNonce.id === transactionId
+  if (currentSubmittedTxs.length > 0) {
+    currentTxSharesEarliestNonce = currentNonce === networkNonce
+  }
 
-  return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
+  return currentTxSharesEarliestNonce && currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
 }
 
 TxListItem.prototype.setSelectedToken = function (tokenAddress) {
@@ -215,12 +237,12 @@ TxListItem.prototype.setSelectedToken = function (tokenAddress) {
 TxListItem.prototype.resubmit = function () {
   const { transactionId } = this.props
   this.props.retryTransaction(transactionId)
+    .then(id => this.props.history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`))
 }
 
 TxListItem.prototype.render = function () {
   const {
     transactionStatus,
-    transactionAmount,
     onClick,
     transactionId,
     dateString,
@@ -229,7 +251,6 @@ TxListItem.prototype.render = function () {
     txParams,
   } = this.props
   const { total, fiatTotal, isTokenTx } = this.state
-  const showFiatTotal = transactionAmount !== '0x0' && fiatTotal
 
   return h(`div${className || ''}`, {
     key: transactionId,
@@ -288,25 +309,21 @@ TxListItem.prototype.render = function () {
 
           h('span.tx-list-value', total),
 
-          showFiatTotal && h('span.tx-list-fiat-value', fiatTotal),
+          fiatTotal && h('span.tx-list-fiat-value', fiatTotal),
 
         ]),
       ]),
 
-      this.showRetryButton() && h('div.tx-list-item-retry-container', [
-
-        h('span.tx-list-item-retry-copy', 'Taking too long?'),
-
-        h('span.tx-list-item-retry-link', {
-          onClick: (event) => {
-            event.stopPropagation()
-            if (isTokenTx) {
-              this.setSelectedToken(txParams.to)
-            }
-            this.resubmit()
-          },
-        }, 'Increase the gas price on your transaction'),
-
+      this.showRetryButton() && h('.tx-list-item-retry-container', {
+        onClick: (event) => {
+          event.stopPropagation()
+          if (isTokenTx) {
+            this.setSelectedToken(txParams.to)
+          }
+          this.resubmit()
+        },
+      }, [
+        h('span', 'Taking too long? Increase the gas price on your transaction'),
       ]),
 
     ]), // holding on icon from design
