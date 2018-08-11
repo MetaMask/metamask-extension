@@ -7,10 +7,11 @@ const Transaction = require('ethereumjs-tx')
 
 
 // HD path differs from eth-hd-keyring - MEW, Parity, Geth and Official Ledger clients use same unusual derivation for Ledger
-const hdPathString = `m/44'/60'/0'`
+const hdPathString = `44'/60'/0'`
 const type = 'Ledger Hardware'
 const ORIGIN  = 'https://localhost:3000'
 const pathBase = 'm'
+const MAX_INDEX = 1000
 
 class LedgerKeyring extends EventEmitter {
   constructor (opts = {}) {
@@ -39,11 +40,11 @@ class LedgerKeyring extends EventEmitter {
   sendMessage(msg, cb) {
     console.log('[LEDGER]: SENDING MESSAGE TO IFRAME', msg)
     this.iframe.contentWindow.postMessage({...msg, target: 'LEDGER-IFRAME'}, '*')
-    window.addEventListener('message', event => {
-      if(event.origin !== ORIGIN) return false
-      if (event.data && event.data.action && event.data.action.search(name) !== -1) {
-        console.log('[LEDGER]: GOT MESAGE FROM IFRAME', event.data)
-        cb(event.data)
+    window.addEventListener('message', ({ origin, data }) => {
+      if(origin !== ORIGIN) return false
+      if (data && data.action && data.action === `${msg.action}-reply`) {
+        console.log('[LEDGER]: GOT MESAGE FROM IFRAME', data)
+        cb(data)
       }
     })
   }
@@ -176,20 +177,41 @@ class LedgerKeyring extends EventEmitter {
 
   // tx is an instance of the ethereumjs-transaction class.
   async signTransaction (address, tx) {
+    
     return new Promise((resolve, reject) => {
       this.unlock()
         .then(_ => {
           console.log('[LEDGER]: sending message ', 'ledger-sign-transaction')
+          
           this.sendMessage({
             action: 'ledger-sign-transaction',
             params: {
-              address,
-              tx,
+              tx: {
+                to: this._normalize(tx.to),
+                value: this._normalize(tx.value),
+                data: this._normalize(tx.data),
+                chainId: tx._chainId,
+                nonce: this._fixNonce(this._normalize(tx.nonce)),
+                gasLimit: this._normalize(tx.gasLimit),
+                gasPrice: this._normalize(tx.gasPrice),
+              },
+              path: this._pathFromAddress(address)
             },
           },
           ({action, success, payload}) => {
             if (success) {
-              resolve(payload)
+              console.log('[LEDGER]: got tx signed!', payload.txData)
+              const signedTx = new Transaction(payload.txData)
+              // Validate that the signature matches the right address
+              const addressSignedWith = ethUtil.toChecksumAddress(`0x${signedTx.from.toString('hex')}`)
+              const correctAddress = ethUtil.toChecksumAddress(address)
+              if (addressSignedWith !== correctAddress) {
+                reject('signature doesnt match the right address')
+              }
+              console.log('[LEDGER]: all good!', signedTx.toJSON())
+              console.log('[LEDGER]: signedTX', `0x${signedTx.serialize().toString('hex')}`)
+              
+              resolve(signedTx)
             } else {
               reject(payload)
             }        
@@ -249,7 +271,7 @@ class LedgerKeyring extends EventEmitter {
   }
 
   _normalize (buf) {
-    return this._padLeftEven(ethUtil.bufferToHex(buf).substring(2).toLowerCase())
+    return this._padLeftEven(ethUtil.bufferToHex(buf).toLowerCase())
   }
 
   _addressFromIndex (pathBase, i) {
@@ -290,6 +312,13 @@ class LedgerKeyring extends EventEmitter {
       }
 
       return str
+  }
+
+  _fixNonce(nonce){
+    if(nonce === '0x'){
+      return `${nonce}0`
+    }
+    return nonce
   }
 }
 
