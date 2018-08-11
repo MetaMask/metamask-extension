@@ -546,12 +546,11 @@ module.exports = class MetamaskController extends EventEmitter {
         keyringName = TrezorKeyring.type
         break
       case 'ledger':
-        keyringName = TrezorKeyring.type
+        keyringName = LedgerKeyring.type
         break
       default:
         throw new Error('MetamaskController:connectHardware - Unknown device')
     }
-
     let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName)
@@ -568,10 +567,8 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async connectHardware (deviceName, page) {
 
-    const oldAccounts = await this.keyringController.getAccounts()
     const keyring = await this.getKeyringForDevice(deviceName)
     let accounts = []
-
     switch (page) {
         case -1:
           accounts = await keyring.getPreviousPage()
@@ -585,6 +582,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // Merge with existing accounts
     // and make sure addresses are not repeated
+    const oldAccounts = await this.keyringController.getAccounts()
     const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.address.toLowerCase())))]
     this.accountTracker.syncWithAddresses(accountsToTrack)
     return accounts
