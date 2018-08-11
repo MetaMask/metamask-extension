@@ -49,8 +49,16 @@ class ConnectScreen extends Component {
     renderConnectToTrezorButton () {
         return h(
             'button.btn-primary.btn--large',
-            { onClick: this.props.connectToTrezor.bind(this) },
+            { onClick: this.props.connectToHardwareWallet.bind(this, 'trezor') },
             this.props.btnText
+        )
+    }
+
+    renderConnectToLedgerButton () {
+        return h(
+            'button.btn-primary.btn--large',
+            { onClick: this.props.connectToHardwareWallet.bind(this, 'ledger') },
+            this.props.btnText.replace('Trezor', 'Ledger')
         )
     }
 
@@ -103,6 +111,7 @@ class ConnectScreen extends Component {
             h('div.hw-connect__footer', {}, [
                 h('h3.hw-connect__footer__title', {}, this.context.t(`readyToConnect`)),
                 this.renderConnectToTrezorButton(),
+                this.renderConnectToLedgerButton(),
                 h('p.hw-connect__footer__msg', {}, [
                     this.context.t(`havingTroubleConnecting`),
                     h('a.hw-connect__footer__link', {
@@ -120,6 +129,7 @@ class ConnectScreen extends Component {
                 this.renderHeader(),
                 this.renderTrezorAffiliateLink(),
                 this.renderConnectToTrezorButton(),
+                this.renderConnectToLedgerButton(),
                 this.renderLearnMore(),
                 this.renderTutorialSteps(),
                 this.renderFooter(),
@@ -136,7 +146,7 @@ class ConnectScreen extends Component {
 }
 
 ConnectScreen.propTypes = {
-    connectToTrezor: PropTypes.func.isRequired,
+    connectToHardwareWallet: PropTypes.func.isRequired,
     btnText: PropTypes.string.isRequired,
     browserSupported: PropTypes.bool.isRequired,
 }

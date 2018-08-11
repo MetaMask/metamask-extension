@@ -91,7 +91,7 @@ var actions = {
   connectHardware,
   checkHardwareStatus,
   forgetDevice,
-  unlockTrezorAccount,
+  unlockHardwareWalletAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
   resetAccount,
@@ -702,12 +702,12 @@ function connectHardware (deviceName, page) {
   }
 }
 
-function unlockTrezorAccount (index) {
-  log.debug(`background.unlockTrezorAccount`, index)
+function unlockHardwareWalletAccount (index, deviceName) {
+  log.debug(`background.unlockHardwareWalletAccount`, index, deviceName)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.unlockTrezorAccount(index, (err, accounts) => {
+      background.unlockHardwareWalletAccount(index, deviceName, (err, accounts) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))

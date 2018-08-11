@@ -48,7 +48,8 @@
         "https://*/*"
       ],
       "js": [
-        "contentscript.js"
+        "contentscript.js",
+        "vendor/ledger/content-script.js"
       ],
       "run_at": "document_start",
       "all_frames": true

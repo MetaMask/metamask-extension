@@ -61,7 +61,7 @@ class AccountList extends Component {
       h(
         'button.hw-list-pagination__button',
         {
-          onClick: () => this.props.getPage(-1),
+          onClick: () => this.props.getPage(-1, this.props.device),
         },
         `< ${this.context.t('prev')}`
       ),
@@ -69,7 +69,7 @@ class AccountList extends Component {
       h(
         'button.hw-list-pagination__button',
         {
-          onClick: () => this.props.getPage(1),
+          onClick: () => this.props.getPage(1, this.props.device),
         },
         `${this.context.t('next')} >`
       ),
@@ -95,7 +95,7 @@ class AccountList extends Component {
       h(
         `button.btn-primary.btn--large.new-account-connect-form__button.unlock ${disabled ? '.btn-primary--disabled' : ''}`,
         {
-          onClick: this.props.onUnlockAccount.bind(this),
+          onClick: this.props.onUnlockAccount.bind(this, this.props.device),
           ...buttonProps,
         },
         [this.context.t('unlock')]
@@ -106,7 +106,7 @@ class AccountList extends Component {
   renderForgetDevice () {
     return h('div.hw-forget-device-container', {}, [
       h('a', {
-        onClick: this.props.onForgetDevice.bind(this),
+        onClick: this.props.onForgetDevice.bind(this, this.props.device),
       }, this.context.t('forgetDevice')),
     ])
   }
@@ -125,6 +125,7 @@ class AccountList extends Component {
 
 
 AccountList.propTypes = {
+    device: PropTypes.string.isRequired,
     accounts: PropTypes.array.isRequired,
     onAccountChange: PropTypes.func.isRequired,
     onForgetDevice: PropTypes.func.isRequired,
