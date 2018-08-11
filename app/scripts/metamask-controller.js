@@ -615,7 +615,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns {} keyState
    */
-  async unlockHardwareWalletAccount (deviceName, index) {
+  async unlockHardwareWalletAccount (index, deviceName) {
     const keyring = await this.getKeyringForDevice(deviceName)
 
     keyring.setAccountToUnlock(index)

@@ -128,13 +128,13 @@ class ConnectHardwareForm extends Component {
     })
   }
 
-  onUnlockAccount = () => {
+  onUnlockAccount = (device) => {
 
     if (this.state.selectedAccount === null) {
       this.setState({ error: this.context.t('accountSelectionRequired') })
     }
 
-    this.props.unlockHardwareWalletAccount(this.state.selectedAccount, this.state.device)
+    this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
     .then(_ => {
       this.props.history.push(DEFAULT_ROUTE)
     }).catch(e => {

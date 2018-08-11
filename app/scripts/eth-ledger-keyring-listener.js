@@ -1,11 +1,16 @@
 const extension = require('extensionizer')
 const {EventEmitter} = require('events')
+const HDKey = require('hdkey')
+const ethUtil = require('ethereumjs-util')
+const sigUtil = require('eth-sig-util')
+const Transaction = require('ethereumjs-tx')
 
 
 // HD path differs from eth-hd-keyring - MEW, Parity, Geth and Official Ledger clients use same unusual derivation for Ledger
 const hdPathString = `m/44'/60'/0'`
 const type = 'Ledger Hardware Keyring'
-const ORIGIN  = 'http://localhost:9000'
+const ORIGIN  = 'https://localhost:3000'
+const pathBase = 'm'
 
 class LedgerKeyring extends EventEmitter {
   constructor (opts = {}) {
@@ -14,6 +19,7 @@ class LedgerKeyring extends EventEmitter {
     this.page = 0
     this.perPage = 5
     this.unlockedAccount = 0
+    this.hdk = new HDKey()
     this.paths = {}
     this.iframe = null
     this.setupIframe()
@@ -26,10 +32,6 @@ class LedgerKeyring extends EventEmitter {
     console.log('Injecting ledger iframe')
     document.head.appendChild(this.iframe)
 
-    
-     /*
-    Passing messages from iframe to background script
-    */
     console.log('[LEDGER]: LEDGER FROM-IFRAME LISTENER READY')
     
   }
@@ -78,32 +80,39 @@ class LedgerKeyring extends EventEmitter {
       },
       ({action, success, payload}) => {  
         if (success) {
-          resolve(payload)
+          this.hdk.publicKey = new Buffer(payload.publicKey, 'hex')
+          this.hdk.chainCode = new Buffer(payload.chainCode, 'hex')
+          resolve('just unlocked')
         } else {
-          reject(payload)
+          reject(payload.error || 'Unknown error')
         }
       })
     })
   }
 
-  async addAccounts (n = 1) {
+  setAccountToUnlock (index) {
+    this.unlockedAccount = parseInt(index, 10)
+  }
+
+  addAccounts (n = 1) {
+
     return new Promise((resolve, reject) => {
       this.unlock()
-      .then(_ => {
-        this.sendMessage({
-          action: 'ledger-add-account',
-          params: {
-            n,
-          },
-        },
-        ({action, success, payload}) => {
-          if (success) {
-            resolve(payload)
-          } else {
-            reject(payload)
-          }        
+        .then(_ => {
+          const from = this.unlockedAccount
+          const to = from + n
+          this.accounts = []
+
+          for (let i = from; i < to; i++) {
+            const address = this._addressFromIndex(pathBase, i)
+            this.accounts.push(address)
+            this.page = 0
+          }
+          resolve(this.accounts)
         })
-      })
+        .catch(e => {
+          reject(e)
+        })
     })
   }
 
@@ -129,20 +138,27 @@ class LedgerKeyring extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.unlock()
         .then(_ => {
-          this.sendMessage({
-            action: 'ledger-get-page',
-            params: {
-              page: this.page,
-            },
-          },
-          ({action, success, payload}) => {
-            if (success) {
-              resolve(payload)
-            } else {
-              reject(payload)
-            }        
-          })
-      })
+
+          const from = (this.page - 1) * this.perPage
+          const to = from + this.perPage
+
+          const accounts = []
+
+          for (let i = from; i < to; i++) {
+            const address = this._addressFromIndex(pathBase, i)
+             accounts.push({
+              address: address,
+              balance: null,
+              index: i,
+            })
+            this.paths[ethUtil.toChecksumAddress(address)] = i
+
+          }
+          resolve(accounts)
+        })
+        .catch(e => {
+          reject(e)
+        })
     })
   }
 
@@ -156,6 +172,7 @@ class LedgerKeyring extends EventEmitter {
     }
     this.accounts = this.accounts.filter(a => a.toLowerCase() !== address.toLowerCase())
   }
+
 
   // tx is an instance of the ethereumjs-transaction class.
   async signTransaction (address, tx) {
@@ -223,6 +240,56 @@ class LedgerKeyring extends EventEmitter {
     this.page = 0
     this.unlockedAccount = 0
     this.paths = {}
+  }
+
+  /* PRIVATE METHODS */
+
+  _padLeftEven (hex) {
+    return hex.length % 2 !== 0 ? `0${hex}` : hex
+  }
+
+  _normalize (buf) {
+    return this._padLeftEven(ethUtil.bufferToHex(buf).substring(2).toLowerCase())
+  }
+
+  _addressFromIndex (pathBase, i) {
+    const dkey = this.hdk.derive(`${pathBase}/${i}`)
+    const address = ethUtil
+      .publicToAddress(dkey.publicKey, true)
+      .toString('hex')
+    return ethUtil.toChecksumAddress(address)
+  }
+
+  _pathFromAddress (address) {
+    const checksummedAddress = ethUtil.toChecksumAddress(address)
+    let index = this.paths[checksummedAddress]
+    if (typeof index === 'undefined') {
+      for (let i = 0; i < MAX_INDEX; i++) {
+        if (checksummedAddress === this._addressFromIndex(pathBase, i)) {
+          index = i
+          break
+        }
+      }
+    }
+
+    if (typeof index === 'undefined') {
+      throw new Error('Unknown address')
+    }
+    return `${this.hdPath}/${index}`
+  }
+
+  _toAscii (hex) {
+      let str = ''
+      let i = 0; const l = hex.length
+      if (hex.substring(0, 2) === '0x') {
+          i = 2
+      }
+      for (; i < l; i += 2) {
+          const code = parseInt(hex.substr(i, 2), 16)
+          str += String.fromCharCode(code)
+      }
+
+      return str
   }
 }
 

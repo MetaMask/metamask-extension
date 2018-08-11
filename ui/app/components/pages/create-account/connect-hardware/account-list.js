@@ -11,7 +11,7 @@ class AccountList extends Component {
     renderHeader () {
       return (
         h('div.hw-connect', [
-          h('h3.hw-connect__title', {}, this.context.t('selectAnAccount')),
+          h('h3.hw-connect__title', {}, `${this.props.device.toUpperCase()} - ${this.context.t('selectAnAccount')}`),
           h('p.hw-connect__msg', {}, this.context.t('selectAnAccountHelp')),
         ])
       )
