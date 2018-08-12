@@ -74,7 +74,6 @@
     ]
   },
   "dependencies": {
-    "@ledgerhq/hw-app-eth": "^4.21.0",
     "@material-ui/core": "1.0.0",
     "@zxing/library": "^0.7.0",
     "abi-decoder": "^1.0.9",
