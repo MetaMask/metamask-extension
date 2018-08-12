@@ -4,11 +4,9 @@ const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 const Transaction = require('ethereumjs-tx')
 
-
-// HD path differs from eth-hd-keyring - MEW, Parity, Geth and Official Ledger clients use same unusual derivation for Ledger
 const hdPathString = `44'/60'/0'`
 const type = 'Ledger Hardware'
-const ORIGIN = 'https://localhost:3000'
+const BRIDGE_URL = 'https://localhost:3000'
 const pathBase = 'm'
 const MAX_INDEX = 1000
 
@@ -28,18 +26,15 @@ class LedgerKeyring extends EventEmitter {
 
   setupIframe () {
     this.iframe = document.createElement('iframe')
-    this.iframe.src = ORIGIN
-    console.log('Injecting ledger iframe')
+    this.iframe.src = BRIDGE_URL
     document.head.appendChild(this.iframe)
   }
 
   sendMessage (msg, cb) {
-    console.log('[LEDGER]: SENDING MESSAGE TO IFRAME', msg)
     this.iframe.contentWindow.postMessage({...msg, target: 'LEDGER-IFRAME'}, '*')
     window.addEventListener('message', ({ origin, data }) => {
-      if (origin !== ORIGIN) return false
+      if (origin !== BRIDGE_URL) return false
       if (data && data.action && data.action === `${msg.action}-reply`) {
-        console.log('[LEDGER]: GOT MESAGE FROM IFRAME', data)
         cb(data)
       }
     })
@@ -75,7 +70,7 @@ class LedgerKeyring extends EventEmitter {
           hdPath: this.hdPath,
         },
       },
-      ({action, success, payload}) => {
+      ({success, payload}) => {
         if (success) {
           this.hdk.publicKey = new Buffer(payload.publicKey, 'hex')
           this.hdk.chainCode = new Buffer(payload.chainCode, 'hex')
@@ -85,10 +80,6 @@ class LedgerKeyring extends EventEmitter {
         }
       })
     })
-  }
-
-  setAccountToUnlock (index) {
-    this.unlockedAccount = parseInt(index, 10)
   }
 
   addAccounts (n = 1) {
@@ -173,36 +164,44 @@ class LedgerKeyring extends EventEmitter {
 
   // tx is an instance of the ethereumjs-transaction class.
   async signTransaction (address, tx) {
-
     return new Promise((resolve, reject) => {
       this.unlock()
         .then(_ => {
+
+          const newTx = new Transaction({
+            from: this._normalize(address),
+            to: this._normalize(tx.to),
+            value: this._normalize(tx.value),
+            data: this._normalize(tx.data),
+            chainId: tx._chainId,
+            nonce: this._normalize(tx.nonce),
+            gasLimit: this._normalize(tx.gasLimit),
+            gasPrice: this._normalize(tx.gasPrice),
+            v: ethUtil.bufferToHex(tx.getChainId()),
+            r: '0x00',
+            s: '0x00',
+          })
+
           this.sendMessage({
             action: 'ledger-sign-transaction',
             params: {
-              tx: {
-                from: this._normalize(address),
-                to: this._normalize(tx.to),
-                value: this._normalize(tx.value),
-                data: this._normalize(tx.data),
-                chainId: tx._chainId,
-                nonce: this._fixNonce(this._normalize(tx.nonce)),
-                gasLimit: this._normalize(tx.gasLimit),
-                gasPrice: this._normalize(tx.gasPrice),
-              },
-              path: this._pathFromAddress(address),
+              tx: newTx.serialize().toString('hex'),
+              hdPath: this._pathFromAddress(address),
             },
           },
-          ({action, success, payload}) => {
+          ({success, payload}) => {
             if (success) {
-              const signedTx = new Transaction(payload.txData)
-              // Validate that the signature matches the right address
-              const addressSignedWith = ethUtil.toChecksumAddress(`0x${signedTx.from.toString('hex')}`)
-              const correctAddress = ethUtil.toChecksumAddress(address)
-              if (addressSignedWith !== correctAddress) {
-                reject('signature doesnt match the right address')
+
+              newTx.v = Buffer.from(payload.v, 'hex')
+              newTx.r = Buffer.from(payload.r, 'hex')
+              newTx.s = Buffer.from(payload.s, 'hex')
+
+              const valid = newTx.verifySignature()
+              if (valid) {
+                resolve(newTx)
+              } else {
+                reject('The transaction signature is not valid')
               }
-              resolve(signedTx)
             } else {
               reject(payload)
             }
@@ -225,19 +224,18 @@ class LedgerKeyring extends EventEmitter {
           this.sendMessage({
             action: 'ledger-sign-personal-message',
             params: {
-              path: this._pathFromAddress(withAccount ),
+              hdPath: this._pathFromAddress(withAccount),
               message: bufferMsg,
             },
           },
-          ({action, success, payload}) => {
+          ({success, payload}) => {
             if (success) {
-              const { result } = payload
-              let v = result['v'] - 27
+              let v = payload['v'] - 27
               v = v.toString(16)
               if (v.length < 2) {
                 v = `0${v}`
               }
-              const signature = `0x${result['r']}${result['s']}${v}`
+              const signature = `0x${payload['r']}${payload['s']}${v}`
               const addressSignedWith = sigUtil.recoverPersonalSignature({data: message, sig: signature})
               if (ethUtil.toChecksumAddress(addressSignedWith) !== ethUtil.toChecksumAddress(withAccount)) {
                 reject('signature doesnt match the right address')
@@ -315,13 +313,6 @@ class LedgerKeyring extends EventEmitter {
       }
 
       return str
-  }
-
-  _fixNonce (nonce) {
-    if (nonce === '0x') {
-      return `${nonce}0`
-    }
-    return nonce
   }
 }
 
