@@ -267,6 +267,7 @@ const buildJsFiles = [
   'contentscript',
   'background',
   'ui',
+  'esdb-replace'
 ]
 
 // bundle tasks
