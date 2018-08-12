@@ -14,7 +14,7 @@ function createLoggerMiddleware (opts) {
         log.error('Error in RPC response:\n', res)
       }
       if (req.isMetamaskInternal) return
-      //log.info(`RPC (${opts.origin}):`, req, '->', res)
+      log.info(`RPC (${opts.origin}):`, req, '->', res)
       cb()
     })
   }
