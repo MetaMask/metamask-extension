@@ -2,7 +2,6 @@ import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
-import { hexToDecimal } from './conversions.util'
 
 import {
   TOKEN_METHOD_TRANSFER,
@@ -76,21 +75,20 @@ export function getTransactionActionKey (transaction, methodData) {
   }
 }
 
-export function getLatestSubmittedTxWithEarliestNonce (transactions = []) {
+export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0') {
   if (!transactions.length) {
     return {}
   }
 
   return transactions.reduce((acc, current) => {
-    const accNonce = hexToDecimal(acc.nonce)
-    const currentNonce = hexToDecimal(current.nonce)
+    const { submittedTime, txParams: { nonce: currentNonce } = {} } = current
 
-    if (currentNonce < accNonce) {
-      return current
-    } else if (currentNonce === accNonce) {
-      return current.submittedTime > acc.submittedTime ? current : acc
+    if (currentNonce === nonce) {
+      return acc.submittedTime
+        ? submittedTime > acc.submittedTime ? current : acc
+        : current
     } else {
       return acc
     }
-  })
+  }, {})
 }

@@ -20,6 +20,20 @@ export default class TransactionList extends PureComponent {
     completedTransactions: PropTypes.array,
     transactionToRetry: PropTypes.object,
     selectedToken: PropTypes.object,
+    updateNetworkNonce: PropTypes.func,
+  }
+
+  componentDidMount () {
+    this.props.updateNetworkNonce()
+  }
+
+  componentDidUpdate (prevProps) {
+    const { pendingTransactions: prevPendingTransactions = [] } = prevProps
+    const { pendingTransactions = [], updateNetworkNonce } = this.props
+
+    if (pendingTransactions.length > prevPendingTransactions.length) {
+      updateNetworkNonce()
+    }
   }
 
   shouldShowRetry = transaction => {
