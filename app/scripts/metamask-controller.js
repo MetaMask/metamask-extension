@@ -49,7 +49,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
-const LedgerKeyring = require('./eth-ledger-keyring-listener')
+const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -128,7 +128,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring, LedgerKeyring]
+    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -546,7 +546,7 @@ module.exports = class MetamaskController extends EventEmitter {
         keyringName = TrezorKeyring.type
         break
       case 'ledger':
-        keyringName = LedgerKeyring.type
+        keyringName = LedgerBridgeKeyring.type
         break
       default:
         throw new Error('MetamaskController:connectHardware - Unknown device')
