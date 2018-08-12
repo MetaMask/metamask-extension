@@ -1,4 +1,3 @@
-const extension = require('extensionizer')
 const {EventEmitter} = require('events')
 const HDKey = require('hdkey')
 const ethUtil = require('ethereumjs-util')
@@ -202,7 +201,7 @@ class LedgerKeyring extends EventEmitter {
               const correctAddress = ethUtil.toChecksumAddress(address)
               if (addressSignedWith !== correctAddress) {
                 reject('signature doesnt match the right address')
-              }              
+              }
               resolve(signedTx)
             } else {
               reject(payload)
@@ -218,19 +217,32 @@ class LedgerKeyring extends EventEmitter {
 
   // For personal_sign, we need to prefix the message:
   async signPersonalMessage (withAccount, message) {
+    const humanReadableMsg = this._toAscii(message)
+    const bufferMsg = Buffer.from(humanReadableMsg).toString('hex')
     return new Promise((resolve, reject) => {
       this.unlock()
         .then(_ => {
           this.sendMessage({
             action: 'ledger-sign-personal-message',
             params: {
-              withAccount,
-              message,
+              path: this._pathFromAddress(withAccount ),
+              message: bufferMsg,
             },
           },
           ({action, success, payload}) => {
             if (success) {
-              resolve(payload)
+              const { result } = payload
+              let v = result['v'] - 27
+              v = v.toString(16)
+              if (v.length < 2) {
+                v = `0${v}`
+              }
+              const signature = `0x${result['r']}${result['s']}${v}`
+              const addressSignedWith = sigUtil.recoverPersonalSignature({data: message, sig: signature})
+              if (ethUtil.toChecksumAddress(addressSignedWith) !== ethUtil.toChecksumAddress(withAccount)) {
+                reject('signature doesnt match the right address')
+              }
+              resolve(signature)
             } else {
               reject(payload)
             }
