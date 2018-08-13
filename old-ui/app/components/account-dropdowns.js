@@ -2,13 +2,13 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../../../ui/app/actions')
-const genAccountLink = require('etherscan-link').createAccountLink
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const Identicon = require('./identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
+const ethNetProps = require('eth-net-props')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -161,19 +161,6 @@ class AccountDropdowns extends Component {
     )
   }
 
-  genPOAEplorerAccountLink (selected, network) {
-    const isSokol = parseInt(network) === 77
-    const isPOA = parseInt(network) === 99
-    if (isSokol) {
-      return `https://sokol.poaexplorer.com/address/search/${selected}`
-    }
-    if (isPOA) {
-      return `https://poaexplorer.com/address/search/${selected}`
-    }
-
-    return ''
-  }
-
   renderAccountOptions () {
     const { actions, network } = this.props
     const { optionsMenuActive } = this.state
@@ -207,7 +194,7 @@ class AccountDropdowns extends Component {
             closeMenu: () => {},
             onClick: () => {
               const { selected, network } = this.props
-              const url = (isSokol || isPOA) ? this.genPOAEplorerAccountLink(selected, network) : genAccountLink(selected, network)
+              const url = ethNetProps.explorerLinks.getExplorerAccountLinkFor(selected, network)
               global.platform.openWindow({ url })
             },
           },
