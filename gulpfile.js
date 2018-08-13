@@ -267,7 +267,7 @@ const buildJsFiles = [
   'contentscript',
   'background',
   'ui',
-  'phishingdetect'
+  'phishing-detect'
 ]
 
 // bundle tasks
