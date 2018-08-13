@@ -2,16 +2,53 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const genAccountLink = require('../../../../../lib/account-link.js')
+const Select = require('react-select').default
 
 class AccountList extends Component {
     constructor (props, context) {
         super(props)
     }
 
+    getHdPaths () {
+      return [
+        {
+          label: `m/44'/60'/0' (Legacy)`,
+          value: `m/44'/60'/0'`,
+        },
+        {
+          label: `m/44'/60'/0'/0`,
+          value: `m/44'/60'/0'/0'`,
+        },
+      ]
+    }
+
+    renderHdPathSelector () {
+      const { onPathChange, selectedPath } = this.props
+
+      const options = this.getHdPaths()
+      return h('div.hw-connect__hdPath', [
+        h('h3.hw-connect__hdPath__title', {}, `HD Path`),
+        h(Select, {
+          className: 'hw-connect__hdPath__select',
+          name: 'hd-path-select',
+          clearable: false,
+          value: selectedPath,
+          options,
+          onChange: (opt) => {
+            onPathChange(opt.value)
+          },
+        }),
+      ])
+    }
     renderHeader () {
+      const { device } = this.props
       return (
         h('div.hw-connect', [
-          h('h3.hw-connect__title', {}, `${this.props.device.toUpperCase()} - ${this.context.t('selectAnAccount')}`),
+
+          h('h3.hw-connect__title', {}, `${device.toUpperCase()} - ${this.context.t('selectAnAccount')}`),
+
+          device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null,
+
           h('p.hw-connect__msg', {}, this.context.t('selectAnAccountHelp')),
         ])
       )
@@ -125,6 +162,8 @@ class AccountList extends Component {
 
 
 AccountList.propTypes = {
+    onPathChange: PropTypes.func.isRequired,
+    selectedPath: PropTypes.string.isRequired,
     device: PropTypes.string.isRequired,
     accounts: PropTypes.array.isRequired,
     onAccountChange: PropTypes.func.isRequired,

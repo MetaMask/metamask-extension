@@ -18,7 +18,7 @@ class ConnectHardwareForm extends Component {
       accounts: [],
       browserSupported: true,
       unlocked: false,
-      device: null
+      device: null,
     }
   }
 
@@ -40,10 +40,10 @@ class ConnectHardwareForm extends Component {
 
   async checkIfUnlocked () {
     ['trezor', 'ledger'].forEach(async device => {
-      const unlocked = await this.props.checkHardwareStatus(device)
+      const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
         this.setState({unlocked: true})
-        this.getPage(0, device)
+        this.getPage(0, device, this.props.defaultHdPaths[device])
       }
     })
   }
@@ -52,8 +52,16 @@ class ConnectHardwareForm extends Component {
     if (this.state.accounts.length) {
       return null
     }
+
+    // Default values
     this.setState({ btnText: this.context.t('connecting')})
-    this.getPage(0, device)
+    this.getPage(0, device, this.props.defaultHdPaths[device])
+  }
+
+  onPathChange = (path) => {
+    console.log('BRUNO: path changed', path)
+    this.props.setHardwareWalletDefaultHdPath({device: this.state.device, path})
+    this.getPage(0, this.state.device, path)
   }
 
   onAccountChange = (account) => {
@@ -68,9 +76,9 @@ class ConnectHardwareForm extends Component {
     }, 5000)
   }
 
-  getPage = (page, device) => {
+  getPage = (page, device, hdPath) => {
     this.props
-      .connectHardware(device, page)
+      .connectHardware(device, page, hdPath)
       .then(accounts => {
         if (accounts.length) {
 
@@ -162,6 +170,8 @@ class ConnectHardwareForm extends Component {
     }
 
     return h(AccountList, {
+      onPathChange: this.onPathChange,
+      selectedPath: this.props.defaultHdPaths[this.state.device],
       device: this.state.device,
       accounts: this.state.accounts,
       selectedAccount: this.state.selectedAccount,
@@ -193,12 +203,14 @@ ConnectHardwareForm.propTypes = {
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
   unlockHardwareWalletAccount: PropTypes.func,
+  setHardwareWalletDefaultHdPath: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
   history: PropTypes.object,
   t: PropTypes.func,
   network: PropTypes.string,
   accounts: PropTypes.object,
   address: PropTypes.string,
+  defaultHdPaths: PropTypes.object,
 }
 
 const mapStateToProps = state => {
@@ -206,28 +218,35 @@ const mapStateToProps = state => {
     metamask: { network, selectedAddress, identities = {}, accounts = [] },
   } = state
   const numberOfExistingAccounts = Object.keys(identities).length
+  const {
+    appState: { defaultHdPaths },
+  } = state
 
   return {
     network,
     accounts,
     address: selectedAddress,
     numberOfExistingAccounts,
+    defaultHdPaths,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    connectHardware: (deviceName, page) => {
-      return dispatch(actions.connectHardware(deviceName, page))
+    setHardwareWalletDefaultHdPath: ({device, path}) => {
+      return dispatch(actions.setHardwareWalletDefaultHdPath({device, path}))
     },
-    checkHardwareStatus: (deviceName) => {
-      return dispatch(actions.checkHardwareStatus(deviceName))
+    connectHardware: (deviceName, page, hdPath) => {
+      return dispatch(actions.connectHardware(deviceName, hdPath, page))
+    },
+    checkHardwareStatus: (deviceName, hdPath) => {
+      return dispatch(actions.checkHardwareStatus(deviceName, hdPath))
     },
     forgetDevice: (deviceName) => {
       return dispatch(actions.forgetDevice(deviceName))
     },
-    unlockHardwareWalletAccount: (index, deviceName) => {
-      return dispatch(actions.unlockHardwareWalletAccount(index, deviceName))
+    unlockHardwareWalletAccount: (index, deviceName, hdPath) => {
+      return dispatch(actions.unlockHardwareWalletAccount(index, deviceName, hdPath))
     },
     showImportPage: () => dispatch(actions.showImportPage()),
     showConnectPage: () => dispatch(actions.showConnectPage()),

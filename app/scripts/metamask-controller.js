@@ -539,7 +539,7 @@ module.exports = class MetamaskController extends EventEmitter {
   // Hardware
   //
 
-  async getKeyringForDevice (deviceName) {
+  async getKeyringForDevice (deviceName, hdPath = null) {
     let keyringName = null
     switch (deviceName) {
       case 'trezor':
@@ -555,6 +555,10 @@ module.exports = class MetamaskController extends EventEmitter {
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName)
     }
+    if (hdPath) {
+      console.log('[LEDGER]: HDPATH set', hdPath)
+      keyring.hdPath = hdPath
+    }
 
     return keyring
 
@@ -565,9 +569,8 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns [] accounts
    */
-  async connectHardware (deviceName, page) {
-
-    const keyring = await this.getKeyringForDevice(deviceName)
+  async connectHardware (deviceName, page, hdPath) {
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath)
     let accounts = []
     switch (page) {
         case -1:
@@ -593,8 +596,8 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns {Promise<boolean>}
    */
-  async checkHardwareStatus (deviceName) {
-    const keyring = await this.getKeyringForDevice(deviceName)
+  async checkHardwareStatus (deviceName, hdPath) {
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath)
     return keyring.isUnlocked()
   }
 
@@ -615,8 +618,8 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns {} keyState
    */
-  async unlockHardwareWalletAccount (index, deviceName) {
-    const keyring = await this.getKeyringForDevice(deviceName)
+  async unlockHardwareWalletAccount (index, deviceName, hdPath) {
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath)
 
     keyring.setAccountToUnlock(index)
     const oldAccounts = await this.keyringController.getAccounts()
