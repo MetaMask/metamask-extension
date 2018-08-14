@@ -36,6 +36,7 @@ const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 const DeleteRpc = require('./components/delete-rpc')
+const DeleteImportedAccount = require('./components/delete-imported-account')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -651,7 +652,9 @@ App.prototype.renderPrimary = function () {
     case 'delete-rpc':
       log.debug('rendering delete rpc confirmation screen')
       return h(DeleteRpc, {key: 'delete-rpc'})
-
+    case 'delete-imported-account':
+      log.debug('rendering delete imported account confirmation screen')
+      return h(DeleteImportedAccount, {key: 'delete-imported-account'})
     default:
       log.debug('rendering default, account detail screen')
       return h(AccountDetailScreen, {key: 'account-detail'})
@@ -702,7 +705,7 @@ App.prototype.renderCustomOption = function (provider) {
         },
         [h('div.selected-network'),
           label,
-          h('.remove-rpc', {
+          h('.remove', {
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -761,7 +764,7 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
         },
         [
           rpc,
-          h('.remove-rpc', {
+          h('.remove', {
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()

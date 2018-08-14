@@ -241,7 +241,7 @@ hr.horizontal-line {
   justify-content: center;
   padding: 4px;
   position: absolute;
-  right: 0;
+  right: 20px;
 }
 
 .ether-balance {

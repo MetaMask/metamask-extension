@@ -720,6 +720,15 @@ function reduceApp (state, action) {
         RPC_URL: action.RPC_URL,
       })
 
+    case actions.SHOW_DELETE_IMPORTED_ACCOUNT:
+      return extend(appState, {
+        currentView: {
+          name: 'delete-imported-account',
+          context: appState.currentView.context,
+        },
+        identity: action.identity,
+      })
+
     default:
       return appState
   }

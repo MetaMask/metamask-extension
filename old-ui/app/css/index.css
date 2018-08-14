@@ -357,7 +357,7 @@ p.exchanges {
   background-position: right;
 }
 
-.remove-rpc {
+.remove {
   background-image: url('../images/remove.svg');
   background-size: 12px 12px;
   background-repeat: no-repeat;
@@ -988,6 +988,7 @@ div.message-container > div:first-child {
   border: solid 1px #6729a8;
   border-radius: 5px;
   background-color: rgba(103,41,168, 0.2);
+  word-wrap: break-word;
 }
 
 .contract {
