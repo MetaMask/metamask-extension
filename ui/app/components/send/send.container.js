@@ -21,11 +21,15 @@ import {
   getSendFromObject,
   getSendTo,
   getTokenBalance,
+  getQrCodeData,
 } from './send.selectors'
 import {
+  updateSendTo,
   updateSendTokenBalance,
   updateGasData,
   setGasTotal,
+  showQrScanner,
+  qrCodeDetected,
 } from '../../actions'
 import {
   resetSendState,
@@ -34,6 +38,10 @@ import {
 import {
   calcGasTotal,
 } from './send.utils.js'
+
+import {
+  SEND_ROUTE,
+} from '../../routes'
 
 module.exports = compose(
   withRouter,
@@ -60,6 +68,7 @@ function mapStateToProps (state) {
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
     tokenToFiatRate: getSelectedTokenToFiatRate(state),
+    qrCodeData: getQrCodeData(state),
   }
 }
 
@@ -89,5 +98,8 @@ function mapDispatchToProps (dispatch) {
     },
     updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
+    scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
+    qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
+    updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
   }
 }

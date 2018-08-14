@@ -8,7 +8,7 @@ const selectors = require('../selectors')
 const TxListItem = require('./tx-list-item')
 const ShiftListItem = require('./shift-list-item')
 const { formatDate } = require('../util')
-const { showConfTxPage } = require('../actions')
+const { showConfTxPage, updateNetworkNonce } = require('../actions')
 const classnames = require('classnames')
 const { tokenInfoGetter } = require('../token-util')
 const { withRouter } = require('react-router-dom')
@@ -28,12 +28,14 @@ function mapStateToProps (state) {
   return {
     txsToRender: selectors.transactionsSelector(state),
     conversionRate: selectors.conversionRateSelector(state),
+    selectedAddress: selectors.getSelectedAddress(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id })),
+    updateNetworkNonce: (address) => dispatch(updateNetworkNonce(address)),
   }
 }
 
@@ -44,6 +46,20 @@ function TxList () {
 
 TxList.prototype.componentWillMount = function () {
   this.tokenInfoGetter = tokenInfoGetter()
+  this.props.updateNetworkNonce(this.props.selectedAddress)
+}
+
+TxList.prototype.componentDidUpdate = function (prevProps) {
+  const oldTxsToRender = prevProps.txsToRender
+  const {
+    txsToRender: newTxsToRender,
+    selectedAddress,
+    updateNetworkNonce,
+  } = this.props
+
+  if (newTxsToRender.length > oldTxsToRender.length) {
+    updateNetworkNonce(selectedAddress)
+  }
 }
 
 TxList.prototype.render = function () {
