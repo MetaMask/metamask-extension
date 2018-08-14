@@ -77,7 +77,7 @@ class PreferencesController {
    * @param {Function} - end
    */
   requestAddToken (req, res, next, end) {
-    if (req.method === 'metamask_watchToken') {
+    if (req.method === 'metamask_watchAsset') {
       const [ rawAddress, symbol, decimals, imageUrl ] = req.params
       this._validateSuggestedTokenParams({ rawAddress, symbol, decimals })
       const tokenOpts = {
