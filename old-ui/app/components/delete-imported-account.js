@@ -45,7 +45,7 @@ DeleteImportedAccount.prototype.render = function () {
         margin: '0px 30px 20px',
       },
     },
-    h('.error', 'Be sure, that you saved a private key of JSON keystore file of this account in a safe place. Otherwise, you will not be able to restore this account.'),
+    h('.error', 'Be sure, that you saved a private key or JSON keystore file of this account in a safe place. Otherwise, you will not be able to restore this account.'),
     ),
     h('p.confirm-label', {
         style: {
