@@ -13,7 +13,7 @@ export default class ConfirmAddSuggestedToken extends Component {
   static propTypes = {
     history: PropTypes.object,
     clearPendingTokens: PropTypes.func,
-    addTokens: PropTypes.func,
+    addToken: PropTypes.func,
     pendingTokens: PropTypes.object,
     removeSuggestedTokens: PropTypes.func,
   }
@@ -33,7 +33,9 @@ export default class ConfirmAddSuggestedToken extends Component {
   }
 
   render () {
-    const { addTokens, clearPendingTokens, pendingTokens, removeSuggestedTokens } = this.props
+    const { addToken, clearPendingTokens, pendingTokens, removeSuggestedTokens } = this.props
+    const pendingTokenKey = Object.keys(pendingTokens)[0]
+    const pendingToken = pendingTokens[pendingTokenKey]
 
     return (
       <div className="page-container">
@@ -59,7 +61,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               {
                 Object.entries(pendingTokens)
                   .map(([ address, token ]) => {
-                    const { name, symbol } = token
+                    const { name, symbol, imageUrl } = token
 
                     return (
                       <div
@@ -71,6 +73,7 @@ export default class ConfirmAddSuggestedToken extends Component {
                             className="confirm-add-token__token-icon"
                             diameter={48}
                             address={address}
+                            imageUrl={imageUrl}
                           />
                           <div className="confirm-add-token__name">
                             { this.getTokenName(name, symbol) }
@@ -102,14 +105,14 @@ export default class ConfirmAddSuggestedToken extends Component {
             large
             className="page-container__footer-button"
             onClick={() => {
-              addTokens(pendingTokens)
+              addToken(pendingToken)
                 .then(() => {
                   clearPendingTokens()
                   removeSuggestedTokens()
                 })
             }}
           >
-            { this.context.t('addTokens') }
+            { this.context.t('addToken') }
           </Button>
         </div>
       </div>

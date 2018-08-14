@@ -61,9 +61,9 @@ class PreferencesController {
   addSuggestedToken (tokenOpts) {
     this._validateSuggestedTokenParams(tokenOpts)
     const suggested = this.getSuggestedTokens()
-    const { rawAddress, symbol, decimals } = tokenOpts
+    const { rawAddress, symbol, decimals, imageUrl } = tokenOpts
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, symbol, decimals }
+    const newEntry = { address, symbol, decimals, imageUrl }
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
   }
@@ -78,12 +78,13 @@ class PreferencesController {
    */
   requestAddToken (req, res, next, end) {
     if (req.method === 'metamask_watchToken') {
-      const [ rawAddress, symbol, decimals ] = req.params
+      const [ rawAddress, symbol, decimals, imageUrl ] = req.params
       this._validateSuggestedTokenParams({ rawAddress, symbol, decimals })
       const tokenOpts = {
         rawAddress,
         decimals,
         symbol,
+        imageUrl,
       }
 
       this.addSuggestedToken(tokenOpts)
@@ -283,10 +284,9 @@ class PreferencesController {
    * @returns {Promise<array>} Promises the new array of AddedToken objects.
    *
    */
-  async addToken (rawAddress, symbol, decimals) {
+  async addToken (rawAddress, symbol, decimals, imageUrl) {
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, symbol, decimals }
-
+    const newEntry = { address, symbol, decimals, imageUrl }
     const tokens = this.store.getState().tokens
     const previousEntry = tokens.find((token, index) => {
       return token.address === address
@@ -299,6 +299,7 @@ class PreferencesController {
       tokens.push(newEntry)
     }
     this._updateAccountTokens(tokens)
+
     return Promise.resolve(tokens)
   }
 

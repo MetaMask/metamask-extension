@@ -9,10 +9,15 @@ const selectors = require('../selectors')
 const log = require('loglevel')
 
 function mapStateToProps (state) {
+  // In order to get `imageUrl` from token added with `eth_watchToken`
+  // TODO do this with cache memory for browsers, add support for image object, var names
+  const tokenImagesHashes = {}
+  state.metamask.tokens.forEach((token) => { tokenImagesHashes[token.address] = token.imageUrl })
   return {
     network: state.metamask.network,
     tokens: state.metamask.tokens,
     userAddress: selectors.getSelectedAddress(state),
+    tokenImagesHashes: tokenImagesHashes,
   }
 }
 
@@ -44,10 +49,9 @@ function TokenList () {
 }
 
 TokenList.prototype.render = function () {
-  const { userAddress } = this.props
+  const { userAddress, tokenImagesHashes } = this.props
   const state = this.state
   const { tokens, isLoading, error } = state
-
   if (isLoading) {
     return this.message(this.context.t('loadingTokens'))
   }
@@ -74,7 +78,10 @@ TokenList.prototype.render = function () {
     ])
   }
 
-  return h('div', tokens.map((tokenData) => h(TokenCell, tokenData)))
+  return h('div', tokens.map((tokenData) => {
+    tokenData.imageUrl = tokenImagesHashes[tokenData.address]
+    return h(TokenCell, tokenData)
+  }))
 
 }
 
