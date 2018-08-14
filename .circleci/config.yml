@@ -25,11 +25,11 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
-      - test-e2e-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-deps-firefox
-            - prep-build
+      # - test-e2e-firefox:
+      #     requires:
+      #       - prep-deps-npm
+      #       - prep-deps-firefox
+      #       - prep-build
       - test-unit:
           requires:
             - prep-deps-npm
