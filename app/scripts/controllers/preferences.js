@@ -77,7 +77,7 @@ class PreferencesController {
    * @param {Function} - end
    */
   requestAddToken (req, res, next, end) {
-    if (req.method === 'eth_watchToken') {
+    if (req.method === 'metamask_watchToken') {
       const [ rawAddress, symbol, decimals ] = req.params
       this._validateSuggestedTokenParams({ rawAddress, symbol, decimals })
       const tokenOpts = {
