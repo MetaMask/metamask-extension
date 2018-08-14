@@ -516,7 +516,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       let contractStatus = await findElement(driver, By.css('#contractStatus'))
-      await driver.wait(until.elementTextMatches(contractStatus, /Deployed/), 10000)
+      await driver.wait(until.elementTextMatches(contractStatus, /Deployed/), 15000)
 
       const depositButton = await findElement(driver, By.css('#depositButton'))
       await depositButton.click()
