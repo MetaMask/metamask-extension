@@ -88,7 +88,14 @@ describe('MetaMask', function () {
         await driver.wait(until.stalenessOf(overlay))
       } catch (e) {}
 
-      const button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      let button
+      try {
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      } catch (e) {
+        await loadExtension(driver, extensionId)
+        await delay(largeDelayMs)
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      }
       await button.click()
       await delay(regularDelayMs)
 
