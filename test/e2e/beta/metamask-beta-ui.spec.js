@@ -460,6 +460,11 @@ describe('MetaMask', function () {
       const transactions = await findElements(driver, By.css('.tx-list-item'))
       assert.equal(transactions.length, 2)
 
+      await findElement(driver, By.xpath(`//span[contains(text(), 'Submitted')]`))
+
+      const txStatuses = await findElements(driver, By.css('.tx-list-status'))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
+
       const txValues = await findElement(driver, By.css('.tx-list-value'))
       await driver.wait(until.elementTextMatches(txValues, /3\sETH/), 10000)
     })
@@ -509,6 +514,8 @@ describe('MetaMask', function () {
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirmButton.click()
       await delay(regularDelayMs)
+
+      await findElement(driver, By.xpath(`//span[contains(text(), 'Submitted')]`))
 
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
