@@ -67,8 +67,6 @@ describe('DetectTokensController', () => {
   })
 
   it('should not check tokens while in test network', async () => {
-    // network.setProviderType('rinkeby')
-    // const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
     controller.isUnlocked = true
 
@@ -81,7 +79,6 @@ describe('DetectTokensController', () => {
   })
 
   it('should only check and add tokens while in main network', async () => {
-    // network.setProviderType('mainnet')
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
     controller.isUnlocked = true
@@ -98,7 +95,6 @@ describe('DetectTokensController', () => {
   })
 
   it('should not detect same token while in main network', async () => {
-    // network.setProviderType('mainnet')
     preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8)
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
@@ -116,8 +112,6 @@ describe('DetectTokensController', () => {
   })
 
   it('should trigger detect new tokens when change address', async () => {
-    // network.setProviderType('mainnet')
-    // const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
     controller.isUnlocked = true
     var stub = sandbox.stub(controller, 'detectNewTokens')
@@ -126,8 +120,6 @@ describe('DetectTokensController', () => {
   })
 
   it('should trigger detect new tokens when submit password', async () => {
-    // network.setProviderType('mainnet')
-    // const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
     controller.selectedAddress = '0x0'
     var stub = sandbox.stub(controller, 'detectNewTokens')
@@ -136,8 +128,6 @@ describe('DetectTokensController', () => {
   })
 
   it('should not trigger detect new tokens when not open or not unlocked', async () => {
-    // network.setProviderType('mainnet')
-    // const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
     controller.isUnlocked = false
     var stub = sandbox.stub(controller, 'detectTokenBalance')
