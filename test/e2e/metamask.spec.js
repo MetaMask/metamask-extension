@@ -29,7 +29,8 @@ describe('Metamask popup page', function () {
       if (errors.length) {
         const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
-        this.test.error(new Error(errorMessage))
+        console.error(new Error(errorMessage))
+
       }
     }
     // gather extra data if test failed
