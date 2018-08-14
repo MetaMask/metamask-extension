@@ -6,14 +6,14 @@ const actions = require('../../../../actions')
 const ConnectScreen = require('./connect-screen')
 const AccountList = require('./account-list')
 const { DEFAULT_ROUTE } = require('../../../../routes')
-const { formatBalance } = require('../../../../util')
+const { formatBalance, getPlatform } = require('../../../../../../app/scripts/lib/util')
+const { PLATFORM_FIREFOX } = require('../../../../../../app/scripts/lib/enums')
 
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
     super(props)
     this.state = {
       error: null,
-      btnText: context.t('connectToTrezor'),
       selectedAccount: null,
       accounts: [],
       browserSupported: true,
@@ -49,17 +49,22 @@ class ConnectHardwareForm extends Component {
   }
 
   connectToHardwareWallet = (device) => {
+    // None of the hardware wallets are supported
+    // At least for now
+    if (getPlatform() === PLATFORM_FIREFOX) {
+      this.setState({ browserSupported: false, error: null})
+      return null
+    }
+
     if (this.state.accounts.length) {
       return null
     }
 
     // Default values
-    this.setState({ btnText: this.context.t('connecting')})
     this.getPage(device, 0, this.props.defaultHdPaths[device])
   }
 
   onPathChange = (path) => {
-    console.log('BRUNO: path changed', path)
     this.props.setHardwareWalletDefaultHdPath({device: this.state.device, path})
     this.getPage(this.state.device, 0, path)
   }
@@ -92,7 +97,7 @@ class ConnectHardwareForm extends Component {
             this.showTemporaryAlert()
           }
 
-          const newState = { unlocked: true, device }
+          const newState = { unlocked: true, device, error: null }
           // Default to the first account
           if (this.state.selectedAccount === null) {
             accounts.forEach((a, i) => {
@@ -119,9 +124,10 @@ class ConnectHardwareForm extends Component {
       })
       .catch(e => {
         if (e === 'Window blocked') {
-          this.setState({ browserSupported: false })
+          this.setState({ browserSupported: false, error: null})
+        } else {
+          this.setState({ error: e.toString() })
         }
-        this.setState({ btnText: this.context.t('connectToTrezor') })
       })
   }
 
@@ -130,7 +136,6 @@ class ConnectHardwareForm extends Component {
     .then(_ => {
       this.setState({
         error: null,
-        btnText: this.context.t('connectToTrezor'),
         selectedAccount: null,
         accounts: [],
         unlocked: false,
@@ -160,7 +165,7 @@ class ConnectHardwareForm extends Component {
 
   renderError () {
     return this.state.error
-      ? h('span.error', { style: { marginBottom: 40 } }, this.state.error)
+      ? h('span.error', { style: { margin: '20px 20px 10px', display: 'block', textAlign: 'center' } }, this.state.error)
       : null
   }
 
@@ -168,7 +173,6 @@ class ConnectHardwareForm extends Component {
     if (!this.state.accounts.length) {
       return h(ConnectScreen, {
         connectToHardwareWallet: this.connectToHardwareWallet,
-        btnText: this.state.btnText,
         browserSupported: this.state.browserSupported,
       })
     }

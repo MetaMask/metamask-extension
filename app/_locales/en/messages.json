@@ -119,8 +119,8 @@
   "close": {
     "message": "Close"
   },
-  "chromeRequiredForTrezor":{
-    "message": "You need to use Metamask on Google Chrome in order to connect to your TREZOR device."
+  "chromeRequiredForHardwareWallets":{
+    "message": "You need to use Metamask on Google Chrome in order to connect to your Hardware Wallet."
   },
   "confirm": {
     "message": "Confirm"
@@ -149,11 +149,8 @@
   "connectToTrezor": {
     "message": "Connect to Trezor"
   },
-  "connectToTrezorHelp": {
-    "message": "Metamask is able to access your TREZOR ethereum accounts. First make sure your device is connected and unlocked."
-  },
-  "connectToTrezorTrouble": {
-    "message": "If you are having trouble, please make sure you are using the latest version of the TREZOR firmware."
+  "connectToLedger": {
+    "message": "Connect to Ledger"
   },
   "continue": {
     "message": "Continue"
@@ -426,11 +423,11 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
-  "hardwareSupport": {
-    "message": "Hardware Support"
+  "hardwareWallets": {
+    "message": "Hardware Wallets"
   },
-  "hardwareSupportMsg": {
-    "message": "You can now view your Hardware accounts in MetaMask!  Scroll down and read how it works."
+  "hardwareWalletsMsg": {
+    "message": "You can now view your Hardware wallet accounts in MetaMask!  Scroll down and read how it works."
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"

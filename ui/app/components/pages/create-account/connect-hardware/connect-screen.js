@@ -12,7 +12,7 @@ class ConnectScreen extends Component {
             h('div.new-account-connect-form.unsupported-browser', {}, [
                 h('div.hw-connect', [
                     h('h3.hw-connect__title', {}, this.context.t('browserNotSupported')),
-                    h('p.hw-connect__msg', {}, this.context.t('chromeRequiredForTrezor')),
+                    h('p.hw-connect__msg', {}, this.context.t('chromeRequiredForHardwareWallets')),
                 ]),
                 h(
                     'button.btn-primary.btn--large',
@@ -30,8 +30,8 @@ class ConnectScreen extends Component {
     renderHeader () {
         return (
             h('div.hw-connect__header', {}, [
-                h('h3.hw-connect__header__title', {}, this.context.t(`hardwareSupport`)),
-                h('p.hw-connect__header__msg', {}, this.context.t(`hardwareSupportMsg`)),
+                h('h3.hw-connect__header__title', {}, this.context.t(`hardwareWallets`)),
+                h('p.hw-connect__header__msg', {}, this.context.t(`hardwareWalletsMsg`)),
             ])
         )
     }
@@ -50,7 +50,7 @@ class ConnectScreen extends Component {
         return h(
             'button.btn-primary.btn--large',
             { onClick: this.props.connectToHardwareWallet.bind(this, 'trezor') },
-            this.props.btnText
+            this.context.t('connectToTrezor')
         )
     }
 
@@ -58,7 +58,7 @@ class ConnectScreen extends Component {
         return h(
             'button.btn-primary.btn--large',
             { onClick: this.props.connectToHardwareWallet.bind(this, 'ledger') },
-            this.props.btnText.replace('Trezor', 'Ledger')
+            this.context.t('connectToLedger')
         )
     }
 
@@ -127,9 +127,9 @@ class ConnectScreen extends Component {
         return (
             h('div.new-account-connect-form', {}, [
                 this.renderHeader(),
-                this.renderTrezorAffiliateLink(),
-                this.renderConnectToTrezorButton(),
                 this.renderConnectToLedgerButton(),
+                this.renderConnectToTrezorButton(),
+                this.renderTrezorAffiliateLink(),
                 this.renderLearnMore(),
                 this.renderTutorialSteps(),
                 this.renderFooter(),
@@ -147,7 +147,6 @@ class ConnectScreen extends Component {
 
 ConnectScreen.propTypes = {
     connectToHardwareWallet: PropTypes.func.isRequired,
-    btnText: PropTypes.string.isRequired,
     browserSupported: PropTypes.bool.isRequired,
 }
 
