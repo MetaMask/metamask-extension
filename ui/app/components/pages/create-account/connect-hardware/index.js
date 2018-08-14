@@ -125,7 +125,7 @@ class ConnectHardwareForm extends Component {
       .catch(e => {
         if (e === 'Window blocked') {
           this.setState({ browserSupported: false, error: null})
-        } else {
+        } else if (e !== 'Window closed') {
           this.setState({ error: e.toString() })
         }
       })
