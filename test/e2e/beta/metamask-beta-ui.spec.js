@@ -345,8 +345,8 @@ describe('MetaMask', function () {
       const passwordInputs = await driver.findElements(By.css('input'))
       await delay(regularDelayMs)
 
-      passwordInputs[0].sendKeys('correct horse battery staple')
-      passwordInputs[1].sendKeys('correct horse battery staple')
+      await passwordInputs[0].sendKeys('correct horse battery staple')
+      await passwordInputs[1].sendKeys('correct horse battery staple')
       await driver.findElement(By.css('.first-time-flow__button')).click()
       await delay(regularDelayMs)
     })
@@ -438,7 +438,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(windowHandles[2])
       await delay(regularDelayMs)
 
-      assertElementNotPresent(webdriver, driver, By.xpath(`//li[contains(text(), 'Data')]`))
+      await assertElementNotPresent(webdriver, driver, By.xpath(`//li[contains(text(), 'Data')]`))
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
       await confirmButton.click()
@@ -515,15 +515,15 @@ describe('MetaMask', function () {
       await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
 
-      let contractStatus = await driver.findElement(By.css('#contractStatus'))
-      await driver.wait(until.elementTextMatches(contractStatus, /Deployed/))
+      let contractStatus = await findElement(driver, By.css('#contractStatus'))
+      await driver.wait(until.elementTextMatches(contractStatus, /Deployed/), 10000)
 
       const depositButton = await findElement(driver, By.css('#depositButton'))
       await depositButton.click()
       await delay(largeDelayMs)
 
-      contractStatus = await driver.findElement(By.css('#contractStatus'))
-      await driver.wait(until.elementTextMatches(contractStatus, /Deposit\sinitiated/))
+      contractStatus = await findElement(driver, By.css('#contractStatus'))
+      await driver.wait(until.elementTextMatches(contractStatus, /Deposit\sinitiated/), 10000)
 
       await driver.switchTo().window(extension)
       await delay(largeDelayMs)
@@ -539,8 +539,8 @@ describe('MetaMask', function () {
       await configureGas.click()
       await delay(regularDelayMs)
 
-      const gasModal = await driver.findElement(By.css('span .modal'))
-      await driver.wait(until.elementLocated(By.css('.customize-gas__title')))
+      const gasModal = await findElement(driver, By.css('span .modal'))
+      await driver.wait(until.elementLocated(By.css('.customize-gas__title')), 10000)
 
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
       await gasPriceInput.clear()
