@@ -48,7 +48,8 @@ deployButton.addEventListener('click', async function (event) {
     }, function (e, contract) {
       if (e) {
         throw e
-      } else if (typeof contract.address !== 'undefined') {
+      }
+      if (typeof contract.address !== 'undefined') {
         console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash)
 
         document.getElementById('contractStatus').innerHTML = 'Deployed'
