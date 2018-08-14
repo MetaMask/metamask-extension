@@ -289,10 +289,10 @@ class TransactionController extends EventEmitter {
     // sign tx
     const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
-    const signedTx = await this.signEthTx(ethTx, fromAddress)
+    await this.signEthTx(ethTx, fromAddress)
     // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id)
-    const rawTx = ethUtil.bufferToHex(signedTx.serialize())
+    const rawTx = ethUtil.bufferToHex(ethTx.serialize())
     return rawTx
   }
 

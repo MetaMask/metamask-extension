@@ -549,14 +549,14 @@ module.exports = class MetamaskController extends EventEmitter {
         keyringName = LedgerBridgeKeyring.type
         break
       default:
-        throw new Error('MetamaskController:connectHardware - Unknown device')
+        throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
     }
     let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName)
     }
-    if (hdPath) {
-      keyring.hdPath = hdPath
+    if (hdPath && keyring.setHdPath) {
+      keyring.setHdPath(hdPath)
     }
 
     keyring.network = this.networkController.getProviderConfig().type
