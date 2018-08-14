@@ -69,7 +69,7 @@ function reduceApp (state, action) {
     networkNonce: null,
     defaultHdPaths: {
       trezor: `m/44'/60'/0'/0`,
-      ledger: `m/44'/60'/0'`,
+      ledger: `m/44'/60'/0'/0/0`,
     },
   }, state.appState)
 

@@ -556,9 +556,10 @@ module.exports = class MetamaskController extends EventEmitter {
       keyring = await this.keyringController.addNewKeyring(keyringName)
     }
     if (hdPath) {
-      console.log('[LEDGER]: HDPATH set', hdPath)
       keyring.hdPath = hdPath
     }
+
+    keyring.network = this.networkController.getProviderConfig().type
 
     return keyring
 

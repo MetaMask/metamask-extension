@@ -12,32 +12,47 @@ class AccountList extends Component {
     getHdPaths () {
       return [
         {
-          label: `m/44'/60'/0' (Legacy)`,
-          value: `m/44'/60'/0'`,
+          label: `Ledger Live`,
+          value: `m/44'/60'/0'/0/0`,
         },
         {
-          label: `m/44'/60'/0'/0`,
-          value: `m/44'/60'/0'/0'`,
+          label: `Legacy (MEW / MyCrypto)`,
+          value: `m/44'/60'/0'`,
         },
       ]
+    }
+
+    goToNextPage = () => {
+      if (this.props.accounts === 5) {
+        this.props.getPage(this.props.device, 1, this.props.selectedPath)
+      } else {
+        this.props.onAccountRestriction()
+      }
+    }
+
+    goToPreviousPage = () => {
+      this.props.getPage(this.props.device, -1, this.props.selectedPath)
     }
 
     renderHdPathSelector () {
       const { onPathChange, selectedPath } = this.props
 
       const options = this.getHdPaths()
-      return h('div.hw-connect__hdPath', [
-        h('h3.hw-connect__hdPath__title', {}, `HD Path`),
-        h(Select, {
-          className: 'hw-connect__hdPath__select',
-          name: 'hd-path-select',
-          clearable: false,
-          value: selectedPath,
-          options,
-          onChange: (opt) => {
-            onPathChange(opt.value)
-          },
-        }),
+      return h('div', [
+        h('div.hw-connect__hdPath', [
+          h('h3.hw-connect__hdPath__title', {}, `HD Path`),
+          h(Select, {
+            className: 'hw-connect__hdPath__select',
+            name: 'hd-path-select',
+            clearable: false,
+            value: selectedPath,
+            options,
+            onChange: (opt) => {
+              onPathChange(opt.value)
+            },
+          }),
+        ]),
+        h('p.hw-connect__msg', {}, this.context.t('selectPathHelp')),
       ])
     }
     renderHeader () {
@@ -98,7 +113,7 @@ class AccountList extends Component {
       h(
         'button.hw-list-pagination__button',
         {
-          onClick: () => this.props.getPage(-1, this.props.device),
+          onClick: this.goToPreviousPage,
         },
         `< ${this.context.t('prev')}`
       ),
@@ -106,7 +121,7 @@ class AccountList extends Component {
       h(
         'button.hw-list-pagination__button',
         {
-          onClick: () => this.props.getPage(1, this.props.device),
+          onClick: this.goToNextPage,
         },
         `${this.context.t('next')} >`
       ),
@@ -174,6 +189,7 @@ AccountList.propTypes = {
     history: PropTypes.object,
     onUnlockAccount: PropTypes.func,
     onCancel: PropTypes.func,
+    onAccountRestriction: PropTypes.func,
 }
 
 AccountList.contextTypes = {

@@ -43,7 +43,7 @@ class ConnectHardwareForm extends Component {
       const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
         this.setState({unlocked: true})
-        this.getPage(0, device, this.props.defaultHdPaths[device])
+        this.getPage(device, 0, this.props.defaultHdPaths[device])
       }
     })
   }
@@ -55,17 +55,21 @@ class ConnectHardwareForm extends Component {
 
     // Default values
     this.setState({ btnText: this.context.t('connecting')})
-    this.getPage(0, device, this.props.defaultHdPaths[device])
+    this.getPage(device, 0, this.props.defaultHdPaths[device])
   }
 
   onPathChange = (path) => {
     console.log('BRUNO: path changed', path)
     this.props.setHardwareWalletDefaultHdPath({device: this.state.device, path})
-    this.getPage(0, this.state.device, path)
+    this.getPage(this.state.device, 0, path)
   }
 
   onAccountChange = (account) => {
     this.setState({selectedAccount: account.toString(), error: null})
+  }
+
+  onAccountRestriction = () => {
+    this.setState({error: this.context.t('ledgerAccountRestriction') })
   }
 
   showTemporaryAlert () {
@@ -76,7 +80,7 @@ class ConnectHardwareForm extends Component {
     }, 5000)
   }
 
-  getPage = (page, device, hdPath) => {
+  getPage = (device, page, hdPath) => {
     this.props
       .connectHardware(device, page, hdPath)
       .then(accounts => {
@@ -182,6 +186,7 @@ class ConnectHardwareForm extends Component {
       onUnlockAccount: this.onUnlockAccount,
       onForgetDevice: this.onForgetDevice,
       onCancel: this.onCancel,
+      onAccountRestriction: this.onAccountRestriction,
     })
   }
 
@@ -237,7 +242,7 @@ const mapDispatchToProps = dispatch => {
       return dispatch(actions.setHardwareWalletDefaultHdPath({device, path}))
     },
     connectHardware: (deviceName, page, hdPath) => {
-      return dispatch(actions.connectHardware(deviceName, hdPath, page))
+      return dispatch(actions.connectHardware(deviceName, page, hdPath))
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath))

@@ -538,6 +538,9 @@
   "learnMore": {
     "message": "Learn more"
   },
+  "ledgerAccountRestriction": {
+    "message": "You need to make use your last account before you can add a new one."
+  },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
@@ -921,6 +924,9 @@
   },
   "selectAnAccountHelp": {
     "message": "These are the accounts available in your hardware wallet. Select the one you’d like to use in MetaMask."
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger address(es), please try selecting a different HD Path \"Legacy (MEW / MyCrypto)\""
   },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
