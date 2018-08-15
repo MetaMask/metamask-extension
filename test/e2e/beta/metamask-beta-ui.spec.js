@@ -525,6 +525,15 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
+    it('confirms a deploy contract transaction in the popup', async () => {
+      const windowHandles = await driver.getAllWindowHandles()
+      const popup = windowHandles[2]
+      await driver.switchTo().window(popup)
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+      await delay(regularDelayMs)
+    })
+
     it('calls and confirms a contract method where ETH is sent', async () => {
       await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
@@ -626,20 +635,21 @@ describe('MetaMask', function () {
 
   describe('Add a custom token from a dapp', () => {
     it('creates a new token', async () => {
-      const windowHandles = await driver.getAllWindowHandles()
+      let windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
       const dapp = windowHandles[1]
       await delay(regularDelayMs * 2)
 
       await driver.switchTo().window(dapp)
-      await delay(regularDelayMs)
+      await delay(regularDelayMs * 2)
 
       const createToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Create Token')]`))
       await createToken.click()
-      await delay(regularDelayMs)
+      await delay(largeDelayMs)
 
-      await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      windowHandles = await driver.getAllWindowHandles()
+      const popup = windowHandles[2]
+      await driver.switchTo().window(popup)
       await delay(regularDelayMs)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))

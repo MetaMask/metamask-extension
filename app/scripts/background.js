@@ -19,7 +19,7 @@ const PortStream = require('./lib/port-stream.js')
 const createStreamSink = require('./lib/createStreamSink')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
-const firstTimeState = require('./first-time-state')
+const rawFirstTimeState = require('./first-time-state')
 const setupRaven = require('./lib/setupRaven')
 const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
@@ -33,6 +33,9 @@ const {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
 } = require('./lib/enums')
+
+// METAMASK_TEST_CONFIG is used in e2e tests to set the default network to localhost
+const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
