@@ -75,7 +75,7 @@ class PreferencesController {
   }
 
   /**
-   * RPC engine middleware for requesting new token added
+   * RPC engine middleware for requesting new asset added
    *
    * @param req
    * @param res
@@ -84,21 +84,18 @@ class PreferencesController {
    */
   requestAddToken (req, res, next, end) {
     if (req.method === 'metamask_watchAsset') {
-      const [ rawAddress, symbol, decimals, imageUrl ] = req.params
-      this._validateSuggestedTokenParams({ rawAddress, symbol, decimals })
-      const tokenOpts = {
-        rawAddress,
-        decimals,
-        symbol,
-        imageUrl,
+      const { type, options } = req.params
+      switch (type) {
+        case 'ERC20':
+          this._handleWatchAssetERC20(options, res)
+          res.result = options.address
+          break
+        default:
+          // TODO return promise for not handled assets
       }
-
-      this.addSuggestedToken(tokenOpts)
-      this.showAddTokenUi()
-      res.result = rawAddress
-      return end()
+      end()
     } else {
-      return next()
+      next()
     }
   }
 
@@ -307,7 +304,6 @@ class PreferencesController {
     }
     objects[address] = imageUrl
     this._updateAccountTokens(tokens, objects)
-    console.log('OBJECTS OBJET', this.getObjects())
     return Promise.resolve(tokens)
   }
 
@@ -519,6 +515,22 @@ class PreferencesController {
     if (!(providerType in accountTokens[selectedAddress])) accountTokens[selectedAddress][providerType] = []
     const tokens = accountTokens[selectedAddress][providerType]
     return { tokens, accountTokens, providerType, selectedAddress }
+  }
+
+  /**
+   * Handle the suggestion of an ERC20 asset through `watchAsset`
+   * *
+   * @param {Object} options Parameters according to addition of ERC20 token
+   *
+   */
+  _handleWatchAssetERC20 (options) {
+    // TODO handle bad parameters
+    const { address, symbol, decimals, imageUrl } = options
+    const rawAddress = address
+    this._validateSuggestedTokenParams({ rawAddress, symbol, decimals })
+    const tokenOpts = { rawAddress, decimals, symbol, imageUrl }
+    this.addSuggestedToken(tokenOpts)
+    this.showAddTokenUi()
   }
 }
 
