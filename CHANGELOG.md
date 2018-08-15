@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 4.9.2 Mon Aug 09 2018
+
+- [#5020](https://github.com/MetaMask/metamask-extension/pull/5020): Fix bug in migration #28 ( moving tokens to specific accounts )
+
 ## 4.9.1 Mon Aug 09 2018
 
 - [#4884](https://github.com/MetaMask/metamask-extension/pull/4884): Allow to have tokens per account and network.
