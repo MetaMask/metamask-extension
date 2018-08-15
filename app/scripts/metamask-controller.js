@@ -551,15 +551,21 @@ module.exports = class MetamaskController extends EventEmitter {
       default:
         throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
     }
+    console.log('getting keyring for device ', deviceName, hdPath)
     let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
+    console.log('got Keyring', keyring)
     if (!keyring) {
+      console.log('we did not so lets add it', keyringName)
       keyring = await this.keyringController.addNewKeyring(keyringName)
+      console.log('what about now', keyring)
     }
+    console.log('setting hdPath', hdPath)
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath)
     }
 
     keyring.network = this.networkController.getProviderConfig().type
+    console.log('setting network', keyring.network)
 
     return keyring
 
