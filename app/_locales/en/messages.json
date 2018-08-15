@@ -120,7 +120,7 @@
     "message": "Close"
   },
   "chromeRequiredForHardwareWallets":{
-    "message": "You need to use Metamask on Google Chrome in order to connect to your Hardware Wallet."
+    "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
   "confirm": {
     "message": "Confirm"
@@ -151,12 +151,6 @@
   },
   "connectToTrezor": {
     "message": "Connect to Trezor"
-  },
-  "connectToTrezorHelp": {
-    "message": "MetaMask is able to access your TREZOR Ethereum accounts. First make sure your device is connected and unlocked."
-  },
-  "connectToTrezorTrouble": {
-    "message": "If you are having trouble, please make sure you are using the latest version of the TREZOR firmware."
   },
   "continue": {
     "message": "Continue"
