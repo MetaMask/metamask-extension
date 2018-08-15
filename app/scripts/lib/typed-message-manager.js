@@ -72,11 +72,40 @@ module.exports = class TypedMessageManager extends EventEmitter {
    * this.memStore. Before any of this is done, msgParams are validated
    *
    * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} req (optional) The original request object possibly containing the origin
+   * @returns {promise} When the message has been signed or rejected
+   *
+   */
+  addUnapprovedMessageAsync (msgParams, req) {
+    return new Promise((resolve, reject) => {
+      const msgId = this.addUnapprovedMessage(msgParams, req)
+      this.once(`${msgId}:finished`, (data) => {
+        switch (data.status) {
+          case 'signed':
+            return resolve(data.rawSig)
+          case 'rejected':
+            return reject(new Error('MetaMask Message Signature: User denied message signature.'))
+          default:
+            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+        }
+      })
+    })
+  }
+
+  /**
+   * Creates a new TypedMessage with an 'unapproved' status using the passed msgParams. this.addMsg is called to add
+   * the new TypedMessage to this.messages, and to save the unapproved TypedMessages from that list to
+   * this.memStore. Before any of this is done, msgParams are validated
+   *
+   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} req (optional) The original request object possibly containing the origin
    * @returns {number} The id of the newly created TypedMessage.
    *
    */
-  addUnapprovedMessage (msgParams) {
+  addUnapprovedMessage (msgParams, req) {
     this.validateParams(msgParams)
+    // add origin from request
+    if (req) msgParams.origin = req.origin
 
     log.debug(`TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
     // create txData obj with parameters and meta data

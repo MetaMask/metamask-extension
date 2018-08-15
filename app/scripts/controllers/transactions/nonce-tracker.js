@@ -12,8 +12,9 @@ const Mutex = require('await-semaphore').Mutex
 */
 class NonceTracker {
 
-  constructor ({ provider, getPendingTransactions, getConfirmedTransactions }) {
+  constructor ({ provider, blockTracker, getPendingTransactions, getConfirmedTransactions }) {
     this.provider = provider
+    this.blockTracker = blockTracker
     this.ethQuery = new EthQuery(provider)
     this.getPendingTransactions = getPendingTransactions
     this.getConfirmedTransactions = getConfirmedTransactions
@@ -34,7 +35,7 @@ class NonceTracker {
    * @typedef NonceDetails
    * @property {number} highestLocallyConfirmed - A hex string of the highest nonce on a confirmed transaction.
    * @property {number} nextNetworkNonce - The next nonce suggested by the eth_getTransactionCount method.
-   * @property {number} highetSuggested - The maximum between the other two, the number returned.
+   * @property {number} highestSuggested - The maximum between the other two, the number returned.
    */
 
   /**
@@ -80,15 +81,6 @@ class NonceTracker {
     }
   }
 
-  async _getCurrentBlock () {
-    const blockTracker = this._getBlockTracker()
-    const currentBlock = blockTracker.getCurrentBlock()
-    if (currentBlock) return currentBlock
-    return await new Promise((reject, resolve) => {
-      blockTracker.once('latest', resolve)
-    })
-  }
-
   async _globalMutexFree () {
     const globalMutex = this._lookupMutex('global')
     const releaseLock = await globalMutex.acquire()
@@ -114,9 +106,8 @@ class NonceTracker {
     // calculate next nonce
     // we need to make sure our base count
     // and pending count are from the same block
-    const currentBlock = await this._getCurrentBlock()
-    const blockNumber = currentBlock.blockNumber
-    const baseCountBN = await this.ethQuery.getTransactionCount(address, blockNumber || 'latest')
+    const blockNumber = await this.blockTracker.getLatestBlock()
+    const baseCountBN = await this.ethQuery.getTransactionCount(address, blockNumber)
     const baseCount = baseCountBN.toNumber()
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
     const nonceDetails = { blockNumber, baseCount }
@@ -165,15 +156,6 @@ class NonceTracker {
     return { name: 'local', nonce: highest, details: { startPoint, highest } }
   }
 
-  // this is a hotfix for the fact that the blockTracker will
-  // change when the network changes
-
-  /**
-    @returns {Object} the current blockTracker
-  */
-  _getBlockTracker () {
-    return this.provider._blockTracker
-  }
 }
 
 module.exports = NonceTracker

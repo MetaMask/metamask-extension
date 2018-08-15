@@ -17,6 +17,7 @@ export default class SendToRow extends Component {
     updateGas: PropTypes.func,
     updateSendTo: PropTypes.func,
     updateSendToError: PropTypes.func,
+    scanQrCode: PropTypes.func,
   };
 
   static contextTypes = {
@@ -51,6 +52,7 @@ export default class SendToRow extends Component {
         showError={inError}
       >
         <EnsInput
+          scanQrCode={_ => this.props.scanQrCode()}
           accounts={toAccounts}
           closeDropdown={() => closeToDropdown()}
           dropdownOpen={toDropdownOpen}

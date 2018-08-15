@@ -9,6 +9,7 @@ package
 # IDEs
 .idea
 .vscode
+.sublime-project
 
 # VIM
 *.swp
@@ -34,6 +35,7 @@ test/bundle.js
 test/test-bundle.js
 
 test-artifacts
+test-builds
 
 #ignore css output and sourcemaps
 ui/app/css/output/

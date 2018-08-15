@@ -271,9 +271,9 @@ function getContractAtAddress (tokenAddress) {
   return global.eth.contract(abi).at(tokenAddress)
 }
 
-function exportAsFile (filename, data) {
+function exportAsFile (filename, data, type = 'text/csv') {
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
-  const blob = new Blob([data], {type: 'text/csv'})
+  const blob = new Blob([data], {type})
   if (window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveBlob(blob, filename)
   } else {
