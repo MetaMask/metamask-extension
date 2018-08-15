@@ -551,21 +551,15 @@ module.exports = class MetamaskController extends EventEmitter {
       default:
         throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
     }
-    console.log('getting keyring for device ', deviceName, hdPath)
     let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
-    console.log('got Keyring', keyring)
     if (!keyring) {
-      console.log('we did not so lets add it', keyringName)
       keyring = await this.keyringController.addNewKeyring(keyringName)
-      console.log('what about now', keyring)
     }
-    console.log('setting hdPath', hdPath)
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath)
     }
 
     keyring.network = this.networkController.getProviderConfig().type
-    console.log('setting network', keyring.network)
 
     return keyring
 
@@ -635,7 +629,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(newAccounts)
     newAccounts.forEach(address => {
       if (!oldAccounts.includes(address)) {
-        this.preferencesController.setAccountLabel(address, `${deviceName.toUpperCase()} #${parseInt(index, 10) + 1}`)
+        this.preferencesController.setAccountLabel(address, `${deviceName.toUpperCase()} ${parseInt(index, 10) + 1}`)
         this.preferencesController.setSelectedAddress(address)
       }
     })
