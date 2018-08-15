@@ -99,7 +99,7 @@
     "message": "Buy on Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
+    "message": "Coinbase is the world’s most popular way to buy and sell Bitcoin, Ethereum, and Litecoin."
   },
   "bytes": {
     "message": "Bytes"
@@ -146,11 +146,17 @@
   "connecting": {
     "message": "Connecting..."
   },
+  "connectToLedger": {
+    "message": "Connect to Ledger"
+  },
   "connectToTrezor": {
     "message": "Connect to Trezor"
   },
-  "connectToLedger": {
-    "message": "Connect to Ledger"
+  "connectToTrezorHelp": {
+    "message": "MetaMask is able to access your TREZOR Ethereum accounts. First make sure your device is connected and unlocked."
+  },
+  "connectToTrezorTrouble": {
+    "message": "If you are having trouble, please make sure you are using the latest version of the TREZOR firmware."
   },
   "continue": {
     "message": "Continue"
@@ -1090,7 +1096,7 @@
     "message": "Welcome to the New UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI."
+    "message": "You are now using the new MetaMask UI."
   },
   "unapproved": {
     "message": "Unapproved"
