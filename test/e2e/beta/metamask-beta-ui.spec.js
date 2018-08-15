@@ -566,11 +566,8 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      // const txStatuses = await findElements(driver, By.css('.transaction-list-item__status'))
-      // await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
-      let confirmedTxes
       driver.wait(async () => {
-        confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
+        const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 4
       }, 10000)
 
@@ -601,11 +598,8 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      // const txStatuses = await findElements(driver, By.css('.tx-list-status'))
-      // await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
-      let confirmedTxes
       driver.wait(async () => {
-        confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
+        const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 5
       }, 10000)
 
@@ -853,8 +847,6 @@ describe('MetaMask', function () {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 2
       }, 10000)
-      // const transactions = await findElements(driver, By.css('.transaction-list-item'))
-      // assert.equal(transactions.length, 2)
 
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues[0], /-7\sTST/))
@@ -1032,7 +1024,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the balance for the chosen token', async () => {
-      const balance = await findElement(driver, By.css('.balance-display .token-amount'))
+      const balance = await findElement(driver, By.css('.token-view-balance__token-balance'))
       await driver.wait(until.elementTextMatches(balance, /0\sBAT/))
       await delay(regularDelayMs)
     })
