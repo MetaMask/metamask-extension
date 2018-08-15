@@ -84,7 +84,7 @@
       "message": "Coinbase'de satın al"
     },
     "buyCoinbaseExplainer": {
-      "message": "Coinbase bitcoin, ethereum, and litecoin alıp satmanın dünyadaki en popüler yolu"
+      "message": "Coinbase Bitcoin, Ethereum, and Litecoin alıp satmanın dünyadaki en popüler yolu"
     },
     "ok": {
       "message": "Tamam"
@@ -852,7 +852,7 @@
       "message": "Yeni UI (Beta)'ya hoşgeldiniz"
     },
     "uiWelcomeMessage": {
-      "message": "Şu anda yeni Metamask UI kullanmaktasınız. Gözatın, jeton gönderme gibi yeni özellikleri deneyin ve herhangi bir sorunlar karşılaşırsanız bize haber verin"
+      "message": "Şu anda yeni MetaMask UI kullanmaktasınız. Gözatın, jeton gönderme gibi yeni özellikleri deneyin ve herhangi bir sorunlar karşılaşırsanız bize haber verin"
     },
     "unapproved": {
       "message": "Onaylanmadı"
