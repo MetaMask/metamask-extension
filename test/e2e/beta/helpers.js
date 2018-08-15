@@ -122,12 +122,14 @@ async function closeAllWindowHandlesExcept (driver, exceptions, windowHandles) {
 }
 
 async function assertElementNotPresent (webdriver, driver, by) {
+  let dataTab
   try {
-    const dataTab = await findElement(driver, by, 4000)
-    if (dataTab) {
-      assert(false, 'Data tab should not be present')
-    }
+    dataTab = await findElement(driver, by, 4000)
   } catch (err) {
-    assert(err instanceof webdriver.error.NoSuchElementError)
+    console.log(err)
+    assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
+  }
+  if (dataTab) {
+    assert(false, 'Data tab should not be present')
   }
 }
