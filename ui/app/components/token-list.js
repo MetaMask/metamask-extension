@@ -11,13 +11,11 @@ const log = require('loglevel')
 function mapStateToProps (state) {
   // In order to get `imageUrl` from token added with `eth_watchToken`
   // TODO do this with cache memory for browsers, add support for image object, var names
-  const tokenImagesHashes = {}
-  state.metamask.tokens.forEach((token) => { tokenImagesHashes[token.address] = token.imageUrl })
   return {
     network: state.metamask.network,
     tokens: state.metamask.tokens,
     userAddress: selectors.getSelectedAddress(state),
-    tokenImagesHashes: tokenImagesHashes,
+    tokenImagesHashes: state.metamask.objects,
   }
 }
 

@@ -22,6 +22,7 @@ function mapStateToProps (state) {
     network,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
+    objects: state.metamask.objects,
   }
 }
 
@@ -32,9 +33,9 @@ function BalanceComponent () {
 
 BalanceComponent.prototype.render = function () {
   const props = this.props
-  const { token, network } = props
+  const { token, network, objects } = props
   let imageUrl
-  if (token) imageUrl = token.imageUrl
+  if (token) imageUrl = objects[token.address]
 
   return h('div.balance-container', {}, [
 

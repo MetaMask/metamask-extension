@@ -15,6 +15,7 @@ class PreferencesController {
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
    * @property {object} store.accountTokens The tokens stored per account and then per network type
+   * @property {object} store.objects Contains assets objects related to 
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
@@ -28,6 +29,7 @@ class PreferencesController {
       currentAccountTab: 'history',
       accountTokens: {},
       tokens: [],
+      objects: {},
       suggestedTokens: {},
       useBlockie: false,
       featureFlags: {},
@@ -56,6 +58,10 @@ class PreferencesController {
 
   getSuggestedTokens () {
     return this.store.getState().suggestedTokens
+  }
+
+  getObjects () {
+    return this.store.getState().objects
   }
 
   addSuggestedToken (tokenOpts) {
@@ -286,8 +292,9 @@ class PreferencesController {
    */
   async addToken (rawAddress, symbol, decimals, imageUrl) {
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, symbol, decimals, imageUrl }
+    const newEntry = { address, symbol, decimals }
     const tokens = this.store.getState().tokens
+    const objects = this.getObjects()
     const previousEntry = tokens.find((token, index) => {
       return token.address === address
     })
@@ -298,8 +305,9 @@ class PreferencesController {
     } else {
       tokens.push(newEntry)
     }
-    this._updateAccountTokens(tokens)
-
+    objects[address] = imageUrl
+    this._updateAccountTokens(tokens, objects)
+    console.log('OBJECTS OBJET', this.getObjects())
     return Promise.resolve(tokens)
   }
 
@@ -312,8 +320,10 @@ class PreferencesController {
    */
   removeToken (rawAddress) {
     const tokens = this.store.getState().tokens
+    const objects = this.getObjects()
     const updatedTokens = tokens.filter(token => token.address !== rawAddress)
-    this._updateAccountTokens(updatedTokens)
+    const updatedObjects = Object.keys(objects).filter(key => key !== rawAddress)
+    this._updateAccountTokens(updatedTokens, updatedObjects)
     return Promise.resolve(updatedTokens)
   }
 
@@ -477,10 +487,10 @@ class PreferencesController {
    * @param {array} tokens Array of tokens to be updated.
    *
    */
-  _updateAccountTokens (tokens) {
+  _updateAccountTokens (tokens, objects) {
     const { accountTokens, providerType, selectedAddress } = this._getTokenRelatedStates()
     accountTokens[selectedAddress][providerType] = tokens
-    this.store.updateState({ accountTokens, tokens })
+    this.store.updateState({ accountTokens, tokens, objects })
   }
 
   /**
