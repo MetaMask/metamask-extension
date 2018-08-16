@@ -870,6 +870,12 @@
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
   },
+  "showHexData": {
+    "message": "Show Hex Data"
+  },
+  "showHexDataDescription": {
+    "message": "Select this to show the hex data field on the send screen"
+  },
   "newPassword8Chars": {
     "message": "New Password (min 8 chars)"
   },

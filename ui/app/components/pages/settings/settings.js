@@ -66,6 +66,30 @@ class Settings extends Component {
     ])
   }
 
+  renderHexDataOptIn () {
+    const { metamask: { featureFlags: { sendHexData } }, setHexDataFeatureFlag } = this.props
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', this.context.t('showHexData')),
+        h(
+          'div.settings__content-description',
+          this.context.t('showHexDataDescription')
+        ),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h(ToggleButton, {
+            value: sendHexData,
+            onToggle: (value) => setHexDataFeatureFlag(!value),
+            activeLabel: '',
+            inactiveLabel: '',
+          }),
+        ]),
+      ]),
+    ])
+  }
+
   renderCurrentConversion () {
     const { metamask: { currentCurrency, conversionDate }, setCurrentCurrency } = this.props
 
@@ -307,6 +331,7 @@ class Settings extends Component {
         !isMascara && this.renderOldUI(),
         this.renderResetAccount(),
         this.renderBlockieOptIn(),
+        this.renderHexDataOptIn(),
       ])
     )
   }
@@ -315,6 +340,7 @@ class Settings extends Component {
 Settings.propTypes = {
   metamask: PropTypes.object,
   setUseBlockie: PropTypes.func,
+  setHexDataFeatureFlag: PropTypes.func,
   setCurrentCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
   displayWarning: PropTypes.func,
@@ -348,6 +374,9 @@ const mapDispatchToProps = dispatch => {
     updateCurrentLocale: key => dispatch(actions.updateCurrentLocale(key)),
     setFeatureFlagToBeta: () => {
       return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+    },
+    setHexDataFeatureFlag: (featureFlagShowState) => {
+      return dispatch(actions.setFeatureFlag('sendHexData', featureFlagShowState))
     },
     showResetAccountConfirmationModal: () => {
       return dispatch(actions.showModal({ name: 'CONFIRM_RESET_ACCOUNT' }))
