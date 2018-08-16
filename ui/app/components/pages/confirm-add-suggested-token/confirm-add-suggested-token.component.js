@@ -33,7 +33,7 @@ export default class ConfirmAddSuggestedToken extends Component {
   }
 
   render () {
-    const { addToken, clearPendingTokens, pendingTokens, removeSuggestedTokens, history } = this.props
+    const { addToken, pendingTokens, removeSuggestedTokens, history } = this.props
     const pendingTokenKey = Object.keys(pendingTokens)[0]
     const pendingToken = pendingTokens[pendingTokenKey]
 
@@ -96,8 +96,10 @@ export default class ConfirmAddSuggestedToken extends Component {
             className="page-container__footer-button"
             onClick={() => {
               removeSuggestedTokens()
-              history.push(DEFAULT_ROUTE)
-            }}
+              .then(() => {
+                history.push(DEFAULT_ROUTE)
+              })
+          }}
           >
             { this.context.t('cancel') }
           </Button>
@@ -109,7 +111,9 @@ export default class ConfirmAddSuggestedToken extends Component {
               addToken(pendingToken)
                 .then(() => {
                   removeSuggestedTokens()
-                  history.push(DEFAULT_ROUTE)
+                  .then(() => {
+                    history.push(DEFAULT_ROUTE)
+                  })
                 })
             }}
           >

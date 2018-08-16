@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 
 const extend = require('xtend')
 
-const { addToken, clearPendingTokens, removeSuggestedTokens } = require('../../../actions')
+const { addToken, removeSuggestedTokens } = require('../../../actions')
 
 const mapStateToProps = ({ metamask }) => {
   const { pendingTokens, suggestedTokens } = metamask
@@ -19,7 +19,6 @@ const mapStateToProps = ({ metamask }) => {
 const mapDispatchToProps = dispatch => {
   return {
     addToken: ({address, symbol, decimals, imageUrl}) => dispatch(addToken(address, symbol, decimals, imageUrl)),
-    clearPendingTokens: () => dispatch(clearPendingTokens()),
     removeSuggestedTokens: () => dispatch(removeSuggestedTokens()),
   }
 }

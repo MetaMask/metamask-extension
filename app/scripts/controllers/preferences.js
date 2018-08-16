@@ -237,7 +237,7 @@ class PreferencesController {
   removeSuggestedTokens () {
     return new Promise((resolve, reject) => {
       this.store.updateState({ suggestedTokens: {} })
-      resolve()
+      resolve({})
     })
   }
 

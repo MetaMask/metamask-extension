@@ -1626,16 +1626,21 @@ function addTokens (tokens) {
 function removeSuggestedTokens () {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.removeSuggestedTokens((err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        dispatch(actions.displayWarning(err.message))
-      }
-      dispatch(actions.clearPendingTokens())
-      if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
-        return global.platform.closeCurrentWindow()
-      }
+    return new Promise((resolve, reject) => {
+      background.removeSuggestedTokens((err, suggestedTokens) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.clearPendingTokens())
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+          return global.platform.closeCurrentWindow()
+        }
+        resolve(suggestedTokens)
+      })
     })
+    .then(() => updateMetamaskStateFromBackground())
+    .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
   }
 }
 
