@@ -5,12 +5,12 @@ const connect = require('react-redux').connect
 
 const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
-const explorerLink = require('etherscan-link').createExplorerLink
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
 const numberToBN = require('number-to-bn')
 const actions = require('../../../ui/app/actions')
+const ethNetProps = require('eth-net-props')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -44,19 +44,6 @@ TransactionListItem.prototype.showRetryButton = function () {
     lastSubmittedTxWithCurrentNonce.id === transaction.id
 
   return currentTxIsLatestWithNonce && Date.now() - submittedTime > 30000
-}
-
-const poaExplorerTxLink = (hash, network) => {
-  const isSokol = network === 77
-  const isPOA = network === 99
-  if (isSokol) {
-    return `https://sokol.poaexplorer.com/txid/search/${hash}`
-  }
-  if (isPOA) {
-    return `https://poaexplorer.com/txid/search/${hash}`
-  }
-
-  return ''
 }
 
 TransactionListItem.prototype.render = function () {
@@ -106,14 +93,7 @@ TransactionListItem.prototype.render = function () {
         }
         event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
-        const isSokol = numericNet === 77
-        const isPOA = numericNet === 99
-        let url
-        if (isSokol || isPOA) {
-          url = poaExplorerTxLink(transaction.hash, numericNet)
-        } else {
-          url = explorerLink(transaction.hash, numericNet)
-        }
+        const url = ethNetProps.explorerLinks.getExplorerTxLinkFor(transaction.hash, numericNet)
         global.platform.openWindow({ url })
       },
       style: {

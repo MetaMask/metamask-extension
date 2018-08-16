@@ -1,5 +1,5 @@
 const extension = require('extensionizer')
-const explorerLink = require('etherscan-link').createExplorerLink
+const explorerLinks = require('eth-net-props').explorerLinks
 
 class ExtensionPlatform {
 
@@ -96,21 +96,16 @@ class ExtensionPlatform {
   }
 
   _getExplorer (hash, networkId) {
-    if (networkId === 99) {
-      return {
-        explorerName: 'POA explorer',
-        url: `https://poaexplorer.com/txid/search/${hash}`,
-      }
-    } else if (networkId === 77) {
-      return {
-        explorerName: 'POA explorer',
-        url: `https://sokol.poaexplorer.com/txid/search/${hash}`,
-      }
+    let explorerName
+    if (networkId === 99 || networkId === 77) {
+      explorerName = 'POA explorer'
     } else {
-      return {
-        explorerName: 'Etherscan',
-        url: explorerLink(hash, networkId),
-      }
+      explorerName = 'Etherscan'
+    }
+
+    return {
+      explorerName: explorerName,
+      url: explorerLinks.getExplorerTxLinkFor(hash, networkId),
     }
   }
 

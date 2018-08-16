@@ -2,7 +2,7 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../../../actions')
-const genAccountLink = require('../../../../lib/account-link.js')
+const ethNetProps = require('eth-net-props')
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
@@ -295,7 +295,7 @@ class AccountDropdowns extends Component {
             closeMenu: () => {},
             onClick: () => {
               const { selected, network } = this.props
-              const url = genAccountLink(selected, network)
+              const url = ethNetProps.explorerLinks.getExplorerAccountLinkFor(selected, network)
               global.platform.openWindow({ url })
             },
             style: Object.assign(
