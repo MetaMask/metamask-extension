@@ -40,6 +40,7 @@ class Home extends Component {
 
     // suggested new tokens
     if (Object.keys(suggestedTokens).length > 0) {
+      console.log('CALLING CONFIRM ADD SUGGESTED')
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
     }
 

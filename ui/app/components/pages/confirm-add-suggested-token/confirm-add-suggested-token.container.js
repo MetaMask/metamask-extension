@@ -1,5 +1,7 @@
 import { connect } from 'react-redux'
+import { compose } from 'recompose'
 import ConfirmAddSuggestedToken from './confirm-add-suggested-token.component'
+import { withRouter } from 'react-router-dom'
 
 const extend = require('xtend')
 
@@ -22,4 +24,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfirmAddSuggestedToken)
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(ConfirmAddSuggestedToken)
