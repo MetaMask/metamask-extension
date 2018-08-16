@@ -34,7 +34,7 @@ describe('TransactionAction Component', () => {
       assert.equal(wrapper.text(), '--')
     })
 
-    it('should render Outgoing', () => {
+    it('should render Sent Ether', () => {
       const methodData = { data: {}, done: true, error: null }
       const transaction = {
         id: 1,
@@ -58,7 +58,7 @@ describe('TransactionAction Component', () => {
       />, { context: { tOrDefault }})
 
       assert.equal(wrapper.find('.transaction-action').length, 1)
-      assert.equal(wrapper.text(), 'outgoing')
+      assert.equal(wrapper.text(), 'sentEther')
     })
 
     it('should render Approved', () => {

@@ -903,6 +903,12 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "sentEther": {
+    "message": "sent ether"
+  },
+  "sentTokens": {
+    "message": "sent tokens"
+  },
   "separateEachWord": {
     "message": "Separate each word with a single space"
   },
