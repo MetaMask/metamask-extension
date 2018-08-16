@@ -1,14 +1,14 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
-const BN = require('ethereumjs-util').BN
 const EthQuery = require('eth-query')
 const log = require('loglevel')
+const pify = require('pify')
 
 class RecentBlocksController {
 
   /**
    * Controller responsible for storing, updating and managing the recent history of blocks. Blocks are back filled
-   * upon the controller's construction and then the list is updated when the given block tracker gets a 'block' event
+   * upon the controller's construction and then the list is updated when the given block tracker gets a 'latest' event
    * (indicating that there is a new block to process).
    *
    * @typedef {Object} RecentBlocksController
@@ -16,7 +16,7 @@ class RecentBlocksController {
    * @param {BlockTracker} opts.blockTracker Contains objects necessary for tracking blocks and querying the blockchain
    * @param {BlockTracker} opts.provider The provider used to create a new EthQuery instance.
    * @property {BlockTracker} blockTracker Points to the passed BlockTracker. On RecentBlocksController construction,
-   * listens for 'block' events so that new blocks can be processed and added to storage.
+   * listens for 'latest' events so that new blocks can be processed and added to storage.
    * @property {EthQuery} ethQuery Points to the EthQuery instance created with the passed provider
    * @property {number} historyLength The maximum length of blocks to track
    * @property {object} store Stores the recentBlocks
@@ -34,7 +34,13 @@ class RecentBlocksController {
     }, opts.initState)
     this.store = new ObservableStore(initState)
 
-    this.blockTracker.on('block', this.processBlock.bind(this))
+    this.blockTracker.on('latest', async (newBlockNumberHex) => {
+      try {
+        await this.processBlock(newBlockNumberHex)
+      } catch (err) {
+        log.error(err)
+      }
+    })
     this.backfill()
   }
 
@@ -55,7 +61,11 @@ class RecentBlocksController {
    * @param {object} newBlock The new block to modify and add to the recentBlocks array
    *
    */
-  processBlock (newBlock) {
+  async processBlock (newBlockNumberHex) {
+    const newBlockNumber = Number.parseInt(newBlockNumberHex, 16)
+    const newBlock = await this.getBlockByNumber(newBlockNumber, true)
+    if (!newBlock) return
+
     const block = this.mapTransactionsToPrices(newBlock)
 
     const state = this.store.getState()
@@ -108,9 +118,9 @@ class RecentBlocksController {
   }
 
   /**
-   * On this.blockTracker's first 'block' event after this RecentBlocksController's instantiation, the store.recentBlocks
+   * On this.blockTracker's first 'latest' event after this RecentBlocksController's instantiation, the store.recentBlocks
    * array is populated with this.historyLength number of blocks. The block number of the this.blockTracker's first
-   * 'block' event is used to iteratively generate all the numbers of the previous blocks, which are obtained by querying
+   * 'latest' event is used to iteratively generate all the numbers of the previous blocks, which are obtained by querying
    * the blockchain. These blocks are backfilled so that the recentBlocks array is ordered from oldest to newest.
    *
    * Each iteration over the block numbers is delayed by 100 milliseconds.
@@ -118,34 +128,21 @@ class RecentBlocksController {
    * @returns {Promise<void>} Promises undefined
    */
   async backfill () {
-    this.blockTracker.once('block', async (block) => {
-      const currentBlockNumber = Number.parseInt(block.number, 16)
+    this.blockTracker.once('latest', async (blockNumberHex) => {
+      const currentBlockNumber = Number.parseInt(blockNumberHex, 16)
       const blocksToFetch = Math.min(currentBlockNumber, this.historyLength)
       const prevBlockNumber = currentBlockNumber - 1
       const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
       await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
         try {
-          const newBlock = await this.getBlockByNumber(targetBlockNumber)
+          const newBlock = await this.getBlockByNumber(targetBlockNumber, true)
+          if (!newBlock) return
 
-          if (newBlock) {
-            this.backfillBlock(newBlock)
-          }
+          this.backfillBlock(newBlock)
         } catch (e) {
           log.error(e)
         }
       }))
-    })
-  }
-
-  /**
-   * A helper for this.backfill. Provides an easy way to ensure a 100 millisecond delay using await
-   *
-   * @returns {Promise<void>} Promises undefined
-   *
-   */
-  async wait () {
-    return new Promise((resolve) => {
-      setTimeout(resolve, 100)
     })
   }
 
@@ -157,13 +154,8 @@ class RecentBlocksController {
    *
    */
   async getBlockByNumber (number) {
-    const bn = new BN(number)
-    return new Promise((resolve, reject) => {
-      this.ethQuery.getBlockByNumber('0x' + bn.toString(16), true, (err, block) => {
-        if (err) reject(err)
-        resolve(block)
-      })
-    })
+    const blockNumberHex = '0x' + number.toString(16)
+    return await pify(this.ethQuery.getBlockByNumber).call(this.ethQuery, blockNumberHex, true)
   }
 
 }

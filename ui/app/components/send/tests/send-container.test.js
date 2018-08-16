@@ -44,6 +44,7 @@ proxyquire('../send.container.js', {
     getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
     getSendFromObject: (s) => `mockFrom:${s}`,
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
+    getQrCodeData: (s) => `mockQrCodeData:${s}`,
   },
   '../../actions': actionSpies,
   '../../ducks/send.duck': duckActionSpies,
@@ -76,6 +77,7 @@ describe('send container', () => {
         tokenBalance: 'mockTokenBalance:mockState',
         tokenContract: 'mockTokenContract:mockState',
         tokenToFiatRate: 'mockTokenToFiatRate:mockState',
+        qrCodeData: 'mockQrCodeData:mockState',
       })
     })
 

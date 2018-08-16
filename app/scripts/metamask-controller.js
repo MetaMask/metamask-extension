@@ -46,7 +46,6 @@ const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
-const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 
@@ -87,6 +86,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
+      network: this.networkController,
     })
 
     // currency controller
@@ -106,8 +106,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.blacklistController.scheduleUpdates()
 
     // rpc provider
-    this.provider = this.initializeProvider()
-    this.blockTracker = this.provider._blockTracker
+    this.initializeProvider()
+    this.provider = this.networkController.getProviderAndBlockTracker().provider
+    this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
@@ -251,28 +252,22 @@ module.exports = class MetamaskController extends EventEmitter {
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
-        eth_sendTransaction: (payload, next, end) => {
-          const origin = payload.origin
-          const txParams = payload.params[0]
-          nodeify(this.txController.newUnapprovedTransaction, this.txController)(txParams, { origin }, end)
-        },
       },
       // account mgmt
-      getAccounts: (cb) => {
+      getAccounts: async () => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-        const result = []
         const selectedAddress = this.preferencesController.getSelectedAddress()
-
         // only show address if account is unlocked
         if (isUnlocked && selectedAddress) {
-          result.push(selectedAddress)
+          return [selectedAddress]
+        } else {
+          return []
         }
-        cb(null, result)
       },
       // tx signing
-      // old style msg signing
-      processMessage: this.newUnsignedMessage.bind(this),
-      // personal_sign msg signing
+      processTransaction: this.newUnapprovedTransaction.bind(this),
+      // msg signing
+      processEthSignMessage: this.newUnsignedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       processTypedMessage: this.newUnsignedTypedMessage.bind(this),
     }
@@ -808,6 +803,18 @@ module.exports = class MetamaskController extends EventEmitter {
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
+  /**
+   * Called when a Dapp suggests a new tx to be signed.
+   * this wrapper needs to exist so we can provide a reference to
+   *  "newUnapprovedTransaction" before "txController" is instantiated
+   *
+   * @param {Object} msgParams - The params passed to eth_sign.
+   * @param {Object} req - (optional) the original request, containing the origin
+   */
+  async newUnapprovedTransaction (txParams, req) {
+    return await this.txController.newUnapprovedTransaction(txParams, req)
+  }
+
   // eth_sign methods:
 
   /**
@@ -819,20 +826,11 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params passed to eth_sign.
    * @param {Function} cb = The callback function called with the signature.
    */
-  newUnsignedMessage (msgParams, cb) {
-    const msgId = this.messageManager.addUnapprovedMessage(msgParams)
+  newUnsignedMessage (msgParams, req) {
+    const promise = this.messageManager.addUnapprovedMessageAsync(msgParams, req)
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
-    this.messageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
-        default:
-          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
-      }
-    })
+    return promise
   }
 
   /**
@@ -886,24 +884,11 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb - The callback function called with the signature.
    * Passed back to the requesting Dapp.
    */
-  newUnsignedPersonalMessage (msgParams, cb) {
-    if (!msgParams.from) {
-      return cb(cleanErrorStack(new Error('MetaMask Message Signature: from field is required.')))
-    }
-
-    const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
+  async newUnsignedPersonalMessage (msgParams, req) {
+    const promise = this.personalMessageManager.addUnapprovedMessageAsync(msgParams, req)
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
-    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
-        default:
-          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
-      }
-    })
+    return promise
   }
 
   /**
@@ -952,26 +937,11 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params passed to eth_signTypedData.
    * @param {Function} cb - The callback function, called with the signature.
    */
-  newUnsignedTypedMessage (msgParams, cb) {
-    let msgId
-    try {
-      msgId = this.typedMessageManager.addUnapprovedMessage(msgParams)
-      this.sendUpdate()
-      this.opts.showUnconfirmedMessage()
-    } catch (e) {
-      return cb(e)
-    }
-
-    this.typedMessageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(cleanErrorStack(new Error('MetaMask Message Signature: User denied message signature.')))
-        default:
-          return cb(cleanErrorStack(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`)))
-      }
-    })
+  newUnsignedTypedMessage (msgParams, req) {
+    const promise = this.typedMessageManager.addUnapprovedMessageAsync(msgParams, req)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    return promise
   }
 
   /**
@@ -1236,7 +1206,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({
       provider: this.provider,
-      blockTracker: this.provider._blockTracker,
+      blockTracker: this.blockTracker,
     })
 
     engine.push(createOriginMiddleware({ origin }))
@@ -1436,7 +1406,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for activating the retrieval of price data and auto detect tokens,
+   * A method for activating the retrieval of price data,
    * which should only be fetched when the UI is visible.
    * @private
    * @param {boolean} active - True if price data should be getting fetched.

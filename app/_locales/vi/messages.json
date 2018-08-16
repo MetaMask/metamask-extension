@@ -570,7 +570,7 @@
     "message": "Chào mừng bạn đến với giao diện mới (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Bạn đang sử dụng giao diện mới của Metamask. Chúng tôi khuyến khích bạn thử nghiệm và khám phá các tính năng mới như gửi token, và nếu bạn có gặp phải vấn đề gì khó khăn, xin hãy liên hệ ngay để chúng tôi có thể giúp đỡ bạn."
+    "message": "Bạn đang sử dụng giao diện mới của MetaMask. Chúng tôi khuyến khích bạn thử nghiệm và khám phá các tính năng mới như gửi token, và nếu bạn có gặp phải vấn đề gì khó khăn, xin hãy liên hệ ngay để chúng tôi có thể giúp đỡ bạn."
   },
   "unavailable": {
     "message": "Không có sẵn"
