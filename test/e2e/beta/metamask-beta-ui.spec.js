@@ -571,8 +571,8 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 4
       }, 10000)
 
-      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--secondary'))
-      await driver.wait(until.elementTextMatches(txValues, /-4\sETH/), 10000)
+      const txValues = await findElements(driver, By.css('.transaction-list-item__amount--secondary'))
+      await driver.wait(until.elementTextMatches(txValues[0], /-4\sETH/), 10000)
 
       // const txAccounts = await findElements(driver, By.css('.tx-list-account'))
       // const firstTxAddress = await txAccounts[0].getText()
