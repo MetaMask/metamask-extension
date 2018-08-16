@@ -560,7 +560,7 @@ describe('MetaMask', function () {
       driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 4
-      }, 10000)
+      }, 15000)
 
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--secondary'))
       await driver.wait(until.elementTextMatches(txValues[0], /-4\sETH/), 10000)
@@ -761,8 +761,8 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 1
       }, 10000)
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
-      const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Outgoing|Failed/), 10000)
-      assert.equal(await tx.getText(), 'Outgoing')
+      const tx = await driver.wait(until.elementTextMatches(txStatuses[0], /Sent\sToken|Failed/), 10000)
+      assert.equal(await tx.getText(), 'Sent Tokens')
     })
   })
 
@@ -842,7 +842,7 @@ describe('MetaMask', function () {
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues[0], /-7\sTST/))
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Outgoing/))
+      await driver.wait(until.elementTextMatches(txStatuses[0], /Sent\sToken/))
 
       const walletBalance = await findElement(driver, By.css('.wallet-balance'))
       await walletBalance.click()
