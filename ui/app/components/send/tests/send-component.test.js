@@ -13,6 +13,7 @@ const propsMethodSpies = {
   updateSendErrors: sinon.spy(),
   updateSendTokenBalance: sinon.spy(),
   resetSendState: sinon.spy(),
+  fetchGasEstimates: sinon.spy(),
 }
 const utilsMethodStubs = {
   getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
@@ -37,6 +38,7 @@ describe('Send Component', function () {
       blockGasLimit={'mockBlockGasLimit'}
       conversionRate={10}
       editingTransactionId={'mockEditingTransactionId'}
+      fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
       from={ { address: 'mockAddress', balance: 'mockBalance' } }
       gasLimit={'mockGasLimit'}
       gasPrice={'mockGasPrice'}
@@ -62,6 +64,7 @@ describe('Send Component', function () {
     utilsMethodStubs.doesAmountErrorRequireUpdate.resetHistory()
     utilsMethodStubs.getAmountErrorObject.resetHistory()
     utilsMethodStubs.getGasFeeErrorObject.resetHistory()
+    propsMethodSpies.fetchGasEstimates.resetHistory()
     propsMethodSpies.updateAndSetGasTotal.resetHistory()
     propsMethodSpies.updateSendErrors.resetHistory()
     propsMethodSpies.updateSendTokenBalance.resetHistory()
@@ -78,6 +81,15 @@ describe('Send Component', function () {
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
       wrapper.instance().componentWillMount()
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
+    })
+  })
+
+  describe('componentDidMount', () => {
+    it('should call props.fetchGasEstimates', () => {
+      propsMethodSpies.fetchGasEstimates.resetHistory()
+      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 0)
+      wrapper.instance().componentDidMount()
+      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 1)
     })
   })
 

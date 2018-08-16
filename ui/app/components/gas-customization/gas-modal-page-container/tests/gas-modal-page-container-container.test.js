@@ -25,9 +25,11 @@ proxyquire('../gas-modal-page-container.container.js', {
   '../../../selectors/custom-gas': {
     getCustomGasPrice: (s) => `mockGasPrice:${s}`,
     getCustomGasLimit: (s) => `mockGasLimit:${s}`,
+    getBasicGasEstimateLoadingStatus: (s) => `mockBasicGasEstimateLoadingStatus:${s}`,
+    getRenderableBasicEstimateData: (s) => `mockRenderableBasicEstimateData:${s}`,
   },
   '../../../actions': actionSpies,
-  '../../../ducks/custom-gas': customGasActionSpies,
+  '../../../ducks/gas.duck': customGasActionSpies,
 })
 
 describe('gas-modal-page-container container', () => {
@@ -37,6 +39,8 @@ describe('gas-modal-page-container container', () => {
     it('should map the correct properties to props', () => {
       assert.equal(mapStateToProps('mockState').customGasPrice, 'mockGasPrice:mockState')
       assert.equal(mapStateToProps('mockState').customGasLimit, 'mockGasLimit:mockState')
+      assert.equal(mapStateToProps('mockState').gasPriceButtonGroupProps.buttonDataLoading, 'mockBasicGasEstimateLoadingStatus:mockState')
+      assert.equal(mapStateToProps('mockState').gasPriceButtonGroupProps.gasButtonInfo, 'mockRenderableBasicEstimateData:mockState')
     })
 
   })

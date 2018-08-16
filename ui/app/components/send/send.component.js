@@ -163,6 +163,10 @@ export default class SendTransactionScreen extends PersistentForm {
     }
   }
 
+  componentDidMount () {
+    this.props.fetchGasEstimates()
+  }
+
   componentWillMount () {
     const {
       from: { address },

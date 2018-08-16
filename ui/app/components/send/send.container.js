@@ -36,6 +36,9 @@ import {
   updateSendErrors,
 } from '../../ducks/send.duck'
 import {
+  fetchGasEstimates,
+} from '../../ducks/gas.duck'
+import {
   calcGasTotal,
 } from './send.utils.js'
 
@@ -101,5 +104,6 @@ function mapDispatchToProps (dispatch) {
     scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
+    fetchGasEstimates: () => dispatch(fetchGasEstimates()),
   }
 }
