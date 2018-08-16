@@ -7,6 +7,12 @@ const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 
+const accountsMenuSelector = '#app-content > div > div.full-width > div > div:nth-child(2) > span > div'
+const settingsTitleSelector = '#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'
+const deleteImportedAccountTitleSelector = '#app-content > div > div.app-primary.from-left > div > div.section-title.flex-row.flex-center > h2'
+const importedAccountRemoveIconSelector = '#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'
+const importedLabelSelector = '#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label'
+
 describe('Metamask popup page', function () {
   let driver, accountAddress, tokenAddress, extensionId
 
@@ -116,7 +122,7 @@ describe('Metamask popup page', function () {
     })
 
     it('adds a second account', async function () {
-      await driver.findElement(By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div')).click()
+      await driver.findElement(By.css(accountsMenuSelector)).click()
       await delay(300)
       await driver.findElement(By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span')).click()
     })
@@ -152,6 +158,72 @@ describe('Metamask popup page', function () {
       const QRaccountAddress = await driver.findElement(By.css('.ellip-address')).getText()
       assert.equal(accountAddress.toLowerCase(), QRaccountAddress)
       await driver.findElement(By.css('.fa-arrow-left')).click()
+      await delay(500)
+    })
+  })
+
+  describe('Import Account', () => {
+    it('opens import account menu', async function () {
+      await driver.findElement(By.css(accountsMenuSelector)).click()
+      await delay(500)
+      await driver.findElement(By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span')).click()
+      await delay(500)
+      const importAccountTitle = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div.flex-row.flex-center > h2'))
+      assert.equal(await importAccountTitle.getText(), 'Import Accounts')
+    })
+
+    it('imports account', async function () {
+      const privateKeyBox = await driver.findElement(By.css('#private-key-box'))
+      const importButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div:nth-child(4) > button'))
+      privateKeyBox.sendKeys('c6b81c1252415d1acfda94474ab8f662a44c045f96749c805ff12a6074081586')// demo private key
+      importButton.click()
+      await delay(200)
+      // check, that account is added
+      await driver.findElement(By.css(accountsMenuSelector)).click()
+      await delay(500)
+      const importedLabel = await driver.findElement(By.css(importedLabelSelector))
+      assert.equal(await importedLabel.getText(), 'IMPORTED')
+    })
+
+    it('opens delete imported account screen', async function () {
+      await driver.findElement(By.css(importedAccountRemoveIconSelector)).click()
+      await delay(200)
+      const deleteImportedAccountTitle = await driver.findElement(By.css(deleteImportedAccountTitleSelector))
+      assert.equal(await deleteImportedAccountTitle.getText(), 'Delete Imported Account')
+    })
+
+    it('doesn\'t remove imported account with \'No\' button', async function () {
+      const NoButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-right > button.btn-violet'))
+      NoButton.click()
+      await delay(500)
+      const settingsTitle = await driver.findElement(By.css(settingsTitleSelector))
+      assert.equal(await settingsTitle.getText(), 'Settings')
+
+      // check, that imported account still exists
+      await driver.findElement(By.css(accountsMenuSelector)).click()
+      await delay(500)
+      const importedLabel = await driver.findElement(By.css(importedLabelSelector))
+      assert.equal(await importedLabel.getText(), 'IMPORTED')
+    })
+
+    it('opens delete imported account screen again', async function () {
+      await driver.findElement(By.css(importedAccountRemoveIconSelector)).click()
+      await delay(500)
+    })
+
+    it('removes imported account with \'Yes\' button', async function () {
+      const YesButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'))
+      YesButton.click()
+      await delay(500)
+      const settingsTitle = await driver.findElement(By.css(settingsTitleSelector))
+      assert.equal(await settingsTitle.getText(), 'Settings')
+
+      // check, that imported account is removed
+      await driver.findElement(By.css(accountsMenuSelector)).click()
+      await delay(500)
+      const importedAccounts = await driver.findElements(By.css(importedLabelSelector))
+      assert.ok(importedAccounts.length === 0)
+      await driver.findElement(By.css(accountsMenuSelector)).click()
       await delay(500)
     })
   })
@@ -296,7 +368,7 @@ describe('Metamask popup page', function () {
     })
 
     it('checks add token screen rendered', async function () {
-      const addTokenScreen = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
+      const addTokenScreen = await driver.findElement(By.css(settingsTitleSelector))
       assert.equal(await addTokenScreen.getText(), 'Add Token')
     })
 
@@ -319,7 +391,7 @@ describe('Metamask popup page', function () {
       // Click to remove first token
       const removeTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > .trash'))
       await removeTokenButton.click()
-      const removeTokenTitle = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
+      const removeTokenTitle = await driver.findElement(By.css(settingsTitleSelector))
 
       // Check that the correct page is opened
       assert.equal(await removeTokenTitle.getText(), 'Remove Token')
@@ -337,7 +409,7 @@ describe('Metamask popup page', function () {
       // Click to remove first token
       const removeTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > .trash'))
       await removeTokenButton.click()
-      const removeTokenTitle = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
+      const removeTokenTitle = await driver.findElement(By.css(settingsTitleSelector))
 
       // Check that the correct page is opened
       assert.equal(await removeTokenTitle.getText(), 'Remove Token')
@@ -380,7 +452,7 @@ describe('Metamask popup page', function () {
     it('delete custom rpc', async function () {
       await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button')).click()
       await delay(300)
-      const titleConfirmPage = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'))
+      const titleConfirmPage = await driver.findElement(By.css(settingsTitleSelector))
       assert.equal(await titleConfirmPage.getText(), 'Delete Custom RPC')
       const yesButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'))
       assert.equal(await yesButton.getText(), 'Yes')

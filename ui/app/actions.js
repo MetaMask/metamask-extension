@@ -309,6 +309,8 @@ var actions = {
   SHOW_DELETE_RPC: 'SHOW_DELETE_RPC',
   showDeleteRPC,
   removeCustomRPC,
+  SHOW_DELETE_IMPORTED_ACCOUNT: 'SHOW_DELETE_IMPORTED_ACCOUNT',
+  showDeleteImportedAccount,
 }
 
 module.exports = actions
@@ -2303,5 +2305,13 @@ function removeCustomRPC (url, provider) {
         resolve(url)
       })
     })
+  }
+}
+
+function showDeleteImportedAccount (identity, keyring) {
+  return {
+    type: actions.SHOW_DELETE_IMPORTED_ACCOUNT,
+    identity,
+    keyring,
   }
 }
