@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import Button from '../button'
 import Identicon from '../identicon'
 import TokenBalance from '../token-balance'
+import CurrencyDisplay from '../currency-display'
 import { SEND_ROUTE } from '../../routes'
-import { formatCurrency } from '../../helpers/confirm-transaction/util'
+import { ETH } from '../../constants/common'
 
 export default class TokenViewBalance extends PureComponent {
   static contextTypes = {
@@ -16,14 +17,11 @@ export default class TokenViewBalance extends PureComponent {
     selectedToken: PropTypes.object,
     history: PropTypes.object,
     network: PropTypes.string,
-    ethBalance: PropTypes.string,
-    fiatBalance: PropTypes.string,
-    currentCurrency: PropTypes.string,
+    balance: PropTypes.string,
   }
 
   renderBalance () {
-    const { selectedToken, ethBalance, fiatBalance, currentCurrency } = this.props
-    const formattedFiatBalance = formatCurrency(fiatBalance, currentCurrency)
+    const { selectedToken, balance } = this.props
 
     return selectedToken
       ? (
@@ -34,12 +32,16 @@ export default class TokenViewBalance extends PureComponent {
         />
       ) : (
         <div className="token-view-balance__balance">
-          <div className="token-view-balance__primary-balance">
-            { `${ethBalance} ETH` }
-          </div>
-          <div className="token-view-balance__secondary-balance">
-            { formattedFiatBalance }
-          </div>
+          <CurrencyDisplay
+            className="token-view-balance__primary-balance"
+            value={balance}
+            currency={ETH}
+            numberOfDecimals={3}
+          />
+          <CurrencyDisplay
+            className="token-view-balance__secondary-balance"
+            value={balance}
+          />
         </div>
       )
   }
