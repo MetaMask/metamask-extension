@@ -28,14 +28,17 @@ IdenticonComponent.prototype.render = function () {
   var props = this.props
   const { className = '', address, imageUrl } = props
   var diameter = props.diameter || this.defaultDiameter
-  // for tokens added with `watchToken` we need to render the given image
+  const style = {
+    height: diameter,
+    width: diameter,
+    borderRadius: diameter / 2,
+  }
   if (imageUrl) {
-    return h('img.balance-icon', {
+    return h('img', {
+      className: `${className} identicon`,
       src: imageUrl,
       style: {
-        height: diameter,
-        width: diameter,
-        borderRadius: diameter / 2,
+        ...style,
       },
     })
   } else if (address) {
@@ -47,9 +50,7 @@ IdenticonComponent.prototype.render = function () {
         flexShrink: 0,
         alignItems: 'center',
         justifyContent: 'center',
-        height: diameter,
-        width: diameter,
-        borderRadius: diameter / 2,
+        ...style,
         overflow: 'hidden',
       },
     })
@@ -57,9 +58,7 @@ IdenticonComponent.prototype.render = function () {
     return h('img.balance-icon', {
       src: './images/eth_logo.svg',
       style: {
-        height: diameter,
-        width: diameter,
-        borderRadius: diameter / 2,
+        ...style,
       },
     })
   }
