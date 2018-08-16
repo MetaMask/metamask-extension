@@ -93,7 +93,7 @@ export function formatCurrency (value, currencyCode) {
   const upperCaseCurrencyCode = currencyCode.toUpperCase()
 
   return currencies.find(currency => currency.code === upperCaseCurrencyCode)
-    ? currencyFormatter.format(Number(value), { code: upperCaseCurrencyCode })
+    ? currencyFormatter.format(Number(value), { code: upperCaseCurrencyCode, style: 'currency' })
     : value
 }
 
