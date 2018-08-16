@@ -3,21 +3,24 @@ import PropTypes from 'prop-types'
 import Identicon from '../identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
+import CurrencyDisplay from '../currency-display'
+import TokenCurrencyDisplay from '../token-currency-display'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
+import { ETH } from '../../constants/common'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     transaction: PropTypes.object,
-    ethTransactionAmount: PropTypes.string,
-    fiatDisplayValue: PropTypes.string,
+    value: PropTypes.string,
     methodData: PropTypes.object,
     showRetry: PropTypes.bool,
     retryTransaction: PropTypes.func,
     setSelectedToken: PropTypes.func,
     nonceAndDate: PropTypes.string,
+    token: PropTypes.object,
   }
 
   handleClick = () => {
@@ -55,18 +58,50 @@ export default class TransactionListItem extends PureComponent {
       .then(id => history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`))
   }
 
+  renderPrimaryCurrency () {
+    const { token, transaction: { txParams: { data } = {} } = {}, value } = this.props
+
+    return token
+      ? (
+        <TokenCurrencyDisplay
+          className="transaction-list-item__amount transaction-list-item__amount--primary"
+          token={token}
+          transactionData={data}
+          prefix="-"
+        />
+      ) : (
+        <CurrencyDisplay
+          className="transaction-list-item__amount transaction-list-item__amount--primary"
+          value={value}
+          prefix="-"
+        />
+      )
+  }
+
+  renderSecondaryCurrency () {
+    const { token, value } = this.props
+
+    return token
+      ? null
+      : (
+        <CurrencyDisplay
+          className="transaction-list-item__amount transaction-list-item__amount--secondary"
+          prefix="-"
+          value={value}
+          numberOfDecimals={2}
+          currency={ETH}
+        />
+      )
+  }
+
   render () {
     const {
       transaction,
-      ethTransactionAmount,
-      fiatDisplayValue,
       methodData,
       showRetry,
       nonceAndDate,
     } = this.props
     const { txParams = {} } = transaction
-    const fiatDisplayText = `-${fiatDisplayValue}`
-    const ethDisplayText = ethTransactionAmount && `-${ethTransactionAmount} ETH`
 
     return (
       <div
@@ -94,18 +129,8 @@ export default class TransactionListItem extends PureComponent {
             className="transaction-list-item__status"
             status={transaction.status}
           />
-          <div
-            className="transaction-list-item__amount transaction-list-item__amount--primary"
-            title={fiatDisplayText}
-          >
-            { fiatDisplayText }
-          </div>
-          <div
-            className="transaction-list-item__amount transaction-list-item__amount--secondary"
-            title={ethDisplayText}
-          >
-            { ethDisplayText }
-          </div>
+          { this.renderPrimaryCurrency() }
+          { this.renderSecondaryCurrency() }
         </div>
         {
           showRetry && !methodData.isFetching && (
