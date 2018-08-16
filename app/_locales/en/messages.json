@@ -286,8 +286,8 @@
   "downloadStateLogs": {
     "message": "Download State Logs"
   },
-  "dontHaveATrezorWallet": {
-    "message": "Don't have a TREZOR hardware wallet?"
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
   },
   "dropped": {
     "message": "Dropped"
@@ -424,10 +424,10 @@
     "message": "Hardware wallet connected"
   },
   "hardwareWallets": {
-    "message": "Hardware Wallets"
+    "message": "Connect a hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "You can now view your Hardware wallet accounts in MetaMask!  Scroll down and read how it works."
+    "message": "Select a hardware wallet you'd like to use with MetaMask"
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -908,7 +908,7 @@
     "description": "displays token symbol"
   },
   "orderOneHere": {
-    "message": "Order one here."
+    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
   },
   "searchTokens": {
     "message": "Search Tokens"

@@ -167,7 +167,6 @@
       margin-top: 5px;
       margin-bottom: 15px;
       font-size: 22px;
-      text-align: center;
     }
 
     &__msg {
@@ -176,6 +175,66 @@
       margin-top: 10px;
       margin-bottom: 20px;
     }
+  }
+
+  &__btn-wrapper {
+    flex: 1;
+    flex-direction: row;
+    display: flex;
+  }
+
+  &__connect-btn {
+    background-color: #259De5;
+    color: #fff;
+    border: none;
+    width: 315px;
+    min-height: 54px;
+    font-weight: 300;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex: 1;
+    margin-left: 20px;
+    margin-right: 20px;
+    justify-content: center;
+    text-transform: uppercase;
+  }
+
+  &__connect-btn.disabled {
+    cursor: not-allowed;
+    opacity: .5;
+  }
+
+  &__btn {
+    background: #fbfbfb;
+    border: 1px solid #e5e5e5;
+    height: 100px;
+    width: 150px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+
+    &__img {
+      width: 95px;
+    }
+  }
+
+  &__btn.selected {
+    border: 2px solid #00a8ee;
+    width: 149px;
+  }
+
+  &__btn:first-child {
+    margin-right: 15px;
+    margin-left: 20px;
+  }
+
+  &__btn:last-child {
+    margin-right: 20px;
   }
 
   &__hdPath {
@@ -255,7 +314,7 @@
     }
   }
 
-  &__get-trezor {
+  &__get-hw {
     width: 100%;
     padding-bottom: 10px;
     padding-top: 10px;
