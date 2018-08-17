@@ -3,9 +3,10 @@ const sinon = require('sinon')
 const clone = require('clone')
 const nock = require('nock')
 const createThoughStream = require('through2').obj
-const MetaMaskController = require('../../../../app/scripts/metamask-controller')
 const blacklistJSON = require('eth-phishing-detect/src/config')
-const firstTimeState = require('../../../../app/scripts/first-time-state')
+const MetaMaskController = require('../../../../app/scripts/metamask-controller')
+const firstTimeState = require('../../../unit/localhostState')
+const createTxMeta = require('../../../lib/createTxMeta')
 
 const currentNetworkId = 42
 const DEFAULT_LABEL = 'Account 1'
@@ -13,6 +14,7 @@ const TEST_SEED = 'debris dizzy just program just float decrease vacant alarm re
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
 const TEST_SEED_ALT = 'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle'
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
+const CUSTOM_RPC_URL = 'http://localhost:8545'
 
 describe('MetaMaskController', function () {
   let metamaskController
@@ -360,29 +362,19 @@ describe('MetaMaskController', function () {
   })
 
   describe('#setCustomRpc', function () {
-    const customRPC = 'https://custom.rpc/'
     let rpcTarget
 
     beforeEach(function () {
-
-      nock('https://custom.rpc')
-      .post('/')
-      .reply(200)
-
-      rpcTarget = metamaskController.setCustomRpc(customRPC)
-    })
-
-    afterEach(function () {
-      nock.cleanAll()
+      rpcTarget = metamaskController.setCustomRpc(CUSTOM_RPC_URL)
     })
 
     it('returns custom RPC that when called', async function () {
-      assert.equal(await rpcTarget, customRPC)
+      assert.equal(await rpcTarget, CUSTOM_RPC_URL)
     })
 
     it('changes the network controller rpc', function () {
       const networkControllerState = metamaskController.networkController.store.getState()
-      assert.equal(networkControllerState.provider.rpcTarget, customRPC)
+      assert.equal(networkControllerState.provider.rpcTarget, CUSTOM_RPC_URL)
     })
   })
 
@@ -487,9 +479,10 @@ describe('MetaMaskController', function () {
       getNetworkstub.returns(42)
 
       metamaskController.txController.txStateManager._saveTxList([
-        { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'} },
-        { id: 2, status: 'rejected', metamaskNetworkId: 32, txParams: {} },
-        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4'} },
+        createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'} }),
+        createTxMeta({ id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'} }),
+        createTxMeta({ id: 2, status: 'rejected', metamaskNetworkId: 32 }),
+        createTxMeta({ id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4'} }),
       ])
     })
 
@@ -566,14 +559,14 @@ describe('MetaMaskController', function () {
 
   })
 
-  describe('#newUnsignedMessage', function () {
+  describe('#newUnsignedMessage', () => {
 
     let msgParams, metamaskMsgs, messages, msgId
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813'
     const data = '0x43727970746f6b697474696573'
 
-    beforeEach(async function () {
+    beforeEach(async () => {
 
       await metamaskController.createNewVaultAndRestore('foobar1337', TEST_SEED_ALT)
 
@@ -582,7 +575,10 @@ describe('MetaMaskController', function () {
         'data': data,
       }
 
-      metamaskController.newUnsignedMessage(msgParams, noop)
+      const promise = metamaskController.newUnsignedMessage(msgParams)
+      // handle the promise so it doesn't throw an unhandledRejection
+      promise.then(noop).catch(noop)
+
       metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
       messages = metamaskController.messageManager.messages
       msgId = Object.keys(metamaskMsgs)[0]
@@ -622,13 +618,16 @@ describe('MetaMaskController', function () {
 
   describe('#newUnsignedPersonalMessage', function () {
 
-    it('errors with no from in msgParams', function () {
+    it('errors with no from in msgParams', async () => {
       const msgParams = {
         'data': data,
       }
-      metamaskController.newUnsignedPersonalMessage(msgParams, function (error) {
+      try {
+        await metamaskController.newUnsignedPersonalMessage(msgParams)
+        assert.fail('should have thrown')
+      } catch (error) {
         assert.equal(error.message, 'MetaMask Message Signature: from field is required.')
-      })
+      }
     })
 
     let msgParams, metamaskPersonalMsgs, personalMessages, msgId
@@ -645,7 +644,10 @@ describe('MetaMaskController', function () {
         'data': data,
       }
 
-      metamaskController.newUnsignedPersonalMessage(msgParams, noop)
+      const promise = metamaskController.newUnsignedPersonalMessage(msgParams)
+      // handle the promise so it doesn't throw an unhandledRejection
+      promise.then(noop).catch(noop)
+
       metamaskPersonalMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
       personalMessages = metamaskController.personalMessageManager.messages
       msgId = Object.keys(metamaskPersonalMsgs)[0]
@@ -684,22 +686,27 @@ describe('MetaMaskController', function () {
   describe('#setupUntrustedCommunication', function () {
     let streamTest
 
-    const phishingUrl = 'decentral.market'
+    const phishingUrl = 'myethereumwalletntw.com'
 
     afterEach(function () {
       streamTest.end()
     })
 
-    it('sets up phishing stream for untrusted communication ', async function () {
+    it('sets up phishing stream for untrusted communication ', async () => {
       await metamaskController.blacklistController.updatePhishingList()
+      console.log(blacklistJSON.blacklist.includes(phishingUrl))
+
+      const { promise, resolve } = deferredPromise()
 
       streamTest = createThoughStream((chunk, enc, cb) => {
-        assert.equal(chunk.name, 'phishing')
+        if (chunk.name !== 'phishing') return cb()
         assert.equal(chunk.data.hostname, phishingUrl)
-         cb()
-        })
-      // console.log(streamTest)
-       metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+        resolve()
+        cb()
+      })
+      metamaskController.setupUntrustedCommunication(streamTest, phishingUrl)
+
+      await promise
     })
   })
 
@@ -746,3 +753,9 @@ describe('MetaMaskController', function () {
   })
 
 })
+
+function deferredPromise () {
+  let resolve
+  const promise = new Promise(_resolve => { resolve = _resolve })
+  return { promise, resolve }
+}
