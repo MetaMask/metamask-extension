@@ -40,8 +40,9 @@ class AccountList extends Component {
 
       const options = this.getHdPaths()
       return h('div', [
+        h('h3.hw-connect__hdPath__title', {}, this.context.t('selectHdPath')),
+        h('p.hw-connect__msg', {}, this.context.t('selectPathHelp')),
         h('div.hw-connect__hdPath', [
-          h('h3.hw-connect__hdPath__title', {}, `HD Path`),
           h(Select, {
             className: 'hw-connect__hdPath__select',
             name: 'hd-path-select',
@@ -53,18 +54,23 @@ class AccountList extends Component {
             },
           }),
         ]),
-        h('p.hw-connect__msg', {}, this.context.t('selectPathHelp')),
       ])
     }
+
+    capitalizeDevice (device) {
+      return device.slice(0, 1).toUpperCase() + device.slice(1)
+    }
+
     renderHeader () {
       const { device } = this.props
       return (
         h('div.hw-connect', [
 
-          h('h3.hw-connect__title', {}, `${device.toUpperCase()} - ${this.context.t('selectAnAccount')}`),
+          h('h3.hw-connect__unlock-title', {}, `${this.context.t('unlock')} ${this.capitalizeDevice(device)}`),
 
           device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null,
 
+          h('h3.hw-connect__hdPath__title', {}, this.context.t('selectAnAccount')),
           h('p.hw-connect__msg', {}, this.context.t('selectAnAccountHelp')),
         ])
       )
