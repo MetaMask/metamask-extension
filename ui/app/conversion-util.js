@@ -46,7 +46,7 @@ const decToBigNumberViaString = n => R.pipe(String, toBigNumber['dec'])
 // Setter Maps
 const toBigNumber = {
   hex: n => new BigNumber(stripHexPrefix(n), 16),
-  dec: n => new BigNumber(n, 10),
+  dec: n => new BigNumber(String(n), 10),
   BN: n => new BigNumber(n.toString(16), 16),
 }
 const toNormalizedDenomination = {
@@ -154,7 +154,7 @@ const subtractCurrencies = (a, b, options = {}) => {
     bBase,
     ...conversionOptions
   } = options
-  const value = (new BigNumber(a, aBase)).minus(b, bBase)
+  const value = (new BigNumber(String(a), aBase)).minus(b, bBase)
 
   return converter({
     value,
