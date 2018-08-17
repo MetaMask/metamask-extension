@@ -5,7 +5,6 @@ workflows:
   full_test:
     jobs:
       - prep-deps-npm
-      - prep-deps-firefox
       - prep-build:
           requires:
             - prep-deps-npm
@@ -28,7 +27,6 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox
             - prep-build
       - test-e2e-beta-chrome:
           requires:
@@ -37,7 +35,6 @@ workflows:
       - test-e2e-beta-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox
             - prep-build
       - test-unit:
           requires:
@@ -49,7 +46,6 @@ workflows:
       - test-integration-mascara-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox
             - prep-scss
       - test-integration-flat-chrome:
           requires:
@@ -58,7 +54,6 @@ workflows:
       - test-integration-flat-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox
             - prep-scss
       - all-tests-pass:
           requires:
@@ -113,20 +108,6 @@ jobs:
           key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-  prep-deps-firefox:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
-      - run:
-          name: Download Firefox If needed
-          command: ./.circleci/scripts/firefox-download.sh
-      - save_cache:
-          key: v1.0-dependency-cache-firefox-
-          paths:
-            - firefox
 
   prep-build:
     docker:
@@ -224,11 +205,9 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
       - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install
       - restore_cache:
           key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
@@ -261,11 +240,9 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
       - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install
       - restore_cache:
           key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
@@ -356,17 +333,13 @@ jobs:
           command: npm run test:coverage
 
   test-integration-flat-firefox:
-    environment:
-      browsers: '["Firefox"]'
     docker:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
       - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install
       - restore_cache:
           key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
@@ -399,17 +372,13 @@ jobs:
           command: npm run test:flat
 
   test-integration-mascara-firefox:
-    environment:
-      browsers: '["Firefox"]'
     docker:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
       - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install
       - restore_cache:
           key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
       - run:
