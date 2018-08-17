@@ -15,7 +15,7 @@ class PreferencesController {
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
    * @property {object} store.accountTokens The tokens stored per account and then per network type
-   * @property {object} store.objects Contains assets objects related to assets added
+   * @property {object} store.imageObjects Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
@@ -28,8 +28,8 @@ class PreferencesController {
       frequentRpcList: [],
       currentAccountTab: 'history',
       accountTokens: {},
+      imageObjects: {},
       tokens: [],
-      objects: {},
       suggestedTokens: {},
       useBlockie: false,
       featureFlags: {},
@@ -60,8 +60,8 @@ class PreferencesController {
     return this.store.getState().suggestedTokens
   }
 
-  getObjects () {
-    return this.store.getState().objects
+  getImageObjects () {
+    return this.store.getState().imageObjects
   }
 
   addSuggestedToken (tokenOpts) {
@@ -89,11 +89,12 @@ class PreferencesController {
         case 'ERC20':
           this._handleWatchAssetERC20(options, res)
           res.result = options.address
+          end()
           break
         default:
           // TODO return promise for not handled assets
+          end(new Error(`Asset of type ${type} not supported`))
       }
-      end()
     } else {
       next()
     }
@@ -291,7 +292,7 @@ class PreferencesController {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
     const tokens = this.store.getState().tokens
-    const objects = this.getObjects()
+    const imageObjects = this.getImageObjects()
     const previousEntry = tokens.find((token, index) => {
       return token.address === address
     })
@@ -302,8 +303,8 @@ class PreferencesController {
     } else {
       tokens.push(newEntry)
     }
-    objects[address] = imageUrl
-    this._updateAccountTokens(tokens, objects)
+    imageObjects[address] = imageUrl
+    this._updateAccountTokens(tokens, imageObjects)
     return Promise.resolve(tokens)
   }
 
@@ -316,10 +317,10 @@ class PreferencesController {
    */
   removeToken (rawAddress) {
     const tokens = this.store.getState().tokens
-    const objects = this.getObjects()
+    const imageObjects = this.getImageObjects()
     const updatedTokens = tokens.filter(token => token.address !== rawAddress)
-    const updatedObjects = Object.keys(objects).filter(key => key !== rawAddress)
-    this._updateAccountTokens(updatedTokens, updatedObjects)
+    delete imageObjects[rawAddress]
+    this._updateAccountTokens(updatedTokens, imageObjects)
     return Promise.resolve(updatedTokens)
   }
 
@@ -483,10 +484,10 @@ class PreferencesController {
    * @param {array} tokens Array of tokens to be updated.
    *
    */
-  _updateAccountTokens (tokens, objects) {
+  _updateAccountTokens (tokens, imageObjects) {
     const { accountTokens, providerType, selectedAddress } = this._getTokenRelatedStates()
     accountTokens[selectedAddress][providerType] = tokens
-    this.store.updateState({ accountTokens, tokens, objects })
+    this.store.updateState({ accountTokens, tokens, imageObjects })
   }
 
   /**
