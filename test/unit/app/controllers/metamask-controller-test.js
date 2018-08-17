@@ -286,9 +286,9 @@ describe('MetaMaskController', function () {
 
     it('should throw if it receives an unknown device name', async function () {
       try {
-        await metamaskController.connectHardware('Some random device name', 0)
+        await metamaskController.connectHardware('Some random device name', 0, `m/44/0'/0'`)
       } catch (e) {
-        assert.equal(e, 'Error: MetamaskController:connectHardware - Unknown device')
+        assert.equal(e, 'Error: MetamaskController:getKeyringForDevice - Unknown device')
       }
     })
 
@@ -302,14 +302,24 @@ describe('MetaMaskController', function () {
       assert.equal(keyrings.length, 1)
     })
 
+    it('should add the Ledger Hardware keyring', async function () {
+      sinon.spy(metamaskController.keyringController, 'addNewKeyring')
+      await metamaskController.connectHardware('ledger', 0).catch((e) => null)
+      const keyrings = await metamaskController.keyringController.getKeyringsByType(
+        'Ledger Hardware'
+      )
+      assert.equal(metamaskController.keyringController.addNewKeyring.getCall(0).args, 'Ledger Hardware')
+      assert.equal(keyrings.length, 1)
+    })
+
   })
 
   describe('checkHardwareStatus', function () {
     it('should throw if it receives an unknown device name', async function () {
       try {
-        await metamaskController.checkHardwareStatus('Some random device name')
+        await metamaskController.checkHardwareStatus('Some random device name', `m/44/0'/0'`)
       } catch (e) {
-        assert.equal(e, 'Error: MetamaskController:checkHardwareStatus - Unknown device')
+        assert.equal(e, 'Error: MetamaskController:getKeyringForDevice - Unknown device')
       }
     })
 
@@ -325,7 +335,7 @@ describe('MetaMaskController', function () {
       try {
         await metamaskController.forgetDevice('Some random device name')
       } catch (e) {
-        assert.equal(e, 'Error: MetamaskController:forgetDevice - Unknown device')
+        assert.equal(e, 'Error: MetamaskController:getKeyringForDevice - Unknown device')
       }
     })
 
@@ -342,7 +352,7 @@ describe('MetaMaskController', function () {
     })
   })
 
-  describe('unlockTrezorAccount', function () {
+  describe('unlockHardwareWalletAccount', function () {
     let accountToUnlock
     let windowOpenStub
     let addNewAccountStub
@@ -365,16 +375,20 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.preferencesController, 'setAddresses')
       sinon.spy(metamaskController.preferencesController, 'setSelectedAddress')
       sinon.spy(metamaskController.preferencesController, 'setAccountLabel')
-      await metamaskController.connectHardware('trezor', 0).catch((e) => null)
-      await metamaskController.unlockTrezorAccount(accountToUnlock).catch((e) => null)
+      await metamaskController.connectHardware('trezor', 0, `m/44/0'/0'`).catch((e) => null)
+      await metamaskController.unlockHardwareWalletAccount(accountToUnlock, 'trezor', `m/44/0'/0'`)
     })
 
     afterEach(function () {
-      metamaskController.keyringController.addNewAccount.restore()
       window.open.restore()
+      metamaskController.keyringController.addNewAccount.restore()
+      metamaskController.keyringController.getAccounts.restore()
+      metamaskController.preferencesController.setAddresses.restore()
+      metamaskController.preferencesController.setSelectedAddress.restore()
+      metamaskController.preferencesController.setAccountLabel.restore()
     })
 
-    it('should set accountToUnlock in the keyring', async function () {
+    it('should set unlockedAccount in the keyring', async function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Trezor Hardware'
       )
@@ -382,7 +396,7 @@ describe('MetaMaskController', function () {
     })
 
 
-    it('should call  keyringController.addNewAccount', async function () {
+    it('should call keyringController.addNewAccount', async function () {
       assert(metamaskController.keyringController.addNewAccount.calledOnce)
     })
 
