@@ -48,6 +48,7 @@ const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
+const EthQuery = require('eth-query')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -475,12 +476,32 @@ module.exports = class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore (password, seed) {
     const releaseLock = await this.createVaultMutex.acquire()
     try {
+      let accounts, lastBalance
+
+      const keyringController = this.keyringController
+
       // clear known identities
       this.preferencesController.setAddresses([])
       // create new vault
-      const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
+      const vault = await keyringController.createNewVaultAndRestore(password, seed)
+
+      const ethQuery = new EthQuery(this.provider)
+      accounts = await keyringController.getAccounts()
+      lastBalance = await this.getBalance(accounts[accounts.length - 1], ethQuery)
+
+      const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
+      if (!primaryKeyring) {
+        throw new Error('MetamaskController - No HD Key Tree found')
+      }
+
+      // seek out the first zero balance
+      while (lastBalance !== '0x0') {
+        await keyringController.addNewAccount(primaryKeyring)
+        accounts = await keyringController.getAccounts()
+        lastBalance = await this.getBalance(accounts[accounts.length - 1], ethQuery)
+      }
+
       // set new identities
-      const accounts = await this.keyringController.getAccounts()
       this.preferencesController.setAddresses(accounts)
       this.selectFirstIdentity()
       releaseLock()
@@ -489,6 +510,30 @@ module.exports = class MetamaskController extends EventEmitter {
       releaseLock()
       throw err
     }
+  }
+
+  /**
+   * Get an account balance from the AccountTracker or request it directly from the network.
+   * @param {string} address - The account address
+   * @param {EthQuery} ethQuery - The EthQuery instance to use when asking the network
+   */
+  getBalance (address, ethQuery) {
+    return new Promise((resolve, reject) => {
+      const cached = this.accountTracker.store.getState().accounts[address]
+
+      if (cached && cached.balance) {
+        resolve(cached.balance)
+      } else {
+        ethQuery.getBalance(address, (error, balance) => {
+          if (error) {
+            reject(error)
+            log.error(error)
+          } else {
+            resolve(balance || '0x0')
+          }
+        })
+      }
+    })
   }
 
   /*
