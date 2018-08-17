@@ -103,7 +103,7 @@ jobs:
       - run:
           name: Install npm 6 + deps via npm
           command: |
-           sudo npm install -g npm@6.1.0 && npm install --no-save
+           sudo npm install -g npm@6 && npm install --no-save
       - save_cache:
           key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
           paths:
