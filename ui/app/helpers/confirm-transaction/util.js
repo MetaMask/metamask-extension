@@ -146,3 +146,8 @@ export function roundExponential (value) {
   // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
   return bigNumberValue.e > 20 ? Number(bigNumberValue.toPrecision(PRECISION)) : value
 }
+
+export async function isSmartContractAddress (address) {
+  const code = await global.eth.getCode(address)
+  return code && code !== '0x'
+}
