@@ -85,7 +85,7 @@ class ConnectScreen extends Component {
     getAffiliateLinks () {
       const links = {
         trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
-        ledger: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Ledger</a>`,
+        ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
       }
 
       const text = this.context.t('orderOneHere')
