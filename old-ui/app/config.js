@@ -9,6 +9,7 @@ const infuraCurrencies = require('./infura-conversion.json').objects.sort((a, b)
 const validUrl = require('valid-url')
 const exportAsFile = require('./util').exportAsFile
 const Modal = require('../../ui/app/components/modals/index').Modal
+const ethNetProps = require('eth-net-props')
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
@@ -257,32 +258,32 @@ function currentProviderDisplay (metamaskState, state) {
 
     case 'mainnet':
       title = 'Current Network'
-      value = 'Main Ethereum Network'
+      value = ethNetProps.props.getNetworkDisplayName(1)
       break
 
     case 'sokol':
       title = 'Current Network'
-      value = 'POA Sokol Test Network'
+      value = ethNetProps.props.getNetworkDisplayName(77)
       break
 
     case 'ropsten':
       title = 'Current Network'
-      value = 'Ropsten Test Network'
+      value = ethNetProps.props.getNetworkDisplayName(3)
       break
 
     case 'kovan':
       title = 'Current Network'
-      value = 'Kovan Test Network'
+      value = ethNetProps.props.getNetworkDisplayName(42)
       break
 
     case 'rinkeby':
       title = 'Current Network'
-      value = 'Rinkeby Test Network'
+      value = ethNetProps.props.getNetworkDisplayName(4)
       break
 
     case 'poa':
       title = 'Current Network'
-      value = 'POA Network'
+      value = ethNetProps.props.getNetworkDisplayName(99)
       break
 
     default:

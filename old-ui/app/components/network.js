@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const ethNetProps = require('eth-net-props')
 
 module.exports = Network
 
@@ -12,14 +13,14 @@ function Network () {
 
 Network.prototype.render = function () {
   const props = this.props
-  const networkNumber = props.network
+  const { provider, network: networkNumber } = props
   let providerName
   try {
-    providerName = props.provider.type
+    providerName = provider.type
   } catch (e) {
     providerName = null
   }
-  let iconName, hoverText
+  let displayName, hoverText
 
   if (networkNumber === 'loading') {
     return h('span.pointer', {
@@ -40,30 +41,29 @@ Network.prototype.render = function () {
       }),
       h('i.fa.fa-caret-down'),
     ])
-  } else if (providerName === 'mainnet') {
-    hoverText = 'Main Ethereum Network'
-    iconName = 'ethereum-network'
-  } else if (providerName === 'ropsten') {
-    hoverText = 'Ropsten Test Network'
-    iconName = 'ropsten-test-network'
-  } else if (providerName === 'sokol') {
-    hoverText = 'POA Sokol Test Network'
-    iconName = 'sokol-test-network'
-  } else if (parseInt(networkNumber) === 3) {
-    hoverText = 'Ropsten Test Network'
-    iconName = 'ropsten-test-network'
-  } else if (providerName === 'kovan') {
-    hoverText = 'Kovan Test Network'
-    iconName = 'kovan-test-network'
-  } else if (providerName === 'rinkeby') {
-    hoverText = 'Rinkeby Test Network'
-    iconName = 'rinkeby-test-network'
-  } else if (providerName === 'poa') {
-    hoverText = 'POA Network'
-    iconName = 'poa-network'
   } else {
-    hoverText = 'Unknown Private Network'
-    iconName = 'unknown-private-network'
+    if (providerName === 'mainnet') {
+      displayName = 'Main Network'
+      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+    } else if (providerName === 'ropsten' || parseInt(networkNumber) === 3) {
+      displayName = 'Ropsten Test Net'
+      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+    } else if (providerName === 'sokol') {
+      displayName = 'Sokol Network'
+      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+    } else if (providerName === 'kovan') {
+      displayName = 'Kovan Test Net'
+      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+    } else if (providerName === 'rinkeby') {
+      displayName = 'Rinkeby Test Net'
+      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+    } else if (providerName === 'poa') {
+      displayName = 'POA Network'
+      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+    } else {
+      hoverText = (provider.type === 'rpc') ? `Private Network (${provider.rpcTarget})` : `Private Network (${provider.type})`
+      displayName = 'Private Network'
+    }
   }
 
   return (
@@ -73,51 +73,11 @@ Network.prototype.render = function () {
       onClick: (event) => props.onClick && props.onClick(event),
     }, [
       (function () {
-        switch (iconName) {
-          case 'ethereum-network':
-            return h(props.isUnlocked ? '.network-indicator' : '.network-indicator.hidden', [
-              h('.network-name',
-              'Main Network'),
-              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
-            ])
-          case 'sokol-test-network':
-            return h(props.isUnlocked ? '.network-indicator' : '.network-indicator.hidden', [
-              h('.network-name',
-              'Sokol Network'),
-              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
-            ])
-          case 'ropsten-test-network':
-            return h(props.isUnlocked ? '.network-indicator' : '.network-indicator.hidden', [
-              h('.network-name',
-              'Ropsten Test Net'),
-              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
-            ])
-          case 'kovan-test-network':
-            return h(props.isUnlocked ? '.network-indicator' : '.network-indicator.hidden', [
-              h('.network-name',
-              'Kovan Test Net'),
-              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
-            ])
-          case 'rinkeby-test-network':
-            return h(props.isUnlocked ? '.network-indicator' : '.network-indicator.hidden', [
-              h('.network-name',
-              'Rinkeby Test Net'),
-              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
-            ])
-          case 'poa-network':
-            return h(props.isUnlocked ? '.network-indicator' : '.network-indicator.hidden', [
-              h('.network-name',
-              'POA Network'),
-              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
-            ])
-          default:
-            return h(props.isUnlocked ? '.network-indicator' : '.network-indicator.hidden', [
-
-              h('.network-name',
-              'Private Network'),
-              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
-            ])
-        }
+        return h(props.isUnlocked ? '.network-indicator' : '.network-indicator.hidden', [
+          h('.network-name',
+          displayName),
+          props.onClick && h('i.fa.fa-caret-down.fa-lg'),
+        ])
       })(),
     ])
   )
