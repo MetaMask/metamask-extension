@@ -9,8 +9,8 @@ const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
-const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
-const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
+// const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
+// const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const Tooltip = require('../tooltip')
 
 
@@ -19,7 +19,7 @@ const {
   INFO_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
+  // CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
 } = require('../../routes')
 
@@ -115,18 +115,18 @@ AccountMenu.prototype.render = function () {
       icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
       text: this.context.t('importAccount'),
     }),
-    h(Item, {
-      onClick: () => {
-        toggleAccountMenu()
-        if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
-          global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
-        } else {
-          history.push(CONNECT_HARDWARE_ROUTE)
-        }
-      },
-      icon: h('img.account-menu__item-icon', { src: 'images/connect-icon.svg' }),
-      text: this.context.t('connectHardwareWallet'),
-    }),
+    // h(Item, {
+    //   onClick: () => {
+    //     toggleAccountMenu()
+    //     if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
+    //       global.platform.openExtensionInBrowser(CONNECT_HARDWARE_ROUTE)
+    //     } else {
+    //       history.push(CONNECT_HARDWARE_ROUTE)
+    //     }
+    //   },
+    //   icon: h('img.account-menu__item-icon', { src: 'images/connect-icon.svg' }),
+    //   text: this.context.t('connectHardwareWallet'),
+    // }),
     h(Divider),
     h(Item, {
       onClick: () => {

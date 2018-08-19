@@ -196,7 +196,7 @@ describe('SendAmountRow Component', function () {
     it('should pass the default primaryCurrency to the CurrencyDisplay if primaryCurrency is falsy', () => {
       wrapper.setProps({ primaryCurrency: null })
       const { primaryCurrency } = wrapper.find(SendRowWrapper).childAt(1).props()
-      assert.equal(primaryCurrency, 'ETH')
+      assert.equal(primaryCurrency, 'AUX') // RvH Changed ETH to AUX
     })
   })
 })

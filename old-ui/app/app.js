@@ -25,7 +25,7 @@ const ConfigScreen = require('./config')
 const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
-const NewUiAnnouncement = require('./new-ui-annoucement')
+// const NewUiAnnouncement = require('./new-ui-annoucement')
 const AppBar = require('./components/app-bar')
 const Loading = require('./components/loading')
 const BuyView = require('./components/buy-button-subview')
@@ -85,7 +85,7 @@ function mapStateToProps (state) {
 App.prototype.render = function () {
   const {
     currentView,
-    dispatch,
+    // dispatch,
     isLoading,
     loadingMessage,
     transForward,
@@ -99,12 +99,22 @@ App.prototype.render = function () {
   log.debug('Main ui render function')
 
   if (!featureFlags.skipAnnounceBetaUI) {
-    return (
-      h(NewUiAnnouncement, {
-        dispatch,
-      })
-    )
+    // return (
+    //   h(NewUiAnnouncement, {
+    //     dispatch,
+    //   })
+    // )
+
+    
+    const flag = 'betaUI'
+    const enabled = true
+    this.props.dispatch(actions.setFeatureFlag(
+      flag,
+      enabled,
+    ))
+    // global.platform.openExtensionInBrowser()
   }
+
 
   return (
     h('.flex-column.full-height', {

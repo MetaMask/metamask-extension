@@ -30,11 +30,11 @@
     "message": "Betrag + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browsererweiterung",
+    "message": "Auxilium Browsererweiterung",
     "description": "Die Beschreibung der Erweiterung"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Auxilium",
     "description": "Der Name der Erweiterung"
   },
   "approved": {
@@ -184,10 +184,10 @@
     "message": "Dezimalangabe der Präzision"
   },
   "defaultNetwork": {
-    "message": "Das Standardnetzwerk für Ether Transaktionen ist das Main Net."
+    "message": "Das Standardnetzwerk für AUX Transaktionen ist das Main Net."
   },
   "denExplainer": {
-    "message": "Dein DEN ist dein passwortverschlüsselter Speicher innerhalb von MetaMask."
+    "message": "Dein DEN ist dein passwortverschlüsselter Speicher innerhalb von Auxilium."
   },
   "deposit": {
     "message": "Einzahlen"
@@ -200,10 +200,10 @@
     "description": "Teilt dem Benutzer mit welchen Token er beim Einzahlen mit Shapeshift ausgewählt hat"
   },
   "depositEth": {
-    "message": "Eth kaufen"
+    "message": "AUX kaufen"
   },
   "depositEther": {
-    "message": "Ether einzahlen"
+    "message": "AUX einzahlen"
   },
   "depositFiat": {
     "message": "Fiat einzahlen"
@@ -215,7 +215,7 @@
     "message": "Mit ShapeShift einzahlen"
   },
   "depositShapeShiftExplainer": {
-    "message": "Wenn du andere Kryptowährungen besitzt, kannst du diese direkt mit Hilfe deiner MetaMask Wallet handeln und einzahlen. Du benötigst keinen Account."
+    "message": "Wenn du andere Kryptowährungen besitzt, kannst du diese direkt mit Hilfe deiner Auxilium Wallet handeln und einzahlen. Du benötigst keinen Account."
   },
   "details": {
     "message": "Details"
@@ -224,10 +224,10 @@
     "message": "Sofortige Einzahlung"
   },
   "directDepositEther": {
-    "message": "Sofort Ether einzahlen"
+    "message": "Sofort AUX einzahlen"
   },
   "directDepositEtherExplainer": {
-    "message": "Wenn du bereits Ether besitzt, ist die sofortige Einzahlung die schnellste Methode Ether in deine neue Wallet zu bekommen."
+    "message": "Wenn du bereits AUX besitzt, ist die sofortige Einzahlung die schnellste Methode AUX in deine neue Wallet zu bekommen."
   },
   "done": {
     "message": "Fertig"
@@ -263,7 +263,7 @@
     "message": "Passwörter stimmen nicht überein"
   },
   "etherscanView": {
-    "message": "Account auf Etherscan anschauen"
+    "message": "Account auf Explore anschauen"
   },
   "exchangeRate": {
     "message": "Wechselrate"
@@ -320,7 +320,7 @@
     "message": "Seed generieren..."
   },
   "gasPrice": {
-    "message": "Gaspreis (GWEI)"
+    "message": "Gaspreis (AUX)"
   },
   "gasPriceCalculation": {
     "message": "Wir berechnen den empfohlenen Gaspreis basierend auf der Erfolgsrate des Netzwerks."
@@ -329,11 +329,11 @@
     "message": "Gaspreis benötigt"
   },
   "getEther": {
-    "message": "Ether holen"
+    "message": "AUX holen"
   },
   "getEtherFromFaucet": {
-    "message": "Ether für $1 vom Faucet holen",
-    "description": "Zeigt den Netzwerknamen für den Ether Faucet an"
+    "message": "AUX für $1 vom Faucet holen",
+    "description": "Zeigt den Netzwerknamen für den AUX Faucet an"
   },
   "greaterThanMin": {
     "message": "Muss größer oder gleich $1 sein.",
@@ -356,10 +356,10 @@
     "message": "Token ausblenden?"
   },
   "howToDeposit": {
-    "message": "Wie möchtest du Ether einzahlen?"
+    "message": "Wie möchtest du AUX einzahlen?"
   },
   "holdEther": {
-    "message": "Es erlaubt dir ether & Token zu halten und dient dir als Verbindung zu dezentralisierten Applikationen."
+    "message": "Es erlaubt dir AUX & Token zu halten und dient dir als Verbindung zu dezentralisierten Applikationen."
   },
   "import": {
     "message": "Importieren",
@@ -369,7 +369,7 @@
     "message": "Account importieren"
   },
   "importAccountMsg": {
-    "message":" Importierte Accounts werden nicht mit der Seed-Wörterfolge  deines ursprünglichen MetaMask Accounts verknüpft. Erfahre mehr über importierte Accounts."
+    "message":" Importierte Accounts werden nicht mit der Seed-Wörterfolge  deines ursprünglichen Auxilium Accounts verknüpft. Erfahre mehr über importierte Accounts."
   },
   "importAnAccount": {
     "message": "Einen Account importieren"
@@ -459,13 +459,13 @@
     "message": "Die Wörter der Seed-Wörterfolgen sind alle kleingeschrieben"
   },
   "mainnet": {
-    "message": "Ethereum Main Net"
+    "message": "Auxilium Main Net"
   },
   "message": {
     "message": "Nachricht"
   },
   "metamaskDescription": {
-    "message": "MetaMask ist ein sicherer Identitätssafe für Ethereum."
+    "message": "Auxilium ist ein sicherer Identitätssafe für Auxilium."
   },
   "min": {
     "message": "Minimum"
@@ -477,7 +477,7 @@
     "message": "Du musst mindestens 1 Token auswählen."
   },
   "needEtherInWallet": {
-    "message": "Um dezentralisierte Applikationen mit MetaMask verwenden zu können, benötigst du Ether in deiner Wallet."
+    "message": "Um dezentralisierte Applikationen mit Auxilium verwenden zu können, benötigst du AUX in deiner Wallet."
   },
   "needImportFile": {
     "message": "Für den Import musst du eine Datei auswählen.",
@@ -488,7 +488,7 @@
     "description": "Passwort und Datei sind notwendig um einen Account zu importieren"
   },
   "negativeETH": {
-    "message": "Negative ETH Beträge können nicht versendet werden."
+    "message": "Negative AUX Beträge können nicht versendet werden."
   },
   "networks": {
     "message": "Netzwerke"
@@ -638,7 +638,7 @@
     "message": "Aktueller RPC"
   },
   "connectingToMainnet": {
-    "message": "Verbinde zum Ethereum Main Net"
+    "message": "Verbinde zum Auxilium Main Net"
   },
   "connectingToRopsten": {
     "message": " Verbinde zum Ropsten Testnetzwerk"
@@ -694,16 +694,16 @@
     "message": "Senden"
   },
   "sendETH": {
-    "message": "ETH senden"
+    "message": "AUX senden"
   },
   "sendTokens": {
     "message": "Token senden"
   },
   "onlySendToEtherAddress": {
-    "message": "ETH unbedingt nur zu einer Ethereum Adresse senden."
+    "message": "AUX unbedingt nur zu einer Auxilium Adresse senden."
   },
   "sendTokensAnywhere": {
-    "message": "Token zu einer beliebigen Person mit einem Ethereumaccount senden"
+    "message": "Token zu einer beliebigen Person mit einem Auxilium Account senden"
   },
   "settings": {
     "message": "Einstellungen"
@@ -778,7 +778,7 @@
     "message": "An:"
   },
   "toETHviaShapeShift": {
-    "message": "$1 an ETH via ShapeShift",
+    "message": "$1 an AUX via ShapeShift",
     "description": "Das System wird den Einzahlungstyp im Beginn der Nachricht eintragen"
   },
   "tokenAddress": {
@@ -797,7 +797,7 @@
     "message": "Tokensymbol"
   },
   "tokenWarning1": {
-    "message": "Behalte die Token die du mit deinem MetaMask Account gekauft hast im Blick. Wenn du Token mit einem anderen Account gekauft hast, werden diese hier nicht angezeigt."
+    "message": "Behalte die Token die du mit deinem Auxilium Account gekauft hast im Blick. Wenn du Token mit einem anderen Account gekauft hast, werden diese hier nicht angezeigt."
   },
   "total": {
     "message": "Gesamt"
@@ -819,7 +819,7 @@
     "description": "Gefolgt von einem Link (hier) um die Tokenguthaben anzuzeigen"
   },
   "twelveWords": {
-    "message": "Diese 12 Wörter stellen die einzige Möglichkeit dar deinen MetaMask Account wiederherzustellen. Speichere sie daher an einem sicheren und geheimen Ort."
+    "message": "Diese 12 Wörter stellen die einzige Möglichkeit dar deinen Auxilium Account wiederherzustellen. Speichere sie daher an einem sicheren und geheimen Ort."
   },
   "typePassword": {
     "message": "Passwort eingeben"
@@ -828,7 +828,7 @@
     "message": "Willkommen zur neuen Oberfläche (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Du verwendest  nun die neue Metamask Oberfläche. Schau dich um, teste die neuen Features wie z.B. das Senden von Token und lass es uns wissen falls du irgendwelche Probleme hast."
+    "message": "Du verwendest  nun die neue Auxilium Oberfläche. Schau dich um, teste die neuen Features wie z.B. das Senden von Token und lass es uns wissen falls du irgendwelche Probleme hast."
   },
   "unapproved": {
     "message": "Nicht genehmigt"
@@ -874,7 +874,7 @@
     "message": "Warnung"
   },
   "welcomeBeta": {
-    "message": "Willkommen zu MetaMask Beta"
+    "message": "Willkommen zu Auxilium"
   },
   "whatsThis": {
     "message": "Was ist das?"

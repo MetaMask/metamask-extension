@@ -293,7 +293,7 @@ class Settings extends Component {
   }
 
   render () {
-    const { warning, isMascara } = this.props
+    const { warning } = this.props
 
     return (
       h('div.settings__content', [
@@ -304,7 +304,6 @@ class Settings extends Component {
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
-        !isMascara && this.renderOldUI(),
         this.renderResetAccount(),
         this.renderBlockieOptIn(),
       ])

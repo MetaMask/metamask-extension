@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import {closeWelcomeScreen} from './actions'
-import Mascot from './components/mascot'
+// import Mascot from './components/mascot'
 import { INITIALIZE_CREATE_PASSWORD_ROUTE } from './routes'
 
 class WelcomeScreen extends Component {
@@ -44,11 +44,17 @@ class WelcomeScreen extends Component {
 
         h('div.welcome-screen__info', [
 
-          h(Mascot, {
-            animationEventEmitter: this.animationEventEmitter,
-            width: '225',
-            height: '225',
-          }),
+          // RvH - 04-08-2018 -- TEMPORARILY DISABLED THE ANIMATED METAMASK FOX          
+          //  h(Mascot, {
+          //    animationEventEmitter: this.animationEventEmitter,
+          //    width: '225',
+          //    height: '225',
+          //  }),  
+          
+          
+          h('div.welcome-screen__info__logo', [
+            h('img.welcome-screen__info__logo__img', { src: 'images/info-logo.png' }),
+          ]),
 
           h('div.welcome-screen__info__header', this.context.t('welcomeBeta')),
 

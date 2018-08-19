@@ -22,6 +22,15 @@
     align-items: center;
     justify-content: center;
 
+    &__logo {
+      width:225px;
+      height:225px;
+      &__img{
+        width:225px;
+        height:225px;
+      }
+    }
+
     &__header {
       font-size: 1.65em;
       margin-bottom: 14px;
@@ -55,6 +64,6 @@
     text-transform: uppercase;
     margin: 35px 0 14px;
     transition: 200ms ease-in-out;
-    background-color: rgba(247, 134, 28, .9);
+    background-color: rgba(137, 214, 21, .9);
   }
 }

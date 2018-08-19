@@ -27,7 +27,7 @@
     "message": "Add Tokens"
   },
   "addAcquiredTokens": {
-    "message": "Add the tokens you've acquired using MetaMask"
+    "message": "Add the tokens you've acquired using Auxilium"
   },
   "amount": {
     "message": "Amount"
@@ -36,11 +36,11 @@
     "message": "Amount + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "Auxilium Browser Extension",
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Auxilium",
     "description": "The name of the application"
   },
   "approve": {
@@ -232,10 +232,10 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "The default network for Aux transactions is Main Net."
   },
   "denExplainer": {
-    "message": "Your DEN is your password-encrypted storage within MetaMask."
+    "message": "Your DEN is your password-encrypted storage within Auxilium."
   },
   "deposit": {
     "message": "Deposit"
@@ -248,10 +248,10 @@
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "Deposit Eth"
+    "message": "Deposit AUX"
   },
   "depositEther": {
-    "message": "Deposit Ether"
+    "message": "Deposit AUX"
   },
   "depositFiat": {
     "message": "Deposit with Fiat"
@@ -263,7 +263,7 @@
     "message": "Deposit with ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+    "message": "If you own other cryptocurrencies, you can trade and deposit AUX directly into your Auxilium wallet. No Account Needed."
   },
   "details": {
     "message": "Details"
@@ -272,10 +272,10 @@
     "message": "Direct Deposit"
   },
   "directDepositEther": {
-    "message": "Directly Deposit Ether"
+    "message": "Directly Deposit AUX"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "If you already have some AUX, the quickest way to get AUX in your new wallet by direct deposit."
   },
   "done": {
     "message": "Done"
@@ -329,7 +329,7 @@
     "message": "Passwords Don't Match"
   },
   "etherscanView": {
-    "message": "View account on Etherscan"
+    "message": "View account on Explore"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
@@ -392,7 +392,7 @@
     "message": "Generating Seed..."
   },
   "gasPrice": {
-    "message": "Gas Price (GWEI)"
+    "message": "Gas Price (AUX)"
   },
   "gasPriceCalculation": {
     "message": "We calculate the suggested gas prices based on network success rates."
@@ -404,11 +404,11 @@
     "message": "Generating transaction"
   },
   "getEther": {
-    "message": "Get Ether"
+    "message": "Get AUX"
   },
   "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Get AUX from a faucet for the $1",
+    "description": "Displays network name for AUX faucet"
   },
   "getHelp": {
     "message": "Get Help."
@@ -427,7 +427,7 @@
     "message": "Hardware Support"
   },
   "hardwareSupportMsg": {
-    "message": "You can now view your Hardware accounts in MetaMask!  Scroll down and read how it works."
+    "message": "You can now view your Hardware accounts in Auxilium!  Scroll down and read how it works."
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -452,10 +452,10 @@
     "message": "Hide Token?"
   },
   "howToDeposit": {
-    "message": "How would you like to deposit Ether?"
+    "message": "How would you like to deposit AUX?"
   },
   "holdEther": {
-    "message": "It allows you to hold ether & tokens, and serves as your bridge to decentralized applications."
+    "message": "It allows you to hold AUX & tokens, and serves as your bridge to decentralized applications."
   },
   "import": {
     "message": "Import",
@@ -465,7 +465,7 @@
     "message": "Import Account"
   },
   "importAccountMsg": {
-    "message":" Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
+    "message":" Imported accounts will not be associated with your originally created Auxilium account seedphrase. Learn more about imported accounts "
   },
   "importAnAccount": {
     "message": "Import an account"
@@ -518,7 +518,7 @@
     "description": "format for importing an account"
   },
   "keepTrackTokens": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account."
+    "message": "Keep track of the tokens you’ve bought with your Auxilium account."
   },
   "kovan": {
     "message": "Kovan Test Network"
@@ -567,7 +567,7 @@
     "message": "seed words only have lowercase characters"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Auxilium Network"
   },
   "menu": {
     "message": "Menu"
@@ -576,10 +576,10 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "MetaMask is a secure identity vault for Ethereum."
+    "message": "Auxilium is a secure identity vault for Auxilium."
   },
   "metamaskSeedWords": {
-    "message": "MetaMask Seed Words"
+    "message": "Auxilium Seed Words"
   },
   "min": {
     "message": "Minimum"
@@ -591,7 +591,7 @@
     "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+    "message": "To interact with decentralized applications using Auxilium, you’ll need AUX in your wallet."
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -602,7 +602,7 @@
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
+    "message": "Can not send negative amounts of AUX."
   },
   "networks": {
     "message": "Networks"
@@ -812,7 +812,7 @@
     "message": "Current RPC"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main Ethereum Network"
+    "message": "Connecting to Main Auxilium Network"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -880,7 +880,7 @@
     "message": "Send"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "Send AUX"
   },
   "sendTokens": {
     "message": "Send Tokens"
@@ -889,10 +889,10 @@
     "message": "Separate each word with a single space"
   },
   "onlySendToEtherAddress": {
-    "message": "Only send ETH to an Ethereum address."
+    "message": "Only send AUX to an Auxilium address."
   },
   "onlySendTokensToAccountAddress": {
-    "message": "Only send $1 to an Ethereum account address.",
+    "message": "Only send $1 to an Auxilium account address.",
     "description": "displays token symbol"
   },
   "orderOneHere": {
@@ -908,10 +908,10 @@
     "message": "Select an Account"
   },
   "selectAnAccountHelp": {
-    "message": "These are the accounts available in your hardware wallet. Select the one you’d like to use in MetaMask."
+    "message": "These are the accounts available in your hardware wallet. Select the one you’d like to use in Auxilium."
   },
   "sendTokensAnywhere": {
-    "message": "Send Tokens to anyone with an Ethereum account"
+    "message": "Send Tokens to anyone with an Auxilium account"
   },
   "settings": {
     "message": "Settings"
@@ -932,7 +932,7 @@
     "message": "3. Start using dApps and more!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+    "message": "Use your hardware account like you would with any Auxilium account. Log in to dApps, send AUX, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
   },
   "info": {
   "message": "Info"
@@ -1004,7 +1004,7 @@
     "message": "To: "
   },
   "toETHviaShapeShift": {
-    "message": "$1 to ETH via ShapeShift",
+    "message": "$1 to AUX via ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
   "token": {
@@ -1026,7 +1026,7 @@
     "message": "Token Symbol"
   },
   "tokenWarning1": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account. If you bought tokens using a different account, those tokens will not appear here."
+    "message": "Keep track of the tokens you’ve bought with your Auxilium account. If you bought tokens using a different account, those tokens will not appear here."
   },
   "total": {
     "message": "Total"
@@ -1057,7 +1057,7 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
-    "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
+    "message": "These 12 words are the only way to restore your Auxilium accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
     "message": "Type Your Password"
@@ -1066,7 +1066,7 @@
     "message": "Welcome to the New UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI."
+    "message": "You are now using the new Auxilium UI."
   },
   "unapproved": {
     "message": "Unapproved"
@@ -1115,7 +1115,7 @@
     "message": "View Account"
   },
   "viewOnEtherscan": {
-    "message": "View on Etherscan"
+    "message": "View on Explore"
   },
   "visitWebSite": {
     "message": "Visit our web site"
@@ -1127,7 +1127,7 @@
     "message": "Welcome Back!"
   },
   "welcomeBeta": {
-    "message": "Welcome to MetaMask Beta"
+    "message": "Welcome to Auxilium"
   },
   "whatsThis": {
     "message": "What's this?"

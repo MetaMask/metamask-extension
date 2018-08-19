@@ -108,15 +108,15 @@ class AppHeader extends Component {
           >
             <img
               className="app-header__metafox"
-              src="/images/metamask-fox.svg"
+              src="/images/auxilium-square.svg"
               height={42}
               width={42}
             />
             <div className="flex-row">
               <h1>{ this.context.t('appName') }</h1>
-              <div className="app-header__beta-label">
+              {/* <div className="app-header__beta-label">
                 { this.context.t('beta') }
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="app-header__account-menu-container">

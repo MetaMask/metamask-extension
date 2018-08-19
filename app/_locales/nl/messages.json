@@ -30,11 +30,11 @@
     "message": "Bedrag + gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser-extensie",
+    "message": "Auxilium Browser-extensie",
     "description": "De beschrijving van de applicatie"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Auxilium",
     "description": "De naam van de applicatie"
   },
   "attemptingConnect": {
@@ -123,7 +123,7 @@
     "message": "Gekopieerd naar het klembord"
   },
   "copiedExclamation": {
-    "message": "Gekopieerde!"
+    "message": "Gekopieerd!"
   },
   "copiedSafe": {
     "message": "Ik heb het ergens veilig gekopieerd"
@@ -175,10 +175,10 @@
     "message": "Decimalen van precisie"
   },
   "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
+    "message": "Het standaardnetwerk voor AUX-transacties is Main Net."
   },
   "denExplainer": {
-    "message": "Uw DEN is uw wachtwoord-gecodeerde opslag binnen MetaMask."
+    "message": "Uw DEN is uw wachtwoord-gecodeerde opslag binnen Auxilium."
   },
   "deposit": {
     "message": "Storting"
@@ -191,10 +191,10 @@
     "description": "Laat de gebruiker weten welk muntje ze hebben geselecteerd om te deponeren met shapeshift"
   },
   "depositEth": {
-    "message": "Aanbetaling Eth"
+    "message": "Aanbetaling AUX"
   },
   "depositEther": {
-    "message": "Stort Ether"
+    "message": "Stort AUX"
   },
   "depositFiat": {
     "message": "Stort met Fiat"
@@ -206,7 +206,7 @@
     "message": "Stort met ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Als u andere cryptocurrencies bezit, kunt u Ether direct in uw MetaMask-portemonnee ruilen en storten. Geen account nodig."
+    "message": "Als u andere cryptocurrencies bezit, kunt u AUX direct in uw Auxilium-portemonnee ruilen en storten. Geen account nodig."
   },
   "details": {
     "message": "Details"
@@ -215,10 +215,10 @@
     "message": "Directe storting"
   },
   "directDepositEther": {
-    "message": "Directe Ether storten"
+    "message": "Direct AUX storten"
   },
   "directDepositEtherExplainer": {
-    "message": "Als je al wat Ether hebt, de snelste manier om Ether in je nieuwe portemonnee te krijgen door een directe storting."
+    "message": "Als je al wat AUX hebt, de snelste manier om AUX in je nieuwe portemonnee te krijgen door een directe storting."
   },
   "done": {
     "message": "Gedaan"
@@ -245,7 +245,7 @@
     "message": "Voer uw wachtwoord in om te bevestigen"
   },
   "etherscanView": {
-    "message": "Bekijk account op Etherscan"
+    "message": "Bekijk account op Explore"
   },
   "exchangeRate": {
     "message": "Wisselkoers"
@@ -302,7 +302,7 @@
     "message": "Back-up woorden produceren ..."
   },
   "gasPrice": {
-    "message": "Gasprijs (GWEI)"
+    "message": "Gasprijs (AUX)"
   },
   "gasPriceCalculation": {
     "message": "We berekenen de voorgestelde gasprijzen op basis van succespercentages van het netwerk."
@@ -311,11 +311,11 @@
     "message": "Gasprijs vereist"
   },
   "getEther": {
-    "message": "Krijg Ether"
+    "message": "Krijg AUX"
   },
   "getEtherFromFaucet": {
-    "message": "Haal Ether uit een kraan voor de $1",
-    "description": "Geeft de netwerknaam voor Ether-kraan weer"
+    "message": "Haal AUX uit een kraan voor de $1",
+    "description": "Geeft de netwerknaam voor AUX-kraan weer"
   },
   "greaterThanMin": {
     "message": "moet groter zijn dan of gelijk zijn aan $1.",
@@ -338,10 +338,10 @@
     "message": "Token verbergen?"
   },
   "howToDeposit": {
-    "message": "Hoe zou je Ether willen deponeren?"
+    "message": "Hoe zou je AUX willen deponeren?"
   },
   "holdEther": {
-    "message": "Hiermee kunt u ether & tokens bewaren en dient u als brug naar gedecentraliseerde applicaties."
+    "message": "Hiermee kunt u AUX & tokens bewaren en dient u als brug naar gedecentraliseerde applicaties."
   },
   "import": {
     "message": "Importeren",
@@ -351,7 +351,7 @@
     "message": "Account importeren"
   },
   "importAccountMsg": {
-    "message":" Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
+    "message":"Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte Auxilium-account. Meer informatie over geïmporteerde accounts "
   },
   "importAnAccount": {
     "message": "Importeer een account"
@@ -435,13 +435,13 @@
     "message": "back-up woorden hebben alleen kleine letters"
   },
   "mainnet": {
-    "message": "belangrijkste ethereum-netwerk"
+    "message": "belangrijkste auxilium-netwerk"
   },
   "message": {
     "message": "Bericht"
   },
   "metamaskDescription": {
-    "message": "MetaMask is een veilige identiteitskluis voor Ethereum."
+    "message": "Auxilium is een veilige identiteitskluis voor Auxilium."
   },
   "min": {
     "message": "Minimum"
@@ -453,7 +453,7 @@
     "message": "Moet ten minste één token selecteren."
   },
   "needEtherInWallet": {
-    "message": "Om te communiceren met gedecentraliseerde applicaties met MetaMask, heb je Ether nodig in je portemonnee."
+    "message": "Om te communiceren met gedecentraliseerde applicaties met Auxilium, heb je AUX nodig in je portemonnee."
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
@@ -464,7 +464,7 @@
     "description": "Wachtwoord en bestand nodig om een ​​account te importeren"
   },
   "negativeETH": {
-    "message": "Kan geen negatieve hoeveelheden ETH verzenden."
+    "message": "Kan geen negatieve hoeveelheden AUX verzenden."
   },
   "networks": {
     "message": "netwerken"
@@ -643,13 +643,16 @@
     "message": "Sturen"
   },
   "sendETH": {
-    "message": "Verzend ETH"
+    "message": "Verzend AUX"
   },
   "sendTokens": {
     "message": "Stuur tokens"
   },
+  "onlySendToEtherAddress": {
+    "message": "Stuur alleen AUX naar een Auxilium adres."
+  },
   "sendTokensAnywhere": {
-    "message": "Stuur tokens naar iedereen met een Ethereum-account"
+    "message": "Stuur tokens naar iedereen met een Auxilium-account"
   },
   "settings": {
     "message": "instellingen"
@@ -712,7 +715,7 @@
     "message": "Naar"
   },
   "toETHviaShapeShift": {
-    "message": "$1 tot ETH via ShapeShift",
+    "message": "$1 tot AUX via ShapeShift",
     "description": "systeem zal het aanbetalingstype invullen bij het begin van het bericht"
   },
   "tokenAddress": {
@@ -762,7 +765,7 @@
     "message": "Welkom bij de nieuwe gebruikersinterface (bèta)"
   },
   "uiWelcomeMessage": {
-    "message": "U gebruikt nu de nieuwe gebruikersinterface van Metamask. Kijk rond, probeer nieuwe functies uit zoals het verzenden van tokens en laat ons weten of u problemen ondervindt."
+    "message": "U gebruikt nu de nieuwe gebruikersinterface van Auxilium. Kijk rond, probeer nieuwe functies uit zoals het verzenden van tokens en laat ons weten of u problemen ondervindt."
   },
   "unavailable": {
     "message": "Niet beschikbaar"
@@ -804,8 +807,11 @@
   "warning": {
     "message": "Waarschuwing"
   },
+  "welcomeBack": {
+    "message": "Welkom terug!"
+  },
   "welcomeBeta": {
-    "message": "Welkom bij MetaMask Beta"
+    "message": "Welkom bij Auxilium"
   },
   "whatsThis": {
     "message": "Wat is dit?"

@@ -30,11 +30,11 @@
     "message": "Částka + palivo"
   },
   "appDescription": {
-    "message": "Ethereum rozšíření prohlížeče",
+    "message": "Auxilium rozšíření prohlížeče",
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Auxilium",
     "description": "The name of the application"
   },
   "approved": {
@@ -187,10 +187,10 @@
     "message": "Počet desetinných míst přesnosti"
   },
   "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Main Net."
+    "message": "Výchozí síť pro AUX transakce je Main Net."
   },
   "denExplainer": {
-    "message": "Váš DEN je heslem šifrované uložiště v MetaMasku."
+    "message": "Váš DEN je heslem šifrované uložiště v Auxilium."
   },
   "deposit": {
     "message": "Vklad"
@@ -203,10 +203,10 @@
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "Vložit Eth"
+    "message": "Vložit AUX"
   },
   "depositEther": {
-    "message": "Vložit Ether"
+    "message": "Vložit AUX"
   },
   "depositFiat": {
     "message": "Vklad s fiat měnou"
@@ -218,7 +218,7 @@
     "message": "Vklad přes ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Pokud vlastníte jiné kryptoměny, můžete je směnit Ether a vložit ho přímo do peněženky MetaMask. Bez založení účtu."
+    "message": "Pokud vlastníte jiné kryptoměny, můžete je směnit AUX a vložit ho přímo do peněženky Auxilium. Bez založení účtu."
   },
   "details": {
     "message": "Podrobnosti"
@@ -227,10 +227,10 @@
     "message": "Přímý vklad"
   },
   "directDepositEther": {
-    "message": "Vložit Ether přímo"
+    "message": "Vložit AUX přímo"
   },
   "directDepositEtherExplainer": {
-    "message": "Pokud už vlastníte nějaký Ether, nejrychleji ho dostanete do peněženky přímým vkladem."
+    "message": "Pokud už vlastníte nějaký AUX, nejrychleji ho dostanete do peněženky přímým vkladem."
   },
   "done": {
     "message": "Hotovo"
@@ -266,7 +266,7 @@
     "message": "Hesla nejsou stejná"
   },
   "etherscanView": {
-    "message": "Prohlédněte si účet na Etherscan"
+    "message": "Prohlédněte si účet na Explore"
   },
   "exchangeRate": {
     "message": "Směnný kurz"
@@ -323,7 +323,7 @@
     "message": "Generuji klíčovou frázi..."
   },
   "gasPrice": {
-    "message": "Cena paliva (GWEI)"
+    "message": "Cena paliva (AUX)"
   },
   "gasPriceCalculation": {
     "message": "Počítáme doporučenou cenu paliva na základě úspěšnosti v síti."
@@ -332,11 +332,11 @@
     "message": "Cena paliva je povinná"
   },
   "getEther": {
-    "message": "Získejte Ether"
+    "message": "Získejte AUX"
   },
   "getEtherFromFaucet": {
-    "message": "Získejte Ether z faucetu za $1.",
-    "description": "Displays network name for Ether faucet"
+    "message": "Získejte AUX z faucetu za $1.",
+    "description": "Displays network name for AUX faucet"
   },
   "greaterThanMin": {
     "message": "musí být větší nebo roven $1.",
@@ -359,10 +359,10 @@
     "message": "Skrýt token?"
   },
   "howToDeposit": {
-    "message": "Jakým způsobem chcete vložit Ether?"
+    "message": "Jakým způsobem chcete vložit AUX?"
   },
   "holdEther": {
-    "message": "Dovoluje vám držet ether a tokeny a slouží jako most k decentralizovaným aplikacím."
+    "message": "Dovoluje vám držet AUX a tokeny a slouží jako most k decentralizovaným aplikacím."
   },
   "import": {
     "message": "Import",
@@ -372,7 +372,7 @@
     "message": "Import účtu"
   },
   "importAccountMsg": {
-    "message":"Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
+    "message":"Importované účty nebudou spojeny s vaší původní Auxilium klíčovou frází. Zjistěte více o importovaných účtech "
   },
   "importAnAccount": {
     "message": "Import účtu"
@@ -419,7 +419,7 @@
     "description": "format for importing an account"
   },
   "keepTrackTokens": {
-    "message": "Udržujte si záznamy o tokenech, které jste koupili s účtem v MetaMasku."
+    "message": "Udržujte si záznamy o tokenech, které jste koupili s účtem v Auxilium."
   },
   "kovan": {
     "message": "Kovan Test Network"
@@ -468,13 +468,13 @@
     "message": "slova klíčové fráze mají pouze malá písmena"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Auxilium Network"
   },
   "message": {
     "message": "Zpráva"
   },
   "metamaskDescription": {
-    "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
+    "message": "Auxilium je bezpečný osobní trezor pro Auxilium."
   },
   "min": {
     "message": "Minimum"
@@ -486,7 +486,7 @@
     "message": "Musíte zvolit aspoň 1 token."
   },
   "needEtherInWallet": {
-    "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
+    "message": "Potřebujete AUX v peněžence, abyste mohli pomocí Auxilium interagovat s decentralizovanými aplikacemi."
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
@@ -497,7 +497,7 @@
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "Nelze odeslat zápornou částku ETH."
+    "message": "Nelze odeslat zápornou částku AUX."
   },
   "networks": {
     "message": "Sítě"
@@ -650,7 +650,7 @@
     "message": "Současné RPC"
   },
   "connectingToMainnet": {
-    "message": "Připojuji se k Main Ethereum Network"
+    "message": "Připojuji se k Main Auxilium Network"
   },
   "connectingToRopsten": {
     "message": "Připojuji se k Ropsten Test Network"
@@ -712,19 +712,19 @@
     "message": "Odeslat"
   },
   "sendETH": {
-    "message": "Odeslat ETH"
+    "message": "Odeslat AUX"
   },
   "sendTokens": {
     "message": "Odeslat tokeny"
   },
   "onlySendToEtherAddress": {
-    "message": "Posílejte jen ETH na Ethereum adresu."
+    "message": "Posílejte jen AUX na Auxilium adresu."
   },
   "searchTokens": {
     "message": "Hledat tokeny"
   },
   "sendTokensAnywhere": {
-    "message": "Posílejte tokeny komukoli s Ethereum účtem"
+    "message": "Posílejte tokeny komukoli s Auxilium účtem"
   },
   "settings": {
     "message": "Nastavení"
@@ -799,7 +799,7 @@
     "message": "Komu: "
   },
   "toETHviaShapeShift": {
-    "message": "$1 na ETH přes ShapeShift",
+    "message": "$1 na AUX přes ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {
@@ -818,7 +818,7 @@
     "message": "Symbol tokenu"
   },
   "tokenWarning1": {
-    "message": "Mějte přehled o tokenech, které jste koupili s účtem MetaMasku. Pokud jste koupili tokeny s jiným účtem, tyto tokeny se zde nezobrazí."
+    "message": "Mějte přehled o tokenech, které jste koupili s účtem Auxilium. Pokud jste koupili tokeny s jiným účtem, tyto tokeny se zde nezobrazí."
   },
   "total": {
     "message": "Celkem"
@@ -843,7 +843,7 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
-    "message": "Těchto 12 slov je jedinou možností, jak obnovit MetaMask účet. \nUložte je na bezpečné a neveřejné místo."
+    "message": "Těchto 12 slov je jedinou možností, jak obnovit Auxilium účet. \nUložte je na bezpečné a neveřejné místo."
   },
   "typePassword": {
     "message": "Zadejte své heslo"
@@ -852,7 +852,7 @@
     "message": "Vítejte v novém rozhraní (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Používáte nyní nové rozhraní MetaMasku. Rozhlédněte se kolem, vyzkoušejte nové funkce, jako jsou zasílání tokenů, a dejte nám vědět, pokud narazíte na problém."
+    "message": "Používáte nyní nové rozhraní Auxilium. Rozhlédněte se kolem, vyzkoušejte nové funkce, jako jsou zasílání tokenů, a dejte nám vědět, pokud narazíte na problém."
   },
   "unapproved": {
     "message": "Neschváleno"
@@ -898,7 +898,7 @@
     "message": "Varování"
   },
   "welcomeBeta": {
-    "message": "Vítejte v MetaMask Beta"
+    "message": "Vítejte v Auxilium"
   },
   "whatsThis": {
     "message": "Co to je?"

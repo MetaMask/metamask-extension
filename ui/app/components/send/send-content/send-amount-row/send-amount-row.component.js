@@ -111,7 +111,7 @@ export default class SendAmountRow extends Component {
           }}
           onChange={newAmount => this.validateAmount(newAmount)}
           inError={inError}
-          primaryCurrency={primaryCurrency || 'ETH'}
+          primaryCurrency={primaryCurrency || 'AUX'} // RvH Changed ETH to AUX
           selectedToken={selectedToken}
           value={amount}
           step="any"

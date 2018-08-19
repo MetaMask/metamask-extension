@@ -77,8 +77,8 @@ button, input[type="submit"] {
   transform-origin: center center;
   transition: transform 50ms ease-in;
   /* default orange */
-  background: rgba(247, 134, 28, 1);
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  background: rgba(137, 214, 21, 1);
+  box-shadow: 0px 3px 6px rgba(137, 214, 21, 0.36);
 }
 
 .btn-green, input[type="submit"].btn-green {

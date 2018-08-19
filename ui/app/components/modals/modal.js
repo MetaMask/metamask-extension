@@ -132,7 +132,7 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '7px',
-      height: '100%',
+      height: 'auto',
     },
   },
 

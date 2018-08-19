@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="352px" height="352px" viewBox="0 0 352 352" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+    <title>auxilium-square</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50.7665983%" y1="0.380715327%" x2="50.471614%" y2="98.7488036%" id="linearGradient-1">
+            <stop stop-color="#89D615" offset="0%"></stop>
+            <stop stop-color="#68C235" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="auxilium-square" fill-rule="nonzero">
+            <polygon id="path830" fill="url(#linearGradient-1)" points="0.19836044 351.404848 126.810129 0.289082151 227.801737 0.287990459 351.830925 351.407476 252.241674 351.407476 176.609378 141.84341 101.668721 351.407476"></polygon>
+            <polygon id="path1178-2-26-0-5" fill-opacity="0.45226129" fill="#000000" points="224.035257 7.58157854 223.378246 270.889124 176.609378 141.84341"></polygon>
+            <polygon id="path6044-0" fill-opacity="0.08287294" fill="#000000" points="126.810129 0.289082151 0.198348921 351.404969 227.801737 0.287990459"></polygon>
+        </g>
+    </g>
+</svg>
