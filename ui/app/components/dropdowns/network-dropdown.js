@@ -275,7 +275,9 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
   const rpcTarget = provider.rpcTarget
 
   return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
+    const currentRpcTarget = provider.type === 'rpc' && rpc === rpcTarget
+
+    if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
       return null
     } else {
       return h(
@@ -291,17 +293,17 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
           },
         },
         [
-          rpcTarget === rpc ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+          currentRpcTarget ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
           h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
           h('span.network-name-item', {
             style: {
-              color: rpcTarget === rpc ? '#ffffff' : '#9b9b9b',
+              color: currentRpcTarget ? '#ffffff' : '#9b9b9b',
             },
           }, rpc),
         ]
       )
     }
-  })
+  }).reverse()
 }
 
 NetworkDropdown.prototype.renderCustomOption = function (provider) {
