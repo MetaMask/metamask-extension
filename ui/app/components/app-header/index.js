@@ -1,2 +1,1 @@
-import AppHeader from './app-header.container'
-module.exports = AppHeader
+export { default } from './app-header.container'
