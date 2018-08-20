@@ -91,7 +91,7 @@ var actions = {
   connectHardware,
   checkHardwareStatus,
   forgetDevice,
-  unlockTrezorAccount,
+  unlockHardwareWalletAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
   resetAccount,
@@ -235,6 +235,8 @@ var actions = {
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
+  SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
+  setHardwareWalletDefaultHdPath,
   updateProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
@@ -639,12 +641,12 @@ function addNewAccount () {
   }
 }
 
-function checkHardwareStatus (deviceName) {
-  log.debug(`background.checkHardwareStatus`, deviceName)
+function checkHardwareStatus (deviceName, hdPath) {
+  log.debug(`background.checkHardwareStatus`, deviceName, hdPath)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.checkHardwareStatus(deviceName, (err, unlocked) => {
+      background.checkHardwareStatus(deviceName, hdPath, (err, unlocked) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -681,12 +683,12 @@ function forgetDevice (deviceName) {
   }
 }
 
-function connectHardware (deviceName, page) {
-  log.debug(`background.connectHardware`, deviceName, page)
+function connectHardware (deviceName, page, hdPath) {
+  log.debug(`background.connectHardware`, deviceName, page, hdPath)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.connectHardware(deviceName, page, (err, accounts) => {
+      background.connectHardware(deviceName, page, hdPath, (err, accounts) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -702,12 +704,12 @@ function connectHardware (deviceName, page) {
   }
 }
 
-function unlockTrezorAccount (index) {
-  log.debug(`background.unlockTrezorAccount`, index)
+function unlockHardwareWalletAccount (index, deviceName, hdPath) {
+  log.debug(`background.unlockHardwareWalletAccount`, index, deviceName, hdPath)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.unlockTrezorAccount(index, (err, accounts) => {
+      background.unlockHardwareWalletAccount(index, deviceName, hdPath, (err, accounts) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -1852,6 +1854,13 @@ function showLoadingIndication (message) {
     type: actions.SHOW_LOADING,
     value: message,
   }
+}
+
+function setHardwareWalletDefaultHdPath ({ device, path }) {
+    return {
+      type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
+      value: {device, path},
+    }
 }
 
 function hideLoadingIndication () {

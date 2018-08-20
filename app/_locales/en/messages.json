@@ -119,8 +119,8 @@
   "close": {
     "message": "Close"
   },
-  "chromeRequiredForTrezor":{
-    "message": "You need to use MetaMask on Google Chrome in order to connect to your TREZOR device."
+  "chromeRequiredForHardwareWallets":{
+    "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
   "confirm": {
     "message": "Confirm"
@@ -146,14 +146,11 @@
   "connecting": {
     "message": "Connecting..."
   },
+  "connectToLedger": {
+    "message": "Connect to Ledger"
+  },
   "connectToTrezor": {
     "message": "Connect to Trezor"
-  },
-  "connectToTrezorHelp": {
-    "message": "MetaMask is able to access your TREZOR Ethereum accounts. First make sure your device is connected and unlocked."
-  },
-  "connectToTrezorTrouble": {
-    "message": "If you are having trouble, please make sure you are using the latest version of the TREZOR firmware."
   },
   "continue": {
     "message": "Continue"
@@ -289,8 +286,8 @@
   "downloadStateLogs": {
     "message": "Download State Logs"
   },
-  "dontHaveATrezorWallet": {
-    "message": "Don't have a TREZOR hardware wallet?"
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
   },
   "dropped": {
     "message": "Dropped"
@@ -426,11 +423,11 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
-  "hardwareSupport": {
-    "message": "Hardware Support"
+  "hardwareWallets": {
+    "message": "Connect a hardware wallet"
   },
-  "hardwareSupportMsg": {
-    "message": "You can now view your Hardware accounts in MetaMask!  Scroll down and read how it works."
+  "hardwareWalletsMsg": {
+    "message": "Select a hardware wallet you'd like to use with MetaMask"
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -537,6 +534,9 @@
   },
   "learnMore": {
     "message": "Learn more"
+  },
+  "ledgerAccountRestriction": {
+    "message": "You need to make use your last account before you can add a new one."
   },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
@@ -908,7 +908,7 @@
     "description": "displays token symbol"
   },
   "orderOneHere": {
-    "message": "Order one here."
+    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
   },
   "searchTokens": {
     "message": "Search Tokens"
@@ -920,7 +920,13 @@
     "message": "Select an Account"
   },
   "selectAnAccountHelp": {
-    "message": "These are the accounts available in your hardware wallet. Select the one you’d like to use in MetaMask."
+    "message": "Select the account to view in MetaMask"
+  },
+  "selectHdPath": {
+    "message": "Select HD Path"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
   },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
