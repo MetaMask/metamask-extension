@@ -6,7 +6,7 @@ const {
   KOVAN_CODE,
 } = require('../../../../../app/scripts/controllers/network/enums')
 
-const KeyringController = require('eth-keyring-controller')
+const KeyringController = require('eth-keychain-controller')
 
 describe('Recipient Blacklist Checker', function () {
 
