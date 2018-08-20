@@ -190,11 +190,7 @@ ConfigScreen.prototype.render = function () {
                 lineHeight: '18px',
               },
             }, [
-              'Resetting is for developer use only. ',
-              h('a', {
-                href: 'http://metamask.helpscoutdocs.com/article/36-resetting-an-account',
-                target: '_blank',
-              }, 'Read more.'),
+              'Resetting is for developer use only. '
             ]),
             h('br'),
 
@@ -207,8 +203,23 @@ ConfigScreen.prototype.render = function () {
                 state.dispatch(actions.resetAccount())
               },
             }, 'Reset Account'),
-          ]),
 
+            h('hr.horizontal-line', {
+              style: {
+                marginTop: '20px',
+              },
+            }),
+
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                event.preventDefault()
+                state.dispatch(actions.confirmChangePassword())
+              },
+            }, 'Change password'),
+          ]),
         ]),
       ]),
     ])

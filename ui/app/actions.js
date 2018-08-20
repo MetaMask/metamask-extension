@@ -92,6 +92,7 @@ var actions = {
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
   resetAccount,
+  changePassword,
   removeAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
@@ -311,6 +312,8 @@ var actions = {
   removeCustomRPC,
   SHOW_DELETE_IMPORTED_ACCOUNT: 'SHOW_DELETE_IMPORTED_ACCOUNT',
   showDeleteImportedAccount,
+  CONFIRM_CHANGE_PASSWORD: 'CONFIRM_CHANGE_PASSWORD',
+  confirmChangePassword,
 }
 
 module.exports = actions
@@ -547,6 +550,26 @@ function resetAccount () {
         }
 
         log.info('Transaction history reset for ' + account)
+        dispatch(actions.showAccountsPage())
+        resolve(account)
+      })
+    })
+  }
+}
+
+function changePassword (oldPassword, newPassword) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      background.changePassword(oldPassword, newPassword, (err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.info('Password is changed for ' + account)
         dispatch(actions.showAccountsPage())
         resolve(account)
       })
@@ -2313,5 +2336,11 @@ function showDeleteImportedAccount (identity, keyring) {
     type: actions.SHOW_DELETE_IMPORTED_ACCOUNT,
     identity,
     keyring,
+  }
+}
+
+function confirmChangePassword () {
+  return {
+    type: actions.CONFIRM_CHANGE_PASSWORD,
   }
 }
