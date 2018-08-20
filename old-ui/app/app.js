@@ -705,7 +705,7 @@ App.prototype.renderCustomOption = function (provider) {
           },
         },
         [h('div.selected-network'),
-          label,
+          h('.span.custom-rpc', label),
           h('.remove', {
             onClick: (event) => {
               event.preventDefault()
@@ -744,7 +744,7 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
           },
         },
         [
-          rpc,
+          h('.span.custom-rpc', rpc),
           h('.remove', {
             onClick: (event) => {
               event.preventDefault()

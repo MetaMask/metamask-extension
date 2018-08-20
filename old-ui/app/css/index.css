@@ -701,6 +701,12 @@ input.large-input {
   display: inline-block;
 }
 
+.custom-rpc {
+  width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* buy eth warning screen */
 .custom-radios {
   justify-content: space-around;
