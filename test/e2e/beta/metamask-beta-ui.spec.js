@@ -460,8 +460,6 @@ describe('MetaMask', function () {
       const transactions = await findElements(driver, By.css('.tx-list-item'))
       assert.equal(transactions.length, 2)
 
-      await findElement(driver, By.xpath(`//span[contains(text(), 'Submitted')]`))
-
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
 
@@ -515,22 +513,11 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      await findElement(driver, By.xpath(`//span[contains(text(), 'Submitted')]`))
-
       const txStatuses = await findElements(driver, By.css('.tx-list-status'))
       await driver.wait(until.elementTextMatches(txStatuses[0], /Confirmed/))
 
       const txAccounts = await findElements(driver, By.css('.tx-list-account'))
       assert.equal(await txAccounts[0].getText(), 'Contract Deployment')
-      await delay(regularDelayMs)
-    })
-
-    it('confirms a deploy contract transaction in the popup', async () => {
-      const windowHandles = await driver.getAllWindowHandles()
-      const popup = windowHandles[2]
-      await driver.switchTo().window(popup)
-      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
-      await confirmButton.click()
       await delay(regularDelayMs)
     })
 
