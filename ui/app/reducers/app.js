@@ -734,7 +734,7 @@ function reduceApp (state, action) {
         currentView: {
           name: 'confirm-change-password',
           context: appState.currentView.context,
-        }
+        },
       })
 
     default:

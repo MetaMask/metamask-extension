@@ -190,7 +190,7 @@ ConfigScreen.prototype.render = function () {
                 lineHeight: '18px',
               },
             }, [
-              'Resetting is for developer use only. '
+              'Resetting is for developer use only. ',
             ]),
             h('br'),
 

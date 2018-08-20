@@ -19,7 +19,7 @@ function ConfirmChangePassword () {
 }
 
 ConfirmChangePassword.prototype.render = function () {
-  let state = this.props
+  const state = this.props
   const passwordInputAdditionalStyle = {
     width: '100%',
     marginTop: 10,
@@ -46,8 +46,8 @@ ConfirmChangePassword.prototype.render = function () {
     ]),
     h('div', {
       style: {
-        margin: '0 30px'
-      }
+        margin: '0 30px',
+      },
     }, [
       h('.error', {
         style: {

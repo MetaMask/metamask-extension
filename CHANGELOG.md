@@ -2,6 +2,11 @@
 
 ## Current Master
 
+- [83](https://github.com/poanetwork/metamask-extension/pull/83): (Feature) Changing of password
+- [81](https://github.com/poanetwork/metamask-extension/pull/81): (Feature) Deanonymize private network
+- [80](https://github.com/poanetwork/metamask-extension/pull/80): (Feature) Remove imported account
+- [78](https://github.com/poanetwork/metamask-extension/pull/78): (Fix) Link to POA explorer for POA networks
+
 ## 4.8.4 Thu Aug 09 2018
 
 - [#70](https://github.com/poanetwork/metamask-extension/pull/70): Change ShapeShift API key
