@@ -1,17 +1,40 @@
 # Changelog
 
-## Current Master
+## Current Develop Branch
+
+## 4.9.3 Wed Aug 15 2018
+
+- (#4897)[https://github.com/MetaMask/metamask-extension/pull/4897]: QR code scan for recipient addresses.
+- (#4961)[https://github.com/MetaMask/metamask-extension/pull/4961]: Add a download seed phrase link.
+- (#5060)[https://github.com/MetaMask/metamask-extension/pull/5060]: Fix bug where gas was not updating properly.
+
+## 4.9.2 Mon Aug 09 2018
+
+- [#5020](https://github.com/MetaMask/metamask-extension/pull/5020): Fix bug in migration #28 ( moving tokens to specific accounts )
+
+## 4.9.1 Mon Aug 09 2018
 
 - [#4884](https://github.com/MetaMask/metamask-extension/pull/4884): Allow to have tokens per account and network.
+- [#4989](https://github.com/MetaMask/metamask-extension/pull/4989): Continue to use original signedTypedData.
+- [#5010](https://github.com/MetaMask/metamask-extension/pull/5010): Fix ENS resolution issues.
+- [#5000](https://github.com/MetaMask/metamask-extension/pull/5000): Show error while allowing confirmation of tx where simulation fails.
+- [#4995](https://github.com/MetaMask/metamask-extension/pull/4995): Shows retry button on dApp initialized transactions.
 
-## 4.9.0 Tue Aug 07 2018
+## 4.9.0 Mon Aug 07 2018
 
-- Add new tokens auto detection
-- Remove rejected transactions from transaction history
-- Add Trezor Support
-- Allow to remove accounts (Imported and Hardware Wallets)
+- [#4926](https://github.com/MetaMask/metamask-extension/pull/4926): Show retry button on the latest tx of the earliest nonce.
+- [#4888](https://github.com/MetaMask/metamask-extension/pull/4888): Suggest using the new user interface.
+- [#4947](https://github.com/MetaMask/metamask-extension/pull/4947): Prevent sending multiple transasctions on multiple confirm clicks.
+- [#4844](https://github.com/MetaMask/metamask-extension/pull/4844): Add new tokens auto detection.
+- [#4667](https://github.com/MetaMask/metamask-extension/pull/4667): Remove rejected transactions from transaction history.
+- [#4625](https://github.com/MetaMask/metamask-extension/pull/4625): Add Trezor Support.
+- [#4625](https://github.com/MetaMask/metamask-extension/pull/4625/commits/523cf9ad33d88719520ae5e7293329d133b64d4d): Allow to remove accounts (Imported and Hardware Wallets)
+- [#4814](https://github.com/MetaMask/metamask-extension/pull/4814): Add hex data input to send screen.
+- [#4691](https://github.com/MetaMask/metamask-extension/pull/4691): Redesign of the Confirm Transaction Screen.
 - [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
+- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): Allow the use of HTTP prefix for custom rpc urls.
 - [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): network.js: convert rpc protocol to lower case.
+- [#4898](https://github.com/MetaMask/metamask-extension/pull/4898): Restore multiple consecutive accounts with balances.
 
 ## 4.8.0 Thur Jun 14 2018
 

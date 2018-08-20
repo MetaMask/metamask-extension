@@ -89,7 +89,14 @@ describe('Using MetaMask with an existing account', function () {
         await driver.wait(until.stalenessOf(overlay))
       } catch (e) {}
 
-      const button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      let button
+      try {
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      } catch (e) {
+        await loadExtension(driver, extensionId)
+        await delay(largeDelayMs)
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      }
       await button.click()
       await delay(regularDelayMs)
 
@@ -359,7 +366,10 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should open the TREZOR Connect popup', async () => {
-      const connectButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Connect to Trezor')]`))
+      const trezorButton = await findElements(driver, By.css('.hw-connect__btn'))
+      await trezorButton[1].click()
+      await delay(regularDelayMs)
+      const connectButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
       await connectButtons[0].click()
       await delay(regularDelayMs)
       const allWindows = await driver.getAllWindowHandles()

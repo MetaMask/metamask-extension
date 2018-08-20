@@ -40,8 +40,7 @@ const Modal = require('./components/modals/index').Modal
 // Global Alert
 const Alert = require('./components/alert')
 
-const AppHeader = require('./components/app-header')
-
+import AppHeader from './components/app-header'
 import UnlockPage from './components/pages/unlock-page'
 
 // Routes

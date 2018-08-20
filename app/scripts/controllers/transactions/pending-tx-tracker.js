@@ -1,6 +1,7 @@
 const EventEmitter = require('events')
 const log = require('loglevel')
 const EthQuery = require('ethjs-query')
+
 /**
 
   Event emitter utility class for tracking the transactions as they<br>
@@ -23,55 +24,26 @@ class PendingTransactionTracker extends EventEmitter {
     super()
     this.query = new EthQuery(config.provider)
     this.nonceTracker = config.nonceTracker
-    // default is one day
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
     this.publishTransaction = config.publishTransaction
-    this._checkPendingTxs()
+    this.confirmTransaction = config.confirmTransaction
   }
 
   /**
-    checks if a signed tx is in a block and
-    if it is included emits tx status as 'confirmed'
-    @param block {object}, a full block
-    @emits tx:confirmed
-    @emits tx:failed
+    checks the network for signed txs and releases the nonce global lock if it is
   */
-  checkForTxInBlock (block) {
-    const signedTxList = this.getPendingTransactions()
-    if (!signedTxList.length) return
-    signedTxList.forEach((txMeta) => {
-      const txHash = txMeta.hash
-      const txId = txMeta.id
-
-      if (!txHash) {
-        const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
-        noTxHashErr.name = 'NoTxHashError'
-        this.emit('tx:failed', txId, noTxHashErr)
-        return
-      }
-
-
-      block.transactions.forEach((tx) => {
-        if (tx.hash === txHash) this.emit('tx:confirmed', txId)
-      })
-    })
-  }
-
-  /**
-    asks the network for the transaction to see if a block number is included on it
-    if we have skipped/missed blocks
-    @param object - oldBlock newBlock
-  */
-  queryPendingTxs ({ oldBlock, newBlock }) {
-    // check pending transactions on start
-    if (!oldBlock) {
-      this._checkPendingTxs()
-      return
+  async updatePendingTxs () {
+    // in order to keep the nonceTracker accurate we block it while updating pending transactions
+    const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
+    try {
+      const pendingTxs = this.getPendingTransactions()
+      await Promise.all(pendingTxs.map((txMeta) => this._checkPendingTx(txMeta)))
+    } catch (err) {
+      log.error('PendingTransactionTracker - Error updating pending transactions')
+      log.error(err)
     }
-    // if we synced by more than one block, check for missed pending transactions
-    const diff = Number.parseInt(newBlock.number, 16) - Number.parseInt(oldBlock.number, 16)
-    if (diff > 1) this._checkPendingTxs()
+    nonceGlobalLock.releaseLock()
   }
 
   /**
@@ -79,11 +51,11 @@ class PendingTransactionTracker extends EventEmitter {
     @param block {object} - a block object
     @emits tx:warning
   */
-  resubmitPendingTxs (block) {
+  resubmitPendingTxs (blockNumber) {
     const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
-    pending.forEach((txMeta) => this._resubmitTx(txMeta, block.number).catch((err) => {
+    pending.forEach((txMeta) => this._resubmitTx(txMeta, blockNumber).catch((err) => {
       /*
       Dont marked as failed if the error is a "known" transaction warning
       "there is already a transaction with the same sender-nonce
@@ -145,6 +117,7 @@ class PendingTransactionTracker extends EventEmitter {
     this.emit('tx:retry', txMeta)
     return txHash
   }
+
   /**
     Ask the network for the transaction to see if it has been include in a block
     @param txMeta {Object} - the txMeta object
@@ -174,9 +147,8 @@ class PendingTransactionTracker extends EventEmitter {
     }
 
     // get latest transaction status
-    let txParams
     try {
-      txParams = await this.query.getTransactionByHash(txHash)
+      const txParams = await this.query.getTransactionByHash(txHash)
       if (!txParams) return
       if (txParams.blockNumber) {
         this.emit('tx:confirmed', txId)
@@ -191,26 +163,12 @@ class PendingTransactionTracker extends EventEmitter {
   }
 
   /**
-    checks the network for signed txs and releases the nonce global lock if it is
-  */
-  async _checkPendingTxs () {
-    const signedTxList = this.getPendingTransactions()
-    // in order to keep the nonceTracker accurate we block it while updating pending transactions
-    const { releaseLock } = await this.nonceTracker.getGlobalLock()
-    try {
-      await Promise.all(signedTxList.map((txMeta) => this._checkPendingTx(txMeta)))
-    } catch (err) {
-      log.error('PendingTransactionWatcher - Error updating pending transactions')
-      log.error(err)
-    }
-    releaseLock()
-  }
-
-  /**
     checks to see if a confirmed txMeta has the same nonce
     @param txMeta {Object} - txMeta object
     @returns {boolean}
   */
+
+
   async _checkIfNonceIsTaken (txMeta) {
     const address = txMeta.txParams.from
     const completed = this.getCompletedTransactions(address)

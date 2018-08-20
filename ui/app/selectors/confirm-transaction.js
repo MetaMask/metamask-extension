@@ -147,14 +147,20 @@ export const tokenAmountAndToAddressSelector = createSelector(
 
 export const approveTokenAmountAndToAddressSelector = createSelector(
   tokenDataParamsSelector,
-  params => {
+  tokenDecimalsSelector,
+  (params, tokenDecimals) => {
     let toAddress = ''
     let tokenAmount = 0
 
     if (params && params.length) {
       toAddress = params.find(param => param.name === TOKEN_PARAM_SPENDER).value
       const value = Number(params.find(param => param.name === TOKEN_PARAM_VALUE).value)
-      tokenAmount = roundExponential(value)
+
+      if (tokenDecimals) {
+        tokenAmount = calcTokenAmount(value, tokenDecimals)
+      }
+
+      tokenAmount = roundExponential(tokenAmount)
     }
 
     return {

@@ -30,21 +30,19 @@
     }
   }
 
-  &__metafox {
+  &__metafox-logo {
     cursor: pointer;
-  }
 
-  &__beta-label {
-    font-family: Roboto;
-    text-transform: uppercase;
-    font-weight: 500;
-    font-size: .8rem;
-    color: $buttercup;
-    margin-left: 5px;
-    line-height: initial;
+    &--icon {
+      @media screen and (min-width: $break-large) {
+        display: none;
+      }
+    }
 
-    @media screen and (max-width: 575px) {
-      display: none;
+    &--horizontal {
+      @media screen and (max-width: $break-small) {
+        display: none;
+      }
     }
   }
 
@@ -83,31 +81,10 @@
     flex-flow: row nowrap;
     align-items: center;
   }
-}
 
-.app-header h1 {
-  font-family: Roboto;
-  text-transform: uppercase;
-  font-weight: 400;
-  font-size: 1.1rem;
-  position: relative;
-  padding-left: 15px;
-  color: #5b5d67;
-
-  @media screen and (max-width: 575px) {
-    display: none;
+  &__network-component-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
-}
-
-h2.page-subtitle {
-  text-transform: uppercase;
-  color: #aeaeae;
-  font-size: 1em;
-  margin: 12px;
-}
-
-.network-component-wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 }

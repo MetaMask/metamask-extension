@@ -229,6 +229,7 @@ AccountMenu.prototype.renderKeyringType = function (keyring) {
     let label
     switch (type) {
       case 'Trezor Hardware':
+      case 'Ledger Hardware':
         label = this.context.t('hardware')
       break
       case 'Simple Key Pair':

@@ -14,6 +14,7 @@ function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
+    keyrings: state.metamask.keyrings,
   }
 }
 
@@ -50,8 +51,19 @@ AccountDetailsModal.prototype.render = function () {
     network,
     showExportPrivateKeyModal,
     setAccountLabel,
+    keyrings,
   } = this.props
   const { name, address } = selectedIdentity
+
+  const keyring = keyrings.find((kr) => {
+    return kr.accounts.includes(address)
+  })
+
+  let exportPrivateKeyFeatureEnabled = true
+  // This feature is disabled for hardware wallets
+  if (keyring.type.search('Hardware') !== -1) {
+    exportPrivateKeyFeatureEnabled = false
+  }
 
   return h(AccountModalContainer, {}, [
       h(EditableLabel, {
@@ -73,9 +85,9 @@ AccountDetailsModal.prototype.render = function () {
       }, this.context.t('etherscanView')),
 
       // Holding on redesign for Export Private Key functionality
-      h('button.btn-primary.account-modal__button', {
+      exportPrivateKeyFeatureEnabled ? h('button.btn-primary.account-modal__button', {
         onClick: () => showExportPrivateKeyModal(),
-      }, this.context.t('exportPrivateKey')),
+      }, this.context.t('exportPrivateKey')) : null,
 
   ])
 }

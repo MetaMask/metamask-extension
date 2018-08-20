@@ -5,6 +5,7 @@ import classnames from 'classnames'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import Identicon from '../../../../ui/app/components/identicon'
+import {exportAsFile} from '../../../../ui/app/util'
 import Breadcrumbs from './breadcrumbs'
 import LoadingScreen from './loading-screen'
 import { DEFAULT_ROUTE, INITIALIZE_CONFIRM_SEED_ROUTE } from '../../../../ui/app/routes'
@@ -65,6 +66,12 @@ class BackupPhraseScreen extends Component {
     }
   }
 
+  exportSeedWords = () => {
+    const { seedWords } = this.props
+
+    exportAsFile('MetaMask Secret Backup Phrase', seedWords, 'text/plain')
+  }
+
   renderSecretWordsContainer () {
     const { isShowingSecret } = this.state
 
@@ -111,13 +118,20 @@ class BackupPhraseScreen extends Component {
         <div className="backup-phrase__tips">
           <div className="backup-phrase__tips-text">Tips:</div>
           <div className="backup-phrase__tips-text">
-            Store this phrase in a password manager like 1password.
+            Store this phrase in a password manager like 1Password.
           </div>
           <div className="backup-phrase__tips-text">
             Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations.
           </div>
           <div className="backup-phrase__tips-text">
             Memorize this phrase.
+          </div>
+          <div className="backup-phrase__tips-text">
+            <strong>
+              <a className="backup-phrase__tips-text--link backup-phrase__tips-text--strong" onClick={this.exportSeedWords}>
+                Download this Secret Backup Phrase
+              </a>
+            </strong> and keep it stored safely on an external encrypted hard drive or storage medium.
           </div>
         </div>
         <div className="backup-phrase__next-button">
