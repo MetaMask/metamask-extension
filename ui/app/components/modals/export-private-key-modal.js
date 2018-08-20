@@ -1,3 +1,4 @@
+const log = require('loglevel')
 const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
@@ -23,7 +24,13 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    exportAccount: (password, address) => dispatch(actions.exportAccount(password, address)),
+    exportAccount: (password, address) => {
+      return dispatch(actions.exportAccount(password, address))
+        .then((res) => {
+          dispatch(actions.hideWarning())
+          return res
+        })
+    },
     showAccountDetailModal: () => dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' })),
     hideModal: () => dispatch(actions.hideModal()),
   }
@@ -36,6 +43,7 @@ function ExportPrivateKeyModal () {
   this.state = {
     password: '',
     privateKey: null,
+    showWarning: true,
   }
 }
 
@@ -50,7 +58,11 @@ ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (passwo
   const { exportAccount } = this.props
 
   exportAccount(password, address)
-    .then(privateKey => this.setState({ privateKey }))
+    .then(privateKey => this.setState({
+      privateKey,
+      showWarning: false,
+    }))
+    .catch((e) => log.error(e))
 }
 
 ExportPrivateKeyModal.prototype.renderPasswordLabel = function (privateKey) {
@@ -110,7 +122,10 @@ ExportPrivateKeyModal.prototype.render = function () {
   } = this.props
   const { name, address } = selectedIdentity
 
-  const { privateKey } = this.state
+  const {
+    privateKey,
+    showWarning,
+  } = this.state
 
   return h(AccountModalContainer, {
     showBackButton: previousModalState === 'ACCOUNT_DETAILS',
@@ -134,7 +149,7 @@ ExportPrivateKeyModal.prototype.render = function () {
 
         this.renderPasswordInput(privateKey),
 
-        !warning ? null : h('span.private-key-password-error', warning),
+        showWarning && warning ? h('span.private-key-password-error', warning) : null,
       ]),
 
       h('div.private-key-password-warning', this.context.t('privateKeyWarning')),
