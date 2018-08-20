@@ -405,7 +405,7 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
-          color: '#8fdc97',
+          color: '#60db97',
         },
       },
       [

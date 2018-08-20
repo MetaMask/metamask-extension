@@ -97,12 +97,12 @@ button, input[type="submit"] {
   border-radius: 3px;
   font-size: 14px;
   /* default green */
-  background: #8fdc97;
+  background: #60db97;
   /*box-shadow: 0px 5px 10px 0px rgba(92, 52, 162, 0.3);*/
 }
 
 .btn-green, input[type="submit"].btn-green {
-  background: #8fdc97;
+  background: #60db97;
 }
 
 .btn-red {
@@ -230,7 +230,7 @@ textarea.twelve-word-phrase {
 
 .check {
   margin-left: 12px;
-  color: #8fdc97;
+  color: #60db97;
   flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;
@@ -279,7 +279,7 @@ app sections
 }
 
 .warning {
-  color: #8fdc97;
+  color: #60db97;
 }
 
 p.exchanges {
@@ -391,7 +391,7 @@ p.exchanges {
 .selected-network {
   width: 4px;
   height: 26px;
-  background: #8fdc97;
+  background: #60db97;
   position: absolute;
   left: 0;
 }
