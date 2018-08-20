@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- [#84](https://github.com/poanetwork/metamask-extension/pull/84): (Fix) Change green color
+
 ## 4.8.4 Thu Aug 09 2018
 
 - [#70](https://github.com/poanetwork/metamask-extension/pull/70): Change ShapeShift API key
