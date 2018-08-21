@@ -729,6 +729,14 @@ function reduceApp (state, action) {
         identity: action.identity,
       })
 
+    case actions.CONFIRM_CHANGE_PASSWORD:
+      return extend(appState, {
+        currentView: {
+          name: 'confirm-change-password',
+          context: appState.currentView.context,
+        },
+      })
+
     default:
       return appState
   }

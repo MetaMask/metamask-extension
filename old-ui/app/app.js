@@ -37,6 +37,7 @@ const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 const DeleteRpc = require('./components/delete-rpc')
 const DeleteImportedAccount = require('./components/delete-imported-account')
+const ConfirmChangePassword = require('./components/confirm-change-password')
 const ethNetProps = require('eth-net-props')
 
 module.exports = connect(mapStateToProps)(App)
@@ -656,6 +657,9 @@ App.prototype.renderPrimary = function () {
     case 'delete-imported-account':
       log.debug('rendering delete imported account confirmation screen')
       return h(DeleteImportedAccount, {key: 'delete-imported-account'})
+    case 'confirm-change-password':
+      log.debug('rendering confirm password changing screen')
+      return h(ConfirmChangePassword, {key: 'confirm-change-password'})
     default:
       log.debug('rendering default, account detail screen')
       return h(AccountDetailScreen, {key: 'account-detail'})
