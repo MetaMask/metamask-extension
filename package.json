@@ -250,7 +250,7 @@
     "fs-promise": "^2.0.3",
     "ganache-cli": "^6.1.0",
     "ganache-core": "^2.1.5",
-    "geckodriver": "^1.11.0",
+    "geckodriver": "^1.12.2",
     "gh-pages": "^1.2.0",
     "gifencoder": "^1.1.0",
     "gulp": "github:gulpjs/gulp#6d71a658c61edb3090221579d8f97dbe086ba2ed",
@@ -318,7 +318,7 @@
     "watchify": "^3.11.0"
   },
   "engines": {
-    "node": "8.11.3",
+    "node": "8.11.4",
     "npm": "^6.1.0"
   }
 }
