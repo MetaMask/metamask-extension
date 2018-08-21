@@ -33,7 +33,6 @@ const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
-const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
 const ConfigManager = require('./lib/config-manager')
@@ -185,17 +184,6 @@ module.exports = class MetamaskController extends EventEmitter {
       }
     })
 
-    // computed balances (accounting for pending transactions)
-    this.balancesController = new BalancesController({
-      accountTracker: this.accountTracker,
-      txController: this.txController,
-      blockTracker: this.blockTracker,
-    })
-    this.networkController.on('networkDidChange', () => {
-      this.balancesController.updateAllBalances()
-    })
-    this.balancesController.updateAllBalances()
-
     // notices
     this.noticeController = new NoticeController({
       initState: initState.NoticeController,
@@ -229,7 +217,6 @@ module.exports = class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
-      BalancesController: this.balancesController.store,
       TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
@@ -512,26 +499,20 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Get an account balance from the AccountTracker or request it directly from the network.
+   * Get an account balance from the current provider.
    * @param {string} address - The account address
    * @param {EthQuery} ethQuery - The EthQuery instance to use when asking the network
    */
   getBalance (address, ethQuery) {
     return new Promise((resolve, reject) => {
-      const cached = this.accountTracker.store.getState().accounts[address]
-
-      if (cached && cached.balance) {
-        resolve(cached.balance)
-      } else {
-        ethQuery.getBalance(address, (error, balance) => {
-          if (error) {
-            reject(error)
-            log.error(error)
-          } else {
-            resolve(balance || '0x0')
-          }
-        })
-      }
+      ethQuery.getBalance(address, (error, balance) => {
+        if (error) {
+          log.error(error)
+          reject(error)
+        } else {
+          resolve(balance || '0x0')
+        }
+      })
     })
   }
 

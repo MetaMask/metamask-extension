@@ -190,27 +190,12 @@ describe('MetaMaskController', function () {
   })
 
   describe('#getBalance', () => {
-    it('should return the balance known by accountTracker', async () => {
-      const accounts = {}
-      const balance = '0x14ced5122ce0a000'
-      accounts[TEST_ADDRESS] = { balance: balance }
-
-      metamaskController.accountTracker.store.putState({ accounts: accounts })
-
-      const gotten = await metamaskController.getBalance(TEST_ADDRESS)
-
-      assert.equal(balance, gotten)
-    })
-
-    it('should ask the network for a balance when not known by accountTracker', async () => {
-      const accounts = {}
+    it('should ask the network for a balance', async () => {
       const balance = '0x14ced5122ce0a000'
       const ethQuery = new EthQuery()
       sinon.stub(ethQuery, 'getBalance').callsFake((account, callback) => {
         callback(undefined, balance)
       })
-
-      metamaskController.accountTracker.store.putState({ accounts: accounts })
 
       const gotten = await metamaskController.getBalance(TEST_ADDRESS, ethQuery)
 
