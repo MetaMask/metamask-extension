@@ -670,7 +670,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(newAccounts)
     newAccounts.forEach(address => {
       if (!oldAccounts.includes(address)) {
-        this.preferencesController.setAccountLabel(address, `${deviceName.toUpperCase()} ${parseInt(index, 10) + 1}`)
+        // Set the account label to Trezor 1 /  Ledger 1, etc
+        this.preferencesController.setAccountLabel(address, `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${parseInt(index, 10) + 1}`)
+        // Select the account
         this.preferencesController.setSelectedAddress(address)
       }
     })
@@ -802,7 +804,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // Remove account from the preferences controller
     this.preferencesController.removeAddress(address)
     // Remove account from the account tracker controller
-    this.accountTracker.removeAccount(address)
+    this.accountTracker.removeAccount([address])
+
     // Remove account from the keyring
     await this.keyringController.removeAccount(address)
     return address
