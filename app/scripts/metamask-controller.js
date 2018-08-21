@@ -67,6 +67,10 @@ module.exports = class MetamaskController extends EventEmitter {
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
 
+    // this keeps track of how many "controllerStream" connections are open
+    // the only thing that uses controller connections are open metamask UI instances
+    this.activeControllerConnections = 0
+
     // platform-specific api
     this.platform = opts.platform
 
@@ -1209,11 +1213,19 @@ module.exports = class MetamaskController extends EventEmitter {
   setupControllerConnection (outStream) {
     const api = this.getApi()
     const dnode = Dnode(api)
+    // report new active controller connection
+    this.activeControllerConnections++
+    this.emit('controllerConnectionChanged', this.activeControllerConnections)
+    // connect dnode api to remote connection
     pump(
       outStream,
       dnode,
       outStream,
       (err) => {
+        // report new active controller connection
+        this.activeControllerConnections--
+        this.emit('controllerConnectionChanged', this.activeControllerConnections)
+        // report any error
         if (err) log.error(err)
       }
     )
