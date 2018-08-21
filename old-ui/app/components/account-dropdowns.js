@@ -54,7 +54,7 @@ class AccountDropdowns extends Component {
             style: {
               width: '4px',
               height: '26px',
-              background: '#8fdc97',
+              background: '#60db97',
               position: 'absolute',
               left: '-25px',
             },
@@ -150,7 +150,7 @@ class AccountDropdowns extends Component {
             onClick: () => actions.addNewAccount(),
           },
           [
-            h('span', { style: { fontSize: '16px', color: '#8fdc97' } }, 'Create Account'),
+            h('span', { style: { fontSize: '16px', color: '#60db97' } }, 'Create Account'),
           ],
         ),
         h(
@@ -167,7 +167,7 @@ class AccountDropdowns extends Component {
               style: {
                 fontSize: '16px',
                 marginBottom: '5px',
-                color: '#8fdc97',
+                color: '#60db97',
               },
             }, 'Import Account'),
           ]
