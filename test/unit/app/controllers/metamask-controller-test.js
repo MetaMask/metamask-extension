@@ -191,7 +191,6 @@ describe('MetaMaskController', function () {
 
   describe('#getBalance', () => {
     it('should ask the network for a balance', async () => {
-      const accounts = {}
       const balance = '0x14ced5122ce0a000'
       const ethQuery = new EthQuery()
       sinon.stub(ethQuery, 'getBalance').callsFake((account, callback) => {
