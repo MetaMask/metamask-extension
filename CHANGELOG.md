@@ -2,6 +2,16 @@
 
 ## Current Develop Branch
 
+## 4.9.3 Wed Aug 15 2018
+
+- (#4897)[https://github.com/MetaMask/metamask-extension/pull/4897]: QR code scan for recipient addresses.
+- (#4961)[https://github.com/MetaMask/metamask-extension/pull/4961]: Add a download seed phrase link.
+- (#5060)[https://github.com/MetaMask/metamask-extension/pull/5060]: Fix bug where gas was not updating properly.
+
+## 4.9.2 Mon Aug 09 2018
+
+- [#5020](https://github.com/MetaMask/metamask-extension/pull/5020): Fix bug in migration #28 ( moving tokens to specific accounts )
+
 ## 4.9.1 Mon Aug 09 2018
 
 - [#4884](https://github.com/MetaMask/metamask-extension/pull/4884): Allow to have tokens per account and network.
@@ -23,6 +33,8 @@
 - [#4691](https://github.com/MetaMask/metamask-extension/pull/4691): Redesign of the Confirm Transaction Screen.
 - [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
 - [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): Allow the use of HTTP prefix for custom rpc urls.
+- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): network.js: convert rpc protocol to lower case.
+- [#4898](https://github.com/MetaMask/metamask-extension/pull/4898): Restore multiple consecutive accounts with balances.
 
 ## 4.8.0 Thur Jun 14 2018
 

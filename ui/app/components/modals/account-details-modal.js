@@ -60,7 +60,8 @@ AccountDetailsModal.prototype.render = function () {
   })
 
   let exportPrivateKeyFeatureEnabled = true
-  if (keyring.type === 'Trezor Hardware') {
+  // This feature is disabled for hardware wallets
+  if (keyring.type.search('Hardware') !== -1) {
     exportPrivateKeyFeatureEnabled = false
   }
 

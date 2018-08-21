@@ -7,17 +7,19 @@ const ConnectScreen = require('./connect-screen')
 const AccountList = require('./account-list')
 const { DEFAULT_ROUTE } = require('../../../../routes')
 const { formatBalance } = require('../../../../util')
+const { getPlatform } = require('../../../../../../app/scripts/lib/util')
+const { PLATFORM_FIREFOX } = require('../../../../../../app/scripts/lib/enums')
 
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
     super(props)
     this.state = {
       error: null,
-      btnText: context.t('connectToTrezor'),
       selectedAccount: null,
       accounts: [],
       browserSupported: true,
       unlocked: false,
+      device: null,
     }
   }
 
@@ -38,23 +40,41 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked () {
-    const unlocked = await this.props.checkHardwareStatus('trezor')
-    if (unlocked) {
-      this.setState({unlocked: true})
-      this.getPage(0)
-    }
+    ['trezor', 'ledger'].forEach(async device => {
+      const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
+      if (unlocked) {
+        this.setState({unlocked: true})
+        this.getPage(device, 0, this.props.defaultHdPaths[device])
+      }
+    })
   }
 
-  connectToTrezor = () => {
+  connectToHardwareWallet = (device) => {
+    // Ledger hardware wallets are not supported on firefox
+    if (getPlatform() === PLATFORM_FIREFOX && device === 'ledger') {
+      this.setState({ browserSupported: false, error: null})
+      return null
+    }
+
     if (this.state.accounts.length) {
       return null
     }
-    this.setState({ btnText: this.context.t('connecting')})
-    this.getPage(0)
+
+    // Default values
+    this.getPage(device, 0, this.props.defaultHdPaths[device])
+  }
+
+  onPathChange = (path) => {
+    this.props.setHardwareWalletDefaultHdPath({device: this.state.device, path})
+    this.getPage(this.state.device, 0, path)
   }
 
   onAccountChange = (account) => {
     this.setState({selectedAccount: account.toString(), error: null})
+  }
+
+  onAccountRestriction = () => {
+    this.setState({error: this.context.t('ledgerAccountRestriction') })
   }
 
   showTemporaryAlert () {
@@ -65,9 +85,9 @@ class ConnectHardwareForm extends Component {
     }, 5000)
   }
 
-  getPage = (page) => {
+  getPage = (device, page, hdPath) => {
     this.props
-      .connectHardware('trezor', page)
+      .connectHardware(device, page, hdPath)
       .then(accounts => {
         if (accounts.length) {
 
@@ -77,7 +97,7 @@ class ConnectHardwareForm extends Component {
             this.showTemporaryAlert()
           }
 
-          const newState = { unlocked: true, error: null }
+          const newState = { unlocked: true, device, error: null }
           // Default to the first account
           if (this.state.selectedAccount === null) {
             accounts.forEach((a, i) => {
@@ -104,20 +124,18 @@ class ConnectHardwareForm extends Component {
       })
       .catch(e => {
         if (e === 'Window blocked') {
-          this.setState({ browserSupported: false })
-        } else {
+          this.setState({ browserSupported: false, error: null})
+        } else if (e !== 'Window closed' && e !== 'Popup closed') {
           this.setState({ error: e.toString() })
         }
-        this.setState({ btnText: this.context.t('connectToTrezor') })
       })
   }
 
-  onForgetDevice = () => {
-    this.props.forgetDevice('trezor')
+  onForgetDevice = (device) => {
+    this.props.forgetDevice(device)
     .then(_ => {
       this.setState({
         error: null,
-        btnText: this.context.t('connectToTrezor'),
         selectedAccount: null,
         accounts: [],
         unlocked: false,
@@ -127,13 +145,13 @@ class ConnectHardwareForm extends Component {
     })
   }
 
-  onUnlockAccount = () => {
+  onUnlockAccount = (device) => {
 
     if (this.state.selectedAccount === null) {
       this.setState({ error: this.context.t('accountSelectionRequired') })
     }
 
-    this.props.unlockTrezorAccount(this.state.selectedAccount)
+    this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
     .then(_ => {
       this.props.history.push(DEFAULT_ROUTE)
     }).catch(e => {
@@ -154,13 +172,15 @@ class ConnectHardwareForm extends Component {
   renderContent () {
     if (!this.state.accounts.length) {
       return h(ConnectScreen, {
-        connectToTrezor: this.connectToTrezor,
-        btnText: this.state.btnText,
+        connectToHardwareWallet: this.connectToHardwareWallet,
         browserSupported: this.state.browserSupported,
       })
     }
 
     return h(AccountList, {
+      onPathChange: this.onPathChange,
+      selectedPath: this.props.defaultHdPaths[this.state.device],
+      device: this.state.device,
       accounts: this.state.accounts,
       selectedAccount: this.state.selectedAccount,
       onAccountChange: this.onAccountChange,
@@ -170,6 +190,7 @@ class ConnectHardwareForm extends Component {
       onUnlockAccount: this.onUnlockAccount,
       onForgetDevice: this.onForgetDevice,
       onCancel: this.onCancel,
+      onAccountRestriction: this.onAccountRestriction,
     })
   }
 
@@ -190,13 +211,15 @@ ConnectHardwareForm.propTypes = {
   forgetDevice: PropTypes.func,
   showAlert: PropTypes.func,
   hideAlert: PropTypes.func,
-  unlockTrezorAccount: PropTypes.func,
+  unlockHardwareWalletAccount: PropTypes.func,
+  setHardwareWalletDefaultHdPath: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
   history: PropTypes.object,
   t: PropTypes.func,
   network: PropTypes.string,
   accounts: PropTypes.object,
   address: PropTypes.string,
+  defaultHdPaths: PropTypes.object,
 }
 
 const mapStateToProps = state => {
@@ -204,28 +227,35 @@ const mapStateToProps = state => {
     metamask: { network, selectedAddress, identities = {}, accounts = [] },
   } = state
   const numberOfExistingAccounts = Object.keys(identities).length
+  const {
+    appState: { defaultHdPaths },
+  } = state
 
   return {
     network,
     accounts,
     address: selectedAddress,
     numberOfExistingAccounts,
+    defaultHdPaths,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    connectHardware: (deviceName, page) => {
-      return dispatch(actions.connectHardware(deviceName, page))
+    setHardwareWalletDefaultHdPath: ({device, path}) => {
+      return dispatch(actions.setHardwareWalletDefaultHdPath({device, path}))
     },
-    checkHardwareStatus: (deviceName) => {
-      return dispatch(actions.checkHardwareStatus(deviceName))
+    connectHardware: (deviceName, page, hdPath) => {
+      return dispatch(actions.connectHardware(deviceName, page, hdPath))
+    },
+    checkHardwareStatus: (deviceName, hdPath) => {
+      return dispatch(actions.checkHardwareStatus(deviceName, hdPath))
     },
     forgetDevice: (deviceName) => {
       return dispatch(actions.forgetDevice(deviceName))
     },
-    unlockTrezorAccount: index => {
-      return dispatch(actions.unlockTrezorAccount(index))
+    unlockHardwareWalletAccount: (index, deviceName, hdPath) => {
+      return dispatch(actions.unlockHardwareWalletAccount(index, deviceName, hdPath))
     },
     showImportPage: () => dispatch(actions.showImportPage()),
     showConnectPage: () => dispatch(actions.showConnectPage()),

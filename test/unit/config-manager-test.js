@@ -1,6 +1,3 @@
-// polyfill fetch
-global.fetch = global.fetch || require('isomorphic-fetch')
-
 const assert = require('assert')
 const configManagerGen = require('../lib/mock-config-manager')
 

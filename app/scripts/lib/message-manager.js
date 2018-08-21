@@ -69,10 +69,39 @@ module.exports = class MessageManager extends EventEmitter {
    * new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.
    *
    * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} req (optional) The original request object possibly containing the origin
+   * @returns {promise} after signature has been
+   *
+   */
+  addUnapprovedMessageAsync (msgParams, req) {
+    return new Promise((resolve, reject) => {
+      const msgId = this.addUnapprovedMessage(msgParams, req)
+      // await finished
+      this.once(`${msgId}:finished`, (data) => {
+        switch (data.status) {
+          case 'signed':
+            return resolve(data.rawSig)
+          case 'rejected':
+            return reject(new Error('MetaMask Message Signature: User denied message signature.'))
+          default:
+            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+        }
+      })
+    })
+  }
+
+  /**
+   * Creates a new Message with an 'unapproved' status using the passed msgParams. this.addMsg is called to add the
+   * new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.
+   *
+   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} req (optional) The original request object where the origin may be specificied
    * @returns {number} The id of the newly created message.
    *
    */
-  addUnapprovedMessage (msgParams) {
+  addUnapprovedMessage (msgParams, req) {
+    // add origin from request
+    if (req) msgParams.origin = req.origin
     msgParams.data = normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
     var time = (new Date()).getTime()
