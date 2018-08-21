@@ -131,6 +131,14 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
     })
+    // start and stop polling for balances based on activeControllerConnections
+    this.on('controllerConnectionChanged', (activeControllerConnections) => {
+      if (activeControllerConnections > 0) {
+        this.accountTracker.start()
+      } else {
+        this.accountTracker.stop()
+      }
+    })
 
     // key mgmt
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
