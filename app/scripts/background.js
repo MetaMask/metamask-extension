@@ -256,7 +256,7 @@ function setupController (initState, initLangCode) {
     showUnconfirmedMessage: triggerUi,
     unlockAccountMessage: triggerUi,
     showUnapprovedTx: triggerUi,
-    showAddTokenUi: triggerUi,
+    showWatchAssetUi: showWatchAssetUi,
     // initial state
     initState,
     // initial locale code
@@ -442,6 +442,24 @@ function triggerUi () {
       notificationManager.showPopup()
     }
   })
+}
+
+/**
+ * Opens the browser popup for user confirmation of watchAsset
+ * then it waits until user interact with the UI
+ */
+function showWatchAssetUi () {
+  triggerUi()
+  return new Promise(
+    (resolve) => {
+      var interval = setInterval(() => {
+        if (!notificationIsOpen) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 1000)
+    }
+  )
 }
 
 // On first install, open a window to MetaMask website to how-it-works.

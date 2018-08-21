@@ -41,7 +41,7 @@ class PreferencesController {
     this.diagnostics = opts.diagnostics
     this.network = opts.network
     this.store = new ObservableStore(initState)
-    this.showAddTokenUi = opts.showAddTokenUi
+    this.showWatchAssetUi = opts.showWatchAssetUi
     this._subscribeProviderType()
   }
 // PUBLIC METHODS
@@ -82,13 +82,12 @@ class PreferencesController {
    * @param {Function} - next
    * @param {Function} - end
    */
-  requestAddToken (req, res, next, end) {
+  async requestWatchAsset (req, res, next, end) {
     if (req.method === 'metamask_watchAsset') {
       const { type, options } = req.params
       switch (type) {
         case 'ERC20':
-          this._handleWatchAssetERC20(options, res)
-          res.result = options.address
+          res.result = await this._handleWatchAssetERC20(options)
           end()
           break
         default:
@@ -521,17 +520,20 @@ class PreferencesController {
   /**
    * Handle the suggestion of an ERC20 asset through `watchAsset`
    * *
-   * @param {Object} options Parameters according to addition of ERC20 token
+   * @param {Boolean} assetAdded Boolean according to addition of ERC20 token
    *
    */
-  _handleWatchAssetERC20 (options) {
+  async _handleWatchAssetERC20 (options) {
     // TODO handle bad parameters
     const { address, symbol, decimals, imageUrl } = options
     const rawAddress = address
     this._validateSuggestedTokenParams({ rawAddress, symbol, decimals })
     const tokenOpts = { rawAddress, decimals, symbol, imageUrl }
     this.addSuggestedToken(tokenOpts)
-    this.showAddTokenUi()
+    return this.showWatchAssetUi().then(() => {
+      const tokenAddresses = this.getTokens().filter(token => token.address === normalizeAddress(rawAddress))
+      return tokenAddresses.length > 0
+    })
   }
 }
 
