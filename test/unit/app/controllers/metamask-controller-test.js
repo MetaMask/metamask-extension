@@ -573,7 +573,7 @@ describe('MetaMaskController', function () {
       assert(metamaskController.preferencesController.removeAddress.calledWith(addressToRemove))
     })
     it('should call accountTracker.removeAccount', async function () {
-      assert(metamaskController.accountTracker.removeAccount.calledWith(addressToRemove))
+      assert(metamaskController.accountTracker.removeAccount.calledWith([addressToRemove]))
     })
     it('should call keyringController.removeAccount', async function () {
       assert(metamaskController.keyringController.removeAccount.calledWith(addressToRemove))
