@@ -15,7 +15,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     tokens: state.metamask.tokens,
     userAddress: selectors.getSelectedAddress(state),
-    imageObjects: state.metamask.imageObjects,
+    assetImages: state.metamask.assetImages,
   }
 }
 
@@ -47,7 +47,7 @@ function TokenList () {
 }
 
 TokenList.prototype.render = function () {
-  const { userAddress, imageObjects } = this.props
+  const { userAddress, assetImages } = this.props
   const state = this.state
   const { tokens, isLoading, error } = state
   if (isLoading) {
@@ -77,7 +77,7 @@ TokenList.prototype.render = function () {
   }
 
   return h('div', tokens.map((tokenData) => {
-    tokenData.imageUrl = imageObjects[tokenData.address]
+    tokenData.imageUrl = assetImages[tokenData.address]
     return h(TokenCell, tokenData)
   }))
 

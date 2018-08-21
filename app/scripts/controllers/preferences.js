@@ -15,7 +15,7 @@ class PreferencesController {
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
    * @property {object} store.accountTokens The tokens stored per account and then per network type
-   * @property {object} store.imageObjects Contains assets objects related to assets added
+   * @property {object} store.assetImages Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
@@ -28,7 +28,7 @@ class PreferencesController {
       frequentRpcList: [],
       currentAccountTab: 'history',
       accountTokens: {},
-      imageObjects: {},
+      assetImages: {},
       tokens: [],
       suggestedTokens: {},
       useBlockie: false,
@@ -60,12 +60,12 @@ class PreferencesController {
     return this.store.getState().suggestedTokens
   }
 
-  getImageObjects () {
-    return this.store.getState().imageObjects
+  getAssetImages () {
+    return this.store.getState().assetImages
   }
 
-  addSuggestedToken (tokenOpts) {
-    this._validateSuggestedTokenParams(tokenOpts)
+  addSuggestedERC20Asset (tokenOpts) {
+    this._validateERC20AssetParams(tokenOpts)
     const suggested = this.getSuggestedTokens()
     const { rawAddress, symbol, decimals, imageUrl } = tokenOpts
     const address = normalizeAddress(rawAddress)
@@ -291,7 +291,7 @@ class PreferencesController {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
     const tokens = this.store.getState().tokens
-    const imageObjects = this.getImageObjects()
+    const assetImages = this.getAssetImages()
     const previousEntry = tokens.find((token, index) => {
       return token.address === address
     })
@@ -302,8 +302,8 @@ class PreferencesController {
     } else {
       tokens.push(newEntry)
     }
-    imageObjects[address] = imageUrl
-    this._updateAccountTokens(tokens, imageObjects)
+    assetImages[address] = imageUrl
+    this._updateAccountTokens(tokens, assetImages)
     return Promise.resolve(tokens)
   }
 
@@ -316,10 +316,10 @@ class PreferencesController {
    */
   removeToken (rawAddress) {
     const tokens = this.store.getState().tokens
-    const imageObjects = this.getImageObjects()
+    const assetImages = this.getAssetImages()
     const updatedTokens = tokens.filter(token => token.address !== rawAddress)
-    delete imageObjects[rawAddress]
-    this._updateAccountTokens(updatedTokens, imageObjects)
+    delete assetImages[rawAddress]
+    this._updateAccountTokens(updatedTokens, assetImages)
     return Promise.resolve(updatedTokens)
   }
 
@@ -447,25 +447,6 @@ class PreferencesController {
   //
 
   /**
-   * Validates that the passed options for suggested token have all required properties.
-   *
-   * @param {Object} opts The options object to validate
-   * @throws {string} Throw a custom error indicating that address, symbol and/or decimals
-   * doesn't fulfill requirements
-   *
-   */
-  _validateSuggestedTokenParams (opts) {
-    const { rawAddress, symbol, decimals } = opts
-    if (!rawAddress || !symbol || !decimals) throw new Error(`Cannot suggest token without address, symbol, and decimals`)
-    if (!(symbol.length < 5)) throw new Error(`Invalid symbol ${symbol} more than four characters`)
-    const numDecimals = parseInt(decimals, 10)
-    if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
-      throw new Error(`Invalid decimals ${decimals} must be at least 0, and not over 36`)
-    }
-    if (!isValidAddress(rawAddress)) throw new Error(`Invalid address ${rawAddress}`)
-  }
-
-  /**
    * Subscription to network provider type.
    *
    *
@@ -483,10 +464,10 @@ class PreferencesController {
    * @param {array} tokens Array of tokens to be updated.
    *
    */
-  _updateAccountTokens (tokens, imageObjects) {
+  _updateAccountTokens (tokens, assetImages) {
     const { accountTokens, providerType, selectedAddress } = this._getTokenRelatedStates()
     accountTokens[selectedAddress][providerType] = tokens
-    this.store.updateState({ accountTokens, tokens, imageObjects })
+    this.store.updateState({ accountTokens, tokens, assetImages })
   }
 
   /**
@@ -520,20 +501,38 @@ class PreferencesController {
   /**
    * Handle the suggestion of an ERC20 asset through `watchAsset`
    * *
-   * @param {Boolean} assetAdded Boolean according to addition of ERC20 token
+   * @param {Promise} promise Promise according to addition of ERC20 token
    *
    */
   async _handleWatchAssetERC20 (options) {
-    // TODO handle bad parameters
     const { address, symbol, decimals, imageUrl } = options
     const rawAddress = address
-    this._validateSuggestedTokenParams({ rawAddress, symbol, decimals })
+    this._validateERC20AssetParams({ rawAddress, symbol, decimals })
     const tokenOpts = { rawAddress, decimals, symbol, imageUrl }
-    this.addSuggestedToken(tokenOpts)
+    this.addSuggestedERC20Asset(tokenOpts)
     return this.showWatchAssetUi().then(() => {
       const tokenAddresses = this.getTokens().filter(token => token.address === normalizeAddress(rawAddress))
       return tokenAddresses.length > 0
     })
+  }
+
+  /**
+   * Validates that the passed options for suggested token have all required properties.
+   *
+   * @param {Object} opts The options object to validate
+   * @throws {string} Throw a custom error indicating that address, symbol and/or decimals
+   * doesn't fulfill requirements
+   *
+   */
+  _validateERC20AssetParams (opts) {
+    const { rawAddress, symbol, decimals } = opts
+    if (!rawAddress || !symbol || !decimals) throw new Error(`Cannot suggest token without address, symbol, and decimals`)
+    if (!(symbol.length < 6)) throw new Error(`Invalid symbol ${symbol} more than five characters`)
+    const numDecimals = parseInt(decimals, 10)
+    if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
+      throw new Error(`Invalid decimals ${decimals} must be at least 0, and not over 36`)
+    }
+    if (!isValidAddress(rawAddress)) throw new Error(`Invalid address ${rawAddress}`)
   }
 }
 
