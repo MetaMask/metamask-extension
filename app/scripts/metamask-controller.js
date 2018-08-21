@@ -33,7 +33,6 @@ const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
-const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
 const ConfigManager = require('./lib/config-manager')
@@ -185,17 +184,6 @@ module.exports = class MetamaskController extends EventEmitter {
       }
     })
 
-    // computed balances (accounting for pending transactions)
-    this.balancesController = new BalancesController({
-      accountTracker: this.accountTracker,
-      txController: this.txController,
-      blockTracker: this.blockTracker,
-    })
-    this.networkController.on('networkDidChange', () => {
-      this.balancesController.updateAllBalances()
-    })
-    this.balancesController.updateAllBalances()
-
     // notices
     this.noticeController = new NoticeController({
       initState: initState.NoticeController,
@@ -229,7 +217,6 @@ module.exports = class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
-      BalancesController: this.balancesController.store,
       TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
