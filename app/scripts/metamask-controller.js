@@ -512,26 +512,20 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Get an account balance from the AccountTracker or request it directly from the network.
+   * Get an account balance from the current provider.
    * @param {string} address - The account address
    * @param {EthQuery} ethQuery - The EthQuery instance to use when asking the network
    */
   getBalance (address, ethQuery) {
     return new Promise((resolve, reject) => {
-      const cached = this.accountTracker.store.getState().accounts[address]
-
-      if (cached && cached.balance) {
-        resolve(cached.balance)
-      } else {
-        ethQuery.getBalance(address, (error, balance) => {
-          if (error) {
-            reject(error)
-            log.error(error)
-          } else {
-            resolve(balance || '0x0')
-          }
-        })
-      }
+      ethQuery.getBalance(address, (error, balance) => {
+        if (error) {
+          log.error(error)
+          reject(error)
+        } else {
+          resolve(balance || '0x0')
+        }
+      })
     })
   }
 
