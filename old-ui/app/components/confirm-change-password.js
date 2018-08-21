@@ -124,12 +124,6 @@ ConfirmChangePassword.prototype.ChangePassword = function () {
   const newPasswordConfirmBox = this.refs.PasswordBoxConfirm
   const newPasswordConfirm = newPasswordConfirmBox.value
 
-  if (newPassword.length < 8) {
-    this.warning = 'Password not long enough'
-
-    this.props.dispatch(actions.displayWarning(this.warning))
-    return
-  }
   if (newPassword !== newPasswordConfirm) {
     this.warning = 'Passwords don\'t match'
     this.props.dispatch(actions.displayWarning(this.warning))
