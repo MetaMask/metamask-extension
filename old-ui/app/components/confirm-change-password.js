@@ -58,18 +58,21 @@ ConfirmChangePassword.prototype.render = function () {
       h('input.large-input', {
         type: 'password',
         id: 'old-password-box',
+        ref: 'OldPasswordBox',
         style: passwordInputAdditionalStyle,
       }),
       h('span', 'New password'),
       h('input.large-input', {
         type: 'password',
         id: 'new-password-box',
+        ref: 'NewPasswordBox',
         style: passwordInputAdditionalStyle,
       }),
       h('span', 'Confirm new password'),
       h('input.large-input', {
         type: 'password',
         id: 'password-box-confirm',
+        ref: 'PasswordBoxConfirm',
         style: passwordInputAdditionalStyle,
         onKeyPress: this.createOnEnter.bind(this),
       }),
@@ -114,18 +117,13 @@ ConfirmChangePassword.prototype.createOnEnter = function (event) {
 }
 
 ConfirmChangePassword.prototype.ChangePassword = function () {
-  var oldPasswordBox = document.getElementById('old-password-box')
-  var oldPassword = oldPasswordBox.value
-  var newPasswordBox = document.getElementById('new-password-box')
-  var newPassword = newPasswordBox.value
-  var newPasswordConfirmBox = document.getElementById('password-box-confirm')
-  var newPasswordConfirm = newPasswordConfirmBox.value
-  if (oldPassword.length < 8) {
-    this.warning = 'Incorrect password'
+  const oldPasswordBox = this.refs.OldPasswordBox
+  const oldPassword = oldPasswordBox.value
+  const newPasswordBox = this.refs.NewPasswordBox
+  const newPassword = newPasswordBox.value
+  const newPasswordConfirmBox = this.refs.PasswordBoxConfirm
+  const newPasswordConfirm = newPasswordConfirmBox.value
 
-    this.props.dispatch(actions.displayWarning(this.warning))
-    return
-  }
   if (newPassword.length < 8) {
     this.warning = 'Password not long enough'
 
