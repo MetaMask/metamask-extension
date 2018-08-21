@@ -48,7 +48,7 @@ export default class SendToRow extends Component {
     return (
       <SendRowWrapper
         errorType={'to'}
-        label={`${this.context.t('to')}`}
+        label={`${this.context.t('to')}: `}
         showError={inError}
       >
         <EnsInput
