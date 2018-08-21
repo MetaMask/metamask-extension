@@ -87,11 +87,15 @@ class PreferencesController {
       const { type, options } = req.params
       switch (type) {
         case 'ERC20':
-          res.result = await this._handleWatchAssetERC20(options)
-          end()
+          const result = await this._handleWatchAssetERC20(options)
+          if (result instanceof Error) {
+            end(result)
+          } else {
+            res.result = result
+            end()
+          }
           break
         default:
-          // TODO return promise for not handled assets
           end(new Error(`Asset of type ${type} not supported`))
       }
     } else {
@@ -507,7 +511,11 @@ class PreferencesController {
   async _handleWatchAssetERC20 (options) {
     const { address, symbol, decimals, imageUrl } = options
     const rawAddress = address
-    this._validateERC20AssetParams({ rawAddress, symbol, decimals })
+    try {
+      this._validateERC20AssetParams({ rawAddress, symbol, decimals })
+    } catch (err) {
+      return err
+    }
     const tokenOpts = { rawAddress, decimals, symbol, imageUrl }
     this.addSuggestedERC20Asset(tokenOpts)
     return this.showWatchAssetUi().then(() => {
