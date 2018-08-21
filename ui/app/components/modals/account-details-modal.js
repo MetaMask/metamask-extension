@@ -86,8 +86,6 @@ AccountDetailsModal.prototype.render = function () {
       }, this.context.t('etherscanView')),
 
       // Holding on redesign for Export Private Key functionality
-      // This feature is disabled for TREZOR accounts
-
       exportPrivateKeyFeatureEnabled ? h('button.btn-primary.account-modal__button', {
         onClick: () => showExportPrivateKeyModal(),
       }, this.context.t('exportPrivateKey')) : null,
