@@ -161,6 +161,14 @@ class Settings extends Component {
   }
 
   renderNewRpcUrl () {
+    const { metamask: { provider = {} } } = this.props
+    let rpcTarget = ''
+    let chainId = ''
+    if (provider.type === 'rpc') {
+      rpcTarget = provider.rpcTarget
+      chainId = provider.chainId || ''
+    }
+
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
@@ -169,6 +177,7 @@ class Settings extends Component {
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('input.settings__input', {
+              defaultValue: rpcTarget,
               placeholder: this.context.t('newRPC'),
               onChange: event => this.setState({ newRpc: event.target.value }),
               onKeyPress: event => {
@@ -178,6 +187,7 @@ class Settings extends Component {
               },
             }),
             h('input.settings__input', {
+              defaultValue: chainId,
               placeholder: this.context.t('optionalChainId'),
               onChange: event => this.setState({ chainId: event.target.value }),
               onKeyPress: event => {
@@ -186,7 +196,7 @@ class Settings extends Component {
                 }
               },
             }),
-            h('div.settings__rpc-save-button', {
+            h('button.btn-primary.settings__rpc-save-button', {
               onClick: event => {
                 event.preventDefault()
                 this.validateRpc(this.state.newRpc, this.state.chainId)
