@@ -9,8 +9,6 @@ const selectors = require('../selectors')
 const log = require('loglevel')
 
 function mapStateToProps (state) {
-  // In order to get `imageUrl` from token added with `eth_watchToken`
-  // TODO do this with cache memory for browsers, add support for image object, var names
   return {
     network: state.metamask.network,
     tokens: state.metamask.tokens,
