@@ -6,6 +6,7 @@
 - [81](https://github.com/poanetwork/metamask-extension/pull/81): (Feature) Deanonymize private network
 - [80](https://github.com/poanetwork/metamask-extension/pull/80): (Feature) Remove imported account
 - [78](https://github.com/poanetwork/metamask-extension/pull/78): (Fix) Link to POA explorer for POA networks
+- [#84](https://github.com/poanetwork/metamask-extension/pull/84): (Fix) Change green color
 
 ## 4.8.4 Thu Aug 09 2018
 
