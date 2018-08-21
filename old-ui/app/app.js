@@ -721,7 +721,7 @@ App.prototype.renderCustomOption = function (provider) {
 
 App.prototype.getNetworkName = function () {
   const { network } = this.props
-  return ethNetProps.props.getNetworkDisplayName(parseInt(network))
+  return ethNetProps.props.getNetworkDisplayName(network)
 }
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {

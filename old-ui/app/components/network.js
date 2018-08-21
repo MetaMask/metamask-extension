@@ -44,22 +44,22 @@ Network.prototype.render = function () {
   } else {
     if (providerName === 'mainnet') {
       displayName = 'Main Network'
-      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else if (providerName === 'ropsten' || parseInt(networkNumber) === 3) {
       displayName = 'Ropsten Test Net'
-      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else if (providerName === 'sokol') {
       displayName = 'Sokol Network'
-      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else if (providerName === 'kovan') {
       displayName = 'Kovan Test Net'
-      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else if (providerName === 'rinkeby') {
       displayName = 'Rinkeby Test Net'
-      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else if (providerName === 'poa') {
       displayName = 'POA Network'
-      hoverText = ethNetProps.props.getNetworkDisplayName(parseInt(networkNumber))
+      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else {
       hoverText = (provider.type === 'rpc') ? `Private Network (${provider.rpcTarget})` : `Private Network (${provider.type})`
       displayName = 'Private Network'
