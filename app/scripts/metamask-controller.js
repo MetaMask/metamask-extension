@@ -127,6 +127,10 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
     })
+    // ensure accountTracker updates balances after network change
+    this.networkController.on('networkDidChange', () => {
+      this.accountTracker._updateAccounts()
+    })
 
     // key mgmt
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
