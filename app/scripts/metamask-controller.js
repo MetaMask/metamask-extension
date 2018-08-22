@@ -1444,6 +1444,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
   /**
    * A method for recording whether the MetaMask user interface is open or not.
    * @private
