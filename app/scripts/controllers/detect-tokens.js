@@ -50,7 +50,7 @@ class DetectTokensController {
     ethContract.balanceOf(this.selectedAddress, (error, result) => {
       if (!error) {
         if (!result.isZero()) {
-          this._preferences.addToken(contractAddress, contracts[contractAddress].symbol, contracts[contractAddress].decimals)
+          this._preferences.addToken(contractAddress, contracts[contractAddress].symbol, contracts[contractAddress].decimals, this.network)
         }
       } else {
         warn(`MetaMask - DetectTokensController balance fetch failed for ${contractAddress}.`, error)
