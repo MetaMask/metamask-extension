@@ -137,19 +137,7 @@ module.exports = class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
 
-    // If only one account exists, make sure it is selected.
-    this.keyringController.memStore.subscribe((state) => {
-      const addresses = state.keyrings.reduce((res, keyring) => {
-        return res.concat(keyring.accounts)
-      }, [])
-      if (addresses.length === 1) {
-        const address = addresses[0]
-        this.preferencesController.setSelectedAddress(address)
-      }
-      // ensure preferences + identities controller know about all addresses
-      this.preferencesController.addAddresses(addresses)
-      this.accountTracker.syncWithAddresses(addresses)
-    })
+    this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
 
     // detect tokens controller
     this.detectTokensController = new DetectTokensController({
@@ -1276,6 +1264,34 @@ module.exports = class MetamaskController extends EventEmitter {
         if (err) log.error(err)
       }
     )
+  }
+
+  /**
+   * Handle a KeyringController update
+   * @param {object} state the KC state
+   * @return {Promise<void>}
+   * @private
+   */
+  async _onKeyringControllerUpdate (state) {
+    const {isUnlocked, keyrings} = state
+    const addresses = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), [])
+
+    if (!addresses.length) {
+      return
+    }
+
+    // Ensure preferences + identities controller know about all addresses
+    this.preferencesController.addAddresses(addresses)
+    this.accountTracker.syncWithAddresses(addresses)
+
+    const wasLocked = !isUnlocked
+    if (wasLocked) {
+      const oldSelectedAddress = this.preferencesController.getSelectedAddress()
+      if (!addresses.includes(oldSelectedAddress)) {
+        const address = addresses[0]
+        await this.preferencesController.setSelectedAddress(address)
+      }
+    }
   }
 
   /**

@@ -11,13 +11,21 @@ const ReadOnlyInput = require('../readonly-input')
 const copyToClipboard = require('copy-to-clipboard')
 const { checksumAddress } = require('../../util')
 
-function mapStateToProps (state) {
-  return {
-    warning: state.appState.warning,
-    privateKey: state.appState.accountDetail.privateKey,
-    network: state.metamask.network,
-    selectedIdentity: getSelectedIdentity(state),
-    previousModalState: state.appState.modal.previousModalState.name,
+function mapStateToPropsFactory () {
+  let selectedIdentity = null
+  return function mapStateToProps (state) {
+    // We should **not** change the identity displayed here even if it changes from underneath us.
+    // If we do, we will be showing the user one private key and a **different** address and name.
+    // Note that the selected identity **will** change from underneath us when we unlock the keyring
+    // which is the expected behavior that we are side-stepping.
+    selectedIdentity = selectedIdentity || getSelectedIdentity(state)
+    return {
+      warning: state.appState.warning,
+      privateKey: state.appState.accountDetail.privateKey,
+      network: state.metamask.network,
+      selectedIdentity,
+      previousModalState: state.appState.modal.previousModalState.name,
+    }
   }
 }
 
@@ -43,7 +51,7 @@ ExportPrivateKeyModal.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ExportPrivateKeyModal)
+module.exports = connect(mapStateToPropsFactory, mapDispatchToProps)(ExportPrivateKeyModal)
 
 
 ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (password, address) {
@@ -113,6 +121,7 @@ ExportPrivateKeyModal.prototype.render = function () {
   const { privateKey } = this.state
 
   return h(AccountModalContainer, {
+    selectedIdentity,
     showBackButton: previousModalState === 'ACCOUNT_DETAILS',
     backButtonAction: () => showAccountDetailModal(),
   }, [
