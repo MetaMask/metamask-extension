@@ -52,6 +52,12 @@ const screenChangePassword = {
     incorrectPassword: 'Incorrect password'
   }
 }
+const screenLock = {
+  fieldPassword:'password-box',
+  error:'error',
+  errorText:'Incorrect password',
+  buttonLogin:'cursor-pointer'
+}
 
 describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
@@ -94,7 +100,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    await driver.quit()
+    //await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -324,15 +330,22 @@ describe('Metamask popup page', async function () {
         const itemLogOut = await driver.findElement(By.css(sandwichMenuSelectors.LogOut))
         await driver.wait(until.elementIsVisible(itemLogOut))
         itemLogOut.click()
-        await driver.wait(until.elementLocated(By.id('password-box')))
-        const fields = await driver.findElements(By.id('password-box'))
+        await driver.wait(until.elementLocated(By.id(screenLock.fieldPassword)))
+        const fields = await driver.findElements(By.id(screenLock.fieldPassword))
         assert.equal(fields.length, 1, 'password box isn\'t present after logout')
       })
-
+      it.skip('can\'t login with old password', async () => {
+        const field = await driver.findElement(By.id(screenLock.fieldPassword))
+        await field.sendKeys(password)
+        await driver.findElement(By.className(screenLock.buttonLogin)).click()
+        const errors = await driver.findElements(By.className(screenLock.error))
+        assert.equal(errors.length, 1, 'error isn\'t displayed if password incorrect')
+        assert.equal(await errors[0].getText(),screenLock.errorText, 'error\'s text incorrect')
+      })
       it('accepts new password after lock', async () => {
-        const field = await driver.findElement(By.id('password-box'))
+        const field = await driver.findElement(By.id(screenLock.fieldPassword))
         await field.sendKeys(newPassword.correct)
-        await driver.findElement(By.className('cursor-pointer')).click()
+        await driver.findElement(By.className(screenLock.buttonLogin)).click()
 
         await driver.wait(until.elementLocated(By.css(mainScreenSelectors.buttonBuy)))
         const buttons = await driver.findElements(By.css(mainScreenSelectors.buttonBuy))
