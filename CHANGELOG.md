@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#85](https://github.com/poanetwork/metamask-extension/pull/85): (Upgrade) node, npm packages versions
 - [#84](https://github.com/poanetwork/metamask-extension/pull/84): (Fix) Change green color
 - [#83](https://github.com/poanetwork/metamask-extension/pull/83): (Feature) Changing of password
 - [#81](https://github.com/poanetwork/metamask-extension/pull/81): (Feature) Deanonymize private network
