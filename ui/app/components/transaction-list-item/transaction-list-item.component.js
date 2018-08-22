@@ -128,6 +128,7 @@ export default class TransactionListItem extends PureComponent {
           <TransactionStatus
             className="transaction-list-item__status"
             status={transaction.status}
+            title={(transaction.err && transaction.err.rpc) ? transaction.err.rpc.message : null}
           />
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }

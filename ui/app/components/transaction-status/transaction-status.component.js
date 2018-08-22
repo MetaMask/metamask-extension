@@ -28,16 +28,24 @@ const statusToTextHash = {
 }
 
 export default class TransactionStatus extends PureComponent {
+  static defaultProps = {
+    title: null,
+  }
+
   static propTypes = {
     status: PropTypes.string,
+    title: PropTypes.string,
     className: PropTypes.string,
   }
 
   render () {
-    const { className, status } = this.props
+    const { className, status, title } = this.props
 
     return (
-      <div className={classnames('transaction-status', className, statusToClassNameHash[status])}>
+      <div
+        className={classnames('transaction-status', className, statusToClassNameHash[status])}
+        title={title || status}
+      >
         { statusToTextHash[status] || status }
       </div>
     )
