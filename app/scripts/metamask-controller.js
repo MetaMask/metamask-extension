@@ -67,6 +67,10 @@ module.exports = class MetamaskController extends EventEmitter {
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
 
+    // this keeps track of how many "controllerStream" connections are open
+    // the only thing that uses controller connections are open metamask UI instances
+    this.activeControllerConnections = 0
+
     // platform-specific api
     this.platform = opts.platform
 
@@ -126,6 +130,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.accountTracker = new AccountTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
+    })
+    // start and stop polling for balances based on activeControllerConnections
+    this.on('controllerConnectionChanged', (activeControllerConnections) => {
+      if (activeControllerConnections > 0) {
+        this.accountTracker.start()
+      } else {
+        this.accountTracker.stop()
+      }
     })
 
     // key mgmt
@@ -1197,11 +1209,19 @@ module.exports = class MetamaskController extends EventEmitter {
   setupControllerConnection (outStream) {
     const api = this.getApi()
     const dnode = Dnode(api)
+    // report new active controller connection
+    this.activeControllerConnections++
+    this.emit('controllerConnectionChanged', this.activeControllerConnections)
+    // connect dnode api to remote connection
     pump(
       outStream,
       dnode,
       outStream,
       (err) => {
+        // report new active controller connection
+        this.activeControllerConnections--
+        this.emit('controllerConnectionChanged', this.activeControllerConnections)
+        // report any error
         if (err) log.error(err)
       }
     )
@@ -1440,6 +1460,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
   /**
    * A method for recording whether the MetaMask user interface is open or not.
    * @private
