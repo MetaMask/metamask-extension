@@ -289,7 +289,7 @@ describe('Metamask popup page', async function () {
         assert.equal(await errors[0].getText(), screenChangePassword.error.differ, 'Error\'s text incorrect')
       })
 
-      it.skip('error if old password incorrect ', async () => {
+      it.skip('error if old password incorrect, https://github.com/poanetwork/metamask-extension/issues/86 ', async () => {
         await clearField(fieldOldPassword)
         await fieldOldPassword.sendKeys(newPassword.incorrect)
         await buttonYes.click()

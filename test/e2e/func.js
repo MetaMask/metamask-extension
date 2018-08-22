@@ -64,10 +64,10 @@ async function installWebExt(driver, extension) {
   return await driver.schedule(cmd, 'installWebExt(' + extension + ')')
 }
 
-async function clearField(field) {
+async function clearField(field, number) {
   await field.click();
-  await delay(200);
-  for ( let i = 0; i < 40; i++ ) {
+  if (number === undefined) number = 40;
+  for ( let i = 0; i < number; i++ ) {
     await field.sendKeys(Key.BACK_SPACE);
   }
 }
