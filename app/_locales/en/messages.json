@@ -1025,7 +1025,7 @@
     "message": "Test Faucet"
   },
   "to": {
-    "message": "To: "
+    "message": "To"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
