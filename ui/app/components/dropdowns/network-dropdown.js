@@ -272,8 +272,9 @@ NetworkDropdown.prototype.getNetworkName = function () {
 
 NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
+  const reversedRpcList = rpcList.slice().reverse()
 
-  return rpcList.map((rpc) => {
+  return reversedRpcList.map((rpc) => {
     const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
 
     if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
@@ -302,7 +303,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
         ]
       )
     }
-  }).reverse()
+  })
 }
 
 NetworkDropdown.prototype.renderCustomOption = function (provider) {
