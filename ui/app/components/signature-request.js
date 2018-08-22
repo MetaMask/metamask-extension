@@ -14,9 +14,6 @@ const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 const actions = require('../actions')
 const { conversionUtil } = require('../conversion-util')
 
-const { getPlatform } = require('../../../app/scripts/lib/util')
-const { PLATFORM_FIREFOX } = require('../../../app/scripts/lib/enums')
-
 const {
   getSelectedAccount,
   getCurrentAccountWithSendEtherInfo,
@@ -250,7 +247,7 @@ SignatureRequest.prototype.renderFooter = function () {
     sign = signMessage
   }
 
-  return h(`div.request-signature__footer${getPlatform() !== PLATFORM_FIREFOX ? '.not-firefox' : ''}`, [
+  return h('div.request-signature__footer', [
     h('button.btn-default.btn--large.request-signature__footer__cancel-button', {
       onClick: event => {
         cancel(event).then(() => {
