@@ -354,7 +354,8 @@ module.exports = class AppBar extends Component {
     const {dispatch} = this.props
     const reversedRpcList = rpcList.slice().reverse()
 
-    return reversedRpcList.map((rpc) => {
+    return reversedRpcList.map((entry) => {
+      const rpc = entry.rpcUrl
       const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
 
       if ((rpc === LOCALHOST_RPC_URL) || currentRpcTarget) {
