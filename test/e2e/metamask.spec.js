@@ -18,22 +18,22 @@ let password = '123456789'
 const sandwichMenuSelectors = {
   Menu: '.sandwich-expando',
   Settings: '#app-content > div > div:nth-child(3) > span > div > li:nth-child(2)',
-  LogOut: '#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)'
+  LogOut: '#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)',
 }
 
 const titlesOfScreensSelectors = {
   ChangePassword: 'Change Password',
-  Settings: 'Settings'
+  Settings: 'Settings',
 }
 const mainScreenSelectors = {
-  buttonBuy: '#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)'
+  buttonBuy: '#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)',
 }
 
 const screenChangePassword = {
   ById: {
     fieldOldPassword: 'old-password-box',
     fieldNewPassword: 'new-password-box',
-    fieldConfirmNewPassword: 'password-box-confirm'
+    fieldConfirmNewPassword: 'password-box-confirm',
   },
   ByCss: {
     buttonNo: '#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button.btn-violet',
@@ -42,21 +42,21 @@ const screenChangePassword = {
   ByClassName: {
     label: 'confirm-label',
     arrowLeft: 'fa fa-arrow-left fa-lg cursor-pointer',
-    error: 'error'
+    error: 'error',
   },
   labelText: 'Are you sure you want to change the password for unlocking of your wallet?',
   error: {
     differ: 'New password should differ from the current one',
     notLong: 'Password not long enough',
     dontMatch: 'Passwords don\'t match',
-    incorrectPassword: 'Incorrect password'
-  }
+    incorrectPassword: 'Incorrect password',
+  },
 }
 const screenLock = {
-  fieldPassword:'password-box',
-  error:'error',
-  errorText:'Incorrect password',
-  buttonLogin:'cursor-pointer'
+  fieldPassword: 'password-box',
+  error: 'error',
+  errorText: 'Incorrect password',
+  buttonLogin: 'cursor-pointer',
 }
 
 describe('Metamask popup page', async function () {
@@ -65,13 +65,13 @@ describe('Metamask popup page', async function () {
   this.timeout(0)
 
   before(async function () {
-    if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
       const extPath = path.resolve('dist/chrome')
       driver = buildChromeWebDriver(extPath)
       extensionId = await getExtensionIdChrome(driver)
       await driver.get(`chrome-extension://${extensionId}/popup.html`)
 
-    } else if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
+    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
       const extPath = path.resolve('dist/firefox')
       driver = buildFirefoxWebdriver()
       await installWebExt(driver, extPath)
@@ -84,23 +84,23 @@ describe('Metamask popup page', async function () {
   afterEach(async function () {
     // logs command not supported in firefox
     // https://github.com/SeleniumHQ/selenium/issues/2910
-    if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
       // check for console errors
       const errors = await checkBrowserForConsoleErrors()
-      if ( errors.length ) {
+      if (errors.length) {
         const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
         this.test.error(new Error(errorMessage))
       }
     }
     // gather extra data if test failed
-    if ( this.currentTest.state === 'failed' ) {
+    if (this.currentTest.state === 'failed') {
       await verboseReportOnFailure(this.currentTest)
     }
   })
 
   after(async function () {
-    //await driver.quit()
+    // await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -212,7 +212,7 @@ describe('Metamask popup page', async function () {
     const newPassword = {
       correct: 'abcDEF123!@#',
       short: '123',
-      incorrect: '1234567890'
+      incorrect: '1234567890',
     }
     let fieldNewPassword
     let fieldConfirmNewPassword
@@ -340,7 +340,7 @@ describe('Metamask popup page', async function () {
         await driver.findElement(By.className(screenLock.buttonLogin)).click()
         const errors = await driver.findElements(By.className(screenLock.error))
         assert.equal(errors.length, 1, 'error isn\'t displayed if password incorrect')
-        assert.equal(await errors[0].getText(),screenLock.errorText, 'error\'s text incorrect')
+        assert.equal(await errors[0].getText(), screenLock.errorText, 'error\'s text incorrect')
       })
       it('accepts new password after lock', async () => {
         const field = await driver.findElement(By.id(screenLock.fieldPassword))
@@ -538,9 +538,9 @@ describe('Metamask popup page', async function () {
     })
 
     it('navigates back to MetaMask popup in the tab', async function () {
-      if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
         await driver.get(`chrome-extension://${extensionId}/popup.html`)
-      } else if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
+      } else if (process.env.SELENIUM_BROWSER === 'firefox') {
         await driver.get(`moz-extension://${extensionId}/popup.html`)
       }
       await delay(700)
@@ -636,7 +636,7 @@ describe('Metamask popup page', async function () {
       const input = await driver.findElement(By.css('#new_rpc'))
       input.sendKeys(customUrl)
       await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(2) > button')).click()
-      if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
         input.sendKeys(Key.ENTER)
       }
       await delay(400)
@@ -658,11 +658,11 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  async function setProviderType(type) {
+  async function setProviderType (type) {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
-  async function checkBrowserForConsoleErrors() {
+  async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly
@@ -682,11 +682,11 @@ describe('Metamask popup page', async function () {
     return matchedErrorObjects
   }
 
-  async function verboseReportOnFailure(test) {
+  async function verboseReportOnFailure (test) {
     let artifactDir
-    if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
       artifactDir = `./test-artifacts/chrome/${test.title}`
-    } else if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
+    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
       artifactDir = `./test-artifacts/firefox/${test.title}`
     }
     const filepathBase = `${artifactDir}/test-failure`
