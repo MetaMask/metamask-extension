@@ -271,7 +271,7 @@ NetworkDropdown.prototype.getNetworkName = function () {
   return name
 }
 
-NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
+NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
   const reversedRpcList = rpcList.slice().reverse()
 
