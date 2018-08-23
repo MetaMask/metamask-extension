@@ -635,6 +635,9 @@
   "newRPC": {
     "message": "New RPC URL"
   },
+  "optionalChainId": {
+    "message": "ChainId (optional)"
+  },
   "next": {
     "message": "Next"
   },
@@ -834,6 +837,9 @@
   },
   "connectingToRinkeby": {
     "message": "Connecting to Rinkeby Test Network"
+  },
+  "connectingToClassic": {
+    "message": "Connecting to Ethereum Classic Network"
   },
   "connectingToUnknown": {
     "message": "Connecting to Unknown Network"

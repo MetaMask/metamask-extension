@@ -99,7 +99,7 @@ class App extends Component {
       network,
       isMouseUser,
       provider,
-      frequentRpcList,
+      frequentRpcListDetail,
       currentView,
       setMouseUserState,
     } = this.props
@@ -139,7 +139,7 @@ class App extends Component {
         // network dropdown
         h(NetworkDropdown, {
           provider,
-          frequentRpcList,
+          frequentRpcListDetail,
         }, []),
 
         h(AccountMenu),
@@ -265,7 +265,7 @@ App.propTypes = {
   alertMessage: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
-  frequentRpcList: PropTypes.array,
+  frequentRpcListDetail: PropTypes.array,
   currentView: PropTypes.object,
   sidebarOpen: PropTypes.bool,
   alertOpen: PropTypes.bool,
@@ -357,7 +357,7 @@ function mapStateToProps (state) {
     forgottenPassword: state.appState.forgottenPassword,
     nextUnreadNotice,
     lostAccounts,
-    frequentRpcList: state.metamask.frequentRpcList || [],
+    frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
     betaUI: state.metamask.featureFlags.betaUI,

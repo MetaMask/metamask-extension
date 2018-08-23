@@ -25,6 +25,7 @@ class CurrencyController {
    */
   constructor (opts = {}) {
     const initState = extend({
+      fromCurrency: 'ETH',
       currentCurrency: 'usd',
       conversionRate: 0,
       conversionDate: 'N/A',
@@ -35,6 +36,26 @@ class CurrencyController {
   //
   // PUBLIC METHODS
   //
+
+  /**
+   * A getter for the fromCurrency property
+   *
+   * @returns {string} A 2-4 character shorthand that describes the specific currency
+   *
+   */
+  getFromCurrency () {
+    return this.store.getState().fromCurrency
+  }
+
+  /**
+   * A setter for the fromCurrency property
+   *
+   * @param {string} fromCurrency The new currency to set as the fromCurrency in the store
+   *
+   */
+  setFromCurrency (fromCurrency) {
+    this.store.updateState({ ticker: fromCurrency, fromCurrency })
+  }
 
   /**
    * A getter for the currentCurrency property
@@ -104,15 +125,16 @@ class CurrencyController {
    *
    */
   async updateConversionRate () {
-    let currentCurrency
+    let currentCurrency, fromCurrency
     try {
       currentCurrency = this.getCurrentCurrency()
-      const response = await fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`)
+      fromCurrency = this.getFromCurrency()
+      const response = await fetch(`https://min-api.cryptocompare.com/data/pricehistorical?fsym=${fromCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`)
       const parsedResponse = await response.json()
-      this.setConversionRate(Number(parsedResponse.bid))
-      this.setConversionDate(Number(parsedResponse.timestamp))
+      this.setConversionRate(Number(parsedResponse[fromCurrency.toUpperCase()][currentCurrency.toUpperCase()]))
+      this.setConversionDate(parseInt(new Date().getTime() / 1000))
     } catch (err) {
-      log.warn(`MetaMask - Failed to query currency conversion:`, currentCurrency, err)
+      log.warn(`MetaMask - Failed to query currency conversion:`, fromCurrency, currentCurrency, err)
       this.setConversionRate(0)
       this.setConversionDate('N/A')
     }

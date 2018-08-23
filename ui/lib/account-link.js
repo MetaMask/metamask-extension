@@ -1,4 +1,4 @@
-module.exports = function (address, network) {
+module.exports = function (address, network, url) {
   const net = parseInt(network)
   let link
   switch (net) {
@@ -18,6 +18,10 @@ module.exports = function (address, network) {
       link = `https://kovan.etherscan.io/address/${address}`
       break
     default:
+      if (url) {
+        return url.replace('[[address]]', address)
+      }
+
       link = ''
       break
   }
