@@ -26,6 +26,7 @@ TxList.contextTypes = {
 
 function mapStateToProps (state) {
   return {
+    settings: state.metamask.settings,
     txsToRender: selectors.transactionsSelector(state),
     conversionRate: selectors.conversionRateSelector(state),
     selectedAddress: selectors.getSelectedAddress(state),
@@ -155,7 +156,11 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
 }
 
 TxList.prototype.view = function (txHash, network) {
-  const url = etherscanLinkFor(txHash, network)
+  let url
+  if (this.props.settings && this.props.settings.blockExplorerTx) {
+    url = this.props.settings.blockExplorerTx
+  }
+  url = etherscanLinkFor(txHash, network, url)
   if (url) {
     navigateTo(url)
   }
@@ -165,7 +170,10 @@ function navigateTo (url) {
   global.platform.openWindow({ url })
 }
 
-function etherscanLinkFor (txHash, network) {
+function etherscanLinkFor (txHash, network, url) {
   const prefix = prefixForNetwork(network)
+  if (url) {
+    return url.replace('[[txHash]]', txHash)
+  }
   return `https://${prefix}etherscan.io/tx/${txHash}`
 }

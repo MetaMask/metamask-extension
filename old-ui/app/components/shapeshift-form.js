@@ -10,6 +10,7 @@ function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
     isSubLoading: state.appState.isSubLoading,
+    ticker: state.metamask.ticker,
   }
 }
 
@@ -237,7 +238,7 @@ ShapeshiftForm.prototype.updateCoin = function (event) {
     var message = 'Not a valid coin'
     return props.dispatch(actions.displayWarning(message))
   } else {
-    return props.dispatch(actions.pairUpdate(coin))
+    return props.dispatch(actions.pairUpdate(coin, props.ticker))
   }
 }
 
@@ -249,7 +250,7 @@ ShapeshiftForm.prototype.handleLiveInput = function () {
   if (!coinOptions[coin.toUpperCase()] || coin.toUpperCase() === 'ETH') {
     return null
   } else {
-    return props.dispatch(actions.pairUpdate(coin))
+    return props.dispatch(actions.pairUpdate(coin, props.ticker))
   }
 }
 

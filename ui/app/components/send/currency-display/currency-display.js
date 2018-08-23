@@ -1,5 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const connect = require('react-redux').connect
 const inherits = require('util').inherits
 const { conversionUtil, multiplyCurrencies } = require('../../../conversion-util')
 const { removeLeadingZeroes } = require('../send.utils')
@@ -12,7 +13,12 @@ CurrencyDisplay.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = CurrencyDisplay
+module.exports = connect(mapStateToProps)(CurrencyDisplay)
+function mapStateToProps (state) {
+  return {
+    fromCurrency: state.metamask.fromCurrency,
+  }
+}
 
 inherits(CurrencyDisplay, Component)
 function CurrencyDisplay () {
@@ -78,7 +84,7 @@ CurrencyDisplay.prototype.getValueToRender = function ({ selectedToken, conversi
 }
 
 CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValue) {
-  const { primaryCurrency, convertedCurrency, conversionRate } = this.props
+  const { fromCurrency, primaryCurrency, convertedCurrency, conversionRate } = this.props
 
   if (conversionRate === 0 || conversionRate === null || conversionRate === undefined) {
     if (nonFormattedValue !== 0) {
@@ -88,7 +94,7 @@ CurrencyDisplay.prototype.getConvertedValueToRender = function (nonFormattedValu
 
   let convertedValue = conversionUtil(nonFormattedValue, {
     fromNumericBase: 'dec',
-    fromCurrency: primaryCurrency,
+    fromCurrency: fromCurrency || primaryCurrency,
     toCurrency: convertedCurrency,
     numberOfDecimals: 2,
     conversionRate,
@@ -132,6 +138,7 @@ CurrencyDisplay.prototype.render = function () {
   const {
     className = 'currency-display',
     primaryBalanceClassName = 'currency-display__input',
+    fromCurrency,
     primaryCurrency,
     readOnly = false,
     inError = false,
@@ -174,7 +181,7 @@ CurrencyDisplay.prototype.render = function () {
           step,
         }),
 
-        h('span.currency-display__currency-symbol', primaryCurrency),
+        h('span.currency-display__currency-symbol', fromCurrency || primaryCurrency),
 
       ]),
 

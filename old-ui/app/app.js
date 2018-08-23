@@ -72,7 +72,7 @@ function mapStateToProps (state) {
     forgottenPassword: state.appState.forgottenPassword,
     nextUnreadNotice: state.metamask.nextUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
-    frequentRpcList: state.metamask.frequentRpcList || [],
+    frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     featureFlags,
 
     // state needed to get account dropdown temporarily rendering from app bar
@@ -298,6 +298,8 @@ App.prototype.getNetworkName = function () {
     name = 'Kovan Test Network'
   } else if (providerName === 'rinkeby') {
     name = 'Rinkeby Test Network'
+  } else if (providerName === 'classic') {
+    name = 'Ethereum Classic Network'
   } else {
     name = 'Unknown Private Network'
   }

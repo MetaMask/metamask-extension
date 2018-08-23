@@ -181,6 +181,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
+      var currentCurrency = this.currencyController.getCurrentCurrency()
+      this.setCurrentCurrency(currentCurrency, function() {})
     })
     this.balancesController.updateAllBalances()
 
@@ -1348,10 +1350,13 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb - A callback function returning currency info.
    */
   setCurrentCurrency (currencyCode, cb) {
+    const { ticker } = this.networkController.getNetworkConfig()
     try {
+      this.currencyController.setFromCurrency(ticker)
       this.currencyController.setCurrentCurrency(currencyCode)
       this.currencyController.updateConversionRate()
       const data = {
+        fromCurrency: ticker || 'ETH',
         conversionRate: this.currencyController.getConversionRate(),
         currentCurrency: this.currencyController.getCurrentCurrency(),
         conversionDate: this.currencyController.getConversionDate(),
@@ -1372,7 +1377,8 @@ module.exports = class MetamaskController extends EventEmitter {
   buyEth (address, amount) {
     if (!amount) amount = '5'
     const network = this.networkController.getNetworkState()
-    const url = getBuyEthUrl({ network, address, amount })
+    const link = this.networkController.getNetworkConfig().buyUrl
+    const url = getBuyEthUrl({ network, address, amount, link })
     if (url) this.platform.openWindow({ url })
   }
 
@@ -1392,9 +1398,9 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} rpcTarget - A URL for a valid Ethereum RPC API.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  async setCustomRpc (rpcTarget) {
-    this.networkController.setRpcTarget(rpcTarget)
-    await this.preferencesController.updateFrequentRpcList(rpcTarget)
+  async setCustomRpc (rpcTarget, chainId) {
+    this.networkController.setRpcTarget(rpcTarget, chainId)
+    await this.preferencesController.updateFrequentRpcList(rpcTarget, chainId)
     return rpcTarget
   }
 
