@@ -1596,11 +1596,11 @@ function showRemoveTokenPage (token, transitionForward = true) {
   }
 }
 
-function addToken (address, symbol, decimals) {
+function addToken (address, symbol, decimals, network) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, (err, tokens) => {
+      background.addToken(address, symbol, decimals, network, (err, tokens) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
@@ -1634,16 +1634,16 @@ function addTokens (tokens) {
   return dispatch => {
     if (Array.isArray(tokens)) {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
-      return Promise.all(tokens.map(({ address, symbol, decimals }) => (
-        dispatch(addToken(address, symbol, decimals))
+      return Promise.all(tokens.map(({ address, symbol, decimals, network }) => (
+        dispatch(addToken(address, symbol, decimals, network))
       )))
     } else {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
         .entries(tokens)
-        .map(([_, { address, symbol, decimals }]) => (
-          dispatch(addToken(address, symbol, decimals))
+        .map(([_, { address, symbol, decimals, network }]) => (
+          dispatch(addToken(address, symbol, decimals, network))
         ))
       )
     }

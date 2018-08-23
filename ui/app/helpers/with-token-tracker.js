@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import TokenTracker from 'eth-token-tracker'
+import TokenTracker from 'eth-token-watcher'
 
 const withTokenTracker = WrappedComponent => {
   return class TokenTrackerWrappedComponent extends Component {

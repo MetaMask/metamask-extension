@@ -49,8 +49,6 @@ TokenCell.prototype.render = function () {
         },
       }, ''),
 
-      h('hr'),
-
       /*
       h('button', {
         onClick: this.send.bind(this, address),
