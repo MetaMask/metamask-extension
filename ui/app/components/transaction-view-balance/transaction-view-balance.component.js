@@ -7,7 +7,7 @@ import CurrencyDisplay from '../currency-display'
 import { SEND_ROUTE } from '../../routes'
 import { ETH } from '../../constants/common'
 
-export default class TokenViewBalance extends PureComponent {
+export default class TransactionViewBalance extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -28,18 +28,18 @@ export default class TokenViewBalance extends PureComponent {
         <TokenBalance
           token={selectedToken}
           withSymbol
-          className="token-view-balance__token-balance"
+          className="transaction-view-balance__token-balance"
         />
       ) : (
-        <div className="token-view-balance__balance">
+        <div className="transaction-view-balance__balance">
           <CurrencyDisplay
-            className="token-view-balance__primary-balance"
+            className="transaction-view-balance__primary-balance"
             value={balance}
             currency={ETH}
             numberOfDecimals={3}
           />
           <CurrencyDisplay
-            className="token-view-balance__secondary-balance"
+            className="transaction-view-balance__secondary-balance"
             value={balance}
           />
         </div>
@@ -51,12 +51,12 @@ export default class TokenViewBalance extends PureComponent {
     const { selectedToken, showDepositModal, history } = this.props
 
     return (
-      <div className="token-view-balance__buttons">
+      <div className="transaction-view-balance__buttons">
         {
           !selectedToken && (
             <Button
               type="primary"
-              className="token-view-balance__button"
+              className="transaction-view-balance__button"
               onClick={() => showDepositModal()}
             >
               { t('deposit') }
@@ -65,7 +65,7 @@ export default class TokenViewBalance extends PureComponent {
         }
         <Button
           type="primary"
-          className="token-view-balance__button"
+          className="transaction-view-balance__button"
           onClick={() => history.push(SEND_ROUTE)}
         >
           { t('send') }
@@ -78,8 +78,8 @@ export default class TokenViewBalance extends PureComponent {
     const { network, selectedToken } = this.props
 
     return (
-      <div className="token-view-balance">
-        <div className="token-view-balance__balance-container">
+      <div className="transaction-view-balance">
+        <div className="transaction-view-balance__balance-container">
           <Identicon
             diameter={50}
             address={selectedToken && selectedToken.address}

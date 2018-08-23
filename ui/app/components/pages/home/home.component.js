@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import WalletView from '../../wallet-view'
-import TokenView from '../../token-view'
+import TransactionView from '../../transaction-view'
 import {
   INITIALIZE_BACKUP_PHRASE_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -58,7 +58,7 @@ export default class Home extends PureComponent {
             query="(min-width: 576px)"
             render={() => <WalletView />}
           />
-          <TokenView />
+          <TransactionView />
         </div>
       </div>
     )

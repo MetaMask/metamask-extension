@@ -4,7 +4,7 @@ import CurrencyDisplay from '../currency-display/currency-display.component'
 import { getTokenData } from '../../helpers/transactions.util'
 import { calcTokenAmount } from '../../token-util'
 
-export default class TokenCurrencyDisplayContainer extends PureComponent {
+export default class TokenCurrencyDisplay extends PureComponent {
   static propTypes = {
     transactionData: PropTypes.string,
     token: PropTypes.object,

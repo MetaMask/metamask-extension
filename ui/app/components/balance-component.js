@@ -4,8 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenBalance = require('./token-balance')
 const Identicon = require('./identicon')
-const currencyFormatter = require('currency-formatter')
-const currencies = require('currency-formatter/currencies')
+import CurrencyDisplay from './currency-display'
 
 const { formatBalance, generateBalanceObject } = require('../util')
 
@@ -80,36 +79,10 @@ BalanceComponent.prototype.renderBalance = function () {
       style: {},
     }, this.getTokenBalance(formattedBalance, shorten)),
 
-    showFiat ? this.renderFiatValue(formattedBalance) : null,
+    showFiat && h(CurrencyDisplay, {
+      value: balanceValue,
+    }),
   ])
-}
-
-BalanceComponent.prototype.renderFiatValue = function (formattedBalance) {
-
-  const { conversionRate, currentCurrency } = this.props
-
-  const fiatDisplayNumber = this.getFiatDisplayNumber(formattedBalance, conversionRate)
-
-  const fiatPrefix = currentCurrency === 'USD' ? '$' : ''
-
-  return this.renderFiatAmount(fiatDisplayNumber, currentCurrency, fiatPrefix)
-}
-
-BalanceComponent.prototype.renderFiatAmount = function (fiatDisplayNumber, fiatSuffix, fiatPrefix) {
-  const shouldNotRenderFiat = fiatDisplayNumber === 'N/A' || Number(fiatDisplayNumber) === 0
-  if (shouldNotRenderFiat) return null
-
-  const upperCaseFiatSuffix = fiatSuffix.toUpperCase()
-
-  const display = currencies.find(currency => currency.code === upperCaseFiatSuffix)
-    ? currencyFormatter.format(Number(fiatDisplayNumber), {
-      code: upperCaseFiatSuffix,
-    })
-    : `${fiatPrefix}${fiatDisplayNumber} ${upperCaseFiatSuffix}`
-
-  return h('div.fiat-amount', {
-    style: {},
-  }, display)
 }
 
 BalanceComponent.prototype.getTokenBalance = function (formattedBalance, shorten) {

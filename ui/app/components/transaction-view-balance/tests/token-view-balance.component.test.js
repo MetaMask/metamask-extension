@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import TokenBalance from '../../token-balance'
 import CurrencyDisplay from '../../currency-display'
 import { SEND_ROUTE } from '../../../routes'
-import TokenViewBalance from '../token-view-balance.component'
+import TransactionViewBalance from '../transaction-view-balance.component'
 
 const propsMethodSpies = {
   showDepositModal: sinon.spy(),
@@ -17,14 +17,14 @@ const historySpies = {
 
 const t = (str1, str2) => str2 ? str1 + str2 : str1
 
-describe('TokenViewBalance Component', () => {
+describe('TransactionViewBalance Component', () => {
   afterEach(() => {
     propsMethodSpies.showDepositModal.resetHistory()
     historySpies.push.resetHistory()
   })
 
   it('should render ETH balance properly', () => {
-    const wrapper = shallow(<TokenViewBalance
+    const wrapper = shallow(<TransactionViewBalance
       showDepositModal={propsMethodSpies.showDepositModal}
       history={historySpies}
       network="3"
@@ -33,11 +33,11 @@ describe('TokenViewBalance Component', () => {
       currentCurrency="usd"
     />, { context: { t } })
 
-    assert.equal(wrapper.find('.token-view-balance').length, 1)
-    assert.equal(wrapper.find('.token-view-balance__button').length, 2)
+    assert.equal(wrapper.find('.transaction-view-balance').length, 1)
+    assert.equal(wrapper.find('.transaction-view-balance__button').length, 2)
     assert.equal(wrapper.find(CurrencyDisplay).length, 2)
 
-    const buttons = wrapper.find('.token-view-balance__buttons')
+    const buttons = wrapper.find('.transaction-view-balance__buttons')
     assert.equal(propsMethodSpies.showDepositModal.callCount, 0)
     buttons.childAt(0).simulate('click')
     assert.equal(propsMethodSpies.showDepositModal.callCount, 1)
@@ -54,7 +54,7 @@ describe('TokenViewBalance Component', () => {
       symbol: 'ABC',
     }
 
-    const wrapper = shallow(<TokenViewBalance
+    const wrapper = shallow(<TransactionViewBalance
       showDepositModal={propsMethodSpies.showDepositModal}
       history={historySpies}
       network="3"
@@ -64,8 +64,8 @@ describe('TokenViewBalance Component', () => {
       selectedToken={token}
     />, { context: { t } })
 
-    assert.equal(wrapper.find('.token-view-balance').length, 1)
-    assert.equal(wrapper.find('.token-view-balance__button').length, 1)
+    assert.equal(wrapper.find('.transaction-view-balance').length, 1)
+    assert.equal(wrapper.find('.transaction-view-balance__button').length, 1)
     assert.equal(wrapper.find(TokenBalance).length, 1)
   })
 })

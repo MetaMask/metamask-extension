@@ -41,8 +41,8 @@ export function isConfirmDeployContract (txData = {}) {
   return !txParams.to
 }
 
-export function getTransactionActionKey (transaction, methodData) {
-  const { txParams: { data } = {}, msgParams } = transaction
+export async function getTransactionActionKey (transaction, methodData) {
+  const { txParams: { data, to } = {}, msgParams } = transaction
 
   if (msgParams) {
     return SIGNATURE_REQUEST_KEY
@@ -53,6 +53,12 @@ export function getTransactionActionKey (transaction, methodData) {
   }
 
   if (data) {
+    const toSmartContract = await isSmartContractAddress(to)
+
+    if (!toSmartContract) {
+      return SEND_ETHER_ACTION_KEY
+    }
+
     const { name } = methodData
     const methodName = name && name.toLowerCase()
 
@@ -91,4 +97,9 @@ export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0')
       return acc
     }
   }, {})
+}
+
+export async function isSmartContractAddress (address) {
+  const code = await global.eth.getCode(address)
+  return code && code !== '0x'
 }

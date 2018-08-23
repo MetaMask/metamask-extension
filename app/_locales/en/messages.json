@@ -705,6 +705,9 @@
   "pasteSeed": {
     "message": "Paste your seed phrase here!"
   },
+  "pending": {
+    "message": "pending"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },

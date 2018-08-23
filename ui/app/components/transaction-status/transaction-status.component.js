@@ -1,15 +1,16 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-
-const UNAPPROVED_STATUS = 'unapproved'
-const REJECTED_STATUS = 'rejected'
-const APPROVED_STATUS = 'approved'
-const SIGNED_STATUS = 'signed'
-const SUBMITTED_STATUS = 'submitted'
-const CONFIRMED_STATUS = 'confirmed'
-const FAILED_STATUS = 'failed'
-const DROPPED_STATUS = 'dropped'
+import {
+  UNAPPROVED_STATUS,
+  REJECTED_STATUS,
+  APPROVED_STATUS,
+  SIGNED_STATUS,
+  SUBMITTED_STATUS,
+  CONFIRMED_STATUS,
+  FAILED_STATUS,
+  DROPPED_STATUS,
+} from '../../constants/transactions'
 
 const statusToClassNameHash = {
   [UNAPPROVED_STATUS]: 'transaction-status--unapproved',
@@ -28,17 +29,22 @@ const statusToTextHash = {
 }
 
 export default class TransactionStatus extends PureComponent {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   static propTypes = {
-    status: PropTypes.string,
+    statusKey: PropTypes.string,
     className: PropTypes.string,
   }
 
   render () {
-    const { className, status } = this.props
+    const { className, statusKey } = this.props
+    const statusText = this.context.t(statusToTextHash[statusKey] || statusKey)
 
     return (
-      <div className={classnames('transaction-status', className, statusToClassNameHash[status])}>
-        { statusToTextHash[status] || status }
+      <div className={classnames('transaction-status', className, statusToClassNameHash[statusKey])}>
+        { statusText }
       </div>
     )
   }

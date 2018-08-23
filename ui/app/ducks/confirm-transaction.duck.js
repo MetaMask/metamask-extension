@@ -12,10 +12,9 @@ import {
   addEth,
   increaseLastGasPrice,
   hexGreaterThan,
-  isSmartContractAddress,
 } from '../helpers/confirm-transaction/util'
 
-import { getTokenData, getMethodData } from '../helpers/transactions.util'
+import { getTokenData, getMethodData, isSmartContractAddress } from '../helpers/transactions.util'
 import { getSymbolAndDecimals } from '../token-util'
 import { conversionUtil } from '../conversion-util'
 

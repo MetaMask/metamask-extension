@@ -25,7 +25,7 @@ export default class TransactionAction extends PureComponent {
     this.getTransactionAction()
   }
 
-  getTransactionAction () {
+  async getTransactionAction () {
     const { transactionAction } = this.state
     const { transaction, methodData } = this.props
     const { data, done } = methodData
@@ -34,18 +34,18 @@ export default class TransactionAction extends PureComponent {
       return
     }
 
-    const actionKey = getTransactionActionKey(transaction, data)
+    const actionKey = await getTransactionActionKey(transaction, data)
     const action = actionKey && this.context.tOrDefault(actionKey)
     this.setState({ transactionAction: action })
   }
 
   render () {
-    const { className, methodData: { isFetching } } = this.props
+    const { className, methodData: { done } } = this.props
     const { transactionAction } = this.state
 
     return (
       <div className={className}>
-        { (!isFetching && transactionAction) || '--' }
+        { (done && transactionAction) || '--' }
       </div>
     )
   }

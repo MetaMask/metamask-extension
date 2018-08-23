@@ -127,13 +127,13 @@ export default class TransactionListItem extends PureComponent {
           </div>
           <TransactionStatus
             className="transaction-list-item__status"
-            status={transaction.status}
+            statusKey={transaction.status}
           />
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }
         </div>
         {
-          showRetry && !methodData.isFetching && (
+          showRetry && methodData.done && (
             <div
               className="transaction-list-item__retry"
               onClick={this.handleRetryClick}

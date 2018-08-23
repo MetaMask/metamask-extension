@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
-import TokenViewBalance from './token-view-balance.component'
+import TransactionViewBalance from './transaction-view-balance.component'
 import { getSelectedToken, getSelectedAddress } from '../../selectors'
 import { showModal } from '../../actions'
 
@@ -27,4 +27,4 @@ const mapDispatchToProps = dispatch => {
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
-)(TokenViewBalance)
+)(TransactionViewBalance)
