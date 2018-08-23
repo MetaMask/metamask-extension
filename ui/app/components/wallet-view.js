@@ -34,7 +34,7 @@ function mapStateToProps (state) {
 
   return {
     network: state.metamask.network,
-    sidebarOpen: state.appState.sidebarOpen,
+    sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     tokens: state.metamask.tokens,
