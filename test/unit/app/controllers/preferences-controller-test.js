@@ -409,8 +409,8 @@ describe('preferences controller', function () {
       const address = '0xabcdef1234567'
       const symbol = 'ABBR'
       const decimals = 5
-      const imageUrl = 'someimageurl'
-      req.params.options = { address, symbol, decimals, imageUrl }
+      const image = 'someimage'
+      req.params.options = { address, symbol, decimals, image }
 
       sandbox.stub(preferencesController, '_validateERC20AssetParams').returns(true)
       preferencesController.showWatchAssetUi = async () => {}
@@ -422,19 +422,19 @@ describe('preferences controller', function () {
       assert.equal(suggested[address].address, address, 'set address correctly')
       assert.equal(suggested[address].symbol, symbol, 'set symbol correctly')
       assert.equal(suggested[address].decimals, decimals, 'set decimals correctly')
-      assert.equal(suggested[address].imageUrl, imageUrl, 'set imageUrl correctly')
+      assert.equal(suggested[address].image, image, 'set image correctly')
     })
 
     it('should add token correctly if user confirms', async function () {
       const address = '0xabcdef1234567'
       const symbol = 'ABBR'
       const decimals = 5
-      const imageUrl = 'someimageurl'
-      req.params.options = { address, symbol, decimals, imageUrl }
+      const image = 'someimage'
+      req.params.options = { address, symbol, decimals, image }
 
       sandbox.stub(preferencesController, '_validateERC20AssetParams').returns(true)
       preferencesController.showWatchAssetUi = async () => {
-        await preferencesController.addToken(address, symbol, decimals, imageUrl)
+        await preferencesController.addToken(address, symbol, decimals, image)
       }
 
       await preferencesController._handleWatchAssetERC20(req.params.options)
@@ -446,7 +446,7 @@ describe('preferences controller', function () {
       assert.equal(added.decimals, decimals, 'set decimals correctly')
 
       const assetImages = preferencesController.getAssetImages()
-      assert.ok(assetImages[address], `set imageurl correctly`)
+      assert.ok(assetImages[address], `set image correctly`)
     })
   })
 })

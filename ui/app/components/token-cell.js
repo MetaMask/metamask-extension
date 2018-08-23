@@ -56,7 +56,7 @@ TokenCell.prototype.render = function () {
     sidebarOpen,
     currentCurrency,
     // userAddress,
-    imageUrl,
+    image,
   } = props
   let currentTokenToFiatRate
   let currentTokenInFiat
@@ -97,7 +97,7 @@ TokenCell.prototype.render = function () {
         diameter: 50,
         address,
         network,
-        imageUrl,
+        image,
       }),
 
       h('div.token-list-item__balance-ellipsis', null, [

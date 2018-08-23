@@ -26,17 +26,17 @@ function mapStateToProps (state) {
 
 IdenticonComponent.prototype.render = function () {
   var props = this.props
-  const { className = '', address, imageUrl } = props
+  const { className = '', address, image } = props
   var diameter = props.diameter || this.defaultDiameter
   const style = {
     height: diameter,
     width: diameter,
     borderRadius: diameter / 2,
   }
-  if (imageUrl) {
+  if (image) {
     return h('img', {
       className: `${className} identicon`,
-      src: imageUrl,
+      src: image,
       style: {
         ...style,
       },

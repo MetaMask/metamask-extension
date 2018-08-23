@@ -35,7 +35,7 @@ BalanceComponent.prototype.render = function () {
   const props = this.props
   const { token, network, assetImages } = props
   const address = token && token.address
-  const imageUrl = assetImages && address ? assetImages[token.address] : undefined
+  const image = assetImages && address ? assetImages[token.address] : undefined
 
   return h('div.balance-container', {}, [
 
@@ -48,7 +48,7 @@ BalanceComponent.prototype.render = function () {
       diameter: 50,
       address,
       network,
-      imageUrl,
+      image,
     }),
 
     token ? this.renderTokenBalance() : this.renderBalance(),

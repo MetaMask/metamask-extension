@@ -67,9 +67,9 @@ class PreferencesController {
   addSuggestedERC20Asset (tokenOpts) {
     this._validateERC20AssetParams(tokenOpts)
     const suggested = this.getSuggestedTokens()
-    const { rawAddress, symbol, decimals, imageUrl } = tokenOpts
+    const { rawAddress, symbol, decimals, image } = tokenOpts
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, symbol, decimals, imageUrl }
+    const newEntry = { address, symbol, decimals, image }
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
   }
@@ -291,7 +291,7 @@ class PreferencesController {
    * @returns {Promise<array>} Promises the new array of AddedToken objects.
    *
    */
-  async addToken (rawAddress, symbol, decimals, imageUrl) {
+  async addToken (rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
     const tokens = this.store.getState().tokens
@@ -306,7 +306,7 @@ class PreferencesController {
     } else {
       tokens.push(newEntry)
     }
-    assetImages[address] = imageUrl
+    assetImages[address] = image
     this._updateAccountTokens(tokens, assetImages)
     return Promise.resolve(tokens)
   }
@@ -509,14 +509,14 @@ class PreferencesController {
    *
    */
   async _handleWatchAssetERC20 (options) {
-    const { address, symbol, decimals, imageUrl } = options
+    const { address, symbol, decimals, image } = options
     const rawAddress = address
     try {
       this._validateERC20AssetParams({ rawAddress, symbol, decimals })
     } catch (err) {
       return err
     }
-    const tokenOpts = { rawAddress, decimals, symbol, imageUrl }
+    const tokenOpts = { rawAddress, decimals, symbol, image }
     this.addSuggestedERC20Asset(tokenOpts)
     return this.showWatchAssetUi().then(() => {
       const tokenAddresses = this.getTokens().filter(token => token.address === normalizeAddress(rawAddress))

@@ -61,7 +61,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               {
                 Object.entries(pendingTokens)
                   .map(([ address, token ]) => {
-                    const { name, symbol, imageUrl } = token
+                    const { name, symbol, image } = token
 
                     return (
                       <div
@@ -73,7 +73,7 @@ export default class ConfirmAddSuggestedToken extends Component {
                             className="confirm-add-token__token-icon"
                             diameter={48}
                             address={address}
-                            imageUrl={imageUrl}
+                            image={image}
                           />
                           <div className="confirm-add-token__name">
                             { this.getTokenName(name, symbol) }

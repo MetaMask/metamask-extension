@@ -1599,11 +1599,11 @@ function showAddSuggestedTokenPage (transitionForward = true) {
   }
 }
 
-function addToken (address, symbol, decimals, imageUrl) {
+function addToken (address, symbol, decimals, image) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, imageUrl, (err, tokens) => {
+      background.addToken(address, symbol, decimals, image, (err, tokens) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))

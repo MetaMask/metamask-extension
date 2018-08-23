@@ -18,7 +18,7 @@ const mapStateToProps = ({ metamask }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addToken: ({address, symbol, decimals, imageUrl}) => dispatch(addToken(address, symbol, decimals, imageUrl)),
+    addToken: ({address, symbol, decimals, image}) => dispatch(addToken(address, symbol, decimals, image)),
     removeSuggestedTokens: () => dispatch(removeSuggestedTokens()),
   }
 }

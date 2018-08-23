@@ -43,7 +43,7 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(HideTokenConfirmat
 HideTokenConfirmationModal.prototype.render = function () {
   const { token, network, hideToken, hideModal, assetImages } = this.props
   const { symbol, address } = token
-  const imageUrl = assetImages[address]
+  const image = assetImages[address]
 
   return h('div.hide-token-confirmation', {}, [
     h('div.hide-token-confirmation__container', {
@@ -57,7 +57,7 @@ HideTokenConfirmationModal.prototype.render = function () {
         diameter: 45,
         address,
         network,
-        imageUrl,
+        image,
       }),
 
       h('div.hide-token-confirmation__symbol', {}, symbol),

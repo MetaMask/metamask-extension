@@ -75,7 +75,7 @@ TokenList.prototype.render = function () {
   }
 
   return h('div', tokens.map((tokenData) => {
-    tokenData.imageUrl = assetImages[tokenData.address]
+    tokenData.image = assetImages[tokenData.address]
     return h(TokenCell, tokenData)
   }))
 
