@@ -11,6 +11,7 @@ const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
+const networks = require('./networks')
 const extend = require('xtend')
 
 const {
@@ -34,8 +35,6 @@ const defaultProviderConfig = {
 const defaultNetworkConfig = {
   ticker: 'ETH',
 }
-
-const networks = {};
 
 module.exports = class NetworkController extends EventEmitter {
 
