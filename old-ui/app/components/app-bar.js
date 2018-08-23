@@ -352,12 +352,12 @@ module.exports = class AppBar extends Component {
 
   renderCommonRpc (rpcList, provider) {
     const {dispatch} = this.props
-    const {rpcTarget, type} = provider
+    const reversedRpcList = rpcList.slice().reverse()
 
-    return rpcList.map((entry) => {
-      const rpc = entry.rpcUrl
-      const selected = type === 'rpc' && rpcTarget === rpc
-      if ((rpc === LOCALHOST_RPC_URL) || selected) {
+    return reversedRpcList.map((rpc) => {
+      const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
+
+      if ((rpc === LOCALHOST_RPC_URL) || currentRpcTarget) {
         return null
       } else {
         return h(DropdownMenuItem, {
@@ -367,7 +367,7 @@ module.exports = class AppBar extends Component {
         }, [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
           rpc,
-          selected
+          currentRpcTarget
             ? h('.check', '✓')
             : null,
         ])

@@ -273,13 +273,12 @@ NetworkDropdown.prototype.getNetworkName = function () {
 
 NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
   const props = this.props
-  const { rpcTarget, type } = provider
-  const network = props.network
+  const reversedRpcList = rpcList.slice().reverse()
 
-  return rpcListDetail.map((entry) => {
-    const rpc = entry.rpcUrl
-    const selected = type === 'rpc' && rpcTarget === rpc
-    if ((rpc === 'http://localhost:8545') || selected) {
+  return reversedRpcList.map((rpc) => {
+    const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
+
+    if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
       return null
     } else {
       const chainId = entry.chainId || network
@@ -296,11 +295,11 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
           },
         },
         [
-          selected ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+          currentRpcTarget ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
           h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
           h('span.network-name-item', {
             style: {
-              color: selected ? '#ffffff' : '#9b9b9b',
+              color: currentRpcTarget ? '#ffffff' : '#9b9b9b',
             },
           }, rpc),
         ]

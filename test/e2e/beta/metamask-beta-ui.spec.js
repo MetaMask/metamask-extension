@@ -665,7 +665,7 @@ describe('MetaMask', function () {
     })
 
     it('picks the newly created Test token', async () => {
-      const addCustomToken = await findElement(driver, By.xpath("//div[contains(text(), 'Custom Token')]"))
+      const addCustomToken = await findElement(driver, By.xpath("//li[contains(text(), 'Custom Token')]"))
       await addCustomToken.click()
       await delay(regularDelayMs)
 
@@ -1009,6 +1009,66 @@ describe('MetaMask', function () {
       const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
       await driver.wait(until.elementTextMatches(balance, /0\sBAT/))
       await delay(regularDelayMs)
+    })
+  })
+
+  describe('Stores custom RPC history', () => {
+    const customRpcUrls = [
+      'https://mainnet.infura.io/1',
+      'https://mainnet.infura.io/2',
+      'https://mainnet.infura.io/3',
+      'https://mainnet.infura.io/4',
+    ]
+
+    customRpcUrls.forEach(customRpcUrl => {
+      it('creates custom RPC: ' + customRpcUrl, async () => {
+        const networkDropdown = await findElement(driver, By.css('.network-name'))
+        await networkDropdown.click()
+        await delay(regularDelayMs)
+
+        const customRpcButton = await findElement(driver, By.xpath(`//span[contains(text(), 'Custom RPC')]`))
+        await customRpcButton.click()
+        await delay(regularDelayMs)
+
+        const customRpcInput = await findElement(driver, By.css('input[placeholder="New RPC URL"]'))
+        await customRpcInput.clear()
+        await customRpcInput.sendKeys(customRpcUrl)
+
+        const customRpcSave = await findElement(driver, By.css('.settings__rpc-save-button'))
+        await customRpcSave.click()
+        await delay(largeDelayMs * 2)
+      })
+    })
+
+    it('selects another provider', async () => {
+      const networkDropdown = await findElement(driver, By.css('.network-name'))
+      await networkDropdown.click()
+      await delay(regularDelayMs)
+
+      const customRpcButton = await findElement(driver, By.xpath(`//span[contains(text(), 'Main Ethereum Network')]`))
+      await customRpcButton.click()
+      await delay(largeDelayMs * 2)
+    })
+
+    it('finds 3 recent RPCs in history', async () => {
+      const networkDropdown = await findElement(driver, By.css('.network-name'))
+      await networkDropdown.click()
+      await delay(regularDelayMs)
+
+      // oldest selected RPC is not found
+      await assertElementNotPresent(webdriver, driver, By.xpath(`//span[contains(text(), '${customRpcUrls[0]}')]`))
+
+      // only recent 3 are found and in correct order (most recent at the top)
+      const customRpcs = await findElements(driver, By.xpath(`//span[contains(text(), 'https://mainnet.infura.io/')]`))
+
+      assert.equal(customRpcs.length, 3)
+
+      for (let i = 0; i < customRpcs.length; i++) {
+        const linkText = await customRpcs[i].getText()
+        const rpcUrl = customRpcUrls[customRpcUrls.length - i - 1]
+
+        assert.notEqual(linkText.indexOf(rpcUrl), -1)
+      }
     })
   })
 })
