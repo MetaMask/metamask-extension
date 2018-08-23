@@ -48,6 +48,7 @@ function mapStateToProps (state) {
     warning: state.appState.warning,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    isUnlocked: state.metamask.isUnlocked,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
@@ -57,7 +58,7 @@ function mapStateToProps (state) {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { currentCurrency, blockGasLimit, network, provider } = props
+  const { currentCurrency, blockGasLimit, network, provider, isUnlocked } = props
 
   const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
@@ -272,6 +273,7 @@ PendingTx.prototype.render = function () {
               isNotification ? h(NetworkIndicator, {
                 network: network,
                 provider: provider,
+                isUnlocked: isUnlocked,
               }) : null,
             ]),
 

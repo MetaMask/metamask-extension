@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#91](https://github.com/poanetwork/metamask-extension/pull/91): (Fix) Confirm tx notification popup: network name
 - [#89](https://github.com/poanetwork/metamask-extension/pull/89): (Feature) Support of token per network basis
 - [#85](https://github.com/poanetwork/metamask-extension/pull/85): (Upgrade) node, npm packages versions
 - [#84](https://github.com/poanetwork/metamask-extension/pull/84): (Fix) Change green color
