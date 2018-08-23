@@ -20,6 +20,10 @@ class ExtensionPlatform {
     })
   }
 
+  /**
+   * Closes all notifications windows, when action is confirmed in popup
+   * or closes notification window itself, wheb action is confirmed from it
+   */
   closeNotificationWindow () {
     return extension.windows.getCurrent((curWindowsDetails) => {
       if (curWindowsDetails.type === 'popup') {
