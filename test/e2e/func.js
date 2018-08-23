@@ -15,8 +15,8 @@ module.exports = {
   installWebExt,
   getExtensionIdChrome,
   getExtensionIdFirefox,
-  clearField,
-}
+  clearField
+  }
 
 function delay (time) {
   return new Promise(resolve => setTimeout(resolve, time))
