@@ -986,198 +986,198 @@
     "message": "개인 시드 구문"
   },
   "accessingYourCamera": {
-    "message": "Accesing your camera..."
+    "message": "카메라 접근중..."
   },
   "accountSelectionRequired": {
-    "message": "You need to select an account!"
+    "message": "계정을 선택하셔야 합니다!"
   },
   "approve": {
-    "message": "Approve"
+    "message": "수락"
   },
   "browserNotSupported": {
-    "message": "Your Browser is not supported..."
+    "message": "브라우저가 지원하지 않습니다..."
   },
   "bytes": {
-    "message": "Bytes"
+    "message": "바이트"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+    "message": "하드웨어 지갑을 연결하기 위해서는 구글 크롬에서 메타마스크를 사용하셔야 합니다."
   },
   "connectHardwareWallet": {
-    "message": "Connect Hardware Wallet"
+    "message": "하드웨어 지갑 연결"
   },
   "connect": {
-    "message": "Connect"
+    "message": "연결"
   },
   "connecting": {
-    "message": "Connecting..."
+    "message": "연결중..."
   },
   "connectToLedger": {
-    "message": "Connect to Ledger"
+    "message": "Ledger 연결"
   },
   "connectToTrezor": {
-    "message": "Connect to Trezor"
+    "message": "Trezor 연결"
   },
   "copyAddress": {
-    "message": "Copy address to clipboard"
+    "message": "클립보드로 주소 복사"
   },
   "downloadGoogleChrome": {
-    "message": "Download Google Chrome"
+    "message": "구글 크롬 다운로드"
   },
   "dontHaveAHardwareWallet": {
-    "message": "Don’t have a hardware wallet?"
+    "message": "하드웨어 지갑이 없나요?"
   },
   "ensNameNotFound": {
-    "message": "ENS name not found"
+    "message": "ENS 이름을 찾을 수 없습니다"
   },
   "parameters": {
-    "message": "Parameters"
+    "message": "매개변수"
   },
   "forgetDevice": {
-    "message": "Forget this device"
+    "message": "장치 연결 해제"
   },
   "functionType": {
-    "message": "Function Type"
+    "message": "함수 유형"
   },
   "getHelp": {
-    "message": "Get Help."
+    "message": "도움말"
   },
   "hardware": {
-    "message": "hardware"
+    "message": "하드웨어"
   },
   "hardwareWalletConnected": {
-    "message": "Hardware wallet connected"
+    "message": "하드웨어 지갑이 연결됨"
   },
   "hardwareWallets": {
-    "message": "Connect a hardware wallet"
+    "message": "하드웨어 지갑 연결"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
+    "message": "메타마스크에서 사용할 하드웨어 지갑을 선택해주세요"
   },
   "havingTroubleConnecting": {
-    "message": "Having trouble connecting?"
+    "message": "연결에 문제가 있나요?"
   },
   "hexData": {
-    "message": "Hex Data"
+    "message": "Hex 데이터"
   },
   "invalidSeedPhrase": {
-    "message": "Invalid seed phrase"
+    "message": "잘못된 시드 구문"
   },
   "ledgerAccountRestriction": {
-    "message": "You need to make use your last account before you can add a new one."
+    "message": "새 계정을 추가하려면 최소 마지막 계정을 사용해야 합니다."
   },
   "menu": {
-    "message": "Menu"
+    "message": "메뉴"
   },
   "noConversionRateAvailable": {
-    "message": "No Conversion Rate Available"
+    "message": "변환 비율을 찾을 수 없습니다"
   },
   "notFound": {
-    "message": "Not Found"
+    "message": "찾을 수 없음"
   },
   "noWebcamFoundTitle": {
-    "message": "Webcam not found"
+    "message": "웹캠이 없습니다"
   },
   "noWebcamFound": {
-    "message": "Your computer's webcam was not found. Please try again."
+    "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도해보세요."
   },
   "openInTab": {
-    "message": "Open in tab"
+    "message": "탭으로 열기"
   },
   "origin": {
     "message": "Origin"
   },
   "prev": {
-    "message": "Prev"
+    "message": "이전"
   },
   "restoreAccountWithSeed": {
-    "message": "Restore your Account with Seed Phrase"
+    "message": "시드 구문으로 계정 복구하기"
   },
   "restore": {
-    "message": "Restore"
+    "message": "복구"
   },
   "remove": {
-    "message": "remove"
+    "message": "제거"
   },
   "removeAccount": {
-    "message": "Remove account"
+    "message": "계정 제거"
   },
   "removeAccountDescription": {
-    "message": "This account will be removed from your wallet. Please make sure you have the original seed phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+    "message": "이 계정한 지갑에서 삭제될 것입니다. 지우기 전에 이 계정에 대한 개인 키 혹은 시드 구문을 가지고 있는지 확인하세요. 계정 드랍다운 메뉴를 통해서 계정을 가져오거나 생성할 수 있습니다."
   },
   "readyToConnect": {
-    "message": "Ready to Connect?"
+    "message": "접속 준비되었나요?"
   },
   "separateEachWord": {
-    "message": "Separate each word with a single space"
+    "message": "각 단어는 공백 한칸으로 분리합니다"
   },
   "orderOneHere": {
-    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
+    "message": "Trezor 혹은 Ledger를 구입하고 자금을 콜드 스토리지에 저장합니다"
   },
   "selectAnAddress": {
-    "message": "Select an Address"
+    "message": "주소 선택"
   },
   "selectAnAccount": {
-    "message": "Select an Account"
+    "message": "계정 선택"
   },
   "selectAnAccountHelp": {
-    "message": "Select the account to view in MetaMask"
+    "message": "메타마스크에서 보기위한 계정 선택"
   },
   "selectHdPath": {
-    "message": "Select HD Path"
+    "message": "HD 경로 지정"
   },
   "selectPathHelp": {
-    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+    "message": "하단에서 Ledger지갑 계정을 찾지 못하겠으면 \"Legacy (MEW / MyCrypto)\" 경로로 바꿔보세요"
   },
   "step1HardwareWallet": {
-    "message": "1. Connect Hardware Wallet"
+    "message": "1. 하드웨어 지갑 연결"
   },
   "step1HardwareWalletMsg": {
-    "message": "Connect your hardware wallet directly to your computer."
+    "message": "하드웨어 지갑을 컴퓨터에 연결해주세요."
   },
   "step2HardwareWallet": {
-    "message": "2. Select an Account"
+    "message": "2. 계정 선택"
   },
   "step2HardwareWalletMsg": {
-    "message": "Select the account you want to view. You can only choose one at a time."
+    "message": "보고 싶은 계정을 선택합니다. 한번에 하나의 계정만 선택할 수 있습니다."
   },
   "step3HardwareWallet": {
-    "message": "3. Start using dApps and more!"
+    "message": "3. dApps을 사용하거나 다른 것을 합니다!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+    "message": "다른 이더리움 계정을 사용하듯 하드웨어 계정을 사용합니다. dApps을 로그인하거나, 이더를 보내거나, ERC20토큰 혹은 대체가능하지 않은 토큰 (예를 들어 CryptoKitties)을 사거나 저장하거나 합니다."
   },
   "scanInstructions": {
-    "message": "Place the QR code in front of your camera"
+    "message": "QR 코드를 카메라 앞에 가져다 놓아주세요"
   },
   "scanQrCode": {
-    "message": "Scan QR Code"
+    "message": "QR 코드 스캔"
   },
   "transfer": {
-    "message": "Transfer"
+    "message": "전송"
   },
   "trezorHardwareWallet": {
-    "message": "TREZOR Hardware Wallet"
+    "message": "TREZOR 하드웨어 지갑"
   },
   "tryAgain": {
-    "message": "Try again"
+    "message": "다시 시도하세요"
   },
   "unknownFunction": {
-    "message": "Unknown Function"
+    "message": "알 수 없는 함수"
   },
   "unknownQrCode": {
-    "message": "Error: We couldn't identify that QR code"
+    "message": "오류: QR 코드를 확인할 수 없습니다"
   },
   "unknownCameraErrorTitle": {
-    "message": "Ooops! Something went wrong...."
+    "message": "이런! 뭔가 잘못되었습니다...."
   },
   "unknownCameraError": {
-    "message": "There was an error while trying to access you camera. Please try again..."
+    "message": "카메라를 접근하는 중 오류가 발생했습니다. 다시 시도해 주세요..."
   },
   "unlock": {
-    "message": "Unlock"
+    "message": "잠금 해제"
   },
   "youNeedToAllowCameraAccess": {
-    "message": "You need to allow camera access to use this feature."
+    "message": "이 기능을 사용하려면 카메라 접근을 허용해야 합니다."
   }
 }
