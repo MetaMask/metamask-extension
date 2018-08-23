@@ -172,7 +172,7 @@
     "description": "거래 유형 (암호화폐)"
   },
   "currentConversion": {
-    "message": "선택된 변환"
+    "message": "선택된 단위"
   },
   "currentNetwork": {
     "message": "현재 네트워크"
@@ -205,17 +205,17 @@
     "message": "입금"
   },
   "depositBTC": {
-    "message": "아래 주소로 BTC를 입급해주세요."
+    "message": "다음 주소로 BTC를 입급해주세요."
   },
   "depositCoin": {
-    "message": "아래 주소로 $1 만큼 입금해주세요.",
-    "description": "Tells the user what coin they have selected to deposit with shapeshift"
+    "message": "다음 주소로 $1 만큼 입금해주세요.",
+    "description": "사용자에게 shapeshift에서 어떤 코인을 선택해 입금했는지 알려줍니다"
   },
   "depositEth": {
-    "message": "이더 입금"
+    "message": "이더 입금하기"
   },
   "depositEther": {
-    "message": "이더리움 입금"
+    "message": "이더리움 입금하기"
   },
   "depositFiat": {
     "message": "현금으로 입금하기"
@@ -555,7 +555,7 @@
     "message": "다음"
   },
   "noAddressForName": {
-    "message": "이 이름 대해 주소가 설정되어 있지 않습니다."
+    "message": "이 이름에 대해 주소가 설정되어 있지 않습니다."
   },
   "noDeposits": {
     "message": "입금 내역이 없습니다."
@@ -644,7 +644,7 @@
     "message": "환불받을 주소"
   },
   "rejected": {
-    "message": "거부됨."
+    "message": "거부됨"
   },
   "reset": {
     "message": "초기화"
@@ -674,7 +674,7 @@
     "message": "시드 단어 보이기"
   },
   "revealSeedWordsTitle": {
-    "message": "시드 구문"
+    "message": "시드 단어"
   },
   "revealSeedWordsDescription": {
     "message": "브라우저를 바꾸거나 컴퓨터를 옮기는 경우 이 시드 구문이 필요하며 이를 통해 계정에 접근할 수 있습니다. 시드 구문을 안전한 곳에 보관하세요."
@@ -683,7 +683,7 @@
     "message": "이 구문을 다른사람과 절대로 공유하지 마세요!"
   },
   "revealSeedWordsWarning": {
-    "message": "These words can be used to steal all your accounts."
+    "message": "이 단어모음은 당신의 모든 계정을 훔치는데 사용할 수 있습니다."
   },
   "revert": {
     "message": "되돌림"
@@ -861,7 +861,7 @@
   },
   "toETHviaShapeShift": {
     "message": "ShapeShift를 통해 $1를 ETH로 바꾸기",
-    "description": "system will fill in deposit type in start of message"
+    "description": "시스템이 시작할 때에 입금 유형을 입력해줍니다"
   },
   "token": {
     "message": "토큰"
@@ -891,7 +891,7 @@
     "message": "트랜잭션"
   },
   "transactionError": {
-    "message": "트랜잭션 오류. 컨트랙트 코드에서 예외가 발생(Exception thrown)."
+    "message": "트랜잭션 오류. 컨트랙트 코드에서 예외 발생(Exception thrown)."
   },
   "transactionMemo": {
     "message": "트랜잭션 메모 (선택사항)"
@@ -903,8 +903,8 @@
     "message": "전송"
   },
   "troubleTokenBalances": {
-    "message": "토큰 잔액을 가져오는데에 문제가 생겼습니다. (here) 링크에서 상세내용을 볼 수 있습니다.",
-    "description": "Followed by a link (here) to view token balances"
+    "message": "토큰 잔액을 가져오는데에 문제가 생겼습니다. 링크에서 상세내용을 볼 수 있습니다.",
+    "description": "토큰 잔액을 보려면 (here) 링크를 따라가세요"
   },
   "twelveWords": {
     "message": "12개의 단어는 메타마스크 계정을 복구하기 위한 유일한 방법입니다.\n안전한 장소에 보관하시기 바랍니다."
@@ -984,5 +984,200 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "개인 시드 구문"
+  },
+  "accessingYourCamera": {
+    "message": "Accesing your camera..."
+  },
+  "accountSelectionRequired": {
+    "message": "You need to select an account!"
+  },
+  "approve": {
+    "message": "Approve"
+  },
+  "browserNotSupported": {
+    "message": "Your Browser is not supported..."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+  },
+  "connectHardwareWallet": {
+    "message": "Connect Hardware Wallet"
+  },
+  "connect": {
+    "message": "Connect"
+  },
+  "connecting": {
+    "message": "Connecting..."
+  },
+  "connectToLedger": {
+    "message": "Connect to Ledger"
+  },
+  "connectToTrezor": {
+    "message": "Connect to Trezor"
+  },
+  "copyAddress": {
+    "message": "Copy address to clipboard"
+  },
+  "downloadGoogleChrome": {
+    "message": "Download Google Chrome"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
+  },
+  "ensNameNotFound": {
+    "message": "ENS name not found"
+  },
+  "parameters": {
+    "message": "Parameters"
+  },
+  "forgetDevice": {
+    "message": "Forget this device"
+  },
+  "functionType": {
+    "message": "Function Type"
+  },
+  "getHelp": {
+    "message": "Get Help."
+  },
+  "hardware": {
+    "message": "hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware wallet connected"
+  },
+  "hardwareWallets": {
+    "message": "Connect a hardware wallet"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Select a hardware wallet you'd like to use with MetaMask"
+  },
+  "havingTroubleConnecting": {
+    "message": "Having trouble connecting?"
+  },
+  "hexData": {
+    "message": "Hex Data"
+  },
+  "invalidSeedPhrase": {
+    "message": "Invalid seed phrase"
+  },
+  "ledgerAccountRestriction": {
+    "message": "You need to make use your last account before you can add a new one."
+  },
+  "menu": {
+    "message": "Menu"
+  },
+  "noConversionRateAvailable": {
+    "message": "No Conversion Rate Available"
+  },
+  "notFound": {
+    "message": "Not Found"
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam not found"
+  },
+  "noWebcamFound": {
+    "message": "Your computer's webcam was not found. Please try again."
+  },
+  "openInTab": {
+    "message": "Open in tab"
+  },
+  "origin": {
+    "message": "Origin"
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Restore your Account with Seed Phrase"
+  },
+  "restore": {
+    "message": "Restore"
+  },
+  "remove": {
+    "message": "remove"
+  },
+  "removeAccount": {
+    "message": "Remove account"
+  },
+  "removeAccountDescription": {
+    "message": "This account will be removed from your wallet. Please make sure you have the original seed phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+  },
+  "readyToConnect": {
+    "message": "Ready to Connect?"
+  },
+  "separateEachWord": {
+    "message": "Separate each word with a single space"
+  },
+  "orderOneHere": {
+    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
+  },
+  "selectAnAddress": {
+    "message": "Select an Address"
+  },
+  "selectAnAccount": {
+    "message": "Select an Account"
+  },
+  "selectAnAccountHelp": {
+    "message": "Select the account to view in MetaMask"
+  },
+  "selectHdPath": {
+    "message": "Select HD Path"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+  },
+  "step1HardwareWallet": {
+    "message": "1. Connect Hardware Wallet"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Connect your hardware wallet directly to your computer."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Select an Account"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Select the account you want to view. You can only choose one at a time."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Start using dApps and more!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+  },
+  "scanInstructions": {
+    "message": "Place the QR code in front of your camera"
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
+  },
+  "transfer": {
+    "message": "Transfer"
+  },
+  "trezorHardwareWallet": {
+    "message": "TREZOR Hardware Wallet"
+  },
+  "tryAgain": {
+    "message": "Try again"
+  },
+  "unknownFunction": {
+    "message": "Unknown Function"
+  },
+  "unknownQrCode": {
+    "message": "Error: We couldn't identify that QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Ooops! Something went wrong...."
+  },
+  "unknownCameraError": {
+    "message": "There was an error while trying to access you camera. Please try again..."
+  },
+  "unlock": {
+    "message": "Unlock"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "You need to allow camera access to use this feature."
   }
 }
