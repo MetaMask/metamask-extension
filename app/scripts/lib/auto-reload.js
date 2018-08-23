@@ -14,23 +14,6 @@ function setupDappAutoReload (web3, observable) {
         console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider \nhttps://github.com/MetaMask/faq/blob/master/detecting_metamask.md#web3-deprecation')
         hasBeenWarned = true
       }
-      // setup wallet
-      if (key === 'metamask') {
-        return {
-          watchAsset: (params) => {
-            return new Promise((resolve, reject) => {
-              web3.currentProvider.sendAsync({
-                jsonrpc: '2.0',
-                method: 'metamask_watchAsset',
-                params,
-              }, (err, res) => {
-                if (err) reject(err)
-                resolve(res)
-              })
-            })
-          },
-        }
-      }
       // get the time of use
       lastTimeUsed = Date.now()
       // return value normally
