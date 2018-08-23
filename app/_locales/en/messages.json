@@ -838,9 +838,6 @@
   "connectingToRinkeby": {
     "message": "Connecting to Rinkeby Test Network"
   },
-  "connectingToClassic": {
-    "message": "Connecting to Ethereum Classic Network"
-  },
   "connectingToUnknown": {
     "message": "Connecting to Unknown Network"
   },
