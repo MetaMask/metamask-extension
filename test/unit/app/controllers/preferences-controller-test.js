@@ -129,12 +129,13 @@ describe('preferences controller', function () {
       const address = '0xabcdef1234567'
       const symbol = 'ABBR'
       const decimals = 5
+      const network = 1
 
       await preferencesController.setSelectedAddress('0x7e57e2')
-      await preferencesController.addToken(address, symbol, decimals)
+      await preferencesController.addToken(address, symbol, decimals, network)
 
       const newDecimals = 6
-      await preferencesController.addToken(address, symbol, newDecimals)
+      await preferencesController.addToken(address, symbol, newDecimals, network)
 
       const tokens = preferencesController.getTokens()
       assert.equal(tokens.length, 1, 'one token added')
@@ -143,19 +144,21 @@ describe('preferences controller', function () {
       assert.equal(added.address, address, 'set address correctly')
       assert.equal(added.symbol, symbol, 'set symbol correctly')
       assert.equal(added.decimals, newDecimals, 'updated decimals correctly')
+      assert.equal(added.network, network, 'set network correctly')
     })
 
     it('should allow adding tokens to two separate addresses', async function () {
       const address = '0xabcdef1234567'
       const symbol = 'ABBR'
       const decimals = 5
+      const network = 1
 
       await preferencesController.setSelectedAddress('0x7e57e2')
-      await preferencesController.addToken(address, symbol, decimals)
+      await preferencesController.addToken(address, symbol, decimals, network)
       assert.equal(preferencesController.getTokens().length, 1, 'one token added for 1st address')
 
       await preferencesController.setSelectedAddress('0xda22le')
-      await preferencesController.addToken(address, symbol, decimals)
+      await preferencesController.addToken(address, symbol, decimals, network)
       assert.equal(preferencesController.getTokens().length, 1, 'one token added for 2nd address')
     })
   })
@@ -172,15 +175,15 @@ describe('preferences controller', function () {
 
     it('should remove a token from its state', async function () {
       await preferencesController.setSelectedAddress('0x7e57e2')
-      await preferencesController.addToken('0xa', 'A', 4)
-      await preferencesController.addToken('0xb', 'B', 5)
+      await preferencesController.addToken('0xa', 'A', 4, 1)
+      await preferencesController.addToken('0xb', 'B', 5, 1)
       await preferencesController.removeToken('0xa')
 
       const tokens = preferencesController.getTokens()
       assert.equal(tokens.length, 1, 'one token removed')
 
       const [token1] = tokens
-      assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5})
+      assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5, network: 1})
     })
   })
 

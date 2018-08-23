@@ -18,6 +18,7 @@ module.exports = connect(mapStateToProps)(AddTokenScreen)
 function mapStateToProps (state) {
   return {
     identities: state.metamask.identities,
+    network: state.metamask.network,
   }
 }
 
@@ -36,6 +37,7 @@ AddTokenScreen.prototype.render = function () {
   const state = this.state
   const props = this.props
   const { warning, symbol, decimals } = state
+  const { network } = props
 
   return (
     h('.flex-column.flex-grow', [
@@ -167,7 +169,7 @@ AddTokenScreen.prototype.render = function () {
               if (!valid) return
 
               const { address, symbol, decimals } = this.state
-              this.props.dispatch(actions.addToken(address.trim(), symbol.trim(), decimals))
+              this.props.dispatch(actions.addToken(address.trim(), symbol.trim(), decimals, network))
                 .then(() => {
                   this.props.dispatch(actions.goHome())
                 })
