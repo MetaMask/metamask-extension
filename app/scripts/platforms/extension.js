@@ -25,16 +25,8 @@ class ExtensionPlatform {
       if (curWindowsDetails.type === 'popup') {
         return extension.windows.remove(curWindowsDetails.id)
       } else {
-        // console.log('### curWindowsDetails ###')
-        // console.log(curWindowsDetails)
         extension.windows.getAll((windowsDetails) => {
-          // console.log('### windowsDetails ###')
-          // console.log(windowsDetails)
-          const windowsDetailsFiltered = windowsDetails.filter((windowDetails) => windowDetails.id != curWindowsDetails.id)
-          // console.log('### windowsDetailsFiltered ###')
-          // console.log(windowsDetailsFiltered)
-          //extension.windows.update(windowsDetailsFiltered[0].id, {focused:true});
-          // return extension.windows.remove(windowsDetailsFiltered[0].id)
+          const windowsDetailsFiltered = windowsDetails.filter((windowDetails) => windowDetails.id !== curWindowsDetails.id)
           return windowsDetailsFiltered.forEach((windowDetails) => {
             if (windowDetails.type === 'popup') {
               extension.windows.remove(windowDetails.id)
