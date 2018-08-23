@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const TokenTracker = require('eth-token-tracker')
+const TokenTracker = require('eth-token-watcher')
 const TokenCell = require('./token-cell.js')
 const log = require('loglevel')
 
@@ -48,8 +48,9 @@ TokenList.prototype.render = function () {
     ])
   }
 
-  const tokenViews = tokens.map((tokenData, ind) => {
-    tokenData.network = network
+  const tokensFromCurrentNetwork = tokens.filter(token => (parseInt(token.network) === parseInt(network) || !token.network))
+
+  const tokenViews = tokensFromCurrentNetwork.map((tokenData, ind) => {
     tokenData.userAddress = userAddress
     const isLastTokenCell = ind === (tokens.length - 1)
     return h(TokenCell, {
@@ -97,12 +98,14 @@ TokenList.prototype.render = function () {
 
 TokenList.prototype.renderTokenStatusBar = function () {
   const { tokens } = this.state
+  const { network } = this.props
+  const tokensFromCurrentNetwork = tokens.filter(token => (parseInt(token.network) === parseInt(network) || !token.network))
 
   let msg
-  if (tokens.length === 1) {
+  if (tokensFromCurrentNetwork.length === 1) {
     msg = `You own 1 token`
-  } else if (tokens.length > 1) {
-    msg = `You own ${tokens.length} tokens`
+  } else if (tokensFromCurrentNetwork.length > 1) {
+    msg = `You own ${tokensFromCurrentNetwork.length} tokens`
   } else {
     msg = `No tokens found`
   }
