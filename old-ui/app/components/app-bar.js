@@ -288,20 +288,6 @@ module.exports = class AppBar extends Component {
           : null,
       ]),
       h(DropdownMenuItem, {
-        key: 'classic',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => dispatch(actions.setProviderType('classic')),
-        style: {
-          fontSize: '18px',
-        },
-      }, [
-        h('.menu-icon.diamond'),
-        'Ethereum Classic Network',
-        providerType === 'classic'
-          ? h('.check', '✓')
-          : null,
-      ]),
-      h(DropdownMenuItem, {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => dispatch(actions.setProviderType('localhost')),

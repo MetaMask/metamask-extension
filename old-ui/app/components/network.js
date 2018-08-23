@@ -55,9 +55,6 @@ Network.prototype.render = function () {
   } else if (providerName === 'rinkeby') {
     hoverText = 'Rinkeby Test Network'
     iconName = 'rinkeby-test-network'
-  } else if (providerName === 'classic') {
-    hoverText = 'Ethereum Classic'
-    iconName = 'ethereum-classic-network'
   } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
@@ -109,16 +106,6 @@ Network.prototype.render = function () {
                   color: '#e7a218',
                 }},
               'Rinkeby Test Net'),
-              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
-            ])
-          case 'ethereum-classic-network':
-            return h('.network-indicator', [
-              h('.menu-icon.diamond'),
-              h('.network-name', {
-                style: {
-                  color: '#267f00',
-                }},
-              'Ethereum Classic Network'),
               props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           default:

@@ -11,7 +11,6 @@ const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
-const networks = require('./networks')
 const extend = require('xtend')
 
 const {
@@ -19,11 +18,10 @@ const {
   RINKEBY,
   KOVAN,
   MAINNET,
-  CLASSIC,
   LOCALHOST,
 } = require('./enums')
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
-const ALL_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, CLASSIC]
+const ALL_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -161,9 +159,6 @@ module.exports = class NetworkController extends EventEmitter {
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
       this._configureInfuraProvider(opts)
-    // other predefined endpoints
-    } else if (ALL_PROVIDER_TYPES.includes(type)){
-      this._configurePredefinedProvider(opts)
     // other type-based rpc endpoints
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
@@ -189,19 +184,6 @@ module.exports = class NetworkController extends EventEmitter {
   _configureLocalhostProvider () {
     log.info('NetworkController - configureLocalhostProvider')
     const networkClient = createLocalhostClient()
-    this._setNetworkClient(networkClient)
-  }
-
-  _configurePredefinedProvider ({ type }) {
-    log.info('NetworkController - configurePredefinedProvider', type)
-    // setup networkConfig
-    var settings = {
-      network: networks.networkList[type].chainId,
-    }
-    settings = extend(settings, networks.networkList[type])
-    const rpcUrl = networks.networkList[type].rpcUrl
-    const networkClient = createJsonRpcClient({ rpcUrl })
-    this.networkConfig.putState(settings)
     this._setNetworkClient(networkClient)
   }
 

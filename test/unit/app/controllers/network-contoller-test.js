@@ -81,9 +81,6 @@ describe('Network utils', () => {
         input: 42,
         expected: 'Kovan',
       }, {
-        input: 61,
-        expected: 'Ethereum Classic',
-      }, {
         input: 'ropsten',
         expected: 'Ropsten',
       }, {
@@ -92,9 +89,6 @@ describe('Network utils', () => {
       }, {
         input: 'kovan',
         expected: 'Kovan',
-      }, {
-        input: 'classic',
-        expected: 'Ethereum Classic',
       }, {
         input: 'mainnet',
         expected: 'Main Ethereum Network',

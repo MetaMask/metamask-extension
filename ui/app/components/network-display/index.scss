@@ -24,9 +24,6 @@
       background-color: lighten($tulip-tree, 35%);
     }
 
-    &--classic {
-      background-color: lighten($java, 45%);
-    }
   }
 
   &__name {
@@ -53,10 +50,6 @@
 
     &--rinkeby {
       background-color: $tulip-tree;
-    }
-
-    &--classic {
-      background-color: $java;
     }
   }
 }

@@ -820,9 +820,6 @@
   "ropsten": {
     "message": "Ropsten Test Network"
   },
-  "classic": {
-    "message": "Ethereum Classic Network"
-  },
   "rpc": {
     "message": "Custom RPC"
   },
