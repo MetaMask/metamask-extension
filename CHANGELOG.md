@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+- (#4606)[https://github.com/MetaMask/metamask-extension/pull/4606]: Add new metamask_watchAsset method.
+
 ## 4.9.3 Wed Aug 15 2018
 
 - (#4897)[https://github.com/MetaMask/metamask-extension/pull/4897]: QR code scan for recipient addresses.
