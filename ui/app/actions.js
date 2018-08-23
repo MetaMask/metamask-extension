@@ -793,9 +793,8 @@ function signMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.metamaskId))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -824,9 +823,8 @@ function signPersonalMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.metamaskId))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -855,9 +853,8 @@ function signTypedMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.metamaskId))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -1062,9 +1059,8 @@ function sendTx (txData) {
       }
       dispatch(actions.completedTx(txData.id))
 
-      if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-        !hasUnconfirmedTransactions(getState())) {
-        return global.platform.closeCurrentWindow()
+      if (!hasUnconfirmedTransactions(getState())) {
+        return global.platform.closeNotificationWindow()
       }
     })
   }
@@ -1140,9 +1136,8 @@ function updateAndApproveTx (txData) {
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return txData
@@ -1188,9 +1183,8 @@ function cancelMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.id))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -1215,9 +1209,8 @@ function cancelPersonalMsg (msgData) {
 
         dispatch(actions.completedTx(id))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -1242,9 +1235,8 @@ function cancelTypedMsg (msgData) {
 
         dispatch(actions.completedTx(id))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -1274,9 +1266,8 @@ function cancelTx (txData) {
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return txData

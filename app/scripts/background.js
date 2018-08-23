@@ -434,7 +434,13 @@ function setupController (initState, initLangCode) {
 function triggerUi () {
   extension.tabs.query({ active: true }, tabs => {
     const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
-    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
+    /**
+     * https://github.com/poanetwork/metamask-extension/issues/19
+     * !notificationIsOpen was removed from the check, because notification can be opened, but it can be behind the DApp
+     * for some reasons. For example, if notification popup was opened, but user moved focus to DApp.
+     * New transaction, in this case, will not appear in front of DApp.
+     */
+    if (!popupIsOpen && !currentlyActiveMetamaskTab) {
       notificationManager.showPopup()
     }
   })
