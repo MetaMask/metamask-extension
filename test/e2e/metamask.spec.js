@@ -512,7 +512,6 @@ describe('Metamask popup page', async function () {
     it('navigates to the add token screen', async function () {
       const addTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > section > div.full-flex-height > div > button'))
       assert.equal(await addTokenButton.getText(), 'Add Token')
-      console.log(tokenAddress)
       await addTokenButton.click()
     })
 
