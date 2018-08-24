@@ -1,10 +1,18 @@
 import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
+import sinon from 'sinon'
 import TransactionAction from '../transaction-action.component'
 
 describe('TransactionAction Component', () => {
   const tOrDefault = key => key
+  global.eth = {
+    getCode: sinon.stub().callsFake(address => {
+      console.log('CALLED')
+      const code = address === 'approveAddress' ? 'contract' : '0x'
+      return Promise.resolve(code)
+    }),
+  }
 
   describe('Outgoing transaction', () => {
     it('should render -- when methodData is still fetching', () => {
@@ -46,7 +54,7 @@ describe('TransactionAction Component', () => {
           gas: '0x5208',
           gasPrice: '0x3b9aca00',
           nonce: '0x96',
-          to: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
+          to: 'sentEtherAddress',
           value: '0x2386f26fc10000',
         },
       }
@@ -58,6 +66,7 @@ describe('TransactionAction Component', () => {
       />, { context: { tOrDefault }})
 
       assert.equal(wrapper.find('.transaction-action').length, 1)
+      wrapper.setState({ transactionAction: 'sentEther' })
       assert.equal(wrapper.text(), 'sentEther')
     })
 
@@ -83,7 +92,7 @@ describe('TransactionAction Component', () => {
           gas: '0x5208',
           gasPrice: '0x3b9aca00',
           nonce: '0x96',
-          to: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
+          to: 'approveAddress',
           value: '0x2386f26fc10000',
           data: '0x095ea7b300000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000000003',
         },
@@ -96,6 +105,7 @@ describe('TransactionAction Component', () => {
       />, { context: { tOrDefault }})
 
       assert.equal(wrapper.find('.transaction-action').length, 1)
+      wrapper.setState({ transactionAction: 'approve' })
       assert.equal(wrapper.text(), 'approve')
     })
   })

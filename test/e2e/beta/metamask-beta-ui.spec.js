@@ -602,7 +602,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the correct ETH balance', async () => {
-      const balance = await findElement(driver, By.css('.token-view-balance__primary-balance'))
+      const balance = await findElement(driver, By.css('.transaction-view-balance__primary-balance'))
       await delay(regularDelayMs)
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
         await driver.wait(until.elementTextMatches(balance, /^92.*ETH.*$/), 10000)
@@ -675,7 +675,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the balance for the new token', async () => {
-      const balance = await findElement(driver, By.css('.token-view-balance .token-view-balance__token-balance'))
+      const balance = await findElement(driver, By.css('.transaction-view-balance .transaction-view-balance__token-balance'))
       await driver.wait(until.elementTextMatches(balance, /^100\s*TST\s*$/))
       const tokenAmount = await balance.getText()
       assert.ok(/^100\s*TST\s*$/.test(tokenAmount))
@@ -854,7 +854,7 @@ describe('MetaMask', function () {
       // test cancelled on firefox until https://github.com/mozilla/geckodriver/issues/906 is resolved,
       // or possibly until we use latest version of firefox in the tests
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        const tokenBalanceAmount = await findElement(driver, By.css('.token-view-balance__token-balance'))
+        const tokenBalanceAmount = await findElement(driver, By.css('.transaction-view-balance__token-balance'))
         assert.equal(await tokenBalanceAmount.getText(), '43 TST')
       }
     })
@@ -1015,7 +1015,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the balance for the chosen token', async () => {
-      const balance = await findElement(driver, By.css('.token-view-balance__token-balance'))
+      const balance = await findElement(driver, By.css('.transaction-view-balance__token-balance'))
       await driver.wait(until.elementTextMatches(balance, /0\sBAT/))
       await delay(regularDelayMs)
     })

@@ -46,7 +46,7 @@ async function runTxListItemsTest (assert, done) {
 
   const failedTx = txListItems[4]
   const failedTxRenderedStatus = await findAsync($(failedTx), '.transaction-list-item__status')
-  assert.equal(failedTxRenderedStatus[0].textContent, 'failed', 'failedTx has correct label')
+  assert.equal(failedTxRenderedStatus[0].textContent, 'Failed', 'failedTx has correct label')
 
   const shapeShiftTx = txListItems[5]
   const shapeShiftTxStatus = await findAsync($(shapeShiftTx), '.flex-column div:eq(1)')
@@ -54,9 +54,9 @@ async function runTxListItemsTest (assert, done) {
 
   const confirmedTokenTx = txListItems[6]
   const confirmedTokenTxAddress = await findAsync($(confirmedTokenTx), '.transaction-list-item__status')
-  assert.equal(confirmedTokenTxAddress[0].textContent, 'confirmed', 'confirmedTokenTx has correct address')
+  assert.equal(confirmedTokenTxAddress[0].textContent, 'Confirmed', 'confirmedTokenTx has correct address')
 
   const rejectedTx = txListItems[7]
   const rejectedTxRenderedStatus = await findAsync($(rejectedTx), '.transaction-list-item__status')
-  assert.equal(rejectedTxRenderedStatus[0].textContent, 'rejected', 'rejectedTx has correct label')
+  assert.equal(rejectedTxRenderedStatus[0].textContent, 'Rejected', 'rejectedTx has correct label')
 }
