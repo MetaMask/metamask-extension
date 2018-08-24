@@ -288,6 +288,9 @@ var actions = {
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
 
+  SET_USE_MULTICHAIN: 'SET_USE_MULTICHAIN',
+  setUseMultiChain,
+
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
   SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
@@ -2263,6 +2266,23 @@ function setUseBlockie (val) {
     })
     dispatch({
       type: actions.SET_USE_BLOCKIE,
+      value: val,
+    })
+  }
+}
+
+function setUseMultiChain (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setUseMultiChain`)
+    background.setUseMultiChain(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_USE_MULTICHAIN,
       value: val,
     })
   }

@@ -26,6 +26,7 @@ module.exports = class AppBar extends Component {
     network: PropTypes.any.isRequired,
     keyrings: PropTypes.any.isRequired,
     provider: PropTypes.any.isRequired,
+    useMultiChain: PropTypes.bool.isRequired,
   }
 
   static renderSpace () {
@@ -206,7 +207,7 @@ module.exports = class AppBar extends Component {
     } = provider
     const isOpen = this.state.isNetworkMenuOpen
 
-    const showMultiChain = useMultiChain ? 'flex' : 'none';
+    const showMultiChain = useMultiChain ? 'flex' : 'none'
 
     return h(Dropdown, {
       useCssTransition: true,

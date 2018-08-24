@@ -1147,6 +1147,10 @@
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
+  "useMultiChainMenu": {
+    "message": "Use MultiChain menu",
+    "description": "show available MultiChains in the dropdown menu"
+  },
   "useOldUI": {
     "message": "Use old UI"
   },

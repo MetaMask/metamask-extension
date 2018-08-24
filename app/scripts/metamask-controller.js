@@ -351,6 +351,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
+      setUseMultiChain: this.setUseMultiChain.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
@@ -1432,6 +1433,20 @@ module.exports = class MetamaskController extends EventEmitter {
   setUseBlockie (val, cb) {
     try {
       this.preferencesController.setUseBlockie(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * Sets whether or not to use the multichain dropdown-menu.
+   * @param {boolean} val - True to show multichains, false to disable multichain menu.
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setUseMultiChain (val, cb) {
+    try {
+      this.preferencesController.setUseMultiChain(val)
       cb(null)
     } catch (err) {
       cb(err)

@@ -62,6 +62,27 @@ class PreferencesController {
   }
 
   /**
+   * Setter for the `useMultiChain` property
+   *
+   * @param {boolean} val Whether or not the user prefers multichain menu
+   *
+   */
+  setUseMultiChain (val) {
+    this.store.updateState({ useMultiChain: val })
+  }
+
+  /**
+   * Getter for the `useMultiChain` property
+   *
+   * @returns {boolean} this.store.useMultiChain
+   *
+   */
+  getUseMultiChain () {
+    return this.store.getState().useMultiChain
+  }
+
+
+  /**
    * Setter for the `currentLocale` property
    *
    * @param {string} key he preferred language locale key

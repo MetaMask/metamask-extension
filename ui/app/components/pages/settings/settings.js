@@ -66,6 +66,26 @@ class Settings extends Component {
     ])
   }
 
+  renderMultiChainOptIn () {
+    const { metamask: { useMultiChain }, setUseMultiChain } = this.props
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', this.context.t('useMultiChainMenu')),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h(ToggleButton, {
+            value: useMultiChain,
+            onToggle: (value) => setUseMultiChain(!value),
+            activeLabel: '',
+            inactiveLabel: '',
+          }),
+        ]),
+      ]),
+    ])
+  }
+
   renderCurrentConversion () {
     const { metamask: { currentCurrency, conversionDate }, setCurrentCurrency } = this.props
 
@@ -320,6 +340,7 @@ class Settings extends Component {
         this.renderCurrentConversion(),
         this.renderCurrentLocale(),
         // this.renderCurrentProvider(),
+        this.renderMultiChainOptIn(),
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
@@ -336,6 +357,7 @@ Settings.propTypes = {
   setUseBlockie: PropTypes.func,
   setCurrentCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
+  setUseMultiChain: PropTypes.func,
   displayWarning: PropTypes.func,
   revealSeedConfirmation: PropTypes.func,
   setFeatureFlagToBeta: PropTypes.func,
@@ -364,6 +386,7 @@ const mapDispatchToProps = dispatch => {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
+    setUseMultiChain: value => dispatch(actions.setUseMultiChain(value)),
     updateCurrentLocale: key => dispatch(actions.updateCurrentLocale(key)),
     setFeatureFlagToBeta: () => {
       return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))

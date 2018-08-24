@@ -24,6 +24,7 @@ const notToggleElementClassnames = [
 function mapStateToProps (state) {
   return {
     provider: state.metamask.provider,
+    multichain: state.metamask.useMultiChain,
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
     network: state.metamask.network,
@@ -75,6 +76,13 @@ NetworkDropdown.prototype.render = function () {
     fontSize: '16px',
     lineHeight: '20px',
     padding: '12px 0',
+  }
+
+  const dropdownMenuItemMultiChainStyle = {
+    fontSize: '16px',
+    lineHeight: '20px',
+    padding: '12px 0',
+    display: props.multichain ? 'flex' : 'none',
   }
 
   return h(Dropdown, {
@@ -206,7 +214,7 @@ NetworkDropdown.prototype.render = function () {
         key: 'classic',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => props.setProviderType('classic'),
-        style: dropdownMenuItemStyle,
+        style: dropdownMenuItemMultiChainStyle,
       },
       [
         providerType === 'classic' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
