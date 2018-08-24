@@ -15,7 +15,7 @@ module.exports = {
   installWebExt,
   getExtensionIdChrome,
   getExtensionIdFirefox,
-  clearField
+  clearField,
   }
 
 function delay (time) {
