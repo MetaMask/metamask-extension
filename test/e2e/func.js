@@ -16,7 +16,7 @@ module.exports = {
   getExtensionIdChrome,
   getExtensionIdFirefox,
   clearField,
-}
+  }
 
 function delay (time) {
   return new Promise(resolve => setTimeout(resolve, time))
