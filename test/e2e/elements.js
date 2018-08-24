@@ -4,6 +4,8 @@ module.exports = {
       menu: '.sandwich-expando',
       settings: '#app-content > div > div:nth-child(3) > span > div > li:nth-child(2)',
       logOut: '#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)',
+      textLogOut: 'Log Out',
+      textSettings: 'Settings',
     },
     account: {
       menu: '#app-content > div > div.full-width > div > div:nth-child(2) > span > div',
@@ -18,9 +20,40 @@ module.exports = {
     },
   },
   screens: {
+    deleteCustomRPC: {
+      buttons: {
+        yes: '#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)',
+      },
+    },
+    confirmTransaction: {
+      buttons: {
+        submit: '#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input',
+      },
+    },
+    sendTransaction: {
+      title: '#app-content > div > div.app-primary.from-right > div > h3:nth-child(2)',
+      titleText: 'Send Transaction',
+      fields: {
+        address: '#app-content > div > div.app-primary.from-right > div > section:nth-child(3) > div > input',
+        amount: '#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > input',
+      },
+      buttonNext: '#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > button',
+    },
+    restoreVault: {
+      textArea: '#app-content > div > div.app-primary.from-left > div > div.initialize-screen.flex-column.flex-center.flex-grow > textarea',
+      fieldPassword: 'password-box',
+      fieldPasswordConfirm: 'password-box-confirm',
+      buttos: {
+        ok: '#app-content > div > div.app-primary.from-left > div > div.initialize-screen.flex-column.flex-center.flex-grow > div > button:nth-child(2)',
+      },
+    },
     deleteImportedAccount: {
       title: '#app-content > div > div.app-primary.from-left > div > div.section-title.flex-row.flex-center > h2',
       titleText: 'Delete Imported Account',
+      buttons: {
+        no: '#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-right > button.btn-violet',
+        yes: '#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)',
+      },
     },
     importAccounts: {
       title: '#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div.flex-row.flex-center > h2',
@@ -33,18 +66,29 @@ module.exports = {
       buttonArrow: '.fa-arrow-left',
     },
     settings: {
+      currentNetwork: '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)',
+      customUrl: '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)',
+      fieldNewRPC: '#new_rpc',
+      buttonSave: '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(2) > button',
       titleText: 'Settings',
       title: '#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2',
       buttons: {
         changePassword: '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(10) > button:nth-child(5)',
+        delete: '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button',
       },
     },
     main: {
-      buttonBuy: '#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)',
-      network: 'network-name',
+      transactionList: '#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)',
+      buttons: {
+        send: '#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)',
+        buy: '#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)',
+        sendText: 'Send',
+      },
+       network: 'network-name',
       sent: {
         menu: 'activeForm left',
       },
+      balance: '#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)',
       address: '#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div',
       tokens: {
         menu: 'activeForm right',
@@ -85,6 +129,8 @@ module.exports = {
       error: 'error',
       errorText: 'Incorrect password',
       buttonLogin: 'cursor-pointer',
+      linkRestore: '#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-center.flex-grow > p',
+      linkRestoreText: 'Restore from seed phrase',
     },
     addToken: {
       fieldTokenContractAddress: '#token-address',

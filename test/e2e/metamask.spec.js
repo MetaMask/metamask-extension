@@ -9,7 +9,7 @@ const { clearField, delay, buildChromeWebDriver, buildFirefoxWebdriver, installW
 
 let password = '123456789'
 const loader = '#app-content > div > div.full-flex-height > img'
-const { menus, screens, NETWORKS} = require('./elements')
+const { menus, screens, NETWORKS } = require('./elements')
 
 
 describe('Metamask popup page', async function () {
@@ -172,7 +172,7 @@ describe('Metamask popup page', async function () {
     let fieldOldPassword
     let buttonYes
 
-    describe('check screen "Settings" -> "Change password" ', async () => {
+    describe('Check screen "Settings" -> "Change password" ', async () => {
 
       it('checks if "Change password" button is present and enabled', async () => {
         await driver.findElement(By.css(menus.sandwich.menu)).click()
@@ -300,8 +300,8 @@ describe('Metamask popup page', async function () {
         await field.sendKeys(newPassword.correct)
         await driver.findElement(By.className(screens.lock.buttonLogin)).click()
 
-        await driver.wait(until.elementLocated(By.css(screens.main.buttonBuy)))
-        const buttons = await driver.findElements(By.css(screens.main.buttonBuy))
+        await driver.wait(until.elementLocated(By.css(screens.main.buttons.buy)))
+        const buttons = await driver.findElements(By.css(screens.main.buttons.buy))
         assert.equal(buttons.length, 1, 'main screen isn\'t displayed')
         password = newPassword.correct
       })
@@ -341,7 +341,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('doesn\'t remove imported account with \'No\' button', async function () {
-      const NoButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-right > button.btn-violet'))
+      const NoButton = await driver.findElement(By.css(screens.deleteImportedAccount.buttons.no))
       NoButton.click()
       await delay(500)
       const settingsTitle = await driver.findElement(By.css(screens.settings.title))
@@ -360,7 +360,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('removes imported account with \'Yes\' button', async function () {
-      const YesButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'))
+      const YesButton = await driver.findElement(By.css(screens.deleteImportedAccount.buttons.yes))
       YesButton.click()
       await delay(500)
       const settingsTitle = await driver.findElement(By.css(screens.settings.title))
@@ -379,60 +379,60 @@ describe('Metamask popup page', async function () {
   describe('Import Ganache seed phrase', function () {
 
     it('logs out', async function () {
-      await driver.findElement(By.css('.sandwich-expando')).click()
+      await driver.findElement(By.css(menus.sandwich.menu)).click()
       await delay(200)
-      const logOut = await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)'))
-      assert.equal(await logOut.getText(), 'Log Out')
+      const logOut = await driver.findElement(By.css(menus.sandwich.logOut))
+      assert.equal(await logOut.getText(), menus.sandwich.textLogOut)
       await logOut.click()
       await delay(300)
     })
 
     it('restores from seed phrase', async function () {
-      const restoreSeedLink = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-center.flex-grow > p'))
-      assert.equal(await restoreSeedLink.getText(), 'Restore from seed phrase')
+      const restoreSeedLink = await driver.findElement(By.css(screens.lock.linkRestore))
+      assert.equal(await restoreSeedLink.getText(), screens.lock.linkRestoreText)
       await restoreSeedLink.click()
       await delay(100)
     })
 
     it('adds seed phrase', async function () {
       const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
-      const seedTextArea = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div.initialize-screen.flex-column.flex-center.flex-grow > textarea'))
+      const seedTextArea = await driver.findElement(By.css(screens.restoreVault.textArea))
       await seedTextArea.sendKeys(testSeedPhrase)
 
-      await driver.findElement(By.id('password-box')).sendKeys('123456789')
-      await driver.findElement(By.id('password-box-confirm')).sendKeys('123456789')
-      await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div.initialize-screen.flex-column.flex-center.flex-grow > div > button:nth-child(2)')).click()
+      await driver.findElement(By.id(screens.restoreVault.fieldPassword)).sendKeys(password)
+      await driver.findElement(By.id(screens.restoreVault.fieldPasswordConfirm)).sendKeys(password)
+      await driver.findElement(By.css(screens.restoreVault.buttos.ok)).click()
       await delay(500)
     })
 
     it('balance renders', async function () {
       await delay(200)
-      const balance = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'))
+      const balance = await driver.findElement(By.css(screens.main.balance))
       assert.equal(await balance.getText(), '100.000')
       await delay(200)
     })
 
     it('sends transaction', async function () {
-      const sendButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'))
-      assert.equal(await sendButton.getText(), 'Send')
+      const sendButton = await driver.findElement(By.css(screens.main.buttons.send))
+      assert.equal(await sendButton.getText(), screens.main.buttons.sendText)
       await sendButton.click()
       await delay(200)
     })
 
     it('adds recipient address and amount', async function () {
-      const sendTranscationScreen = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > h3:nth-child(2)')).getText()
-      assert.equal(sendTranscationScreen, 'Send Transaction')
-      const inputAddress = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(3) > div > input'))
-      const inputAmmount = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > input'))
+      const sendTranscationScreen = await driver.findElement(By.css(screens.sendTransaction.title)).getText()
+      assert.equal(sendTranscationScreen, screens.sendTransaction.titleText)
+      const inputAddress = await driver.findElement(By.css(screens.sendTransaction.fields.address))
+      const inputAmmount = await driver.findElement(By.css(screens.sendTransaction.fields.amount))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmmount.sendKeys('10')
-      await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > button')).click()
+      await driver.findElement(By.css(screens.sendTransaction.buttonNext)).click()
       await delay(300)
     })
 
     it('confirms transaction', async function () {
       await delay(300)
-      const bySubmitButton = By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+      const bySubmitButton = By.css(screens.confirmTransaction.buttons.submit)
       const submitButton = await driver.wait(until.elementLocated(bySubmitButton))
 
       submitButton.click()
@@ -441,7 +441,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const tranasactionAmount = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'))
+      const tranasactionAmount = await driver.findElement(By.css(screens.main.transactionList))
       assert.equal(await tranasactionAmount.getText(), '10.0')
     })
   })
@@ -570,7 +570,7 @@ describe('Metamask popup page', async function () {
       })
     })
 
-    describe('add token with the same address to each network  ', async function () {
+    describe('Add token with the same address to each network  ', async function () {
 
       const tokenName = 'DVT'
       const tokenDecimals = '13'
@@ -650,7 +650,7 @@ describe('Metamask popup page', async function () {
       assert.equal(tokens.length, 1, 'There should be 1 token')
     })
 
-    it('navigates to the remove token screen and removes the token', async function () {
+    it('navigates to the remove token screen and removes the token from LOCALHOST', async function () {
       // Click to remove first token
       const removeTokenButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > .trash'))
       await removeTokenButton.click()
@@ -702,37 +702,37 @@ describe('Metamask popup page', async function () {
 
   describe('Custom Rpc', function () {
     it('switches to settings screen', async function () {
-      await driver.findElement(By.css('.sandwich-expando')).click()
+      await driver.findElement(By.css(menus.sandwich.menu)).click()
       await delay(200)
-      const settings = await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(2)'))
-      assert.equal(await settings.getText(), 'Settings')
+      const settings = await driver.findElement(By.css(menus.sandwich.settings))
+      assert.equal(await settings.getText(), menus.sandwich.textSettings)
       await settings.click()
       await delay(300)
     })
 
     it('add custom rpc', async function () {
       const customUrl = 'http://test.com'
-      const input = await driver.findElement(By.css('#new_rpc'))
+      const input = await driver.findElement(By.css(screens.settings.fieldNewRPC))
       input.sendKeys(customUrl)
-      await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(2) > button')).click()
+      await driver.findElement(By.css(screens.settings.buttonSave)).click()
       if (process.env.SELENIUM_BROWSER === 'firefox') {
         input.sendKeys(Key.ENTER)
       }
       await delay(400)
-      const customUrlElement = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'))
+      const customUrlElement = await driver.findElement(By.css(screens.settings.customUrl))
       assert.equal(await customUrlElement.getText(), customUrl)
     })
 
     it('delete custom rpc', async function () {
-      await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button')).click()
+      await driver.findElement(By.css(screens.settings.buttons.delete)).click()
       await delay(300)
       const titleConfirmPage = await driver.findElement(By.css(screens.settings.title))
       assert.equal(await titleConfirmPage.getText(), 'Delete Custom RPC')
-      const yesButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'))
+      const yesButton = await driver.findElement(By.css(screens.deleteCustomRPC.buttons.yes))
       assert.equal(await yesButton.getText(), 'Yes')
       await yesButton.click()
       await delay(300)
-      const urlElement = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'))
+      const urlElement = await driver.findElement(By.css(screens.settings.currentNetwork))
       assert.equal(await urlElement.getText(), 'POA Network')
     })
   })
@@ -773,25 +773,24 @@ describe('Metamask popup page', async function () {
         counter = 6
     }
     await driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
-
   }
 
-  async function waitUntilDisappear (by, Twaiting) {
-    (Twaiting === undefined) ? (Twaiting = 10) : (Twaiting)
+  async function waitUntilDisappear (by, Twait) {
+    if (Twait === undefined) Twait = 10
     do {
       await delay(100)
       if (!await isElementDisplayed(by)) return true
 
-    } while (Twaiting-- > 0)
+    } while (Twait-- > 0)
     return false
   }
 
-  async function waitUntilShowUp (by, Twaiting) {
-    (Twaiting === undefined) ? (Twaiting = 200) : (Twaiting)
+  async function waitUntilShowUp (by, Twait) {
+    if (Twait === undefined) Twait = 2000
     do {
-      await delay(200)
+      await delay(100)
       if (await isElementDisplayed(by)) return await driver.findElement(by)
-    } while (Twaiting-- > 0)
+    } while (Twait-- > 0)
     return false
   }
 
@@ -838,7 +837,6 @@ describe('Metamask popup page', async function () {
       return false
     }
   }
-
 
   async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
