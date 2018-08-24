@@ -16,19 +16,23 @@ function mapStateToProps (state) {
     selectedAddress,
   } = state.metamask
   const { warning } = state.appState
+  const ticker = state.metamask.ticker
+  const provider = state.metamask.provider
 
   return {
     coinOptions,
     tokenExchangeRates,
     selectedAddress,
+    provider,
+    ticker,
     warning,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    shapeShiftSubview: () => dispatch(shapeShiftSubview()),
-    pairUpdate: coin => dispatch(pairUpdate(coin)),
+    shapeShiftSubview: (type, ticker) => dispatch(shapeShiftSubview(type, ticker)),
+    pairUpdate: (coin, ticker) => dispatch(pairUpdate(coin, ticker)),
     buyWithShapeShift: data => dispatch(buyWithShapeShift(data)),
   }
 }
@@ -56,22 +60,27 @@ function ShapeshiftForm () {
 }
 
 ShapeshiftForm.prototype.getCoinPair = function () {
-  return `${this.state.depositCoin.toUpperCase()}_ETH`
+  const ticker = this.props.ticker
+  return `${this.state.depositCoin.toUpperCase()}_${ticker}`
 }
 
 ShapeshiftForm.prototype.componentWillMount = function () {
-  this.props.shapeShiftSubview()
+  const ticker = this.props.ticker
+  const type = this.props.provider.type
+  this.props.shapeShiftSubview(type, ticker)
 }
 
 ShapeshiftForm.prototype.onCoinChange = function (coin) {
+  const ticker = this.props.ticker
   this.setState({
     depositCoin: coin,
     errorMessage: '',
   })
-  this.props.pairUpdate(coin)
+  this.props.pairUpdate(coin, ticker)
 }
 
 ShapeshiftForm.prototype.onBuyWithShapeShift = function () {
+  const ticker = this.props.ticker
   this.setState({
     isLoading: true,
     showQrCode: true,
@@ -85,7 +94,7 @@ ShapeshiftForm.prototype.onBuyWithShapeShift = function () {
     refundAddress: returnAddress,
     depositCoin,
   } = this.state
-  const pair = `${depositCoin}_eth`
+  const pair = `${depositCoin}_${ticker.toLowerCase()}`
   const data = {
     withdrawal,
     pair,
@@ -175,7 +184,7 @@ ShapeshiftForm.prototype.renderQrCode = function () {
 ShapeshiftForm.prototype.render = function () {
   const { coinOptions, btnClass, warning } = this.props
   const { errorMessage, showQrCode, depositAddress } = this.state
-  const { tokenExchangeRates } = this.props
+  const { tokenExchangeRates, ticker } = this.props
   const token = tokenExchangeRates[this.getCoinPair()]
 
   return h('div.shapeshift-form-wrapper', [
@@ -209,7 +218,7 @@ ShapeshiftForm.prototype.render = function () {
                 this.context.t('receive'),
               ]),
 
-              h('div.shapeshift-form__selector-input', ['ETH']),
+              h('div.shapeshift-form__selector-input', [ticker]),
 
             ]),
 

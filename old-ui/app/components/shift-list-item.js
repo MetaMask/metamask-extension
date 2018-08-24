@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const vreme = new (require('vreme'))()
-const explorerLink = require('etherscan-link').createExplorerLink
+const explorerLink = require('../../../ui/lib/explorer-link.js')
 const actions = require('../../../ui/app/actions')
 const addressSummary = require('../util').addressSummary
 
@@ -18,6 +18,7 @@ function mapStateToProps (state) {
   return {
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
+    ticker: state.metamask.ticker,
   }
 }
 
@@ -79,7 +80,7 @@ ShiftListItem.prototype.renderUtilComponents = function () {
           title: 'QR Code',
         }, [
           h('i.fa.fa-qrcode.pointer.pop-hover', {
-            onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType)),
+            onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType, props.ticker)),
             style: {
               margin: '5px',
               marginLeft: '23px',

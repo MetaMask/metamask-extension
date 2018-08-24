@@ -20,6 +20,7 @@ function mapStateToProps (state) {
   return {
     account,
     network,
+    ticker: state.metamask.ticker,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
   }
@@ -61,11 +62,15 @@ BalanceComponent.prototype.renderTokenBalance = function () {
 
 BalanceComponent.prototype.renderBalance = function () {
   const props = this.props
-  const { shorten, account } = props
+  const { shorten, account, ticker } = props
   const balanceValue = account && account.balance
   const needsParse = 'needsParse' in props ? props.needsParse : true
-  const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse) : '...'
   const showFiat = 'showFiat' in props ? props.showFiat : true
+  let formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse) : '...'
+
+  if (ticker !== 'ETH') {
+    formattedBalance = formattedBalance.replace(/ETH/, ticker)
+  }
 
   if (formattedBalance === 'None' || formattedBalance === '...') {
     return h('div.flex-column.balance-display', {}, [
