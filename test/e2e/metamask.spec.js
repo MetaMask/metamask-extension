@@ -120,7 +120,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('adds a second account', async function () {
-      //throw('sf')
+      // throw('sf')
       await driver.findElement(By.css(menus.account.menu)).click()
       await delay(300)
       await driver.findElement(By.css(menus.account.createAccount)).click()

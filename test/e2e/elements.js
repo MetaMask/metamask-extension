@@ -10,34 +10,34 @@ module.exports = {
       delete: '#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove',
       createAccount: '#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span',
       import: '#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span',
-      labelImported: '#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label'
+      labelImported: '#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label',
     },
     dot: {
       menu: '.account-dropdown',
-      showQRcode: '#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(3)'
-    }
+      showQRcode: '#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(3)',
+    },
   },
   screens: {
     deleteImportedAccount: {
       title: '#app-content > div > div.app-primary.from-left > div > div.section-title.flex-row.flex-center > h2',
-      titleText: 'Delete Imported Account'
+      titleText: 'Delete Imported Account',
     },
     importAccounts: {
       title: '#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div.flex-row.flex-center > h2',
       textTitle: 'Import Accounts',
       fieldPrivateKey: '#private-key-box',
-      buttonImport: '#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div:nth-child(4) > button'
+      buttonImport: '#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div:nth-child(4) > button',
     },
     QRcode: {
       address: '.ellip-address',
-      buttonArrow: '.fa-arrow-left'
+      buttonArrow: '.fa-arrow-left',
     },
     settings: {
       titleText: 'Settings',
       title: '#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2',
       buttons: {
-        changePassword: '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(10) > button:nth-child(5)'
-      }
+        changePassword: '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(10) > button:nth-child(5)',
+      },
     },
     main: {
       buttonBuy: '#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)',
@@ -101,13 +101,13 @@ module.exports = {
     create: {
       fieldPassword: 'password-box',
       fieldPasswordConfirm: 'password-box-confirm',
-      button: 'button'
+      button: 'button',
     },
     seedPhrase: {
       fieldPhrase: '.twelve-word-phrase',
       buttonIveCopied: '#app-content > div > div.app-primary.from-right > div > button:nth-child(4)',
-      textButtonIveCopied: 'I\'ve copied it somewhere safe'
-    }
+      textButtonIveCopied: 'I\'ve copied it somewhere safe',
+    },
   },
   NETWORKS: {
     POA: 'poa',
@@ -118,6 +118,6 @@ module.exports = {
     RINKEBY: 'rinkeby',
     LOCALHOST: 'localhost',
     CUSTOM: 'http://test.com',
-  }
+  },
 }
 
