@@ -17,6 +17,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "activityLog": {
+    "message": "activity log"
+  },
   "address": {
     "message": "Address"
   },
