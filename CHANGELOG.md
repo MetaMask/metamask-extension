@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#94](https://github.com/poanetwork/metamask-extension/pull/94): (Fix) Force open notification popup
 - [#93](https://github.com/poanetwork/metamask-extension/pull/93): (Fix) Empty pending tx screen after logout/login
 - [#91](https://github.com/poanetwork/metamask-extension/pull/91): (Fix) Confirm tx notification popup: network name
 - [#89](https://github.com/poanetwork/metamask-extension/pull/89): (Feature) Support of token per network basis
