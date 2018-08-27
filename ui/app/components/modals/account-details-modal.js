@@ -15,6 +15,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
     keyrings: state.metamask.keyrings,
+    settings: state.metamask.settings,
   }
 }
 
@@ -65,6 +66,11 @@ AccountDetailsModal.prototype.render = function () {
     exportPrivateKeyFeatureEnabled = false
   }
 
+  let link
+  if (this.props.settings && this.props.settings.blockExplorerAddr) {
+    link = this.props.settings.blockExplorerAddr
+  }
+
   return h(AccountModalContainer, {}, [
       h(EditableLabel, {
         className: 'account-modal__name',
@@ -81,7 +87,7 @@ AccountDetailsModal.prototype.render = function () {
       h('div.account-modal-divider'),
 
       h('button.btn-primary.account-modal__button', {
-        onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
+        onClick: () => global.platform.openWindow({ url: genAccountLink(address, network, link) }),
       }, this.context.t('etherscanView')),
 
       // Holding on redesign for Export Private Key functionality

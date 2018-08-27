@@ -17,7 +17,7 @@ module.exports = class AppBar extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    frequentRpcList: PropTypes.array.isRequired,
+    frequentRpcListDetail: PropTypes.array.isRequired,
     isMascara: PropTypes.bool.isRequired,
     isOnboarding: PropTypes.bool.isRequired,
     identities: PropTypes.any.isRequired,
@@ -26,6 +26,7 @@ module.exports = class AppBar extends Component {
     network: PropTypes.any.isRequired,
     keyrings: PropTypes.any.isRequired,
     provider: PropTypes.any.isRequired,
+    useMultiChain: PropTypes.bool.isRequired,
   }
 
   static renderSpace () {
@@ -196,7 +197,8 @@ module.exports = class AppBar extends Component {
   renderNetworkDropdown () {
     const {
       dispatch,
-      frequentRpcList: rpcList,
+      useMultiChain,
+      frequentRpcListDetail: rpcList,
       provider,
     } = this.props
     const {
@@ -204,6 +206,8 @@ module.exports = class AppBar extends Component {
       rpcTarget: activeNetwork,
     } = provider
     const isOpen = this.state.isNetworkMenuOpen
+
+    const showMultiChain = useMultiChain ? 'flex' : 'none'
 
     return h(Dropdown, {
       useCssTransition: true,
@@ -288,6 +292,21 @@ module.exports = class AppBar extends Component {
           : null,
       ]),
       h(DropdownMenuItem, {
+        key: 'classic',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => dispatch(actions.setProviderType('classic')),
+        style: {
+          fontSize: '18px',
+          display: showMultiChain,
+        },
+      }, [
+        h('.menu-icon.diamond'),
+        'Ethereum Classic Network',
+        providerType === 'classic'
+          ? h('.check', '✓')
+          : null,
+      ]),
+      h(DropdownMenuItem, {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => dispatch(actions.setProviderType('localhost')),
@@ -322,7 +341,7 @@ module.exports = class AppBar extends Component {
   }
 
   renderCustomOption ({ rpcTarget, type }) {
-    const {dispatch} = this.props
+    const {dispatch, network} = this.props
 
     if (type !== 'rpc') {
       return null
@@ -340,7 +359,7 @@ module.exports = class AppBar extends Component {
       default:
         return h(DropdownMenuItem, {
           key: rpcTarget,
-          onClick: () => dispatch(actions.setRpcTarget(rpcTarget)),
+          onClick: () => dispatch(actions.setRpcTarget(rpcTarget, network)),
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         }, [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
@@ -354,7 +373,8 @@ module.exports = class AppBar extends Component {
     const {dispatch} = this.props
     const reversedRpcList = rpcList.slice().reverse()
 
-    return reversedRpcList.map((rpc) => {
+    return reversedRpcList.map((entry) => {
+      const rpc = entry.rpcUrl
       const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
 
       if ((rpc === LOCALHOST_RPC_URL) || currentRpcTarget) {
@@ -363,7 +383,7 @@ module.exports = class AppBar extends Component {
         return h(DropdownMenuItem, {
           key: `common${rpc}`,
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-          onClick: () => dispatch(actions.setRpcTarget(rpc)),
+          onClick: () => dispatch(actions.setRpcTarget(rpc, entry.chainId)),
         }, [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
           rpc,

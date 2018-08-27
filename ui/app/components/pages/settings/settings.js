@@ -66,6 +66,26 @@ class Settings extends Component {
     ])
   }
 
+  renderMultiChainOptIn () {
+    const { metamask: { useMultiChain }, setUseMultiChain } = this.props
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', this.context.t('useMultiChainMenu')),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h(ToggleButton, {
+            value: useMultiChain,
+            onToggle: (value) => setUseMultiChain(!value),
+            activeLabel: '',
+            inactiveLabel: '',
+          }),
+        ]),
+      ]),
+    ])
+  }
+
   renderCurrentConversion () {
     const { metamask: { currentCurrency, conversionDate }, setCurrentCurrency } = this.props
 
@@ -161,6 +181,14 @@ class Settings extends Component {
   }
 
   renderNewRpcUrl () {
+    const { metamask: { provider = {} } } = this.props
+    let rpcTarget = ''
+    let chainId = ''
+    if (provider.type === 'rpc') {
+      rpcTarget = provider.rpcTarget
+      chainId = provider.chainId || ''
+    }
+
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
@@ -169,18 +197,29 @@ class Settings extends Component {
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('input.settings__input', {
+              defaultValue: rpcTarget,
               placeholder: this.context.t('newRPC'),
               onChange: event => this.setState({ newRpc: event.target.value }),
               onKeyPress: event => {
                 if (event.key === 'Enter') {
-                  this.validateRpc(this.state.newRpc)
+                  this.validateRpc(this.state.newRpc, this.state.chainId)
                 }
               },
             }),
-            h('div.settings__rpc-save-button', {
+            h('input.settings__input', {
+              defaultValue: chainId,
+              placeholder: this.context.t('optionalChainId'),
+              onChange: event => this.setState({ chainId: event.target.value }),
+              onKeyPress: event => {
+                if (event.key === 'Enter') {
+                  this.validateRpc(this.state.newRpc, this.state.chainId)
+                }
+              },
+            }),
+            h('button.btn-primary.settings__rpc-save-button', {
               onClick: event => {
                 event.preventDefault()
-                this.validateRpc(this.state.newRpc)
+                this.validateRpc(this.state.newRpc, this.state.chainId)
               },
             }, this.context.t('save')),
           ]),
@@ -189,11 +228,11 @@ class Settings extends Component {
     )
   }
 
-  validateRpc (newRpc) {
+  validateRpc (newRpc, chainId) {
     const { setRpcTarget, displayWarning } = this.props
 
     if (validUrl.isWebUri(newRpc)) {
-      setRpcTarget(newRpc)
+      setRpcTarget(newRpc, chainId)
     } else {
       const appendedRpc = `http://${newRpc}`
 
@@ -301,6 +340,7 @@ class Settings extends Component {
         this.renderCurrentConversion(),
         this.renderCurrentLocale(),
         // this.renderCurrentProvider(),
+        this.renderMultiChainOptIn(),
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
@@ -317,6 +357,7 @@ Settings.propTypes = {
   setUseBlockie: PropTypes.func,
   setCurrentCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
+  setUseMultiChain: PropTypes.func,
   displayWarning: PropTypes.func,
   revealSeedConfirmation: PropTypes.func,
   setFeatureFlagToBeta: PropTypes.func,
@@ -341,10 +382,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setCurrentCurrency: currency => dispatch(actions.setCurrentCurrency(currency)),
-    setRpcTarget: newRpc => dispatch(actions.setRpcTarget(newRpc)),
+    setRpcTarget: (newRpc, chainId) => dispatch(actions.setRpcTarget(newRpc, chainId)),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
+    setUseMultiChain: value => dispatch(actions.setUseMultiChain(value)),
     updateCurrentLocale: key => dispatch(actions.updateCurrentLocale(key)),
     setFeatureFlagToBeta: () => {
       return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))

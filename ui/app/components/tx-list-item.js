@@ -32,6 +32,7 @@ module.exports = compose(
 function mapStateToProps (state) {
   return {
     tokens: state.metamask.tokens,
+    ticker: state.metamask.ticker,
     currentCurrency: getCurrentCurrency(state),
     contractExchangeRates: state.metamask.contractExchangeRates,
     selectedAddressTxList: state.metamask.selectedAddressTxList,
@@ -110,6 +111,7 @@ TxListItem.prototype.getSendEtherTotal = function () {
   const {
     transactionAmount,
     conversionRate,
+    ticker,
     address,
     currentCurrency,
   } = this.props
@@ -121,7 +123,7 @@ TxListItem.prototype.getSendEtherTotal = function () {
   const totalInFiat = conversionUtil(transactionAmount, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromCurrency: 'ETH',
+    fromCurrency: ticker,
     toCurrency: currentCurrency,
     fromDenomination: 'WEI',
     numberOfDecimals: 2,
@@ -130,15 +132,15 @@ TxListItem.prototype.getSendEtherTotal = function () {
   const totalInETH = conversionUtil(transactionAmount, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromCurrency: 'ETH',
-    toCurrency: 'ETH',
+    fromCurrency: ticker,
+    toCurrency: ticker,
     fromDenomination: 'WEI',
     conversionRate,
     numberOfDecimals: 6,
   })
 
   return {
-    total: `${totalInETH} ETH`,
+    total: `${totalInETH} ${ticker}`,
     fiatTotal: `${totalInFiat} ${currentCurrency.toUpperCase()}`,
   }
 }

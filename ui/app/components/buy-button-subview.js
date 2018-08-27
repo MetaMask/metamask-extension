@@ -27,6 +27,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     provider: state.metamask.provider,
     context: state.appState.currentView.context,
+    ticker: state.metamask.ticker,
     isSubLoading: state.appState.isSubLoading,
   }
 }
@@ -258,10 +259,11 @@ BuyButtonSubview.prototype.backButtonContext = function () {
 }
 
 BuyButtonSubview.prototype.radioHandler = function (event) {
+  const ticker = this.props.ticker
   switch (event.target.title) {
     case 'Coinbase':
-      return this.props.dispatch(actions.coinBaseSubview())
+      return this.props.dispatch(actions.coinBaseSubview(ticker))
     case 'ShapeShift':
-      return this.props.dispatch(actions.shapeShiftSubview(this.props.provider.type))
+      return this.props.dispatch(actions.shapeShiftSubview(this.props.provider.type, ticker))
   }
 }

@@ -46,6 +46,7 @@ function reduceMetamask (state, action) {
     },
     coinOptions: {},
     useBlockie: false,
+    useMultiChain: false,
     featureFlags: {},
     networkEndpointType: OLD_UI_NETWORK_TYPE,
     isRevealingSeedWords: false,
@@ -333,6 +334,11 @@ function reduceMetamask (state, action) {
           return extend(metamaskState, {
             useBlockie: action.value,
           })
+
+    case actions.SET_USE_MULTICHAIN:
+      return extend(metamaskState, {
+        useMultiChain: action.value,
+      })
 
     case actions.UPDATE_FEATURE_FLAGS:
       return extend(metamaskState, {

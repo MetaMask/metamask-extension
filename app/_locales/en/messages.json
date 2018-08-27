@@ -635,6 +635,9 @@
   "newRPC": {
     "message": "New RPC URL"
   },
+  "optionalChainId": {
+    "message": "ChainId (optional)"
+  },
   "next": {
     "message": "Next"
   },
@@ -817,6 +820,9 @@
   "ropsten": {
     "message": "Ropsten Test Network"
   },
+  "classic": {
+    "message": "Ethereum Classic Network"
+  },
   "rpc": {
     "message": "Custom RPC"
   },
@@ -834,6 +840,9 @@
   },
   "connectingToRinkeby": {
     "message": "Connecting to Rinkeby Test Network"
+  },
+  "connectingToClassic": {
+    "message": "Connecting to Ethereum Classic Network"
   },
   "connectingToUnknown": {
     "message": "Connecting to Unknown Network"
@@ -1137,6 +1146,10 @@
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
+  },
+  "useMultiChainMenu": {
+    "message": "Use MultiChain menu",
+    "description": "show available MultiChains in the dropdown menu"
   },
   "useOldUI": {
     "message": "Use old UI"

@@ -23,7 +23,7 @@ class PreferencesController {
    */
   constructor (opts = {}) {
     const initState = extend({
-      frequentRpcList: [],
+      frequentRpcListDetail: [],
       currentAccountTab: 'history',
       accountTokens: {},
       tokens: [],
@@ -60,6 +60,27 @@ class PreferencesController {
   getUseBlockie () {
     return this.store.getState().useBlockie
   }
+
+  /**
+   * Setter for the `useMultiChain` property
+   *
+   * @param {boolean} val Whether or not the user prefers multichain menu
+   *
+   */
+  setUseMultiChain (val) {
+    this.store.updateState({ useMultiChain: val })
+  }
+
+  /**
+   * Getter for the `useMultiChain` property
+   *
+   * @returns {boolean} this.store.useMultiChain
+   *
+   */
+  getUseMultiChain () {
+    return this.store.getState().useMultiChain
+  }
+
 
   /**
    * Setter for the `currentLocale` property
@@ -298,10 +319,10 @@ class PreferencesController {
    * @returns {Promise<void>} Promise resolves with undefined
    *
    */
-  updateFrequentRpcList (_url) {
-    return this.addToFrequentRpcList(_url)
+  updateFrequentRpcList (_url, chainId) {
+    return this.addToFrequentRpcList(_url, chainId)
       .then((rpcList) => {
-        this.store.updateState({ frequentRpcList: rpcList })
+        this.store.updateState({ frequentRpcListDetail: rpcList })
         return Promise.resolve()
       })
   }
@@ -329,14 +350,14 @@ class PreferencesController {
    * @returns {Promise<array>} The updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (_url) {
-    const rpcList = this.getFrequentRpcList()
-    const index = rpcList.findIndex((element) => { return element === _url })
+  addToFrequentRpcList (_url, chainId) {
+    const rpcList = this.getFrequentRpcListDetail()
+    const index = rpcList.findIndex((element) => { return element.rpcUrl === _url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
     if (_url !== 'http://localhost:8545') {
-      rpcList.push(_url)
+      rpcList.push({rpcUrl : _url, chainId })
     }
     if (rpcList.length > 3) {
       rpcList.shift()
@@ -345,13 +366,13 @@ class PreferencesController {
   }
 
   /**
-   * Getter for the `frequentRpcList` property.
+   * Getter for the `frequentRpcListDetail` property.
    *
-   * @returns {array<string>} An array of one or two rpc urls.
+   * @returns {array<array>} An array of rpc urls.
    *
    */
-  getFrequentRpcList () {
-    return this.store.getState().frequentRpcList
+  getFrequentRpcListDetail () {
+    return this.store.getState().frequentRpcListDetail
   }
 
   /**

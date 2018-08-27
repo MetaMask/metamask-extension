@@ -193,6 +193,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
+      var currentCurrency = this.currencyController.getCurrentCurrency()
+      this.setCurrentCurrency(currentCurrency, function() {})
     })
     this.balancesController.updateAllBalances()
 
@@ -349,6 +351,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
+      setUseMultiChain: this.setUseMultiChain.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
@@ -1368,10 +1371,13 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb - A callback function returning currency info.
    */
   setCurrentCurrency (currencyCode, cb) {
+    const { ticker } = this.networkController.getNetworkConfig()
     try {
+      this.currencyController.setFromCurrency(ticker)
       this.currencyController.setCurrentCurrency(currencyCode)
       this.currencyController.updateConversionRate()
       const data = {
+        fromCurrency: ticker || 'ETH',
         conversionRate: this.currencyController.getConversionRate(),
         currentCurrency: this.currencyController.getCurrentCurrency(),
         conversionDate: this.currencyController.getConversionDate(),
@@ -1392,7 +1398,8 @@ module.exports = class MetamaskController extends EventEmitter {
   buyEth (address, amount) {
     if (!amount) amount = '5'
     const network = this.networkController.getNetworkState()
-    const url = getBuyEthUrl({ network, address, amount })
+    const link = this.networkController.getNetworkConfig().buyUrl
+    const url = getBuyEthUrl({ network, address, amount, link })
     if (url) this.platform.openWindow({ url })
   }
 
@@ -1412,9 +1419,9 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} rpcTarget - A URL for a valid Ethereum RPC API.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  async setCustomRpc (rpcTarget) {
-    this.networkController.setRpcTarget(rpcTarget)
-    await this.preferencesController.updateFrequentRpcList(rpcTarget)
+  async setCustomRpc (rpcTarget, chainId) {
+    this.networkController.setRpcTarget(rpcTarget, chainId)
+    await this.preferencesController.updateFrequentRpcList(rpcTarget, chainId)
     return rpcTarget
   }
 
@@ -1426,6 +1433,20 @@ module.exports = class MetamaskController extends EventEmitter {
   setUseBlockie (val, cb) {
     try {
       this.preferencesController.setUseBlockie(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * Sets whether or not to use the multichain dropdown-menu.
+   * @param {boolean} val - True to show multichains, false to disable multichain menu.
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setUseMultiChain (val, cb) {
+    try {
+      this.preferencesController.setUseMultiChain(val)
       cb(null)
     } catch (err) {
       cb(err)

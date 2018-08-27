@@ -63,6 +63,9 @@ Network.prototype.render = function () {
   } else if (providerName === 'rinkeby') {
     hoverText = context.t('rinkeby')
     iconName = 'rinkeby-test-network'
+  } else if (providerName === 'classic') {
+    hoverText = context.t('classic')
+    iconName = 'ethereum-classic-network'
   } else {
     hoverText = context.t('unknownNetwork')
     iconName = 'unknown-private-network'
@@ -76,6 +79,7 @@ Network.prototype.render = function () {
         'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
         'kovan-test-network': providerName === 'kovan',
         'rinkeby-test-network': providerName === 'rinkeby',
+        'ethereum-classic-network': providerName === 'classic',
       }),
       title: hoverText,
       onClick: (event) => {
@@ -120,6 +124,15 @@ Network.prototype.render = function () {
                 nonSelectBackgroundColor: '#ecb23e',
               }),
               h('.network-name', context.t('rinkeby')),
+              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+            ])
+          case 'ethereum-classic-network':
+            return h('.network-indicator', [
+              h(NetworkDropdownIcon, {
+                backgroundColor: '#228B22', // green
+                nonSelectBackgroundColor: '#46893D',
+              }),
+              h('.network-name', context.t('classic')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           default:
