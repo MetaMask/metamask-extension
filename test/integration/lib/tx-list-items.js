@@ -16,7 +16,7 @@ QUnit.test('renders list items successfully', (assert) => {
 
 global.ethQuery = global.ethQuery || {}
 global.ethQuery.getTransactionCount = (_, cb) => {
-  cb(null, '0x0')
+  cb(null, '0x3')
 }
 
 async function runTxListItemsTest (assert, done) {
