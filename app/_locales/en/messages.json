@@ -451,6 +451,9 @@
   "hideTokenPrompt": {
     "message": "Hide Token?"
   },
+  "history": {
+    "message": "History"
+  },
   "howToDeposit": {
     "message": "How would you like to deposit Ether?"
   },
@@ -651,7 +654,7 @@
     "message": "No transaction history."
   },
   "noTransactions": {
-    "message": "No Transactions"
+    "message": "You have no transactions"
   },
   "notFound": {
     "message": "Not Found"
@@ -702,6 +705,9 @@
   "pasteSeed": {
     "message": "Paste your seed phrase here!"
   },
+  "pending": {
+    "message": "pending"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -729,6 +735,9 @@
   },
   "qrCode": {
     "message": "Show QR Code"
+  },
+  "queue": {
+    "message": "Queue"
   },
   "readdToken": {
     "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
@@ -897,6 +906,12 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "sentEther": {
+    "message": "sent ether"
+  },
+  "sentTokens": {
+    "message": "sent tokens"
+  },
   "separateEachWord": {
     "message": "Separate each word with a single space"
   },
@@ -909,6 +924,9 @@
   },
   "orderOneHere": {
     "message": "Order a Trezor or Ledger and keep your funds in cold storage"
+  },
+  "outgoing": {
+    "message": "Outgoing"
   },
   "searchTokens": {
     "message": "Search Tokens"
@@ -972,6 +990,9 @@
   },
   "sign": {
     "message": "Sign"
+  },
+  "signatureRequest": {
+    "message": "Signature Request"
   },
   "signed": {
     "message": "Signed"
