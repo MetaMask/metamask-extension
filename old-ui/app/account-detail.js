@@ -14,6 +14,7 @@ const EditableLabel = require('./components/editable-label')
 const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+const CopyButton = require('./components/copyButton')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -159,6 +160,12 @@ AccountDetailScreen.prototype.render = function () {
 
               h('div', {
                 style: {
+                  width: '8em',
+                  display: 'inline-flex',
+                  marginBottom: '15px',
+                },
+              }, [
+                h('span', {style: {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   paddingTop: '3px',
@@ -167,10 +174,12 @@ AccountDetailScreen.prototype.render = function () {
                   fontSize: '14px',
                   fontFamily: 'Nunito Bold',
                   textRendering: 'geometricPrecision',
-                  marginBottom: '15px',
                   color: 'rgba(255, 255, 255, 0.7)',
-                },
-              }, checksumAddress),
+                }}, checksumAddress),
+                h(CopyButton, {
+                  value: checksumAddress,
+                })
+              ]),
             ]),
 
             // account ballance
