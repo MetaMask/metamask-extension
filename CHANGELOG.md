@@ -3,11 +3,12 @@
 ## Current Master
 
 - [#94](https://github.com/poanetwork/metamask-extension/pull/94): (Fix) Force open notification popup
+- [#93](https://github.com/poanetwork/metamask-extension/pull/93): (Fix) Empty pending tx screen after logout/login
 - [#91](https://github.com/poanetwork/metamask-extension/pull/91): (Fix) Confirm tx notification popup: network name
 - [#89](https://github.com/poanetwork/metamask-extension/pull/89): (Feature) Support of token per network basis
 - [#85](https://github.com/poanetwork/metamask-extension/pull/85): (Upgrade) node, npm packages versions
 - [#84](https://github.com/poanetwork/metamask-extension/pull/84): (Fix) Change green color
-- [#83](https://github.com/poanetwork/metamask-extension/pull/83): (Feature) Changing of password
+- [#83](https://github.com/poanetwork/metamask-extension/pull/83), [#92](https://github.com/poanetwork/metamask-extension/pull/92): (Feature) Changing of password
 - [#81](https://github.com/poanetwork/metamask-extension/pull/81): (Feature) Deanonymize private network
 - [#80](https://github.com/poanetwork/metamask-extension/pull/80): (Feature) Remove imported account
 - [#78](https://github.com/poanetwork/metamask-extension/pull/78): (Fix) Link to POA explorer for POA networks

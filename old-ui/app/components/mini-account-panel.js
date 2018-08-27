@@ -53,7 +53,6 @@ AccountPanel.prototype.genIcon = function (seed, picOrder) {
       h('i.contract', {
         style: {
           fontSize: '42px',
-          transform: 'translate(0px, -16px)',
         },
       }),
     ])

@@ -24,7 +24,7 @@ function mapStateToProps (state) {
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
     unapprovedTypedMessages: state.metamask.unapprovedTypedMessages,
-    index: state.appState.currentView.context,
+    index: state.appState.currentView.pendingTxIndex || 0,
     warning: state.appState.warning,
     network: state.metamask.network,
     provider: state.metamask.provider,
@@ -52,8 +52,8 @@ ConfirmTxScreen.prototype.render = function () {
   }
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
-
-  var txData = unconfTxList[props.index] || {}
+  const ind = props.index || 0
+  var txData = unconfTxList[ind] || {}
   var txParams = txData.params || {}
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
