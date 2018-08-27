@@ -3,16 +3,17 @@ import CurrencyDisplay from './currency-display.component'
 import { getValueFromWeiHex, formatCurrency } from '../../helpers/confirm-transaction/util'
 
 const mapStateToProps = state => {
-  const { metamask: { currentCurrency, conversionRate } } = state
+  const { metamask: { fromCurrency, currentCurrency, conversionRate } } = state
 
   return {
     currentCurrency,
     conversionRate,
+    fromCurrency,
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { currentCurrency, conversionRate, ...restStateProps } = stateProps
+  const { fromCurrency, currentCurrency, conversionRate, ...restStateProps } = stateProps
   const {
     value,
     numberOfDecimals = 2,

@@ -1874,10 +1874,10 @@ function updateProviderType (type) {
   }
 }
 
-function setRpcTarget (newRpc, chainId) {
+function setRpcTarget (newRpc, chainId, ticker = 'ETH') {
   return (dispatch) => {
-    log.debug(`background.setRpcTarget: ${newRpc}`)
-    background.setCustomRpc(newRpc, chainId, (err, result) => {
+    log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker}`)
+    background.setCustomRpc(newRpc, chainId, ticker, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))

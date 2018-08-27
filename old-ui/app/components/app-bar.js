@@ -321,7 +321,7 @@ module.exports = class AppBar extends Component {
     ])
   }
 
-  renderCustomOption ({ rpcTarget, type }) {
+  renderCustomOption ({ rpcTarget, type, ticker }) {
     const {dispatch, network} = this.props
 
     if (type !== 'rpc') {
@@ -340,7 +340,7 @@ module.exports = class AppBar extends Component {
       default:
         return h(DropdownMenuItem, {
           key: rpcTarget,
-          onClick: () => dispatch(actions.setRpcTarget(rpcTarget, network)),
+          onClick: () => dispatch(actions.setRpcTarget(rpcTarget, network, ticker)),
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         }, [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
@@ -364,7 +364,7 @@ module.exports = class AppBar extends Component {
         return h(DropdownMenuItem, {
           key: `common${rpc}`,
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-          onClick: () => dispatch(actions.setRpcTarget(rpc, entry.chainId)),
+          onClick: () => dispatch(actions.setRpcTarget(rpc, entry.chainId, entry.ticker)),
         }, [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
           rpc,

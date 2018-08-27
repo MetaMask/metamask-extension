@@ -21,6 +21,7 @@ function mapStateToProps (state) {
   return {
     account,
     network,
+    ticker: state.metamask.ticker,
     conversionRate: conversionRateSelector(state),
     currentCurrency: getCurrentCurrency(state),
     assetImages: getAssetImages(state),
@@ -67,9 +68,10 @@ BalanceComponent.prototype.renderTokenBalance = function () {
 BalanceComponent.prototype.renderBalance = function () {
   const props = this.props
   const { account } = props
+  const { account, ticker } = props
   const balanceValue = account && account.balance
   const needsParse = 'needsParse' in props ? props.needsParse : true
-  const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse) : '...'
+  const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse, ticker) : '...'
   const showFiat = 'showFiat' in props ? props.showFiat : true
 
   if (formattedBalance === 'None' || formattedBalance === '...') {

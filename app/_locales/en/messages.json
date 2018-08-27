@@ -698,6 +698,9 @@
   "optionalChainId": {
     "message": "ChainId (optional)"
   },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
   "next": {
     "message": "Next"
   },

@@ -121,7 +121,7 @@ export default class SettingsTab extends PureComponent {
 
   renderNewRpcUrl () {
     const { t } = this.context
-    const { newRpc, chainId } = this.state
+    const { newRpc, chainId, ticker } = this.state
 
     return (
       <div className="settings-page__content-row">
@@ -138,7 +138,7 @@ export default class SettingsTab extends PureComponent {
               onChange={e => this.setState({ newRpc: e.target.value })}
               onKeyPress={e => {
                 if (e.key === 'Enter') {
-                  this.validateRpc(newRpc)
+                  this.validateRpc(newRpc, chainId, ticker)
                 }
               }}
               fullWidth
@@ -152,7 +152,21 @@ export default class SettingsTab extends PureComponent {
               onChange={e => this.setState({ chainId: e.target.value })}
               onKeyPress={e => {
                 if (e.key === 'Enter') {
-                  this.validateRpc(newRpc, chainId)
+                  this.validateRpc(newRpc, chainId, ticker)
+                }
+              }}
+              fullWidth
+              margin="none"
+            />
+            <TextField
+              type="text"
+              id="ticker"
+              placeholder={t('optionalSymbol')}
+              value={ticker}
+              onChange={e => this.setState({ ticker: e.target.value })}
+              onKeyPress={e => {
+                if (e.key === 'Enter') {
+                  this.validateRpc(newRpc, chainId, ticker)
                 }
               }}
               fullWidth
@@ -162,7 +176,7 @@ export default class SettingsTab extends PureComponent {
               className="settings-tab__rpc-save-button"
               onClick={e => {
                 e.preventDefault()
-                this.validateRpc(newRpc, chainId)
+                this.validateRpc(newRpc, chainId, ticker)
               }}
             >
               { t('save') }
@@ -173,11 +187,11 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  validateRpc (newRpc, chainId) {
+  validateRpc (newRpc, chainId, ticker = 'ETH') {
     const { setRpcTarget, displayWarning } = this.props
 
     if (validUrl.isWebUri(newRpc)) {
-      setRpcTarget(newRpc, chainId)
+      setRpcTarget(newRpc, chainId, ticker)
     } else {
       const appendedRpc = `http://${newRpc}`
 

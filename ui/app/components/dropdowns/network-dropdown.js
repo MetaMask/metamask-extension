@@ -41,8 +41,8 @@ function mapDispatchToProps (dispatch) {
     setDefaultRpcTarget: type => {
       dispatch(actions.setDefaultRpcTarget(type))
     },
-    setRpcTarget: (target, network) => {
-      dispatch(actions.setRpcTarget(target, network))
+    setRpcTarget: (target, network, ticker) => {
+      dispatch(actions.setRpcTarget(target, network, ticker))
     },
     delRpcTarget: (target) => {
       dispatch(actions.delRpcTarget(target))
@@ -281,6 +281,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
 
   return reversedRpcListDetail.map((entry) => {
     const rpc = entry.rpcUrl
+    const ticker = entry.ticker || 'ETH'
     const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
 
     if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
@@ -292,7 +293,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
         {
           key: `common${rpc}`,
           closeMenu: () => this.props.hideNetworkDropdown(),
-          onClick: () => props.setRpcTarget(rpc, chainId),
+          onClick: () => props.setRpcTarget(rpc, chainId, ticker),
           style: {
             fontSize: '16px',
             lineHeight: '20px',
@@ -321,7 +322,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
 }
 
 NetworkDropdown.prototype.renderCustomOption = function (provider) {
-  const { rpcTarget, type } = provider
+  const { rpcTarget, type, ticker } = provider
   const props = this.props
   const network = props.network
 
@@ -337,7 +338,7 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
-          onClick: () => props.setRpcTarget(rpcTarget, network),
+          onClick: () => props.setRpcTarget(rpcTarget, network, ticker),
           closeMenu: () => this.props.hideNetworkDropdown(),
           style: {
             fontSize: '16px',

@@ -396,7 +396,7 @@ class PreferencesController {
    * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (url, chainId) {
+  addToFrequentRpcList (url, chainId, ticker) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
     if (index !== -1) {

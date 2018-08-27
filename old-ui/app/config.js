@@ -82,7 +82,8 @@ ConfigScreen.prototype.render = function () {
                   var element = event.target
                   var newRpc = element.value
                   var chainid = document.querySelector('input#chainid')
-                  rpcValidation(newRpc, chainid.value, state)
+                  var ticker = document.querySelector('input#ticker')
+                  rpcValidation(newRpc, chainid.value, ticker.value, state)
                 }
               },
             }),
@@ -100,7 +101,27 @@ ConfigScreen.prototype.render = function () {
                   var element = document.querySelector('input#new_rpc')
                   var newRpc = element.value
                   var chainid = document.querySelector('input#chainid')
-                  rpcValidation(newRpc, chainid.value, state)
+                  var ticker = document.querySelector('input#ticker')
+                  rpcValidation(newRpc, chainid.value, ticker.value, state)
+                }
+              },
+            }),
+            h('br'),
+            h('input#ticker', {
+              placeholder: 'Symbol (optional)',
+              style: {
+                width: 'inherit',
+                flex: '1 0 auto',
+                height: '30px',
+                margin: '8px',
+              },
+              onKeyPress (event) {
+                if (event.key === 'Enter') {
+                  var element = document.querySelector('input#new_rpc')
+                  var newRpc = element.value
+                  var chainid = document.querySelector('input#chainid')
+                  var ticker = document.querySelector('input#ticker')
+                  rpcValidation(newRpc, chainid.value, ticker.value, state)
                 }
               },
             }),
@@ -113,7 +134,8 @@ ConfigScreen.prototype.render = function () {
                 var element = document.querySelector('input#new_rpc')
                 var newRpc = element.value
                 var chainid = document.querySelector('input#chainid')
-                rpcValidation(newRpc, chainid.value, state)
+                var ticker = document.querySelector('input#ticker')
+                rpcValidation(newRpc, chainid.value, ticker.value, state)
               },
             }, 'Save'),
           ]),
@@ -209,9 +231,9 @@ ConfigScreen.prototype.render = function () {
   )
 }
 
-function rpcValidation (newRpc, chainid, state) {
+function rpcValidation (newRpc, chainid, ticker, state) {
   if (validUrl.isWebUri(newRpc)) {
-    state.dispatch(actions.setRpcTarget(newRpc, chainid))
+    state.dispatch(actions.setRpcTarget(newRpc, chainid, ticker))
   } else {
     var appendedRpc = `http://${newRpc}`
     if (validUrl.isWebUri(appendedRpc)) {

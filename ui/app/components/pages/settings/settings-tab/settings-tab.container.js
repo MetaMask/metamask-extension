@@ -25,6 +25,7 @@ const mapStateToProps = state => {
     provider = {},
     isMascara,
     currentLocale,
+    ticker,
   } = metamask
   const { useETHAsPrimaryCurrency } = preferencesSelector(state)
 
@@ -44,7 +45,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setCurrentCurrency: currency => dispatch(setCurrentCurrency(currency)),
-    setRpcTarget: (newRpc, chainId) => dispatch(setRpcTarget(newRpc, chainId)),
+    setRpcTarget: (newRpc, chainId, ticker) => dispatch(setRpcTarget(newRpc, chainId, ticker)),
     displayWarning: warning => dispatch(displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(revealSeedConfirmation()),
     setUseBlockie: value => dispatch(setUseBlockie(value)),
