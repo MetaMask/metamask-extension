@@ -1009,6 +1009,21 @@ div.message-container > div:first-child {
   height: 22px;
 }
 
+.menu-droppo-container::-webkit-scrollbar {
+    width: 16px;
+}
+ 
+.menu-droppo-container::-webkit-scrollbar-track {
+    background-color: rgba(71, 28, 115, 0.95);
+}
+ 
+.menu-droppo-container::-webkit-scrollbar-thumb {
+  background-color: #411a6a;
+  border-radius: 10px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
 .hidden {
   visibility: hidden;
 }

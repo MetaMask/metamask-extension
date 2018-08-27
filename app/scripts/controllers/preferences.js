@@ -311,8 +311,7 @@ class PreferencesController {
 
   /**
    * Returns an updated rpcList based on the passed url and the current list.
-   * The returned list will have a max length of 2. If the _url currently exists it the list, it will be moved to the
-   * end of the list. The current list is modified and returned as a promise.
+   * The returned list will have an unlimited length. The current list is modified and returned as a promise.
    *
    * @param {string} _url The rpc url to add to the frequentRpcList.
    * @returns {Promise<array>} The updated frequentRpcList.
@@ -326,9 +325,6 @@ class PreferencesController {
     }
     if (_url !== 'http://localhost:8545') {
       rpcList.push(_url)
-    }
-    if (rpcList.length > 2) {
-      rpcList.shift()
     }
     return Promise.resolve(rpcList)
   }

@@ -271,6 +271,8 @@ App.prototype.renderNetworkDropdown = function () {
       left: '2px',
       top: '36px',
       width: '270px',
+      overflowY: 'auto',
+      maxHeight: '524px',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',

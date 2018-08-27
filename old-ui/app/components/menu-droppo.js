@@ -26,39 +26,41 @@ MenuDroppoComponent.prototype.render = function () {
   style.zIndex = zIndex
 
   return (
-    h('.menu-droppo-container', {
-      style,
-    }, [
-      h('style', `
-        .menu-droppo-enter {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-200%);
-        }
+    h('.menu-droppo-outer-container',[
+      h('.menu-droppo-container', {
+        style,
+      }, [
+        h('style', `
+          .menu-droppo-enter {
+            transition: transform ${speed} ease-in-out;
+            transform: translateY(-200%);
+          }
 
-        .menu-droppo-enter.menu-droppo-enter-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
+          .menu-droppo-enter.menu-droppo-enter-active {
+            transition: transform ${speed} ease-in-out;
+            transform: translateY(0%);
+          }
 
-        .menu-droppo-leave {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
+          .menu-droppo-leave {
+            transition: transform ${speed} ease-in-out;
+            transform: translateY(0%);
+          }
 
-        .menu-droppo-leave.menu-droppo-leave-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-200%);
-        }
-      `),
+          .menu-droppo-leave.menu-droppo-leave-active {
+            transition: transform ${speed} ease-in-out;
+            transform: translateY(-200%);
+          }
+        `),
 
-      useCssTransition
-        ? h(ReactCSSTransitionGroup, {
-          className: 'css-transition-group',
-          transitionName: 'menu-droppo',
-          transitionEnterTimeout: parseInt(speed),
-          transitionLeaveTimeout: parseInt(speed),
-        }, this.renderPrimary())
-        : this.renderPrimary(),
+        useCssTransition
+          ? h(ReactCSSTransitionGroup, {
+            className: 'css-transition-group',
+            transitionName: 'menu-droppo',
+            transitionEnterTimeout: parseInt(speed),
+            transitionLeaveTimeout: parseInt(speed),
+          }, this.renderPrimary())
+          : this.renderPrimary(),
+      ])
     ])
   )
 }
