@@ -26,6 +26,10 @@ WalletView.contextTypes = {
   t: PropTypes.func,
 }
 
+WalletView.defaultProps = {
+  responsiveDisplayClassname: '',
+}
+
 function mapStateToProps (state) {
 
   return {
@@ -131,8 +135,9 @@ WalletView.prototype.render = function () {
     }
   }
 
-  return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
+  return h('div.wallet-view.flex-column', {
     style: {},
+    className: responsiveDisplayClassname,
   }, [
 
     // TODO: Separate component: wallet account details

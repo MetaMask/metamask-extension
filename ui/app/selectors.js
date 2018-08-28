@@ -1,5 +1,8 @@
-const valuesFor = require('./util').valuesFor
 const abi = require('human-standard-token-abi')
+
+import {
+  transactionsSelector,
+} from './selectors/transactions'
 
 const {
   multiplyCurrencies,
@@ -99,22 +102,6 @@ function getCurrentAccountWithSendEtherInfo (state) {
   const accounts = accountsWithSendEtherInfoSelector(state)
 
   return accounts.find(({ address }) => address === currentAddress)
-}
-
-function transactionsSelector (state) {
-  const { network, selectedTokenAddress } = state.metamask
-  const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
-  const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
-  const transactions = state.metamask.selectedAddressTxList || []
-  const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
-
-  // console.log({txsToRender, selectedTokenAddress})
-  return selectedTokenAddress
-    ? txsToRender
-      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-      .sort((a, b) => b.time - a.time)
-    : txsToRender
-      .sort((a, b) => b.time - a.time)
 }
 
 function getGasIsLoading (state) {

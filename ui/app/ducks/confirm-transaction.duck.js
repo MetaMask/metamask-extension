@@ -5,9 +5,7 @@ import {
 } from '../selectors/confirm-transaction'
 
 import {
-  getTokenData,
-  getMethodData,
-  getTransactionAmount,
+  getValueFromWeiHex,
   getTransactionFee,
   getHexGasTotal,
   addFiat,
@@ -16,6 +14,7 @@ import {
   hexGreaterThan,
 } from '../helpers/confirm-transaction/util'
 
+import { getTokenData, getMethodData, isSmartContractAddress } from '../helpers/transactions.util'
 import { getSymbolAndDecimals } from '../token-util'
 import { conversionUtil } from '../conversion-util'
 
@@ -35,8 +34,9 @@ const UPDATE_TRANSACTION_TOTALS = createActionType('UPDATE_TRANSACTION_TOTALS')
 const UPDATE_HEX_GAS_TOTAL = createActionType('UPDATE_HEX_GAS_TOTAL')
 const UPDATE_TOKEN_PROPS = createActionType('UPDATE_TOKEN_PROPS')
 const UPDATE_NONCE = createActionType('UPDATE_NONCE')
-const FETCH_METHOD_DATA_START = createActionType('FETCH_METHOD_DATA_START')
-const FETCH_METHOD_DATA_END = createActionType('FETCH_METHOD_DATA_END')
+const UPDATE_TO_SMART_CONTRACT = createActionType('UPDATE_TO_SMART_CONTRACT')
+const FETCH_DATA_START = createActionType('FETCH_DATA_START')
+const FETCH_DATA_END = createActionType('FETCH_DATA_END')
 
 // Initial state
 const initState = {
@@ -55,7 +55,8 @@ const initState = {
   ethTransactionTotal: '',
   hexGasTotal: '',
   nonce: '',
-  fetchingMethodData: false,
+  toSmartContract: false,
+  fetchingData: false,
 }
 
 // Reducer
@@ -138,15 +139,20 @@ export default function reducer ({ confirmTransaction: confirmState = initState 
         ...confirmState,
         nonce: action.payload,
       }
-    case FETCH_METHOD_DATA_START:
+    case UPDATE_TO_SMART_CONTRACT:
       return {
         ...confirmState,
-        fetchingMethodData: true,
+        toSmartContract: action.payload,
       }
-    case FETCH_METHOD_DATA_END:
+    case FETCH_DATA_START:
       return {
         ...confirmState,
-        fetchingMethodData: false,
+        fetchingData: true,
+      }
+    case FETCH_DATA_END:
+      return {
+        ...confirmState,
+        fetchingData: false,
       }
     case CLEAR_CONFIRM_TRANSACTION:
       return initState
@@ -237,9 +243,16 @@ export function updateNonce (nonce) {
   }
 }
 
-export function setFetchingMethodData (isFetching) {
+export function updateToSmartContract (toSmartContract) {
   return {
-    type: isFetching ? FETCH_METHOD_DATA_START : FETCH_METHOD_DATA_END,
+    type: UPDATE_TO_SMART_CONTRACT,
+    payload: toSmartContract,
+  }
+}
+
+export function setFetchingData (isFetching) {
+  return {
+    type: isFetching ? FETCH_DATA_START : FETCH_DATA_END,
   }
 }
 
@@ -286,10 +299,10 @@ export function updateTxDataAndCalculate (txData) {
 
     const { txParams: { value, gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
 
-    const fiatTransactionAmount = getTransactionAmount({
+    const fiatTransactionAmount = getValueFromWeiHex({
       value, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
     })
-    const ethTransactionAmount = getTransactionAmount({
+    const ethTransactionAmount = getValueFromWeiHex({
       value, toCurrency: 'ETH', conversionRate, numberOfDecimals: 6,
     })
 
@@ -338,19 +351,22 @@ export function setTransactionToConfirm (transactionId) {
       dispatch(updateTxDataAndCalculate(txData))
 
       const { txParams } = transaction
+      const { to } = txParams
 
       if (txParams.data) {
         const { tokens: existingTokens } = state
         const { data, to: tokenAddress } = txParams
 
         try {
-          dispatch(setFetchingMethodData(true))
+          dispatch(setFetchingData(true))
           const methodData = await getMethodData(data)
           dispatch(updateMethodData(methodData))
-          dispatch(setFetchingMethodData(false))
+          const toSmartContract = await isSmartContractAddress(to)
+          dispatch(updateToSmartContract(toSmartContract))
+          dispatch(setFetchingData(false))
         } catch (error) {
           dispatch(updateMethodData({}))
-          dispatch(setFetchingMethodData(false))
+          dispatch(setFetchingData(false))
         }
 
         const tokenData = getTokenData(data)

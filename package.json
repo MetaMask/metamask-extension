@@ -57,7 +57,11 @@
             [
               "env",
               {
-                "debug": true
+                "browsers": [
+                  ">0.25%",
+                  "not ie 11",
+                  "not op_mini all"
+                ]
               }
             ],
             "stage-0"
@@ -185,6 +189,7 @@
     "react-dom": "^15.6.2",
     "react-hyperscript": "^3.0.0",
     "react-markdown": "^3.0.0",
+    "react-media": "^1.8.0",
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.2.2",
     "react-select": "^1.0.0",

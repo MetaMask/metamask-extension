@@ -67,6 +67,10 @@ module.exports = class MetamaskController extends EventEmitter {
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
 
+    // this keeps track of how many "controllerStream" connections are open
+    // the only thing that uses controller connections are open metamask UI instances
+    this.activeControllerConnections = 0
+
     // platform-specific api
     this.platform = opts.platform
 
@@ -128,6 +132,14 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
     })
+    // start and stop polling for balances based on activeControllerConnections
+    this.on('controllerConnectionChanged', (activeControllerConnections) => {
+      if (activeControllerConnections > 0) {
+        this.accountTracker.start()
+      } else {
+        this.accountTracker.stop()
+      }
+    })
 
     // key mgmt
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
@@ -138,19 +150,7 @@ module.exports = class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
 
-    // If only one account exists, make sure it is selected.
-    this.keyringController.memStore.subscribe((state) => {
-      const addresses = state.keyrings.reduce((res, keyring) => {
-        return res.concat(keyring.accounts)
-      }, [])
-      if (addresses.length === 1) {
-        const address = addresses[0]
-        this.preferencesController.setSelectedAddress(address)
-      }
-      // ensure preferences + identities controller know about all addresses
-      this.preferencesController.addAddresses(addresses)
-      this.accountTracker.syncWithAddresses(addresses)
-    })
+    this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
 
     // detect tokens controller
     this.detectTokensController = new DetectTokensController({
@@ -1211,11 +1211,19 @@ module.exports = class MetamaskController extends EventEmitter {
   setupControllerConnection (outStream) {
     const api = this.getApi()
     const dnode = Dnode(api)
+    // report new active controller connection
+    this.activeControllerConnections++
+    this.emit('controllerConnectionChanged', this.activeControllerConnections)
+    // connect dnode api to remote connection
     pump(
       outStream,
       dnode,
       outStream,
       (err) => {
+        // report new active controller connection
+        this.activeControllerConnections--
+        this.emit('controllerConnectionChanged', this.activeControllerConnections)
+        // report any error
         if (err) log.error(err)
       }
     )
@@ -1279,6 +1287,34 @@ module.exports = class MetamaskController extends EventEmitter {
         if (err) log.error(err)
       }
     )
+  }
+
+  /**
+   * Handle a KeyringController update
+   * @param {object} state the KC state
+   * @return {Promise<void>}
+   * @private
+   */
+  async _onKeyringControllerUpdate (state) {
+    const {isUnlocked, keyrings} = state
+    const addresses = keyrings.reduce((acc, {accounts}) => acc.concat(accounts), [])
+
+    if (!addresses.length) {
+      return
+    }
+
+    // Ensure preferences + identities controller know about all addresses
+    this.preferencesController.addAddresses(addresses)
+    this.accountTracker.syncWithAddresses(addresses)
+
+    const wasLocked = !isUnlocked
+    if (wasLocked) {
+      const oldSelectedAddress = this.preferencesController.getSelectedAddress()
+      if (!addresses.includes(oldSelectedAddress)) {
+        const address = addresses[0]
+        await this.preferencesController.setSelectedAddress(address)
+      }
+    }
   }
 
   /**
@@ -1427,6 +1463,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
   /**
    * A method for recording whether the MetaMask user interface is open or not.
    * @private

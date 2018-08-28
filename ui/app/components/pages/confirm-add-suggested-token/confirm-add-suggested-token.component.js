@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { DEFAULT_ROUTE } from '../../../routes'
 import Button from '../../button'
 import Identicon from '../../../components/identicon'
-import TokenBalance from '../confirm-add-token/token-balance'
+import TokenBalance from '../../token-balance'
 
 export default class ConfirmAddSuggestedToken extends Component {
   static contextTypes = {
