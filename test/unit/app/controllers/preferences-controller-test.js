@@ -357,7 +357,7 @@ describe('preferences controller', function () {
       sandbox.restore()
     })
 
-    it('should do anything if method not corresponds', async function () {
+    it('shouldn not do anything if method not corresponds', async function () {
       const asy = {next: () => {}, end: () => {}}
       var stubNext = sandbox.stub(asy, 'next')
       var stubEnd = sandbox.stub(asy, 'end').returns(0)
