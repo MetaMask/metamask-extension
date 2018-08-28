@@ -359,6 +359,7 @@ function mapStateToProps (state) {
     lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
     currentCurrency: state.metamask.currentCurrency,
+    primaryCurrency: state.metamask.primaryCurrency,
     isMouseUser: state.appState.isMouseUser,
     betaUI: state.metamask.featureFlags.betaUI,
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,

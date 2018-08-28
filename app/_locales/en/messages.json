@@ -910,6 +910,12 @@
   "orderOneHere": {
     "message": "Order a Trezor or Ledger and keep your funds in cold storage"
   },
+  "primaryCurrency":{
+    "message": "Primary Currency"
+  },
+  "primaryCurrencyDescription":{
+    "message": "Primary Currency for Confirmation Screen"
+  },
   "searchTokens": {
     "message": "Search Tokens"
   },

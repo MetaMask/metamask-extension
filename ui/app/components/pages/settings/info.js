@@ -104,6 +104,7 @@ Info.propTypes = {
   tab: PropTypes.string,
   metamask: PropTypes.object,
   setCurrentCurrency: PropTypes.func,
+  setPrimaryCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
   displayWarning: PropTypes.func,
   revealSeedConfirmation: PropTypes.func,

@@ -295,6 +295,10 @@ var actions = {
   updateCurrentLocale,
   setLocaleMessages,
   //
+  // primary currency
+  //
+  SET_PRIMARY_CURRENCY: 'SET_PRIMARY_CURRENCY',
+  setPrimaryCurrency,
   // Feature Flags
   setFeatureFlag,
   updateFeatureFlags,
@@ -768,6 +772,26 @@ function setCurrentCurrency (currencyCode) {
           conversionRate: data.conversionRate,
           conversionDate: data.conversionDate,
         },
+      })
+    })
+  }
+}
+
+function setPrimaryCurrency (primaryCurrency) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setPrimaryCurrency`)
+    background.setPrimaryCurrency(primaryCurrency, (err, data) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        log.error(err.stack)
+        return dispatch(actions.displayWarning(err.message))
+      }
+      dispatch({
+        type: actions.SET_PRIMARY_CURRENCY,
+        value: {
+          primaryCurrency: primaryCurrency
+        }
       })
     })
   }

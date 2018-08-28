@@ -350,6 +350,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
+      setPrimaryCurrency: this.setPrimaryCurrency.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -1440,6 +1441,20 @@ module.exports = class MetamaskController extends EventEmitter {
   setCurrentLocale (key, cb) {
     try {
       this.preferencesController.setCurrentLocale(key)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * A method for setting a user's preferred currency, affecting the confirmation screen.
+   * @param {string} key - Currency identifier.
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setPrimaryCurrency (key, cb) {
+    try {
+      this.preferencesController.setPrimaryCurrency(key)
       cb(null)
     } catch (err) {
       cb(err)

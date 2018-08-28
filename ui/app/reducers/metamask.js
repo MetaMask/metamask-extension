@@ -24,6 +24,7 @@ function reduceMetamask (state, action) {
     nextUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
+    primaryCurrency: "eth",
     selectedTokenAddress: null,
     contractExchangeRates: {},
     tokenExchangeRates: {},
@@ -178,6 +179,11 @@ function reduceMetamask (state, action) {
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
       })
+
+    case actions.SET_PRIMARY_CURRENCY:
+      return extend(metamaskState, {
+        primaryCurrency: action.value.primaryCurrency
+      })  
 
     case actions.UPDATE_TOKENS:
       return extend(metamaskState, {

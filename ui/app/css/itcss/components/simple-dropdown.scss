@@ -25,7 +25,7 @@
 .simple-dropdown__options {
   z-index: 1050;
   position: absolute;
-  height: 220px;
+  max-height: 220px;
   width: 100%;
   border: 1px solid #d2d8dd;
   border-radius: 4px;
