@@ -73,6 +73,7 @@ export default class ConfirmTransactionBase extends Component {
 
   state = {
     submitting: false,
+    submitError: null,
   }
 
   componentDidUpdate () {
@@ -268,7 +269,7 @@ export default class ConfirmTransactionBase extends Component {
       return
     }
 
-    this.setState({ submitting: true })
+    this.setState({ submitting: true, submitError: null })
 
     if (onSubmit) {
       Promise.resolve(onSubmit(txData))
@@ -280,7 +281,9 @@ export default class ConfirmTransactionBase extends Component {
           this.setState({ submitting: false })
           history.push(DEFAULT_ROUTE)
         })
-        .catch(() => this.setState({ submitting: false }))
+        .catch(error => {
+          this.setState({ submitting: false, submitError: error.message })
+        })
     }
   }
 
@@ -309,7 +312,7 @@ export default class ConfirmTransactionBase extends Component {
       nonce,
       warning,
     } = this.props
-    const { submitting } = this.state
+    const { submitting, submitError } = this.state
 
     const { name } = methodData
     const fiatConvertedAmount = formatCurrency(fiatTransactionAmount, currentCurrency)
@@ -332,7 +335,7 @@ export default class ConfirmTransactionBase extends Component {
         contentComponent={contentComponent}
         nonce={nonce}
         identiconAddress={identiconAddress}
-        errorMessage={errorMessage}
+        errorMessage={errorMessage || submitError}
         errorKey={propsErrorKey || errorKey}
         warning={warning}
         disabled={!propsValid || !valid || submitting}

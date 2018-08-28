@@ -1147,6 +1147,10 @@ function updateAndApproveTx (txData) {
 
         return txData
       })
+      .catch((err) => {
+        dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
+      })
   }
 }
 
