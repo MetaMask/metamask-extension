@@ -1,6 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
+import Button from '../../../button'
 
 class ConnectScreen extends Component {
     constructor (props, context) {
@@ -60,13 +61,13 @@ class ConnectScreen extends Component {
                     h('h3.hw-connect__title', {}, this.context.t('browserNotSupported')),
                     h('p.hw-connect__msg', {}, this.context.t('chromeRequiredForHardwareWallets')),
                 ]),
-                h(
-                    'button.btn-primary.btn--large',
-                    {
-                      onClick: () => global.platform.openWindow({
-                        url: 'https://google.com/chrome',
-                      }),
-                    },
+                h(Button, {
+                  type: 'primary',
+                  large: true,
+                  onClick: () => global.platform.openWindow({
+                    url: 'https://google.com/chrome',
+                  }),
+                },
                     this.context.t('downloadGoogleChrome')
                 ),
             ])

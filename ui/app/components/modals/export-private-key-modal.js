@@ -11,6 +11,7 @@ const { getSelectedIdentity } = require('../../selectors')
 const ReadOnlyInput = require('../readonly-input')
 const copyToClipboard = require('copy-to-clipboard')
 const { checksumAddress } = require('../../util')
+import Button from '../button'
 
 function mapStateToPropsFactory () {
   let selectedIdentity = null
@@ -97,24 +98,31 @@ ExportPrivateKeyModal.prototype.renderPasswordInput = function (privateKey) {
     })
 }
 
-ExportPrivateKeyModal.prototype.renderButton = function (className, onClick, label) {
-  return h('button', {
-    className,
-    onClick,
-  }, label)
-}
-
 ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, address, hideModal) {
   return h('div.export-private-key-buttons', {}, [
-    !privateKey && this.renderButton(
-      'btn-default btn--large export-private-key__button export-private-key__button--cancel',
-      () => hideModal(),
-      'Cancel'
-    ),
+    !privateKey && h(Button, {
+      type: 'default',
+      large: true,
+      className: 'export-private-key__button export-private-key__button--cancel',
+      onClick: () => hideModal(),
+    }, this.context.t('cancel')),
 
     (privateKey
-      ? this.renderButton('btn-primary btn--large export-private-key__button', () => hideModal(), this.context.t('done'))
-      : this.renderButton('btn-primary btn--large export-private-key__button', () => this.exportAccountAndGetPrivateKey(this.state.password, address), this.context.t('confirm'))
+      ? (
+          h(Button, {
+          type: 'primary',
+          large: true,
+          className: 'export-private-key__button',
+          onClick: () => hideModal(),
+        }, this.context.t('done'))
+      ) : (
+          h(Button, {
+          type: 'primary',
+          large: true,
+          className: 'export-private-key__button',
+          onClick: () => this.exportAccountAndGetPrivateKey(this.state.password, address),
+        }, this.context.t('confirm'))
+      )
     ),
 
   ])
