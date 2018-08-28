@@ -217,13 +217,13 @@ class PreferencesController {
    * @returns {Promise<array>} Promises the new array of AddedToken objects.
    *
    */
-  async addToken (rawAddress, symbol, decimals) {
+  async addToken (rawAddress, symbol, decimals, network) {
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, symbol, decimals }
+    const newEntry = { address, symbol, decimals, network }
 
     const tokens = this.store.getState().tokens
     const previousEntry = tokens.find((token, index) => {
-      return token.address === address
+      return (token.address === address && parseInt(token.network) === parseInt(network))
     })
     const previousIndex = tokens.indexOf(previousEntry)
 

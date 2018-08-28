@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Button from '../../button'
 import { addressSummary } from '../../../util'
 import Identicon from '../../identicon'
-import genAccountLink from '../../../../lib/account-link'
+import ethNetProps from 'eth-net-props'
 
 class ConfirmRemoveAccount extends Component {
   static propTypes = {
@@ -43,7 +43,7 @@ class ConfirmRemoveAccount extends Component {
         <div className="modal-container__account__link">
           <a
             className=""
-            href={genAccountLink(identity.address, this.props.network)}
+            href={ethNetProps.explorerLinks.getExplorerAccountLinkFor(identity.address, this.props.network)}
             target={'_blank'}
             title={this.context.t('etherscanView')}
           >

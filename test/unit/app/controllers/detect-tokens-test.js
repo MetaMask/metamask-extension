@@ -70,33 +70,33 @@ describe('DetectTokensController', () => {
 
     sandbox.stub(controller, 'detectTokenBalance')
         .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4')
-        .returns(preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8))
+        .returns(preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8, 1))
         .withArgs('0xBC86727E770de68B1060C91f6BB6945c73e10388')
-        .returns(preferences.addToken('0xbc86727e770de68b1060c91f6bb6945c73e10388', 'XNK', 18))
+        .returns(preferences.addToken('0xbc86727e770de68b1060c91f6bb6945c73e10388', 'XNK', 18, 1))
 
     await controller.detectNewTokens()
-    assert.deepEqual(preferences.store.getState().tokens, [{address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T'},
-        {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK'}])
+    assert.deepEqual(preferences.store.getState().tokens, [{address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T', network: 1},
+        {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK', network: 1}])
   })
 
   it('should not detect same token while in main network', async () => {
     const network = new NetworkController()
     network.setProviderType('mainnet')
     const preferences = new PreferencesController()
-    preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8)
+    preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8, 1)
     const controller = new DetectTokensController({ preferences: preferences, network: network, keyringMemStore: keyringMemStore })
     controller.isOpen = true
     controller.isUnlocked = true
 
     sandbox.stub(controller, 'detectTokenBalance')
       .withArgs('0x0D262e5dC4A06a0F1c90cE79C7a60C09DfC884E4')
-      .returns(preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8))
+      .returns(preferences.addToken('0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', 'J8T', 8, 1))
       .withArgs('0xBC86727E770de68B1060C91f6BB6945c73e10388')
-      .returns(preferences.addToken('0xbc86727e770de68b1060c91f6bb6945c73e10388', 'XNK', 18))
+      .returns(preferences.addToken('0xbc86727e770de68b1060c91f6bb6945c73e10388', 'XNK', 18, 1))
 
     await controller.detectNewTokens()
-    assert.deepEqual(preferences.store.getState().tokens, [{address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T'},
-        {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK'}])
+    assert.deepEqual(preferences.store.getState().tokens, [{address: '0x0d262e5dc4a06a0f1c90ce79c7a60c09dfc884e4', decimals: 8, symbol: 'J8T', network: 1},
+        {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK', network: 1}])
   })
 
   it('should trigger detect new tokens when change address', async () => {

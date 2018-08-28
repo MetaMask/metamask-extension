@@ -1,5 +1,5 @@
 const extension = require('extensionizer')
-const explorerLink = require('etherscan-link').createExplorerLink
+const explorerLinks = require('eth-net-props').explorerLinks
 
 class ExtensionPlatform {
 
@@ -17,6 +17,27 @@ class ExtensionPlatform {
   closeCurrentWindow () {
     return extension.windows.getCurrent((windowDetails) => {
       return extension.windows.remove(windowDetails.id)
+    })
+  }
+
+  /**
+   * Closes all notifications windows, when action is confirmed in popup
+   * or closes notification window itself, when action is confirmed from it
+   */
+  closeNotificationWindow () {
+    return extension.windows.getCurrent((curWindowsDetails) => {
+      if (curWindowsDetails.type === 'popup') {
+        return extension.windows.remove(curWindowsDetails.id)
+      } else {
+        extension.windows.getAll((windowsDetails) => {
+          const windowsDetailsFiltered = windowsDetails.filter((windowDetails) => windowDetails.id !== curWindowsDetails.id)
+          return windowsDetailsFiltered.forEach((windowDetails) => {
+            if (windowDetails.type === 'popup') {
+              extension.windows.remove(windowDetails.id)
+            }
+          })
+        })
+      }
     })
   }
 
@@ -96,21 +117,16 @@ class ExtensionPlatform {
   }
 
   _getExplorer (hash, networkId) {
-    if (networkId === 99) {
-      return {
-        explorerName: 'POA explorer',
-        url: `https://poaexplorer.com/txid/search/${hash}`,
-      }
-    } else if (networkId === 77) {
-      return {
-        explorerName: 'POA explorer',
-        url: `https://sokol.poaexplorer.com/txid/search/${hash}`,
-      }
+    let explorerName
+    if (networkId === 99 || networkId === 77) {
+      explorerName = 'POA explorer'
     } else {
-      return {
-        explorerName: 'Etherscan',
-        url: explorerLink(hash, networkId),
-      }
+      explorerName = 'Etherscan'
+    }
+
+    return {
+      explorerName: explorerName,
+      url: explorerLinks.getExplorerTxLinkFor(hash, networkId),
     }
   }
 

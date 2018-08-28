@@ -44,10 +44,11 @@ function mapStateToProps (state) {
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
     unapprovedTypedMessages: state.metamask.unapprovedTypedMessages,
-    index: state.appState.currentView.context,
+    index: state.appState.currentView.pendingTxIndex || 0,
     warning: state.appState.warning,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    isUnlocked: state.metamask.isUnlocked,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
@@ -57,7 +58,7 @@ function mapStateToProps (state) {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { currentCurrency, blockGasLimit, network, provider } = props
+  const { currentCurrency, blockGasLimit, network, provider, isUnlocked } = props
 
   const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
@@ -272,6 +273,7 @@ PendingTx.prototype.render = function () {
               isNotification ? h(NetworkIndicator, {
                 network: network,
                 provider: provider,
+                isUnlocked: isUnlocked,
               }) : null,
             ]),
 
@@ -517,7 +519,7 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
       ])
   } else {
     return h(MiniAccountPanel, {
-      picOrder: 'left',
+      picOrder: 'right',
     }, [
 
       h('span.font-small', {

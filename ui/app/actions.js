@@ -10,7 +10,6 @@ const {
 const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
-const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
 
 var actions = {
@@ -92,6 +91,7 @@ var actions = {
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
   resetAccount,
+  changePassword,
   removeAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
@@ -309,6 +309,10 @@ var actions = {
   SHOW_DELETE_RPC: 'SHOW_DELETE_RPC',
   showDeleteRPC,
   removeCustomRPC,
+  SHOW_DELETE_IMPORTED_ACCOUNT: 'SHOW_DELETE_IMPORTED_ACCOUNT',
+  showDeleteImportedAccount,
+  CONFIRM_CHANGE_PASSWORD: 'CONFIRM_CHANGE_PASSWORD',
+  confirmChangePassword,
 }
 
 module.exports = actions
@@ -552,6 +556,26 @@ function resetAccount () {
   }
 }
 
+function changePassword (oldPassword, newPassword) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      background.changePassword(oldPassword, newPassword, (err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.info('Password is changed for ' + account)
+        dispatch(actions.showAccountsPage())
+        resolve(account)
+      })
+    })
+  }
+}
+
 function removeAccount (address) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
@@ -768,9 +792,8 @@ function signMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.metamaskId))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -799,9 +822,8 @@ function signPersonalMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.metamaskId))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -830,9 +852,8 @@ function signTypedMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.metamaskId))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -1037,9 +1058,8 @@ function sendTx (txData) {
       }
       dispatch(actions.completedTx(txData.id))
 
-      if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-        !hasUnconfirmedTransactions(getState())) {
-        return global.platform.closeCurrentWindow()
+      if (!hasUnconfirmedTransactions(getState())) {
+        return global.platform.closeNotificationWindow()
       }
     })
   }
@@ -1115,9 +1135,8 @@ function updateAndApproveTx (txData) {
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return txData
@@ -1163,9 +1182,8 @@ function cancelMsg (msgData) {
 
         dispatch(actions.completedTx(msgData.id))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -1190,9 +1208,8 @@ function cancelPersonalMsg (msgData) {
 
         dispatch(actions.completedTx(id))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -1217,9 +1234,8 @@ function cancelTypedMsg (msgData) {
 
         dispatch(actions.completedTx(id))
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return resolve(msgData)
@@ -1249,9 +1265,8 @@ function cancelTx (txData) {
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
 
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION &&
-          !hasUnconfirmedTransactions(getState())) {
-          return global.platform.closeCurrentWindow()
+        if (!hasUnconfirmedTransactions(getState())) {
+          return global.platform.closeNotificationWindow()
         }
 
         return txData
@@ -1264,7 +1279,10 @@ function cancelAllTx (txsData) {
     txsData.forEach((txData, i) => {
       background.cancelTransaction(txData.id, () => {
         dispatch(actions.completedTx(txData.id))
-        i === txsData.length - 1 ? dispatch(actions.goHome()) : null
+        if (i === txsData.length - 1) {
+          dispatch(actions.goHome())
+          global.platform.closeNotificationWindow()
+        }
       })
     })
   }
@@ -1571,11 +1589,11 @@ function showRemoveTokenPage (token, transitionForward = true) {
   }
 }
 
-function addToken (address, symbol, decimals) {
+function addToken (address, symbol, decimals, network) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, (err, tokens) => {
+      background.addToken(address, symbol, decimals, network, (err, tokens) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
@@ -1609,16 +1627,16 @@ function addTokens (tokens) {
   return dispatch => {
     if (Array.isArray(tokens)) {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
-      return Promise.all(tokens.map(({ address, symbol, decimals }) => (
-        dispatch(addToken(address, symbol, decimals))
+      return Promise.all(tokens.map(({ address, symbol, decimals, network }) => (
+        dispatch(addToken(address, symbol, decimals, network))
       )))
     } else {
       dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
         .entries(tokens)
-        .map(([_, { address, symbol, decimals }]) => (
-          dispatch(addToken(address, symbol, decimals))
+        .map(([_, { address, symbol, decimals, network }]) => (
+          dispatch(addToken(address, symbol, decimals, network))
         ))
       )
     }
@@ -2303,5 +2321,19 @@ function removeCustomRPC (url, provider) {
         resolve(url)
       })
     })
+  }
+}
+
+function showDeleteImportedAccount (identity, keyring) {
+  return {
+    type: actions.SHOW_DELETE_IMPORTED_ACCOUNT,
+    identity,
+    keyring,
+  }
+}
+
+function confirmChangePassword () {
+  return {
+    type: actions.CONFIRM_CHANGE_PASSWORD,
   }
 }

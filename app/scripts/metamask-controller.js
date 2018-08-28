@@ -19,7 +19,7 @@ const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
-const KeyringController = require('eth-keyring-controller')
+const KeyringController = require('eth-keychain-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
@@ -370,6 +370,7 @@ module.exports = class MetamaskController extends EventEmitter {
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: nodeify(this.resetAccount, this),
+      changePassword: nodeify(this.changePassword, this),
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
@@ -768,6 +769,10 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.resetConnection()
 
     return selectedAddress
+  }
+
+  async changePassword (oldPassword, newPassword) {
+    await this.keyringController.changePassword(oldPassword, newPassword)
   }
 
   /**

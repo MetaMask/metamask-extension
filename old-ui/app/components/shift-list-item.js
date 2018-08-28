@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const vreme = new (require('vreme'))()
-const explorerLink = require('etherscan-link').createExplorerLink
+const ethNetProps = require('eth-net-props')
 const actions = require('../../../ui/app/actions')
 const addressSummary = require('../util').addressSummary
 
@@ -202,7 +202,7 @@ ShiftListItem.prototype.renderInfo = function () {
         }, 'Conversion in progress'),
       ])
     case 'complete':
-      var url = explorerLink(props.response.transaction, parseInt('1'))
+      var url = ethNetProps.explorerLinks.getExplorerTxLinkFor(props.response.transaction, parseInt('1'))
 
       return h('.flex-column.pointer', {
         style: {

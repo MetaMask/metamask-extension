@@ -97,12 +97,12 @@ button, input[type="submit"] {
   border-radius: 3px;
   font-size: 14px;
   /* default green */
-  background: #8fdc97;
+  background: #60db97;
   /*box-shadow: 0px 5px 10px 0px rgba(92, 52, 162, 0.3);*/
 }
 
 .btn-green, input[type="submit"].btn-green {
-  background: #8fdc97;
+  background: #60db97;
 }
 
 .btn-red {
@@ -230,7 +230,7 @@ textarea.twelve-word-phrase {
 
 .check {
   margin-left: 12px;
-  color: #8fdc97;
+  color: #60db97;
   flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;
@@ -279,7 +279,7 @@ app sections
 }
 
 .warning {
-  color: #8fdc97;
+  color: #60db97;
 }
 
 p.exchanges {
@@ -357,7 +357,7 @@ p.exchanges {
   background-position: right;
 }
 
-.remove-rpc {
+.remove {
   background-image: url('../images/remove.svg');
   background-size: 12px 12px;
   background-repeat: no-repeat;
@@ -391,7 +391,7 @@ p.exchanges {
 .selected-network {
   width: 4px;
   height: 26px;
-  background: #8fdc97;
+  background: #60db97;
   position: absolute;
   left: 0;
 }
@@ -532,8 +532,6 @@ input.large-input {
 }
 
 .identity-panel .identicon-wrapper {
-  margin-bottom: 10px;
-  margin-top: 10px;
   display: flex;
   align-items: center;
 }
@@ -547,8 +545,7 @@ input.large-input {
 }
 
 .identity-panel i {
-  margin-top: 32px;
-  margin-right: 6px;
+  margin-left: 6px;
   color: #ffffff;
 }
 
@@ -699,6 +696,12 @@ input.large-input {
   font-family: 'Nunito Regular';
   padding-bottom: 10px;
   display: inline-block;
+}
+
+.custom-rpc {
+  width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* buy eth warning screen */
@@ -988,6 +991,7 @@ div.message-container > div:first-child {
   border: solid 1px #6729a8;
   border-radius: 5px;
   background-color: rgba(103,41,168, 0.2);
+  word-wrap: break-word;
 }
 
 .contract {

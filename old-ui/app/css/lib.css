@@ -1,7 +1,7 @@
 /* color */
 
 .color-green {
-  color: #8fdc97;
+  color: #60db97;
 }
 
 .color-violet {
@@ -231,7 +231,7 @@ hr.horizontal-line {
 .keyring-label {
   z-index: 1;
   font-size: 11px;
-  background: #8fdc97;
+  background: #60db97;
   color: white;
   border-radius: 3px;
   height: 20px;
@@ -241,7 +241,7 @@ hr.horizontal-line {
   justify-content: center;
   padding: 4px;
   position: absolute;
-  right: 0;
+  right: 20px;
 }
 
 .ether-balance {

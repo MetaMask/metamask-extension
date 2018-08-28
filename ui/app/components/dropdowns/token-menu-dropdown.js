@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const genAccountLink = require('etherscan-link').createAccountLink
+const ethNetProps = require('eth-net-props')
 const copyToClipboard = require('copy-to-clipboard')
 const { Menu, Item, CloseArea } = require('./components/menu')
 
@@ -67,7 +67,7 @@ TokenMenuDropdown.prototype.render = function () {
     h(Item, {
       onClick: (e) => {
         e.stopPropagation()
-        const url = genAccountLink(this.props.token.address, this.props.network)
+        const url = ethNetProps.explorerLinks.getExplorerAccountLinkFor(this.props.token.address, this.props.network)
         global.platform.openWindow({ url })
         this.props.onClose()
       },

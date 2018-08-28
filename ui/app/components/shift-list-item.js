@@ -4,7 +4,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const vreme = new (require('vreme'))()
-const explorerLink = require('etherscan-link').createExplorerLink
+const ethNetProps = require('eth-net-props')
 const actions = require('../actions')
 const addressSummary = require('../util').addressSummary
 
@@ -175,7 +175,7 @@ ShiftListItem.prototype.renderInfo = function () {
         }, formatDate(props.time)),
       ])
     case 'complete':
-      var url = explorerLink(props.response.transaction, parseInt('1'))
+      var url = ethNetProps.explorerLinks.getExplorerTxLinkFor(props.response.transaction, parseInt('1'))
 
       return h('.flex-column.pointer', {
         style: {

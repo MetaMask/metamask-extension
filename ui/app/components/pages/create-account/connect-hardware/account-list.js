@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const genAccountLink = require('../../../../../lib/account-link.js')
+const ethNetProps = require('eth-net-props')
 
 class AccountList extends Component {
     constructor (props, context) {
@@ -45,7 +45,7 @@ class AccountList extends Component {
                 h(
                     'a.hw-account-list__item__link',
                     {
-                    href: genAccountLink(a.address, this.props.network),
+                    href: ethNetProps.explorerLinks.getExplorerAccountLinkFor(a.address, this.props.network),
                     target: '_blank',
                     title: this.context.t('etherscanView'),
                     },

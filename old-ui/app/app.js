@@ -36,6 +36,9 @@ const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 const DeleteRpc = require('./components/delete-rpc')
+const DeleteImportedAccount = require('./components/delete-imported-account')
+const ConfirmChangePassword = require('./components/confirm-change-password')
+const ethNetProps = require('eth-net-props')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -165,16 +168,6 @@ App.prototype.renderAppBar = function () {
           height: '38px',
           position: 'relative',
           zIndex: 12,
-          /* borderBottom: (
-            props.currentView.name === 'config' ||
-            props.currentView.name === 'add-token' ||
-            props.currentView.name === 'info' ||
-            props.currentView.name === 'qr' ||
-            props.currentView.name === 'reveal-seed-conf' ||
-            props.currentView.name === 'createVaultComplete' ||
-            props.currentView.name === 'restoreVault' ||
-            props.currentView.name === 'import-menu'
-          ) ? '1px solid #e2e2e2' : 'none',*/
         },
       }, [
 
@@ -287,7 +280,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'poa' ? 'div.selected-network' : ''),
-        'POA Network',
+        ethNetProps.props.getNetworkDisplayName(99),
       ]
     ),
 
@@ -304,7 +297,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'sokol' ? 'div.selected-network' : ''),
-        'POA Sokol Test Network',
+        ethNetProps.props.getNetworkDisplayName(77),
       ]
     ),
 
@@ -321,7 +314,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'mainnet' ? 'div.selected-network' : ''),
-        'Main Ethereum Network',
+        ethNetProps.props.getNetworkDisplayName(1),
       ]
     ),
 
@@ -338,7 +331,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'ropsten' ? 'div.selected-network' : ''),
-        'Ropsten Test Network',
+        ethNetProps.props.getNetworkDisplayName(3),
       ]
     ),
 
@@ -355,7 +348,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'kovan' ? 'div.selected-network' : ''),
-        'Kovan Test Network',
+        ethNetProps.props.getNetworkDisplayName(42),
       ]
     ),
 
@@ -372,7 +365,7 @@ App.prototype.renderNetworkDropdown = function () {
         },
       },
       [h(providerType === 'rinkeby' ? 'div.selected-network' : ''),
-        'Rinkeby Test Network',
+        ethNetProps.props.getNetworkDisplayName(4),
       ]
     ),
 
@@ -404,7 +397,7 @@ App.prototype.renderNetworkDropdown = function () {
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
-          color: '#8fdc97',
+          color: '#60db97',
         },
       },
       [
@@ -651,7 +644,12 @@ App.prototype.renderPrimary = function () {
     case 'delete-rpc':
       log.debug('rendering delete rpc confirmation screen')
       return h(DeleteRpc, {key: 'delete-rpc'})
-
+    case 'delete-imported-account':
+      log.debug('rendering delete imported account confirmation screen')
+      return h(DeleteImportedAccount, {key: 'delete-imported-account'})
+    case 'confirm-change-password':
+      log.debug('rendering confirm password changing screen')
+      return h(ConfirmChangePassword, {key: 'confirm-change-password'})
     default:
       log.debug('rendering default, account detail screen')
       return h(AccountDetailScreen, {key: 'account-detail'})
@@ -701,8 +699,8 @@ App.prototype.renderCustomOption = function (provider) {
           },
         },
         [h('div.selected-network'),
-          label,
-          h('.remove-rpc', {
+          h('.span.custom-rpc', label),
+          h('.remove', {
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -716,28 +714,8 @@ App.prototype.renderCustomOption = function (provider) {
 }
 
 App.prototype.getNetworkName = function () {
-  const { provider } = this.props
-  const providerName = provider.type
-
-  let name
-
-  if (providerName === 'mainnet') {
-    name = 'Main Ethereum Network'
-  } else if (providerName === 'sokol') {
-    name = 'POA Sokol Test Network'
-  } else if (providerName === 'ropsten') {
-    name = 'Ropsten Test Network'
-  } else if (providerName === 'kovan') {
-    name = 'Kovan Test Network'
-  } else if (providerName === 'rinkeby') {
-    name = 'Rinkeby Test Network'
-  } else if (providerName === 'poa') {
-    name = 'POA Network'
-  } else {
-    name = 'Unknown Private Network'
-  }
-
-  return name
+  const { network } = this.props
+  return ethNetProps.props.getNetworkDisplayName(network)
 }
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {
@@ -760,8 +738,8 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
           },
         },
         [
-          rpc,
-          h('.remove-rpc', {
+          h('.span.custom-rpc', rpc),
+          h('.remove', {
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
