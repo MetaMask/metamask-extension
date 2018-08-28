@@ -8,6 +8,7 @@ const actions = require('../../../../actions')
 const FileInput = require('react-simple-file-input').default
 const { DEFAULT_ROUTE } = require('../../../../routes')
 const HELP_LINK = 'https://support.metamask.io/kb/article/7-importing-accounts'
+import Button from '../../../button'
 
 class JsonImportSubview extends Component {
   constructor (props) {
@@ -51,17 +52,19 @@ class JsonImportSubview extends Component {
 
         h('div.new-account-create-form__buttons', {}, [
 
-          h('button.btn-default.new-account-create-form__button', {
+          h(Button, {
+            type: 'default',
+            large: true,
+            className: 'new-account-create-form__button',
             onClick: () => this.props.history.push(DEFAULT_ROUTE),
-          }, [
-            this.context.t('cancel'),
-          ]),
+          }, [this.context.t('cancel')]),
 
-          h('button.btn-primary.new-account-create-form__button', {
+          h(Button, {
+            type: 'primary',
+            large: true,
+            className: 'new-account-create-form__button',
             onClick: () => this.createNewKeychain(),
-          }, [
-            this.context.t('import'),
-          ]),
+          }, [this.context.t('import')]),
 
         ]),
 

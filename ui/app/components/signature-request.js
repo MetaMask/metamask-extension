@@ -23,6 +23,7 @@ const {
 } = require('../selectors.js')
 
 import { clearConfirmTransaction } from '../ducks/confirm-transaction.duck'
+import Button from './button'
 
 const { DEFAULT_ROUTE } = require('../routes')
 
@@ -248,7 +249,10 @@ SignatureRequest.prototype.renderFooter = function () {
   }
 
   return h('div.request-signature__footer', [
-    h('button.btn-default.btn--large.request-signature__footer__cancel-button', {
+    h(Button, {
+      type: 'default',
+      large: true,
+      className: 'request-signature__footer__cancel-button',
       onClick: event => {
         cancel(event).then(() => {
           this.props.clearConfirmTransaction()
@@ -256,7 +260,9 @@ SignatureRequest.prototype.renderFooter = function () {
         })
       },
     }, this.context.t('cancel')),
-    h('button.btn-primary.btn--large', {
+    h(Button, {
+      type: 'primary',
+      large: true,
       onClick: event => {
         sign(event).then(() => {
           this.props.clearConfirmTransaction()
