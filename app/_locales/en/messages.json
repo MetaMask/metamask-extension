@@ -29,6 +29,9 @@
   "addTokens": {
     "message": "Add Tokens"
   },
+  "addSuggestedTokens": {
+    "message": "Add Suggested Tokens"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },

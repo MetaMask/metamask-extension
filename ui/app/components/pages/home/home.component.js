@@ -9,6 +9,7 @@ import {
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   NOTICE_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
 } from '../../../routes'
 
 export default class Home extends PureComponent {
@@ -18,11 +19,21 @@ export default class Home extends PureComponent {
     lostAccounts: PropTypes.array,
     forgottenPassword: PropTypes.bool,
     seedWords: PropTypes.string,
+    suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
   }
 
   componentDidMount () {
-    const { history, unconfirmedTransactionsCount = 0 } = this.props
+    const {
+      history,
+      suggestedTokens = {},
+      unconfirmedTransactionsCount = 0,
+    } = this.props
+
+    // suggested new tokens
+    if (Object.keys(suggestedTokens).length > 0) {
+        history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE)
+    }
 
     if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE)
