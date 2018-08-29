@@ -532,8 +532,6 @@ input.large-input {
 }
 
 .identity-panel .identicon-wrapper {
-  margin-bottom: 10px;
-  margin-top: 10px;
   display: flex;
   align-items: center;
 }
@@ -547,8 +545,7 @@ input.large-input {
 }
 
 .identity-panel i {
-  margin-top: 32px;
-  margin-right: 6px;
+  margin-left: 6px;
   color: #ffffff;
 }
 
