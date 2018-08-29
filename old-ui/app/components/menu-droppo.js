@@ -20,25 +20,18 @@ MenuDroppoComponent.prototype.render = function () {
   this.manageListeners()
 
   const style = this.props.style || {}
-  if (!('position' in style)) {
-    style.position = 'fixed'
-  }
-  style.zIndex = zIndex
 
   const outerStyle = this.props.outerStyle || {}
   if (!('position' in outerStyle)) {
     outerStyle.position = 'fixed'
   }
   outerStyle.zIndex = zIndex
-  outerStyle.transition = 'transform 600ms ease-in-out'
-  outerStyle.transform = 'translateY(-200%)'
-
-  this.props.isOpen ? outerStyle.height = '524px' : outerStyle.height = '0px'
+  this.props.isOpen ? outerStyle.transform = '' : outerStyle.transform = 'translateY(-100%)'
 
   return (
     h('.menu-droppo-outer-container', {
         style: outerStyle,
-      },[
+      }, [
       h('.menu-droppo-container', {
         style,
       }, [
@@ -72,7 +65,7 @@ MenuDroppoComponent.prototype.render = function () {
             transitionLeaveTimeout: parseInt(speed),
           }, this.renderPrimary())
           : this.renderPrimary(),
-      ])
+      ]),
     ])
   )
 }

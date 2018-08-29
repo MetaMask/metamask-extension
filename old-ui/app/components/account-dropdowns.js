@@ -111,23 +111,30 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountSelector () {
-    const { actions, keyrings } = this.props
+    const { actions } = this.props
     const { accountSelectorActive } = this.state
-
-    const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
-    console.log('accountOrder: ', accountOrder)
 
     return h(
       Dropdown,
       {
         useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
+        zIndex: 11,
         style: {
-          marginLeft: accountOrder.length > 4 ? '-197px' : '-213px',
-          marginTop: '32px',
           minWidth: '180px',
           overflowY: 'auto',
           maxHeight: '300px',
           width: '265px',
+        },
+        outerStyle: {
+          position: 'absolute',
+          right: '2px',
+          top: '38px',
+          minWidth: '180px',
+          maxHeight: '300px',
+          width: '265px',
+          borderRadius: '4px',
+          background: 'rgba(71, 28, 115, 0.95)',
+          transition: 'transform 300ms ease-in-out',
         },
         innerStyle: {
           padding: '8px 25px',
@@ -267,11 +274,9 @@ class AccountDropdowns extends Component {
       },
       [
         enableAccountsSelector && h(
-          // 'i.fa.fa-angle-down',
           'div.accounts-selector',
           {
             style: {
-              // fontSize: '1.8em',
               background: 'url(images/switch_acc.svg) white center center no-repeat',
               height: '25px',
               width: '25px',

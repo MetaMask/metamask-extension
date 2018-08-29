@@ -1007,7 +1007,7 @@ div.message-container > div:first-child {
 }
 
 .menu-droppo-container::-webkit-scrollbar {
-    width: 16px;
+  width: 16px;
 }
  
 .menu-droppo-container::-webkit-scrollbar-thumb {

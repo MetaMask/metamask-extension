@@ -54,6 +54,7 @@ Dropdown.propTypes = {
   children: PropTypes.node,
   style: PropTypes.object.isRequired,
   onClickOutside: PropTypes.func,
+  outerStyle: PropTypes.object,
   innerStyle: PropTypes.object,
   useCssTransition: PropTypes.bool,
 }

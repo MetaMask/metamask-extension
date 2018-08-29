@@ -206,7 +206,6 @@ App.prototype.renderAppBar = function () {
             alignItems: 'center',
           },
         }, [
-
           props.isUnlocked && h(AccountDropdowns, {
             style: {},
             enableAccountsSelector: true,
@@ -241,6 +240,25 @@ App.prototype.renderNetworkDropdown = function () {
 
   return h(Dropdown, {
     useCssTransition: true,
+    zIndex: 11,
+    style: {
+      width: '270px',
+      overflowY: 'auto',
+      maxHeight: '524px',
+    },
+    outerStyle: {
+      position: 'absolute',
+      left: '2px',
+      top: '38px',
+      width: '270px',
+      height: '524px',
+      borderRadius: '4px',
+      background: 'rgba(71, 28, 115, 0.95)',
+      transition: 'transform 300ms ease-in-out',
+    },
+    innerStyle: {
+      padding: '2px 16px 2px 0px',
+    },
     isOpen,
     onClickOutside: (event) => {
       const { classList } = event.target
@@ -254,23 +272,6 @@ App.prototype.renderNetworkDropdown = function () {
       if (isNotToggleElement) {
         this.setState({ isNetworkMenuOpen: false })
       }
-    },
-    zIndex: 11,
-    style: {
-      width: '270px',
-      overflowY: 'auto',
-      maxHeight: '524px',
-    },
-    outerStyle: {
-      position: 'absolute',
-      left: '2px',
-      top: '36px',
-      width: '270px',
-      borderRadius: '4px',
-      background: 'rgba(71, 28, 115, 0.95)',
-    },
-    innerStyle: {
-      padding: '2px 16px 2px 0px',
     },
   }, [
 
@@ -438,10 +439,13 @@ App.prototype.renderDropdown = function () {
         })
       }
     },
-    style: {
+    outerStyle: {
       position: 'absolute',
       right: '2px',
       top: '38px',
+      background: 'rgba(71, 28, 115, 0.95)',
+      transition: 'transform 300ms ease-in-out',
+      borderRadius: '4px',
     },
     innerStyle: {},
   }, [
