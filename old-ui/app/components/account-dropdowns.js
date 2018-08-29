@@ -111,15 +111,18 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountSelector () {
-    const { actions } = this.props
+    const { actions, keyrings } = this.props
     const { accountSelectorActive } = this.state
+
+    const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
+    console.log('accountOrder: ', accountOrder)
 
     return h(
       Dropdown,
       {
         useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
         style: {
-          marginLeft: '-213px',
+          marginLeft: accountOrder.length > 4 ? '-197px' : '-213px',
           marginTop: '32px',
           minWidth: '180px',
           overflowY: 'auto',

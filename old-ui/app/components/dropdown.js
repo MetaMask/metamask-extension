@@ -8,12 +8,12 @@ const noop = () => {}
 
 class Dropdown extends Component {
   render () {
-    const { isOpen, onClickOutside, style, innerStyle, children, useCssTransition } = this.props
+    const { isOpen, onClickOutside, style, outerStyle, innerStyle, children, useCssTransition } = this.props
 
     const innerStyleDefaults = extend({
       borderRadius: '4px',
       padding: '15px 30px',
-      background: 'rgba(71, 28, 115, 0.95)',
+      background: 'transparent',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     }, innerStyle)
 
@@ -25,6 +25,7 @@ class Dropdown extends Component {
         zIndex: 11,
         onClickOutside,
         style,
+        outerStyle,
         innerStyle: innerStyleDefaults,
       },
       [

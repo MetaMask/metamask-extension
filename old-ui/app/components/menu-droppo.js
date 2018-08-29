@@ -25,8 +25,20 @@ MenuDroppoComponent.prototype.render = function () {
   }
   style.zIndex = zIndex
 
+  const outerStyle = this.props.outerStyle || {}
+  if (!('position' in outerStyle)) {
+    outerStyle.position = 'fixed'
+  }
+  outerStyle.zIndex = zIndex
+  outerStyle.transition = 'transform 600ms ease-in-out'
+  outerStyle.transform = 'translateY(-200%)'
+
+  this.props.isOpen ? outerStyle.height = '524px' : outerStyle.height = '0px'
+
   return (
-    h('.menu-droppo-outer-container',[
+    h('.menu-droppo-outer-container', {
+        style: outerStyle,
+      },[
       h('.menu-droppo-container', {
         style,
       }, [

@@ -257,12 +257,17 @@ App.prototype.renderNetworkDropdown = function () {
     },
     zIndex: 11,
     style: {
+      width: '270px',
+      overflowY: 'auto',
+      maxHeight: '524px',
+    },
+    outerStyle: {
       position: 'absolute',
       left: '2px',
       top: '36px',
       width: '270px',
-      overflowY: 'auto',
-      maxHeight: '524px',
+      borderRadius: '4px',
+      background: 'rgba(71, 28, 115, 0.95)',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',
