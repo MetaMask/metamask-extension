@@ -19,6 +19,8 @@ class Dropdown extends Component {
     const styleDefaults = extend({
       borderRadius: '4px',
       background: 'rgba(71, 28, 115, 0.95)',
+      overflowY: 'auto',
+      transition: 'max-height 300ms ease-in-out',
     }, style)
 
     return h(

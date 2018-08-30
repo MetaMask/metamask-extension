@@ -261,8 +261,6 @@ App.prototype.renderNetworkDropdown = function () {
       top: '38px',
       width: '270px',
       maxHeight: isOpen ? '524px' : '0px',
-      overflowY: 'auto',
-      transition: 'max-height 300ms ease-in-out',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',
@@ -437,10 +435,8 @@ App.prototype.renderDropdown = function () {
       position: 'absolute',
       right: '2px',
       top: '38px',
-      maxHeight: isOpen ? '186px' : '0px',
       width: '126px',
-      overflowY: 'auto',
-      transition: 'max-height 300ms ease-in-out',
+      maxHeight: isOpen ? '186px' : '0px',
     },
     innerStyle: {},
   }, [

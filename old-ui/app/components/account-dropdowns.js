@@ -123,10 +123,8 @@ class AccountDropdowns extends Component {
           marginLeft: '-213px',
           top: '38px',
           minWidth: '180px',
-          overflowY: 'auto',
           maxHeight: accountSelectorActive ? '300px' : '0px',
           width: '265px',
-          transition: 'max-height 300ms ease-in-out',
         },
         innerStyle: {
           padding: '8px 25px',
