@@ -251,6 +251,7 @@ App.prototype.renderNetworkDropdown = function () {
       borderRadius: '4px',
       background: 'rgba(71, 28, 115, 0.95)',
       transition: 'transform 300ms ease-in-out',
+      transform: isOpen ? '' : 'translateY(-100%)',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',
@@ -441,6 +442,7 @@ App.prototype.renderDropdown = function () {
       top: '38px',
       background: 'rgba(71, 28, 115, 0.95)',
       transition: 'transform 300ms ease-in-out',
+      transform: isOpen ? '' : 'translateY(-100%)',
       borderRadius: '4px',
     },
     innerStyle: {},

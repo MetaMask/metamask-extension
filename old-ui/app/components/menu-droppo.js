@@ -24,9 +24,6 @@ MenuDroppoComponent.prototype.render = function () {
     style.position = 'fixed'
   }
   style.zIndex = zIndex
-  const needTransform = !(this.props.isOpen && !this.props.isAccountsDropdown)
-  console.log('needTransform:', needTransform)
-  needTransform ? style.transform = 'translateY(-100%)' : style.transform = ''
 
   return (
     h('.menu-droppo-container', {
