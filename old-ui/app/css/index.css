@@ -1012,7 +1012,7 @@ div.message-container > div:first-child {
  
 .menu-droppo-container::-webkit-scrollbar-thumb {
   border: 6px solid transparent;
-  background-clip: content-box;
+  /*background-clip: content-box;*/
 }
 
 .hidden {

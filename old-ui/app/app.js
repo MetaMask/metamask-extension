@@ -242,16 +242,12 @@ App.prototype.renderNetworkDropdown = function () {
     useCssTransition: true,
     zIndex: 11,
     style: {
-      width: '270px',
-      overflowY: 'auto',
-      maxHeight: '524px',
-    },
-    outerStyle: {
       position: 'absolute',
       left: '2px',
       top: '38px',
       width: '270px',
-      height: '524px',
+      maxHeight: '524px',
+      overflowY: 'auto',
       borderRadius: '4px',
       background: 'rgba(71, 28, 115, 0.95)',
       transition: 'transform 300ms ease-in-out',
@@ -439,7 +435,7 @@ App.prototype.renderDropdown = function () {
         })
       }
     },
-    outerStyle: {
+    style: {
       position: 'absolute',
       right: '2px',
       top: '38px',

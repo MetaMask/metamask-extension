@@ -118,27 +118,21 @@ class AccountDropdowns extends Component {
       Dropdown,
       {
         useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
-        zIndex: 11,
         style: {
+          marginLeft: '-213px',
+          marginTop: '32px',
           minWidth: '180px',
-          overflowY: 'auto',
-          maxHeight: '300px',
-          width: '265px',
-        },
-        outerStyle: {
-          position: 'absolute',
-          right: '2px',
-          top: '38px',
-          minWidth: '180px',
-          maxHeight: '300px',
           width: '265px',
           borderRadius: '4px',
+          overflowY: 'auto',
           background: 'rgba(71, 28, 115, 0.95)',
-          transition: 'transform 300ms ease-in-out',
+          // transition: 'transform 300ms ease-in-out',
+          // overflowY: 'auto',
         },
         innerStyle: {
           padding: '8px 25px',
         },
+        isAccountsDropdown: true,
         isOpen: accountSelectorActive,
         onClickOutside: (event) => {
           const { classList } = event.target
@@ -202,6 +196,7 @@ class AccountDropdowns extends Component {
           minWidth: '180px',
           marginTop: '30px',
           width: '280px',
+          background: 'rgba(71, 28, 115, 0.95)',
         },
         isOpen: optionsMenuActive,
         onClickOutside: (event) => {

@@ -20,52 +20,48 @@ MenuDroppoComponent.prototype.render = function () {
   this.manageListeners()
 
   const style = this.props.style || {}
-
-  const outerStyle = this.props.outerStyle || {}
-  if (!('position' in outerStyle)) {
-    outerStyle.position = 'fixed'
+  if (!('position' in style)) {
+    style.position = 'fixed'
   }
-  outerStyle.zIndex = zIndex
-  this.props.isOpen ? outerStyle.transform = '' : outerStyle.transform = 'translateY(-100%)'
+  style.zIndex = zIndex
+  const needTransform = !(this.props.isOpen && !this.props.isAccountsDropdown)
+  console.log('needTransform:', needTransform)
+  needTransform ? style.transform = 'translateY(-100%)' : style.transform = ''
 
   return (
-    h('.menu-droppo-outer-container', {
-        style: outerStyle,
-      }, [
-      h('.menu-droppo-container', {
-        style,
-      }, [
-        h('style', `
-          .menu-droppo-enter {
-            transition: transform ${speed} ease-in-out;
-            transform: translateY(-200%);
-          }
+    h('.menu-droppo-container', {
+      style,
+    }, [
+      h('style', `
+        .menu-droppo-enter {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(-200%);
+        }
 
-          .menu-droppo-enter.menu-droppo-enter-active {
-            transition: transform ${speed} ease-in-out;
-            transform: translateY(0%);
-          }
+        .menu-droppo-enter.menu-droppo-enter-active {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(0%);
+        }
 
-          .menu-droppo-leave {
-            transition: transform ${speed} ease-in-out;
-            transform: translateY(0%);
-          }
+        .menu-droppo-leave {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(0%);
+        }
 
-          .menu-droppo-leave.menu-droppo-leave-active {
-            transition: transform ${speed} ease-in-out;
-            transform: translateY(-200%);
-          }
-        `),
+        .menu-droppo-leave.menu-droppo-leave-active {
+          transition: transform ${speed} ease-in-out;
+          transform: translateY(-200%);
+        }
+      `),
 
-        useCssTransition
-          ? h(ReactCSSTransitionGroup, {
-            className: 'css-transition-group',
-            transitionName: 'menu-droppo',
-            transitionEnterTimeout: parseInt(speed),
-            transitionLeaveTimeout: parseInt(speed),
-          }, this.renderPrimary())
-          : this.renderPrimary(),
-      ]),
+      useCssTransition
+        ? h(ReactCSSTransitionGroup, {
+          className: 'css-transition-group',
+          transitionName: 'menu-droppo',
+          transitionEnterTimeout: parseInt(speed),
+          transitionLeaveTimeout: parseInt(speed),
+        }, this.renderPrimary())
+        : this.renderPrimary(),
     ])
   )
 }
