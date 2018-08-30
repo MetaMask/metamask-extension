@@ -45,8 +45,7 @@ export default class TransactionList extends PureComponent {
 
   renderTransactions () {
     const { t } = this.context
-    const { pendingTransactions = [], completedTransactions = [], assetImages } = this.props
-    console.log('REMDERING FROM TX LIST', assetImages)
+    const { pendingTransactions = [], completedTransactions = [] } = this.props
     return (
       <div className="transaction-list__transactions">
         {
