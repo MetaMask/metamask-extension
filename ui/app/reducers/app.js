@@ -67,6 +67,8 @@ function reduceApp (state, action) {
     gasIsLoading: false,
   }, state.appState)
 
+  let curPendingTxIndex = appState.currentView.pendingTxIndex || 0
+
   switch (action.type) {
     // dropdown methods
     case actions.NETWORK_DROPDOWN_OPEN:
@@ -425,7 +427,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'confTx',
-          context: action.id ? indexForPending(state, action.id) : 0,
+          pendingTxIndex: action.id ? indexForPending(state, action.id) : 0,
         },
         transForward: action.transForward,
         warning: null,
@@ -481,18 +483,18 @@ function reduceApp (state, action) {
         transForward: true,
         currentView: {
           name: 'confTx',
-          context: ++appState.currentView.context,
+          pendingTxIndex: ++curPendingTxIndex,
           warning: null,
         },
       })
 
     case actions.VIEW_PENDING_TX:
-      const context = indexForPending(state, action.value)
+      const pendingTxIndex = indexForPending(state, action.value)
       return extend(appState, {
         transForward: true,
         currentView: {
           name: 'confTx',
-          context,
+          pendingTxIndex,
           warning: null,
         },
       })
@@ -502,7 +504,7 @@ function reduceApp (state, action) {
         transForward: false,
         currentView: {
           name: 'confTx',
-          context: --appState.currentView.context,
+          pendingTxIndex: --curPendingTxIndex,
           warning: null,
         },
       })

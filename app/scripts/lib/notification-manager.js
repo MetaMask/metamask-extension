@@ -26,7 +26,10 @@ class NotificationManager {
         // bring focus to existing chrome popup
         extension.windows.update(popup.id, { focused: true })
       } else {
-        const cb = (currentPopup) => { this._popupId = currentPopup.id }
+        const cb = (currentPopup) => {
+          this._popupId = currentPopup.id
+          extension.windows.update(currentPopup.id, { focused: true })
+        }
         // create new notification popup
         const creation = extension.windows.create({
           url: 'notification.html',
