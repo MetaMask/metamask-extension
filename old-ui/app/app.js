@@ -240,20 +240,6 @@ App.prototype.renderNetworkDropdown = function () {
 
   return h(Dropdown, {
     useCssTransition: true,
-    zIndex: 11,
-    style: {
-      position: 'absolute',
-      left: '2px',
-      top: '38px',
-      width: '270px',
-      maxHeight: '524px',
-      overflowY: 'auto',
-      transition: 'transform 300ms ease-in-out',
-      transform: isOpen ? '' : 'translateY(-100%)',
-    },
-    innerStyle: {
-      padding: '2px 16px 2px 0px',
-    },
     isOpen,
     onClickOutside: (event) => {
       const { classList } = event.target
@@ -267,6 +253,19 @@ App.prototype.renderNetworkDropdown = function () {
       if (isNotToggleElement) {
         this.setState({ isNetworkMenuOpen: false })
       }
+    },
+    zIndex: 11,
+    style: {
+      position: 'absolute',
+      left: '2px',
+      top: '38px',
+      width: '270px',
+      maxHeight: isOpen ? '524px' : '0px',
+      overflowY: 'auto',
+      transition: 'max-height 300ms ease-in-out',
+    },
+    innerStyle: {
+      padding: '2px 16px 2px 0px',
     },
   }, [
 
@@ -438,8 +437,10 @@ App.prototype.renderDropdown = function () {
       position: 'absolute',
       right: '2px',
       top: '38px',
-      transition: 'transform 300ms ease-in-out',
-      transform: isOpen ? '' : 'translateY(-100%)',
+      maxHeight: isOpen ? '186px' : '0px',
+      width: '126px',
+      overflowY: 'auto',
+      transition: 'max-height 300ms ease-in-out',
     },
     innerStyle: {},
   }, [
