@@ -74,14 +74,14 @@ function getSelectedTokenExchangeRate (state) {
 }
 
 function getSelectedTokenAssetImage (state) {
-  const assetImages = state.metamask.assetImages
+  const assetImages = state.metamask.assetImages || {}
   const selectedToken = getSelectedToken(state) || {}
   const { address } = selectedToken
   return assetImages[address]
 }
 
 function getAssetImages (state) {
-  const assetImages = state.metamask.assetImages
+  const assetImages = state.metamask.assetImages || {}
   return assetImages
 }
 
