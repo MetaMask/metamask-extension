@@ -14,6 +14,7 @@ const selectors = {
   getSelectedAccount,
   getSelectedToken,
   getSelectedTokenExchangeRate,
+  getSelectedTokenAssetImage,
   getTokenExchangeRate,
   conversionRateSelector,
   transactionsSelector,
@@ -69,6 +70,13 @@ function getSelectedTokenExchangeRate (state) {
   const selectedToken = getSelectedToken(state) || {}
   const { address } = selectedToken
   return contractExchangeRates[address] || 0
+}
+
+function getSelectedTokenAssetImage (state) {
+  const assetImages = state.metamask.assetImages
+  const selectedToken = getSelectedToken(state) || {}
+  const { address } = selectedToken
+  return assetImages[address]
 }
 
 function getTokenExchangeRate (state, address) {

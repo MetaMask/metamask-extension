@@ -18,6 +18,7 @@ export default class TransactionViewBalance extends PureComponent {
     history: PropTypes.object,
     network: PropTypes.string,
     balance: PropTypes.string,
+    assetImage: PropTypes.string,
   }
 
   renderBalance () {
@@ -75,7 +76,7 @@ export default class TransactionViewBalance extends PureComponent {
   }
 
   render () {
-    const { network, selectedToken } = this.props
+    const { network, selectedToken, assetImage } = this.props
 
     return (
       <div className="transaction-view-balance">
@@ -84,6 +85,7 @@ export default class TransactionViewBalance extends PureComponent {
             diameter={50}
             address={selectedToken && selectedToken.address}
             network={network}
+            image={assetImage}
           />
           { this.renderBalance() }
         </div>
