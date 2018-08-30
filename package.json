@@ -147,7 +147,7 @@
     "gulp-eslint": "^4.0.0",
     "gulp-sass": "^4.0.0",
     "hat": "0.0.3",
-    "human-standard-token-abi": "^1.0.2",
+    "human-standard-token-abi": "^2.0.0",
     "idb-global": "^2.1.0",
     "identicon.js": "^2.3.1",
     "iframe": "^1.0.0",
