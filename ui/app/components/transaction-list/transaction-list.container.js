@@ -7,7 +7,7 @@ import {
   submittedPendingTransactionsSelector,
   completedTransactionsSelector,
 } from '../../selectors/transactions'
-import { getSelectedAddress } from '../../selectors'
+import { getSelectedAddress, getAssetImages } from '../../selectors'
 import { selectedTokenSelector } from '../../selectors/tokens'
 import { getLatestSubmittedTxWithNonce } from '../../helpers/transactions.util'
 import { updateNetworkNonce } from '../../actions'
@@ -23,6 +23,7 @@ const mapStateToProps = state => {
     transactionToRetry: getLatestSubmittedTxWithNonce(submittedPendingTransactions, networkNonce),
     selectedToken: selectedTokenSelector(state),
     selectedAddress: getSelectedAddress(state),
+    assetImages: getAssetImages(state),
   }
 }
 
