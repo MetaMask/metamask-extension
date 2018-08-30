@@ -74,6 +74,7 @@ export default class ConfirmPageContainer extends Component {
       assetImage,
       warning,
     } = this.props
+    const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
 
     return (
       <div className="page-container">
@@ -86,6 +87,7 @@ export default class ConfirmPageContainer extends Component {
             senderAddress={fromAddress}
             recipientName={toName}
             recipientAddress={toAddress}
+            assetImage={renderAssetImage ? assetImage : undefined}
           />
         </ConfirmPageContainerHeader>
         {
