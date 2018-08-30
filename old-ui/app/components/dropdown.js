@@ -16,6 +16,11 @@ class Dropdown extends Component {
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     }, innerStyle)
 
+    const styleDefaults = extend({
+      borderRadius: '4px',
+      background: 'rgba(71, 28, 115, 0.95)',
+    }, style)
+
     return h(
       MenuDroppo,
       {
@@ -23,7 +28,7 @@ class Dropdown extends Component {
         isOpen,
         zIndex: 11,
         onClickOutside,
-        style,
+        style: styleDefaults,
         innerStyle: innerStyleDefaults,
       },
       [

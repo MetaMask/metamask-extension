@@ -1007,11 +1007,11 @@ div.message-container > div:first-child {
 }
 
 .menu-droppo-container::-webkit-scrollbar {
-  width: 16px;
+  width: 1px;
 }
  
 .menu-droppo-container::-webkit-scrollbar-thumb {
-  border: 6px solid transparent;
+  border: 1px solid transparent;
   background-clip: content-box;
 }
 

@@ -125,8 +125,6 @@ class AccountDropdowns extends Component {
           overflowY: 'auto',
           maxHeight: '300px',
           width: '265px',
-          borderRadius: '4px',
-          background: 'rgba(71, 28, 115, 0.95)',
         },
         innerStyle: {
           padding: '8px 25px',
@@ -195,7 +193,6 @@ class AccountDropdowns extends Component {
           minWidth: '180px',
           marginTop: '30px',
           width: '280px',
-          background: 'rgba(71, 28, 115, 0.95)',
         },
         isOpen: optionsMenuActive,
         onClickOutside: (event) => {
