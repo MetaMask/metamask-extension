@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- [#99](https://github.com/poanetwork/metamask-extension/pull/99), [#100](https://github.com/poanetwork/metamask-extension/pull/100): (Fix) Validate custom RPC
+
 ## 4.8.5 Mon Aug 27 2018
 
 - [#94](https://github.com/poanetwork/metamask-extension/pull/94): (Fix) Force open notification popup
