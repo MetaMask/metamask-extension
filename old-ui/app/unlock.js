@@ -6,8 +6,6 @@ const actions = require('../../ui/app/actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
 
-// const Mascot = require('./components/mascot')
-
 module.exports = connect(mapStateToProps)(UnlockScreen)
 
 inherits(UnlockScreen, Component)
@@ -33,11 +31,6 @@ UnlockScreen.prototype.render = function () {
     }, [
       h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
-        // disable fox's animation
-        /* h(Mascot, {
-          animationEventEmitter: this.animationEventEmitter,
-        }),*/
-
         h('.logo'),
 
         h('h1', {
@@ -57,7 +50,6 @@ UnlockScreen.prototype.render = function () {
 
             },
             onKeyPress: this.onKeyPress.bind(this),
-            onInput: this.inputChanged.bind(this),
           }),
 
           h('button.cursor-pointer', {
@@ -111,15 +103,4 @@ UnlockScreen.prototype.submitPassword = function (event) {
   // reset input
   element.value = ''
   this.props.dispatch(actions.tryUnlockMetamask(password))
-}
-
-UnlockScreen.prototype.inputChanged = function (event) {
-  // tell mascot to look at page action
-  var element = event.target
-  var boundingRect = element.getBoundingClientRect()
-  var coordinates = getCaretCoordinates(element, element.selectionEnd)
-  this.animationEventEmitter.emit('point', {
-    x: boundingRect.left + coordinates.left - element.scrollLeft,
-    y: boundingRect.top + coordinates.top - element.scrollTop,
-  })
 }
