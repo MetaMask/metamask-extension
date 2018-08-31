@@ -1,0 +1,49 @@
+.transaction-list-item-details {
+  &__header {
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__header-buttons {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__header-button {
+    font-size: .625rem;
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+
+  &__sender-to-recipient-container {
+    margin-bottom: 8px;
+  }
+
+  &__cards-container {
+    display: flex;
+    flex-direction: row;
+
+    @media screen and (max-width: $break-small) {
+      flex-direction: column;
+    }
+  }
+
+  &__transaction-breakdown {
+    flex: 1;
+    margin-right: 8px;
+    min-width: 0;
+
+    @media screen and (max-width: $break-small) {
+      margin: 0 0 8px 0;
+    }
+  }
+
+  &__transaction-activity-log {
+    flex: 2;
+    min-width: 0;
+  }
+}
