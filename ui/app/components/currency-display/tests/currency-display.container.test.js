@@ -51,6 +51,50 @@ describe('CurrencyDisplay container', () => {
             displayValue: '1.266 ETH',
           },
         },
+        {
+          props: {
+            value: '0x1193461d01595930',
+            currency: 'ETH',
+            numberOfDecimals: 3,
+            hideLabel: true,
+          },
+          result: {
+            displayValue: '1.266',
+          },
+        },
+        {
+          props: {
+            value: '0x3b9aca00',
+            currency: 'ETH',
+            denomination: 'GWEI',
+            hideLabel: true,
+          },
+          result: {
+            displayValue: '1',
+          },
+        },
+        {
+          props: {
+            value: '0x3b9aca00',
+            currency: 'ETH',
+            denomination: 'WEI',
+            hideLabel: true,
+          },
+          result: {
+            displayValue: '1000000000',
+          },
+        },
+        {
+          props: {
+            value: '0x3b9aca00',
+            currency: 'ETH',
+            numberOfDecimals: 100,
+            hideLabel: true,
+          },
+          result: {
+            displayValue: '1e-9',
+          },
+        },
       ]
 
       tests.forEach(({ props, result }) => {
