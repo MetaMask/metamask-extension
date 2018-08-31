@@ -9,7 +9,7 @@ export function hexToDecimal (hexValue) {
 }
 
 export function getEthConversionFromWeiHex ({ value, conversionRate, numberOfDecimals = 6 }) {
-  const denominations = [ETH, GWEI]
+  const denominations = [ETH, GWEI, WEI]
 
   let nonZeroDenomination
 
