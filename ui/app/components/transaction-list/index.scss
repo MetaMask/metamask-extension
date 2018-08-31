@@ -7,7 +7,7 @@
   &__completed-transactions {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
   }
 
   &__header {
@@ -35,6 +35,7 @@
     flex: 1;
     display: grid;
     grid-template-rows: 35% 1fr;
+    padding-top: 8px;
   }
 
   &__empty-text {
