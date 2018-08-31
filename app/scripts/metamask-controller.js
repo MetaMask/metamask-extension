@@ -92,6 +92,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
+      showWatchAssetUi: opts.showWatchAssetUi,
       network: this.networkController,
     })
 
@@ -386,6 +387,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
       addToken: nodeify(preferencesController.addToken, preferencesController),
       removeToken: nodeify(preferencesController.removeToken, preferencesController),
+      removeSuggestedTokens: nodeify(preferencesController.removeSuggestedTokens, preferencesController),
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
@@ -1250,6 +1252,7 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(createOriginMiddleware({ origin }))
     engine.push(createLoggerMiddleware({ origin }))
     engine.push(filterMiddleware)
+    engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection

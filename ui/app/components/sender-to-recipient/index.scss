@@ -80,13 +80,13 @@
     justify-content: center;
     position: relative;
     flex: 0 0 auto;
-    padding: 8px;
 
     .sender-to-recipient {
       &__party {
         display: flex;
         flex-direction: row;
         align-items: center;
+        justify-content: center;
         flex: 1;
         border-radius: 4px;
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
@@ -111,7 +111,6 @@
       }
 
       &__arrow-container {
-        padding: 0 2px;
         display: flex;
         justify-content: center;
         align-items: center;

@@ -58,6 +58,7 @@ export function getValueFromWeiHex ({
   toCurrency,
   conversionRate,
   numberOfDecimals,
+  toDenomination,
 }) {
   return conversionUtil(value, {
     fromNumericBase: 'hex',
@@ -66,6 +67,7 @@ export function getValueFromWeiHex ({
     toCurrency,
     numberOfDecimals,
     fromDenomination: 'WEI',
+    toDenomination,
     conversionRate,
   })
 }

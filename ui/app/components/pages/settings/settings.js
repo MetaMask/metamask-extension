@@ -13,6 +13,8 @@ const ToggleButton = require('react-toggle-button')
 const { REVEAL_SEED_ROUTE } = require('../../../routes')
 const locales = require('../../../../../app/_locales/index.json')
 
+import Button from '../../button'
+
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
     return a.quote.name.toLocaleLowerCase().localeCompare(b.quote.name.toLocaleLowerCase())
@@ -217,7 +219,10 @@ class Settings extends Component {
         ]),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.btn-primary.btn--large.settings__button', {
+            h(Button, {
+              type: 'primary',
+              large: true,
+              className: 'settings__button',
               onClick (event) {
                 window.logStateString((err, result) => {
                   if (err) {
@@ -242,7 +247,10 @@ class Settings extends Component {
         h('div.settings__content-item', this.context.t('revealSeedWords')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.btn-primary.btn--large.settings__button--red', {
+            h(Button, {
+              type: 'primary',
+              large: true,
+              className: 'settings__button--red',
               onClick: event => {
                 event.preventDefault()
                 history.push(REVEAL_SEED_ROUTE)
@@ -262,7 +270,10 @@ class Settings extends Component {
         h('div.settings__content-item', this.context.t('useOldUI')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.btn-primary.btn--large.settings__button--orange', {
+            h(Button, {
+              type: 'primary',
+              large: true,
+              className: 'settings__button--orange',
               onClick (event) {
                 event.preventDefault()
                 setFeatureFlagToBeta()
@@ -281,7 +292,10 @@ class Settings extends Component {
       h('div.settings__content-item', this.context.t('resetAccount')),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
-          h('button.btn-primary.btn--large.settings__button--orange', {
+          h(Button, {
+            type: 'primary',
+            large: true,
+            className: 'settings__button--orange',
             onClick (event) {
               event.preventDefault()
               showResetAccountConfirmationModal()

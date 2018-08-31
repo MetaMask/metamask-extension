@@ -5,6 +5,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const GasModalCard = require('./gas-modal-card')
+import Button from '../button'
 
 const ethUtil = require('ethereumjs-util')
 
@@ -353,16 +354,16 @@ CustomizeGasModal.prototype.render = function () {
         }, [this.context.t('revert')]),
 
         h('div.send-v2__customize-gas__buttons', [
-          h('button.btn-default.send-v2__customize-gas__cancel', {
+          h(Button, {
+            type: 'default',
+            className: 'send-v2__customize-gas__cancel',
             onClick: this.props.hideModal,
-            style: {
-              marginRight: '10px',
-            },
           }, [this.context.t('cancel')]),
-
-          h('button.btn-primary.send-v2__customize-gas__save', {
+          h(Button, {
+            type: 'primary',
+            className: 'send-v2__customize-gas__save',
             onClick: () => !error && this.save(newGasPrice, gasLimit, gasTotal),
-            className: error && 'btn-primary--disabled',
+            disabled: error,
           }, [this.context.t('save')]),
         ]),
 

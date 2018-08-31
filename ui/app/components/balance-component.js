@@ -21,6 +21,7 @@ function mapStateToProps (state) {
     network,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
+    assetImages: state.metamask.assetImages,
   }
 }
 
@@ -31,7 +32,9 @@ function BalanceComponent () {
 
 BalanceComponent.prototype.render = function () {
   const props = this.props
-  const { token, network } = props
+  const { token, network, assetImages } = props
+  const address = token && token.address
+  const image = assetImages && address ? assetImages[token.address] : undefined
 
   return h('div.balance-container', {}, [
 
@@ -42,8 +45,9 @@ BalanceComponent.prototype.render = function () {
     // }),
     h(Identicon, {
       diameter: 50,
-      address: token && token.address,
+      address,
       network,
+      image,
     }),
 
     token ? this.renderTokenBalance() : this.renderBalance(),

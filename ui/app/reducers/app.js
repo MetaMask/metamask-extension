@@ -209,6 +209,15 @@ function reduceApp (state, action) {
         transForward: action.value,
       })
 
+    case actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'add-suggested-token',
+          context: appState.currentView.context,
+        },
+        transForward: action.value,
+      })
+
     case actions.SHOW_IMPORT_PAGE:
       return extend(appState, {
         currentView: {

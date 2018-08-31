@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import GasModalCard from '../../customize-gas-modal/gas-modal-card'
 import { MIN_GAS_PRICE_GWEI } from '../../send/send.constants'
+import Button from '../../button'
 
 import {
   getDecimalGasLimit,
@@ -116,21 +117,23 @@ export default class CustomizeGas extends Component {
               { t('revert') }
             </div>
             <div className="customize-gas__buttons">
-              <button
-                className="btn-default customize-gas__cancel"
+              <Button
+                type="default"
+                className="customize-gas__cancel"
                 onClick={() => hideModal()}
                 style={{ marginRight: '10px' }}
               >
                 { t('cancel') }
-              </button>
-              <button
-                className="btn-primary customize-gas__save"
+              </Button>
+              <Button
+                type="primary"
+                className="customize-gas__save"
                 onClick={() => this.handleSave()}
                 style={{ marginRight: '10px' }}
                 disabled={!valid}
               >
                 { t('save') }
-              </button>
+              </Button>
             </div>
           </div>
         </div>

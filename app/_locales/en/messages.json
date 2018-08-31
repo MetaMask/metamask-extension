@@ -17,6 +17,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "activityLog": {
+    "message": "activity log"
+  },
   "address": {
     "message": "Address"
   },
@@ -28,6 +31,9 @@
   },
   "addTokens": {
     "message": "Add Tokens"
+  },
+  "addSuggestedTokens": {
+    "message": "Add Suggested Tokens"
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
@@ -854,6 +860,9 @@
   "save": {
     "message": "Save"
   },
+  "speedUp": {
+    "message": "speed up"
+  },
   "speedUpTitle": {
     "message": "Speed Up Transaction"
   },
@@ -1076,6 +1085,24 @@
   "total": {
     "message": "Total"
   },
+  "transaction": {
+    "message": "transaction"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted."
+  },
+  "transactionUpdatedGas": {
+    "message": "Transaction updated with a gas price of $1."
+  },
   "transactions": {
     "message": "transactions"
   },
@@ -1121,6 +1148,9 @@
   },
   "unavailable": {
     "message": "Unavailable"
+  },
+  "units": {
+    "message": "units"
   },
   "unknown": {
     "message": "Unknown"
