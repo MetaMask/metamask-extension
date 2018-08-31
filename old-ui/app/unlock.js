@@ -100,7 +100,7 @@ UnlockScreen.prototype.onSubmit = async function (event) {
   try {
     await this.props.dispatch(actions.tryUnlockMetamask(password))
   } catch(e) {
-    log.info(e)
+    log.error(e)
   }
 }
 
@@ -118,7 +118,7 @@ UnlockScreen.prototype.submitPassword = async function (event) {
   try {
     await this.props.dispatch(actions.tryUnlockMetamask(password))
   } catch(e) {
-    log.info(e)
+    log.error(e)
   }
 }
 
