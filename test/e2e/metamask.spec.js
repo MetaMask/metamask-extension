@@ -8,11 +8,9 @@ const { By, Key, until } = webdriver
 const { clearField, delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 const { menus, screens, elements, NETWORKS } = require('./elements')
 
-let password = '123456789'
-
-
 describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
+  let password = '123456789'
 
   this.timeout(0)
 
@@ -52,7 +50,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    // await driver.quit()
+    await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -286,7 +284,7 @@ describe('Metamask popup page', async function () {
         const fields = await driver.findElements(screens.lock.fieldPassword)
         assert.equal(fields.length, 1, 'password box isn\'t present after logout')
       })
-      it.skip('can\'t login with old password', async () => {
+      it('can\'t login with old password', async () => {
         const field = await driver.findElement(screens.lock.fieldPassword)
         await field.sendKeys(password)
         await driver.findElement(screens.lock.buttonLogin).click()
@@ -296,6 +294,7 @@ describe('Metamask popup page', async function () {
       })
       it('accepts new password after lock', async () => {
         const field = await driver.findElement(screens.lock.fieldPassword)
+        await clearField(field)
         await field.sendKeys(newPassword.correct)
         await driver.findElement(screens.lock.buttonLogin).click()
 
