@@ -1,8 +1,8 @@
 const webdriver = require('selenium-webdriver')
-const { By, Key, until } = webdriver
+const { By } = webdriver
 module.exports = {
   elements: {
-    loader: By.css('#app-content > div > div.full-flex-height > img')
+    loader: By.css('#app-content > div > div.full-flex-height > img'),
   },
   menus: {
     sandwich: {
@@ -17,22 +17,22 @@ module.exports = {
       delete: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
       createAccount: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
       import: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span'),
-      labelImported: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label')
+      labelImported: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label'),
     },
     dot: {
       menu: By.className('account-dropdown'),
-      showQRcode: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(3)')
+      showQRcode: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(3)'),
     },
   },
   screens: {
     deleteCustomRPC: {
       buttons: {
-        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)')
+        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
       },
     },
     confirmTransaction: {
       buttons: {
-        submit: By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+        submit: By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'),
       },
     },
     sendTransaction: {
@@ -42,14 +42,14 @@ module.exports = {
         address: By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(3) > div > input'),
         amount: By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > input'),
       },
-      buttonNext: By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > button')
+      buttonNext: By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > button'),
     },
     restoreVault: {
       textArea: By.css('#app-content > div > div.app-primary.from-left > div > div.initialize-screen.flex-column.flex-center.flex-grow > textarea'),
       fieldPassword: By.id('password-box'),
       fieldPasswordConfirm: By.id('password-box-confirm'),
       buttos: {
-        ok: By.css('#app-content > div > div.app-primary.from-left > div > div.initialize-screen.flex-column.flex-center.flex-grow > div > button:nth-child(2)')
+        ok: By.css('#app-content > div > div.app-primary.from-left > div > div.initialize-screen.flex-column.flex-center.flex-grow > div > button:nth-child(2)'),
       },
     },
     deleteImportedAccount: {
@@ -57,18 +57,18 @@ module.exports = {
       titleText: 'Delete Imported Account',
       buttons: {
         no: By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-right > button.btn-violet'),
-        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)')
+        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
       },
     },
     importAccounts: {
       title: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div.flex-row.flex-center > h2'),
       textTitle: 'Import Accounts',
       fieldPrivateKey: By.id('private-key-box'),
-      buttonImport: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div:nth-child(4) > button')
+      buttonImport: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div:nth-child(4) > button'),
     },
     QRcode: {
       address: By.className('ellip-address'),
-      buttonArrow: By.className('fa-arrow-left')
+      buttonArrow: By.className('fa-arrow-left'),
     },
     settings: {
       currentNetwork: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'),
@@ -79,7 +79,7 @@ module.exports = {
       title: By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'),
       buttons: {
         changePassword: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(10) > button:nth-child(5)'),
-        delete: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button')
+        delete: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button'),
       },
     },
     main: {
@@ -92,24 +92,24 @@ module.exports = {
       network: By.className('network-name'),
       sent: {
         menu: By.className('activeForm left'),
-        tokens: By.className('activeForm right')
+        tokens: By.className('activeForm right'),
       },
       balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),
       address: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div'),
       tokens: {
-        remove:By.className('trash'),
+        remove: By.className('trash'),
         menu: 'activeForm right',
         token: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li'),
         balance: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > h3'),
         amount: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
         textNoTokens: 'No tokens found',
         textYouOwn1token: 'You own 1 token',
-        buttonAdd: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > button')
+        buttonAdd: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > button'),
       },
     },
     changePassword: {
-      title:By.className('page-subtitle'),
-      titleText:'Change Password',
+      title: By.className('page-subtitle'),
+      titleText: 'Change Password',
       fieldOldPassword: By.id('old-password-box'),
       fieldNewPassword: By.id('new-password-box'),
       fieldConfirmNewPassword: By.id('password-box-confirm'),
@@ -138,17 +138,17 @@ module.exports = {
       fieldTokenContractAddress: By.id('token-address'),
       fieldTokenSymbol: By.id('token_symbol'),
       fieldDecimals: By.id('token_decimals'),
-      buttonAdd: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button')
+      buttonAdd: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button'),
     },
     TOU: {
       titleText: 'Nifty Wallet',
       header: By.className('terms-header'),
-      button: By.css('button')
+      button: By.css('button'),
     },
     create: {
       fieldPassword: By.id('password-box'),
       fieldPasswordConfirm: By.id('password-box-confirm'),
-      button: By.css('button')
+      button: By.css('button'),
     },
     seedPhrase: {
       fieldPhrase: By.className('twelve-word-phrase'),
