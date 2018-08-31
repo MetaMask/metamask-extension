@@ -20,10 +20,10 @@ const getMessage = (locale, key, substitutions) => {
   let phrase = entry.message
   // perform substitutions
   if (substitutions && substitutions.length) {
-    phrase = phrase.replace(/\$1/g, substitutions[0])
-    if (substitutions.length > 1) {
-      phrase = phrase.replace(/\$2/g, substitutions[1])
-    }
+    substitutions.forEach((substitution, index) => {
+      const regex = new RegExp(`\\$${index + 1}`, 'g')
+      phrase = phrase.replace(regex, substitution)
+    })
   }
   return phrase
 }
