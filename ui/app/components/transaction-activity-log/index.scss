@@ -1,6 +1,7 @@
 .transaction-activity-log {
   &__card {
     background: $white;
+    height: 100%;
   }
 
   &__activities-container {
@@ -45,6 +46,11 @@
   &__activity-text {
     color: $scorpion;
     font-size: .75rem;
+  }
+
+  &__value {
+    display: inline;
+    font-weight: 500;
   }
 
   b {
