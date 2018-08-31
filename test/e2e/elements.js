@@ -24,7 +24,8 @@ module.exports = {
       showQRcode: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(3)'),
     },
     networks: {
-      customRpc: By.className('span custom-rpc'),
+      addedCustomRpc: By.className('span custom-rpc'),
+      customRpc: By.css('#app-content > div > div:nth-child(2) > span > div > li:nth-child(9)'),
     },
   },
   screens: {

@@ -50,7 +50,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    await driver.quit()
+   // await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -701,15 +701,13 @@ describe('Metamask popup page', async function () {
     const invalidStringUrl = 'http://lwkdfowi**&#v er'
     const urlWithoutHttp = 'infura.com'
     const invalidEndpoint = 'http://abrakadabrawdjkwjeciwkasuhlvflwe.com'
-    const correctRpcUrl = 'https://sokol.poa.network'
+    const correctRpcUrl = 'https://poa.infura.io/test1'
 
-    it('switches to settings screen', async function () {
-      await driver.findElement(menus.sandwich.menu).click()
-      await delay(200)
-      const settings = await driver.findElement(menus.sandwich.settings)
-      assert.equal(await settings.getText(), menus.sandwich.textSettings)
-      await settings.click()
-      await delay(300)
+    it('switches to settings screen through menu \'Network -> Custom RPC\'', async function () {
+
+      await setProvider(NETWORKS.CUSTOM)
+      const settings = await driver.findElement(screens.settings.title)
+      assert.equal(await settings.getText(), screens.settings.titleText, 'inappropriate screen is opened')
     })
 
     it('error message if new Rpc url is invalid', async function () {
@@ -720,6 +718,7 @@ describe('Metamask popup page', async function () {
       assert.equal(errors.length, 1, 'error isn\'t displayed if Rpc url incorrect')
       assert.equal(await errors[0].getText(), screens.settings.errors.invalidRpcUrl, 'error\'s text incorrect')
     })
+
     it('error message if new Rpc url has no HTTP/HTTPS prefix', async function () {
       const fieldRpc = await driver.findElement(screens.settings.fieldNewRPC)
       await clearField(fieldRpc)
@@ -731,6 +730,7 @@ describe('Metamask popup page', async function () {
       assert.equal(errors.length, 1, 'error isn\'t displayed if Rpc url incorrect')
       assert.equal(await errors[0].getText(), screens.settings.errors.invalidHTTP, 'error\'s text incorrect')
     })
+
     it('error message if Rpc doesn\'t exist', async function () {
       const fieldRpc = await driver.findElement(screens.settings.fieldNewRPC)
       await clearField(fieldRpc)
@@ -751,14 +751,14 @@ describe('Metamask popup page', async function () {
       await clearField(fieldRpc)
       await fieldRpc.sendKeys(correctRpcUrl)
       await driver.findElement(screens.settings.buttonSave).click()
-      await delay(5000)
+      await delay(10000)
       const customUrlElement = await waitUntilShowUp(screens.settings.customUrl)
       assert.equal(await customUrlElement.getText(), correctRpcUrl, 'Added Url doesn\'t match')
     })
 
     it('new added Rpc displayed in network dropdown menu', async function () {
       await driver.findElement(screens.main.network).click()
-      const item = await waitUntilShowUp(menus.networks.customRpc)
+      const item = await waitUntilShowUp(menus.networks.addedCustomRpc)
       await driver.findElement(screens.main.network).click()
       assert.equal(await item.getText(), correctRpcUrl, 'Added custom Url aren\'t displayed ')
     })
@@ -796,8 +796,9 @@ describe('Metamask popup page', async function () {
     })
 
     it('deleted custom rpc isn\'t displayed in network dropdown menu', async function () {
-      await driver.findElement(screens.main.network).click()
-      const item = await waitUntilShowUp(menus.networks.customRpc, 20)
+      const menu = await waitUntilShowUp(screens.main.network)
+        await menu.click()
+      const item = await waitUntilShowUp(menus.networks.addedCustomRpc, 20)
       await driver.findElement(screens.main.network).click()
       assert.equal(item, false, 'deleted custom rpc is displayed in network dropdown menu ')
     })
@@ -940,5 +941,4 @@ describe('Metamask popup page', async function () {
     const htmlSource = await driver.getPageSource()
     await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
-
 })
