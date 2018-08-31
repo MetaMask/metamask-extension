@@ -23,12 +23,17 @@ module.exports = {
       menu: By.className('account-dropdown'),
       showQRcode: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(3)'),
     },
+    networks: {
+      customRpc: By.className('span custom-rpc'),
+    },
   },
   screens: {
     deleteCustomRPC: {
       buttons: {
         yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
+        no: By.className('btn-violet'),
       },
+      titleText: 'Delete Custom RPC',
     },
     confirmTransaction: {
       buttons: {
@@ -81,6 +86,13 @@ module.exports = {
         changePassword: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(10) > button:nth-child(5)'),
         delete: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button'),
       },
+      error: By.className('error'),
+      errors: {
+        invalidHTTP: 'URIs require the appropriate HTTP/HTTPS prefix.',
+        invalidRpcEndpoint: 'Invalid RPC endpoint',
+        invalidRpcUrl: 'Invalid RPC URI',
+      },
+
     },
     main: {
       transactionList: By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'),
