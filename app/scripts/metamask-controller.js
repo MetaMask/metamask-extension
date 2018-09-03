@@ -508,11 +508,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<object>} - The keyringController update.
    */
   async submitPassword (password) {
-    try {
-      await this.keyringController.submitPassword(password)
-    } catch (err) {
-      return Promise.reject(err)
-    }
+    await this.keyringController.submitPassword(password)
     const accounts = await this.keyringController.getAccounts()
 
     // verify keyrings
