@@ -1,5 +1,5 @@
 .confirm-page-container-error {
-  height: 32px;
+  min-height: 32px;
   border: 1px solid $monzo;
   color: $monzo;
   background: lighten($monzo, 56%);
@@ -8,10 +8,14 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding-left: 16px;
+  padding: 8px 16px;
 
   &__icon {
     margin-right: 8px;
     flex: 0 0 auto;
+  }
+
+  &__text {
+    overflow: auto;
   }
 }

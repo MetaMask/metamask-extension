@@ -1,14 +1,7 @@
 import currencyFormatter from 'currency-formatter'
 import currencies from 'currency-formatter/currencies'
-import abi from 'human-standard-token-abi'
-import abiDecoder from 'abi-decoder'
 import ethUtil from 'ethereumjs-util'
 import BigNumber from 'bignumber.js'
-
-abiDecoder.addABI(abi)
-
-import MethodRegistry from 'eth-method-registry'
-const registry = new MethodRegistry({ provider: global.ethereumProvider })
 
 import {
   conversionUtil,
@@ -18,22 +11,6 @@ import {
 } from '../../conversion-util'
 
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
-
-export function getTokenData (data = {}) {
-  return abiDecoder.decodeMethod(data)
-}
-
-export async function getMethodData (data = {}) {
-  const prefixedData = ethUtil.addHexPrefix(data)
-  const fourBytePrefix = prefixedData.slice(0, 10)
-  const sig = await registry.lookup(fourBytePrefix)
-  const parsedResult = registry.parse(sig)
-
-  return {
-    name: parsedResult.name,
-    params: parsedResult.args,
-  }
-}
 
 export function increaseLastGasPrice (lastGasPrice) {
   return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
@@ -76,7 +53,7 @@ export function addFiat (...args) {
   })
 }
 
-export function getTransactionAmount ({
+export function getValueFromWeiHex ({
   value,
   toCurrency,
   conversionRate,
@@ -145,9 +122,4 @@ export function roundExponential (value) {
 
   // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
   return bigNumberValue.e > 20 ? Number(bigNumberValue.toPrecision(PRECISION)) : value
-}
-
-export async function isSmartContractAddress (address) {
-  const code = await global.eth.getCode(address)
-  return code && code !== '0x'
 }
