@@ -196,7 +196,7 @@ AddTokenScreen.prototype.validateInputs = function () {
     msg += 'Address is invalid.'
   }
 
-  const validDecimals = decimals >= 0 && decimals < 36
+  const validDecimals = decimals >= 0 && decimals <= 36
   if (!validDecimals) {
     msg += 'Decimals must be at least 0, and not over 36. '
   }
