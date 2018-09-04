@@ -206,7 +206,7 @@ class AddToken extends Component {
     const validDecimals = customDecimals !== null &&
       customDecimals !== '' &&
       customDecimals >= 0 &&
-      customDecimals < 36
+      customDecimals <= 36
     let customDecimalsError = null
 
     if (!validDecimals) {
