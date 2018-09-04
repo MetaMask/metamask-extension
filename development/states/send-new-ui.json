@@ -120,6 +120,7 @@
     "accountDetail": {
       "subview": "transactions"
     },
+    "sidebar": {},
     "modal": {
       "modalState": {},
       "previousModalState": {}

@@ -1853,9 +1853,13 @@ function hideModal (payload) {
   }
 }
 
-function showSidebar () {
+function showSidebar ({ transitionName, type }) {
   return {
     type: actions.SIDEBAR_OPEN,
+    value: {
+      transitionName,
+      type,
+    },
   }
 }
 

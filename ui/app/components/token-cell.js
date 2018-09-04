@@ -18,7 +18,7 @@ function mapStateToProps (state) {
     userAddress: selectors.getSelectedAddress(state),
     contractExchangeRates: state.metamask.contractExchangeRates,
     conversionRate: state.metamask.conversionRate,
-    sidebarOpen: state.appState.sidebarOpen,
+    sidebarOpen: state.appState.sidebar.isOpen,
   }
 }
 

@@ -99,6 +99,7 @@
       "accountExport": "none",
       "privateKey": ""
     },
+    "sidebar": {},
     "transForward": true,
     "isLoading": false,
     "warning": null,
