@@ -20,6 +20,7 @@ class PreferencesController {
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
    * @property {string} store.currentLocale The preferred language locale key
+   * @property {string} store.primaryCurrency The preferred currency for the confirmation screen
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    *
    */
@@ -34,6 +35,7 @@ class PreferencesController {
       useBlockie: false,
       featureFlags: {},
       currentLocale: opts.initLangCode,
+      primaryCurrency: "eth",
       identities: {},
       lostIdentities: {},
     }, opts.initState)
@@ -121,6 +123,16 @@ class PreferencesController {
    */
   setCurrentLocale (key) {
     this.store.updateState({ currentLocale: key })
+  }
+
+  /**
+   * Setter for the `primaryCurrency` property
+   *
+   * @param {string} key - preferred currency key
+   *
+   */
+  setPrimaryCurrency (key) {
+    this.store.updateState({ primaryCurrency: key })
   }
 
   /**

@@ -66,6 +66,30 @@ class Settings extends Component {
     ])
   }
 
+  renderPrimaryCurrency () {
+    const { metamask: { primaryCurrency }, setPrimaryCurrency } = this.props
+    const primaryCurrencyOptions = [
+      {displayValue: "ETH", key: "eth", value: "eth"},
+      {displayValue: "Converted Fiat", key: "converted", value: "converted"}
+    ]
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', this.context.t('primaryCurrency')),
+        h('span.settings__content-description', this.context.t('primaryCurrencyDescription')),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h(SimpleDropdown, {
+            placeholder: 'Select Primary Currency',
+            options: primaryCurrencyOptions,
+            selectedOption: primaryCurrency || "eth",
+            onSelect: newPrimaryCurrency => setPrimaryCurrency(newPrimaryCurrency)
+          }),
+        ]),
+      ]),
+    ])
+  }
+
   renderCurrentConversion () {
     const { metamask: { currentCurrency, conversionDate }, setCurrentCurrency } = this.props
 
@@ -299,6 +323,7 @@ class Settings extends Component {
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
         this.renderCurrentConversion(),
+        this.renderPrimaryCurrency(),
         this.renderCurrentLocale(),
         // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
@@ -316,6 +341,7 @@ Settings.propTypes = {
   metamask: PropTypes.object,
   setUseBlockie: PropTypes.func,
   setCurrentCurrency: PropTypes.func,
+  setPrimaryCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
   displayWarning: PropTypes.func,
   revealSeedConfirmation: PropTypes.func,
@@ -340,6 +366,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    setPrimaryCurrency: primaryCurrency => dispatch(actions.setPrimaryCurrency(primaryCurrency)),
     setCurrentCurrency: currency => dispatch(actions.setCurrentCurrency(currency)),
     setRpcTarget: newRpc => dispatch(actions.setRpcTarget(newRpc)),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
