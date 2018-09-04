@@ -719,10 +719,10 @@ App.prototype.getNetworkName = function () {
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
-  const rpcTarget = provider.rpcTarget
+  const { rpcTarget, type } = provider
 
   return rpcList.map((rpc) => {
-    if (rpc === rpcTarget) {
+    if (type === 'rpc' && rpc === rpcTarget) {
       return null
     } else {
       return h(
