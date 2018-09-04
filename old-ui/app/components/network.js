@@ -61,8 +61,8 @@ Network.prototype.render = function () {
       displayName = 'POA Network'
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else {
-      hoverText = (provider.type === 'rpc') ? `Private Network (${provider.rpcTarget})` : `Private Network (${provider.type})`
       displayName = 'Private Network'
+      hoverText = `Private Network (${provider.rpcTarget})`
     }
   }
 

@@ -1,13 +1,5 @@
 const ethUtil = require('ethereumjs-util')
 const normalize = require('eth-sig-util').normalize
-const {
-  MAINNET_RPC_URL,
-  ROPSTEN_RPC_URL,
-  KOVAN_RPC_URL,
-  RINKEBY_RPC_URL,
-  POA_SOKOL_RPC_URL,
-  POA_RPC_URL,
-} = require('../controllers/network/enums')
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -147,34 +139,6 @@ ConfigManager.prototype.useEtherscanProvider = function () {
 ConfigManager.prototype.getProvider = function () {
   var config = this.getConfig()
   return config.provider
-}
-
-ConfigManager.prototype.getCurrentRpcAddress = function () {
-  var provider = this.getProvider()
-  if (!provider) return null
-  switch (provider.type) {
-
-    case 'mainnet':
-      return MAINNET_RPC_URL
-
-    case 'ropsten':
-      return ROPSTEN_RPC_URL
-
-    case 'kovan':
-      return KOVAN_RPC_URL
-
-    case 'rinkeby':
-      return RINKEBY_RPC_URL
-
-    case 'sokol':
-      return POA_SOKOL_RPC_URL
-
-    case 'poa':
-      return POA_RPC_URL
-
-    default:
-      return provider && provider.rpcTarget ? provider.rpcTarget : POA_SOKOL_RPC_URL
-  }
 }
 
 //
