@@ -34,6 +34,7 @@ const selectors = {
   getSelectedTokenToFiatRate,
   getSendAmount,
   getSendHexData,
+  getSendHexDataFeatureFlagState,
   getSendEditingTransactionId,
   getSendErrors,
   getSendFrom,
@@ -214,6 +215,10 @@ function getSendAmount (state) {
 
 function getSendHexData (state) {
   return state.metamask.send.data
+}
+
+function getSendHexDataFeatureFlagState (state) {
+  return state.metamask.featureFlags.sendHexData
 }
 
 function getSendEditingTransactionId (state) {
