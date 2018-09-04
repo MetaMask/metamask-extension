@@ -5,6 +5,7 @@ const inherits = require('util').inherits
 const TokenBalance = require('./token-balance')
 const Identicon = require('./identicon')
 import CurrencyDisplay from './currency-display'
+const { getAssetImages, conversionRateSelector, getCurrentCurrency} = require('../selectors')
 
 const { formatBalance, generateBalanceObject } = require('../util')
 
@@ -19,9 +20,9 @@ function mapStateToProps (state) {
   return {
     account,
     network,
-    conversionRate: state.metamask.conversionRate,
-    currentCurrency: state.metamask.currentCurrency,
-    assetImages: state.metamask.assetImages,
+    conversionRate: conversionRateSelector(state),
+    currentCurrency: getCurrentCurrency(state),
+    assetImages: getAssetImages(state),
   }
 }
 

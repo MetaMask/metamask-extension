@@ -38,6 +38,7 @@ export default class ConfirmTransactionBase extends Component {
     isTxReprice: PropTypes.bool,
     methodData: PropTypes.object,
     nonce: PropTypes.string,
+    assetImage: PropTypes.string,
     sendTransaction: PropTypes.func,
     showCustomizeGasModal: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
@@ -310,6 +311,7 @@ export default class ConfirmTransactionBase extends Component {
       contentComponent,
       onEdit,
       nonce,
+      assetImage,
       warning,
     } = this.props
     const { submitting, submitError } = this.state
@@ -334,6 +336,7 @@ export default class ConfirmTransactionBase extends Component {
         dataComponent={this.renderData()}
         contentComponent={contentComponent}
         nonce={nonce}
+        assetImage={assetImage}
         identiconAddress={identiconAddress}
         errorMessage={errorMessage || submitError}
         errorKey={propsErrorKey || errorKey}
