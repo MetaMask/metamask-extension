@@ -44,7 +44,7 @@ describe('SendContent Component', function () {
       assert(PageContainerContentChild.childAt(1).is(SendToRow))
       assert(PageContainerContentChild.childAt(2).is(SendAmountRow))
       assert(PageContainerContentChild.childAt(3).is(SendGasRow))
-      assert.equal(PageContainerContentChild.childAt(4).html(), null)
+      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
     })
   })
 })
