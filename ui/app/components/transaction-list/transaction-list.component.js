@@ -21,6 +21,7 @@ export default class TransactionList extends PureComponent {
     transactionToRetry: PropTypes.object,
     selectedToken: PropTypes.object,
     updateNetworkNonce: PropTypes.func,
+    assetImages: PropTypes.object,
   }
 
   componentDidMount () {
@@ -45,7 +46,6 @@ export default class TransactionList extends PureComponent {
   renderTransactions () {
     const { t } = this.context
     const { pendingTransactions = [], completedTransactions = [] } = this.props
-
     return (
       <div className="transaction-list__transactions">
         {
@@ -79,7 +79,7 @@ export default class TransactionList extends PureComponent {
   }
 
   renderTransaction (transaction, index) {
-    const { selectedToken } = this.props
+    const { selectedToken, assetImages } = this.props
 
     return transaction.key === TRANSACTION_TYPE_SHAPESHIFT
       ? (
@@ -93,6 +93,7 @@ export default class TransactionList extends PureComponent {
           key={transaction.id}
           showRetry={this.shouldShowRetry(transaction)}
           token={selectedToken}
+          assetImages={assetImages}
         />
       )
   }

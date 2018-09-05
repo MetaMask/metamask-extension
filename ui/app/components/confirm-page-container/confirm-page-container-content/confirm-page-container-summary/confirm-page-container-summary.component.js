@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import Identicon from '../../../identicon'
 
 const ConfirmPageContainerSummary = props => {
-  const { action, title, subtitle, hideSubtitle, className, identiconAddress, nonce } = props
+  const { action, title, subtitle, hideSubtitle, className, identiconAddress, nonce, assetImage } = props
 
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
@@ -27,6 +27,7 @@ const ConfirmPageContainerSummary = props => {
               className="confirm-page-container-summary__identicon"
               diameter={36}
               address={identiconAddress}
+              image={assetImage}
             />
           )
         }
@@ -51,6 +52,7 @@ ConfirmPageContainerSummary.propTypes = {
   className: PropTypes.string,
   identiconAddress: PropTypes.string,
   nonce: PropTypes.string,
+  assetImage: PropTypes.string,
 }
 
 export default ConfirmPageContainerSummary

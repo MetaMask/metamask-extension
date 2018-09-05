@@ -459,7 +459,7 @@ const mapDispatchToProps = (dispatch) => {
 function mapStateToProps (state) {
   return {
     keyrings: state.metamask.keyrings,
-    sidebarOpen: state.appState.sidebarOpen,
+    sidebarOpen: state.appState.sidebar.isOpen,
   }
 }
 

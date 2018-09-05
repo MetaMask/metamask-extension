@@ -148,7 +148,7 @@ $wallet-view-bg: $alabaster;
   }
 }
 
-.wallet-view.sidebar {
+.wallet-view.sidebar-right {
   flex: 1 0 230px;
   background: rgb(250, 250, 250);
   z-index: $sidebar-z-index;
@@ -164,20 +164,6 @@ $wallet-view-bg: $alabaster;
   box-shadow: rgba(0, 0, 0, .15) 2px 2px 4px;
   width: 85%;
   height: calc(100% - 56px);
-}
-
-.sidebar-overlay {
-  z-index: $sidebar-overlay-z-index;
-  position: fixed;
-  // top: 41px;
-  height: 100%;
-  width: 100%;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 1;
-  visibility: visible;
-  background-color: rgba(0, 0, 0, .3);
 }
 
 // main-container media queries
