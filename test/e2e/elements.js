@@ -110,6 +110,8 @@ module.exports = {
       ByCss: {
         buttonNo: '#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button.btn-violet',
         buttonYes: '#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)',
+        subtitle: '#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2',
+        label: '#app-content > div > div.app-primary.from-right > div > p',
       },
       ByClassName: {
         label: 'confirm-label',
