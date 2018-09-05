@@ -162,7 +162,7 @@ describe('Metamask popup page', async function () {
   })
 
   //it doesn't work for Firefox in Circle CI
-  if (process.env.SELENIUM_BROWSER === 'chrome') {
+  // if (process.env.SELENIUM_BROWSER === 'chrome') {
     describe('Change password', async () => {
       const newPassword = {
         correct: 'abcDEF123!@#',
@@ -313,7 +313,7 @@ describe('Metamask popup page', async function () {
         })
       })
     })
-  }
+  // }
 
   describe('Import Account', () => {
 
@@ -330,9 +330,9 @@ describe('Metamask popup page', async function () {
     it('imports account', async function () {
       const privateKeyBox = await driver.findElement(By.css(screens.importAccounts.fieldPrivateKey))
       const importButton = await driver.findElement(By.css(screens.importAccounts.buttonImport))
-      privateKeyBox.sendKeys('c6b81c1252415d1acfda94474ab8f662a44c045f96749c805ff12a6074081586')// demo private key
+      await privateKeyBox.sendKeys('c6b81c1252415d1acfda94474ab8f662a44c045f96749c805ff12a6074081586')// demo private key
       importButton.click()
-      await delay(200)
+      await delay(500)
       // check, that account is added
       await driver.findElement(By.css(menus.account.menu)).click()
       await delay(500)
