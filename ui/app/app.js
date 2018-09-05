@@ -40,6 +40,7 @@ const Modal = require('./components/modals/index').Modal
 const Alert = require('./components/alert')
 
 import AppHeader from './components/app-header'
+import ErrorLoading from './components/error-loading-screen'
 import UnlockPage from './components/pages/unlock-page'
 
 // Routes
@@ -104,8 +105,10 @@ class App extends Component {
       setMouseUserState,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
+    const isErrorLoading = network === 'timeout' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
+    const errorLoadingMessage = this.context.t('verifyNetworkTimeout')
     log.debug('Main ui render function')
 
     return (
@@ -148,6 +151,13 @@ class App extends Component {
           loadingMessage: loadMessage,
         }),
 
+        (isErrorLoading) && h(ErrorLoading, {
+           loadingMessage: errorLoadingMessage,
+           networkDropdownOpen: this.props.networkDropdownOpen,
+           showNetworkDropdown: this.props.showNetworkDropdown,
+           hideNetworkDropdown: this.props.hideNetworkDropdown,
+           provider: this.props.provider
+        }),
         // content
         this.renderRoutes(),
       ])

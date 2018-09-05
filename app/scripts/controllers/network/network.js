@@ -11,6 +11,7 @@ const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
+const pausable = require('pausable')
 
 const {
   ROPSTEN,
@@ -39,19 +40,23 @@ module.exports = class NetworkController extends EventEmitter {
     // create stores
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
-    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
+    this.changeStore = new ObservableStore(new Date())
+    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore, change: this.changeStore })
     this.on('networkDidChange', this.lookupNetwork)
+    this.on('networkTimeout', this.timeoutNetwork)
     // provider and block tracker
     this._provider = null
     this._blockTracker = null
     // provider and block tracker proxies - because the network changes
     this._providerProxy = null
     this._blockTrackerProxy = null
+      console.log('constructing')
   }
 
   initializeProvider (providerParams) {
     this._baseProviderParams = providerParams
     const { type, rpcTarget } = this.providerStore.getState()
+    log.warn('intializing')
     this._configureProvider({ type, rpcTarget })
     this.lookupNetwork()
   }
@@ -63,8 +68,14 @@ module.exports = class NetworkController extends EventEmitter {
     return { provider, blockTracker }
   }
 
+  timeoutNetwork () {
+    if (this.isNetworkLoading()) {
+        this.setNetworkState('timeout')
+    }
+  }
   verifyNetwork () {
     // Check network when restoring connectivity:
+    log.info('verifying')
     if (this.isNetworkLoading()) this.lookupNetwork()
   }
 
@@ -76,21 +87,40 @@ module.exports = class NetworkController extends EventEmitter {
     return this.networkStore.putState(network)
   }
 
+  getNetworkChanged () {
+    return this.changeStore.getState()
+  }
+
+  setNetworkChanged() {
+    return this.changeStore.putState(new Date())
+  }
+
   isNetworkLoading () {
     return this.getNetworkState() === 'loading'
   }
 
   lookupNetwork () {
+    log.enableAll()
+    log.info('in lookupnetwork')
     // Prevent firing when provider is not defined.
     if (!this._provider) {
       return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
     }
+    log.info('setting timeout')
+    setTimeout(() => this.emit('networkTimeout') , 25000)
+    log.info('set timeout')
     const ethQuery = new EthQuery(this._provider)
+    //  this.store.dispatch(waitTimer())
     ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      if (err) return this.setNetworkState('loading')
-      log.info('web3.getNetwork returned ' + network)
-      this.setNetworkState(network)
+      if (err) {
+        this.setNetworkState('loading')
+      } else {
+        log.info('web3.getNetwork returned ' + network)
+        this.setNetworkState(network)
+      }
     })
+    // Start the clock for the error screen component to timeout the above RPC call changing the network state from loading
+    //setTimeout(timeoutProviderLookup, 20000)
   }
 
   setRpcTarget (rpcTarget) {
@@ -128,6 +158,7 @@ module.exports = class NetworkController extends EventEmitter {
   _switchNetwork (opts) {
     this.setNetworkState('loading')
     this._configureProvider(opts)
+    this._timeoutError = new Date()
     this.emit('networkDidChange')
   }
 
