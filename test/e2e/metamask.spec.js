@@ -315,73 +315,76 @@ describe('Metamask popup page', async function () {
     })
   }
 
-  describe('Import Account', () => {
+  // it doesn't work for Firefox in Circle CI
+  if (process.env.SELENIUM_BROWSER === 'chrome') {
+    describe('Import Account', () => {
 
-    it('opens import account menu', async function () {
-      await driver.wait(until.elementLocated(By.css(menus.account.menu)))
-      await driver.findElement(By.css(menus.account.menu)).click()
-      await delay(500)
-      await driver.findElement(By.css(menus.account.import)).click()
-      await delay(500)
-      const importAccountTitle = await driver.findElement(By.css(screens.importAccounts.title))
-      assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
+      it('opens import account menu', async function () {
+        await driver.wait(until.elementLocated(By.css(menus.account.menu)))
+        await driver.findElement(By.css(menus.account.menu)).click()
+        await delay(500)
+        await driver.findElement(By.css(menus.account.import)).click()
+        await delay(500)
+        const importAccountTitle = await driver.findElement(By.css(screens.importAccounts.title))
+        assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
+      })
+
+      it('imports account', async function () {
+        const privateKeyBox = await driver.findElement(By.css(screens.importAccounts.fieldPrivateKey))
+        const importButton = await driver.findElement(By.css(screens.importAccounts.buttonImport))
+        await privateKeyBox.sendKeys('c6b81c1252415d1acfda94474ab8f662a44c045f96749c805ff12a6074081586')// demo private key
+        importButton.click()
+        await delay(500)
+        // check, that account is added
+        await driver.findElement(By.css(menus.account.menu)).click()
+        await delay(500)
+        const importedLabel = await driver.findElement(By.css(menus.account.labelImported))
+        assert.equal(await importedLabel.getText(), 'IMPORTED')
+      })
+
+      it('opens delete imported account screen', async function () {
+        await driver.findElement(By.css(menus.account.delete)).click()
+        await delay(200)
+        const deleteImportedAccountTitle = await driver.findElement(By.css(screens.deleteImportedAccount.title))
+        assert.equal(await deleteImportedAccountTitle.getText(), screens.deleteImportedAccount.titleText)
+      })
+
+      it('doesn\'t remove imported account with \'No\' button', async function () {
+        const NoButton = await driver.findElement(By.css(screens.deleteImportedAccount.buttons.no))
+        NoButton.click()
+        await delay(500)
+        const settingsTitle = await driver.findElement(By.css(screens.settings.title))
+        assert.equal(await settingsTitle.getText(), 'Settings')
+
+        // check, that imported account still exists
+        await driver.findElement(By.css(menus.account.menu)).click()
+        await delay(500)
+        const importedLabel = await driver.findElement(By.css(menus.account.labelImported))
+        assert.equal(await importedLabel.getText(), 'IMPORTED')
+      })
+
+      it('opens delete imported account screen again', async function () {
+        await driver.findElement(By.css(menus.account.delete)).click()
+        await delay(500)
+      })
+
+      it('removes imported account with \'Yes\' button', async function () {
+        const YesButton = await driver.findElement(By.css(screens.deleteImportedAccount.buttons.yes))
+        YesButton.click()
+        await delay(500)
+        const settingsTitle = await driver.findElement(By.css(screens.settings.title))
+        assert.equal(await settingsTitle.getText(), 'Settings')
+
+        // check, that imported account is removed
+        await driver.findElement(By.css(menus.account.menu)).click()
+        await delay(500)
+        const importedAccounts = await driver.findElements(By.css(menus.account.labelImported))
+        assert.ok(importedAccounts.length === 0)
+        await driver.findElement(By.css(menus.account.menu)).click()
+        await delay(500)
+      })
     })
-
-    it('imports account', async function () {
-      const privateKeyBox = await driver.findElement(By.css(screens.importAccounts.fieldPrivateKey))
-      const importButton = await driver.findElement(By.css(screens.importAccounts.buttonImport))
-      await privateKeyBox.sendKeys('c6b81c1252415d1acfda94474ab8f662a44c045f96749c805ff12a6074081586')// demo private key
-      importButton.click()
-      await delay(500)
-      // check, that account is added
-      await driver.findElement(By.css(menus.account.menu)).click()
-      await delay(500)
-      const importedLabel = await driver.findElement(By.css(menus.account.labelImported))
-      assert.equal(await importedLabel.getText(), 'IMPORTED')
-    })
-
-    it('opens delete imported account screen', async function () {
-      await driver.findElement(By.css(menus.account.delete)).click()
-      await delay(200)
-      const deleteImportedAccountTitle = await driver.findElement(By.css(screens.deleteImportedAccount.title))
-      assert.equal(await deleteImportedAccountTitle.getText(), screens.deleteImportedAccount.titleText)
-    })
-
-    it('doesn\'t remove imported account with \'No\' button', async function () {
-      const NoButton = await driver.findElement(By.css(screens.deleteImportedAccount.buttons.no))
-      NoButton.click()
-      await delay(500)
-      const settingsTitle = await driver.findElement(By.css(screens.settings.title))
-      assert.equal(await settingsTitle.getText(), 'Settings')
-
-      // check, that imported account still exists
-      await driver.findElement(By.css(menus.account.menu)).click()
-      await delay(500)
-      const importedLabel = await driver.findElement(By.css(menus.account.labelImported))
-      assert.equal(await importedLabel.getText(), 'IMPORTED')
-    })
-
-    it('opens delete imported account screen again', async function () {
-      await driver.findElement(By.css(menus.account.delete)).click()
-      await delay(500)
-    })
-
-    it('removes imported account with \'Yes\' button', async function () {
-      const YesButton = await driver.findElement(By.css(screens.deleteImportedAccount.buttons.yes))
-      YesButton.click()
-      await delay(500)
-      const settingsTitle = await driver.findElement(By.css(screens.settings.title))
-      assert.equal(await settingsTitle.getText(), 'Settings')
-
-      // check, that imported account is removed
-      await driver.findElement(By.css(menus.account.menu)).click()
-      await delay(500)
-      const importedAccounts = await driver.findElements(By.css(menus.account.labelImported))
-      assert.ok(importedAccounts.length === 0)
-      await driver.findElement(By.css(menus.account.menu)).click()
-      await delay(500)
-    })
-  })
+  }
 
   describe('Import Ganache seed phrase', function () {
 
