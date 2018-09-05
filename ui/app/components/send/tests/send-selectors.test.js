@@ -31,6 +31,7 @@ const {
   getSendFrom,
   getSendFromBalance,
   getSendFromObject,
+  getSendHexDataFeatureFlagState,
   getSendMaxModeState,
   getSendTo,
   getSendToAccounts,
@@ -375,6 +376,15 @@ describe('send selectors', () => {
       assert.deepEqual(
         getSendErrors(mockState),
         { someError: null }
+      )
+    })
+  })
+
+  describe('getSendHexDataFeatureFlagState()', () => {
+    it('should return the sendHexData feature flag state', () => {
+      assert.deepEqual(
+        getSendHexDataFeatureFlagState(mockState),
+        true
       )
     })
   })

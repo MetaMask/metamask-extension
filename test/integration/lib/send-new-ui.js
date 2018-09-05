@@ -58,7 +58,7 @@ async function runSendFlowTest (assert, done) {
   selectState.val('send new ui')
   reactTriggerChange(selectState[0])
 
-  const sendScreenButton = await queryAsync($, 'button.btn-primary.hero-balance-button')
+  const sendScreenButton = await queryAsync($, 'button.btn-primary.transaction-view-balance__button')
   assert.ok(sendScreenButton[1], 'send screen button present')
   sendScreenButton[1].click()
 
@@ -124,10 +124,10 @@ async function runSendFlowTest (assert, done) {
   selectState.val('send edit')
   reactTriggerChange(selectState[0])
 
-  const confirmFromName = (await queryAsync($, '.sender-to-recipient__sender-name')).first()
+  const confirmFromName = (await queryAsync($, '.sender-to-recipient__name')).first()
   assert.equal(confirmFromName[0].textContent, 'Send Account 4', 'confirm screen should show correct from name')
 
-  const confirmToName = (await queryAsync($, '.sender-to-recipient__recipient-name')).last()
+  const confirmToName = (await queryAsync($, '.sender-to-recipient__name')).last()
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
 
   const confirmScreenRowFiats = await queryAsync($, '.confirm-detail-row__fiat')

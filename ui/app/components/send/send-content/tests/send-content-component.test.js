@@ -8,12 +8,13 @@ import SendAmountRow from '../send-amount-row/send-amount-row.container'
 import SendFromRow from '../send-from-row/send-from-row.container'
 import SendGasRow from '../send-gas-row/send-gas-row.container'
 import SendToRow from '../send-to-row/send-to-row.container'
+import SendHexDataRow from '../send-hex-data-row/send-hex-data-row.container'
 
 describe('SendContent Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<SendContent />)
+    wrapper = shallow(<SendContent showHexData={true} />)
   })
 
   describe('render', () => {
@@ -33,6 +34,17 @@ describe('SendContent Component', function () {
       assert(PageContainerContentChild.childAt(1).is(SendToRow))
       assert(PageContainerContentChild.childAt(2).is(SendAmountRow))
       assert(PageContainerContentChild.childAt(3).is(SendGasRow))
+      assert(PageContainerContentChild.childAt(4).is(SendHexDataRow))
+    })
+
+    it('should not render the SendHexDataRow if props.showHexData is false', () => {
+      wrapper.setProps({ showHexData: false })
+      const PageContainerContentChild = wrapper.find(PageContainerContent).children()
+      assert(PageContainerContentChild.childAt(0).is(SendFromRow))
+      assert(PageContainerContentChild.childAt(1).is(SendToRow))
+      assert(PageContainerContentChild.childAt(2).is(SendAmountRow))
+      assert(PageContainerContentChild.childAt(3).is(SendGasRow))
+      assert.equal(PageContainerContentChild.childAt(4).exists(), false)
     })
   })
 })

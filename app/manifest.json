@@ -71,7 +71,6 @@
     "activeTab",
     "webRequest",
     "*://*.eth/",
-    "*://*.test/",
     "notifications"
   ],
   "web_accessible_resources": [

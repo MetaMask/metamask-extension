@@ -38,6 +38,7 @@ export default class ConfirmPageContainer extends Component {
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
+    assetImage: PropTypes.string,
     summaryComponent: PropTypes.node,
     warning: PropTypes.string,
     // Footer
@@ -70,8 +71,10 @@ export default class ConfirmPageContainer extends Component {
       onSubmit,
       identiconAddress,
       nonce,
+      assetImage,
       warning,
     } = this.props
+    const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
 
     return (
       <div className="page-container">
@@ -84,6 +87,7 @@ export default class ConfirmPageContainer extends Component {
             senderAddress={fromAddress}
             recipientName={toName}
             recipientAddress={toAddress}
+            assetImage={renderAssetImage ? assetImage : undefined}
           />
         </ConfirmPageContainerHeader>
         {
@@ -101,6 +105,7 @@ export default class ConfirmPageContainer extends Component {
               errorKey={errorKey}
               identiconAddress={identiconAddress}
               nonce={nonce}
+              assetImage={assetImage}
               warning={warning}
             />
           )

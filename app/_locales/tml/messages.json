@@ -796,7 +796,7 @@
     "message": "சோதனை குழாய்"
   },
   "to": {
-    "message": "பெறுநர்: "
+    "message": "பெறுநர்"
   },
   "toETHviaShapeShift": {
     "message": "$ 1 முதல் ETH வரை வடிவம்",
