@@ -5,9 +5,9 @@ const assert = require('assert')
 const pify = require('pify')
 const webdriver = require('selenium-webdriver')
 const { By, Key, until } = webdriver
-const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
+const { clearField, delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 
-const password = '123456789'
+let password = '123456789'
 const loader = '#app-content > div > div.full-flex-height > img'
 const { menus, screens, NETWORKS } = require('./elements')
 
@@ -161,156 +161,159 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  // it doesn't work for Firefox in Circle CI
-  // describe('Change password', async () => {
-  //   const newPassword = {
-  //     correct: 'abcDEF123!@#',
-  //     short: '123',
-  //     incorrect: '1234567890',
-  //   }
-  //   let fieldNewPassword
-  //   let fieldConfirmNewPassword
-  //   let fieldOldPassword
-  //   let buttonYes
+  //it doesn't work for Firefox in Circle CI
+  if (process.env.SELENIUM_BROWSER === 'chrome') {
+    describe('Change password', async () => {
+      const newPassword = {
+        correct: 'abcDEF123!@#',
+        short: '123',
+        incorrect: '1234567890',
+      }
+      let fieldNewPassword
+      let fieldConfirmNewPassword
+      let fieldOldPassword
+      let buttonYes
 
-  //   describe('Check screen "Settings" -> "Change password" ', async () => {
+      describe('Check screen "Settings" -> "Change password" ', async () => {
 
-  //     it('checks if "Change password" button is present and enabled', async () => {
-  //       await driver.findElement(By.css(menus.sandwich.menu)).click()
-  //       await delay(500)
-  //       await driver.findElement(By.css(menus.sandwich.settings)).click()
-  //       await delay(500)
-  //       const buttons = await driver.findElements(By.css(screens.settings.buttons.changePassword))
-  //       assert.equal(buttons.length, 1, 'Button "Change password" is not present')
-  //       assert.equal(await buttons[0].isEnabled(), true, 'Button "Change password" is disabled')
-  //     })
+        it('checks if "Change password" button is present and enabled', async () => {
+          await driver.findElement(By.css(menus.sandwich.menu)).click()
+          await delay(500)
+          await driver.findElement(By.css(menus.sandwich.settings)).click()
+          await delay(500)
+          const buttons = await driver.findElements(By.css(screens.settings.buttons.changePassword))
+          assert.equal(buttons.length, 1, 'Button "Change password" is not present')
+          assert.equal(await buttons[0].isEnabled(), true, 'Button "Change password" is disabled')
+        })
 
-  //     it('screen contains correct title', async () => {
-  //       const button = await driver.findElement(By.css(screens.settings.buttons.changePassword))
-  //       await delay(1000)
-  //       await driver.executeScript('arguments[0].scrollIntoView(true)', button)
-  //       await button.click()
-  //       await delay(1000)
-  //       const title = await driver.findElement(By.css(screens.changePassword.ByCss.subtitle))
-  //       assert.equal(await title.getText(), screens.changePassword.titleText, '"Change password" screen contains incorrect title')
-  //     })
+        it('screen contains correct title', async () => {
+          const button = await driver.findElement(By.css(screens.settings.buttons.changePassword))
+          await delay(500)
+          await driver.executeScript('arguments[0].scrollIntoView(true)', button)
+          await delay(700)
+          await button.click()
+          await delay(500)
+          const title = await driver.findElement(By.css(screens.changePassword.ByCss.subtitle))
+          assert.equal(await title.getText(), screens.changePassword.titleText, '"Change password" screen contains incorrect title')
+        })
 
-  //     it('screen contains correct label', async () => {
-  //       const labels = await driver.findElements(By.css(screens.changePassword.ByCss.label))
-  //       assert.equal(labels.length, 1, 'screen "Change password" doesn\'t contain label')
-  //       assert.equal(await labels[0].getText(), screens.changePassword.labelText, 'label contains incorrect title')
-  //     })
+        it('screen contains correct label', async () => {
+          const labels = await driver.findElements(By.css(screens.changePassword.ByCss.label))
+          assert.equal(labels.length, 1, 'screen "Change password" doesn\'t contain label')
+          assert.equal(await labels[0].getText(), screens.changePassword.labelText, 'label contains incorrect title')
+        })
 
-  //     it('clicking the button "No" bring back to "Setting" screen ', async () => {
-  //       const button = await driver.findElement(By.css(screens.changePassword.ByCss.buttonNo))
-  //       await button.click()
-  //       const title = await driver.findElement(By.css(screens.settings.title))
-  //       assert.equal(await title.getText(), screens.settings.titleText, 'button "No" doesnt open settings screen')
-  //       const buttonChangePass = await driver.findElement(By.css(screens.settings.buttons.changePassword))
-  //       await buttonChangePass.click()
-  //     })
-  //   })
+        it('clicking the button "No" bring back to "Setting" screen ', async () => {
+          const button = await driver.findElement(By.css(screens.changePassword.ByCss.buttonNo))
+          await button.click()
+          const title = await driver.findElement(By.css(screens.settings.title))
+          assert.equal(await title.getText(), screens.settings.titleText, 'button "No" doesnt open settings screen')
+          const buttonChangePass = await driver.findElement(By.css(screens.settings.buttons.changePassword))
+          await buttonChangePass.click()
+        })
+      })
 
-  //   describe('Validation of errors ', async () => {
+      describe('Validation of errors ', async () => {
 
-  //     before(async () => {
-  //       fieldOldPassword = await driver.findElement(By.id(screens.changePassword.ById.fieldOldPassword))
-  //       await fieldOldPassword.sendKeys(password)
-  //       fieldNewPassword = await driver.findElement(By.id(screens.changePassword.ById.fieldNewPassword))
-  //       fieldConfirmNewPassword = await driver.findElement(By.id(screens.changePassword.ById.fieldConfirmNewPassword))
-  //       buttonYes = await driver.findElement(By.css(screens.changePassword.ByCss.buttonYes))
-  //     })
+        before(async () => {
+          fieldOldPassword = await driver.findElement(By.id(screens.changePassword.ById.fieldOldPassword))
+          await fieldOldPassword.sendKeys(password)
+          fieldNewPassword = await driver.findElement(By.id(screens.changePassword.ById.fieldNewPassword))
+          fieldConfirmNewPassword = await driver.findElement(By.id(screens.changePassword.ById.fieldConfirmNewPassword))
+          buttonYes = await driver.findElement(By.css(screens.changePassword.ByCss.buttonYes))
+        })
 
-  //     it('error if new password shorter than 8 digits', async () => {
-  //       await fieldNewPassword.sendKeys(newPassword.short)
-  //       await fieldConfirmNewPassword.sendKeys(newPassword.short)
-  //       await buttonYes.click()
-  //       const errors = await driver.findElements(By.className(screens.changePassword.ByClassName.error))
-  //       assert.equal(errors.length > 0, true, 'error isn\'t displayed')
-  //       assert.equal(await errors[0].getText(), screens.changePassword.error.notLong, 'Error\'s text incorrect')
-  //     })
+        it('error if new password shorter than 8 digits', async () => {
+          await fieldNewPassword.sendKeys(newPassword.short)
+          await fieldConfirmNewPassword.sendKeys(newPassword.short)
+          await buttonYes.click()
+          const errors = await driver.findElements(By.className(screens.changePassword.ByClassName.error))
+          assert.equal(errors.length > 0, true, 'error isn\'t displayed')
+          assert.equal(await errors[0].getText(), screens.changePassword.error.notLong, 'Error\'s text incorrect')
+        })
 
-  //     it('error if new password  doesn\'t match confirmation', async () => {
-  //       await clearField(fieldNewPassword)
-  //       await clearField(fieldConfirmNewPassword)
-  //       await fieldNewPassword.sendKeys(newPassword.correct)
-  //       await fieldConfirmNewPassword.sendKeys(newPassword.incorrect)
-  //       await buttonYes.click()
-  //       const errors = await driver.findElements(By.className(screens.changePassword.ByClassName.error))
-  //       assert.equal(errors.length > 0, true, 'error isn\'t displayed')
-  //       assert.equal(await errors[0].getText(), screens.changePassword.error.dontMatch, 'Error\'s text incorrect')
-  //     })
+        it('error if new password  doesn\'t match confirmation', async () => {
+          await clearField(fieldNewPassword)
+          await clearField(fieldConfirmNewPassword)
+          await fieldNewPassword.sendKeys(newPassword.correct)
+          await fieldConfirmNewPassword.sendKeys(newPassword.incorrect)
+          await buttonYes.click()
+          const errors = await driver.findElements(By.className(screens.changePassword.ByClassName.error))
+          assert.equal(errors.length > 0, true, 'error isn\'t displayed')
+          assert.equal(await errors[0].getText(), screens.changePassword.error.dontMatch, 'Error\'s text incorrect')
+        })
 
-  //     it('error if new password match old password', async () => {
-  //       await clearField(fieldNewPassword)
-  //       await clearField(fieldConfirmNewPassword)
-  //       await fieldNewPassword.sendKeys(password)
-  //       await fieldConfirmNewPassword.sendKeys(password)
-  //       await buttonYes.click()
-  //       const errors = await driver.findElements(By.className(screens.changePassword.ByClassName.error))
-  //       assert.equal(errors.length > 0, true, 'error isn\'t displayed')
-  //       assert.equal(await errors[0].getText(), screens.changePassword.error.differ, 'Error\'s text incorrect')
-  //     })
+        it('error if new password match old password', async () => {
+          await clearField(fieldNewPassword)
+          await clearField(fieldConfirmNewPassword)
+          await fieldNewPassword.sendKeys(password)
+          await fieldConfirmNewPassword.sendKeys(password)
+          await buttonYes.click()
+          const errors = await driver.findElements(By.className(screens.changePassword.ByClassName.error))
+          assert.equal(errors.length > 0, true, 'error isn\'t displayed')
+          assert.equal(await errors[0].getText(), screens.changePassword.error.differ, 'Error\'s text incorrect')
+        })
 
-  //     it.skip('error if old password incorrect, https://github.com/poanetwork/metamask-extension/issues/86 ', async () => {
-  //       await clearField(fieldOldPassword)
-  //       await fieldOldPassword.sendKeys(newPassword.incorrect)
-  //       await buttonYes.click()
-  //       const errors = await driver.findElements(By.className(screens.changePassword.ByClassName.error))
-  //       assert.equal(errors.length > 0, true, 'error isn\'t displayed')
-  //       assert.equal(await errors[0].getText(), screens.changePassword.error.incorrectPassword, 'Error\'s text incorrect')
-  //     })
+        it.skip('error if old password incorrect, https://github.com/poanetwork/metamask-extension/issues/86 ', async () => {
+          await clearField(fieldOldPassword)
+          await fieldOldPassword.sendKeys(newPassword.incorrect)
+          await buttonYes.click()
+          const errors = await driver.findElements(By.className(screens.changePassword.ByClassName.error))
+          assert.equal(errors.length > 0, true, 'error isn\'t displayed')
+          assert.equal(await errors[0].getText(), screens.changePassword.error.incorrectPassword, 'Error\'s text incorrect')
+        })
 
-  //     it('no errors if old, new, confirm new passwords are correct; user can change password', async () => {
-  //       await clearField(fieldNewPassword)
-  //       await clearField(fieldOldPassword)
-  //       await clearField(fieldConfirmNewPassword)
+        it('no errors if old, new, confirm new passwords are correct; user can change password', async () => {
+          await clearField(fieldNewPassword)
+          await clearField(fieldOldPassword)
+          await clearField(fieldConfirmNewPassword)
 
-  //       await fieldOldPassword.sendKeys(password)
-  //       await fieldNewPassword.sendKeys(newPassword.correct)
-  //       await fieldConfirmNewPassword.sendKeys(newPassword.correct)
-  //       await buttonYes.click()
+          await fieldOldPassword.sendKeys(password)
+          await fieldNewPassword.sendKeys(newPassword.correct)
+          await fieldConfirmNewPassword.sendKeys(newPassword.correct)
+          await buttonYes.click()
 
-  //       await driver.wait(until.elementLocated(By.css(screens.settings.buttons.changePassword)))
-  //       const buttons = await driver.findElements(By.css(screens.settings.buttons.changePassword))
-  //       assert.equal(buttons.length, 1, 'Button "Change password" is not present')
-  //       assert.equal(await buttons[0].isEnabled(), true, 'Button "Change password" is disabled')
-  //     })
-  //   })
+          await driver.wait(until.elementLocated(By.css(screens.settings.buttons.changePassword)))
+          const buttons = await driver.findElements(By.css(screens.settings.buttons.changePassword))
+          assert.equal(buttons.length, 1, 'Button "Change password" is not present')
+          assert.equal(await buttons[0].isEnabled(), true, 'Button "Change password" is disabled')
+        })
+      })
 
-  //   describe('Check if new password is accepted', async () => {
+      describe('Check if new password is accepted', async () => {
 
-  //     it('user can log out', async () => {
-  //       await driver.findElement(By.css(menus.sandwich.menu)).click()
-  //       await delay(500)
-  //       await driver.wait(until.elementLocated(By.css(menus.sandwich.logOut)))
-  //       const itemLogOut = await driver.findElement(By.css(menus.sandwich.logOut))
-  //       await driver.wait(until.elementIsVisible(itemLogOut))
-  //       itemLogOut.click()
-  //       await driver.wait(until.elementLocated(By.id(screens.lock.fieldPassword)))
-  //       const fields = await driver.findElements(By.id(screens.lock.fieldPassword))
-  //       assert.equal(fields.length, 1, 'password box isn\'t present after logout')
-  //     })
-  //     it.skip('can\'t login with old password', async () => {
-  //       const field = await driver.findElement(By.id(screens.lock.fieldPassword))
-  //       await field.sendKeys(password)
-  //       await driver.findElement(By.className(screens.lock.buttonLogin)).click()
-  //       const errors = await driver.findElements(By.className(screens.lock.error))
-  //       assert.equal(errors.length, 1, 'error isn\'t displayed if password incorrect')
-  //       assert.equal(await errors[0].getText(), screens.lock.errorText, 'error\'s text incorrect')
-  //     })
-  //     it('accepts new password after lock', async () => {
-  //       const field = await driver.findElement(By.id(screens.lock.fieldPassword))
-  //       await field.sendKeys(newPassword.correct)
-  //       await driver.findElement(By.className(screens.lock.buttonLogin)).click()
+        it('user can log out', async () => {
+          await driver.findElement(By.css(menus.sandwich.menu)).click()
+          await delay(500)
+          await driver.wait(until.elementLocated(By.css(menus.sandwich.logOut)))
+          const itemLogOut = await driver.findElement(By.css(menus.sandwich.logOut))
+          await driver.wait(until.elementIsVisible(itemLogOut))
+          itemLogOut.click()
+          await driver.wait(until.elementLocated(By.id(screens.lock.fieldPassword)))
+          const fields = await driver.findElements(By.id(screens.lock.fieldPassword))
+          assert.equal(fields.length, 1, 'password box isn\'t present after logout')
+        })
+        it.skip('can\'t login with old password', async () => {
+          const field = await driver.findElement(By.id(screens.lock.fieldPassword))
+          await field.sendKeys(password)
+          await driver.findElement(By.className(screens.lock.buttonLogin)).click()
+          const errors = await driver.findElements(By.className(screens.lock.error))
+          assert.equal(errors.length, 1, 'error isn\'t displayed if password incorrect')
+          assert.equal(await errors[0].getText(), screens.lock.errorText, 'error\'s text incorrect')
+        })
+        it('accepts new password after lock', async () => {
+          const field = await driver.findElement(By.id(screens.lock.fieldPassword))
+          await field.sendKeys(newPassword.correct)
+          await driver.findElement(By.className(screens.lock.buttonLogin)).click()
 
-  //       await driver.wait(until.elementLocated(By.css(screens.main.buttons.buy)))
-  //       const buttons = await driver.findElements(By.css(screens.main.buttons.buy))
-  //       assert.equal(buttons.length, 1, 'main screen isn\'t displayed')
-  //       password = newPassword.correct
-  //     })
-  //   })
-  // })
+          await driver.wait(until.elementLocated(By.css(screens.main.buttons.buy)))
+          const buttons = await driver.findElements(By.css(screens.main.buttons.buy))
+          assert.equal(buttons.length, 1, 'main screen isn\'t displayed')
+          password = newPassword.correct
+        })
+      })
+    })
+  }
 
   describe('Import Account', () => {
 
