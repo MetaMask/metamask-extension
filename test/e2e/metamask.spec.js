@@ -185,7 +185,10 @@ describe('Metamask popup page', async function () {
       })
 
       it('screen contains correct title', async () => {
-        await driver.findElement(By.css(screens.settings.buttons.changePassword)).click()
+        const button = await driver.findElement(By.css(screens.settings.buttons.changePassword))
+        await delay(500)
+        await driver.executeScript('arguments[0].scrollIntoView(true)', button)
+        await button.click()
         await delay(500)
         const title = await driver.findElement(By.css(screens.changePassword.ByCss.subtitle))
         assert.equal(await title.getText(), screens.changePassword.titleText, '"Change password" screen contains incorrect title')
