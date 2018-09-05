@@ -161,8 +161,8 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  //it doesn't work for Firefox in Circle CI
-  // if (process.env.SELENIUM_BROWSER === 'chrome') {
+  // it doesn't work for Firefox in Circle CI
+  if (process.env.SELENIUM_BROWSER === 'chrome') {
     describe('Change password', async () => {
       const newPassword = {
         correct: 'abcDEF123!@#',
@@ -313,7 +313,7 @@ describe('Metamask popup page', async function () {
         })
       })
     })
-  // }
+  }
 
   describe('Import Account', () => {
 
