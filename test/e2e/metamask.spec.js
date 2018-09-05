@@ -161,55 +161,55 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Change password', async () => {
-    const newPassword = {
-      correct: 'abcDEF123!@#',
-      short: '123',
-      incorrect: '1234567890',
-    }
-    let fieldNewPassword
-    let fieldConfirmNewPassword
-    let fieldOldPassword
-    let buttonYes
+  //it doesn't work for Firefox in Circle CI
+  // describe('Change password', async () => {
+  //   const newPassword = {
+  //     correct: 'abcDEF123!@#',
+  //     short: '123',
+  //     incorrect: '1234567890',
+  //   }
+  //   let fieldNewPassword
+  //   let fieldConfirmNewPassword
+  //   let fieldOldPassword
+  //   let buttonYes
 
-    //it doesn't work for Firefox in Circle CI
-    // describe('Check screen "Settings" -> "Change password" ', async () => {
+  //   describe('Check screen "Settings" -> "Change password" ', async () => {
 
-    //   it('checks if "Change password" button is present and enabled', async () => {
-    //     await driver.findElement(By.css(menus.sandwich.menu)).click()
-    //     await delay(500)
-    //     await driver.findElement(By.css(menus.sandwich.settings)).click()
-    //     await delay(500)
-    //     const buttons = await driver.findElements(By.css(screens.settings.buttons.changePassword))
-    //     assert.equal(buttons.length, 1, 'Button "Change password" is not present')
-    //     assert.equal(await buttons[0].isEnabled(), true, 'Button "Change password" is disabled')
-    //   })
+  //     it('checks if "Change password" button is present and enabled', async () => {
+  //       await driver.findElement(By.css(menus.sandwich.menu)).click()
+  //       await delay(500)
+  //       await driver.findElement(By.css(menus.sandwich.settings)).click()
+  //       await delay(500)
+  //       const buttons = await driver.findElements(By.css(screens.settings.buttons.changePassword))
+  //       assert.equal(buttons.length, 1, 'Button "Change password" is not present')
+  //       assert.equal(await buttons[0].isEnabled(), true, 'Button "Change password" is disabled')
+  //     })
 
-    //   it('screen contains correct title', async () => {
-    //     const button = await driver.findElement(By.css(screens.settings.buttons.changePassword))
-    //     await delay(1000)
-    //     await driver.executeScript('arguments[0].scrollIntoView(true)', button)
-    //     await button.click()
-    //     await delay(1000)
-    //     const title = await driver.findElement(By.css(screens.changePassword.ByCss.subtitle))
-    //     assert.equal(await title.getText(), screens.changePassword.titleText, '"Change password" screen contains incorrect title')
-    //   })
+  //     it('screen contains correct title', async () => {
+  //       const button = await driver.findElement(By.css(screens.settings.buttons.changePassword))
+  //       await delay(1000)
+  //       await driver.executeScript('arguments[0].scrollIntoView(true)', button)
+  //       await button.click()
+  //       await delay(1000)
+  //       const title = await driver.findElement(By.css(screens.changePassword.ByCss.subtitle))
+  //       assert.equal(await title.getText(), screens.changePassword.titleText, '"Change password" screen contains incorrect title')
+  //     })
 
-    //   it('screen contains correct label', async () => {
-    //     const labels = await driver.findElements(By.css(screens.changePassword.ByCss.label))
-    //     assert.equal(labels.length, 1, 'screen "Change password" doesn\'t contain label')
-    //     assert.equal(await labels[0].getText(), screens.changePassword.labelText, 'label contains incorrect title')
-    //   })
+  //     it('screen contains correct label', async () => {
+  //       const labels = await driver.findElements(By.css(screens.changePassword.ByCss.label))
+  //       assert.equal(labels.length, 1, 'screen "Change password" doesn\'t contain label')
+  //       assert.equal(await labels[0].getText(), screens.changePassword.labelText, 'label contains incorrect title')
+  //     })
 
-    //   it('clicking the button "No" bring back to "Setting" screen ', async () => {
-    //     const button = await driver.findElement(By.css(screens.changePassword.ByCss.buttonNo))
-    //     await button.click()
-    //     const title = await driver.findElement(By.css(screens.settings.title))
-    //     assert.equal(await title.getText(), screens.settings.titleText, 'button "No" doesnt open settings screen')
-    //     const buttonChangePass = await driver.findElement(By.css(screens.settings.buttons.changePassword))
-    //     await buttonChangePass.click()
-    //   })
-    // })
+  //     it('clicking the button "No" bring back to "Setting" screen ', async () => {
+  //       const button = await driver.findElement(By.css(screens.changePassword.ByCss.buttonNo))
+  //       await button.click()
+  //       const title = await driver.findElement(By.css(screens.settings.title))
+  //       assert.equal(await title.getText(), screens.settings.titleText, 'button "No" doesnt open settings screen')
+  //       const buttonChangePass = await driver.findElement(By.css(screens.settings.buttons.changePassword))
+  //       await buttonChangePass.click()
+  //     })
+  //   })
 
     describe('Validation of errors ', async () => {
 
