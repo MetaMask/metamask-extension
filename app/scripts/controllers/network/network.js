@@ -216,7 +216,7 @@ module.exports = class NetworkController extends EventEmitter {
     if (this._blockTrackerProxy) {
       this._blockTrackerProxy.setTarget(blockTracker)
     } else {
-      this._blockTrackerProxy = createEventEmitterProxy(blockTracker)
+      this._blockTrackerProxy = createEventEmitterProxy(blockTracker, { eventFilter: 'skipInternal' })
     }
     // set new provider and blockTracker
     this._provider = provider

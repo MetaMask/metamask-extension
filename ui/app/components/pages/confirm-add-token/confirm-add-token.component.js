@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { DEFAULT_ROUTE, ADD_TOKEN_ROUTE } from '../../../routes'
 import Button from '../../button'
-import Identicon from '../../../components/identicon'
-import TokenBalance from './token-balance'
+import Identicon from '../../identicon'
+import TokenBalance from '../../token-balance'
 
 export default class ConfirmAddToken extends Component {
   static contextTypes = {

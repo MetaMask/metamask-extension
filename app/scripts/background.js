@@ -15,7 +15,7 @@ const asStream = require('obs-store/lib/asStream')
 const ExtensionPlatform = require('./platforms/extension')
 const Migrator = require('./lib/migrator/')
 const migrations = require('./migrations/')
-const PortStream = require('./lib/port-stream.js')
+const PortStream = require('extension-port-stream')
 const createStreamSink = require('./lib/createStreamSink')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
@@ -256,6 +256,7 @@ function setupController (initState, initLangCode) {
     showUnconfirmedMessage: triggerUi,
     unlockAccountMessage: triggerUi,
     showUnapprovedTx: triggerUi,
+    showWatchAssetUi: showWatchAssetUi,
     // initial state
     initState,
     // initial locale code
@@ -443,9 +444,28 @@ function triggerUi () {
   })
 }
 
+/**
+ * Opens the browser popup for user confirmation of watchAsset
+ * then it waits until user interact with the UI
+ */
+function showWatchAssetUi () {
+  triggerUi()
+  return new Promise(
+    (resolve) => {
+      var interval = setInterval(() => {
+        if (!notificationIsOpen) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 1000)
+    }
+  )
+}
+
 // On first install, open a window to MetaMask website to how-it-works.
 extension.runtime.onInstalled.addListener(function (details) {
   if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
     extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
   }
 })
+

@@ -15,10 +15,10 @@ const SendTransactionScreen = require('./components/send/send.container')
 const ConfirmTransaction = require('./components/pages/confirm-transaction')
 
 // slideout menu
-const WalletView = require('./components/wallet-view')
+const Sidebar = require('./components/sidebars').default
 
 // other views
-const Home = require('./components/pages/home')
+import Home from './components/pages/home'
 const Authenticated = require('./components/pages/authenticated')
 const Initialized = require('./components/pages/initialized')
 const Settings = require('./components/pages/settings')
@@ -26,11 +26,11 @@ const RestoreVaultPage = require('./components/pages/keychains/restore-vault').d
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
 const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
+const ConfirmAddSuggestedTokenPage = require('./components/pages/confirm-add-suggested-token')
 const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 
 const Loading = require('./components/loading-screen')
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
 const AccountMenu = require('./components/account-menu')
 
@@ -52,6 +52,7 @@ const {
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
   CONFIRM_ADD_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
   SEND_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -86,6 +87,7 @@ class App extends Component {
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
+        h(Authenticated, { path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE, exact, component: ConfirmAddSuggestedTokenPage }),
         h(Authenticated, { path: NEW_ACCOUNT_ROUTE, component: CreateAccountPage }),
         h(Authenticated, { path: DEFAULT_ROUTE, exact, component: Home }),
       ])
@@ -103,6 +105,7 @@ class App extends Component {
       frequentRpcList,
       currentView,
       setMouseUserState,
+      sidebar,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const isErrorLoading = network === 'timeout' && currentView.name !== 'config'
@@ -137,7 +140,12 @@ class App extends Component {
         h(AppHeader),
 
         // sidebar
-        this.renderSidebar(),
+        h(Sidebar, {
+          sidebarOpen: sidebar.isOpen,
+          hideSidebar: this.props.hideSidebar,
+          transitionName: sidebar.transitionName,
+          type: sidebar.type,
+        }),
 
         // network dropdown
         h(NetworkDropdown, {
@@ -162,51 +170,6 @@ class App extends Component {
         this.renderRoutes(),
       ])
     )
-  }
-
-  renderSidebar () {
-    return h('div', [
-      h('style', `
-        .sidebar-enter {
-          transition: transform 300ms ease-in-out;
-          transform: translateX(-100%);
-        }
-        .sidebar-enter.sidebar-enter-active {
-          transition: transform 300ms ease-in-out;
-          transform: translateX(0%);
-        }
-        .sidebar-leave {
-          transition: transform 200ms ease-out;
-          transform: translateX(0%);
-        }
-        .sidebar-leave.sidebar-leave-active {
-          transition: transform 200ms ease-out;
-          transform: translateX(-100%);
-        }
-      `),
-
-      h(ReactCSSTransitionGroup, {
-        transitionName: 'sidebar',
-        transitionEnterTimeout: 300,
-        transitionLeaveTimeout: 200,
-      }, [
-        // A second instance of Walletview is used for non-mobile viewports
-        this.props.sidebarOpen ? h(WalletView, {
-          responsiveDisplayClassname: '.sidebar',
-          style: {},
-        }) : undefined,
-
-      ]),
-
-      // overlay
-      // TODO: add onClick for overlay to close sidebar
-      this.props.sidebarOpen ? h('div.sidebar-overlay', {
-        style: {},
-        onClick: () => {
-          this.props.hideSidebar()
-        },
-      }, []) : undefined,
-    ])
   }
 
   toggleMetamaskActive () {
@@ -277,7 +240,7 @@ App.propTypes = {
   provider: PropTypes.object,
   frequentRpcList: PropTypes.array,
   currentView: PropTypes.object,
-  sidebarOpen: PropTypes.bool,
+  sidebar: PropTypes.object,
   alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
   isMascara: PropTypes.bool,
@@ -313,7 +276,7 @@ function mapStateToProps (state) {
   const { appState, metamask } = state
   const {
     networkDropdownOpen,
-    sidebarOpen,
+    sidebar,
     alertOpen,
     alertMessage,
     isLoading,
@@ -340,7 +303,7 @@ function mapStateToProps (state) {
   return {
     // state from plugin
     networkDropdownOpen,
-    sidebarOpen,
+    sidebar,
     alertOpen,
     alertMessage,
     isLoading,

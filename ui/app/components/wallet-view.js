@@ -26,11 +26,15 @@ WalletView.contextTypes = {
   t: PropTypes.func,
 }
 
+WalletView.defaultProps = {
+  responsiveDisplayClassname: '',
+}
+
 function mapStateToProps (state) {
 
   return {
     network: state.metamask.network,
-    sidebarOpen: state.appState.sidebarOpen,
+    sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     tokens: state.metamask.tokens,
@@ -131,8 +135,9 @@ WalletView.prototype.render = function () {
     }
   }
 
-  return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
+  return h('div.wallet-view.flex-column', {
     style: {},
+    className: responsiveDisplayClassname,
   }, [
 
     // TODO: Separate component: wallet account details
