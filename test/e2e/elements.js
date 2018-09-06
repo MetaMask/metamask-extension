@@ -123,14 +123,22 @@ module.exports = {
     changePassword: {
       title: By.className('page-subtitle'),
       titleText: 'Change Password',
-      fieldOldPassword: By.id('old-password-box'),
-      fieldNewPassword: By.id('new-password-box'),
-      fieldConfirmNewPassword: By.id('password-box-confirm'),
-      buttonNo: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button.btn-violet'),
-      buttonYes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
-      label: By.className('confirm-label'),
-      arrowLeft: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
-      error: By.className('error'),
+      ById: {
+        fieldOldPassword: 'old-password-box',
+        fieldNewPassword: 'new-password-box',
+        fieldConfirmNewPassword: 'password-box-confirm',
+      },
+      ByCss: {
+        buttonNo: '#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button.btn-violet',
+        buttonYes: '#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)',
+        subtitle: '#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2',
+        label: '#app-content > div > div.app-primary.from-right > div > p',
+      },
+      ByClassName: {
+        label: 'confirm-label',
+        arrowLeft: 'fa fa-arrow-left fa-lg cursor-pointer',
+        error: 'error',
+      },
       labelText: 'Are you sure you want to change the password for unlocking of your wallet?',
       errorText: {
         differ: 'New password should differ from the current one',

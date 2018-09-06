@@ -75,21 +75,6 @@ describe('config-manager', function () {
     })
   })
 
-  describe('rpc manipulations', function () {
-    it('changing rpc should return a different rpc', function () {
-      var firstRpc = 'first'
-      var secondRpc = 'second'
-
-      configManager.setRpcTarget(firstRpc)
-      var firstResult = configManager.getCurrentRpcAddress()
-      assert.equal(firstResult, firstRpc)
-
-      configManager.setRpcTarget(secondRpc)
-      var secondResult = configManager.getCurrentRpcAddress()
-      assert.equal(secondResult, secondRpc)
-    })
-  })
-
   describe('transactions', function () {
     beforeEach(function () {
       configManager.setTxList([])
