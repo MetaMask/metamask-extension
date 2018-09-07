@@ -3,6 +3,7 @@
 ## Current Master
 
 - [#99](https://github.com/poanetwork/metamask-extension/pull/99), [#100](https://github.com/poanetwork/metamask-extension/pull/100): (Fix) Validate custom RPC
+- [#98](https://github.com/poanetwork/metamask-extension/pull/98): (Feature) Unlimited amount of custom RPC
 
 ## 4.8.5 Mon Aug 27 2018
 

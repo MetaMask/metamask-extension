@@ -29,28 +29,6 @@ MenuDroppoComponent.prototype.render = function () {
     h('.menu-droppo-container', {
       style,
     }, [
-      h('style', `
-        .menu-droppo-enter {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-200%);
-        }
-
-        .menu-droppo-enter.menu-droppo-enter-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
-
-        .menu-droppo-leave {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
-
-        .menu-droppo-leave.menu-droppo-leave-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-200%);
-        }
-      `),
-
       useCssTransition
         ? h(ReactCSSTransitionGroup, {
           className: 'css-transition-group',

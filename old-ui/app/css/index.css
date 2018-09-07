@@ -403,7 +403,7 @@ p.exchanges {
   font-family: 'Nunito Semibold';
 }
 
-.trash {
+.trash:after {
   content: url('../images/close.svg');
   width: 12px;
   height: 12px;
@@ -1006,6 +1006,15 @@ div.message-container > div:first-child {
   content: url('../images/contract-small.svg');
   width: 19px;
   height: 22px;
+}
+
+.menu-droppo-container::-webkit-scrollbar {
+  width: 1px;
+}
+ 
+.menu-droppo-container::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  background-clip: content-box;
 }
 
 .hidden {

@@ -207,7 +207,6 @@ App.prototype.renderAppBar = function () {
             alignItems: 'center',
           },
         }, [
-
           props.isUnlocked && h(AccountDropdowns, {
             style: {},
             enableAccountsSelector: true,
@@ -260,8 +259,9 @@ App.prototype.renderNetworkDropdown = function () {
     style: {
       position: 'absolute',
       left: '2px',
-      top: '36px',
+      top: '38px',
       width: '270px',
+      maxHeight: isOpen ? '524px' : '0px',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',
@@ -390,9 +390,6 @@ App.prototype.renderNetworkDropdown = function () {
       ]
     ),
 
-    this.renderSelectedCustomOption(props.provider),
-    this.renderCommonRpc(rpcList, props.provider),
-
     h(
       DropdownMenuItem,
       {
@@ -408,6 +405,9 @@ App.prototype.renderNetworkDropdown = function () {
         'Custom RPC',
       ]
     ),
+
+    this.renderSelectedCustomOption(props.provider),
+    this.renderCommonRpc(rpcList, props.provider),
 
   ])
 }
@@ -439,6 +439,8 @@ App.prototype.renderDropdown = function () {
       position: 'absolute',
       right: '2px',
       top: '38px',
+      width: '126px',
+      maxHeight: isOpen ? '186px' : '0px',
     },
     innerStyle: {},
   }, [
