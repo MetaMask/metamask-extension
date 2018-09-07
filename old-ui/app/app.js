@@ -386,9 +386,6 @@ App.prototype.renderNetworkDropdown = function () {
       ]
     ),
 
-    this.renderCustomOption(props.provider),
-    this.renderCommonRpc(rpcList, props.provider),
-
     h(
       DropdownMenuItem,
       {
@@ -404,6 +401,9 @@ App.prototype.renderNetworkDropdown = function () {
         'Custom RPC',
       ]
     ),
+
+    this.renderCustomOption(props.provider),
+    this.renderCommonRpc(rpcList, props.provider),
 
   ])
 }
