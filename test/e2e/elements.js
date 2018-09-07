@@ -11,7 +11,8 @@ module.exports = {
       logOut: By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)'),
       textLogOut: 'Log Out',
       textSettings: 'Settings',
-    },
+      info: By.css('li.dropdown-menu-item:nth-child(4)'),
+   },
     account: {
       menu: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div'),
       delete: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
@@ -25,7 +26,7 @@ module.exports = {
     },
     networks: {
       addedCustomRpc: By.className('span custom-rpc'),
-      customRpc: By.css('#app-content > div > div:nth-child(2) > span > div > li:nth-child(9)')
+      customRpc: By.css('#app-content > div > div:nth-child(2) > span > div > li:nth-child(9)'),
     },
   },
   screens: {
@@ -37,10 +38,9 @@ module.exports = {
         tokenSymbol: By.id('token_symbol'),
         decimals: By.id('token_decimals'),
       },
-      buttonAdd: By.css('.flex-space-around > button:nth-child(7)')
+      buttonAdd: By.css('.flex-space-around > button:nth-child(7)'),
 
     },
-
     deleteCustomRPC: {
       buttons: {
         yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
@@ -130,8 +130,13 @@ module.exports = {
         textNoTokens: 'No tokens found',
         textYouOwn1token: 'You own 1 token',
         buttonAdd: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > button:nth-child(2)'),
-        buttonAddText: 'Add Token'
+        buttonAddText: 'Add Token',
       },
+    },
+    info: {
+      title: By.className('section-title flex-row flex-center'),
+      titleText: 'Info',
+      label: By.className('info'),
     },
     removeToken: {
       title: By.className('page-subtitle'),
@@ -141,8 +146,8 @@ module.exports = {
       buttons: {
         back: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
         no: By.className('btn-violet'),
-        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button:nth-child(2)')
-      }
+        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button:nth-child(2)'),
+      },
     },
 
     changePassword: {
@@ -179,7 +184,7 @@ module.exports = {
       title: By.className('terms-header'),
       button: By.css('button'),
       linkTerms: By.linkText('Terms of Service'),
-      linkTermsText: 'Terms of Service'
+      linkTermsText: 'Terms of Service',
     },
     create: {
       fieldPassword: By.id('password-box'),

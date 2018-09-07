@@ -6,7 +6,7 @@ const path = require('path')
 const webdriver = require('selenium-webdriver')
 const Command = require('selenium-webdriver/lib/command').Command
 
-const { By, Key } = webdriver
+const { By } = webdriver
 
 module.exports = {
   delay,
