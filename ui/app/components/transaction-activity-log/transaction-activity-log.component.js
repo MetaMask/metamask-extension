@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { getActivities } from './transaction-activity-log.util'
 import Card from '../card'
-import { getEthConversionFromWeiHex } from '../../helpers/conversions.util'
+import { getEthConversionFromWeiHex, getValueFromWeiHex } from '../../helpers/conversions.util'
 import { ETH } from '../../constants/common'
+import { formatDate } from '../../util'
 
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {
@@ -41,8 +42,17 @@ export default class TransactionActivityLog extends PureComponent {
 
   renderActivity (activity, index) {
     const { conversionRate } = this.props
-    const { eventKey, value } = activity
-    const ethValue = getEthConversionFromWeiHex({ value, toCurrency: ETH, conversionRate })
+    const { eventKey, value, timestamp } = activity
+    const ethValue = index === 0
+      ? `${getValueFromWeiHex({
+        value,
+        toCurrency: ETH,
+        conversionRate,
+        numberOfDecimals: 6,
+      })} ${ETH}`
+      : getEthConversionFromWeiHex({ value, toCurrency: ETH, conversionRate })
+    const formattedTimestamp = formatDate(timestamp)
+    const activityText = this.context.t(eventKey, [ethValue, formattedTimestamp])
 
     return (
       <div
@@ -50,8 +60,11 @@ export default class TransactionActivityLog extends PureComponent {
         className="transaction-activity-log__activity"
       >
         <div className="transaction-activity-log__activity-icon" />
-        <div className="transaction-activity-log__activity-text">
-          { this.context.t(eventKey, [ethValue]) }
+        <div
+          className="transaction-activity-log__activity-text"
+          title={activityText}
+        >
+          { activityText }
         </div>
       </div>
     )

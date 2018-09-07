@@ -17,6 +17,7 @@ const TRANSACTION_UPDATED_GAS_EVENT = 'transactionUpdatedGas'
 const TRANSACTION_SUBMITTED_EVENT = 'transactionSubmitted'
 const TRANSACTION_CONFIRMED_EVENT = 'transactionConfirmed'
 const TRANSACTION_DROPPED_EVENT = 'transactionDropped'
+const TRANSACTION_UPDATED_EVENT = 'transactionUpdated'
 
 const eventPathsHash = {
   [STATUS_PATH]: true,
@@ -67,7 +68,7 @@ export function getActivities (transaction) {
             }
 
             default: {
-              events.push(eventCreator(value, timestamp))
+              events.push(eventCreator(TRANSACTION_UPDATED_EVENT, timestamp))
             }
           }
         }

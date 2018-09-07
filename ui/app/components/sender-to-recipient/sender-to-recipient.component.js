@@ -115,7 +115,7 @@ export default class SenderToRecipient extends PureComponent {
   renderRecipientWithoutAddress () {
     return (
       <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
-        <i className="fa fa-file-text-o" />
+        { !this.props.addressOnly && <i className="fa fa-file-text-o" /> }
         <div className="sender-to-recipient__name">
           { this.context.t('newContract') }
         </div>

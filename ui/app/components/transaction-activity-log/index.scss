@@ -41,11 +41,15 @@
     margin-right: 6px;
     border-radius: 50%;
     background: $scorpion;
+    flex: 0 0 auto;
   }
 
   &__activity-text {
     color: $scorpion;
     font-size: .75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__value {

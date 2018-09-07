@@ -7,7 +7,7 @@ import CurrencyDisplay from '../currency-display'
 import HexToDecimal from '../hex-to-decimal'
 import { ETH, GWEI } from '../../constants/common'
 import { getHexGasTotal } from '../../helpers/confirm-transaction/util'
-import { addHex } from '../../helpers/transactions.util'
+import { sumHexes } from '../../helpers/transactions.util'
 
 export default class TransactionBreakdown extends PureComponent {
   static contextTypes = {
@@ -28,7 +28,7 @@ export default class TransactionBreakdown extends PureComponent {
     const { transaction, className } = this.props
     const { txParams: { gas, gasPrice, value } = {} } = transaction
     const hexGasTotal = getHexGasTotal({ gasLimit: gas, gasPrice })
-    const totalInHex = addHex(hexGasTotal, value)
+    const totalInHex = sumHexes(hexGasTotal, value)
 
     return (
       <div className={classnames('transaction-breakdown', className)}>

@@ -106,7 +106,7 @@ export async function isSmartContractAddress (address) {
   return code && code !== '0x'
 }
 
-export function addHex (...args) {
+export function sumHexes (...args) {
   const total = args.reduce((acc, base) => {
     return addCurrencies(acc, base, {
       toNumericBase: 'hex',

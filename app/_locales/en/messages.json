@@ -1095,19 +1095,22 @@
     "message": "transaction"
   },
   "transactionConfirmed": {
-    "message": "Transaction confirmed."
+    "message": "Transaction confirmed on $2."
   },
   "transactionCreated": {
-    "message": "Transaction created with a value of $1."
+    "message": "Transaction created with a value of $1 on $2."
   },
   "transactionDropped": {
-    "message": "Transaction dropped."
+    "message": "Transaction dropped on $2."
   },
   "transactionSubmitted": {
-    "message": "Transaction submitted."
+    "message": "Transaction submitted on $2."
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated on $2."
   },
   "transactionUpdatedGas": {
-    "message": "Transaction updated with a gas price of $1."
+    "message": "Transaction updated with a gas price of $1 on $2."
   },
   "transactions": {
     "message": "transactions"

@@ -22,6 +22,7 @@ export default class TransactionListItem extends PureComponent {
     nonceAndDate: PropTypes.string,
     token: PropTypes.object,
     assetImages: PropTypes.object,
+    tokenData: PropTypes.object,
   }
 
   state = {
@@ -106,9 +107,13 @@ export default class TransactionListItem extends PureComponent {
       showRetry,
       nonceAndDate,
       assetImages,
+      tokenData,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
+    const toAddress = tokenData
+      ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
+      : txParams.to
 
     return (
       <div className="transaction-list-item">
@@ -118,9 +123,9 @@ export default class TransactionListItem extends PureComponent {
         >
           <Identicon
             className="transaction-list-item__identicon"
-            address={txParams.to}
+            address={toAddress}
             diameter={34}
-            image={assetImages[txParams.to]}
+            image={assetImages[toAddress]}
           />
           <TransactionAction
             transaction={transaction}
