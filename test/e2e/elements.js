@@ -11,7 +11,8 @@ module.exports = {
       logOut: By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)'),
       textLogOut: 'Log Out',
       textSettings: 'Settings',
-    },
+      info: By.css('li.dropdown-menu-item:nth-child(4)'),
+   },
     account: {
       menu: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div'),
       delete: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
@@ -29,6 +30,17 @@ module.exports = {
     },
   },
   screens: {
+    addToken: {
+      title: By.className('page-subtitle'),
+      titleText: 'Add Token',
+      fields: {
+        contractAddress: By.id('token-address'),
+        tokenSymbol: By.id('token_symbol'),
+        decimals: By.id('token_decimals'),
+      },
+      buttonAdd: By.css('.flex-space-around > button:nth-child(7)'),
+
+    },
     deleteCustomRPC: {
       buttons: {
         yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
@@ -111,34 +123,44 @@ module.exports = {
       address: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div'),
       tokens: {
         remove: By.className('trash'),
-        menu: 'activeForm right',
+        menu: By.className('inactiveForm pointer'),
         token: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li'),
         balance: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > h3'),
         amount: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
         textNoTokens: 'No tokens found',
         textYouOwn1token: 'You own 1 token',
-        buttonAdd: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > button'),
+        buttonAdd: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > button:nth-child(2)'),
+        buttonAddText: 'Add Token',
       },
     },
+    info: {
+      title: By.className('section-title flex-row flex-center'),
+      titleText: 'Info',
+      label: By.className('info'),
+    },
+    removeToken: {
+      title: By.className('page-subtitle'),
+      titleText: 'Remove Token',
+      label: By.className('confirm-label'),
+      labelText: 'Are you sure you want to remove token',
+      buttons: {
+        back: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
+        no: By.className('btn-violet'),
+        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button:nth-child(2)'),
+      },
+    },
+
     changePassword: {
       title: By.className('page-subtitle'),
       titleText: 'Change Password',
-      ById: {
-        fieldOldPassword: 'old-password-box',
-        fieldNewPassword: 'new-password-box',
-        fieldConfirmNewPassword: 'password-box-confirm',
-      },
-      ByCss: {
-        buttonNo: '#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button.btn-violet',
-        buttonYes: '#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)',
-        subtitle: '#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2',
-        label: '#app-content > div > div.app-primary.from-right > div > p',
-      },
-      ByClassName: {
-        label: 'confirm-label',
-        arrowLeft: 'fa fa-arrow-left fa-lg cursor-pointer',
-        error: 'error',
-      },
+      fieldOldPassword: By.id('old-password-box'),
+      fieldNewPassword: By.id('new-password-box'),
+      fieldConfirmNewPassword: By.id('password-box-confirm'),
+      buttonNo: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button.btn-violet'),
+      buttonYes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
+      label: By.className('confirm-label'),
+      arrowLeft: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
+      error: By.className('error'),
       labelText: 'Are you sure you want to change the password for unlocking of your wallet?',
       errorText: {
         differ: 'New password should differ from the current one',
@@ -150,21 +172,19 @@ module.exports = {
     lock: {
       fieldPassword: By.id('password-box'),
       error: By.className('error'),
-      errorText: 'Incorrect password',
+      errorText: 'Incorrect password. Try again.',
       buttonLogin: By.className('cursor-pointer'),
       linkRestore: By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-center.flex-grow > p'),
       linkRestoreText: 'Restore from seed phrase',
     },
-    addToken: {
-      fieldTokenContractAddress: By.id('token-address'),
-      fieldTokenSymbol: By.id('token_symbol'),
-      fieldDecimals: By.id('token_decimals'),
-      buttonAdd: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button'),
-    },
+
     TOU: {
-      titleText: 'Nifty Wallet',
-      header: By.className('terms-header'),
+      agreement: By.className('notice-box'),
+      titleText: 'Terms of Use',
+      title: By.className('terms-header'),
       button: By.css('button'),
+      linkTerms: By.linkText('Terms of Service'),
+      linkTermsText: 'Terms of Service',
     },
     create: {
       fieldPassword: By.id('password-box'),
