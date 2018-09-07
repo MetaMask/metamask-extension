@@ -349,6 +349,10 @@ function tryUnlockMetamask (password) {
         dispatch(actions.unlockSucceeded())
         return forceUpdateMetamaskState(dispatch)
       })
+      .catch((err) => {
+        log.error(err)
+        return Promise.reject(err)
+      })
       .then(() => {
         return new Promise((resolve, reject) => {
           background.verifySeedPhrase(err => {
@@ -564,10 +568,9 @@ function changePassword (oldPassword, newPassword) {
       background.changePassword(oldPassword, newPassword, (err, account) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          log.error(err)
           return reject(err)
         }
-
         log.info('Password is changed for ' + account)
         dispatch(actions.showAccountsPage())
         resolve(account)

@@ -374,7 +374,10 @@ App.prototype.renderNetworkDropdown = function () {
       {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('localhost')),
+        onClick: () => {
+          props.dispatch(actions.setRpcTarget('http://localhost:8545'))
+          props.dispatch(actions.setProviderType('localhost'))
+        },
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
@@ -670,10 +673,9 @@ App.prototype.toggleMetamaskActive = function () {
   }
 }
 
-App.prototype.renderCustomOption = function (provider) {
+App.prototype.renderSelectedCustomOption = function (provider) {
   const { rpcTarget, type } = provider
   const props = this.props
-
   if (type !== 'rpc') return null
 
   // Concatenate long URLs
@@ -683,9 +685,6 @@ App.prototype.renderCustomOption = function (provider) {
   }
 
   switch (rpcTarget) {
-
-    case 'http://localhost:8545':
-      return null
 
     default:
       return h(
@@ -722,10 +721,10 @@ App.prototype.getNetworkName = function () {
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
-  const rpcTarget = provider.rpcTarget
+  const { rpcTarget, type } = provider
 
   return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (provider.type === 'rpc' && rpc === rpcTarget)) {
+    if (type === 'rpc' && rpc === rpcTarget) {
       return null
     } else {
       return h(
