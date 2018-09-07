@@ -9,7 +9,18 @@ workflows:
     - prep-build:
         requires:
         - prep-deps-npm
-
+    - prep-docs:
+        requires:
+        - prep-deps-npm
+    - prep-scss:
+        requires:
+        - prep-deps-npm
+    - test-lint:
+        requires:
+        - prep-deps-npm
+    - test-deps:
+        requires:
+        - prep-deps-npm
     - test-e2e-chrome:
         requires:
         - prep-deps-npm
@@ -19,10 +30,68 @@ workflows:
         - prep-deps-npm
         - prep-deps-firefox
         - prep-build
-
-
-
-
+    - test-unit:
+        requires:
+        - prep-deps-npm
+    - test-integration-mascara-chrome:
+        requires:
+        - prep-deps-npm
+        - prep-scss
+    - test-integration-mascara-firefox:
+        requires:
+        - prep-deps-npm
+        - prep-deps-firefox
+        - prep-scss
+    - test-integration-flat-chrome:
+        requires:
+        - prep-deps-npm
+        - prep-scss
+    - test-integration-flat-firefox:
+        requires:
+        - prep-deps-npm
+        - prep-deps-firefox
+        - prep-scss
+    - all-tests-pass:
+        requires:
+        - test-lint
+        - test-unit
+        - test-e2e-chrome
+        - test-e2e-firefox
+        - test-integration-mascara-chrome
+        - test-integration-mascara-firefox
+        - test-integration-flat-chrome
+        - test-integration-flat-firefox
+    - job-screens:
+        requires:
+        - prep-deps-npm
+        - prep-build
+    #           - all-tests-pass
+    - job-publish-prerelease:
+        requires:
+        - prep-deps-npm
+        - prep-build
+        - job-screens
+    #           - all-tests-pass
+    - job-publish-release:
+        filters:
+          branches:
+            only: master
+        requires:
+        - prep-deps-npm
+        - prep-build
+        - prep-docs
+        - job-screens
+    #           - all-tests-pass
+    - job-publish-postrelease:
+        filters:
+          branches:
+            only: master
+        requires:
+        - prep-deps-npm
+        - prep-build
+        - prep-docs
+        - job-screens
+#            - all-tests-pass
 
 jobs:
   prep-deps-npm:
