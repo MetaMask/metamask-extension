@@ -15,8 +15,7 @@ module.exports = {
   installWebExt,
   getExtensionIdChrome,
   getExtensionIdFirefox,
-  clearField,
-  }
+}
 
 function delay (time) {
   return new Promise(resolve => setTimeout(resolve, time))
@@ -62,12 +61,4 @@ async function installWebExt (driver, extension) {
     .defineCommand(cmd.getName(), 'POST', '/session/:sessionId/moz/addon/install')
 
   return await driver.execute(cmd, 'installWebExt(' + extension + ')')
-}
-
-async function clearField (field, number) {
-  await field.click()
-  if (number === undefined) number = 40
-  for (let i = 0; i < number; i++) {
-    await field.sendKeys(Key.BACK_SPACE)
-  }
 }
