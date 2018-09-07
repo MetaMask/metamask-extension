@@ -11,11 +11,17 @@ class Dropdown extends Component {
     const { isOpen, onClickOutside, style, innerStyle, children, useCssTransition } = this.props
 
     const innerStyleDefaults = extend({
-      borderRadius: '4px',
       padding: '15px 30px',
-      background: 'rgba(71, 28, 115, 0.95)',
+      background: 'transparent',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     }, innerStyle)
+
+    const styleDefaults = extend({
+      borderRadius: '4px',
+      background: 'rgba(71, 28, 115, 0.95)',
+      overflowY: 'auto',
+      transition: 'max-height 300ms ease-in-out',
+    }, style)
 
     return h(
       MenuDroppo,
@@ -24,7 +30,7 @@ class Dropdown extends Component {
         isOpen,
         zIndex: 11,
         onClickOutside,
-        style,
+        style: styleDefaults,
         innerStyle: innerStyleDefaults,
       },
       [

@@ -1008,6 +1008,15 @@ div.message-container > div:first-child {
   height: 22px;
 }
 
+.menu-droppo-container::-webkit-scrollbar {
+  width: 1px;
+}
+ 
+.menu-droppo-container::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
 .hidden {
   visibility: hidden;
 }
