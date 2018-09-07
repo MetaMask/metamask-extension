@@ -13,9 +13,9 @@ If you're a user seeking support, [here is our support site](https://metamask.he
 
 ## Developing Compatible Dapps
 
-If you're a web dapp developer, we've got two types of guides for you:
+If you're a web DApp developer, we've got two types of guides for you:
 
-### New Dapp Developers
+### New DApp Developers
 
 - We recommend this [Learning Solidity](https://karl.tech/learning-solidity-part-1-deploy-a-contract/) tutorial series by Karl Floersch.
 - We wrote a (slightly outdated now) gentle introduction on [Developing Dapps with Truffle and MetaMask](https://medium.com/metamask/developing-ethereum-dapps-with-truffle-and-metamask-aa8ad7e363ba).
