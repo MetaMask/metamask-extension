@@ -236,7 +236,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.7.2",
-    "babelify": "^8.0.0",
+    "babelify": "^10.0.0",
     "beefy": "^2.1.5",
     "brfs": "^1.6.1",
     "browserify": "^16.1.1",
