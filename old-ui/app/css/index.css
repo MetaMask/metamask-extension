@@ -403,7 +403,7 @@ p.exchanges {
   font-family: 'Nunito Semibold';
 }
 
-.trash {
+.trash:after {
   content: url('../images/close.svg');
   width: 12px;
   height: 12px;
