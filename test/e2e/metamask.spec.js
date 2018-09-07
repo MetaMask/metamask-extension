@@ -166,7 +166,6 @@ describe('Metamask popup page', async function () {
     })
 
     it('user is able to open \'Info\' screen', async function () {
-
       const accountMenu = await waitUntilShowUp(menus.sandwich.menu)
       await accountMenu.click()
       const item = await waitUntilShowUp(menus.sandwich.info)
@@ -177,8 +176,6 @@ describe('Metamask popup page', async function () {
       const title = await waitUntilShowUp(screens.info.title)
       assert.equal(await title.getText(), screens.info.titleText, 'title is incorrect')
     })
-
-
   })
 
   describe('Change password', async () => {
@@ -452,7 +449,6 @@ describe('Metamask popup page', async function () {
     })
 
     it('confirms transaction', async function () {
-
       const submitButton = await waitUntilShowUp(screens.confirmTransaction.buttons.submit)
       await click(submitButton)
     })
@@ -986,5 +982,4 @@ describe('Metamask popup page', async function () {
     const htmlSource = await driver.getPageSource()
     await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
-
 })
