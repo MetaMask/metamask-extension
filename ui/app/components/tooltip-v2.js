@@ -38,6 +38,14 @@ export default class Tooltip extends PureComponent {
   render () {
     const {arrow, children, containerClassName, position, size, title, trigger, onHidden, wrapperClassName } = this.props
 
+    if (!title) {
+      return (
+        <div className={wrapperClassName}>
+          {children}
+        </div>
+      )
+    }
+
     return (
       <div className={wrapperClassName}>
         <ReactTippy
