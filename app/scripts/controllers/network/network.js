@@ -11,7 +11,6 @@ const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
-const pausable = require('pausable')
 
 const {
   ROPSTEN,
