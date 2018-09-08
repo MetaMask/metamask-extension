@@ -106,13 +106,16 @@ class App extends Component {
       currentView,
       setMouseUserState,
       sidebar,
+      location
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
-    const isErrorLoading = network === 'timeout' && currentView.name !== 'config'
+    const isErrorLoading = network === 'timeout' && location.pathname !== SETTINGS_ROUTE && location.pathname !== UNLOCK_ROUTE
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
     const errorLoadingMessage = this.context.t('verifyNetworkTimeout')
     log.debug('Main ui render function')
+    log.debug(currentView.name)
+    log.debug(location.pathname)
 
     return (
       h('.flex-column.full-height', {
