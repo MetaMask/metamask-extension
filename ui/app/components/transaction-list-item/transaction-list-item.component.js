@@ -134,7 +134,7 @@ export default class TransactionListItem extends PureComponent {
             title={(
               (transaction.err && transaction.err.rpc)
                 ? transaction.err.rpc.message
-                : null
+                : transaction.err && transaction.err.message
             )}
           />
           { this.renderPrimaryCurrency() }
