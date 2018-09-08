@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
 import { addressSlicer } from '../../util'
 
-const Tooltip = require('../tooltip-v2.js')
+const Tooltip = require('../tooltip-v2.js').default
 
 class SelectedAccount extends Component {
   state = {
