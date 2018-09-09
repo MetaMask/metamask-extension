@@ -79,6 +79,15 @@ function reduceApp (state, action) {
 
   switch (action.type) {
     // dropdown methods
+    case actions.ERROR_LOADING_SCREEN_OPEN:
+      return extend(appState, {
+        errorLoadingScreenOpen: true,
+      })
+
+    case actions.ERROR_LOADING_SCREEN_CLOSE:
+      return extend(appState, {
+        errorLoadingScreenOpen: false,
+      })
     case actions.NETWORK_DROPDOWN_OPEN:
       return extend(appState, {
         networkDropdownOpen: true,

@@ -41,6 +41,11 @@ var actions = {
   NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
   showNetworkDropdown: showNetworkDropdown,
   hideNetworkDropdown: hideNetworkDropdown,
+  //error loading screen open
+  ERROR_LOADING_SCREEN_OPEN: 'UI_ERROR_LOADING_SCREEN_OPEN',
+  ERROR_LOADING_SCREEN_CLOSE: 'UI_ERROR_LOADING_SCREEN_CLOSE',
+  showErrorLoadingScreen: showErrorLoadingScreen,
+  hideErrorLoadingScreen: hideErrorLoadingScreen,
   // menu state/
   getNetworkStatus: 'getNetworkStatus',
   // transition state
@@ -1823,6 +1828,18 @@ function useEtherscanProvider () {
   background.useEtherscanProvider()
   return {
     type: actions.USE_ETHERSCAN_PROVIDER,
+  }
+}
+
+function showErrorLoadingScreen () {
+  return {
+    type: actions.ERROR_LOADING_SCREEN_OPEN,
+  }
+}
+
+function hideErrorLoadingScreen () {
+  return {
+    type: actions.ERROR_LOADING_SCREEN_CLOSE,
   }
 }
 

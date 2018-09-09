@@ -9,6 +9,7 @@ const actions = require('../../actions')
 const mapStateToProps = state => {
   const { appState, metamask } = state
   const { networkDropdownOpen } = appState
+  const { errorLoadingScreenOpen } = appState
   const {
     network,
     provider,
@@ -18,6 +19,7 @@ const mapStateToProps = state => {
 
   return {
     networkDropdownOpen,
+    errorLoadingScreenOpen,
     network,
     provider,
     selectedAddress,
@@ -29,6 +31,8 @@ const mapDispatchToProps = dispatch => {
   return {
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
+    showErrorLoadingScreen: () => dispatch(actions.showErrorLoadingScreen()),
+    hideErrorLoadingScreen: () => dispatch(actions.hideErrorLoadingScreen()),
     setProviderType: (type) => {
       dispatch(actions.setProviderType(type))
     }

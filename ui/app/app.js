@@ -249,6 +249,9 @@ App.propTypes = {
   isMascara: PropTypes.bool,
   isOnboarding: PropTypes.bool,
   isUnlocked: PropTypes.bool,
+  errorLoadingScreenOpen: PropTypes.bool,
+  showErrorLoadingScreen: PropTypes.func,
+  hideErrorLoadingScreen: PropTypes.func,
   networkDropdownOpen: PropTypes.bool,
   showNetworkDropdown: PropTypes.func,
   hideNetworkDropdown: PropTypes.func,
@@ -279,6 +282,7 @@ function mapStateToProps (state) {
   const { appState, metamask } = state
   const {
     networkDropdownOpen,
+    errorLoadingScreenOpen,
     sidebar,
     alertOpen,
     alertMessage,
@@ -305,6 +309,7 @@ function mapStateToProps (state) {
 
   return {
     // state from plugin
+    errorLoadingScreenOpen,
     networkDropdownOpen,
     sidebar,
     alertOpen,
@@ -352,6 +357,8 @@ function mapDispatchToProps (dispatch, ownProps) {
   return {
     dispatch,
     hideSidebar: () => dispatch(actions.hideSidebar()),
+    showErrorLoadingScreen: () => dispatch(actions.showErrorLoadingScreen()),
+    hideErrorLoadingScreen: () => dispatch(actions.hideErrorLoadingScreen()),
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),

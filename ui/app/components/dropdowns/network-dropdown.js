@@ -45,6 +45,7 @@ function mapDispatchToProps (dispatch) {
     },
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
+    showErrorLoadingScreen: () => dispatch(actions.showErrorLoadingScreen())
   }
 }
 
@@ -116,7 +117,10 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'main',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('mainnet'),
+        onClick: () => {
+         props.setProviderType('mainnet')
+         props.showErrorLoadingScreen()
+        },
         style: { ...dropdownMenuItemStyle, borderColor: '#038789' },
       },
       [
@@ -138,7 +142,10 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'ropsten',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('ropsten'),
+        onClick: () => {
+         props.setProviderType('ropsten')   
+         props.showErrorLoadingScreen()
+        },
         style: dropdownMenuItemStyle,
       },
       [
@@ -160,7 +167,10 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'kovan',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('kovan'),
+        onClick: () => {
+         props.setProviderType('kovan'),
+         props.showErrorLoadingScreen()
+        },
         style: dropdownMenuItemStyle,
       },
       [
@@ -182,7 +192,10 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'rinkeby',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('rinkeby'),
+        onClick: () => {
+         props.setProviderType('rinkeby'),
+         props.showErrorLoadingScreen()
+        },
         style: dropdownMenuItemStyle,
       },
       [
@@ -204,7 +217,10 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'default',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setProviderType('localhost'),
+        onClick: () => {
+         props.setProviderType('localhost'),
+         props.showErrorLoadingScreen()
+        },
         style: dropdownMenuItemStyle,
       },
       [
@@ -228,7 +244,10 @@ NetworkDropdown.prototype.render = function () {
       DropdownMenuItem,
       {
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => this.props.history.push(SETTINGS_ROUTE),
+        onClick: () => {
+         this.props.history.push(SETTINGS_ROUTE),
+         props.showErrorLoadingScreen()
+        },
         style: dropdownMenuItemStyle,
       },
       [

@@ -1,4 +1,4 @@
-const { Component } = require('react')
+import React, { Component } from 'react'
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
 const actions = require('../../actions')
@@ -12,6 +12,13 @@ class ErrorLoadingScreen extends Component {
     hideNetworkDropdown: PropTypes.func
   }
 
+  constructor(props) {
+    super(props)
+
+    this.state = {
+        isShowing: true
+    }
+  }
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -31,6 +38,9 @@ class ErrorLoadingScreen extends Component {
         }, 'Switch network', [])
       ])
     ])
+  }
+  handleClose () {
+      this.setState({ isShowing: false })
   }
 
   handleNetworkResetConnectionClick (event) {
@@ -54,9 +64,15 @@ class ErrorLoadingScreen extends Component {
   }
 
   render () {
-    return (
-      h('.loading-overlay', [
+    return !this.state.isShowing
+       ? null
+       : (
+       h('.loading-overlay', [
         h('.loading-overlay__container', [
+          <div
+            className="info-box__close"
+            onClick={() => this.handleClose()}
+          />,
           this.renderMessage(),
           this.renderButtons()
         ]),
