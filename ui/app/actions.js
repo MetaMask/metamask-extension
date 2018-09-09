@@ -315,6 +315,8 @@ var actions = {
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
   setPendingTokens,
   clearPendingTokens,
+
+  createCancelTransaction,
 }
 
 module.exports = actions
@@ -1763,6 +1765,29 @@ function retryTransaction (txId) {
     })
       .then(newState => dispatch(actions.updateMetamaskState(newState)))
       .then(() => newTxId)
+  }
+}
+
+function createCancelTransaction (txId, customGasPrice) {
+  log.debug('background.cancelTransaction')
+  let newTxId
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        newTxId = id
+        resolve(newState)
+      })
+    })
+    .then(newState => dispatch(actions.updateMetamaskState(newState)))
+    .then(() => newTxId)
   }
 }
 
