@@ -12,15 +12,15 @@ class ErrorLoadingScreen extends Component {
     hideNetworkDropdown: PropTypes.func
   }
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-        isShowing: true
-    }
-  }
   static contextTypes = {
     t: PropTypes.func,
+  }
+
+  constructor (props) {
+    super(props)
+
+    const { showErrorLoadingScreen } = this.props
+    showErrorLoadingScreen()
   }
 
   renderMessage () {
@@ -35,12 +35,12 @@ class ErrorLoadingScreen extends Component {
         }, 'Try again', []),
         h('button.btn-primary.hero-balance-button', {
           onClick: event => this.handleNetworkResetConnectionClick(event)
-        }, 'Switch network', [])
+        }, 'tryAgain', [])
       ])
     ])
   }
   handleClose () {
-      this.setState({ isShowing: false })
+      this.props.hideErrorLoadingScreen()
   }
 
   handleNetworkResetConnectionClick (event) {
@@ -64,7 +64,8 @@ class ErrorLoadingScreen extends Component {
   }
 
   render () {
-    return !this.state.isShowing
+    const isOpen = this.props.errorLoadingScreenOpen
+    return !isOpen
        ? null
        : (
        h('.loading-overlay', [
