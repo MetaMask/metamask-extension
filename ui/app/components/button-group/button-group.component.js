@@ -14,12 +14,13 @@ export default class ButtonGroup extends PureComponent {
 
   static defaultProps = {
     className: 'button-group',
+    defaultActiveButtonIndex: 0,
   }
 
   state = {
     activeButtonIndex: this.props.noButtonActiveByDefault
       ? null
-      : this.props.defaultActiveButtonIndex || 0,
+      : this.props.defaultActiveButtonIndex,
   }
 
   handleButtonClick (activeButtonIndex) {
