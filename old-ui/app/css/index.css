@@ -26,6 +26,7 @@ html, body {
 
 html {
   min-height: 500px;
+  overflow: -moz-scrollbars-none;
 }
 
 .account-detail-section::-webkit-scrollbar {
@@ -331,7 +332,7 @@ p.exchanges {
   height: 14px;
 }
 
-.arrow-right {
+.arrow-right::before {
   content: url('../images/arrow-right.svg');
   width: 14px;
   height: 14px;
@@ -402,7 +403,7 @@ p.exchanges {
   font-family: 'Nunito Semibold';
 }
 
-.trash {
+.trash:after {
   content: url('../images/close.svg');
   width: 12px;
   height: 12px;
@@ -593,7 +594,8 @@ input.large-input {
   display: flex;
   flex-wrap: wrap;
   overflow-x: hidden;
-  overflow-y: auto;
+  /*overflow-y: auto;*/
+  overflow-y: -moz-scrollbars-none;
   max-height: 585px;
   flex-direction: inherit;
 }
@@ -994,16 +996,25 @@ div.message-container > div:first-child {
   word-wrap: break-word;
 }
 
-.contract {
+.contract::after {
   content: url('../images/contract.svg');
   width: 36px;
   height: 42px;
 }
 
-.contract-small {
+.contract-small::after {
   content: url('../images/contract-small.svg');
   width: 19px;
   height: 22px;
+}
+
+.menu-droppo-container::-webkit-scrollbar {
+  width: 1px;
+}
+ 
+.menu-droppo-container::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  background-clip: content-box;
 }
 
 .hidden {

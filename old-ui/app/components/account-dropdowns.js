@@ -119,11 +119,11 @@ class AccountDropdowns extends Component {
       {
         useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
         style: {
+          position: 'absolute',
           marginLeft: '-213px',
-          marginTop: '32px',
+          top: '38px',
           minWidth: '180px',
-          overflowY: 'auto',
-          maxHeight: '300px',
+          maxHeight: accountSelectorActive ? '300px' : '0px',
           width: '265px',
         },
         innerStyle: {
@@ -264,11 +264,9 @@ class AccountDropdowns extends Component {
       },
       [
         enableAccountsSelector && h(
-          // 'i.fa.fa-angle-down',
           'div.accounts-selector',
           {
             style: {
-              // fontSize: '1.8em',
               background: 'url(images/switch_acc.svg) white center center no-repeat',
               height: '25px',
               width: '25px',
