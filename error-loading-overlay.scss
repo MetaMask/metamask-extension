@@ -1,0 +1,54 @@
+.error-loading-overlay {
+  left: 0;
+  z-index: 50;
+  position: absolute;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 auto;
+  width: 100%;
+  background: rgba(255, 255, 255, .8);
+
+  @media screen and (max-width: 575px) {
+    margin-top: 66px;
+    height: calc(100% - 66px);
+  }
+
+  @media screen and (min-width: 576px) {
+    margin-top: 75px;
+    height: calc(100% - 75px);
+  }
+
+  &--full-screen {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    margin-top: 0;
+  }
+
+  &__container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  & .hero-balance .hero-balance-buttons .btn-primary {
+    margin-right: 12px;
+  }
+
+  &__message {
+    font-weight: 400;
+    font-size: 20px;
+    color: $manatee;
+    margin-bottom: 50px;
+  }
+}
+
+.spinner {
+  height: 58px;
+  width: 58px;
+}
