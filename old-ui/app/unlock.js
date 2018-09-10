@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
 const getCaretCoordinates = require('textarea-caret')
+const log = require('loglevel')
 const EventEmitter = require('events').EventEmitter
 
 module.exports = connect(mapStateToProps)(UnlockScreen)
@@ -85,10 +86,14 @@ UnlockScreen.prototype.componentDidMount = function () {
   document.getElementById('password-box').focus()
 }
 
-UnlockScreen.prototype.onSubmit = function (event) {
+UnlockScreen.prototype.onSubmit = async function (event) {
   const input = document.getElementById('password-box')
   const password = input.value
-  this.props.dispatch(actions.tryUnlockMetamask(password))
+  try {
+    await this.props.dispatch(actions.tryUnlockMetamask(password))
+  } catch (e) {
+    log.error(e)
+  }
 }
 
 UnlockScreen.prototype.onKeyPress = function (event) {
@@ -97,10 +102,14 @@ UnlockScreen.prototype.onKeyPress = function (event) {
   }
 }
 
-UnlockScreen.prototype.submitPassword = function (event) {
+UnlockScreen.prototype.submitPassword = async function (event) {
   var element = event.target
   var password = element.value
   // reset input
   element.value = ''
-  this.props.dispatch(actions.tryUnlockMetamask(password))
+  try {
+    await this.props.dispatch(actions.tryUnlockMetamask(password))
+  } catch (e) {
+    log.error(e)
+  }
 }

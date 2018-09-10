@@ -24,33 +24,13 @@ MenuDroppoComponent.prototype.render = function () {
     style.position = 'fixed'
   }
   style.zIndex = zIndex
+  style.overflow = 'hidden'
 
   return (
     h('.menu-droppo-container', {
+      ref: 'menuDroppoContainer',
       style,
     }, [
-      h('style', `
-        .menu-droppo-enter {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-200%);
-        }
-
-        .menu-droppo-enter.menu-droppo-enter-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
-
-        .menu-droppo-leave {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(0%);
-        }
-
-        .menu-droppo-leave.menu-droppo-leave-active {
-          transition: transform ${speed} ease-in-out;
-          transform: translateY(-200%);
-        }
-      `),
-
       useCssTransition
         ? h(ReactCSSTransitionGroup, {
           className: 'css-transition-group',
@@ -99,6 +79,20 @@ MenuDroppoComponent.prototype.componentDidMount = function () {
     var container = findDOMNode(this)
     this.container = container
   }
+
+  /*
+   * transitionstart event is not supported in Chrome yet. But it works for Firefox 53+.
+   * We need to handle this event only for FF because for Chrome we've hidden scrolls.
+  */
+  this.refs.menuDroppoContainer.addEventListener('transitionstart', () => {
+    this.refs.menuDroppoContainer.style.overflow = 'hidden'
+  })
+
+  this.refs.menuDroppoContainer.addEventListener('transitionend', () => {
+    if (!this.props.constOverflow) {
+      this.refs.menuDroppoContainer.style.overflow = 'auto'
+    }
+  })
 }
 
 MenuDroppoComponent.prototype.componentWillUnmount = function () {

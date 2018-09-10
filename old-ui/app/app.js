@@ -207,7 +207,6 @@ App.prototype.renderAppBar = function () {
             alignItems: 'center',
           },
         }, [
-
           props.isUnlocked && h(AccountDropdowns, {
             style: {},
             enableAccountsSelector: true,
@@ -260,8 +259,9 @@ App.prototype.renderNetworkDropdown = function () {
     style: {
       position: 'absolute',
       left: '2px',
-      top: '36px',
+      top: '38px',
       width: '270px',
+      maxHeight: isOpen ? '524px' : '0px',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',
@@ -375,7 +375,10 @@ App.prototype.renderNetworkDropdown = function () {
       {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('localhost')),
+        onClick: () => {
+          props.dispatch(actions.setRpcTarget('http://localhost:8545'))
+          props.dispatch(actions.setProviderType('localhost'))
+        },
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
@@ -386,9 +389,6 @@ App.prototype.renderNetworkDropdown = function () {
         'Localhost 8545',
       ]
     ),
-
-    this.renderCustomOption(props.provider),
-    this.renderCommonRpc(rpcList, props.provider),
 
     h(
       DropdownMenuItem,
@@ -406,6 +406,9 @@ App.prototype.renderNetworkDropdown = function () {
       ]
     ),
 
+    this.renderSelectedCustomOption(props.provider),
+    this.renderCommonRpc(rpcList, props.provider),
+
   ])
 }
 
@@ -418,6 +421,7 @@ App.prototype.renderDropdown = function () {
     useCssTransition: true,
     isOpen: isOpen,
     zIndex: 11,
+    constOverflow: true,
     onClickOutside: (event) => {
       const classList = event.target.classList
       const parentClassList = event.target.parentElement.classList
@@ -436,6 +440,9 @@ App.prototype.renderDropdown = function () {
       position: 'absolute',
       right: '2px',
       top: '38px',
+      width: '126px',
+      maxHeight: isOpen ? '186px' : '0px',
+      overflow: 'hidden',
     },
     innerStyle: {},
   }, [
@@ -669,10 +676,9 @@ App.prototype.toggleMetamaskActive = function () {
   }
 }
 
-App.prototype.renderCustomOption = function (provider) {
+App.prototype.renderSelectedCustomOption = function (provider) {
   const { rpcTarget, type } = provider
   const props = this.props
-
   if (type !== 'rpc') return null
 
   // Concatenate long URLs
@@ -682,9 +688,6 @@ App.prototype.renderCustomOption = function (provider) {
   }
 
   switch (rpcTarget) {
-
-    case 'http://localhost:8545':
-      return null
 
     default:
       return h(
@@ -721,10 +724,10 @@ App.prototype.getNetworkName = function () {
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
-  const rpcTarget = provider.rpcTarget
+  const { rpcTarget, type } = provider
 
   return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (provider.type === 'rpc' && rpc === rpcTarget)) {
+    if (type === 'rpc' && rpc === rpcTarget) {
       return null
     } else {
       return h(
