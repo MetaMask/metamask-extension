@@ -502,7 +502,7 @@ function requestRevealSeed (password) {
     return new Promise((resolve, reject) => {
       background.submitPassword(password, err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(actions.displayWarning(err))
           return reject(err)
         }
 
