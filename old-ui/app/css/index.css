@@ -1013,11 +1013,11 @@ div.message-container > div:first-child {
 }
 
 .menu-droppo-container::-webkit-scrollbar {
-  width: 1px;
+  width: 0px;
 }
  
 .menu-droppo-container::-webkit-scrollbar-thumb {
-  border: 1px solid transparent;
+  border: none;
   background-clip: content-box;
 }
 

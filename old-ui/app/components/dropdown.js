@@ -8,7 +8,7 @@ const noop = () => {}
 
 class Dropdown extends Component {
   render () {
-    const { isOpen, onClickOutside, style, innerStyle, children, useCssTransition } = this.props
+    const { isOpen, onClickOutside, style, innerStyle, children, useCssTransition, constOverflow } = this.props
 
     const innerStyleDefaults = extend({
       padding: '15px 30px',
@@ -29,6 +29,7 @@ class Dropdown extends Component {
         useCssTransition,
         isOpen,
         zIndex: 11,
+        constOverflow,
         onClickOutside,
         style: styleDefaults,
         innerStyle: innerStyleDefaults,
@@ -61,6 +62,7 @@ Dropdown.propTypes = {
   onClickOutside: PropTypes.func,
   innerStyle: PropTypes.object,
   useCssTransition: PropTypes.bool,
+  constOverflow: PropTypes.bool,
 }
 
 class DropdownMenuItem extends Component {
