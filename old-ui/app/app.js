@@ -91,10 +91,11 @@ function mapStateToProps (state) {
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, loadingMessage, transForward, network } = props
+  const { isLoading, loadingMessage, transForward, network, provider } = props
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config' && props.currentView.name !== 'delete-rpc'
+  const networkName = provider.type === 'rpc' ? `${this.getNetworkName()} (${provider.rpcTarget})` : this.getNetworkName()
   const loadMessage = loadingMessage || isLoadingNetwork ?
-    `Connecting to ${this.getNetworkName()}` : null
+    `Connecting to ${networkName}` : null
   log.debug('Main ui render function')
 
   return (

@@ -4,456 +4,456 @@ workflows:
   version: 2
   full_test:
     jobs:
-      - prep-deps-npm
-      - prep-deps-firefox
-      - prep-build:
-          requires:
-            - prep-deps-npm
-      - prep-docs:
-          requires:
-            - prep-deps-npm
-      - prep-scss:
-          requires:
-            - prep-deps-npm
-      - test-lint:
-          requires:
-            - prep-deps-npm
-      - test-deps:
-          requires:
-            - prep-deps-npm
-      - test-e2e-chrome:
-          requires:
-            - prep-deps-npm
-            - prep-build
-      - test-e2e-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-deps-firefox
-            - prep-build
-      - test-unit:
-          requires:
-            - prep-deps-npm
-      - test-integration-mascara-chrome:
-          requires:
-            - prep-deps-npm
-            - prep-scss
-      - test-integration-mascara-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-deps-firefox
-            - prep-scss
-      - test-integration-flat-chrome:
-          requires:
-            - prep-deps-npm
-            - prep-scss
-      - test-integration-flat-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-deps-firefox
-            - prep-scss
-      - all-tests-pass:
-          requires:
-            - test-lint
-            - test-unit
-            - test-e2e-chrome
-            - test-e2e-firefox
-            - test-integration-mascara-chrome
-            - test-integration-mascara-firefox
-            - test-integration-flat-chrome
-            - test-integration-flat-firefox
-      - job-screens:
-          requires:
-            - prep-deps-npm
-            - prep-build
-#           - all-tests-pass
-      - job-publish-prerelease:
-          requires:
-            - prep-deps-npm
-            - prep-build
-            - job-screens
-#           - all-tests-pass
-      - job-publish-release:
-          filters:
-            branches:
-              only: master
-          requires:
-            - prep-deps-npm
-            - prep-build
-            - prep-docs
-            - job-screens
-#           - all-tests-pass
-      - job-publish-postrelease:
-          filters:
-            branches:
-              only: master
-          requires:
-             - prep-deps-npm
-             - prep-build
-             - prep-docs
-             - job-screens
+    - prep-deps-npm
+    - prep-deps-firefox
+    - prep-build:
+        requires:
+        - prep-deps-npm
+    - prep-docs:
+        requires:
+        - prep-deps-npm
+    - prep-scss:
+        requires:
+        - prep-deps-npm
+    - test-lint:
+        requires:
+        - prep-deps-npm
+    - test-deps:
+        requires:
+        - prep-deps-npm
+    - test-e2e-chrome:
+        requires:
+        - prep-deps-npm
+        - prep-build
+    - test-e2e-firefox:
+        requires:
+        - prep-deps-npm
+        - prep-deps-firefox
+        - prep-build
+    - test-unit:
+        requires:
+        - prep-deps-npm
+    - test-integration-mascara-chrome:
+        requires:
+        - prep-deps-npm
+        - prep-scss
+    - test-integration-mascara-firefox:
+        requires:
+        - prep-deps-npm
+        - prep-deps-firefox
+        - prep-scss
+    - test-integration-flat-chrome:
+        requires:
+        - prep-deps-npm
+        - prep-scss
+    - test-integration-flat-firefox:
+        requires:
+        - prep-deps-npm
+        - prep-deps-firefox
+        - prep-scss
+    - all-tests-pass:
+        requires:
+        - test-lint
+        - test-unit
+        - test-e2e-chrome
+        - test-e2e-firefox
+        - test-integration-mascara-chrome
+        - test-integration-mascara-firefox
+        - test-integration-flat-chrome
+        - test-integration-flat-firefox
+    - job-screens:
+        requires:
+        - prep-deps-npm
+        - prep-build
+    #           - all-tests-pass
+    - job-publish-prerelease:
+        requires:
+        - prep-deps-npm
+        - prep-build
+        - job-screens
+    #           - all-tests-pass
+    - job-publish-release:
+        filters:
+          branches:
+            only: master
+        requires:
+        - prep-deps-npm
+        - prep-build
+        - prep-docs
+        - job-screens
+    #           - all-tests-pass
+    - job-publish-postrelease:
+        filters:
+          branches:
+            only: master
+        requires:
+        - prep-deps-npm
+        - prep-build
+        - prep-docs
+        - job-screens
 #            - all-tests-pass
 
 jobs:
   prep-deps-npm:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: Install npm 6 + deps via npm
-          command: |
-           sudo npm install -g npm@6.1.0 && npm install --no-save
-      - save_cache:
-          key: dependency-cache-{{ .Revision }}
-          paths:
-            - node_modules
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: Install npm 6 + deps via npm
+        command: |
+          sudo npm install -g npm@6.1.0 && npm install --no-save
+    - save_cache:
+        key: dependency-cache-{{ .Revision }}
+        paths:
+        - node_modules
   prep-deps-firefox:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
-      - run:
-          name: Download Firefox
-          command: ./.circleci/scripts/firefox-download.sh
-      - save_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
-          paths:
-            - firefox
+    - checkout
+    - restore_cache:
+        key: dependency-cache-firefox-{{ .Revision }}
+    - run:
+        name: Download Firefox
+        command: ./.circleci/scripts/firefox-download.sh
+    - save_cache:
+        key: dependency-cache-firefox-{{ .Revision }}
+        paths:
+        - firefox
 
   prep-build:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: build:dist
-          command: NODE_ENV='production' npm run dist
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - save_cache:
-          key: build-cache-{{ .Revision }}
-          paths:
-            - dist
-            - builds
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: build:dist
+        command: NODE_ENV='production' npm run dist
+    - run:
+        name: build:debug
+        command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+    - save_cache:
+        key: build-cache-{{ .Revision }}
+        paths:
+        - dist
+        - builds
 
   prep-docs:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: build:dist
-          command: npm run doc
-      - save_cache:
-          key: docs-cache-{{ .Revision }}
-          paths:
-            - docs/jsdoc
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: build:dist
+        command: npm run doc
+    - save_cache:
+        key: docs-cache-{{ .Revision }}
+        paths:
+        - docs/jsdoc
 
   prep-scss:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - run:
-          name: Build for integration tests
-          command: npm run test:integration:build
-      - save_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
-          paths:
-            - ui/app/css/output
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: Get Scss Cache key
+        # this allows us to checksum against a whole directory
+        command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
+    - run:
+        name: Build for integration tests
+        command: npm run test:integration:build
+    - save_cache:
+        key: scss-cache-{{ checksum "scss_checksum" }}
+        paths:
+        - ui/app/css/output
 
   test-lint:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: Test
-          command: npm run lint
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: Test
+        command: npm run lint
 
   test-deps:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: Test
-          command: npx nsp check
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: Test
+        command: npx nsp check
 
   test-e2e-chrome:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
-      - run:
-          name: test:e2e:chrome
-          command: npm run test:e2e:chrome
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - restore_cache:
+        key: build-cache-{{ .Revision }}
+    - run:
+        name: test:e2e:chrome
+        command: npm run test:e2e:chrome
+    - store_artifacts:
+        path: test-artifacts
+        destination: test-artifacts
 
   test-e2e-firefox:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
-      - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
-      - run:
-          name: test:e2e:firefox
-          command: npm run test:e2e:firefox
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
+    - checkout
+    - restore_cache:
+        key: dependency-cache-firefox-{{ .Revision }}
+    - run:
+        name: Install firefox
+        command: ./.circleci/scripts/firefox-install.sh
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - restore_cache:
+        key: build-cache-{{ .Revision }}
+    - run:
+        name: test:e2e:firefox
+        command: npm run test:e2e:firefox
+    - store_artifacts:
+        path: test-artifacts
+        destination: test-artifacts
 
   test-e2e-beta-chrome:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
-      - run:
-          name: test:e2e:chrome:beta
-          command: npm run test:e2e:chrome:beta
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - restore_cache:
+        key: build-cache-{{ .Revision }}
+    - run:
+        name: test:e2e:chrome:beta
+        command: npm run test:e2e:chrome:beta
+    - store_artifacts:
+        path: test-artifacts
+        destination: test-artifacts
 
   test-e2e-beta-firefox:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
-      - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
-      - run:
-          name: test:e2e:firefox:beta
-          command: npm run test:e2e:firefox:beta
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
+    - checkout
+    - restore_cache:
+        key: dependency-cache-firefox-{{ .Revision }}
+    - run:
+        name: Install firefox
+        command: ./.circleci/scripts/firefox-install.sh
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - restore_cache:
+        key: build-cache-{{ .Revision }}
+    - run:
+        name: test:e2e:firefox:beta
+        command: npm run test:e2e:firefox:beta
+    - store_artifacts:
+        path: test-artifacts
+        destination: test-artifacts
 
   job-screens:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
-      - run:
-          name: Test
-          command: npm run test:screens
-      - save_cache:
-          key: job-screens-{{ .Revision }}
-          paths:
-            - test-artifacts
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - restore_cache:
+        key: build-cache-{{ .Revision }}
+    - run:
+        name: Test
+        command: npm run test:screens
+    - save_cache:
+        key: job-screens-{{ .Revision }}
+        paths:
+        - test-artifacts
 
   job-publish-prerelease:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
-      - restore_cache:
-          key: job-screens-{{ .Revision }}
-      - store_artifacts:
-          path: dist/mascara
-          destination: builds/mascara
-      - store_artifacts:
-          path: dist/sourcemaps
-          destination: builds/sourcemaps
-      - store_artifacts:
-          path: builds
-          destination: builds
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - run:
-          name: build:announce
-          command: ./development/metamaskbot-build-announce.js
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - restore_cache:
+        key: build-cache-{{ .Revision }}
+    - restore_cache:
+        key: job-screens-{{ .Revision }}
+    - store_artifacts:
+        path: dist/mascara
+        destination: builds/mascara
+    - store_artifacts:
+        path: dist/sourcemaps
+        destination: builds/sourcemaps
+    - store_artifacts:
+        path: builds
+        destination: builds
+    - store_artifacts:
+        path: test-artifacts
+        destination: test-artifacts
+    - run:
+        name: build:announce
+        command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-     - checkout
-     - restore_cache:
+    - checkout
+    - restore_cache:
         key: dependency-cache-{{ .Revision }}
-     - restore_cache:
+    - restore_cache:
         key: build-cache-{{ .Revision }}
-     - run:
-         name: build:release
-         command: node ./development/publish-release.js
+    - run:
+        name: build:release
+        command: node ./development/publish-release.js
 
   job-publish-postrelease:
-      docker:
-        - image: circleci/node:8.11.4-browsers
-      steps:
-        - checkout
-        - restore_cache:
-            key: dependency-cache-{{ .Revision }}
-        - restore_cache:
-            key: build-cache-{{ .Revision }}
-        - restore_cache:
-            key: docs-cache-{{ .Revision }}
-        - restore_cache:
-            key: job-screens-{{ .Revision }}
-        - run:
-            name: sentry sourcemaps upload
-            command: npm run sentry:publish
-#        - run:
-#            name: github gh-pages docs publish
-#            command: >
-#              git config user.name metamaskbot
-#              git config user.email admin@metamask.io
-#              gh-pages -d docs/jsdocs
+    docker:
+    - image: circleci/node:8.11.4-browsers
+    steps:
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - restore_cache:
+        key: build-cache-{{ .Revision }}
+    - restore_cache:
+        key: docs-cache-{{ .Revision }}
+    - restore_cache:
+        key: job-screens-{{ .Revision }}
+    - run:
+        name: sentry sourcemaps upload
+        command: npm run sentry:publish
+  #        - run:
+  #            name: github gh-pages docs publish
+  #            command: >
+  #              git config user.name metamaskbot
+  #              git config user.email admin@metamask.io
+  #              gh-pages -d docs/jsdocs
 
   test-unit:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: test:coverage
-          command: npm run test:coverage
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: test:coverage
+        command: npm run test:coverage
 
   test-integration-flat-firefox:
     environment:
       browsers: '["Firefox"]'
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
-      - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
-      - run:
-          name: test:integration:flat
-          command: npm run test:flat
+    - checkout
+    - restore_cache:
+        key: dependency-cache-firefox-{{ .Revision }}
+    - run:
+        name: Install firefox
+        command: ./.circleci/scripts/firefox-install.sh
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: Get Scss Cache key
+        # this allows us to checksum against a whole directory
+        command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
+    - restore_cache:
+        key: scss-cache-{{ checksum "scss_checksum" }}
+    - run:
+        name: test:integration:flat
+        command: npm run test:flat
 
   test-integration-flat-chrome:
     environment:
       browsers: '["Chrome"]'
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
-      - run:
-          name: test:integration:flat
-          command: npm run test:flat
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: Get Scss Cache key
+        # this allows us to checksum against a whole directory
+        command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
+    - restore_cache:
+        key: scss-cache-{{ checksum "scss_checksum" }}
+    - run:
+        name: test:integration:flat
+        command: npm run test:flat
 
   test-integration-mascara-firefox:
     environment:
       browsers: '["Firefox"]'
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-firefox-{{ .Revision }}
-      - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
-      - run:
-          name: test:integration:mascara
-          command: npm run test:mascara
+    - checkout
+    - restore_cache:
+        key: dependency-cache-firefox-{{ .Revision }}
+    - run:
+        name: Install firefox
+        command: ./.circleci/scripts/firefox-install.sh
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: Get Scss Cache key
+        # this allows us to checksum against a whole directory
+        command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
+    - restore_cache:
+        key: scss-cache-{{ checksum "scss_checksum" }}
+    - run:
+        name: test:integration:mascara
+        command: npm run test:mascara
 
   test-integration-mascara-chrome:
     environment:
       browsers: '["Chrome"]'
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ .Revision }}
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
-      - run:
-          name: test:integration:mascara
-          command: npm run test:mascara
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ .Revision }}
+    - run:
+        name: Get Scss Cache key
+        # this allows us to checksum against a whole directory
+        command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
+    - restore_cache:
+        key: scss-cache-{{ checksum "scss_checksum" }}
+    - run:
+        name: test:integration:mascara
+        command: npm run test:mascara
 
   all-tests-pass:
     docker:
-      - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.11.4-browsers
     steps:
-      - run:
-          name: All Tests Passed
-          command: echo 'weew - everything passed!'
+    - run:
+        name: All Tests Passed
+        command: echo 'weew - everything passed!'

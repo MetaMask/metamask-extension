@@ -159,6 +159,12 @@ AccountDetailScreen.prototype.render = function () {
 
               h('div', {
                 style: {
+                  width: '8em',
+                  display: 'inline-flex',
+                  marginBottom: '15px',
+                },
+              }, [
+                h('span', {style: {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   paddingTop: '3px',
@@ -167,10 +173,9 @@ AccountDetailScreen.prototype.render = function () {
                   fontSize: '14px',
                   fontFamily: 'Nunito Bold',
                   textRendering: 'geometricPrecision',
-                  marginBottom: '15px',
                   color: 'rgba(255, 255, 255, 0.7)',
-                },
-              }, checksumAddress),
+                }}, checksumAddress),
+              ]),
             ]),
 
             // account ballance
