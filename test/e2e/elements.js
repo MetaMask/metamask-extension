@@ -87,7 +87,7 @@ module.exports = {
     QRcode: {
       address: By.className('ellip-address'),
       buttonArrow: By.className('fa-arrow-left'),
-      iconCopy:By.className('clipboard cursor-pointer')
+      iconCopy: By.className('clipboard cursor-pointer'),
     },
     settings: {
       currentNetwork: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'),
@@ -106,15 +106,17 @@ module.exports = {
         invalidRpcEndpoint: 'Invalid RPC endpoint',
         invalidRpcUrl: 'Invalid RPC URI',
       },
-
     },
     main: {
-      iconCopy:By.className('clipboard cursor-pointer white'),
+      accountName: By.className('sizing-input'),
+      edit: By.className('edit-text'),
+      iconCopy: By.className('clipboard cursor-pointer white'),
       transactionList: By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'),
       buttons: {
         send: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'),
         buy: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)'),
         sendText: 'Send',
+        save: By.className('editable-button'),
       },
       network: By.className('network-name'),
       sent: {

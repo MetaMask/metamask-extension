@@ -50,7 +50,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    //await driver.quit()
+    await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -122,6 +122,23 @@ describe('Metamask popup page', async function () {
       const field = await waitUntilShowUp(screens.main.iconCopy)
       await field.click()
       assert.notEqual(field, false, 'copy icon doesn\'t present')
+    })
+    it('open  \'Account name\' change dialog', async () => {
+      const menu = await waitUntilShowUp(menus.dot.menu)
+      await menu.click()
+      const field = await waitUntilShowUp(screens.main.edit)
+      await field.click()
+      const accountName = await waitUntilShowUp(screens.main.accountName)
+      assert.notEqual(accountName, false, '\'Account name\' change dialog isn\'t opened')
+      assert.equal(await accountName.getAttribute('value'), 'Account 1', 'incorrect placeholder')
+    })
+
+    it('dialog \'Account name\' is dissappeared if click button \'Save\'', async () => {
+      const button = await waitUntilShowUp(screens.main.buttons.save)
+      assert.notEqual(button, true, 'button \'Save\' does not present')
+      await click(button)
+      const accountName = await waitUntilShowUp(screens.main.accountName, 10)
+      assert.equal(accountName, false, '\'Account name\' change dialog isn\'t opened')
     })
 
     it('adds a second account', async function () {
@@ -439,7 +456,7 @@ describe('Metamask popup page', async function () {
       await click(field)
     })
 
-    it.skip('balance renders', async function () {
+    it('balance renders', async function () {
       const balance = await waitUntilShowUp(screens.main.balance)
       assert.equal(await balance.getText(), '100.000')
     })
