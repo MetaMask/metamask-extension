@@ -407,6 +407,7 @@ module.exports = class MetamaskController extends EventEmitter {
       updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
+      createCancelTransaction: nodeify(this.createCancelTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
@@ -1105,6 +1106,19 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async retryTransaction (txId, cb) {
     await this.txController.retryTransaction(txId)
+    const state = await this.getState()
+    return state
+  }
+
+  /**
+   * Allows a user to attempt to cancel a previously submitted transaction by creating a new
+   * transaction.
+   * @param {number} originalTxId - the id of the txMeta that you want to attempt to cancel
+   * @param {string=} customGasPrice - the hex value to use for the cancel transaction
+   * @returns {object} MetaMask state
+   */
+  async createCancelTransaction (originalTxId, customGasPrice, cb) {
+    await this.txController.createCancelTransaction(originalTxId, customGasPrice)
     const state = await this.getState()
     return state
   }
