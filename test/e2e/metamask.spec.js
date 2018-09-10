@@ -50,7 +50,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    await driver.quit()
+   // await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -965,13 +965,14 @@ describe('Metamask popup page', async function () {
       const field = await waitUntilShowUp(screens.addToken.fields.contractAddress)
       await clearField(field)
       await field.sendKeys(tokenAddress)
-      const name = await driver.findElement(screens.addToken.fields.tokenSymbol)
+      /*const name = await driver.findElement(screens.addToken.fields.tokenSymbol)
       await clearField(name)
       await name.sendKeys(tokenName)
       await delay(500)
       const decimals = await driver.findElement(screens.addToken.fields.decimals)
       await clearField(decimals)
       await decimals.sendKeys(tokenDecimals)
+      */
       const buttonAdd = await waitUntilShowUp(screens.addToken.buttonAdd)
       await click(buttonAdd)
       return true
