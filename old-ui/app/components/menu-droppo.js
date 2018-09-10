@@ -82,7 +82,7 @@ MenuDroppoComponent.prototype.componentDidMount = function () {
 
   /*
    * transitionstart event is not supported in Chrome yet. But it works for Firefox 53+.
-   * We need to handle this event only for FF because for Chrome we hidden scrolls.
+   * We need to handle this event only for FF because for Chrome we've hidden scrolls.
   */
   this.refs.menuDroppoContainer.addEventListener('transitionstart', () => {
     this.refs.menuDroppoContainer.style.overflow = 'hidden'
