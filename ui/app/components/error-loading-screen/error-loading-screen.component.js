@@ -32,10 +32,10 @@ class ErrorLoadingScreen extends Component {
       h('div.flex-row.flex-center.hero-balance-buttons', [
         h('button.btn-primary.hero-balance-button', {
           onClick: event => this.handleNetworkIndicatorClick(event)
-        }, 'Try again', []),
+        }, this.context.t('switchNetwork'), []),
         h('button.btn-primary.hero-balance-button', {
           onClick: event => this.handleNetworkResetConnectionClick(event)
-        }, 'tryAgain', [])
+        }, this.context.t('tryAgain'), [])
       ])
     ])
   }
@@ -68,13 +68,15 @@ class ErrorLoadingScreen extends Component {
     return !isOpen
        ? null
        : (
-       h('.loading-overlay', [
-        h('.loading-overlay__container', [
+       h('.error-loading-overlay', [
+        h('.error-loading-overlay__container', [
           <div
             className="info-box__close"
             onClick={() => this.handleClose()}
           />,
-          this.renderMessage(),
+          h('.error-loading-overlay__message', [
+            this.renderMessage()
+          ]),
           this.renderButtons()
         ]),
       ])

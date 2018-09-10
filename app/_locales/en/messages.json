@@ -1042,6 +1042,9 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
+  "switchNetwork": {
+    "message": "Switch networks"
+  },
   "symbolBetweenZeroTen": {
     "message": "Symbol must be between 0 and 10 characters."
   },
