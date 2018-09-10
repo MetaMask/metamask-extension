@@ -153,7 +153,7 @@ TokenList.prototype.componentDidMount = function () {
   this.createFreshTokenTracker()
 }
 
-TokenList.prototype.createFreshTokenTracker = function () {
+TokenList.prototype.createFreshTokenTracker = function (userAddress) {
   if (this.tracker) {
     // Clean up old trackers when refreshing:
     this.tracker.stop()
@@ -162,9 +162,8 @@ TokenList.prototype.createFreshTokenTracker = function () {
   }
 
   if (!global.ethereumProvider) return
-  const { userAddress } = this.props
   this.tracker = new TokenTracker({
-    userAddress,
+    userAddress: userAddress || this.props.userAddress,
     provider: global.ethereumProvider,
     tokens: this.props.tokens,
     pollingInterval: 8000,
@@ -194,9 +193,12 @@ TokenList.prototype.componentWillUpdate = function (nextProps) {
   const oldNet = this.props.network
   const newNet = nextProps.network
 
-  if (oldNet && newNet && newNet !== oldNet) {
+  const oldAddress = this.props.userAddress
+  const newAddress = nextProps.userAddress
+
+  if (oldNet && newNet && (newNet !== oldNet || newAddress !== oldAddress)) {
     this.setState({ isLoading: true })
-    this.createFreshTokenTracker()
+    this.createFreshTokenTracker(newAddress)
   }
 }
 
