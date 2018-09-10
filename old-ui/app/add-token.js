@@ -86,18 +86,13 @@ AddTokenScreen.prototype.render = function () {
           ]),
 
           h('section.flex-row.flex-center', [
-            h('input#token-address', {
+            h('input.large-input#token-address', {
               name: 'address',
               placeholder: 'Token Contract Address',
               onChange: this.tokenAddressDidChange.bind(this),
               style: {
-                width: 'inherit',
-                flex: '1 0 auto',
-                height: '30px',
+                width: '100%',
                 margin: '10px 0',
-                borderRadius: '3px',
-                border: '1px solid #e2e2e2',
-                padding: '10px',
               },
             }),
           ]),
@@ -109,17 +104,12 @@ AddTokenScreen.prototype.render = function () {
           ]),
 
           h('div', { style: {display: 'flex'} }, [
-            h('input#token_symbol', {
+            h('input.large-input#token_symbol', {
               placeholder: `Like "ETH"`,
               value: symbol,
               style: {
-                width: 'inherit',
-                flex: '1 0 auto',
-                height: '30px',
+                width: '100%',
                 margin: '10px 0',
-                borderRadius: '3px',
-                border: '1px solid #e2e2e2',
-                padding: '10px',
               },
               onChange: (event) => {
                 var element = event.target
@@ -136,19 +126,14 @@ AddTokenScreen.prototype.render = function () {
           ]),
 
           h('div', { style: {display: 'flex'} }, [
-            h('input#token_decimals', {
+            h('input.large-input#token_decimals', {
               value: decimals,
               type: 'number',
               min: 0,
               max: 36,
               style: {
-                width: 'inherit',
-                flex: '1 0 auto',
-                height: '30px',
+                width: '100%',
                 margin: '10px 0',
-                borderRadius: '3px',
-                border: '1px solid #e2e2e2',
-                padding: '10px',
               },
               onChange: (event) => {
                 var element = event.target
