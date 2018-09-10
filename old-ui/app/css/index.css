@@ -338,13 +338,13 @@ p.exchanges {
   height: 14px;
 }
 
-.clipboard {
+.clipboard::before {
   content: url('../images/copy.svg');
   width: 14px;
   height: 14px;
 }
 
-.clipboard.white {
+.clipboard.white::before {
   content: url('../images/copy-white.svg');
 }
 
