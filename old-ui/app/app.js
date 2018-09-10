@@ -420,6 +420,7 @@ App.prototype.renderDropdown = function () {
     useCssTransition: true,
     isOpen: isOpen,
     zIndex: 11,
+    constOverflow: true,
     onClickOutside: (event) => {
       const classList = event.target.classList
       const parentClassList = event.target.parentElement.classList
@@ -440,6 +441,7 @@ App.prototype.renderDropdown = function () {
       top: '38px',
       width: '126px',
       maxHeight: isOpen ? '186px' : '0px',
+      overflow: 'hidden',
     },
     innerStyle: {},
   }, [
