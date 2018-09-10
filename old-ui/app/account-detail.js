@@ -178,7 +178,8 @@ AccountDetailScreen.prototype.render = function () {
                 }}, checksumAddress),
                 h(CopyButton, {
                   value: checksumAddress,
-                })
+                  isWhite: true,
+                }),
               ]),
             ]),
 

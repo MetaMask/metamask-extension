@@ -1,5 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const classNames = require('classnames')
 const inherits = require('util').inherits
 const copyToClipboard = require('copy-to-clipboard')
 
@@ -24,6 +25,7 @@ CopyButton.prototype.render = function () {
   const copied = state.copied
 
   const message = copied ? 'Copied' : props.title || ' Copy '
+  const defaultCopyStyles = ['clipboard', 'cursor-pointer']
 
   return h('.copy-button', {
     style: {
@@ -31,14 +33,14 @@ CopyButton.prototype.render = function () {
       alignItems: 'center',
     },
   }, [
-
     h(Tooltip, {
       title: message,
     }, [
-      h('i.fa.fa-clipboard.cursor-pointer', {
+      h('i', {
         style: {
           marginLeft: '5px',
         },
+        className: props.isWhite ? classNames(defaultCopyStyles.concat(['white'])) : classNames(defaultCopyStyles),
         onClick: (event) => {
           event.preventDefault()
           event.stopPropagation()
