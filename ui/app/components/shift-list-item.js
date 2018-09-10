@@ -51,7 +51,7 @@ ShiftListItem.prototype.render = function () {
       },
     }, [
       h('img', {
-        src: 'https://info.shapeshift.io/sites/default/files/logo.png',
+        src: './images/shapeshift-logo-only.png',
         style: {
           height: '35px',
           width: '132px',
