@@ -985,7 +985,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Object} Full state update.
    */
   async signTypedMessage (msgParams) {
-    log.info('MetaMaskController - eth_signTypedDataV1')
+    log.info('MetaMaskController - eth_signTypedData')
     const msgId = msgParams.metamaskId
     const version = msgParams.version
     try {
@@ -1263,8 +1263,9 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }))
     engine.push(filterMiddleware)
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
-    engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
+    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v2', 'V2').bind(this))
+    engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V2').bind(this))
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection
