@@ -3,7 +3,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const getCaretCoordinates = require('textarea-caret')
 const log = require('loglevel')
 const EventEmitter = require('events').EventEmitter
 

@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button'
 import TextField from '../../text-field'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import getCaretCoordinates from 'textarea-caret'
 import { EventEmitter } from 'events'
 import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../../routes'
 
@@ -68,15 +67,6 @@ export default class UnlockPage extends Component {
 
   handleInputChange ({ target }) {
     this.setState({ password: target.value, error: null })
-
-    // tell mascot to look at page action
-    const element = target
-    const boundingRect = element.getBoundingClientRect()
-    const coordinates = getCaretCoordinates(element, element.selectionEnd)
-    this.animationEventEmitter.emit('point', {
-      x: boundingRect.left + coordinates.left - element.scrollLeft,
-      y: boundingRect.top + coordinates.top - element.scrollTop,
-    })
   }
 
   renderSubmitButton () {

@@ -5,7 +5,6 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../ui/app/actions')
 const Tooltip = require('../components/tooltip')
-const getCaretCoordinates = require('textarea-caret')
 
 module.exports = connect(mapStateToProps)(InitializeMenuScreen)
 
@@ -175,15 +174,4 @@ InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
   }
 
   this.props.dispatch(actions.createNewVaultAndKeychain(password))
-}
-
-InitializeMenuScreen.prototype.inputChanged = function (event) {
-  // tell mascot to look at page action
-  var element = event.target
-  var boundingRect = element.getBoundingClientRect()
-  var coordinates = getCaretCoordinates(element, element.selectionEnd)
-  this.animationEventEmitter.emit('point', {
-    x: boundingRect.left + coordinates.left - element.scrollLeft,
-    y: boundingRect.top + coordinates.top - element.scrollTop,
-  })
 }
