@@ -97,7 +97,6 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         type: 'password',
         id: 'password-box',
         placeholder: 'New Password (min 8 chars)',
-        onInput: this.inputChanged.bind(this),
         style: {
           width: 260,
           marginTop: 12,
@@ -111,7 +110,6 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         id: 'password-box-confirm',
         placeholder: 'Confirm Password',
         onKeyPress: this.createVaultOnEnter.bind(this),
-        onInput: this.inputChanged.bind(this),
         style: {
           width: 260,
           marginTop: 16,
