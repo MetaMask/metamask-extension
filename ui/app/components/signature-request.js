@@ -8,6 +8,7 @@ const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')
 const { compose } = require('recompose')
 const { withRouter } = require('react-router-dom')
+const { ObjectInspector } = require('react-inspector')
 
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 
@@ -169,12 +170,29 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
   }
 }
 
+// eslint-disable-next-line react/display-name
+SignatureRequest.prototype.renderTypedDataV2 = function (data) {
+  const { domain, message } = JSON.parse(data)
+  return [
+    h('div.request-signature__typed-container', [
+      domain ? h('div', [
+        h('h1', 'Domain'),
+        h(ObjectInspector, { data: domain, expandLevel: 1, name: 'domain' }),
+      ]) : '',
+      message ? h('div', [
+        h('h1', 'Message'),
+        h(ObjectInspector, { data: message, expandLevel: 1, name: 'message' }),
+      ]) : '',
+    ]),
+  ]
+}
+
 SignatureRequest.prototype.renderBody = function () {
   let rows
   let notice = this.context.t('youSign') + ':'
 
   const { txData } = this.props
-  const { type, msgParams: { data } } = txData
+  const { type, msgParams: { data, version } } = txData
 
   if (type === 'personal_sign') {
     rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
@@ -205,9 +223,9 @@ SignatureRequest.prototype.renderBody = function () {
       }),
     }, [notice]),
 
-    h('div.request-signature__rows', [
-
-      ...rows.map(({ name, value }) => {
+    h('div.request-signature__rows', type === 'eth_signTypedData' && version === 'V2' ?
+      this.renderTypedDataV2(data) :
+      rows.map(({ name, value }) => {
         if (typeof value === 'boolean') {
           value = value.toString()
         }
@@ -216,9 +234,7 @@ SignatureRequest.prototype.renderBody = function () {
           h('div.request-signature__row-value', value),
         ])
       }),
-
-    ]),
-
+    ),
   ])
 }
 
