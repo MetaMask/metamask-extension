@@ -177,7 +177,7 @@ module.exports = class MetamaskController extends EventEmitter {
       blockTracker: this.blockTracker,
       getGasPrice: this.getGasPrice.bind(this),
     })
-    this.txController.on('newUnapprovedTx', opts.showUnapprovedTx.bind(opts))
+    this.txController.on('newUnapprovedTx', () => opts.showUnapprovedTx())
 
     this.txController.on(`tx:status-update`, (txId, status) => {
       if (status === 'confirmed' || status === 'failed') {
@@ -1229,8 +1229,10 @@ module.exports = class MetamaskController extends EventEmitter {
     )
     dnode.on('remote', (remote) => {
       // push updates to popup
-      const sendUpdate = remote.sendUpdate.bind(remote)
+      const sendUpdate = (update) => remote.sendUpdate(update)
       this.on('update', sendUpdate)
+      // remove update listener once the connection ends
+      dnode.on('end', () => this.removeListener('update', sendUpdate))
     })
   }
 
@@ -1280,10 +1282,12 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {*} outStream - The stream to provide public config over.
    */
   setupPublicConfig (outStream) {
+    const configStream = asStream(this.publicConfigStore)
     pump(
-      asStream(this.publicConfigStore),
+      configStream,
       outStream,
       (err) => {
+        configStream.destroy()
         if (err) log.error(err)
       }
     )
