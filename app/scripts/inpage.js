@@ -96,3 +96,39 @@ function restoreContextAfterImports () {
     console.warn('MetaMask - global.define could not be overwritten.')
   }
 }
+
+/* ------ HANDLE INJECTING PLUGINS ------- */
+
+var plugins = {};
+
+// the following should be dynamic, NOT hard coded,
+// based on a UI a user can use to add directories or URLs.
+// We DO NOT want to have to add dependencies to MetaMask for plugins,
+// but for now, I did, just to get the gulp build system working properly.
+plugins.GUN = require('gun/gun.min.js'); // TODO: Need way to escape window context.
+plugins.SEA = require('gun/sea.js'); // TODO: Need 2 SEA's, 1 for window that communicates to extension, and 1 for extension. MetaMask already has this working, I know, just IDK how to access / do it. Hack for now.
+console.log('MetaMask plugins:', plugins);
+
+/* delete this... temporary test for demo purposes */
+var names = ['KEY GENERATION', 'PROOF OF WORK', 'SIGNING', 'SIGNATURE VERIFICATION'];
+['pair', 'work', 'sign', 'verify'].forEach(function(method, i){
+  var _old = plugins.SEA[method];
+  plugins.SEA[method] = function(a,b,c,d,e,f){
+    console.log("METAMASK HAS HIJACKED SEA's "+names[i]+" FOR SECURITY REASONS!");
+    return _old(a,b,c,d,e,f);
+  }
+})
+/* end delete */
+
+// registered event listeners cannot be used to ambiently detect if MetaMask is installed.
+// yet should be compatible with old browsers, and can receive events synchronously.
+// Note: However, any site could add a tracker by just making a MetaMask postmessage call
+// and listening for a response. So this (or MetaMask's new method) doesn't really stop it?
+console.log("add listener");
+window.addEventListener('extension', function(eve) {
+  var data = eve.detail || eve.data;
+  if(!data){ return }
+  if(!plugins[data.type]){ return }
+  window[data.type] = plugins[data.type];
+  console.log('Page has requested MetaMask plugin to hijack:', data.type, eve, window[data.type]);
+});
