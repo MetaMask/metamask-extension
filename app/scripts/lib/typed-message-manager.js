@@ -18,7 +18,7 @@ const jsonschema = require('jsonschema')
  * @property {Object} msgParams.from The address that is making the signature request.
  * @property {string} msgParams.data A hex string conversion of the raw buffer data of the signature request
  * @property {number} time The epoch time at which the this message was created
- * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed' or 'rejected'
+ * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed', 'rejected', or 'errored'
  * @property {string} type The json-prc signing method for which a signature request has been made. A 'Message' will
  * always have a 'eth_signTypedData' type.
  *
@@ -27,17 +27,10 @@ const jsonschema = require('jsonschema')
 module.exports = class TypedMessageManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - TypedMessage.
-   *
-   * @typedef {Object} TypedMessage
-   * @param {Object} opts @deprecated
-   * @property {Object} memStore The observable store where TypedMessage are saved.
-   * @property {Object} memStore.unapprovedTypedMessages A collection of all TypedMessages in the 'unapproved' state
-   * @property {number} memStore.unapprovedTypedMessagesCount The count of all TypedMessages in this.memStore.unapprobedMsgs
-   * @property {array} messages Holds all messages that have been created by this TypedMessage
-   *
    */
-  constructor (opts) {
+  constructor ({ networkController }) {
     super()
+    this.networkController = networkController
     this.memStore = new ObservableStore({
       unapprovedTypedMessages: {},
       unapprovedTypedMessagesCount: 0,
@@ -106,8 +99,8 @@ module.exports = class TypedMessageManager extends EventEmitter {
    *
    */
   addUnapprovedMessage (msgParams, req, version) {
-    this.validateParams(msgParams)
     msgParams.version = version
+    this.validateParams(msgParams)
     // add origin from request
     if (req) msgParams.origin = req.origin
 

@@ -189,6 +189,7 @@
     "react-addons-css-transition-group": "^15.6.0",
     "react-dom": "^15.6.2",
     "react-hyperscript": "^3.0.0",
+    "react-inspector": "^2.3.0",
     "react-markdown": "^3.0.0",
     "react-media": "^1.8.0",
     "react-redux": "^5.0.5",
