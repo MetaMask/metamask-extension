@@ -3,6 +3,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
+const url = require('url')
+const http = require('http')
+const https = require('https')
 const infuraCurrencies = require('./infura-conversion.json').objects.sort((a, b) => {
       return a.quote.name.toLocaleLowerCase().localeCompare(b.quote.name.toLocaleLowerCase())
     })
@@ -229,7 +232,18 @@ ConfigScreen.prototype.render = function () {
 
 function rpcValidation (newRpc, state) {
   if (validUrl.isWebUri(newRpc)) {
-    state.dispatch(actions.setRpcTarget(newRpc))
+    const rpc = url.parse(newRpc)
+    const protocolName = rpc.protocol.replace(/:/g, '')
+    const protocol = protocolName === 'https' ? https : http
+    const options = {method: 'GET', host: rpc.hostname, port: rpc.port, path: rpc.pathname}
+    const req = protocol.request(options)
+    .on('response', () => {
+      state.dispatch(actions.setRpcTarget(newRpc))
+    })
+    .on('error', () => {
+      state.dispatch(actions.displayWarning('Invalid RPC endpoint'))
+    })
+    req.end()
   } else {
     var appendedRpc = `http://${newRpc}`
     if (validUrl.isWebUri(appendedRpc)) {

@@ -42,22 +42,22 @@ Network.prototype.render = function () {
       h('i.fa.fa-caret-down'),
     ])
   } else {
-    if (providerName === 'mainnet') {
+    if (providerName === 'mainnet' || parseInt(networkNumber) === 1) {
       displayName = 'Main Network'
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else if (providerName === 'ropsten' || parseInt(networkNumber) === 3) {
       displayName = 'Ropsten Test Net'
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'sokol') {
+    } else if (providerName === 'sokol' || parseInt(networkNumber) === 77) {
       displayName = 'Sokol Network'
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'kovan') {
+    } else if (providerName === 'kovan' || parseInt(networkNumber) === 42) {
       displayName = 'Kovan Test Net'
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'rinkeby') {
+    } else if (providerName === 'rinkeby' || parseInt(networkNumber) === 4) {
       displayName = 'Rinkeby Test Net'
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'poa') {
+    } else if (providerName === 'poa' || parseInt(networkNumber) === 99) {
       displayName = 'POA Network'
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else {
