@@ -40,7 +40,7 @@ CopyButton.prototype.render = function () {
         style: {
           marginLeft: '5px',
         },
-        className: props.isWhite ? classNames(defaultCopyStyles.concat(['white'])) : classNames(defaultCopyStyles),
+        className: classNames(defaultCopyStyles, {white: props.isWhite}),
         onClick: (event) => {
           event.preventDefault()
           event.stopPropagation()
