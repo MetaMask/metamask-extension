@@ -49,7 +49,8 @@ class ErrorLoadingScreen extends Component {
 
     const props = this.props
     const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
-    activeNetwork === 'rpc' ? this.props.history.push(SETTINGS_ROUTE) : props.setProviderType(providerType)
+    console.log(activeNetwork)
+    providerType === 'rpc' ? this.props.history.push(SETTINGS_ROUTE) : props.setProviderType(providerType)
       
   }
   handleNetworkIndicatorClick (event) {

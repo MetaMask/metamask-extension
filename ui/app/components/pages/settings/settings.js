@@ -185,6 +185,8 @@ class Settings extends Component {
   }
 
   renderNewRpcUrl () {
+    const { showErrorLoadingScreen } = this.props
+
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
@@ -198,6 +200,7 @@ class Settings extends Component {
               onKeyPress: event => {
                 if (event.key === 'Enter') {
                   this.validateRpc(this.state.newRpc)
+                  showErrorLoadingScreen()
                 }
               },
             }),
@@ -205,6 +208,7 @@ class Settings extends Component {
               onClick: event => {
                 event.preventDefault()
                 this.validateRpc(this.state.newRpc)
+                showErrorLoadingScreen()
               },
             }, this.context.t('save')),
           ]),
@@ -343,6 +347,7 @@ Settings.propTypes = {
   setHexDataFeatureFlag: PropTypes.func,
   setCurrentCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
+  showErrorLoadingScreen: PropTypes.func,
   displayWarning: PropTypes.func,
   revealSeedConfirmation: PropTypes.func,
   setFeatureFlagToBeta: PropTypes.func,
@@ -368,6 +373,7 @@ const mapDispatchToProps = dispatch => {
   return {
     setCurrentCurrency: currency => dispatch(actions.setCurrentCurrency(currency)),
     setRpcTarget: newRpc => dispatch(actions.setRpcTarget(newRpc)),
+    showErrorLoadingScreen: () => dispatch(actions.showErrorLoadingScreen()),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
