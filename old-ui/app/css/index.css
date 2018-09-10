@@ -468,7 +468,7 @@ p.exchanges {
 
 input.large-input, textarea.large-input {
   /*margin-bottom: 24px;*/
-  padding: 9px 10px;
+  padding: 0px 10px;
   border-radius: 3px;
   border: 1px solid #e2e2e2;
   font-family: 'Nunito Regular';
