@@ -413,12 +413,18 @@ function createNewVaultAndRestore (password, seed) {
     log.debug(`background.createNewVaultAndRestore`)
 
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, err => {
+      background.clearSeedWordCache((err) => {
         if (err) {
           return reject(err)
         }
 
-        resolve()
+        background.createNewVaultAndRestore(password, seed, (err) => {
+          if (err) {
+            return reject(err)
+          }
+
+          resolve()
+        })
       })
     })
       .then(() => dispatch(actions.unMarkPasswordForgotten()))
