@@ -937,7 +937,11 @@ describe('Metamask popup page', async function () {
       await delay(500)
       await driver.findElement(screens.addToken.fields.tokenSymbol).sendKeys(tokenName)
       await delay(500)
-      await driver.findElement(screens.addToken.fields.decimals).sendKeys(tokenDecimals)
+      const decimalsInput = await driver.findElement(screens.addToken.fields.decimals)
+      await decimalsInput.clear()
+      await delay(500)
+      await decimalsInput.sendKeys(tokenDecimals)
+      await delay(500)
       const buttonAdd = await waitUntilShowUp(screens.addToken.buttonAdd)
       await click(buttonAdd)
       return true
