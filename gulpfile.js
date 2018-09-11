@@ -80,14 +80,6 @@ createCopyTasks('reload', {
   pattern: '/chromereload.js',
   destinations: commonPlatforms.map(platform => `./dist/${platform}`),
 })
-// ========================================================================================================
-// createCopyTasks('pwloading', {
-//   devOnly: true,
-//   source: './app/scripts/',
-//   pattern: '/pwloading.js',
-//   destinations: commonPlatforms.map(platform => `./dist/${platform}`),
-// })
-// ========================================================================================================
 createCopyTasks('html', {
   source: './app/',
   pattern: '/*.html',
