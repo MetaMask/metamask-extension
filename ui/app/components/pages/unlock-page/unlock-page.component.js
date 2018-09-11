@@ -4,9 +4,7 @@ import Button from '@material-ui/core/Button'
 import TextField from '../../text-field'
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
-import getCaretCoordinates from 'textarea-caret'
 import { EventEmitter } from 'events'
-import Mascot from '../../mascot'
 import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../../routes'
 
 export default class UnlockPage extends Component {
@@ -69,15 +67,6 @@ export default class UnlockPage extends Component {
 
   handleInputChange ({ target }) {
     this.setState({ password: target.value, error: null })
-
-    // tell mascot to look at page action
-    const element = target
-    const boundingRect = element.getBoundingClientRect()
-    const coordinates = getCaretCoordinates(element, element.selectionEnd)
-    this.animationEventEmitter.emit('point', {
-      x: boundingRect.left + coordinates.left - element.scrollLeft,
-      y: boundingRect.top + coordinates.top - element.scrollTop,
-    })
   }
 
   renderSubmitButton () {
@@ -115,13 +104,6 @@ export default class UnlockPage extends Component {
     return (
       <div className="unlock-page__container">
         <div className="unlock-page">
-          <div className="unlock-page__mascot-container">
-            <Mascot
-              animationEventEmitter={this.animationEventEmitter}
-              width="120"
-              height="120"
-            />
-          </div>
           <h1 className="unlock-page__title">
             { t('welcomeBack') }
           </h1>
