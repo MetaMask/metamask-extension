@@ -261,13 +261,12 @@ gulp.task('fmt-scss', function () {
 })
 
 // build js
-
 const buildJsFiles = [
   'inpage',
   'contentscript',
   'background',
   'ui',
-  'pwloading'
+  'pwloading',
 ]
 
 // bundle tasks
