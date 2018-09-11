@@ -1778,6 +1778,7 @@ function setRpcTarget (newRpc) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
+      dispatch(actions.displayWarning(''))
       dispatch(actions.setSelectedToken())
     })
   }
