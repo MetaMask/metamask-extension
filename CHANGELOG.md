@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- [#127](https://github.com/poanetwork/metamask-extension/pull/127): (Fix) Error is constantly shown through screens
 - [#120](https://github.com/poanetwork/metamask-extension/pull/120): (Feature) Update token's balance on account switch
 - [#119](https://github.com/poanetwork/metamask-extension/pull/119): (Fix) Shapeshift logo from local storage
 - [#104](https://github.com/poanetwork/metamask-extension/pull/104), [#108](https://github.com/poanetwork/metamask-extension/pull/108), [#109](https://github.com/poanetwork/metamask-extension/pull/109), [#116](https://github.com/poanetwork/metamask-extension/pull/116), [#121](https://github.com/poanetwork/metamask-extension/pull/121): (Feature) Support of Firefox
