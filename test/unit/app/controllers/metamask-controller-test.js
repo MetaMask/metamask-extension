@@ -584,22 +584,18 @@ describe('MetaMaskController', function () {
   })
 
   describe('#clearSeedWordCache', function () {
+    it('should set seed words to null', function (done) {
+      sandbox.stub(metamaskController.preferencesController, 'setSeedWords')
+      metamaskController.clearSeedWordCache((err) => {
+        if (err) {
+          done(err)
+        }
 
-    it('should have set seed words', function () {
-      metamaskController.configManager.setSeedWords('test words')
-      const getConfigSeed = metamaskController.configManager.getSeedWords()
-      assert.equal(getConfigSeed, 'test words')
-    })
-
-    it('should clear config seed phrase', function () {
-      metamaskController.configManager.setSeedWords('test words')
-      metamaskController.clearSeedWordCache((err, result) => {
-        if (err) console.log(err)
+        assert.ok(metamaskController.preferencesController.setSeedWords.calledOnce)
+        assert.deepEqual(metamaskController.preferencesController.setSeedWords.args, [[null]])
+        done()
       })
-      const getConfigSeed = metamaskController.configManager.getSeedWords()
-      assert.equal(getConfigSeed, null)
     })
-
   })
 
   describe('#setCurrentLocale', function () {
@@ -793,24 +789,24 @@ describe('MetaMaskController', function () {
   describe('#markAccountsFound', function () {
     it('adds lost accounts to config manager data', function () {
       metamaskController.markAccountsFound(noop)
-      const configManagerData = metamaskController.configManager.getData()
-      assert.deepEqual(configManagerData.lostAccounts, [])
+      const state = metamaskController.getState()
+      assert.deepEqual(state.lostAccounts, [])
     })
   })
 
   describe('#markPasswordForgotten', function () {
     it('adds and sets forgottenPassword to config data to true', function () {
       metamaskController.markPasswordForgotten(noop)
-      const configManagerData = metamaskController.configManager.getData()
-      assert.equal(configManagerData.forgottenPassword, true)
+      const state = metamaskController.getState()
+      assert.equal(state.forgottenPassword, true)
     })
   })
 
   describe('#unMarkPasswordForgotten', function () {
     it('adds and sets forgottenPassword to config data to false', function () {
       metamaskController.unMarkPasswordForgotten(noop)
-      const configManagerData = metamaskController.configManager.getData()
-      assert.equal(configManagerData.forgottenPassword, false)
+      const state = metamaskController.getState()
+      assert.equal(state.forgottenPassword, false)
     })
   })
 

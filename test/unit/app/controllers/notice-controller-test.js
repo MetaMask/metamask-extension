@@ -1,16 +1,11 @@
 const assert = require('assert')
-const configManagerGen = require('../../../lib/mock-config-manager')
 const NoticeController = require('../../../../app/scripts/notice-controller')
 
 describe('notice-controller', function () {
   var noticeController
 
   beforeEach(function () {
-    // simple localStorage polyfill
-    const configManager = configManagerGen()
-    noticeController = new NoticeController({
-      configManager: configManager,
-    })
+    noticeController = new NoticeController({})
   })
 
   describe('notices', function () {
