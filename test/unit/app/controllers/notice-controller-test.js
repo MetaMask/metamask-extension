@@ -5,7 +5,7 @@ describe('notice-controller', function () {
   var noticeController
 
   beforeEach(function () {
-    noticeController = new NoticeController({})
+    noticeController = new NoticeController()
   })
 
   describe('notices', function () {
