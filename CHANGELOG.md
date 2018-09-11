@@ -2,6 +2,11 @@
 
 ## Current Master
 
+- [#120](https://github.com/poanetwork/metamask-extension/pull/120): (Feature) Update token's balance on account switch
+- [#119](https://github.com/poanetwork/metamask-extension/pull/119): (Fix) Shapeshift logo from local storage
+- [#104](https://github.com/poanetwork/metamask-extension/pull/104), [#108](https://github.com/poanetwork/metamask-extension/pull/108), [#109](https://github.com/poanetwork/metamask-extension/pull/109), [#116](https://github.com/poanetwork/metamask-extension/pull/116), [#121](https://github.com/poanetwork/metamask-extension/pull/121): (Feature) Support of Firefox
+- [#103](https://github.com/poanetwork/metamask-extension/pull/103): (Fix) to display localhost:8545 in Settings
+- [#101](https://github.com/poanetwork/metamask-extension/pull/101): (Fix) Catch Promises errors
 - [#99](https://github.com/poanetwork/metamask-extension/pull/99), [#100](https://github.com/poanetwork/metamask-extension/pull/100): (Fix) Validate custom RPC
 - [#98](https://github.com/poanetwork/metamask-extension/pull/98): (Feature) Unlimited amount of custom RPC
 
