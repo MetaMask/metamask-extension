@@ -115,6 +115,31 @@ describe('Metamask popup page', async function () {
 
     it('sets provider type to localhost', async function () {
       await setProvider(NETWORKS.LOCALHOST)
+      await delay(2000)
+    })
+
+    it('copy icon is displayed and clickable', async () => {
+      const field = await waitUntilShowUp(screens.main.iconCopy)
+      await field.click()
+      assert.notEqual(field, false, 'copy icon doesn\'t present')
+    })
+
+    it('open  \'Account name\' change dialog', async () => {
+      const menu = await waitUntilShowUp(menus.dot.menu)
+      await menu.click()
+      const field = await waitUntilShowUp(screens.main.edit)
+      await field.click()
+      const accountName = await waitUntilShowUp(screens.main.accountName)
+      assert.notEqual(accountName, false, '\'Account name\' change dialog isn\'t opened')
+      assert.equal(await accountName.getAttribute('value'), 'Account 1', 'incorrect placeholder')
+    })
+
+    it('dialog \'Account name\' is dissappeared if click button \'Save\'', async () => {
+      const button = await waitUntilShowUp(screens.main.buttons.save)
+      assert.notEqual(button, true, 'button \'Save\' does not present')
+      await click(button)
+      const accountName = await waitUntilShowUp(screens.main.accountName, 10)
+      assert.equal(accountName, false, '\'Account name\' change dialog isn\'t opened')
     })
 
     it('adds a second account', async function () {
@@ -158,6 +183,12 @@ describe('Metamask popup page', async function () {
       const field = await waitUntilShowUp(screens.QRcode.address)
       const text = await field.getText()
       assert.equal(text.toLowerCase(), accountAddress.toLowerCase(), 'QR addres doesn\'t match')
+    })
+
+    it('copy icon is displayed and clickable', async () => {
+      const field = await waitUntilShowUp(screens.QRcode.iconCopy)
+      await field.click()
+      assert.notEqual(field, false, 'copy icon doesn\'t present')
     })
 
     it('close QR code screen by clicking button arrow', async () => {
@@ -933,15 +964,9 @@ describe('Metamask popup page', async function () {
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd)
       await click(button)
       const field = await waitUntilShowUp(screens.addToken.fields.contractAddress)
+      await clearField(field)
       await field.sendKeys(tokenAddress)
-      await delay(500)
-      await driver.findElement(screens.addToken.fields.tokenSymbol).sendKeys(tokenName)
-      await delay(500)
-      const decimalsInput = await driver.findElement(screens.addToken.fields.decimals)
-      await decimalsInput.clear()
-      await delay(500)
-      await decimalsInput.sendKeys(tokenDecimals)
-      await delay(500)
+
       const buttonAdd = await waitUntilShowUp(screens.addToken.buttonAdd)
       await click(buttonAdd)
       return true
@@ -949,6 +974,7 @@ describe('Metamask popup page', async function () {
       return false
     }
   }
+
 
   async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']

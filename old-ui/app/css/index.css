@@ -344,6 +344,10 @@ p.exchanges {
   height: 14px;
 }
 
+.clipboard.white::before {
+  content: url('../images/copy-white.svg');
+}
+
 .sandwich-expando {
   background-image: url('../images/menu.svg');
   background-size: 14px 12px;

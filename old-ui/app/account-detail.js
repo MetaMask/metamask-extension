@@ -14,6 +14,7 @@ const EditableLabel = require('./components/editable-label')
 const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+const CopyButton = require('./components/copyButton')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -175,6 +176,10 @@ AccountDetailScreen.prototype.render = function () {
                   textRendering: 'geometricPrecision',
                   color: 'rgba(255, 255, 255, 0.7)',
                 }}, checksumAddress),
+                h(CopyButton, {
+                  value: checksumAddress,
+                  isWhite: true,
+                }),
               ]),
             ]),
 
