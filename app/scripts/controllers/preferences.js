@@ -36,6 +36,8 @@ class PreferencesController {
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
+      seedWords: null,
+      forgottenPassword: false,
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -45,6 +47,22 @@ class PreferencesController {
     this._subscribeProviderType()
   }
 // PUBLIC METHODS
+
+  /**
+   * Sets the {@code forgottenPassword} state property
+   * @param {boolean} forgottenPassword whether or not the user has forgotten their password
+   */
+  setPasswordForgotten (forgottenPassword) {
+    this.store.updateState({ forgottenPassword })
+  }
+
+  /**
+   * Sets the {@code seedWords} seed words
+   * @param {string|null} seedWords the seed words
+   */
+  setSeedWords (seedWords) {
+    this.store.updateState({ seedWords })
+  }
 
   /**
    * Setter for the `useBlockie` property

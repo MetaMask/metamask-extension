@@ -36,7 +36,6 @@ const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
-const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -82,11 +81,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // network store
     this.networkController = new NetworkController(initState.NetworkController)
-
-    // config manager
-    this.configManager = new ConfigManager({
-      store: this.store,
-    })
 
     // preferences controller
     this.preferencesController = new PreferencesController({
@@ -314,18 +308,15 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Object} status
    */
   getState () {
-    const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
-    const isInitialized = (!!wallet || !!vault)
+    const isInitialized = !!vault
 
     return {
       ...{ isInitialized },
       ...this.memStore.getFlatState(),
-      ...this.configManager.getConfig(),
       ...{
-        lostAccounts: this.configManager.getLostAccounts(),
-        seedWords: this.configManager.getSeedWords(),
-        forgottenPassword: this.configManager.getPasswordForgotten(),
+        // TODO: Remove usages of lost accounts
+        lostAccounts: [],
       },
     }
   }
@@ -727,7 +718,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.verifySeedPhrase()
       .then((seedWords) => {
-        this.configManager.setSeedWords(seedWords)
+        this.preferencesController.setSeedWords(seedWords)
         return cb(null, seedWords)
       })
       .catch((err) => {
@@ -776,7 +767,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {function} cb Callback function called with the current address.
    */
   clearSeedWordCache (cb) {
-    this.configManager.setSeedWords(null)
+    this.preferencesController.setSeedWords(null)
     cb(null, this.preferencesController.getSelectedAddress())
   }
 
@@ -1037,33 +1028,14 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A legacy method used to record user confirmation that they understand
    * that some of their accounts have been recovered but should be backed up.
+   * This function no longer does anything and will be removed.
    *
    * @deprecated
    * @param {Function} cb - A callback function called with a full state update.
    */
   markAccountsFound (cb) {
-    this.configManager.setLostAccounts([])
-    this.sendUpdate()
+    // TODO Remove me
     cb(null, this.getState())
-  }
-
-  /**
-   * A legacy method (probably dead code) that was used when we swapped out our
-   * key management library that we depended on.
-   *
-   * Described in:
-   * https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd
-   *
-   * @deprecated
-   * @param  {} migratorOutput
-   */
-  restoreOldLostAccounts (migratorOutput) {
-    const { lostAccounts } = migratorOutput
-    if (lostAccounts) {
-      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
-      return this.importLostAccounts(migratorOutput)
-    }
-    return Promise.resolve(migratorOutput)
   }
 
   /**
@@ -1144,7 +1116,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb - A callback function called when complete.
    */
   markPasswordForgotten (cb) {
-    this.configManager.setPasswordForgotten(true)
+    this.preferencesController.setPasswordForgotten(true)
     this.sendUpdate()
     cb()
   }
@@ -1154,7 +1126,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb - A callback function called when complete.
    */
   unMarkPasswordForgotten (cb) {
-    this.configManager.setPasswordForgotten(false)
+    this.preferencesController.setPasswordForgotten(false)
     this.sendUpdate()
     cb()
   }
