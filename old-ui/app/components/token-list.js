@@ -203,7 +203,7 @@ TokenList.prototype.componentWillUpdate = function (nextProps) {
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
-  this.setState({ tokens, isLoading: false })
+  this.setState({ tokens, error: null, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
