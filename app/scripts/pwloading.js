@@ -14,7 +14,6 @@ function UrlSearch(){
 	}
 	return aryPara;
 }
-console.log('loading')
 let tabid = UrlSearch()["tabid"];
 if(tabid =='undefined') {
     extension.tabs.update(tabid, { url: '404.html' })
