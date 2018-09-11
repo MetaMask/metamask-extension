@@ -230,6 +230,10 @@ ConfigScreen.prototype.render = function () {
   )
 }
 
+ConfigScreen.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 function rpcValidation (newRpc, state) {
   if (validUrl.isWebUri(newRpc)) {
     const rpc = url.parse(newRpc)

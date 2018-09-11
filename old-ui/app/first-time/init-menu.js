@@ -154,6 +154,10 @@ InitializeMenuScreen.prototype.componentDidMount = function () {
   document.getElementById('password-box').focus()
 }
 
+InitializeMenuScreen.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 InitializeMenuScreen.prototype.showRestoreVault = function () {
   this.props.dispatch(actions.showRestoreVault())
 }
