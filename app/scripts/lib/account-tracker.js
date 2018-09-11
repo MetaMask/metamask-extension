@@ -45,6 +45,9 @@ class AccountTracker {
     this._blockTracker = opts.blockTracker
     // blockTracker.currentBlock may be null
     this._currentBlockNumber = this._blockTracker.getCurrentBlock()
+    this._blockTracker.once('latest', blockNumber => {
+      this._currentBlockNumber = blockNumber
+    })
     // bind function for easier listener syntax
     this._updateForBlock = this._updateForBlock.bind(this)
   }
