@@ -153,7 +153,7 @@ module.exports = class TypedMessageManager extends EventEmitter {
         assert.equal(validation.errors.length, 0, 'Data must conform to EIP-712 schema. See https://git.io/fNtcx.')
         const chainId = data.domain.chainId
         const activeChainId = parseInt(this.networkController.getNetworkState())
-        chainId && assert.equal(chainId, activeChainId, `Provided chainId (${activeChainId}) must match the active chainId (${activeChainId})`)
+        chainId && assert.equal(chainId, activeChainId, `Provided chainId (${chainId}) must match the active chainId (${activeChainId})`)
         break
     }
   }
