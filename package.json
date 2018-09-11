@@ -22,7 +22,7 @@
     "test:e2e:run:firefox": "SELENIUM_BROWSER=firefox mocha test/e2e/metamask.spec --bail --recursive",
     "test:screens": "shell-parallel -s 'npm run ganache:start' -x 'sleep 3 && npm run test:screens:run'",
     "test:screens:run": "node test/screens/new-ui.js",
-    "test:coverage": "nyc npm run test:unit && npm run test:coveralls-upload",
+    "test:coverage": "nyc --reporter=text --reporter=html npm run test:unit && npm run test:coveralls-upload",
     "test:coveralls-upload": "if [ $COVERALLS_REPO_TOKEN ]; then nyc report --reporter=text-lcov | coveralls; fi",
     "test:flat": "npm run test:flat:build && karma start test/flat.conf.js",
     "test:flat:build": "npm run test:flat:build:ui && npm run test:flat:build:tests && npm run test:flat:build:locales",
