@@ -32,7 +32,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="ComposableObservableStore.html">ComposableObservableStore</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="ComposableObservableStore.html#getFlatState">getFlatState</a></li><li data-type='method'><a href="ComposableObservableStore.html#updateStructure">updateStructure</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="ComputedbalancesController.html">ComputedbalancesController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="ComputedbalancesController.html#syncAllAccountsFromStore">syncAllAccountsFromStore</a></li><li data-type='method'><a href="ComputedbalancesController.html#trackAddress">trackAddress</a></li><li data-type='method'><a href="ComputedbalancesController.html#trackAddressIfNotAlready">trackAddressIfNotAlready</a></li><li data-type='method'><a href="ComputedbalancesController.html#updateAllBalances">updateAllBalances</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="EdgeEncryptor.html">EdgeEncryptor</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="EdgeEncryptor.html#decrypt">decrypt</a></li><li data-type='method'><a href="EdgeEncryptor.html#encrypt">encrypt</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="Migrator.html">Migrator</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="Migrator.html#generateInitialState">generateInitialState</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="NonceTracker.html">NonceTracker</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="NonceTracker.html#_getBlockTracker">_getBlockTracker</a></li><li data-type='method'><a href="NonceTracker.html#_getHighestContinuousFrom">_getHighestContinuousFrom</a></li><li data-type='method'><a href="NonceTracker.html#getGlobalLock">getGlobalLock</a></li><li data-type='method'><a href="NonceTracker.html#getNonceLock">getNonceLock</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="PendingTransactionTracker.html">PendingTransactionTracker</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="PendingTransactionTracker.html#_checkIfNonceIsTaken">_checkIfNonceIsTaken</a></li><li data-type='method'><a href="PendingTransactionTracker.html#_checkPendingTx">_checkPendingTx</a></li><li data-type='method'><a href="PendingTransactionTracker.html#_checkPendingTxs">_checkPendingTxs</a></li><li data-type='method'><a href="PendingTransactionTracker.html#_resubmitTx">_resubmitTx</a></li><li data-type='method'><a href="PendingTransactionTracker.html#checkForTxInBlock">checkForTxInBlock</a></li><li data-type='method'><a href="PendingTransactionTracker.html#queryPendingTxs">queryPendingTxs</a></li><li data-type='method'><a href="PendingTransactionTracker.html#resubmitPendingTxs">resubmitPendingTxs</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="inverted dropdown icon"></i><a href="PortDuplexStream.html">PortDuplexStream</a></div></div></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TokenRatesController.html">TokenRatesController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TokenRatesController.html#fetchExchangeRate">fetchExchangeRate</a></li><li data-type='method'><a href="TokenRatesController.html#updateExchangeRates">updateExchangeRates</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TransactionController.html">TransactionController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TransactionController.html#_mapMethods">_mapMethods</a></li><li data-type='method'><a href="TransactionController.html#_markNonceDuplicatesDropped">_markNonceDuplicatesDropped</a></li><li data-type='method'><a href="TransactionController.html#_onBootCleanUp">_onBootCleanUp</a></li><li data-type='method'><a href="TransactionController.html#_setupListners">_setupListners</a></li><li data-type='method'><a href="TransactionController.html#_updateMemstore">_updateMemstore</a></li><li data-type='method'><a href="TransactionController.html#addTx">addTx</a></li><li data-type='method'><a href="TransactionController.html#addTxGasDefaults">addTxGasDefaults</a></li><li data-type='method'><a href="TransactionController.html#addUnapprovedTransaction">addUnapprovedTransaction</a></li><li data-type='method'><a href="TransactionController.html#approveTransaction">approveTransaction</a></li><li data-type='method'><a href="TransactionController.html#cancelTransaction">cancelTransaction</a></li><li data-type='method'><a href="TransactionController.html#getChainId">getChainId</a></li><li data-type='method'><a href="TransactionController.html#getFilteredTxList">getFilteredTxList</a></li><li data-type='method'><a href="TransactionController.html#getNetwork">getNetwork</a></li><li data-type='method'><a href="TransactionController.html#getPendingTxCount">getPendingTxCount</a></li><li data-type='method'><a href="TransactionController.html#getSelectedAddress">getSelectedAddress</a></li><li data-type='method'><a href="TransactionController.html#getState">getState</a></li><li data-type='method'><a href="TransactionController.html#getUnapprovedTxCount">getUnapprovedTxCount</a></li><li data-type='method'><a href="TransactionController.html#isNonceTaken">isNonceTaken</a></li><li data-type='method'><a href="TransactionController.html#newUnapprovedTransaction">newUnapprovedTransaction</a></li><li data-type='method'><a href="TransactionController.html#publishTransaction">publishTransaction</a></li><li data-type='method'><a href="TransactionController.html#retryTransaction">retryTransaction</a></li><li data-type='method'><a href="TransactionController.html#setTxHash">setTxHash</a></li><li data-type='method'><a href="TransactionController.html#signTransaction">signTransaction</a></li><li data-type='method'><a href="TransactionController.html#updateAndApproveTransaction">updateAndApproveTransaction</a></li><li data-type='method'><a href="TransactionController.html#updateTransaction">updateTransaction</a></li><li data-type='method'><a href="TransactionController.html#wipeTransactions">wipeTransactions</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TransactionStateManager.html">TransactionStateManager</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TransactionStateManager.html#_saveTxList">_saveTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#_setTxStatus">_setTxStatus</a></li><li data-type='method'><a href="TransactionStateManager.html#addTx">addTx</a></li><li data-type='method'><a href="TransactionStateManager.html#generateTxMeta">generateTxMeta</a></li><li data-type='method'><a href="TransactionStateManager.html#getConfirmedTransactions">getConfirmedTransactions</a></li><li data-type='method'><a href="TransactionStateManager.html#getFullTxList">getFullTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#getPendingTransactions">getPendingTransactions</a></li><li data-type='method'><a href="TransactionStateManager.html#getTx">getTx</a></li><li data-type='method'><a href="TransactionStateManager.html#getTxList">getTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#getTxsByMetaData">getTxsByMetaData</a></li><li data-type='method'><a href="TransactionStateManager.html#getTxStatus">getTxStatus</a></li><li data-type='method'><a href="TransactionStateManager.html#getUnapprovedTxList">getUnapprovedTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusApproved">setTxStatusApproved</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusConfirmed">setTxStatusConfirmed</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusDropped">setTxStatusDropped</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusFailed">setTxStatusFailed</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusRejected">setTxStatusRejected</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusSigned">setTxStatusSigned</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusSubmitted">setTxStatusSubmitted</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusUnapproved">setTxStatusUnapproved</a></li><li data-type='method'><a href="TransactionStateManager.html#updateTx">updateTx</a></li><li data-type='method'><a href="TransactionStateManager.html#updateTxParams">updateTxParams</a></li><li data-type='method'><a href="TransactionStateManager.html#validateTxParams">validateTxParams</a></li><li data-type='method'><a href="TransactionStateManager.html#wipeTransactions">wipeTransactions</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TxGasUtil.html">TxGasUtil</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TxGasUtil.html#addGasBuffer">addGasBuffer</a></li><li data-type='method'><a href="TxGasUtil.html#analyzeGasUsage">analyzeGasUsage</a></li><li data-type='method'><a href="TxGasUtil.html#estimateTxGas">estimateTxGas</a></li><li data-type='method'><a href="TxGasUtil.html#setTxGas">setTxGas</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="inverted dropdown icon"></i><a href="module.exports_module.exports.html">exports</a></div></div></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module.html#.exports">exports</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addNewAccount">addNewAccount</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#buyEth">buyEth</a></li><li data-type='method'><a href="module.html#.exports#cancelMessage">cancelMessage</a></li><li data-type='method'><a href="module.html#.exports#cancelPersonalMessage">cancelPersonalMessage</a></li><li data-type='method'><a href="module.html#.exports#cancelTypedMessage">cancelTypedMessage</a></li><li data-type='method'><a href="module.html#.exports#clearSeedWordCache">clearSeedWordCache</a></li><li data-type='method'><a href="module.html#.exports#createNewVaultAndKeychain">createNewVaultAndKeychain</a></li><li data-type='method'><a href="module.html#.exports#createNewVaultAndRestore">createNewVaultAndRestore</a></li><li data-type='method'><a href="module.html#.exports#createShapeShiftTx">createShapeShiftTx</a></li><li data-type='method'><a href="module.html#.exports#get">get</a></li><li data-type='method'><a href="module.html#.exports#getApi">getApi</a></li><li data-type='method'><a href="module.html#.exports#getGasPrice">getGasPrice</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getState">getState</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#importAccountWithStrategy">importAccountWithStrategy</a></li><li data-type='method'><a href="module.html#.exports#importLostAccounts">importLostAccounts</a></li><li data-type='method'><a href="module.html#.exports#initializeProvider">initializeProvider</a></li><li data-type='method'><a href="module.html#.exports#initPublicConfigStore">initPublicConfigStore</a></li><li data-type='method'><a href="module.html#.exports#markAccountsFound">markAccountsFound</a></li><li data-type='method'><a href="module.html#.exports#markPasswordForgotten">markPasswordForgotten</a></li><li data-type='method'><a href="module.html#.exports#newUnsignedMessage">newUnsignedMessage</a></li><li data-type='method'><a href="module.html#.exports#newUnsignedPersonalMessage">newUnsignedPersonalMessage</a></li><li data-type='method'><a href="module.html#.exports#newUnsignedTypedMessage">newUnsignedTypedMessage</a></li><li data-type='method'><a href="module.html#.exports#normalizeMsgData">normalizeMsgData</a></li><li data-type='method'><a href="module.html#.exports#placeSeedWords">placeSeedWords</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#resetAccount">resetAccount</a></li><li data-type='method'><a href="module.html#.exports#restoreOldLostAccounts">restoreOldLostAccounts</a></li><li data-type='method'><a href="module.html#.exports#restoreOldVaultAccounts">restoreOldVaultAccounts</a></li><li data-type='method'><a href="module.html#.exports#retryTransaction">retryTransaction</a></li><li data-type='method'><a href="module.html#.exports#selectFirstIdentity">selectFirstIdentity</a></li><li data-type='method'><a href="module.html#.exports#set">set</a></li><li data-type='method'><a href="module.html#.exports#setCurrentCurrency">setCurrentCurrency</a></li><li data-type='method'><a href="module.html#.exports#setCurrentLocale">setCurrentLocale</a></li><li data-type='method'><a href="module.html#.exports#setCustomRpc">setCustomRpc</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setupControllerConnection">setupControllerConnection</a></li><li data-type='method'><a href="module.html#.exports#setupProviderConnection">setupProviderConnection</a></li><li data-type='method'><a href="module.html#.exports#setupPublicConfig">setupPublicConfig</a></li><li data-type='method'><a href="module.html#.exports#setupTrustedCommunication">setupTrustedCommunication</a></li><li data-type='method'><a href="module.html#.exports#setupUntrustedCommunication">setupUntrustedCommunication</a></li><li data-type='method'><a href="module.html#.exports#setUseBlockie">setUseBlockie</a></li><li data-type='method'><a href="module.html#.exports#signMessage">signMessage</a></li><li data-type='method'><a href="module.html#.exports#signPersonalMessage">signPersonalMessage</a></li><li data-type='method'><a href="module.html#.exports#signTypedMessage">signTypedMessage</a></li><li data-type='method'><a href="module.html#.exports#unMarkPasswordForgotten">unMarkPasswordForgotten</a></li><li data-type='method'><a href="module.html#.exports#validateParams">validateParams</a></li><li data-type='method'><a href="module.html#.exports#verifySeedPhrase">verifySeedPhrase</a></li><li data-type='method'><a href="module.html#.exports#~addListener">addListener</a></li></ul></div></li></div></ul><h3>Modules</h3><ul><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module-controllers_transactions_lib_tx-state-history-helper.html">controllers/transactions/lib/tx-state-history-helper</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~generateHistoryEntry">generateHistoryEntry</a></li><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~migrateFromSnapshotsToDiffs">migrateFromSnapshotsToDiffs</a></li><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~replayHistory">replayHistory</a></li><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~snapshotFromTxMeta">snapshotFromTxMeta</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module-controllers_transactions_lib_util.html">controllers/transactions/lib/util</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~getFinalStates">getFinalStates</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~normalizeTxParams">normalizeTxParams</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~validateFrom">validateFrom</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~validateRecipient">validateRecipient</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~validateTxParams">validateTxParams</a></li></ul></div></li></div></ul><h3>Global</h3><ul><li><a href="global.html#blacklistedDomainCheck">blacklistedDomainCheck</a></li><li><a href="global.html#BnMultiplyByFraction">BnMultiplyByFraction</a></li><li><a href="global.html#bnToHex">bnToHex</a></li><li><a href="global.html#cleanContextForImports">cleanContextForImports</a></li><li><a href="global.html#connectToAccountManager">connectToAccountManager</a></li><li><a href="global.html#createLoggerMiddleware">createLoggerMiddleware</a></li><li><a href="global.html#createOriginMiddleware">createOriginMiddleware</a></li><li><a href="global.html#createProviderMiddleware">createProviderMiddleware</a></li><li><a href="global.html#deepMap">deepMap</a></li><li><a href="global.html#doctypeCheck">doctypeCheck</a></li><li><a href="global.html#documentElementCheck">documentElementCheck</a></li><li><a href="global.html#extractEthjsErrorMessage">extractEthjsErrorMessage</a></li><li><a href="global.html#getBuyEthUrl">getBuyEthUrl</a></li><li><a href="global.html#getEnvironmentType">getEnvironmentType</a></li><li><a href="global.html#getFirstPreferredLangCode">getFirstPreferredLangCode</a></li><li><a href="global.html#getObjStructure">getObjStructure</a></li><li><a href="global.html#getStack">getStack</a></li><li><a href="global.html#hexToBn">hexToBn</a></li><li><a href="global.html#initialize">initialize</a></li><li><a href="global.html#initializePopup">initializePopup</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#jsonParseStream">jsonParseStream</a></li><li><a href="global.html#jsonStringifyStream">jsonStringifyStream</a></li><li><a href="global.html#loadStateFromPersistence">loadStateFromPersistence</a></li><li><a href="global.html#logStreamDisconnectWarning">logStreamDisconnectWarning</a></li><li><a href="global.html#normalizeMsgData">normalizeMsgData</a></li><li><a href="global.html#redirectToPhishingWarning">redirectToPhishingWarning</a></li><li><a href="global.html#restoreContextAfterImports">restoreContextAfterImports</a></li><li><a href="global.html#setupController">setupController</a></li><li><a href="global.html#setupControllerConnection">setupControllerConnection</a></li><li><a href="global.html#setupInjection">setupInjection</a></li><li><a href="global.html#setupMetamaskMeshMetrics">setupMetamaskMeshMetrics</a></li><li><a href="global.html#setupMultiplex">setupMultiplex</a></li><li><a href="global.html#setupStreams">setupStreams</a></li><li><a href="global.html#setupWeb3Connection">setupWeb3Connection</a></li><li><a href="global.html#shouldInjectWeb3">shouldInjectWeb3</a></li><li><a href="global.html#sufficientBalance">sufficientBalance</a></li><li><a href="global.html#suffixCheck">suffixCheck</a></li><li><a href="global.html#triggerUi">triggerUi</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="ComposableObservableStore.html">ComposableObservableStore</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="ComposableObservableStore.html#getFlatState">getFlatState</a></li><li data-type='method'><a href="ComposableObservableStore.html#updateStructure">updateStructure</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="ComputedbalancesController.html">ComputedbalancesController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="ComputedbalancesController.html#syncAllAccountsFromStore">syncAllAccountsFromStore</a></li><li data-type='method'><a href="ComputedbalancesController.html#trackAddress">trackAddress</a></li><li data-type='method'><a href="ComputedbalancesController.html#trackAddressIfNotAlready">trackAddressIfNotAlready</a></li><li data-type='method'><a href="ComputedbalancesController.html#updateAllBalances">updateAllBalances</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="DetectTokensController.html">DetectTokensController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="DetectTokensController.html#detectNewTokens">detectNewTokens</a></li><li data-type='method'><a href="DetectTokensController.html#detectTokenBalance">detectTokenBalance</a></li><li data-type='method'><a href="DetectTokensController.html#restartTokenDetection">restartTokenDetection</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="EdgeEncryptor.html">EdgeEncryptor</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="EdgeEncryptor.html#decrypt">decrypt</a></li><li data-type='method'><a href="EdgeEncryptor.html#encrypt">encrypt</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="Migrator.html">Migrator</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="Migrator.html#generateInitialState">generateInitialState</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="NonceTracker.html">NonceTracker</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="NonceTracker.html#_getHighestContinuousFrom">_getHighestContinuousFrom</a></li><li data-type='method'><a href="NonceTracker.html#getGlobalLock">getGlobalLock</a></li><li data-type='method'><a href="NonceTracker.html#getNonceLock">getNonceLock</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="PendingTransactionTracker.html">PendingTransactionTracker</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="PendingTransactionTracker.html#_checkIfNonceIsTaken">_checkIfNonceIsTaken</a></li><li data-type='method'><a href="PendingTransactionTracker.html#_checkPendingTx">_checkPendingTx</a></li><li data-type='method'><a href="PendingTransactionTracker.html#_resubmitTx">_resubmitTx</a></li><li data-type='method'><a href="PendingTransactionTracker.html#resubmitPendingTxs">resubmitPendingTxs</a></li><li data-type='method'><a href="PendingTransactionTracker.html#updatePendingTxs">updatePendingTxs</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TokenRatesController.html">TokenRatesController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TokenRatesController.html#fetchExchangeRate">fetchExchangeRate</a></li><li data-type='method'><a href="TokenRatesController.html#updateExchangeRates">updateExchangeRates</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TransactionController.html">TransactionController</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TransactionController.html#_mapMethods">_mapMethods</a></li><li data-type='method'><a href="TransactionController.html#_markNonceDuplicatesDropped">_markNonceDuplicatesDropped</a></li><li data-type='method'><a href="TransactionController.html#_onBootCleanUp">_onBootCleanUp</a></li><li data-type='method'><a href="TransactionController.html#_setupListeners">_setupListeners</a></li><li data-type='method'><a href="TransactionController.html#_updateMemstore">_updateMemstore</a></li><li data-type='method'><a href="TransactionController.html#addTx">addTx</a></li><li data-type='method'><a href="TransactionController.html#addTxGasDefaults">addTxGasDefaults</a></li><li data-type='method'><a href="TransactionController.html#addUnapprovedTransaction">addUnapprovedTransaction</a></li><li data-type='method'><a href="TransactionController.html#approveTransaction">approveTransaction</a></li><li data-type='method'><a href="TransactionController.html#cancelTransaction">cancelTransaction</a></li><li data-type='method'><a href="TransactionController.html#createCancelTransaction">createCancelTransaction</a></li><li data-type='method'><a href="TransactionController.html#getChainId">getChainId</a></li><li data-type='method'><a href="TransactionController.html#getFilteredTxList">getFilteredTxList</a></li><li data-type='method'><a href="TransactionController.html#getNetwork">getNetwork</a></li><li data-type='method'><a href="TransactionController.html#getPendingTxCount">getPendingTxCount</a></li><li data-type='method'><a href="TransactionController.html#getSelectedAddress">getSelectedAddress</a></li><li data-type='method'><a href="TransactionController.html#getState">getState</a></li><li data-type='method'><a href="TransactionController.html#getUnapprovedTxCount">getUnapprovedTxCount</a></li><li data-type='method'><a href="TransactionController.html#newUnapprovedTransaction">newUnapprovedTransaction</a></li><li data-type='method'><a href="TransactionController.html#publishTransaction">publishTransaction</a></li><li data-type='method'><a href="TransactionController.html#retryTransaction">retryTransaction</a></li><li data-type='method'><a href="TransactionController.html#setTxHash">setTxHash</a></li><li data-type='method'><a href="TransactionController.html#signTransaction">signTransaction</a></li><li data-type='method'><a href="TransactionController.html#updateAndApproveTransaction">updateAndApproveTransaction</a></li><li data-type='method'><a href="TransactionController.html#updateTransaction">updateTransaction</a></li><li data-type='method'><a href="TransactionController.html#wipeTransactions">wipeTransactions</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TransactionStateManager.html">TransactionStateManager</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TransactionStateManager.html#_saveTxList">_saveTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#_setTxStatus">_setTxStatus</a></li><li data-type='method'><a href="TransactionStateManager.html#addTx">addTx</a></li><li data-type='method'><a href="TransactionStateManager.html#generateTxMeta">generateTxMeta</a></li><li data-type='method'><a href="TransactionStateManager.html#getConfirmedTransactions">getConfirmedTransactions</a></li><li data-type='method'><a href="TransactionStateManager.html#getFullTxList">getFullTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#getPendingTransactions">getPendingTransactions</a></li><li data-type='method'><a href="TransactionStateManager.html#getTx">getTx</a></li><li data-type='method'><a href="TransactionStateManager.html#getTxList">getTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#getTxsByMetaData">getTxsByMetaData</a></li><li data-type='method'><a href="TransactionStateManager.html#getTxStatus">getTxStatus</a></li><li data-type='method'><a href="TransactionStateManager.html#getUnapprovedTxList">getUnapprovedTxList</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusApproved">setTxStatusApproved</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusConfirmed">setTxStatusConfirmed</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusDropped">setTxStatusDropped</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusFailed">setTxStatusFailed</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusRejected">setTxStatusRejected</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusSigned">setTxStatusSigned</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusSubmitted">setTxStatusSubmitted</a></li><li data-type='method'><a href="TransactionStateManager.html#setTxStatusUnapproved">setTxStatusUnapproved</a></li><li data-type='method'><a href="TransactionStateManager.html#updateTx">updateTx</a></li><li data-type='method'><a href="TransactionStateManager.html#updateTxParams">updateTxParams</a></li><li data-type='method'><a href="TransactionStateManager.html#validateTxParams">validateTxParams</a></li><li data-type='method'><a href="TransactionStateManager.html#wipeTransactions">wipeTransactions</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="TxGasUtil.html">TxGasUtil</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="TxGasUtil.html#addGasBuffer">addGasBuffer</a></li><li data-type='method'><a href="TxGasUtil.html#analyzeGasUsage">analyzeGasUsage</a></li><li data-type='method'><a href="TxGasUtil.html#estimateTxGas">estimateTxGas</a></li><li data-type='method'><a href="TxGasUtil.html#setTxGas">setTxGas</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module.html#.exports">exports</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addMsg">addMsg</a></li><li data-type='method'><a href="module.html#.exports#addNewAccount">addNewAccount</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessage">addUnapprovedMessage</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessageAsync">addUnapprovedMessageAsync</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessageAsync">addUnapprovedMessageAsync</a></li><li data-type='method'><a href="module.html#.exports#addUnapprovedMessageAsync">addUnapprovedMessageAsync</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#approveMessage">approveMessage</a></li><li data-type='method'><a href="module.html#.exports#buyEth">buyEth</a></li><li data-type='method'><a href="module.html#.exports#cancelMessage">cancelMessage</a></li><li data-type='method'><a href="module.html#.exports#cancelPersonalMessage">cancelPersonalMessage</a></li><li data-type='method'><a href="module.html#.exports#cancelTypedMessage">cancelTypedMessage</a></li><li data-type='method'><a href="module.html#.exports#checkHardwareStatus">checkHardwareStatus</a></li><li data-type='method'><a href="module.html#.exports#clearSeedWordCache">clearSeedWordCache</a></li><li data-type='method'><a href="module.html#.exports#connectHardware">connectHardware</a></li><li data-type='method'><a href="module.html#.exports#createCancelTransaction">createCancelTransaction</a></li><li data-type='method'><a href="module.html#.exports#createNewVaultAndKeychain">createNewVaultAndKeychain</a></li><li data-type='method'><a href="module.html#.exports#createNewVaultAndRestore">createNewVaultAndRestore</a></li><li data-type='method'><a href="module.html#.exports#createShapeShiftTx">createShapeShiftTx</a></li><li data-type='method'><a href="module.html#.exports#forgetDevice">forgetDevice</a></li><li data-type='method'><a href="module.html#.exports#get">get</a></li><li data-type='method'><a href="module.html#.exports#getApi">getApi</a></li><li data-type='method'><a href="module.html#.exports#getBalance">getBalance</a></li><li data-type='method'><a href="module.html#.exports#getGasPrice">getGasPrice</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getMsg">getMsg</a></li><li data-type='method'><a href="module.html#.exports#getState">getState</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#getUnapprovedMsgs">getUnapprovedMsgs</a></li><li data-type='method'><a href="module.html#.exports#importAccountWithStrategy">importAccountWithStrategy</a></li><li data-type='method'><a href="module.html#.exports#importLostAccounts">importLostAccounts</a></li><li data-type='method'><a href="module.html#.exports#initializeProvider">initializeProvider</a></li><li data-type='method'><a href="module.html#.exports#initPublicConfigStore">initPublicConfigStore</a></li><li data-type='method'><a href="module.html#.exports#markAccountsFound">markAccountsFound</a></li><li data-type='method'><a href="module.html#.exports#markPasswordForgotten">markPasswordForgotten</a></li><li data-type='method'><a href="module.html#.exports#newUnapprovedTransaction">newUnapprovedTransaction</a></li><li data-type='method'><a href="module.html#.exports#newUnsignedMessage">newUnsignedMessage</a></li><li data-type='method'><a href="module.html#.exports#newUnsignedPersonalMessage">newUnsignedPersonalMessage</a></li><li data-type='method'><a href="module.html#.exports#newUnsignedTypedMessage">newUnsignedTypedMessage</a></li><li data-type='method'><a href="module.html#.exports#normalizeMsgData">normalizeMsgData</a></li><li data-type='method'><a href="module.html#.exports#placeSeedWords">placeSeedWords</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#prepMsgForSigning">prepMsgForSigning</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#rejectMsg">rejectMsg</a></li><li data-type='method'><a href="module.html#.exports#removeAccount">removeAccount</a></li><li data-type='method'><a href="module.html#.exports#resetAccount">resetAccount</a></li><li data-type='method'><a href="module.html#.exports#restoreOldVaultAccounts">restoreOldVaultAccounts</a></li><li data-type='method'><a href="module.html#.exports#retryTransaction">retryTransaction</a></li><li data-type='method'><a href="module.html#.exports#selectFirstIdentity">selectFirstIdentity</a></li><li data-type='method'><a href="module.html#.exports#set">set</a></li><li data-type='method'><a href="module.html#.exports#setCurrentCurrency">setCurrentCurrency</a></li><li data-type='method'><a href="module.html#.exports#setCurrentLocale">setCurrentLocale</a></li><li data-type='method'><a href="module.html#.exports#setCustomRpc">setCustomRpc</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusApproved">setMsgStatusApproved</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setMsgStatusSigned">setMsgStatusSigned</a></li><li data-type='method'><a href="module.html#.exports#setupControllerConnection">setupControllerConnection</a></li><li data-type='method'><a href="module.html#.exports#setupProviderConnection">setupProviderConnection</a></li><li data-type='method'><a href="module.html#.exports#setupPublicConfig">setupPublicConfig</a></li><li data-type='method'><a href="module.html#.exports#setupTrustedCommunication">setupTrustedCommunication</a></li><li data-type='method'><a href="module.html#.exports#setupUntrustedCommunication">setupUntrustedCommunication</a></li><li data-type='method'><a href="module.html#.exports#setUseBlockie">setUseBlockie</a></li><li data-type='method'><a href="module.html#.exports#signMessage">signMessage</a></li><li data-type='method'><a href="module.html#.exports#signPersonalMessage">signPersonalMessage</a></li><li data-type='method'><a href="module.html#.exports#signTypedMessage">signTypedMessage</a></li><li data-type='method'><a href="module.html#.exports#unlockHardwareWalletAccount">unlockHardwareWalletAccount</a></li><li data-type='method'><a href="module.html#.exports#unMarkPasswordForgotten">unMarkPasswordForgotten</a></li><li data-type='method'><a href="module.html#.exports#validateParams">validateParams</a></li><li data-type='method'><a href="module.html#.exports#verifySeedPhrase">verifySeedPhrase</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="inverted dropdown icon"></i><a href="module.exports_module.exports.html">exports</a></div></div></div></li></div></ul><h3>Modules</h3><ul><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module-controllers_transactions_lib_recipient-blacklist-checker.html">controllers/transactions/lib/recipient-blacklist-checker</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module-controllers_transactions_lib_recipient-blacklist-checker.html#~checkAccount">checkAccount</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module-controllers_transactions_lib_tx-state-history-helper.html">controllers/transactions/lib/tx-state-history-helper</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~generateHistoryEntry">generateHistoryEntry</a></li><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~migrateFromSnapshotsToDiffs">migrateFromSnapshotsToDiffs</a></li><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~replayHistory">replayHistory</a></li><li data-type='method'><a href="module-controllers_transactions_lib_tx-state-history-helper.html#~snapshotFromTxMeta">snapshotFromTxMeta</a></li></ul></div></li></div><div class="ui vertical accordion"><div class="title"><div class="ui list"><div class="item"><i class="dropdown icon"></i><a href="module-controllers_transactions_lib_util.html">controllers/transactions/lib/util</a></div></div></div><div class="content"><ul class='methods'><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~getFinalStates">getFinalStates</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~normalizeTxParams">normalizeTxParams</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~validateFrom">validateFrom</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~validateRecipient">validateRecipient</a></li><li data-type='method'><a href="module-controllers_transactions_lib_util.html#~validateTxParams">validateTxParams</a></li></ul></div></li></div></ul><h3>Global</h3><ul><li><a href="global.html#blacklistedDomainCheck">blacklistedDomainCheck</a></li><li><a href="global.html#BnMultiplyByFraction">BnMultiplyByFraction</a></li><li><a href="global.html#bnToHex">bnToHex</a></li><li><a href="global.html#cleanContextForImports">cleanContextForImports</a></li><li><a href="global.html#cleanErrorStack">cleanErrorStack</a></li><li><a href="global.html#connectToAccountManager">connectToAccountManager</a></li><li><a href="global.html#createLoggerMiddleware">createLoggerMiddleware</a></li><li><a href="global.html#createOriginMiddleware">createOriginMiddleware</a></li><li><a href="global.html#createProviderMiddleware">createProviderMiddleware</a></li><li><a href="global.html#deepMap">deepMap</a></li><li><a href="global.html#doctypeCheck">doctypeCheck</a></li><li><a href="global.html#documentElementCheck">documentElementCheck</a></li><li><a href="global.html#extractEthjsErrorMessage">extractEthjsErrorMessage</a></li><li><a href="global.html#getBuyEthUrl">getBuyEthUrl</a></li><li><a href="global.html#getEnvironmentType">getEnvironmentType</a></li><li><a href="global.html#getFirstPreferredLangCode">getFirstPreferredLangCode</a></li><li><a href="global.html#getObjStructure">getObjStructure</a></li><li><a href="global.html#getPlatform">getPlatform</a></li><li><a href="global.html#getStack">getStack</a></li><li><a href="global.html#hexToBn">hexToBn</a></li><li><a href="global.html#initialize">initialize</a></li><li><a href="global.html#initializePopup">initializePopup</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#jsonParseStream">jsonParseStream</a></li><li><a href="global.html#jsonStringifyStream">jsonStringifyStream</a></li><li><a href="global.html#loadStateFromPersistence">loadStateFromPersistence</a></li><li><a href="global.html#logStreamDisconnectWarning">logStreamDisconnectWarning</a></li><li><a href="global.html#normalizeMsgData">normalizeMsgData</a></li><li><a href="global.html#redirectToPhishingWarning">redirectToPhishingWarning</a></li><li><a href="global.html#restoreContextAfterImports">restoreContextAfterImports</a></li><li><a href="global.html#setupController">setupController</a></li><li><a href="global.html#setupControllerConnection">setupControllerConnection</a></li><li><a href="global.html#setupInjection">setupInjection</a></li><li><a href="global.html#setupMetamaskMeshMetrics">setupMetamaskMeshMetrics</a></li><li><a href="global.html#setupMultiplex">setupMultiplex</a></li><li><a href="global.html#setupStreams">setupStreams</a></li><li><a href="global.html#setupWeb3Connection">setupWeb3Connection</a></li><li><a href="global.html#shouldInjectWeb3">shouldInjectWeb3</a></li><li><a href="global.html#showWatchAssetUi">showWatchAssetUi</a></li><li><a href="global.html#sufficientBalance">sufficientBalance</a></li><li><a href="global.html#suffixCheck">suffixCheck</a></li><li><a href="global.html#triggerUi">triggerUi</a></li></ul>
 </nav>
 
 <div id="main">
@@ -172,6 +172,132 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line52">line 52</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>A getter for the number of 'unapproved' Messages in this.messages</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="unapprovedMsgCount"><span class="type-signature"></span>unapprovedMsgCount<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line52">line 52</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>A getter for the number of 'unapproved' Messages in this.messages</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="unapprovedMsgCount"><span class="type-signature"></span>unapprovedMsgCount<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line52">line 52</a>
     </li></ul></dd>
     
 
@@ -370,7 +496,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line101">line 101</a>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line101">line 101</a>
     </li></ul></dd>
     
 
@@ -504,7 +630,275 @@ list to this.memStore.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line123">line 123</a>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line138">line 138</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Adds a passed PersonalMessage to this.messages, and calls this._saveMsgList() to save the unapproved PersonalMessages from that
+list to this.memStore.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Message">Message</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The PersonalMessage to add to this.messages</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addMsg"><span class="type-signature"></span>addMsg<span class="signature">(msg)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line130">line 130</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Adds a passed Message to this.messages, and calls this._saveMsgList() to save the unapproved Messages from that
+list to this.memStore.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Message">Message</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The Message to add to this.messages</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addMsg"><span class="type-signature"></span>addMsg<span class="signature">(msg)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line152">line 152</a>
     </li></ul></dd>
     
 
@@ -638,7 +1032,7 @@ list to this.memStore.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line106">line 106</a>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line101">line 101</a>
     </li></ul></dd>
     
 
@@ -678,7 +1072,7 @@ list to this.memStore.</p>
 
 
 <div class="description">
-    <p>Adds a passed PersonalMessage to this.messages, and calls this._saveMsgList() to save the unapproved PersonalMessages from that
+    <p>Adds a passed Message to this.messages, and calls this._saveMsgList() to save the unapproved Messages from that
 list to this.memStore.</p>
 </div>
 
@@ -733,7 +1127,7 @@ list to this.memStore.</p>
 
             
 
-            <td class="description last"><p>The PersonalMessage to add to this.messages</p></td>
+            <td class="description last"><p>The Message to add to this.messages</p></td>
         </tr>
 
     
@@ -772,7 +1166,7 @@ list to this.memStore.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line493">line 493</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line686">line 686</a>
     </li></ul></dd>
     
 
@@ -854,7 +1248,7 @@ list to this.memStore.</p>
 
     
 
-    <h4 class="name" id="addUnapprovedMessage"><span class="type-signature"></span>addUnapprovedMessage<span class="signature">(msgParams)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="addUnapprovedMessage"><span class="type-signature"></span>addUnapprovedMessage<span class="signature">(msgParams, req)</span><span class="type-signature"> &rarr; {number}</span></h4>
 
     
 
@@ -866,7 +1260,7 @@ list to this.memStore.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line79">line 79</a>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line105">line 105</a>
     </li></ul></dd>
     
 
@@ -906,9 +1300,9 @@ list to this.memStore.</p>
 
 
 <div class="description">
-    <p>Creates a new PersonalMessage with an 'unapproved' status using the passed msgParams. this.addMsg is called to add
-the new PersonalMessage to this.messages, and to save the unapproved PersonalMessages from that list to
-this.memStore.</p>
+    <p>Creates a new TypedMessage with an 'unapproved' status using the passed msgParams. this.addMsg is called to add
+the new TypedMessage to this.messages, and to save the unapproved TypedMessages from that list to
+this.memStore. Before any of this is done, msgParams are validated</p>
 </div>
 
 
@@ -966,6 +1360,29 @@ this.memStore.</p>
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>(optional) The original request object possibly containing the origin</p></td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -986,7 +1403,186 @@ this.memStore.</p>
 
         
 <div class="param-desc">
-    <p>The id of the newly created PersonalMessage.</p>
+    <p>The id of the newly created TypedMessage.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addUnapprovedMessage"><span class="type-signature"></span>addUnapprovedMessage<span class="signature">(msgParams, req)</span><span class="type-signature"> &rarr; {number}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line102">line 102</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Creates a new Message with an 'unapproved' status using the passed msgParams. this.addMsg is called to add the
+new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The params for the eth_sign call to be made after the message is approved.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>(optional) The original request object where the origin may be specificied</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The id of the newly created message.</p>
 </div>
 
 
@@ -1023,7 +1619,7 @@ this.memStore.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line75">line 75</a>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line75">line 75</a>
     </li></ul></dd>
     
 
@@ -1167,6 +1763,186 @@ new Message to this.messages, and to save the unapproved Messages from that list
 
     
 
+    <h4 class="name" id="addUnapprovedMessage"><span class="type-signature"></span>addUnapprovedMessage<span class="signature">(msgParams, req)</span><span class="type-signature"> &rarr; {number}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line109">line 109</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Creates a new PersonalMessage with an 'unapproved' status using the passed msgParams. this.addMsg is called to add
+the new PersonalMessage to this.messages, and to save the unapproved PersonalMessages from that list to
+this.memStore.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The params for the eth_sign call to be made after the message is approved.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>(optional) The original request object possibly containing the origin</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The id of the newly created PersonalMessage.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
     <h4 class="name" id="addUnapprovedMessage"><span class="type-signature"></span>addUnapprovedMessage<span class="signature">(msgParams)</span><span class="type-signature"> &rarr; {number}</span></h4>
 
     
@@ -1179,7 +1955,342 @@ new Message to this.messages, and to save the unapproved Messages from that list
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line78">line 78</a>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line75">line 75</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Creates a new Message with an 'unapproved' status using the passed msgParams. this.addMsg is called to add the
+new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The params for the eth_sign call to be made after the message is approved.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The id of the newly created message.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addUnapprovedMessageAsync"><span class="type-signature"></span>addUnapprovedMessageAsync<span class="signature">(msgParams, req)</span><span class="type-signature"> &rarr; {promise}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line76">line 76</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Creates a new Message with an 'unapproved' status using the passed msgParams. this.addMsg is called to add the
+new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The params for the eth_sign call to be made after the message is approved.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>(optional) The original request object possibly containing the origin</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>after signature has been</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addUnapprovedMessageAsync"><span class="type-signature"></span>addUnapprovedMessageAsync<span class="signature">(msgParams, req)</span><span class="type-signature"> &rarr; {promise}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line79">line 79</a>
     </li></ul></dd>
     
 
@@ -1279,6 +2390,29 @@ this.memStore. Before any of this is done, msgParams are validated</p>
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>(optional) The original request object possibly containing the origin</p></td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -1299,7 +2433,7 @@ this.memStore. Before any of this is done, msgParams are validated</p>
 
         
 <div class="param-desc">
-    <p>The id of the newly created TypedMessage.</p>
+    <p>When the message has been signed or rejected</p>
 </div>
 
 
@@ -1310,7 +2444,187 @@ this.memStore. Before any of this is done, msgParams are validated</p>
     </dt>
     <dd>
         
-<span class="param-type">number</span>
+<span class="param-type">promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addUnapprovedMessageAsync"><span class="type-signature"></span>addUnapprovedMessageAsync<span class="signature">(msgParams, req)</span><span class="type-signature"> &rarr; {promise}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line80">line 80</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Creates a new PersonalMessage with an 'unapproved' status using the passed msgParams. this.addMsg is called to add
+the new PersonalMessage to this.messages, and to save the unapproved PersonalMessages from that list to
+this.memStore.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The params for the eth_sign call to be made after the message is approved.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>(optional) The original request object possibly containing the origin</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>When the message has been signed or rejected</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">promise</span>
 
 
     </dd>
@@ -1336,7 +2650,7 @@ this.memStore. Before any of this is done, msgParams are validated</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line126">line 126</a>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line126">line 126</a>
     </li></ul></dd>
     
 
@@ -1541,7 +2855,7 @@ any the message params modified for proper signing.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line149">line 149</a>
+        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line155">line 155</a>
     </li></ul></dd>
     
 
@@ -1581,8 +2895,8 @@ any the message params modified for proper signing.</p>
 
 
 <div class="description">
-    <p>Approves a TypedMessage. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
-with any the message params modified for proper signing.</p>
+    <p>Approves a Message. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise with
+any the message params modified for proper signing.</p>
 </div>
 
 
@@ -1746,7 +3060,7 @@ with any the message params modified for proper signing.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line132">line 132</a>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line164">line 164</a>
     </li></ul></dd>
     
 
@@ -1939,6 +3253,416 @@ with any the message params modified for proper signing.</p>
 
     
 
+    <h4 class="name" id="approveMessage"><span class="type-signature"></span>approveMessage<span class="signature">(msgParams)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line126">line 126</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Approves a Message. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise with
+any the message params modified for proper signing.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The msgParams to be used when eth_sign is called, plus data added by MetaMask.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>metamaskId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Added to msgParams for tracking and identification within MetaMask.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Promises the msgParams object with metamaskId removed.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;object></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="approveMessage"><span class="type-signature"></span>approveMessage<span class="signature">(msgParams)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line178">line 178</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Approves a TypedMessage. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
+with any the message params modified for proper signing.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The msgParams to be used when eth_sign is called, plus data added by MetaMask.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>metamaskId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Added to msgParams for tracking and identification within MetaMask.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Promises the msgParams object with metamaskId removed.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;object></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
     <h4 class="name" id="buyEth"><span class="type-signature"></span>buyEth<span class="signature">(address, amount)</span><span class="type-signature"></span></h4>
 
     
@@ -1951,7 +3675,7 @@ with any the message params modified for proper signing.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1153">line 1153</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1385">line 1385</a>
     </li></ul></dd>
     
 
@@ -2108,7 +3832,7 @@ or the network &quot;gas&quot; currency, for the current selected network.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line677">line 677</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line890">line 890</a>
     </li></ul></dd>
     
 
@@ -2241,7 +3965,7 @@ or the network &quot;gas&quot; currency, for the current selected network.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line748">line 748</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line948">line 948</a>
     </li></ul></dd>
     
 
@@ -2397,7 +4121,7 @@ or the network &quot;gas&quot; currency, for the current selected network.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line816">line 816</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1001">line 1001</a>
     </li></ul></dd>
     
 
@@ -2541,6 +4265,108 @@ or the network &quot;gas&quot; currency, for the current selected network.</p>
 
     
 
+    <h4 class="name" id="checkHardwareStatus"><span class="type-signature">(async) </span>checkHardwareStatus<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;boolean>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line633">line 633</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Check if the device is unlocked</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;boolean></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
     <h4 class="name" id="clearSeedWordCache"><span class="type-signature"></span>clearSeedWordCache<span class="signature">(cb)</span><span class="type-signature"></span></h4>
 
     
@@ -2553,7 +4379,7 @@ or the network &quot;gas&quot; currency, for the current selected network.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line574">line 574</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line769">line 769</a>
     </li></ul></dd>
     
 
@@ -2675,6 +4501,299 @@ or the network &quot;gas&quot; currency, for the current selected network.</p>
 
     
 
+    <h4 class="name" id="connectHardware"><span class="type-signature">(async) </span>connectHardware<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line606">line 606</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Fetch account list from a trezor device.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>[] accounts</p>
+</div>
+
+
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="createCancelTransaction"><span class="type-signature">(async) </span>createCancelTransaction<span class="signature">(originalTxId, customGasPrice<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1092">line 1092</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Allows a user to attempt to cancel a previously submitted transaction by creating a new
+transaction.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>originalTxId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the id of the txMeta that you want to attempt to cancel</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>customGasPrice</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the hex value to use for the cancel transaction</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>MetaMask state</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
     <h4 class="name" id="createNewVaultAndKeychain"><span class="type-signature">(async) </span>createNewVaultAndKeychain<span class="signature">(password)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
@@ -2687,7 +4806,7 @@ or the network &quot;gas&quot; currency, for the current selected network.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line424">line 424</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line443">line 443</a>
     </li></ul></dd>
     
 
@@ -2847,7 +4966,7 @@ For example, a mnemonic phrase can generate many accounts, and is a keyring.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line452">line 452</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line469">line 469</a>
     </li></ul></dd>
     
 
@@ -2993,7 +5112,7 @@ For example, a mnemonic phrase can generate many accounts, and is a keyring.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1165">line 1165</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1397">line 1397</a>
     </li></ul></dd>
     
 
@@ -3166,6 +5285,108 @@ For example, a mnemonic phrase can generate many accounts, and is a keyring.</p>
 
     
 
+    <h4 class="name" id="forgetDevice"><span class="type-signature">(async) </span>forgetDevice<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;boolean>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line643">line 643</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Clear</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;boolean></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
     <h4 class="name" id="get"><span class="type-signature">(async) </span>get<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;*>}</span></h4>
 
     
@@ -3280,7 +5501,7 @@ For example, a mnemonic phrase can generate many accounts, and is a keyring.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line323">line 323</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line331">line 331</a>
     </li></ul></dd>
     
 
@@ -3376,6 +5597,162 @@ The API object can be transmitted over a stream with dnode.</p>
 
     
 
+    <h4 class="name" id="getBalance"><span class="type-signature"></span>getBalance<span class="signature">(address, ethQuery)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line513">line 513</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Get an account balance from the AccountTracker or request it directly from the network.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>address</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The account address</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ethQuery</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">EthQuery</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The EthQuery instance to use when asking the network</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="getGasPrice"><span class="type-signature"></span>getGasPrice<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
 
     
@@ -3388,7 +5765,7 @@ The API object can be transmitted over a stream with dnode.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1093">line 1093</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1325">line 1325</a>
     </li></ul></dd>
     
 
@@ -3496,7 +5873,7 @@ Returns the lowest price that would have been included in
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line119">line 119</a>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line151">line 151</a>
     </li></ul></dd>
     
 
@@ -3655,7 +6032,165 @@ if no PersonalMessage has that id.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line113">line 113</a>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line113">line 113</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Returns a specified Message.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The id of the Message to get</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The Message with the id that matches the passed msgId, or undefined if no Message has that id.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#Message">Message</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getMsg"><span class="type-signature"></span>getMsg<span class="signature">(msgId)</span><span class="type-signature"> &rarr; {<a href="global.html#Message">Message</a>|undefined}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line113">line 113</a>
     </li></ul></dd>
     
 
@@ -3813,7 +6348,7 @@ if no PersonalMessage has that id.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line136">line 136</a>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line165">line 165</a>
     </li></ul></dd>
     
 
@@ -3960,6 +6495,164 @@ if no TypedMessage has that id.</p>
 
     
 
+    <h4 class="name" id="getMsg"><span class="type-signature"></span>getMsg<span class="signature">(msgId)</span><span class="type-signature"> &rarr; {<a href="global.html#Message">Message</a>|undefined}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line142">line 142</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Returns a specified Message.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The id of the Message to get</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The Message with the id that matches the passed msgId, or undefined if no Message has that id.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#Message">Message</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
     <h4 class="name" id="getState"><span class="type-signature"></span>getState<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
@@ -3972,7 +6665,7 @@ if no TypedMessage has that id.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line299">line 299</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line310">line 310</a>
     </li></ul></dd>
     
 
@@ -4042,6 +6735,112 @@ if no TypedMessage has that id.</p>
         
 <div class="param-desc">
     <p>status</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getUnapprovedMsgs"><span class="type-signature"></span>getUnapprovedMsgs<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line62">line 62</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>A getter for the 'unapproved' Messages in this.messages</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>An index of Message ids to Messages, for all 'unapproved' Messages in this.messages</p>
 </div>
 
 
@@ -4292,6 +7091,112 @@ this.messages</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line62">line 62</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>A getter for the 'unapproved' Messages in this.messages</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>An index of Message ids to Messages, for all 'unapproved' Messages in this.messages</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getUnapprovedMsgs"><span class="type-signature"></span>getUnapprovedMsgs<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
         <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line62">line 62</a>
     </li></ul></dd>
     
@@ -4386,7 +7291,7 @@ this.messages</p>
 
     
 
-    <h4 class="name" id="importAccountWithStrategy"><span class="type-signature"></span>importAccountWithStrategy<span class="signature">(strategy, args, cb)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="importAccountWithStrategy"><span class="type-signature">(async) </span>importAccountWithStrategy<span class="signature">(strategy, args, cb)</span><span class="type-signature"></span></h4>
 
     
 
@@ -4398,7 +7303,7 @@ this.messages</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line606">line 606</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line816">line 816</a>
     </li></ul></dd>
     
 
@@ -4579,7 +7484,7 @@ Each strategy represents a different way of serializing an Ethereum key pair.</p
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line894">line 894</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1060">line 1060</a>
     </li></ul></dd>
     
 
@@ -4741,7 +7646,7 @@ and add it to the keyring controller.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line230">line 230</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line247">line 247</a>
     </li></ul></dd>
     
 
@@ -4825,7 +7730,7 @@ and add it to the keyring controller.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line268">line 268</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line279">line 279</a>
     </li></ul></dd>
     
 
@@ -4910,7 +7815,7 @@ This store is used to make some config info available to Dapps synchronously.</p
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line850">line 850</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1036">line 1036</a>
     </li></ul></dd>
     
 
@@ -4953,7 +7858,8 @@ This store is used to make some config info available to Dapps synchronously.</p
 
 <div class="description">
     <p>A legacy method used to record user confirmation that they understand
-that some of their accounts have been recovered but should be backed up.</p>
+that some of their accounts have been recovered but should be backed up.
+This function no longer does anything and will be removed.</p>
 </div>
 
 
@@ -5046,7 +7952,7 @@ that some of their accounts have been recovered but should be backed up.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line927">line 927</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1118">line 1118</a>
     </li></ul></dd>
     
 
@@ -5167,6 +8073,164 @@ that some of their accounts have been recovered but should be backed up.</p>
 
     
 
+    <h4 class="name" id="newUnapprovedTransaction"><span class="type-signature">(async) </span>newUnapprovedTransaction<span class="signature">(msgParams, req)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line838">line 838</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Called when a Dapp suggests a new tx to be signed.
+this wrapper needs to exist so we can provide a reference to
+ &quot;newUnapprovedTransaction&quot; before &quot;txController&quot; is instantiated</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The params passed to eth_sign.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>(optional) the original request, containing the origin</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="newUnsignedMessage"><span class="type-signature"></span>newUnsignedMessage<span class="signature">(msgParams, cb)</span><span class="type-signature"></span></h4>
 
     
@@ -5179,7 +8243,7 @@ that some of their accounts have been recovered but should be backed up.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line631">line 631</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line853">line 853</a>
     </li></ul></dd>
     
 
@@ -5326,7 +8390,7 @@ information.</p>
 
     
 
-    <h4 class="name" id="newUnsignedPersonalMessage"><span class="type-signature"></span>newUnsignedPersonalMessage<span class="signature">(msgParams, cb)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="newUnsignedPersonalMessage"><span class="type-signature">(async) </span>newUnsignedPersonalMessage<span class="signature">(msgParams, cb)</span><span class="type-signature"></span></h4>
 
     
 
@@ -5338,7 +8402,7 @@ information.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line698">line 698</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line911">line 911</a>
     </li></ul></dd>
     
 
@@ -5498,7 +8562,7 @@ Passed back to the requesting Dapp.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line764">line 764</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line964">line 964</a>
     </li></ul></dd>
     
 
@@ -5654,7 +8718,7 @@ Passed back to the requesting Dapp.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line246">line 246</a>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line278">line 278</a>
     </li></ul></dd>
     
 
@@ -5809,7 +8873,7 @@ Passed back to the requesting Dapp.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line522">line 522</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line717">line 717</a>
     </li></ul></dd>
     
 
@@ -5944,7 +9008,7 @@ Also used when revealing the seed words in the confirmation view.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line169">line 169</a>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line215">line 215</a>
     </li></ul></dd>
     
 
@@ -6099,7 +9163,7 @@ Also used when revealing the seed words in the confirmation view.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line163">line 163</a>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line163">line 163</a>
     </li></ul></dd>
     
 
@@ -6254,7 +9318,317 @@ Also used when revealing the seed words in the confirmation view.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line186">line 186</a>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line163">line 163</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The msgParams to modify</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Promises the msgParams with the metamaskId property removed</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;object></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="prepMsgForSigning"><span class="type-signature"></span>prepMsgForSigning<span class="signature">(msgParams)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line192">line 192</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The msgParams to modify</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Promises the msgParams with the metamaskId property removed</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;object></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="prepMsgForSigning"><span class="type-signature"></span>prepMsgForSigning<span class="signature">(msgParams)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line201">line 201</a>
     </li></ul></dd>
     
 
@@ -6409,7 +9783,7 @@ Also used when revealing the seed words in the confirmation view.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line174">line 174</a>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line174">line 174</a>
     </li></ul></dd>
     
 
@@ -6542,7 +9916,140 @@ Also used when revealing the seed words in the confirmation view.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line180">line 180</a>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line174">line 174</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Sets a Message status to 'rejected' via a call to this._setMsgStatus.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The id of the Message to reject.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="rejectMsg"><span class="type-signature"></span>rejectMsg<span class="signature">(msgId)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line212">line 212</a>
     </li></ul></dd>
     
 
@@ -6675,7 +10182,140 @@ Also used when revealing the seed words in the confirmation view.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line197">line 197</a>
+        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line203">line 203</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Sets a Message status to 'rejected' via a call to this._setMsgStatus.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The id of the Message to reject.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="rejectMsg"><span class="type-signature"></span>rejectMsg<span class="signature">(msgId)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line226">line 226</a>
     </li></ul></dd>
     
 
@@ -6796,6 +10436,139 @@ Also used when revealing the seed words in the confirmation view.</p>
 
     
 
+    <h4 class="name" id="removeAccount"><span class="type-signature">(async) </span>removeAccount<span class="signature">(address)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line795">line 795</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Removes an account from state / storage.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>address</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>A hex address</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="resetAccount"><span class="type-signature">(async) </span>resetAccount<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
@@ -6808,7 +10581,7 @@ Also used when revealing the seed words in the confirmation view.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line586">line 586</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line781">line 781</a>
     </li></ul></dd>
     
 
@@ -6892,139 +10665,6 @@ the same network ID.</p>
 
     
 
-    <h4 class="name" id="restoreOldLostAccounts"><span class="type-signature"></span>restoreOldLostAccounts<span class="signature">(migratorOutput)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line866">line 866</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <dt class="important tag-deprecated">Deprecated:</dt><dd class="yes-def tag-deprecated"><ul class="dummy"><li>Yes</li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>A legacy method (probably dead code) that was used when we swapped out our
-key management library that we depended on.</p>
-<p>Described in:
-https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>migratorOutput</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
     <h4 class="name" id="restoreOldVaultAccounts"><span class="type-signature"></span>restoreOldVaultAccounts<span class="signature">(migratorOutput)</span><span class="type-signature"></span></h4>
 
     
@@ -7037,7 +10677,7 @@ https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line837">line 837</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1022">line 1022</a>
     </li></ul></dd>
     
 
@@ -7170,7 +10810,7 @@ https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line913">line 913</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1079">line 1079</a>
     </li></ul></dd>
     
 
@@ -7315,7 +10955,7 @@ with higher gas.</p>
 
     
 
-    <h4 class="name" id="selectFirstIdentity"><span class="type-signature"></span>selectFirstIdentity<span class="signature">(vault)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="selectFirstIdentity"><span class="type-signature"></span>selectFirstIdentity<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
@@ -7327,7 +10967,7 @@ with higher gas.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line478">line 478</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line565">line 565</a>
     </li></ul></dd>
     
 
@@ -7367,7 +11007,7 @@ with higher gas.</p>
 
 
 <div class="description">
-    <p>Retrieves the first Identiy from the passed Vault and selects the related address</p>
+    <p>Sets the first address in the state to the selected address</p>
 </div>
 
 
@@ -7378,50 +11018,6 @@ with higher gas.</p>
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>vault</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -7606,7 +11202,7 @@ with higher gas.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1131">line 1131</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1363">line 1363</a>
     </li></ul></dd>
     
 
@@ -7762,7 +11358,7 @@ with higher gas.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1201">line 1201</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1433">line 1433</a>
     </li></ul></dd>
     
 
@@ -7918,7 +11514,7 @@ with higher gas.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1176">line 1176</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1408">line 1408</a>
     </li></ul></dd>
     
 
@@ -8075,7 +11671,7 @@ with higher gas.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line143">line 143</a>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line175">line 175</a>
     </li></ul></dd>
     
 
@@ -8208,7 +11804,140 @@ with higher gas.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line137">line 137</a>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line189">line 189</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Sets a TypedMessage status to 'approved' via a call to this._setMsgStatus.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The id of the TypedMessage to approve.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setMsgStatusApproved"><span class="type-signature"></span>setMsgStatusApproved<span class="signature">(msgId)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line137">line 137</a>
     </li></ul></dd>
     
 
@@ -8341,7 +12070,7 @@ with higher gas.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line160">line 160</a>
+        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line166">line 166</a>
     </li></ul></dd>
     
 
@@ -8381,7 +12110,7 @@ with higher gas.</p>
 
 
 <div class="description">
-    <p>Sets a TypedMessage status to 'approved' via a call to this._setMsgStatus.</p>
+    <p>Sets a Message status to 'approved' via a call to this._setMsgStatus.</p>
 </div>
 
 
@@ -8435,7 +12164,7 @@ with higher gas.</p>
 
             
 
-            <td class="description last"><p>The id of the TypedMessage to approve.</p></td>
+            <td class="description last"><p>The id of the Message to approve.</p></td>
         </tr>
 
     
@@ -8462,7 +12191,7 @@ with higher gas.</p>
 
     
 
-    <h4 class="name" id="setMsgStatusSigned"><span class="type-signature"></span>setMsgStatusSigned<span class="signature">(msgId, rawSig)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setMsgStatusApproved"><span class="type-signature"></span>setMsgStatusApproved<span class="signature">(msgId)</span><span class="type-signature"></span></h4>
 
     
 
@@ -8474,7 +12203,7 @@ with higher gas.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line149">line 149</a>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line137">line 137</a>
     </li></ul></dd>
     
 
@@ -8514,8 +12243,7 @@ with higher gas.</p>
 
 
 <div class="description">
-    <p>Sets a Message status to 'signed' via a call to this._setMsgStatus and updates that Message in this.messages by
-adding the raw signature data of the signature request to the Message</p>
+    <p>Sets a Message status to 'approved' via a call to this._setMsgStatus.</p>
 </div>
 
 
@@ -8569,30 +12297,7 @@ adding the raw signature data of the signature request to the Message</p>
 
             
 
-            <td class="description last"><p>The id of the Message to sign.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rawSig</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">buffer</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The raw data of the signature request</p></td>
+            <td class="description last"><p>The id of the Message to approve.</p></td>
         </tr>
 
     
@@ -8631,7 +12336,7 @@ adding the raw signature data of the signature request to the Message</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line155">line 155</a>
+        <a href="lib_personal-message-manager.js.html">lib/personal-message-manager.js</a>, <a href="lib_personal-message-manager.js.html#line187">line 187</a>
     </li></ul></dd>
     
 
@@ -8788,7 +12493,478 @@ this.messages by adding the raw signature data of the signature request to the P
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line172">line 172</a>
+        <a href="controllers_messages_index.js.html">controllers/messages/index.js</a>, <a href="controllers_messages_index.js.html#line149">line 149</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Sets a Message status to 'signed' via a call to this._setMsgStatus and updates that Message in this.messages by
+adding the raw signature data of the signature request to the Message</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The id of the Message to sign.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rawSig</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">buffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The raw data of the signature request</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setMsgStatusSigned"><span class="type-signature"></span>setMsgStatusSigned<span class="signature">(msgId, rawSig)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controllers_messages_SignController.js.html">controllers/messages/SignController.js</a>, <a href="controllers_messages_SignController.js.html#line149">line 149</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Sets a Message status to 'signed' via a call to this._setMsgStatus and updates that Message in this.messages by
+adding the raw signature data of the signature request to the Message</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The id of the Message to sign.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rawSig</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">buffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The raw data of the signature request</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setMsgStatusSigned"><span class="type-signature"></span>setMsgStatusSigned<span class="signature">(msgId, rawSig)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_message-manager.js.html">lib/message-manager.js</a>, <a href="lib_message-manager.js.html#line178">line 178</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Sets a Message status to 'signed' via a call to this._setMsgStatus and updates that Message in this.messages by
+adding the raw signature data of the signature request to the Message</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>msgId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The id of the Message to sign.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rawSig</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">buffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The raw data of the signature request</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setMsgStatusSigned"><span class="type-signature"></span>setMsgStatusSigned<span class="signature">(msgId, rawSig)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line201">line 201</a>
     </li></ul></dd>
     
 
@@ -8945,7 +13121,7 @@ this.messages by adding the raw signature data of the signature request to the T
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1006">line 1006</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1197">line 1197</a>
     </li></ul></dd>
     
 
@@ -9078,7 +13254,7 @@ this.messages by adding the raw signature data of the signature request to the T
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1029">line 1029</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1230">line 1230</a>
     </li></ul></dd>
     
 
@@ -9234,7 +13410,7 @@ this.messages by adding the raw signature data of the signature request to the T
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1068">line 1068</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1270">line 1270</a>
     </li></ul></dd>
     
 
@@ -9371,7 +13547,7 @@ this is a good candidate for deprecation.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line979">line 979</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1170">line 1170</a>
     </li></ul></dd>
     
 
@@ -9531,7 +13707,7 @@ used in logging and error reporting.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line954">line 954</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1145">line 1145</a>
     </li></ul></dd>
     
 
@@ -9689,7 +13865,7 @@ may trigger a blacklist reload.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1187">line 1187</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1419">line 1419</a>
     </li></ul></dd>
     
 
@@ -9845,7 +14021,7 @@ may trigger a blacklist reload.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line653">line 653</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line866">line 866</a>
     </li></ul></dd>
     
 
@@ -10000,7 +14176,7 @@ may trigger a blacklist reload.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line725">line 725</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line925">line 925</a>
     </li></ul></dd>
     
 
@@ -10158,7 +14334,7 @@ Triggers signing, and the callback function from newUnsignedPersonalMessage.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line793">line 793</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line978">line 978</a>
     </li></ul></dd>
     
 
@@ -10302,6 +14478,100 @@ Triggers the callback in newUnsignedTypedMessage.</p>
 
     
 
+    <h4 class="name" id="unlockHardwareWalletAccount"><span class="type-signature">(async) </span>unlockHardwareWalletAccount<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line655">line 655</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Imports an account from a trezor device.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>keyState</p>
+</div>
+
+
+
+    
+
+
+        
+            
+
+    
+
     <h4 class="name" id="unMarkPasswordForgotten"><span class="type-signature"></span>unMarkPasswordForgotten<span class="signature">(cb)</span><span class="type-signature"></span></h4>
 
     
@@ -10314,7 +14584,7 @@ Triggers the callback in newUnsignedTypedMessage.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line937">line 937</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line1128">line 1128</a>
     </li></ul></dd>
     
 
@@ -10447,7 +14717,7 @@ Triggers the callback in newUnsignedTypedMessage.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line105">line 105</a>
+        <a href="lib_typed-message-manager.js.html">lib/typed-message-manager.js</a>, <a href="lib_typed-message-manager.js.html#line134">line 134</a>
     </li></ul></dd>
     
 
@@ -10580,7 +14850,7 @@ Triggers the callback in newUnsignedTypedMessage.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line543">line 543</a>
+        <a href="metamask-controller.js.html">metamask-controller.js</a>, <a href="metamask-controller.js.html#line738">line 738</a>
     </li></ul></dd>
     
 
@@ -10672,162 +14942,6 @@ Triggers the callback in newUnsignedTypedMessage.</p>
 
 
         
-            
-
-    
-
-    <h4 class="name" id="~addListener"><span class="type-signature">(inner) </span>addListener<span class="signature">(name, handler)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_events-proxy.js.html">lib/events-proxy.js</a>, <a href="lib_events-proxy.js.html#line35">line 35</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>Attaches a function to be called whenever the specified event is emitted</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>handler</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
     
 
     
@@ -10845,7 +14959,7 @@ Triggers the callback in newUnsignedTypedMessage.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 18 2018 11:51:51 GMT-0700 (PDT) using the radgrad jsdoc theme. Derived from docdash.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Sep 12 2018 14:05:44 GMT-0700 (PDT) using the radgrad jsdoc theme. Derived from docdash.
 </footer>
 
 <script>prettyPrint();</script>
