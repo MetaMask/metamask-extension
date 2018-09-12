@@ -85,6 +85,10 @@ UnlockScreen.prototype.componentDidMount = function () {
   document.getElementById('password-box').focus()
 }
 
+UnlockScreen.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 UnlockScreen.prototype.onSubmit = async function (event) {
   const input = document.getElementById('password-box')
   const password = input.value

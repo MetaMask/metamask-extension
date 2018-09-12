@@ -174,6 +174,10 @@ AddTokenScreen.prototype.componentWillMount = function () {
   this.TokenContract = this.contract(abi)
 }
 
+AddTokenScreen.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 AddTokenScreen.prototype.tokenAddressDidChange = function (event) {
   const el = event.target
   const address = el.value.trim()

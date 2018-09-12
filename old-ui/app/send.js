@@ -234,6 +234,10 @@ SendTransactionScreen.prototype.render = function () {
   )
 }
 
+SendTransactionScreen.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 SendTransactionScreen.prototype.navigateToAccounts = function (event) {
   event.stopPropagation()
   this.props.dispatch(actions.showAccountsPage())

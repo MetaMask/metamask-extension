@@ -110,6 +110,10 @@ ConfirmChangePassword.prototype.render = function () {
   ])
 }
 
+ConfirmChangePassword.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 ConfirmChangePassword.prototype.createOnEnter = function (event) {
   if (event.key === 'Enter') {
     this.ChangePassword()

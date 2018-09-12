@@ -159,6 +159,10 @@ ExportAccountView.prototype.render = function () {
   }
 }
 
+ExportAccountView.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 ExportAccountView.prototype.onExportKeyPress = function (event) {
   if (event.key !== 'Enter') return
   event.preventDefault()

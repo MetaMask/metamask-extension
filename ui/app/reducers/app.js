@@ -187,6 +187,7 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: action.value,
+        warning: null,
       })
 
     case actions.SHOW_ADD_TOKEN_PAGE:
