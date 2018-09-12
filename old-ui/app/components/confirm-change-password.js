@@ -150,7 +150,7 @@ ConfirmChangePassword.prototype.ChangePassword = function () {
       props.dispatch(actions.showConfigPage())
     })
     .catch((err) => {
-      this.warning = err
+      this.warning = err.message
       props.dispatch(actions.displayWarning(this.warning))
     })
 }
