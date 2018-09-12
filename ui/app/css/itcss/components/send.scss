@@ -622,12 +622,14 @@
     position: relative;
 
     &__down-caret {
+      z-index: 1051;
       position: absolute;
       top: 18px;
       right: 12px;
     }
 
     &__qr-code {
+      z-index: 1051;
       position: absolute;
       top: 13px;
       right: 33px;
@@ -647,6 +649,8 @@
 
   &__to-autocomplete, &__memo-text-area, &__hex-data {
     &__input {
+      z-index: 1050;
+      position: relative;
       height: 54px;
       width: 100%;
       border: 1px solid $alto;
