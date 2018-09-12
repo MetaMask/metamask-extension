@@ -1043,7 +1043,7 @@ describe('MetaMask', function () {
         await customRpcInput.clear()
         await customRpcInput.sendKeys(customRpcUrl)
 
-        const customRpcSave = await findElement(driver, By.css('.settings__rpc-save-button'))
+        const customRpcSave = await findElement(driver, By.css('.settings-tab__rpc-save-button'))
         await customRpcSave.click()
         await delay(largeDelayMs * 2)
       })
