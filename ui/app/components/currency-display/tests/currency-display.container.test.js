@@ -20,6 +20,7 @@ describe('CurrencyDisplay container', () => {
         metamask: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
+          fromCurrency: 'ETH',
         },
       }
 

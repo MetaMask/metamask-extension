@@ -28,6 +28,7 @@ describe('AccountListItem Component', function () {
       className={'mockClassName'}
       conversionRate={4}
       currentCurrency={'mockCurrentyCurrency'}
+      fromCurrency={'ETH'}
       displayAddress={false}
       displayBalance={false}
       handleClick={propsMethodSpies.handleClick}
