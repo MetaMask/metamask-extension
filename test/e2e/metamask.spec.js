@@ -317,6 +317,20 @@ describe('Metamask popup page', async function () {
 
     describe('Check screen "Settings" -> "Change password" ', async () => {
 
+      it('checks if current network name (localhost) is correct', async () => {
+        const menu = await waitUntilShowUp(menus.sandwich.menu, 300)
+        await menu.click()
+        const settings = await waitUntilShowUp(menus.sandwich.settings)
+        await settings.click()
+        const field = await waitUntilShowUp(screens.settings.currentNetwork)
+        assert.equal(await field.getText(), 'http://localhost:8545', 'current network is incorrect')
+      })
+
+      it('error should not be displayed', async () => {
+        const error = await waitUntilShowUp(screens.settings.error, 10)
+        assert.equal(error, false, 'improper error is displayed')
+      })
+
       it('checks if "Change password" button is present and enabled', async () => {
         const menu = await waitUntilShowUp(menus.sandwich.menu, 300)
         await menu.click()
