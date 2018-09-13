@@ -58,7 +58,8 @@ export default class PageContainer extends PureComponent {
 
   renderActiveTabContent () {
     const { tabsComponent } = this.props
-    const { children } = tabsComponent.props
+    let { children } = tabsComponent.props
+    children = children.filter(child => child)
     const { activeTabIndex } = this.state
 
     return children[activeTabIndex]
