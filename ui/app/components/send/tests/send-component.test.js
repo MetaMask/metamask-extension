@@ -9,11 +9,11 @@ import SendContent from '../send-content/send-content.component'
 import SendFooter from '../send-footer/send-footer.container'
 
 const propsMethodSpies = {
-  updateAndSetGasTotal: sinon.spy(),
+  updateAndSetGasLimit: sinon.spy(),
   updateSendErrors: sinon.spy(),
   updateSendTokenBalance: sinon.spy(),
   resetSendState: sinon.spy(),
-  fetchGasEstimates: sinon.spy(),
+  fetchGasEstimates: sinon.stub().returns(Promise.resolve()),
 }
 const utilsMethodStubs = {
   getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
@@ -52,7 +52,7 @@ describe('Send Component', function () {
       showHexData={true}
       tokenBalance={'mockTokenBalance'}
       tokenContract={'mockTokenContract'}
-      updateAndSetGasTotal={propsMethodSpies.updateAndSetGasTotal}
+      updateAndSetGasLimit={propsMethodSpies.updateAndSetGasLimit}
       updateSendErrors={propsMethodSpies.updateSendErrors}
       updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
       resetSendState={propsMethodSpies.resetSendState}
@@ -66,7 +66,7 @@ describe('Send Component', function () {
     utilsMethodStubs.getAmountErrorObject.resetHistory()
     utilsMethodStubs.getGasFeeErrorObject.resetHistory()
     propsMethodSpies.fetchGasEstimates.resetHistory()
-    propsMethodSpies.updateAndSetGasTotal.resetHistory()
+    propsMethodSpies.updateAndSetGasLimit.resetHistory()
     propsMethodSpies.updateSendErrors.resetHistory()
     propsMethodSpies.updateSendTokenBalance.resetHistory()
   })
@@ -75,22 +75,20 @@ describe('Send Component', function () {
     assert(SendTransactionScreen.prototype.componentDidMount.calledOnce)
   })
 
-  describe('componentWillMount', () => {
-    it('should call this.updateGas', () => {
-      SendTransactionScreen.prototype.updateGas.resetHistory()
-      propsMethodSpies.updateSendErrors.resetHistory()
-      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
-      wrapper.instance().componentWillMount()
-      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
-    })
-  })
-
   describe('componentDidMount', () => {
     it('should call props.fetchGasEstimates', () => {
       propsMethodSpies.fetchGasEstimates.resetHistory()
       assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
       assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 1)
+    })
+
+    it('should call this.updateGas', () => {
+      SendTransactionScreen.prototype.updateGas.resetHistory()
+      propsMethodSpies.updateSendErrors.resetHistory()
+      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
+      wrapper.instance().componentDidMount()
+      setTimeout(() => assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1), 250)
     })
   })
 
@@ -285,12 +283,12 @@ describe('Send Component', function () {
   })
 
   describe('updateGas', () => {
-    it('should call updateAndSetGasTotal with the correct params if no to prop is passed', () => {
-      propsMethodSpies.updateAndSetGasTotal.resetHistory()
+    it('should call updateAndSetGasLimit with the correct params if no to prop is passed', () => {
+      propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.instance().updateGas()
-      assert.equal(propsMethodSpies.updateAndSetGasTotal.callCount, 1)
+      assert.equal(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
       assert.deepEqual(
-        propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0],
+        propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0],
         {
           blockGasLimit: 'mockBlockGasLimit',
           editingTransactionId: 'mockEditingTransactionId',
@@ -306,20 +304,20 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateAndSetGasTotal with the correct params if a to prop is passed', () => {
-      propsMethodSpies.updateAndSetGasTotal.resetHistory()
+    it('should call updateAndSetGasLimit with the correct params if a to prop is passed', () => {
+      propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.setProps({ to: 'someAddress' })
       wrapper.instance().updateGas()
       assert.equal(
-        propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0].to,
+        propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0].to,
         'someaddress',
       )
     })
 
-    it('should call updateAndSetGasTotal with to set to lowercase if passed', () => {
-      propsMethodSpies.updateAndSetGasTotal.resetHistory()
+    it('should call updateAndSetGasLimit with to set to lowercase if passed', () => {
+      propsMethodSpies.updateAndSetGasLimit.resetHistory()
       wrapper.instance().updateGas({ to: '0xABC' })
-      assert.equal(propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0].to, '0xabc')
+      assert.equal(propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0].to, '0xabc')
     })
   })
 
