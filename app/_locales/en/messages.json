@@ -121,6 +121,9 @@
   "available": {
     "message": "Available"
   },
+  "average": {
+    "message": "Average"
+  },
   "back": {
     "message": "Back"
   },
@@ -438,6 +441,9 @@
   },
   "failed": {
     "message": "Failed"
+  },
+  "fast": {
+    "message": "Fast"
   },
   "feeChartTitle": {
     "message": "Live Transaction Fee Predictions"
@@ -1023,6 +1029,9 @@
   "save": {
     "message": "Save"
   },
+  "slow": {
+    "message": "Slow"
+  },
   "saveAsCsvFile": {
     "message": "Save as CSV File"
   },
@@ -1276,6 +1285,9 @@
   },
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
+  },
+  "transactionFee": {
+    "message": "Transaction Fee"
   },
   "transactionMemo": {
     "message": "Transaction memo (optional)"

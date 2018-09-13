@@ -11,6 +11,9 @@ import {
   setCustomGasLimit,
 } from '../../../ducks/gas.duck'
 import {
+  hideGasButtonGroup,
+} from '../../../ducks/send.duck'
+import {
   updateGasAndCalculate,
 } from '../../../ducks/confirm-transaction.duck'
 import {
@@ -59,7 +62,10 @@ const mapStateToProps = state => {
 
   const newTotalFiat = addHexWEIsToRenderableFiat(value, customGasTotal, currentCurrency, conversionRate)
 
+  const hideBasic = state.appState.modal.modalState.props.hideBasic
+
   return {
+    hideBasic,
     isConfirm: isConfirm(state),
     customGasPriceInHex,
     customGasLimitInHex,
@@ -95,6 +101,7 @@ const mapDispatchToProps = dispatch => {
     updateConfirmTxGasAndCalculate: (gasLimit, gasPrice) => {
       return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
     },
+    hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
   }
 }
 
@@ -102,6 +109,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { gasPriceButtonGroupProps, isConfirm } = stateProps
   const {
     updateCustomGasPrice: dispatchUpdateCustomGasPrice,
+    hideGasButtonGroup: dispatchHideGasButtonGroup,
     setGasData: dispatchSetGasData,
     updateConfirmTxGasAndCalculate: dispatchUpdateConfirmTxGasAndCalculate,
     ...otherDispatchProps
@@ -111,7 +119,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
-    onSubmit: isConfirm ? dispatchUpdateConfirmTxGasAndCalculate : dispatchSetGasData,
+    onSubmit: isConfirm ? dispatchUpdateConfirmTxGasAndCalculate : (newLimit, newPrice) => {
+      dispatchSetGasData(newLimit, newPrice)
+      dispatchHideGasButtonGroup()
+    },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
       handleGasPriceSelection: dispatchUpdateCustomGasPrice,
