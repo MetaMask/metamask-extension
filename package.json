@@ -187,7 +187,7 @@
     "raven-js": "^3.24.2",
     "react": "^16.5.1",
     "react-addons-css-transition-group": "^15.6.0",
-    "react-dom": "^15.6.2",
+    "react-dom": "^16.5.1",
     "react-hyperscript": "^3.0.0",
     "react-markdown": "^3.0.0",
     "react-media": "^1.8.0",
