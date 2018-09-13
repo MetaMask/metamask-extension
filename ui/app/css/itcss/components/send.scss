@@ -837,6 +837,10 @@
       line-height: 12px;
       color: $red;
     }
+
+    &__cancel {
+      margin-right: 10px;
+    }
   }
 
   &__gas-modal-card {
