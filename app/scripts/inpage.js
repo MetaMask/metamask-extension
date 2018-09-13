@@ -22,6 +22,15 @@ var metamaskStream = new LocalMessageDuplexStream({
 // compose the inpage provider
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
+// Augment the provider with its enable method
+inpageProvider.enable = function () {
+  return new Promise((resolve) => {
+    resolve(inpageProvider.send({ method: 'eth_accounts' }).result)
+  })
+}
+
+window.ethereum = inpageProvider
+
 //
 // setup web3
 //
