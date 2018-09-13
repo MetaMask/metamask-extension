@@ -3,7 +3,6 @@ const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const {
-  calcGasTotal,
   calcTokenBalance,
   estimateGas,
 } = require('./components/send/send.utils')
@@ -12,6 +11,7 @@ const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
+const gasDuck = require('./ducks/gas.duck')
 const WebcamUtils = require('../lib/webcam-utils')
 
 var actions = {
@@ -912,6 +912,7 @@ function setGasTotal (gasTotal) {
 }
 
 function updateGasData ({
+  gasPrice,
   blockGasLimit,
   recentBlocks,
   selectedAddress,
@@ -922,34 +923,19 @@ function updateGasData ({
 }) {
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
-    return new Promise((resolve, reject) => {
-      background.getGasPrice((err, data) => {
-        if (err) return reject(err)
-        return resolve(data)
-      })
+    return estimateGas({
+      estimateGasMethod: background.estimateGas,
+      blockGasLimit,
+      selectedAddress,
+      selectedToken,
+      to,
+      value,
+      estimateGasPrice: gasPrice,
+      data,
     })
-    .then(estimateGasPrice => {
-      return Promise.all([
-        Promise.resolve(estimateGasPrice),
-        estimateGas({
-          estimateGasMethod: background.estimateGas,
-          blockGasLimit,
-          selectedAddress,
-          selectedToken,
-          to,
-          value,
-          estimateGasPrice,
-          data,
-        }),
-      ])
-    })
-    .then(([gasPrice, gas]) => {
-      dispatch(actions.setGasPrice(gasPrice))
+    .then(gas => {
       dispatch(actions.setGasLimit(gas))
-      return calcGasTotal(gas, gasPrice)
-    })
-    .then((gasEstimate) => {
-      dispatch(actions.setGasTotal(gasEstimate))
+      dispatch(gasDuck.setCustomGasLimit(gas))
       dispatch(updateSendErrors({ gasLoadingError: null }))
       dispatch(actions.gasLoadingFinished())
     })

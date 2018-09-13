@@ -1,6 +1,7 @@
 import ethUtil from 'ethereumjs-util'
 import { conversionUtil } from '../conversion-util'
 import { ETH, GWEI, WEI } from '../constants/common'
+import { conversionUtil, addCurrencies } from '../conversion-util'
 
 export function bnToHex (inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))
@@ -59,5 +60,43 @@ export function getValueFromWeiHex ({
     fromDenomination: WEI,
     toDenomination,
     conversionRate,
+  })
+}
+
+export function addHexWEIsToDec (aHexWEI, bHexWEI) {
+  return addCurrencies(aHexWEI, bHexWEI, {
+    aBase: 16,
+    bBase: 16,
+    fromDenomination: 'WEI',
+    numberOfDecimals: 6,
+  })
+}
+
+export function decEthToConvertedCurrency (ethTotal, convertedCurrency, conversionRate) {
+  return conversionUtil(ethTotal, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
+    toCurrency: convertedCurrency,
+    numberOfDecimals: 2,
+    conversionRate,
+  })
+}
+
+export function decGWEIToHexWEI (decGWEI) {
+  return conversionUtil(decGWEI, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
+    fromDenomination: 'GWEI',
+    toDenomination: 'WEI',
+  })
+}
+
+export function hexWEIToDecGWEI (decGWEI) {
+  return conversionUtil(decGWEI, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'GWEI',
   })
 }

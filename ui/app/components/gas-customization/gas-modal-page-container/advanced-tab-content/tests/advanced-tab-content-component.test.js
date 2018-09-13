@@ -138,10 +138,10 @@ describe('AdvancedTabContent Component', function () {
       const renderGasEditRowSpyArgs = AdvancedTabContent.prototype.renderGasEditRow.args
       assert.equal(renderGasEditRowSpyArgs.length, 2)
       assert.deepEqual(renderGasEditRowSpyArgs[0].map(String), [
-        'gasPriceNoDenom', 'mockGasPrice', () => 'mockUpdateCustomGasPriceReturn', '0', 9, true,
+        'gasPriceNoDenom', 'mockGasPrice', () => 'mockUpdateCustomGasPriceReturn', 'mockGasPrice', 9, true,
       ].map(String))
       assert.deepEqual(renderGasEditRowSpyArgs[1].map(String), [
-        'gasLimit', 'mockGasLimit', () => 'mockUpdateCustomGasLimitReturn', 21000, '0',
+        'gasLimit', 'mockGasLimit', () => 'mockUpdateCustomGasLimitReturn', 'mockGasLimit', 0,
       ].map(String))
     })
   })

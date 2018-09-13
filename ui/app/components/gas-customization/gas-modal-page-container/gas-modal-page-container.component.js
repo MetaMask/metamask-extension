@@ -17,34 +17,42 @@ export default class GasModalPageContainer extends Component {
     customGasPrice: PropTypes.number,
     customGasLimit: PropTypes.number,
     gasPriceButtonGroupProps: PropTypes.object,
+    infoRowProps: PropTypes.shape({
+      originalTotalFiat: PropTypes.string,
+      originalTotalEth: PropTypes.string,
+      newTotalFiat: PropTypes.string,
+      newTotalEth: PropTypes.string,
+    }),
+    onSubmit: PropTypes.func,
+    customGasPriceInHex: PropTypes.string,
+    customGasLimitInHex: PropTypes.string,
   }
 
   state = {}
 
-  renderBasicTabContent () {
+  renderBasicTabContent (gasPriceButtonGroupProps) {
     return (
       <BasicTabContent
-        gasPriceButtonGroupProps={this.props.gasPriceButtonGroupProps}
+        gasPriceButtonGroupProps={gasPriceButtonGroupProps}
       />
     )
   }
 
-  renderAdvancedTabContent = () => {
-    const {
-      updateCustomGasPrice,
-      updateCustomGasLimit,
-      customGasPrice,
-      customGasLimit,
-    } = this.props
-
+  renderAdvancedTabContent ({
+    convertThenUpdateCustomGasPrice,
+    convertThenUpdateCustomGasLimit,
+    customGasPrice,
+    customGasLimit,
+    newTotalFiat,
+  }) {
     return (
       <AdvancedTabContent
-        updateCustomGasPrice={updateCustomGasPrice}
-        updateCustomGasLimit={updateCustomGasLimit}
+        updateCustomGasPrice={convertThenUpdateCustomGasPrice}
+        updateCustomGasLimit={convertThenUpdateCustomGasLimit}
         customGasPrice={customGasPrice}
         customGasLimit={customGasLimit}
         millisecondsRemaining={91000}
-        totalFee={'$0.30'}
+        totalFee={newTotalFiat}
       />
     )
   }
@@ -64,41 +72,67 @@ export default class GasModalPageContainer extends Component {
     )
   }
 
-  renderTabContent (mainTabContent) {
+  renderInfoRows (originalTotalFiat, originalTotalEth, newTotalFiat, newTotalEth) {
     return (
-      <div className="gas-modal-content">
-        { mainTabContent }
-        { this.renderInfoRow('gas-modal-content__info-row--fade', 'originalTotal', '$20.02 USD', '0.06685 ETH') }
-        { this.renderInfoRow('gas-modal-content__info-row', 'newTotal', '$20.02 USD', '0.06685 ETH') }
+      <div>
+        { this.renderInfoRow('gas-modal-content__info-row--fade', 'originalTotal', originalTotalFiat, originalTotalEth) }
+        { this.renderInfoRow('gas-modal-content__info-row', 'newTotal', newTotalFiat, newTotalEth) }
       </div>
     )
   }
 
-  renderTabs () {
+  renderTabs ({
+    originalTotalFiat,
+    originalTotalEth,
+    newTotalFiat,
+    newTotalEth,
+  },
+  {
+    gasPriceButtonGroupProps,
+    ...advancedTabProps
+  }) {
     return (
       <Tabs>
         <Tab name={this.context.t('basic')}>
-          { this.renderTabContent(this.renderBasicTabContent()) }
+          <div className="gas-modal-content">
+            { this.renderBasicTabContent(gasPriceButtonGroupProps) }
+            { this.renderInfoRows(originalTotalFiat, originalTotalEth, newTotalFiat, newTotalEth) }
+          </div>
         </Tab>
         <Tab name={this.context.t('advanced')}>
-          { this.renderTabContent(this.renderAdvancedTabContent()) }
+          <div className="gas-modal-content">
+            { this.renderAdvancedTabContent(advancedTabProps) }
+            { this.renderInfoRows(originalTotalFiat, originalTotalEth, newTotalFiat, newTotalEth) }
+          </div>
         </Tab>
       </Tabs>
     )
   }
 
   render () {
-    const { hideModal } = this.props
+    const {
+      hideModal,
+      infoRowProps,
+      onSubmit,
+      customGasPriceInHex,
+      customGasLimitInHex,
+      ...tabProps
+    } = this.props
 
     return (
       <div className="gas-modal-page-container">
         <PageContainer
           title={this.context.t('customGas')}
           subtitle={this.context.t('customGasSubTitle')}
-          tabsComponent={this.renderTabs()}
+          tabsComponent={this.renderTabs(infoRowProps, tabProps)}
           disabled={false}
           onCancel={() => hideModal()}
           onClose={() => hideModal()}
+          onSubmit={() => {
+            onSubmit(customGasLimitInHex, customGasPriceInHex)
+            hideModal()
+          }}
+          submitText={this.context.t('save')}
         />
       </div>
     )
