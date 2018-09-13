@@ -5,30 +5,46 @@ const Eth = require('ethjs-query')
 const EthContract = require('ethjs-contract')
 const registrarAbi = require('./contracts/registrar')
 const resolverAbi = require('./contracts/resolver')
+const Promises = require('bluebird')
+const ResolverInserface = require('./resolverInserface')
+
 
 function ens (name, provider) {
   const eth = new Eth(new HttpProvider(getProvider(provider.type)))
   const hash = namehash.hash(name)
   const contract = new EthContract(eth)
   const Registrar = contract(registrarAbi).at(getRegistrar(provider.type))
+  let Resolvers = null
+  let isMultihash = false
   return new Promise((resolve, reject) => {
     if (provider.type === 'mainnet' || provider.type === 'ropsten') {
-      Registrar.resolver(hash).then((address) => {
-        if (address === '0x0000000000000000000000000000000000000000') {
-          reject(null)
+      Registrar.resolver(hash).then(async address => {
+
+        Resolvers = new ResolverInserface(contract, resolverAbi, address['0'])
+        const res = await Resolvers.getSupportsInterface('0xe89401a1')
+        isMultihash = res['0']
+
+        const mHash = await Resolvers.getMultiHash(name)
+        if (address === '0x0000000000000000000000000000000000000000') return reject(null)
+        if (isMultihash) {
+          return Promises.resolve(mHash)
         } else {
           const Resolver = contract(resolverAbi).at(address['0'])
           return Resolver.content(hash)
         }
+
       }).then((contentHash) => {
-        if (contentHash['0'] === '0x0000000000000000000000000000000000000000000000000000000000000000') reject(null)
-        if (contentHash.ret !== '0x') {
-          const hex = contentHash['0'].substring(2)
-          const buf = multihash.fromHexString(hex)
-          resolve(multihash.toB58String(multihash.encode(buf, 'sha2-256')))
+        if (contentHash['0'] === '0x0000000000000000000000000000000000000000000000000000000000000000') return reject(null)
+        if (contentHash.ret === '0x') return reject(null)
+        const hex = contentHash['0'].substring(2)
+        const buf = multihash.fromHexString(hex)
+
+        if (isMultihash) {
+          resolve(multihash.toB58String(buf))
         } else {
-          reject(null)
+          resolve(multihash.toB58String(multihash.encode(buf, 'sha2-256')))
         }
+
       })
     } else {
       return reject('unsupport')
