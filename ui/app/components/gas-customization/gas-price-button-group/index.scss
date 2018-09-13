@@ -18,6 +18,9 @@
     height: 15.4px;
   }
 
+  &__loading-container {
+    height: 130px;
+  }
 
   .button-group__button, .button-group__button--active {
     height: 130px;
@@ -54,6 +57,70 @@
         display: flex;
         color: $curious-blue;
         margin-top: 8px
+      }
+    }
+  }
+}
+
+.gas-price-button-group--small {
+  display: flex;
+  justify-content: stretch;
+  max-width: 260px;
+
+  &__button-fiat-price {
+    font-size: 13px;
+  }
+
+  &__button-label {
+    font-size: 16px;
+  }
+
+  &__label {
+    font-weight: 500;
+  }
+
+  &__primary-currency {
+    font-size: 12px;
+  }
+
+  &__secondary-currency {
+    font-size: 12px;
+  }
+
+  &__loading-container {
+    height: 78px;
+  }
+
+  .button-group__button, .button-group__button--active {
+    height: 78px;
+    background: white;
+    color: $scorpion;
+    padding-top: 9px;
+    padding-left: 8.5px;
+
+    div {
+      display: flex;
+      flex-flow: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+
+    i {
+      &:last-child {
+        display: none;
+      }
+    }
+  }
+
+  .button-group__button--active {
+    color: $white;
+    background: $dodger-blue;
+
+    i {
+      &:last-child {
+        display: flex;
+        color: $curious-blue;
+        margin-top: 10px
       }
     }
   }

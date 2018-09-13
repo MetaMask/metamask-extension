@@ -26,6 +26,7 @@ export default class GasFeeDisplay extends Component {
       primaryCurrency = 'ETH',
       convertedCurrency,
       gasLoadingError,
+      showGasButtonGroup,
     } = this.props
 
     return (
@@ -49,11 +50,10 @@ export default class GasFeeDisplay extends Component {
               </div>
         }
         <button
-          className="sliders-icon-container"
-          onClick={onClick}
-          disabled={!gasTotal && !gasLoadingError}
+          className="gas-fee-reset"
+          onClick={showGasButtonGroup}
         >
-          <i className="fa fa-sliders sliders-icon" />
+          Reset
         </button>
       </div>
     )
