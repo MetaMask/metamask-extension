@@ -13,8 +13,8 @@ const SET_CUSTOM_GAS_TOTAL = 'metamask/gas/SET_CUSTOM_GAS_TOTAL'
 // TODO: determine if this approach to initState is consistent with conventional ducks pattern
 const initState = {
   customData: {
-    price: 0,
-    limit: 21000,
+    price: null,
+    limit: '0x5208',
   },
   basicEstimates: {
     average: null,

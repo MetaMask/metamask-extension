@@ -5,13 +5,12 @@ import sinon from 'sinon'
 import GasModalPageContainer from '../gas-modal-page-container.component.js'
 
 import PageContainer from '../../../page-container'
-import BasicTabContent from '../basic-tab-content'
-import AdvancedTabContent from '../advanced-tab-content'
 
 import { Tab } from '../../../tabs'
 
 const propsMethodSpies = {
   hideModal: sinon.spy(),
+  onSubmit: sinon.spy(),
 }
 
 const mockGasPriceButtonGroupProps = {
@@ -41,18 +40,29 @@ const mockGasPriceButtonGroupProps = {
   noButtonActiveByDefault: true,
   showCheck: true,
 }
+const mockInfoRowProps = {
+  originalTotalFiat: 'mockOriginalTotalFiat',
+  originalTotalEth: 'mockOriginalTotalEth',
+  newTotalFiat: 'mockNewTotalFiat',
+  newTotalEth: 'mockNewTotalEth',
+}
 
+const GP = GasModalPageContainer.prototype
 describe('GasModalPageContainer Component', function () {
   let wrapper
 
   beforeEach(() => {
     wrapper = shallow(<GasModalPageContainer
       hideModal={propsMethodSpies.hideModal}
+      onSubmit={propsMethodSpies.onSubmit}
       updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
       updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
       customGasPrice={21}
       customGasLimit={54321}
       gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
+      infoRowProps={mockInfoRowProps}
+      customGasPriceInHex={'mockCustomGasPriceInHex'}
+      customGasLimitInHex={'mockCustomGasLimitInHex'}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 
@@ -89,7 +99,7 @@ describe('GasModalPageContainer Component', function () {
     })
 
     it('should pass the correct renderTabs property to PageContainer', () => {
-      sinon.stub(GasModalPageContainer.prototype, 'renderTabs').returns('mockTabs')
+      sinon.stub(GP, 'renderTabs').returns('mockTabs')
       const renderTabsWrapperTester = shallow(<GasModalPageContainer />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
       const { tabsComponent } = renderTabsWrapperTester.find(PageContainer).props()
       assert.equal(tabsComponent, 'mockTabs')
@@ -98,8 +108,23 @@ describe('GasModalPageContainer Component', function () {
   })
 
   describe('renderTabs', () => {
+    beforeEach(() => {
+      sinon.spy(GP, 'renderBasicTabContent')
+      sinon.spy(GP, 'renderAdvancedTabContent')
+      sinon.spy(GP, 'renderInfoRows')
+    })
+
+    afterEach(() => {
+      GP.renderBasicTabContent.restore()
+      GP.renderAdvancedTabContent.restore()
+      GP.renderInfoRows.restore()
+    })
+
     it('should render a Tabs component with "Basic" and "Advanced" tabs', () => {
-      const renderTabsResult = wrapper.instance().renderTabs()
+      const renderTabsResult = wrapper.instance().renderTabs(mockInfoRowProps, {
+        gasPriceButtonGroupProps: mockGasPriceButtonGroupProps,
+        otherProps: 'mockAdvancedTabProps',
+      })
       const renderedTabs = shallow(renderTabsResult)
       assert.equal(renderedTabs.props().className, 'tabs')
 
@@ -113,45 +138,28 @@ describe('GasModalPageContainer Component', function () {
       assert.equal(tabs.at(1).childAt(0).props().className, 'gas-modal-content')
     })
 
-    it('should render the expected children of each tab', () => {
-      const GP = GasModalPageContainer.prototype
-      sinon.spy(GP, 'renderTabContent')
-      assert.equal(GP.renderTabContent.callCount, 0)
+    it('should call renderBasicTabContent and renderAdvancedTabContent with the expected props', () => {
+      assert.equal(GP.renderBasicTabContent.callCount, 0)
+      assert.equal(GP.renderAdvancedTabContent.callCount, 0)
 
-      wrapper.instance().renderTabs()
+      wrapper.instance().renderTabs(mockInfoRowProps, { gasPriceButtonGroupProps: mockGasPriceButtonGroupProps, otherProps: 'mockAdvancedTabProps' })
 
-      assert.equal(GP.renderTabContent.callCount, 2)
+      assert.equal(GP.renderBasicTabContent.callCount, 1)
+      assert.equal(GP.renderAdvancedTabContent.callCount, 1)
 
-      assert.equal(GP.renderTabContent.firstCall.args.type, BasicTabContent.type)
-      assert.equal(GP.renderTabContent.secondCall.args.type, AdvancedTabContent.type)
-
-      GP.renderTabContent.restore()
-    })
-  })
-
-  describe('renderTabContent', () => {
-    it('should render a root gas-modal-content div', () => {
-      const renderTabContentResult = wrapper.instance().renderTabContent(() => {})
-      const renderedTabContent = shallow(renderTabContentResult)
-      assert.equal(renderedTabContent.props().className, 'gas-modal-content')
+      assert.deepEqual(GP.renderBasicTabContent.getCall(0).args[0], mockGasPriceButtonGroupProps)
+      assert.deepEqual(GP.renderAdvancedTabContent.getCall(0).args[0], { otherProps: 'mockAdvancedTabProps' })
     })
 
-    it('should render the passed element as its first child', () => {
-      const renderTabContentResult = wrapper.instance().renderTabContent(<span>Mock content</span>)
-      const renderedTabContent = shallow(renderTabContentResult)
-      assert(renderedTabContent.childAt(0).equals(<span>Mock content</span>))
-    })
+    it('should call renderInfoRows with the expected props', () => {
+      assert.equal(GP.renderInfoRows.callCount, 0)
 
-    it('should render the element results of renderInfoRow calls as second and third childs', () => {
-      const GP = GasModalPageContainer.prototype
-      sinon.stub(GP, 'renderInfoRow').callsFake((...args) => args.join(','))
+      wrapper.instance().renderTabs(mockInfoRowProps, { gasPriceButtonGroupProps: mockGasPriceButtonGroupProps, otherProps: 'mockAdvancedTabProps' })
 
-      const renderTabContentResult = wrapper.instance().renderTabContent(() => <span>Mock content</span>)
-      const renderedTabContent = shallow(renderTabContentResult)
-      assert.equal(renderedTabContent.childAt(1).text(), 'gas-modal-content__info-row--fade,originalTotal,$20.02 USD,0.06685 ETH')
-      assert.equal(renderedTabContent.childAt(2).text(), 'gas-modal-content__info-row,newTotal,$20.02 USD,0.06685 ETH')
+      assert.equal(GP.renderInfoRows.callCount, 2)
 
-      GP.renderInfoRow.restore()
+      assert.deepEqual(GP.renderInfoRows.getCall(0).args, ['mockOriginalTotalFiat', 'mockOriginalTotalEth', 'mockNewTotalFiat', 'mockNewTotalEth'])
+      assert.deepEqual(GP.renderInfoRows.getCall(1).args, ['mockOriginalTotalFiat', 'mockOriginalTotalEth', 'mockNewTotalFiat', 'mockNewTotalEth'])
     })
   })
 
@@ -176,7 +184,7 @@ describe('GasModalPageContainer Component', function () {
 
   describe('renderBasicTabContent', () => {
     it('should render', () => {
-      const renderBasicTabContentResult = wrapper.instance().renderBasicTabContent()
+      const renderBasicTabContentResult = wrapper.instance().renderBasicTabContent(mockGasPriceButtonGroupProps)
 
       assert.deepEqual(
         renderBasicTabContentResult.props.gasPriceButtonGroupProps,
@@ -187,15 +195,20 @@ describe('GasModalPageContainer Component', function () {
 
   describe('renderAdvancedTabContent', () => {
     it('should render with the correct props', () => {
-      const renderAdvancedTabContentResult = wrapper.instance().renderAdvancedTabContent()
+      const renderAdvancedTabContentResult = wrapper.instance().renderAdvancedTabContent({
+        convertThenUpdateCustomGasPrice: () => 'mockConvertThenUpdateCustomGasPrice',
+        convertThenUpdateCustomGasLimit: () => 'mockConvertThenUpdateCustomGasLimit',
+        customGasPrice: 123,
+        customGasLimit: 456,
+        newTotalFiat: '$0.30',
+      })
       const advancedTabContentProps = renderAdvancedTabContentResult.props
-      assert.equal(advancedTabContentProps.updateCustomGasPrice(), 'mockupdateCustomGasPrice')
-      assert.equal(advancedTabContentProps.updateCustomGasLimit(), 'mockupdateCustomGasLimit')
-      assert.equal(advancedTabContentProps.customGasPrice, 21)
-      assert.equal(advancedTabContentProps.customGasLimit, 54321)
+      assert.equal(advancedTabContentProps.updateCustomGasPrice(), 'mockConvertThenUpdateCustomGasPrice')
+      assert.equal(advancedTabContentProps.updateCustomGasLimit(), 'mockConvertThenUpdateCustomGasLimit')
+      assert.equal(advancedTabContentProps.customGasPrice, 123)
+      assert.equal(advancedTabContentProps.customGasLimit, 456)
       assert.equal(advancedTabContentProps.millisecondsRemaining, 91000)
       assert.equal(advancedTabContentProps.totalFee, '$0.30')
-      assert(shallow(renderAdvancedTabContentResult).hasClass('advanced-tab'))
     })
   })
 })
