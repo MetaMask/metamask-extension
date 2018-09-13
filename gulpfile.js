@@ -275,7 +275,7 @@ const buildJsFiles = [
   'contentscript',
   'background',
   'ui',
-  'pwloading'
+  'pwloading',
 ]
 
 // bundle tasks

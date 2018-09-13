@@ -4,7 +4,7 @@ const resolver = require('./resolver.js')
 module.exports = function (provider) {
     function ipfsContent (details) {
       const name = details.url.substring(7, details.url.length - 1)
-      
+
       extension.tabs.query({active: true}, tab => {
           extension.tabs.update(tab.id, { url: `loading.html?tabid=${tab[0].id}` })
             resolver.resolve(name, provider).then(ipfsHash => {
