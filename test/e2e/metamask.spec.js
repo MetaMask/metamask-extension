@@ -63,6 +63,7 @@ describe('Metamask popup page', async function () {
   })
 
   describe('Account Creation', async () => {
+    const newAccountName = 'new name'
 
     it('title is \'Nifty Wallet\'', async () => {
       const title = await driver.getTitle()
@@ -91,6 +92,7 @@ describe('Metamask popup page', async function () {
       const button = await waitUntilShowUp(screens.TOU.button)
       assert.notEqual(button, false, 'button isn\'t present')
       assert.equal(await button.isEnabled(), true, 'button isn\'t enabled')
+      assert.equal(await button.getText(), 'Accept', 'button has incorrect name')
       await click(button)
     })
 
@@ -98,6 +100,7 @@ describe('Metamask popup page', async function () {
       const passwordBox = await waitUntilShowUp(screens.create.fieldPassword)
       const passwordBoxConfirm = await waitUntilShowUp(screens.create.fieldPasswordConfirm)
       const button = await waitUntilShowUp(screens.create.button)
+      assert.equal(await button.getText(), 'Create', 'button has incorrect name')
       await passwordBox.sendKeys(password)
       await passwordBoxConfirm.sendKeys(password)
       await click(button)
@@ -134,12 +137,27 @@ describe('Metamask popup page', async function () {
       assert.equal(await accountName.getAttribute('value'), 'Account 1', 'incorrect placeholder')
     })
 
-    it('dialog \'Account name\' is dissappeared if click button \'Save\'', async () => {
+    it('fill out new account\'s name', async () => {
+      const field = await waitUntilShowUp(screens.main.accountName)
+      await field.clear()
+      await field.sendKeys(newAccountName)
+    })
+
+    it('dialog \'Account name\' is disappeared if click button \'Save\'', async () => {
       const button = await waitUntilShowUp(screens.main.buttons.save)
+      assert.equal(await button.getText(), 'Save', 'button has incorrect name')
       assert.notEqual(button, true, 'button \'Save\' does not present')
       await click(button)
       const accountName = await waitUntilShowUp(screens.main.accountName, 10)
       assert.equal(accountName, false, '\'Account name\' change dialog isn\'t opened')
+    })
+
+    it('account has new name', async function () {
+      const accountMenu = await waitUntilShowUp(menus.account.menu)
+      await accountMenu.click()
+      const account1 = await waitUntilShowUp(menus.account.account1)
+      assert.equal(await account1.getText(), newAccountName, 'account\'s name didn\'t changed')
+      await accountMenu.click()
     })
 
     it('adds a second account', async function () {
@@ -153,21 +171,22 @@ describe('Metamask popup page', async function () {
       await delay(300)
       const account = await waitUntilShowUp(screens.main.address)
       accountAddress = await account.getText()
-     })
+    })
 
     it('logs out of the vault', async () => {
       const menu = await waitUntilShowUp(menus.sandwich.menu)
       await menu.click()
       await delay(500)
-      const logoutButton = await waitUntilShowUp(menus.sandwich.logOut)
-      assert.equal(await logoutButton.getText(), 'Log Out')
-      await logoutButton.click()
+      const button = await waitUntilShowUp(menus.sandwich.logOut)
+      assert.equal(await button.getText(), 'Log Out', 'button has incorrect name')
+      await button.click()
     })
 
     it('accepts account password after lock', async () => {
       const box = await waitUntilShowUp(screens.lock.fieldPassword)
       await box.sendKeys(password)
       const button = await waitUntilShowUp(screens.lock.buttonLogin)
+      assert.equal(await button.getText(), 'Log In', 'button has incorrect name')
       await click(button)
     })
 
@@ -176,7 +195,6 @@ describe('Metamask popup page', async function () {
       await menu.click()
       const item = await waitUntilShowUp(menus.dot.showQRcode)
       await item.click()
-
     })
 
     it('checks QR code address is the same as account details address', async () => {
@@ -207,6 +225,83 @@ describe('Metamask popup page', async function () {
       const title = await waitUntilShowUp(screens.info.title)
       assert.equal(await title.getText(), screens.info.titleText, 'title is incorrect')
     })
+    it('close \'Info\' screen by clicking button arrow', async () => {
+      const button = await waitUntilShowUp(screens.info.buttonArrow)
+      await button.click()
+    })
+
+  })
+  describe('Export private key', async () => {
+
+    it('open dialog', async function () {
+      await driver.navigate().refresh()
+      const menu = await waitUntilShowUp(menus.dot.menu)
+      await menu.click()
+      const item = await waitUntilShowUp(menus.dot.exportPR)
+      await item.click()
+    })
+
+    it('warning is displayed', async function () {
+      await waitUntilShowUp(screens.exportPR.error)
+      const error = await driver.findElements(screens.exportPR.error)
+      assert.equal(error.length, 1, 'warning isn\'t present')
+      assert.equal(await error[0].getText(), screens.exportPR.warningText, 'warning\'s text incorrect')
+    })
+
+    it('button \'Cancel\' leads back to main screen', async function () {
+      const button = await waitUntilShowUp(screens.exportPR.button.cancel)
+      assert.equal(await button.getText(), 'Cancel', 'button has incorrect name')
+      await click(button)
+      const field = await waitUntilShowUp(screens.exportPR.fieldPassword, 20)
+      assert.equal(field, false, 'field \'password\' is displayed after closing')
+    })
+
+    it('error message if password incorrect', async function () {
+      await driver.navigate().refresh()
+      const menu = await waitUntilShowUp(menus.dot.menu)
+      await menu.click()
+      const item = await waitUntilShowUp(menus.dot.exportPR)
+      await item.click()
+      const field = await waitUntilShowUp(screens.exportPR.fieldPassword)
+      await field.sendKeys('abrakadabr')
+      const button = await waitUntilShowUp(screens.exportPR.button.submit)
+      assert.equal(await button.getText(), 'Submit', 'button has incorrect name')
+      await click(button)
+      await delay(500)
+      const error = await driver.findElements(screens.exportPR.error)
+      assert.equal(error.length, 2, 'warning isn\'t present')
+      assert.equal(await error[1].getText(), screens.exportPR.errorText, 'error\'s text incorrect')
+    })
+
+    it('private key is shown if password correct', async function () {
+      const field = await waitUntilShowUp(screens.exportPR.fieldPassword)
+      await clearField(field)
+      await field.sendKeys(password)
+      const button = await waitUntilShowUp(screens.exportPR.button.submit)
+      await click(button)
+      const key = await waitUntilShowUp(screens.yourPR.key)
+      const pr = await key.getText()
+      assert.equal(pr.length, 32 * 2, 'private key isn\'t displayed')
+    })
+
+    it('icon copy cliboard is displayed and clickable', async function () {
+      const field = await waitUntilShowUp(screens.yourPR.copy)
+      assert.notEqual(field, false, 'icon copy isn\'t displayed')
+    })
+
+    it('file loaded if click button \'Save\' ', async function () {
+      const button = await waitUntilShowUp(screens.yourPR.button.save)
+      assert.equal(await button.getText(), 'Save as File', 'button has incorrect name')
+      assert.notEqual(button, false, 'button \'Save\' isn\'t displayed')
+    })
+
+    it('button \'Done\' leads back to main screen', async function () {
+      const button = await waitUntilShowUp(screens.yourPR.button.done)
+      await click(button)
+      const field = await waitUntilShowUp(screens.yourPR.key, 20)
+      assert.equal(field, false, 'screen \'Your PR\' is displayed after closing')
+      await driver.navigate().refresh()
+    })
   })
 
   describe('Change password', async () => {
@@ -223,7 +318,7 @@ describe('Metamask popup page', async function () {
     describe('Check screen "Settings" -> "Change password" ', async () => {
 
       it('checks if "Change password" button is present and enabled', async () => {
-        const menu = await waitUntilShowUp(menus.sandwich.menu)
+        const menu = await waitUntilShowUp(menus.sandwich.menu, 300)
         await menu.click()
         const settings = await waitUntilShowUp(menus.sandwich.settings)
         await settings.click()
@@ -231,6 +326,7 @@ describe('Metamask popup page', async function () {
         const buttons = await driver.findElements(screens.settings.buttons.changePassword)
         await scrollTo(buttons[0])
         assert.equal(buttons.length, 1, 'Button "Change password" is not present')
+        assert.equal(await buttons[0].getText(), 'Change password', 'button has incorrect name')
         assert.equal(await buttons[0].isEnabled(), true, 'Button "Change password" is disabled')
         await click(buttons[0])
       })
@@ -249,6 +345,7 @@ describe('Metamask popup page', async function () {
 
       it('clicking the button "No" bring back to "Setting" screen ', async () => {
         const button = await waitUntilShowUp(screens.changePassword.buttonNo)
+        assert.equal(await button.getText(), 'No', 'button has incorrect name')
         await click(button)
         const title = await waitUntilShowUp(screens.settings.title)
         assert.equal(await title.getText(), screens.settings.titleText, 'button "No" doesnt open settings screen')
@@ -271,6 +368,7 @@ describe('Metamask popup page', async function () {
       it('error if new password shorter than 8 digits', async () => {
         await fieldNewPassword.sendKeys(newPassword.short)
         await fieldConfirmNewPassword.sendKeys(newPassword.short)
+        assert.equal(await buttonYes.getText(), 'Yes', 'button has incorrect name')
         await click(buttonYes)
         await delay(2000)
         const errors = await driver.findElements(screens.changePassword.error)
@@ -339,6 +437,7 @@ describe('Metamask popup page', async function () {
         const field = await waitUntilShowUp(screens.lock.fieldPassword)
         assert.notEqual(field, false, 'password box isn\'t present after logout')
       })
+
       it('can\'t login with old password', async () => {
         const field = await waitUntilShowUp(screens.lock.fieldPassword)
         await field.sendKeys(password)
@@ -348,6 +447,7 @@ describe('Metamask popup page', async function () {
         assert.notEqual(error, false, 'error isn\'t displayed if password incorrect')
         assert.equal(await error.getText(), screens.lock.errorText, 'error\'s text incorrect')
       })
+
       it('accepts new password after lock', async () => {
         const field = await waitUntilShowUp(screens.lock.fieldPassword)
         await clearField(field)
@@ -358,6 +458,7 @@ describe('Metamask popup page', async function () {
         await waitUntilShowUp(screens.main.buttons.buy)
         const buttons = await driver.findElements(screens.main.buttons.buy)
         assert.equal(buttons.length, 1, 'main screen isn\'t displayed')
+        assert.equal(await buttons[0].getText(), 'Buy', 'button has incorrect name')
         password = newPassword.correct
       })
     })
@@ -377,12 +478,11 @@ describe('Metamask popup page', async function () {
     it('imports account', async function () {
       const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
       await privateKeyBox.sendKeys('c6b81c1252415d1acfda94474ab8f662a44c045f96749c805ff12a6074081586')// demo private key
-      const importButton = await waitUntilShowUp(screens.importAccounts.buttonImport)
-      await click(importButton)
-
+      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+      await click(button)
+      assert.equal(await button.getText(), 'Import', 'button has incorrect name')
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
-
       const importedLabel = await waitUntilShowUp(menus.account.labelImported)
       assert.equal(await importedLabel.getText(), 'IMPORTED')
     })
@@ -395,11 +495,11 @@ describe('Metamask popup page', async function () {
     })
 
     it('doesn\'t remove imported account with \'No\' button', async function () {
-      const NoButton = await waitUntilShowUp(screens.deleteImportedAccount.buttons.no)
-      await click(NoButton)
+      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.no)
+      assert.equal(await button.getText(), 'No', 'button has incorrect name')
+      await click(button)
       const settingsTitle = await waitUntilShowUp(screens.settings.title)
       assert.equal(await settingsTitle.getText(), 'Settings')
-
       // check, that imported account still exists
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
@@ -413,11 +513,11 @@ describe('Metamask popup page', async function () {
     })
 
     it('removes imported account with \'Yes\' button', async function () {
-      const YesButton = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
-      await click(YesButton)
+      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+      assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
+      await click(button)
       const settingsTitle = await waitUntilShowUp(screens.settings.title)
       assert.equal(await settingsTitle.getText(), 'Settings')
-
       // check, that imported account is removed
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
@@ -476,12 +576,14 @@ describe('Metamask popup page', async function () {
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmmount.sendKeys('10')
       const button = await waitUntilShowUp(screens.sendTransaction.buttonNext)
+      assert.equal(await button.getText(), 'Next', 'button has incorrect name')
       await click(button)
     })
 
     it('confirms transaction', async function () {
-      const submitButton = await waitUntilShowUp(screens.confirmTransaction.buttons.submit)
-      await click(submitButton)
+      const button = await waitUntilShowUp(screens.confirmTransaction.buttons.submit)
+      assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
+      await click(button)
     })
 
     it('finds the transaction in the transactions list', async function () {
@@ -520,8 +622,8 @@ describe('Metamask popup page', async function () {
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-      const buttonSubmit = await waitUntilShowUp(screens.confirmTransaction.buttons.submit)
-      await click(buttonSubmit)
+      const button = await waitUntilShowUp(screens.confirmTransaction.buttons.submit)
+      await click(button)
     })
 
     it('switches back to Token Factory to grab the token contract address', async function () {
@@ -572,6 +674,15 @@ describe('Metamask popup page', async function () {
     it('checks the token balance', async function () {
       const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
       assert.equal(await tokenBalance.getText(), '100 TST')
+    })
+
+    it('token balance updates if switch account', async function () {
+      const accountMenu = await waitUntilShowUp(menus.account.menu)
+      await accountMenu.click()
+      const item = await waitUntilShowUp(menus.account.createAccount)
+      await item.click()
+      const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+      assert.equal(await tokenBalance.getText(), '0 TST')
     })
   })
 
@@ -669,12 +780,14 @@ describe('Metamask popup page', async function () {
   })
 
   describe('Remove Token', function () {
+
     it('button \'Remove token\' displayed', async function () {
       await setProvider(NETWORKS.LOCALHOST)
       const removeTokenButton = await waitUntilShowUp(screens.main.tokens.remove)
       assert.notEqual(removeTokenButton, false, 'button isn\'t displayed')
       await removeTokenButton.click()
     })
+
     it('screen \'Remove token\' has correct title', async function () {
       const title = await waitUntilShowUp(screens.removeToken.title)
       assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
@@ -683,10 +796,9 @@ describe('Metamask popup page', async function () {
     it('button "No" bring back to "Main" screen', async function () {
       const title = await waitUntilShowUp(screens.removeToken.title)
       assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
-
       const button = await waitUntilShowUp(screens.removeToken.buttons.no)
       assert.notEqual(button, false, 'button \'No\' isn\'t displayed ')
-      assert.equal(await button.getText(), 'No', 'button \'No\' has incorrect name')
+      assert.equal(await button.getText(), 'No', 'button has incorrect name')
       await click(button)
       const token = await waitUntilShowUp(screens.main.tokens.balance)
       assert.notEqual(await token.getText(), '', 'token is disapeared after return from remove token screen ')
@@ -701,7 +813,7 @@ describe('Metamask popup page', async function () {
 
       const button = await waitUntilShowUp(screens.removeToken.buttons.yes)
       assert.notEqual(button, false, 'button \'Yes\' isn\'t displayed ')
-      assert.equal(await button.getText(), 'Yes', 'button \'Yes\' has incorrect name')
+      assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
       await click(button)
       assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
     })
@@ -741,7 +853,7 @@ describe('Metamask popup page', async function () {
     const invalidStringUrl = 'http://lwkdfowi**&#v er'
     const urlWithoutHttp = 'infura.com'
     const invalidEndpoint = 'http://abrakadabrawdjkwjeciwkasuhlvflwe.com'
-    const correctRpcUrl = 'https://poa.infura.io/test1'
+    const correctRpcUrl = 'https://poa.infura.io/test'
 
     it('switches to settings screen through menu \'Network -> Custom RPC\'', async function () {
       await setProvider(NETWORKS.CUSTOM)
@@ -753,6 +865,7 @@ describe('Metamask popup page', async function () {
       const field = await waitUntilShowUp(screens.settings.fieldNewRPC)
       await field.sendKeys(invalidStringUrl)
       const button = await waitUntilShowUp(screens.settings.buttonSave)
+      assert.equal(await button.getText(), 'Save', 'button has incorrect name')
       await click(button)
       await delay(1000)
       assert.equal(await waitUntilShowUp(screens.settings.buttons.delete, 5), false, 'invalid Rpc was added')
@@ -795,35 +908,61 @@ describe('Metamask popup page', async function () {
       await clearField(fieldRpc)
       await clearField(fieldRpc)
       await clearField(fieldRpc)
-      await fieldRpc.sendKeys(correctRpcUrl)
+      await fieldRpc.sendKeys(correctRpcUrl + 0)
       await driver.findElement(screens.settings.buttonSave).click()
       await delay(10000)
-      const customUrlElement = await waitUntilShowUp(screens.settings.customUrl)
-      assert.equal(await customUrlElement.getText(), correctRpcUrl, 'Added Url doesn\'t match')
+      const customUrlElement = await waitUntilShowUp(screens.settings.currentNetwork)
+      assert.equal(await customUrlElement.getText(), correctRpcUrl + 0, 'Added Url doesn\'t match')
     })
 
     it('new added Rpc displayed in network dropdown menu', async function () {
       let menu = await waitUntilShowUp(screens.main.network)
       await menu.click()
       const item = await waitUntilShowUp(menus.networks.addedCustomRpc)
-      assert.equal(await item.getText(), correctRpcUrl, 'Added custom Url isn\'t displayed ')
+      assert.equal(await item.getText(), correctRpcUrl + 0, 'Added custom Url isn\'t displayed ')
+      menu = await waitUntilShowUp(screens.main.network)
+      await menu.click()
+    })
+
+    it('user can add four more valid custom rpc', async function () {
+      const fieldRpc = await waitUntilShowUp(screens.settings.fieldNewRPC)
+      const customUrlElement = await waitUntilShowUp(screens.settings.currentNetwork)
+      for (let i = 1; i < 5; i++) {
+        await clearField(fieldRpc)
+        await clearField(fieldRpc)
+        await clearField(fieldRpc)
+        await clearField(fieldRpc)
+        await fieldRpc.sendKeys(correctRpcUrl + i)
+        await driver.findElement(screens.settings.buttonSave).click()
+        await delay(5000)
+        assert.equal(await customUrlElement.getText(), correctRpcUrl + i, '#' + i + ': Current RPC field contains incorrect URL')
+      }
+    })
+
+    it('new added Rpc displayed in network dropdown menu', async function () {
+      let menu = await waitUntilShowUp(screens.main.network)
+      await menu.click()
+      await waitUntilShowUp(menus.networks.addedCustomRpc)
+      const items = await driver.findElements(menus.networks.addedCustomRpc)
+      assert.equal(items.length, 5, 'Incorrect number of added RPC')
+
       menu = await waitUntilShowUp(screens.main.network)
       await menu.click()
     })
 
     it('click button \'Delete\' opens screen \'Delete Custom RPC\'', async function () {
       await delay(1000)
-      const buttonDelete = await waitUntilShowUp(screens.settings.buttons.delete, 10)
-      assert.equal(await buttonDelete.getText(), 'Delete')
-      await click(buttonDelete)
+      const button = await waitUntilShowUp(screens.settings.buttons.delete, 10)
+      assert.equal(await button.getText(), 'Delete', 'button has incorrect name')
+      await click(button)
       const title = await waitUntilShowUp(screens.settings.title)
       assert.equal(await title.getText(), screens.deleteCustomRPC.titleText, 'inappropriate screen is opened')
     })
 
     it('click button \'No\' opens screen \'Settings\'', async function () {
-      const buttonNo = await waitUntilShowUp(screens.deleteCustomRPC.buttons.no)
-      assert.equal(await buttonNo.getText(), 'No')
-      await click(buttonNo)
+      const button = await waitUntilShowUp(screens.deleteCustomRPC.buttons.no)
+      assert.equal(await button.getText(), 'No', 'button has incorrect name')
+      await click(button)
       const title = await waitUntilShowUp(screens.settings.title)
       assert.equal(await title.getText(), screens.settings.titleText, 'inappropriate screen is opened')
     })
@@ -839,17 +978,18 @@ describe('Metamask popup page', async function () {
     })
 
     it('deleted custom rpc isn\'t displayed in \'Settings\' screen', async function () {
-      const currentNetwork = await waitUntilShowUp(screens.settings.customUrl)
+      const currentNetwork = await waitUntilShowUp(screens.settings.currentNetwork)
       assert.equal(await currentNetwork.getText(), 'POA Network', 'custom Rpc is displayed after deletion')
     })
 
     it('deleted custom rpc isn\'t displayed in network dropdown menu', async function () {
       let menu = await waitUntilShowUp(screens.main.network)
       await menu.click()
-      const item = await waitUntilShowUp(menus.networks.addedCustomRpc, 20)
+      await waitUntilShowUp(menus.networks.addedCustomRpc, 20)
+      const items = await driver.findElements(menus.networks.addedCustomRpc)
+      assert.equal(items.length, 4, 'deleted custom rpc is displayed in network dropdown menu')
       menu = await waitUntilShowUp(screens.main.network)
       await menu.click()
-      assert.equal(item, false, 'deleted custom rpc is displayed in network dropdown menu ')
     })
   })
 
@@ -925,7 +1065,7 @@ describe('Metamask popup page', async function () {
   }
 
   async function waitUntilShowUp (by, Twait) {
-    if (Twait === undefined) Twait = 200
+    if (Twait === undefined) Twait = 2000
     do {
       await delay(100)
       if (await isElementDisplayed(by)) return await driver.findElement(by)
@@ -961,7 +1101,7 @@ describe('Metamask popup page', async function () {
 
   async function addToken (tokenAddress, tokenName, tokenDecimals) {
     try {
-      const button = await waitUntilShowUp(screens.main.tokens.buttonAdd)
+      const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
       const field = await waitUntilShowUp(screens.addToken.fields.contractAddress)
       await clearField(field)
@@ -971,10 +1111,10 @@ describe('Metamask popup page', async function () {
       await click(buttonAdd)
       return true
     } catch (err) {
+      console.log(err)
       return false
     }
   }
-
 
   async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
@@ -1013,3 +1153,4 @@ describe('Metamask popup page', async function () {
     await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
 })
+

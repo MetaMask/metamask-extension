@@ -12,8 +12,9 @@ module.exports = {
       textLogOut: 'Log Out',
       textSettings: 'Settings',
       info: By.css('li.dropdown-menu-item:nth-child(4)'),
-   },
+    },
     account: {
+      account1: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(2) > span'),
       menu: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div'),
       delete: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
       createAccount: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
@@ -23,6 +24,8 @@ module.exports = {
     dot: {
       menu: By.className('account-dropdown'),
       showQRcode: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(3)'),
+      exportPR: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(5)'),
+
     },
     networks: {
       addedCustomRpc: By.className('span custom-rpc'),
@@ -30,6 +33,26 @@ module.exports = {
     },
   },
   screens: {
+    yourPR: {
+      key: By.css('#app-content > div > div.app-primary.from-right > div > div.privateKey > div.flex-row > p'),
+      copy: By.className('clipboard cursor-pointer'),
+      button: {
+        save: By.className('btn-violet'),
+        done: By.css('#app-content > div > div.app-primary.from-right > div > div.privateKey > div:nth-child(3) > button:nth-child(2)'),
+
+      },
+    },
+    exportPR: {
+      error: By.className('error'),
+      warningText: 'Export private keys at your own risk',
+      errorText: 'Incorrect Password.',
+      button: {
+        cancel: By.className('btn-violet'),
+        submit: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div:nth-child(2) > button:nth-child(2)'),
+      },
+      fieldPassword: By.id('exportAccount'),
+
+    },
     addToken: {
       title: By.className('page-subtitle'),
       titleText: 'Add Token',
@@ -91,7 +114,6 @@ module.exports = {
     },
     settings: {
       currentNetwork: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'),
-      customUrl: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > span:nth-child(2)'),
       fieldNewRPC: By.id('new_rpc'),
       buttonSave: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(2) > button'),
       titleText: 'Settings',
@@ -141,6 +163,7 @@ module.exports = {
       title: By.className('section-title flex-row flex-center'),
       titleText: 'Info',
       label: By.className('info'),
+      buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
     },
     removeToken: {
       title: By.className('page-subtitle'),
@@ -212,3 +235,4 @@ module.exports = {
     CUSTOM: 'http://test.com',
   },
 }
+
