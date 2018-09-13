@@ -185,7 +185,7 @@
     "qrcode-npm": "0.0.3",
     "ramda": "^0.24.1",
     "raven-js": "^3.24.2",
-    "react": "^15.6.2",
+    "react": "^16.5.1",
     "react-addons-css-transition-group": "^15.6.0",
     "react-dom": "^15.6.2",
     "react-hyperscript": "^3.0.0",
