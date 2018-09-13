@@ -25,6 +25,7 @@ export default class TransactionListItem extends PureComponent {
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
     showTransactionDetailsModal: PropTypes.func,
+    fromCurrency: PropTypes.string,
     token: PropTypes.object,
     tokenData: PropTypes.object,
     transaction: PropTypes.object,
@@ -92,7 +93,7 @@ export default class TransactionListItem extends PureComponent {
   }
 
   renderPrimaryCurrency () {
-    const { token, transaction: { txParams: { data } = {} } = {}, value } = this.props
+    const { token, fromCurrency, transaction: { txParams: { data } = {} } = {}, value } = this.props
 
     return token
       ? (

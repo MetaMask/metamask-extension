@@ -19,6 +19,7 @@ const selectors = {
   getCurrentNetwork,
   getCurrentViewContext,
   getForceGasMin,
+  getFromCurrency,
   getGasLimit,
   getGasPrice,
   getGasPriceFromRecentBlocks,
@@ -109,6 +110,10 @@ function getCurrentAccountWithSendEtherInfo (state) {
 
 function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
+}
+
+function getFromCurrency (state) {
+  return state.metamask.fromCurrency
 }
 
 function getCurrentNetwork (state) {

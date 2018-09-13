@@ -25,7 +25,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   const toCurrency = currency || currentCurrency
   const convertedValue = getValueFromWeiHex({
-    value, toCurrency, conversionRate, numberOfDecimals, toDenomination: denomination,
+    value, fromCurrency, toCurrency, conversionRate, numberOfDecimals, toDenomination: denomination,
   })
   const displayValue = formatCurrency(convertedValue, toCurrency)
   const suffix = hideLabel ? undefined : toCurrency.toUpperCase()

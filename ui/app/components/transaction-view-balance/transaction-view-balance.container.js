@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import TransactionViewBalance from './transaction-view-balance.component'
-import { getSelectedToken, getSelectedAddress, getSelectedTokenAssetImage } from '../../selectors'
+import { getSelectedToken, getSelectedAddress, getFromCurrency, getSelectedTokenAssetImage } from '../../selectors'
 import { showModal } from '../../actions'
 
 const mapStateToProps = state => {
@@ -15,6 +15,7 @@ const mapStateToProps = state => {
     selectedToken: getSelectedToken(state),
     network,
     balance,
+    fromCurrency: getFromCurrency(state),
     assetImage: getSelectedTokenAssetImage(state),
   }
 }

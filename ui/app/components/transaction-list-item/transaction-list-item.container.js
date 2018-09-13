@@ -7,17 +7,20 @@ import { setSelectedToken, retryTransaction, showModal } from '../../actions'
 import { hexToDecimal } from '../../helpers/conversions.util'
 import { getTokenData } from '../../helpers/transactions.util'
 import { formatDate } from '../../util'
+import { getFromCurrency } from '../../selectors.js'
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction: { txParams: { value, nonce, data } = {}, time } = {} } = ownProps
 
   const tokenData = data && getTokenData(data)
   const nonceAndDate = nonce ? `#${hexToDecimal(nonce)} - ${formatDate(time)}` : formatDate(time)
+  const fromCurrency = getFromCurrency(state)
 
   return {
     value,
     nonceAndDate,
     tokenData,
+    fromCurrency,
   }
 }
 

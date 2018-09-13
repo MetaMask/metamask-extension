@@ -2,6 +2,7 @@ import {
   conversionRateSelector,
   currentCurrencySelector,
   unconfirmedTransactionsHashSelector,
+  getFromCurrency,
 } from '../selectors/confirm-transaction'
 
 import {
@@ -292,16 +293,17 @@ export function updateTxDataAndCalculate (txData) {
     const state = getState()
     const currentCurrency = currentCurrencySelector(state)
     const conversionRate = conversionRateSelector(state)
+    const fromCurrency = getFromCurrency(state)
 
     dispatch(updateTxData(txData))
 
     const { txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
 
     const fiatTransactionAmount = getValueFromWeiHex({
-      value, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
+      value, fromCurrency, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
     })
     const ethTransactionAmount = getValueFromWeiHex({
-      value, toCurrency: 'ETH', conversionRate, numberOfDecimals: 6,
+      value, fromCurrency, toCurrency: fromCurrency, conversionRate, numberOfDecimals: 6,
     })
 
     dispatch(updateTransactionAmounts({
@@ -314,13 +316,15 @@ export function updateTxDataAndCalculate (txData) {
 
     const fiatTransactionFee = getTransactionFee({
       value: hexTransactionFee,
+      fromCurrency,
       toCurrency: currentCurrency,
       numberOfDecimals: 2,
       conversionRate,
     })
     const ethTransactionFee = getTransactionFee({
       value: hexTransactionFee,
-      toCurrency: 'ETH',
+      fromCurrency,
+      toCurrency: fromCurrency,
       numberOfDecimals: 6,
       conversionRate,
     })
