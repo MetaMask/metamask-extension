@@ -991,7 +991,7 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'V1':
           signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
           break
-        case 'V2':
+        case 'V3':
           signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
           break
       }
@@ -1253,7 +1253,7 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
-    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v2', 'V2').bind(this))
+    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3').bind(this))
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection

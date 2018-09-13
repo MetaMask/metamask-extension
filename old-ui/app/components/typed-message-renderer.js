@@ -19,8 +19,8 @@ TypedMessageRenderer.prototype.render = function () {
     case 'V1':
       text = renderTypedData(value)
       break
-    case 'V2':
-      text = renderTypedDataV2(value)
+    case 'V3':
+      text = renderTypedDataV3(value)
       break
   }
 
@@ -54,7 +54,7 @@ function renderTypedData (values) {
   })
 }
 
-function renderTypedDataV2 (values) {
+function renderTypedDataV3 (values) {
   const { domain, message } = JSON.parse(values)
    return [
     domain ? h('div', [

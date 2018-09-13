@@ -140,7 +140,7 @@ module.exports = class TypedMessageManager extends EventEmitter {
           sigUtil.typedSignatureHash(params.data)
         }, 'Expected EIP712 typed data')
         break
-      case 'V2':
+      case 'V3':
         let data
         assert.equal(typeof params, 'object', 'Params should be an object.')
         assert.ok('data' in params, 'Params must include a data field.')
