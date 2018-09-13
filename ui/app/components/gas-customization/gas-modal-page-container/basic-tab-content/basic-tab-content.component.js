@@ -17,9 +17,7 @@ export default class BasicTabContent extends Component {
         <div className="basic-tab-content__title">Suggest gas fee increases</div>
         <GasPriceButtonGroup
           className="gas-price-button-group"
-          noButtonActiveByDefault={true}
           showCheck={true}
-          handleGasPriceSelection={(newPrice) => console.log('New Price:', newPrice)}
           {...this.props.gasPriceButtonGroupProps}
         />
       </div>
