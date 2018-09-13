@@ -82,6 +82,9 @@
   "available": {
     "message": "Available"
   },
+  "average": {
+    "message": "Average"
+  },
   "back": {
     "message": "Back"
   },
@@ -390,6 +393,9 @@
   },
   "failed": {
     "message": "Failed"
+  },
+  "fast": {
+    "message": "Fast"
   },
   "feeChartTitle": {
     "message": "Live Transaction Fee Predictions"
@@ -942,6 +948,15 @@
   "save": {
     "message": "Save"
   },
+  "slow": {
+    "message": "Slow"
+  },
+  "speedUpTitle": {
+    "message": "Speed Up Transaction"
+  },
+  "speedUpSubtitle": {
+    "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
+  },
   "saveAsCsvFile": {
     "message": "Save as CSV File"
   },
@@ -1192,6 +1207,9 @@
   },
   "transactionError": {
     "message": "Transaction Error. Exception thrown in contract code."
+  },
+  "transactionFee": {
+    "message": "Transaction Fee"
   },
   "transactionMemo": {
     "message": "Transaction memo (optional)"

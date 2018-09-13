@@ -23,6 +23,12 @@ export default class ButtonGroup extends PureComponent {
       : this.props.defaultActiveButtonIndex,
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (typeof this.props.newActiveButtonIndex === 'number' && prevState.activeButtonIndex !== this.props.newActiveButtonIndex) {
+      this.setState({ activeButtonIndex: prevProps.newActiveButtonIndex })
+    }
+  }
+
   handleButtonClick (activeButtonIndex) {
     this.setState({ activeButtonIndex })
   }

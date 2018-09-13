@@ -89,16 +89,20 @@ export default class GasModalPageContainer extends Component {
   },
   {
     gasPriceButtonGroupProps,
+    hideBasic,
     ...advancedTabProps
   }) {
     return (
       <Tabs>
-        <Tab name={this.context.t('basic')}>
-          <div className="gas-modal-content">
-            { this.renderBasicTabContent(gasPriceButtonGroupProps) }
-            { this.renderInfoRows(originalTotalFiat, originalTotalEth, newTotalFiat, newTotalEth) }
-          </div>
-        </Tab>
+        {hideBasic
+          ? null
+          : <Tab name={this.context.t('basic')}>
+            <div className="gas-modal-content">
+              { this.renderBasicTabContent(gasPriceButtonGroupProps) }
+              { this.renderInfoRows(originalTotalFiat, originalTotalEth, newTotalFiat, newTotalEth) }
+            </div>
+          </Tab>
+        }
         <Tab name={this.context.t('advanced')}>
           <div className="gas-modal-content">
             { this.renderAdvancedTabContent(advancedTabProps) }
