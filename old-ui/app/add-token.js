@@ -65,7 +65,7 @@ class AddTokenScreen extends Component {
     this.state = {
       warning: null,
       customAddress: '',
-      customSymbol: '',
+      customSymbol: 'Token',
       customDecimals: 18,
       searchResults: [],
       selectedTokens: {},
