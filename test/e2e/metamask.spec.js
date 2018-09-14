@@ -50,7 +50,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    await driver.quit()
+    //await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -231,7 +231,7 @@ describe('Metamask popup page', async function () {
     })
 
   })
-  describe('Export private key', async () => {
+  describe.skip('Export private key', async () => {
 
     it('open dialog', async function () {
       await driver.navigate().refresh()
@@ -304,7 +304,7 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Change password', async () => {
+  describe.skip('Change password', async () => {
     const newPassword = {
       correct: 'abcDEF123!@#',
       short: '123',
@@ -315,7 +315,7 @@ describe('Metamask popup page', async function () {
     let fieldOldPassword
     let buttonYes
 
-    describe('Check screen "Settings" -> "Change password" ', async () => {
+    describe.skip('Check screen "Settings" -> "Change password" ', async () => {
 
       it('checks if current network name (localhost) is correct', async () => {
         const menu = await waitUntilShowUp(menus.sandwich.menu, 300)
@@ -478,7 +478,7 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Import Account', () => {
+  describe.skip('Import Account', () => {
 
     it('opens import account menu', async function () {
       const menu = await waitUntilShowUp(menus.account.menu)
@@ -571,7 +571,7 @@ describe('Metamask popup page', async function () {
       await click(field)
     })
 
-    it('balance renders', async function () {
+    it.skip('balance renders', async function () {
       const balance = await waitUntilShowUp(screens.main.balance)
       assert.equal(await balance.getText(), '100.000')
     })
@@ -674,14 +674,18 @@ describe('Metamask popup page', async function () {
     })
 
     it('checks add token screen has correct title', async function () {
-      const addTokenScreen = await waitUntilShowUp(By.className('page-subtitle'))
+      const addTokenScreen = await waitUntilShowUp(screens.addToken.title)
       assert.equal(await addTokenScreen.getText(), screens.addToken.titleText)
     })
 
     it('adds token parameters', async function () {
-      const tokenContractAddress = await waitUntilShowUp(screens.addToken.fields.contractAddress)
+      const tab = await waitUntilShowUp(screens.addToken.tab.custom)
+      await tab.click()
+      console.log(1)
+      const tokenContractAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
       await tokenContractAddress.sendKeys(tokenAddress)
-      const button = await waitUntilShowUp(screens.addToken.buttonAdd)
+      console.log(2)
+      const button = await waitUntilShowUp(screens.addToken.custom.buttons.add)
       await click(button)
     })
 
@@ -1079,7 +1083,7 @@ describe('Metamask popup page', async function () {
   }
 
   async function waitUntilShowUp (by, Twait) {
-    if (Twait === undefined) Twait = 2000
+    if (Twait === undefined) Twait = 20
     do {
       await delay(100)
       if (await isElementDisplayed(by)) return await driver.findElement(by)
@@ -1117,11 +1121,17 @@ describe('Metamask popup page', async function () {
     try {
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
-      const field = await waitUntilShowUp(screens.addToken.fields.contractAddress)
+      //await delay(2000)
+      do {
+        const tab = await waitUntilShowUp(screens.addToken.tab.custom)
+        await tab.click()
+      }
+      while( await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
+      const field = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
       await clearField(field)
       await field.sendKeys(tokenAddress)
 
-      const buttonAdd = await waitUntilShowUp(screens.addToken.buttonAdd)
+      const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
       await click(buttonAdd)
       return true
     } catch (err) {

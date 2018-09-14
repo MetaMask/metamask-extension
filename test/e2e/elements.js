@@ -56,12 +56,30 @@ module.exports = {
     addToken: {
       title: By.className('page-subtitle'),
       titleText: 'Add Token',
-      fields: {
-        contractAddress: By.id('token-address'),
-        tokenSymbol: By.id('token_symbol'),
-        decimals: By.id('token_decimals'),
+      tab:{
+        custom:By.className('inactiveForm pointer'),
+        search:By.className('inactiveForm pointer')
+       },
+      search: {
+        fieldSearch: By.id('search-tokens'),
+        results: By.className('token-list__token-data'),
+        buttons: {
+          next: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(3) > div.page-container__footer > div > button:nth-child(2)'),
+          cancel: By.className('btn-violet')
+        }
       },
-      buttonAdd: By.css('.flex-space-around > button:nth-child(7)'),
+      custom:
+        {
+          fields: {
+            contractAddress: By.id('token-address'),
+            tokenSymbol: By.id('token_symbol'),
+            decimals: By.id('token_decimals'),
+          },
+          buttons: {
+            add: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(7) > button:nth-child(2)'),
+            cancel: By.className('btn-violet')
+          },
+        },
 
     },
     deleteCustomRPC: {
