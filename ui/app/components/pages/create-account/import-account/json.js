@@ -85,7 +85,7 @@ class JsonImportSubview extends Component {
   }
 
   createNewKeychain () {
-    const { firstAddress, displayWarning, importNewJsonAccount, setSelectedAddress } = this.props
+    const { firstAddress, displayWarning, importNewJsonAccount, setSelectedAddress, history } = this.props
     const state = this.state
 
     if (!state) {
