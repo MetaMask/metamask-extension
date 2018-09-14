@@ -41,6 +41,7 @@ export default class SettingsTab extends PureComponent {
     setHexDataFeatureFlag: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
     setRpcTarget: PropTypes.func,
+    delRpcTarget: PropTypes.func,
     displayWarning: PropTypes.func,
     revealSeedConfirmation: PropTypes.func,
     setFeatureFlagToBeta: PropTypes.func,

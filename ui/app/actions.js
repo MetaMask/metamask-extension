@@ -237,6 +237,7 @@ var actions = {
   removeSuggestedTokens,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
+  delRpcTarget: delRpcTarget,
   setProviderType: setProviderType,
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   setHardwareWalletDefaultHdPath,
@@ -1830,6 +1831,19 @@ function setRpcTarget (newRpc) {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
+      }
+      dispatch(actions.setSelectedToken())
+    })
+  }
+}
+
+function delRpcTarget (oldRpc) {
+  return (dispatch) => {
+    log.debug(`background.delRpcTarget: ${oldRpc}`)
+    background.delCustomRpc(oldRpc, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Had a problem removing network!'))
       }
       dispatch(actions.setSelectedToken())
     })

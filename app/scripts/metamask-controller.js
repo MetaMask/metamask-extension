@@ -376,6 +376,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
+      delCustomRpc: nodeify(this.delCustomRpc, this),
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
@@ -1437,6 +1438,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.setRpcTarget(rpcTarget)
     await this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
+  }
+
+  /**
+   * A method for deleting a selected custom URL.
+   * @param {string} rpcTarget - A RPC URL to delete.
+   */
+  async delCustomRpc (rpcTarget) {
+    await this.preferencesController.updateFrequentRpcList(rpcTarget, true)
   }
 
   /**

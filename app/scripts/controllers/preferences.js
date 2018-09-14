@@ -375,11 +375,12 @@ class PreferencesController {
    * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
    *
    * @param {string} _url The the new rpc url to add to the updated list
+   * @param {bool} remove Remove selected url
    * @returns {Promise<void>} Promise resolves with undefined
    *
    */
-  updateFrequentRpcList (_url) {
-    return this.addToFrequentRpcList(_url)
+  updateFrequentRpcList (_url, remove = false) {
+    return this.addToFrequentRpcList(_url, remove)
       .then((rpcList) => {
         this.store.updateState({ frequentRpcList: rpcList })
         return Promise.resolve()
@@ -406,16 +407,17 @@ class PreferencesController {
    * end of the list. The current list is modified and returned as a promise.
    *
    * @param {string} _url The rpc url to add to the frequentRpcList.
+   * @param {bool} remove Remove selected url
    * @returns {Promise<array>} The updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (_url) {
+  addToFrequentRpcList (_url, remove = false) {
     const rpcList = this.getFrequentRpcList()
     const index = rpcList.findIndex((element) => { return element === _url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
-    if (_url !== 'http://localhost:8545') {
+    if (!remove && _url !== 'http://localhost:8545') {
       rpcList.push(_url)
     }
     if (rpcList.length > 3) {
