@@ -94,7 +94,7 @@ export default class ConfirmAddToken extends Component {
               className="btn-violet"
               onClick={() => goHome()}// history.push(ADD_TOKEN_ROUTE)}
             >
-              { 'Back' /* this.context.t('back')*/ }
+              { 'Cancel' /* this.context.t('back')*/ }
             </Button>
             <Button
               type="primary"
