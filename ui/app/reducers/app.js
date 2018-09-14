@@ -69,9 +69,6 @@ function reduceApp (state, action) {
 
   let curPendingTxIndex = appState.currentView.pendingTxIndex || 0
 
-  console.log(`action.type: ${action.type}`)
-  console.log(`appState.currentView: ${appState.currentView.name}`)
-
   switch (action.type) {
     // dropdown methods
     case actions.NETWORK_DROPDOWN_OPEN:
