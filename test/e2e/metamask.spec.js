@@ -50,7 +50,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    //await driver.quit()
+    await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -1083,7 +1083,7 @@ describe('Metamask popup page', async function () {
   }
 
   async function waitUntilShowUp (by, Twait) {
-    if (Twait === undefined) Twait = 20
+    if (Twait === undefined) Twait = 200
     do {
       await delay(100)
       if (await isElementDisplayed(by)) return await driver.findElement(by)
@@ -1121,12 +1121,12 @@ describe('Metamask popup page', async function () {
     try {
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
-      //await delay(2000)
+      // await delay(2000)
       do {
         const tab = await waitUntilShowUp(screens.addToken.tab.custom)
         await tab.click()
       }
-      while( await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
+      while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
       const field = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
       await clearField(field)
       await field.sendKeys(tokenAddress)
