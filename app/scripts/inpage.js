@@ -22,6 +22,25 @@ var metamaskStream = new LocalMessageDuplexStream({
 // compose the inpage provider
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
+// Augment the provider with its enable method
+inpageProvider.enable = function (options = {}) {
+  return new Promise((resolve, reject) => {
+    if (options.mockRejection) {
+      reject('User rejected account access')
+    } else {
+      inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(response.result)
+        }
+      })
+    }
+  })
+}
+
+window.ethereum = inpageProvider
+
 //
 // setup web3
 //
