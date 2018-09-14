@@ -1,7 +1,6 @@
 const { Component } = require('react')
 const connect = require('react-redux').connect
 const PropTypes = require('prop-types')
-const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const t = require('../i18n-helper').getMessage
 
@@ -38,7 +37,6 @@ const mapStateToProps = state => {
 }
 
 module.exports = compose(
-  withRouter,
   connect(mapStateToProps)
 )(I18nProvider)
 

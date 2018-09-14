@@ -69,6 +69,9 @@ function reduceApp (state, action) {
 
   let curPendingTxIndex = appState.currentView.pendingTxIndex || 0
 
+  console.log(`action.type: ${action.type}`)
+  console.log(`appState.currentView: ${appState.currentView.name}`)
+
   switch (action.type) {
     // dropdown methods
     case actions.NETWORK_DROPDOWN_OPEN:
@@ -194,6 +197,16 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'add-token',
+          context: appState.currentView.context,
+        },
+        transForward: action.value,
+      })
+
+    // case actions.SHOW_CONFIRM_ADD_TOKEN_PAGE:
+    case actions.SET_PENDING_TOKENS:
+      return extend(appState, {
+        currentView: {
+          name: 'confirm-add-token',
           context: appState.currentView.context,
         },
         transForward: action.value,
@@ -387,6 +400,7 @@ function reduceApp (state, action) {
       })
 
     case actions.BACK_TO_ACCOUNT_DETAIL:
+      console.log('BACK_TO_ACCOUNT_DETAIL')
       return extend(appState, {
         currentView: {
           name: 'accountDetail',

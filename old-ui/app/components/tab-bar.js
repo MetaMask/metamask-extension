@@ -24,9 +24,9 @@ TabBar.prototype.render = function () {
         minHeight: '45px',
         lineHeight: '45px',
       },
-    }, tabs.map((tab) => {
+    }, tabs.map((tab, ind) => {
       const { key, content } = tab
-      return h(subview === key ? subview === 'history' ? '.activeForm.left' : '.activeForm.right' : '.inactiveForm.pointer', {
+      return h(subview === key ? ind === 0 ? '.activeForm.left' : '.activeForm.right' : '.inactiveForm.pointer', {
         onClick: () => {
           this.setState({ subview: key })
           tabSelected(key)

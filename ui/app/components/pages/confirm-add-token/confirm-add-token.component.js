@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { DEFAULT_ROUTE, ADD_TOKEN_ROUTE } from '../../../routes'
+// import { DEFAULT_ROUTE, ADD_TOKEN_ROUTE } from '../../../routes'
 import Button from '../../button'
 import Identicon from '../../../components/identicon'
 import TokenBalance from './token-balance'
@@ -15,13 +15,15 @@ export default class ConfirmAddToken extends Component {
     clearPendingTokens: PropTypes.func,
     addTokens: PropTypes.func,
     pendingTokens: PropTypes.object,
+    goHome: PropTypes.func,
   }
 
   componentDidMount () {
-    const { pendingTokens = {}, history } = this.props
+    const { pendingTokens = {}, goHome /*, history*/ } = this.props
 
     if (Object.keys(pendingTokens).length === 0) {
-      history.push(DEFAULT_ROUTE)
+      goHome()
+      // history.push(DEFAULT_ROUTE)
     }
   }
 
@@ -32,26 +34,26 @@ export default class ConfirmAddToken extends Component {
   }
 
   render () {
-    const { history, addTokens, clearPendingTokens, pendingTokens } = this.props
+    const { /* history,*/ addTokens, clearPendingTokens, pendingTokens, goHome } = this.props
 
     return (
       <div className="page-container">
         <div className="page-container__header">
-          <div className="page-container__title">
-            { this.context.t('addTokens') }
-          </div>
-          <div className="page-container__subtitle">
-            { this.context.t('likeToAddTokens') }
-          </div>
+          <h2 className="page-subtitle">
+            { 'Add Tokens' /* this.context.t('addTokens')*/ }
+          </h2>
+          <p className="confirm-label">
+            { 'Would you like to add these tokens?' /* this.context.t('likeToAddTokens')*/ }
+          </p>
         </div>
         <div className="page-container__content">
           <div className="confirm-add-token">
             <div className="confirm-add-token__header">
               <div className="confirm-add-token__token">
-                { this.context.t('token') }
+                { 'Token' /* this.context.t('token')*/ }
               </div>
               <div className="confirm-add-token__balance">
-                { this.context.t('balance') }
+                { 'Balance' /* this.context.t('balance')*/ }
               </div>
             </div>
             <div className="confirm-add-token__token-list">
@@ -86,28 +88,28 @@ export default class ConfirmAddToken extends Component {
           </div>
         </div>
         <div className="page-container__footer">
-          <Button
-            type="default"
-            large
-            className="page-container__footer-button"
-            onClick={() => history.push(ADD_TOKEN_ROUTE)}
-          >
-            { this.context.t('back') }
-          </Button>
-          <Button
-            type="primary"
-            large
-            className="page-container__footer-button"
-            onClick={() => {
-              addTokens(pendingTokens)
-                .then(() => {
-                  clearPendingTokens()
-                  history.push(DEFAULT_ROUTE)
-                })
-            }}
-          >
-            { this.context.t('addTokens') }
-          </Button>
+          <div className="page-container__footer-container">
+            <Button
+              type="default"
+              className="btn-violet"
+              onClick={() => goHome()}// history.push(ADD_TOKEN_ROUTE)}
+            >
+              { 'Back' /* this.context.t('back')*/ }
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                addTokens(pendingTokens)
+                  .then(() => {
+                    clearPendingTokens()
+                    goHome()
+                    // history.push(DEFAULT_ROUTE)
+                  })
+              }}
+            >
+              { 'Add Tokens' /* this.context.t('addTokens')*/ }
+            </Button>
+          </div>
         </div>
       </div>
     )
