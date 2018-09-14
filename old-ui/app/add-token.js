@@ -164,7 +164,7 @@ class AddTokenScreen extends Component {
               }, [
                 h('.error', {
                   style: {
-                    display: warning ? 'block' : 'none',
+                    display: 'block',
                   },
                 }, warning),
               ]) : null,
