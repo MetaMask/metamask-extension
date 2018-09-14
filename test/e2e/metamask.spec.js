@@ -231,7 +231,7 @@ describe('Metamask popup page', async function () {
     })
 
   })
-  describe.skip('Export private key', async () => {
+  describe('Export private key', async () => {
 
     it('open dialog', async function () {
       await driver.navigate().refresh()
@@ -304,7 +304,7 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe.skip('Change password', async () => {
+  describe('Change password', async () => {
     const newPassword = {
       correct: 'abcDEF123!@#',
       short: '123',
@@ -315,7 +315,7 @@ describe('Metamask popup page', async function () {
     let fieldOldPassword
     let buttonYes
 
-    describe.skip('Check screen "Settings" -> "Change password" ', async () => {
+    describe('Check screen "Settings" -> "Change password" ', async () => {
 
       it('checks if current network name (localhost) is correct', async () => {
         const menu = await waitUntilShowUp(menus.sandwich.menu, 300)
@@ -478,7 +478,7 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe.skip('Import Account', () => {
+  describe('Import Account', () => {
 
     it('opens import account menu', async function () {
       const menu = await waitUntilShowUp(menus.account.menu)
@@ -571,7 +571,7 @@ describe('Metamask popup page', async function () {
       await click(field)
     })
 
-    it.skip('balance renders', async function () {
+    it('balance renders', async function () {
       const balance = await waitUntilShowUp(screens.main.balance)
       assert.equal(await balance.getText(), '100.000')
     })
