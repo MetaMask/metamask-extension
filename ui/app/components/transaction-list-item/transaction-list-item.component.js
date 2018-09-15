@@ -42,9 +42,7 @@ export default class TransactionListItem extends PureComponent {
     this.setState({ showTransactionDetails: !showTransactionDetails })
   }
 
-  handleRetryClick = event => {
-    event.stopPropagation()
-
+  handleRetry = () => {
     const {
       transaction: { txParams: { to } = {} },
       methodData: { name } = {},
@@ -156,6 +154,7 @@ export default class TransactionListItem extends PureComponent {
               <TransactionListItemDetails
                 transaction={transaction}
                 showRetry={showRetry && methodData.done}
+                onRetry={this.handleRetry}
               />
             </div>
           )

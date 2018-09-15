@@ -13,8 +13,9 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   static propTypes = {
-    transaction: PropTypes.object,
+    onRetry: PropTypes.func,
     showRetry: PropTypes.bool,
+    transaction: PropTypes.object,
   }
 
   handleEtherscanClick = () => {
@@ -24,6 +25,13 @@ export default class TransactionListItemDetails extends PureComponent {
     const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
     global.platform.openWindow({ url: etherscanUrl })
     this.setState({ showTransactionDetails: true })
+  }
+
+  handleRetry = event => {
+    const { onRetry } = this.props
+
+    event.stopPropagation()
+    onRetry()
   }
 
   render () {
@@ -40,7 +48,7 @@ export default class TransactionListItemDetails extends PureComponent {
               showRetry && (
                 <Button
                   type="raised"
-                  onClick={this.handleEtherscanClick}
+                  onClick={this.handleRetry}
                   className="transaction-list-item-details__header-button"
                 >
                   { t('speedUp') }
