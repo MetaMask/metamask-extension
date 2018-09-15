@@ -888,10 +888,19 @@
       font-size: 18px;
       color: $tundora;
       right: 0px;
-      padding: 1px 4px;
+      padding: 0;
       display: flex;
       justify-content: space-around;
       align-items: center;
+    }
+
+    .gas-tooltip-input-arrow-wrapper {
+      align-items: center;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: center;
     }
 
     input[type="number"]::-webkit-inner-spin-button {
