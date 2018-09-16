@@ -220,13 +220,13 @@
         "message": "Rezo aktyèl"
     },
     "customGas": {
-        "message": "Customize Gaz"
+        "message": "Koutim Gaz"
     },
     "customToken": {
         "message": "Koutim Token"
     },
     "customize": {
-        "message": "Customize"
+        "message": "Koutim"
     },
     "customRPC": {
         "message": "Koutim RPC"
@@ -250,7 +250,7 @@
         "message": "Depoze BTC ou nan adrès ki anba a:"
     },
     "depositCoin": {
-        "message": "Depoze $ 1 ou nan adrès ki anba a",
+        "message": "Depoze $1 ou nan adrès ki anba a",
         "description": "Tells the user what coin they have selected to deposit with shapeshift"
     },
     "depositEth": {
@@ -413,7 +413,7 @@
         "message": "Jwenn Ether"
     },
     "getEtherFromFaucet": {
-        "message": "Jwenn Ether nan yon tiyo pou $ 1 la",
+        "message": "Jwenn Ether nan yon tiyo pou $1 la",
         "description": "Displays network name for Ether faucet"
     },
     "getHelp": {
@@ -474,7 +474,7 @@
         "message": "Pòte Kont"
     },
     "importAccountMsg": {
-        "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed phrase. Aprann plis sou kont enpòte "
+        "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
     },
     "importAnAccount": {
         "message": "Pòte yon kont"
@@ -487,7 +487,7 @@
         "description": "status showing that an account has been fully loaded into the keyring"
     },
     "importUsingSeed": {
-        "message": "Pòte lè sèvi avèk seed phrase"
+        "message": "Pòte lè sèvi avèk seed fraz"
     },
     "infoHelp": {
         "message": "Enfo & Èd"
@@ -520,7 +520,7 @@
         "message": "RPC URI pa valab"
     },
     "invalidSeedPhrase": {
-        "message": "Seed phrase pa valab"
+        "message": "Seed fraz pa valab"
     },
     "jsonFail": {
         "message": "Yon bagay ale mal. Tanpri, asire w ke dosye JSON ou an byen fòmate."
@@ -579,7 +579,7 @@
         "message": "Pèdi"
     },
     "loweCaseWords": {
-        "message": "seed words sèlman gen karaktè miniskil"
+        "message": "seed mo sèlman gen karaktè miniskil"
     },
     "mainnet": {
         "message": "Main Ethereum Network"
@@ -594,7 +594,7 @@
         "message": "MetaMask sekirize idantite pou Ethereum."
     },
     "metamaskSeedWords": {
-        "message": "MetaMask Seed Words"
+        "message": "MetaMask Seed Mo"
     },
     "min": {
         "message": "Minimòm"
@@ -709,7 +709,7 @@
         "description": "For importing an account from a private key"
     },
     "pasteSeed": {
-        "message": "Kole seed phrase ou a la!"
+        "message": "Kole seed fraz ou a la!"
     },
     "pending": {
         "message": "l ap mache"
@@ -746,8 +746,7 @@
         "message": "Queue"
     },
     "readdToken": {
-        "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan "
-        Add Token " nan opsyon meni kont ou an."
+        "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan "Ajoute Token" nan opsyon meni kont ou an."
     },
     "readMore": {
         "message": "Li plis isit la."
@@ -783,7 +782,7 @@
         "message": "Retabli kazye"
     },
     "restoreAccountWithSeed": {
-        "message": "Retabli kont ou avèk yo Seed Phrase"
+        "message": "Retabli kont ou avèk yo Seed Fraz"
     },
     "required": {
         "message": "Egzije"
@@ -822,8 +821,7 @@
         "message": "Retire kont"
     },
     "removeAccountDescription": {
-        "message": "Kont sa a pral retire nan Wallet ou. Tanpri, asire ou ke ou gen orijinal fraz seed la oubyen kle prive pou rantre kont lan avan ou kontinye. Oubyen ou ka rantre kont ou ankò apati kont "
-        drop - down " ou an."
+        "message": "Kont sa a pral retire nan Wallet ou. Tanpri, asire ou ke ou gen orijinal fraz seed la oubyen kle prive pou rantre kont lan avan ou kontinye. Oubyen ou ka rantre kont ou ankò apati kont "drop-down" ou an."
     },
     "readyToConnect": {
         "message": "Pare pou konekte?"
