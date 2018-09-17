@@ -42,7 +42,7 @@ export default class InfoBox extends Component {
                     'token-list__token--disabled': tokenAlreadyAdded,
                   }).split(' ').join('.')}`, {
                     onClick: () => !tokenAlreadyAdded && onToggleToken(results[i]),
-                    key: key ? key : 'tokenRow'
+                    key: key || 'tokenRow',
                   }, [
                     h('.token-list__token-icon', {
                       style: {
@@ -60,7 +60,7 @@ export default class InfoBox extends Component {
                       title: title,
                       key: i,
                     }, [
-                      tokenRow()
+                      tokenRow(),
                     ]) : tokenRow(i)
                   )
                 })
