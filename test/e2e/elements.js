@@ -59,13 +59,35 @@ module.exports = {
       tab: {
         custom: By.className('inactiveForm pointer'),
         search: By.className('inactiveForm pointer'),
-       },
+      },
       search: {
         fieldSearch: By.id('search-tokens'),
         results: By.className('token-list__token-data'),
-        buttons: {
+        token: {
+          unselected: By.className('token-list__token'),
+          selected: By.className('token-list__token token-list__token--selected'),
+          name: By.className('token-list__token-name'),
+          icon: By.className('token-list__token-icon'),
+        },
+        button: {
           next: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(3) > div.page-container__footer > div > button:nth-child(2)'),
           cancel: By.className('btn-violet'),
+        },
+        confirm: {
+          label: By.className('confirm-label'),
+          labelText: By.className('Would you like to add these tokens?'),
+          button: {
+            add: By.className('btn-primary'),
+            cancel: By.className('btn-default btn-violet'),
+          },
+          token: {
+            item: By.className('confirm-add-token__token-list-item'),
+            balance: By.className('confirm-add-token__balance'),
+            name: By.className('confirm-add-token__name'),
+            icon: By.className('confirm-add-token__token-icon identicon'),
+          },
+
+
         },
       },
       custom:
@@ -148,6 +170,7 @@ module.exports = {
       },
     },
     main: {
+      identicon: By.className('identicon-wrapper select-none'),
       accountName: By.className('sizing-input'),
       edit: By.className('edit-text'),
       iconCopy: By.className('clipboard cursor-pointer white'),
@@ -168,13 +191,14 @@ module.exports = {
       tokens: {
         remove: By.className('trash'),
         menu: By.className('inactiveForm pointer'),
-        token: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li'),
+        token: By.className('token-cell'),
         balance: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > h3'),
         amount: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
         textNoTokens: 'No tokens found',
         textYouOwn1token: 'You own 1 token',
         buttonAdd: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > button:nth-child(2)'),
         buttonAddText: 'Add Token',
+        counter: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
       },
     },
     info: {
