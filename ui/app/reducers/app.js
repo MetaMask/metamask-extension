@@ -397,7 +397,6 @@ function reduceApp (state, action) {
       })
 
     case actions.BACK_TO_ACCOUNT_DETAIL:
-      console.log('BACK_TO_ACCOUNT_DETAIL')
       return extend(appState, {
         currentView: {
           name: 'accountDetail',

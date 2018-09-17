@@ -1530,7 +1530,6 @@ function showAccountDetail (address) {
 }
 
 function backToAccountDetail (address) {
-  console.log('### backToAccountDetail ###')
   return {
     type: actions.BACK_TO_ACCOUNT_DETAIL,
     value: address,

@@ -35,6 +35,7 @@ export default class ConfirmAddToken extends Component {
 
   render () {
     const { /* history,*/ addTokens, clearPendingTokens, pendingTokens, goHome } = this.props
+    const areMultipleTokens = pendingTokens && Object.keys(pendingTokens).length > 1
 
     return (
       <div className="page-container">
@@ -43,7 +44,7 @@ export default class ConfirmAddToken extends Component {
             { 'Add Tokens' /* this.context.t('addTokens')*/ }
           </h2>
           <p className="confirm-label">
-            { 'Would you like to add these tokens?' /* this.context.t('likeToAddTokens')*/ }
+            { areMultipleTokens ? 'Would you like to add these tokens?' : 'Would you like to add this token?' /* this.context.t('likeToAddTokens')*/ }
           </p>
         </div>
         <div className="page-container__content">
