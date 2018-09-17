@@ -108,7 +108,6 @@ function transactionsSelector (state) {
   const transactions = state.metamask.selectedAddressTxList || []
   const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
 
-  // console.log({txsToRender, selectedTokenAddress})
   return selectedTokenAddress
     ? txsToRender
       .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)

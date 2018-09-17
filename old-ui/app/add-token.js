@@ -58,6 +58,7 @@ class AddTokenScreen extends Component {
     identities: PropTypes.object,
     address: PropTypes.string,
     dispatch: PropTypes.func,
+    network: PropTypes.string,
   }
 
   constructor (props) {
@@ -111,6 +112,19 @@ class AddTokenScreen extends Component {
   }
 
   render () {
+    const { network } = this.props
+    const networkID = parseInt(network)
+    let views = []
+    networkID === 1 ? views = [h(TabBar, {
+          tabs: [
+            { content: 'Search', key: SEARCH_TAB },
+            { content: 'Custom', key: CUSTOM_TOKEN_TAB },
+          ],
+          defaultTab: this.state.displayedTab || CUSTOM_TOKEN_TAB,
+          tabSelected: (key) => this.setCurrentAddTokenTab(key),
+        }),
+        this.tabSwitchView()] : views = [this.renderAddToken()]
+
     return (
       h('.flex-column.flex-grow', {
         style: {
@@ -130,16 +144,7 @@ class AddTokenScreen extends Component {
           }, 'Add Token'),
         ]),
 
-        h(TabBar, {
-          tabs: [
-            { content: 'Search', key: SEARCH_TAB },
-            { content: 'Custom', key: CUSTOM_TOKEN_TAB },
-          ],
-          defaultTab: this.state.displayedTab || CUSTOM_TOKEN_TAB,
-          tabSelected: (key) => this.setCurrentAddTokenTab(key),
-        }),
-
-        this.tabSwitchView(),
+        ...views,
       ])
     )
   }
@@ -149,158 +154,170 @@ class AddTokenScreen extends Component {
   }
 
   tabSwitchView () {
-    const props = this.props
     const state = this.state
-    const { warning, customSymbol, customDecimals, tokenSelectorError, selectedTokens, searchResults, displayedTab } = state
-    const { network, clearPendingTokens, goHome, addToken } = props
-
+    const { displayedTab } = state
     switch (displayedTab) {
       case CUSTOM_TOKEN_TAB:
-        return h('.flex-column.flex-justify-center.flex-grow.select-none', [
-              warning ? h('div', {
-                style: {
-                  margin: '20px 30px 0 30px',
-                },
-              }, [
-                h('.error', {
-                  style: {
-                    display: 'block',
-                  },
-                }, warning),
-              ]) : null,
-            h('.flex-space-around', {
-              style: {
-                padding: '30px',
-              },
-            }, [
-
-              h('div', [
-                h(Tooltip, {
-                  position: 'top',
-                  title: 'The contract of the actual token contract.',
-                }, [
-                  h('span', {
-                    style: { fontWeight: 'bold'},
-                  }, 'Token Address' /* this.context.t('tokenAddress')*/),
-                ]),
-              ]),
-
-              h('section.flex-row.flex-center', [
-                h('input.large-input#token-address', {
-                  name: 'address',
-                  placeholder: 'Token Contract Address',
-                  style: {
-                    width: '100%',
-                    margin: '10px 0',
-                  },
-                  onChange: e => this.handleCustomAddressChange(e.target.value),
-                }),
-              ]),
-
-              h('div', [
-                h('span', {
-                  style: { fontWeight: 'bold', paddingRight: '10px'},
-                }, 'Token Symbol' /* this.context.t('tokenSymbol')*/),
-              ]),
-
-              h('div', { style: {display: 'flex'} }, [
-                h('input.large-input#token_symbol', {
-                  placeholder: `Like "ETH"`,
-                  value: customSymbol,
-                  style: {
-                    width: '100%',
-                    margin: '10px 0',
-                  },
-                  onChange: e => this.handleCustomSymbolChange(e.target.value),
-                }),
-              ]),
-
-              h('div', [
-                h('span', {
-                  style: { fontWeight: 'bold', paddingRight: '10px'},
-                }, 'Decimals of Precision' /* this.context.t('decimal')*/),
-              ]),
-
-              h('div', { style: {display: 'flex'} }, [
-                h('input.large-input#token_decimals', {
-                  value: customDecimals,
-                  type: 'number',
-                  min: 0,
-                  max: 36,
-                  style: {
-                    width: '100%',
-                    margin: '10px 0',
-                  },
-                  onChange: e => this.handleCustomDecimalsChange(e.target.value),
-                }),
-              ]),
-
-              h('div', {
-                key: 'buttons',
-                style: {
-                  alignSelf: 'center',
-                  float: 'right',
-                  marginTop: '10px',
-                },
-              }, [
-                h('button.btn-violet', {
-                  onClick: () => {
-                    goHome()
-                  },
-                }, 'Cancel' /* this.context.t('cancel')*/),
-                h('button', {
-                  onClick: (event) => {
-                    const valid = this.validateInputs()
-                    if (!valid) return
-
-                    const { customAddress, customSymbol, customDecimals } = this.state
-                    addToken(customAddress.trim(), customSymbol.trim(), customDecimals, network)
-                      .then(() => {
-                        // this.props.dispatch(actions.goHome())
-                        goHome()
-                      })
-                  },
-                }, 'Add' /* this.context.t('addToken')*/),
-              ]),
-            ]),
-          ])
+        return this.renderAddToken()
       default:
-        return h('div', [
-          h('.add-token__search-token', [
-           h(TokenSearch, {
-            onSearch: ({ results = [] }) => this.setState({ searchResults: results }),
-            error: tokenSelectorError,
-           }),
-           h('.add-token__token-list', {
-              style: {
-                marginTop: '20px',
-                height: '250px',
-                overflow: 'auto',
-              },
-            }, [
-              h(TokenList, {
-                results: searchResults,
-                selectedTokens: selectedTokens,
-                onToggleToken: token => this.handleToggleToken(token),
-              }),
-            ]),
-          ]),
-          h('.page-container__footer', [
-            h('.page-container__footer-container', [
-              h('button.btn-violet', {
-                onClick: () => {
-                  clearPendingTokens()
-                  goHome()
-                },
-              }, 'Cancel' /* this.context.t('cancel')*/),
-              h('button', {
-                onClick: () => this.handleNext(),
-                disabled: this.hasError() || !this.hasSelected(),
-              }, 'Next' /* this.context.t('next')*/),
-            ]),
-          ]),
-        ])
+        return this.renderTabBar()
     }
+  }
+
+  renderAddToken () {
+    const props = this.props
+    const state = this.state
+    const { warning, customSymbol, customDecimals } = state
+    const { network, goHome, addToken } = props
+    return h('.flex-column.flex-justify-center.flex-grow.select-none', [
+        warning ? h('div', {
+          style: {
+            margin: '20px 30px 0 30px',
+          },
+        }, [
+          h('.error', {
+            style: {
+              display: 'block',
+            },
+          }, warning),
+        ]) : null,
+      h('.flex-space-around', {
+        style: {
+          padding: '30px',
+        },
+      }, [
+
+        h('div', [
+          h(Tooltip, {
+            position: 'top',
+            title: 'The contract of the actual token contract.',
+          }, [
+            h('span', {
+              style: { fontWeight: 'bold'},
+            }, 'Token Address' /* this.context.t('tokenAddress')*/),
+          ]),
+        ]),
+
+        h('section.flex-row.flex-center', [
+          h('input.large-input#token-address', {
+            name: 'address',
+            placeholder: 'Token Contract Address',
+            style: {
+              width: '100%',
+              margin: '10px 0',
+            },
+            onChange: e => this.handleCustomAddressChange(e.target.value),
+          }),
+        ]),
+
+        h('div', [
+          h('span', {
+            style: { fontWeight: 'bold', paddingRight: '10px'},
+          }, 'Token Symbol' /* this.context.t('tokenSymbol')*/),
+        ]),
+
+        h('div', { style: {display: 'flex'} }, [
+          h('input.large-input#token_symbol', {
+            placeholder: `Like "ETH"`,
+            value: customSymbol,
+            style: {
+              width: '100%',
+              margin: '10px 0',
+            },
+            onChange: e => this.handleCustomSymbolChange(e.target.value),
+          }),
+        ]),
+
+        h('div', [
+          h('span', {
+            style: { fontWeight: 'bold', paddingRight: '10px'},
+          }, 'Decimals of Precision' /* this.context.t('decimal')*/),
+        ]),
+
+        h('div', { style: {display: 'flex'} }, [
+          h('input.large-input#token_decimals', {
+            value: customDecimals,
+            type: 'number',
+            min: 0,
+            max: 36,
+            style: {
+              width: '100%',
+              margin: '10px 0',
+            },
+            onChange: e => this.handleCustomDecimalsChange(e.target.value),
+          }),
+        ]),
+
+        h('div', {
+          key: 'buttons',
+          style: {
+            alignSelf: 'center',
+            float: 'right',
+            marginTop: '10px',
+          },
+        }, [
+          h('button.btn-violet', {
+            onClick: () => {
+              goHome()
+            },
+          }, 'Cancel' /* this.context.t('cancel')*/),
+          h('button', {
+            onClick: (event) => {
+              const valid = this.validateInputs()
+              if (!valid) return
+
+              const { customAddress, customSymbol, customDecimals } = this.state
+              addToken(customAddress.trim(), customSymbol.trim(), customDecimals, network)
+                .then(() => {
+                  goHome()
+                })
+            },
+          }, 'Add' /* this.context.t('addToken')*/),
+        ]),
+      ]),
+    ])
+  }
+
+  renderTabBar () {
+    const props = this.props
+    const state = this.state
+    const { tokenSelectorError, selectedTokens, searchResults } = state
+    const { clearPendingTokens, goHome } = props
+    return h('div', [
+      h('.add-token__search-token', [
+       h(TokenSearch, {
+        onSearch: ({ results = [] }) => this.setState({ searchResults: results }),
+        error: tokenSelectorError,
+       }),
+       h('.add-token__token-list', {
+          style: {
+            marginTop: '20px',
+            height: '250px',
+            overflow: 'auto',
+          },
+        }, [
+          h(TokenList, {
+            results: searchResults,
+            selectedTokens: selectedTokens,
+            onToggleToken: token => this.handleToggleToken(token),
+          }),
+        ]),
+      ]),
+      h('.page-container__footer', [
+        h('.page-container__footer-container', [
+          h('button.btn-violet', {
+            onClick: () => {
+              clearPendingTokens()
+              goHome()
+            },
+          }, 'Cancel' /* this.context.t('cancel')*/),
+          h('button', {
+            onClick: () => this.handleNext(),
+            disabled: this.hasError() || !this.hasSelected(),
+          }, 'Next' /* this.context.t('next')*/),
+        ]),
+      ]),
+    ])
   }
 
   componentWillMount () {
@@ -315,15 +332,6 @@ class AddTokenScreen extends Component {
     const { displayWarning } = this.props
     displayWarning('')
   }
-
-  // tokenAddressDidChange (event) {
-  //   const el = event.target
-  //   const address = el.value.trim()
-  //   if (ethUtil.isValidAddress(address) && address !== emptyAddr) {
-  //     this.setState({ address })
-  //     this.attemptToAutoFillTokenParams(address)
-  //   }
-  // }
 
   validateInputs () {
     let msg = ''
