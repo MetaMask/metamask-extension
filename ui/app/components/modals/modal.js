@@ -19,14 +19,14 @@ const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
-const ConfirmResetAccount = require('./confirm-reset-account')
-const ConfirmRemoveAccount = require('./confirm-remove-account')
 const QRScanner = require('./qr-scanner')
-const TransactionConfirmed = require('./transaction-confirmed')
-const WelcomeBeta = require('./welcome-beta')
-const Notification = require('./notification')
 
+import ConfirmRemoveAccount from './confirm-remove-account'
+import ConfirmResetAccount from './confirm-reset-account'
+import TransactionConfirmed from './transaction-confirmed'
 import ConfirmCustomizeGasModal from './customize-gas'
+import CancelTransaction from './cancel-transaction'
+import WelcomeBeta from './welcome-beta'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -199,11 +199,7 @@ const MODALS = {
   },
 
   BETA_UI_NOTIFICATION_MODAL: {
-    contents: [
-      h(Notification, [
-        h(WelcomeBeta),
-      ]),
-    ],
+    contents: h(WelcomeBeta),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -307,9 +303,7 @@ const MODALS = {
   },
 
   CONFIRM_CUSTOMIZE_GAS: {
-    contents: [
-      h(ConfirmCustomizeGasModal),
-    ],
+    contents: h(ConfirmCustomizeGasModal),
     mobileModalStyle: {
       width: '100vw',
       height: '100vh',
@@ -332,11 +326,7 @@ const MODALS = {
 
   TRANSACTION_CONFIRMED: {
     disableBackdropClick: true,
-    contents: [
-      h(Notification, [
-        h(TransactionConfirmed),
-      ]),
-    ],
+    contents: h(TransactionConfirmed),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -347,8 +337,22 @@ const MODALS = {
       borderRadius: '8px',
     },
   },
+
   QR_SCANNER: {
     contents: h(QRScanner),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CANCEL_TRANSACTION: {
+    contents: h(CancelTransaction),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

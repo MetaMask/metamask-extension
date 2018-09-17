@@ -18,5 +18,6 @@ export const SEND_TOKEN_ACTION_KEY = 'sentTokens'
 export const TRANSFER_FROM_ACTION_KEY = 'transferFrom'
 export const SIGNATURE_REQUEST_KEY = 'signatureRequest'
 export const UNKNOWN_FUNCTION_KEY = 'unknownFunction'
+export const CANCEL_ATTEMPT_ACTION_KEY = 'cancelAttempt'
 
 export const TRANSACTION_TYPE_SHAPESHIFT = 'shapeshift'

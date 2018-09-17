@@ -18,7 +18,7 @@ const {
   TRANSACTION_STATUS_APPROVED,
 } = require('./enums')
 
-const { hexToBn, bnToHex } = require('../../lib/util')
+const { hexToBn, bnToHex, BnMultiplyByFraction } = require('../../lib/util')
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -244,7 +244,8 @@ class TransactionController extends EventEmitter {
     const originalTxMeta = this.txStateManager.getTx(originalTxId)
     const { txParams } = originalTxMeta
     const { gasPrice: lastGasPrice, from, nonce } = txParams
-    const newGasPrice = customGasPrice || bnToHex(hexToBn(lastGasPrice).mul(1.1))
+
+    const newGasPrice = customGasPrice || bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
     const newTxMeta = this.txStateManager.generateTxMeta({
       txParams: {
         from,

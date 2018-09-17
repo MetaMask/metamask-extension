@@ -13,7 +13,9 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   static propTypes = {
+    onCancel: PropTypes.func,
     onRetry: PropTypes.func,
+    showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
     transaction: PropTypes.object,
   }
@@ -27,6 +29,13 @@ export default class TransactionListItemDetails extends PureComponent {
     this.setState({ showTransactionDetails: true })
   }
 
+  handleCancel = event => {
+    const { onCancel } = this.props
+
+    event.stopPropagation()
+    onCancel()
+  }
+
   handleRetry = event => {
     const { onRetry } = this.props
 
@@ -36,7 +45,7 @@ export default class TransactionListItemDetails extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { transaction, showRetry } = this.props
+    const { transaction, showCancel, showRetry } = this.props
     const { txParams: { to, from } = {} } = transaction
 
     return (
@@ -52,6 +61,17 @@ export default class TransactionListItemDetails extends PureComponent {
                   className="transaction-list-item-details__header-button"
                 >
                   { t('speedUp') }
+                </Button>
+              )
+            }
+            {
+              showCancel && (
+                <Button
+                  type="raised"
+                  onClick={this.handleCancel}
+                  className="transaction-list-item-details__header-button"
+                >
+                  { t('cancel') }
                 </Button>
               )
             }

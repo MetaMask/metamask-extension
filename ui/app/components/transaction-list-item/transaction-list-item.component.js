@@ -12,17 +12,19 @@ import { ETH } from '../../constants/common'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
+    assetImages: PropTypes.object,
     history: PropTypes.object,
-    transaction: PropTypes.object,
-    value: PropTypes.string,
     methodData: PropTypes.object,
-    showRetry: PropTypes.bool,
+    nonceAndDate: PropTypes.string,
     retryTransaction: PropTypes.func,
     setSelectedToken: PropTypes.func,
-    nonceAndDate: PropTypes.string,
+    showCancelModal: PropTypes.func,
+    showCancel: PropTypes.bool,
+    showRetry: PropTypes.bool,
     token: PropTypes.object,
-    assetImages: PropTypes.object,
     tokenData: PropTypes.object,
+    transaction: PropTypes.object,
+    value: PropTypes.string,
   }
 
   state = {
@@ -40,6 +42,11 @@ export default class TransactionListItem extends PureComponent {
     }
 
     this.setState({ showTransactionDetails: !showTransactionDetails })
+  }
+
+  handleCancel = () => {
+    const { transaction: { id, txParams: { gasPrice } } = {}, showCancelModal } = this.props
+    showCancelModal(id, gasPrice)
   }
 
   handleRetry = () => {
@@ -100,12 +107,13 @@ export default class TransactionListItem extends PureComponent {
 
   render () {
     const {
-      transaction,
-      methodData,
-      showRetry,
-      nonceAndDate,
       assetImages,
+      methodData,
+      nonceAndDate,
+      showCancel,
+      showRetry,
       tokenData,
+      transaction,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
@@ -153,8 +161,10 @@ export default class TransactionListItem extends PureComponent {
             <div className="transaction-list-item__details-container">
               <TransactionListItemDetails
                 transaction={transaction}
-                showRetry={showRetry && methodData.done}
                 onRetry={this.handleRetry}
+                showRetry={showRetry && methodData.done}
+                onCancel={this.handleCancel}
+                showCancel={showCancel}
               />
             </div>
           )
