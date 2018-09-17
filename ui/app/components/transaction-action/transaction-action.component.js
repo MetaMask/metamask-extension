@@ -4,7 +4,7 @@ import { getTransactionActionKey } from '../../helpers/transactions.util'
 
 export default class TransactionAction extends PureComponent {
   static contextTypes = {
-    tOrDefault: PropTypes.func,
+    t: PropTypes.func,
   }
 
   static propTypes = {
@@ -35,7 +35,7 @@ export default class TransactionAction extends PureComponent {
     }
 
     const actionKey = await getTransactionActionKey(transaction, data)
-    const action = actionKey && this.context.tOrDefault(actionKey)
+    const action = actionKey && this.context.t(actionKey)
     this.setState({ transactionAction: action })
   }
 

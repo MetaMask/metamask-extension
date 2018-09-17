@@ -33,6 +33,10 @@
     &:last-child::after {
       height: 50%;
     }
+
+    &:first-child:last-child::after {
+      display: none;
+    }
   }
 
   &__activity-icon {
