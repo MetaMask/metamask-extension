@@ -417,7 +417,7 @@ class AddTokenScreen extends Component {
       return
     }
 
-    const { setPendingTokens/* , history*/ } = this.props
+    const { setPendingTokens, network/* , history*/ } = this.props
     const {
       customAddress: address,
       customSymbol: symbol,
@@ -429,6 +429,7 @@ class AddTokenScreen extends Component {
       address,
       symbol,
       decimals,
+      network: network,
     }
 
     setPendingTokens({ customToken, selectedTokens })

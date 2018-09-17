@@ -2296,9 +2296,12 @@ function updateNetworkEndpointType (networkEndpointType) {
 }
 
 function setPendingTokens (pendingTokens) {
-  const { customToken = {}, selectedTokens = {} } = pendingTokens
-  const { address, symbol, decimals } = customToken
-  const tokens = address && symbol && decimals
+  const { selectedTokens = {}, customToken = {} } = pendingTokens
+  const { address, symbol, decimals, network } = customToken
+  Object.keys(selectedTokens).forEach(address => {
+    selectedTokens[address].network = parseInt(network)
+  })
+  const tokens = address && symbol && decimals && network
     ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }
     : selectedTokens
 

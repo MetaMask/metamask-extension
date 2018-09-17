@@ -59,7 +59,7 @@ export default class ConfirmAddToken extends Component {
             </div>
             <div className="confirm-add-token__token-list">
               {
-                Object.entries(pendingTokens)
+                pendingTokens && Object.entries(pendingTokens)
                   .map(([ address, token ]) => {
                     const { name, symbol } = token
 
