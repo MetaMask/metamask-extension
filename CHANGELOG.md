@@ -5,6 +5,7 @@
 - [#4606](https://github.com/MetaMask/metamask-extension/pull/4606): Add new metamask_watchAsset method.
 - [#5189](https://github.com/MetaMask/metamask-extension/pull/5189): Fix bug where Ropsten loading message is shown when connecting to Kovan.
 - [#4752](https://github.com/MetaMask/metamask-extension/issues/4752): Implement latest `eth_signTypedData` specification.
+- [#5256](https://github.com/MetaMask/metamask-extension/pull/5256): Add mock EIP-1102 support
 
 ## 4.9.3 Wed Aug 15 2018
 
