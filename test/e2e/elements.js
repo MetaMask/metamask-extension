@@ -86,8 +86,6 @@ module.exports = {
             name: By.className('confirm-add-token__name'),
             icon: By.className('confirm-add-token__token-icon identicon'),
           },
-
-
         },
       },
       custom:

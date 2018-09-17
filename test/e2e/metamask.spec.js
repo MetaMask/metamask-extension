@@ -937,7 +937,7 @@ describe('Metamask popup page', async function () {
 
       it('adds token parameters', async function () {
         const tab = await waitUntilShowUp(screens.addToken.tab.custom)
-        await tab.click()
+        if (! await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)) await tab.click()
         const tokenContractAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
         await tokenContractAddress.sendKeys(tokenAddress)
         const button = await waitUntilShowUp(screens.addToken.custom.buttons.add)
