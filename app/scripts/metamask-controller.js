@@ -49,6 +49,8 @@ const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
 const EthQuery = require('eth-query')
+const ethUtil = require('ethereumjs-util')
+const sigUtil = require('eth-sig-util')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -205,7 +207,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
-    this.typedMessageManager = new TypedMessageManager()
+    this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
     this.publicConfigStore = this.initPublicConfigStore()
 
     this.store.updateStructure({
@@ -266,7 +268,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // msg signing
       processEthSignMessage: this.newUnsignedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
-      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -975,22 +976,31 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param  {Object} msgParams - The params passed to eth_signTypedData.
    * @returns {Object} Full state update.
    */
-  signTypedMessage (msgParams) {
-    log.info('MetaMaskController - signTypedMessage')
+  async signTypedMessage (msgParams) {
+    log.info('MetaMaskController - eth_signTypedData')
     const msgId = msgParams.metamaskId
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.typedMessageManager.approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-        // signs the message
-        return this.keyringController.signTypedMessage(cleanMsgParams)
-      })
-      .then((rawSig) => {
-        // tells the listener that the message has been signed
-        // and can be returned to the dapp
-        this.typedMessageManager.setMsgStatusSigned(msgId, rawSig)
-        return this.getState()
-      })
+    const version = msgParams.version
+    try {
+      const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
+      const address = sigUtil.normalize(cleanMsgParams.from)
+      const keyring = await this.keyringController.getKeyringForAccount(address)
+      const wallet = keyring._getWalletForAccount(address)
+      const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
+      let signature
+      switch (version) {
+        case 'V1':
+          signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
+          break
+        case 'V3':
+          signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
+          break
+      }
+      this.typedMessageManager.setMsgStatusSigned(msgId, signature)
+      return this.getState()
+    } catch (error) {
+      log.info('MetaMaskController - eth_signTypedData failed.', error)
+      this.typedMessageManager.errorMessage(msgId, error)
+    }
   }
 
   /**
@@ -1241,6 +1251,9 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }))
     engine.push(filterMiddleware)
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
+    engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
+    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
+    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3').bind(this))
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection
@@ -1473,5 +1486,35 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   set isClientOpenAndUnlocked (active) {
     this.tokenRatesController.isActive = active
+  }
+
+ /**
+  * Creates RPC engine middleware for processing eth_signTypedData requests
+  *
+  * @param {Object} req - request object
+  * @param {Object} res - response object
+  * @param {Function} - next
+  * @param {Function} - end
+  */
+  createTypedDataMiddleware (methodName, version) {
+    return async (req, res, next, end) => {
+      const { method, params } = req
+      if (method === methodName) {
+        const promise = this.typedMessageManager.addUnapprovedMessageAsync({
+          data: params.length >= 1 && params[0],
+          from: params.length >= 2 && params[1],
+        }, req, version)
+        this.sendUpdate()
+        this.opts.showUnconfirmedMessage()
+        try {
+          res.result = await promise
+          end()
+        } catch (error) {
+          end(error)
+        }
+      } else {
+        next()
+      }
+    }
   }
 }

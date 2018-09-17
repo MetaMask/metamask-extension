@@ -21,7 +21,7 @@ PendingMsgDetails.prototype.render = function () {
   var identity = state.identities[address] || { address: address }
   var account = state.accounts[address] || { address: address }
 
-  var { data } = msgParams
+  var { data, version } = msgParams
 
   return (
     h('div', {
@@ -48,6 +48,7 @@ PendingMsgDetails.prototype.render = function () {
         h('label.font-small', { style: { display: 'block' } }, 'YOU ARE SIGNING'),
         h(TypedMessageRenderer, {
           value: data,
+          version,
           style: {
             height: '215px',
           },
