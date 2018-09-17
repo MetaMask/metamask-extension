@@ -619,8 +619,9 @@ describe('Metamask popup page', async function () {
 
     describe('add Mainnet\'s tokens', function () {
 
-      it('user is able to open Add tokens:Search, field \'Search\' is displayed', async function () {
+      it(' field \'Search\' is displayed', async function () {
         await setProvider(NETWORKS.MAINNET)
+        await delay(2000)
         const tab = await waitUntilShowUp(screens.main.tokens.menu)
         await tab.click()
         const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
@@ -792,7 +793,7 @@ describe('Metamask popup page', async function () {
       })
 
     })
-    describe.skip('Token should be displayed only for network, where it was added ', async function () {
+    describe('Token should be displayed only for network, where it was added ', async function () {
 
       it('token should not  be displayed in POA network', async function () {
         await setProvider(NETWORKS.POA)
@@ -804,7 +805,8 @@ describe('Metamask popup page', async function () {
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not  be displayed in LOCALHOST network', async function () {
+      it.skip('token should not  be displayed in LOCALHOST network', async function () {
+        console.log('https://github.com/poanetwork/metamask-extension/issues/131')
         await setProvider(NETWORKS.LOCALHOST)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
@@ -937,7 +939,7 @@ describe('Metamask popup page', async function () {
 
       it('adds token parameters', async function () {
         const tab = await waitUntilShowUp(screens.addToken.tab.custom)
-        if (! await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)) await tab.click()
+        if (!await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)) await tab.click()
         const tokenContractAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
         await tokenContractAddress.sendKeys(tokenAddress)
         const button = await waitUntilShowUp(screens.addToken.custom.buttons.add)
@@ -1379,13 +1381,12 @@ describe('Metamask popup page', async function () {
     try {
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
-      // await delay(2000)
+
       do {
-        const tab = await waitUntilShowUp(screens.addToken.tab.custom)
+        const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
         try {
           await tab.click()
         } catch (err) {
-          console.log(err)
         }
 
       }
