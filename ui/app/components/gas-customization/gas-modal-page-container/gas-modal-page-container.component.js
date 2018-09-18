@@ -23,7 +23,9 @@ export default class GasModalPageContainer extends Component {
 
   renderBasicTabContent () {
     return (
-      <BasicTabContent gasPriceButtonGroupProps={this.props.gasPriceButtonGroupProps} />
+      <BasicTabContent
+        gasPriceButtonGroupProps={this.props.gasPriceButtonGroupProps}
+      />
     )
   }
 

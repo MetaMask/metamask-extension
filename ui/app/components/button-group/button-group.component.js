@@ -5,6 +5,7 @@ import classnames from 'classnames'
 export default class ButtonGroup extends PureComponent {
   static propTypes = {
     defaultActiveButtonIndex: PropTypes.number,
+    noButtonActiveByDefault: PropTypes.bool,
     disabled: PropTypes.bool,
     children: PropTypes.array,
     className: PropTypes.string,
@@ -13,10 +14,13 @@ export default class ButtonGroup extends PureComponent {
 
   static defaultProps = {
     className: 'button-group',
+    defaultActiveButtonIndex: 0,
   }
 
   state = {
-    activeButtonIndex: this.props.defaultActiveButtonIndex || 0,
+    activeButtonIndex: this.props.noButtonActiveByDefault
+      ? null
+      : this.props.defaultActiveButtonIndex,
   }
 
   handleButtonClick (activeButtonIndex) {
