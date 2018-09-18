@@ -34,7 +34,7 @@ async function runTxListItemsTest (assert, done) {
 
   const retryTxGrid = await findAsync($(txListItems[1]), '.transaction-list-item__grid')
   retryTxGrid[0].click()
-  const retryTxDetails = await findAsync($(txListItems[1]), '.transaction-list-item-details')
+  const retryTxDetails = await findAsync($, '.transaction-list-item-details')
   const headerButtons = await findAsync($(retryTxDetails[0]), '.transaction-list-item-details__header-button')
   assert.equal(headerButtons[0].textContent, 'speed up')
 
