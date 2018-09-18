@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import Identicon from '../identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
@@ -176,19 +177,23 @@ export default class TransactionListItem extends PureComponent {
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }
         </div>
-        {
-          showTransactionDetails && (
-            <div className="transaction-list-item__details-container">
-              <TransactionListItemDetails
-                transaction={transaction}
-                onRetry={this.handleRetry}
-                showRetry={showRetry && methodData.done}
-                onCancel={this.handleCancel}
-                showCancel={showCancel}
-              />
-            </div>
-          )
-        }
+        <div className={classnames('transaction-list-item__expander', {
+          'transaction-list-item__expander--show': showTransactionDetails,
+        })}>
+          {
+            showTransactionDetails && (
+              <div className="transaction-list-item__details-container">
+                <TransactionListItemDetails
+                  transaction={transaction}
+                  onRetry={this.handleRetry}
+                  showRetry={showRetry && methodData.done}
+                  onCancel={this.handleCancel}
+                  showCancel={showCancel}
+                />
+              </div>
+            )
+          }
+        </div>
       </div>
     )
   }
