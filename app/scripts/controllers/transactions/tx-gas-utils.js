@@ -7,6 +7,8 @@ const {
 const { addHexPrefix } = require('ethereumjs-util')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
+import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/constants/error-keys'
+
 /**
 tx-gas-utils are gas utility methods for Transaction manager
 its passed ethquery
@@ -32,6 +34,7 @@ class TxGasUtil {
     } catch (err) {
       txMeta.simulationFails = {
         reason: err.message,
+        errorKey: err.errorKey,
       }
       return txMeta
     }
@@ -56,16 +59,22 @@ class TxGasUtil {
       return txParams.gas
     }
 
-    // if recipient has no code, gas is 21k max:
     const recipient = txParams.to
     const hasRecipient = Boolean(recipient)
-    let code
-    if (recipient) code = await this.query.getCode(recipient)
 
-    if (hasRecipient && (!code || code === '0x')) {
-      txParams.gas = SIMPLE_GAS_COST
-      txMeta.simpleSend = true // Prevents buffer addition
-      return SIMPLE_GAS_COST
+    if (hasRecipient) {
+      let code = await this.query.getCode(recipient)
+
+      // If there's data in the params, but there's no code, it's not a valid contract
+      // For no code, Infura will return '0x', and Ganache will return '0x0'
+      if (txParams.data && (!code || code === '0x' || code === '0x0')) {
+        throw {errorKey: TRANSACTION_NO_CONTRACT_ERROR_KEY}
+      }
+      else if (!code) {
+        txParams.gas = SIMPLE_GAS_COST // For a standard ETH send, gas is 21k max
+        txMeta.simpleSend = true // Prevents buffer addition
+        return SIMPLE_GAS_COST
+      }
     }
 
     // if not, fall back to block gasLimit

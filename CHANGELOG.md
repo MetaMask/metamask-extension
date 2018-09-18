@@ -4,6 +4,7 @@
 
 - Update transaction statuses when switching networks.
 - [#5470](https://github.com/MetaMask/metamask-extension/pull/5470) 100% coverage in French locale, fixed the procedure to verify proposed locale.
+- [#5283](https://github.com/MetaMask/metamask-extension/pull/5283): Fix bug when eth.getCode() called with no contract
 
 ## 4.12.0 Thursday September 27 2018
 

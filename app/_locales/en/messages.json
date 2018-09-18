@@ -1154,6 +1154,9 @@
   "transactionError": {
     "message": "Transaction Error. Exception thrown in contract code."
   },
+  "transactionErrorNoContract": {
+    "message": "Trying to call a contract function at an address that is not a contract address."
+  },
   "transactionMemo": {
     "message": "Transaction memo (optional)"
   },

@@ -215,7 +215,7 @@ async function estimateGas ({
   // if recipient has no code, gas is 21k max:
   if (!selectedToken && !data) {
     const code = Boolean(to) && await global.eth.getCode(to)
-    if (!code || code === '0x') {
+    if (!code || code === '0x' || code === '0x0') { // Infura will return '0x', and Ganache will return '0x0'
       return SIMPLE_GAS_COST
     }
   } else if (selectedToken && !to) {

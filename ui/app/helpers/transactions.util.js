@@ -114,7 +114,7 @@ export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0')
 
 export async function isSmartContractAddress (address) {
   const code = await global.eth.getCode(address)
-  return code && code !== '0x'
+  return code && code !== '0x' && code !== '0x0'; // Infura will return '0x', and Ganache will return '0x0'
 }
 
 export function sumHexes (...args) {
