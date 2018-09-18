@@ -1,40 +1,49 @@
-import React, { Component } from 'react'
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
-import { checkExistingAddresses } from './util'
-import { tokenInfoGetter } from '../../../token-util'
-import { DEFAULT_ROUTE, CONFIRM_ADD_TOKEN_ROUTE } from '../../../routes'
-import Button from '../../button'
-import TextField from '../../text-field'
-import TokenList from './token-list'
-import TokenSearch from './token-search'
+const React = require('react')
+const { Component } = React
+const h = require('react-hyperscript')
+const Tooltip = require('../tooltip.js')
+const TabBar = require('../tab-bar')
+// const { CONFIRM_ADD_TOKEN_ROUTE } = require('../../ui/app/routes')
+const { checkExistingAddresses } = require('../../../../ui/app/components/pages/add-token/util')
+const TokenList = require('./token-list')
+const TokenSearch = require('./token-search')
+const { tokenInfoGetter } = require('../../../../ui/app/token-util')
+const ethUtil = require('ethereumjs-util')
+const abi = require('human-standard-token-abi')
+const Eth = require('ethjs-query')
+const EthContract = require('ethjs-contract')
+const PropTypes = require('prop-types')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 const SEARCH_TAB = 'SEARCH'
 const CUSTOM_TOKEN_TAB = 'CUSTOM_TOKEN'
 
-class AddToken extends Component {
+class AddTokenScreen extends Component {
+
   static contextTypes = {
     t: PropTypes.func,
   }
 
   static propTypes = {
-    history: PropTypes.object,
     setPendingTokens: PropTypes.func,
     pendingTokens: PropTypes.object,
     clearPendingTokens: PropTypes.func,
+    showConfirmAddTokensPage: PropTypes.func,
+    displayWarning: PropTypes.func,
     tokens: PropTypes.array,
     identities: PropTypes.object,
+    address: PropTypes.string,
+    dispatch: PropTypes.func,
+    network: PropTypes.string,
   }
 
   constructor (props) {
     super(props)
-
     this.state = {
+      warning: null,
       customAddress: '',
-      customSymbol: '',
-      customDecimals: 0,
+      customSymbol: 'Token',
+      customDecimals: 18,
       searchResults: [],
       selectedTokens: {},
       tokenSelectorError: null,
@@ -44,6 +53,7 @@ class AddToken extends Component {
       autoFilled: false,
       displayedTab: SEARCH_TAB,
     }
+    Component.call(this)
   }
 
   componentDidMount () {
@@ -77,7 +87,270 @@ class AddToken extends Component {
     }
   }
 
-  handleToggleToken (token) {
+  render () {
+    const { network } = this.props
+    const networkID = parseInt(network)
+    let views = []
+    networkID === 1 ? views = [h(TabBar, {
+          tabs: [
+            { content: 'Search', key: SEARCH_TAB },
+            { content: 'Custom', key: CUSTOM_TOKEN_TAB },
+          ],
+          defaultTab: this.state.displayedTab || CUSTOM_TOKEN_TAB,
+          tabSelected: (key) => this.setCurrentAddTokenTab(key),
+        }),
+        this.tabSwitchView()] : views = [this.renderAddToken()]
+
+    return (
+      h('.flex-column.flex-grow', {
+        style: {
+          width: '100%',
+        },
+      }, [
+        // subtitle and nav
+        h('.section-title.flex-row.flex-center', {
+          style: {
+            background: '#60269c',
+          },
+        }, [
+          h('h2.page-subtitle', {
+            style: {
+              color: '#ffffff',
+            },
+          }, 'Add Token'),
+        ]),
+
+        ...views,
+      ])
+    )
+  }
+
+  setCurrentAddTokenTab (key) {
+    this.setState({displayedTab: key})
+  }
+
+  tabSwitchView () {
+    const state = this.state
+    const { displayedTab } = state
+    switch (displayedTab) {
+      case CUSTOM_TOKEN_TAB:
+        return this.renderAddToken()
+      default:
+        return this.renderTabBar()
+    }
+  }
+
+  renderAddToken () {
+    const props = this.props
+    const state = this.state
+    const { warning, customSymbol, customDecimals } = state
+    const { network, goHome, addToken } = props
+    return h('.flex-column.flex-justify-center.flex-grow.select-none', [
+        warning ? h('div', {
+          style: {
+            margin: '20px 30px 0 30px',
+          },
+        }, [
+          h('.error', {
+            style: {
+              display: 'block',
+            },
+          }, warning),
+        ]) : null,
+      h('.flex-space-around', {
+        style: {
+          padding: '30px',
+        },
+      }, [
+
+        h('div', [
+          h(Tooltip, {
+            position: 'top',
+            title: 'The contract of the actual token contract.',
+          }, [
+            h('span', {
+              style: { fontWeight: 'bold'},
+            }, 'Token Address' /* this.context.t('tokenAddress')*/),
+          ]),
+        ]),
+
+        h('section.flex-row.flex-center', [
+          h('input.large-input#token-address', {
+            name: 'address',
+            placeholder: 'Token Contract Address',
+            style: {
+              width: '100%',
+              margin: '10px 0',
+            },
+            onChange: e => this.handleCustomAddressChange(e.target.value),
+          }),
+        ]),
+
+        h('div', [
+          h('span', {
+            style: { fontWeight: 'bold', paddingRight: '10px'},
+          }, 'Token Symbol' /* this.context.t('tokenSymbol')*/),
+        ]),
+
+        h('div', { style: {display: 'flex'} }, [
+          h('input.large-input#token_symbol', {
+            placeholder: `Like "ETH"`,
+            value: customSymbol,
+            style: {
+              width: '100%',
+              margin: '10px 0',
+            },
+            onChange: e => this.handleCustomSymbolChange(e.target.value),
+          }),
+        ]),
+
+        h('div', [
+          h('span', {
+            style: { fontWeight: 'bold', paddingRight: '10px'},
+          }, 'Decimals of Precision' /* this.context.t('decimal')*/),
+        ]),
+
+        h('div', { style: {display: 'flex'} }, [
+          h('input.large-input#token_decimals', {
+            value: customDecimals,
+            type: 'number',
+            min: 0,
+            max: 36,
+            style: {
+              width: '100%',
+              margin: '10px 0',
+            },
+            onChange: e => this.handleCustomDecimalsChange(e.target.value),
+          }),
+        ]),
+
+        h('div', {
+          key: 'buttons',
+          style: {
+            alignSelf: 'center',
+            float: 'right',
+            marginTop: '10px',
+          },
+        }, [
+          h('button.btn-violet', {
+            onClick: () => {
+              goHome()
+            },
+          }, 'Cancel' /* this.context.t('cancel')*/),
+          h('button', {
+            onClick: (event) => {
+              const valid = this.validateInputs()
+              if (!valid) return
+
+              const { customAddress, customSymbol, customDecimals } = this.state
+              addToken(customAddress.trim(), customSymbol.trim(), customDecimals, network)
+                .then(() => {
+                  goHome()
+                })
+            },
+          }, 'Add' /* this.context.t('addToken')*/),
+        ]),
+      ]),
+    ])
+  }
+
+  renderTabBar () {
+    const props = this.props
+    const state = this.state
+    const { tokenSelectorError, selectedTokens, searchResults } = state
+    const { clearPendingTokens, goHome } = props
+    return h('div', [
+      h('.add-token__search-token', [
+       h(TokenSearch, {
+        onSearch: ({ results = [] }) => this.setState({ searchResults: results }),
+        error: tokenSelectorError,
+       }),
+       h('.add-token__token-list', {
+          style: {
+            marginTop: '20px',
+            height: '250px',
+            overflow: 'auto',
+          },
+        }, [
+          h(TokenList, {
+            results: searchResults,
+            selectedTokens: selectedTokens,
+            onToggleToken: token => this.handleToggleToken(token),
+          }),
+        ]),
+      ]),
+      h('.page-container__footer', [
+        h('.page-container__footer-container', [
+          h('button.btn-violet', {
+            onClick: () => {
+              clearPendingTokens()
+              goHome()
+            },
+          }, 'Cancel' /* this.context.t('cancel')*/),
+          h('button.btn-primary', {
+            onClick: () => this.handleNext(),
+            disabled: this.hasError() || !this.hasSelected(),
+          }, 'Next' /* this.context.t('next')*/),
+        ]),
+      ]),
+    ])
+  }
+
+  componentWillMount () {
+    if (typeof global.ethereumProvider === 'undefined') return
+
+    this.eth = new Eth(global.ethereumProvider)
+    this.contract = new EthContract(this.eth)
+    this.TokenContract = this.contract(abi)
+  }
+
+  componentWillUnmount () {
+    const { displayWarning } = this.props
+    displayWarning('')
+  }
+
+  validateInputs () {
+    let msg = ''
+    const state = this.state
+    const identitiesList = Object.keys(this.props.identities)
+    const { customAddress: address, customSymbol: symbol, customDecimals: decimals } = state
+    const standardAddress = ethUtil.addHexPrefix(address).toLowerCase()
+
+    const validAddress = ethUtil.isValidAddress(address)
+    if (!validAddress) {
+      msg += 'Address is invalid.'
+    }
+
+    const validDecimals = decimals >= 0 && decimals < 36
+    if (!validDecimals) {
+      msg += 'Decimals must be at least 0, and not over 36. '
+    }
+
+    const symbolLen = symbol.trim().length
+    const validSymbol = symbolLen > 0 && symbolLen < 10
+    if (!validSymbol) {
+      msg += 'Symbol must be between 0 and 10 characters.'
+    }
+
+    const ownAddress = identitiesList.includes(standardAddress)
+    if (ownAddress) {
+      msg = 'Personal address detected. Input the token contract address.'
+    }
+
+    const isValid = validAddress && validDecimals && !ownAddress
+
+    if (!isValid) {
+      this.setState({
+        warning: msg,
+      })
+    } else {
+      this.setState({ warning: null })
+    }
+
+    return isValid
+  }
+
+  handleToggleToken = (token) => {
     const { address } = token
     const { selectedTokens = {} } = this.state
     const selectedTokensCopy = { ...selectedTokens }
@@ -94,7 +367,7 @@ class AddToken extends Component {
     })
   }
 
-  hasError () {
+  hasError = () => {
     const {
       tokenSelectorError,
       customAddressError,
@@ -105,22 +378,22 @@ class AddToken extends Component {
     return tokenSelectorError || customAddressError || customSymbolError || customDecimalsError
   }
 
-  hasSelected () {
+  hasSelected = () => {
     const { customAddress = '', selectedTokens = {} } = this.state
     return customAddress || Object.keys(selectedTokens).length > 0
   }
 
-  handleNext () {
+  handleNext = () => {
     if (this.hasError()) {
       return
     }
 
     if (!this.hasSelected()) {
-      this.setState({ tokenSelectorError: this.context.t('mustSelectOne') })
+      this.setState({ tokenSelectorError: 'Must select at least 1 token.' /* this.context.t('mustSelectOne')*/ })
       return
     }
 
-    const { setPendingTokens, history } = this.props
+    const { setPendingTokens, network, showConfirmAddTokensPage } = this.props
     const {
       customAddress: address,
       customSymbol: symbol,
@@ -132,13 +405,14 @@ class AddToken extends Component {
       address,
       symbol,
       decimals,
+      network: network,
     }
 
     setPendingTokens({ customToken, selectedTokens })
-    history.push(CONFIRM_ADD_TOKEN_ROUTE)
+    showConfirmAddTokensPage()
   }
 
-  async attemptToAutoFillTokenParams (address) {
+  attemptToAutoFillTokenParams = async (address) => {
     const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(address)
 
     const autoFilled = Boolean(symbol && decimals)
@@ -147,7 +421,7 @@ class AddToken extends Component {
     this.handleCustomDecimalsChange(decimals)
   }
 
-  handleCustomAddressChange (value) {
+  handleCustomAddressChange = (value) => {
     const customAddress = value.trim()
     this.setState({
       customAddress,
@@ -162,7 +436,7 @@ class AddToken extends Component {
     switch (true) {
       case !isValidAddress:
         this.setState({
-          customAddressError: this.context.t('invalidAddress'),
+          customAddressError: 'Invalid address' /* this.context.t('invalidAddress')*/,
           customSymbol: '',
           customDecimals: 0,
           customSymbolError: null,
@@ -172,13 +446,13 @@ class AddToken extends Component {
         break
       case Boolean(this.props.identities[standardAddress]):
         this.setState({
-          customAddressError: this.context.t('personalAddressDetected'),
+          customAddressError: 'Personal address detected. Input the token contract address.' /* this.context.t('personalAddressDetected')*/,
         })
 
         break
       case checkExistingAddresses(customAddress, this.props.tokens):
         this.setState({
-          customAddressError: this.context.t('tokenAlreadyAdded'),
+          customAddressError: 'Token has already been added.' /* this.context.t('tokenAlreadyAdded')*/,
         })
 
         break
@@ -189,19 +463,19 @@ class AddToken extends Component {
     }
   }
 
-  handleCustomSymbolChange (value) {
+  handleCustomSymbolChange = (value) => {
     const customSymbol = value.trim()
     const symbolLength = customSymbol.length
     let customSymbolError = null
 
     if (symbolLength <= 0 || symbolLength >= 10) {
-      customSymbolError = this.context.t('symbolBetweenZeroTen')
+      customSymbolError = 'Symbol must be between 0 and 10 characters.' /* this.context.t('symbolBetweenZeroTen')*/
     }
 
     this.setState({ customSymbol, customSymbolError })
   }
 
-  handleCustomDecimalsChange (value) {
+  handleCustomDecimalsChange = (value) => {
     const customDecimals = value.trim()
     const validDecimals = customDecimals !== null &&
       customDecimals !== '' &&
@@ -210,142 +484,11 @@ class AddToken extends Component {
     let customDecimalsError = null
 
     if (!validDecimals) {
-      customDecimalsError = this.context.t('decimalsMustZerotoTen')
+      customDecimalsError = 'Decimals must be at least 0, and not over 36.' /* this.context.t('decimalsMustZerotoTen')*/
     }
 
     this.setState({ customDecimals, customDecimalsError })
   }
-
-  renderCustomTokenForm () {
-    const {
-      customAddress,
-      customSymbol,
-      customDecimals,
-      customAddressError,
-      customSymbolError,
-      customDecimalsError,
-      autoFilled,
-    } = this.state
-
-    return (
-      <div className="add-token__custom-token-form">
-        <TextField
-          id="custom-address"
-          label={this.context.t('tokenAddress')}
-          type="text"
-          value={customAddress}
-          onChange={e => this.handleCustomAddressChange(e.target.value)}
-          error={customAddressError}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          id="custom-symbol"
-          label={this.context.t('tokenSymbol')}
-          type="text"
-          value={customSymbol}
-          onChange={e => this.handleCustomSymbolChange(e.target.value)}
-          error={customSymbolError}
-          fullWidth
-          margin="normal"
-          disabled={autoFilled}
-        />
-        <TextField
-          id="custom-decimals"
-          label={this.context.t('decimal')}
-          type="number"
-          value={customDecimals}
-          onChange={e => this.handleCustomDecimalsChange(e.target.value)}
-          error={customDecimalsError}
-          fullWidth
-          margin="normal"
-          disabled={autoFilled}
-        />
-      </div>
-    )
-  }
-
-  renderSearchToken () {
-    const { tokenSelectorError, selectedTokens, searchResults } = this.state
-
-    return (
-      <div className="add-token__search-token">
-        <TokenSearch
-          onSearch={({ results = [] }) => this.setState({ searchResults: results })}
-          error={tokenSelectorError}
-        />
-        <div className="add-token__token-list">
-          <TokenList
-            results={searchResults}
-            selectedTokens={selectedTokens}
-            onToggleToken={token => this.handleToggleToken(token)}
-          />
-        </div>
-      </div>
-    )
-  }
-
-  render () {
-    const { displayedTab } = this.state
-    const { history, clearPendingTokens } = this.props
-
-    return (
-      <div className="page-container">
-        <div className="page-container__header page-container__header--no-padding-bottom">
-          <div className="page-container__title">
-            { this.context.t('addTokens') }
-          </div>
-          <div className="page-container__tabs">
-            <div
-              className={classnames('page-container__tab', {
-                'page-container__tab--selected': displayedTab === SEARCH_TAB,
-              })}
-              onClick={() => this.setState({ displayedTab: SEARCH_TAB })}
-            >
-              { this.context.t('search') }
-            </div>
-            <div
-              className={classnames('page-container__tab', {
-                'page-container__tab--selected': displayedTab === CUSTOM_TOKEN_TAB,
-              })}
-              onClick={() => this.setState({ displayedTab: CUSTOM_TOKEN_TAB })}
-            >
-              { this.context.t('customToken') }
-            </div>
-          </div>
-        </div>
-        <div className="page-container__content">
-          {
-            displayedTab === CUSTOM_TOKEN_TAB
-              ? this.renderCustomTokenForm()
-              : this.renderSearchToken()
-          }
-        </div>
-        <div className="page-container__footer">
-          <Button
-            type="default"
-            large
-            className="page-container__footer-button"
-            onClick={() => {
-              clearPendingTokens()
-              history.push(DEFAULT_ROUTE)
-            }}
-          >
-            { this.context.t('cancel') }
-          </Button>
-          <Button
-            type="primary"
-            large
-            className="page-container__footer-button"
-            onClick={() => this.handleNext()}
-            disabled={this.hasError() || !this.hasSelected()}
-          >
-            { this.context.t('next') }
-          </Button>
-        </div>
-      </div>
-    )
-  }
 }
 
-export default AddToken
+module.exports = AddTokenScreen

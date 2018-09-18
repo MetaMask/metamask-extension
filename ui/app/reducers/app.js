@@ -199,8 +199,8 @@ function reduceApp (state, action) {
         transForward: action.value,
       })
 
-    // case actions.SHOW_CONFIRM_ADD_TOKEN_PAGE:
-    case actions.SET_PENDING_TOKENS:
+    case actions.SHOW_CONFIRM_ADD_TOKEN_PAGE:
+    // case actions.SET_PENDING_TOKENS:
       return extend(appState, {
         currentView: {
           name: 'confirm-add-token',

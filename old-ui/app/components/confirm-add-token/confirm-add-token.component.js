@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-// import { DEFAULT_ROUTE, ADD_TOKEN_ROUTE } from '../../../routes'
 import Button from '../../../../ui/app/components/button'
 import Identicon from '../identicon'
 import TokenBalance from './token-balance'
@@ -11,19 +10,18 @@ export default class ConfirmAddToken extends Component {
   }
 
   static propTypes = {
-    // history: PropTypes.object,
     clearPendingTokens: PropTypes.func,
     addTokens: PropTypes.func,
     pendingTokens: PropTypes.object,
     goHome: PropTypes.func,
+    showAddTokenPage: PropTypes.func,
   }
 
   componentDidMount () {
-    const { pendingTokens = {}, goHome /*, history*/ } = this.props
+    const { pendingTokens = {}, goHome } = this.props
 
     if (Object.keys(pendingTokens).length === 0) {
       goHome()
-      // history.push(DEFAULT_ROUTE)
     }
   }
 
@@ -34,7 +32,7 @@ export default class ConfirmAddToken extends Component {
   }
 
   render () {
-    const { /* history,*/ addTokens, clearPendingTokens, pendingTokens, goHome } = this.props
+    const { addTokens, clearPendingTokens, pendingTokens, goHome, showAddTokenPage } = this.props
     const areMultipleTokens = pendingTokens && Object.keys(pendingTokens).length > 1
 
     return (
@@ -93,9 +91,9 @@ export default class ConfirmAddToken extends Component {
             <Button
               type="default"
               className="btn-violet"
-              onClick={() => goHome()}// history.push(ADD_TOKEN_ROUTE)}
+              onClick={() => showAddTokenPage()}
             >
-              { 'Cancel' /* this.context.t('back')*/ }
+              { 'Back' /* this.context.t('back')*/ }
             </Button>
             <Button
               type="primary"
@@ -104,7 +102,6 @@ export default class ConfirmAddToken extends Component {
                   .then(() => {
                     clearPendingTokens()
                     goHome()
-                    // history.push(DEFAULT_ROUTE)
                   })
               }}
             >

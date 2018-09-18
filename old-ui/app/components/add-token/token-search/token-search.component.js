@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import contractMap from 'eth-contract-metadata'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import TextField from '../../../text-field'
+import TextField from '../../../../../ui/app/components/text-field'
 
 const contractList = Object.entries(contractMap)
   .map(([ _, tokenData]) => tokenData)
