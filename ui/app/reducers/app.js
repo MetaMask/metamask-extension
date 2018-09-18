@@ -200,7 +200,6 @@ function reduceApp (state, action) {
       })
 
     case actions.SHOW_CONFIRM_ADD_TOKEN_PAGE:
-    // case actions.SET_PENDING_TOKENS:
       return extend(appState, {
         currentView: {
           name: 'confirm-add-token',
