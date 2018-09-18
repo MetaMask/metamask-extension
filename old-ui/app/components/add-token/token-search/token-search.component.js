@@ -72,7 +72,7 @@ export default class TokenSearch extends Component {
     return (
       <TextField
         id="search-tokens"
-        placeholder={this.context.t('searchTokens')}
+        placeholder={'Search Tokens' /* this.context.t('searchTokens')*/}
         type="text"
         value={searchQuery}
         onChange={e => this.handleSearch(e.target.value)}

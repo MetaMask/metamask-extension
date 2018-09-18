@@ -2,15 +2,15 @@ const React = require('react')
 const { Component } = React
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const actions = require('../../ui/app/actions')
+const actions = require('../../../ui/app/actions')
 const { setPendingTokens, clearPendingTokens, displayWarning, goHome, addToken } = actions
-const Tooltip = require('./components/tooltip.js')
-const TabBar = require('./components/tab-bar')
+const Tooltip = require('./tooltip.js')
+const TabBar = require('./tab-bar')
 // const { CONFIRM_ADD_TOKEN_ROUTE } = require('../../ui/app/routes')
-const { checkExistingAddresses } = require('../../ui/app/components/pages/add-token/util')
-const TokenList = require('../../ui/app/components/pages/add-token/token-list')
-const TokenSearch = require('../../ui/app/components/pages/add-token/token-search')
-const { tokenInfoGetter } = require('../../ui/app/token-util')
+const { checkExistingAddresses } = require('../../../ui/app/components/pages/add-token/util')
+const TokenList = require('../../../ui/app/components/pages/add-token/token-list')
+const TokenSearch = require('../../../ui/app/components/pages/add-token/token-search')
+const { tokenInfoGetter } = require('../../../ui/app/token-util')
 const ethUtil = require('ethereumjs-util')
 const abi = require('human-standard-token-abi')
 const Eth = require('ethjs-query')
@@ -311,7 +311,7 @@ class AddTokenScreen extends Component {
               goHome()
             },
           }, 'Cancel' /* this.context.t('cancel')*/),
-          h('button', {
+          h('button.btn-primary', {
             onClick: () => this.handleNext(),
             disabled: this.hasError() || !this.hasSelected(),
           }, 'Next' /* this.context.t('next')*/),
