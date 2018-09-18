@@ -4,8 +4,6 @@ import PropTypes from 'prop-types'
 export default class TokenBalance extends Component {
   static propTypes = {
     string: PropTypes.string,
-    symbol: PropTypes.string,
-    error: PropTypes.string,
   }
 
   render () {
