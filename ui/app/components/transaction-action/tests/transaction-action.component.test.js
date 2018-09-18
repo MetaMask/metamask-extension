@@ -5,10 +5,9 @@ import sinon from 'sinon'
 import TransactionAction from '../transaction-action.component'
 
 describe('TransactionAction Component', () => {
-  const tOrDefault = key => key
+  const t = key => key
   global.eth = {
     getCode: sinon.stub().callsFake(address => {
-      console.log('CALLED')
       const code = address === 'approveAddress' ? 'contract' : '0x'
       return Promise.resolve(code)
     }),
@@ -36,7 +35,7 @@ describe('TransactionAction Component', () => {
         methodData={methodData}
         transaction={transaction}
         className="transaction-action"
-      />, { context: { tOrDefault }})
+      />, { context: { t }})
 
       assert.equal(wrapper.find('.transaction-action').length, 1)
       assert.equal(wrapper.text(), '--')
@@ -63,7 +62,7 @@ describe('TransactionAction Component', () => {
         methodData={methodData}
         transaction={transaction}
         className="transaction-action"
-      />, { context: { tOrDefault }})
+      />, { context: { t }})
 
       assert.equal(wrapper.find('.transaction-action').length, 1)
       wrapper.setState({ transactionAction: 'sentEther' })
@@ -102,7 +101,7 @@ describe('TransactionAction Component', () => {
         methodData={methodData}
         transaction={transaction}
         className="transaction-action"
-      />, { context: { tOrDefault }})
+      />, { context: { t }})
 
       assert.equal(wrapper.find('.transaction-action').length, 1)
       wrapper.setState({ transactionAction: 'approve' })
