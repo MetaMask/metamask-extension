@@ -50,7 +50,6 @@ class AddTokenScreen extends Component {
   static propTypes = {
     // history: PropTypes.object,
     setPendingTokens: PropTypes.func,
-    showConfirmAddTokenPage: PropTypes.func,
     pendingTokens: PropTypes.object,
     clearPendingTokens: PropTypes.func,
     displayWarning: PropTypes.func,
