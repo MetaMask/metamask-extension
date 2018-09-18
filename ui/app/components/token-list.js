@@ -17,7 +17,13 @@ function mapStateToProps (state) {
 }
 
 const defaultTokens = []
-const contracts = require('eth-contract-metadata')
+const contractsETH = require('eth-contract-metadata')
+const contractsPOA = require('poa-contract-metadata')
+let contracts
+
+// const { network } = this.props
+// contracts = network === 1 ? contractsETH : contractsPOA
+contracts = contractsETH
 for (const address in contracts) {
   const contract = contracts[address]
   if (contract.erc20) {
@@ -170,16 +176,3 @@ TokenList.prototype.componentWillUnmount = function () {
   this.tracker.removeListener('update', this.balanceUpdater)
   this.tracker.removeListener('error', this.showError)
 }
-
-// function uniqueMergeTokens (tokensA, tokensB = []) {
-//   const uniqueAddresses = []
-//   const result = []
-//   tokensA.concat(tokensB).forEach((token) => {
-//     const normal = normalizeAddress(token.address)
-//     if (!uniqueAddresses.includes(normal)) {
-//       uniqueAddresses.push(normal)
-//       result.push(token)
-//     }
-//   })
-//   return result
-// }

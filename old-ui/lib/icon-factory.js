@@ -2,6 +2,7 @@ var iconFactory
 const isValidAddress = require('ethereumjs-util').isValidAddress
 const toChecksumAddress = require('ethereumjs-util').toChecksumAddress
 const contractMap = require('eth-contract-metadata')
+const contractMapPOA = require('poa-contract-metadata')
 const colors = require('../../colors')
 
 module.exports = function (jazzicon) {

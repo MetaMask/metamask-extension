@@ -115,7 +115,8 @@ class AddTokenScreen extends Component {
     const { network } = this.props
     const networkID = parseInt(network)
     let views = []
-    networkID === 1 ? views = [h(TabBar, {
+    const isProdNetwork = networkID === 1 || networkID === 99
+    isProdNetwork ? views = [h(TabBar, {
           tabs: [
             { content: 'Search', key: SEARCH_TAB },
             { content: 'Custom', key: CUSTOM_TOKEN_TAB },
@@ -279,15 +280,14 @@ class AddTokenScreen extends Component {
   }
 
   renderTabBar () {
-    const props = this.props
-    const state = this.state
-    const { tokenSelectorError, selectedTokens, searchResults } = state
-    const { clearPendingTokens, goHome } = props
+    const { tokenSelectorError, selectedTokens, searchResults } = this.state
+    const { clearPendingTokens, goHome, network } = this.props
     return h('div', [
       h('.add-token__search-token', [
        h(TokenSearch, {
         onSearch: ({ results = [] }) => this.setState({ searchResults: results }),
         error: tokenSelectorError,
+        network: network
        }),
        h('.add-token__token-list', {
           style: {

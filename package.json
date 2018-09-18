@@ -161,6 +161,7 @@
     "percentile": "^1.2.0",
     "pify": "^3.0.0",
     "ping-pong-stream": "^1.0.0",
+    "poa-contract-metadata": "github:poanetwork/poa-contract-metadata#master",
     "pojo-migrator": "^2.1.0",
     "polyfill-crypto.getrandomvalues": "^1.0.0",
     "post-message-stream": "^3.0.0",
@@ -318,7 +319,7 @@
     "watchify": "^3.11.0"
   },
   "engines": {
-    "node": "8.11.4",
-    "npm": "^6.1.0"
+    "node": "8.12.0",
+    "npm": "^6.4.1"
   }
 }
