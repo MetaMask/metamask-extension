@@ -1112,6 +1112,9 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 on $2."
   },
+  "transactionWithNonce": {
+    "message": "Transaction $1"
+  },
   "transactionDropped": {
     "message": "Transaction dropped on $2."
   },

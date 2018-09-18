@@ -8,12 +8,13 @@
   flex-flow: column;
   border-radius: 8px;
 
+  @media screen and (max-width: 575px) {
+    max-height: 450px;
+  }
+
   &__content {
     overflow-y: auto;
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     padding: 16px 32px;
 
     @media screen and (max-width: 575px) {
@@ -28,6 +29,7 @@
     padding: 12px;
     justify-content: center;
     border-bottom: 1px solid #d2d8dd;
+    flex: 0 0 auto;
   }
 
   &__header-close::after {

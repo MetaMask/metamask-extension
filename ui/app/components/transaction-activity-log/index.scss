@@ -51,9 +51,12 @@
   &__activity-text {
     color: $scorpion;
     font-size: .75rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
+    @media screen and (min-width: $break-large) {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   &__value {

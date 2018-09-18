@@ -22,6 +22,22 @@ export default class Modal extends PureComponent {
     cancelType: 'default',
   }
 
+  handleClose = () => {
+    const { onCancel, onSubmit } = this.props
+
+    /**
+     * The close button should be used to dismiss the modal, without performing any actions, which
+     * is typically what props.onCancel does. However, if props.onCancel is undefined, that should
+     * mean that the modal is a simple notification modal and props.onSubmit can be used to dismiss
+     * it.
+     */
+    if (onCancel && typeof onCancel === 'function') {
+      onCancel()
+    } else {
+      onSubmit()
+    }
+  }
+
   render () {
     const {
       children,
@@ -44,7 +60,7 @@ export default class Modal extends PureComponent {
               </div>
               <div
                 className="modal-container__header-close"
-                onClick={() => onCancel()}
+                onClick={this.handleClose}
               />
             </div>
           )

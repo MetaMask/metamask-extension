@@ -9,6 +9,7 @@ import TransactionListItemDetails from '../transaction-list-item-details'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
 import { ETH } from '../../constants/common'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
@@ -21,6 +22,7 @@ export default class TransactionListItem extends PureComponent {
     showCancelModal: PropTypes.func,
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
+    showTransactionDetailsModal: PropTypes.func,
     token: PropTypes.object,
     tokenData: PropTypes.object,
     transaction: PropTypes.object,
@@ -32,16 +34,34 @@ export default class TransactionListItem extends PureComponent {
   }
 
   handleClick = () => {
-    const { transaction, history } = this.props
+    const {
+      transaction,
+      history,
+      showTransactionDetailsModal,
+      methodData,
+      showCancel,
+      showRetry,
+    } = this.props
     const { id, status } = transaction
     const { showTransactionDetails } = this.state
+    const windowType = window.METAMASK_UI_TYPE
 
     if (status === UNAPPROVED_STATUS) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`)
       return
     }
 
-    this.setState({ showTransactionDetails: !showTransactionDetails })
+    if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
+      this.setState({ showTransactionDetails: !showTransactionDetails })
+    } else {
+      showTransactionDetailsModal({
+        transaction,
+        onRetry: this.handleRetry,
+        showRetry: showRetry && methodData.done,
+        onCancel: this.handleCancel,
+        showCancel,
+      })
+    }
   }
 
   handleCancel = () => {

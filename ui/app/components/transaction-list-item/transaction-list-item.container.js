@@ -28,6 +28,16 @@ const mapDispatchToProps = dispatch => {
     showCancelModal: (transactionId, originalGasPrice) => {
       return dispatch(showModal({ name: 'CANCEL_TRANSACTION', transactionId, originalGasPrice }))
     },
+    showTransactionDetailsModal: ({ transaction, onRetry, showRetry, onCancel, showCancel }) => {
+      return dispatch(showModal({
+        name: 'TRANSACTION_DETAILS',
+        transaction,
+        onRetry,
+        showRetry,
+        onCancel,
+        showCancel,
+      }))
+    },
   }
 }
 
