@@ -1,5 +1,6 @@
 const Promises = require('bluebird')
 const namehash = require('eth-ens-namehash')
+const log = require('loglevel')
 
 class ResolverInserface {
 
@@ -23,7 +24,7 @@ class ResolverInserface {
           const content = await this.supportsInterface(support)
           return content
         } catch (err) {
-          console.error('getSupportsInterface:', support, err)
+          log.error('getSupportsInterface:', support, err)
           return 'getSupportsInterface not found'
         }
     }
@@ -34,7 +35,7 @@ class ResolverInserface {
             if (hash['0'] === '0x') return hash['0']
             return hash
         } catch (err) {
-            console.error('getMultiHash: ', name, err)
+            log.error('getMultiHash:', name, err)
             return 'getMultiHash not found'
         }
     }
