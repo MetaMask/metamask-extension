@@ -57,10 +57,9 @@ export default class CancelTransaction extends PureComponent {
           <div className="cancel-transaction__title">
             { t('cancellationGasFee') }
           </div>
-          <CancelTransactionGasFee
-            className="cancel-transaction__cancel-transaction-gas-fee-container"
-            value={newGasFee}
-          />
+          <div className="cancel-transaction__cancel-transaction-gas-fee-container">
+            <CancelTransactionGasFee value={newGasFee} />
+          </div>
           <div className="cancel-transaction__description">
             { t('attemptToCancelDescription') }
           </div>
