@@ -2,7 +2,6 @@ var iconFactory
 const isValidAddress = require('ethereumjs-util').isValidAddress
 const { checksumAddress } = require('../app/util')
 const contractMap = require('eth-contract-metadata')
-const contractMapPOA = require('poa-contract-metadata')
 const colors = require('../../colors')
 
 module.exports = function (jazzicon) {
@@ -65,4 +64,3 @@ function jsNumberForAddress (address) {
   var seed = parseInt(addr, 16)
   return seed
 }
-

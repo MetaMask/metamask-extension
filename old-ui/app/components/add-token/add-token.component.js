@@ -3,8 +3,7 @@ const { Component } = React
 const h = require('react-hyperscript')
 const Tooltip = require('../tooltip.js')
 const TabBar = require('../tab-bar')
-// const { CONFIRM_ADD_TOKEN_ROUTE } = require('../../ui/app/routes')
-const { checkExistingAddresses } = require('../../../../ui/app/components/pages/add-token/util')
+const { checkExistingAddresses } = require('./util')
 const TokenList = require('./token-list')
 const TokenSearch = require('./token-search')
 const { tokenInfoGetter } = require('../../../../ui/app/token-util')
@@ -25,6 +24,7 @@ class AddTokenScreen extends Component {
   }
 
   static propTypes = {
+    goHome: PropTypes.func,
     setPendingTokens: PropTypes.func,
     pendingTokens: PropTypes.object,
     clearPendingTokens: PropTypes.func,
@@ -263,7 +263,7 @@ class AddTokenScreen extends Component {
        h(TokenSearch, {
         onSearch: ({ results = [] }) => this.setState({ searchResults: results }),
         error: tokenSelectorError,
-        network: network
+        network: network,
        }),
        h('.add-token__token-list', {
           style: {
@@ -275,6 +275,7 @@ class AddTokenScreen extends Component {
           h(TokenList, {
             results: searchResults,
             selectedTokens: selectedTokens,
+            network: network,
             onToggleToken: token => this.handleToggleToken(token),
           }),
         ]),
@@ -307,6 +308,22 @@ class AddTokenScreen extends Component {
   componentWillUnmount () {
     const { displayWarning } = this.props
     displayWarning('')
+  }
+
+  componentWillUpdate (nextProps) {
+    const {
+      network: oldNet,
+    } = this.props
+    const {
+      network: newNet,
+    } = nextProps
+
+    if (oldNet !== newNet) {
+      this.setState({
+        selectedTokens: {},
+        searchResults: [],
+      })
+    }
   }
 
   validateInputs () {

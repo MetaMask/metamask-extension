@@ -70,6 +70,10 @@ createCopyTasks('contractImages', {
   source: './node_modules/eth-contract-metadata/images/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/images/contract`),
 })
+createCopyTasks('contractImagesPOA', {
+  source: './node_modules/poa-contract-metadata/images/',
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/images/contractPOA`),
+})
 createCopyTasks('fonts', {
   source: './app/fonts/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/fonts`),
