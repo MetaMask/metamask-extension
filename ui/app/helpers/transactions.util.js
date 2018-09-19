@@ -20,13 +20,13 @@ import { addCurrencies } from '../conversion-util'
 
 abiDecoder.addABI(abi)
 
-export function getTokenData (data = {}) {
+export function getTokenData (data = '') {
   return abiDecoder.decodeMethod(data)
 }
 
 const registry = new MethodRegistry({ provider: global.ethereumProvider })
 
-export async function getMethodData (data = {}) {
+export async function getMethodData (data = '') {
   const prefixedData = ethUtil.addHexPrefix(data)
   const fourBytePrefix = prefixedData.slice(0, 10)
   const sig = await registry.lookup(fourBytePrefix)
