@@ -1,16 +1,13 @@
 const React = require('react')
 const { Component } = React
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const actions = require('../../ui/app/actions')
-const { setPendingTokens, clearPendingTokens, displayWarning, goHome, addToken } = actions
-const Tooltip = require('./components/tooltip.js')
-const TabBar = require('./components/tab-bar')
+const Tooltip = require('../tooltip.js')
+const TabBar = require('../tab-bar')
 // const { CONFIRM_ADD_TOKEN_ROUTE } = require('../../ui/app/routes')
-const { checkExistingAddresses } = require('../../ui/app/components/pages/add-token/util')
-const TokenList = require('../../ui/app/components/pages/add-token/token-list')
-const TokenSearch = require('../../ui/app/components/pages/add-token/token-search')
-const { tokenInfoGetter } = require('../../ui/app/token-util')
+const { checkExistingAddresses } = require('../../../../ui/app/components/pages/add-token/util')
+const TokenList = require('./token-list')
+const TokenSearch = require('./token-search')
+const { tokenInfoGetter } = require('../../../../ui/app/token-util')
 const ethUtil = require('ethereumjs-util')
 const abi = require('human-standard-token-abi')
 const Eth = require('ethjs-query')
@@ -21,26 +18,6 @@ const emptyAddr = '0x0000000000000000000000000000000000000000'
 const SEARCH_TAB = 'SEARCH'
 const CUSTOM_TOKEN_TAB = 'CUSTOM_TOKEN'
 
-const mapStateToProps = ({metamask}) => {
-  const { identities, tokens, pendingTokens, network } = metamask
-  return {
-    identities,
-    tokens,
-    network,
-    pendingTokens,
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setPendingTokens: tokens => dispatch(setPendingTokens(tokens)),
-    clearPendingTokens: () => dispatch(clearPendingTokens()),
-    displayWarning: (warn) => dispatch(displayWarning(warn)),
-    goHome: () => dispatch(goHome()),
-    addToken: (address, symbol, decimals, token) => dispatch(addToken(address, symbol, decimals, token)),
-  }
-}
-
 class AddTokenScreen extends Component {
 
   static contextTypes = {
@@ -48,11 +25,10 @@ class AddTokenScreen extends Component {
   }
 
   static propTypes = {
-    // history: PropTypes.object,
     setPendingTokens: PropTypes.func,
-    showConfirmAddTokenPage: PropTypes.func,
     pendingTokens: PropTypes.object,
     clearPendingTokens: PropTypes.func,
+    showConfirmAddTokensPage: PropTypes.func,
     displayWarning: PropTypes.func,
     tokens: PropTypes.array,
     identities: PropTypes.object,
@@ -311,7 +287,7 @@ class AddTokenScreen extends Component {
               goHome()
             },
           }, 'Cancel' /* this.context.t('cancel')*/),
-          h('button', {
+          h('button.btn-primary', {
             onClick: () => this.handleNext(),
             disabled: this.hasError() || !this.hasSelected(),
           }, 'Next' /* this.context.t('next')*/),
@@ -417,7 +393,7 @@ class AddTokenScreen extends Component {
       return
     }
 
-    const { setPendingTokens, network/* , history*/ } = this.props
+    const { setPendingTokens, network, showConfirmAddTokensPage } = this.props
     const {
       customAddress: address,
       customSymbol: symbol,
@@ -433,7 +409,7 @@ class AddTokenScreen extends Component {
     }
 
     setPendingTokens({ customToken, selectedTokens })
-    // history.push(CONFIRM_ADD_TOKEN_ROUTE)
+    showConfirmAddTokensPage()
   }
 
   attemptToAutoFillTokenParams = async (address) => {
@@ -515,4 +491,4 @@ class AddTokenScreen extends Component {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(AddTokenScreen)
+module.exports = AddTokenScreen

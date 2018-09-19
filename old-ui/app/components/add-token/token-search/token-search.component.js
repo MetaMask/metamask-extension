@@ -1,13 +1,26 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import contractMapETH from 'eth-contract-metadata'
-import contractMapPOA from 'poa-contract-metadata'
+import contractMap from 'eth-contract-metadata'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import TextField from '../../../text-field'
+import TextField from '../../../../../ui/app/components/text-field'
 
-let contractList
-let fuse
+const contractList = Object.entries(contractMap)
+  .map(([ _, tokenData]) => tokenData)
+  .filter(tokenData => Boolean(tokenData.erc20))
+
+const fuse = new Fuse(contractList, {
+  shouldSort: true,
+  threshold: 0.45,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: [
+    { name: 'name', weight: 0.5 },
+    { name: 'symbol', weight: 0.5 },
+  ],
+})
 
 export default class TokenSearch extends Component {
   static contextTypes = {
@@ -29,26 +42,6 @@ export default class TokenSearch extends Component {
     this.state = {
       searchQuery: '',
     }
-
-    const networkID = parseInt(props.network)
-    const contractMap = networkID === 1 ? contractMapETH : contractMapPOA
-
-    contractList = Object.entries(contractMap)
-      .map(([ _, tokenData]) => tokenData)
-      .filter(tokenData => Boolean(tokenData.erc20))
-
-    fuse = new Fuse(contractList, {
-      shouldSort: true,
-      threshold: 0.45,
-      location: 0,
-      distance: 100,
-      maxPatternLength: 32,
-      minMatchCharLength: 1,
-      keys: [
-        { name: 'name', weight: 0.5 },
-        { name: 'symbol', weight: 0.5 },
-      ],
-    })
   }
 
   handleSearch (searchQuery) {
@@ -79,7 +72,7 @@ export default class TokenSearch extends Component {
     return (
       <TextField
         id="search-tokens"
-        placeholder={this.context.t('searchTokens')}
+        placeholder={'Search Tokens' /* this.context.t('searchTokens')*/}
         type="text"
         value={searchQuery}
         onChange={e => this.handleSearch(e.target.value)}

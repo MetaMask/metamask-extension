@@ -224,7 +224,7 @@ var actions = {
   SHOW_CONFIRM_ADD_TOKEN_PAGE: 'SHOW_CONFIRM_ADD_TOKEN_PAGE',
   SHOW_REMOVE_TOKEN_PAGE: 'SHOW_REMOVE_TOKEN_PAGE',
   showAddTokenPage,
-  showConfirmAddTokenPage,
+  showConfirmAddTokensPage,
   showRemoveTokenPage,
   addToken,
   addTokens,
@@ -1590,7 +1590,7 @@ function showAddTokenPage (transitionForward = true) {
   }
 }
 
-function showConfirmAddTokenPage (transitionForward = true) {
+function showConfirmAddTokensPage (transitionForward = true) {
   return {
     type: actions.SHOW_CONFIRM_ADD_TOKEN_PAGE,
     value: transitionForward,

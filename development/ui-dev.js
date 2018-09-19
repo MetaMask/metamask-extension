@@ -34,7 +34,7 @@ let selectedView = queryString.view || 'first time'
 updateQueryParams(selectedView)
 
 // CSS
-const MetaMaskUiCss = require('../ui/css')
+const MetaMaskUiCss = require('../old-ui/css')
 const injectCss = require('inject-css')
 
 

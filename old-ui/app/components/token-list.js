@@ -120,7 +120,7 @@ TokenList.prototype.renderTokenStatusBar = function () {
     },
   }, [
     h('span', msg),
-    h('button', {
+    h('button.btn-primary.wallet-view__add-token-button', {
       key: 'reveal-account-bar',
       onClick: (event) => {
         event.preventDefault()
