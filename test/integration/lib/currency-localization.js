@@ -21,9 +21,11 @@ async function runCurrencyLocalizationTest (assert, done) {
   selectState.val('currency localization')
   await timeout(1000)
   reactTriggerChange(selectState[0])
-  await timeout(1000)
-  const txView = await queryAsync($, '.tx-view')
-  const heroBalance = await findAsync($(txView), '.hero-balance')
-  const fiatAmount = await findAsync($(heroBalance), '.fiat-amount')
-  assert.equal(fiatAmount[0].textContent, '₱102,707.97')
+
+  const balance = await queryAsync($, '.ether-balance.ether-balance-amount')
+  const ethBalance = (await findAsync(balance, '.flex-row'))[0]
+  const fiatAmount = (await findAsync(balance, '.flex-row'))[1]
+  assert.equal(ethBalance.textContent, '5.172ETH', 'eth balance rendered')
+  assert.equal(fiatAmount.textContent, '102707.97PHP', 'fiat balance rendered')
+
 }
