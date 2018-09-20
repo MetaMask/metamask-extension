@@ -8,6 +8,8 @@ const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 
+const tokenCellDropDownPrefix = 'token-cell_dropdown_'
+
 module.exports = TokenCell
 
 inherits(TokenCell, Component)
@@ -21,11 +23,11 @@ function TokenCell () {
 }
 
 TokenCell.prototype.render = function () {
-  const { address, symbol, string, network, userAddress, isLastTokenCell, menuToTop } = this.props
+  const { address, symbol, string, network, userAddress, isLastTokenCell, menuToTop, ind } = this.props
   const { optionsMenuActive } = this.state
 
   return (
-    h('li.token-cell', {
+    h(`li#token-cell_${ind}.token-cell`, {
       style: {
         cursor: network === '1' ? 'pointer' : 'default',
         borderBottom: isLastTokenCell ? 'none' : '1px solid #e2e2e2',
@@ -50,7 +52,7 @@ TokenCell.prototype.render = function () {
 
       h('span', { style: { flex: '1 0 auto' } }),
 
-      h('div.address-dropdown.token-dropdown',
+      h(`div#${tokenCellDropDownPrefix}${ind}.address-dropdown.token-dropdown`,
         {
           style: { cursor: 'pointer' },
           onClick: (event) => {
@@ -60,7 +62,7 @@ TokenCell.prototype.render = function () {
             })
           },
         },
-        this.renderTokenOptions(menuToTop)
+        this.renderTokenOptions(menuToTop, ind)
       ),
 
       /*
@@ -73,7 +75,7 @@ TokenCell.prototype.render = function () {
   )
 }
 
-TokenCell.prototype.renderTokenOptions = function (menuToTop) {
+TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
   const { address, symbol, string, network, userAddress } = this.props
   const { optionsMenuActive } = this.state
 
@@ -89,9 +91,10 @@ TokenCell.prototype.renderTokenOptions = function (menuToTop) {
       },
       isOpen: optionsMenuActive,
       onClickOutside: (event) => {
-        const { classList } = event.target
-        const isNotToggleElement = !classList.contains(this.optionsMenuToggleClassName)
-        if (optionsMenuActive && isNotToggleElement) {
+        const { classList, id: targetID } = event.target
+        const isNotToggleCell = !classList.contains(this.optionsMenuToggleClassName)
+        const isAnotherCell = targetID !== `${tokenCellDropDownPrefix}${ind}`
+        if (optionsMenuActive && (isNotToggleCell || (!isNotToggleCell && isAnotherCell))) {
           this.setState({ optionsMenuActive: false })
         }
       },

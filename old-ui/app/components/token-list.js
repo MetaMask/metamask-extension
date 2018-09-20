@@ -52,14 +52,10 @@ TokenList.prototype.render = function () {
 
   const tokenViews = tokensFromCurrentNetwork.map((tokenData, ind) => {
     tokenData.userAddress = userAddress
-    const isPenultimateTokenCell = ind === (tokensFromCurrentNetwork.length - 2)
     const isLastTokenCell = ind === (tokensFromCurrentNetwork.length - 1)
-    const multipleTokens = tokensFromCurrentNetwork.length > 1
-    const more2Tokens = tokensFromCurrentNetwork.length > 2
-    const last2Tokens = more2Tokens && (isLastTokenCell || isPenultimateTokenCell)
-    const last1Token = !more2Tokens && isLastTokenCell
-    const menuToTop = multipleTokens && (last1Token || last2Tokens)
+    const menuToTop = true
     return h(TokenCell, {
+      ind,
       ...tokenData,
       isLastTokenCell,
       menuToTop,
@@ -72,7 +68,6 @@ TokenList.prototype.render = function () {
 
     h('ol.full-flex-height.flex-column', {
       style: {
-        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
       },
