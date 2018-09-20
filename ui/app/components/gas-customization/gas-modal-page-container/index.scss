@@ -3,7 +3,8 @@
 
 .gas-modal-page-container {
   .page-container {
-    width: 391px;
+    max-width: 391px;
+    min-height: 585px;
 
     &__header {
       padding: 0px;

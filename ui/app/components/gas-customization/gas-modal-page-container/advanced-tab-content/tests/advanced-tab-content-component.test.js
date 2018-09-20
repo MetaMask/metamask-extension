@@ -54,7 +54,9 @@ describe('AdvancedTabContent Component', function () {
       const feeChartDiv = advancedTabChildren.at(1)
 
       assert(feeChartDiv.childAt(0).hasClass('advanced-tab__gas-edit-rows'))
-      assert(feeChartDiv.childAt(1).is(GasPriceChart))
+      assert(feeChartDiv.childAt(1).hasClass('advanced-tab__fee-chart__title'))
+      assert(feeChartDiv.childAt(2).is(GasPriceChart))
+      assert(feeChartDiv.childAt(3).hasClass('advanced-tab__fee-chart__speed-buttons'))
     })
 
     it('should call renderDataSummary with the expected params', () => {
