@@ -4,6 +4,7 @@ import sinon from 'sinon'
 
 let mapStateToProps
 let mapDispatchToProps
+let mergeProps
 
 const actionSpies = {
   hideModal: sinon.spy(),
@@ -20,11 +21,16 @@ const confirmTransactionActionSpies = {
   updateGasAndCalculate: sinon.spy(),
 }
 
+const sendActionSpies = {
+  hideGasButtonGroup: sinon.spy(),
+}
+
 proxyquire('../gas-modal-page-container.container.js', {
   'react-redux': {
-    connect: (ms, md) => {
+    connect: (ms, md, mp) => {
       mapStateToProps = ms
       mapDispatchToProps = md
+      mergeProps = mp
       return () => ({})
     },
   },
@@ -36,6 +42,7 @@ proxyquire('../gas-modal-page-container.container.js', {
   '../../../actions': actionSpies,
   '../../../ducks/gas.duck': gasActionSpies,
   '../../../ducks/confirm-transaction.duck': confirmTransactionActionSpies,
+  '../../../ducks/send.duck': sendActionSpies,
 })
 
 describe('gas-modal-page-container container', () => {
@@ -44,6 +51,15 @@ describe('gas-modal-page-container container', () => {
 
     it('should map the correct properties to props', () => {
       const mockState2 = {
+        appState: {
+          modal: {
+            modalState: {
+              props: {
+                hideBasic: true,
+              },
+            },
+          },
+        },
         metamask: {
           send: {
             gasLimit: '16',
@@ -80,10 +96,11 @@ describe('gas-modal-page-container container', () => {
         newTotalFiat: '637.41',
         gasPriceButtonGroupProps:
         {
-          buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:3',
-          defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:3ffffffff0x3200000',
-          gasButtonInfo: 'mockRenderableBasicEstimateData:3',
+          buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:4',
+          defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:4ffffffff0x3200000',
+          gasButtonInfo: 'mockRenderableBasicEstimateData:4',
         },
+        hideBasic: true,
         infoRowProps: {
           originalTotalFiat: '22.58',
           originalTotalEth: '0.451569 ETH',
@@ -108,6 +125,14 @@ describe('gas-modal-page-container container', () => {
       actionSpies.hideModal.resetHistory()
       gasActionSpies.setCustomGasPrice.resetHistory()
       gasActionSpies.setCustomGasLimit.resetHistory()
+    })
+
+    describe('hideGasButtonGroup()', () => {
+      it('should dispatch a hideGasButtonGroup action', () => {
+        mapDispatchToPropsObject.hideGasButtonGroup()
+        assert(dispatchSpy.calledOnce)
+        assert(sendActionSpies.hideGasButtonGroup.calledOnce)
+      })
     })
 
     describe('hideModal()', () => {
@@ -166,6 +191,87 @@ describe('gas-modal-page-container container', () => {
       })
     })
 
+  })
+
+  describe('mergeProps', () => {
+      let stateProps
+      let dispatchProps
+      let ownProps
+
+      beforeEach(() => {
+        stateProps = {
+          gasPriceButtonGroupProps: {
+            someGasPriceButtonGroupProp: 'foo',
+            anotherGasPriceButtonGroupProp: 'bar',
+          },
+          isConfirm: true,
+          someOtherStateProp: 'baz',
+        }
+        dispatchProps = {
+          updateCustomGasPrice: sinon.spy(),
+          hideGasButtonGroup: sinon.spy(),
+          setGasData: sinon.spy(),
+          updateConfirmTxGasAndCalculate: sinon.spy(),
+          someOtherDispatchProp: sinon.spy(),
+        }
+        ownProps = { someOwnProp: 123 }
+      })
+    it('should return the expected props when isConfirm is true', () => {
+      const result = mergeProps(stateProps, dispatchProps, ownProps)
+
+      assert.equal(result.isConfirm, true)
+      assert.equal(result.someOtherStateProp, 'baz')
+      assert.equal(result.gasPriceButtonGroupProps.someGasPriceButtonGroupProp, 'foo')
+      assert.equal(result.gasPriceButtonGroupProps.anotherGasPriceButtonGroupProp, 'bar')
+      assert.equal(result.someOwnProp, 123)
+
+      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
+      assert.equal(dispatchProps.setGasData.callCount, 0)
+      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
+
+      result.onSubmit()
+
+      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 1)
+      assert.equal(dispatchProps.setGasData.callCount, 0)
+      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
+
+      assert.equal(dispatchProps.updateCustomGasPrice.callCount, 0)
+      result.gasPriceButtonGroupProps.handleGasPriceSelection()
+      assert.equal(dispatchProps.updateCustomGasPrice.callCount, 1)
+
+      assert.equal(dispatchProps.someOtherDispatchProp.callCount, 0)
+      result.someOtherDispatchProp()
+      assert.equal(dispatchProps.someOtherDispatchProp.callCount, 1)
+    })
+
+    it('should return the expected props when isConfirm is false', () => {
+      const result = mergeProps(Object.assign({}, stateProps, { isConfirm: false }), dispatchProps, ownProps)
+
+      assert.equal(result.isConfirm, false)
+      assert.equal(result.someOtherStateProp, 'baz')
+      assert.equal(result.gasPriceButtonGroupProps.someGasPriceButtonGroupProp, 'foo')
+      assert.equal(result.gasPriceButtonGroupProps.anotherGasPriceButtonGroupProp, 'bar')
+      assert.equal(result.someOwnProp, 123)
+
+      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
+      assert.equal(dispatchProps.setGasData.callCount, 0)
+      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
+
+      result.onSubmit('mockNewLimit', 'mockNewPrice')
+
+      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
+      assert.equal(dispatchProps.setGasData.callCount, 1)
+      assert.deepEqual(dispatchProps.setGasData.getCall(0).args, ['mockNewLimit', 'mockNewPrice'])
+      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 1)
+
+      assert.equal(dispatchProps.updateCustomGasPrice.callCount, 0)
+      result.gasPriceButtonGroupProps.handleGasPriceSelection()
+      assert.equal(dispatchProps.updateCustomGasPrice.callCount, 1)
+
+      assert.equal(dispatchProps.someOtherDispatchProp.callCount, 0)
+      result.someOtherDispatchProp()
+      assert.equal(dispatchProps.someOtherDispatchProp.callCount, 1)
+    })
   })
 
 })

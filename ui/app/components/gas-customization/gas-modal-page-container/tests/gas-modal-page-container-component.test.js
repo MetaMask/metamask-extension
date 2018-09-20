@@ -161,6 +161,19 @@ describe('GasModalPageContainer Component', function () {
       assert.deepEqual(GP.renderInfoRows.getCall(0).args, ['mockOriginalTotalFiat', 'mockOriginalTotalEth', 'mockNewTotalFiat', 'mockNewTotalEth'])
       assert.deepEqual(GP.renderInfoRows.getCall(1).args, ['mockOriginalTotalFiat', 'mockOriginalTotalEth', 'mockNewTotalFiat', 'mockNewTotalEth'])
     })
+
+    it('should not render the basic tab if hideBasic is true', () => {
+      const renderTabsResult = wrapper.instance().renderTabs(mockInfoRowProps, {
+        gasPriceButtonGroupProps: mockGasPriceButtonGroupProps,
+        otherProps: 'mockAdvancedTabProps',
+        hideBasic: true,
+      })
+
+      const renderedTabs = shallow(renderTabsResult)
+      const tabs = renderedTabs.find(Tab)
+      assert.equal(tabs.length, 1)
+      assert.equal(tabs.at(0).props().name, 'advanced')
+    })
   })
 
   describe('renderInfoRow', () => {

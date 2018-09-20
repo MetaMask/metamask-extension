@@ -65,6 +65,9 @@
   "address": {
     "message": "Address"
   },
+  "advancedOptions": {
+    "message": "Advanced Options"
+  },
   "addCustomToken": {
     "message": "Add custom token"
   },

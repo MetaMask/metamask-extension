@@ -13,6 +13,9 @@ export default class SendGasRow extends Component {
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
     showCustomizeGasModal: PropTypes.func,
+    gasPriceButtonGroupProps: PropTypes.object,
+    showGasButtonGroup: PropTypes.func,
+    gasButtonGroupShown: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -29,7 +32,7 @@ export default class SendGasRow extends Component {
       showCustomizeGasModal,
       gasPriceButtonGroupProps,
       gasButtonGroupShown,
-      showGasButtonGroup
+      showGasButtonGroup,
     } = this.props
 
     return (
@@ -43,10 +46,10 @@ export default class SendGasRow extends Component {
             <GasPriceButtonGroup
               className="gas-price-button-group--small"
               showCheck={false}
-              {...this.props.gasPriceButtonGroupProps}
+              {...gasPriceButtonGroupProps}
             />
             <div className="advanced-gas-options-btn" onClick={() => showCustomizeGasModal()}>
-              Advanced Options
+              { this.context.t('advancedOptions') }
             </div>
           </div>
         : <GasFeeDisplay

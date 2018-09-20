@@ -5,13 +5,13 @@ import {
   getGasTotal,
   getGasPrice,
 } from '../../send.selectors.js'
-import{
+import {
   getBasicGasEstimateLoadingStatus,
   getRenderableEstimateDataForSmallButtons,
-  getDefaultActiveButtonIndex
+  getDefaultActiveButtonIndex,
 } from '../../../../selectors/custom-gas'
-import{
-  showGasButtonGroup
+import {
+  showGasButtonGroup,
 } from '../../../../ducks/send.duck'
 import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice } from '../../../../actions'
@@ -43,7 +43,7 @@ function mapDispatchToProps (dispatch) {
   return {
     showCustomizeGasModal: () => dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
     setGasPrice: newPrice => dispatch(setGasPrice(newPrice)),
-    showGasButtonGroup: () => dispatch(showGasButtonGroup())
+    showGasButtonGroup: () => dispatch(showGasButtonGroup()),
   }
 }
 
