@@ -9,6 +9,7 @@ export default class PageContainer extends PureComponent {
     // PageContainerHeader props
     backButtonString: PropTypes.string,
     backButtonStyles: PropTypes.object,
+    headerCloseText: PropTypes.string,
     onBackButtonClick: PropTypes.func,
     onClose: PropTypes.func,
     showBackButton: PropTypes.bool,
@@ -22,6 +23,7 @@ export default class PageContainer extends PureComponent {
     // PageContainerFooter props
     cancelText: PropTypes.string,
     disabled: PropTypes.bool,
+    hideCancel: PropTypes.string,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     submitText: PropTypes.string,
@@ -93,6 +95,8 @@ export default class PageContainer extends PureComponent {
       onSubmit,
       submitText,
       disabled,
+      headerCloseText,
+      hideCancel,
     } = this.props
 
     return (
@@ -106,6 +110,7 @@ export default class PageContainer extends PureComponent {
           backButtonStyles={backButtonStyles}
           backButtonString={backButtonString}
           tabs={this.renderTabs()}
+          headerCloseText={headerCloseText}
         />
         <div className="page-container__content">
           { this.renderContent() }
@@ -113,6 +118,7 @@ export default class PageContainer extends PureComponent {
         <PageContainerFooter
           onCancel={onCancel}
           cancelText={cancelText}
+          hideCancel={hideCancel}
           onSubmit={onSubmit}
           submitText={submitText}
           disabled={disabled}

@@ -9,6 +9,7 @@ import {
 import {
   setCustomGasPrice,
   setCustomGasLimit,
+  resetCustomData,
 } from '../../../ducks/gas.duck'
 import {
   hideGasButtonGroup,
@@ -48,12 +49,12 @@ import { addHexPrefix } from 'ethereumjs-util'
 
 const mapStateToProps = state => {
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
-  const { gasPrice, gas: gasLimit, value } = getTxParams(state)
-  const gasTotal = calcGasTotal(gasLimit, gasPrice)
+  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state)
+  const gasTotal = calcGasTotal(currentGasLimit, currentGasPrice)
 
-  const customGasPriceInHex = getCustomGasPrice(state)
-  const customGasLimitInHex = getCustomGasLimit(state)
-  const customGasTotal = calcGasTotal(customGasLimitInHex || gasLimit, customGasPriceInHex || gasPrice)
+  const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
+  const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit
+  const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
 
   const gasButtonInfo = getRenderableBasicEstimateData(state)
 
@@ -67,14 +68,14 @@ const mapStateToProps = state => {
   return {
     hideBasic,
     isConfirm: isConfirm(state),
-    customGasPriceInHex,
-    customGasLimitInHex,
-    customGasPrice: calcCustomGasPrice(customGasPriceInHex, gasPrice),
-    customGasLimit: calcCustomGasLimit(customGasLimitInHex, gasLimit),
+    customModalGasPriceInHex,
+    customModalGasLimitInHex,
+    customGasPrice: calcCustomGasPrice(customModalGasPriceInHex),
+    customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     newTotalFiat,
     gasPriceButtonGroupProps: {
       buttonDataLoading,
-      defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customGasPriceInHex, gasPrice),
+      defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),
       gasButtonInfo,
     },
     infoRowProps: {
@@ -82,6 +83,8 @@ const mapStateToProps = state => {
       originalTotalEth: addHexWEIsToRenderableEth(value, gasTotal),
       newTotalFiat,
       newTotalEth: addHexWEIsToRenderableEth(value, customGasTotal),
+      transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
+      sendAmount: addHexWEIsToRenderableEth(value, '0x0'),
     },
   }
 }
@@ -90,7 +93,10 @@ const mapDispatchToProps = dispatch => {
   const updateCustomGasPrice = newPrice => dispatch(setCustomGasPrice(addHexPrefix(newPrice)))
 
   return {
-    hideModal: () => dispatch(hideModal()),
+    cancelAndClose: () => {
+      dispatch(resetCustomData())
+      dispatch(hideModal())
+    },
     updateCustomGasPrice,
     convertThenUpdateCustomGasPrice: newPrice => updateCustomGasPrice(decGWEIToHexWEI(newPrice)),
     convertThenUpdateCustomGasLimit: newLimit => dispatch(setCustomGasLimit(addHexPrefix(newLimit.toString(16)))),
@@ -138,12 +144,12 @@ function isConfirm (state) {
   return Boolean(Object.keys(state.confirmTransaction.txData).length)
 }
 
-function calcCustomGasPrice (customGasPriceInHex, gasPrice) {
-  return Number(hexWEIToDecGWEI(customGasPriceInHex || gasPrice))
+function calcCustomGasPrice (customGasPriceInHex) {
+  return Number(hexWEIToDecGWEI(customGasPriceInHex))
 }
 
-function calcCustomGasLimit (customGasLimitInHex, gasLimit) {
-  return parseInt(customGasLimitInHex || gasLimit, 16)
+function calcCustomGasLimit (customGasLimitInHex) {
+  return parseInt(customGasLimitInHex, 16)
 }
 
 function getTxParams (state) {
