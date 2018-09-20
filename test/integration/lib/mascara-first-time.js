@@ -88,10 +88,11 @@ async function runFirstTimeUsageTest (assert, done) {
 
   await nativeInputValueSetter.call(pwBox2, PASSWORD)
   await pwBox2.dispatchEvent(new Event('input', { bubbles: true}))
-  await timeout(1000)
-  const createButton2 = (await findAsync($, 'button[type="submit"]'))[0]
-  await createButton2.click()
-  await timeout(1000)
+
+  const createButton2 = (await findAsync(app, '.MuiButtonBase-root-91.MuiButton-root-75.MuiButton-raised-81.MuiButton-sizeLarge-89.MuiButton-fullWidth-90'))
+  await createButton2[0].click()
+  await timeout(10000)
+  await createButton2[0].click()
   const detail2 = (await findAsync($, '.wallet-view'))[0]
   assert.ok(detail2, 'Account detail section loaded again.')
 
