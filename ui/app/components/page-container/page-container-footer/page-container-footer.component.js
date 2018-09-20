@@ -30,7 +30,7 @@ export default class PageContainerFooter extends Component {
     this.nextBtnRef = e
   }
 
-  componentDidMount () {
+  componentDidUpdate () {
     if (this.nextBtnRef) {
       this.nextBtnRef.scrollIntoView()
     }
