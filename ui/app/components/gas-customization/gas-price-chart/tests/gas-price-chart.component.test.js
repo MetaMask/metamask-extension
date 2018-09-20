@@ -17,7 +17,7 @@ describe('GasPriceChart Component', function () {
     })
 
     it('should render the chart div', () => {
-      assert(wrapper.childAt(0).hasClass('gas-price-chart__container'))
+      assert(wrapper.childAt(0).hasClass('gas-price-chart__root'))
       assert.equal(wrapper.childAt(0).props().id, 'chart')
     })
   })
