@@ -116,6 +116,9 @@
   "cancel": {
     "message": "Cancel"
   },
+  "cancelAll": {
+    "message": "Cancel All"
+  },
   "classicInterface": {
     "message": "Use classic interface"
   },

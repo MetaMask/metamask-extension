@@ -42,6 +42,7 @@ export default class ConfirmPageContainer extends Component {
     summaryComponent: PropTypes.node,
     warning: PropTypes.string,
     // Footer
+    onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     disabled: PropTypes.bool,
@@ -67,6 +68,7 @@ export default class ConfirmPageContainer extends Component {
       summaryComponent,
       detailsComponent,
       dataComponent,
+      onCancelAll,
       onCancel,
       onSubmit,
       identiconAddress,
@@ -111,8 +113,10 @@ export default class ConfirmPageContainer extends Component {
           )
         }
         <PageContainerFooter
+          onAlternate={() => onCancelAll()}
           onCancel={() => onCancel()}
           onSubmit={() => onSubmit()}
+          alternateText={this.context.t('cancelAll')}
           submitText={this.context.t('confirm')}
           submitButtonType="confirm"
           disabled={disabled}
