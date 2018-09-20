@@ -4,6 +4,7 @@ import { clone } from 'ramda'
 const BASIC_GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'
 const BASIC_GAS_ESTIMATE_LOADING_STARTED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_STARTED'
 const RESET_CUSTOM_GAS_STATE = 'metamask/gas/RESET_CUSTOM_GAS_STATE'
+const RESET_CUSTOM_DATA = 'metamask/gas/RESET_CUSTOM_DATA'
 const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA'
 const SET_CUSTOM_GAS_ERRORS = 'metamask/gas/SET_CUSTOM_GAS_ERRORS'
 const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT'
@@ -84,6 +85,11 @@ export default function reducer ({ gas: gasState = initState }, action = {}) {
           ...newState.errors,
           ...action.value,
         },
+      }
+    case RESET_CUSTOM_DATA:
+      return {
+        ...newState,
+        customData: clone(initState.customData),
       }
     case RESET_CUSTOM_GAS_STATE:
       return clone(initState)
@@ -186,4 +192,8 @@ export function setCustomGasErrors (newErrors) {
 
 export function resetCustomGasState () {
   return { type: RESET_CUSTOM_GAS_STATE }
+}
+
+export function resetCustomData () {
+  return { type: RESET_CUSTOM_DATA }
 }

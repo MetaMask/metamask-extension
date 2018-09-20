@@ -4,7 +4,7 @@ import shallow from '../../../../../../lib/shallow-with-context'
 import sinon from 'sinon'
 import AdvancedTabContent from '../advanced-tab-content.component.js'
 
-import TimeRemaining from '../time-remaining'
+import GasPriceChart from '../../../gas-price-chart'
 
 const propsMethodSpies = {
   updateCustomGasPrice: sinon.spy(),
@@ -13,6 +13,8 @@ const propsMethodSpies = {
 
 sinon.spy(AdvancedTabContent.prototype, 'renderGasEditRow')
 sinon.spy(AdvancedTabContent.prototype, 'gasInput')
+sinon.spy(AdvancedTabContent.prototype, 'renderGasEditRows')
+sinon.spy(AdvancedTabContent.prototype, 'renderDataSummary')
 
 describe('AdvancedTabContent Component', function () {
   let wrapper
@@ -23,7 +25,7 @@ describe('AdvancedTabContent Component', function () {
       updateCustomGasLimit={propsMethodSpies.updateCustomGasLimit}
       customGasPrice={11}
       customGasLimit={23456}
-      millisecondsRemaining={21500}
+      timeRemaining={21500}
       totalFee={'$0.25'}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
@@ -31,6 +33,10 @@ describe('AdvancedTabContent Component', function () {
   afterEach(() => {
     propsMethodSpies.updateCustomGasPrice.resetHistory()
     propsMethodSpies.updateCustomGasLimit.resetHistory()
+    AdvancedTabContent.prototype.renderGasEditRow.resetHistory()
+    AdvancedTabContent.prototype.gasInput.resetHistory()
+    AdvancedTabContent.prototype.renderGasEditRows.resetHistory()
+    AdvancedTabContent.prototype.renderDataSummary.resetHistory()
   })
 
   describe('render()', () => {
@@ -40,12 +46,31 @@ describe('AdvancedTabContent Component', function () {
 
     it('should render the expected four children of the advanced-tab div', () => {
       const advancedTabChildren = wrapper.children()
-      assert.equal(advancedTabChildren.length, 4)
+      assert.equal(advancedTabChildren.length, 2)
 
       assert(advancedTabChildren.at(0).hasClass('advanced-tab__transaction-data-summary'))
-      assert(advancedTabChildren.at(1).hasClass('advanced-tab__fee-chart-title'))
-      assert(advancedTabChildren.at(2).hasClass('advanced-tab__fee-chart'))
-      assert(advancedTabChildren.at(3).hasClass('advanced-tab__gas-edit-rows'))
+      assert(advancedTabChildren.at(1).hasClass('advanced-tab__fee-chart'))
+
+      const feeChartDiv = advancedTabChildren.at(1)
+
+      assert(feeChartDiv.childAt(0).hasClass('advanced-tab__gas-edit-rows'))
+      assert(feeChartDiv.childAt(1).is(GasPriceChart))
+    })
+
+    it('should call renderDataSummary with the expected params', () => {
+      assert.equal(AdvancedTabContent.prototype.renderGasEditRows.callCount, 1)
+      const renderDataSummaryArgs = AdvancedTabContent.prototype.renderDataSummary.getCall(0).args
+      assert.deepEqual(renderDataSummaryArgs, ['$0.25', 21500])
+
+      assert.equal(AdvancedTabContent.prototype.renderGasEditRows.callCount, 1)
+      const renderGasEditRowArgs = AdvancedTabContent.prototype.renderGasEditRows.getCall(0).args
+      assert.deepEqual(renderGasEditRowArgs, [
+        11, propsMethodSpies.updateCustomGasPrice, 23456, propsMethodSpies.updateCustomGasLimit,
+      ])
+    })
+
+    it('should call renderGasEditRows with the expected params', () => {
+
     })
   })
 
@@ -71,8 +96,8 @@ describe('AdvancedTabContent Component', function () {
       const dataNode = dataSummary.children().at(1)
       assert(dataNode.hasClass('advanced-tab__transaction-data-summary__container'))
       assert.equal(dataNode.children().at(0).text(), 'mockTotalFee')
-      assert(dataNode.children().at(1).is(TimeRemaining))
-      assert.equal(dataNode.children().at(1).props().milliseconds, 'mockMsRemaining')
+      assert(dataNode.children().at(1).hasClass('time-remaining'))
+      assert.equal(dataNode.children().at(1).text(), 'mockMsRemaining')
     })
   })
 
@@ -138,7 +163,7 @@ describe('AdvancedTabContent Component', function () {
       const renderGasEditRowSpyArgs = AdvancedTabContent.prototype.renderGasEditRow.args
       assert.equal(renderGasEditRowSpyArgs.length, 2)
       assert.deepEqual(renderGasEditRowSpyArgs[0].map(String), [
-        'gasPriceNoDenom', 'mockGasPrice', () => 'mockUpdateCustomGasPriceReturn', 'mockGasPrice', 9, true,
+        'gasPrice', 'mockGasPrice', () => 'mockUpdateCustomGasPriceReturn', 'mockGasPrice', 9, true,
       ].map(String))
       assert.deepEqual(renderGasEditRowSpyArgs[1].map(String), [
         'gasLimit', 'mockGasLimit', () => 'mockUpdateCustomGasLimitReturn', 'mockGasLimit', 0,
@@ -184,19 +209,6 @@ describe('AdvancedTabContent Component', function () {
     it('should render an input, but not a GWEI symbol', () => {
       assert.equal(gasInput.children().length, 1)
       assert(gasInput.children().at(0).hasClass('advanced-tab__gas-edit-row__input'))
-    })
-
-    it('should show GWEI if the showGWEI prop is truthy', () => {
-      const gasInputWithGWEI = shallow(wrapper.instance().gasInput(
-        321,
-        value => value + 7,
-        0,
-        8,
-        true
-      ))
-      assert.equal(gasInputWithGWEI.children().length, 2)
-      assert(gasInputWithGWEI.children().at(0).hasClass('advanced-tab__gas-edit-row__input'))
-      assert(gasInputWithGWEI.children().at(1).hasClass('advanced-tab__gas-edit-row__gwei-symbol'))
     })
 
     it('should pass the correct value min and precision props to the input', () => {
