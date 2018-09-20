@@ -43,7 +43,7 @@ async function runAddTokenFlowTest (assert, done) {
   const cancelAddTokenButton = await queryAsync($, 'button.btn-violet')
   assert.ok(cancelAddTokenButton[0], 'cancel add token button present')
   await cancelAddTokenButton.click()
-  assert.ok((await queryAsync($,'.identicon-wrapper'))[0], 'cancelled and returned to account detail wallet view')
+  assert.ok((await queryAsync($, '.identicon-wrapper'))[0], 'cancelled and returned to account detail wallet view')
 
   // Return to Add Token Screen
   addTokenButton = await queryAsync($, 'button.btn-primary.wallet-view__add-token-button')
@@ -62,11 +62,11 @@ async function runAddTokenFlowTest (assert, done) {
   await customAddress.dispatchEvent(new Event('input', { bubbles: true }))
   const buttonAdd = await queryAsync($, '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div.flex-space-around > div:nth-child(7) > button:nth-child(2)')
 
-  assert.ok(buttonAdd[0],'add button rendered')
+  assert.ok(buttonAdd[0], 'add button rendered')
   await buttonAdd[0].click()
 
   // Verify contract  error since contract address is invalid
-  let errorMessage = await queryAsync($, '.error')
+  const errorMessage = await queryAsync($, '.error')
   assert.ok(errorMessage[0], 'error rendered')
 
   // Input valid token contract address
@@ -97,5 +97,5 @@ async function runAddTokenFlowTest (assert, done) {
   await buttonAdd[0].click()
 
   // check if main screen
-  assert.ok((await queryAsync($,'.identicon-wrapper'))[0], 'returned to account detail wallet view')
+  assert.ok((await queryAsync($, '.identicon-wrapper'))[0], 'returned to account detail wallet view')
 }

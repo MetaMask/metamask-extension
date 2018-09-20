@@ -273,5 +273,5 @@ module.exports = {
     RINKEBY: 'rinkeby',
     LOCALHOST: 'localhost',
     CUSTOM: 'http://test.com',
-  }
+  },
 }
