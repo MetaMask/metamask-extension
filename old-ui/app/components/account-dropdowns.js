@@ -177,17 +177,14 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountOptions () {
-    const { actions, network } = this.props
+    const { actions } = this.props
     const { optionsMenuActive } = this.state
-
-    const isSokol = parseInt(network) === 77
-    const isPOA = parseInt(network) === 99
-    const explorerStr = (isSokol || isPOA) ? 'POA explorer' : 'Etherscan'
 
     return h(
       Dropdown,
       {
         style: {
+          position: 'relative',
           marginLeft: '-234px',
           minWidth: '180px',
           marginTop: '30px',
@@ -213,7 +210,7 @@ class AccountDropdowns extends Component {
               global.platform.openWindow({ url })
             },
           },
-          `View account on ${explorerStr}`,
+          `View on block explorer`,
         ),
         h(
           DropdownMenuItem,
@@ -237,7 +234,7 @@ class AccountDropdowns extends Component {
               copyToClipboard(checkSumAddress)
             },
           },
-          'Copy Address to clipboard',
+          'Copy address to clipboard',
         ),
         h(
           DropdownMenuItem,
@@ -283,15 +280,8 @@ class AccountDropdowns extends Component {
           this.renderAccountSelector(),
         ),
         enableAccountOptions && h(
-          'div.account-dropdown',
+          'div.address-dropdown.account-dropdown',
           {
-            style: {
-              backgroundImage: 'url(../images/more.svg)',
-              width: '30px',
-              height: '24px',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-            },
             onClick: (event) => {
               event.stopPropagation()
               this.setState({

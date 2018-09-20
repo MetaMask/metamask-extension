@@ -20,7 +20,6 @@ function DeleteImportedAccount () {
 }
 
 DeleteImportedAccount.prototype.render = function () {
-  console.log('this.props:', this.props)
   return h('.flex-column.flex-grow', {
     style: {
       overflowX: 'auto',

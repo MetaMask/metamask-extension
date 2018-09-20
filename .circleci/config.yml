@@ -96,7 +96,7 @@ workflows:
 jobs:
   prep-deps-npm:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -104,14 +104,14 @@ jobs:
     - run:
         name: Install npm 6 + deps via npm
         command: |
-          sudo npm install -g npm@6.1.0 && npm install --no-save
+          sudo npm install -g npm@6.4.1 && npm install --no-save
     - save_cache:
         key: dependency-cache-{{ .Revision }}
         paths:
         - node_modules
   prep-deps-firefox:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -126,7 +126,7 @@ jobs:
 
   prep-build:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -145,7 +145,7 @@ jobs:
 
   prep-docs:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -160,7 +160,7 @@ jobs:
 
   prep-scss:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -179,7 +179,7 @@ jobs:
 
   test-lint:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -190,7 +190,7 @@ jobs:
 
   test-deps:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -201,7 +201,7 @@ jobs:
 
   test-e2e-chrome:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -217,7 +217,7 @@ jobs:
 
   test-e2e-firefox:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -238,7 +238,7 @@ jobs:
 
   test-e2e-beta-chrome:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -254,7 +254,7 @@ jobs:
 
   test-e2e-beta-firefox:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -275,7 +275,7 @@ jobs:
 
   job-screens:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -292,7 +292,7 @@ jobs:
 
   job-publish-prerelease:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -319,7 +319,7 @@ jobs:
 
   job-publish-release:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -332,7 +332,7 @@ jobs:
 
   job-publish-postrelease:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -355,7 +355,7 @@ jobs:
 
   test-unit:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -368,7 +368,7 @@ jobs:
     environment:
       browsers: '["Firefox"]'
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -392,7 +392,7 @@ jobs:
     environment:
       browsers: '["Chrome"]'
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -411,7 +411,7 @@ jobs:
     environment:
       browsers: '["Firefox"]'
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -435,7 +435,7 @@ jobs:
     environment:
       browsers: '["Chrome"]'
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - checkout
     - restore_cache:
@@ -452,7 +452,7 @@ jobs:
 
   all-tests-pass:
     docker:
-    - image: circleci/node:8.11.4-browsers
+    - image: circleci/node:8.12.0-browsers
     steps:
     - run:
         name: All Tests Passed

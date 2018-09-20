@@ -29,6 +29,14 @@ html {
   overflow: -moz-scrollbars-none;
 }
 
+.address-dropdown {
+  background-image: url(../images/more.svg);
+  width: 30px;
+  height: 24px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .account-detail-section::-webkit-scrollbar {
     width: 0;
 }

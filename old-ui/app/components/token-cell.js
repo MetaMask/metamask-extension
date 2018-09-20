@@ -3,23 +3,32 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('./identicon')
 const ethNetProps = require('eth-net-props')
+const Dropdown = require('./dropdown').Dropdown
+const DropdownMenuItem = require('./dropdown').DropdownMenuItem
+const ethUtil = require('ethereumjs-util')
+const copyToClipboard = require('copy-to-clipboard')
 
 module.exports = TokenCell
 
 inherits(TokenCell, Component)
 function TokenCell () {
   Component.call(this)
+
+  this.state = {
+    optionsMenuActive: false,
+  }
+  this.optionsMenuToggleClassName = 'token-dropdown'
 }
 
 TokenCell.prototype.render = function () {
-  const props = this.props
-  const { address, symbol, string, network, userAddress } = props
+  const { address, symbol, string, network, userAddress, isLastTokenCell, menuToTop } = this.props
+  const { optionsMenuActive } = this.state
 
   return (
     h('li.token-cell', {
       style: {
         cursor: network === '1' ? 'pointer' : 'default',
-        borderBottom: props.isLastTokenCell ? 'none' : '1px solid #e2e2e2',
+        borderBottom: isLastTokenCell ? 'none' : '1px solid #e2e2e2',
         padding: '20px 0',
         margin: '0 30px',
       },
@@ -41,13 +50,18 @@ TokenCell.prototype.render = function () {
 
       h('span', { style: { flex: '1 0 auto' } }),
 
-      h('span.trash', {
-        style: { cursor: 'pointer' },
-        onClick: (event) => {
-          event.stopPropagation()
-          this.props.removeToken({ address, symbol, string, network, userAddress })
+      h('div.address-dropdown.token-dropdown',
+        {
+          style: { cursor: 'pointer' },
+          onClick: (event) => {
+            event.stopPropagation()
+            this.setState({
+              optionsMenuActive: !optionsMenuActive,
+            })
+          },
         },
-      }, ''),
+        this.renderTokenOptions(menuToTop)
+      ),
 
       /*
       h('button', {
@@ -56,6 +70,67 @@ TokenCell.prototype.render = function () {
       */
 
     ])
+  )
+}
+
+TokenCell.prototype.renderTokenOptions = function (menuToTop) {
+  const { address, symbol, string, network, userAddress } = this.props
+  const { optionsMenuActive } = this.state
+
+  return h(
+    Dropdown,
+    {
+      style: {
+        position: 'relative',
+        marginLeft: '-263px',
+        minWidth: '180px',
+        marginTop: menuToTop ? '-200px' : '30px',
+        width: '280px',
+      },
+      isOpen: optionsMenuActive,
+      onClickOutside: (event) => {
+        const { classList } = event.target
+        const isNotToggleElement = !classList.contains(this.optionsMenuToggleClassName)
+        if (optionsMenuActive && isNotToggleElement) {
+          this.setState({ optionsMenuActive: false })
+        }
+      },
+    },
+    [
+      h(
+        DropdownMenuItem,
+        {
+          closeMenu: () => {},
+          onClick: () => {
+            const { network } = this.props
+            const url = ethNetProps.explorerLinks.getExplorerTokenLinkFor(address, userAddress, network)
+            global.platform.openWindow({ url })
+          },
+        },
+        `View token on block explorer`,
+      ),
+      h(
+        DropdownMenuItem,
+        {
+          closeMenu: () => {},
+          onClick: () => {
+            const checkSumAddress = address && ethUtil.toChecksumAddress(address)
+            copyToClipboard(checkSumAddress)
+          },
+        },
+        'Copy address to clipboard',
+      ),
+      h(
+        DropdownMenuItem,
+        {
+          closeMenu: () => {},
+          onClick: () => {
+            this.props.removeToken({ address, symbol, string, network, userAddress })
+          },
+        },
+        'Remove',
+      ),
+    ]
   )
 }
 

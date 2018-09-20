@@ -52,10 +52,17 @@ TokenList.prototype.render = function () {
 
   const tokenViews = tokensFromCurrentNetwork.map((tokenData, ind) => {
     tokenData.userAddress = userAddress
-    const isLastTokenCell = ind === (tokens.length - 1)
+    const isPenultimateTokenCell = ind === (tokensFromCurrentNetwork.length - 2)
+    const isLastTokenCell = ind === (tokensFromCurrentNetwork.length - 1)
+    const multipleTokens = tokensFromCurrentNetwork.length > 1
+    const more2Tokens = tokensFromCurrentNetwork.length > 2
+    const last2Tokens = more2Tokens && (isLastTokenCell || isPenultimateTokenCell)
+    const last1Token = !more2Tokens && isLastTokenCell
+    const menuToTop = multipleTokens && (last1Token || last2Tokens)
     return h(TokenCell, {
       ...tokenData,
       isLastTokenCell,
+      menuToTop,
       removeToken: this.props.removeToken,
     })
   })
