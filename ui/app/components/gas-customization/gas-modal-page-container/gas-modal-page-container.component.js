@@ -92,23 +92,24 @@ export default class GasModalPageContainer extends Component {
     hideBasic,
     ...advancedTabProps
   }) {
+    let tabsToRender = [
+      { name: 'basic', content: this.renderBasicTabContent(gasPriceButtonGroupProps) },
+      { name: 'advanced', content: this.renderAdvancedTabContent(advancedTabProps) },
+    ]
+
+    if (hideBasic) {
+      tabsToRender = tabsToRender.slice(1)
+    }
+
     return (
       <Tabs>
-        {hideBasic
-          ? null
-          : <Tab name={this.context.t('basic')}>
+        {tabsToRender.map(({ name, content }, i) => <Tab name={this.context.t(name)} key={`gas-modal-tab-${i}`}>
             <div className="gas-modal-content">
-              { this.renderBasicTabContent(gasPriceButtonGroupProps) }
+              { content }
               { this.renderInfoRows(originalTotalFiat, originalTotalEth, newTotalFiat, newTotalEth) }
             </div>
           </Tab>
-        }
-        <Tab name={this.context.t('advanced')}>
-          <div className="gas-modal-content">
-            { this.renderAdvancedTabContent(advancedTabProps) }
-            { this.renderInfoRows(originalTotalFiat, originalTotalEth, newTotalFiat, newTotalEth) }
-          </div>
-        </Tab>
+        )}
       </Tabs>
     )
   }

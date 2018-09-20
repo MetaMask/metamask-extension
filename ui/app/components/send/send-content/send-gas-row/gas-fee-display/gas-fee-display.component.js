@@ -11,7 +11,7 @@ export default class GasFeeDisplay extends Component {
     convertedCurrency: PropTypes.string,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
-    onClick: PropTypes.func,
+    showGasButtonGroup: PropTypes.func,
   };
 
   static contextTypes = {
@@ -22,7 +22,6 @@ export default class GasFeeDisplay extends Component {
     const {
       conversionRate,
       gasTotal,
-      onClick,
       primaryCurrency = 'ETH',
       convertedCurrency,
       gasLoadingError,
@@ -53,7 +52,7 @@ export default class GasFeeDisplay extends Component {
           className="gas-fee-reset"
           onClick={showGasButtonGroup}
         >
-          Reset
+          { this.context.t('reset') }
         </button>
       </div>
     )

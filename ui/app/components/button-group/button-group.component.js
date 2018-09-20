@@ -10,6 +10,7 @@ export default class ButtonGroup extends PureComponent {
     children: PropTypes.array,
     className: PropTypes.string,
     style: PropTypes.object,
+    newActiveButtonIndex: PropTypes.number,
   }
 
   static defaultProps = {
@@ -23,9 +24,10 @@ export default class ButtonGroup extends PureComponent {
       : this.props.defaultActiveButtonIndex,
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate (_, prevState) {
+    // Provides an API for dynamically updating the activeButtonIndex
     if (typeof this.props.newActiveButtonIndex === 'number' && prevState.activeButtonIndex !== this.props.newActiveButtonIndex) {
-      this.setState({ activeButtonIndex: prevProps.newActiveButtonIndex })
+      this.setState({ activeButtonIndex: this.props.newActiveButtonIndex })
     }
   }
 

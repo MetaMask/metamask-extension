@@ -7,6 +7,7 @@ const {
   getCustomGasPrice,
   getCustomGasTotal,
   getRenderableBasicEstimateData,
+  getRenderableEstimateDataForSmallButtons,
 } = proxyquire('../custom-gas', {})
 
 describe('custom-gas selectors', () => {
@@ -130,6 +131,104 @@ describe('custom-gas selectors', () => {
       tests.forEach(test => {
         assert.deepEqual(
           getRenderableBasicEstimateData(test.mockState),
+          test.expectedResult
+        )
+      })
+    })
+
+  })
+
+  describe('getRenderableEstimateDataForSmallButtons()', () => {
+    const tests = [
+      {
+        expectedResult: [
+          {
+            feeInSecondaryCurrency: '$0.05',
+            feeInPrimaryCurrency: '0.00021 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x2540be400',
+          },
+          {
+            feeInSecondaryCurrency: '$0.03',
+            feeInPrimaryCurrency: '0.0001 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0x12a05f200',
+          },
+          {
+            feeInSecondaryCurrency: '$0.01',
+            feeInPrimaryCurrency: '0.00005 ETH',
+            labelKey: 'slow',
+            priceInHexWei: '0x9502f900',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 255.71,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 25,
+              safeLowWait: 6.6,
+              average: 50,
+              avgWait: 3.3,
+              fast: 100,
+              fastWait: 0.5,
+            },
+          },
+        },
+      },
+      {
+        expectedResult: [
+          {
+            feeInSecondaryCurrency: '$1.07',
+            feeInPrimaryCurrency: '0.00042 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x4a817c800',
+          },
+          {
+            feeInSecondaryCurrency: '$0.54',
+            feeInPrimaryCurrency: '0.00021 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0x2540be400',
+          },
+          {
+            feeInSecondaryCurrency: '$0.27',
+            feeInPrimaryCurrency: '0.0001 ETH',
+            labelKey: 'slow',
+            priceInHexWei: '0x12a05f200',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 50,
+              safeLowWait: 13.2,
+              average: 100,
+              avgWait: 6.6,
+              fast: 200,
+              fastWait: 1.0,
+            },
+          },
+        },
+      },
+    ]
+    it('should return renderable data about basic estimates appropriate for buttons with less info', () => {
+      tests.forEach(test => {
+        assert.deepEqual(
+          getRenderableEstimateDataForSmallButtons(test.mockState),
           test.expectedResult
         )
       })
