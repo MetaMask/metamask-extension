@@ -78,7 +78,7 @@ module.exports = {
           labelText: By.className('Would you like to add these tokens?'),
           button: {
             add: By.className('btn-primary'),
-            cancel: By.className('btn-default btn-violet'),
+            back: By.className('btn-default btn-violet'),
           },
           token: {
             item: By.className('confirm-add-token__token-list-item'),
@@ -273,6 +273,5 @@ module.exports = {
     RINKEBY: 'rinkeby',
     LOCALHOST: 'localhost',
     CUSTOM: 'http://test.com',
-  },
+  }
 }
-
