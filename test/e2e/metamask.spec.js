@@ -59,6 +59,7 @@ describe('Metamask popup page', async function () {
       await delay(300)
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
+      await delay(5000)
     })
   })
 
