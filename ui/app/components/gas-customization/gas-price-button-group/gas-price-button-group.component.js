@@ -22,6 +22,7 @@ export default class GasPriceButtonGroup extends Component {
     defaultActiveButtonIndex: PropTypes.number,
     gasButtonInfo: PropTypes.arrayOf(PropTypes.shape(GAS_OBJECT_PROPTYPES_SHAPE)),
     handleGasPriceSelection: PropTypes.func,
+    newActiveButtonIndex: PropTypes.number,
     noButtonActiveByDefault: PropTypes.bool,
     showCheck: PropTypes.bool,
   }
@@ -82,7 +83,7 @@ export default class GasPriceButtonGroup extends Component {
         >
           { gasButtonInfo.map((obj, index) => this.renderButton(obj, buttonPropsAndFlags, index)) }
         </ButtonGroup>
-        : <div className={`${buttonPropsAndFlags.className}__loading-container`}>Loading...</div>
+        : <div className={`${buttonPropsAndFlags.className}__loading-container`}>{ this.context.t('loading') }</div>
     )
   }
 }
