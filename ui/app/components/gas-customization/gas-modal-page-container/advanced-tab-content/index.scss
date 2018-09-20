@@ -3,11 +3,9 @@
 .advanced-tab {
   display: flex;
   flex-flow: column;
-  height: 430px;
 
   &__transaction-data-summary,
-  &__fee-chart-title,
-  &__gas-edit-row {
+  &__fee-chart-title {
     padding-left: 24px;
     padding-right: 24px;
   }
@@ -17,6 +15,8 @@
     flex-flow: column;
     color: $mid-gray;
     margin-top: 12px;
+    padding-left: 18px;
+    padding-right: 18px;
 
     &__titles,
     &__container {
@@ -24,11 +24,17 @@
       flex-flow: row;
       justify-content: space-between;
       font-size: 12px;
+      color: #888EA3;
     }
 
     &__container {
-      font-size: 26px;
-      margin-top: 6px;  
+      font-size: 16px;
+      margin-top: 0px;
+    }
+
+    &__fee {
+      font-size: 16px;
+      color: #313A5E;
     }
   }
 
@@ -40,8 +46,11 @@
 
   &__fee-chart {
     padding-left: 10px;
-    margin-top: 24px;
-    height: 134px;
+    margin-top: 8px;
+    height: 258px;
+    background: #F8F9FB;
+    border-bottom: 1px solid #d2d8dd;
+    border-top: 1px solid #d2d8dd;
   }
 
   &__slider-container {
@@ -50,21 +59,25 @@
   }
 
   &__gas-edit-rows {
-    margin-top: 44px;
     height: 87px;
     display: flex;
-    flex-flow: column;
+    flex-flow: row;
     justify-content: space-between;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 9px;
   }
 
   &__gas-edit-row {
     display: flex;
-    flex-flow: row;
-    justify-content: space-between;
+    flex-flow: column;
 
     &__label {
-      color: $mid-gray;
-      font-size: 16px;
+      color: #313B5E;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       
       .fa-info-circle {
         color: $silver;
@@ -87,10 +100,11 @@
       border-radius: 4px;
       color: $mid-gray;
       font-size: 16px;
-      height: 37px;
-      width: 163px;
+      height: 24px;
+      width: 155px;
       padding-left: 8px;
       padding-top: 2px;
+      margin-top: 7px;
     }
 
     input[type="number"]::-webkit-inner-spin-button {

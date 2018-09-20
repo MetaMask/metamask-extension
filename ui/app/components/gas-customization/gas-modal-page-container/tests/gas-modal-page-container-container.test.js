@@ -15,6 +15,7 @@ const actionSpies = {
 const gasActionSpies = {
   setCustomGasPrice: sinon.spy(),
   setCustomGasLimit: sinon.spy(),
+  resetCustomData: sinon.spy(),
 }
 
 const confirmTransactionActionSpies = {
@@ -37,7 +38,7 @@ proxyquire('../gas-modal-page-container.container.js', {
   '../../../selectors/custom-gas': {
     getBasicGasEstimateLoadingStatus: (s) => `mockBasicGasEstimateLoadingStatus:${Object.keys(s).length}`,
     getRenderableBasicEstimateData: (s) => `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
-    getDefaultActiveButtonIndex: (a, b, c) => a + b + c,
+    getDefaultActiveButtonIndex: (a, b) => a + b,
   },
   '../../../actions': actionSpies,
   '../../../ducks/gas.duck': gasActionSpies,
@@ -89,15 +90,14 @@ describe('gas-modal-page-container container', () => {
 
       assert.deepEqual(result2, {
         isConfirm: true,
-        customGasPriceInHex: 'ffffffff',
-        customGasLimitInHex: 'aaaaaaaa',
         customGasPrice: 4.294967295,
         customGasLimit: 2863311530,
         newTotalFiat: '637.41',
-        gasPriceButtonGroupProps:
-        {
+        customModalGasLimitInHex: 'aaaaaaaa',
+        customModalGasPriceInHex: 'ffffffff',
+        gasPriceButtonGroupProps: {
           buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:4',
-          defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:4ffffffff0x3200000',
+          defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:4ffffffff',
           gasButtonInfo: 'mockRenderableBasicEstimateData:4',
         },
         hideBasic: true,
@@ -106,6 +106,8 @@ describe('gas-modal-page-container container', () => {
           originalTotalEth: '0.451569 ETH',
           newTotalFiat: '637.41',
           newTotalEth: '12.748189 ETH',
+          sendAmount: '0.45036 ETH',
+          transactionFee: '12.297829 ETH',
         },
       })
     })
@@ -135,11 +137,12 @@ describe('gas-modal-page-container container', () => {
       })
     })
 
-    describe('hideModal()', () => {
+    describe('cancelAndClose()', () => {
       it('should dispatch a hideModal action', () => {
-        mapDispatchToPropsObject.hideModal()
-        assert(dispatchSpy.calledOnce)
+        mapDispatchToPropsObject.cancelAndClose()
+        assert(dispatchSpy.calledTwice)
         assert(actionSpies.hideModal.calledOnce)
+        assert(gasActionSpies.resetCustomData.calledOnce)
       })
     })
 
