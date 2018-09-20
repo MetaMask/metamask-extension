@@ -33,108 +33,69 @@ async function runAddTokenFlowTest (assert, done) {
   // Go to Add Token screen
   let addTokenButton = await queryAsync($, 'button.btn-primary.wallet-view__add-token-button')
   assert.ok(addTokenButton[0], 'add token button present')
-  addTokenButton[0].click()
+  await addTokenButton[0].click()
 
   // Verify Add Token screen
-  let addTokenWrapper = await queryAsync($, '.page-container')
-  assert.ok(addTokenWrapper[0], 'add token wrapper renders')
-
-  let addTokenTitle = await queryAsync($, '.page-container__title')
-  assert.equal(addTokenTitle[0].textContent, 'Add Tokens', 'add token title is correct')
+  let addTokenTitle = await queryAsync($, '.page-subtitle')
+  assert.equal(addTokenTitle[0].textContent, 'Add Token', 'add token title is correct')
 
   // Cancel Add Token
-  const cancelAddTokenButton = await queryAsync($, 'button.btn-default.btn--large.page-container__footer-button')
+  const cancelAddTokenButton = await queryAsync($, 'button.btn-violet')
   assert.ok(cancelAddTokenButton[0], 'cancel add token button present')
-  cancelAddTokenButton.click()
-
-  assert.ok($('.wallet-view')[0], 'cancelled and returned to account detail wallet view')
+  await cancelAddTokenButton.click()
+  assert.ok((await queryAsync($,'.identicon-wrapper'))[0], 'cancelled and returned to account detail wallet view')
 
   // Return to Add Token Screen
   addTokenButton = await queryAsync($, 'button.btn-primary.wallet-view__add-token-button')
   assert.ok(addTokenButton[0], 'add token button present')
-  addTokenButton[0].click()
+  await addTokenButton[0].click()
 
   // Verify Add Token Screen
-  addTokenWrapper = await queryAsync($, '.page-container')
-  addTokenTitle = await queryAsync($, '.page-container__title')
-  assert.ok(addTokenWrapper[0], 'add token wrapper renders')
-  assert.equal(addTokenTitle[0].textContent, 'Add Tokens', 'add token title is correct')
+  addTokenTitle = await queryAsync($, '.page-subtitle')
+  assert.equal(addTokenTitle[0].textContent, 'Add Token', 'add token title is correct')
 
-  // Search for token
-  const searchInput = (await findAsync(addTokenWrapper, '#search-tokens'))[0]
-  searchInput.focus()
+  // Input invalid token contract address
+  const customAddress = (await findAsync($, '#token-address'))[0]
+  await customAddress.focus()
   await timeout(1000)
-  nativeInputValueSetter.call(searchInput, 'a')
-  searchInput.dispatchEvent(new Event('input', { bubbles: true}))
+  await nativeInputValueSetter.call(customAddress, 'invalid address')
+  await customAddress.dispatchEvent(new Event('input', { bubbles: true }))
+  const buttonAdd = await queryAsync($, '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div.flex-space-around > div:nth-child(7) > button:nth-child(2)')
 
-  // Click token to add
-  const tokenWrapper = await queryAsync($, 'div.token-list__token')
-  assert.ok(tokenWrapper[0], 'token found')
-  const tokenImageProp = tokenWrapper.find('.token-list__token-icon').css('background-image')
-  const tokenImageUrl = tokenImageProp.slice(5, -2)
-  tokenWrapper[0].click()
+  assert.ok(buttonAdd[0],'add button rendered')
+  await buttonAdd[0].click()
 
-  // Click Next button
-  const nextButton = await queryAsync($, 'button.btn-primary.btn--large')
-  assert.equal(nextButton[0].textContent, 'Next', 'next button rendered')
-  nextButton[0].click()
-
-  // Confirm Add token
-  const confirmAddToken = await queryAsync($, '.confirm-add-token')
-  assert.ok(confirmAddToken[0], 'confirm add token rendered')
-  assert.ok($('button.btn-primary.btn--large')[0], 'confirm add token button found')
-  $('button.btn-primary.btn--large')[0].click()
-
-  // Verify added token image
-  let heroBalance = await queryAsync($, '.hero-balance')
-  assert.ok(heroBalance, 'rendered hero balance')
-  assert.ok(tokenImageUrl.indexOf(heroBalance.find('img').attr('src')) > -1, 'token added')
-
-  // Return to Add Token Screen
-  addTokenButton = await queryAsync($, 'button.btn-primary.wallet-view__add-token-button')
-  assert.ok(addTokenButton[0], 'add token button present')
-  addTokenButton[0].click()
-
-  addTokenWrapper = await queryAsync($, '.page-container')
-  const addTokenTabs = await queryAsync($, '.page-container__tab')
-  assert.equal(addTokenTabs.length, 2, 'expected number of tabs')
-  assert.equal(addTokenTabs[1].textContent, 'Custom Token', 'Custom Token tab present')
-  assert.ok(addTokenTabs[1], 'add custom token tab present')
-  addTokenTabs[1].click()
-  await timeout(1000)
-
-  // Input token contract address
-  const customInput = (await findAsync(addTokenWrapper, '#custom-address'))[0]
-  customInput.focus()
-  await timeout(1000)
-  nativeInputValueSetter.call(customInput, '0x177af043D3A1Aed7cc5f2397C70248Fc6cDC056c')
-  customInput.dispatchEvent(new Event('input', { bubbles: true}))
-
-
-  // Click Next button
-  // nextButton = await queryAsync($, 'button.btn-primary--lg')
-  // assert.equal(nextButton[0].textContent, 'Next', 'next button rendered')
-  // nextButton[0].click()
-
-  // // Verify symbol length error since contract address won't return symbol
-  const errorMessage = await queryAsync($, '#custom-symbol-helper-text')
+  // Verify contract  error since contract address is invalid
+  let errorMessage = await queryAsync($, '.error')
   assert.ok(errorMessage[0], 'error rendered')
 
-  $('button.btn-default.btn--large')[0].click()
+  // Input valid token contract address
+  await nativeInputValueSetter.call(customAddress, '0x177af043D3A1Aed7cc5f2397C70248Fc6cDC056c')
+  await customAddress.dispatchEvent(new Event('input', { bubbles: true }))
 
-  // await timeout(100000)
+  // Input token symbol with length more than 10
+  const customSymbol = (await findAsync($, '#token_symbol'))[0]
+  assert.ok(customSymbol, 'symbol field rendered')
+  /*
+  await customSymbol.focus()
+  await timeout(1000)
+  await nativeInputValueSetter.call(customSymbol, 'POAPOAPOA20')
+  await customSymbol.dispatchEvent(new Event('input', { bubbles: true }))
+  await buttonAdd[0].click()
+  // Verify symbol length error since length more than 10
+  errorMessage = await queryAsync($, '.error')[0]
+  assert.ok(errorMessage, 'error rendered')
+*/
+  // Input valid token symbol
+  await nativeInputValueSetter.call(customSymbol, 'POA')
+  await customSymbol.dispatchEvent(new Event('input', { bubbles: true }))
+  // Input valid decimals
+  const customDecimals = (await findAsync($, '#token_decimals'))[0]
+  assert.ok(customDecimals, 'decimals field rendered')
 
-  // Confirm Add token
-  // assert.equal(
-  //   $('.page-container__subtitle')[0].textContent,
-  //   'Would you like to add these tokens?',
-  //   'confirm add token rendered'
-  // )
-  // assert.ok($('button.btn-primary--lg')[0], 'confirm add token button found')
-  // $('button.btn-primary--lg')[0].click()
+  // Click Add button
+  await buttonAdd[0].click()
 
-  // Verify added token image
-  heroBalance = await queryAsync($, '.hero-balance')
-  assert.ok(heroBalance, 'rendered hero balance')
-  assert.ok(heroBalance.find('.identicon')[0], 'token added')
+  // check if main screen
+  assert.ok((await queryAsync($,'.identicon-wrapper'))[0], 'returned to account detail wallet view')
 }
