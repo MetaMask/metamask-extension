@@ -63,9 +63,7 @@ function getAveragePriceEstimateInHexWEI (state) {
 }
 
 function getDefaultActiveButtonIndex (gasButtonInfo, customGasPriceInHex, gasPrice) {
-  console.log('gasButtonInfo', gasButtonInfo)
   return gasButtonInfo.findIndex(({ priceInHexWei }) => {
-    console.log('priceInHexWei', priceInHexWei, '|', customGasPriceInHex)
     return priceInHexWei === addHexPrefix(customGasPriceInHex || gasPrice)
   })
 }
@@ -208,10 +206,6 @@ function getRenderableEstimateDataForSmallButtons (state) {
         safeLow,
         average,
         fast,
-        blockTime,
-        safeLowWait,
-        avgWait,
-        fastWait,
       },
     },
   } = state

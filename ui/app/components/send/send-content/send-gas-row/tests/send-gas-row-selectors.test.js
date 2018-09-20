@@ -2,6 +2,7 @@ import assert from 'assert'
 import {
   gasFeeIsInError,
   getGasLoadingError,
+  getGasButtonGroupShown,
 } from '../send-gas-row.selectors.js'
 
 describe('send-gas-row selectors', () => {
@@ -43,6 +44,18 @@ describe('send-gas-row selectors', () => {
       }
 
       assert.equal(gasFeeIsInError(state), false)
+    })
+  })
+
+  describe('getGasButtonGroupShown()', () => {
+    it('should return send.gasButtonGroupShown', () => {
+      const state = {
+        send: {
+          gasButtonGroupShown: 'foobar',
+        },
+      }
+
+      assert.equal(getGasButtonGroupShown(state), 'foobar')
     })
   })
 

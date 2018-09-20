@@ -119,10 +119,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
-    onSubmit: isConfirm ? dispatchUpdateConfirmTxGasAndCalculate : (newLimit, newPrice) => {
-      dispatchSetGasData(newLimit, newPrice)
-      dispatchHideGasButtonGroup()
-    },
+    onSubmit: isConfirm
+      ? dispatchUpdateConfirmTxGasAndCalculate
+      : (newLimit, newPrice) => {
+        dispatchSetGasData(newLimit, newPrice)
+        dispatchHideGasButtonGroup()
+      },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
       handleGasPriceSelection: dispatchUpdateCustomGasPrice,
