@@ -41,7 +41,9 @@ export default class ConfirmPageContainer extends Component {
     assetImage: PropTypes.string,
     summaryComponent: PropTypes.node,
     warning: PropTypes.string,
+    unapprovedTxCount: PropTypes.number,
     // Footer
+    onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     disabled: PropTypes.bool,
@@ -67,10 +69,12 @@ export default class ConfirmPageContainer extends Component {
       summaryComponent,
       detailsComponent,
       dataComponent,
+      onCancelAll,
       onCancel,
       onSubmit,
       identiconAddress,
       nonce,
+      unapprovedTxCount,
       assetImage,
       warning,
     } = this.props
@@ -116,7 +120,13 @@ export default class ConfirmPageContainer extends Component {
           submitText={this.context.t('confirm')}
           submitButtonType="confirm"
           disabled={disabled}
-        />
+        >
+          {unapprovedTxCount > 1 && (
+            <a onClick={() => onCancelAll()}>
+              {this.context.t('cancelN', [unapprovedTxCount])}
+            </a>
+          )}
+        </PageContainerFooter>
       </div>
     )
   }

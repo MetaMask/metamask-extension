@@ -167,6 +167,7 @@ var actions = {
   updateTransaction,
   updateAndApproveTx,
   cancelTx: cancelTx,
+  cancelTxs,
   completedTx: completedTx,
   txError: txError,
   nextTx: nextTx,
@@ -1300,6 +1301,47 @@ function cancelTx (txData) {
   }
 }
 
+/**
+ * Cancels all of the given transactions
+ * @param {Array<object>} txDataList a list of tx data objects
+ * @return {function(*): Promise<void>}
+ */
+function cancelTxs (txDataList) {
+  return async (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    const txIds = txDataList.map(({id}) => id)
+    const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
+      background.cancelTransaction(id, (err) => {
+        if (err) {
+          return reject(err)
+        }
+
+        resolve()
+      })
+    }))
+
+    await Promise.all(cancellations)
+    const newState = await updateMetamaskStateFromBackground()
+    dispatch(actions.updateMetamaskState(newState))
+    dispatch(actions.clearSend())
+
+    txIds.forEach((id) => {
+      dispatch(actions.completedTx(id))
+    })
+
+    dispatch(actions.hideLoadingIndication())
+
+    if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+      return global.platform.closeCurrentWindow()
+    }
+  }
+}
+
+/**
+ * @deprecated
+ * @param {Array<object>} txsData
+ * @return {Function}
+ */
 function cancelAllTx (txsData) {
   return (dispatch) => {
     txsData.forEach((txData, i) => {

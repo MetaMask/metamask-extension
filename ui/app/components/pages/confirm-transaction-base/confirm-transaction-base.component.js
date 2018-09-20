@@ -22,6 +22,7 @@ export default class ConfirmTransactionBase extends Component {
     // Redux props
     balance: PropTypes.string,
     cancelTransaction: PropTypes.func,
+    cancelAllTransactions: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
     clearSend: PropTypes.func,
     conversionRate: PropTypes.number,
@@ -49,6 +50,7 @@ export default class ConfirmTransactionBase extends Component {
     toName: PropTypes.string,
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
+    unapprovedTxCount: PropTypes.number,
     // Component props
     action: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -249,6 +251,16 @@ export default class ConfirmTransactionBase extends Component {
     onEdit({ txData, tokenData, tokenProps })
   }
 
+  handleCancelAll () {
+    const { cancelAllTransactions, history, clearConfirmTransaction } = this.props
+
+    cancelAllTransactions()
+      .then(() => {
+        clearConfirmTransaction()
+        history.push(DEFAULT_ROUTE)
+      })
+  }
+
   handleCancel () {
     const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction } = this.props
 
@@ -314,6 +326,7 @@ export default class ConfirmTransactionBase extends Component {
       nonce,
       assetImage,
       warning,
+      unapprovedTxCount,
     } = this.props
     const { submitting, submitError } = this.state
 
@@ -337,6 +350,7 @@ export default class ConfirmTransactionBase extends Component {
         dataComponent={this.renderData()}
         contentComponent={contentComponent}
         nonce={nonce}
+        unapprovedTxCount={unapprovedTxCount}
         assetImage={assetImage}
         identiconAddress={identiconAddress}
         errorMessage={errorMessage || submitError}
@@ -344,6 +358,7 @@ export default class ConfirmTransactionBase extends Component {
         warning={warning}
         disabled={!propsValid || !valid || submitting}
         onEdit={() => this.handleEdit()}
+        onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
       />
