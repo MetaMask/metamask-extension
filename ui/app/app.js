@@ -152,12 +152,14 @@ class App extends Component {
 
         h(AccountMenu),
 
-        (isLoading || isLoadingNetwork) && h(Loading, {
-          loadingMessage: loadMessage,
-        }),
+        h('div.main-container-wrapper', [
+          (isLoading || isLoadingNetwork) && h(Loading, {
+            loadingMessage: loadMessage,
+          }),
 
-        // content
-        this.renderRoutes(),
+          // content
+          this.renderRoutes(),
+        ]),
       ])
     )
   }

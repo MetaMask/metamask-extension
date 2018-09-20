@@ -22,6 +22,12 @@ $wallet-view-bg: $alabaster;
   display: none;
 }
 
+.main-container-wrapper {
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+}
+
 //Account and transaction details
 .account-and-transaction-details {
   display: flex;
@@ -218,6 +224,10 @@ $wallet-view-bg: $alabaster;
     width: 100%;
     overflow-y: auto;
     background-color: $white;
+  }
+
+  .main-container-wrapper {
+    height: 100%;
   }
 }
 
