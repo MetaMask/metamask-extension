@@ -4,6 +4,57 @@
 .gas-modal-page-container {
   .page-container {
     width: 391px;
+
+    &__header {
+      padding: 0px;
+      padding-top: 16px;
+
+      &--no-padding-bottom {
+        padding-bottom: 0;
+      }
+    }
+
+    &__header-close-text {
+      font-size: 14px;
+      color: #4EADE7;
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    &__title {
+      color: $black;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    &__subtitle {
+      display: none;
+    }
+
+    &__tabs {
+      margin-top: 0px;
+    }
+
+    &__tab {
+      width: 100%;
+      font-size: 14px;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+
+      &--selected {
+        color: $curious-blue;
+        border-bottom: 2px solid $curious-blue;
+      }
+    }
   }
 }
 
@@ -20,30 +71,35 @@
     display: flex;
     flex-flow: column;
     color: $scorpion;
+    font-size: 12px;
 
-    &__total-info, &__sum-info {
+    &__send-info, &__transaction-info, &__total-info, &__fiat-total-info {
       display: flex;
       flex-flow: row;
       justify-content: space-between;
     }
 
+    &__fiat-total-info {
+      justify-content: flex-end;
+    }
+
     &__total-info {
-      &__total-label {
+      &__label {
         font-size: 16px;
       }
 
-      &__total-value {
+      &__value {
         font-size: 16px;
         font-weight: bold;
       }
     }
 
-    &__sum-info {
-      &__sum-label {
+    &__transaction-info, &__send-info {
+      &__label {
         font-size: 12px;
       }
 
-      &__sum-value {
+      &__value {
         font-size: 14px;
       }
     }

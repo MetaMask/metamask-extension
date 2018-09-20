@@ -9,7 +9,7 @@ import PageContainer from '../../../page-container'
 import { Tab } from '../../../tabs'
 
 const propsMethodSpies = {
-  hideModal: sinon.spy(),
+  cancelAndClose: sinon.spy(),
   onSubmit: sinon.spy(),
 }
 
@@ -39,12 +39,16 @@ const mockGasPriceButtonGroupProps = {
   handleGasPriceSelection: 'mockSelectionFunction',
   noButtonActiveByDefault: true,
   showCheck: true,
+  newTotalFiat: 'mockNewTotalFiat',
+  newTotalEth: 'mockNewTotalEth',
 }
 const mockInfoRowProps = {
   originalTotalFiat: 'mockOriginalTotalFiat',
   originalTotalEth: 'mockOriginalTotalEth',
   newTotalFiat: 'mockNewTotalFiat',
   newTotalEth: 'mockNewTotalEth',
+  sendAmount: 'mockSendAmount',
+  transactionFee: 'mockTransactionFee',
 }
 
 const GP = GasModalPageContainer.prototype
@@ -53,7 +57,7 @@ describe('GasModalPageContainer Component', function () {
 
   beforeEach(() => {
     wrapper = shallow(<GasModalPageContainer
-      hideModal={propsMethodSpies.hideModal}
+      cancelAndClose={propsMethodSpies.cancelAndClose}
       onSubmit={propsMethodSpies.onSubmit}
       updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
       updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
@@ -67,7 +71,7 @@ describe('GasModalPageContainer Component', function () {
   })
 
   afterEach(() => {
-    propsMethodSpies.hideModal.resetHistory()
+    propsMethodSpies.cancelAndClose.resetHistory()
   })
 
   describe('render', () => {
@@ -91,11 +95,11 @@ describe('GasModalPageContainer Component', function () {
         onCancel,
         onClose,
       } = wrapper.find(PageContainer).props()
-      assert.equal(propsMethodSpies.hideModal.callCount, 0)
+      assert.equal(propsMethodSpies.cancelAndClose.callCount, 0)
       onCancel()
-      assert.equal(propsMethodSpies.hideModal.callCount, 1)
+      assert.equal(propsMethodSpies.cancelAndClose.callCount, 1)
       onClose()
-      assert.equal(propsMethodSpies.hideModal.callCount, 2)
+      assert.equal(propsMethodSpies.cancelAndClose.callCount, 2)
     })
 
     it('should pass the correct renderTabs property to PageContainer', () => {
@@ -158,8 +162,8 @@ describe('GasModalPageContainer Component', function () {
 
       assert.equal(GP.renderInfoRows.callCount, 2)
 
-      assert.deepEqual(GP.renderInfoRows.getCall(0).args, ['mockOriginalTotalFiat', 'mockOriginalTotalEth', 'mockNewTotalFiat', 'mockNewTotalEth'])
-      assert.deepEqual(GP.renderInfoRows.getCall(1).args, ['mockOriginalTotalFiat', 'mockOriginalTotalEth', 'mockNewTotalFiat', 'mockNewTotalEth'])
+      assert.deepEqual(GP.renderInfoRows.getCall(0).args, ['mockNewTotalFiat', 'mockNewTotalEth', 'mockSendAmount', 'mockTransactionFee'])
+      assert.deepEqual(GP.renderInfoRows.getCall(1).args, ['mockNewTotalFiat', 'mockNewTotalEth', 'mockSendAmount', 'mockTransactionFee'])
     })
 
     it('should not render the basic tab if hideBasic is true', () => {
@@ -173,25 +177,6 @@ describe('GasModalPageContainer Component', function () {
       const tabs = renderedTabs.find(Tab)
       assert.equal(tabs.length, 1)
       assert.equal(tabs.at(0).props().name, 'advanced')
-    })
-  })
-
-  describe('renderInfoRow', () => {
-    it('should render a div with the passed className and two children, each with the expected text', () => {
-      const renderInfoRowResult = wrapper.instance().renderInfoRow('mockClassName', 'mockLabelKey', 'mockFiatAmount', 'mockCryptoAmount')
-      const renderedInfoRow = shallow(renderInfoRowResult)
-      assert.equal(renderedInfoRow.props().className, 'mockClassName')
-
-      const firstChild = renderedInfoRow.childAt(0)
-      const secondhild = renderedInfoRow.childAt(1)
-
-      assert.equal(firstChild.props().className, 'mockClassName__total-info')
-      assert.equal(secondhild.props().className, 'mockClassName__sum-info')
-
-      assert.equal(firstChild.childAt(0).text(), 'mockLabelKey:')
-      assert.equal(firstChild.childAt(1).text(), 'mockFiatAmount')
-      assert.equal(secondhild.childAt(0).text(), 'amountPlusTxFee')
-      assert.equal(secondhild.childAt(1).text(), 'mockCryptoAmount')
     })
   })
 
@@ -220,8 +205,34 @@ describe('GasModalPageContainer Component', function () {
       assert.equal(advancedTabContentProps.updateCustomGasLimit(), 'mockConvertThenUpdateCustomGasLimit')
       assert.equal(advancedTabContentProps.customGasPrice, 123)
       assert.equal(advancedTabContentProps.customGasLimit, 456)
-      assert.equal(advancedTabContentProps.millisecondsRemaining, 91000)
+      assert.equal(advancedTabContentProps.timeRemaining, '1 min 31 sec')
       assert.equal(advancedTabContentProps.totalFee, '$0.30')
+    })
+  })
+
+  describe('renderInfoRows', () => {
+    it('should render the info rows with the passed data', () => {
+      const baseClassName = 'gas-modal-content__info-row'
+      const renderedInfoRowsContainer = shallow(wrapper.instance().renderInfoRows(
+        'mockNewTotalFiat',
+        ' mockNewTotalEth',
+        ' mockSendAmount',
+        ' mockTransactionFee'
+      ))
+
+      assert(renderedInfoRowsContainer.childAt(0).hasClass(baseClassName))
+
+      const renderedInfoRows = renderedInfoRowsContainer.childAt(0).children()
+      assert.equal(renderedInfoRows.length, 4)
+      assert(renderedInfoRows.at(0).hasClass(`${baseClassName}__send-info`))
+      assert(renderedInfoRows.at(1).hasClass(`${baseClassName}__transaction-info`))
+      assert(renderedInfoRows.at(2).hasClass(`${baseClassName}__total-info`))
+      assert(renderedInfoRows.at(3).hasClass(`${baseClassName}__fiat-total-info`))
+
+      assert.equal(renderedInfoRows.at(0).text(), 'Send Amount mockSendAmount')
+      assert.equal(renderedInfoRows.at(1).text(), 'Transaction Fee mockTransactionFee')
+      assert.equal(renderedInfoRows.at(2).text(), 'New Total mockNewTotalEth')
+      assert.equal(renderedInfoRows.at(3).text(), 'mockNewTotalFiat')
     })
   })
 })
