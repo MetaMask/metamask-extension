@@ -217,7 +217,7 @@
     "message": "Current Conversion"
   },
   "currentLanguage": {
-    "message": "current language"
+    "message": "Current Language"
   },
   "currentNetwork": {
     "message": "Current Network"
@@ -600,7 +600,7 @@
     "message": "MetaMask Seed Words"
   },
   "metamaskVersion": {
-    "message": "metamask version"
+    "message": "MetaMask Version"
   },
   "min": {
     "message": "Minimum"
