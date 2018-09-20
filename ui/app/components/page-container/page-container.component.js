@@ -23,7 +23,7 @@ export default class PageContainer extends PureComponent {
     // PageContainerFooter props
     cancelText: PropTypes.string,
     disabled: PropTypes.bool,
-    hideCancel: PropTypes.string,
+    hideCancel: PropTypes.bool,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     submitText: PropTypes.string,

@@ -154,7 +154,7 @@ function calcCustomGasLimit (customGasLimitInHex) {
 
 function getTxParams (state) {
   const { confirmTransaction: { txData }, metamask: { send } } = state
-
+  console.log('txData', txData)
   return txData.txParams || {
     from: send.from,
     gas: send.gasLimit,
