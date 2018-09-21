@@ -216,6 +216,9 @@
   "currentConversion": {
     "message": "Current Conversion"
   },
+  "currentLanguage": {
+    "message": "Current Language"
+  },
   "currentNetwork": {
     "message": "Current Network"
   },
@@ -596,6 +599,9 @@
   "metamaskSeedWords": {
     "message": "MetaMask Seed Words"
   },
+  "metamaskVersion": {
+    "message": "MetaMask Version"
+  },
   "min": {
     "message": "Minimum"
   },
@@ -906,6 +912,9 @@
   "selectCurrency": {
     "message": "Select Currency"
   },
+  "selectLocale": {
+    "message": "Select Locale"
+  },
   "selectService": {
     "message": "Select Service"
   },
@@ -1187,6 +1196,9 @@
   },
   "unlockMessage": {
     "message": "The decentralized web awaits"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
   },
   "uriErrorMsg": {
     "message": "URIs require the appropriate HTTP/HTTPS prefix."
