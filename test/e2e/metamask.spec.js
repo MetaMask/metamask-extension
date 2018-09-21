@@ -50,7 +50,7 @@ describe('Nifty wallet popup page', async function () {
   })
 
   after(async function () {
-    // await driver.quit()
+     await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -698,14 +698,6 @@ describe('Nifty wallet popup page', async function () {
       const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
       assert.equal(await tokenBalance.getText(), '0 TST')
     })
-
-    it('click to token opens the etherscan', async function () {
-      await (await waitUntilShowUp(screens.main.tokens.token)).click()
-      await switchToLastPage()
-      const title = await driver.getCurrentUrl()
-      assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
-      await switchToFirstPage()
-    })
   })
 
   describe('Check support of token per network basis ', async function () {
@@ -755,11 +747,27 @@ describe('Nifty wallet popup page', async function () {
         assert.notEqual(await tokenBalance.getText(), '')
       })
 
+      it('click to token opens the PoaExplorer', async function () {
+        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://poaexplorer.com/address/' + tokenAddress), true, 'link leads to wrong page')
+        await switchToFirstPage()
+      })
+
       it('adds token with  the same address to SOKOL network', async function () {
         await setProvider(NETWORKS.SOKOL)
         await addToken(tokenAddress, tokenName, tokenDecimals)
         const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
         assert.notEqual(await tokenBalance.getText(), '')
+      })
+
+      it('click to token opens the Sokol PoaExplorer', async function () {
+        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://sokol.poaexplorer.com/address/search/' + tokenAddress), true, 'link leads to wrong page')
+        await switchToFirstPage()
       })
 
       it('adds token with  the same address to MAINNET network', async function () {
@@ -769,11 +777,27 @@ describe('Nifty wallet popup page', async function () {
         assert.notEqual(await tokenBalance.getText(), '')
       })
 
+      it('click to token opens the Etherscan', async function () {
+        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://etherscan.io/token/' + tokenAddress), true, 'link leads to wrong page')
+        await switchToFirstPage()
+      })
+
       it('adds token with  the same address to ROPSTEN network', async function () {
         await setProvider(NETWORKS.ROPSTEN)
         await addToken(tokenAddress, tokenName, tokenDecimals)
         const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
         assert.notEqual(await tokenBalance.getText(), '')
+      })
+
+      it('click to token opens the Ropsten Etherscan', async function () {
+        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://ropsten.etherscan.io/token/' + tokenAddress), true, 'link leads to wrong page')
+        await switchToFirstPage()
       })
 
       it('adds token with  the same address to KOVAN network', async function () {
@@ -783,11 +807,27 @@ describe('Nifty wallet popup page', async function () {
         assert.notEqual(await tokenBalance.getText(), '')
       })
 
+      it('click to token opens the Kovan Etherscan', async function () {
+        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://kovan.etherscan.io/token/' + tokenAddress), true, 'link leads to wrong page')
+        await switchToFirstPage()
+      })
+
       it('adds token with  the same address to RINKEBY network', async function () {
         await setProvider(NETWORKS.RINKEBY)
         await addToken(tokenAddress, tokenName, tokenDecimals)
         const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
         assert.notEqual(await tokenBalance.getText(), '')
+      })
+
+      it('click to token opens the Rinkeby Etherscan', async function () {
+        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://rinkeby.etherscan.io/token/' + tokenAddress), true, 'link leads to wrong page')
+        await switchToFirstPage()
       })
 
       it('token still should be displayed in LOCALHOST network', async function () {
@@ -797,6 +837,14 @@ describe('Nifty wallet popup page', async function () {
         const tokens = await driver.findElements(screens.main.tokens.amount)
         assert.equal(tokens.length, 1, '\'Tokens\' section doesn\'t contain field with amount of tokens')
         assert.equal(await tokens[0].getText(), screens.main.tokens.textYouOwn1token, 'Token isn\'t displayed')
+      })
+
+      it('click to token opens the Etherscan', async function () {
+        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://etherscan.io/token/' + tokenAddress), true, 'link leads to wrong page')
+        await switchToFirstPage()
       })
     })
   })
@@ -1225,7 +1273,7 @@ describe('Nifty wallet popup page', async function () {
       let counter = 100
       do {
         await delay(500)
-        if (await driver.getCurrentUrl() !== '') return true
+        if (await driver.getCurrentUrl() !== 'about:blank') return true
       }
       while (counter-- > 0)
       return true
@@ -1241,7 +1289,7 @@ describe('Nifty wallet popup page', async function () {
       let counter = 100
       do {
         await delay(500)
-        if (await driver.getCurrentUrl() !== '') return true
+        if (await driver.getCurrentUrl() !== 'about:blank') return true
       }
       while (counter-- > 0)
       return true
