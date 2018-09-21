@@ -11,6 +11,7 @@ const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
 // Modal Components
 const BuyOptions = require('./buy-options-modal')
 const DepositEtherModal = require('./deposit-ether-modal')
+const ErrorLoadingNetwork = require('./error-loading-network')
 const AccountDetailsModal = require('./account-details-modal')
 const EditAccountNameModal = require('./edit-account-name-modal')
 const ExportPrivateKeyModal = require('./export-private-key-modal')
@@ -166,6 +167,13 @@ const MODALS = {
   ACCOUNT_DETAILS: {
     contents: [
       h(AccountDetailsModal, {}, []),
+    ],
+    ...accountModalStyle,
+  },
+
+  ERROR_LOADING_NETWORK: { 
+    contents: [
+        h(ErrorLoadingNetwork, {}, []),
     ],
     ...accountModalStyle,
   },
@@ -386,7 +394,12 @@ function mapDispatchToProps (dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning())
     },
-
+    showErrorLoadingNetworkModal: () => {
+      dispatch(actions.showErrorLoadingNetworkModal())
+    },
+    hideErrorLoadingNetworkModal: () => {
+      dispatch(actions.hideErrorLoadingNetworkModal())
+    }
   }
 }
 
@@ -399,7 +412,10 @@ function Modal () {
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 
 Modal.prototype.render = function () {
-  const modal = MODALS[this.props.modalState.name || 'DEFAULT']
+  const modal = MODALS[(this.props.isErrorLoadingNetwork && this.props.errorLoadingNetworkModalOpen) ? 'ERROR_LOADING_NETWORK' : (this.props.modalState.name || 'DEFAULT')]
+  console.log('render ')
+  console.log(modal)
+  console.log(this.props)
 
   const { contents: children, disableBackdropClick = false } = modal
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
@@ -428,9 +444,9 @@ Modal.prototype.render = function () {
 }
 
 Modal.prototype.componentWillReceiveProps = function (nextProps) {
-  if (nextProps.active) {
+  if (nextProps.active || (nextProps.isErrorLoadingNetwork && nextProps.errorLoadingNetworkModalOpen)) {
     this.show()
-  } else if (this.props.active) {
+  } else if ((this.props.errorLoadingNetworkModalOpen || this.props.active) && (!nextProps.errorLoadingNetworkModalOpen || !nextProps.active)) {
     this.hide()
   }
 }

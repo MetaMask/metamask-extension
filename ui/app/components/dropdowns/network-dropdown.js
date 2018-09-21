@@ -45,7 +45,6 @@ function mapDispatchToProps (dispatch) {
     },
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
-    showErrorLoadingScreen: () => dispatch(actions.showErrorLoadingScreen())
   }
 }
 
@@ -119,7 +118,6 @@ NetworkDropdown.prototype.render = function () {
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => {
          props.setProviderType('mainnet')
-         props.showErrorLoadingScreen()
         },
         style: { ...dropdownMenuItemStyle, borderColor: '#038789' },
       },
@@ -144,7 +142,6 @@ NetworkDropdown.prototype.render = function () {
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => {
          props.setProviderType('ropsten')   
-         props.showErrorLoadingScreen()
         },
         style: dropdownMenuItemStyle,
       },
@@ -168,8 +165,7 @@ NetworkDropdown.prototype.render = function () {
         key: 'kovan',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => {
-         props.setProviderType('kovan'),
-         props.showErrorLoadingScreen()
+         props.setProviderType('kovan')
         },
         style: dropdownMenuItemStyle,
       },
@@ -193,8 +189,7 @@ NetworkDropdown.prototype.render = function () {
         key: 'rinkeby',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => {
-         props.setProviderType('rinkeby'),
-         props.showErrorLoadingScreen()
+         props.setProviderType('rinkeby')
         },
         style: dropdownMenuItemStyle,
       },
@@ -218,8 +213,7 @@ NetworkDropdown.prototype.render = function () {
         key: 'default',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => {
-         props.setProviderType('localhost'),
-         props.showErrorLoadingScreen()
+         props.setProviderType('localhost')
         },
         style: dropdownMenuItemStyle,
       },
@@ -245,8 +239,7 @@ NetworkDropdown.prototype.render = function () {
       {
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => {
-         this.props.history.push(SETTINGS_ROUTE),
-         props.showErrorLoadingScreen()
+         this.props.history.push(SETTINGS_ROUTE)
         },
         style: dropdownMenuItemStyle,
       },

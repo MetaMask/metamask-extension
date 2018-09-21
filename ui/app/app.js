@@ -40,7 +40,6 @@ const Modal = require('./components/modals/index').Modal
 const Alert = require('./components/alert')
 
 import AppHeader from './components/app-header'
-import ErrorLoading from './components/error-loading-screen'
 import UnlockPage from './components/pages/unlock-page'
 
 // Routes
@@ -100,6 +99,7 @@ class App extends Component {
       alertMessage,
       loadingMessage,
       network,
+      errorLoadingNetworkModalOpen,
       isMouseUser,
       provider,
       frequentRpcList,
@@ -109,10 +109,9 @@ class App extends Component {
       location
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
-    const isErrorLoading = network === 'timeout' && location.pathname !== SETTINGS_ROUTE && location.pathname !== UNLOCK_ROUTE
+    const isErrorLoadingNetwork = network === 'timeout' && location.pathname !== SETTINGS_ROUTE && location.pathname !== UNLOCK_ROUTE
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
-    const errorLoadingMessage = this.context.t('verifyNetworkTimeout')
     log.debug('Main ui render function')
     log.debug(currentView.name)
     log.debug(location.pathname)
@@ -135,7 +134,7 @@ class App extends Component {
       }, [
 
         // global modal
-        h(Modal, {}, []),
+        h(Modal, {'isErrorLoadingNetwork': isErrorLoadingNetwork, 'errorLoadingNetworkModalOpen': errorLoadingNetworkModalOpen}),
 
         // global alert
         h(Alert, {visible: this.props.alertOpen, msg: alertMessage}),
@@ -162,13 +161,6 @@ class App extends Component {
           loadingMessage: loadMessage,
         }),
 
-        (isErrorLoading) && h(ErrorLoading, {
-           loadingMessage: errorLoadingMessage,
-           networkDropdownOpen: this.props.networkDropdownOpen,
-           showNetworkDropdown: this.props.showNetworkDropdown,
-           hideNetworkDropdown: this.props.hideNetworkDropdown,
-           provider: this.props.provider
-        }),
         // content
         this.renderRoutes(),
       ])
@@ -249,9 +241,9 @@ App.propTypes = {
   isMascara: PropTypes.bool,
   isOnboarding: PropTypes.bool,
   isUnlocked: PropTypes.bool,
-  errorLoadingScreenOpen: PropTypes.bool,
-  showErrorLoadingScreen: PropTypes.func,
-  hideErrorLoadingScreen: PropTypes.func,
+  errorLoadingNetworkModalOpen: PropTypes.bool,
+  showErrorLoadingNetworkModal: PropTypes.func,
+  hideErrorLoadingNetworkModal: PropTypes.func,
   networkDropdownOpen: PropTypes.bool,
   showNetworkDropdown: PropTypes.func,
   hideNetworkDropdown: PropTypes.func,
@@ -282,7 +274,7 @@ function mapStateToProps (state) {
   const { appState, metamask } = state
   const {
     networkDropdownOpen,
-    errorLoadingScreenOpen,
+    errorLoadingNetworkModalOpen,
     sidebar,
     alertOpen,
     alertMessage,
@@ -309,7 +301,7 @@ function mapStateToProps (state) {
 
   return {
     // state from plugin
-    errorLoadingScreenOpen,
+    errorLoadingNetworkModalOpen,
     networkDropdownOpen,
     sidebar,
     alertOpen,
@@ -357,8 +349,8 @@ function mapDispatchToProps (dispatch, ownProps) {
   return {
     dispatch,
     hideSidebar: () => dispatch(actions.hideSidebar()),
-    showErrorLoadingScreen: () => dispatch(actions.showErrorLoadingScreen()),
-    hideErrorLoadingScreen: () => dispatch(actions.hideErrorLoadingScreen()),
+    showErrorLoadingNetworkModal: () => dispatch(actions.showErrorLoadingNetworkModal()),
+    hideErrorLoadingNetworkModal: () => dispatch(actions.hideErrorLoadingNetworkModal()),
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),

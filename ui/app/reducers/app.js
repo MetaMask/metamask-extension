@@ -57,6 +57,7 @@ function reduceApp (state, action) {
     alertMessage: null,
     qrCodeData: null,
     networkDropdownOpen: false,
+    errorLoadingNetworkModalOpen: true,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
@@ -79,14 +80,14 @@ function reduceApp (state, action) {
 
   switch (action.type) {
     // dropdown methods
-    case actions.ERROR_LOADING_SCREEN_OPEN:
+    case actions.ERROR_LOADING_NETWORK_MODAL_OPEN:
       return extend(appState, {
-        errorLoadingScreenOpen: true,
+        errorLoadingNetworkModalOpen: true,
       })
 
-    case actions.ERROR_LOADING_SCREEN_CLOSE:
+    case actions.ERROR_LOADING_NETWORK_MODAL_CLOSE:
       return extend(appState, {
-        errorLoadingScreenOpen: false,
+        errorLoadingNetworkModalOpen: false,
       })
     case actions.NETWORK_DROPDOWN_OPEN:
       return extend(appState, {

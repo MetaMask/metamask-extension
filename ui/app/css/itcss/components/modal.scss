@@ -183,6 +183,65 @@
   font-size: 18px;
 }
 
+// Error Loading Network Modal Container
+.error-loading-network-modal-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  padding: 5px 0 31px 0;
+  border: 1px solid $silver;
+  border-radius: 4px;
+  font-family: Roboto;
+
+  button {
+    cursor: pointer;
+  }
+}
+
+.error-loading-network-modal-back {
+  color: $dusty-gray;
+  position: absolute;
+  top: 13px;
+  left: 17px;
+  cursor: pointer;
+
+  &__text {
+    margin-top: 2px;
+    font-family: Roboto;
+    font-size: 14px;
+    line-height: 18px;
+  }
+}
+
+.error-loading-network-modal-close::after {
+  content: '\00D7';
+  font-size: 25px;
+  color: #000;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  cursor: pointer;
+}
+
+.error-loading-network-modal-container .emoji {
+    font-size: 24px; 
+    display: block;
+    margin-bottom: 25px;
+}
+
+.error-loading-network-modal-message {
+    margin: 20px;
+    margin-top: 64px;
+    padding: 10px;
+    font-weight: 400;
+    font-size: 20px;
+    color: #000;
+    text-align: center;
+    display: block;
+  }
+
 // Account Modal Container
 .account-modal-container {
   display: flex;

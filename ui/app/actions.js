@@ -42,10 +42,10 @@ var actions = {
   showNetworkDropdown: showNetworkDropdown,
   hideNetworkDropdown: hideNetworkDropdown,
   //error loading screen open
-  ERROR_LOADING_SCREEN_OPEN: 'UI_ERROR_LOADING_SCREEN_OPEN',
-  ERROR_LOADING_SCREEN_CLOSE: 'UI_ERROR_LOADING_SCREEN_CLOSE',
-  showErrorLoadingScreen: showErrorLoadingScreen,
-  hideErrorLoadingScreen: hideErrorLoadingScreen,
+  ERROR_LOADING_NETWORK_MODAL_OPEN: 'UI_ERROR_LOADING_NETWORK_MODAL_OPEN',
+  ERROR_LOADING_NETWORK_MODAL_CLOSE: 'UI_ERROR_LOADING_NETWORK_MODAL_CLOSE',
+  showErrorLoadingNetworkModal: showErrorLoadingNetworkModal,
+  hideErrorLoadingNetworkModal: hideErrorLoadingNetworkModal,
   // menu state/
   getNetworkStatus: 'getNetworkStatus',
   // transition state
@@ -1785,6 +1785,7 @@ function setProviderType (type) {
       }
       dispatch(actions.updateProviderType(type))
       dispatch(actions.setSelectedToken())
+      dispatch(actions.showErrorLoadingNetworkModal())
     })
 
   }
@@ -1806,6 +1807,7 @@ function setRpcTarget (newRpc) {
         return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
       dispatch(actions.setSelectedToken())
+      dispatch(actions.showErrorLoadingNetworkModal())
     })
   }
 }
@@ -1831,17 +1833,18 @@ function useEtherscanProvider () {
   }
 }
 
-function showErrorLoadingScreen () {
+function showErrorLoadingNetworkModal() {
   return {
-    type: actions.ERROR_LOADING_SCREEN_OPEN,
+    type: actions.ERROR_LOADING_NETWORK_MODAL_OPEN
   }
 }
 
-function hideErrorLoadingScreen () {
+function hideErrorLoadingNetworkModal() {
   return {
-    type: actions.ERROR_LOADING_SCREEN_CLOSE,
+    type: actions.ERROR_LOADING_NETWORK_MODAL_CLOSE,
   }
 }
+
 
 function showNetworkDropdown () {
   return {
