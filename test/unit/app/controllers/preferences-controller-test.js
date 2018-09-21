@@ -449,5 +449,35 @@ describe('preferences controller', function () {
       assert.ok(assetImages[address], `set image correctly`)
     })
   })
+
+  describe('setPasswordForgotten', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState()
+      assert.equal(state.forgottenPassword, false)
+    })
+
+    it('should set the forgottenPassword property in state', function () {
+      assert.equal(preferencesController.store.getState().forgottenPassword, false)
+
+      preferencesController.setPasswordForgotten(true)
+
+      assert.equal(preferencesController.store.getState().forgottenPassword, true)
+    })
+  })
+
+  describe('setSeedWords', function () {
+    it('should default to null', function () {
+      const state = preferencesController.store.getState()
+      assert.equal(state.seedWords, null)
+    })
+
+    it('should set the seedWords property in state', function () {
+      assert.equal(preferencesController.store.getState().seedWords, null)
+
+      preferencesController.setSeedWords('foo bar baz')
+
+      assert.equal(preferencesController.store.getState().seedWords, 'foo bar baz')
+    })
+  })
 })
 

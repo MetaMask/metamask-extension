@@ -1,37 +1,34 @@
 .transaction-list-item {
   box-sizing: border-box;
   min-height: 74px;
-  padding: 8px 20px;
   border-bottom: 1px solid $geyser;
-  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 
-  @media screen and (max-width: $break-small) {
-    padding: 8px 20px 12px;
-  }
-
-  &:hover {
-    background: rgba($alto, .2);
-  }
-
   &__grid {
+    cursor: pointer;
     width: 100%;
+    padding: 16px 20px;
     display: grid;
     grid-template-columns: 45px 1fr 1fr 1fr;
     grid-template-areas:
       "identicon action status primary-amount"
       "identicon nonce status secondary-amount";
 
-      @media screen and (max-width: $break-small) {
-        grid-template-columns: 45px 5fr 3fr;
-        grid-template-areas:
-          "nonce nonce nonce"
-          "identicon action primary-amount"
-          "identicon status secondary-amount";
-      }
+    @media screen and (max-width: $break-small) {
+      padding: 8px 20px 12px;
+      grid-template-columns: 45px 5fr 3fr;
+      grid-template-areas:
+        "nonce nonce nonce"
+        "identicon action primary-amount"
+        "identicon status secondary-amount";
+    }
+
+    &:hover {
+      background: rgba($alto, .2);
+    }
   }
 
   &__identicon {
@@ -113,5 +110,11 @@
     @media screen and (max-width: $break-small) {
       font-size: .5rem;
     }
+  }
+
+  &__details-container {
+    padding: 8px 16px 16px;
+    background: #f3f4f7;
+    width: 100%;
   }
 }

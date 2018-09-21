@@ -56,6 +56,7 @@ IdenticonComponent.prototype.render = function () {
     })
   } else {
     return h('img.balance-icon', {
+      className,
       src: './images/eth_logo.svg',
       style: {
         ...style,

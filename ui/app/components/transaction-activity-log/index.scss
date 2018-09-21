@@ -1,0 +1,63 @@
+.transaction-activity-log {
+  &__card {
+    background: $white;
+    height: 100%;
+  }
+
+  &__activities-container {
+    padding-top: 8px;
+  }
+
+  &__activity {
+    padding: 4px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 6px;
+      border-right: 1px solid $scorpion;
+    }
+
+    &:first-child::after {
+      height: 50%;
+      top: 50%;
+    }
+
+    &:last-child::after {
+      height: 50%;
+    }
+  }
+
+  &__activity-icon {
+    width: 13px;
+    height: 13px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: $scorpion;
+    flex: 0 0 auto;
+  }
+
+  &__activity-text {
+    color: $scorpion;
+    font-size: .75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__value {
+    display: inline;
+    font-weight: 500;
+  }
+
+  b {
+    font-weight: 500;
+  }
+}

@@ -7,6 +7,8 @@ const actions = require('../../actions')
 const { getNetworkDisplayName } = require('../../../../app/scripts/controllers/network/util')
 const ShapeshiftForm = require('../shapeshift-form')
 
+import Button from '../button'
+
 let DIRECT_DEPOSIT_ROW_TITLE
 let DIRECT_DEPOSIT_ROW_TEXT
 let COINBASE_ROW_TITLE
@@ -109,7 +111,10 @@ DepositEtherModal.prototype.renderRow = function ({
       ]),
 
       !hideButton && h('div.deposit-ether-modal__buy-row__button', [
-        h('button.btn-primary.btn--large.deposit-ether-modal__deposit-button', {
+        h(Button, {
+          type: 'primary',
+          className: 'deposit-ether-modal__deposit-button',
+          large: true,
           onClick: onButtonClick,
         }, [buttonLabel]),
       ]),

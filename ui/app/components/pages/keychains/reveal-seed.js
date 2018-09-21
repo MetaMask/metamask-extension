@@ -8,6 +8,8 @@ const { requestRevealSeedWords } = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../routes')
 const ExportTextContainer = require('../../export-text-container')
 
+import Button from '../../button'
+
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
 
@@ -106,10 +108,16 @@ class RevealSeedPage extends Component {
   renderPasswordPromptFooter () {
     return (
       h('.page-container__footer', [
-        h('button.btn-default.btn--large.page-container__footer-button', {
+        h(Button, {
+          type: 'default',
+          large: true,
+          className: 'page-container__footer-button',
           onClick: () => this.props.history.push(DEFAULT_ROUTE),
         }, this.context.t('cancel')),
-        h('button.btn-primary.btn--large.page-container__footer-button', {
+        h(Button, {
+          type: 'primary',
+          large: true,
+          className: 'page-container__footer-button',
           onClick: event => this.handleSubmit(event),
           disabled: this.state.password === '',
         }, this.context.t('next')),
@@ -120,7 +128,10 @@ class RevealSeedPage extends Component {
   renderRevealSeedFooter () {
     return (
       h('.page-container__footer', [
-        h('button.btn-default.btn--large.page-container__footer-button', {
+        h(Button, {
+          type: 'default',
+          large: true,
+          className: 'page-container__footer-button',
           onClick: () => this.props.history.push(DEFAULT_ROUTE),
         }, this.context.t('close')),
       ])
