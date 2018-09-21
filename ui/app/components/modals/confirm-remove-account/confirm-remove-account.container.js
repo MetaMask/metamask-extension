@@ -2,8 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import ConfirmRemoveAccount from './confirm-remove-account.component'
 import withModalProps from '../../../higher-order-components/with-modal-props'
-
-const { hideModal, removeAccount } = require('../../../actions')
+import { removeAccount } from '../../../actions'
 
 const mapStateToProps = state => {
   return {
@@ -13,7 +12,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    hideModal: () => dispatch(hideModal()),
     removeAccount: (address) => dispatch(removeAccount(address)),
   }
 }

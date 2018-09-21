@@ -12,7 +12,7 @@ describe('CancelTransaction Component', () => {
   it('should render a CancelTransaction modal', () => {
     const wrapper = shallow(
       <CancelTransaction
-        defaultNewGasPrice="0x3b9aca00"
+        newGasFee="0x1319718a5000"
       />,
       { context: { t }}
     )

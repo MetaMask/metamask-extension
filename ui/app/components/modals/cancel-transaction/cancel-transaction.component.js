@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import Modal from '../../modal'
 import CancelTransactionGasFee from './cancel-transaction-gas-fee'
 import { SUBMITTED_STATUS } from '../../../constants/transactions'
-import { decimalToHex } from '../../../helpers/conversions.util'
-import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
 
 export default class CancelTransaction extends PureComponent {
   static contextTypes = {
@@ -16,7 +14,7 @@ export default class CancelTransaction extends PureComponent {
     hideModal: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
     transactionStatus: PropTypes.string,
-    defaultNewGasPrice: PropTypes.string,
+    newGasFee: PropTypes.string,
   }
 
   componentDidUpdate () {
@@ -41,12 +39,12 @@ export default class CancelTransaction extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { defaultNewGasPrice: gasPrice } = this.props
-    const newGasFee = getHexGasTotal({ gasPrice, gasLimit: decimalToHex(21000) })
+    const { newGasFee } = this.props
 
     return (
       <Modal
         headerText={t('attemptToCancel')}
+        onClose={this.handleCancel}
         onSubmit={this.handleSubmit}
         onCancel={this.handleCancel}
         submitText={t('yesLetsTry')}

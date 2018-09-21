@@ -88,6 +88,7 @@ describe('Modal Component', () => {
         onSubmit={handleSubmit}
         submitText="Submit"
         headerText="My Header"
+        onClose={handleCancel}
       />
     )
 
@@ -98,20 +99,5 @@ describe('Modal Component', () => {
     wrapper.find('.modal-container__header-close').simulate('click')
     assert.equal(handleCancel.callCount, 1)
     assert.equal(handleSubmit.callCount, 0)
-  })
-
-  it('should call onSubmit when onCancel is undefined and the header close button is clicked', () => {
-    const handleSubmit = sinon.spy()
-    const wrapper = shallow(
-      <Modal
-        onSubmit={handleSubmit}
-        submitText="Submit"
-        headerText="My Header"
-      />
-    )
-
-    assert.equal(handleSubmit.callCount, 0)
-    wrapper.find('.modal-container__header-close').simulate('click')
-    assert.equal(handleSubmit.callCount, 1)
   })
 })

@@ -1,32 +1,39 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import R from 'ramda'
+import ethUtil from 'ethereumjs-util'
 import { multiplyCurrencies } from '../../../conversion-util'
-import { bnToHex } from '../../../helpers/conversions.util'
 import withModalProps from '../../../higher-order-components/with-modal-props'
 import CancelTransaction from './cancel-transaction.component'
-import { showModal, hideModal, createCancelTransaction } from '../../../actions'
+import { showModal, createCancelTransaction } from '../../../actions'
+import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state
   const { transactionId, originalGasPrice } = ownProps
   const { selectedAddressTxList } = metamask
-  const transaction = R.find(({ id }) => id === transactionId)(selectedAddressTxList)
+  const transaction = selectedAddressTxList.find(({ id }) => id === transactionId)
   const transactionStatus = transaction ? transaction.status : ''
 
-  const defaultNewGasPrice = bnToHex(multiplyCurrencies(originalGasPrice, 1.1))
+  const defaultNewGasPrice = ethUtil.addHexPrefix(
+    multiplyCurrencies(originalGasPrice, 1.1, {
+      toNumericBase: 'hex',
+      multiplicandBase: 16,
+      multiplierBase: 10,
+    })
+  )
+
+  const newGasFee = getHexGasTotal({ gasPrice: defaultNewGasPrice, gasLimit: '0x5208' })
 
   return {
     transactionId,
     transactionStatus,
     originalGasPrice,
-    defaultNewGasPrice,
+    newGasFee,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    hideModal: () => dispatch(hideModal()),
     createCancelTransaction: txId => dispatch(createCancelTransaction(txId)),
     showTransactionConfirmedModal: () => dispatch(showModal({ name: 'TRANSACTION_CONFIRMED' })),
   }

@@ -5,7 +5,7 @@ import { addressSummary } from '../../../util'
 import Identicon from '../../identicon'
 import genAccountLink from '../../../../lib/account-link'
 
-class ConfirmRemoveAccount extends Component {
+export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
@@ -17,9 +17,13 @@ class ConfirmRemoveAccount extends Component {
     t: PropTypes.func,
   }
 
-  handleRemove () {
+  handleRemove = () => {
     this.props.removeAccount(this.props.identity.address)
       .then(() => this.props.hideModal())
+  }
+
+  handleCancel = () => {
+    this.props.hideModal()
   }
 
   renderSelectedAccount () {
@@ -60,8 +64,9 @@ class ConfirmRemoveAccount extends Component {
     return (
       <Modal
         headerText={`${t('removeAccount')}?`}
-        onSubmit={() => this.handleRemove()}
-        onCancel={() => this.props.hideModal()}
+        onClose={this.handleCancel}
+        onSubmit={this.handleRemove}
+        onCancel={this.handleCancel}
         submitText={t('remove')}
         cancelText={t('nevermind')}
         submitType="secondary"
@@ -82,5 +87,3 @@ class ConfirmRemoveAccount extends Component {
     )
   }
 }
-
-export default ConfirmRemoveAccount

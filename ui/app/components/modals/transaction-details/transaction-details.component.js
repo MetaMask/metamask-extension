@@ -18,15 +18,20 @@ export default class TransactionConfirmed extends PureComponent {
     showCancel: PropTypes.bool,
   }
 
+  handleSubmit = () => {
+    this.props.hideModal()
+  }
+
   render () {
     const { t } = this.context
-    const { transaction, onRetry, showRetry, onCancel, showCancel, hideModal } = this.props
+    const { transaction, onRetry, showRetry, onCancel, showCancel } = this.props
     const { txParams: { nonce } = {} } = transaction
     const decimalNonce = nonce && hexToDecimal(nonce)
 
     return (
       <Modal
-        onSubmit={() => hideModal()}
+        onSubmit={this.handleSubmit}
+        onClose={this.handleSubmit}
         submitText={t('ok')}
         headerText={t('transactionWithNonce', [`#${decimalNonce}`])}
       >
