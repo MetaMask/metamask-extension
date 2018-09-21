@@ -5,6 +5,16 @@ module.exports = {
     loader: By.css('#app-content > div > div.full-flex-height > img'),
   },
   menus: {
+    token: {
+      menu: By.id('token-cell_dropdown_0'),
+      items: By.className('dropdown-menu-item'),
+      view: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(2)'),
+      copy: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(3)'),
+      remove: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(4)'),
+      viewText: 'View token on block explorer',
+      copyText: 'Copy address to clipboard',
+      removeText: 'Remove',
+    },
     sandwich: {
       menu: By.css('.sandwich-expando'),
       settings: By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(2)'),
@@ -148,7 +158,6 @@ module.exports = {
       balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),
       address: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div'),
       tokens: {
-        remove: By.className('trash'),
         menu: By.className('inactiveForm pointer'),
         token: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li'),
         balance: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > h3'),
@@ -169,7 +178,7 @@ module.exports = {
       title: By.className('page-subtitle'),
       titleText: 'Remove Token',
       label: By.className('confirm-label'),
-      labelText: 'Are you sure you want to remove token',
+      labelText: 'Are you sure you want to remove token "TST"?',
       buttons: {
         back: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
         no: By.className('btn-violet'),

@@ -8,7 +8,7 @@ const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 const { menus, screens, elements, NETWORKS } = require('./elements')
 
-describe('Metamask popup page', async function () {
+describe('Nifty wallet popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
   let password = '123456789'
 
@@ -50,7 +50,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    await driver.quit()
+    // await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -698,6 +698,14 @@ describe('Metamask popup page', async function () {
       const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
       assert.equal(await tokenBalance.getText(), '0 TST')
     })
+
+    it('click to token opens the etherscan', async function () {
+      await (await waitUntilShowUp(screens.main.tokens.token)).click()
+      await switchToLastPage()
+      const title = await driver.getCurrentUrl()
+      assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
+      await switchToFirstPage()
+    })
   })
 
   describe('Check support of token per network basis ', async function () {
@@ -792,19 +800,60 @@ describe('Metamask popup page', async function () {
       })
     })
   })
+  describe('Token menu', function () {
 
+    it('token menu is displayed and clickable ', async function () {
+      const menu = await waitUntilShowUp(menus.token.menu)
+      await menu.click()
+    })
+
+    it('link \'View on blockexplorer...\' leads to correct page ', async function () {
+      const menu = await waitUntilShowUp(menus.token.view)
+      assert.notEqual(menu, false, 'item isn\'t displayed')
+      assert.equal(await menu.getText(), menus.token.viewText, 'incorrect name')
+      await menu.click()
+      await switchToLastPage()
+      const title = await driver.getCurrentUrl()
+      assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
+      await switchToFirstPage()
+    })
+
+    it('item \'Copy\' is displayed and clickable ', async function () {
+      let menu = await waitUntilShowUp(menus.token.menu)
+      await menu.click()
+      const item = await waitUntilShowUp(menus.token.copy)
+      assert.notEqual(item, false, 'item isn\'t displayed')
+      assert.equal(await item.getText(), menus.token.copyText, 'incorrect name')
+      await item.click()
+      menu = await waitUntilShowUp(menus.token.menu, 10)
+      assert.notEqual(menu, false, 'menu wasn\'t closed')
+    })
+    it('item \'Remove\' is displayed', async function () {
+      const menu = await waitUntilShowUp(menus.token.menu)
+      await menu.click()
+      const item = await waitUntilShowUp(menus.token.remove)
+      assert.notEqual(item, false, 'item isn\'t displayed')
+      assert.equal(await item.getText(), menus.token.removeText, 'incorrect name')
+    })
+  })
   describe('Remove Token', function () {
 
-    it('button \'Remove token\' displayed', async function () {
+    it('remove option open \'Remove token\' screen ', async function () {
       await setProvider(NETWORKS.LOCALHOST)
-      const removeTokenButton = await waitUntilShowUp(screens.main.tokens.remove)
-      assert.notEqual(removeTokenButton, false, 'button isn\'t displayed')
-      await removeTokenButton.click()
+      const menu = await waitUntilShowUp(menus.token.menu)
+      await menu.click()
+      const remove = await waitUntilShowUp(menus.token.remove)
+      await remove.click()
     })
 
     it('screen \'Remove token\' has correct title', async function () {
       const title = await waitUntilShowUp(screens.removeToken.title)
       assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
+    })
+
+    it('screen \'Remove token\' has correct label', async function () {
+      const title = await waitUntilShowUp(screens.removeToken.label)
+      assert.equal(await title.getText(), screens.removeToken.labelText, 'label is incorrect')
     })
 
     it('button "No" bring back to "Main" screen', async function () {
@@ -819,9 +868,11 @@ describe('Metamask popup page', async function () {
     })
 
     it('button "Yes" delete token', async function () {
-      const removeTokenButton = await waitUntilShowUp(screens.main.tokens.remove)
-      assert.notEqual(removeTokenButton, false, 'button isn\'t displayed')
-      await removeTokenButton.click()
+      const menu = await waitUntilShowUp(menus.token.menu)
+      await menu.click()
+      const remove = await waitUntilShowUp(menus.token.remove)
+      await remove.click()
+
       const title = await waitUntilShowUp(screens.removeToken.title)
       assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
 
@@ -1079,7 +1130,7 @@ describe('Metamask popup page', async function () {
   }
 
   async function waitUntilShowUp (by, Twait) {
-    if (Twait === undefined) Twait = 2000
+    if (Twait === undefined) Twait = 200
     do {
       await delay(100)
       if (await isElementDisplayed(by)) return await driver.findElement(by)
@@ -1166,5 +1217,38 @@ describe('Metamask popup page', async function () {
     const htmlSource = await driver.getPageSource()
     await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
+
+  async function switchToLastPage () {
+    try {
+      const allHandles = await driver.getAllWindowHandles()
+      await driver.switchTo().window(allHandles[allHandles.length - 1])
+      let counter = 100
+      do {
+        await delay(500)
+        if (await driver.getCurrentUrl() !== '') return true
+      }
+      while (counter-- > 0)
+      return true
+    } catch (err) {
+      return false
+    }
+  }
+
+  async function switchToFirstPage () {
+    try {
+      const allHandles = await driver.getAllWindowHandles()
+      await driver.switchTo().window(allHandles[0])
+      let counter = 100
+      do {
+        await delay(500)
+        if (await driver.getCurrentUrl() !== '') return true
+      }
+      while (counter-- > 0)
+      return true
+    } catch (err) {
+      return false
+    }
+  }
+
 })
 
