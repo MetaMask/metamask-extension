@@ -268,6 +268,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // msg signing
       processEthSignMessage: this.newUnsignedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      getPendingNonce: this.getPendingNonce.bind(this),
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -1360,6 +1361,19 @@ module.exports = class MetamaskController extends EventEmitter {
     const percentileNum = percentile(50, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
+  }
+
+  /**
+   * Returns the nonce that will be associated with a transaction once approved
+   * @param address {string} - The hex string address for the transaction
+   * @returns Promise<number>
+   */
+  async getPendingNonce (address) {
+    const { nonceDetails, releaseLock} = await this.txController.nonceTracker.getNonceLock(address)
+    const pendingNonce = nonceDetails.params.highestSuggested
+
+    releaseLock()
+    return pendingNonce
   }
 
 //=============================================================================
