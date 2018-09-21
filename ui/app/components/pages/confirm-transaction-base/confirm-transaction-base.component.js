@@ -21,6 +21,7 @@ export default class ConfirmTransactionBase extends Component {
     // Redux props
     balance: PropTypes.string,
     cancelTransaction: PropTypes.func,
+    cancelAllTransactions: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
     clearSend: PropTypes.func,
     conversionRate: PropTypes.number,
@@ -248,6 +249,16 @@ export default class ConfirmTransactionBase extends Component {
     onEdit({ txData, tokenData, tokenProps })
   }
 
+  handleCancelAll () {
+    const { cancelAllTransactions, history, clearConfirmTransaction } = this.props
+
+    cancelAllTransactions()
+      .then(() => {
+        clearConfirmTransaction()
+        history.push(DEFAULT_ROUTE)
+      })
+  }
+
   handleCancel () {
     const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction } = this.props
 
@@ -309,6 +320,7 @@ export default class ConfirmTransactionBase extends Component {
       identiconAddress,
       summaryComponent,
       contentComponent,
+      onCancelAll,
       onEdit,
       nonce,
       assetImage,
@@ -343,6 +355,7 @@ export default class ConfirmTransactionBase extends Component {
         warning={warning}
         disabled={!propsValid || !valid || submitting}
         onEdit={() => this.handleEdit()}
+        onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
       />

@@ -18,7 +18,12 @@ const typeHash = {
 }
 
 export default class Button extends Component {
+  static defaultProps = {
+    buttonRef: () => {},
+  }
+
   static propTypes = {
+    buttonRef: PropTypes.func,
     type: PropTypes.string,
     large: PropTypes.bool,
     className: PropTypes.string,
@@ -26,10 +31,11 @@ export default class Button extends Component {
   }
 
   render () {
-    const { type, large, className, ...buttonProps } = this.props
+    const { buttonRef, type, large, className, ...buttonProps } = this.props
 
     return (
       <button
+        ref={buttonRef}
         className={classnames(
           'button',
           typeHash[type],

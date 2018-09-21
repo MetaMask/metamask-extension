@@ -46,8 +46,19 @@
     flex-flow: row;
     justify-content: center;
     border-top: 1px solid $geyser;
-    padding: 16px;
+    padding: 16px 16px 16px 0;
     flex: 0 0 auto;
+
+    > div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: end;
+      width: 100%;
+      height: 100%;
+      overflow-x: scroll;
+      padding-left: 16px;
+    }
 
     .btn-default,
     .btn-confirm {
