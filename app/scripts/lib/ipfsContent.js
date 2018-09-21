@@ -34,7 +34,7 @@ module.exports = function (provider) {
       return { cancel: true }
     }
 
-    extension.webRequest.onErrorOccurred.addListener(ipfsContent, {urls: ['*://*.eth/', '*://*.test/']})
+    extension.webRequest.onErrorOccurred.addListener(ipfsContent, {urls: ['*://*.eth/']})
 
     return {
       remove () {

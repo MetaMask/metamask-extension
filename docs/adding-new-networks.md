@@ -5,7 +5,6 @@ To add another network to our dropdown menu, make sure the following files are a
 ```
 app/scripts/config.js
 app/scripts/lib/buy-eth-url.js
-app/scripts/lib/config-manager.js
 ui/app/app.js
 ui/app/components/buy-button-subview.js
 ui/app/components/drop-menu-item.js

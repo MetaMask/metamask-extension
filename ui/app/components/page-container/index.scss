@@ -109,7 +109,7 @@
 
     &--selected {
       color: $curious-blue;
-      border-bottom: 3px solid $curious-blue;
+      border-bottom: 2px solid $curious-blue;
     }
   }
 
@@ -182,5 +182,7 @@
     max-height: 82vh;
     min-height: 570px;
     flex: 0 0 auto;
+    margin-right: auto;
+    margin-left: auto;
   }
 }

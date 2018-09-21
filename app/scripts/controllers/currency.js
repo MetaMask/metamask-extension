@@ -1,4 +1,4 @@
-  const ObservableStore = require('obs-store')
+const ObservableStore = require('obs-store')
 const extend = require('xtend')
 const log = require('loglevel')
 

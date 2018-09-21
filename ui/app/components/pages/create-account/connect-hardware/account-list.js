@@ -2,16 +2,76 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const genAccountLink = require('../../../../../lib/account-link.js')
+const Select = require('react-select').default
+import Button from '../../../button'
 
 class AccountList extends Component {
     constructor (props, context) {
         super(props)
     }
 
+    getHdPaths () {
+      return [
+        {
+          label: `Ledger Live`,
+          value: `m/44'/60'/0'/0/0`,
+        },
+        {
+          label: `Legacy (MEW / MyCrypto)`,
+          value: `m/44'/60'/0'`,
+        },
+      ]
+    }
+
+    goToNextPage = () => {
+      // If we have < 5 accounts, it's restricted by BIP-44
+      if (this.props.accounts.length === 5) {
+        this.props.getPage(this.props.device, 1, this.props.selectedPath)
+      } else {
+        this.props.onAccountRestriction()
+      }
+    }
+
+    goToPreviousPage = () => {
+      this.props.getPage(this.props.device, -1, this.props.selectedPath)
+    }
+
+    renderHdPathSelector () {
+      const { onPathChange, selectedPath } = this.props
+
+      const options = this.getHdPaths()
+      return h('div', [
+        h('h3.hw-connect__hdPath__title', {}, this.context.t('selectHdPath')),
+        h('p.hw-connect__msg', {}, this.context.t('selectPathHelp')),
+        h('div.hw-connect__hdPath', [
+          h(Select, {
+            className: 'hw-connect__hdPath__select',
+            name: 'hd-path-select',
+            clearable: false,
+            value: selectedPath,
+            options,
+            onChange: (opt) => {
+              onPathChange(opt.value)
+            },
+          }),
+        ]),
+      ])
+    }
+
+    capitalizeDevice (device) {
+      return device.slice(0, 1).toUpperCase() + device.slice(1)
+    }
+
     renderHeader () {
+      const { device } = this.props
       return (
         h('div.hw-connect', [
-          h('h3.hw-connect__title', {}, this.context.t('selectAnAccount')),
+
+          h('h3.hw-connect__unlock-title', {}, `${this.context.t('unlock')} ${this.capitalizeDevice(device)}`),
+
+          device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null,
+
+          h('h3.hw-connect__hdPath__title', {}, this.context.t('selectAnAccount')),
           h('p.hw-connect__msg', {}, this.context.t('selectAnAccountHelp')),
         ])
       )
@@ -61,7 +121,7 @@ class AccountList extends Component {
       h(
         'button.hw-list-pagination__button',
         {
-          onClick: () => this.props.getPage(-1),
+          onClick: this.goToPreviousPage,
         },
         `< ${this.context.t('prev')}`
       ),
@@ -69,7 +129,7 @@ class AccountList extends Component {
       h(
         'button.hw-list-pagination__button',
         {
-          onClick: () => this.props.getPage(1),
+          onClick: this.goToNextPage,
         },
         `${this.context.t('next')} >`
       ),
@@ -84,29 +144,27 @@ class AccountList extends Component {
     }
 
     return h('div.new-account-connect-form__buttons', {}, [
-      h(
-        'button.btn-default.btn--large.new-account-connect-form__button',
-        {
-          onClick: this.props.onCancel.bind(this),
-        },
-        [this.context.t('cancel')]
-      ),
+      h(Button, {
+        type: 'default',
+        large: true,
+        className: 'new-account-connect-form__button',
+        onClick: this.props.onCancel.bind(this),
+      }, [this.context.t('cancel')]),
 
-      h(
-        `button.btn-primary.btn--large.new-account-connect-form__button.unlock ${disabled ? '.btn-primary--disabled' : ''}`,
-        {
-          onClick: this.props.onUnlockAccount.bind(this),
-          ...buttonProps,
-        },
-        [this.context.t('unlock')]
-      ),
+      h(Button, {
+        type: 'primary',
+        large: true,
+        className: 'new-account-connect-form__button unlock',
+        disabled,
+        onClick: this.props.onUnlockAccount.bind(this, this.props.device),
+      }, [this.context.t('unlock')]),
     ])
   }
 
   renderForgetDevice () {
     return h('div.hw-forget-device-container', {}, [
       h('a', {
-        onClick: this.props.onForgetDevice.bind(this),
+        onClick: this.props.onForgetDevice.bind(this, this.props.device),
       }, this.context.t('forgetDevice')),
     ])
   }
@@ -125,6 +183,9 @@ class AccountList extends Component {
 
 
 AccountList.propTypes = {
+    onPathChange: PropTypes.func.isRequired,
+    selectedPath: PropTypes.string.isRequired,
+    device: PropTypes.string.isRequired,
     accounts: PropTypes.array.isRequired,
     onAccountChange: PropTypes.func.isRequired,
     onForgetDevice: PropTypes.func.isRequired,
@@ -134,6 +195,7 @@ AccountList.propTypes = {
     history: PropTypes.object,
     onUnlockAccount: PropTypes.func,
     onCancel: PropTypes.func,
+    onAccountRestriction: PropTypes.func,
 }
 
 AccountList.contextTypes = {

@@ -91,7 +91,7 @@ var actions = {
   connectHardware,
   checkHardwareStatus,
   forgetDevice,
-  unlockTrezorAccount,
+  unlockHardwareWalletAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
   resetAccount,
@@ -227,14 +227,19 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
+  SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
   showAddTokenPage,
+  showAddSuggestedTokenPage,
   addToken,
   addTokens,
   removeToken,
   updateTokens,
+  removeSuggestedTokens,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
+  SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
+  setHardwareWalletDefaultHdPath,
   updateProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
@@ -310,6 +315,8 @@ var actions = {
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
   setPendingTokens,
   clearPendingTokens,
+
+  createCancelTransaction,
 }
 
 module.exports = actions
@@ -408,12 +415,18 @@ function createNewVaultAndRestore (password, seed) {
     log.debug(`background.createNewVaultAndRestore`)
 
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, err => {
+      background.clearSeedWordCache((err) => {
         if (err) {
           return reject(err)
         }
 
-        resolve()
+        background.createNewVaultAndRestore(password, seed, (err) => {
+          if (err) {
+            return reject(err)
+          }
+
+          resolve()
+        })
       })
     })
       .then(() => dispatch(actions.unMarkPasswordForgotten()))
@@ -639,12 +652,12 @@ function addNewAccount () {
   }
 }
 
-function checkHardwareStatus (deviceName) {
-  log.debug(`background.checkHardwareStatus`, deviceName)
+function checkHardwareStatus (deviceName, hdPath) {
+  log.debug(`background.checkHardwareStatus`, deviceName, hdPath)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.checkHardwareStatus(deviceName, (err, unlocked) => {
+      background.checkHardwareStatus(deviceName, hdPath, (err, unlocked) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -681,12 +694,12 @@ function forgetDevice (deviceName) {
   }
 }
 
-function connectHardware (deviceName, page) {
-  log.debug(`background.connectHardware`, deviceName, page)
+function connectHardware (deviceName, page, hdPath) {
+  log.debug(`background.connectHardware`, deviceName, page, hdPath)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.connectHardware(deviceName, page, (err, accounts) => {
+      background.connectHardware(deviceName, page, hdPath, (err, accounts) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -702,12 +715,12 @@ function connectHardware (deviceName, page) {
   }
 }
 
-function unlockTrezorAccount (index) {
-  log.debug(`background.unlockTrezorAccount`, index)
+function unlockHardwareWalletAccount (index, deviceName, hdPath) {
+  log.debug(`background.unlockHardwareWalletAccount`, index, deviceName, hdPath)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.unlockTrezorAccount(index, (err, accounts) => {
+      background.unlockHardwareWalletAccount(index, deviceName, hdPath, (err, accounts) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -1144,6 +1157,10 @@ function updateAndApproveTx (txData) {
         }
 
         return txData
+      })
+      .catch((err) => {
+        dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
       })
   }
 }
@@ -1587,11 +1604,18 @@ function showAddTokenPage (transitionForward = true) {
   }
 }
 
-function addToken (address, symbol, decimals) {
+function showAddSuggestedTokenPage (transitionForward = true) {
+  return {
+    type: actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE,
+    value: transitionForward,
+  }
+}
+
+function addToken (address, symbol, decimals, image) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, (err, tokens) => {
+      background.addToken(address, symbol, decimals, image, (err, tokens) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
@@ -1641,10 +1665,37 @@ function addTokens (tokens) {
   }
 }
 
+function removeSuggestedTokens () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeSuggestedTokens((err, suggestedTokens) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.clearPendingTokens())
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+          return global.platform.closeCurrentWindow()
+        }
+        resolve(suggestedTokens)
+      })
+    })
+    .then(() => updateMetamaskStateFromBackground())
+    .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+  }
+}
+
 function updateTokens (newTokens) {
   return {
     type: actions.UPDATE_TOKENS,
     newTokens,
+  }
+}
+
+function clearPendingTokens () {
+  return {
+    type: actions.CLEAR_PENDING_TOKENS,
   }
 }
 
@@ -1720,6 +1771,29 @@ function retryTransaction (txId) {
     })
       .then(newState => dispatch(actions.updateMetamaskState(newState)))
       .then(() => newTxId)
+  }
+}
+
+function createCancelTransaction (txId, customGasPrice) {
+  log.debug('background.cancelTransaction')
+  let newTxId
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        newTxId = id
+        resolve(newState)
+      })
+    })
+    .then(newState => dispatch(actions.updateMetamaskState(newState)))
+    .then(() => newTxId)
   }
 }
 
@@ -1810,9 +1884,13 @@ function hideModal (payload) {
   }
 }
 
-function showSidebar () {
+function showSidebar ({ transitionName, type }) {
   return {
     type: actions.SIDEBAR_OPEN,
+    value: {
+      transitionName,
+      type,
+    },
   }
 }
 
@@ -1852,6 +1930,13 @@ function showLoadingIndication (message) {
     type: actions.SHOW_LOADING,
     value: message,
   }
+}
+
+function setHardwareWalletDefaultHdPath ({ device, path }) {
+    return {
+      type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
+      value: {device, path},
+    }
 }
 
 function hideLoadingIndication () {
@@ -2299,11 +2384,5 @@ function setPendingTokens (pendingTokens) {
   return {
     type: actions.SET_PENDING_TOKENS,
     payload: tokens,
-  }
-}
-
-function clearPendingTokens () {
-  return {
-    type: actions.CLEAR_PENDING_TOKENS,
   }
 }

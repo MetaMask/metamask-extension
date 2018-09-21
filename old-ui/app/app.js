@@ -23,6 +23,7 @@ const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
 const AddTokenScreen = require('./add-token')
+const AddSuggestedTokenScreen = require('./add-suggested-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const NewUiAnnouncement = require('./new-ui-annoucement')
@@ -74,6 +75,7 @@ function mapStateToProps (state) {
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
     featureFlags,
+    suggestedTokens: state.metamask.suggestedTokens,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -235,6 +237,10 @@ App.prototype.renderPrimary = function () {
     case 'add-token':
       log.debug('rendering add-token screen from unlock screen.')
       return h(AddTokenScreen, {key: 'add-token'})
+
+    case 'add-suggested-token':
+      log.debug('rendering add-suggested-token screen from unlock screen.')
+      return h(AddSuggestedTokenScreen, {key: 'add-suggested-token'})
 
     case 'config':
       log.debug('rendering config screen')

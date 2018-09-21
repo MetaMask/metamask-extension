@@ -159,7 +159,7 @@ export const approveTokenAmountAndToAddressSelector = createSelector(
       if (tokenDecimals) {
         tokenAmount = calcTokenAmount(value, tokenDecimals)
       }
-      
+
       tokenAmount = roundExponential(tokenAmount)
     }
 
