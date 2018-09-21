@@ -747,7 +747,7 @@ describe('Nifty wallet popup page', async function () {
         assert.notEqual(await tokenBalance.getText(), '')
       })
 
-      it('click to token opens the PoaExplorer', async function () {
+      it.skip('click to token opens the PoaExplorer', async function () {
         await (await waitUntilShowUp(screens.main.tokens.token)).click()
         await switchToLastPage()
         const title = await driver.getCurrentUrl()
