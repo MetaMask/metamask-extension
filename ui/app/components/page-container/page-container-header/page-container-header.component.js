@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 export default class PageContainerHeader extends Component {
-
   static propTypes = {
     title: PropTypes.string,
     subtitle: PropTypes.string,
@@ -11,8 +11,18 @@ export default class PageContainerHeader extends Component {
     onBackButtonClick: PropTypes.func,
     backButtonStyles: PropTypes.object,
     backButtonString: PropTypes.string,
-    children: PropTypes.node,
-  };
+    tabs: PropTypes.node,
+  }
+
+  renderTabs () {
+    const { tabs } = this.props
+
+    return tabs && (
+      <ul className="page-container__tabs">
+        { tabs }
+      </ul>
+    )
+  }
 
   renderHeaderRow () {
     const { showBackButton, onBackButtonClick, backButtonStyles, backButtonString } = this.props
@@ -31,14 +41,17 @@ export default class PageContainerHeader extends Component {
   }
 
   render () {
-    const { title, subtitle, onClose, children } = this.props
+    const { title, subtitle, onClose, tabs } = this.props
 
     return (
-      <div className="page-container__header">
+      <div className={
+        classnames(
+          'page-container__header',
+          { 'page-container__header--no-padding-bottom': Boolean(tabs) }
+        )
+      }>
 
         { this.renderHeaderRow() }
-
-        { children }
 
         {
           title && <div className="page-container__title">
@@ -59,6 +72,7 @@ export default class PageContainerHeader extends Component {
           />
         }
 
+        { this.renderTabs() }
       </div>
     )
   }

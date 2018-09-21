@@ -7,6 +7,7 @@ const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const actions = require('../../../../actions')
 const { DEFAULT_ROUTE } = require('../../../../routes')
+import Button from '../../../button'
 
 PrivateKeyImportView.contextTypes = {
   t: PropTypes.func,
@@ -61,20 +62,22 @@ PrivateKeyImportView.prototype.render = function () {
 
       h('div.new-account-import-form__buttons', {}, [
 
-        h('button.btn-default.btn--large.new-account-create-form__button', {
+        h(Button, {
+          type: 'default',
+          large: true,
+          className: 'new-account-create-form__button',
           onClick: () => {
             displayWarning(null)
             this.props.history.push(DEFAULT_ROUTE)
           },
-        }, [
-          this.context.t('cancel'),
-        ]),
+        }, [this.context.t('cancel')]),
 
-        h('button.btn-primary.btn--large.new-account-create-form__button', {
+        h(Button, {
+          type: 'primary',
+          large: true,
+          className: 'new-account-create-form__button',
           onClick: () => this.createNewKeychain(),
-        }, [
-          this.context.t('import'),
-        ]),
+        }, [this.context.t('import')]),
 
       ]),
 

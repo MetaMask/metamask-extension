@@ -35,12 +35,13 @@ function ShiftListItem () {
 }
 
 ShiftListItem.prototype.render = function () {
-  return h('div.tx-list-item.tx-list-clickable', {
+  return h('div.transaction-list-item.tx-list-clickable', {
     style: {
       paddingTop: '20px',
       paddingBottom: '20px',
       justifyContent: 'space-around',
       alignItems: 'center',
+      flexDirection: 'row',
     },
   }, [
     h('div', {

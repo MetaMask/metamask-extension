@@ -10,10 +10,13 @@ const genAccountLink = require('../../../lib/account-link.js')
 const QrView = require('../qr-code')
 const EditableLabel = require('../editable-label')
 
+import Button from '../button'
+
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
+    keyrings: state.metamask.keyrings,
   }
 }
 
@@ -50,8 +53,19 @@ AccountDetailsModal.prototype.render = function () {
     network,
     showExportPrivateKeyModal,
     setAccountLabel,
+    keyrings,
   } = this.props
   const { name, address } = selectedIdentity
+
+  const keyring = keyrings.find((kr) => {
+    return kr.accounts.includes(address)
+  })
+
+  let exportPrivateKeyFeatureEnabled = true
+  // This feature is disabled for hardware wallets
+  if (keyring && keyring.type.search('Hardware') !== -1) {
+    exportPrivateKeyFeatureEnabled = false
+  }
 
   return h(AccountModalContainer, {}, [
       h(EditableLabel, {
@@ -68,14 +82,19 @@ AccountDetailsModal.prototype.render = function () {
 
       h('div.account-modal-divider'),
 
-      h('button.btn-primary.account-modal__button', {
+      h(Button, {
+        type: 'primary',
+        className: 'account-modal__button',
         onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
       }, this.context.t('etherscanView')),
 
       // Holding on redesign for Export Private Key functionality
-      h('button.btn-primary.account-modal__button', {
+
+      exportPrivateKeyFeatureEnabled ? h(Button, {
+        type: 'primary',
+        className: 'account-modal__button',
         onClick: () => showExportPrivateKeyModal(),
-      }, this.context.t('exportPrivateKey')),
+      }, this.context.t('exportPrivateKey')) : null,
 
   ])
 }

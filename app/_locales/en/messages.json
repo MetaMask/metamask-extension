@@ -17,6 +17,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "activityLog": {
+    "message": "activity log"
+  },
   "address": {
     "message": "Address"
   },
@@ -28,6 +31,9 @@
   },
   "addTokens": {
     "message": "Add Tokens"
+  },
+  "addSuggestedTokens": {
+    "message": "Add Suggested Tokens"
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
@@ -119,8 +125,8 @@
   "close": {
     "message": "Close"
   },
-  "chromeRequiredForTrezor":{
-    "message": "You need to use MetaMask on Google Chrome in order to connect to your TREZOR device."
+  "chromeRequiredForHardwareWallets":{
+    "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
   "confirm": {
     "message": "Confirm"
@@ -146,14 +152,11 @@
   "connecting": {
     "message": "Connecting..."
   },
+  "connectToLedger": {
+    "message": "Connect to Ledger"
+  },
   "connectToTrezor": {
     "message": "Connect to Trezor"
-  },
-  "connectToTrezorHelp": {
-    "message": "MetaMask is able to access your TREZOR Ethereum accounts. First make sure your device is connected and unlocked."
-  },
-  "connectToTrezorTrouble": {
-    "message": "If you are having trouble, please make sure you are using the latest version of the TREZOR firmware."
   },
   "continue": {
     "message": "Continue"
@@ -212,6 +215,9 @@
   },
   "currentConversion": {
     "message": "Current Conversion"
+  },
+  "currentLanguage": {
+    "message": "Current Language"
   },
   "currentNetwork": {
     "message": "Current Network"
@@ -289,8 +295,8 @@
   "downloadStateLogs": {
     "message": "Download State Logs"
   },
-  "dontHaveATrezorWallet": {
-    "message": "Don't have a TREZOR hardware wallet?"
+  "dontHaveAHardwareWallet": {
+    "message": "Don’t have a hardware wallet?"
   },
   "dropped": {
     "message": "Dropped"
@@ -426,11 +432,11 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
-  "hardwareSupport": {
-    "message": "Hardware Support"
+  "hardwareWallets": {
+    "message": "Connect a hardware wallet"
   },
-  "hardwareSupportMsg": {
-    "message": "You can now view your Hardware accounts in MetaMask!  Scroll down and read how it works."
+  "hardwareWalletsMsg": {
+    "message": "Select a hardware wallet you'd like to use with MetaMask"
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -453,6 +459,9 @@
   },
   "hideTokenPrompt": {
     "message": "Hide Token?"
+  },
+  "history": {
+    "message": "History"
   },
   "howToDeposit": {
     "message": "How would you like to deposit Ether?"
@@ -538,6 +547,9 @@
   "learnMore": {
     "message": "Learn more"
   },
+  "ledgerAccountRestriction": {
+    "message": "You need to make use your last account before you can add a new one."
+  },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
@@ -586,6 +598,9 @@
   },
   "metamaskSeedWords": {
     "message": "MetaMask Seed Words"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask Version"
   },
   "min": {
     "message": "Minimum"
@@ -651,7 +666,7 @@
     "message": "No transaction history."
   },
   "noTransactions": {
-    "message": "No Transactions"
+    "message": "You have no transactions"
   },
   "notFound": {
     "message": "Not Found"
@@ -702,6 +717,9 @@
   "pasteSeed": {
     "message": "Paste your seed phrase here!"
   },
+  "pending": {
+    "message": "pending"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -729,6 +747,9 @@
   },
   "qrCode": {
     "message": "Show QR Code"
+  },
+  "queue": {
+    "message": "Queue"
   },
   "readdToken": {
     "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
@@ -845,6 +866,9 @@
   "save": {
     "message": "Save"
   },
+  "speedUp": {
+    "message": "speed up"
+  },
   "speedUpTitle": {
     "message": "Speed Up Transaction"
   },
@@ -870,6 +894,12 @@
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
   },
+  "showHexData": {
+    "message": "Show Hex Data"
+  },
+  "showHexDataDescription": {
+    "message": "Select this to show the hex data field on the send screen"
+  },
   "newPassword8Chars": {
     "message": "New Password (min 8 chars)"
   },
@@ -881,6 +911,9 @@
   },
   "selectCurrency": {
     "message": "Select Currency"
+  },
+  "selectLocale": {
+    "message": "Select Locale"
   },
   "selectService": {
     "message": "Select Service"
@@ -897,6 +930,12 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "sentEther": {
+    "message": "sent ether"
+  },
+  "sentTokens": {
+    "message": "sent tokens"
+  },
   "separateEachWord": {
     "message": "Separate each word with a single space"
   },
@@ -908,7 +947,10 @@
     "description": "displays token symbol"
   },
   "orderOneHere": {
-    "message": "Order one here."
+    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
+  },
+  "outgoing": {
+    "message": "Outgoing"
   },
   "searchTokens": {
     "message": "Search Tokens"
@@ -920,7 +962,13 @@
     "message": "Select an Account"
   },
   "selectAnAccountHelp": {
-    "message": "These are the accounts available in your hardware wallet. Select the one you’d like to use in MetaMask."
+    "message": "Select the account to view in MetaMask"
+  },
+  "selectHdPath": {
+    "message": "Select HD Path"
+  },
+  "selectPathHelp": {
+    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
   },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
@@ -966,6 +1014,9 @@
   },
   "sign": {
     "message": "Sign"
+  },
+  "signatureRequest": {
+    "message": "Signature Request"
   },
   "signed": {
     "message": "Signed"
@@ -1019,7 +1070,7 @@
     "message": "Test Faucet"
   },
   "to": {
-    "message": "To: "
+    "message": "To"
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
@@ -1048,6 +1099,27 @@
   },
   "total": {
     "message": "Total"
+  },
+  "transaction": {
+    "message": "transaction"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed on $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 on $2."
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped on $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted on $2."
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated on $2."
+  },
+  "transactionUpdatedGas": {
+    "message": "Transaction updated with a gas price of $1 on $2."
   },
   "transactions": {
     "message": "transactions"
@@ -1095,6 +1167,9 @@
   "unavailable": {
     "message": "Unavailable"
   },
+  "units": {
+    "message": "units"
+  },
   "unknown": {
     "message": "Unknown"
   },
@@ -1121,6 +1196,9 @@
   },
   "unlockMessage": {
     "message": "The decentralized web awaits"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
   },
   "uriErrorMsg": {
     "message": "URIs require the appropriate HTTP/HTTPS prefix."

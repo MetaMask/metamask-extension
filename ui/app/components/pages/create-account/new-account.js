@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../routes')
+import Button from '../../button'
 
 class NewAccountCreateForm extends Component {
   constructor (props, context) {
@@ -38,20 +39,22 @@ class NewAccountCreateForm extends Component {
 
       h('div.new-account-create-form__buttons', {}, [
 
-        h('button.btn-default.btn--large.new-account-create-form__button', {
+        h(Button, {
+          type: 'default',
+          large: true,
+          className: 'new-account-create-form__button',
           onClick: () => history.push(DEFAULT_ROUTE),
-        }, [
-          this.context.t('cancel'),
-        ]),
+        }, [this.context.t('cancel')]),
 
-        h('button.btn-primary.btn--large.new-account-create-form__button', {
+        h(Button, {
+          type: 'primary',
+          large: true,
+          className:'new-account-create-form__button',
           onClick: () => {
             createAccount(newAccountName || defaultAccountName)
               .then(() => history.push(DEFAULT_ROUTE))
           },
-        }, [
-          this.context.t('create'),
-        ]),
+        }, [this.context.t('create')]),
 
       ]),
 

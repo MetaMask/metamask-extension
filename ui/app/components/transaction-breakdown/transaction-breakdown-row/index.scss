@@ -1,0 +1,19 @@
+.transaction-breakdown-row {
+  font-size: .75rem;
+  color: $scorpion;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #d8d8d8;
+  }
+
+  &__title {
+    padding-right: 8px;
+  }
+
+  &__value {
+    min-width: 0;
+  }
+}

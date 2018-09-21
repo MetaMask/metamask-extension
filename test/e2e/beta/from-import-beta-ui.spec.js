@@ -314,12 +314,12 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
       assert.equal(transactions.length, 1)
 
-      const txValues = await findElements(driver, By.css('.tx-list-value'))
+      const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       assert.equal(txValues.length, 1)
-      assert.equal(await txValues[0].getText(), '1 ETH')
+      assert.equal(await txValues[0].getText(), '-1 ETH')
     })
   })
 
@@ -366,7 +366,10 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should open the TREZOR Connect popup', async () => {
-      const connectButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Connect to Trezor')]`))
+      const trezorButton = await findElements(driver, By.css('.hw-connect__btn'))
+      await trezorButton[1].click()
+      await delay(regularDelayMs)
+      const connectButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
       await connectButtons[0].click()
       await delay(regularDelayMs)
       const allWindows = await driver.getAllWindowHandles()
