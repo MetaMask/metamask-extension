@@ -111,6 +111,9 @@ const mapDispatchToProps = dispatch => {
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
       return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
     },
+    showRejectTransactionsConfirmationModal: ({ onSubmit, unapprovedTxCount }) => {
+      return dispatch(showModal({ name: 'REJECT_TRANSACTIONS', onSubmit, unapprovedTxCount }))
+    },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: txData => dispatch(updateAndApproveTx(txData)),

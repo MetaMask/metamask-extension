@@ -790,6 +790,9 @@
   "rejectTxsN": {
     "message": "Reject $1 transactions"
   },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
   "rejected": {
     "message": "Rejected"
   },

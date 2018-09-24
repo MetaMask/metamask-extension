@@ -44,6 +44,7 @@ export default class ConfirmTransactionBase extends Component {
     sendTransaction: PropTypes.func,
     showCustomizeGasModal: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
+    showRejectTransactionsConfirmationModal: PropTypes.func,
     toAddress: PropTypes.string,
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
@@ -252,13 +253,22 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleCancelAll () {
-    const { cancelAllTransactions, history, clearConfirmTransaction } = this.props
+    const {
+      cancelAllTransactions,
+      clearConfirmTransaction,
+      history,
+      showRejectTransactionsConfirmationModal,
+      unapprovedTxCount,
+    } = this.props
 
-    cancelAllTransactions()
-      .then(() => {
+    showRejectTransactionsConfirmationModal({
+      unapprovedTxCount,
+      async onSubmit () {
+        await cancelAllTransactions()
         clearConfirmTransaction()
         history.push(DEFAULT_ROUTE)
-      })
+      },
+    })
   }
 
   handleCancel () {
