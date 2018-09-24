@@ -784,6 +784,12 @@
   "refundAddress": {
     "message": "Your Refund Address"
   },
+  "reject": {
+    "message": "Reject"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
   "rejected": {
     "message": "Rejected"
   },

@@ -116,6 +116,7 @@ export default class ConfirmPageContainer extends Component {
         }
         <PageContainerFooter
           onCancel={() => onCancel()}
+          cancelText={this.context.t('reject')}
           onSubmit={() => onSubmit()}
           submitText={this.context.t('confirm')}
           submitButtonType="confirm"
@@ -123,7 +124,7 @@ export default class ConfirmPageContainer extends Component {
         >
           {unapprovedTxCount > 1 && (
             <a onClick={() => onCancelAll()}>
-              {this.context.t('cancelN', [unapprovedTxCount])}
+              {this.context.t('rejectTxsN', [unapprovedTxCount])}
             </a>
           )}
         </PageContainerFooter>
