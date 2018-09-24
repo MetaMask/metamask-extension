@@ -53,9 +53,6 @@ DeleteRpc.prototype.render = function () {
     }, [
       h('button.btn-violet',
         {
-          style: {
-            marginRight: '10px',
-          },
           onClick: () => {
             this.props.dispatch(actions.showConfigPage())
           },

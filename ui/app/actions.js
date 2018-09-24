@@ -221,8 +221,10 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
+  SHOW_CONFIRM_ADD_TOKEN_PAGE: 'SHOW_CONFIRM_ADD_TOKEN_PAGE',
   SHOW_REMOVE_TOKEN_PAGE: 'SHOW_REMOVE_TOKEN_PAGE',
   showAddTokenPage,
+  showConfirmAddTokensPage,
   showRemoveTokenPage,
   addToken,
   addTokens,
@@ -1588,6 +1590,13 @@ function showAddTokenPage (transitionForward = true) {
   }
 }
 
+function showConfirmAddTokensPage (transitionForward = true) {
+  return {
+    type: actions.SHOW_CONFIRM_ADD_TOKEN_PAGE,
+    value: transitionForward,
+  }
+}
+
 function showRemoveTokenPage (token, transitionForward = true) {
   return {
     type: actions.SHOW_REMOVE_TOKEN_PAGE,
@@ -2287,9 +2296,12 @@ function updateNetworkEndpointType (networkEndpointType) {
 }
 
 function setPendingTokens (pendingTokens) {
-  const { customToken = {}, selectedTokens = {} } = pendingTokens
-  const { address, symbol, decimals } = customToken
-  const tokens = address && symbol && decimals
+  const { selectedTokens = {}, customToken = {} } = pendingTokens
+  const { address, symbol, decimals, network } = customToken
+  Object.keys(selectedTokens).forEach(address => {
+    selectedTokens[address].network = parseInt(network)
+  })
+  const tokens = address && symbol && decimals && network
     ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }
     : selectedTokens
 

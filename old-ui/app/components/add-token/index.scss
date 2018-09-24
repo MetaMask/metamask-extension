@@ -1,0 +1,25 @@
+@import './token-list/index';
+
+.add-token {
+  &__custom-token-form {
+    padding: 8px 16px 16px;
+
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+  }
+
+  &__search-token {
+    padding: 16px;
+  }
+
+  &__token-list {
+    margin-top: 16px;
+  }
+}

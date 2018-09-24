@@ -199,6 +199,15 @@ function reduceApp (state, action) {
         transForward: action.value,
       })
 
+    case actions.SHOW_CONFIRM_ADD_TOKEN_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'confirm-add-token',
+          context: appState.currentView.context,
+        },
+        transForward: action.value,
+      })
+
     case actions.SHOW_REMOVE_TOKEN_PAGE:
       return extend(appState, {
         currentView: {

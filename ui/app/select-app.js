@@ -68,5 +68,5 @@ SelectedApp.prototype.render = function () {
     }, [
       h(I18nProvider, [ h(App) ]),
     ])
-  : h(OldApp)
+  : h(I18nProvider, [ h(OldApp) ])
 }
