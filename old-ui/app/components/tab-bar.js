@@ -12,15 +12,14 @@ function TabBar () {
 TabBar.prototype.render = function () {
   const props = this.props
   const state = this.state || {}
-  const { tabs = [], defaultTab, tabSelected } = props
+  const { tabs = [], defaultTab, tabSelected, style } = props
   const { subview = defaultTab } = state
 
   return (
     h('.flex-row.space-around', {
       style: {
         background: '#60269c',
-        color: '#AEAEAE',
-        paddingTop: '10px',
+        paddingTop: (style && style.paddingTop) || '10px',
         minHeight: '45px',
         lineHeight: '45px',
       },

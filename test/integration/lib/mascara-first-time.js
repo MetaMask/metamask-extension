@@ -15,10 +15,14 @@ async function runFirstTimeUsageTest (assert, done) {
     window.HTMLInputElement.prototype, 'value'
   ).set
 
+  const loader = (await findAsync($, '.loading-overlay'))[0]
+  await loader.setAttribute('style', 'display:none')
+  await loader.click()
+
   await skipNotices(app)
 
   const welcomeButton = (await findAsync(app, '.welcome-screen__button'))[0]
-  welcomeButton.click()
+  await welcomeButton.click()
 
   // Scroll through terms
   const title = (await findAsync(app, '.create-password__title')).text()
@@ -28,23 +32,23 @@ async function runFirstTimeUsageTest (assert, done) {
   const pwBox = (await findAsync(app, '#create-password'))[0]
   const confBox = (await findAsync(app, '#confirm-password'))[0]
 
-  nativeInputValueSetter.call(pwBox, PASSWORD)
-  pwBox.dispatchEvent(new Event('input', { bubbles: true}))
+  await nativeInputValueSetter.call(pwBox, PASSWORD)
+  await pwBox.dispatchEvent(new Event('input', { bubbles: true}))
 
-  nativeInputValueSetter.call(confBox, PASSWORD)
-  confBox.dispatchEvent(new Event('input', { bubbles: true}))
+  await nativeInputValueSetter.call(confBox, PASSWORD)
+  await confBox.dispatchEvent(new Event('input', { bubbles: true}))
 
   // Create Password
   const createButton = (await findAsync(app, 'button.first-time-flow__button'))[0]
-  createButton.click()
+  await createButton.click()
 
   const created = (await findAsync(app, '.unique-image__title'))[0]
-  assert.equal(created.textContent, 'Your unique account image', 'unique image screen')
+  await assert.equal(created.textContent, 'Your unique account image', 'unique image screen')
 
   // Agree button
   const button = (await findAsync(app, 'button'))[0]
   assert.ok(button, 'button present')
-  button.click()
+  await button.click()
 
   await skipNotices(app)
 
@@ -66,35 +70,35 @@ async function runFirstTimeUsageTest (assert, done) {
   ;(await findAsync(app, '.first-time-flow__button')).click()
 
   // Deposit Ether Screen
-  const depositEthTitle = (await findAsync(app, '.page-container__title'))[0]
+  const depositEthTitle = (await findAsync($, '.page-container__title'))[0]
   assert.equal(depositEthTitle.textContent, 'Deposit Ether', 'deposit ether screen')
   ;(await findAsync(app, '.page-container__header-close')).click()
-
   const menu = (await findAsync(app, '.account-menu__icon'))[0]
-  menu.click()
+  await menu.click()
 
   const lock = (await findAsync(app, '.account-menu__logout-button'))[0]
   assert.ok(lock, 'Lock menu item found')
-  lock.click()
+  await lock.click()
 
   await timeout(1000)
 
   const pwBox2 = (await findAsync(app, '#password'))[0]
-  pwBox2.focus()
+  await pwBox2.focus()
   await timeout(1000)
 
-  nativeInputValueSetter.call(pwBox2, PASSWORD)
-  pwBox2.dispatchEvent(new Event('input', { bubbles: true}))
+  await nativeInputValueSetter.call(pwBox2, PASSWORD)
+  await pwBox2.dispatchEvent(new Event('input', { bubbles: true}))
 
-  const createButton2 = (await findAsync(app, 'button[type="submit"]'))[0]
-  createButton2.click()
-
-  const detail2 = (await findAsync(app, '.wallet-view'))[0]
+  const createButton2 = (await findAsync(app, '.MuiButtonBase-root-91.MuiButton-root-75.MuiButton-raised-81.MuiButton-sizeLarge-89.MuiButton-fullWidth-90'))
+  await createButton2[0].click()
+  await timeout(10000)
+  await createButton2[0].click()
+  const detail2 = (await findAsync($, '.wallet-view'))[0]
   assert.ok(detail2, 'Account detail section loaded again.')
 
   // open account settings dropdown
   const qrButton = (await findAsync(app, '.wallet-view__details-button'))[0]
-  qrButton.click()
+  await qrButton.click()
 
   const qrHeader = (await findAsync(app, '.editable-label__value'))[0]
   const qrContainer = (await findAsync(app, '.qr-wrapper'))[0]
@@ -102,7 +106,7 @@ async function runFirstTimeUsageTest (assert, done) {
   assert.ok(qrContainer, 'QR Container found')
 
   const networkMenu = (await findAsync(app, '.network-indicator'))[0]
-  networkMenu.click()
+  await networkMenu.click()
 
   const networkMenu2 = (await findAsync(app, '.network-indicator'))[0]
   const children2 = networkMenu2.children

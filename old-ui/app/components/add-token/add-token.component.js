@@ -93,14 +93,17 @@ class AddTokenScreen extends Component {
     let views = []
     const isProdNetwork = networkID === 1 || networkID === 99
     isProdNetwork ? views = [h(TabBar, {
-          tabs: [
-            { content: 'Search', key: SEARCH_TAB },
-            { content: 'Custom', key: CUSTOM_TOKEN_TAB },
-          ],
-          defaultTab: this.state.displayedTab || CUSTOM_TOKEN_TAB,
-          tabSelected: (key) => this.setCurrentAddTokenTab(key),
-        }),
-        this.tabSwitchView()] : views = [this.renderAddToken()]
+      style: {
+        paddingTop: '0px',
+      },
+      tabs: [
+        { content: 'Search', key: SEARCH_TAB },
+        { content: 'Custom', key: CUSTOM_TOKEN_TAB },
+      ],
+      defaultTab: this.state.displayedTab || CUSTOM_TOKEN_TAB,
+      tabSelected: (key) => this.setCurrentAddTokenTab(key),
+    }),
+    this.tabSwitchView()] : views = [this.renderAddToken()]
 
     return (
       h('.flex-column.flex-grow', {
@@ -112,6 +115,7 @@ class AddTokenScreen extends Component {
         h('.section-title.flex-row.flex-center', {
           style: {
             background: '#60269c',
+            borderTop: 'none',
           },
         }, [
           h('h2.page-subtitle', {

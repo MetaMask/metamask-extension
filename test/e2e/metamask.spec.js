@@ -59,6 +59,7 @@ describe('Metamask popup page', async function () {
       await delay(300)
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
+      await delay(5000)
     })
   })
 
@@ -71,7 +72,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('screen \'Terms of Use\' has not empty agreement', async () => {
-      const terms = await waitUntilShowUp(screens.TOU.agreement)
+      const terms = await waitUntilShowUp(screens.TOU.agreement, 300)
       const text = await terms.getText()
       assert.equal(text.length > 400, true, 'agreement is too short')
     })
@@ -707,7 +708,7 @@ describe('Metamask popup page', async function () {
         assert.notEqual(buttonAdd, false, 'failed to open screen confirmation')
       })
 
-      it('two selected tokens displayed and have correct parameters', async function () {
+      it('confirm screen: two selected tokens are displayed and have correct parameters', async function () {
         const tokens = await driver.findElements(screens.addToken.search.confirm.token.item)
         assert.equal(tokens.length, 2, 'incorrect number of tokens are presented')
 
@@ -724,20 +725,48 @@ describe('Metamask popup page', async function () {
         assert.equal(balance1, '0', 'balance isn\'t 0')
       })
 
-      it('button \'Cancel\' is enabled and leads to main screen ', async function () {
-        const button = await waitUntilShowUp(screens.addToken.search.button.cancel)
+      it('button \'Back\' is enabled and leads to previous screen ', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.confirm.button.back)
         assert.equal(await button.isEnabled(), true, 'button isn\'t enabled')
         await click(button)
-        const identicon = await waitUntilShowUp(screens.main.identicon)
-        assert.notEqual(identicon, false, 'main screen didn\'t opened')
+        const fieldSearch = await waitUntilShowUp(screens.addToken.search.fieldSearch)
+        assert.notEqual(fieldSearch, false, 'add token screen didn\'t opened')
       })
 
       it('button \'Next\' is enabled if confirmation list isn\'t empty', async function () {
-        const buttonAdd = await waitUntilShowUp(screens.main.tokens.buttonAdd)
-        await click(buttonAdd)
-        await waitUntilShowUp(screens.addToken.search.fieldSearch)
         const button = await waitUntilShowUp(screens.addToken.search.button.next)
         assert.equal(await button.isEnabled(), true, 'button is disabled')
+      })
+
+      it('previous selected tokens remain selected after new search', async function () {
+        const field = await waitUntilShowUp(screens.addToken.search.fieldSearch)
+        await clearField(field)
+        await field.sendKeys(request.valid)
+        await waitUntilShowUp(screens.addToken.search.token.selected)
+        const listSelected = await driver.findElements(screens.addToken.search.token.selected)
+        assert.equal(listSelected.length, 2, 'tokens are unselected')
+      })
+
+      it('user can unselect token', async function () {
+        const tokensUnselected = await driver.findElements(screens.addToken.search.token.unselected)
+        assert.notEqual(tokensUnselected.length, 0, 'all tokens are selected')
+
+        let tokensSelected = await driver.findElements(screens.addToken.search.token.selected)
+        await tokensSelected[0].click()
+        const old = tokensSelected.length
+
+        tokensSelected = await driver.findElements(screens.addToken.search.token.selected)
+        assert.equal(tokensSelected.length, old - 1, 'can\'t unselect token')
+      })
+
+      it('confirm screen: unselected token aren\'t displayed', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.next)
+        await click(button)
+        await waitUntilShowUp(screens.addToken.search.confirm.token.item)
+        const tokens = await driver.findElements(screens.addToken.search.confirm.token.item)
+        assert.equal(tokens.length, 1, 'incorrect number of tokens are presented')
+        const back = await waitUntilShowUp(screens.addToken.search.confirm.button.back)
+        await click(back)
       })
 
       it('Search by contract address: searching result list is empty if address invalid ', async function () {
@@ -745,7 +774,6 @@ describe('Metamask popup page', async function () {
         await field.sendKeys(request.notExistingAddress)
         const list = await waitUntilShowUp(screens.addToken.search.token.unselected, 20)
         assert.equal(list, false, 'unexpected tokens are displayed')
-
       })
 
       it('Search by valid contract address: searching result list contains one token ', async function () {
@@ -769,7 +797,7 @@ describe('Metamask popup page', async function () {
         await click(button)
         await waitUntilShowUp(screens.addToken.search.confirm.token.item)
         const list = await driver.findElements(screens.addToken.search.confirm.token.item)
-        assert.equal(list.length, 3, 'token wasn\'t added')
+        assert.equal(list.length, 2, 'token wasn\'t added')
       })
 
       it('button \'Add tokens\' is enabled and clickable', async function () {
@@ -783,12 +811,12 @@ describe('Metamask popup page', async function () {
       it('all selected tokens are displayed on main screen', async function () {
         await waitUntilShowUp(screens.main.tokens.token)
         const tokens = await driver.findElements(screens.main.tokens.token)
-        assert.equal(tokens.length, 3, 'tokens weren\'t added')
+        assert.equal(tokens.length, 2, 'tokens weren\'t added')
       })
 
       it('correct value of counter of owned tokens', async function () {
         const counter = await waitUntilShowUp(screens.main.tokens.counter)
-        assert.equal(await counter.getText(), 'You own 3 tokens', 'incorrect value of counter')
+        assert.equal(await counter.getText(), 'You own 2 tokens', 'incorrect value of counter')
 
       })
 
@@ -834,24 +862,15 @@ describe('Metamask popup page', async function () {
         let button
         let counter
         let buttonYes
-        let tokensNumber
 
         button = await waitUntilShowUp(screens.main.tokens.remove)
         await button.click()
         buttonYes = await waitUntilShowUp(screens.removeToken.buttons.yes)
         await buttonYes.click()
-        counter = await waitUntilShowUp(screens.main.tokens.counter)
-        assert.equal(await counter.getText(), 'You own 2 tokens', 'incorrect value of counter')
-        tokensNumber = await driver.findElements(screens.main.tokens.token)
-        assert.equal(tokensNumber.length, 2, 'incorrect amount of token\'s  is displayed')
-
-        button = await waitUntilShowUp(screens.main.tokens.remove)
-        await button.click()
-        buttonYes = await waitUntilShowUp(screens.removeToken.buttons.yes)
-        await buttonYes.click()
+        await delay(500)
         counter = await waitUntilShowUp(screens.main.tokens.counter)
         assert.equal(await counter.getText(), 'You own 1 token', 'incorrect value of counter')
-        tokensNumber = await driver.findElements(screens.main.tokens.token)
+        const tokensNumber = await driver.findElements(screens.main.tokens.token)
         assert.equal(tokensNumber.length, 1, 'incorrect amount of token\'s  is displayed')
 
         button = await waitUntilShowUp(screens.main.tokens.remove)
@@ -863,11 +882,8 @@ describe('Metamask popup page', async function () {
 
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
-
-
     })
   })
-
 
   describe('Add Token: Custom', function () {
 
@@ -1015,13 +1031,6 @@ describe('Metamask popup page', async function () {
           assert.notEqual(await tokenBalance.getText(), '')
         })
 
-        it('adds token with  the same address to MAINNET network', async function () {
-          await setProvider(NETWORKS.MAINNET)
-          await addToken(tokenAddress, tokenName, tokenDecimals)
-          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-          assert.notEqual(await tokenBalance.getText(), '')
-        })
-
         it('adds token with  the same address to ROPSTEN network', async function () {
           await setProvider(NETWORKS.ROPSTEN)
           await addToken(tokenAddress, tokenName, tokenDecimals)
@@ -1038,6 +1047,13 @@ describe('Metamask popup page', async function () {
 
         it('adds token with  the same address to RINKEBY network', async function () {
           await setProvider(NETWORKS.RINKEBY)
+          await addToken(tokenAddress, tokenName, tokenDecimals)
+          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+          assert.notEqual(await tokenBalance.getText(), '')
+        })
+
+        it('adds token with  the same address to MAINNET network', async function () {
+          await setProvider(NETWORKS.MAINNET)
           await addToken(tokenAddress, tokenName, tokenDecimals)
           const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
           assert.notEqual(await tokenBalance.getText(), '')
@@ -1363,10 +1379,9 @@ describe('Metamask popup page', async function () {
       await waitUntilDisappear(elements.loader)
       assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
       // Check tokens title
-      await waitUntilShowUp(screens.main.tokens.counter)
-      const tokensStatus = await driver.findElements(screens.main.tokens.counter)
-      assert.equal(tokensStatus.length, 1, '\'Tokens\' section doesn\'t contain field with amount of tokens')
-      assert.equal(await tokensStatus[0].getText(), screens.main.tokens.textNoTokens, 'Unexpected token presents')
+      const tokensCounter = await waitUntilShowUp(screens.main.tokens.counter)
+      assert.notEqual(tokensCounter, false, '\'Token\'s counter isn\'t displayed ')
+      assert.equal(await tokensCounter.getText(), screens.main.tokens.textNoTokens, 'Unexpected token presents')
       // Check if token presents
       const tokens = await driver.findElements(screens.main.tokens.token)
       assert.equal(tokens.length, 0, 'Unexpected token presents')
@@ -1381,14 +1396,12 @@ describe('Metamask popup page', async function () {
     try {
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
-
       do {
         const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
         try {
           await tab.click()
         } catch (err) {
         }
-
       }
       while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
       const field = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
@@ -1441,4 +1454,3 @@ describe('Metamask popup page', async function () {
     await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
 })
-
