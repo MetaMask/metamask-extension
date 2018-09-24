@@ -34,6 +34,7 @@ class PreferencesController {
       useBlockie: false,
       featureFlags: {
         betaUI: true,
+        skipAnnounceBetaUI: true,
       },
       currentLocale: opts.initLangCode,
       identities: {},
