@@ -21,7 +21,6 @@ export default class TokenSearch extends Component {
 
   static propTypes = {
     network: PropTypes.string,
-    clearPendingTokens: PropTypes.func,
     onSearch: PropTypes.func,
     error: PropTypes.string,
   }
