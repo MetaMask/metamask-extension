@@ -8,6 +8,7 @@
 
 .first-time-flow {
   width: 100vw;
+  height: 100vh;
   background-color: #fff;
   overflow: auto;
   display: flex;
