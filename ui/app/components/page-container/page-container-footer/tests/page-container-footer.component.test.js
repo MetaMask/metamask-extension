@@ -25,6 +25,17 @@ describe('Page Footer', () => {
     assert.equal(wrapper.find('.page-container__footer').length, 1)
   })
 
+  it('should render a page-container__footer-footer class when given children', () => {
+    const wrapper = shallow(
+      <PageFooter>
+        <div>Works</div>
+      </PageFooter>,
+      { context: { t: sinon.spy((k) => `[${k}]`) } }
+    )
+
+    assert.equal(wrapper.find('.page-container__footer-footer').length, 1)
+  })
+
   it('renders two button components', () => {
     assert.equal(wrapper.find(Button).length, 2)
   })
@@ -65,5 +76,4 @@ describe('Page Footer', () => {
       assert.equal(onSubmit.callCount, 1)
     })
   })
-
 })
