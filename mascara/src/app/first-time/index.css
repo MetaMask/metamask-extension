@@ -8,7 +8,6 @@
 
 .first-time-flow {
   width: 100vw;
-  height: 100vh;
   background-color: #fff;
   overflow: auto;
   display: flex;
@@ -16,6 +15,12 @@
   flex: 1 0 auto;
   font-weight: 400;
   font-family: Roboto;
+}
+
+@media screen and (min-height: 576px) {
+  .first-time-flow {
+    height: 100vh;
+  }
 }
 
 .alpha-warning__container {
