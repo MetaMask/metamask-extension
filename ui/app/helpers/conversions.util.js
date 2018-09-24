@@ -1,10 +1,22 @@
+import ethUtil from 'ethereumjs-util'
 import { conversionUtil } from '../conversion-util'
 import { ETH, GWEI, WEI } from '../constants/common'
+
+export function bnToHex (inputBn) {
+  return ethUtil.addHexPrefix(inputBn.toString(16))
+}
 
 export function hexToDecimal (hexValue) {
   return conversionUtil(hexValue, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
+  })
+}
+
+export function decimalToHex (decimal) {
+  return conversionUtil(decimal, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
   })
 }
 

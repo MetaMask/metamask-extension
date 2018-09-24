@@ -61,6 +61,12 @@
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Attempting to cancel does not guarantee your original transaction will be cancelled. If cancelled, you are still required to pay a transaction fee to the network."
+  },
   "attributions": {
     "message": "Attributions"
   },
@@ -115,6 +121,12 @@
   },
   "cancel": {
     "message": "Cancel"
+  },
+  "cancelAttempt": {
+    "message": "Cancel Attempt"
+  },
+  "cancellationGasFee": {
+    "message": "Cancellation Gas Fee"
   },
   "classicInterface": {
     "message": "Use classic interface"
@@ -1109,6 +1121,9 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 on $2."
   },
+  "transactionWithNonce": {
+    "message": "Transaction $1"
+  },
   "transactionDropped": {
     "message": "Transaction dropped on $2."
   },
@@ -1239,6 +1254,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "yesLetsTry": {
+    "message": "Yes, let's try"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

@@ -8,6 +8,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
 } from '../../../constants/error-keys'
+import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../../constants/transactions'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -85,9 +86,9 @@ export default class ConfirmTransactionBase extends Component {
       clearConfirmTransaction,
     } = this.props
 
-    if (transactionStatus === 'dropped') {
+    if (transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS) {
       showTransactionConfirmedModal({
-        onHide: () => {
+        onSubmit: () => {
           clearConfirmTransaction()
           history.push(DEFAULT_ROUTE)
         },

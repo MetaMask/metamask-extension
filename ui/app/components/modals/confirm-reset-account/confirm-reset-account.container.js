@@ -1,13 +1,16 @@
 import { connect } from 'react-redux'
+import { compose } from 'recompose'
+import withModalProps from '../../../higher-order-components/with-modal-props'
 import ConfirmResetAccount from './confirm-reset-account.component'
-
-const { hideModal, resetAccount } = require('../../../actions')
+import { resetAccount } from '../../../actions'
 
 const mapDispatchToProps = dispatch => {
   return {
-    hideModal: () => dispatch(hideModal()),
     resetAccount: () => dispatch(resetAccount()),
   }
 }
 
-export default connect(null, mapDispatchToProps)(ConfirmResetAccount)
+export default compose(
+  withModalProps,
+  connect(null, mapDispatchToProps)
+)(ConfirmResetAccount)

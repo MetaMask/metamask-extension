@@ -6,6 +6,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background: $white;
 
   &__grid {
     cursor: pointer;
@@ -116,5 +117,15 @@
     padding: 8px 16px 16px;
     background: #f3f4f7;
     width: 100%;
+  }
+
+  &__expander {
+    max-height: 0px;
+    width: 100%;
+
+    &--show {
+      max-height: 1000px;
+      transition: max-height 700ms ease-out;
+    }
   }
 }

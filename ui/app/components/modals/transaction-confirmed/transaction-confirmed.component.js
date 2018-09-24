@@ -1,24 +1,45 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import Modal from '../../modal'
 
-const TransactionConfirmed = (props, context) => {
-  const { t } = context
+export default class TransactionConfirmed extends PureComponent {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
 
-  return (
-    <div className="modal-container__content">
-      <img src="images/check-icon.svg" />
-      <div className="modal-container__title">
-        { `${t('confirmed')}!` }
-      </div>
-      <div className="modal-container__description">
-        { t('initialTransactionConfirmed') }
-      </div>
-    </div>
-  )
+  static propTypes = {
+    onSubmit: PropTypes.func,
+    hideModal: PropTypes.func,
+  }
+
+  handleSubmit = () => {
+    const { hideModal, onSubmit } = this.props
+
+    hideModal()
+
+    if (onSubmit && typeof onSubmit === 'function') {
+      onSubmit()
+    }
+  }
+
+  render () {
+    const { t } = this.context
+
+    return (
+      <Modal
+        onSubmit={this.handleSubmit}
+        submitText={t('ok')}
+      >
+        <div className="transaction-confirmed__content">
+          <img src="images/check-icon.svg" />
+          <div className="transaction-confirmed__title">
+            { `${t('confirmed')}!` }
+          </div>
+          <div className="transaction-confirmed__description">
+            { t('initialTransactionConfirmed') }
+          </div>
+        </div>
+      </Modal>
+    )
+  }
 }
-
-TransactionConfirmed.contextTypes = {
-  t: PropTypes.func,
-}
-
-export default TransactionConfirmed

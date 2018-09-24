@@ -14,6 +14,7 @@ import {
   TRANSFER_FROM_ACTION_KEY,
   SIGNATURE_REQUEST_KEY,
   UNKNOWN_FUNCTION_KEY,
+  CANCEL_ATTEMPT_ACTION_KEY,
 } from '../constants/transactions'
 
 import { addCurrencies } from '../conversion-util'
@@ -44,7 +45,11 @@ export function isConfirmDeployContract (txData = {}) {
 }
 
 export async function getTransactionActionKey (transaction, methodData) {
-  const { txParams: { data, to } = {}, msgParams } = transaction
+  const { txParams: { data, to } = {}, msgParams, type } = transaction
+
+  if (type === 'cancel') {
+    return CANCEL_ATTEMPT_ACTION_KEY
+  }
 
   if (msgParams) {
     return SIGNATURE_REQUEST_KEY
