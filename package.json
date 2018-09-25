@@ -155,7 +155,7 @@
     "iframe-stream": "^3.0.0",
     "inject-css": "^0.1.1",
     "jazzicon": "^1.2.0",
-    "json-rpc-engine": "^3.7.3",
+    "json-rpc-engine": "github:metamask/json-rpc-engine",
     "json-rpc-middleware-stream": "^1.0.1",
     "jsonschema": "^1.2.4",
     "lodash.debounce": "^4.0.8",
