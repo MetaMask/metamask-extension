@@ -252,6 +252,7 @@ module.exports = class MetamaskController extends EventEmitter {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
       },
+      version,
       // account mgmt
       getAccounts: async () => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
