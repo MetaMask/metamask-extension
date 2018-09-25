@@ -5,7 +5,6 @@
 ## 4.11.1 Tuesday September 25 2018
 
 - Adds Ledger support.
-- Fixes bug causing issues with some Dapps including EtherDelta.
 
 ## 4.11.0 Monday September 24 2018
 
