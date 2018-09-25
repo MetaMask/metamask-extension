@@ -10,9 +10,9 @@ restoreContextAfterImports()
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 console.warn('ATTENTION: In an effort to improve user privacy, MetaMask will ' +
-'stop exposing user accounts to dapps by default. Dapps must call provider.enable() ' +
-'in order to view and use accounts. Please see https://bit.ly/2QQHXvF for complete ' +
-'information and up-to-date example code.')
+'stop exposing user accounts to dapps by default beginning November 2nd, 2018. ' +
+'Dapps should call provider.enable() in order to view and use accounts. Please see ' +
+'https://bit.ly/2QQHXvF for complete information and up-to-date example code.')
 
 //
 // setup plugin communication
