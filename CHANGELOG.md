@@ -2,7 +2,12 @@
 
 ## Current Develop Branch
 
-## 4.11.0
+## 4.11.1 Tuesday September 25 2018
+
+- Adds Ledger support.
+- Fixes bug causing issues with some Dapps including EtherDelta.
+
+## 4.11.0 Monday September 24 2018
 
 - Identical to 4.9.3. A rollback version to give time to fix bugs in the 4.10.x branch.
 
