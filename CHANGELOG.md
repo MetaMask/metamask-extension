@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 4.11.0
+
+- Identical to 4.9.3. A rollback version to give time to fix bugs in the 4.10.x branch.
+
 ## 4.9.3 Wed Aug 15 2018
 
 - (#4897)[https://github.com/MetaMask/metamask-extension/pull/4897]: QR code scan for recipient addresses.
