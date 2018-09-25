@@ -162,19 +162,99 @@
 }
 
 .hw-connect {
+  width: 100%;
+
   &__header {
     &__title {
       margin-top: 5px;
       margin-bottom: 15px;
       font-size: 22px;
-      text-align: center;
     }
 
     &__msg {
       font-size: 14px;
       color: #9b9b9b;
       margin-top: 10px;
-      margin-bottom: 0px;
+      margin-bottom: 20px;
+    }
+  }
+
+  &__btn-wrapper {
+    flex: 1;
+    flex-direction: row;
+    display: flex;
+  }
+
+  &__connect-btn {
+    background-color: #259De5;
+    color: #fff;
+    border: none;
+    width: 315px;
+    min-height: 54px;
+    font-weight: 300;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex: 1;
+    margin-left: 20px;
+    margin-right: 20px;
+    justify-content: center;
+    text-transform: uppercase;
+  }
+
+  &__connect-btn.disabled {
+    cursor: not-allowed;
+    opacity: .5;
+  }
+
+  &__btn {
+    background: #fbfbfb;
+    border: 1px solid #e5e5e5;
+    height: 100px;
+    width: 150px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+
+    &__img {
+      width: 95px;
+    }
+  }
+
+  &__btn.selected {
+    border: 2px solid #00a8ee;
+    width: 149px;
+  }
+
+  &__btn:first-child {
+    margin-right: 15px;
+    margin-left: 20px;
+  }
+
+  &__btn:last-child {
+    margin-right: 20px;
+  }
+
+  &__hdPath {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    font-size: 14px;
+
+    &__title {
+      display: flex;
+      margin-top: 10px;
+      margin-right: 15px;
+    }
+
+    &__select {
+      display: flex;
+      flex: 1;
     }
   }
 
@@ -201,6 +281,13 @@
     font-size: 18px;
   }
 
+  &__unlock-title {
+    padding-top: 10px;
+    font-weight: 400;
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+
   &__msg {
     font-size: 14px;
     color: #9b9b9b;
@@ -213,8 +300,6 @@
   }
 
   &__footer {
-    width: 100%;
-
     &__title {
       padding-top: 15px;
       padding-bottom: 12px;
@@ -228,6 +313,9 @@
       color: #9b9b9b;
       margin-top: 12px;
       margin-bottom: 27px;
+      width: 100%;
+      display: block;
+      margin-left: 20px;
     }
 
     &__link {
@@ -236,10 +324,10 @@
     }
   }
 
-  &__get-trezor {
+  &__get-hw {
     width: 100%;
-    padding-bottom: 20px;
-    padding-top: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
 
     &__msg {
       font-size: 14px;
@@ -390,6 +478,8 @@
 
   &.account-list {
     height: auto;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   &__buttons {
@@ -412,6 +502,7 @@
     min-height: 54px;
     font-weight: 300;
     font-size: 14px;
+    margin-bottom: 20px
   }
 
   &__button.unlock {

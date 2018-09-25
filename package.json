@@ -110,6 +110,7 @@
     "eth-hd-keyring": "^1.2.2",
     "eth-json-rpc-filters": "^1.2.6",
     "eth-json-rpc-infura": "^3.0.0",
+    "eth-ledger-bridge-keyring": "^0.1.0",
     "eth-method-registry": "^1.0.0",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",

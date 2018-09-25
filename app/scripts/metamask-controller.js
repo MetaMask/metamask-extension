@@ -49,6 +49,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const cleanErrorStack = require('./lib/cleanErrorStack')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
+const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -127,7 +128,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring]
+    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -377,9 +378,7 @@ module.exports = class MetamaskController extends EventEmitter {
       connectHardware: nodeify(this.connectHardware, this),
       forgetDevice: nodeify(this.forgetDevice, this),
       checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
-
-      // TREZOR
-      unlockTrezorAccount: nodeify(this.unlockTrezorAccount, this),
+      unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
 
       // vault management
       submitPassword: nodeify(this.submitPassword, this),
@@ -540,45 +539,57 @@ module.exports = class MetamaskController extends EventEmitter {
   // Hardware
   //
 
+  async getKeyringForDevice (deviceName, hdPath = null) {
+    let keyringName = null
+    switch (deviceName) {
+      case 'trezor':
+        keyringName = TrezorKeyring.type
+        break
+      case 'ledger':
+        keyringName = LedgerBridgeKeyring.type
+        break
+      default:
+        throw new Error('MetamaskController:getKeyringForDevice - Unknown device')
+    }
+    let keyring = await this.keyringController.getKeyringsByType(keyringName)[0]
+    if (!keyring) {
+      keyring = await this.keyringController.addNewKeyring(keyringName)
+    }
+    if (hdPath && keyring.setHdPath) {
+      keyring.setHdPath(hdPath)
+    }
+
+    keyring.network = this.networkController.getProviderConfig().type
+
+    return keyring
+
+  }
+
   /**
    * Fetch account list from a trezor device.
    *
    * @returns [] accounts
    */
-  async connectHardware (deviceName, page) {
-
-    switch (deviceName) {
-      case 'trezor':
-        const keyringController = this.keyringController
-        const oldAccounts = await keyringController.getAccounts()
-        let keyring = await keyringController.getKeyringsByType(
-          'Trezor Hardware'
-        )[0]
-        if (!keyring) {
-          keyring = await this.keyringController.addNewKeyring('Trezor Hardware')
-        }
-        let accounts = []
-
-        switch (page) {
-            case -1:
-              accounts = await keyring.getPreviousPage()
-              break
-            case 1:
-              accounts = await keyring.getNextPage()
-              break
-            default:
-              accounts = await keyring.getFirstPage()
-        }
-
-        // Merge with existing accounts
-        // and make sure addresses are not repeated
-        const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.address.toLowerCase())))]
-        this.accountTracker.syncWithAddresses(accountsToTrack)
-        return accounts
-
-      default:
-        throw new Error('MetamaskController:connectHardware - Unknown device')
+  async connectHardware (deviceName, page, hdPath) {
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath)
+    let accounts = []
+    switch (page) {
+        case -1:
+          accounts = await keyring.getPreviousPage()
+          break
+        case 1:
+          accounts = await keyring.getNextPage()
+          break
+        default:
+          accounts = await keyring.getFirstPage()
     }
+
+    // Merge with existing accounts
+    // and make sure addresses are not repeated
+    const oldAccounts = await this.keyringController.getAccounts()
+    const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.address.toLowerCase())))]
+    this.accountTracker.syncWithAddresses(accountsToTrack)
+    return accounts
   }
 
   /**
@@ -586,21 +597,9 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns {Promise<boolean>}
    */
-  async checkHardwareStatus (deviceName) {
-
-    switch (deviceName) {
-      case 'trezor':
-        const keyringController = this.keyringController
-        const keyring = await keyringController.getKeyringsByType(
-          'Trezor Hardware'
-        )[0]
-        if (!keyring) {
-          return false
-        }
-        return keyring.isUnlocked()
-      default:
-        throw new Error('MetamaskController:checkHardwareStatus - Unknown device')
-    }
+  async checkHardwareStatus (deviceName, hdPath) {
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath)
+    return keyring.isUnlocked()
   }
 
   /**
@@ -610,20 +609,9 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async forgetDevice (deviceName) {
 
-    switch (deviceName) {
-      case 'trezor':
-        const keyringController = this.keyringController
-        const keyring = await keyringController.getKeyringsByType(
-          'Trezor Hardware'
-        )[0]
-        if (!keyring) {
-          throw new Error('MetamaskController:forgetDevice - Trezor Hardware keyring not found')
-        }
-        keyring.forgetDevice()
-        return true
-      default:
-        throw new Error('MetamaskController:forgetDevice - Unknown device')
-    }
+    const keyring = await this.getKeyringForDevice(deviceName)
+    keyring.forgetDevice()
+    return true
   }
 
   /**
@@ -631,23 +619,17 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns {} keyState
    */
-  async unlockTrezorAccount (index) {
-    const keyringController = this.keyringController
-    const keyring = await keyringController.getKeyringsByType(
-      'Trezor Hardware'
-    )[0]
-    if (!keyring) {
-      throw new Error('MetamaskController - No Trezor Hardware Keyring found')
-    }
+  async unlockHardwareWalletAccount (index, deviceName, hdPath) {
+    const keyring = await this.getKeyringForDevice(deviceName, hdPath)
 
     keyring.setAccountToUnlock(index)
-    const oldAccounts = await keyringController.getAccounts()
-    const keyState = await keyringController.addNewAccount(keyring)
-    const newAccounts = await keyringController.getAccounts()
+    const oldAccounts = await this.keyringController.getAccounts()
+    const keyState = await this.keyringController.addNewAccount(keyring)
+    const newAccounts = await this.keyringController.getAccounts()
     this.preferencesController.setAddresses(newAccounts)
     newAccounts.forEach(address => {
       if (!oldAccounts.includes(address)) {
-        this.preferencesController.setAccountLabel(address, `TREZOR #${parseInt(index, 10) + 1}`)
+        this.preferencesController.setAccountLabel(address, `${deviceName.toUpperCase()} ${parseInt(index, 10) + 1}`)
         this.preferencesController.setSelectedAddress(address)
       }
     })
