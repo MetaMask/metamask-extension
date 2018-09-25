@@ -251,8 +251,8 @@ AccountDetailScreen.prototype.tabSections = function () {
 
     h(TabBar, {
       tabs: [
-        { content: 'Sent', key: 'history' },
-        { content: 'Tokens', key: 'tokens' },
+        { content: 'Sent', key: 'history', id: 'wallet-view__tab-history' },
+        { content: 'Tokens', key: 'tokens', id: 'wallet-view__tab-tokens' },
       ],
       defaultTab: currentAccountTab || 'history',
       tabSelected: (key) => {

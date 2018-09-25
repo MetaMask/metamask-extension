@@ -59,6 +59,7 @@ describe('Metamask popup page', async function () {
       await delay(300)
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
+      await delay(5000)
     })
   })
 
@@ -71,7 +72,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('screen \'Terms of Use\' has not empty agreement', async () => {
-      const terms = await waitUntilShowUp(screens.TOU.agreement)
+      const terms = await waitUntilShowUp(screens.TOU.agreement, 300)
       const text = await terms.getText()
       assert.equal(text.length > 400, true, 'agreement is too short')
     })
@@ -606,102 +607,220 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Token Factory', function () {
+  describe('Add Token:Search', function () {
+    const request = {
+      valid: 'cry',
+      invalid: 'zzz',
+      notExistingAddress: '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC',
+    }
+    const Qtum = {
+      name: 'Qtum (QTUM)',
+      address: '0x9a642d6b3368ddc662CA244bAdf32cDA716005BC',
+    }
 
-    it('navigates to token factory', async function () {
-      await driver.get('http://tokenfactory.surge.sh/')
+    describe('add Mainnet\'s tokens', function () {
+
+      it(' field \'Search\' is displayed', async function () {
+        await setProvider(NETWORKS.MAINNET)
+        await delay(2000)
+        const tab = await waitUntilShowUp(screens.main.tokens.menu)
+        await tab.click()
+        const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
+        await click(button)
+        const field = await waitUntilShowUp(screens.addToken.search.fieldSearch)
+        assert.notEqual(field, false, 'field \'Search\'  isn\'t displayed')
+      })
+
+      it('button \'Next\' is disabled if no tokens found', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.next)
+        assert.equal(await button.isEnabled(), false, 'button is enabled')
+        assert.equal(await button.getText(), 'Next', 'button has incorrect name')
+      })
+
+      it('button \'Cancel\' is enabled and lead to main screen ', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.cancel)
+        assert.equal(await button.isEnabled(), true, 'button isn\'t enabled')
+        assert.equal(await button.getText(), 'Cancel', 'button has incorrect name')
+      })
+
+      it('Search by name: searching result list is empty if request invalid', async function () {
+        const field = await waitUntilShowUp(screens.addToken.search.fieldSearch)
+        await field.sendKeys(request.invalid)
+        const list = await waitUntilShowUp(screens.addToken.search.token.unselected, 20)
+        assert.equal(list, false, 'unexpected tokens are displayed')
+      })
+
+      it('Search by name: searching result list isn\'t empty ', async function () {
+        const field = await waitUntilShowUp(screens.addToken.search.fieldSearch)
+        await clearField(field)
+        await field.sendKeys(request.valid)
+        await waitUntilShowUp(screens.addToken.search.token.unselected)
+        const list = await driver.findElements(screens.addToken.search.token.unselected)
+        assert.notEqual(list, 0, 'tokens aren\'t displayed')
+      })
+
+      it('Token\'s info contains name, symbol and picture ', async function () {
+        const tokens = await driver.findElements(screens.addToken.search.token.unselected)
+        const names = await driver.findElements(screens.addToken.search.token.name)
+        const icons = await driver.findElements(screens.addToken.search.token.icon)
+        assert.equal(tokens.length, names.length, 'some names are missed')
+        assert.equal(tokens.length, icons.length, 'some icons are missed')
+      })
+
+      it('button \'Next\' is disabled if no one token is selected', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.next)
+        assert.equal(await button.isEnabled(), false, 'button is enabled')
+      })
+
+      it('user can select one token', async function () {
+        const token = await waitUntilShowUp(screens.addToken.search.token.unselected)
+        await token.click()
+      })
+
+      it('button \'Next\' is enabled if token is selected', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.next)
+        assert.equal(await button.isEnabled(), true, 'button is disabled')
+      })
+
+      it('user can unselected token', async function () {
+        const token = await waitUntilShowUp(screens.addToken.search.token.selected)
+        await token.click()
+      })
+
+      it('button \'Next\' is disabled after token was unselected', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.next)
+        assert.equal(await button.isEnabled(), false, 'button is enabled')
+      })
+
+      it('user can select two tokens', async function () {
+        await waitUntilShowUp(screens.addToken.search.token.unselected)
+        const tokensUnselected = await driver.findElements(screens.addToken.search.token.unselected)
+        await tokensUnselected[0].click()
+        await tokensUnselected[2].click()
+        const tokensSelected = await driver.findElements(screens.addToken.search.token.selected)
+        assert.equal(tokensSelected.length, 2, 'user can\'t select 2 tokens')
+      })
+
+      it('click button \'Next\' opens confirm screen ', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.next)
+        await click(button)
+        const buttonAdd = await waitUntilShowUp(screens.addToken.search.confirm.button.add)
+        assert.notEqual(buttonAdd, false, 'failed to open screen confirmation')
+      })
+
+      it('confirm screen: two selected tokens are displayed and have correct parameters', async function () {
+        const tokens = await driver.findElements(screens.addToken.search.confirm.token.item)
+        assert.equal(tokens.length, 2, 'incorrect number of tokens are presented')
+
+        const names = await driver.findElements(screens.addToken.search.confirm.token.name)
+        const name0 = await names[0].getText()
+        const name1 = await names[1].getText()
+        assert.equal(name0.length > 10, true, 'empty token name')
+        assert.equal(name1.length > 10, true, 'empty token name')
+        await delay(2000)
+        const balances = await driver.findElements(screens.addToken.search.confirm.token.balance)
+        const balance0 = await balances[1].getText()
+        const balance1 = await balances[2].getText()
+        assert.equal(balance0, '0', 'balance isn\'t 0')
+        assert.equal(balance1, '0', 'balance isn\'t 0')
+      })
+
+      it('button \'Back\' is enabled and leads to previous screen ', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.confirm.button.back)
+        assert.equal(await button.isEnabled(), true, 'button isn\'t enabled')
+        await click(button)
+        const fieldSearch = await waitUntilShowUp(screens.addToken.search.fieldSearch)
+        assert.notEqual(fieldSearch, false, 'add token screen didn\'t opened')
+      })
+
+      it('button \'Next\' is enabled if confirmation list isn\'t empty', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.next)
+        assert.equal(await button.isEnabled(), true, 'button is disabled')
+      })
+
+      it('previous selected tokens remain selected after new search', async function () {
+        const field = await waitUntilShowUp(screens.addToken.search.fieldSearch)
+        await clearField(field)
+        await field.sendKeys(request.valid)
+        await waitUntilShowUp(screens.addToken.search.token.selected)
+        const listSelected = await driver.findElements(screens.addToken.search.token.selected)
+        assert.equal(listSelected.length, 2, 'tokens are unselected')
+      })
+
+      it('user can unselect token', async function () {
+        const tokensUnselected = await driver.findElements(screens.addToken.search.token.unselected)
+        assert.notEqual(tokensUnselected.length, 0, 'all tokens are selected')
+
+        let tokensSelected = await driver.findElements(screens.addToken.search.token.selected)
+        await tokensSelected[0].click()
+        const old = tokensSelected.length
+
+        tokensSelected = await driver.findElements(screens.addToken.search.token.selected)
+        assert.equal(tokensSelected.length, old - 1, 'can\'t unselect token')
+      })
+
+      it('confirm screen: unselected token aren\'t displayed', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.next)
+        await click(button)
+        await waitUntilShowUp(screens.addToken.search.confirm.token.item)
+        const tokens = await driver.findElements(screens.addToken.search.confirm.token.item)
+        assert.equal(tokens.length, 1, 'incorrect number of tokens are presented')
+        const back = await waitUntilShowUp(screens.addToken.search.confirm.button.back)
+        await click(back)
+      })
+
+      it('Search by contract address: searching result list is empty if address invalid ', async function () {
+        const field = await waitUntilShowUp(screens.addToken.search.fieldSearch)
+        await field.sendKeys(request.notExistingAddress)
+        const list = await waitUntilShowUp(screens.addToken.search.token.unselected, 20)
+        assert.equal(list, false, 'unexpected tokens are displayed')
+      })
+
+      it('Search by valid contract address: searching result list contains one token ', async function () {
+        const field = await waitUntilShowUp(screens.addToken.search.fieldSearch)
+        await clearField(field)
+        await clearField(field)
+        await field.sendKeys(Qtum.address)
+        const token = await waitUntilShowUp(screens.addToken.search.token.unselected)
+        const list = await driver.findElements(screens.addToken.search.token.unselected)
+        assert.notEqual(list, 0, 'tokens aren\'t displayed')
+        await token.click()
+      })
+
+      it('Token\'s info contains correct name ', async function () {
+        const name = await waitUntilShowUp(screens.addToken.search.token.name)
+        assert.equal(await name.getText(), Qtum.name, 'incorrect token\'s name')
+      })
+
+      it('one more token added to confirmation list', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.button.next)
+        await click(button)
+        await waitUntilShowUp(screens.addToken.search.confirm.token.item)
+        const list = await driver.findElements(screens.addToken.search.confirm.token.item)
+        assert.equal(list.length, 2, 'token wasn\'t added')
+      })
+
+      it('button \'Add tokens\' is enabled and clickable', async function () {
+        const button = await waitUntilShowUp(screens.addToken.search.confirm.button.add)
+        assert.equal(await button.isEnabled(), true, 'button isn\'t enabled')
+        await click(button)
+        const identicon = await waitUntilShowUp(screens.main.identicon)
+        assert.notEqual(identicon, false, 'main screen didn\'t opened')
+      })
+
+      it('all selected tokens are displayed on main screen', async function () {
+        await waitUntilShowUp(screens.main.tokens.token)
+        const tokens = await driver.findElements(screens.main.tokens.token)
+        assert.equal(tokens.length, 2, 'tokens weren\'t added')
+      })
+
+      it('correct value of counter of owned tokens', async function () {
+        const counter = await waitUntilShowUp(screens.main.tokens.counter)
+        assert.equal(await counter.getText(), 'You own 2 tokens', 'incorrect value of counter')
+
+      })
+
     })
-
-    it('navigates to create token contract link', async function () {
-      const createToken = await waitUntilShowUp(By.css('#bs-example-navbar-collapse-1 > ul > li:nth-child(3) > a'))
-      await createToken.click()
-    })
-
-    it('adds input for token', async function () {
-      const totalSupply = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(5) > input'))
-      const tokenName = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(6) > input'))
-      const tokenDecimal = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(7) > input'))
-      const tokenSymbol = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(8) > input'))
-      const createToken = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > button'))
-
-      await totalSupply.sendKeys('100')
-      await tokenName.sendKeys('Test')
-      await tokenDecimal.sendKeys('0')
-      await tokenSymbol.sendKeys('TST')
-      await click(createToken)
-      await delay(1000)
-    })
-
-    // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
-    it('confirms transaction in MetaMask popup', async function () {
-      const windowHandles = await driver.getAllWindowHandles()
-      await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-      const button = await waitUntilShowUp(screens.confirmTransaction.buttons.submit)
-      await click(button)
-    })
-
-    it('switches back to Token Factory to grab the token contract address', async function () {
-      const windowHandles = await driver.getAllWindowHandles()
-      await driver.switchTo().window(windowHandles[0])
-      const tokenContactAddress = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > span:nth-child(3)'))
-      tokenAddress = await tokenContactAddress.getText()
-      await delay(500)
-    })
-
-    it('navigates back to MetaMask popup in the tab', async function () {
-      if (process.env.SELENIUM_BROWSER === 'chrome') {
-        await driver.get(`chrome-extension://${extensionId}/popup.html`)
-      } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-        await driver.get(`moz-extension://${extensionId}/popup.html`)
-      }
-      await delay(700)
-    })
-  })
-
-  describe('Add Token', function () {
-
-    it('switches to the add token screen', async function () {
-      await waitUntilShowUp(screens.main.buttons.send)
-      const tokensTab = await driver.findElement(screens.main.tokens.menu)
-      assert.equal(await tokensTab.getText(), 'Tokens')
-      await tokensTab.click()
-    })
-
-    it('navigates to the add token screen', async function () {
-      const addTokenButton = await waitUntilShowUp(screens.main.tokens.buttonAdd)
-      assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
-      await click(addTokenButton)
-    })
-
-    it('checks add token screen has correct title', async function () {
-      const addTokenScreen = await waitUntilShowUp(By.className('page-subtitle'))
-      assert.equal(await addTokenScreen.getText(), screens.addToken.titleText)
-    })
-
-    it('adds token parameters', async function () {
-      const tokenContractAddress = await waitUntilShowUp(screens.addToken.fields.contractAddress)
-      await tokenContractAddress.sendKeys(tokenAddress)
-      const button = await waitUntilShowUp(screens.addToken.buttonAdd)
-      await click(button)
-    })
-
-    it('checks the token balance', async function () {
-      const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-      assert.equal(await tokenBalance.getText(), '100 TST')
-    })
-
-    it('token balance updates if switch account', async function () {
-      const accountMenu = await waitUntilShowUp(menus.account.menu)
-      await accountMenu.click()
-      const item = await waitUntilShowUp(menus.account.createAccount)
-      await item.click()
-      const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-      assert.equal(await tokenBalance.getText(), '0 TST')
-    })
-  })
-
-  describe('Check support of token per network basis ', async function () {
-
     describe('Token should be displayed only for network, where it was added ', async function () {
 
       it('token should not  be displayed in POA network', async function () {
@@ -714,8 +833,9 @@ describe('Metamask popup page', async function () {
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not  be displayed in MAINNET network', async function () {
-        await setProvider(NETWORKS.MAINNET)
+      it.skip('token should not  be displayed in LOCALHOST network', async function () {
+        console.log('https://github.com/poanetwork/metamask-extension/issues/131')
+        await setProvider(NETWORKS.LOCALHOST)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
@@ -734,132 +854,290 @@ describe('Metamask popup page', async function () {
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
     })
+    describe('remove Mainnet\'s tokens', function () {
 
-    describe('Add token with the same address to each network  ', async function () {
-
-      const tokenName = 'DVT'
-      const tokenDecimals = '13'
-
-      it('adds token with  the same address to POA network', async function () {
-        await setProvider(NETWORKS.POA)
-        await addToken(tokenAddress, tokenName, tokenDecimals)
-        const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.notEqual(await tokenBalance.getText(), '')
-      })
-
-      it('adds token with  the same address to SOKOL network', async function () {
-        await setProvider(NETWORKS.SOKOL)
-        await addToken(tokenAddress, tokenName, tokenDecimals)
-        const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.notEqual(await tokenBalance.getText(), '')
-      })
-
-      it('adds token with  the same address to MAINNET network', async function () {
+      it('remove tokens', async function () {
         await setProvider(NETWORKS.MAINNET)
-        await addToken(tokenAddress, tokenName, tokenDecimals)
-        const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.notEqual(await tokenBalance.getText(), '')
-      })
 
-      it('adds token with  the same address to ROPSTEN network', async function () {
-        await setProvider(NETWORKS.ROPSTEN)
-        await addToken(tokenAddress, tokenName, tokenDecimals)
-        const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.notEqual(await tokenBalance.getText(), '')
-      })
+        let button
+        let counter
+        let buttonYes
 
-      it('adds token with  the same address to KOVAN network', async function () {
-        await setProvider(NETWORKS.KOVAN)
-        await addToken(tokenAddress, tokenName, tokenDecimals)
-        const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.notEqual(await tokenBalance.getText(), '')
-      })
+        button = await waitUntilShowUp(screens.main.tokens.remove)
+        await button.click()
+        buttonYes = await waitUntilShowUp(screens.removeToken.buttons.yes)
+        await buttonYes.click()
+        await delay(500)
+        counter = await waitUntilShowUp(screens.main.tokens.counter)
+        assert.equal(await counter.getText(), 'You own 1 token', 'incorrect value of counter')
+        const tokensNumber = await driver.findElements(screens.main.tokens.token)
+        assert.equal(tokensNumber.length, 1, 'incorrect amount of token\'s  is displayed')
 
-      it('adds token with  the same address to RINKEBY network', async function () {
-        await setProvider(NETWORKS.RINKEBY)
-        await addToken(tokenAddress, tokenName, tokenDecimals)
-        const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.notEqual(await tokenBalance.getText(), '')
-      })
+        button = await waitUntilShowUp(screens.main.tokens.remove)
+        await button.click()
+        buttonYes = await waitUntilShowUp(screens.removeToken.buttons.yes)
+        await buttonYes.click()
+        counter = await waitUntilShowUp(screens.main.tokens.counter)
+        assert.equal(await counter.getText(), 'No tokens found', 'incorrect value of counter')
 
-      it('token still should be displayed in LOCALHOST network', async function () {
-        await setProvider(NETWORKS.LOCALHOST)
-        await waitUntilDisappear(screens.main.tokens.amount)
-        assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
-        const tokens = await driver.findElements(screens.main.tokens.amount)
-        assert.equal(tokens.length, 1, '\'Tokens\' section doesn\'t contain field with amount of tokens')
-        assert.equal(await tokens[0].getText(), screens.main.tokens.textYouOwn1token, 'Token isn\'t displayed')
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
     })
   })
 
-  describe('Remove Token', function () {
+  describe('Add Token: Custom', function () {
 
-    it('button \'Remove token\' displayed', async function () {
-      await setProvider(NETWORKS.LOCALHOST)
-      const removeTokenButton = await waitUntilShowUp(screens.main.tokens.remove)
-      assert.notEqual(removeTokenButton, false, 'button isn\'t displayed')
-      await removeTokenButton.click()
+    describe('Token Factory', function () {
+
+      it('navigates to token factory', async function () {
+        await setProvider(NETWORKS.LOCALHOST)
+        await driver.get('http://tokenfactory.surge.sh/')
+      })
+
+      it('navigates to create token contract link', async function () {
+        const createToken = await waitUntilShowUp(By.css('#bs-example-navbar-collapse-1 > ul > li:nth-child(3) > a'))
+        await createToken.click()
+      })
+
+      it('adds input for token', async function () {
+        const totalSupply = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(5) > input'))
+        const tokenName = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(6) > input'))
+        const tokenDecimal = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(7) > input'))
+        const tokenSymbol = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(8) > input'))
+        const createToken = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > button'))
+
+        await totalSupply.sendKeys('100')
+        await tokenName.sendKeys('Test')
+        await tokenDecimal.sendKeys('0')
+        await tokenSymbol.sendKeys('TST')
+        await click(createToken)
+        await delay(1000)
+      })
+
+      // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
+      it('confirms transaction in MetaMask popup', async function () {
+        const windowHandles = await driver.getAllWindowHandles()
+        await driver.switchTo().window(windowHandles[windowHandles.length - 1])
+        const button = await waitUntilShowUp(screens.confirmTransaction.buttons.submit)
+        await click(button)
+      })
+
+      it('switches back to Token Factory to grab the token contract address', async function () {
+        const windowHandles = await driver.getAllWindowHandles()
+        await driver.switchTo().window(windowHandles[0])
+        const tokenContactAddress = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > span:nth-child(3)'))
+        tokenAddress = await tokenContactAddress.getText()
+        await delay(500)
+      })
+
+      it('navigates back to MetaMask popup in the tab', async function () {
+        if (process.env.SELENIUM_BROWSER === 'chrome') {
+          await driver.get(`chrome-extension://${extensionId}/popup.html`)
+        } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+          await driver.get(`moz-extension://${extensionId}/popup.html`)
+        }
+        await delay(700)
+      })
+    })
+    describe('Add token', function () {
+
+      it('navigates to the add token screen', async function () {
+        await waitUntilShowUp(screens.main.identicon)
+        const addTokenButton = await waitUntilShowUp(screens.main.tokens.buttonAdd)
+        assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
+        await click(addTokenButton)
+      })
+
+      it('checks add token screen has correct title', async function () {
+        const addTokenScreen = await waitUntilShowUp(screens.addToken.title)
+        assert.equal(await addTokenScreen.getText(), screens.addToken.titleText)
+      })
+
+      it('adds token parameters', async function () {
+        const tab = await waitUntilShowUp(screens.addToken.tab.custom)
+        if (!await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)) await tab.click()
+        const tokenContractAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
+        await tokenContractAddress.sendKeys(tokenAddress)
+        const button = await waitUntilShowUp(screens.addToken.custom.buttons.add)
+        await click(button)
+      })
+
+      it('checks the token balance', async function () {
+        const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+        assert.equal(await tokenBalance.getText(), '100 TST')
+      })
+
+      it('token balance updates if switch account', async function () {
+        const accountMenu = await waitUntilShowUp(menus.account.menu)
+        await accountMenu.click()
+        const item = await waitUntilShowUp(menus.account.createAccount)
+        await item.click()
+        const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+        assert.equal(await tokenBalance.getText(), '0 TST')
+      })
     })
 
-    it('screen \'Remove token\' has correct title', async function () {
-      const title = await waitUntilShowUp(screens.removeToken.title)
-      assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
+    describe('Check support of token per network basis ', async function () {
+
+      describe('Token should be displayed only for network, where it was added ', async function () {
+
+        it('token should not  be displayed in POA network', async function () {
+          await setProvider(NETWORKS.POA)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in SOKOL network', async function () {
+          await setProvider(NETWORKS.SOKOL)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in MAINNET network', async function () {
+          await setProvider(NETWORKS.MAINNET)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in ROPSTEN network', async function () {
+          await setProvider(NETWORKS.ROPSTEN)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in KOVAN network', async function () {
+          await setProvider(NETWORKS.KOVAN)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in RINKEBY network', async function () {
+          await setProvider(NETWORKS.RINKEBY)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+      })
+
+      describe('Add token with the same address to each network  ', async function () {
+
+        const tokenName = 'DVT'
+        const tokenDecimals = '13'
+
+        it('adds token with  the same address to POA network', async function () {
+          await setProvider(NETWORKS.POA)
+          await addToken(tokenAddress, tokenName, tokenDecimals)
+          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+          assert.notEqual(await tokenBalance.getText(), '')
+        })
+
+        it('adds token with  the same address to SOKOL network', async function () {
+          await setProvider(NETWORKS.SOKOL)
+          await addToken(tokenAddress, tokenName, tokenDecimals)
+          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+          assert.notEqual(await tokenBalance.getText(), '')
+        })
+
+        it('adds token with  the same address to ROPSTEN network', async function () {
+          await setProvider(NETWORKS.ROPSTEN)
+          await addToken(tokenAddress, tokenName, tokenDecimals)
+          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+          assert.notEqual(await tokenBalance.getText(), '')
+        })
+
+        it('adds token with  the same address to KOVAN network', async function () {
+          await setProvider(NETWORKS.KOVAN)
+          await addToken(tokenAddress, tokenName, tokenDecimals)
+          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+          assert.notEqual(await tokenBalance.getText(), '')
+        })
+
+        it('adds token with  the same address to RINKEBY network', async function () {
+          await setProvider(NETWORKS.RINKEBY)
+          await addToken(tokenAddress, tokenName, tokenDecimals)
+          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+          assert.notEqual(await tokenBalance.getText(), '')
+        })
+
+        it('adds token with  the same address to MAINNET network', async function () {
+          await setProvider(NETWORKS.MAINNET)
+          await addToken(tokenAddress, tokenName, tokenDecimals)
+          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
+          assert.notEqual(await tokenBalance.getText(), '')
+        })
+
+        it('token still should be displayed in LOCALHOST network', async function () {
+          await setProvider(NETWORKS.LOCALHOST)
+          await waitUntilDisappear(screens.main.tokens.amount)
+          assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
+          const tokens = await driver.findElements(screens.main.tokens.amount)
+          assert.equal(tokens.length, 1, '\'Tokens\' section doesn\'t contain field with amount of tokens')
+          assert.equal(await tokens[0].getText(), screens.main.tokens.textYouOwn1token, 'Token isn\'t displayed')
+        })
+      })
     })
 
-    it('button "No" bring back to "Main" screen', async function () {
-      const title = await waitUntilShowUp(screens.removeToken.title)
-      assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
-      const button = await waitUntilShowUp(screens.removeToken.buttons.no)
-      assert.notEqual(button, false, 'button \'No\' isn\'t displayed ')
-      assert.equal(await button.getText(), 'No', 'button has incorrect name')
-      await click(button)
-      const token = await waitUntilShowUp(screens.main.tokens.balance)
-      assert.notEqual(await token.getText(), '', 'token is disapeared after return from remove token screen ')
-    })
+    describe('Remove token , provider is localhost', function () {
 
-    it('button "Yes" delete token', async function () {
-      const removeTokenButton = await waitUntilShowUp(screens.main.tokens.remove)
-      assert.notEqual(removeTokenButton, false, 'button isn\'t displayed')
-      await removeTokenButton.click()
-      const title = await waitUntilShowUp(screens.removeToken.title)
-      assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
+      it('button \'Remove token\' displayed', async function () {
+        await setProvider(NETWORKS.LOCALHOST)
+        const removeTokenButton = await waitUntilShowUp(screens.main.tokens.remove)
+        assert.notEqual(removeTokenButton, false, 'button isn\'t displayed')
+        await removeTokenButton.click()
+      })
 
-      const button = await waitUntilShowUp(screens.removeToken.buttons.yes)
-      assert.notEqual(button, false, 'button \'Yes\' isn\'t displayed ')
-      assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
-      await click(button)
-      assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-    })
+      it('screen \'Remove token\' has correct title', async function () {
+        const title = await waitUntilShowUp(screens.removeToken.title)
+        assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
+      })
 
-    it('check if token was removed from SOKOL network', async function () {
-      await setProvider(NETWORKS.SOKOL)
-      assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-    })
+      it('button "No" bring back to "Main" screen', async function () {
+        const title = await waitUntilShowUp(screens.removeToken.title)
+        assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
+        const button = await waitUntilShowUp(screens.removeToken.buttons.no)
+        assert.notEqual(button, false, 'button \'No\' isn\'t displayed ')
+        assert.equal(await button.getText(), 'No', 'button has incorrect name')
+        await click(button)
+        const token = await waitUntilShowUp(screens.main.tokens.balance)
+        assert.notEqual(await token.getText(), '', 'token is disapeared after return from remove token screen ')
+      })
 
-    it('check if token was removed from KOVAN network', async function () {
-      await setProvider(NETWORKS.KOVAN)
-      assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-    })
+      it('button "Yes" delete token', async function () {
+        const removeTokenButton = await waitUntilShowUp(screens.main.tokens.remove)
+        assert.notEqual(removeTokenButton, false, 'button isn\'t displayed')
+        await removeTokenButton.click()
+        const title = await waitUntilShowUp(screens.removeToken.title)
+        assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
 
-    it('check if token was removed from ROPSTEN network', async function () {
-      await setProvider(NETWORKS.ROPSTEN)
-      assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-    })
+        const button = await waitUntilShowUp(screens.removeToken.buttons.yes)
+        assert.notEqual(button, false, 'button \'Yes\' isn\'t displayed ')
+        assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
+        await click(button)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
 
-    it('check if token was removed from MAINNET network', async function () {
-      await setProvider(NETWORKS.MAINNET)
-      assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-    })
+      it('check if token was removed from SOKOL network', async function () {
+        await setProvider(NETWORKS.SOKOL)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
 
-    it('check if token was removed from POA network', async function () {
-      await setProvider(NETWORKS.POA)
-      assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-    })
+      it('check if token was removed from KOVAN network', async function () {
+        await setProvider(NETWORKS.KOVAN)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
 
-    it('check if token was removed from RINKEBY network', async function () {
-      await setProvider(NETWORKS.RINKEBY)
-      assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      it('check if token was removed from ROPSTEN network', async function () {
+        await setProvider(NETWORKS.ROPSTEN)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('check if token was removed from MAINNET network', async function () {
+        await setProvider(NETWORKS.MAINNET)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('check if token was removed from POA network', async function () {
+        await setProvider(NETWORKS.POA)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('check if token was removed from RINKEBY network', async function () {
+        await setProvider(NETWORKS.RINKEBY)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
     })
   })
 
@@ -1079,7 +1357,7 @@ describe('Metamask popup page', async function () {
   }
 
   async function waitUntilShowUp (by, Twait) {
-    if (Twait === undefined) Twait = 2000
+    if (Twait === undefined) Twait = 200
     do {
       await delay(100)
       if (await isElementDisplayed(by)) return await driver.findElement(by)
@@ -1101,14 +1379,15 @@ describe('Metamask popup page', async function () {
       await waitUntilDisappear(elements.loader)
       assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
       // Check tokens title
-      const tokensStatus = await driver.findElements(screens.main.tokens.amount)
-      assert.equal(tokensStatus.length, 1, '\'Tokens\' section doesn\'t contain field with amount of tokens')
-      assert.equal(await tokensStatus[0].getText(), screens.main.tokens.textNoTokens, 'Unexpected token presents')
+      const tokensCounter = await waitUntilShowUp(screens.main.tokens.counter)
+      assert.notEqual(tokensCounter, false, '\'Token\'s counter isn\'t displayed ')
+      assert.equal(await tokensCounter.getText(), screens.main.tokens.textNoTokens, 'Unexpected token presents')
       // Check if token presents
       const tokens = await driver.findElements(screens.main.tokens.token)
       assert.equal(tokens.length, 0, 'Unexpected token presents')
       return true
     } catch (err) {
+      console.log(err)
       return false
     }
   }
@@ -1117,11 +1396,19 @@ describe('Metamask popup page', async function () {
     try {
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
-      const field = await waitUntilShowUp(screens.addToken.fields.contractAddress)
+      do {
+        const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
+        try {
+          await tab.click()
+        } catch (err) {
+        }
+      }
+      while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
+      const field = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
       await clearField(field)
       await field.sendKeys(tokenAddress)
 
-      const buttonAdd = await waitUntilShowUp(screens.addToken.buttonAdd)
+      const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
       await click(buttonAdd)
       return true
     } catch (err) {
@@ -1167,4 +1454,3 @@ describe('Metamask popup page', async function () {
     await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
 })
-

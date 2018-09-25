@@ -2,7 +2,7 @@ const assert = require('assert')
 const { createMockStore } = require('redux-test-utils')
 const h = require('react-hyperscript')
 const { shallowWithStore } = require('../../lib/shallow-with-store')
-const AddTokenScreen = require('../../../old-ui/app/add-token')
+const AddTokenScreen = require('../../../old-ui/app/components/add-token')
 
 describe('Add Token Screen', function () {
   let addTokenComponent, store, component
@@ -32,7 +32,7 @@ describe('Add Token Screen', function () {
 
     it('Address is a Metamask Identity', function () {
       addTokenComponent.setState({
-        address: '0x7d3517b0d011698406d6e0aed8453f0be2697926',
+        customAddress: '0x7d3517b0d011698406d6e0aed8453f0be2697926',
       })
       addTokenComponent.instance().validateInputs()
       const state = addTokenComponent.state()

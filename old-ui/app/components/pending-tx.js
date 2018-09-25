@@ -448,6 +448,9 @@ PendingTx.prototype.render = function () {
               this.resetGasFields()
               event.preventDefault()
             },
+            style: {
+              marginRight: 0,
+            },
           }, 'Reset'),
 
           // Accept Button or Buy Button

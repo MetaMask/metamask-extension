@@ -118,9 +118,6 @@ RestoreVaultScreen.prototype.render = function () {
           // cancel
           h('button.btn-violet', {
             onClick: this.showInitializeMenu.bind(this),
-            style: {
-              marginRight: '10px',
-            },
           }, 'Cancel'),
 
           // submit

@@ -120,6 +120,7 @@ button, input[type="submit"] {
 
 .btn-violet {
   background: #6729a8;
+  margin-right: 10px;
 }
 
 button[disabled], input[type="submit"][disabled] {

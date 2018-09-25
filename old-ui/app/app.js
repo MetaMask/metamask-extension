@@ -21,7 +21,8 @@ const NoticeScreen = require('./components/notice')
 const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
-const AddTokenScreen = require('./add-token')
+const AddTokenScreen = require('./components/add-token')
+const ConfirmAddTokenScreen = require('./components/confirm-add-token')
 const RemoveTokenScreen = require('./remove-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
@@ -587,6 +588,10 @@ App.prototype.renderPrimary = function () {
     case 'add-token':
       log.debug('rendering add-token screen from unlock screen.')
       return h(AddTokenScreen, {key: 'add-token'})
+
+    case 'confirm-add-token':
+      log.debug('rendering confirm-add-token screen from unlock screen.')
+      return h(ConfirmAddTokenScreen, {key: 'confirm-add-token'})
 
     case 'remove-token':
       log.debug('rendering remove-token screen from unlock screen.')
