@@ -22,9 +22,15 @@ export default class TransactionConfirmed extends PureComponent {
     this.props.hideModal()
   }
 
+  handleRetry = () => {
+    const { onRetry, hideModal } = this.props
+
+    Promise.resolve(onRetry()).then(() => hideModal())
+  }
+
   render () {
     const { t } = this.context
-    const { transaction, onRetry, showRetry, onCancel, showCancel } = this.props
+    const { transaction, showRetry, onCancel, showCancel } = this.props
     const { txParams: { nonce } = {} } = transaction
     const decimalNonce = nonce && hexToDecimal(nonce)
 
@@ -37,7 +43,7 @@ export default class TransactionConfirmed extends PureComponent {
       >
         <TransactionListItemDetails
           transaction={transaction}
-          onRetry={() => onRetry()}
+          onRetry={this.handleRetry}
           showRetry={showRetry}
           onCancel={() => onCancel()}
           showCancel={showCancel}
