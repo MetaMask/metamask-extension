@@ -362,7 +362,29 @@ class TransactionController extends EventEmitter {
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 
-  confirmTransaction (txId) {
+  /**
+    Sets the status of the transaction to confirmed
+    and sets the status of nonce duplicates as dropped
+    if the txParams have data it will fetch the txReceipt
+    @param txId {number} - the tx's Id
+    @returns {Promise<void>}
+  */
+
+  async confirmTransaction (txId) {
+    // get the txReceipt before marking the transaction confirmed
+    // to ensure the receipt is gotten before the ui revives the tx
+    const txMeta = this.txStateManager.getTx(txId)
+    if (txMeta.txParams.data) {
+      try {
+        const txReceipt = await this.query.getTransactionReceipt()
+        txMeta.txReceipt = txReceipt
+        this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
+
+      } catch (err) {
+        log.error(err)
+      }
+    }
+
     this.txStateManager.setTxStatusConfirmed(txId)
     this._markNonceDuplicatesDropped(txId)
   }
