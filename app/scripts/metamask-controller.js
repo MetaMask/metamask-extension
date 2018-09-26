@@ -1255,7 +1255,7 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
-    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3').bind(this))
+    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3', true).bind(this))
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection
@@ -1511,13 +1511,13 @@ module.exports = class MetamaskController extends EventEmitter {
   * @param {Function} - next
   * @param {Function} - end
   */
-  createTypedDataMiddleware (methodName, version) {
+  createTypedDataMiddleware (methodName, version, reverse) {
     return async (req, res, next, end) => {
       const { method, params } = req
       if (method === methodName) {
         const promise = this.typedMessageManager.addUnapprovedMessageAsync({
-          data: params.length >= 1 && params[0],
-          from: params.length >= 2 && params[1],
+          data: reverse ? params[1] : params[0],
+          from: reverse ? params[0] : params[1],
         }, req, version)
         this.sendUpdate()
         this.opts.showUnconfirmedMessage()
