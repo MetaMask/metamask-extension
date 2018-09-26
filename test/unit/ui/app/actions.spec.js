@@ -679,7 +679,7 @@ describe('Actions', () => {
 
   describe('#signMsg', () => {
 
-    let signMessageSpy, metamaskMsgs, msgId, messages, closeCurrentWindowSpy
+    let signMessageSpy, metamaskMsgs, msgId, messages
 
     const msgParams = {
       from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -1311,20 +1311,34 @@ describe('Actions', () => {
   describe('#updateNetworkNonce', () => {
     let getTransactionCountSpy
 
-    beforeEach(() => {
-      getTransactionCountSpy = sinon.spy(global.ethQuery, 'getTransactionCount')
-    })
-
     afterEach(() => {
       getTransactionCountSpy.restore()
     })
 
     it('', () => {
       const store = mockStore()
+      getTransactionCountSpy = sinon.spy(global.ethQuery, 'getTransactionCount')
 
       store.dispatch(actions.updateNetworkNonce())
         .then(() => {
           assert(getTransactionCountSpy.calledOnce)
+        })
+    })
+
+    it('', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      getTransactionCountSpy = sinon.stub(global.ethQuery, 'getTransactionCount')
+      getTransactionCountSpy.callsFake((address, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.updateNetworkNonce())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
         })
     })
   })
