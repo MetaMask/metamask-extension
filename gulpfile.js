@@ -229,15 +229,23 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
         await endOfStream(stream)
         livereload.changed(event.path)
       })
+      return buildScssWithSourceMaps()
     }
     return buildScss()
   }
 
-  function buildScss () {
+  function buildScssWithSourceMaps () {
     return gulp.src(src)
       .pipe(sourcemaps.init())
       .pipe(sass().on('error', sass.logError))
       .pipe(sourcemaps.write())
+      .pipe(autoprefixer())
+      .pipe(gulp.dest(dest))
+  }
+
+  function buildScss () {
+    return gulp.src(src)
+      .pipe(sass().on('error', sass.logError))
       .pipe(autoprefixer())
       .pipe(gulp.dest(dest))
   }
