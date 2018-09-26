@@ -1807,7 +1807,7 @@ function setProviderType (type) {
     background.setProviderType(type, (err, result) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem changing networks!'))
+        return dispatch(actions.displayWarning('Had a problem changing networks!'))
       }
       dispatch(actions.updateProviderType(type))
       dispatch(actions.setSelectedToken())
@@ -1829,7 +1829,7 @@ function setRpcTarget (newRpc) {
     background.setCustomRpc(newRpc, (err, result) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem changing networks!'))
+        return dispatch(actions.displayWarning('Had a problem changing networks!'))
       }
       dispatch(actions.setSelectedToken())
     })
@@ -2338,7 +2338,7 @@ function setUseBlockie (val) {
 function updateCurrentLocale (key) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    fetchLocale(key)
+    return fetchLocale(key)
       .then((localeMessages) => {
         log.debug(`background.setCurrentLocale`)
         background.setCurrentLocale(key, (err) => {
