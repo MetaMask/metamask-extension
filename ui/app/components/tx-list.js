@@ -122,7 +122,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
 
   if (isUnapproved) {
     opts.onClick = () => {
-      this.props.showConfTxPage({ id: transactionId })
+      this.props.showConfTxPage({ id: transactionId})
       history.push(CONFIRM_TRANSACTION_ROUTE)
     }
     opts.transactionStatus = this.context.t('notStarted')

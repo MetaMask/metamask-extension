@@ -12,6 +12,7 @@ const util = require('../util')
 const MiniAccountPanel = require('./mini-account-panel')
 const Copyable = require('./copyable')
 const EthBalance = require('./eth-balance')
+const TokenBalance = require('./token-balance')
 const addressSummary = util.addressSummary
 const accountSummary = util.accountSummary
 const nameForAddress = require('../../lib/contract-namer')
@@ -20,6 +21,9 @@ const { getEnvironmentType } = require('../../../app/scripts/lib/util')
 const NetworkIndicator = require('../components/network')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../../app/scripts/lib/enums')
 const connect = require('react-redux').connect
+const abiDecoder = require('abi-decoder')
+const { tokenInfoGetter, calcTokenAmount } = require('../../../ui/app/token-util')
+const BigNumber = require('bignumber.js')
 
 const MIN_GAS_PRICE_BN = new BN('0')
 const MIN_GAS_LIMIT_BN = new BN('21000')
@@ -32,7 +36,11 @@ function PendingTx () {
     valid: true,
     txData: null,
     submitting: false,
+    tokenSymbol: '',
+    tokenDecimals: 0,
+    tokenDataRetrieved: false,
   }
+  this.tokenInfoGetter = tokenInfoGetter()
 }
 
 function mapStateToProps (state) {
@@ -57,12 +65,31 @@ function mapStateToProps (state) {
 }
 
 PendingTx.prototype.render = function () {
+  if (!this.state.tokenDataRetrieved) return null
   const props = this.props
   const { currentCurrency, blockGasLimit, network, provider, isUnlocked } = props
 
   const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
+  let { isToken, tokensToSend, tokensTransferTo } = props
+  let token = {
+    address: txParams.to,
+  }
+
+  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+  if (decodedData && decodedData.name === 'transfer') {
+    isToken = true
+    const tokenValBN = new BigNumber(calcTokenAmount(decodedData.params[1].value, this.state.tokenDecimals))
+    const multiplier = Math.pow(10, 18)
+    tokensToSend = tokenValBN.mul(multiplier).toString(16)
+    tokensTransferTo = decodedData.params[0].value
+    token = {
+      address: txParams.to,
+      decimals: this.state.tokenDecimals,
+      symbol: this.state.tokenSymbol,
+    }
+  }
 
   // Allow retry txs
   const { lastGasPrice } = txMeta
@@ -217,7 +244,10 @@ PendingTx.prototype.render = function () {
                     fontFamily: 'Nunito Regular',
                   },
                 }, [
-                  h(EthBalance, {
+                  isToken ? h(TokenBalance, {
+                    token,
+                    fontSize: '12px',
+                  }) : h(EthBalance, {
                     fontSize: '12px',
                     value: balance,
                     conversionRate,
@@ -231,7 +261,7 @@ PendingTx.prototype.render = function () {
 
             forwardCarrat(),
 
-            this.miniAccountPanelForRecipient(),
+            this.miniAccountPanelForRecipient(isToken, tokensTransferTo),
           ]),
 
           h('style', `
@@ -326,7 +356,17 @@ PendingTx.prototype.render = function () {
             // in the way that gas and gasLimit currently are.
             h('.row', [
               h('.cell.label', 'Amount'),
-              h(EthBalance, { valueStyle, dimStyle, value: txParams.value, currentCurrency, conversionRate, network }),
+              h(EthBalance, {
+                valueStyle,
+                dimStyle,
+                value: isToken ? tokensToSend/* (new BN(tokensToSend)).mul(1e18)*/ : txParams.value,
+                currentCurrency,
+                conversionRate,
+                network,
+                isToken,
+                tokenSymbol: this.state.tokenSymbol,
+                showFiat: !isToken,
+              }),
             ]),
 
             // Gas Limit (customizable)
@@ -381,7 +421,14 @@ PendingTx.prototype.render = function () {
             // Max Transaction Fee (calculated)
             h('.cell.row', [
               h('.cell.label', 'Max Transaction Fee'),
-              h(EthBalance, { valueStyle, dimStyle, value: txFeeBn.toString(16), currentCurrency, conversionRate, network }),
+              h(EthBalance, {
+                valueStyle,
+                dimStyle,
+                value: txFeeBn.toString(16),
+                currentCurrency,
+                conversionRate,
+                network,
+              }),
             ]),
 
             h('.cell.row', {
@@ -482,11 +529,12 @@ PendingTx.prototype.render = function () {
   )
 }
 
-PendingTx.prototype.miniAccountPanelForRecipient = function () {
+PendingTx.prototype.miniAccountPanelForRecipient = function (isToken, tokensTransferTo) {
   const props = this.props
   const txData = props.txData
   const txParams = txData.txParams || {}
   const isContractDeploy = !('to' in txParams)
+  const to = isToken ? tokensTransferTo : txParams.to
 
   // If it's not a contract deploy, send to the account
   if (!isContractDeploy) {
@@ -506,17 +554,17 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
               display: 'inline-block',
               whiteSpace: 'nowrap',
             },
-          }, accountSummary(nameForAddress(txParams.to, props.identities)), 6, 4),
+          }, accountSummary(nameForAddress(to, props.identities)), 6, 4),
 
           h(Copyable, {
-            value: ethUtil.toChecksumAddress(txParams.to),
+            value: ethUtil.toChecksumAddress(to),
           }, [
             h('span.font-small', {
               style: {
                 fontFamily: 'Nunito Regular',
                 color: 'rgba(255, 255, 255, 0.7)',
               },
-            }, addressSummary(txParams.to, 6, 4, false)),
+            }, addressSummary(to, 6, 4, false)),
           ]),
         ]),
       ])
@@ -534,6 +582,29 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 
     ])
   }
+}
+
+PendingTx.prototype.componentWillMount = function () {
+  const txMeta = this.gatherTxMeta()
+  const txParams = txMeta.txParams || {}
+  this.updateTokenInfo(txParams)
+}
+
+PendingTx.prototype.componentWillUnmount = function () {
+  this.setState({
+    tokenSymbol: '',
+    tokenDecimals: 0,
+    tokenDataRetrieved: false,
+  })
+}
+
+PendingTx.prototype.updateTokenInfo = async function (txParams) {
+  const tokenParams = await this.tokenInfoGetter(txParams.to)
+  this.setState({
+    tokenSymbol: tokenParams.symbol,
+    tokenDecimals: tokenParams.decimals,
+    tokenDataRetrieved: true,
+  })
 }
 
 PendingTx.prototype.gasPriceChanged = function (newBN, valid) {

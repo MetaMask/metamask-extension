@@ -7,10 +7,10 @@ const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
+const actions = require('../../../ui/app/actions')
+const connect = require('react-redux').connect
 
 const tokenCellDropDownPrefix = 'token-cell_dropdown_'
-
-module.exports = TokenCell
 
 inherits(TokenCell, Component)
 function TokenCell () {
@@ -76,7 +76,7 @@ TokenCell.prototype.render = function () {
 }
 
 TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
-  const { address, symbol, string, network, userAddress } = this.props
+  const { address, symbol, string, network, userAddress, showSendTokenPage } = this.props
   const { optionsMenuActive } = this.state
 
   return h(
@@ -100,6 +100,16 @@ TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
       },
     },
     [
+      h(
+        DropdownMenuItem,
+        {
+          closeMenu: () => {},
+          onClick: () => {
+            showSendTokenPage(address)
+          },
+        },
+        `Send`,
+      ),
       h(
         DropdownMenuItem,
         {
@@ -160,4 +170,12 @@ function navigateTo (url) {
 function tokenFactoryFor (tokenAddress) {
   return `https://tokenfactory.surge.sh/#/token/${tokenAddress}`
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    showSendTokenPage: (tokenAddress) => dispatch(actions.showSendTokenPage(tokenAddress)),
+  }
+}
+
+module.exports = connect(null, mapDispatchToProps)(TokenCell)
 

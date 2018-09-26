@@ -1074,7 +1074,7 @@ function sendTx (txData) {
   }
 }
 
-function signTokenTx (tokenAddress, toAddress, amount, txData) {
+function signTokenTx (tokenAddress, toAddress, amount, txData, confTxScreenParams) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
     const token = global.eth.contract(abi).at(tokenAddress)
@@ -1083,7 +1083,7 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
         dispatch(actions.hideLoadingIndication())
         dispatch(actions.displayWarning(err.message))
       })
-    dispatch(actions.showConfTxPage({}))
+    dispatch(actions.showConfTxPage(confTxScreenParams || {}))
   }
 }
 
@@ -1109,7 +1109,7 @@ function updateTransaction (txData) {
     .then(() => updateMetamaskStateFromBackground())
     .then(newState => dispatch(actions.updateMetamaskState(newState)))
     .then(() => {
-        dispatch(actions.showConfTxPage({ id: txData.id }))
+        dispatch(actions.showConfTxPage({ id: txData.id}))
         dispatch(actions.hideLoadingIndication())
         return txData
       })
@@ -1542,11 +1542,12 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage ({transForward = true, id}) {
+function showConfTxPage (screenParams) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
-    transForward,
-    id,
+    transForward: (screenParams.transForward || true),
+    id: screenParams.id,
+    value: screenParams,
   }
 }
 
@@ -1994,9 +1995,11 @@ function showSendPage () {
   }
 }
 
-function showSendTokenPage () {
+
+function showSendTokenPage (address) {
   return {
     type: actions.SHOW_SEND_TOKEN_PAGE,
+    value: address,
   }
 }
 

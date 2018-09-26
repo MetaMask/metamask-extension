@@ -15,6 +15,7 @@ const UnlockScreen = require('./unlock')
 // accounts
 const AccountDetailScreen = require('./account-detail')
 const SendTransactionScreen = require('./send')
+const SendTokenScreen = require('./send-token')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
@@ -576,6 +577,10 @@ App.prototype.renderPrimary = function () {
     case 'sendTransaction':
       log.debug('rendering send tx screen')
       return h(SendTransactionScreen, {key: 'send-transaction'})
+
+    case 'sendToken':
+      log.debug('rendering send tx screen')
+      return h(SendTokenScreen, {key: 'send-token'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')
