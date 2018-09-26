@@ -102,7 +102,6 @@ describe('Actions', () => {
 
 
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
-      verifySeedPhraseSpy = sinon.stub(background, 'verifySeedPhrase')
 
       submitPasswordSpy.callsFake((password, callback) => {
         callback(new Error('error in submitPassword'))
@@ -111,6 +110,26 @@ describe('Actions', () => {
       return store.dispatch(actions.tryUnlockMetamask('test'))
         .catch(() => {
           assert.deepEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    it('displays warning error and unlock failed when verifySeed fails', () => {
+      const store = mockStore({})
+      const displayWarningError = [ { type: 'DISPLAY_WARNING', value: 'error' } ]
+      const unlockFailedError = [ { type: 'UNLOCK_FAILED', value: 'error' } ]
+
+      verifySeedPhraseSpy = sinon.stub(background, 'verifySeedPhrase')
+      verifySeedPhraseSpy.callsFake(callback => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.tryUnlockMetamask('test'))
+        .catch(() => {
+          const actions = store.getActions()
+          const warning = actions.filter(action => action.type === 'DISPLAY_WARNING')
+          const unlockFailed = actions.filter(action => action.type === 'UNLOCK_FAILED')
+          assert.deepEqual(warning, displayWarningError)
+          assert.deepEqual(unlockFailed, unlockFailedError)
         })
     })
   })
@@ -185,7 +204,26 @@ describe('Actions', () => {
         })
     })
 
-    it('errors when callback throws', () => {
+    it('errors when callback in clearSeedWordCache throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ]
+
+      clearSeedWordCacheSpy = sinon.stub(background, 'clearSeedWordCache')
+      clearSeedWordCacheSpy.callsFake((callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.createNewVaultAndRestore())
+        .then(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    it('errors when callback in createNewVaultAndRestore throws', () => {
 
       const store = mockStore({})
 
@@ -214,6 +252,7 @@ describe('Actions', () => {
 
     afterEach(() => {
       createNewVaultAndKeychainSpy.restore()
+      placeSeedWordsSpy.restore()
     })
 
     it('calls createNewVaultAndKeychain and placeSeedWords in background', () => {
@@ -249,6 +288,26 @@ describe('Actions', () => {
           assert.deepEqual(store.getActions(), expectedActions)
         })
 
+    })
+
+    it('errors when placeSeedWords throws', () => {
+      const store = mockStore()
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ]
+
+      placeSeedWordsSpy = sinon.stub(background, 'placeSeedWords')
+      placeSeedWordsSpy.callsFake((callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.createNewVaultAndKeychain())
+        .then(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
     })
   })
 
@@ -332,27 +391,49 @@ describe('Actions', () => {
 
   describe('#requestRevealSeed', () => {
 
-    let submitPasswordSpy
+    let submitPasswordSpy, placeSeedWordsSpy
 
     afterEach(() => {
       submitPasswordSpy.restore()
+      placeSeedWordsSpy.restore()
     })
 
-    it('', () => {
+    it('calls submitPassword and placeSeedWords in background', () => {
 
       const store = mockStore()
 
       submitPasswordSpy = sinon.spy(background, 'submitPassword')
+      placeSeedWordsSpy = sinon.spy(background, 'placeSeedWords')
 
       return store.dispatch(actions.requestRevealSeed())
         .then(() => {
           assert(submitPasswordSpy.calledOnce)
+          assert(placeSeedWordsSpy.calledOnce)
         })
     })
 
     it('displays warning error message when submitPassword in background errors', () => {
       submitPasswordSpy = sinon.stub(background, 'submitPassword')
       submitPasswordSpy.callsFake((password, callback) => {
+        callback(new Error('error'))
+      })
+
+      const store = mockStore()
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      return store.dispatch(actions.requestRevealSeed())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    it('errors when placeSeedWords throw', () => {
+      placeSeedWordsSpy = sinon.stub(background, 'placeSeedWords')
+      placeSeedWordsSpy.callsFake((callback) => {
         callback(new Error('error'))
       })
 
@@ -421,12 +502,32 @@ describe('Actions', () => {
       addNewKeyringSpy = sinon.stub(background, 'addNewKeyring')
     })
 
+    afterEach(() => {
+      addNewKeyringSpy.restore()
+    })
+
     it('', () => {
       const privateKey = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
 
       const store = mockStore()
       store.dispatch(actions.addNewKeyring('Simple Key Pair', [ privateKey ]))
       assert(addNewKeyringSpy.calledOnce)
+    })
+
+    it('errors then addNewKeyring in background throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      addNewKeyringSpy.callsFake((type, opts, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.addNewKeyring())
+      assert.deepEqual(store.getActions(), expectedActions)
     })
 
   })
@@ -559,11 +660,26 @@ describe('Actions', () => {
       store.dispatch(actions.setCurrentCurrency('jpy'))
       assert(setCurrentCurrencySpy.calledOnce)
     })
+
+    it('', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+      setCurrentCurrencySpy.callsFake((currencyCode, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.setCurrentCurrency())
+      assert.deepEqual(store.getActions(), expectedActions)
+    })
   })
 
   describe('#signMsg', () => {
 
-    let signMessageSpy, metamaskMsgs, msgId, messages
+    let signMessageSpy, metamaskMsgs, msgId, messages, closeCurrentWindowSpy
 
     const msgParams = {
       from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -571,7 +687,6 @@ describe('Actions', () => {
     }
 
     beforeEach(() => {
-      signMessageSpy = sinon.spy(background, 'signMessage')
       metamaskController.newUnsignedMessage(msgParams, noop)
       metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs()
       messages = metamaskController.messageManager.messages
@@ -583,14 +698,36 @@ describe('Actions', () => {
       signMessageSpy.restore()
     })
 
-    it('', () => {
+    it('calls signMsg in background', () => {
       const store = mockStore()
+
+      signMessageSpy = sinon.spy(background, 'signMessage')
 
       return store.dispatch(actions.signMsg(msgParams))
         .then(() => {
           assert(signMessageSpy.calledOnce)
         })
 
+    })
+
+    it('errors when signMessage in background throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'UPDATE_METAMASK_STATE', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      signMessageSpy = sinon.stub(background, 'signMessage')
+      signMessageSpy.callsFake((msgData, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.signMsg())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
     })
 
   })
@@ -605,7 +742,6 @@ describe('Actions', () => {
     }
 
     beforeEach(() => {
-      signPersonalMessageSpy = sinon.spy(background, 'signPersonalMessage')
       metamaskController.newUnsignedPersonalMessage(msgParams, noop)
       metamaskMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs()
       personalMessages = metamaskController.personalMessageManager.messages
@@ -620,11 +756,33 @@ describe('Actions', () => {
     it('', () => {
       const store = mockStore()
 
+      signPersonalMessageSpy = sinon.spy(background, 'signPersonalMessage')
+
       return store.dispatch(actions.signPersonalMsg(msgParams))
         .then(() => {
           assert(signPersonalMessageSpy.calledOnce)
         })
 
+    })
+
+    it('', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'UPDATE_METAMASK_STATE', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      signPersonalMessageSpy = sinon.stub(background, 'signPersonalMessage')
+      signPersonalMessageSpy.callsFake((msgData, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.signPersonalMsg(msgParams))
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
     })
 
   })
@@ -642,10 +800,24 @@ describe('Actions', () => {
       sendTransactionSpy.restore()
     })
 
-    it('', () => {
+    it('calls sendTransaction in global ethQuery', () => {
       const store = mockStore()
       store.dispatch(actions.signTx())
       assert(sendTransactionSpy.calledOnce)
+    })
+
+    it('errors in when sendTransaction throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_CONF_TX_PAGE', transForward: true, id: undefined },
+      ]
+      sendTransactionSpy.callsFake((txData, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.signTx())
+      assert.deepEqual(store.getActions(), expectedActions)
     })
   })
 
@@ -719,12 +891,28 @@ describe('Actions', () => {
       setSelectedAddressSpy.restore()
     })
 
-    it('', (done) => {
+    it('calls setSelectedAddress in background', () => {
       const store = mockStore({ metamask: devState })
 
       store.dispatch(actions.setSelectedAddress('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'))
       assert(setSelectedAddressSpy.calledOnce)
-      done()
+    })
+
+    it('errors when setSelectedAddress throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      setSelectedAddressSpy.callsFake((address, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.setSelectedAddress())
+      assert.deepEqual(store.getActions(), expectedActions)
+
     })
   })
 
@@ -745,6 +933,22 @@ describe('Actions', () => {
       store.dispatch(actions.showAccountDetail())
       assert(setSelectedAddressSpy.calledOnce)
     })
+
+    it('', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+      setSelectedAddressSpy.callsFake((address, callback) => {
+        callback(new Error('error'))
+      })
+
+
+      store.dispatch(actions.showAccountDetail())
+      assert.deepEqual(store.getActions(), expectedActions)
+    })
   })
 
   describe('#addToken', () => {
@@ -758,12 +962,31 @@ describe('Actions', () => {
       addTokenSpy.restore()
     })
 
-    it('', () => {
+    it('calls addToken in background', () => {
       const store = mockStore()
 
       store.dispatch(actions.addToken())
         .then(() => {
           assert(addTokenSpy.calledOnce)
+        })
+    })
+
+    it('errors when addToken in background throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'UPDATE_TOKENS', newTokens: undefined },
+      ]
+
+      addTokenSpy.callsFake((address, symbol, decimals, image, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.addToken())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
         })
     })
   })
@@ -780,11 +1003,30 @@ describe('Actions', () => {
       removeTokenSpy.restore()
     })
 
-    it('', () => {
+    it('calls removeToken in background', () => {
       const store = mockStore()
       store.dispatch(actions.removeToken())
         .then(() => {
           assert(removeTokenSpy.calledOnce)
+        })
+    })
+
+    it('errors when removeToken in background fails', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'UPDATE_TOKENS', newTokens: undefined },
+      ]
+
+      removeTokenSpy.callsFake((address, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.removeToken())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
         })
     })
   })
@@ -807,7 +1049,7 @@ describe('Actions', () => {
       markNoticeReadSpy.restore()
     })
 
-    it('', () => {
+    it('calls markNoticeRead in background', () => {
       const store = mockStore()
 
       store.dispatch(actions.markNoticeRead(notice))
@@ -815,6 +1057,23 @@ describe('Actions', () => {
         assert(markNoticeReadSpy.calledOnce)
       })
 
+    })
+
+    it('errors when markNoticeRead in background throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+      markNoticeReadSpy.callsFake((notice, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.markNoticeRead())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
     })
   })
 
@@ -834,6 +1093,21 @@ describe('Actions', () => {
       store.dispatch(actions.setProviderType())
       assert(setProviderTypeSpy.calledOnce)
     })
+
+    it('', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
+      ]
+
+      setProviderTypeSpy.callsFake((type, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.setProviderType())
+      assert(setProviderTypeSpy.calledOnce)
+      assert.deepEqual(store.getActions(), expectedActions)
+    })
   })
 
   describe('#setRpcTarget', () => {
@@ -851,6 +1125,20 @@ describe('Actions', () => {
       const store = mockStore()
       store.dispatch(actions.setRpcTarget('http://localhost:8545'))
       assert(setRpcTargetSpy.calledOnce)
+    })
+
+    it('', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
+      ]
+
+      setRpcTargetSpy.callsFake((newRpc, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.setRpcTarget())
+      assert.deepEqual(store.getActions(), expectedActions)
     })
   })
 
@@ -994,11 +1282,29 @@ describe('Actions', () => {
       setFeatureFlagSpy.restore()
     })
 
-    it('', () => {
+    it('calls setFeatureFlag in the background', () => {
       const store = mockStore()
 
       store.dispatch(actions.setFeatureFlag())
       assert(setFeatureFlagSpy.calledOnce)
+    })
+
+    it('errors when setFeatureFlag in background throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+
+      setFeatureFlagSpy.callsFake((feature, activated, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.setFeatureFlag())
+        .catch(() => {
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
     })
   })
 
@@ -1034,11 +1340,28 @@ describe('Actions', () => {
       setUseBlockieSpy.restore()
     })
 
-    it('', () => {
+    it('calls setUseBlockie in background', () => {
       const store = mockStore()
 
       store.dispatch(actions.setUseBlockie())
       assert(setUseBlockieSpy.calledOnce)
+    })
+
+    it('errors when setUseBlockie in background throws', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SET_USE_BLOCKIE', value: undefined },
+      ]
+
+      setUseBlockieSpy.callsFake((val, callback) => {
+        callback(new Error('error'))
+      })
+
+      store.dispatch(actions.setUseBlockie())
+      assert.deepEqual(store.getActions(), expectedActions)
     })
   })
 
@@ -1046,7 +1369,6 @@ describe('Actions', () => {
     let setCurrentLocaleSpy
 
     beforeEach(() => {
-      setCurrentLocaleSpy = sinon.spy(background, 'setCurrentLocale')
       fetchMock.get('*', enLocale)
     })
 
@@ -1057,6 +1379,8 @@ describe('Actions', () => {
 
     it('', () => {
       const store = mockStore()
+      setCurrentLocaleSpy = sinon.spy(background, 'setCurrentLocale')
+
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -1067,6 +1391,24 @@ describe('Actions', () => {
       return store.dispatch(actions.updateCurrentLocale('en'))
         .then(() => {
           assert(setCurrentLocaleSpy.calledOnce)
+          assert.deepEqual(store.getActions(), expectedActions)
+        })
+    })
+
+    it('', () => {
+      const store = mockStore()
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+      ]
+      setCurrentLocaleSpy = sinon.stub(background, 'setCurrentLocale')
+      setCurrentLocaleSpy.callsFake((key, callback) => {
+        callback(new Error('error'))
+      })
+
+      return store.dispatch(actions.updateCurrentLocale('en'))
+        .then(() => {
           assert.deepEqual(store.getActions(), expectedActions)
         })
     })
