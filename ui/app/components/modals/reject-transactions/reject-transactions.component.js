@@ -30,7 +30,7 @@ export default class RejectTransactionsModal extends PureComponent {
         onClose={hideModal}
         onSubmit={this.onSubmit}
         onCancel={hideModal}
-        submitText={t('reject')}
+        submitText={t('rejectAll')}
         cancelText={t('cancel')}
         submitType="secondary"
       >
