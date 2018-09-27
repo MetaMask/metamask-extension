@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "privacyMode": {
     "message": "Način zasebnosti"
   },
@@ -37,6 +38,37 @@
   },
   "providerRequestInfo": {
     "message": "Domena zahteva dostop do verige blokov in ogled vašega računa. Pred potrditvjo vedno preverite ali ste na želeni spletni strani."
+=======
+  "confirmClear": {
+    "message": "Naozaj chcete vymazať schválené webové stránky?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Schválené webové stránky boli úspešne odstránené."
+  },
+  "approvalData": {
+    "message": "Údaje o schválení"
+  },
+  "approvalDataDescription": {
+    "message": "Vymažte schválené údaje webových stránok, aby sa všetky stránky opäť požiadali o schválenie."
+  },
+  "clearApprovalData": {
+    "message": "Jasné údaje o schválení"
+  },
+  "approve": {
+    "message": "Schvaľovať"
+  },
+  "reject": {
+    "message": "Odmietnuť"
+  },
+  "providerAPIRequest": {
+    "message": "Žiadosť API Web3"
+  },
+  "reviewProviderRequest": {
+    "message": "Prečítajte si túto žiadosť rozhrania API Ethereum."
+  },
+  "providerRequestInfo": {
+    "message": "Doména uvedená nižšie sa pokúša požiadať o prístup k rozhraniu API Ethereum, aby mohla komunikovať s blokom Ethereum. Pred schválením prístupu na Ethereum vždy skontrolujte, či ste na správnom mieste."
+>>>>>>> EIP-1102: updated implementation
   },
   "accept": {
     "message": "Potrdi"

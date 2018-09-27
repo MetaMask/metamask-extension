@@ -1,4 +1,34 @@
 {
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Approved website data cleared successfully."
+  },
+  "approvalData": {
+    "message": "Approval Data"
+  },
+  "approvalDataDescription": {
+    "message": "Clear approved website data so all sites must request approval again."
+  },
+  "clearApprovalData": {
+    "message": "Clear Approval Data"
+  },
+  "approve": {
+    "message": "Approve"
+  },
+  "reject": {
+    "message": "Reject"
+  },
+  "providerAPIRequest": {
+    "message": "Ethereum API Request"
+  },
+  "reviewProviderRequest": {
+    "message": "Please review this Ethereum API request."
+  },
+  "providerRequestInfo": {
+    "message": "The domain listed below is requesting access to the Ethereum blockchain and to view your current account. Always double check that you're on the correct site before approving access."
+  },
   "accept": {
     "message": "Accept"
   },
