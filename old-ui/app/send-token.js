@@ -14,6 +14,7 @@ const { tokenInfoGetter, calcTokenAmountWithDec } = require('../../ui/app/token-
 const TokenTracker = require('eth-token-watcher')
 const Loading = require('./components/loading')
 const BigNumber = require('bignumber.js')
+BigNumber.config({ ERRORS: false })
 const log = require('loglevel')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
@@ -325,14 +326,14 @@ SendTransactionScreen.prototype.onSubmit = async function () {
   let message
 
   if (isNaN(input) || input === '') {
-    message = 'Invalid ether value.'
+    message = 'Invalid tokens\' amount.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 
   if (parts[1]) {
     var decimal = parts[1]
     if (decimal.length > 18) {
-      message = 'Ether amount is too precise.'
+      message = 'Tokens\' amount is too precise.'
       return this.props.dispatch(actions.displayWarning(message))
     }
   }
