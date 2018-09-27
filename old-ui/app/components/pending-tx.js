@@ -65,7 +65,8 @@ function mapStateToProps (state) {
 }
 
 PendingTx.prototype.render = function () {
-  if (!this.state.tokenDataRetrieved) return null
+  const state = this.state
+  if (!state.tokenDataRetrieved) return null
   const props = this.props
   const { currentCurrency, blockGasLimit, network, provider, isUnlocked } = props
 
@@ -80,14 +81,14 @@ PendingTx.prototype.render = function () {
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   if (decodedData && decodedData.name === 'transfer') {
     isToken = true
-    const tokenValBN = new BigNumber(calcTokenAmount(decodedData.params[1].value, this.state.tokenDecimals))
+    const tokenValBN = new BigNumber(calcTokenAmount(decodedData.params[1].value, state.tokenDecimals))
     const multiplier = Math.pow(10, 18)
     tokensToSend = tokenValBN.mul(multiplier).toString(16)
     tokensTransferTo = decodedData.params[0].value
     token = {
       address: txParams.to,
-      decimals: this.state.tokenDecimals,
-      symbol: this.state.tokenSymbol,
+      decimals: state.tokenDecimals,
+      symbol: state.tokenSymbol,
     }
   }
 

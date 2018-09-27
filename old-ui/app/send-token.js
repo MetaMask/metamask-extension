@@ -7,11 +7,14 @@ const actions = require('../../ui/app/actions')
 const util = require('./util')
 const numericBalance = require('./util').numericBalance
 const addressSummary = require('./util').addressSummary
-const EthBalance = require('./components/eth-balance')
+const TokenBalance = require('./components/token-balance')
 const EnsInput = require('./components/ens-input')
 const ethUtil = require('ethereumjs-util')
-const { tokenInfoGetter } = require('../../ui/app/token-util')
-const TOKEN_TRANSFER_FUNCTION_SIGNATURE = '0xa9059cbb'
+const { tokenInfoGetter, calcTokenAmountWithDec } = require('../../ui/app/token-util')
+const TokenTracker = require('eth-token-watcher')
+const Loading = require('./components/loading')
+const BigNumber = require('bignumber.js')
+const log = require('loglevel')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
@@ -23,8 +26,6 @@ function mapStateToProps (state) {
     warning: state.appState.warning,
     network: state.metamask.network,
     addressBook: state.metamask.addressBook,
-    conversionRate: state.metamask.conversionRate,
-    currentCurrency: state.metamask.currentCurrency,
     tokenAddress: state.appState.currentView.tokenAddress,
   }
 
@@ -39,22 +40,35 @@ function mapStateToProps (state) {
 
 inherits(SendTransactionScreen, PersistentForm)
 function SendTransactionScreen () {
+  this.state = {
+    token: {
+      address: '',
+      symbol: '',
+      balance: 0,
+      decimals: 0,
+    },
+    isLoading: true,
+  }
   PersistentForm.call(this)
 }
 
 SendTransactionScreen.prototype.render = function () {
+  const { isLoading, token } = this.state
+  if (isLoading) {
+    return h(Loading, {
+      isLoading: isLoading,
+      loadingMessage: 'Loading...',
+    })
+  }
   this.persistentFormParentId = 'send-tx-form'
 
   const props = this.props
   const {
     address,
-    account,
     identity,
     network,
     identities,
     addressBook,
-    conversionRate,
-    currentCurrency,
   } = props
 
   return (
@@ -131,11 +145,8 @@ SendTransactionScreen.prototype.render = function () {
           // balance
           h('.flex-row.flex-center', [
 
-            h(EthBalance, {
-              value: account && account.balance,
-              conversionRate,
-              currentCurrency,
-              network,
+            h(TokenBalance, {
+              token,
             }),
 
           ]),
@@ -161,7 +172,7 @@ SendTransactionScreen.prototype.render = function () {
           },
           onClick: this.back.bind(this),
         }),
-        'Send Tokens',
+        `Send ${this.state.token.symbol} Tokens`,
       ]),
 
       // error message
@@ -208,8 +219,82 @@ SendTransactionScreen.prototype.render = function () {
   )
 }
 
-SendTransactionScreen.prototype.componentWillUnmount = function () {
+SendTransactionScreen.prototype.componentDidMount = function () {
+  this.getTokensMetadata()
+  .then(() => {
+    this.createFreshTokenTracker()
+  })
+}
+
+SendTransactionScreen.prototype.getTokensMetadata = async function () {
+  this.setState({isLoading: true})
+  this.tokenInfoGetter = tokenInfoGetter()
+  const { tokenAddress, network } = this.props
+  const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(tokenAddress)
+  this.setState({
+    token: {
+      address: tokenAddress,
+      network,
+      symbol,
+      decimals,
+    },
+  })
+
+  return Promise.resolve()
+}
+
+SendTransactionScreen.prototype.componentDidUnmount = function () {
   this.props.dispatch(actions.displayWarning(''))
+  if (!this.tracker) return
+  this.tracker.stop()
+  this.tracker.removeListener('update', this.balanceUpdater)
+  this.tracker.removeListener('error', this.showError)
+}
+
+SendTransactionScreen.prototype.createFreshTokenTracker = function () {
+  this.setState({isLoading: true})
+  const { address, tokenAddress } = this.props
+  if (!util.isValidAddress(tokenAddress)) return
+  if (this.tracker) {
+    // Clean up old trackers when refreshing:
+    this.tracker.stop()
+    this.tracker.removeListener('update', this.balanceUpdater)
+    this.tracker.removeListener('error', this.showError)
+  }
+
+  if (!global.ethereumProvider) return
+
+  this.tracker = new TokenTracker({
+    userAddress: address,
+    provider: global.ethereumProvider,
+    tokens: [this.state.token],
+    pollingInterval: 8000,
+  })
+
+
+  // Set up listener instances for cleaning up
+  this.balanceUpdater = this.updateBalances.bind(this)
+  this.showError = (error) => {
+    this.setState({ error, isLoading: false })
+  }
+  this.tracker.on('update', this.balanceUpdater)
+  this.tracker.on('error', this.showError)
+
+  this.tracker.updateBalances()
+  .then(() => {
+    this.updateBalances(this.tracker.serialize())
+  })
+  .catch((reason) => {
+    log.error(`Problem updating balances`, reason)
+    this.setState({ isLoading: false })
+  })
+}
+
+SendTransactionScreen.prototype.updateBalances = function (tokens) {
+  if (!this.tracker.running) {
+    return
+  }
+  this.setState({ token: (tokens && tokens[0]), isLoading: false })
 }
 
 SendTransactionScreen.prototype.navigateToAccounts = function (event) {
@@ -230,14 +315,12 @@ SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickna
 }
 
 SendTransactionScreen.prototype.onSubmit = async function () {
-  const { tokenAddress } = this.props
+  const { token } = this.state
   const state = this.state || {}
   const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
   const nickname = state.nickname || ' '
   const input = document.querySelector('input[name="amount"]').value
   const parts = input.split('')
-
-  this.tokenInfoGetter = tokenInfoGetter()
 
   let message
 
@@ -254,13 +337,14 @@ SendTransactionScreen.prototype.onSubmit = async function () {
     }
   }
 
-  const value = util.normalizeEthStringToWei(input)
-  // const balance = this.props.balance
+  const tokenAddress = ethUtil.addHexPrefix(token.address)
+  const tokensValueWithoutDec = new BigNumber(input)
+  const tokensValueWithDec = new BigNumber(calcTokenAmountWithDec(input, token.decimals))
 
-  // if (value.gt(balance)) {
-  //   message = 'Insufficient token\'s balance.'
-  //   return this.props.dispatch(actions.displayWarning(message))
-  // }
+  if (tokensValueWithDec.gt(token.balance)) {
+    message = 'Insufficient tokens\' balance.'
+    return this.props.dispatch(actions.displayWarning(message))
+  }
 
   if (input < 0) {
     message = 'Can not send negative amounts of ETH.'
@@ -288,25 +372,24 @@ SendTransactionScreen.prototype.onSubmit = async function () {
 
   const toAddress = ethUtil.addHexPrefix(recipient)
 
-  if (recipient) txParams.to = ethUtil.addHexPrefix(tokenAddress)
+  if (recipient) txParams.to = tokenAddress
 
-  const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(txParams.to)
-  const tokeValRaw = value / 1e18 * `1e${decimals}` // todo: use calcTokenAmount function
-  const tokenVal = `0x${tokeValRaw.toString(16)}`
-  const encoded = this.generateTokenTransferData({toAddress, amount: tokenVal})
+  const tokensAmount = `0x${input.toString(16)}`
+  const encoded = this.generateTokenTransferData({toAddress, amount: tokensAmount})
   txParams.data = encoded
 
   const confTxScreenParams = {
     isToken: true,
-    tokenSymbol: symbol,
-    tokensToSend: value,
+    tokenSymbol: token.symbol,
+    tokensToSend: tokensValueWithoutDec,
     tokensTransferTo: toAddress,
   }
 
-  this.props.dispatch(actions.signTokenTx(tokenAddress, toAddress, value, txParams, confTxScreenParams))
+  this.props.dispatch(actions.signTokenTx(tokenAddress, toAddress, tokensValueWithDec, txParams, confTxScreenParams))
 }
 
 SendTransactionScreen.prototype.generateTokenTransferData = function ({ toAddress = '0x0', amount = '0x0' }) {
+  const TOKEN_TRANSFER_FUNCTION_SIGNATURE = '0xa9059cbb'
   const abi = require('ethereumjs-abi')
   return TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
     abi.rawEncode(['address', 'uint256'], [toAddress, ethUtil.addHexPrefix(amount)]),
