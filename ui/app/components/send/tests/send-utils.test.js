@@ -304,10 +304,13 @@ describe('send utils', () => {
       selectedAddress: 'mockAddress',
       to: '0xisContract',
       estimateGasMethod: sinon.stub().callsFake(
-        (data, cb) => cb(
-          data.to.match(/willFailBecauseOf:/) ? { message: data.to.match(/:(.+)$/)[1] } : null,
-          { toString: (n) => `0xabc${n}` }
-        )
+        ({to}, cb) => {
+          const err = typeof to === 'string' && to.match(/willFailBecauseOf:/)
+            ? new Error(to.match(/:(.+)$/)[1])
+            : null
+          const result = { toString: (n) => `0xabc${n}` }
+          return cb(err, result)
+        }
       ),
     }
     const baseExpectedCall = {
@@ -407,7 +410,7 @@ describe('send utils', () => {
           to: 'isContract willFailBecauseOf:some other error',
         }))
       } catch (err) {
-        assert.deepEqual(err, { message: 'some other error' })
+        assert.equal(err.message, 'some other error')
       }
     })
   })
