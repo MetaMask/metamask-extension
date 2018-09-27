@@ -315,8 +315,8 @@ SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickna
 }
 
 SendTransactionScreen.prototype.onSubmit = async function () {
-  const { token } = this.state
   const state = this.state || {}
+  const { token } = state
   const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
   const nickname = state.nickname || ' '
   const input = document.querySelector('input[name="amount"]').value
@@ -372,7 +372,7 @@ SendTransactionScreen.prototype.onSubmit = async function () {
 
   const toAddress = ethUtil.addHexPrefix(recipient)
 
-  if (recipient) txParams.to = tokenAddress
+  txParams.to = tokenAddress
 
   const tokensAmount = `0x${input.toString(16)}`
   const encoded = this.generateTokenTransferData({toAddress, amount: tokensAmount})

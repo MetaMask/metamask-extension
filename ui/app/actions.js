@@ -1143,6 +1143,7 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
+        dispatch(actions.setCurrentAccountTab('history'))
 
         if (!hasUnconfirmedTransactions(getState())) {
           return global.platform.closeNotificationWindow()
