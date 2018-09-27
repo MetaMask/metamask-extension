@@ -2,7 +2,7 @@
 
 ## Current Develop Branch
 
-## 4.12.0 Tuesday September 25 2018
+## 4.12.0 Thursday September 27 2018
 
 - Reintroduces changes from 4.10.0
 
