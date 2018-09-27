@@ -188,6 +188,7 @@ class AccountDropdowns extends Component {
           marginLeft: '-234px',
           minWidth: '180px',
           marginTop: '30px',
+          top: '30px',
           width: '280px',
         },
         isOpen: optionsMenuActive,
