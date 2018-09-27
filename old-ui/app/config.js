@@ -139,6 +139,31 @@ ConfigScreen.prototype.render = function () {
               marginTop: '20px',
             },
           }, [
+            h('p', {
+              style: {
+                fontFamily: 'Montserrat Light',
+                fontSize: '13px',
+              },
+            }, 'Clear approved website data so all sites must request approval again.'),
+            h('br'),
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                event.preventDefault()
+                state.dispatch(actions.clearApprovedOrigins())
+              },
+            }, 'Clear approval data'),
+          ]),
+          
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
             h('button', {
               style: {
                 alignSelf: 'center',

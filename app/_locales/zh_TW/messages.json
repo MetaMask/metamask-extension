@@ -1,4 +1,34 @@
 {
+  "confirmClear": {
+    "message": "您確定要清除已批准的網站嗎？"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "已批准的網站數據已成功清除。"
+  },
+  "approvalData": {
+    "message": "審批數據"
+  },
+  "approvalDataDescription": {
+    "message": "清除已批准的網站數據，以便所有網站都必須再次申請"
+  },
+  "clearApprovalData": {
+    "message": "清除批准數據"
+  },
+  "approve": {
+    "message": "批准"
+  },
+  "reject": {
+    "message": "拒絕"
+  },
+  "providerAPIRequest": {
+    "message": "Web3 API請求"
+  },
+  "reviewProviderRequest": {
+    "message": "請查看此Ethereum API請求。"
+  },
+  "providerRequestInfo": {
+    "message": "下面列出的域正在嘗試請求訪問Ethereum API，以便它可以與以太坊區塊鏈進行交互。在批准Ethereum訪問之前，請務必仔細檢查您是否在正確的站點上。"
+  },
   "accept": {
     "message": "接受"
   },

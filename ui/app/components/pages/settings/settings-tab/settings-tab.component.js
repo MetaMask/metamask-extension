@@ -45,6 +45,7 @@ export default class SettingsTab extends PureComponent {
     displayWarning: PropTypes.func,
     revealSeedConfirmation: PropTypes.func,
     setFeatureFlagToBeta: PropTypes.func,
+    showClearApprovalModal: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
     warning: PropTypes.string,
     history: PropTypes.object,
@@ -203,6 +204,36 @@ export default class SettingsTab extends PureComponent {
               }}
             >
               { t('downloadStateLogs') }
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderClearApproval () {
+    const { t } = this.context
+    const { showClearApprovalModal } = this.props
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('approvalData') }</span>
+          <span className="settings-page__content-description">
+            { t('approvalDataDescription') }
+          </span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Button
+              type="secondary"
+              large
+              className="settings-tab__button--orange"
+              onClick={event => {
+                event.preventDefault()
+                showClearApprovalModal()
+              }}
+            >
+              { t('clearApprovalData') }
             </Button>
           </div>
         </div>
@@ -403,6 +434,7 @@ export default class SettingsTab extends PureComponent {
         { this.renderNewRpcUrl() }
         { this.renderStateLogs() }
         { this.renderSeedWords() }
+        { this.renderClearApproval() }
         { !isMascara && this.renderOldUI() }
         { this.renderResetAccount() }
         { this.renderBlockieOptIn() }

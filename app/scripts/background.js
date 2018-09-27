@@ -256,7 +256,8 @@ function setupController (initState, initLangCode) {
     showUnconfirmedMessage: triggerUi,
     unlockAccountMessage: triggerUi,
     showUnapprovedTx: triggerUi,
-    showWatchAssetUi: showWatchAssetUi,
+    openPopup: openPopup,
+    closePopup: notificationManager.closePopup.bind(notificationManager),
     // initial state
     initState,
     // initial locale code
@@ -447,7 +448,7 @@ function triggerUi () {
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-function showWatchAssetUi () {
+function openPopup () {
   triggerUi()
   return new Promise(
     (resolve) => {

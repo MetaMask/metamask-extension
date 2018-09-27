@@ -57,6 +57,7 @@ const mapDispatchToProps = dispatch => {
     setUseETHAsPrimaryCurrencyPreference: value => {
       return dispatch(setUseETHAsPrimaryCurrencyPreference(value))
     },
+    showClearApprovalModal: () => dispatch(showModal({ name: 'CLEAR_APPROVED_ORIGINS' })),
   }
 }
 
