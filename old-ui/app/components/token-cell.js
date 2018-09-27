@@ -84,9 +84,9 @@ TokenCell.prototype.renderTokenOptions = function (menuToTop, ind) {
     {
       style: {
         position: 'relative',
-        marginLeft: '-263px',
+        marginLeft: menuToTop ? '-273px' : '-263px',
         minWidth: '180px',
-        marginTop: menuToTop ? '-200px' : '30px',
+        marginTop: menuToTop ? '-214px' : '30px',
         width: '280px',
       },
       isOpen: optionsMenuActive,
