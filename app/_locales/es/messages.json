@@ -1,4 +1,34 @@
 {
+  "confirmClear": {
+    "message": "¿Seguro que quieres borrar los sitios web aprobados?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Los datos aprobados del sitio web se borraron con éxito."
+  },
+  "approvalData": {
+    "message": "Datos de aprobación"
+  },
+  "approvalDataDescription": {
+    "message": "Borre los datos del sitio web aprobado para que todos los sitios deban volver a solicitar la aprobación."
+  },
+  "clearApprovalData": {
+    "message": "Borrar datos de aprobación"
+  },
+  "approve": {
+    "message": "Aprobar"
+  },
+  "reject": {
+    "message": "Rechazar"
+  },
+  "providerAPIRequest": {
+    "message": "Solicitud de API Web3"
+  },
+  "reviewProviderRequest": {
+    "message": "Por favor, revise esta solicitud API Ethereum."
+  },
+  "providerRequestInfo": {
+    "message": "El dominio que se muestra a continuación intenta solicitar acceso a la API Ethereum para que pueda interactuar con la cadena de bloques de Ethereum. Siempre verifique que esté en el sitio correcto antes de aprobar el acceso Ethereum."
+  },
   "accept": {
     "message": "Aceptar"
   },

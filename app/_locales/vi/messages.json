@@ -1,4 +1,34 @@
 {
+  "confirmClear": {
+    "message": "Bạn có chắc chắn muốn xóa các trang web được phê duyệt không?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Đã xóa thành công dữ liệu trang web được phê duyệt."
+  },
+  "approvalData": {
+    "message": "Dữ liệu phê duyệt"
+  },
+  "approvalDataDescription": {
+    "message": "Xóa dữ liệu trang web được phê duyệt để tất cả các trang web phải yêu cầu phê duyệt lại."
+  },
+  "clearApprovalData": {
+    "message": "Xóa dữ liệu phê duyệt"
+  },
+  "approve": {
+    "message": "Phê duyệt"
+  },
+  "reject": {
+    "message": "Từ chối"
+  },
+  "providerAPIRequest": {
+    "message": "Yêu cầu API Web3"
+  },
+  "reviewProviderRequest": {
+    "message": "Vui lòng xem lại yêu cầu API Ethereum này."
+  },
+  "providerRequestInfo": {
+    "message": "Miền được liệt kê bên dưới đang cố gắng yêu cầu quyền truy cập vào API Ethereum để nó có thể tương tác với chuỗi khối Ethereum. Luôn kiểm tra kỹ xem bạn có đang ở đúng trang web trước khi phê duyệt quyền truy cập Ethereum hay không."
+  },
   "accept": {
     "message": "Chấp nhận"
   },

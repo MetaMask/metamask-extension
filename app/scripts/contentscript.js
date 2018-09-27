@@ -11,6 +11,7 @@ const PortStream = require('extension-port-stream')
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
+let originApproved = false
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
@@ -20,24 +21,24 @@ const inpageBundle = inpageContent + inpageSuffix
 // MetaMask will be much faster loading and performant on Firefox.
 
 if (shouldInjectWeb3()) {
-  setupInjection()
+  injectScript(inpageBundle)
   setupStreams()
+  listenForProviderRequest()
 }
 
 /**
- * Creates a script tag that injects inpage.js
+ * Injects a script tag into the current document
+ *
+ * @param {string} content - Code to be executed in the current document
  */
-function setupInjection () {
+function injectScript (content) {
   try {
-    // inject in-page script
-    var scriptTag = document.createElement('script')
-    scriptTag.textContent = inpageBundle
-    scriptTag.onload = function () { this.parentNode.removeChild(this) }
-    var container = document.head || document.documentElement
-    // append as first child
+    const container = document.head || document.documentElement
+    const scriptTag = document.createElement('script')
+    scriptTag.textContent = content
     container.insertBefore(scriptTag, container.children[0])
   } catch (e) {
-    console.error('Metamask injection failed.', e)
+    console.error('Metamask script injection failed.', e)
   }
 }
 
@@ -53,6 +54,16 @@ function setupStreams () {
   })
   const pluginPort = extension.runtime.connect({ name: 'contentscript' })
   const pluginStream = new PortStream(pluginPort)
+
+  // Until this origin is approved, cut-off publicConfig stream writes at the content
+  // script level so malicious sites can't snoop on the currently-selected address
+  pageStream._write = function (data, encoding, cb) {
+    if (typeof data === 'object' && data.name && data.name === 'publicConfig' && !originApproved) {
+      cb()
+      return
+    }
+    LocalMessageDuplexStream.prototype._write.apply(pageStream, arguments)
+  }
 
   // forward communication plugin->inpage
   pump(
@@ -95,6 +106,36 @@ function setupStreams () {
   // ignore unused channels (handled by background, inpage)
   mux.ignoreStream('provider')
   mux.ignoreStream('publicConfig')
+}
+
+/**
+ * Establishes listeners for requests to fully-enable the provider from the dapp context
+ * and for full-provider approvals and rejections from the background script context. Dapps
+ * should not post messages directly and should instead call provider.enable(), which
+ * handles posting these messages automatically.
+ */
+function listenForProviderRequest () {
+  window.addEventListener('message', (event) => {
+    if (event.source !== window) { return }
+    if (!event.data || !event.data.type || event.data.type !== 'ETHEREUM_ENABLE_PROVIDER') { return }
+    extension.runtime.sendMessage({
+      action: 'init-provider-request',
+      origin: event.source.location.hostname,
+    })
+  })
+
+  extension.runtime.onMessage.addListener(({ action }) => {
+    if (!action) { return }
+    switch (action) {
+      case 'approve-provider-request':
+        originApproved = true
+        injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: {}}))`)
+        break
+      case 'reject-provider-request':
+        injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: { error: 'User rejected provider access' }}))`)
+        break
+    }
+  })
 }
 
 

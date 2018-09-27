@@ -2,6 +2,11 @@ const path = require('path')
 const assert = require('assert')
 const { By, Key, until } = require('selenium-webdriver')
 const { delay, createModifiedTestBuild, setupBrowserAndExtension, verboseReportOnFailure } = require('./func')
+const {
+  closeAllWindowHandlesExcept,
+  switchToWindowWithTitle,
+  switchToWindowWithUrlThatMatches,
+} = require('./beta/helpers')
 
 describe('Metamask popup page', function () {
   const browser = process.env.SELENIUM_BROWSER
@@ -183,6 +188,7 @@ describe('Metamask popup page', function () {
     })
 
     it('restores from seed phrase', async function () {
+      await delay(1000)
       const restoreSeedLink = await driver.findElement(By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-center.flex-grow > p'))
       assert.equal(await restoreSeedLink.getText(), 'Restore from seed phrase')
       await restoreSeedLink.click()
@@ -201,10 +207,10 @@ describe('Metamask popup page', function () {
     })
 
     it('balance renders', async function () {
-      await delay(500)
+      await delay(1000)
       const balance = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'))
       assert.equal(await balance.getText(), '100.000')
-      await delay(200)
+      await delay(1000)
     })
 
     it('sends transaction', async function () {
@@ -242,12 +248,31 @@ describe('Metamask popup page', function () {
   })
 
   describe('Token Factory', function () {
+    let windowHandles
+    let extension
+    let dapp
 
     it('navigates to token factory', async function () {
-      await driver.get('http://tokenfactory.surge.sh/')
+      await driver.get('http://token-factory-1102.now.sh')
+      await delay(7000)
+      windowHandles = await driver.getAllWindowHandles()
+
+      dapp = await switchToWindowWithTitle(driver, 'Token Factory', windowHandles)
+      await delay(400)
+      extension = await switchToWindowWithUrlThatMatches(driver, /notification.html/, windowHandles)
+      await delay(400)
+
+      await closeAllWindowHandlesExcept(driver, [extension, dapp])
+      await switchToWindowWithUrlThatMatches(driver, /notification.html/, [extension, dapp])
+      const approveButton = await driver.wait(until.elementLocated(By.xpath(`//button[contains(text(), 'APPROVE')]`)), 10000)
+      await approveButton.click()
     })
 
     it('navigates to create token contract link', async function () {
+      await delay(400)
+      await switchToWindowWithTitle(driver, 'Token Factory', windowHandles)
+      await delay(400)
+
       const createToken = await driver.findElement(By.css('#bs-example-navbar-collapse-1 > ul > li:nth-child(3) > a'))
       await createToken.click()
     })

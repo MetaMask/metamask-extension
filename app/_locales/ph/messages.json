@@ -1,4 +1,34 @@
 {
+  "confirmClear": {
+    "message": "Sigurado ka bang gusto mong i-clear ang mga naaprubahang website?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Matagumpay na na-clear ang data ng aprubadong website."
+  },
+  "approvalData": {
+    "message": "Data ng Pag-apruba"
+  },
+  "approvalDataDescription": {
+    "message": "I-clear ang naaprubahang data ng website upang ang lahat ng site ay dapat humiling muli ng pag-apruba"
+  },
+  "clearApprovalData": {
+    "message": "Tanggalin ang data ng pag-apruba"
+  },
+  "approve": {
+    "message": "Aprubahan"
+  },
+  "reject": {
+    "message": "Tanggihan"
+  },
+  "providerAPIRequest": {
+    "message": "Kahilingan sa Web3 API"
+  },
+  "reviewProviderRequest": {
+    "message": "Mangyaring suriin ang kahilingan sa Ethereum API na ito."
+  },
+  "providerRequestInfo": {
+    "message": "Ang domain na nakalista sa ibaba ay sinusubukang humiling ng access sa Ethereum API upang maaari itong makipag-ugnayan sa Ethereum blockchain. Laging i-double check na ikaw ay nasa tamang site bago aprubahan ang Ethereum access."
+  },
   "accept": {
     "message": "Tanggapin"
   },

@@ -418,7 +418,7 @@ describe('preferences controller', function () {
       req.params.options = { address, symbol, decimals, image }
 
       sandbox.stub(preferencesController, '_validateERC20AssetParams').returns(true)
-      preferencesController.showWatchAssetUi = async () => {}
+      preferencesController.openPopup = async () => {}
 
       await preferencesController._handleWatchAssetERC20(req.params.options)
       const suggested = preferencesController.getSuggestedTokens()
@@ -438,7 +438,7 @@ describe('preferences controller', function () {
       req.params.options = { address, symbol, decimals, image }
 
       sandbox.stub(preferencesController, '_validateERC20AssetParams').returns(true)
-      preferencesController.showWatchAssetUi = async () => {
+      preferencesController.openPopup = async () => {
         await preferencesController.addToken(address, symbol, decimals, image)
       }
 
