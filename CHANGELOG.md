@@ -2,6 +2,14 @@
 
 ## Current Develop Branch
 
+## 4.11.1 Tuesday September 25 2018
+
+- Adds Ledger support.
+
+## 4.11.0 Monday September 24 2018
+
+- Identical to 4.9.3. A rollback version to give time to fix bugs in the 4.10.x branch.
+
 ## 4.10.0 Mon Sep 17 2018
 
 - [#4803](https://github.com/MetaMask/metamask-extension/pull/4803): Implement EIP-712: Sign typed data, but continue to support v1.
