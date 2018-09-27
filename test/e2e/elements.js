@@ -8,12 +8,14 @@ module.exports = {
     token: {
       menu: By.id('token-cell_dropdown_0'),
       items: By.className('dropdown-menu-item'),
-      view: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(2)'),
-      copy: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(3)'),
-      remove: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(4)'),
+      send:By.css('#token-cell_dropdown_0 > div > div > li:nth-child(2)'),
+      view: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(3)'),
+      copy: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(4)'),
+      remove: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(5)'),
+      sendText:'Send',
       viewText: 'View token on block explorer',
       copyText: 'Copy address to clipboard',
-      removeText: 'Remove',
+      removeText: 'Remove'
     },
     sandwich: {
       menu: By.css('.sandwich-expando'),

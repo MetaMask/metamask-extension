@@ -1117,6 +1117,14 @@ describe('Metamask popup page', async function () {
         assert.notEqual(item, false, 'item isn\'t displayed')
         assert.equal(await item.getText(), menus.token.removeText, 'incorrect name')
       })
+
+      it('item \'Send \' is displayed', async function () {
+        const menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+        const item = await waitUntilShowUp(menus.token.send)
+        assert.notEqual(item, false, 'item isn\'t displayed')
+        assert.equal(await item.getText(), menus.token.sendText, 'incorrect name')
+      })
     })
 
     describe('Remove token , provider is localhost', function () {
