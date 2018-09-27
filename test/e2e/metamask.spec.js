@@ -305,7 +305,7 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Change password', async () => {
+  describe.skip('Change password', async () => {
     const newPassword = {
       correct: 'abcDEF123!@#',
       short: '123',
@@ -607,7 +607,7 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Add Token:Search', function () {
+  describe.skip('Add Token:Search', function () {
     const request = {
       valid: 'cry',
       invalid: 'zzz',
@@ -618,7 +618,7 @@ describe('Metamask popup page', async function () {
       address: '0x9a642d6b3368ddc662CA244bAdf32cDA716005BC',
     }
 
-    describe('add Mainnet\'s tokens', function () {
+    describe.skip('add Mainnet\'s tokens', function () {
 
       it(' field \'Search\' is displayed', async function () {
         await setProvider(NETWORKS.MAINNET)
@@ -821,7 +821,7 @@ describe('Metamask popup page', async function () {
       })
 
     })
-    describe('Token should be displayed only for network, where it was added ', async function () {
+    describe.skip('Token should be displayed only for network, where it was added ', async function () {
 
       it('token should not  be displayed in POA network', async function () {
         await setProvider(NETWORKS.POA)
@@ -854,7 +854,7 @@ describe('Metamask popup page', async function () {
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
     })
-    describe('remove Mainnet\'s tokens', function () {
+    describe.skip('remove Mainnet\'s tokens', function () {
 
       it('remove tokens', async function () {
         await setProvider(NETWORKS.MAINNET)
@@ -888,7 +888,7 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Add Token: Custom', function () {
+  describe ('Add Token: Custom', function () {
 
     describe('Token Factory', function () {
 
@@ -946,6 +946,9 @@ describe('Metamask popup page', async function () {
 
       it('navigates to the add token screen', async function () {
         await waitUntilShowUp(screens.main.identicon)
+        const tab = await waitUntilShowUp(screens.main.tokens.menu)
+        await tab.click()
+
         const addTokenButton = await waitUntilShowUp(screens.main.tokens.buttonAdd)
         assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
         await click(addTokenButton)
@@ -988,7 +991,7 @@ describe('Metamask popup page', async function () {
       })
     })
 
-    describe('Check support of token per network basis ', async function () {
+    describe.skip('Check support of token per network basis ', async function () {
 
       describe('Token should be displayed only for network, where it was added ', async function () {
 
@@ -1023,7 +1026,7 @@ describe('Metamask popup page', async function () {
         })
       })
 
-      describe('Add token with the same address to each network  ', async function () {
+      describe.skip('Add token with the same address to each network  ', async function () {
 
         const tokenName = 'DVT'
         const tokenDecimals = '13'
@@ -1119,12 +1122,28 @@ describe('Metamask popup page', async function () {
       })
 
       it('item \'Send \' is displayed', async function () {
-        const menu = await waitUntilShowUp(menus.token.menu)
-        await menu.click()
         const item = await waitUntilShowUp(menus.token.send)
         assert.notEqual(item, false, 'item isn\'t displayed')
         assert.equal(await item.getText(), menus.token.sendText, 'incorrect name')
       })
+    })
+
+    describe('Transfer token', function () {
+
+      it('open screen transfer token ', async function () {
+        const item = await waitUntilShowUp(menus.token.send)
+        await item.click()
+        const title = await waitUntilShowUp(screens.sendTokens.title)
+        assert.equal(await title.getText(), 'Send TST tokens', 'title is incorrect')
+      })
+
+      it('open screen transfer token ', async function () {
+        const item = await waitUntilShowUp(menus.token.send)
+        await item.click()
+        const title = await waitUntilShowUp(screens.sendTokens.title)
+        assert.equal(await title.getText(), 'Send TST tokens', 'title is incorrect')
+      })
+
     })
 
     describe('Remove token , provider is localhost', function () {

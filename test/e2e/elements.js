@@ -45,6 +45,17 @@ module.exports = {
     },
   },
   screens: {
+    sendTokens:{
+      title:By.className('flex-center'),
+      field:{
+        address:By.name('address'),
+        amount:By.name('amount')
+      },
+      button:{
+        next:By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > button'),
+        arrow:By.className('fa fa-arrow-left fa-lg cursor-pointer')
+      }
+    },
     yourPR: {
       key: By.css('#app-content > div > div.app-primary.from-right > div > div.privateKey > div.flex-row > p'),
       copy: By.className('clipboard cursor-pointer'),
