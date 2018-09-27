@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import AddToken from './add-token.component'
+import { setPendingTokens, clearPendingTokens } from '../../../actions'
 
-const { setPendingTokens, clearPendingTokens } = require('../../../actions')
 
 const mapStateToProps = ({ metamask }) => {
   const { identities, tokens, pendingTokens } = metamask

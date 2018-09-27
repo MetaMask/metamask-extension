@@ -1,2 +1,1 @@
-import TokenListPlaceholder from './token-list-placeholder.component'
-module.exports = TokenListPlaceholder
+export { default } from './token-list-placeholder.component'

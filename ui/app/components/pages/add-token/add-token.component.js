@@ -14,7 +14,7 @@ const emptyAddr = '0x0000000000000000000000000000000000000000'
 const SEARCH_TAB = 'SEARCH'
 const CUSTOM_TOKEN_TAB = 'CUSTOM_TOKEN'
 
-class AddToken extends Component {
+export default class AddToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -28,27 +28,27 @@ class AddToken extends Component {
     identities: PropTypes.object,
   }
 
-  constructor (props) {
-    super(props)
+  static defaultProps = {
+    pendingTokens: {},
+  }
 
-    this.state = {
-      customAddress: '',
-      customSymbol: '',
-      customDecimals: 0,
-      searchResults: [],
-      selectedTokens: {},
-      tokenSelectorError: null,
-      customAddressError: null,
-      customSymbolError: null,
-      customDecimalsError: null,
-      autoFilled: false,
-      displayedTab: SEARCH_TAB,
-    }
+  state = {
+    customAddress: '',
+    customSymbol: '',
+    customDecimals: 0,
+    searchResults: [],
+    selectedTokens: {},
+    tokenSelectorError: null,
+    customAddressError: null,
+    customSymbolError: null,
+    customDecimalsError: null,
+    autoFilled: false,
+    displayedTab: SEARCH_TAB,
   }
 
   componentDidMount () {
     this.tokenInfoGetter = tokenInfoGetter()
-    const { pendingTokens = {} } = this.props
+    const { pendingTokens } = this.props
     const pendingTokenKeys = Object.keys(pendingTokens)
 
     if (pendingTokenKeys.length > 0) {
@@ -79,7 +79,7 @@ class AddToken extends Component {
 
   handleToggleToken (token) {
     const { address } = token
-    const { selectedTokens = {} } = this.state
+    const { selectedTokens } = this.state
     const selectedTokensCopy = { ...selectedTokens }
 
     if (address in selectedTokensCopy) {
@@ -106,7 +106,7 @@ class AddToken extends Component {
   }
 
   hasSelected () {
-    const { customAddress = '', selectedTokens = {} } = this.state
+    const { customAddress, selectedTokens } = this.state
     return customAddress || Object.keys(selectedTokens).length > 0
   }
 
@@ -315,5 +315,3 @@ class AddToken extends Component {
     )
   }
 }
-
-export default AddToken
