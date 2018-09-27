@@ -62,7 +62,7 @@ export default class SendTransactionScreen extends PersistentForm {
     }
   }
 
-  updateGas ({ to: updatedToAddress, amount: value } = {}) {
+  updateGas ({ to: updatedToAddress, amount: value, data } = {}) {
     const {
       amount,
       blockGasLimit,
@@ -86,6 +86,7 @@ export default class SendTransactionScreen extends PersistentForm {
       selectedToken,
       to: getToAddressForGasUpdate(updatedToAddress, currentToAddress),
       value: value || amount,
+      data,
     })
   }
 

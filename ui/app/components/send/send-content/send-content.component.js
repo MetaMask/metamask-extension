@@ -15,18 +15,24 @@ export default class SendContent extends Component {
     showHexData: PropTypes.bool,
   };
 
+  updateGas = (updateData) => this.props.updateGas(updateData)
+
   render () {
     return (
       <PageContainerContent>
         <div className="send-v2__form">
           <SendFromRow />
           <SendToRow
-            updateGas={(updateData) => this.props.updateGas(updateData)}
+            updateGas={this.updateGas}
             scanQrCode={ _ => this.props.scanQrCode()}
           />
-          <SendAmountRow updateGas={(updateData) => this.props.updateGas(updateData)} />
+          <SendAmountRow updateGas={this.updateGas} />
           <SendGasRow />
-          { this.props.showHexData ? <SendHexDataRow /> : null }
+          {(this.props.showHexData && (
+            <SendHexDataRow
+              updateGas={this.updateGas}
+            />
+          ))}
         </div>
       </PageContainerContent>
     )

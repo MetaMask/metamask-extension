@@ -200,16 +200,34 @@ function doesAmountErrorRequireUpdate ({
   return amountErrorRequiresUpdate
 }
 
-async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to, value, gasPrice, estimateGasMethod }) {
+async function estimateGas ({
+  selectedAddress,
+  selectedToken,
+  blockGasLimit,
+  to,
+  value,
+  data,
+  gasPrice,
+  estimateGasMethod,
+}) {
   const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
 
   if (selectedToken) {
     paramsForGasEstimate.value = '0x0'
     paramsForGasEstimate.data = generateTokenTransferData({ toAddress: to, amount: value, selectedToken })
+    paramsForGasEstimate.to = selectedToken.address
+  } else {
+    if (data) {
+      paramsForGasEstimate.data = data
+    }
+
+    if (to) {
+      paramsForGasEstimate.to = to
+    }
   }
 
   // if recipient has no code, gas is 21k max:
-  if (!selectedToken) {
+  if (!selectedToken && !data) {
     const code = Boolean(to) && await global.eth.getCode(to)
     if (!code || code === '0x') {
       return SIMPLE_GAS_COST
@@ -217,8 +235,6 @@ async function estimateGas ({ selectedAddress, selectedToken, blockGasLimit, to,
   } else if (selectedToken && !to) {
     return BASE_TOKEN_GAS_COST
   }
-
-  paramsForGasEstimate.to = selectedToken ? selectedToken.address : to
 
   // if not, fall back to block gasLimit
   paramsForGasEstimate.gas = ethUtil.addHexPrefix(multiplyCurrencies(blockGasLimit, 0.95, {
