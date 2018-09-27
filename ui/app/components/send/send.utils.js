@@ -212,6 +212,16 @@ async function estimateGas ({
 }) {
   const paramsForGasEstimate = { from: selectedAddress, value, gasPrice }
 
+  // if recipient has no code, gas is 21k max:
+  if (!selectedToken && !data) {
+    const code = Boolean(to) && await global.eth.getCode(to)
+    if (!code || code === '0x') {
+      return SIMPLE_GAS_COST
+    }
+  } else if (selectedToken && !to) {
+    return BASE_TOKEN_GAS_COST
+  }
+
   if (selectedToken) {
     paramsForGasEstimate.value = '0x0'
     paramsForGasEstimate.data = generateTokenTransferData({ toAddress: to, amount: value, selectedToken })
@@ -224,16 +234,6 @@ async function estimateGas ({
     if (to) {
       paramsForGasEstimate.to = to
     }
-  }
-
-  // if recipient has no code, gas is 21k max:
-  if (!selectedToken && !data) {
-    const code = Boolean(to) && await global.eth.getCode(to)
-    if (!code || code === '0x') {
-      return SIMPLE_GAS_COST
-    }
-  } else if (selectedToken && !to) {
-    return BASE_TOKEN_GAS_COST
   }
 
   // if not, fall back to block gasLimit
