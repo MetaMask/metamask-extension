@@ -215,8 +215,8 @@ const MODALS = {
   OLD_UI_NOTIFICATION_MODAL: {
     contents: [
       h(NotifcationModal, {
-        header: 'oldUI',
-        message: 'oldUIMessage',
+        headerKey: 'oldUI',
+        messageKey: 'oldUIMessage',
       }),
     ],
     mobileModalStyle: {

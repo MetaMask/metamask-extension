@@ -7,8 +7,8 @@ const actions = require('../../actions')
 class NotificationModal extends Component {
   render () {
     const {
-      header,
-      message,
+      headerKey,
+      messageKey,
       showCancelButton = false,
       showConfirmButton = false,
       hideModal,
@@ -22,12 +22,12 @@ class NotificationModal extends Component {
       }, [
 
         h('div.notification-modal__header', {}, [
-          this.context.t(header),
+          this.context.t(headerKey),
         ]),
 
         h('div.notification-modal__message-wrapper', {}, [
           h('div.notification-modal__message', {}, [
-            this.context.t(message),
+            this.context.t(messageKey),
           ]),
         ]),
 
@@ -57,8 +57,8 @@ class NotificationModal extends Component {
 
 NotificationModal.propTypes = {
   hideModal: PropTypes.func,
-  header: PropTypes.string,
-  message: PropTypes.node,
+  headerKey: PropTypes.string,
+  messageKey: PropTypes.node,
   showCancelButton: PropTypes.bool,
   showConfirmButton: PropTypes.bool,
   onConfirm: PropTypes.func,
