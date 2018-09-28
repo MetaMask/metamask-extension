@@ -1135,6 +1135,7 @@ describe('Metamask popup page', async function () {
       const invalidAmount = 'eeeee'
       const largeAmount = '123'
       const preciseAmount = '0.123456789123456789123'
+      const negativeAmount = '-1'
       it('switch to account 1 ', async function () {
         const accountMenu = await waitUntilShowUp(menus.account.menu)
         await accountMenu.click()
@@ -1193,7 +1194,7 @@ describe('Metamask popup page', async function () {
         assert.equal(await error.getText(), screens.sendTokens.errorText.address, ' error message is incorrect')
       })
 
-      it('error message if large amount', async function () {
+      it('error message if amount is large', async function () {
         const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
         await amount.sendKeys(largeAmount)
         const address = await waitUntilShowUp(screens.sendTokens.field.address)
@@ -1207,7 +1208,7 @@ describe('Metamask popup page', async function () {
         assert.equal(await error.getText(), screens.sendTokens.errorText.largeAmount, ' error message is incorrect')
       })
 
-      it('error message if invalid amount', async function () {
+      it('error message if amount is invalid', async function () {
         const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
         await clearField(amount)
         await amount.sendKeys(invalidAmount)
@@ -1218,7 +1219,7 @@ describe('Metamask popup page', async function () {
         const error = await waitUntilShowUp(screens.sendTokens.error)
         assert.equal(await error.getText(), screens.sendTokens.errorText.invalidAmount, ' error message is incorrect')
       })
-      it('error message if amount too precise', async function () {
+      it('error message if amount is too precise', async function () {
         const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
         await clearField(amount)
         await amount.sendKeys(preciseAmount)
@@ -1227,7 +1228,19 @@ describe('Metamask popup page', async function () {
         await click(button)
         await delay(2000)
         const error = await waitUntilShowUp(screens.sendTokens.error)
-        assert.equal(await error.getText(), screens.sendTokens.errorText.invalidAmount, ' error message is incorrect')
+        assert.equal(await error.getText(), screens.sendTokens.errorText.tooPrecise, ' error message is incorrect')
+      })
+
+      it('error message if amount is negative', async function () {
+        const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
+        await clearField(amount)
+        await amount.sendKeys(negativeAmount)
+        const button = await waitUntilShowUp(screens.sendTokens.button.next)
+        await click(button)
+        await click(button)
+        await delay(2000)
+        const error = await waitUntilShowUp(screens.sendTokens.error)
+        assert.equal(await error.getText(), screens.sendTokens.errorText.negativeAmount, ' error message is incorrect')
       })
 
       it('\'Confirm transaction\' screen is opened if address and amount are correct', async function () {
