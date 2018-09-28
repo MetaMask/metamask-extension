@@ -8,14 +8,14 @@ module.exports = {
     token: {
       menu: By.id('token-cell_dropdown_0'),
       items: By.className('dropdown-menu-item'),
-      send:By.css('#token-cell_dropdown_0 > div > div > li:nth-child(2)'),
+      send: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(2)'),
       view: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(3)'),
       copy: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(4)'),
       remove: By.css('#token-cell_dropdown_0 > div > div > li:nth-child(5)'),
-      sendText:'Send',
+      sendText: 'Send',
       viewText: 'View token on block explorer',
       copyText: 'Copy address to clipboard',
-      removeText: 'Remove'
+      removeText: 'Remove',
     },
     sandwich: {
       menu: By.css('.sandwich-expando'),
@@ -27,6 +27,7 @@ module.exports = {
     },
     account: {
       account1: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(2) > span'),
+      account2: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
       menu: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div'),
       delete: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
       createAccount: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
@@ -45,16 +46,26 @@ module.exports = {
     },
   },
   screens: {
-    sendTokens:{
-      title:By.className('flex-center'),
-      field:{
-        address:By.name('address'),
-        amount:By.name('amount')
+    sendTokens: {
+      error: By.className('error flex-center'),
+      errorText: {
+        invalidAmount: 'Invalid tokens\' amount',
+        address: 'Recipient address is invalid',
+        largeAmount: 'Insufficient tokens\' balance',
       },
-      button:{
-        next:By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > button'),
-        arrow:By.className('fa fa-arrow-left fa-lg cursor-pointer')
-      }
+      title: By.className('flex-center'),
+      balance: By.className('hide-text-overflow token-balance__amount'),
+      symbol: By.className('token-balance__symbol'),
+      field: {
+        address: By.name('address'),
+        addressPlaceholder: 'Recipient Address',
+        amount: By.name('amount'),
+        amountPlaceholder: 'Amount',
+      },
+      button: {
+        next: By.xpath('//*[@id="app-content"]/div/div[4]/div/section[2]/button'),
+        arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
+      },
     },
     yourPR: {
       key: By.css('#app-content > div > div.app-primary.from-right > div > div.privateKey > div.flex-row > p'),
@@ -133,14 +144,17 @@ module.exports = {
       titleText: 'Delete Custom RPC',
     },
     confirmTransaction: {
-      buttons: {
+      title: By.className('flex-row flex-center'),
+      amount: By.css('#pending-tx-form > div:nth-child(1) > div.table-box > div:nth-child(2) > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'),
+      symbol: By.css('#pending-tx-form > div:nth-child(1) > div.table-box > div:nth-child(2) > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(2)'),
+      button: {
         submit: By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'),
       },
     },
     sendTransaction: {
       title: By.css('#app-content > div > div.app-primary.from-right > div > h3:nth-child(2)'),
       titleText: 'Send Transaction',
-      fields: {
+      field: {
         address: By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(3) > div > input'),
         amount: By.css('#app-content > div > div.app-primary.from-right > div > section:nth-child(4) > input'),
       },
@@ -192,7 +206,8 @@ module.exports = {
     },
     main: {
       identicon: By.className('identicon-wrapper select-none'),
-      accountName: By.className('sizing-input'),
+      fieldAccountName: By.className('sizing-input'),
+      accountName: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.name-label > div > div > h2'),
       edit: By.className('edit-text'),
       iconCopy: By.className('clipboard cursor-pointer white'),
       transactionList: By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'),
@@ -212,7 +227,7 @@ module.exports = {
       tokens: {
         menu: By.className('inactiveForm pointer'),
         token: By.className('token-cell'),
-        balance: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > ol > li:nth-child(2) > h3'),
+        balance: By.css('#token-cell_0 > h3'),
         amount: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
         textNoTokens: 'No tokens found',
         textYouOwn1token: 'You own 1 token',
