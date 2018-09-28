@@ -326,14 +326,14 @@ SendTransactionScreen.prototype.onSubmit = async function () {
   let message
 
   if (isNaN(input) || input === '') {
-    message = 'Invalid tokens\' amount.'
+    message = 'Invalid token\'s amount.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 
   if (parts[1]) {
     var decimal = parts[1]
     if (decimal.length > 18) {
-      message = 'Tokens\' amount is too precise.'
+      message = 'Token\'s amount is too precise.'
       return this.props.dispatch(actions.displayWarning(message))
     }
   }
@@ -343,7 +343,7 @@ SendTransactionScreen.prototype.onSubmit = async function () {
   const tokensValueWithDec = new BigNumber(calcTokenAmountWithDec(input, token.decimals))
 
   if (tokensValueWithDec.gt(token.balance)) {
-    message = 'Insufficient tokens\' balance.'
+    message = 'Insufficient token\'s balance.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 

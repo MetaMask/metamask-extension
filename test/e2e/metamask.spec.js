@@ -1186,7 +1186,7 @@ describe('Metamask popup page', async function () {
         const button = await waitUntilShowUp(screens.sendTokens.button.next)
         await click(button)
         await click(button)
-        await delay(2000)
+        await delay(2000000000)
         const error = await waitUntilShowUp(screens.sendTokens.error)
         assert.equal(await error.getText(), screens.sendTokens.errorText.address, ' error message is incorrect')
       })

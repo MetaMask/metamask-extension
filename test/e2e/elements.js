@@ -49,9 +49,9 @@ module.exports = {
     sendTokens: {
       error: By.className('error flex-center'),
       errorText: {
-        invalidAmount: 'Invalid tokens\' amount',
+        invalidAmount: 'Invalid token\'s amount',
         address: 'Recipient address is invalid',
-        largeAmount: 'Insufficient tokens\' balance',
+        largeAmount: 'Insufficient token\'s balance',
       },
       title: By.className('flex-center'),
       balance: By.className('hide-text-overflow token-balance__amount'),
