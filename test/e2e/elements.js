@@ -52,6 +52,7 @@ module.exports = {
         invalidAmount: 'Invalid token\'s amount',
         address: 'Recipient address is invalid',
         largeAmount: 'Insufficient token\'s balance',
+        tooPrecise:'Token\'s amount is too precise'
       },
       title: By.className('flex-center'),
       balance: By.className('hide-text-overflow token-balance__amount'),
