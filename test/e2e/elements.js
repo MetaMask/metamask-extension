@@ -53,7 +53,7 @@ module.exports = {
         address: 'Recipient address is invalid',
         largeAmount: 'Insufficient token\'s balance',
         tooPrecise: 'Token\'s amount is too precise',
-        negativeAmount:'Can not send negative amounts of ETH'
+        negativeAmount: 'Can not send negative amounts of ETH',
       },
       title: By.className('flex-center'),
       balance: By.className('hide-text-overflow token-balance__amount'),
