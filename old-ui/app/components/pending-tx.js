@@ -489,7 +489,7 @@ PendingTx.prototype.verifyGasParams = function () {
 }
 
 PendingTx.prototype._notZeroOrEmptyString = function (obj) {
-  return obj !== '' && obj !== '0x0' && obj !== '0x' // The '0x' case might not ever happen, but it seems safest to protect against it
+  return obj !== '' && obj !== '0x0' && obj !== '0x' // '0x' means null
 }
 
 PendingTx.prototype.bnMultiplyByFraction = function (targetBN, numerator, denominator) {

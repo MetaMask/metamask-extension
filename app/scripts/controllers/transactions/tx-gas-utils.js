@@ -63,14 +63,15 @@ class TxGasUtil {
     const hasRecipient = Boolean(recipient)
 
     if (hasRecipient) {
-      let code = await this.query.getCode(recipient)
+      const code = await this.query.getCode(recipient)
 
       // If there's data in the params, but there's no code, it's not a valid contract
-      // For no code, Infura will return '0x', and Ganache will return '0x0'
+      // For no code, Infura will return '0x', and ganache-core v2.2.1 will return '0x0'
       if (txParams.data && (!code || code === '0x' || code === '0x0')) {
-        throw {errorKey: TRANSACTION_NO_CONTRACT_ERROR_KEY}
-      }
-      else if (!code) {
+        const err = new Error()
+        err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
+        throw err
+      } else if (!code) {
         txParams.gas = SIMPLE_GAS_COST // For a standard ETH send, gas is 21k max
         txMeta.simpleSend = true // Prevents buffer addition
         return SIMPLE_GAS_COST
