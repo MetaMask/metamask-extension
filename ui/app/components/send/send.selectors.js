@@ -113,7 +113,7 @@ function getCurrentCurrency (state) {
 }
 
 function getFromCurrency (state) {
-  return state.metamask.fromCurrency
+  return state.metamask.fromCurrency || 'ETH'
 }
 
 function getCurrentNetwork (state) {
