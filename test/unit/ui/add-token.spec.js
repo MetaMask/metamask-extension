@@ -27,7 +27,7 @@ describe('Add Token Screen', function () {
     it('Default State', function () {
       addTokenComponent.instance().validateInputs()
       const state = addTokenComponent.state()
-      assert.equal(state.warning, 'Address is invalid.')
+      assert.equal(state.warning, 'Address is invalid.Symbol must be between 0 and 10 characters.')
     })
 
     it('Address is a Metamask Identity', function () {
