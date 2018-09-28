@@ -420,9 +420,6 @@ class PreferencesController {
     if (!remove && _url !== 'http://localhost:8545') {
       rpcList.push(_url)
     }
-    if (rpcList.length > 3) {
-      rpcList.shift()
-    }
     return Promise.resolve(rpcList)
   }
 
