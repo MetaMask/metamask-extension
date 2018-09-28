@@ -1,7 +1,7 @@
 const assert = require('assert')
 const h = require('react-hyperscript')
 const { createMockStore } = require('redux-test-utils')
-const { shallowWithStore } = require('../../lib/shallow-with-store')
+const { shallowWithStore } = require('../../lib/render-helpers')
 const BalanceComponent = require('../../../ui/app/components/balance-component')
 const mockState = {
   metamask: {
@@ -42,4 +42,3 @@ describe('BalanceComponent', function () {
   })
 
 })
-

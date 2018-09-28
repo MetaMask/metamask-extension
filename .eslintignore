@@ -3,6 +3,7 @@ dist/**
 builds/**
 test-builds/**
 docs/**
+coverage/
 
 development/bundle.js
 development/states.js

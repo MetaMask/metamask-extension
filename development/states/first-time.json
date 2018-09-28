@@ -48,6 +48,7 @@
     "accountDetail": {
       "subview": "transactions"
     },
+    "sidebar": {},
     "transForward": true,
     "isLoading": false,
     "warning": null,

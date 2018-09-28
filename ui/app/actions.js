@@ -227,11 +227,14 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
+  SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
   showAddTokenPage,
+  showAddSuggestedTokenPage,
   addToken,
   addTokens,
   removeToken,
   updateTokens,
+  removeSuggestedTokens,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
@@ -312,6 +315,8 @@ var actions = {
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
   setPendingTokens,
   clearPendingTokens,
+
+  createCancelTransaction,
 }
 
 module.exports = actions
@@ -410,12 +415,18 @@ function createNewVaultAndRestore (password, seed) {
     log.debug(`background.createNewVaultAndRestore`)
 
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, err => {
+      background.clearSeedWordCache((err) => {
         if (err) {
           return reject(err)
         }
 
-        resolve()
+        background.createNewVaultAndRestore(password, seed, (err) => {
+          if (err) {
+            return reject(err)
+          }
+
+          resolve()
+        })
       })
     })
       .then(() => dispatch(actions.unMarkPasswordForgotten()))
@@ -1147,6 +1158,10 @@ function updateAndApproveTx (txData) {
 
         return txData
       })
+      .catch((err) => {
+        dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
+      })
   }
 }
 
@@ -1589,11 +1604,18 @@ function showAddTokenPage (transitionForward = true) {
   }
 }
 
-function addToken (address, symbol, decimals) {
+function showAddSuggestedTokenPage (transitionForward = true) {
+  return {
+    type: actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE,
+    value: transitionForward,
+  }
+}
+
+function addToken (address, symbol, decimals, image) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, (err, tokens) => {
+      background.addToken(address, symbol, decimals, image, (err, tokens) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
@@ -1643,10 +1665,37 @@ function addTokens (tokens) {
   }
 }
 
+function removeSuggestedTokens () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeSuggestedTokens((err, suggestedTokens) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.clearPendingTokens())
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+          return global.platform.closeCurrentWindow()
+        }
+        resolve(suggestedTokens)
+      })
+    })
+    .then(() => updateMetamaskStateFromBackground())
+    .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+  }
+}
+
 function updateTokens (newTokens) {
   return {
     type: actions.UPDATE_TOKENS,
     newTokens,
+  }
+}
+
+function clearPendingTokens () {
+  return {
+    type: actions.CLEAR_PENDING_TOKENS,
   }
 }
 
@@ -1722,6 +1771,29 @@ function retryTransaction (txId) {
     })
       .then(newState => dispatch(actions.updateMetamaskState(newState)))
       .then(() => newTxId)
+  }
+}
+
+function createCancelTransaction (txId, customGasPrice) {
+  log.debug('background.cancelTransaction')
+  let newTxId
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        newTxId = id
+        resolve(newState)
+      })
+    })
+    .then(newState => dispatch(actions.updateMetamaskState(newState)))
+    .then(() => newTxId)
   }
 }
 
@@ -1812,9 +1884,13 @@ function hideModal (payload) {
   }
 }
 
-function showSidebar () {
+function showSidebar ({ transitionName, type }) {
   return {
     type: actions.SIDEBAR_OPEN,
+    value: {
+      transitionName,
+      type,
+    },
   }
 }
 
@@ -2308,11 +2384,5 @@ function setPendingTokens (pendingTokens) {
   return {
     type: actions.SET_PENDING_TOKENS,
     payload: tokens,
-  }
-}
-
-function clearPendingTokens () {
-  return {
-    type: actions.CLEAR_PENDING_TOKENS,
   }
 }

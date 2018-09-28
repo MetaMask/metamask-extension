@@ -10,6 +10,7 @@ function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     token: state.appState.modal.modalState.props.token,
+    assetImages: state.metamask.assetImages,
   }
 }
 
@@ -40,8 +41,9 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(HideTokenConfirmat
 
 
 HideTokenConfirmationModal.prototype.render = function () {
-  const { token, network, hideToken, hideModal } = this.props
+  const { token, network, hideToken, hideModal, assetImages } = this.props
   const { symbol, address } = token
+  const image = assetImages[address]
 
   return h('div.hide-token-confirmation', {}, [
     h('div.hide-token-confirmation__container', {
@@ -55,6 +57,7 @@ HideTokenConfirmationModal.prototype.render = function () {
         diameter: 45,
         address,
         network,
+        image,
       }),
 
       h('div.hide-token-confirmation__symbol', {}, symbol),

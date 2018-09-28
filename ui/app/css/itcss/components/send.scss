@@ -622,12 +622,14 @@
     position: relative;
 
     &__down-caret {
+      z-index: 1026;
       position: absolute;
       top: 18px;
       right: 12px;
     }
 
     &__qr-code {
+      z-index: 1026;
       position: absolute;
       top: 13px;
       right: 33px;
@@ -647,6 +649,8 @@
 
   &__to-autocomplete, &__memo-text-area, &__hex-data {
     &__input {
+      z-index: 1025;
+      position: relative;
       height: 54px;
       width: 100%;
       border: 1px solid $alto;
@@ -833,6 +837,10 @@
       line-height: 12px;
       color: $red;
     }
+
+    &__cancel {
+      margin-right: 10px;
+    }
   }
 
   &__gas-modal-card {
@@ -880,10 +888,19 @@
       font-size: 18px;
       color: $tundora;
       right: 0px;
-      padding: 1px 4px;
+      padding: 0;
       display: flex;
       justify-content: space-around;
       align-items: center;
+    }
+
+    .gas-tooltip-input-arrow-wrapper {
+      align-items: center;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: center;
     }
 
     input[type="number"]::-webkit-inner-spin-button {

@@ -21,6 +21,7 @@
         "name": "Account 4"
       }
     },
+    "assetImages": {},
     "unapprovedTxs": {},
     "currentCurrency": "USD",
     "conversionRate": 16.88200327,
@@ -99,6 +100,7 @@
       "accountExport": "none",
       "privateKey": ""
     },
+    "sidebar": {},
     "transForward": true,
     "isLoading": false,
     "warning": null,

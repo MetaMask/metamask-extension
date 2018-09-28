@@ -1,16 +1,30 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import Identicon from '../identicon'
 import Tooltip from '../tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
+import { DEFAULT_VARIANT, CARDS_VARIANT } from './sender-to-recipient.constants'
 
-export default class SenderToRecipient extends Component {
+const variantHash = {
+  [DEFAULT_VARIANT]: 'sender-to-recipient--default',
+  [CARDS_VARIANT]: 'sender-to-recipient--cards',
+}
+
+export default class SenderToRecipient extends PureComponent {
   static propTypes = {
     senderName: PropTypes.string,
     senderAddress: PropTypes.string,
     recipientName: PropTypes.string,
     recipientAddress: PropTypes.string,
     t: PropTypes.func,
+    variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT]),
+    addressOnly: PropTypes.bool,
+    assetImage: PropTypes.string,
+  }
+
+  static defaultProps = {
+    variant: DEFAULT_VARIANT,
   }
 
   static contextTypes = {
@@ -22,24 +36,63 @@ export default class SenderToRecipient extends Component {
     recipientAddressCopied: false,
   }
 
+  renderSenderIdenticon () {
+    return !this.props.addressOnly && (
+      <div className="sender-to-recipient__sender-icon">
+        <Identicon
+          address={this.props.senderAddress}
+          diameter={24}
+        />
+      </div>
+    )
+  }
+
+  renderSenderAddress () {
+    const { t } = this.context
+    const { senderName, senderAddress, addressOnly } = this.props
+
+    return (
+      <Tooltip
+        position="bottom"
+        title={this.state.senderAddressCopied ? t('copiedExclamation') : t('copyAddress')}
+        wrapperClassName="sender-to-recipient__tooltip-wrapper"
+        containerClassName="sender-to-recipient__tooltip-container"
+        onHidden={() => this.setState({ senderAddressCopied: false })}
+      >
+      <div className="sender-to-recipient__name">
+        { addressOnly ? `${t('from')}: ${senderAddress}` : senderName }
+      </div>
+    </Tooltip>
+    )
+  }
+
+  renderRecipientIdenticon () {
+    const { recipientAddress, assetImage } = this.props
+
+    return !this.props.addressOnly && (
+      <div className="sender-to-recipient__sender-icon">
+        <Identicon
+          address={recipientAddress}
+          diameter={24}
+          image={assetImage}
+        />
+      </div>
+    )
+  }
+
   renderRecipientWithAddress () {
     const { t } = this.context
-    const { recipientName, recipientAddress } = this.props
+    const { recipientName, recipientAddress, addressOnly } = this.props
 
     return (
       <div
-        className="sender-to-recipient__recipient sender-to-recipient__recipient--with-address"
+        className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
         onClick={() => {
           this.setState({ recipientAddressCopied: true })
           copyToClipboard(recipientAddress)
         }}
       >
-        <div className="sender-to-recipient__sender-icon">
-          <Identicon
-            address={recipientAddress}
-            diameter={24}
-          />
-        </div>
+        { this.renderRecipientIdenticon() }
         <Tooltip
           position="bottom"
           title={this.state.recipientAddressCopied ? t('copiedExclamation') : t('copyAddress')}
@@ -47,8 +100,12 @@ export default class SenderToRecipient extends Component {
           containerClassName="sender-to-recipient__tooltip-container"
           onHidden={() => this.setState({ recipientAddressCopied: false })}
         >
-          <div className="sender-to-recipient__name sender-to-recipient__recipient-name">
-            { recipientName || this.context.t('newContract') }
+          <div className="sender-to-recipient__name">
+            {
+              addressOnly
+                ? `${t('to')}: ${recipientAddress}`
+                : (recipientName || this.context.t('newContract'))
+            }
           </div>
         </Tooltip>
       </div>
@@ -57,46 +114,25 @@ export default class SenderToRecipient extends Component {
 
   renderRecipientWithoutAddress () {
     return (
-      <div className="sender-to-recipient__recipient">
-        <i className="fa fa-file-text-o" />
-        <div className="sender-to-recipient__name sender-to-recipient__recipient-name">
+      <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
+        { !this.props.addressOnly && <i className="fa fa-file-text-o" /> }
+        <div className="sender-to-recipient__name">
           { this.context.t('newContract') }
         </div>
       </div>
     )
   }
 
-  render () {
-    const { t } = this.context
-    const { senderName, senderAddress, recipientAddress } = this.props
-
-    return (
-      <div className="sender-to-recipient__container">
-        <div
-          className="sender-to-recipient__sender"
-          onClick={() => {
-            this.setState({ senderAddressCopied: true })
-            copyToClipboard(senderAddress)
-          }}
-        >
-          <div className="sender-to-recipient__sender-icon">
-            <Identicon
-              address={senderAddress}
-              diameter={24}
-            />
-          </div>
-          <Tooltip
-              position="bottom"
-              title={this.state.senderAddressCopied ? t('copiedExclamation') : t('copyAddress')}
-              wrapperClassName="sender-to-recipient__tooltip-wrapper"
-              containerClassName="sender-to-recipient__tooltip-container"
-              onHidden={() => this.setState({ senderAddressCopied: false })}
-            >
-            <div className="sender-to-recipient__name sender-to-recipient__sender-name">
-              { senderName }
-            </div>
-          </Tooltip>
+  renderArrow () {
+    return this.props.variant === CARDS_VARIANT
+      ? (
+        <div className="sender-to-recipient__arrow-container">
+          <img
+            height={20}
+            src="./images/caret-right.svg"
+          />
         </div>
+      ) : (
         <div className="sender-to-recipient__arrow-container">
           <div className="sender-to-recipient__arrow-circle">
             <img
@@ -106,6 +142,25 @@ export default class SenderToRecipient extends Component {
             />
           </div>
         </div>
+      )
+  }
+
+  render () {
+    const { senderAddress, recipientAddress, variant } = this.props
+
+    return (
+      <div className={classnames(variantHash[variant])}>
+        <div
+          className={classnames('sender-to-recipient__party sender-to-recipient__party--sender')}
+          onClick={() => {
+            this.setState({ senderAddressCopied: true })
+            copyToClipboard(senderAddress)
+          }}
+        >
+          { this.renderSenderIdenticon() }
+          { this.renderSenderAddress() }
+        </div>
+        { this.renderArrow() }
         {
           recipientAddress
             ? this.renderRecipientWithAddress()

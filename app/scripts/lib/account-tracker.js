@@ -43,10 +43,27 @@ class AccountTracker {
     this._provider = opts.provider
     this._query = pify(new EthQuery(this._provider))
     this._blockTracker = opts.blockTracker
-    // subscribe to latest block
-    this._blockTracker.on('latest', this._updateForBlock.bind(this))
     // blockTracker.currentBlock may be null
     this._currentBlockNumber = this._blockTracker.getCurrentBlock()
+    this._blockTracker.once('latest', blockNumber => {
+      this._currentBlockNumber = blockNumber
+    })
+    // bind function for easier listener syntax
+    this._updateForBlock = this._updateForBlock.bind(this)
+  }
+
+  start () {
+    // remove first to avoid double add
+    this._blockTracker.removeListener('latest', this._updateForBlock)
+    // add listener
+    this._blockTracker.addListener('latest', this._updateForBlock)
+    // fetch account balances
+    this._updateAccounts()
+  }
+
+  stop () {
+    // remove listener
+    this._blockTracker.removeListener('latest', this._updateForBlock)
   }
 
   /**

@@ -6,14 +6,16 @@ const mapStateToProps = state => {
     confirmTransaction: {
       txData,
       methodData,
-      fetchingMethodData,
+      fetchingData,
+      toSmartContract,
     },
   } = state
 
   return {
     txData,
     methodData,
-    fetchingMethodData,
+    fetchingData,
+    isEtherTransaction: !toSmartContract,
   }
 }
 

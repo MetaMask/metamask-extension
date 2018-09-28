@@ -12,6 +12,7 @@ export default class SendContent extends Component {
   static propTypes = {
     updateGas: PropTypes.func,
     scanQrCode: PropTypes.func,
+    showHexData: PropTypes.bool,
   };
 
   render () {
@@ -25,7 +26,7 @@ export default class SendContent extends Component {
           />
           <SendAmountRow updateGas={(updateData) => this.props.updateGas(updateData)} />
           <SendGasRow />
-          <SendHexDataRow />
+          { this.props.showHexData ? <SendHexDataRow /> : null }
         </div>
       </PageContainerContent>
     )

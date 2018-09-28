@@ -38,6 +38,6 @@ function createPendingNonceMiddleware ({ getPendingNonce }) {
     const address = req.params[0]
     const blockRef = req.params[1]
     if (blockRef !== 'pending') return next()
-    req.result = await getPendingNonce(address)
+    res.result = await getPendingNonce(address)
   })
 }

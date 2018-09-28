@@ -9,6 +9,11 @@ restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
+console.warn('ATTENTION: In an effort to improve user privacy, MetaMask will ' +
+'stop exposing user accounts to dapps by default beginning November 2nd, 2018. ' +
+'Dapps should call provider.enable() in order to view and use accounts. Please see ' +
+'https://bit.ly/2QQHXvF for complete information and up-to-date example code.')
+
 //
 // setup plugin communication
 //
@@ -22,6 +27,25 @@ var metamaskStream = new LocalMessageDuplexStream({
 // compose the inpage provider
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
+// Augment the provider with its enable method
+inpageProvider.enable = function (options = {}) {
+  return new Promise((resolve, reject) => {
+    if (options.mockRejection) {
+      reject('User rejected account access')
+    } else {
+      inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(response.result)
+        }
+      })
+    }
+  })
+}
+
+window.ethereum = inpageProvider
+
 //
 // setup web3
 //
@@ -33,6 +57,7 @@ if (typeof window.web3 !== 'undefined') {
      or MetaMask and another web3 extension. Please remove one
      and try again.`)
 }
+
 var web3 = new Web3(inpageProvider)
 web3.setProvider = function () {
   log.debug('MetaMask - overrode web3.setProvider')

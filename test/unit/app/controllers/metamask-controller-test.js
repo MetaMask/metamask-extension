@@ -584,22 +584,18 @@ describe('MetaMaskController', function () {
   })
 
   describe('#clearSeedWordCache', function () {
+    it('should set seed words to null', function (done) {
+      sandbox.stub(metamaskController.preferencesController, 'setSeedWords')
+      metamaskController.clearSeedWordCache((err) => {
+        if (err) {
+          done(err)
+        }
 
-    it('should have set seed words', function () {
-      metamaskController.configManager.setSeedWords('test words')
-      const getConfigSeed = metamaskController.configManager.getSeedWords()
-      assert.equal(getConfigSeed, 'test words')
-    })
-
-    it('should clear config seed phrase', function () {
-      metamaskController.configManager.setSeedWords('test words')
-      metamaskController.clearSeedWordCache((err, result) => {
-        if (err) console.log(err)
+        assert.ok(metamaskController.preferencesController.setSeedWords.calledOnce)
+        assert.deepEqual(metamaskController.preferencesController.setSeedWords.args, [[null]])
+        done()
       })
-      const getConfigSeed = metamaskController.configManager.getSeedWords()
-      assert.equal(getConfigSeed, null)
     })
-
   })
 
   describe('#setCurrentLocale', function () {
@@ -793,24 +789,95 @@ describe('MetaMaskController', function () {
   describe('#markAccountsFound', function () {
     it('adds lost accounts to config manager data', function () {
       metamaskController.markAccountsFound(noop)
-      const configManagerData = metamaskController.configManager.getData()
-      assert.deepEqual(configManagerData.lostAccounts, [])
+      const state = metamaskController.getState()
+      assert.deepEqual(state.lostAccounts, [])
     })
   })
 
   describe('#markPasswordForgotten', function () {
     it('adds and sets forgottenPassword to config data to true', function () {
       metamaskController.markPasswordForgotten(noop)
-      const configManagerData = metamaskController.configManager.getData()
-      assert.equal(configManagerData.forgottenPassword, true)
+      const state = metamaskController.getState()
+      assert.equal(state.forgottenPassword, true)
     })
   })
 
   describe('#unMarkPasswordForgotten', function () {
     it('adds and sets forgottenPassword to config data to false', function () {
       metamaskController.unMarkPasswordForgotten(noop)
-      const configManagerData = metamaskController.configManager.getData()
-      assert.equal(configManagerData.forgottenPassword, false)
+      const state = metamaskController.getState()
+      assert.equal(state.forgottenPassword, false)
+    })
+  })
+
+  describe('#_onKeyringControllerUpdate', function () {
+    it('should do nothing if there are no keyrings in state', async function () {
+      const addAddresses = sinon.fake()
+      const syncWithAddresses = sinon.fake()
+      sandbox.replace(metamaskController, 'preferencesController', {
+        addAddresses,
+      })
+      sandbox.replace(metamaskController, 'accountTracker', {
+        syncWithAddresses,
+      })
+
+      const oldState = metamaskController.getState()
+      await metamaskController._onKeyringControllerUpdate({keyrings: []})
+
+      assert.ok(addAddresses.notCalled)
+      assert.ok(syncWithAddresses.notCalled)
+      assert.deepEqual(metamaskController.getState(), oldState)
+    })
+
+    it('should update selected address if keyrings was locked', async function () {
+      const addAddresses = sinon.fake()
+      const getSelectedAddress = sinon.fake.returns('0x42')
+      const setSelectedAddress = sinon.fake()
+      const syncWithAddresses = sinon.fake()
+      sandbox.replace(metamaskController, 'preferencesController', {
+        addAddresses,
+        getSelectedAddress,
+        setSelectedAddress,
+      })
+      sandbox.replace(metamaskController, 'accountTracker', {
+        syncWithAddresses,
+      })
+
+      const oldState = metamaskController.getState()
+      await metamaskController._onKeyringControllerUpdate({
+        isUnlocked: false,
+        keyrings: [{
+          accounts: ['0x1', '0x2'],
+        }],
+      })
+
+      assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(setSelectedAddress.args, [['0x1']])
+      assert.deepEqual(metamaskController.getState(), oldState)
+    })
+
+    it('should NOT update selected address if already unlocked', async function () {
+      const addAddresses = sinon.fake()
+      const syncWithAddresses = sinon.fake()
+      sandbox.replace(metamaskController, 'preferencesController', {
+        addAddresses,
+      })
+      sandbox.replace(metamaskController, 'accountTracker', {
+        syncWithAddresses,
+      })
+
+      const oldState = metamaskController.getState()
+      await metamaskController._onKeyringControllerUpdate({
+        isUnlocked: true,
+        keyrings: [{
+          accounts: ['0x1', '0x2'],
+        }],
+      })
+
+      assert.deepEqual(addAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]])
+      assert.deepEqual(metamaskController.getState(), oldState)
     })
   })
 
