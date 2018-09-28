@@ -1219,7 +1219,7 @@ describe('Metamask popup page', async function () {
         const error = await waitUntilShowUp(screens.sendTokens.error)
         assert.equal(await error.getText(), screens.sendTokens.errorText.invalidAmount, ' error message is incorrect')
       })
-      it('error message if amount is too precise', async function () {
+      it.skip('error message if amount is too precise', async function () {
         const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
         await clearField(amount)
         await amount.sendKeys(preciseAmount)
