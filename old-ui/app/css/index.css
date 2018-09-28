@@ -1025,3 +1025,7 @@ div.message-container > div:first-child {
 .hidden {
   visibility: hidden;
 }
+
+input[disabled] {
+  background: #FFFADE
+}
