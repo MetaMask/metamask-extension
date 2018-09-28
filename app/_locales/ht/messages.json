@@ -821,7 +821,7 @@
         "message": "Retire kont"
     },
     "removeAccountDescription": {
-        "message": "Kont sa a pral retire nan Wallet ou. Tanpri, asire ou ke ou gen orijinal fraz seed la oubyen kle prive pou rantre kont lan avan ou kontinye. Oubyen ou ka rantre kont ou ankò apati kont "drop-down" ou an."
+        "message": "Kont sa a pral retire nan Wallet ou. Tanpri, asire ou ke ou gen orijinal fraz seed la oubyen kle prive pou rantre kont lan avan ou kontinye. Oubyen ou ka rantre kont ou ankò apati kont \"drop-down\" ou an."
     },
     "readyToConnect": {
         "message": "Pare pou konekte?"
@@ -1111,9 +1111,6 @@
     },
     "transactionUpdatedGas": {
         "message": "Tranzaksyon ou te aktyalize avèk on pri gaz de $1 a $2."
-    },
-    "transactions": {
-        "message": "tranzaksyon yo"
     },
     "transactionError": {
         "message": "Erè tranzaksyon. Eksepsyon jete nan kòd kontra."
