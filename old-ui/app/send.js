@@ -260,7 +260,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
   const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
   const nickname = state.nickname || ' '
   const input = document.querySelector('input[name="amount"]').value
-  const parts = input.split('')
+  const parts = input.split('.')
 
   let message
 
