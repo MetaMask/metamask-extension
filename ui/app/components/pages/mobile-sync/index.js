@@ -5,11 +5,12 @@ const h = require('react-hyperscript')
 const classnames = require('classnames')
 const PubNub = require('pubnub')
 
-const { requestRevealSeedWords } = require('../../../actions')
+const { requestRevealSeedWords, fetchInfoToSync } = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../routes')
 const qrCode = require('qrcode-generator')
 
 import Button from '../../button'
+import LoadingScreen from '../../loading-screen'
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
@@ -23,9 +24,12 @@ class MobileSyncPage extends Component {
       password: '',
       seedWords: null,
       error: null,
+      syncing: false,
+      completed: false,
     }
 
     this.channelName = 'mm-sync-1'
+    this.syncing = false
   }
 
   componentDidMount () {
@@ -69,6 +73,7 @@ class MobileSyncPage extends Component {
           }
         } else if (message.event === 'end-sync') {
             this.disconnectWebsockets()
+            this.setState({syncing: false, completed: true})
         }
       },
     })
@@ -85,12 +90,28 @@ class MobileSyncPage extends Component {
     }
   }
 
-  startSyncing () {
+    // Calculating a PubNub Message Payload Size.
+  calculatePayloadSize (channel, message) {
+    return encodeURIComponent(
+        channel + JSON.stringify(message)
+    ).length + 100
+  }
+
+  async startSyncing () {
+    if (this.syncing) return false
+    this.syncing = true
+    this.setState({syncing: true})
+
+    const { accounts, network, preferences, transactions } = await this.props.fetchInfoToSync()
+    console.log('PUBNUB: Starting sync with data!', { accounts, network, preferences, transactions });
+    console.log('PUBNUB: DATA Payload size', this.calculatePayloadSize('mm-sync-1', { accounts, network, preferences }))
+    console.log('PUBNUB: TX Payload size', this.calculatePayloadSize('mm-sync-1', transactions))
+
     this.pubnub.publish(
       {
           message: {
-              'event': 'syncing',
-              'data': { 'hello': 'from the extension' },
+              event: 'syncing-data',
+              data: { accounts, network, preferences },
           },
           channel: this.channelName,
           sendByPost: false, // true to send via post
@@ -99,6 +120,21 @@ class MobileSyncPage extends Component {
       (status, response) => {
           console.log('PUBNUB: got response from syncing', status, response)
           // handle status, response
+          this.pubnub.publish(
+            {
+                message: {
+                    event: 'syncing-tx',
+                    data: { transactions },
+                },
+                channel: this.channelName,
+                sendByPost: false, // true to send via post
+                storeInHistory: false,
+            },
+            (status, response) => {
+                console.log('PUBNUB: got response from syncing', status, response)
+                // handle status, response
+            }
+          )
       }
     )
   }
@@ -118,6 +154,23 @@ class MobileSyncPage extends Component {
   }
 
   renderContent () {
+    const { t } = this.context
+
+    if (this.state.syncing) {
+      return h(LoadingScreen, {loadingMessage: 'Sync in progress'})
+    }
+
+    if (this.state.completed) {
+      return h('div.reveal-seed__content', {},
+          h('label.reveal-seed__label', {
+            style: {
+             width: '100%',
+             textAlign: 'center',
+            },
+          }, t('syncWithMobileComplete')),
+      )
+    }
+
     return this.state.screen === PASSWORD_PROMPT_SCREEN
       ? h('div', {}, [
         this.renderWarning(),
@@ -162,7 +215,12 @@ class MobileSyncPage extends Component {
     const { t } = this.context
     return (
       h('div', [
-        h('label.reveal-seed__label', t('syncWithMobileScanThisCode')),
+        h('label.reveal-seed__label', {
+          style: {
+           width: '100%',
+           textAlign: 'center',
+          },
+        }, t('syncWithMobileScanThisCode')),
         h('.div.qr-wrapper', {
           style: {
             display: 'flex',
@@ -220,8 +278,8 @@ class MobileSyncPage extends Component {
       h('.page-container', [
         h('.page-container__header', [
           h('.page-container__title', this.context.t('syncWithMobileTitle')),
-          h('.page-container__subtitle', this.context.t('syncWithMobileDesc')),
-          h('.page-container__subtitle', this.context.t('syncWithMobileDescNewUsers')),
+          this.state.screen === PASSWORD_PROMPT_SCREEN ? h('.page-container__subtitle', this.context.t('syncWithMobileDesc')) : null,
+          this.state.screen === PASSWORD_PROMPT_SCREEN ? h('.page-container__subtitle', this.context.t('syncWithMobileDescNewUsers')) : null,
         ]),
         h('.page-container__content', [
             this.renderContent(),
@@ -234,6 +292,7 @@ class MobileSyncPage extends Component {
 
 MobileSyncPage.propTypes = {
   requestRevealSeedWords: PropTypes.func,
+  fetchInfoToSync: PropTypes.func,
   history: PropTypes.object,
 }
 
@@ -244,7 +303,9 @@ MobileSyncPage.contextTypes = {
 const mapDispatchToProps = dispatch => {
   return {
     requestRevealSeedWords: password => dispatch(requestRevealSeedWords(password)),
+    fetchInfoToSync: () => dispatch(fetchInfoToSync()),
   }
 }
+
 
 module.exports = connect(null, mapDispatchToProps)(MobileSyncPage)

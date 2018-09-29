@@ -370,6 +370,9 @@ module.exports = class MetamaskController extends EventEmitter {
       checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
       unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
 
+      // mobile
+      fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
+
       // vault management
       submitPassword: nodeify(this.submitPassword, this),
 
@@ -530,6 +533,63 @@ module.exports = class MetamaskController extends EventEmitter {
         })
       }
     })
+  }
+
+  /**
+   * Collects all the information that we want to share
+   * with the mobile client for syncing purposes
+   * @returns Promise<Object> Parts of the state that we want to syncx
+   */
+   async fetchInfoToSync () {
+    // Preferences
+    const {
+      accountTokens,
+      currentLocale,
+      frequentRpcList,
+      identities,
+      selectedAddress,
+      tokens,
+    } = this.preferencesController.store.getState()
+
+    const preferences = {
+      accountTokens,
+      currentLocale,
+      frequentRpcList,
+      identities,
+      selectedAddress,
+      tokens,
+    }
+
+    // Accounts
+    const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const accounts = {
+      hd: await hdKeyring.getAccounts(),
+      simpleKeyPair: [],
+    }
+    const simpleKeyPairKeyring = await this.keyringController.getKeyringsByType('Simple Key Pair')[0]
+    if (simpleKeyPairKeyring) {
+      accounts.simpleKeyPair = await simpleKeyPairKeyring.getAccounts()
+    }
+
+    // transactions
+
+    const transactions = this.txController.store.getState()
+    // delete tx for other accounts that we're not importing
+    transactions.transactions = transactions.transactions.filter(tx => {
+      return (
+        accounts.hd.includes(tx.txParams.from.toLowerCase()) ||
+        accounts.simpleKeyPair.includes(tx.txParams.from.toLowerCase())
+      )
+    })
+    // delete history of each tx cause we don't need it
+    transactions.transactions.forEach(tx => delete tx.history)
+
+    return {
+      accounts,
+      preferences,
+      transactions,
+      network: this.networkController.store.getState(),
+    }
   }
 
   /*
