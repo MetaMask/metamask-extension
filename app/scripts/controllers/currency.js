@@ -141,8 +141,13 @@ class CurrencyController {
         this.setConversionRate(Number(parsedResponse.bid))
         this.setConversionDate(Number(parsedResponse.timestamp))
       } else {
-        this.setConversionRate(Number(parsedResponse[currentCurrency.toUpperCase()]))
-        this.setConversionDate(parseInt((new Date()).getTime() / 1000))
+        if (parsedResponse[currentCurrency.toUpperCase()]) {
+          this.setConversionRate(Number(parsedResponse[currentCurrency.toUpperCase()]))
+          this.setConversionDate(parseInt((new Date()).getTime() / 1000))
+        } else {
+          this.setConversionRate(0)
+          this.setConversionDate('N/A')
+        }
       }
     } catch (err) {
       log.warn(`MetaMask - Failed to query currency conversion:`, fromCurrency, currentCurrency, err)
