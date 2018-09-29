@@ -1,6 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const qrCode = require('qrcode-npm').qrcode
+const qrCode = require('qrcode-generator')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const { isHexPrefixed } = require('ethereumjs-util')

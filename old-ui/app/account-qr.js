@@ -1,7 +1,7 @@
 const PropTypes = require('prop-types')
 const {PureComponent} = require('react')
 const h = require('react-hyperscript')
-const {qrcode: qrCode} = require('qrcode-npm')
+const qrcode = require('qrcode-generator')
 const {connect} = require('react-redux')
 const {isHexPrefixed} = require('ethereumjs-util')
 const actions = require('../../ui/app/actions')
@@ -23,7 +23,7 @@ class AccountQrScreen extends PureComponent {
   render () {
     const {dispatch, Qr, selectedAddress, warning} = this.props
     const address = `${isHexPrefixed(Qr.data) ? 'ethereum:' : ''}${Qr.data}`
-    const qrImage = qrCode(4, 'M')
+    const qrImage = qrcode(4, 'M')
 
     qrImage.addData(address)
     qrImage.make()
