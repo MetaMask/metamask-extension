@@ -1,0 +1,44 @@
+.unit-input {
+  min-height: 54px;
+  border: 1px solid #dedede;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #4d4d4d;
+  font-size: 1rem;
+  padding: 8px 10px;
+  position: relative;
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    display: none;
+  }
+
+  input[type="number"]:hover::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    display: none;
+  }
+
+  &__input {
+    color: #4d4d4d;
+    font-size: 1rem;
+    font-family: Roboto;
+    border: none;
+    outline: 0 !important;
+    max-width: 22ch;
+  }
+
+  &__input-container {
+    display: flex;
+    align-items: center;
+  }
+
+  &--error {
+    border-color: $red;
+  }
+}
