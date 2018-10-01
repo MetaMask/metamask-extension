@@ -3,7 +3,6 @@ const pify = require('pify')
 const exec = pify(require('child_process').exec, { multiArgs: true })
 const VERSION = require('../dist/chrome/manifest.json').version
 
-
 start().catch(console.error)
 
 async function start () {
@@ -16,7 +15,7 @@ async function start () {
   // abort if versions exists
   if (versionAlreadyExists) {
     console.log(`Version "${VERSION}" already exists on Sentry, skipping version creation`)
-  }else{
+  } else {
      // create sentry release
     console.log(`creating Sentry release for "${VERSION}"...`)
     await exec(`sentry-cli releases --org 'metamask' --project 'metamask' new ${VERSION}`)
@@ -33,7 +32,7 @@ async function start () {
     console.log(`uploading sourcemaps Sentry release "${VERSION}"...`)
     await exec(`sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} upload-sourcemaps ./dist/sourcemaps/ --url-prefix 'sourcemaps'`)
     console.log('all done!')
-  }else{
+  } else {
     console.log(`Version "${VERSION}" already has artifacts on Sentry, skipping sourcemap upload`)
   }
 }
