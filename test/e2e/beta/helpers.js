@@ -128,7 +128,5 @@ async function assertElementNotPresent (webdriver, driver, by) {
   } catch (err) {
     assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
   }
-  if (dataTab) {
-    assert(false, 'Data tab should not be present')
-  }
+  assert.ok(!dataTab, 'Found element that should not be present')
 }
