@@ -15,7 +15,7 @@ async function start () {
   const versionAlreadyExists = await checkIfVersionExists()
   // abort if versions exists
   if (versionAlreadyExists) {
-    console.log(`Version "${VERSION}" already exists on Sentry, aborting version creation`)
+    console.log(`Version "${VERSION}" already exists on Sentry, skipping version creation`)
   }else{
      // create sentry release
     console.log(`creating Sentry release for "${VERSION}"...`)
@@ -34,7 +34,7 @@ async function start () {
     await exec(`sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} upload-sourcemaps ./dist/sourcemaps/ --url-prefix 'sourcemaps'`)
     console.log('all done!')
   }else{
-    console.log(`Version "${VERSION}" already has artifacts on Sentry, aborting sourcemap upload`)
+    console.log(`Version "${VERSION}" already has artifacts on Sentry, skipping sourcemap upload`)
   }
 }
 
