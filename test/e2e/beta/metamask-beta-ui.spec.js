@@ -1030,7 +1030,7 @@ describe('MetaMask', function () {
     ]
 
     customRpcUrls.forEach(customRpcUrl => {
-      it('creates custom RPC: ' + customRpcUrl, async () => {
+      it(`creates custom RPC: ${customRpcUrl}`, async () => {
         const networkDropdown = await findElement(driver, By.css('.network-name'))
         await networkDropdown.click()
         await delay(regularDelayMs)
@@ -1059,25 +1059,15 @@ describe('MetaMask', function () {
       await delay(largeDelayMs * 2)
     })
 
-    it('finds 3 recent RPCs in history', async () => {
+    it('finds all recent RPCs in history', async () => {
       const networkDropdown = await findElement(driver, By.css('.network-name'))
       await networkDropdown.click()
       await delay(regularDelayMs)
 
-      // oldest selected RPC is not found
-      await assertElementNotPresent(webdriver, driver, By.xpath(`//span[contains(text(), '${customRpcUrls[0]}')]`))
-
       // only recent 3 are found and in correct order (most recent at the top)
       const customRpcs = await findElements(driver, By.xpath(`//span[contains(text(), 'https://mainnet.infura.io/')]`))
 
-      assert.equal(customRpcs.length, 3)
-
-      for (let i = 0; i < customRpcs.length; i++) {
-        const linkText = await customRpcs[i].getText()
-        const rpcUrl = customRpcUrls[customRpcUrls.length - i - 1]
-
-        assert.notEqual(linkText.indexOf(rpcUrl), -1)
-      }
+      assert.equal(customRpcs.length, customRpcUrls.length)
     })
   })
 })
