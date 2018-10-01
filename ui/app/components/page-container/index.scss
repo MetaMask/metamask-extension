@@ -52,29 +52,29 @@
     .btn-confirm {
       font-size: 1rem;
     }
-  }
 
-  &__footer-header {
-    display: flex;
-    flex-flow: row;
-    justify-content: center;
-    padding: 16px;
-    flex: 0 0 auto;
-  }
+    header {
+      display: flex;
+      flex-flow: row;
+      justify-content: center;
+      padding: 16px;
+      flex: 0 0 auto;
+    }
 
-  &__footer-footer {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-around;
-    padding: 0 16px 16px;
-    flex: 0 0 auto;
+    footer {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-around;
+      padding: 0 16px 16px;
+      flex: 0 0 auto;
 
-    a, a:hover {
-      text-decoration: none;
-      cursor: pointer;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      color: #2f9ae0;
+      a, a:hover {
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #2f9ae0;
+      }
     }
   }
 

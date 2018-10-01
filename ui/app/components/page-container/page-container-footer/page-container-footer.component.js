@@ -32,7 +32,7 @@ export default class PageContainerFooter extends Component {
     return (
       <div className="page-container__footer">
 
-        <div className="page-container__footer-header">
+        <header>
           <Button
             type="default"
             large
@@ -51,12 +51,12 @@ export default class PageContainerFooter extends Component {
           >
             { submitText || this.context.t('next') }
           </Button>
-        </div>
+        </header>
 
         {children && (
-          <div className="page-container__footer-footer">
+          <footer>
             {children}
-          </div>
+          </footer>
         )}
 
       </div>
