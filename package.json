@@ -254,7 +254,6 @@
     "css-loader": "^0.28.11",
     "deep-freeze-strict": "^1.1.1",
     "del": "^3.0.0",
-    "dot-only-hunter": "^1.0.3",
     "envify": "^4.0.0",
     "enzyme": "^3.4.4",
     "enzyme-adapter-react-15": "^1.0.6",
