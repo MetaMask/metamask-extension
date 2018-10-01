@@ -64,14 +64,14 @@ async function runAddTokenFlowTest (assert, done) {
   // Verify button add disabled since contract is invalid
   const buttonAdd = await queryAsync($, '#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div.flex-space-around > div:nth-child(7) > button:nth-child(2)')
   assert.ok(buttonAdd[0], 'add button rendered')
-  assert.equal(await buttonAdd[0].getAttribute('disabled'),'','add button isn\'t disabled')
+  assert.equal(await buttonAdd[0].getAttribute('disabled'), '', 'add button isn\'t disabled')
   // Input token symbol with length more than 10
   const customSymbol = (await findAsync($, '#token_symbol'))[0]
   assert.ok(customSymbol, 'symbol field rendered')
-  assert.equal(await customSymbol.getAttribute('disabled'),'','symbol field isn\'t disabled')
+  assert.equal(await customSymbol.getAttribute('disabled'), '', 'symbol field isn\'t disabled')
 
   // Input valid decimals
   const customDecimals = (await findAsync($, '#token_decimals'))[0]
   assert.ok(customDecimals, 'decimals field rendered')
-  assert.equal(await customDecimals.getAttribute('disabled'),'','decimals field isn\'t disabled')
+  assert.equal(await customDecimals.getAttribute('disabled'), '', 'decimals field isn\'t disabled')
 }

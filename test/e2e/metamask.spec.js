@@ -72,6 +72,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('screen \'Terms of Use\' has not empty agreement', async () => {
+      await delay(5000)
       const terms = await waitUntilShowUp(screens.TOU.agreement, 300)
       const text = await terms.getText()
       assert.equal(text.length > 400, true, 'agreement is too short')
