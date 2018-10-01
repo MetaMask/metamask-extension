@@ -126,7 +126,6 @@ async function assertElementNotPresent (webdriver, driver, by) {
   try {
     dataTab = await findElement(driver, by, 4000)
   } catch (err) {
-    console.log(err)
     assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
   }
   if (dataTab) {
