@@ -1030,7 +1030,7 @@ describe('MetaMask', function () {
     ]
 
     customRpcUrls.forEach(customRpcUrl => {
-      it('creates custom RPC: ' + customRpcUrl, async () => {
+      it(`creates custom RPC: ${customRpcUrl}`, async () => {
         const networkDropdown = await findElement(driver, By.css('.network-name'))
         await networkDropdown.click()
         await delay(regularDelayMs)
