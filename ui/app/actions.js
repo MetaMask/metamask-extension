@@ -917,6 +917,7 @@ function updateGasData ({
   selectedToken,
   to,
   value,
+  data,
 }) {
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
@@ -937,6 +938,7 @@ function updateGasData ({
           to,
           value,
           estimateGasPrice,
+          data,
         }),
       ])
     })

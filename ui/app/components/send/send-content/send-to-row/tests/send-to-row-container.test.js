@@ -24,6 +24,7 @@ proxyquire('../send-to-row.container.js', {
   },
   '../../send.selectors.js': {
     getCurrentNetwork: (s) => `mockNetwork:${s}`,
+    getSendHexData: (s) => s,
     getSendTo: (s) => `mockTo:${s}`,
     getSendToAccounts: (s) => `mockToAccounts:${s}`,
   },
@@ -41,6 +42,7 @@ describe('send-to-row container', () => {
 
     it('should map the correct properties to props', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
+        hasHexData: true,
         inError: 'mockInError:mockState',
         network: 'mockNetwork:mockState',
         to: 'mockTo:mockState',
