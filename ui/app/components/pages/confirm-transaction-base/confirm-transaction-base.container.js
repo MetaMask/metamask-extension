@@ -53,6 +53,7 @@ const mapStateToProps = (state, props) => {
     selectedAddress,
     selectedAddressTxList,
     assetImages,
+    network,
     unapprovedTxs,
   } = metamask
   const assetImage = assetImages[txParamsToAddress]
@@ -68,7 +69,11 @@ const mapStateToProps = (state, props) => {
   const transaction = R.find(({ id }) => id === transactionId)(selectedAddressTxList)
   const transactionStatus = transaction ? transaction.status : ''
 
-  const unapprovedTxCount = valuesFor(unapprovedTxs).length
+  const currentNetworkUnapprovedTxs = R.filter(
+    ({ metamaskNetworkId }) => metamaskNetworkId === network,
+    valuesFor(unapprovedTxs),
+  )
+  const unapprovedTxCount = currentNetworkUnapprovedTxs.length
 
   return {
     balance,
