@@ -942,7 +942,7 @@ describe('Metamask popup page', async function () {
         await delay(700)
       })
     })
-    describe('Add token', function () {
+    describe('Add token to LOCALHOST', function () {
 
       it('navigates to the add token screen', async function () {
         await waitUntilShowUp(screens.main.identicon)
@@ -1038,36 +1038,40 @@ describe('Metamask popup page', async function () {
 
         it('can not add inexistent token to POA network', async function () {
           await setProvider(NETWORKS.POA)
-          assert(await isDisabledAddInexistentToken, true, 'canadd inexistent token in POA network')
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
         it('can not add inexistent token to SOKOL network', async function () {
           await setProvider(NETWORKS.SOKOL)
-          assert(await isDisabledAddInexistentToken, true, 'canadd inexistent token in POA network')
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
         it('can not add inexistent token to ROPSTEN network', async function () {
           await setProvider(NETWORKS.ROPSTEN)
-          assert(await isDisabledAddInexistentToken, true, 'canadd inexistent token in POA network')
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
         it('can not add inexistent token to KOVAN network', async function () {
           await setProvider(NETWORKS.KOVAN)
-          assert(await isDisabledAddInexistentToken, true, 'canadd inexistent token in POA network')
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
         it('can not add inexistent token to RINKEBY network', async function () {
           await setProvider(NETWORKS.RINKEBY)
-          assert(await isDisabledAddInexistentToken, true, 'canadd inexistent token in POA network')
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
         it('can not add inexistent token to MAINNET network', async function () {
           await setProvider(NETWORKS.MAINNET)
-          assert(await isDisabledAddInexistentToken, true, 'canadd inexistent token in POA network')
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to LOCALHOST network', async function () {
+          await setProvider(NETWORKS.LOCALHOST)
+          assert(await isDisabledAddInexistentToken(tokenAddress.slice(0, tokenAddress.length - 2) + '0'), true, 'can add inexistent token in POA network')
         })
 
         it('token still should be displayed in LOCALHOST network', async function () {
-          await setProvider(NETWORKS.LOCALHOST)
           await waitUntilDisappear(screens.main.tokens.amount)
           assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
           const tokens = await driver.findElements(screens.main.tokens.amount)
@@ -1397,6 +1401,8 @@ describe('Metamask popup page', async function () {
     const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
     if (await buttonAdd.isEnabled()) return false
 
+    const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
+    await click(buttonCancel)
     return true
   }
 
