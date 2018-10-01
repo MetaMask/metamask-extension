@@ -28,7 +28,6 @@ class MobileSyncPage extends Component {
       completed: false,
     }
 
-    this.channelName = 'mm-sync-1'
     this.syncing = false
   }
 
@@ -44,16 +43,26 @@ class MobileSyncPage extends Component {
     this.setState({ seedWords: null, error: null })
     this.props.requestRevealSeedWords(this.state.password)
       .then(seedWords => {
+        this.generateCipherKeyAndChannelName()
         this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
         this.initWebsockets()
       })
       .catch(error => this.setState({ error: error.message }))
   }
 
+  generateCipherKeyAndChannelName () {
+    // Disabled for testing purposes
+    // this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
+    // this.channelName = `mm-${PubNub.generateUUID()}`
+    this.channelName = 'mm-sync-1'
+		this.cipherKey = '4d6826a4-801c-4bff-b45c-752abd4da8a8'
+  }
+
   initWebsockets () {
     this.pubnub = new PubNub({
       subscribeKey: 'sub-c-30b2ba04-c37e-11e8-bd78-d63445bede87',
       publishKey: 'pub-c-d40e77d5-5cd3-4ca2-82eb-792a1f4573db',
+      cipherKey: this.cipherKey,
       ssl: true,
     })
 
@@ -66,11 +75,7 @@ class MobileSyncPage extends Component {
         }
 
         if (message.event === 'start-sync') {
-          // "who" needs to be included in the QR code,
-          // should be some random number
-          if (message.data.who === 'me') {
             this.startSyncing()
-          }
         } else if (message.event === 'end-sync') {
             this.disconnectWebsockets()
             this.setState({syncing: false, completed: true})
@@ -80,6 +85,7 @@ class MobileSyncPage extends Component {
 
     this.pubnub.subscribe({
       channels: [this.channelName],
+      withPresence: false,
     })
 
   }
@@ -103,7 +109,7 @@ class MobileSyncPage extends Component {
     this.setState({syncing: true})
 
     const { accounts, network, preferences, transactions } = await this.props.fetchInfoToSync()
-    console.log('PUBNUB: Starting sync with data!', { accounts, network, preferences, transactions });
+    console.log('PUBNUB: Starting sync with data!', { accounts, network, preferences, transactions })
     console.log('PUBNUB: DATA Payload size', this.calculatePayloadSize('mm-sync-1', { accounts, network, preferences }))
     console.log('PUBNUB: TX Payload size', this.calculatePayloadSize('mm-sync-1', transactions))
 
@@ -209,7 +215,7 @@ class MobileSyncPage extends Component {
   renderRevealSeedContent () {
 
     const qrImage = qrCode(0, 'M')
-    qrImage.addData(`${this.channelName}|${this.state.seedWords}`)
+    qrImage.addData(`${this.channelName}|${this.cipherKey}|${this.state.seedWords}`)
     qrImage.make()
 
     const { t } = this.context
@@ -307,5 +313,14 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
+const mapStateToProps = state => {
+  const {
+    metamask: { selectedAddress },
+  } = state
 
-module.exports = connect(null, mapDispatchToProps)(MobileSyncPage)
+  return {
+    selectedAddress,
+  }
+}
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(MobileSyncPage)
