@@ -102,9 +102,10 @@ async function runFirstTimeUsageTest(assert, done) {
   assert.equal(qrHeader.textContent, 'Account 1', 'Should show account label.')
   assert.ok(qrContainer, 'QR Container found')
 
+  await timeout(10000)
   const networkMenu = (await findAsync(app, '.network-indicator'))[0]
   networkMenu.click()
-
+  await timeout(5000)
   const networkMenu2 = (await findAsync(app, '.network-indicator'))[0]
   const children2 = networkMenu2.children
   children2.length[3]
