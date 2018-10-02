@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "Expose Accounts"
+  },
+  "exposeDescription": {
+    "message": "Esporre gli account al sito Web corrente. Utile per dapps legacy."
+  },
+  "confirmExpose": {
+    "message": "Sei sicuro di voler esporre i tuoi account al sito web corrente?"
+  },
   "confirmClear": {
     "message": "Sei sicuro di voler cancellare i siti Web approvati?"
   },

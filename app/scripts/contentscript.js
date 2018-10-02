@@ -24,6 +24,7 @@ if (shouldInjectWeb3()) {
   injectScript(inpageBundle)
   setupStreams()
   listenForProviderRequest()
+  checkForcedInjection()
 }
 
 /**
@@ -134,10 +135,28 @@ function listenForProviderRequest () {
       case 'reject-provider-request':
         injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: { error: 'User rejected provider access' }}))`)
         break
+      case 'force-injection':
+        extension.storage.local.get(['forcedOrigins'], ({ forcedOrigins = [] }) => {
+          extension.storage.local.set({ forcedOrigins: [ ...forcedOrigins, window.location.hostname ] }, () => {
+            injectScript(`window.location.reload()`)
+          })
+        })
+        break
     }
   })
 }
 
+/**
+ * Checks the current origin to see if it exists in the extension's locally-stored list
+ * off user-whitelisted dapp origins. If it is, this origin will be marked as approved,
+ * meaning the publicConfig stream will be enabled. This is only meant to ease the transition
+ * to 1102 and will be removed in the future.
+ */
+function checkForcedInjection () {
+  extension.storage.local.get(['forcedOrigins'], ({ forcedOrigins = [] }) => {
+    originApproved = forcedOrigins.indexOf(window.location.hostname) > -1
+  })
+}
 
 /**
  * Error handler for page to plugin stream disconnections

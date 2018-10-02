@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "Expose Konten"
+  },
+  "exposeDescription": {
+    "message": "Expose Konten auf der aktuellen Website. Nützlich für ältere Dapps."
+  },
+  "confirmExpose": {
+    "message": "Möchten Sie Ihre Konten wirklich der aktuellen Website zugänglich machen?"
+  },
   "confirmClear": {
     "message": "Möchten Sie die genehmigten Websites wirklich löschen?"
   },

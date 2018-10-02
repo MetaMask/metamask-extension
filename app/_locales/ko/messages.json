@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "계정 노출"
+  },
+  "exposeDescription": {
+    "message": "계정을 현재 웹 사이트에 노출하십시오. 기존 dapps에 유용합니다."
+  },
+  "confirmExpose": {
+    "message": "계정을 현재 웹 사이트에 공개 하시겠습니까?"
+  },
   "confirmClear": {
     "message": "승인 된 웹 사이트를 삭제 하시겠습니까?"
   },
@@ -13,9 +22,6 @@
   },
   "clearApprovalData": {
     "message": "승인 데이터 삭제"
-  },
-  "approve": {
-    "message": "승인하다"
   },
   "reject": {
     "message": "받지 않다"

@@ -230,6 +230,31 @@ ConfigScreen.prototype.render = function () {
               marginTop: '20px',
             },
           }, [
+            h('p', {
+              style: {
+                fontFamily: 'Montserrat Light',
+                fontSize: '13px',
+              },
+            }, 'Expose accounts to the current website. This is useful for legacy dapps.'),
+            h('br'),
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                event.preventDefault()
+                state.dispatch(actions.forceInjection())
+              },
+            }, 'Expose accounts'),
+          ]),
+          
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
             h('button', {
               style: {
                 alignSelf: 'center',
