@@ -292,7 +292,7 @@
     "jsdom": "^11.2.0",
     "jsdom-global": "^3.0.2",
     "jshint-stylish": "~2.2.1",
-    "karma": "^2.0.4",
+    "karma": "^3.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",
     "karma-firefox-launcher": "^1.0.1",
