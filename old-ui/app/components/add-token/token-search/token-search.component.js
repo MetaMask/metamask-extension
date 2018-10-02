@@ -1,26 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import contractMap from 'eth-contract-metadata'
+import contractMapETH from 'eth-contract-metadata'
+import contractMapPOA from 'poa-contract-metadata'
 import Fuse from 'fuse.js'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '../../../../../ui/app/components/text-field'
 
-const contractList = Object.entries(contractMap)
-  .map(([ _, tokenData]) => tokenData)
-  .filter(tokenData => Boolean(tokenData.erc20))
+let contractList
 
-const fuse = new Fuse(contractList, {
-  shouldSort: true,
-  threshold: 0.45,
-  location: 0,
-  distance: 100,
-  maxPatternLength: 32,
-  minMatchCharLength: 1,
-  keys: [
-    { name: 'name', weight: 0.5 },
-    { name: 'symbol', weight: 0.5 },
-  ],
-})
+let fuse
 
 export default class TokenSearch extends Component {
   static contextTypes = {
@@ -32,6 +20,7 @@ export default class TokenSearch extends Component {
   }
 
   static propTypes = {
+    network: PropTypes.string,
     onSearch: PropTypes.func,
     error: PropTypes.string,
   }
@@ -42,6 +31,9 @@ export default class TokenSearch extends Component {
     this.state = {
       searchQuery: '',
     }
+
+    const networkID = parseInt(props.network)
+    this.updateContractList(networkID)
   }
 
   handleSearch (searchQuery) {
@@ -52,6 +44,42 @@ export default class TokenSearch extends Component {
     })
     const results = [...addressSearchResult, ...fuseSearchResult]
     this.props.onSearch({ searchQuery, results })
+  }
+
+  componentWillUpdate (nextProps) {
+    const {
+      network: oldNet,
+    } = this.props
+    const {
+      network: newNet,
+    } = nextProps
+
+    if (oldNet !== newNet) {
+      const newNetworkID = parseInt(newNet)
+      this.updateContractList(newNetworkID)
+      this.setState({ searchQuery: '' })
+      this.props.onSearch({ searchQuery: '', results: [] })
+    }
+  }
+
+  updateContractList (newNetworkID) {
+    const contractMap = newNetworkID === 1 ? contractMapETH : contractMapPOA
+    contractList = Object.entries(contractMap)
+      .map(([ _, tokenData]) => tokenData)
+      .filter(tokenData => Boolean(tokenData.erc20))
+
+    fuse = new Fuse(contractList, {
+      shouldSort: true,
+      threshold: 0.45,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      keys: [
+        { name: 'name', weight: 0.5 },
+        { name: 'symbol', weight: 0.5 },
+      ],
+    })
   }
 
   renderAdornment () {

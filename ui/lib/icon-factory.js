@@ -64,4 +64,3 @@ function jsNumberForAddress (address) {
   var seed = parseInt(addr, 16)
   return seed
 }
-

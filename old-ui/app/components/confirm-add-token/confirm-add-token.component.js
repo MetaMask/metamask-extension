@@ -10,6 +10,7 @@ export default class ConfirmAddToken extends Component {
   }
 
   static propTypes = {
+    network: PropTypes.string,
     clearPendingTokens: PropTypes.func,
     addTokens: PropTypes.func,
     pendingTokens: PropTypes.object,
@@ -31,9 +32,25 @@ export default class ConfirmAddToken extends Component {
       : `${name} (${symbol})`
   }
 
+  componentWillUpdate (nextProps) {
+    const { clearPendingTokens, showAddTokenPage } = this.props
+    const {
+      network: oldNet,
+    } = this.props
+    const {
+      network: newNet,
+    } = nextProps
+
+    if (oldNet !== newNet) {
+      clearPendingTokens()
+      showAddTokenPage()
+    }
+  }
+
   render () {
-    const { addTokens, clearPendingTokens, pendingTokens, goHome, showAddTokenPage } = this.props
+    const { addTokens, clearPendingTokens, pendingTokens, goHome, showAddTokenPage, network } = this.props
     const areMultipleTokens = pendingTokens && Object.keys(pendingTokens).length > 1
+    const likeToAddTokensText = areMultipleTokens ? 'Would you like to add these tokens?' : 'Would you like to add this token?'
 
     return (
       <div className="page-container">
@@ -42,7 +59,7 @@ export default class ConfirmAddToken extends Component {
             { 'Add Tokens' /* this.context.t('addTokens')*/ }
           </h2>
           <p className="confirm-label">
-            { areMultipleTokens ? 'Would you like to add these tokens?' : 'Would you like to add this token?' /* this.context.t('likeToAddTokens')*/ }
+            { likeToAddTokensText /* this.context.t('likeToAddTokens')*/ }
           </p>
         </div>
         <div className="page-container__content">
@@ -71,6 +88,7 @@ export default class ConfirmAddToken extends Component {
                             className="confirm-add-token__token-icon"
                             diameter={48}
                             address={address}
+                            network={network}
                           />
                           <div className="confirm-add-token__name">
                             { this.getTokenName(name, symbol) }
