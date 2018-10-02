@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "Vystavte účty"
+  },
+  "exposeDescription": {
+    "message": "Vystavte účty na aktuální webové stránky. Užitečné pro starší dappy."
+  },
+  "confirmExpose": {
+    "message": "Opravdu chcete své účty vystavit na stávajícím webu?"
+  },
   "confirmClear": {
     "message": "Naozaj chcete vymazať schválené webové stránky?"
   },

@@ -37,8 +37,12 @@ inpageProvider.enable = function () {
       if (typeof detail.error !== 'undefined') {
         reject(detail.error)
       } else {
-        inpageProvider.publicConfigStore.once('update', () => {
-          resolve(inpageProvider.send({ method: 'eth_accounts' }).result)
+        inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(response.result)
+          }
         })
       }
     })

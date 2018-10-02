@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "アカウントを公開する"
+  },
+  "exposeDescription": {
+    "message": "アカウントを現在のウェブサイトに公開する。従来のdappsに役立ちます。"
+  },
+  "confirmExpose": {
+    "message": "現在のウェブサイトにアカウントを公開してもよろしいですか？"
+  },
   "confirmClear": {
     "message": "承認されたウェブサイトをクリアしてもよろしいですか？"
   },

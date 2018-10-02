@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "Expose Accounts"
+  },
+  "exposeDescription": {
+    "message": "Expose accounts to the current website. Useful for legacy dapps."
+  },
+  "confirmExpose": {
+    "message": "Are you sure you want to expose your accounts to the current website?"
+  },
   "confirmClear": {
     "message": "Are you sure you want to clear approved websites?"
   },
@@ -13,9 +22,6 @@
   },
   "clearApprovalData": {
     "message": "Clear Approval Data"
-  },
-  "approve": {
-    "message": "Approve"
   },
   "reject": {
     "message": "Reject"
@@ -889,9 +895,6 @@
   },
   "refundAddress": {
     "message": "Your Refund Address"
-  },
-  "reject": {
-    "message": "Reject"
   },
   "rejectAll": {
     "message": "Reject All"

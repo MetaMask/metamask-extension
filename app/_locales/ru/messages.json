@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "Открыть счета"
+  },
+  "exposeDescription": {
+    "message": "Выводить счета на текущий веб-сайт. Полезно для старых dapps."
+  },
+  "confirmExpose": {
+    "message": "Вы уверены, что хотите открыть свои аккаунты на текущем веб-сайте?"
+  },
   "confirmClear": {
     "message": "Вы уверены, что хотите очистить утвержденные веб-сайты?Tem certeza de que deseja limpar sites aprovados?"
   },
