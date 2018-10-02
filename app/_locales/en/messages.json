@@ -361,6 +361,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "eth": {
+    "message": "ETH"
+  },
   "etherscanView": {
     "message": "View account on Etherscan"
   },
@@ -380,7 +383,7 @@
     "message": "Failed"
   },
   "fiat": {
-    "message": "FIAT",
+    "message": "Fiat",
     "description": "Exchange type"
   },
   "fileImportFail": {
@@ -786,6 +789,12 @@
   },
   "prev": {
     "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "Primary Currency"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select ETH to prioritize displaying values in ETH. Select Fiat to prioritize displaying values in your selected currency."
   },
   "privacyMsg": {
     "message": "Privacy Policy"
