@@ -149,11 +149,11 @@ class MobileSyncPage extends Component {
     this.disconnectWebsockets()
   }
 
-  renderWarning () {
+  renderWarning (text) {
     return (
       h('.page-container__warning-container', [
        h('.page-container__warning-message', [
-          h('div', [this.context.t('mobileSyncText')]),
+          h('div', [text]),
         ]),
       ])
     )
@@ -179,12 +179,15 @@ class MobileSyncPage extends Component {
 
     return this.state.screen === PASSWORD_PROMPT_SCREEN
       ? h('div', {}, [
-        this.renderWarning(),
+        this.renderWarning(this.context.t('mobileSyncText')),
         h('.reveal-seed__content', [
           this.renderPasswordPromptContent(),
         ]),
       ])
-      : h('.reveal-seed__content', [ this.renderRevealSeedContent() ])
+      : h('div', {}, [
+        this.renderWarning(this.context.t('syncWithMobileBeCareful')),
+        h('.reveal-seed__content', [ this.renderRevealSeedContent() ]),
+      ])
   }
 
   renderPasswordPromptContent () {

@@ -1093,6 +1093,9 @@
   "syncWithMobileScanThisCode": {
     "message": "Scan this code with your MetaMask mobile app"
   },
+  "syncWithMobileBeCareful": {
+    "message": "Make sure nobody else is looking at your screen when you scan this code"
+  },
   "syncWithMobileComplete": {
     "message": "Your data has been synced succesfully. Enjoy the MetaMask mobile app!"
   },

@@ -52,6 +52,7 @@ const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 
+
 module.exports = class MetamaskController extends EventEmitter {
 
   /**
@@ -562,23 +563,28 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // Accounts
     const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const hdAccounts = await hdKeyring.getAccounts()
     const accounts = {
-      hd: await hdKeyring.getAccounts(),
+      hd: hdAccounts.map(address => ethUtil.toChecksumAddress(address)),
       simpleKeyPair: [],
+      ledger: [],
+      trezor: [],
     }
+    /*
     const simpleKeyPairKeyring = await this.keyringController.getKeyringsByType('Simple Key Pair')[0]
     if (simpleKeyPairKeyring) {
       accounts.simpleKeyPair = await simpleKeyPairKeyring.getAccounts()
     }
-
+    */
     // transactions
 
     const transactions = this.txController.store.getState()
     // delete tx for other accounts that we're not importing
     transactions.transactions = transactions.transactions.filter(tx => {
+      const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from)
       return (
-        accounts.hd.includes(tx.txParams.from.toLowerCase()) ||
-        accounts.simpleKeyPair.includes(tx.txParams.from.toLowerCase())
+        accounts.hd.includes(checksummedTxFrom) ||
+        accounts.simpleKeyPair.includes(checksummedTxFrom)
       )
     })
     // delete history of each tx cause we don't need it
