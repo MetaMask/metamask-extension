@@ -18,14 +18,14 @@
     min-width: 0;
   }
 
-  &__fiat {
+  &__primary {
     font-size: 1.5rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  &__eth {
+  &__secondary {
     color: $oslo-gray;
     white-space: nowrap;
     overflow: hidden;

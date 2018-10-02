@@ -2,9 +2,25 @@ import { connect } from 'react-redux'
 import CurrencyDisplay from './currency-display.component'
 import { getValueFromWeiHex, formatCurrency } from '../../helpers/confirm-transaction/util'
 
-const mapStateToProps = (state, ownProps) => {
-  const { value, numberOfDecimals = 2, currency, denomination, hideLabel } = ownProps
+const mapStateToProps = state => {
   const { metamask: { currentCurrency, conversionRate } } = state
+
+  return {
+    currentCurrency,
+    conversionRate,
+  }
+}
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { currentCurrency, conversionRate, ...restStateProps } = stateProps
+  const {
+    value,
+    numberOfDecimals = 2,
+    currency,
+    denomination,
+    hideLabel,
+    ...restOwnProps
+  } = ownProps
 
   const toCurrency = currency || currentCurrency
   const convertedValue = getValueFromWeiHex({
@@ -14,8 +30,11 @@ const mapStateToProps = (state, ownProps) => {
   const displayValue = hideLabel ? formattedValue : `${formattedValue} ${toCurrency.toUpperCase()}`
 
   return {
+    ...restStateProps,
+    ...dispatchProps,
+    ...restOwnProps,
     displayValue,
   }
 }
 
-export default connect(mapStateToProps)(CurrencyDisplay)
+export default connect(mapStateToProps, null, mergeProps)(CurrencyDisplay)

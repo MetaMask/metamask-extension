@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
 import AmountMaxButton from './amount-max-button/'
-import CurrencyDisplay from '../../currency-display'
+import UserPreferencedCurrencyInput from '../../../user-preferenced-currency-input'
 
 export default class SendAmountRow extends Component {
 
@@ -85,15 +85,7 @@ export default class SendAmountRow extends Component {
   }
 
   render () {
-    const {
-      amount,
-      amountConversionRate,
-      convertedCurrency,
-      gasTotal,
-      inError,
-      primaryCurrency,
-      selectedToken,
-    } = this.props
+    const { amount, gasTotal, inError } = this.props
 
     return (
       <SendRowWrapper
@@ -102,19 +94,14 @@ export default class SendAmountRow extends Component {
         errorType={'amount'}
       >
         {!inError && gasTotal && <AmountMaxButton />}
-        <CurrencyDisplay
-          conversionRate={amountConversionRate}
-          convertedCurrency={convertedCurrency}
+        <UserPreferencedCurrencyInput
+          onChange={newAmount => this.validateAmount(newAmount)}
           onBlur={newAmount => {
             this.updateGas(newAmount)
             this.updateAmount(newAmount)
           }}
-          onChange={newAmount => this.validateAmount(newAmount)}
-          inError={inError}
-          primaryCurrency={primaryCurrency || 'ETH'}
-          selectedToken={selectedToken}
+          error={inError}
           value={amount}
-          step="any"
         />
       </SendRowWrapper>
     )

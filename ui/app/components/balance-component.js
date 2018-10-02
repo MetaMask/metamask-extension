@@ -4,7 +4,8 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenBalance = require('./token-balance')
 const Identicon = require('./identicon')
-import CurrencyDisplay from './currency-display'
+import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display'
+import { PRIMARY, SECONDARY } from '../constants/common'
 const { getAssetImages, conversionRateSelector, getCurrentCurrency} = require('../selectors')
 
 const { formatBalance, generateBalanceObject } = require('../util')
@@ -65,7 +66,7 @@ BalanceComponent.prototype.renderTokenBalance = function () {
 
 BalanceComponent.prototype.renderBalance = function () {
   const props = this.props
-  const { shorten, account } = props
+  const { account } = props
   const balanceValue = account && account.balance
   const needsParse = 'needsParse' in props ? props.needsParse : true
   const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse) : '...'
@@ -80,23 +81,18 @@ BalanceComponent.prototype.renderBalance = function () {
   }
 
   return h('div.flex-column.balance-display', {}, [
-    h('div.token-amount', {
-      style: {},
-    }, this.getTokenBalance(formattedBalance, shorten)),
-
-    showFiat && h(CurrencyDisplay, {
+    h('div.token-amount', {}, h(UserPreferencedCurrencyDisplay, {
       value: balanceValue,
+      type: PRIMARY,
+      ethNumberOfDecimals: 3,
+    })),
+
+    showFiat && h(UserPreferencedCurrencyDisplay, {
+      value: balanceValue,
+      type: SECONDARY,
+      ethNumberOfDecimals: 3,
     }),
   ])
-}
-
-BalanceComponent.prototype.getTokenBalance = function (formattedBalance, shorten) {
-  const balanceObj = generateBalanceObject(formattedBalance, shorten ? 1 : 3)
-
-  const balanceValue = shorten ? balanceObj.shortBalance : balanceObj.balance
-  const label = balanceObj.label
-
-  return `${balanceValue} ${label}`
 }
 
 BalanceComponent.prototype.getFiatDisplayNumber = function (formattedBalance, conversionRate) {

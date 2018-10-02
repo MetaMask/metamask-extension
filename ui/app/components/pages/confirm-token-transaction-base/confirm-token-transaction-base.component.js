@@ -48,7 +48,7 @@ export default class ConfirmTokenTransactionBase extends Component {
     }
   }
 
-  getFiatTotalTextOverride () {
+  getSecondaryTotalTextOverride () {
     const { fiatTransactionTotal, currentCurrency, contractExchangeRate } = this.props
 
     if (typeof contractExchangeRate === 'undefined') {
@@ -79,8 +79,8 @@ export default class ConfirmTokenTransactionBase extends Component {
         identiconAddress={tokenAddress}
         title={tokensText}
         subtitle={this.getSubtitle()}
-        ethTotalTextOverride={`${tokensText} + \u2666 ${ethTransactionTotal}`}
-        fiatTotalTextOverride={this.getFiatTotalTextOverride()}
+        primaryTotalTextOverride={`${tokensText} + \u2666 ${ethTransactionTotal}`}
+        secondaryTotalTextOverride={this.getSecondaryTotalTextOverride()}
         {...restProps}
       />
     )

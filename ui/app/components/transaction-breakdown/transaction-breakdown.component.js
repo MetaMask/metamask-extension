@@ -4,8 +4,9 @@ import classnames from 'classnames'
 import TransactionBreakdownRow from './transaction-breakdown-row'
 import Card from '../card'
 import CurrencyDisplay from '../currency-display'
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import HexToDecimal from '../hex-to-decimal'
-import { ETH, GWEI } from '../../constants/common'
+import { ETH, GWEI, PRIMARY, SECONDARY } from '../../constants/common'
 import { getHexGasTotal } from '../../helpers/confirm-transaction/util'
 import { sumHexes } from '../../helpers/transactions.util'
 
@@ -37,9 +38,9 @@ export default class TransactionBreakdown extends PureComponent {
           className="transaction-breakdown__card"
         >
           <TransactionBreakdownRow title={t('amount')}>
-            <CurrencyDisplay
+            <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
-              currency={ETH}
+              type={PRIMARY}
               value={value}
             />
           </TransactionBreakdownRow>
@@ -63,14 +64,14 @@ export default class TransactionBreakdown extends PureComponent {
           </TransactionBreakdownRow>
           <TransactionBreakdownRow title={t('total')}>
             <div>
-              <CurrencyDisplay
+              <UserPreferencedCurrencyDisplay
                 className="transaction-breakdown__value transaction-breakdown__value--eth-total"
-                currency={ETH}
+                type={PRIMARY}
                 value={totalInHex}
-                numberOfDecimals={6}
               />
-              <CurrencyDisplay
+              <UserPreferencedCurrencyDisplay
                 className="transaction-breakdown__value"
+                type={SECONDARY}
                 value={totalInHex}
               />
             </div>

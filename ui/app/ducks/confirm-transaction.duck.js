@@ -14,7 +14,13 @@ import {
   hexGreaterThan,
 } from '../helpers/confirm-transaction/util'
 
-import { getTokenData, getMethodData, isSmartContractAddress } from '../helpers/transactions.util'
+import {
+  getTokenData,
+  getMethodData,
+  isSmartContractAddress,
+  sumHexes,
+} from '../helpers/transactions.util'
+
 import { getSymbolAndDecimals } from '../token-util'
 import { conversionUtil } from '../conversion-util'
 
@@ -31,7 +37,6 @@ const CLEAR_CONFIRM_TRANSACTION = createActionType('CLEAR_CONFIRM_TRANSACTION')
 const UPDATE_TRANSACTION_AMOUNTS = createActionType('UPDATE_TRANSACTION_AMOUNTS')
 const UPDATE_TRANSACTION_FEES = createActionType('UPDATE_TRANSACTION_FEES')
 const UPDATE_TRANSACTION_TOTALS = createActionType('UPDATE_TRANSACTION_TOTALS')
-const UPDATE_HEX_GAS_TOTAL = createActionType('UPDATE_HEX_GAS_TOTAL')
 const UPDATE_TOKEN_PROPS = createActionType('UPDATE_TOKEN_PROPS')
 const UPDATE_NONCE = createActionType('UPDATE_NONCE')
 const UPDATE_TO_SMART_CONTRACT = createActionType('UPDATE_TO_SMART_CONTRACT')
@@ -53,7 +58,9 @@ const initState = {
   ethTransactionAmount: '',
   ethTransactionFee: '',
   ethTransactionTotal: '',
-  hexGasTotal: '',
+  hexTransactionAmount: '',
+  hexTransactionFee: '',
+  hexTransactionTotal: '',
   nonce: '',
   toSmartContract: false,
   fetchingData: false,
@@ -99,30 +106,28 @@ export default function reducer ({ confirmTransaction: confirmState = initState 
         methodData: {},
       }
     case UPDATE_TRANSACTION_AMOUNTS:
-      const { fiatTransactionAmount, ethTransactionAmount } = action.payload
+      const { fiatTransactionAmount, ethTransactionAmount, hexTransactionAmount } = action.payload
       return {
         ...confirmState,
         fiatTransactionAmount: fiatTransactionAmount || confirmState.fiatTransactionAmount,
         ethTransactionAmount: ethTransactionAmount || confirmState.ethTransactionAmount,
+        hexTransactionAmount: hexTransactionAmount || confirmState.hexTransactionAmount,
       }
     case UPDATE_TRANSACTION_FEES:
-      const { fiatTransactionFee, ethTransactionFee } = action.payload
+      const { fiatTransactionFee, ethTransactionFee, hexTransactionFee } = action.payload
       return {
         ...confirmState,
         fiatTransactionFee: fiatTransactionFee || confirmState.fiatTransactionFee,
         ethTransactionFee: ethTransactionFee || confirmState.ethTransactionFee,
+        hexTransactionFee: hexTransactionFee || confirmState.hexTransactionFee,
       }
     case UPDATE_TRANSACTION_TOTALS:
-      const { fiatTransactionTotal, ethTransactionTotal } = action.payload
+      const { fiatTransactionTotal, ethTransactionTotal, hexTransactionTotal } = action.payload
       return {
         ...confirmState,
         fiatTransactionTotal: fiatTransactionTotal || confirmState.fiatTransactionTotal,
         ethTransactionTotal: ethTransactionTotal || confirmState.ethTransactionTotal,
-      }
-    case UPDATE_HEX_GAS_TOTAL:
-      return {
-        ...confirmState,
-        hexGasTotal: action.payload,
+        hexTransactionTotal: hexTransactionTotal || confirmState.hexTransactionTotal,
       }
     case UPDATE_TOKEN_PROPS:
       const { tokenSymbol = '', tokenDecimals = '' } = action.payload
@@ -222,13 +227,6 @@ export function updateTransactionTotals (totals) {
   }
 }
 
-export function updateHexGasTotal (hexGasTotal) {
-  return {
-    type: UPDATE_HEX_GAS_TOTAL,
-    payload: hexGasTotal,
-  }
-}
-
 export function updateTokenProps (tokenProps) {
   return {
     type: UPDATE_TOKEN_PROPS,
@@ -306,31 +304,38 @@ export function updateTxDataAndCalculate (txData) {
       value, toCurrency: 'ETH', conversionRate, numberOfDecimals: 6,
     })
 
-    dispatch(updateTransactionAmounts({ fiatTransactionAmount, ethTransactionAmount }))
+    dispatch(updateTransactionAmounts({
+      fiatTransactionAmount,
+      ethTransactionAmount,
+      hexTransactionAmount: value,
+    }))
 
-    const hexGasTotal = getHexGasTotal({ gasLimit, gasPrice })
-
-    dispatch(updateHexGasTotal(hexGasTotal))
+    const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice })
 
     const fiatTransactionFee = getTransactionFee({
-      value: hexGasTotal,
+      value: hexTransactionFee,
       toCurrency: currentCurrency,
       numberOfDecimals: 2,
       conversionRate,
     })
     const ethTransactionFee = getTransactionFee({
-      value: hexGasTotal,
+      value: hexTransactionFee,
       toCurrency: 'ETH',
       numberOfDecimals: 6,
       conversionRate,
     })
 
-    dispatch(updateTransactionFees({ fiatTransactionFee, ethTransactionFee }))
+    dispatch(updateTransactionFees({ fiatTransactionFee, ethTransactionFee, hexTransactionFee }))
 
     const fiatTransactionTotal = addFiat(fiatTransactionFee, fiatTransactionAmount)
     const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount)
+    const hexTransactionTotal = sumHexes(value, hexTransactionFee)
 
-    dispatch(updateTransactionTotals({ fiatTransactionTotal, ethTransactionTotal }))
+    dispatch(updateTransactionTotals({
+      fiatTransactionTotal,
+      ethTransactionTotal,
+      hexTransactionTotal,
+    }))
   }
 }
 
