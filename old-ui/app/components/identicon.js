@@ -37,7 +37,7 @@ IdenticonComponent.prototype.render = function () {
 
 IdenticonComponent.prototype.componentDidMount = function () {
   var props = this.props
-  const { address } = props
+  const { address, network } = props
 
   if (!address) return
 
@@ -46,14 +46,14 @@ IdenticonComponent.prototype.componentDidMount = function () {
 
   var diameter = props.diameter || this.defaultDiameter
   if (!isNode) {
-    var img = iconFactory.iconForAddress(address, diameter)
+    var img = iconFactory.iconForAddress(address, diameter, network)
     container.appendChild(img)
   }
 }
 
 IdenticonComponent.prototype.componentDidUpdate = function () {
   var props = this.props
-  const { address } = props
+  const { address, network } = props
 
   if (!address) return
 
@@ -67,7 +67,7 @@ IdenticonComponent.prototype.componentDidUpdate = function () {
 
   var diameter = props.diameter || this.defaultDiameter
   if (!isNode) {
-    var img = iconFactory.iconForAddress(address, diameter)
+    var img = iconFactory.iconForAddress(address, diameter, network)
     container.appendChild(img)
   }
 }

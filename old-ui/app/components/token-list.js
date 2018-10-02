@@ -3,9 +3,38 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-watcher')
 const TokenCell = require('./token-cell.js')
+const connect = require('react-redux').connect
+const selectors = require('../../../ui/app/selectors')
 const log = require('loglevel')
 
-module.exports = TokenList
+function mapStateToProps (state) {
+  return {
+    network: state.metamask.network,
+    tokens: state.metamask.tokens,
+    userAddress: selectors.getSelectedAddress(state),
+  }
+}
+
+const defaultTokens = []
+
+const contractsETH = require('eth-contract-metadata')
+const contractsPOA = require('poa-contract-metadata')
+for (const address in contractsETH) {
+  const contract = contractsETH[address]
+  if (contract.erc20) {
+    contract.address = address
+    defaultTokens.push(contract)
+  }
+}
+for (const address in contractsPOA) {
+  const contract = contractsPOA[address]
+  if (contract.erc20) {
+    contract.address = address
+    defaultTokens.push(contract)
+  }
+}
+
+module.exports = connect(mapStateToProps)(TokenList)
 
 inherits(TokenList, Component)
 function TokenList () {
@@ -155,7 +184,7 @@ TokenList.prototype.componentDidMount = function () {
   this.createFreshTokenTracker()
 }
 
-TokenList.prototype.createFreshTokenTracker = function (userAddress) {
+TokenList.prototype.createFreshTokenTracker = function () {
   if (this.tracker) {
     // Clean up old trackers when refreshing:
     this.tracker.stop()
@@ -164,8 +193,10 @@ TokenList.prototype.createFreshTokenTracker = function (userAddress) {
   }
 
   if (!global.ethereumProvider) return
+  const { userAddress } = this.props
+
   this.tracker = new TokenTracker({
-    userAddress: userAddress || this.props.userAddress,
+    userAddress,
     provider: global.ethereumProvider,
     tokens: this.props.tokens,
     pollingInterval: 8000,
@@ -190,26 +221,42 @@ TokenList.prototype.createFreshTokenTracker = function (userAddress) {
   })
 }
 
-TokenList.prototype.componentWillUpdate = function (nextProps) {
-  if (nextProps.network === 'loading') return
-  const oldNet = this.props.network
-  const newNet = nextProps.network
+TokenList.prototype.componentDidUpdate = function (nextProps) {
+  const {
+    network: oldNet,
+    userAddress: oldAddress,
+    tokens,
+  } = this.props
+  const {
+    network: newNet,
+    userAddress: newAddress,
+    tokens: newTokens,
+  } = nextProps
 
-  const oldAddress = this.props.userAddress
-  const newAddress = nextProps.userAddress
+  const isLoading = newNet === 'loading'
+  const missingInfo = !oldNet || !newNet || !oldAddress || !newAddress
+  const sameUserAndNetwork = oldAddress === newAddress && oldNet === newNet
+  const shouldUpdateTokens = isLoading || missingInfo || sameUserAndNetwork
 
-  if (oldNet && newNet && (newNet !== oldNet || newAddress !== oldAddress)) {
-    this.setState({ isLoading: true })
-    this.createFreshTokenTracker(newAddress)
-  }
+  const oldTokensLength = tokens ? tokens.length : 0
+  const tokensLengthUnchanged = oldTokensLength === newTokens.length
+
+  if (tokensLengthUnchanged && shouldUpdateTokens) return
+
+  this.setState({ isLoading: true })
+  this.createFreshTokenTracker()
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
-  this.setState({ tokens, error: null, isLoading: false })
+  if (!this.tracker.running) {
+    return
+  }
+  this.setState({ tokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+  this.tracker.removeListener('update', this.balanceUpdater)
+  this.tracker.removeListener('error', this.showError)
 }
-

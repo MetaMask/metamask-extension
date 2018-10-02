@@ -4,9 +4,10 @@ import ConfirmAddToken from './confirm-add-token.component'
 const { addTokens, clearPendingTokens, goHome, showAddTokenPage } = require('../../../../ui/app/actions')
 
 const mapStateToProps = ({ metamask }) => {
-  const { pendingTokens } = metamask
+  const { pendingTokens, network } = metamask
   return {
     pendingTokens,
+    network,
   }
 }
 

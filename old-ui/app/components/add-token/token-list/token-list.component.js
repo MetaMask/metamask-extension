@@ -11,6 +11,7 @@ export default class InfoBox extends Component {
   }
 
   static propTypes = {
+    network: PropTypes.string,
     tokens: PropTypes.array,
     results: PropTypes.array,
     selectedTokens: PropTypes.object,
@@ -18,7 +19,9 @@ export default class InfoBox extends Component {
   }
 
   render () {
-    const { results = [], selectedTokens = {}, onToggleToken, tokens = [] } = this.props
+    const { results = [], selectedTokens = {}, onToggleToken, tokens = [], network } = this.props
+    const networkID = parseInt(network)
+    const imagesFolder = networkID === 1 ? 'images/contract' : 'images/contractPOA'
 
     return results.length === 0
       ? <TokenListPlaceholder />
@@ -43,7 +46,7 @@ export default class InfoBox extends Component {
                       <div
                         className="token-list__token-icon"
                         style={{
-                          'backgroundImage': logo && `url(images/contract/${logo})`,
+                          'backgroundImage': logo && `url(${imagesFolder}/${logo})`,
                         }}
                       >
                       </div>
