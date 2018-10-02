@@ -387,6 +387,9 @@ module.exports = class MetamaskController extends EventEmitter {
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
 
+      // BlacklistController
+      whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
+
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
 
@@ -1540,5 +1543,13 @@ module.exports = class MetamaskController extends EventEmitter {
         next()
       }
     }
+  }
+
+  /**
+   * Adds a domain to the {@link BlacklistController} whitelist
+   * @param {string} hostname the domain to whitelist
+   */
+  whitelistPhishingDomain (hostname) {
+    return this.blacklistController.whitelistDomain(hostname)
   }
 }
