@@ -145,7 +145,7 @@
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-debug": "^3.2.0",
-    "gulp-eslint": "^4.0.0",
+    "gulp-eslint": "^5.0.0",
     "gulp-sass": "^4.0.0",
     "hat": "0.0.3",
     "human-standard-token-abi": "^2.0.0",
