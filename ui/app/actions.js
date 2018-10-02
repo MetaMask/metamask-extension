@@ -305,6 +305,11 @@ var actions = {
   updateFeatureFlags,
   UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
 
+  // Preferences
+  setPreference,
+  updatePreferences,
+  UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
+
   setMouseUserState,
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
@@ -2295,6 +2300,32 @@ function updateFeatureFlags (updatedFeatureFlags) {
   return {
     type: actions.UPDATE_FEATURE_FLAGS,
     value: updatedFeatureFlags,
+  }
+}
+
+function setPreference (preference, value) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.setPreference(preference, value, (err, updatedPreferences) => {
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.updatePreferences(updatedPreferences))
+        resolve(updatedPreferences)
+      })
+    })
+  }
+}
+
+function updatePreferences (value) {
+  return {
+    type: actions.UPDATE_PREFERENCES,
+    value,
   }
 }
 

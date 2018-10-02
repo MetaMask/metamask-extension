@@ -38,6 +38,9 @@ class PreferencesController {
       lostIdentities: {},
       seedWords: null,
       forgottenPassword: false,
+      preferences: {
+        useETHAsPrimaryCurrency: true,
+      },
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -463,6 +466,33 @@ class PreferencesController {
   getFeatureFlags () {
     return this.store.getState().featureFlags
   }
+
+  /**
+   * Updates the `preferences` property, which is an object. These are user-controlled features
+   * found in the settings page.
+   * @param {string} preference The preference to enable or disable.
+   * @param {boolean} value Indicates whether or not the preference should be enabled or disabled.
+   * @returns {Promise<object>} Promises a new object; the updated preferences object.
+   */
+  setPreference (preference, value) {
+    const currentPreferences = this.getPreferences()
+    const updatedPreferences = {
+      ...currentPreferences,
+      [preference]: value,
+    }
+
+    this.store.updateState({ preferences: updatedPreferences })
+    return Promise.resolve(updatedPreferences)
+  }
+
+  /**
+   * A getter for the `preferences` property
+   * @returns {object} A key-boolean map of user-selected preferences.
+   */
+  getPreferences () {
+    return this.store.getState().preferences
+  }
+
   //
   // PRIVATE METHODS
   //
