@@ -98,7 +98,7 @@
     "classnames": "^2.2.5",
     "clone": "^2.1.1",
     "copy-to-clipboard": "^3.0.8",
-    "css-loader": "^0.28.11",
+    "css-loader": "^1.0.0",
     "currency-formatter": "^1.4.2",
     "debounce": "1.1.0",
     "debounce-stream": "^2.0.0",
