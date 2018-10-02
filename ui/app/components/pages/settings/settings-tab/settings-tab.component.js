@@ -46,6 +46,7 @@ export default class SettingsTab extends PureComponent {
     revealSeedConfirmation: PropTypes.func,
     setFeatureFlagToBeta: PropTypes.func,
     showClearApprovalModal: PropTypes.func,
+    showForceInjectionModal: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
     warning: PropTypes.string,
     history: PropTypes.object,
@@ -234,6 +235,36 @@ export default class SettingsTab extends PureComponent {
               }}
             >
               { t('clearApprovalData') }
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderForceInjection () {
+    const { t } = this.context
+    const { showForceInjectionModal } = this.props
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('exposeAccounts') }</span>
+          <span className="settings-page__content-description">
+            { t('exposeDescription') }
+          </span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Button
+              type="secondary"
+              large
+              className="settings-tab__button--orange"
+              onClick={event => {
+                event.preventDefault()
+                showForceInjectionModal()
+              }}
+            >
+              { t('exposeAccounts') }
             </Button>
           </div>
         </div>
@@ -435,6 +466,7 @@ export default class SettingsTab extends PureComponent {
         { this.renderStateLogs() }
         { this.renderSeedWords() }
         { this.renderClearApproval() }
+        { this.renderForceInjection() }
         { !isMascara && this.renderOldUI() }
         { this.renderResetAccount() }
         { this.renderBlockieOptIn() }

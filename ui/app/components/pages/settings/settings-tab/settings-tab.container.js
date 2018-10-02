@@ -58,6 +58,7 @@ const mapDispatchToProps = dispatch => {
       return dispatch(setUseETHAsPrimaryCurrencyPreference(value))
     },
     showClearApprovalModal: () => dispatch(showModal({ name: 'CLEAR_APPROVED_ORIGINS' })),
+    showForceInjectionModal: () => dispatch(showModal({ name: 'FORCE_INJECTION' })),
   }
 }
 

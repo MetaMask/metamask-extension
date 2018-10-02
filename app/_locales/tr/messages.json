@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "Hesapları Açığa Çıkar"
+  },
+  "exposeDescription": {
+    "message": "Hesapları mevcut web sitesine gösterin. Eski dapps için kullanışlıdır."
+  },
+  "confirmExpose": {
+    "message": "Hesaplarınızı mevcut web sitesine taşımak istediğinizden emin misiniz?"
+  },
   "confirmClear": {
     "message": "Onaylanmış web sitelerini silmek istediğinizden emin misiniz?"
   },

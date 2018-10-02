@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "Exposer les comptes"
+  },
+  "exposeDescription": {
+    "message": "Exposer des comptes sur le site Web actuel. Utile pour les dapps hérités."
+  },
+  "confirmExpose": {
+    "message": "Êtes-vous sûr de vouloir exposer vos comptes au site Web actuel?"
+  },
   "confirmClear": {
     "message": "Êtes-vous sûr de vouloir supprimer les sites Web approuvés?"
   },

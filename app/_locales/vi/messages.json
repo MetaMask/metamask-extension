@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "Hiển thị tài khoản"
+  },
+  "exposeDescription": {
+    "message": "Hiển thị tài khoản cho trang web hiện tại. Hữu ích cho các ứng dụng cũ."
+  },
+  "confirmExpose": {
+    "message": "Bạn có chắc chắn muốn hiển thị tài khoản của mình cho trang web hiện tại không?"
+  },
   "confirmClear": {
     "message": "Bạn có chắc chắn muốn xóa các trang web được phê duyệt không?"
   },

@@ -1,4 +1,13 @@
 {
+  "exposeAccounts": {
+    "message": "公開賬戶"
+  },
+  "exposeDescription": {
+    "message": "將帳戶公開給當前網站。對傳統dapps很有用。"
+  },
+  "confirmExpose": {
+    "message": "您確定要將帳戶公開到當前網站嗎？"
+  },
   "confirmClear": {
     "message": "您確定要清除已批准的網站嗎？"
   },
