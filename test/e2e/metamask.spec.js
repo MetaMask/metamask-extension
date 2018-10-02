@@ -50,7 +50,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    await driver.quit()
+    // await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -859,22 +859,25 @@ describe('Metamask popup page', async function () {
 
       it('remove tokens', async function () {
         await setProvider(NETWORKS.MAINNET)
-
+        let menu
         let button
         let counter
         let buttonYes
 
-        button = await waitUntilShowUp(screens.main.tokens.remove)
+        menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+        button = await waitUntilShowUp(menus.token.remove)
         await button.click()
         buttonYes = await waitUntilShowUp(screens.removeToken.buttons.yes)
         await buttonYes.click()
-        await delay(500)
         counter = await waitUntilShowUp(screens.main.tokens.counter)
         assert.equal(await counter.getText(), 'You own 1 token', 'incorrect value of counter')
         const tokensNumber = await driver.findElements(screens.main.tokens.token)
         assert.equal(tokensNumber.length, 1, 'incorrect amount of token\'s  is displayed')
 
-        button = await waitUntilShowUp(screens.main.tokens.remove)
+        menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+        button = await waitUntilShowUp(menus.token.remove)
         await button.click()
         buttonYes = await waitUntilShowUp(screens.removeToken.buttons.yes)
         await buttonYes.click()
@@ -997,6 +1000,14 @@ describe('Metamask popup page', async function () {
         const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
         assert.equal(await tokenBalance.getText(), '0 TST')
       })
+
+      it('click to token opens the etherscan', async function () {
+        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
+        await switchToFirstPage()
+      })
     })
 
     describe('Check support of token per network basis ', async function () {
@@ -1081,18 +1092,62 @@ describe('Metamask popup page', async function () {
       })
     })
 
+    describe('Token menu', function () {
+
+      it('token menu is displayed and clickable ', async function () {
+        const menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+      })
+
+      it('link \'View on blockexplorer...\' leads to correct page ', async function () {
+        const menu = await waitUntilShowUp(menus.token.view)
+        assert.notEqual(menu, false, 'item isn\'t displayed')
+        assert.equal(await menu.getText(), menus.token.viewText, 'incorrect name')
+        await menu.click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
+        await switchToFirstPage()
+      })
+
+      it('item \'Copy\' is displayed and clickable ', async function () {
+        let menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+        const item = await waitUntilShowUp(menus.token.copy)
+        assert.notEqual(item, false, 'item isn\'t displayed')
+        assert.equal(await item.getText(), menus.token.copyText, 'incorrect name')
+        await item.click()
+        menu = await waitUntilShowUp(menus.token.menu, 10)
+        assert.notEqual(menu, false, 'menu wasn\'t closed')
+      })
+
+      it('item \'Remove\' is displayed', async function () {
+        const menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+        const item = await waitUntilShowUp(menus.token.remove)
+        assert.notEqual(item, false, 'item isn\'t displayed')
+        assert.equal(await item.getText(), menus.token.removeText, 'incorrect name')
+      })
+    })
+
     describe('Remove token , provider is localhost', function () {
 
-      it('button \'Remove token\' displayed', async function () {
+      it('remove option opens \'Remove token\' screen ', async function () {
         await setProvider(NETWORKS.LOCALHOST)
-        const removeTokenButton = await waitUntilShowUp(screens.main.tokens.remove)
-        assert.notEqual(removeTokenButton, false, 'button isn\'t displayed')
-        await removeTokenButton.click()
+        const menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+        const remove = await waitUntilShowUp(menus.token.remove)
+        await remove.click()
       })
 
       it('screen \'Remove token\' has correct title', async function () {
         const title = await waitUntilShowUp(screens.removeToken.title)
         assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
+      })
+
+      it('screen \'Remove token\' has correct label', async function () {
+        const title = await waitUntilShowUp(screens.removeToken.label)
+        assert.equal(await title.getText(), screens.removeToken.labelText, 'label is incorrect')
       })
 
       it('button "No" bring back to "Main" screen', async function () {
@@ -1107,9 +1162,11 @@ describe('Metamask popup page', async function () {
       })
 
       it('button "Yes" delete token', async function () {
-        const removeTokenButton = await waitUntilShowUp(screens.main.tokens.remove)
-        assert.notEqual(removeTokenButton, false, 'button isn\'t displayed')
-        await removeTokenButton.click()
+        const menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+        const remove = await waitUntilShowUp(menus.token.remove)
+        await remove.click()
+
         const title = await waitUntilShowUp(screens.removeToken.title)
         assert.equal(await title.getText(), screens.removeToken.titleText, 'title is incorrect')
 
@@ -1117,6 +1174,36 @@ describe('Metamask popup page', async function () {
         assert.notEqual(button, false, 'button \'Yes\' isn\'t displayed ')
         assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
         await click(button)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('check if token was removed from SOKOL network', async function () {
+        await setProvider(NETWORKS.SOKOL)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('check if token was removed from KOVAN network', async function () {
+        await setProvider(NETWORKS.KOVAN)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('check if token was removed from ROPSTEN network', async function () {
+        await setProvider(NETWORKS.ROPSTEN)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('check if token was removed from MAINNET network', async function () {
+        await setProvider(NETWORKS.MAINNET)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('check if token was removed from POA network', async function () {
+        await setProvider(NETWORKS.POA)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('check if token was removed from RINKEBY network', async function () {
+        await setProvider(NETWORKS.RINKEBY)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
     })
@@ -1170,6 +1257,7 @@ describe('Metamask popup page', async function () {
       await click(button)
       await delay(1000)
       assert.equal(await waitUntilShowUp(screens.settings.buttons.delete, 5), false, 'invalid Rpc was added')
+      await waitUntilShowUp(screens.settings.error)
       const errors = await driver.findElements(screens.settings.error)
       assert.equal(errors.length, 1, 'error isn\'t displayed if Rpc url incorrect')
       assert.equal(await errors[0].getText(), screens.settings.errors.invalidRpcEndpoint, 'error\'s text incorrect')
@@ -1256,6 +1344,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('deleted custom rpc isn\'t displayed in network dropdown menu', async function () {
+      await delay(2000)
       let menu = await waitUntilShowUp(screens.main.network)
       await menu.click()
       await waitUntilShowUp(menus.networks.addedCustomRpc, 20)
@@ -1441,5 +1530,37 @@ describe('Metamask popup page', async function () {
     // capture dom source
     const htmlSource = await driver.getPageSource()
     await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+  }
+
+  async function switchToLastPage () {
+    try {
+      const allHandles = await driver.getAllWindowHandles()
+      await driver.switchTo().window(allHandles[allHandles.length - 1])
+      let counter = 100
+      do {
+        await delay(500)
+        if (await driver.getCurrentUrl() !== '') return true
+      }
+      while (counter-- > 0)
+      return true
+    } catch (err) {
+      return false
+    }
+  }
+
+  async function switchToFirstPage () {
+    try {
+      const allHandles = await driver.getAllWindowHandles()
+      await driver.switchTo().window(allHandles[0])
+      let counter = 100
+      do {
+        await delay(500)
+        if (await driver.getCurrentUrl() !== '') return true
+      }
+      while (counter-- > 0)
+      return true
+    } catch (err) {
+      return false
+    }
   }
 })

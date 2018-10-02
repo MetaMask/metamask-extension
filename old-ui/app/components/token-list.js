@@ -81,10 +81,13 @@ TokenList.prototype.render = function () {
 
   const tokenViews = tokensFromCurrentNetwork.map((tokenData, ind) => {
     tokenData.userAddress = userAddress
-    const isLastTokenCell = ind === (tokens.length - 1)
+    const isLastTokenCell = ind === (tokensFromCurrentNetwork.length - 1)
+    const menuToTop = true
     return h(TokenCell, {
+      ind,
       ...tokenData,
       isLastTokenCell,
+      menuToTop,
       removeToken: this.props.removeToken,
     })
   })
@@ -94,7 +97,6 @@ TokenList.prototype.render = function () {
 
     h('ol.full-flex-height.flex-column', {
       style: {
-        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
       },

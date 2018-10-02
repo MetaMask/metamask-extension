@@ -109,7 +109,7 @@
     "eth-json-rpc-filters": "^1.2.6",
     "eth-json-rpc-infura": "^3.0.0",
     "eth-method-registry": "^1.0.0",
-    "eth-net-props": "^1.0.2",
+    "eth-net-props": "^1.0.3",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
     "eth-sig-util": "^1.4.2",
