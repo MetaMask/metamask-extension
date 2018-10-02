@@ -3,7 +3,7 @@ const { Component } = React
 const h = require('react-hyperscript')
 const Tooltip = require('../tooltip.js')
 const TabBar = require('../tab-bar')
-const { checkExistingAddresses } = require('../../../../ui/app/components/pages/add-token/util')
+const { checkExistingAddresses } = require('./util')
 const TokenList = require('./token-list')
 const TokenSearch = require('./token-search')
 const { tokenInfoGetter } = require('../../../../ui/app/token-util')
@@ -24,6 +24,7 @@ class AddTokenScreen extends Component {
   }
 
   static propTypes = {
+    goHome: PropTypes.func,
     setPendingTokens: PropTypes.func,
     pendingTokens: PropTypes.object,
     clearPendingTokens: PropTypes.func,
@@ -90,7 +91,8 @@ class AddTokenScreen extends Component {
     const { network } = this.props
     const networkID = parseInt(network)
     let views = []
-    networkID === 1 ? views = [h(TabBar, {
+    const isProdNetwork = networkID === 1 || networkID === 99
+    isProdNetwork ? views = [h(TabBar, {
       style: {
         paddingTop: '0px',
       },
@@ -258,15 +260,14 @@ class AddTokenScreen extends Component {
   }
 
   renderTabBar () {
-    const props = this.props
-    const state = this.state
-    const { tokenSelectorError, selectedTokens, searchResults } = state
-    const { clearPendingTokens, goHome } = props
+    const { tokenSelectorError, selectedTokens, searchResults } = this.state
+    const { clearPendingTokens, goHome, network } = this.props
     return h('div', [
       h('.add-token__search-token', [
        h(TokenSearch, {
         onSearch: ({ results = [] }) => this.setState({ searchResults: results }),
         error: tokenSelectorError,
+        network: network,
        }),
        h('.add-token__token-list', {
           style: {
@@ -278,6 +279,7 @@ class AddTokenScreen extends Component {
           h(TokenList, {
             results: searchResults,
             selectedTokens: selectedTokens,
+            network: network,
             onToggleToken: token => this.handleToggleToken(token),
           }),
         ]),
@@ -310,6 +312,22 @@ class AddTokenScreen extends Component {
   componentWillUnmount () {
     const { displayWarning } = this.props
     displayWarning('')
+  }
+
+  componentWillUpdate (nextProps) {
+    const {
+      network: oldNet,
+    } = this.props
+    const {
+      network: newNet,
+    } = nextProps
+
+    if (oldNet !== newNet) {
+      this.setState({
+        selectedTokens: {},
+        searchResults: [],
+      })
+    }
   }
 
   validateInputs () {
