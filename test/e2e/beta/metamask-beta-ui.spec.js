@@ -271,6 +271,17 @@ describe('MetaMask', function () {
       await driver.wait(until.stalenessOf(accountModal))
       await delay(regularDelayMs)
     })
+    it('show account details dropdown menu', async () => {
+
+      const {width, height} = await driver.manage().window().getSize()
+      driver.manage().window().setSize(320, 480)
+      await driver.findElement(By.css('div.menu-bar__open-in-browser')).click()
+      const options = await driver.findElements(By.css('div.menu.account-details-dropdown div.menu__item'))
+      assert.equal(options.length, 3) // HD Wallet type does not have to show the Remove Account option
+      await delay(regularDelayMs)
+      driver.manage().window().setSize(width, height)
+
+    })
   })
 
   describe('Log out an log back in', () => {
