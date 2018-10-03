@@ -146,9 +146,6 @@
   "copy": {
     "message": "복사"
   },
-  "copyContractAddress": {
-    "message": "컨트랙트 주소 복사"
-  },
   "copyToClipboard": {
     "message": "클립보드로 복사"
   },

@@ -185,9 +185,6 @@
     "copy": {
         "message": "Kopye"
     },
-    "copyContractAddress": {
-        "message": "Kopi Kontra Adrès"
-    },
     "copyAddress": {
         "message": "Kopi adrès clipboard"
     },

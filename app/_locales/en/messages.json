@@ -200,9 +200,6 @@
   "copy": {
     "message": "Copy"
   },
-  "copyContractAddress": {
-    "message": "Copy Contract Address"
-  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
