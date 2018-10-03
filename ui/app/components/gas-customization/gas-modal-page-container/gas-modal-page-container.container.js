@@ -73,6 +73,7 @@ const mapStateToProps = state => {
     customGasPrice: calcCustomGasPrice(customModalGasPriceInHex),
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     newTotalFiat,
+    transactionFee: addHexWEIsToRenderableFiat('0x0', customGasTotal, currentCurrency, conversionRate),
     gasPriceButtonGroupProps: {
       buttonDataLoading,
       defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),

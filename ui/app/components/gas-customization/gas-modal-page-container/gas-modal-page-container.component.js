@@ -27,6 +27,7 @@ export default class GasModalPageContainer extends Component {
     customModalGasPriceInHex: PropTypes.string,
     customModalGasLimitInHex: PropTypes.string,
     cancelAndClose: PropTypes.func,
+    transactionFee: PropTypes.string,
   }
 
   state = {}
@@ -46,6 +47,7 @@ export default class GasModalPageContainer extends Component {
     customGasLimit,
     newTotalFiat,
   }) {
+    const { transactionFee } = this.props
     return (
       <AdvancedTabContent
         updateCustomGasPrice={convertThenUpdateCustomGasPrice}
@@ -53,6 +55,7 @@ export default class GasModalPageContainer extends Component {
         customGasPrice={customGasPrice}
         customGasLimit={customGasLimit}
         timeRemaining="1 min 31 sec"
+        transactionFee={transactionFee}
         totalFee={newTotalFiat}
       />
     )
