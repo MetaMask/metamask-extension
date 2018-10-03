@@ -8,7 +8,7 @@ import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../constants/common'
 const { getAssetImages, conversionRateSelector, getCurrentCurrency} = require('../selectors')
 
-const { formatBalance, generateBalanceObject } = require('../util')
+const { formatBalance } = require('../util')
 
 module.exports = connect(mapStateToProps)(BalanceComponent)
 

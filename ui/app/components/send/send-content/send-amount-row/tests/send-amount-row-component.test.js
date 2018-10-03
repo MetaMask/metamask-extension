@@ -6,7 +6,7 @@ import SendAmountRow from '../send-amount-row.component.js'
 
 import SendRowWrapper from '../../send-row-wrapper/send-row-wrapper.component'
 import AmountMaxButton from '../amount-max-button/amount-max-button.container'
-import CurrencyDisplay from '../../../currency-display'
+import UserPreferencedTokenInput from '../../../../user-preferenced-token-input'
 
 const propsMethodSpies = {
   setMaxModeTo: sinon.spy(),
@@ -150,26 +150,19 @@ describe('SendAmountRow Component', function () {
       assert(wrapper.find(SendRowWrapper).childAt(0).is(AmountMaxButton))
     })
 
-    it('should render a CurrencyDisplay as the second child of the SendRowWrapper', () => {
-      assert(wrapper.find(SendRowWrapper).childAt(1).is(CurrencyDisplay))
+    it('should render a UserPreferencedTokenInput as the second child of the SendRowWrapper', () => {
+      console.log('HI', wrapper.find(SendRowWrapper).childAt(1))
+      assert(wrapper.find(SendRowWrapper).childAt(1).is(UserPreferencedTokenInput))
     })
 
-    it('should render the CurrencyDisplay with the correct props', () => {
+    it('should render the UserPreferencedTokenInput with the correct props', () => {
       const {
-        conversionRate,
-        convertedCurrency,
         onBlur,
         onChange,
-        inError,
-        primaryCurrency,
-        selectedToken,
+        error,
         value,
       } = wrapper.find(SendRowWrapper).childAt(1).props()
-      assert.equal(conversionRate, 'mockAmountConversionRate')
-      assert.equal(convertedCurrency, 'mockConvertedCurrency')
-      assert.equal(inError, false)
-      assert.equal(primaryCurrency, 'mockPrimaryCurrency')
-      assert.deepEqual(selectedToken, { address: 'mockTokenAddress' })
+      assert.equal(error, false)
       assert.equal(value, 'mockAmount')
       assert.equal(SendAmountRow.prototype.updateGas.callCount, 0)
       assert.equal(SendAmountRow.prototype.updateAmount.callCount, 0)
@@ -191,12 +184,6 @@ describe('SendAmountRow Component', function () {
         SendAmountRow.prototype.validateAmount.getCall(0).args,
         ['mockNewAmount']
       )
-    })
-
-    it('should pass the default primaryCurrency to the CurrencyDisplay if primaryCurrency is falsy', () => {
-      wrapper.setProps({ primaryCurrency: null })
-      const { primaryCurrency } = wrapper.find(SendRowWrapper).childAt(1).props()
-      assert.equal(primaryCurrency, 'ETH')
     })
   })
 })

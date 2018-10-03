@@ -3,7 +3,7 @@ import assert from 'assert'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import TokenBalance from '../../token-balance'
-import CurrencyDisplay from '../../currency-display'
+import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
 import { SEND_ROUTE } from '../../../routes'
 import TransactionViewBalance from '../transaction-view-balance.component'
 
@@ -35,7 +35,7 @@ describe('TransactionViewBalance Component', () => {
 
     assert.equal(wrapper.find('.transaction-view-balance').length, 1)
     assert.equal(wrapper.find('.transaction-view-balance__button').length, 2)
-    assert.equal(wrapper.find(CurrencyDisplay).length, 2)
+    assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 2)
 
     const buttons = wrapper.find('.transaction-view-balance__buttons')
     assert.equal(propsMethodSpies.showDepositModal.callCount, 0)

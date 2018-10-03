@@ -295,7 +295,7 @@ export function updateTxDataAndCalculate (txData) {
 
     dispatch(updateTxData(txData))
 
-    const { txParams: { value, gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
+    const { txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
 
     const fiatTransactionAmount = getValueFromWeiHex({
       value, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
@@ -329,6 +329,7 @@ export function updateTxDataAndCalculate (txData) {
 
     const fiatTransactionTotal = addFiat(fiatTransactionFee, fiatTransactionAmount)
     const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount)
+    console.log('HIHIH', value, hexTransactionFee)
     const hexTransactionTotal = sumHexes(value, hexTransactionFee)
 
     dispatch(updateTransactionTotals({

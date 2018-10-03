@@ -18,7 +18,6 @@ describe('CancelTransactionGasFee Component', () => {
     const fiatDisplay = wrapper.find(UserPreferencedCurrencyDisplay).at(1)
 
     assert.equal(ethDisplay.props().value, '0x3b9aca00')
-    assert.equal(ethDisplay.props().currency, 'ETH')
     assert.equal(ethDisplay.props().className, 'cancel-transaction-gas-fee__eth')
 
     assert.equal(fiatDisplay.props().value, '0x3b9aca00')
