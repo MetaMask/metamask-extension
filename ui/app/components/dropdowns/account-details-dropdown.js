@@ -49,15 +49,15 @@ AccountDetailsDropdown.prototype.onClose = function (e) {
 }
 
 AccountDetailsDropdown.prototype.render = function () {
-  const { 
-    selectedIdentity, 
+  const {
+    selectedIdentity,
     network,
     keyrings,
-    showAccountDetailModal, 
+    showAccountDetailModal,
     viewOnEtherscan,
     showRemoveAccountConfirmationModal } = this.props
-  
-  const { name, address } = selectedIdentity
+
+  const address = selectedIdentity.address
 
   const keyring = keyrings.find((kr) => {
     return kr.accounts.includes(address)
@@ -76,7 +76,7 @@ AccountDetailsDropdown.prototype.render = function () {
         this.props.onClose()
       },
       text: this.context.t('expandView'),
-      icon: h(`img`, { src: "images/expand.svg", style: { height: '15px' } }),
+      icon: h(`img`, { src: 'images/expand.svg', style: { height: '15px' } }),
     }),
     h(Item, {
       onClick: (e) => {
@@ -85,7 +85,7 @@ AccountDetailsDropdown.prototype.render = function () {
         this.props.onClose()
       },
       text: this.context.t('accountDetails'),
-      icon: h(`img`, { src: "images/info.svg", style: { height: '15px' } }),
+      icon: h(`img`, { src: 'images/info.svg', style: { height: '15px' } }),
     }),
     h(Item, {
       onClick: (e) => {
@@ -94,7 +94,7 @@ AccountDetailsDropdown.prototype.render = function () {
         this.props.onClose()
       },
       text: this.context.t('viewOnEtherscan'),
-      icon: h(`img`, { src: "images/open-etherscan.svg", style: { height: '15px' } }),
+      icon: h(`img`, { src: 'images/open-etherscan.svg', style: { height: '15px' } }),
     }),
     isRemovable ? h(Item, {
       onClick: (e) => {
@@ -103,7 +103,7 @@ AccountDetailsDropdown.prototype.render = function () {
         this.props.onClose()
       },
       text: this.context.t('removeAccount'),
-      icon: h(`img`, { src: "images/hide.svg", style: { height: '15px' } }),
-    }):null,
+      icon: h(`img`, { src: 'images/hide.svg', style: { height: '15px' } }),
+    }) : null,
   ])
 }
