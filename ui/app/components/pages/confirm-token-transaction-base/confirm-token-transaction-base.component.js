@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ConfirmTransactionBase from '../confirm-transaction-base'
+import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
 import {
   formatCurrency,
   convertTokenToFiat,
   addFiat,
   roundExponential,
 } from '../../../helpers/confirm-transaction/util'
+import { getWeiHexFromDecimalValue } from '../../../helpers/conversions.util'
+import { ETH, PRIMARY } from '../../../constants/common'
 
 export default class ConfirmTokenTransactionBase extends Component {
   static contextTypes = {
@@ -36,16 +39,29 @@ export default class ConfirmTokenTransactionBase extends Component {
     })
   }
 
-  getSubtitle () {
-    const { currentCurrency, contractExchangeRate } = this.props
+  renderSubtitleComponent () {
+    const { contractExchangeRate, tokenAmount } = this.props
 
-    if (typeof contractExchangeRate === 'undefined') {
-      return this.context.t('noConversionRateAvailable')
-    } else {
-      const fiatTransactionAmount = this.getFiatTransactionAmount()
-      const roundedFiatTransactionAmount = roundExponential(fiatTransactionAmount)
-      return formatCurrency(roundedFiatTransactionAmount, currentCurrency)
-    }
+    const decimalEthValue = (tokenAmount * contractExchangeRate) || 0
+    const hexWeiValue = getWeiHexFromDecimalValue({
+      value: decimalEthValue,
+      fromCurrency: ETH,
+      fromDenomination: ETH,
+    })
+
+    return typeof contractExchangeRate === 'undefined'
+      ? (
+        <span>
+          { this.context.t('noConversionRateAvailable') }
+        </span>
+      ) : (
+        <UserPreferencedCurrencyDisplay
+          value={hexWeiValue}
+          type={PRIMARY}
+          ethPrefix={'\u2666 '}
+          hideLabel
+        />
+      )
   }
 
   getSecondaryTotalTextOverride () {
@@ -78,7 +94,7 @@ export default class ConfirmTokenTransactionBase extends Component {
         toAddress={toAddress}
         identiconAddress={tokenAddress}
         title={tokensText}
-        subtitle={this.getSubtitle()}
+        subtitleComponent={this.renderSubtitleComponent()}
         primaryTotalTextOverride={`${tokensText} + \u2666 ${ethTransactionTotal}`}
         secondaryTotalTextOverride={this.getSecondaryTotalTextOverride()}
         {...restProps}

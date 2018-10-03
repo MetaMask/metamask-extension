@@ -324,6 +324,7 @@ export default class ConfirmTransactionBase extends Component {
         value={hexTransactionAmount}
         type={PRIMARY}
         ethPrefix={'\u2666 '}
+        hideLabel
       />
     )
   }
@@ -341,6 +342,7 @@ export default class ConfirmTransactionBase extends Component {
         value={hexTransactionAmount}
         type={SECONDARY}
         ethPrefix={'\u2666 '}
+        hideLabel
       />
     )
   }

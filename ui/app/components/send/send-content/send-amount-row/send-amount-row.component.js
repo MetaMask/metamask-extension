@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
 import AmountMaxButton from './amount-max-button/'
 import UserPreferencedCurrencyInput from '../../../user-preferenced-currency-input'
+import UserPreferencedTokenInput from '../../../user-preferenced-token-input'
 
 export default class SendAmountRow extends Component {
 
@@ -84,8 +85,25 @@ export default class SendAmountRow extends Component {
     }
   }
 
+  renderInput () {
+    const { amount, inError, selectedToken } = this.props
+    const Component = selectedToken ? UserPreferencedTokenInput : UserPreferencedCurrencyInput
+
+    return (
+      <Component
+        onChange={newAmount => this.validateAmount(newAmount)}
+        onBlur={newAmount => {
+          this.updateGas(newAmount)
+          this.updateAmount(newAmount)
+        }}
+        error={inError}
+        value={amount}
+      />
+    )
+  }
+
   render () {
-    const { amount, gasTotal, inError } = this.props
+    const { gasTotal, inError } = this.props
 
     return (
       <SendRowWrapper
@@ -94,15 +112,7 @@ export default class SendAmountRow extends Component {
         errorType={'amount'}
       >
         {!inError && gasTotal && <AmountMaxButton />}
-        <UserPreferencedCurrencyInput
-          onChange={newAmount => this.validateAmount(newAmount)}
-          onBlur={newAmount => {
-            this.updateGas(newAmount)
-            this.updateAmount(newAmount)
-          }}
-          error={inError}
-          value={amount}
-        />
+        { this.renderInput() }
       </SendRowWrapper>
     )
   }
