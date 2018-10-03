@@ -5,6 +5,7 @@ const inherits = require('util').inherits
 const AccountListItem = require('../account-list-item/account-list-item.component').default
 const connect = require('react-redux').connect
 const Tooltip = require('../../tooltip')
+const checksumAddress = require('../../../util').checksumAddress
 
 ToAutoComplete.contextTypes = {
   t: PropTypes.func,
@@ -103,7 +104,7 @@ ToAutoComplete.prototype.render = function () {
     h(`input.send-v2__to-autocomplete__input${qrScanner ? '.with-qr' : ''}`, {
       placeholder: this.context.t('recipientAddress'),
       className: inError ? `send-v2__error-border` : '',
-      value: to,
+      value: checksumAddress(to),
       onChange: event => onChange(event.target.value),
       onFocus: event => this.handleInputEvent(event),
       style: {
