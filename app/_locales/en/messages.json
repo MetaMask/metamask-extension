@@ -364,6 +364,9 @@
   "exchangeRate": {
     "message": "Exchange Rate"
   },
+  "expandView": {
+    "message": "Expand View"
+  },
   "exportPrivateKey": {
     "message": "Export Private Key"
   },
@@ -722,6 +725,9 @@
   },
   "openInTab": {
     "message": "Open in tab"
+  },
+  "accountOptions": {
+    "message": "Account Options"
   },
   "or": {
     "message": "or",
