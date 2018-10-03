@@ -97,5 +97,5 @@ If streams seem new and confusing to you, that's ok, they can seem strange at fi
 
 ## Conclusion
 
-I hope this has been helpful to you! If you have any other questionsm, or points you think need clarification in this guide, please [open an issue on our GitHub](https://github.com/MetaMask/metamask-plugin/issues/new)!
+I hope this has been helpful to you! If you have any other questions, or points you think need clarification in this guide, please [open an issue on our GitHub](https://github.com/MetaMask/metamask-plugin/issues/new)!
 
