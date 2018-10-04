@@ -116,7 +116,7 @@ describe('MetaMaskController', function () {
       }
 
       const gasPrice = metamaskController.getGasPrice()
-      assert.equal(gasPrice, '0x3b9aca00', 'accurately estimates 50th percentile accepted gas price')
+      assert.equal(gasPrice, '0x174876e800', 'accurately estimates 65th percentile accepted gas price')
 
       metamaskController.recentBlocksController = realRecentBlocksController
     })

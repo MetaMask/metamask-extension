@@ -1363,7 +1363,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     .map(number => number.div(GWEI_BN).toNumber())
 
-    const percentileNum = percentile(50, lowestPrices)
+    const percentileNum = percentile(65, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
   }
