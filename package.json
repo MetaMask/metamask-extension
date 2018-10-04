@@ -156,7 +156,7 @@
     "inject-css": "^0.1.1",
     "jazzicon": "^1.2.0",
     "json-rpc-engine": "^3.7.4",
-    "json-rpc-middleware-stream": "^1.0.1",
+    "json-rpc-middleware-stream": "^2.0.0",
     "jsonschema": "^1.2.4",
     "lodash.debounce": "^4.0.8",
     "lodash.memoize": "^4.1.2",
