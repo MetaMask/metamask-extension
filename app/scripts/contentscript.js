@@ -116,16 +116,25 @@ function setupStreams () {
  * handles posting these messages automatically.
  */
 function listenForProviderRequest () {
-  window.addEventListener('message', (event) => {
-    if (event.source !== window) { return }
-    if (!event.data || !event.data.type || event.data.type !== 'ETHEREUM_ENABLE_PROVIDER') { return }
-    extension.runtime.sendMessage({
-      action: 'init-provider-request',
-      origin: event.source.location.hostname,
-    })
+  window.addEventListener('message', ({ source, data }) => {
+    if (source !== window || !data || !data.type) { return }
+    switch (data.type) {
+      case 'ETHEREUM_ENABLE_PROVIDER':
+        extension.runtime.sendMessage({
+          action: 'init-provider-request',
+          origin: source.location.hostname,
+        })
+        break
+      case 'ETHEREUM_PROVIDER_STATUS':
+        extension.runtime.sendMessage({
+          action: 'provider-status-request',
+          origin: source.location.hostname,
+        })
+        break
+    }
   })
 
-  extension.runtime.onMessage.addListener(({ action }) => {
+  extension.runtime.onMessage.addListener(({ action, isEnabled }) => {
     if (!action) { return }
     switch (action) {
       case 'approve-provider-request':
@@ -141,6 +150,9 @@ function listenForProviderRequest () {
             injectScript(`window.location.reload()`)
           })
         })
+        break
+      case 'provider-status':
+        injectScript(`window.dispatchEvent(new CustomEvent('ethereumproviderstatus', { detail: { isEnabled: ${isEnabled}}}))`)
         break
     }
   })
