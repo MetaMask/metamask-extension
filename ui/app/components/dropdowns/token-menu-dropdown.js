@@ -5,7 +5,6 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const genAccountLink = require('etherscan-link').createAccountLink
-const copyToClipboard = require('copy-to-clipboard')
 const { Menu, Item, CloseArea } = require('./components/menu')
 
 TokenMenuDropdown.contextTypes = {
@@ -55,14 +54,6 @@ TokenMenuDropdown.prototype.render = function () {
         this.props.onClose()
       },
       text: this.context.t('hideToken'),
-    }),
-    h(Item, {
-      onClick: (e) => {
-        e.stopPropagation()
-        copyToClipboard(this.props.token.address)
-        this.props.onClose()
-      },
-      text: this.context.t('copyContractAddress'),
     }),
     h(Item, {
       onClick: (e) => {
