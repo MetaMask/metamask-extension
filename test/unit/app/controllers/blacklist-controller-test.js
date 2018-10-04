@@ -8,6 +8,16 @@ describe('blacklist controller', function () {
     blacklistController = new BlacklistController()
   })
 
+  describe('whitelistDomain', function () {
+    it('should add hostname to the runtime whitelist', function () {
+      blacklistController.whitelistDomain('foo.com')
+      assert.deepEqual(blacklistController.store.getState().whitelist, ['foo.com'])
+
+      blacklistController.whitelistDomain('bar.com')
+      assert.deepEqual(blacklistController.store.getState().whitelist, ['bar.com', 'foo.com'])
+    })
+  })
+
   describe('checkForPhishing', function () {
     it('should not flag whitelisted values', function () {
       const result = blacklistController.checkForPhishing('www.metamask.io')
@@ -35,6 +45,11 @@ describe('blacklist controller', function () {
     })
     it('should not flag the mascara-faucet domain', function () {
       const result = blacklistController.checkForPhishing('zero-faucet.metamask.io')
+      assert.equal(result, false)
+    })
+    it('should not flag whitelisted domain', function () {
+      blacklistController.whitelistDomain('metamask.com')
+      const result = blacklistController.checkForPhishing('metamask.com')
       assert.equal(result, false)
     })
   })

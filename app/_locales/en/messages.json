@@ -128,6 +128,9 @@
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
+  "cancelN": {
+    "message": "Cancel all $1 transactions"
+  },
   "classicInterface": {
     "message": "Use classic interface"
   },
@@ -196,9 +199,6 @@
   },
   "copy": {
     "message": "Copy"
-  },
-  "copyContractAddress": {
-    "message": "Copy Contract Address"
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
@@ -780,6 +780,18 @@
   },
   "refundAddress": {
     "message": "Your Refund Address"
+  },
+  "reject": {
+    "message": "Reject"
+  },
+  "rejectAll": {
+    "message": "Reject All"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
   },
   "rejected": {
     "message": "Rejected"

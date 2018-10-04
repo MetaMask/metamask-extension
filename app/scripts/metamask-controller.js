@@ -376,6 +376,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
+      delCustomRpc: nodeify(this.delCustomRpc, this),
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
@@ -385,6 +386,9 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
+
+      // BlacklistController
+      whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
@@ -1255,7 +1259,7 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
-    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3').bind(this))
+    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3', true).bind(this))
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection
@@ -1440,6 +1444,14 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
+   * A method for deleting a selected custom URL.
+   * @param {string} rpcTarget - A RPC URL to delete.
+   */
+  async delCustomRpc (rpcTarget) {
+    await this.preferencesController.updateFrequentRpcList(rpcTarget, true)
+  }
+
+  /**
    * Sets whether or not to use the blockie identicon format.
    * @param {boolean} val - True for bockie, false for jazzicon.
    * @param {Function} cb - A callback function called when complete.
@@ -1511,13 +1523,13 @@ module.exports = class MetamaskController extends EventEmitter {
   * @param {Function} - next
   * @param {Function} - end
   */
-  createTypedDataMiddleware (methodName, version) {
+  createTypedDataMiddleware (methodName, version, reverse) {
     return async (req, res, next, end) => {
       const { method, params } = req
       if (method === methodName) {
         const promise = this.typedMessageManager.addUnapprovedMessageAsync({
-          data: params.length >= 1 && params[0],
-          from: params.length >= 2 && params[1],
+          data: reverse ? params[1] : params[0],
+          from: reverse ? params[0] : params[1],
         }, req, version)
         this.sendUpdate()
         this.opts.showUnconfirmedMessage()
@@ -1531,5 +1543,13 @@ module.exports = class MetamaskController extends EventEmitter {
         next()
       }
     }
+  }
+
+  /**
+   * Adds a domain to the {@link BlacklistController} whitelist
+   * @param {string} hostname the domain to whitelist
+   */
+  whitelistPhishingDomain (hostname) {
+    return this.blacklistController.whitelistDomain(hostname)
   }
 }

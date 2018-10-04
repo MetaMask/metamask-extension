@@ -43,15 +43,38 @@
 
   &__footer {
     display: flex;
-    flex-flow: row;
+    flex-flow: column;
     justify-content: center;
     border-top: 1px solid $geyser;
-    padding: 16px;
     flex: 0 0 auto;
 
     .btn-default,
     .btn-confirm {
       font-size: 1rem;
+    }
+
+    header {
+      display: flex;
+      flex-flow: row;
+      justify-content: center;
+      padding: 16px;
+      flex: 0 0 auto;
+    }
+
+    footer {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-around;
+      padding: 0 16px 16px;
+      flex: 0 0 auto;
+
+      a, a:hover {
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #2f9ae0;
+      }
     }
   }
 

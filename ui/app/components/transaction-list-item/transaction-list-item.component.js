@@ -81,12 +81,12 @@ export default class TransactionListItem extends PureComponent {
       setSelectedToken(to)
     }
 
-    this.resubmit()
+    return this.resubmit()
   }
 
   resubmit () {
     const { transaction: { id }, retryTransaction, history } = this.props
-    retryTransaction(id)
+    return retryTransaction(id)
       .then(id => history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`))
   }
 

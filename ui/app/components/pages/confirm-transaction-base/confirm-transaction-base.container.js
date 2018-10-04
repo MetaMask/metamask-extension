@@ -8,7 +8,7 @@ import {
   clearConfirmTransaction,
   updateGasAndCalculate,
 } from '../../../ducks/confirm-transaction.duck'
-import { clearSend, cancelTx, updateAndApproveTx, showModal } from '../../../actions'
+import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal } from '../../../actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -17,7 +17,7 @@ import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
 import { isBalanceSufficient } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
-import { addressSlicer } from '../../../util'
+import { addressSlicer, valuesFor } from '../../../util'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -53,6 +53,8 @@ const mapStateToProps = (state, props) => {
     selectedAddress,
     selectedAddressTxList,
     assetImages,
+    network,
+    unapprovedTxs,
   } = metamask
   const assetImage = assetImages[txParamsToAddress]
   const { balance } = accounts[selectedAddress]
@@ -66,6 +68,12 @@ const mapStateToProps = (state, props) => {
 
   const transaction = R.find(({ id }) => id === transactionId)(selectedAddressTxList)
   const transactionStatus = transaction ? transaction.status : ''
+
+  const currentNetworkUnapprovedTxs = R.filter(
+    ({ metamaskNetworkId }) => metamaskNetworkId === network,
+    valuesFor(unapprovedTxs),
+  )
+  const unapprovedTxCount = currentNetworkUnapprovedTxs.length
 
   return {
     balance,
@@ -90,6 +98,8 @@ const mapStateToProps = (state, props) => {
     transactionStatus,
     nonce,
     assetImage,
+    unapprovedTxs,
+    unapprovedTxCount,
   }
 }
 
@@ -106,7 +116,11 @@ const mapDispatchToProps = dispatch => {
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
       return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
     },
+    showRejectTransactionsConfirmationModal: ({ onSubmit, unapprovedTxCount }) => {
+      return dispatch(showModal({ name: 'REJECT_TRANSACTIONS', onSubmit, unapprovedTxCount }))
+    },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
+    cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: txData => dispatch(updateAndApproveTx(txData)),
   }
 }
@@ -156,8 +170,9 @@ const getValidateEditGas = ({ balance, conversionRate, txData }) => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { balance, conversionRate, txData } = stateProps
+  const { balance, conversionRate, txData, unapprovedTxs } = stateProps
   const {
+    cancelAllTransactions: dispatchCancelAllTransactions,
     showCustomizeGasModal: dispatchShowCustomizeGasModal,
     updateGasAndCalculate: dispatchUpdateGasAndCalculate,
     ...otherDispatchProps
@@ -174,6 +189,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       onSubmit: txData => dispatchUpdateGasAndCalculate(txData),
       validate: validateEditGas,
     }),
+    cancelAllTransactions: () => dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
   }
 }
 
