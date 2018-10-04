@@ -65,7 +65,7 @@
     "message": "Attempt to Cancel?"
   },
   "attemptToCancelDescription": {
-    "message": "Attempting to cancel does not guarantee your original transaction will be cancelled. If cancelled, you are still required to pay a transaction fee to the network."
+    "message": "Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction fee above."
   },
   "attributions": {
     "message": "Attributions"
