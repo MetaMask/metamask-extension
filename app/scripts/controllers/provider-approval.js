@@ -18,7 +18,15 @@ class ProviderApprovalController {
     this.publicConfigStore = publicConfigStore
     this.approvedOrigins = {}
     platform && platform.addMessageListener && platform.addMessageListener(({ action, origin }) => {
-      action && action === 'init-provider-request' && this.handleProviderRequest(origin)
+      if (!action) { return }
+      switch (action) {
+        case 'init-provider-request':
+          this.handleProviderRequest(origin)
+          break
+        case 'provider-status-request':
+          this.handleProviderStatusRequest(origin)
+          break
+      }
     })
   }
 
@@ -34,6 +42,16 @@ class ProviderApprovalController {
       return
     }
     this.openPopup && this.openPopup()
+  }
+
+  /**
+   * Called by a tab to detemrine if a full Ethereum provider API is exposed
+   *
+   * @param {string} origin - Origin of the window requesting provider status
+   */
+  async handleProviderStatusRequest (origin) {
+    const isEnabled = await this.isApproved(origin)
+    this.platform && this.platform.sendMessage({ action: 'provider-status', isEnabled }, { active: true })
   }
 
   /**
