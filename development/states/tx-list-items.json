@@ -102,7 +102,10 @@
     "shapeShiftTxList": [{"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke"},"time":1522377459106}],
     "lostAccounts": [],
     "send": {},
-    "currentLocale": "en"
+    "currentLocale": "en",
+    "preferences": {
+      "useETHAsPrimaryCurrency": true
+    }
   },
   "appState": {
     "menuOpen": false,
