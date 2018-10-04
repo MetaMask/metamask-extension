@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+- Update transaction statuses when switching networks.
+
 ## 4.12.0 Thursday September 27 2018
 
 - Reintroduces changes from 4.10.0
