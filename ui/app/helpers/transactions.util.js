@@ -80,8 +80,6 @@ export async function getTransactionActionKey (transaction, methodData) {
         return APPROVE_ACTION_KEY
       case TOKEN_METHOD_TRANSFER_FROM:
         return TRANSFER_FROM_ACTION_KEY
-      default:
-        return name
     }
   } else {
     return SEND_ETHER_ACTION_KEY
