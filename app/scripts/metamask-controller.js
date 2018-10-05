@@ -556,6 +556,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     await this.preferencesController.syncAddresses(accounts)
     await this.balancesController.updateAllBalances()
+    await this.txController.pendingTxTracker.updatePendingTxs()
     return this.keyringController.fullUpdate()
   }
 
