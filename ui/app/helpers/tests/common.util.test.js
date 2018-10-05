@@ -6,6 +6,10 @@ describe('Common utils', () => {
     it('should return a capitalized string from a camel-cased string', () => {
       const tests = [
         {
+          test: undefined,
+          expected: '',
+        },
+        {
           test: '',
           expected: '',
         },

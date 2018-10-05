@@ -44,6 +44,12 @@ export function isConfirmDeployContract (txData = {}) {
   return !txParams.to
 }
 
+/**
+ * Returns the action of a transaction as a key to be passed into the translator.
+ * @param {Object} transaction - txData object
+ * @param {Object} methodData - Data returned from eth-method-registry
+ * @returns {string|undefined}
+ */
 export async function getTransactionActionKey (transaction, methodData) {
   const { txParams: { data, to } = {}, msgParams, type } = transaction
 
@@ -80,6 +86,8 @@ export async function getTransactionActionKey (transaction, methodData) {
         return APPROVE_ACTION_KEY
       case TOKEN_METHOD_TRANSFER_FROM:
         return TRANSFER_FROM_ACTION_KEY
+      default:
+        return undefined
     }
   } else {
     return SEND_ETHER_ACTION_KEY

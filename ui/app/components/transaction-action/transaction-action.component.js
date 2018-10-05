@@ -31,7 +31,7 @@ export default class TransactionAction extends PureComponent {
     const { transactionAction } = this.state
     const { transaction, methodData } = this.props
     const { data, done } = methodData
-    const { name } = data
+    const { name = '' } = data
 
     if (!done || transactionAction) {
       return
