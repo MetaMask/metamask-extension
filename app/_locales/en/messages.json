@@ -1163,6 +1163,9 @@
   "transfer": {
     "message": "Transfer"
   },
+  "transferFrom": {
+    "message": "Transfer From"
+  },
   "transfers": {
     "message": "Transfers"
   },
