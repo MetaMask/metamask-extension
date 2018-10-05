@@ -1,0 +1,30 @@
+.confirm-page-container-navigation {
+  display: flex;
+  justify-content: space-between;
+  color: $oslo-gray;
+  -webkit-transform: scale(0.90);
+          transform: scale(0.90); 
+
+  &__container {
+    display: flex;
+    -webkit-transform: scale(0.90);
+            transform: scale(0.90);
+  }
+
+  &__arrow {
+    cursor: pointer;
+    display: flex;
+    padding-left: 2px;
+    padding-right:  2px;
+  }
+  
+  &__arrow:hover {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1); 
+  }
+
+  &__arrow:active {
+  -webkit-transform: scale(0.95);
+          transform: scale(0.95); 
+  }
+}

@@ -43,6 +43,16 @@ export default class ConfirmPageContainer extends Component {
     summaryComponent: PropTypes.node,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
+    // Navigation
+    totalTx: PropTypes.number,
+    positionOfCurrentTx: PropTypes.number,
+    nextTxId: PropTypes.string,
+    prevTxId: PropTypes.string,
+    showNavigation: PropTypes.bool,
+    onNextTx: PropTypes.func,
+    firstTx: PropTypes.string,
+    lastTx: PropTypes.string,
+    ofText: PropTypes.string,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
@@ -79,6 +89,15 @@ export default class ConfirmPageContainer extends Component {
       unapprovedTxCount,
       assetImage,
       warning,
+      totalTx,
+      positionOfCurrentTx,
+      nextTxId,
+      prevTxId,
+      showNavigation,
+      onNextTx,
+      firstTx,
+      lastTx,
+      ofText,
     } = this.props
     const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
 
@@ -114,6 +133,15 @@ export default class ConfirmPageContainer extends Component {
               nonce={nonce}
               assetImage={assetImage}
               warning={warning}
+              totalTx={totalTx}
+              positionOfCurrentTx={positionOfCurrentTx}
+              nextTxId={nextTxId}
+              prevTxId={prevTxId}
+              showNavigation={showNavigation}
+              onNextTx={(txId) => onNextTx(txId)}
+              firstTx={firstTx}
+              lastTx={lastTx}
+              ofText={ofText}
             />
           )
         }

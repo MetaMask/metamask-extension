@@ -725,6 +725,9 @@
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
+  "of": {
+    "message": "of"
+  },
   "oldUI": {
     "message": "Old UI"
   },
