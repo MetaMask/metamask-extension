@@ -555,6 +555,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     await this.preferencesController.syncAddresses(accounts)
+    await this.balancesController.updateAllBalances()
     return this.keyringController.fullUpdate()
   }
 
