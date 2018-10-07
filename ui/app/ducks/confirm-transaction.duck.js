@@ -366,11 +366,16 @@ export function setTransactionToConfirm (transactionId) {
           dispatch(setFetchingData(true))
           const methodData = await getMethodData(data)
           dispatch(updateMethodData(methodData))
+        } catch (error) {
+          dispatch(updateMethodData({}))
+          dispatch(setFetchingData(false))
+        }
+
+        try {
           const toSmartContract = await isSmartContractAddress(to)
           dispatch(updateToSmartContract(toSmartContract))
           dispatch(setFetchingData(false))
         } catch (error) {
-          dispatch(updateMethodData({}))
           dispatch(setFetchingData(false))
         }
 
