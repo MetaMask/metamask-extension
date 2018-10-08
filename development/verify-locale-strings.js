@@ -20,7 +20,7 @@ const specifiedLocale = process.argv[2]
 if (specifiedLocale) {
 	console.log(`Verifying selected locale "${specifiedLocale}":\n\n`)
 	const locale = localeIndex.find(localeMeta => localeMeta.code === specifiedLocale)
-	verifyLocale({ locale })
+	verifyLocale(locale)
 } else {
 	console.log('Verifying all locales:\n\n')
 	localeIndex.forEach(localeMeta => {
@@ -30,11 +30,10 @@ if (specifiedLocale) {
 }
 
 
-function verifyLocale ({ localeMeta }) {
+function verifyLocale (localeMeta) {
 	const localeCode = localeMeta.code
-	const localeName = localeMeta.name
+        const localeName = localeMeta.name
 	let targetLocale, englishLocale
-
 	try {
 		const localeFilePath = path.join(process.cwd(), 'app', '_locales', localeCode, 'messages.json')
 		targetLocale = JSON.parse(fs.readFileSync(localeFilePath, 'utf8'))
