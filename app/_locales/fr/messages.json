@@ -63,7 +63,7 @@
     "message": "Acheter sur Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase est le moyen le plus populaire au monde d'acheter et de vendre du Bitcoin, de l'Ethereum et du Litecoin."
+    "message": "Coinbase est le moyen le plus populaire d'acheter et de vendre des Ethers."
   },
   "cancel": {
     "message": "Annuler"
@@ -136,23 +136,23 @@
     "message": "RPC personnalisé"
   },
   "defaultNetwork": {
-    "message": "Le réseau par défaut pour les transactions Ether est Main Net."
+    "message": "Le réseau par défaut pour les transactions Ether est le \"Réseau principal Ethereum\"."
   },
   "denExplainer": {
     "message": "Votre DEN est votre stockage crypté par mot de passe dans MetaMask."
   },
   "deposit": {
-    "message": "Dépôt"
+    "message": "Déposer"
   },
   "depositBTC": {
     "message": "Déposez vos BTC à l'adresse ci-dessous:"
   },
   "depositCoin": {
-    "message": "Déposez votre $1 à l'adresse ci-dessous",
-    "description": "Indique à l'utilisateur quelle monnaie il a choisi de déposer avec shapeshift"
+    "message": "Déposer votre $1 à l'adresse ci-dessous",
+    "description": "Indique à l'utilisateur quelle monnaie il a choisi de déposer avec Shapeshift"
   },
   "depositEth": {
-    "message": "Dépôt Eth"
+    "message": "Déposer Eth"
   },
   "depositEther": {
     "message": "Dépôt Ether"
@@ -164,10 +164,10 @@
     "message": "Dépôt d'un autre compte"
   },
   "depositShapeShift": {
-    "message": "Déposez avec ShapeShift"
+    "message": "Déposer avec ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Si vous possédez d'autres crypto-monnaies, vous pouvez échanger et déposer de l'Ether directement dans votre portefeuille MetaMask. Aucun compte n'est requis."
+    "message": "Si vous possédez d'autres crypto-monnaies, vous pouvez échanger et déposer de l'Ether directement dans votre portefeuille MetaMask via Shapeshift. Aucun compte n'est requis."
   },
   "details": {
     "message": "Détails"
@@ -223,26 +223,26 @@
     "message": "de"
   },
   "fromShapeShift": {
-    "message": "ShapeShift de"
+    "message": "de ShapeShift"
   },
   "gas": {
     "message": "Gas",
     "description": "Indication courte du coût du gaz"
   },
   "gasFee": {
-    "message": "Frais de gaz"
+    "message": "Coût en gaz"
   },
   "gasLimit": {
-    "message": "Limite de gaz"
+    "message": "Quantité max. de gaz"
   },
   "gasLimitCalculation": {
-    "message": "Nous calculons la limite de gaz suggérée en fonction des taux de réussite du réseau."
+    "message": "Nous calculons la quantité max. de gaz suggérée en fonction du code exécuté."
   },
   "gasLimitRequired": {
-    "message": "Limite de gaz requise"
+    "message": "Quantité max. de gaz requise"
   },
   "gasLimitTooLow": {
-    "message": "La limite de gaz doit être d'au moins 21000"
+    "message": "La quantité max. de gaz doit être d'au moins 21000"
   },
   "gasPrice": {
     "message": "Prix du gaz (GWEI)"
@@ -285,7 +285,7 @@
     "description": "Bouton pour importer un compte à partir d'un fichier sélectionné"
   },
   "importAccount": {
-    "message": "Importer compte"
+    "message": "Importer un compte"
   },
   "importAnAccount": {
     "message": "Importer un compte"
