@@ -1,6 +1,6 @@
 const mergeMiddleware = require('json-rpc-engine/src/mergeMiddleware')
 const createFetchMiddleware = require('eth-json-rpc-middleware/fetch')
-const createBlockRefMiddleware = require('eth-json-rpc-middleware/block-ref')
+const createBlockRefRewriteMiddleware = require('eth-json-rpc-middleware/block-ref-rewrite')
 const createBlockCacheMiddleware = require('eth-json-rpc-middleware/block-cache')
 const createInflightMiddleware = require('eth-json-rpc-middleware/inflight-cache')
 const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/block-tracker-inspector')
@@ -15,7 +15,7 @@ function createJsonRpcClient ({ rpcUrl }) {
   const blockTracker = new BlockTracker({ provider: blockProvider })
 
   const networkMiddleware = mergeMiddleware([
-    createBlockRefMiddleware({ blockTracker }),
+    createBlockRefRewriteMiddleware({ blockTracker }),
     createBlockCacheMiddleware({ blockTracker }),
     createInflightMiddleware(),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
