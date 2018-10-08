@@ -2,6 +2,9 @@
   "accept": {
     "message": "Accepter"
   },
+  "accessingYourCamera": {
+    "message": "Accès à votre appareil photo..."
+  },
   "account": {
     "message": "Compte"
   },
@@ -11,11 +14,26 @@
   "accountName": {
     "message": "Nom du compte"
   },
+  "accountSelectionRequired": {
+    "message": "Vous devez selectionner un compte !"
+  },
+  "activityLog": {
+    "message": "log d'activité"
+  },
   "address": {
     "message": "Adresse"
   },
   "addToken": {
     "message": "Ajouter un jeton"
+  },
+  "addTokens": {
+    "message": "Ajouter des jetons"
+  },
+  "addSuggestedTokens": {
+    "message": "Ajouter les jetons suggérés"
+  },
+  "addAcquiredTokens": {
+    "message": "Ajouter les jetons que vous avez acquis par l'intermédiaire de Metamask"
   },
   "amount": {
     "message": "Montant"
@@ -31,8 +49,23 @@
     "message": "MetaMask",
     "description": "Le nom de l'application"
   },
+  "approve": {
+    "message": "Approuver"
+  },
+  "approved": {
+    "message": "Approuvé"
+  },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
+  },
+  "attemptToCancel": {
+    "message": "Tenter d'annuler ?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Faire une demande d'annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l'annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
+  },
+  "attributions": {
+    "message": "Attributions"
   },
   "available": {
     "message": "Disponible"
@@ -42,6 +75,9 @@
   },
   "balance": {
     "message": "Balance:"
+  },
+  "balances": {
+    "message": "Balance(s) de(s) jeton(s)"
   },
   "balanceIsInsufficientGas": {
     "message": "Solde insuffisant pour le total actuel de gaz"
@@ -53,8 +89,17 @@
     "message": "doit être supérieur ou égal à $1 et inférieur ou égal à $2",
     "description": "helper pour la saisie hexadécimale en entrée décimale"
   },
+  "blockiesIdenticon": {
+    "message": "Utiliser les Identicon Blockies"
+  },
   "borrowDharma": {
     "message": "Emprunter avec Dharma (Bêta)"
+  },
+  "browserNotSupported": {
+    "message": "Votre navigateur internet n'est pas supporté..."
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask est designé et developpé en Californie."
   },
   "buy": {
     "message": "Acheter"
@@ -65,11 +110,35 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase est le moyen le plus populaire d'acheter et de vendre des Ethers."
   },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "ok": {
+    "message": "Ok"
+  },
   "cancel": {
     "message": "Annuler"
   },
+  "cancelAttempt": {
+    "message": "Annuler la tentative."
+  },
+  "cancellationGasFee": {
+    "message": "Frais en gas de l'annulation"
+  },
+  "cancelN": {
+    "message": "Annuler toutes les transactions $1"
+  },
+  "classicInterface": {
+    "message": "Utiliser l'interface classique"
+  },
   "clickCopy": {
     "message": "Cliquer pour copier"
+  },
+  "close": {
+    "message": "Fermer"
+  },
+  "chromeRequiredForHardwareWallets":{
+    "message": "Pour connecter votre portefeuille Hardware, vous devez utiliser Metamask pour Google Chrome."
   },
   "confirm": {
     "message": "Confirmer"
@@ -82,6 +151,24 @@
   },
   "confirmTransaction": {
     "message": "Confirmer la transaction"
+  },
+  "connectHardwareWallet": {
+    "message": "Connecter un Portefeuille Hardware"
+  },
+  "connect": {
+    "message": "Connecter"
+  },
+  "connecting": {
+    "message": "Connection..."
+  },
+  "connectToLedger": {
+    "message": "Connecter un Ledger"
+  },
+  "connectToTrezor": {
+    "message": "Connecter un Trezor"
+  },
+  "continue": {
+    "message": "Continuer"
   },
   "continueToCoinbase": {
     "message": "Continuer vers Coinbase"
@@ -100,6 +187,9 @@
   },
   "copiedExclamation": {
     "message": "Copié!"
+  },
+  "copiedSafe": {
+    "message": "Copié de manière sécurisé"
   },
   "copy": {
     "message": "Copier"
@@ -120,11 +210,20 @@
     "message": "Créer un compte"
   },
   "createDen": {
-    "message": "Créer"
+    "message": "Créer un antre"
   },
   "crypto": {
     "message": "Crypto",
     "description": "Type d'échange (cryptocurrencies)"
+  },
+  "currentConversion": {
+    "message": "Current Conversion"
+  },
+  "currentLanguage": {
+    "message": "Current Language"
+  },
+  "currentNetwork": {
+    "message": "Current Network"
   },
   "customGas": {
     "message": "Personnaliser le Gaz"
