@@ -340,15 +340,7 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
-  "parameters": {
-    "message": "Parameters"
-  },
-  "passwordNotLongEnough": {
-    "message": "Password not long enough"
-  },
-  "passwordsDontMatch": {
-    "message": "Passwords Don't Match"
-  },
+
   "etherscanView": {
     "message": "View account on Etherscan"
   },
@@ -707,6 +699,15 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "parameters": {
+    "message": "Parameters"
+  },
+  "passwordNotLongEnough": {
+    "message": "Password not long enough"
+  },
+  "passwordsDontMatch": {
+    "message": "Passwords Don't Match"
   },
   "password": {
     "message": "Password"
