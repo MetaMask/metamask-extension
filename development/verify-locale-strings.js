@@ -31,7 +31,7 @@ if (specifiedLocale) {
 
 
 function verifyLocale (localeMeta) {
-	const localeCode = localeMeta.code
+        const localeCode = localeMeta.code
         const localeName = localeMeta.name
 	let targetLocale, englishLocale
 	try {
