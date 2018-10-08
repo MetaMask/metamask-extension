@@ -32,7 +32,7 @@
     "description": "Le nom de l'application"
   },
   "attemptingConnect": {
-    "message": "Tentative de connexion à blockchain."
+    "message": "Tentative de connexion au réseau"
   },
   "available": {
     "message": "Disponible"
@@ -155,13 +155,13 @@
     "message": "Déposer Eth"
   },
   "depositEther": {
-    "message": "Dépôt Ether"
+    "message": "Déposer de l'Ether"
   },
   "depositFiat": {
-    "message": "Dépôt de monnaie-fiat"
+    "message": "Déposer de la monnaie-fiat"
   },
   "depositFromAccount": {
-    "message": "Dépôt d'un autre compte"
+    "message": "Déposer depuis un autre compte"
   },
   "depositShapeShift": {
     "message": "Déposer avec ShapeShift"
@@ -182,7 +182,7 @@
     "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille est par dépôt direct."
   },
   "done": {
-    "message": "Fait"
+    "message": "Terminé"
   },
   "edit": {
     "message": "Modifier"
@@ -227,7 +227,7 @@
   },
   "gas": {
     "message": "Gas",
-    "description": "Indication courte du coût du gaz"
+    "description": "Indication brève du coût du gaz"
   },
   "gasFee": {
     "message": "Coût en gaz"
@@ -307,7 +307,7 @@
     "message": "Paramètres de gaz invalides"
   },
   "invalidInput": {
-    "message": "Entrée non valide."
+    "message": "Saisie non valide."
   },
   "invalidRequest": {
     "message": "Requête invalide"
@@ -354,7 +354,7 @@
     "message": "Mes comptes"
   },
   "needEtherInWallet": {
-    "message": "Pour interagir avec des applications décentralisées à l'aide de MetaMask, vous aurez besoin d'Ether dans votre portefeuille."
+    "message": "Pour interagir avec des applications décentralisées à l'aide de MetaMask, vous avez besoin d'Ether dans votre portefeuille."
   },
   "needImportFile": {
     "message": "Vous devez sélectionner un fichier à importer.",
@@ -405,7 +405,7 @@
     "message": "Ancienne interface utilisateur"
   },
   "oldUIMessage": {
-    "message": "Vous êtes revenu à l'ancienne interface utilisateur.Vous pouvez revenir à la nouvelle interface via l'option dans le menu déroulant en haut à droite."
+    "message": "Vous êtes revenu à l'ancienne interface utilisateur. Vous pouvez revenir à la nouvelle interface via l'option dans le menu déroulant en haut à droite."
   },
   "or": {
     "message": "ou",
@@ -413,7 +413,7 @@
   },
   "passwordMismatch": {
     "message": "les mots de passe ne correspondent pas",
-    "description": "dans le processus de création de mot de passe, les deux nouveaux champs de mot de passe ne correspondent pas"
+    "description": "dans le processus de création de mot de passe, les deux mot de passe saisis ne sont pas identiques."
   },
   "passwordShort": {
     "message": "mot de passe pas assez long",
@@ -443,7 +443,7 @@
     "message": "Afficher le QR Code"
   },
   "readdToken": {
-    "message": "Vous pouvez ajouter ce jeton dans le futur en allant sur “Ajouter un jeton” dans le menu des options de votre compte."
+    "message": "Vous pourrez ajouter à nouveau ce jeton en allant sur “Ajouter un jeton” dans le menu des options de votre compte."
   },
   "readMore": {
     "message": "En savoir plus ici."
@@ -464,7 +464,7 @@
     "message": "Obligatoire"
   },
   "retryWithMoreGas": {
-    "message": "Réessayez avec un prix plus élevé du gaz ici"
+    "message": "Réessayer avec un prix de gaz plus élevé"
   },
   "revert": {
     "message": "Rétablir"
@@ -476,7 +476,7 @@
     "message": "Réseau de test Ropsten"
   },
   "sampleAccountName": {
-    "message": "Par exemple mon nouveau compte",
+    "message": "Par exemple: \"mon nouveau compte\" ",
     "description": "Aidez l'utilisateur à comprendre le concept d'ajout d'un nom lisible par un humain à son compte"
   },
   "save": {
@@ -532,10 +532,10 @@
     "message": "Soumettre"
   },
   "takesTooLong": {
-    "message": "Prend trop de temps?"
+    "message": "Cela prend trop de temps ?"
   },
   "testFaucet": {
-    "message": "Test Faucet"
+    "message": "Faucet Tesnet"
   },
   "to": {
     "message": "Destinataire"
@@ -545,7 +545,7 @@
     "description": "le système remplira le type de dépôt au début du message"
   },
   "tokenBalance": {
-    "message": "Votre solde de jeton est:"
+    "message": "Votre solde de jeton est :"
   },
   "total": {
     "message": "Total"
@@ -560,7 +560,7 @@
     "message": "Transferts"
   },
   "troubleTokenBalances": {
-    "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ",
+    "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ici :",
     "description": "Suivi par un lien (ici) pour voir les soldes des jetons"
   },
   "typePassword": {
