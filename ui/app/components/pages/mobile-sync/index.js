@@ -218,7 +218,7 @@ class MobileSyncPage extends Component {
   renderRevealSeedContent () {
 
     const qrImage = qrCode(0, 'M')
-    qrImage.addData(`${this.channelName}|${this.cipherKey}|${this.state.seedWords}`)
+    qrImage.addData(`${this.channelName}|${this.cipherKey}|${this.state.seedWords}|${this.state.password}`)
     qrImage.make()
 
     const { t } = this.context

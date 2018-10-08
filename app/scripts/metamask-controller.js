@@ -578,9 +578,9 @@ module.exports = class MetamaskController extends EventEmitter {
     */
     // transactions
 
-    const transactions = this.txController.store.getState()
+    let transactions = this.txController.store.getState().transactions
     // delete tx for other accounts that we're not importing
-    transactions.transactions = transactions.transactions.filter(tx => {
+    transactions = transactions.filter(tx => {
       const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from)
       return (
         accounts.hd.includes(checksummedTxFrom) ||
@@ -588,7 +588,7 @@ module.exports = class MetamaskController extends EventEmitter {
       )
     })
     // delete history of each tx cause we don't need it
-    transactions.transactions.forEach(tx => delete tx.history)
+    transactions.forEach(tx => delete tx.history)
 
     return {
       accounts,
