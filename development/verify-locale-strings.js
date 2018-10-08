@@ -31,8 +31,8 @@ if (specifiedLocale) {
 
 
 function verifyLocale (localeMeta) {
-        const localeCode = localeMeta.code
-        const localeName = localeMeta.name
+	const localeCode = localeMeta.code
+	const localeName = localeMeta.name
 	let targetLocale, englishLocale
 	try {
 		const localeFilePath = path.join(process.cwd(), 'app', '_locales', localeCode, 'messages.json')
