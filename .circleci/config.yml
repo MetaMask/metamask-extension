@@ -72,6 +72,7 @@ workflows:
             - test-e2e-firefox
             - test-e2e-beta-chrome
             - test-e2e-beta-firefox
+            - test-e2e-beta-drizzle
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
