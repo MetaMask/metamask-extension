@@ -133,7 +133,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
   })
-  
+
 
   describe('First time flow starting from an existing seed phrase', () => {
     it('imports a seed phrase', async () => {
