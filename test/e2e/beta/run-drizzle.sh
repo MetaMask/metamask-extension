@@ -13,7 +13,6 @@ npm install
 echo "Deploying contracts for Drizzle test..."
 truffle migrate
 BROWSER=none npm start >> /dev/null 2>&1 &
-sleep 10000
 cd ../../../../
 mocha test/e2e/beta/drizzle.spec
 
