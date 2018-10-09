@@ -34,11 +34,11 @@
   },
   "appDescription": {
     "message": "이더리움 브라우저 확장 프로그램",
-    "description": "어플리케이션 설명"
+    "description": "애플리케이션 설명"
   },
   "appName": {
     "message": "메타마스크",
-    "description": "어플리케이션 이름"
+    "description": "애플리케이션 이름"
   },
   "approved": {
     "message": "수락"
@@ -202,7 +202,7 @@
     "message": "입금"
   },
   "depositBTC": {
-    "message": "다음 주소로 BTC를 입급해주세요."
+    "message": "다음 주소로 BTC를 입금해주세요."
   },
   "depositCoin": {
     "message": "다음 주소로 $1 만큼 입금해주세요.",
@@ -468,10 +468,10 @@
     "message": "한도"
   },
   "loading": {
-    "message": "로딩중..."
+    "message": "로딩 중..."
   },
   "loadingTokens": {
-    "message": "토큰 로딩중..."
+    "message": "토큰 로딩 중..."
   },
   "localhost": {
     "message": "로컬호스트 8545"
@@ -845,7 +845,7 @@
     "message": "심볼은 0에서 10개 사이의 문자여야 합니다."
   },
   "takesTooLong": {
-    "message": "너무 오래걸리나요?"
+    "message": "너무 오래 걸리나요?"
   },
   "terms": {
     "message": "사용 지침"
@@ -900,7 +900,7 @@
     "message": "전송"
   },
   "troubleTokenBalances": {
-    "message": "토큰 잔액을 가져오는데에 문제가 생겼습니다. 링크에서 상세내용을 볼 수 있습니다.",
+    "message": "토큰 잔액을 가져오는 데에 문제가 생겼습니다. 링크에서 상세내용을 볼 수 있습니다.",
     "description": "토큰 잔액을 보려면 (here) 링크를 따라가세요"
   },
   "twelveWords": {
