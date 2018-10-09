@@ -52,32 +52,30 @@ export default class GasModalPageContainer extends Component {
         updateCustomGasLimit={convertThenUpdateCustomGasLimit}
         customGasPrice={customGasPrice}
         customGasLimit={customGasLimit}
-        timeRemaining={'1 min 31 sec'}
+        timeRemaining="1 min 31 sec"
         totalFee={newTotalFiat}
       />
     )
   }
 
   renderInfoRows (newTotalFiat, newTotalEth, sendAmount, transactionFee) {
-    const baseClassName = 'gas-modal-content__info-row'
-
     return (
       <div>
-        <div className={baseClassName}>
-          <div className={`${baseClassName}__send-info`}>
-            <span className={`${baseClassName}__send-info__label`}>{`Send Amount`}</span>
-            <span className={`${baseClassName}__send-info__value`}>{sendAmount}</span>
+        <div className="gas-modal-content__info-row">
+          <div className="gas-modal-content__info-row__send-info">
+            <span className="gas-modal-content__info-row__send-info__label">{this.context.t('sendAmount')}</span>
+            <span className="gas-modal-content__info-row__send-info__value">{sendAmount}</span>
           </div>
-          <div className={`${baseClassName}__transaction-info`}>
-            <span className={`${baseClassName}__transaction-info__label`}>{`Transaction Fee`}</span>
-            <span className={`${baseClassName}__transaction-info__value`}>{transactionFee}</span>
+          <div className="gas-modal-content__info-row__transaction-info">
+            <span className={'gas-modal-content__info-row__transaction-info__label'}>{this.context.t('transactionFee')}</span>
+            <span className="gas-modal-content__info-row__transaction-info__value">{transactionFee}</span>
           </div>
-          <div className={`${baseClassName}__total-info`}>
-            <span className={`${baseClassName}__total-info__label`}>{`New Total`}</span>
-            <span className={`${baseClassName}__total-info__value`}>{newTotalEth}</span>
+          <div className="gas-modal-content__info-row__total-info">
+            <span className="gas-modal-content__info-row__total-info__label">{this.context.t('newTotal')}</span>
+            <span className="gas-modal-content__info-row__total-info__value">{newTotalEth}</span>
           </div>
-          <div className={`${baseClassName}__fiat-total-info`}>
-            <span className={`${baseClassName}__fiat-total-info__value`}>{newTotalFiat}</span>
+          <div className="gas-modal-content__info-row__fiat-total-info">
+            <span className="gas-modal-content__info-row__fiat-total-info__value">{newTotalFiat}</span>
           </div>
         </div>
       </div>
