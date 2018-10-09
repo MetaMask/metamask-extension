@@ -75,6 +75,7 @@ describe('gas-modal-page-container container', () => {
             limit: 'aaaaaaaa',
             price: 'ffffffff',
           },
+          priceAndTimeEstimates: 'mockPriceAndTimeEstimates',
         },
         confirmTransaction: {
           txData: {
@@ -95,6 +96,9 @@ describe('gas-modal-page-container container', () => {
         newTotalFiat: '637.41',
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
+        gasChartProps: {
+          priceAndTimeEstimates: 'mockPriceAndTimeEstimates',
+        },
         gasPriceButtonGroupProps: {
           buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:4',
           defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:4ffffffff',
