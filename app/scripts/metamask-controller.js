@@ -15,6 +15,7 @@ const RpcEngine = require('json-rpc-engine')
 const debounce = require('debounce')
 const createEngineStream = require('json-rpc-middleware-stream/engineStream')
 const createFilterMiddleware = require('eth-json-rpc-filters')
+const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
@@ -1248,24 +1249,33 @@ module.exports = class MetamaskController extends EventEmitter {
   setupProviderConnection (outStream, origin) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
+    const provider = this.provider
+    const blockTracker = this.blockTracker
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-    })
+    const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
+    // create subscription polyfill middleware
+    const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
+    subscriptionManager.events.on('notification', (message) => engine.emit('notification', message))
 
+    // metadata
     engine.push(createOriginMiddleware({ origin }))
     engine.push(createLoggerMiddleware({ origin }))
+    // filter and subscription polyfills
     engine.push(filterMiddleware)
+    engine.push(subscriptionManager.middleware)
+    // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
+    // sign typed data middleware
     engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3', true).bind(this))
-    engine.push(createProviderMiddleware({ provider: this.provider }))
+    // forward to metamask primary provider
+    engine.push(createProviderMiddleware({ provider }))
 
     // setup connection
     const providerStream = createEngineStream({ engine })
+
     pump(
       outStream,
       providerStream,
