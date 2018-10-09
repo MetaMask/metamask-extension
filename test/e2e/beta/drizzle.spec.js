@@ -25,7 +25,6 @@ describe('MetaMask', function () {
   let extensionId
   let driver
 
-  const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const tinyDelayMs = 200
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
@@ -134,24 +133,124 @@ describe('MetaMask', function () {
     })
   })
 
+  describe('Going through the first time flow', () => {
+    it('accepts a secure password', async () => {
+      const passwordBox = await findElement(driver, By.css('.create-password #create-password'))
+      const passwordBoxConfirm = await findElement(driver, By.css('.create-password #confirm-password'))
+      const button = await findElement(driver, By.css('.create-password button'))
 
-  describe('First time flow starting from an existing seed phrase', () => {
-    it('imports a seed phrase', async () => {
-      const [seedPhrase] = await findElements(driver, By.xpath(`//a[contains(text(), 'Import with seed phrase')]`))
-      await seedPhrase.click()
+      await passwordBox.sendKeys('correct horse battery staple')
+      await passwordBoxConfirm.sendKeys('correct horse battery staple')
+      await button.click()
+      await delay(regularDelayMs)
+    })
+
+    it('clicks through the unique image screen', async () => {
+      const nextScreen = await findElement(driver, By.css('.unique-image button'))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+    })
+
+    it('clicks through the ToS', async () => {
+      // terms of use
+      const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
+      assert.equal(canClickThrough, false, 'disabled continue button')
+      const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
+      await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
+      await delay(regularDelayMs)
+      const acceptTos = await findElement(driver, By.css('.tou button'))
+      driver.wait(until.elementIsEnabled(acceptTos))
+      await acceptTos.click()
+      await delay(regularDelayMs)
+    })
+
+    it('clicks through the privacy notice', async () => {
+      // privacy notice
+      const nextScreen = await findElement(driver, By.css('.tou button'))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+    })
+
+    it('clicks through the phishing notice', async () => {
+      // phishing notice
+      const noticeElement = await driver.findElement(By.css('.markdown'))
+      await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
+      await delay(regularDelayMs)
+      const nextScreen = await findElement(driver, By.css('.tou button'))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+    })
+
+    let seedPhrase
+
+    it('reveals the seed phrase', async () => {
+      const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
+      await driver.wait(until.elementLocated(byRevealButton, 10000))
+      const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
+      await revealSeedPhraseButton.click()
       await delay(regularDelayMs)
 
-      const [seedTextArea] = await findElements(driver, By.css('textarea.import-account__secret-phrase'))
-      await seedTextArea.sendKeys(testSeedPhrase)
+      seedPhrase = await driver.findElement(By.css('.backup-phrase__secret-words')).getText()
+      assert.equal(seedPhrase.split(' ').length, 12)
       await delay(regularDelayMs)
 
-      const [password] = await findElements(driver, By.id('password'))
-      await password.sendKeys('correct horse battery staple')
-      const [confirmPassword] = await findElements(driver, By.id('confirm-password'))
-      confirmPassword.sendKeys('correct horse battery staple')
+      const nextScreen = await findElement(driver, By.css('.backup-phrase button'))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+    })
 
-      const [importButton] = await findElements(driver, By.xpath(`//button[contains(text(), 'Import')]`))
-      await importButton.click()
+    async function clickWordAndWait (word) {
+      const xpathClass = 'backup-phrase__confirm-seed-option backup-phrase__confirm-seed-option--unselected'
+      const xpath = `//button[@class='${xpathClass}' and contains(text(), '${word}')]`
+      const word0 = await findElement(driver, By.xpath(xpath), 10000)
+
+      await word0.click()
+      await delay(tinyDelayMs)
+    }
+
+    async function retypeSeedPhrase (words, wasReloaded, count = 0) {
+      try {
+        if (wasReloaded) {
+          const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
+          await driver.wait(until.elementLocated(byRevealButton, 10000))
+          const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
+          await revealSeedPhraseButton.click()
+          await delay(regularDelayMs)
+
+          const nextScreen = await findElement(driver, By.css('.backup-phrase button'))
+          await nextScreen.click()
+          await delay(regularDelayMs)
+        }
+
+        for (let i = 0; i < 12; i++) {
+          await clickWordAndWait(words[i])
+        }
+      } catch (e) {
+        if (count > 2) {
+          throw e
+        } else {
+          await loadExtension(driver, extensionId)
+          await retypeSeedPhrase(words, true, count + 1)
+        }
+      }
+    }
+
+    it('can retype the seed phrase', async () => {
+      const words = seedPhrase.split(' ')
+
+      await retypeSeedPhrase(words)
+
+      const confirm = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirm.click()
+      await delay(regularDelayMs)
+    })
+
+    it('clicks through the deposit modal', async () => {
+      const byBuyModal = By.css('span .modal')
+      const buyModal = await driver.wait(until.elementLocated(byBuyModal))
+      const closeModal = await findElement(driver, By.css('.page-container__header-close'))
+      await closeModal.click()
+      await driver.wait(until.stalenessOf(buyModal))
       await delay(regularDelayMs)
     })
 
@@ -164,7 +263,6 @@ describe('MetaMask', function () {
       await localhost.click()
       await delay(largeDelayMs * 2)
     })
-
   })
 
   describe('Drizzle', () => {
