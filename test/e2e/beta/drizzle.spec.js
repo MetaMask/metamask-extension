@@ -155,35 +155,6 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
-    it('clicks through the ToS', async () => {
-      // terms of use
-      const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
-      assert.equal(canClickThrough, false, 'disabled continue button')
-      const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
-      await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
-      await delay(regularDelayMs)
-      const acceptTos = await findElement(driver, By.css('.tou button'))
-      await acceptTos.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the privacy notice', async () => {
-      // privacy notice
-      const nextScreen = await findElement(driver, By.css('.tou button'))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the phishing notice', async () => {
-      // phishing notice
-      const noticeElement = await driver.findElement(By.css('.markdown'))
-      await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
-      await delay(regularDelayMs)
-      const nextScreen = await findElement(driver, By.css('.tou button'))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-    })
-
     it('switches to localhost', async () => {
       const networkDropdown = await findElement(driver, By.css('.network-name'))
       await networkDropdown.click()
