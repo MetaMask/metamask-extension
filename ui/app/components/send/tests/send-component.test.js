@@ -8,12 +8,23 @@ import SendHeader from '../send-header/send-header.container'
 import SendContent from '../send-content/send-content.component'
 import SendFooter from '../send-footer/send-footer.container'
 
+function timeout (time) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, time || 1500)
+  })
+}
+
+const mockBasicGasEstimates = {
+  blockTime: 'mockBlockTime',
+}
+
 const propsMethodSpies = {
   updateAndSetGasLimit: sinon.spy(),
   updateSendErrors: sinon.spy(),
   updateSendTokenBalance: sinon.spy(),
   resetSendState: sinon.spy(),
-  fetchGasEstimates: sinon.stub().returns(Promise.resolve()),
+  fetchBasicGasEstimates: sinon.stub().returns(Promise.resolve(mockBasicGasEstimates)),
+  fetchGasEstimates: sinon.spy(),
 }
 const utilsMethodStubs = {
   getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
@@ -38,6 +49,7 @@ describe('Send Component', function () {
       blockGasLimit={'mockBlockGasLimit'}
       conversionRate={10}
       editingTransactionId={'mockEditingTransactionId'}
+      fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
       fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
       from={ { address: 'mockAddress', balance: 'mockBalance' } }
       gasLimit={'mockGasLimit'}
@@ -65,7 +77,7 @@ describe('Send Component', function () {
     utilsMethodStubs.doesAmountErrorRequireUpdate.resetHistory()
     utilsMethodStubs.getAmountErrorObject.resetHistory()
     utilsMethodStubs.getGasFeeErrorObject.resetHistory()
-    propsMethodSpies.fetchGasEstimates.resetHistory()
+    propsMethodSpies.fetchBasicGasEstimates.resetHistory()
     propsMethodSpies.updateAndSetGasLimit.resetHistory()
     propsMethodSpies.updateSendErrors.resetHistory()
     propsMethodSpies.updateSendTokenBalance.resetHistory()
@@ -76,19 +88,29 @@ describe('Send Component', function () {
   })
 
   describe('componentDidMount', () => {
-    it('should call props.fetchGasEstimates', () => {
-      propsMethodSpies.fetchGasEstimates.resetHistory()
-      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 0)
+    it('should call props.fetchBasicGasEstimates', () => {
+      propsMethodSpies.fetchBasicGasEstimates.resetHistory()
+      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
-      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 1)
+      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 1)
     })
 
-    it('should call this.updateGas', () => {
+    it('should call this.updateGas', async () => {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendErrors.resetHistory()
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
       wrapper.instance().componentDidMount()
-      setTimeout(() => assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1), 250)
+      await timeout(250)
+      assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
+    })
+
+    it('should call props.fetchGasEstimates with the block time returned by fetchBasicGasEstimates', async () => {
+      propsMethodSpies.fetchGasEstimates.resetHistory()
+      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 0)
+      wrapper.instance().componentDidMount()
+      await timeout(250)
+      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 1)
+      assert.equal(propsMethodSpies.fetchGasEstimates.getCall(0).args[0], 'mockBlockTime')
     })
   })
 
