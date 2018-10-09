@@ -171,7 +171,7 @@
     "message": "Connection au réseau de test Kovan"
   },
   "connectingToMainnet": {
-    "message": "Connection au Réseau principal Ethereum"
+    "message": "Connection au réseau principal Ethereum"
   },
   "connectingToRopsten": {
     "message": "Connection au réseau de test Ropsten"
@@ -350,13 +350,13 @@
     "message": "Nom ENS inconnu"
   },
   "enterPassword": {
-    "message": "Entrer le mot de passe"
+    "message": "Entrez votre mot de passe"
   },
   "enterPasswordConfirm": {
-    "message": "Enter your password to confirm"
+    "message": "Entrez votre mot de passe pour confirmer."
   },
   "enterPasswordContinue": {
-    "message": "Enter password to continue"
+    "message": "Entrez votre mot de passe pour continuer."
   },
   "etherscanView": {
     "message": "Afficher le compte sur Etherscan"
