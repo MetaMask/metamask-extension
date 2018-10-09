@@ -21,7 +21,7 @@ The core functionality of MetaMask all lives in what we call [The MetaMask Contr
 When calling `new MetaMask(opts)`, many platform-specific options are configured. The keys on `opts` are as follows:
 
 - initState: The last emitted state, used for restoring persistent state between sessions.
-- platform: The `platform` object defines a variety of platform-specific functions, including opening the confirmation view, and opening web sites.
+- platform: The `platform` object defines a variety of platform-specific functions, including opening the confirmation view, and opening websites.
 - encryptor - An object that provides access to the desired encryption methods.
 
 ##### Encryptor
