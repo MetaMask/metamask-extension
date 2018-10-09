@@ -36,6 +36,10 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
+      - test-e2e-beta-drizzle:
+          requires:
+            - prep-deps-npm
+            - prep-build
       - test-unit:
           requires:
             - prep-deps-npm
@@ -222,6 +226,19 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
+  test-e2e-beta-drizzle:
+    docker:
+      - image: circleci/node:8.11.3-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:e2e:drizzle:beta
+          command: npm run test:e2e:drizzle:beta
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
   test-e2e-beta-chrome:
     docker:
       - image: circleci/node:8.11.3-browsers

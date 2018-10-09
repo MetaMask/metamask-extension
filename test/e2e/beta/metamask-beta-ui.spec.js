@@ -455,48 +455,6 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Work with Drizzle', () => {
-    it('should work ok', async () => {
-      await openNewPage(driver, 'http://127.0.0.1:3000/')
-      await delay(regularDelayMs)
-
-      await waitUntilXWindowHandles(driver, 3)
-      let windowHandles = await driver.getAllWindowHandles()
-      const extension = windowHandles[0]
-      const drizzle = windowHandles[2]
-
-      await driver.switchTo().window(drizzle)
-      await delay(regularDelayMs)
-
-      // const send3eth = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`), 10000)
-      // await send3eth.click()
-      // await delay(regularDelayMs)
-
-      // windowHandles = await driver.getAllWindowHandles()
-      // await driver.switchTo().window(windowHandles[2])
-      // await delay(regularDelayMs)
-
-      // await assertElementNotPresent(webdriver, driver, By.xpath(`//li[contains(text(), 'Data')]`))
-
-      // const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
-      // await confirmButton.click()
-      // await delay(regularDelayMs)
-
-      // await waitUntilXWindowHandles(driver, 2)
-      // await driver.switchTo().window(extension)
-      // await delay(regularDelayMs)
-    })
-
-    // it('finds the transaction in the transactions list', async function () {
-    //   const transactions = await findElements(driver, By.css('.transaction-list-item'))
-    //   assert.equal(transactions.length, 2)
-
-    //   const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
-    //   await driver.wait(until.elementTextMatches(txValues, /-3\sETH/), 10000)
-    // })
-  })
-
-
   describe('Deploy contract and call contract methods', () => {
     let extension
     let dapp
