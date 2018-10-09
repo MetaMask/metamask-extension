@@ -18,7 +18,7 @@
     "message": "Vous devez selectionner un compte !"
   },
   "activityLog": {
-    "message": "log d'activité"
+    "message": "Log d'activité"
   },
   "address": {
     "message": "Adresse"
@@ -36,7 +36,7 @@
     "message": "Ajouter les jetons suggérés"
   },
   "addAcquiredTokens": {
-    "message": "Ajouter les jetons que vous avez acquis par l'intermédiaire de Metamask"
+    "message": "Ajouter les jetons que vous avez acquis par l'intermédiaire de MetaMask"
   },
   "amount": {
     "message": "Montant"
@@ -141,7 +141,7 @@
     "message": "Fermer"
   },
   "chromeRequiredForHardwareWallets":{
-    "message": "Pour connecter votre portefeuille Hardware, vous devez utiliser Metamask pour Google Chrome."
+    "message": "Pour connecter votre portefeuille hardware, vous devez utiliser MetaMask pour Google Chrome."
   },
   "confirm": {
     "message": "Confirmer"
@@ -159,7 +159,7 @@
     "message": "Confirmer la transaction"
   },
   "connectHardwareWallet": {
-    "message": "Connecter un Portefeuille Hardware"
+    "message": "Connecter un portefeuille hardware"
   },
   "connect": {
     "message": "Connecter"
@@ -451,7 +451,7 @@
     "message": "hardware"
   },
   "hardwareWalletConnected": {
-    "message": "Portefeuille Hardware connecté"
+    "message": "Portefeuille hardware connecté"
   },
   "hardwareWallets": {
     "message": "Connecter un portefeuille hardware"
@@ -498,7 +498,7 @@
     "message": "Importer un compte"
   },
   "importAccountMsg": {
-    "message":" Les comptes importés ne seront pas associés avec votre phrase Seed que vous avez créé au départ dans Metamask. Obtenir plus d'information sur les comptes importés"
+    "message":" Les comptes importés ne seront pas associés avec votre phrase Seed que vous avez créé au départ dans MetaMask. Obtenir plus d'information sur les comptes importés"
   },
   "importAnAccount": {
     "message": "Importer un compte"
@@ -888,7 +888,7 @@
     "message": "Suprimer le compte"
   },
   "removeAccountDescription": {
-    "message": "Ce compte va être supprimé de votre portefeuille. Veuillez vérifier que vous avez la phrase Seed originale de ce compte ou la clé privée pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu des comptes. "
+    "message": "Ce compte va être supprimé de votre portefeuille. Veuillez vérifier que vous avez la phrase Seed originale de ce compte ou la clé privée pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu des comptes."
   },
   "readyToConnect": {
     "message": "Prêt à se connecter ?"
@@ -1055,7 +1055,7 @@
     "message": "Erreur lors du chargement des logs d'Etat."
   },
   "step1HardwareWallet": {
-    "message": "1. Connecter le portefeuille Hardware"
+    "message": "1. Connecter le portefeuille hardware"
   },
   "step1HardwareWalletMsg": {
     "message": "Connectez votre portefeuille hardware directement à votre ordinateur."
@@ -1170,7 +1170,7 @@
     "message": "Transferts"
   },
   "trezorHardwareWallet": {
-    "message": "Portefeuille Hardware TREZOR"
+    "message": "Portefeuille hardware TREZOR"
   },
   "troubleTokenBalances": {
     "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ici :",
