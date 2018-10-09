@@ -68,10 +68,6 @@ describe('AdvancedTabContent Component', function () {
         11, propsMethodSpies.updateCustomGasPrice, 23456, propsMethodSpies.updateCustomGasLimit,
       ])
     })
-
-    it('should call renderGasEditRows with the expected params', () => {
-
-    })
   })
 
   describe('renderDataSummary()', () => {
