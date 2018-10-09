@@ -241,19 +241,19 @@
     "description": "Type d'échange (cryptocurrencies)"
   },
   "currentConversion": {
-    "message": "Current Conversion"
+    "message": "Conversion actuelle"
   },
   "currentLanguage": {
-    "message": "Current Language"
+    "message": "Langue actuelle"
   },
   "currentNetwork": {
-    "message": "Current Network"
+    "message": "Réseau actuel"
   },
   "currentRpc": {
     "message": "RPC Actuel"
   },
   "customGas": {
-    "message": "Personnaliser le Gaz"
+    "message": "Personnaliser le gaz"
   },
   "customToken": {
     "message": "Jeton personnalisé"
@@ -1241,22 +1241,22 @@
     "message": "Utilisé par une variété de clients différents"
   },
   "useOldUI": {
-    "message": "Use old UI"
+    "message": "Utiliser l'ancienne interface."
   },
   "validFileImport": {
-    "message": "You must select a valid file to import."
+    "message": "Vous devez selectionner un fichier valide à importer."
   },
   "vaultCreated": {
-    "message": "Vault Created"
+    "message": "Coffre créé"
   },
   "viewAccount": {
     "message": "Afficher le compte"
   },
   "viewOnEtherscan": {
-    "message": "View on Etherscan"
+    "message": "Voir sur Etherscan"
   },
   "visitWebSite": {
-    "message": "Visit our web site"
+    "message": "Visitez notre site web"
   },
   "warning": {
     "message": "Avertissement"
