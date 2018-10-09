@@ -165,9 +165,10 @@ export default class SendTransactionScreen extends PersistentForm {
   }
 
   componentDidMount () {
-    this.props.fetchGasEstimates()
-    .then(() => {
+    this.props.fetchBasicGasEstimates()
+    .then(basicEstimates => {
       this.updateGas()
+      this.props.fetchGasEstimates(basicEstimates.blockTime)
     })
   }
 

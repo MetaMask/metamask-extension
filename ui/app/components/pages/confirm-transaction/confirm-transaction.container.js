@@ -6,7 +6,7 @@ import {
   clearConfirmTransaction,
 } from '../../../ducks/confirm-transaction.duck'
 import {
-  fetchGasEstimates,
+  fetchBasicGasEstimates,
 } from '../../../ducks/gas.duck'
 import ConfirmTransaction from './confirm-transaction.component'
 import { getTotalUnapprovedCount } from '../../../selectors'
@@ -27,7 +27,7 @@ const mapDispatchToProps = dispatch => {
   return {
     setTransactionToConfirm: transactionId => dispatch(setTransactionToConfirm(transactionId)),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    fetchGasEstimates: () => dispatch(fetchGasEstimates()),
+    fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
   }
 }
 

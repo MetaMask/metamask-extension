@@ -10,7 +10,10 @@ import GasReducer, {
   setCustomGasTotal,
   setCustomGasErrors,
   resetCustomGasState,
-  fetchGasEstimates,
+  fetchBasicGasEstimates,
+  gasEstimatesLoadingStarted,
+  gasEstimatesLoadingFinished,
+  setPricesAndTimeEstimates,
 } from '../gas.duck.js'
 
 describe('Gas Duck', () => {
@@ -65,15 +68,21 @@ describe('Gas Duck', () => {
     },
     basicEstimateIsLoading: true,
     errors: {},
+    gasEstimatesLoading: true,
+    priceAndTimeEstimates: [],
+
   }
   const BASIC_GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'
   const BASIC_GAS_ESTIMATE_LOADING_STARTED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_STARTED'
+  const GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/GAS_ESTIMATE_LOADING_FINISHED'
+  const GAS_ESTIMATE_LOADING_STARTED = 'metamask/gas/GAS_ESTIMATE_LOADING_STARTED'
   const RESET_CUSTOM_GAS_STATE = 'metamask/gas/RESET_CUSTOM_GAS_STATE'
   const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA'
   const SET_CUSTOM_GAS_ERRORS = 'metamask/gas/SET_CUSTOM_GAS_ERRORS'
   const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT'
   const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE'
   const SET_CUSTOM_GAS_TOTAL = 'metamask/gas/SET_CUSTOM_GAS_TOTAL'
+  const SET_PRICE_AND_TIME_ESTIMATES = 'metamask/gas/SET_PRICE_AND_TIME_ESTIMATES'
 
   describe('GasReducer()', () => {
     it('should initialize state', () => {
@@ -111,6 +120,24 @@ describe('Gas Duck', () => {
       )
     })
 
+    it('should set gasEstimatesLoading to true when receiving a GAS_ESTIMATE_LOADING_STARTED action', () => {
+      assert.deepEqual(
+        GasReducer(mockState, {
+          type: GAS_ESTIMATE_LOADING_STARTED,
+        }),
+        Object.assign({gasEstimatesLoading: true}, mockState.gas)
+      )
+    })
+
+    it('should set gasEstimatesLoading to false when receiving a GAS_ESTIMATE_LOADING_FINISHED action', () => {
+      assert.deepEqual(
+        GasReducer(mockState, {
+          type: GAS_ESTIMATE_LOADING_FINISHED,
+        }),
+        Object.assign({gasEstimatesLoading: false}, mockState.gas)
+      )
+    })
+
     it('should return a new object (and not just modify the existing state object)', () => {
       assert.deepEqual(GasReducer(mockState), mockState.gas)
       assert.notEqual(GasReducer(mockState), mockState.gas)
@@ -123,6 +150,16 @@ describe('Gas Duck', () => {
           value: { someProp: 'someData123' },
         }),
         Object.assign({basicEstimates: {someProp: 'someData123'} }, mockState.gas)
+      )
+    })
+
+    it('should set priceAndTimeEstimates when receiving a SET_PRICE_AND_TIME_ESTIMATES action', () => {
+      assert.deepEqual(
+        GasReducer(mockState, {
+          type: SET_PRICE_AND_TIME_ESTIMATES,
+          value: { someProp: 'someData123' },
+        }),
+        Object.assign({priceAndTimeEstimates: {someProp: 'someData123'} }, mockState.gas)
       )
     })
 
@@ -194,10 +231,10 @@ describe('Gas Duck', () => {
     })
   })
 
-  describe('fetchGasEstimates', () => {
+  describe('fetchBasicGasEstimates', () => {
     const mockDistpatch = sinon.spy()
     it('should call fetch with the expected params', async () => {
-      await fetchGasEstimates()(mockDistpatch)
+      await fetchBasicGasEstimates()(mockDistpatch)
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
@@ -242,6 +279,32 @@ describe('Gas Duck', () => {
     })
   })
 
+  describe('gasEstimatesLoadingStarted', () => {
+    it('should create the correct action', () => {
+      assert.deepEqual(
+        gasEstimatesLoadingStarted(),
+        { type: GAS_ESTIMATE_LOADING_STARTED }
+      )
+    })
+  })
+
+  describe('gasEstimatesLoadingFinished', () => {
+    it('should create the correct action', () => {
+      assert.deepEqual(
+        gasEstimatesLoadingFinished(),
+        { type: GAS_ESTIMATE_LOADING_FINISHED }
+      )
+    })
+  })
+
+  describe('setPricesAndTimeEstimates', () => {
+    it('should create the correct action', () => {
+      assert.deepEqual(
+        setPricesAndTimeEstimates('mockPricesAndTimeEstimates'),
+        { type: SET_PRICE_AND_TIME_ESTIMATES, value: 'mockPricesAndTimeEstimates' }
+      )
+    })
+  })
 
   describe('setBasicGasEstimateData', () => {
     it('should create the correct action', () => {
