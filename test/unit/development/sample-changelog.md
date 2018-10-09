@@ -67,7 +67,7 @@
 - Estimating gas limit for simple ether sends now faster & cheaper, by avoiding VM usage on recipients with no code.
 - Add an extra px to address for Firefox clipping.
 - Fix Firefox scrollbar.
-- Open metamask popup for transaction confirmation before gas estimation finishes and add a loading screen over transaction confirmation.
+- Open MetaMask popup for transaction confirmation before gas estimation finishes and add a loading screen over transaction confirmation.
 - Fix bug that prevented eth_signTypedData from signing bytes.
 - Further improve gas price estimation.
 
@@ -330,7 +330,7 @@ rollback to 3.10.0 due to bug
 
 ## 3.7.7 2017-6-8
 
-- Fix bug where metamask would show old data after computer being asleep or disconnected from the internet.
+- Fix bug where MetaMask would show old data after computer being asleep or disconnected from the internet.
 
 ## 3.7.6 2017-6-5
 
