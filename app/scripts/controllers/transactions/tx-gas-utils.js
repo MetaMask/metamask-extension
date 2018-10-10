@@ -62,28 +62,34 @@ class TxGasUtil {
     const recipient = txParams.to
     const hasRecipient = Boolean(recipient)
 
+    // see if we can set the gas based on the recipient 
     if (hasRecipient) {
       const code = await this.query.getCode(recipient)
-
-      // If there's data in the params, but there's no code, it's not a valid contract
-      // For no code, Infura will return '0x', and ganache-core v2.2.1 will return '0x0'
-      if (txParams.data && (!code || code === '0x' || code === '0x0')) {
-        const err = new Error()
-        err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
-        throw err
-      } else if (!code) {
-        txParams.gas = SIMPLE_GAS_COST // For a standard ETH send, gas is 21k max
-        txMeta.simpleSend = true // Prevents buffer addition
+      // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+      const codeIsEmpty = !code || code === '0x' || code === '0x0'
+      
+      if (codeIsEmpty) {
+        // if there's data in the params, but there's no contract code, it's not a valid transaction
+        if (txParams.data) {
+          const err = new Error()
+          err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
+          throw err
+        }
+        
+        // This is a standard ether simple send, gas requirement is exactly 21k
+        txParams.gas = SIMPLE_GAS_COST
+        // prevents buffer addition
+        txMeta.simpleSend = true
         return SIMPLE_GAS_COST
       }
     }
 
-    // if not, fall back to block gasLimit
+    // fallback to block gasLimit
     const blockGasLimitBN = hexToBn(blockGasLimitHex)
     const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
     txParams.gas = bnToHex(saferGasLimitBN)
 
-    // run tx
+    // estimate tx gas requirements
     return await this.query.estimateGas(txParams)
   }
 
