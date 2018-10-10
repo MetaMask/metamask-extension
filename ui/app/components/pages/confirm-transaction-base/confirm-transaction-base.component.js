@@ -370,7 +370,7 @@ export default class ConfirmTransactionBase extends Component {
       showNavigation: enumUnapprovedTxs.length > 1,
       firstTx: enumUnapprovedTxs[0],
       lastTx: enumUnapprovedTxs[enumUnapprovedTxs.length - 1],
-      ofText: this.context.t('of'),
+      ofText: this.context.t('ofTextNofM'),
     }
   }
 
