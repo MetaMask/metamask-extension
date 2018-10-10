@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "தனியுரிமை முறை"
+  },
+  "privacyModeDescription": {
+    "message": "உங்கள் கணக்குத் தகவலை பார்வையிட வலைத்தளங்கள் அணுகலைக் கோர வேண்டும்."
+  },
   "exposeAccounts": {
     "message": "கணக்குகளை அம்பலப்படுத்துங்கள்"
   },

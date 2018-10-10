@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "개인 정보 보호 모드"
+  },
+  "privacyModeDescription": {
+    "message": "웹 사이트는 계정 정보를 볼 수있는 액세스 권한을 요청해야합니다."
+  },
   "exposeAccounts": {
     "message": "계정 노출"
   },

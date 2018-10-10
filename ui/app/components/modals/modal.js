@@ -29,7 +29,6 @@ import CancelTransaction from './cancel-transaction'
 import WelcomeBeta from './welcome-beta'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
-import ForceInjection from './force-injection'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -216,19 +215,6 @@ const MODALS = {
 
   CLEAR_APPROVED_ORIGINS: {
     contents: h(ClearApprovedOrigins),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  FORCE_INJECTION: {
-    contents: h(ForceInjection),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

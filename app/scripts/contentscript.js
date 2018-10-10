@@ -24,7 +24,7 @@ if (shouldInjectWeb3()) {
   injectScript(inpageBundle)
   setupStreams()
   listenForProviderRequest()
-  checkForcedInjection()
+  checkPrivacyMode()
 }
 
 /**
@@ -125,9 +125,9 @@ function listenForProviderRequest () {
           origin: source.location.hostname,
         })
         break
-      case 'ETHEREUM_PROVIDER_STATUS':
+      case 'ETHEREUM_QUERY_STATUS':
         extension.runtime.sendMessage({
-          action: 'provider-status-request',
+          action: 'init-status-request',
           origin: source.location.hostname,
         })
         break
@@ -144,14 +144,7 @@ function listenForProviderRequest () {
       case 'reject-provider-request':
         injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: { error: 'User rejected provider access' }}))`)
         break
-      case 'force-injection':
-        extension.storage.local.get(['forcedOrigins'], ({ forcedOrigins = [] }) => {
-          extension.storage.local.set({ forcedOrigins: [ ...forcedOrigins, window.location.hostname ] }, () => {
-            injectScript(`window.location.reload()`)
-          })
-        })
-        break
-      case 'provider-status':
+      case 'answer-status-request':
         injectScript(`window.dispatchEvent(new CustomEvent('ethereumproviderstatus', { detail: { isEnabled: ${isEnabled}}}))`)
         break
     }
@@ -159,15 +152,11 @@ function listenForProviderRequest () {
 }
 
 /**
- * Checks the current origin to see if it exists in the extension's locally-stored list
- * off user-whitelisted dapp origins. If it is, this origin will be marked as approved,
- * meaning the publicConfig stream will be enabled. This is only meant to ease the transition
- * to 1102 and will be removed in the future.
+ * Checks if MetaMask is currently operating in "privacy mode", meaning
+ * dapps must call ethereum.enable in order to access user accounts
  */
-function checkForcedInjection () {
-  extension.storage.local.get(['forcedOrigins'], ({ forcedOrigins = [] }) => {
-    originApproved = forcedOrigins.indexOf(window.location.hostname) > -1
-  })
+function checkPrivacyMode () {
+  extension.runtime.sendMessage({ action: 'init-privacy-request' })
 }
 
 /**

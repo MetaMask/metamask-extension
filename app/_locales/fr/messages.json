@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Les sites Web doivent demander un accès pour afficher les informations de votre compte."
+  },
+  "privacyModeDescription": {
+    "message": "Les sites Web doivent demander un accès pour afficher les informations de votre compte."
+  },
   "exposeAccounts": {
     "message": "Exposer les comptes"
   },
@@ -22,12 +28,6 @@
   },
   "clearApprovalData": {
     "message": "Effacer les données d'approbation"
-  },
-  "approve": {
-    "message": "Approuver"
-  },
-  "reject": {
-    "message": "Rejeter"
   },
   "providerAPIRequest": {
     "message": "Demande d'API Web3"
