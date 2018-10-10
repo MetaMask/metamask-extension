@@ -358,12 +358,6 @@
   "enterPasswordContinue": {
     "message": "Entrez votre mot de passe pour continuer."
   },
-  "enterPasswordConfirm": {
-    "message": "Enter your password to confirm"
-  },
-  "enterPasswordContinue": {
-    "message": "Enter password to continue"
-  },
   "etherscanView": {
     "message": "Afficher le compte sur Etherscan"
   },
