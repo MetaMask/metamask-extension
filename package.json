@@ -289,7 +289,7 @@
     "image-size": "^0.6.2",
     "isomorphic-fetch": "^2.2.1",
     "jsdoc": "^3.5.5",
-    "jsdom": "^11.2.0",
+    "jsdom": "^12.1.0",
     "jsdom-global": "^3.0.2",
     "jshint-stylish": "~2.2.1",
     "karma": "^2.0.4",
