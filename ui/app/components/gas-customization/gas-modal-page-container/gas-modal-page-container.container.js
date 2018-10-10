@@ -10,6 +10,7 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
   resetCustomData,
+  setCustomTimeEstimate,
 } from '../../../ducks/gas.duck'
 import {
   hideGasButtonGroup,
@@ -29,6 +30,7 @@ import {
   getBasicGasEstimateLoadingStatus,
   getAveragePriceEstimateInHexWEI,
   getDefaultActiveButtonIndex,
+  formatTimeEstimate,
 } from '../../../selectors/custom-gas'
 import {
   formatCurrency,
@@ -65,20 +67,24 @@ const mapStateToProps = state => {
 
   const hideBasic = state.appState.modal.modalState.props.hideBasic
 
+  const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
+
   return {
     hideBasic,
     isConfirm: isConfirm(state),
     customModalGasPriceInHex,
     customModalGasLimitInHex,
-    customGasPrice: calcCustomGasPrice(customModalGasPriceInHex),
+    customGasPrice,
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     newTotalFiat,
+    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, state.gas.priceAndTimeEstimates),
     gasPriceButtonGroupProps: {
       buttonDataLoading,
       defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),
       gasButtonInfo,
     },
     gasChartProps: {
+      currentPrice: customGasPrice,
       priceAndTimeEstimates: state.gas.priceAndTimeEstimates,
     },
     infoRowProps: {
@@ -111,6 +117,7 @@ const mapDispatchToProps = dispatch => {
       return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
     },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
+    setCustomTimeEstimate: (timeEstimateInSeconds) => dispatch(setCustomTimeEstimate(timeEstimateInSeconds)),
   }
 }
 
@@ -180,4 +187,26 @@ function addHexWEIsToRenderableFiat (aHexWEI, bHexWEI, convertedCurrency, conver
     partialRight(ethTotalToConvertedCurrency, [convertedCurrency, conversionRate]),
     partialRight(formatCurrency, [convertedCurrency]),
   )(aHexWEI, bHexWEI)
+}
+
+function getRenderableTimeEstimate (currentGasPrice, priceAndTimeEstimates) {
+  const gasPrices = priceAndTimeEstimates.map(({ gasprice }) => gasprice)
+  const estimatedTimes = priceAndTimeEstimates.map(({ expectedTime }) => expectedTime)
+
+  const closestLowerValueIndex = gasPrices.findIndex((e, i, a) => {
+    return e <= currentGasPrice && a[i + 1] >= currentGasPrice
+  })
+  const closestHigherValueIndex = gasPrices.findIndex((e, i, a) => {
+    return e > currentGasPrice
+  })
+
+  const closestLowerValue = gasPrices[closestLowerValueIndex]
+  const closestHigherValue = gasPrices[closestHigherValueIndex]
+  const estimatedClosestLowerTimeEstimate = estimatedTimes[closestLowerValueIndex]
+  const estimatedClosestHigherTimeEstimate = estimatedTimes[closestHigherValueIndex]
+
+  const slope = (estimatedClosestHigherTimeEstimate - estimatedClosestLowerTimeEstimate) / (closestHigherValue - closestLowerValue)
+  const newTimeEstimate = -1 * (slope * (closestHigherValue - currentGasPrice) - estimatedClosestHigherTimeEstimate)
+
+  return formatTimeEstimate(newTimeEstimate)
 }

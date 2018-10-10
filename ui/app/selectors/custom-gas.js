@@ -31,6 +31,7 @@ const selectors = {
   getAveragePriceEstimateInHexWEI,
   getDefaultActiveButtonIndex,
   priceEstimateToWei,
+  formatTimeEstimate,
 }
 
 module.exports = selectors
