@@ -29,6 +29,10 @@ export default class AdvancedTabContent extends Component {
           precision={precision}
           onChange={event => onChange(Number(event.target.value))}
         />
+        <div className="advanced-tab__gas-edit-row__input-arrows">
+          <div className="advanced-tab__gas-edit-row__input-arrows__i-wrap"><i className="fa fa-sm fa-angle-up" onClick={() => onChange(value + 1)} /></div>
+          <div className="advanced-tab__gas-edit-row__input-arrows__i-wrap"><i className="fa fa-sm fa-angle-down" onClick={() => onChange(value - 1)} /></div>
+        </div>
       </div>
     )
   }

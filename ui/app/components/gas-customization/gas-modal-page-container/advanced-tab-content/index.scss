@@ -119,6 +119,43 @@
       margin-top: 7px;
     }
 
+    &__input-arrows {
+      position: absolute;
+      top: 7px;
+      right: 0px;
+      width: 17px;
+      height: 24px;
+      border: 1px solid #dadada;
+      border-top-right-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      color: #9b9b9b;
+      font-size: .8em;
+      border-bottom-right-radius: 4px;
+      cursor: pointer;
+
+      &__i-wrap {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      &__i-wrap:hover {
+        background: #4EADE7;
+        color: $white;
+      }
+
+      i:hover {
+        background: #4EADE7;
+      }
+
+      i {
+        font-size: 10px;
+      }
+    }
+
+
     input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
       -moz-appearance: none;
