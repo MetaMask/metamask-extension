@@ -166,6 +166,10 @@ class TransactionController extends EventEmitter {
   async addUnapprovedTransaction (txParams) {
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
+    // Assert the from address is the selected address
+    if (normalizedTxParams.from !== this.getSelectedAddress()) {
+      throw new Error(`Transaction from address isn't valid for this account`)
+    }
     txUtils.validateTxParams(normalizedTxParams)
     // construct txMeta
     let txMeta = this.txStateManager.generateTxMeta({
