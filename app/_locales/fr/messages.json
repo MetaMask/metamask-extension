@@ -353,10 +353,10 @@
     "message": "Entrez votre mot de passe"
   },
   "enterPasswordConfirm": {
-    "message": "Entrez votre mot de passe pour confirmer."
+    "message": "Entrez votre mot de passe pour confirmer"
   },
   "enterPasswordContinue": {
-    "message": "Entrez votre mot de passe pour continuer."
+    "message": "Entrez votre mot de passe pour continuer"
   },
   "etherscanView": {
     "message": "Afficher le compte sur Etherscan"
