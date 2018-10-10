@@ -3,7 +3,7 @@
     "message": "수락"
   },
   "accessingYourCamera": {
-    "message": "카메라에 접근중..."
+    "message": "카메라에 접근 중..."
   },
   "account": {
     "message": "계정"
@@ -84,7 +84,7 @@
     "message": "Blockies 아이덴티콘 사용"
   },
   "borrowDharma": {
-    "message": "Dharma에서 대여하기(Beta)"
+    "message": "Dharma에서 대출받기 (Beta)"
   },
   "browserNotSupported": {
     "message": "브라우저를 지원하지 않습니다..."
@@ -144,22 +144,22 @@
     "message": "연결"
   },
   "connecting": {
-    "message": "연결중..."
+    "message": "연결 중..."
   },
   "connectingToMainnet": {
-    "message": "이더리움 메인넷 접속중"
+    "message": "이더리움 메인넷 접속 중"
   },
   "connectingToRopsten": {
-    "message": "Ropsten 테스트넷 접속중"
+    "message": "Ropsten 테스트넷 접속 중"
   },
   "connectingToKovan": {
-    "message": "Kovan 테스트넷 접속중"
+    "message": "Kovan 테스트넷 접속 중"
   },
   "connectingToRinkeby": {
-    "message": "Rinkeby 테스트넷 접속중"
+    "message": "Rinkeby 테스트넷 접속 중"
   },
   "connectingToUnknown": {
-    "message": "알려지지 않은 네트워크 접속중"
+    "message": "알 수 없는 네트워크 접속 중"
   },
   "connectToLedger": {
     "message": "Ledger 연결"
@@ -177,7 +177,7 @@
     "message": "컨트랙트 배포"
   },
   "conversionProgress": {
-    "message": "변환 진행중"
+    "message": "변환 진행 중"
   },
   "copiedButton": {
     "message": "복사됨"
@@ -235,7 +235,7 @@
     "message": "사용자 정의 토큰"
   },
   "customize": {
-    "message": "맞춤화 하기"
+    "message": "맞춤화하기"
   },
   "customRPC": {
     "message": "사용자 정의 RPC"
@@ -278,7 +278,7 @@
     "message": "ShapeShift를 통해 입금하기"
   },
   "depositShapeShiftExplainer": {
-    "message": "다른 암호화폐를 가지고 있으면, 계정을 생성할 필요없이 메타마스크 지갑에 이더리움을 바로 거래하거나 입금할 수 있습니다."
+    "message": "다른 암호화폐를 가지고 있으면, 계정을 생성할 필요 없이 메타마스크 지갑에 이더리움을 바로 거래하거나 입금할 수 있습니다."
   },
   "details": {
     "message": "세부사항"
@@ -314,7 +314,7 @@
     "message": "계정 이름 수정"
   },
   "editingTransaction": {
-    "message": "트랜젝션을 변경합니다"
+    "message": "트랜잭션을 변경합니다"
   },
   "emailUs": {
     "message": "저자에게 메일 보내기!"
@@ -367,10 +367,10 @@
     "message": "보내는 이"
   },
   "fromToSame": {
-    "message": "보내고 받는 주소는 동일할 수 없습니다"
+    "message": "보내고 받는 주소는 같을 수 없습니다"
   },
   "fromShapeShift": {
-    "message": "ShapeShift로 부터"
+    "message": "ShapeShift로부터"
   },
   "functionType": {
     "message": "함수 유형"
@@ -392,10 +392,10 @@
     "message": "가스 한도가 필요합니다."
   },
   "gasLimitTooLow": {
-    "message": "가스 한도는 최소 21000 이상이여야 합니다."
+    "message": "가스 한도는 최소 21000 이상이어야 합니다."
   },
   "generatingSeed": {
-    "message": "시드 생성중..."
+    "message": "시드 생성 중..."
   },
   "gasPrice": {
     "message": "가스 가격 (GWEI)"
@@ -407,7 +407,7 @@
     "message": "가스 가격이 필요합니다."
   },
   "generatingTransaction": {
-    "message": "트랜잭션 생성중"
+    "message": "트랜잭션 생성 중"
   },
   "getEther": {
     "message": "이더 얻기"
@@ -620,14 +620,14 @@
     "message": "네트워크"
   },
   "nevermind": {
-    "message": "상관안함"
+    "message": "상관 안 함"
   },
   "newAccount": {
     "message": "새 계정"
   },
   "newAccountNumberName": {
     "message": "새 계정 $1",
-    "description": "계정 생성시 볼 수 있는 새 계정의 기본 이름"
+    "description": "계정 생성 시 볼 수 있는 새 계정의 기본 이름"
   },
   "newContract": {
     "message": "새 컨트랙트"
@@ -663,7 +663,7 @@
     "message": "찾을 수 없음"
   },
   "notStarted": {
-    "message": "시작 안됨"
+    "message": "시작 안 됨"
   },
   "noWebcamFound": {
     "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도해보세요."
@@ -675,13 +675,13 @@
     "message": "구버전 UI"
   },
   "oldUIMessage": {
-    "message": "구버전 UI로 변경하셨습니다. 우 상단 드롭다운 메뉴에서 새 UI로 변경하실 수 있습니다."
+    "message": "구버전 UI로 변경하셨습니다. 오른쪽 위 드롭다운 메뉴에서 새 UI로 변경하실 수 있습니다."
   },
   "onlySendToEtherAddress": {
     "message": "이더리움 주소로 ETH만 송금하세요."
   },
   "onlySendTokensToAccountAddress": {
-    "message": "이더리움계정 주소로 $1 만 보내기.",
+    "message": "이더리움 계정 주소로 $1만 보내기.",
     "description": "토큰 심볼 보이기"
   },
   "openInTab": {
@@ -689,7 +689,7 @@
   },
   "or": {
     "message": "또는",
-    "description": "새 계정을 만들거나 가져오기중에 선택하기"
+    "description": "새 계정을 만들거나 가져오기 중에 선택하기"
   },
   "orderOneHere": {
     "message": "Trezor 혹은 Ledger를 구입하고 자금을 콜드 스토리지에 저장합니다"
@@ -711,7 +711,7 @@
   },
   "passwordMismatch": {
     "message": "비밀번호가 일치하지 않습니다.",
-    "description": "비밀번호를 생성하는 과정에서 두개의 새 비밀번호 입력란이 일치하지 않습니다"
+    "description": "비밀번호를 생성하는 과정에서 두 개의 새 비밀번호 입력란이 일치하지 않습니다"
   },
   "passwordNotLongEnough": {
     "message": "비밀번호가 충분히 길지 않습니다"
@@ -725,7 +725,7 @@
     "description": "개인키로부터 계정을 가져오는 것입니다"
   },
   "pasteSeed": {
-    "message": "시드 구문을 이곳에 붙여넣어주세요!"
+    "message": "시드 구문을 이곳에 붙여넣어 주세요!"
   },
   "personalAddressDetected": {
     "message": "개인 주소가 탐지됨. 토큰 컨트랙트 주소를 입력하세요."
@@ -813,10 +813,10 @@
     "message": "브라우저를 바꾸거나 컴퓨터를 옮기는 경우 이 시드 구문이 필요하며 이를 통해 계정에 접근할 수 있습니다. 시드 구문을 안전한 곳에 보관하세요."
   },
   "revealSeedWordsWarningTitle": {
-    "message": "이 구문을 다른사람과 절대로 공유하지 마세요!"
+    "message": "이 구문을 다른 사람과 절대로 공유하지 마세요!"
   },
   "revealSeedWordsWarning": {
-    "message": "이 단어모음은 당신의 모든 계정을 훔치는데 사용할 수 있습니다."
+    "message": "이 단어 모음은 당신의 모든 계정을 훔치는데 사용할 수 있습니다."
   },
   "revert": {
     "message": "되돌림"
@@ -828,7 +828,7 @@
     "message": "계정 제거"
   },
   "removeAccountDescription": {
-    "message": "이 계정한 지갑에서 삭제될 것입니다. 지우기 전에 이 계정에 대한 개인 키 혹은 시드 구문을 가지고 있는지 확인하세요. 계정 드랍다운 메뉴를 통해서 계정을 가져오거나 생성할 수 있습니다."
+    "message": "이 계정은 지갑에서 삭제될 것입니다. 지우기 전에 이 계정에 대한 개인 키 혹은 시드 구문을 가지고 있는지 확인하세요. 계정 드롭다운 메뉴를 통해서 계정을 가져오거나 생성할 수 있습니다."
   },
   "readyToConnect": {
     "message": "접속 준비되었나요?"
@@ -853,7 +853,7 @@
     "message": "트랜잭션 속도 향상하기"
   },
   "speedUpSubtitle": {
-    "message": "트랜잭션 가스 가격을 늘려서 해당 트랙잭션에 덮어쓰기 하여 속도를 빠르게 합니다"
+    "message": "트랜잭션 가스 가격을 늘려서 해당 트랜잭션에 덮어써서 속도를 빠르게 합니다"
   },
   "saveAsCsvFile": {
     "message": "CSV 파일로 저장"
@@ -920,13 +920,13 @@
     "message": "계정 선택"
   },
   "selectAnAccountHelp": {
-    "message": "메타마스크에서 보기위한 계정 선택"
+    "message": "메타마스크에서 보기 위한 계정 선택"
   },
   "selectHdPath": {
     "message": "HD 경로 지정"
   },
   "selectPathHelp": {
-    "message": "하단에서 Ledger지갑 계정을 찾지 못하겠으면 \"Legacy (MEW / MyCrypto)\" 경로로 바꿔보세요"
+    "message": "하단에서 Ledger 지갑 계정을 찾지 못하겠으면 \"Legacy (MEW / MyCrypto)\" 경로로 바꿔보세요"
   },
   "sendTokensAnywhere": {
     "message": "이더 계정로 토큰 전송"
@@ -989,13 +989,13 @@
     "message": "2. 계정 선택"
   },
   "step2HardwareWalletMsg": {
-    "message": "보고 싶은 계정을 선택합니다. 한번에 하나의 계정만 선택할 수 있습니다."
+    "message": "보고 싶은 계정을 선택합니다. 한 번에 하나의 계정만 선택할 수 있습니다."
   },
   "step3HardwareWallet": {
     "message": "3. dApps을 사용하거나 다른 것을 합니다!"
   },
   "step3HardwareWalletMsg": {
-    "message": "다른 이더리움 계정을 사용하듯 하드웨어 계정을 사용합니다. dApps을 로그인하거나, 이더를 보내거나, ERC20토큰 혹은 대체가능하지 않은 토큰 (예를 들어 CryptoKitties)을 사거나 저장하거나 합니다."
+    "message": "다른 이더리움 계정을 사용하듯 하드웨어 계정을 사용합니다. dApps을 로그인하거나, 이더를 보내거나, ERC20 토큰 혹은 대체 가능하지 않은 토큰 (예를 들어 CryptoKitties)을 사거나 저장하거나 합니다."
   },
   "submit": {
     "message": "제출"
@@ -1044,7 +1044,7 @@
     "message": "토큰 기호"
   },
   "tokenWarning1": {
-    "message": "메타마스크 계좌를 통해 구입한 토큰을 추적합니다. 다른 계정으로 토큰을 구입한 경우 이곳에 나타나지 않습니다."
+    "message": "메타마스크 계정을 통해 구입한 토큰을 추적합니다. 다른 계정으로 토큰을 구입한 경우 이곳에 나타나지 않습니다."
   },
   "total": {
     "message": "합계"
@@ -1090,22 +1090,22 @@
     "message": "새로운 메타마스크 UI를 사용하고 계십니다. 토큰 전송과 같은 새 기능들을 사용해보시면서 문제가 있다면 알려주세요."
   },
   "unapproved": {
-    "message": "허가안됨"
+    "message": "허가 안 됨"
   },
   "unavailable": {
-    "message": "유효하지 않음"
+    "message": "이용할 수 없음"
   },
   "unknown": {
-    "message": "알려지지 않음"
+    "message": "알 수 없음"
   },
   "unknownFunction": {
-    "message": "알려지지 않은 함수"
+    "message": "알 수 없는 함수"
   },
   "unknownNetwork": {
-    "message": "알려지지 않은 프라이빗 네트워크"
+    "message": "알 수 없는 프라이빗 네트워크"
   },
   "unknownNetworkId": {
-    "message": "알려지지 않은 네트워크 ID"
+    "message": "알 수 없는 네트워크 ID"
   },
   "unknownQrCode": {
     "message": "오류: QR 코드를 확인할 수 없습니다"
@@ -1114,7 +1114,7 @@
     "message": "이런! 뭔가 잘못되었습니다...."
   },
   "unknownCameraError": {
-    "message": "카메라를 접근하는 중 오류가 발생했습니다. 다시 시도해 주세요..."
+    "message": "카메라에 접근하는 중 오류가 발생했습니다. 다시 시도해 주세요..."
   },
   "unlock": {
     "message": "잠금 해제"
@@ -1127,7 +1127,7 @@
   },
   "usaOnly": {
     "message": "USA 거주자 한정",
-    "description": "해당 거래소는 USA거주자에 한해서만 사용가능합니다"
+    "description": "해당 거래소는 USA 거주자에 한해서만 사용 가능합니다"
   },
   "usedByClients": {
     "message": "다양한 클라이언트에서 사용되고 있습니다"
@@ -1145,7 +1145,7 @@
     "message": "계정 보기"
   },
   "viewOnEtherscan": {
-    "message": "이터스캔에서 보기"
+    "message": "이더스캔에서 보기"
   },
   "visitWebSite": {
     "message": "웹사이트 방문"
@@ -1166,7 +1166,7 @@
     "message": "이것은 무엇인가요?"
   },
   "yourSigRequested": {
-    "message": "서명이 요청되고 있습니다."
+    "message": "서명을 요청 중입니다."
   },
   "youSign": {
     "message": "서명 중입니다"
