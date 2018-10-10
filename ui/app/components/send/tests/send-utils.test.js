@@ -304,10 +304,13 @@ describe('send utils', () => {
       selectedAddress: 'mockAddress',
       to: '0xisContract',
       estimateGasMethod: sinon.stub().callsFake(
-        (data, cb) => cb(
-          data.to.match(/willFailBecauseOf:/) ? { message: data.to.match(/:(.+)$/)[1] } : null,
-          { toString: (n) => `0xabc${n}` }
-        )
+        ({to}, cb) => {
+          const err = typeof to === 'string' && to.match(/willFailBecauseOf:/)
+            ? new Error(to.match(/:(.+)$/)[1])
+            : null
+          const result = { toString: (n) => `0xabc${n}` }
+          return cb(err, result)
+        }
       ),
     }
     const baseExpectedCall = {
@@ -364,6 +367,18 @@ describe('send utils', () => {
       assert.equal(result, '0xabc16')
     })
 
+    it('should call ethQuery.estimateGas without a recipient if the recipient is empty and data passed', async () => {
+      const data = 'mockData'
+      const to = ''
+      const result = await estimateGas({...baseMockParams, data, to})
+      assert.equal(baseMockParams.estimateGasMethod.callCount, 1)
+      assert.deepEqual(
+        baseMockParams.estimateGasMethod.getCall(0).args[0],
+        { gasPrice: undefined, value: undefined, data, from: baseExpectedCall.from, gas: baseExpectedCall.gas},
+      )
+      assert.equal(result, '0xabc16')
+    })
+
     it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async () => {
       assert.equal(baseMockParams.estimateGasMethod.callCount, 0)
       const result = await estimateGas(Object.assign({}, baseMockParams, { to: '0x123' }))
@@ -407,7 +422,7 @@ describe('send utils', () => {
           to: 'isContract willFailBecauseOf:some other error',
         }))
       } catch (err) {
-        assert.deepEqual(err, { message: 'some other error' })
+        assert.equal(err.message, 'some other error')
       }
     })
   })

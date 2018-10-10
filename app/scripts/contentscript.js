@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const pump = require('pump')
+const querystring = require('querystring')
 const LocalMessageDuplexStream = require('post-message-stream')
 const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
@@ -199,5 +200,8 @@ function blacklistedDomainCheck () {
 function redirectToPhishingWarning () {
   console.log('MetaMask - routing to Phishing Warning component')
   const extensionURL = extension.runtime.getURL('phishing.html')
-  window.location.href = extensionURL
+  window.location.href = `${extensionURL}#${querystring.stringify({
+    hostname: window.location.hostname,
+    href: window.location.href,
+  })}`
 }

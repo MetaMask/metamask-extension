@@ -36,9 +36,17 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
+      - test-e2e-beta-drizzle:
+          requires:
+            - prep-deps-npm
+            - prep-build
       - test-unit:
           requires:
             - prep-deps-npm
+      - test-mozilla-lint:
+          requires:
+            - prep-deps-npm
+            - prep-build
       - test-integration-mascara-chrome:
           requires:
             - prep-deps-npm
@@ -59,10 +67,12 @@ workflows:
           requires:
             - test-lint
             - test-unit
+            - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
             - test-e2e-beta-chrome
             - test-e2e-beta-firefox
+            - test-e2e-beta-drizzle
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
@@ -217,6 +227,19 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
+  test-e2e-beta-drizzle:
+    docker:
+      - image: circleci/node:8.11.3-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:e2e:drizzle:beta
+          command: npm run test:e2e:drizzle:beta
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
   test-e2e-beta-chrome:
     docker:
       - image: circleci/node:8.11.3-browsers
@@ -299,8 +322,8 @@ jobs:
       - run:
           name: github gh-pages docs publish
           command: >
-            git config user.name metamaskbot
-            git config user.email admin@metamask.io
+            git config user.name metamaskbot &&
+            git config user.email admin@metamask.io &&
             gh-pages -d docs/jsdocs
 
   test-unit:
@@ -313,6 +336,16 @@ jobs:
       - run:
           name: test:coverage
           command: npm run test:coverage
+  test-mozilla-lint:
+    docker:
+      - image: circleci/node:8.11.3-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:mozilla-lint
+          command: npm run mozilla-lint
 
   test-integration-flat-firefox:
     docker:

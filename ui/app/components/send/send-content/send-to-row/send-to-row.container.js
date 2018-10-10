@@ -3,6 +3,7 @@ import {
     getCurrentNetwork,
     getSendTo,
     getSendToAccounts,
+    getSendHexData,
 } from '../../send.selectors.js'
 import {
     getToDropdownOpen,
@@ -22,6 +23,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(SendToRow)
 
 function mapStateToProps (state) {
   return {
+    hasHexData: Boolean(getSendHexData(state)),
     inError: sendToIsInError(state),
     network: getCurrentNetwork(state),
     to: getSendTo(state),

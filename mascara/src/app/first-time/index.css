@@ -17,6 +17,12 @@
   font-family: Roboto;
 }
 
+@media screen and (min-height: 576px) {
+  .first-time-flow {
+    height: 100vh;
+  }
+}
+
 .alpha-warning__container {
   display: flex;
   justify-content: center;

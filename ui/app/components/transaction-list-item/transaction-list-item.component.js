@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import Identicon from '../identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
@@ -9,20 +10,24 @@ import TransactionListItemDetails from '../transaction-list-item-details'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
 import { ETH } from '../../constants/common'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
+    assetImages: PropTypes.object,
     history: PropTypes.object,
-    transaction: PropTypes.object,
-    value: PropTypes.string,
     methodData: PropTypes.object,
-    showRetry: PropTypes.bool,
+    nonceAndDate: PropTypes.string,
     retryTransaction: PropTypes.func,
     setSelectedToken: PropTypes.func,
-    nonceAndDate: PropTypes.string,
+    showCancelModal: PropTypes.func,
+    showCancel: PropTypes.bool,
+    showRetry: PropTypes.bool,
+    showTransactionDetailsModal: PropTypes.func,
     token: PropTypes.object,
-    assetImages: PropTypes.object,
     tokenData: PropTypes.object,
+    transaction: PropTypes.object,
+    value: PropTypes.string,
   }
 
   state = {
@@ -30,21 +35,42 @@ export default class TransactionListItem extends PureComponent {
   }
 
   handleClick = () => {
-    const { transaction, history } = this.props
+    const {
+      transaction,
+      history,
+      showTransactionDetailsModal,
+      methodData,
+      showCancel,
+      showRetry,
+    } = this.props
     const { id, status } = transaction
     const { showTransactionDetails } = this.state
+    const windowType = window.METAMASK_UI_TYPE
 
     if (status === UNAPPROVED_STATUS) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`)
       return
     }
 
-    this.setState({ showTransactionDetails: !showTransactionDetails })
+    if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
+      this.setState({ showTransactionDetails: !showTransactionDetails })
+    } else {
+      showTransactionDetailsModal({
+        transaction,
+        onRetry: this.handleRetry,
+        showRetry: showRetry && methodData.done,
+        onCancel: this.handleCancel,
+        showCancel,
+      })
+    }
   }
 
-  handleRetryClick = event => {
-    event.stopPropagation()
+  handleCancel = () => {
+    const { transaction: { id, txParams: { gasPrice } } = {}, showCancelModal } = this.props
+    showCancelModal(id, gasPrice)
+  }
 
+  handleRetry = () => {
     const {
       transaction: { txParams: { to } = {} },
       methodData: { name } = {},
@@ -55,12 +81,12 @@ export default class TransactionListItem extends PureComponent {
       setSelectedToken(to)
     }
 
-    this.resubmit()
+    return this.resubmit()
   }
 
   resubmit () {
     const { transaction: { id }, retryTransaction, history } = this.props
-    retryTransaction(id)
+    return retryTransaction(id)
       .then(id => history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`))
   }
 
@@ -102,12 +128,13 @@ export default class TransactionListItem extends PureComponent {
 
   render () {
     const {
-      transaction,
-      methodData,
-      showRetry,
-      nonceAndDate,
       assetImages,
+      methodData,
+      nonceAndDate,
+      showCancel,
+      showRetry,
       tokenData,
+      transaction,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
@@ -150,16 +177,23 @@ export default class TransactionListItem extends PureComponent {
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }
         </div>
-        {
-          showTransactionDetails && (
-            <div className="transaction-list-item__details-container">
-              <TransactionListItemDetails
-                transaction={transaction}
-                showRetry={showRetry && methodData.done}
-              />
-            </div>
-          )
-        }
+        <div className={classnames('transaction-list-item__expander', {
+          'transaction-list-item__expander--show': showTransactionDetails,
+        })}>
+          {
+            showTransactionDetails && (
+              <div className="transaction-list-item__details-container">
+                <TransactionListItemDetails
+                  transaction={transaction}
+                  onRetry={this.handleRetry}
+                  showRetry={showRetry && methodData.done}
+                  onCancel={this.handleCancel}
+                  showCancel={showCancel}
+                />
+              </div>
+            )
+          }
+        </div>
       </div>
     )
   }

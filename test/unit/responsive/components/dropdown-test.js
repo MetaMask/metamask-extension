@@ -6,7 +6,7 @@ const path = require('path')
 const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'dropdowns', 'index.js')).Dropdown
 
 const { createMockStore } = require('redux-test-utils')
-const { mountWithStore } = require('../../../lib/shallow-with-store')
+const { mountWithStore } = require('../../../lib/render-helpers')
 
 const mockState = {
   metamask: {

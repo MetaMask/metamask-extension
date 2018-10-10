@@ -3,6 +3,8 @@
   flex-direction: column;
   flex: 1;
   overflow-y: hidden;
+  margin-top: 8px;
+  border-top: 1px solid $geyser;
 
   &__completed-transactions {
     display: flex;
@@ -15,7 +17,7 @@
     font-size: .875rem;
     color: $dusty-gray;
     border-bottom: 1px solid $geyser;
-    padding: 16px 0 8px 20px;
+    padding: 8px 0 8px 20px;
 
     @media screen and (max-width: $break-small) {
       padding: 8px 0 8px 16px;

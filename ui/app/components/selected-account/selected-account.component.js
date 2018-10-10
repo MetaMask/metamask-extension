@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
-import { addressSlicer } from '../../util'
+import { addressSlicer, checksumAddress } from '../../util'
 
 const Tooltip = require('../tooltip-v2.js').default
 
@@ -22,6 +22,7 @@ class SelectedAccount extends Component {
   render () {
     const { t } = this.context
     const { selectedAddress, selectedIdentity } = this.props
+    const checksummedAddress = checksumAddress(selectedAddress)
 
     return (
       <div className="selected-account">
@@ -34,14 +35,14 @@ class SelectedAccount extends Component {
             onClick={() => {
               this.setState({ copied: true })
               setTimeout(() => this.setState({ copied: false }), 3000)
-              copyToClipboard(selectedAddress)
+              copyToClipboard(checksummedAddress)
             }}
           >
             <div className="selected-account__name">
               { selectedIdentity.name }
             </div>
             <div className="selected-account__address">
-              { addressSlicer(selectedAddress) }
+              { addressSlicer(checksummedAddress) }
             </div>
           </div>
         </Tooltip>

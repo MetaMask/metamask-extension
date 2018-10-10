@@ -2,6 +2,9 @@
   "accept": {
     "message": "수락"
   },
+  "accessingYourCamera": {
+    "message": "카메라에 접근중..."
+  },
   "account": {
     "message": "계정"
   },
@@ -10,6 +13,9 @@
   },
   "accountName": {
     "message": "계정 이름"
+  },
+  "accountSelectionRequired": {
+    "message": "계정을 선택하셔야 합니다!"
   },
   "address": {
     "message": "주소"
@@ -34,11 +40,14 @@
   },
   "appDescription": {
     "message": "이더리움 브라우저 확장 프로그램",
-    "description": "어플리케이션 설명"
+    "description": "애플리케이션 설명"
   },
   "appName": {
     "message": "메타마스크",
-    "description": "어플리케이션 이름"
+    "description": "애플리케이션 이름"
+  },
+  "approve": {
+    "message": "수락"
   },
   "approved": {
     "message": "수락"
@@ -77,6 +86,9 @@
   "borrowDharma": {
     "message": "Dharma에서 대여하기(Beta)"
   },
+  "browserNotSupported": {
+    "message": "브라우저를 지원하지 않습니다..."
+  },
   "builtInCalifornia": {
     "message": "메타마스크는 캘리포니아에서 디자인되고 만들어졌습니다."
   },
@@ -88,6 +100,9 @@
   },
   "buyCoinbaseExplainer": {
     "message": "코인베이스는 비트코인, 이더리움, 라이트코인을 거래할 수 있는 유명한 거래소입니다."
+  },
+  "bytes": {
+    "message": "바이트"
   },
   "ok": {
     "message": "확인"
@@ -104,6 +119,9 @@
   "close": {
     "message": "닫기"
   },
+  "chromeRequiredForHardwareWallets": {
+    "message": "하드웨어 지갑을 연결하기 위해서는 구글 크롬에서 메타마스크를 사용하셔야 합니다."
+  },
   "confirm": {
     "message": "승인"
   },
@@ -118,6 +136,36 @@
   },
   "confirmTransaction": {
     "message": "트랜잭션 승인"
+  },
+  "connectHardwareWallet": {
+    "message": "하드웨어 지갑 연결"
+  },
+  "connect": {
+    "message": "연결"
+  },
+  "connecting": {
+    "message": "연결중..."
+  },
+  "connectingToMainnet": {
+    "message": "이더리움 메인넷 접속중"
+  },
+  "connectingToRopsten": {
+    "message": "Ropsten 테스트넷 접속중"
+  },
+  "connectingToKovan": {
+    "message": "Kovan 테스트넷 접속중"
+  },
+  "connectingToRinkeby": {
+    "message": "Rinkeby 테스트넷 접속중"
+  },
+  "connectingToUnknown": {
+    "message": "알려지지 않은 네트워크 접속중"
+  },
+  "connectToLedger": {
+    "message": "Ledger 연결"
+  },
+  "connectToTrezor": {
+    "message": "Trezor 연결"
   },
   "continue": {
     "message": "계속"
@@ -146,8 +194,8 @@
   "copy": {
     "message": "복사"
   },
-  "copyContractAddress": {
-    "message": "컨트랙트 주소 복사"
+  "copyAddress": {
+    "message": "클립보드로 주소 복사"
   },
   "copyToClipboard": {
     "message": "클립보드로 복사"
@@ -177,6 +225,9 @@
   "currentNetwork": {
     "message": "현재 네트워크"
   },
+  "currentRpc": {
+    "message": "현재 RPC"
+  },
   "customGas": {
     "message": "가스 설정"
   },
@@ -205,7 +256,7 @@
     "message": "입금"
   },
   "depositBTC": {
-    "message": "다음 주소로 BTC를 입급해주세요."
+    "message": "다음 주소로 BTC를 입금해주세요."
   },
   "depositCoin": {
     "message": "다음 주소로 $1 만큼 입금해주세요.",
@@ -244,8 +295,14 @@
   "done": {
     "message": "완료"
   },
+  "downloadGoogleChrome": {
+    "message": "구글 크롬 다운로드"
+  },
   "downloadStateLogs": {
     "message": "상태 로그 다운로드"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "하드웨어 지갑이 없나요?"
   },
   "dropped": {
     "message": "중단됨"
@@ -265,6 +322,9 @@
   "encryptNewDen": {
     "message": "새로운 DEN을 암호화"
   },
+  "ensNameNotFound": {
+    "message": "ENS 이름을 찾을 수 없습니다"
+  },
   "enterPassword": {
     "message": "비밀번호를 입력해주세요"
   },
@@ -273,12 +333,6 @@
   },
   "enterPasswordContinue": {
     "message": "계속하기 위해 비밀번호 입력"
-  },
-  "passwordNotLongEnough": {
-    "message": "비밀번호가 충분히 길지 않습니다"
-  },
-  "passwordsDontMatch": {
-    "message": "비밀번호가 맞지 않습니다"
   },
   "etherscanView": {
     "message": "이더스캔에서 계정보기"
@@ -306,6 +360,9 @@
   "followTwitter": {
     "message": "트위터에서 팔로우하세요"
   },
+  "forgetDevice": {
+    "message": "장치 연결 해제"
+  },
   "from": {
     "message": "보내는 이"
   },
@@ -314,6 +371,9 @@
   },
   "fromShapeShift": {
     "message": "ShapeShift로 부터"
+  },
+  "functionType": {
+    "message": "함수 유형"
   },
   "gas": {
     "message": "가스",
@@ -356,9 +416,27 @@
     "message": "파우셋에서 $1에 달하는 이더를 얻으세요.",
     "description": "이더 파우셋에 대한 네트워크 이름을 표시합니다"
   },
+  "getHelp": {
+    "message": "도움말"
+  },
   "greaterThanMin": {
     "message": "$1 이상이어야 합니다.",
     "description": "10진수 입력으로 hex값 입력을 도와줍니다"
+  },
+  "hardware": {
+    "message": "하드웨어"
+  },
+  "hardwareWalletConnected": {
+    "message": "하드웨어 지갑이 연결됨"
+  },
+  "hardwareWallets": {
+    "message": "하드웨어 지갑 연결"
+  },
+  "hardwareWalletsMsg": {
+    "message": "메타마스크에서 사용할 하드웨어 지갑을 선택해주세요"
+  },
+  "havingTroubleConnecting": {
+    "message": "연결에 문제가 있나요?"
   },
   "here": {
     "message": "여기",
@@ -366,6 +444,9 @@
   },
   "hereList": {
     "message": "리스트가 있습니다!!!!"
+  },
+  "hexData": {
+    "message": "Hex 데이터"
   },
   "hide": {
     "message": "숨기기"
@@ -435,6 +516,9 @@
   "invalidRPC": {
     "message": "올바르지 않은 RPC URI"
   },
+  "invalidSeedPhrase": {
+    "message": "잘못된 시드 구문"
+  },
   "jsonFail": {
     "message": "이상이 있습니다. JSON 파일이 올바른 파일인지 확인해주세요."
   },
@@ -457,6 +541,9 @@
   "learnMore": {
     "message": "더 배우기."
   },
+  "ledgerAccountRestriction": {
+    "message": "새 계정을 추가하려면 최소 마지막 계정을 사용해야 합니다."
+  },
   "lessThanMax": {
     "message": "$1 이하여야합니다.",
     "description": "10진수 입력으로 hex값 입력을 도와줍니다"
@@ -471,10 +558,10 @@
     "message": "한도"
   },
   "loading": {
-    "message": "로딩중..."
+    "message": "로딩 중..."
   },
   "loadingTokens": {
-    "message": "토큰 로딩중..."
+    "message": "토큰 로딩 중..."
   },
   "localhost": {
     "message": "로컬호스트 8545"
@@ -493,6 +580,9 @@
   },
   "mainnet": {
     "message": "이더리움 메인넷"
+  },
+  "menu": {
+    "message": "메뉴"
   },
   "message": {
     "message": "메시지"
@@ -560,14 +650,26 @@
   "noDeposits": {
     "message": "입금 내역이 없습니다."
   },
+  "noConversionRateAvailable": {
+    "message": "변환 비율을 찾을 수 없습니다"
+  },
   "noTransactionHistory": {
     "message": "트랜잭션 기록이 없습니다."
   },
   "noTransactions": {
     "message": "트랜잭션이 없습니다"
   },
+  "notFound": {
+    "message": "찾을 수 없음"
+  },
   "notStarted": {
     "message": "시작 안됨"
+  },
+  "noWebcamFound": {
+    "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도해보세요."
+  },
+  "noWebcamFoundTitle": {
+    "message": "웹캠이 없습니다"
   },
   "oldUI": {
     "message": "구버전 UI"
@@ -575,9 +677,28 @@
   "oldUIMessage": {
     "message": "구버전 UI로 변경하셨습니다. 우 상단 드롭다운 메뉴에서 새 UI로 변경하실 수 있습니다."
   },
+  "onlySendToEtherAddress": {
+    "message": "이더리움 주소로 ETH만 송금하세요."
+  },
+  "onlySendTokensToAccountAddress": {
+    "message": "이더리움계정 주소로 $1 만 보내기.",
+    "description": "토큰 심볼 보이기"
+  },
+  "openInTab": {
+    "message": "탭으로 열기"
+  },
   "or": {
     "message": "또는",
     "description": "새 계정을 만들거나 가져오기중에 선택하기"
+  },
+  "orderOneHere": {
+    "message": "Trezor 혹은 Ledger를 구입하고 자금을 콜드 스토리지에 저장합니다"
+  },
+  "origin": {
+    "message": "Origin"
+  },
+  "parameters": {
+    "message": "매개변수"
   },
   "password": {
     "message": "비밀번호"
@@ -585,9 +706,15 @@
   "passwordCorrect": {
     "message": "비밀번호가 맞는지 확인해주세요."
   },
+  "passwordsDontMatch": {
+    "message": "비밀번호가 맞지 않습니다"
+  },
   "passwordMismatch": {
     "message": "비밀번호가 일치하지 않습니다.",
     "description": "비밀번호를 생성하는 과정에서 두개의 새 비밀번호 입력란이 일치하지 않습니다"
+  },
+  "passwordNotLongEnough": {
+    "message": "비밀번호가 충분히 길지 않습니다"
   },
   "passwordShort": {
     "message": "비밀번호가 짧습니다.",
@@ -608,6 +735,9 @@
   },
   "popularTokens": {
     "message": "인기있는 토큰"
+  },
+  "prev": {
+    "message": "이전"
   },
   "privacyMsg": {
     "message": "개인정보 보호 정책"
@@ -661,14 +791,17 @@
   "restoreVault": {
     "message": "저장소 복구"
   },
+  "restoreAccountWithSeed": {
+    "message": "시드 구문으로 계정 복구하기"
+  },
   "required": {
     "message": "필요함"
   },
   "retryWithMoreGas": {
     "message": "더 높은 가스 가격으로 다시 시도해주세요"
   },
-  "walletSeed": {
-    "message": "지갑 시드값"
+  "restore": {
+    "message": "복구"
   },
   "revealSeedWords": {
     "message": "시드 단어 보이기"
@@ -688,6 +821,18 @@
   "revert": {
     "message": "되돌림"
   },
+  "remove": {
+    "message": "제거"
+  },
+  "removeAccount": {
+    "message": "계정 제거"
+  },
+  "removeAccountDescription": {
+    "message": "이 계정한 지갑에서 삭제될 것입니다. 지우기 전에 이 계정에 대한 개인 키 혹은 시드 구문을 가지고 있는지 확인하세요. 계정 드랍다운 메뉴를 통해서 계정을 가져오거나 생성할 수 있습니다."
+  },
+  "readyToConnect": {
+    "message": "접속 준비되었나요?"
+  },
   "rinkeby": {
     "message": "Rinkeby 테스트넷"
   },
@@ -696,24 +841,6 @@
   },
   "rpc": {
     "message": "사용자 정의 RPC"
-  },
-  "currentRpc": {
-    "message": "현재 RPC"
-  },
-  "connectingToMainnet": {
-    "message": "이더리움 메인넷 접속중"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten 테스트넷 접속중"
-  },
-  "connectingToKovan": {
-    "message": "Kovan 테스트넷 접속중"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkeby 테스트넷 접속중"
-  },
-  "connectingToUnknown": {
-    "message": "알려지지 않은 네트워크 접속중"
   },
   "sampleAccountName": {
     "message": "예) 나의 새 계정",
@@ -737,6 +864,12 @@
   },
   "saveSeedAsFile": {
     "message": "시드 단어를 파일로 저장하기"
+  },
+  "scanInstructions": {
+    "message": "QR 코드를 카메라 앞에 가져다 놓아주세요"
+  },
+  "scanQrCode": {
+    "message": "QR 코드 스캔"
   },
   "search": {
     "message": "검색"
@@ -774,15 +907,26 @@
   "sendTokens": {
     "message": "토큰 전송"
   },
-  "onlySendToEtherAddress": {
-    "message": "이더리움 주소로 ETH만 송금하세요."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "이더리움계정 주소로 $1 만 보내기.",
-    "description": "토큰 심볼 보이기"
+  "separateEachWord": {
+    "message": "각 단어는 공백 한칸으로 분리합니다"
   },
   "searchTokens": {
     "message": "토큰 검색"
+  },
+  "selectAnAddress": {
+    "message": "주소 선택"
+  },
+  "selectAnAccount": {
+    "message": "계정 선택"
+  },
+  "selectAnAccountHelp": {
+    "message": "메타마스크에서 보기위한 계정 선택"
+  },
+  "selectHdPath": {
+    "message": "HD 경로 지정"
+  },
+  "selectPathHelp": {
+    "message": "하단에서 Ledger지갑 계정을 찾지 못하겠으면 \"Legacy (MEW / MyCrypto)\" 경로로 바꿔보세요"
   },
   "sendTokensAnywhere": {
     "message": "이더 계정로 토큰 전송"
@@ -835,6 +979,24 @@
   "stateLogError": {
     "message": "상태 로그 받기 실패."
   },
+  "step1HardwareWallet": {
+    "message": "1. 하드웨어 지갑 연결"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "하드웨어 지갑을 컴퓨터에 연결해주세요."
+  },
+  "step2HardwareWallet": {
+    "message": "2. 계정 선택"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "보고 싶은 계정을 선택합니다. 한번에 하나의 계정만 선택할 수 있습니다."
+  },
+  "step3HardwareWallet": {
+    "message": "3. dApps을 사용하거나 다른 것을 합니다!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "다른 이더리움 계정을 사용하듯 하드웨어 계정을 사용합니다. dApps을 로그인하거나, 이더를 보내거나, ERC20토큰 혹은 대체가능하지 않은 토큰 (예를 들어 CryptoKitties)을 사거나 저장하거나 합니다."
+  },
   "submit": {
     "message": "제출"
   },
@@ -848,7 +1010,7 @@
     "message": "심볼은 0에서 10개 사이의 문자여야 합니다."
   },
   "takesTooLong": {
-    "message": "너무 오래걸리나요?"
+    "message": "너무 오래 걸리나요?"
   },
   "terms": {
     "message": "사용 지침"
@@ -899,12 +1061,21 @@
   "transactionNumber": {
     "message": "트랜잭션 번호"
   },
+  "transfer": {
+    "message": "전송"
+  },
   "transfers": {
     "message": "전송"
   },
+  "trezorHardwareWallet": {
+    "message": "TREZOR 하드웨어 지갑"
+  },
   "troubleTokenBalances": {
-    "message": "토큰 잔액을 가져오는데에 문제가 생겼습니다. 링크에서 상세내용을 볼 수 있습니다.",
+    "message": "토큰 잔액을 가져오는 데에 문제가 생겼습니다. 링크에서 상세내용을 볼 수 있습니다.",
     "description": "토큰 잔액을 보려면 (here) 링크를 따라가세요"
+  },
+  "tryAgain": {
+    "message": "다시 시도하세요"
   },
   "twelveWords": {
     "message": "12개의 단어는 메타마스크 계정을 복구하기 위한 유일한 방법입니다.\n안전한 장소에 보관하시기 바랍니다."
@@ -927,11 +1098,26 @@
   "unknown": {
     "message": "알려지지 않음"
   },
+  "unknownFunction": {
+    "message": "알려지지 않은 함수"
+  },
   "unknownNetwork": {
     "message": "알려지지 않은 프라이빗 네트워크"
   },
   "unknownNetworkId": {
     "message": "알려지지 않은 네트워크 ID"
+  },
+  "unknownQrCode": {
+    "message": "오류: QR 코드를 확인할 수 없습니다"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "이런! 뭔가 잘못되었습니다...."
+  },
+  "unknownCameraError": {
+    "message": "카메라를 접근하는 중 오류가 발생했습니다. 다시 시도해 주세요..."
+  },
+  "unlock": {
+    "message": "잠금 해제"
   },
   "unlockMessage": {
     "message": "우리가 기다리던 분권형 웹입니다"
@@ -964,6 +1150,9 @@
   "visitWebSite": {
     "message": "웹사이트 방문"
   },
+  "walletSeed": {
+    "message": "지갑 시드값"
+  },
   "warning": {
     "message": "경고"
   },
@@ -984,198 +1173,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "개인 시드 구문"
-  },
-  "accessingYourCamera": {
-    "message": "카메라 접근중..."
-  },
-  "accountSelectionRequired": {
-    "message": "계정을 선택하셔야 합니다!"
-  },
-  "approve": {
-    "message": "수락"
-  },
-  "browserNotSupported": {
-    "message": "브라우저가 지원하지 않습니다..."
-  },
-  "bytes": {
-    "message": "바이트"
-  },
-  "chromeRequiredForHardwareWallets": {
-    "message": "하드웨어 지갑을 연결하기 위해서는 구글 크롬에서 메타마스크를 사용하셔야 합니다."
-  },
-  "connectHardwareWallet": {
-    "message": "하드웨어 지갑 연결"
-  },
-  "connect": {
-    "message": "연결"
-  },
-  "connecting": {
-    "message": "연결중..."
-  },
-  "connectToLedger": {
-    "message": "Ledger 연결"
-  },
-  "connectToTrezor": {
-    "message": "Trezor 연결"
-  },
-  "copyAddress": {
-    "message": "클립보드로 주소 복사"
-  },
-  "downloadGoogleChrome": {
-    "message": "구글 크롬 다운로드"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "하드웨어 지갑이 없나요?"
-  },
-  "ensNameNotFound": {
-    "message": "ENS 이름을 찾을 수 없습니다"
-  },
-  "parameters": {
-    "message": "매개변수"
-  },
-  "forgetDevice": {
-    "message": "장치 연결 해제"
-  },
-  "functionType": {
-    "message": "함수 유형"
-  },
-  "getHelp": {
-    "message": "도움말"
-  },
-  "hardware": {
-    "message": "하드웨어"
-  },
-  "hardwareWalletConnected": {
-    "message": "하드웨어 지갑이 연결됨"
-  },
-  "hardwareWallets": {
-    "message": "하드웨어 지갑 연결"
-  },
-  "hardwareWalletsMsg": {
-    "message": "메타마스크에서 사용할 하드웨어 지갑을 선택해주세요"
-  },
-  "havingTroubleConnecting": {
-    "message": "연결에 문제가 있나요?"
-  },
-  "hexData": {
-    "message": "Hex 데이터"
-  },
-  "invalidSeedPhrase": {
-    "message": "잘못된 시드 구문"
-  },
-  "ledgerAccountRestriction": {
-    "message": "새 계정을 추가하려면 최소 마지막 계정을 사용해야 합니다."
-  },
-  "menu": {
-    "message": "메뉴"
-  },
-  "noConversionRateAvailable": {
-    "message": "변환 비율을 찾을 수 없습니다"
-  },
-  "notFound": {
-    "message": "찾을 수 없음"
-  },
-  "noWebcamFoundTitle": {
-    "message": "웹캠이 없습니다"
-  },
-  "noWebcamFound": {
-    "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도해보세요."
-  },
-  "openInTab": {
-    "message": "탭으로 열기"
-  },
-  "origin": {
-    "message": "Origin"
-  },
-  "prev": {
-    "message": "이전"
-  },
-  "restoreAccountWithSeed": {
-    "message": "시드 구문으로 계정 복구하기"
-  },
-  "restore": {
-    "message": "복구"
-  },
-  "remove": {
-    "message": "제거"
-  },
-  "removeAccount": {
-    "message": "계정 제거"
-  },
-  "removeAccountDescription": {
-    "message": "이 계정한 지갑에서 삭제될 것입니다. 지우기 전에 이 계정에 대한 개인 키 혹은 시드 구문을 가지고 있는지 확인하세요. 계정 드랍다운 메뉴를 통해서 계정을 가져오거나 생성할 수 있습니다."
-  },
-  "readyToConnect": {
-    "message": "접속 준비되었나요?"
-  },
-  "separateEachWord": {
-    "message": "각 단어는 공백 한칸으로 분리합니다"
-  },
-  "orderOneHere": {
-    "message": "Trezor 혹은 Ledger를 구입하고 자금을 콜드 스토리지에 저장합니다"
-  },
-  "selectAnAddress": {
-    "message": "주소 선택"
-  },
-  "selectAnAccount": {
-    "message": "계정 선택"
-  },
-  "selectAnAccountHelp": {
-    "message": "메타마스크에서 보기위한 계정 선택"
-  },
-  "selectHdPath": {
-    "message": "HD 경로 지정"
-  },
-  "selectPathHelp": {
-    "message": "하단에서 Ledger지갑 계정을 찾지 못하겠으면 \"Legacy (MEW / MyCrypto)\" 경로로 바꿔보세요"
-  },
-  "step1HardwareWallet": {
-    "message": "1. 하드웨어 지갑 연결"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "하드웨어 지갑을 컴퓨터에 연결해주세요."
-  },
-  "step2HardwareWallet": {
-    "message": "2. 계정 선택"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "보고 싶은 계정을 선택합니다. 한번에 하나의 계정만 선택할 수 있습니다."
-  },
-  "step3HardwareWallet": {
-    "message": "3. dApps을 사용하거나 다른 것을 합니다!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "다른 이더리움 계정을 사용하듯 하드웨어 계정을 사용합니다. dApps을 로그인하거나, 이더를 보내거나, ERC20토큰 혹은 대체가능하지 않은 토큰 (예를 들어 CryptoKitties)을 사거나 저장하거나 합니다."
-  },
-  "scanInstructions": {
-    "message": "QR 코드를 카메라 앞에 가져다 놓아주세요"
-  },
-  "scanQrCode": {
-    "message": "QR 코드 스캔"
-  },
-  "transfer": {
-    "message": "전송"
-  },
-  "trezorHardwareWallet": {
-    "message": "TREZOR 하드웨어 지갑"
-  },
-  "tryAgain": {
-    "message": "다시 시도하세요"
-  },
-  "unknownFunction": {
-    "message": "알 수 없는 함수"
-  },
-  "unknownQrCode": {
-    "message": "오류: QR 코드를 확인할 수 없습니다"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "이런! 뭔가 잘못되었습니다...."
-  },
-  "unknownCameraError": {
-    "message": "카메라를 접근하는 중 오류가 발생했습니다. 다시 시도해 주세요..."
-  },
-  "unlock": {
-    "message": "잠금 해제"
   },
   "youNeedToAllowCameraAccess": {
     "message": "이 기능을 사용하려면 카메라 접근을 허용해야 합니다."

@@ -8,7 +8,7 @@ The MetaMask browser extension supports new translations added in the form of ne
 
 - Each supported language is represented by a folder in `app/_locales` whose name is that language's subtag (example: `app/_locales/es/`). (look up a language subtag using the [r12a "Find" tool](https://r12a.github.io/app-subtags/) or this [wikipedia list](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)).
 - Inside that folder there should be a `messages.json`. 
-- An easy way to start your translation is to first **make a copy** of `app/_locales/en/messages.json` (the english translation), and then **translate the `message` key** for each in-app message.
+- An easy way to start your translation is to first **make a copy** of `app/_locales/en/messages.json` (the English translation), and then **translate the `message` key** for each in-app message.
 - **The `description` key** is just to add context for what the translation is about, it **does not need to be translated**.
 - Add the language to the [locales index](https://github.com/MetaMask/metamask-extension/blob/master/app/_locales/index.json) `app/_locales/index.json` 
 

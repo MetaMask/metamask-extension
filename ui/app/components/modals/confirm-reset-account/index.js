@@ -1,2 +1,1 @@
-import ConfirmResetAccount from './confirm-reset-account.container'
-module.exports = ConfirmResetAccount
+export { default } from './confirm-reset-account.container'

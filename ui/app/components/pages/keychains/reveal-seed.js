@@ -108,19 +108,21 @@ class RevealSeedPage extends Component {
   renderPasswordPromptFooter () {
     return (
       h('.page-container__footer', [
-        h(Button, {
-          type: 'default',
-          large: true,
-          className: 'page-container__footer-button',
-          onClick: () => this.props.history.push(DEFAULT_ROUTE),
-        }, this.context.t('cancel')),
-        h(Button, {
-          type: 'primary',
-          large: true,
-          className: 'page-container__footer-button',
-          onClick: event => this.handleSubmit(event),
-          disabled: this.state.password === '',
-        }, this.context.t('next')),
+        h('header', [
+          h(Button, {
+            type: 'default',
+            large: true,
+            className: 'page-container__footer-button',
+            onClick: () => this.props.history.push(DEFAULT_ROUTE),
+          }, this.context.t('cancel')),
+          h(Button, {
+            type: 'primary',
+            large: true,
+            className: 'page-container__footer-button',
+            onClick: event => this.handleSubmit(event),
+            disabled: this.state.password === '',
+          }, this.context.t('next')),
+        ]),
       ])
     )
   }

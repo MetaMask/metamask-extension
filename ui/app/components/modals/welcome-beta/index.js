@@ -1,2 +1,1 @@
-import WelcomeBeta from './welcome-beta.component'
-module.exports = WelcomeBeta
+export { default } from './welcome-beta.container'

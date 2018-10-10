@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const extend = require('xtend')
+const { ObjectInspector } = require('react-inspector')
 
 module.exports = TypedMessageRenderer
 
@@ -12,8 +13,16 @@ function TypedMessageRenderer () {
 
 TypedMessageRenderer.prototype.render = function () {
   const props = this.props
-  const { value, style } = props
-  const text = renderTypedData(value)
+  const { value, version, style } = props
+  let text
+  switch (version) {
+    case 'V1':
+      text = renderTypedData(value)
+      break
+    case 'V3':
+      text = renderTypedDataV3(value)
+      break
+  }
 
   const defaultStyle = extend({
     width: '315px',
@@ -43,4 +52,18 @@ function renderTypedData (values) {
       h('div', {}, v),
     ])
   })
+}
+
+function renderTypedDataV3 (values) {
+  const { domain, message } = JSON.parse(values)
+   return [
+    domain ? h('div', [
+      h('h1', 'Domain'),
+      h(ObjectInspector, { data: domain, expandLevel: 1, name: 'domain' }),
+    ]) : '',
+    message ? h('div', [
+      h('h1', 'Message'),
+      h(ObjectInspector, { data: message, expandLevel: 1, name: 'message' }),
+    ]) : '',
+  ]
 }
