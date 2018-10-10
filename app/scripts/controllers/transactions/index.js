@@ -374,6 +374,7 @@ class TransactionController extends EventEmitter {
     // get the txReceipt before marking the transaction confirmed
     // to ensure the receipt is gotten before the ui revives the tx
     const txMeta = this.txStateManager.getTx(txId)
+    if (!txMeta) return
     if (txMeta.txParams.data) {
       try {
         const txReceipt = await this.query.getTransactionReceipt()
