@@ -65,6 +65,7 @@ describe('GasModalPageContainer Component', function () {
       customGasLimit={54321}
       gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
       infoRowProps={mockInfoRowProps}
+      currentTimeEstimate={'1 min 31 sec'}
       customGasPriceInHex={'mockCustomGasPriceInHex'}
       customGasLimitInHex={'mockCustomGasLimitInHex'}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
@@ -199,6 +200,7 @@ describe('GasModalPageContainer Component', function () {
         customGasPrice: 123,
         customGasLimit: 456,
         newTotalFiat: '$0.30',
+        currentTimeEstimate: '1 min 31 sec',
       })
       const advancedTabContentProps = renderAdvancedTabContentResult.props
       assert.equal(advancedTabContentProps.updateCustomGasPrice(), 'mockConvertThenUpdateCustomGasPrice')

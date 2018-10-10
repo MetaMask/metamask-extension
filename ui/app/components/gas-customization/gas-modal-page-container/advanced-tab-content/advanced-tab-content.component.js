@@ -97,7 +97,7 @@ export default class AdvancedTabContent extends Component {
               updateCustomGasLimit
           ) }
           <div className="advanced-tab__fee-chart__title">Live Gas Price Predictions</div>
-          <GasPriceChart {...gasChartProps} />
+          <GasPriceChart {...gasChartProps} updateCustomGasPrice={updateCustomGasPrice} />
           <div className="advanced-tab__fee-chart__speed-buttons">
             <span>Slower</span>
             <span>Faster</span>

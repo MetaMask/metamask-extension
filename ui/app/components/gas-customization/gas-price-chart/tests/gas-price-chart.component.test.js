@@ -10,6 +10,9 @@ const mockSelectReturn = {
   node: () => ({
     getBoundingClientRect: () => ({ x: 123, y: 321, width: 400 }),
   }),
+  empty: sinon.spy(),
+  remove: sinon.spy(),
+  style: sinon.spy(),
   select: d3.select,
   attr: sinon.spy(),
   on: sinon.spy(),
@@ -17,11 +20,17 @@ const mockSelectReturn = {
 
 const GasPriceChart = proxyquire('../gas-price-chart.component.js', {
   'c3': {
-    generate: function () {
+    generate: function ({ data: { columns } }) {
       return {
         internal: {
           showTooltip: () => {},
           showXGridFocus: () => {},
+          hideXGridFocus: () => {},
+          data: {
+            xs: {
+              [columns[1][0]]: columns[1].slice(1),
+            },
+          },
         },
       }
     },
