@@ -144,7 +144,7 @@ ConfigScreen.prototype.render = function () {
                 fontFamily: 'Montserrat Light',
                 fontSize: '13px',
               },
-            }, 'Clear approved website data so all sites must request approval again.'),
+            }, 'Clear privacy data so all websites must request access to view account information again.'),
             h('br'),
             h('button', {
               style: {
@@ -154,7 +154,7 @@ ConfigScreen.prototype.render = function () {
                 event.preventDefault()
                 state.dispatch(actions.clearApprovedOrigins())
               },
-            }, 'Clear approval data'),
+            }, 'Clear privacy data'),
           ]),
           
           h('hr.horizontal-line'),
@@ -169,7 +169,10 @@ ConfigScreen.prototype.render = function () {
                 fontFamily: 'Montserrat Light',
                 fontSize: '13px',
               },
-            }, 'Expose accounts to the current website. This is useful for legacy dapps.'),
+            }, metamaskState.featureFlags.privacyMode ?
+              'Websites will be able to view your account information.' :
+              'Websites must request access to view your account information.'
+            ),
             h('br'),
             h('button', {
               style: {
@@ -177,9 +180,12 @@ ConfigScreen.prototype.render = function () {
               },
               onClick (event) {
                 event.preventDefault()
-                state.dispatch(actions.forceInjection())
+                state.dispatch(actions.setFeatureFlag('privacyMode', !metamaskState.featureFlags.privacyMode))
               },
-            }, 'Expose accounts'),
+            }, metamaskState.featureFlags.privacyMode ?
+              'Disable privacy mode' :
+              'Enable privacy mode'
+            ),
           ]),
           
           h('hr.horizontal-line'),

@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "プライバシーモード"
+  },
+  "privacyModeDescription": {
+    "message": "ウェブサイトはあなたのアカウント情報を閲覧するためのアクセスを要求する必要があります。"
+  },
   "exposeAccounts": {
     "message": "アカウントを公開する"
   },

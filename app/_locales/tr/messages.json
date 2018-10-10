@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Gizlilik modu"
+  },
+  "privacyModeDescription": {
+    "message": "Web siteleri, hesap bilgilerinizi görmek için erişim istemek zorundadır."
+  },
   "exposeAccounts": {
     "message": "Hesapları Açığa Çıkar"
   },

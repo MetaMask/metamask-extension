@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "โหมดความเป็นส่วนตัว"
+  },
+  "privacyModeDescription": {
+    "message": "เว็บไซต์ต้องขอเข้าถึงเพื่อดูข้อมูลบัญชีของคุณ"
+  },
   "exposeAccounts": {
     "message": "เปิดเผยบัญชี"
   },

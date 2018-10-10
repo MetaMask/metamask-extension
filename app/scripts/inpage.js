@@ -56,10 +56,10 @@ inpageProvider.isEnabled = function () {
       if (typeof detail.error !== 'undefined') {
         reject(detail.error)
       } else {
-        resolve(detail.isEnabled)
+        resolve(!!detail.isEnabled)
       }
     })
-    window.postMessage({ type: 'ETHEREUM_PROVIDER_STATUS' }, '*')
+    window.postMessage({ type: 'ETHEREUM_QUERY_STATUS' }, '*')
   })
 }
 

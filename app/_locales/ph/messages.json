@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Mode ng Privacy"
+  },
+  "privacyModeDescription": {
+    "message": "Dapat humiling ng access ang mga website upang tingnan ang impormasyon ng iyong account."
+  },
   "exposeAccounts": {
     "message": "Ilantad ang Mga Account"
   },

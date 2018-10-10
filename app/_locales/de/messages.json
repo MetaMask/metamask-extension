@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Datenschutzmodus"
+  },
+  "privacyModeDescription": {
+    "message": "Websites müssen Zugriff anfordern, um Ihre Kontoinformationen anzuzeigen."
+  },
   "exposeAccounts": {
     "message": "Expose Konten"
   },

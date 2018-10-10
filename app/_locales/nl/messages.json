@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Privacy-modus"
+  },
+  "privacyModeDescription": {
+    "message": "Websites moeten toegang vragen om uw accountgegevens te bekijken."
+  },
   "exposeAccounts": {
     "message": "Expose Accounts"
   },

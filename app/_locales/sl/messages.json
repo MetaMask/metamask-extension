@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Način zasebnosti"
+  },
+  "privacyModeDescription": {
+    "message": "Spletne strani morajo zahtevati dostop za ogled podatkov o vašem računu."
+  },
   "exposeAccounts": {
     "message": "Vystavte účty"
   },
