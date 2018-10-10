@@ -14,6 +14,9 @@
   "accountName": {
     "message": "Account Name"
   },
+  "accountOptions": {
+    "message": "Account Options"
+  },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
@@ -726,9 +729,6 @@
   "openInTab": {
     "message": "Open in tab"
   },
-  "accountOptions": {
-    "message": "Account Options"
-  },
   "or": {
     "message": "or",
     "description": "choice between creating or importing a new account"
@@ -745,21 +745,21 @@
   "parameters": {
     "message": "Parameters"
   },
-  "passwordNotLongEnough": {
-    "message": "Password not long enough"
-  },
-  "passwordsDontMatch": {
-    "message": "Passwords Don't Match"
-  },
   "password": {
     "message": "Password"
   },
   "passwordCorrect": {
     "message": "Please make sure your password is correct."
   },
+  "passwordsDontMatch": {
+    "message": "Passwords Don't Match"
+  },
   "passwordMismatch": {
     "message": "passwords don't match",
     "description": "in password creation process, the two new password fields did not match"
+  },
+  "passwordNotLongEnough": {
+    "message": "Password not long enough"
   },
   "passwordShort": {
     "message": "password not long enough",
@@ -862,9 +862,6 @@
   },
   "retryWithMoreGas": {
     "message": "Retry with a higher gas price here"
-  },
-  "walletSeed": {
-    "message": "Wallet Seed"
   },
   "restore": {
     "message": "Restore"
@@ -1263,6 +1260,9 @@
   },
   "visitWebSite": {
     "message": "Visit our web site"
+  },
+  "walletSeed": {
+    "message": "Wallet Seed"
   },
   "warning": {
     "message": "Warning"
