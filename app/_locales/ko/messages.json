@@ -853,7 +853,7 @@
     "message": "트랜잭션 속도 향상하기"
   },
   "speedUpSubtitle": {
-    "message": "트랜잭션 가스 가격을 늘려서 해당 트랜잭션에 덮어써서 속도를 빠르게 합니다"
+    "message": "트랜잭션 가스 가격을 올려서 해당 트랜잭션에 덮어쓰고 속도를 빠르게 합니다"
   },
   "saveAsCsvFile": {
     "message": "CSV 파일로 저장"
@@ -929,7 +929,7 @@
     "message": "하단에서 Ledger 지갑 계정을 찾지 못하겠으면 \"Legacy (MEW / MyCrypto)\" 경로로 바꿔보세요"
   },
   "sendTokensAnywhere": {
-    "message": "이더 계정로 토큰 전송"
+    "message": "이더 계정으로 토큰 전송"
   },
   "settings": {
     "message": "설정"
