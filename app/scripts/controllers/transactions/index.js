@@ -164,8 +164,11 @@ class TransactionController extends EventEmitter {
   */
 
   async addUnapprovedTransaction (txParams) {
-    // validate
+    // ensure the from address is the selected address
+    txParams.from = this.getSelectedAddress()
+
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
+    // validate
     txUtils.validateTxParams(normalizedTxParams)
     // construct txMeta
     let txMeta = this.txStateManager.generateTxMeta({
