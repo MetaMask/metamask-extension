@@ -16,6 +16,7 @@
     "test:integration": "npm run test:integration:build && npm run test:flat && npm run test:mascara",
     "test:integration:build": "gulp build:scss",
     "test:e2e:chrome": "shell-parallel -s 'npm run ganache:start' -x 'sleep 3 && npm run test:e2e:run:chrome'",
+    "test:e2e:drizzle:beta": "SELENIUM_BROWSER=chrome test/e2e/beta/run-drizzle.sh",
     "test:e2e:chrome:beta": "SELENIUM_BROWSER=chrome test/e2e/beta/run-all.sh",
     "test:e2e:firefox": "shell-parallel -s 'npm run ganache:start' -x 'sleep 3 && npm run test:e2e:run:firefox'",
     "test:e2e:firefox:beta": "SELENIUM_BROWSER=firefox test/e2e/beta/run-all.sh",
