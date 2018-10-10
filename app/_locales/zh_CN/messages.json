@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "隐私模式"
+  },
+  "privacyModeDescription": {
+    "message": "网站必须请求访问权限才能查看您的帐户信息。"
+  },
   "exposeAccounts": {
     "message": "公开账户"
   },

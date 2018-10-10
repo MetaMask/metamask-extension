@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "隱私模式"
+  },
+  "privacyModeDescription": {
+    "message": "網站必須請求訪問權限才能查看您的帳戶信息。"
+  },
   "exposeAccounts": {
     "message": "公開賬戶"
   },

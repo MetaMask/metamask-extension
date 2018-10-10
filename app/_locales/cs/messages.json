@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Režim súkromia"
+  },
+  "privacyModeDescription": {
+    "message": "Webové stránky musia požiadať o prístup k zobrazeniu informácií o vašom účte."
+  },
   "exposeAccounts": {
     "message": "Vystavte účty"
   },

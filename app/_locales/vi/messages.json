@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Chế độ riêng tư"
+  },
+  "privacyModeDescription": {
+    "message": "Trang web phải yêu cầu quyền truy cập để xem thông tin tài khoản của bạn."
+  },
   "exposeAccounts": {
     "message": "Hiển thị tài khoản"
   },

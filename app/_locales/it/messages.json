@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Modalità di privacy"
+  },
+  "privacyModeDescription": {
+    "message": "I siti Web devono richiedere l'accesso per visualizzare le informazioni del tuo account."
+  },
   "exposeAccounts": {
     "message": "Expose Accounts"
   },

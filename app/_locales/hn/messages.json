@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "गोपनीयता मोड"
+  },
+  "privacyModeDescription": {
+    "message": "वेबसाइटों को आपकी खाता जानकारी देखने के लिए पहुंच का अनुरोध करना होगा।"
+  },
   "exposeAccounts": {
     "message": "खातों का पर्दाफाश करें"
   },

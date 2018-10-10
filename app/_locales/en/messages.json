@@ -1,4 +1,10 @@
 {
+  "privacyMode": {
+    "message": "Privacy Mode"
+  },
+  "privacyModeDescription": {
+    "message": "Websites must request access to view your account information."
+  },
   "exposeAccounts": {
     "message": "Expose Accounts"
   },
@@ -15,13 +21,13 @@
     "message": "Approved website data cleared successfully."
   },
   "approvalData": {
-    "message": "Approval Data"
+    "message": "Privacy Data"
   },
   "approvalDataDescription": {
-    "message": "Clear approved website data so all sites must request approval again."
+    "message": "Clear privacy data so all websites must request access to view account information again."
   },
   "clearApprovalData": {
-    "message": "Clear Approval Data"
+    "message": "Clear Privacy Data"
   },
   "reject": {
     "message": "Reject"

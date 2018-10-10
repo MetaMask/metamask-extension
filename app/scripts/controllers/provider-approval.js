@@ -1,5 +1,4 @@
 const ObservableStore = require('obs-store')
-const extension = require('extensionizer')
 
 /**
  * A controller that services user-approved requests for a full Ethereum provider API
@@ -10,22 +9,25 @@ class ProviderApprovalController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ closePopup, openPopup, platform, publicConfigStore } = {}) {
+  constructor ({ closePopup, openPopup, platform, preferencesController, publicConfigStore } = {}) {
     this.store = new ObservableStore()
     this.closePopup = closePopup
     this.openPopup = openPopup
     this.platform = platform
     this.publicConfigStore = publicConfigStore
     this.approvedOrigins = {}
+    this.preferencesController = preferencesController
     platform && platform.addMessageListener && platform.addMessageListener(({ action, origin }) => {
       if (!action) { return }
       switch (action) {
         case 'init-provider-request':
           this.handleProviderRequest(origin)
           break
-        case 'provider-status-request':
+        case 'init-status-request':
           this.handleProviderStatusRequest(origin)
           break
+        case 'init-privacy-request':
+          this.handlePrivacyStatusRequest()
       }
     })
   }
@@ -35,9 +37,9 @@ class ProviderApprovalController {
    *
    * @param {string} origin - Origin of the window requesting full provider access
    */
-  async handleProviderRequest (origin) {
+  handleProviderRequest (origin) {
     this.store.updateState({ providerRequests: [{ origin }] })
-    if (await this.isApproved(origin)) {
+    if (this.isApproved(origin)) {
       this.approveProviderRequest(origin)
       return
     }
@@ -45,13 +47,21 @@ class ProviderApprovalController {
   }
 
   /**
-   * Called by a tab to detemrine if a full Ethereum provider API is exposed
+   * Called by a tab to determine if a full Ethereum provider API is exposed
    *
    * @param {string} origin - Origin of the window requesting provider status
    */
   async handleProviderStatusRequest (origin) {
-    const isEnabled = await this.isApproved(origin)
-    this.platform && this.platform.sendMessage({ action: 'provider-status', isEnabled }, { active: true })
+    const isEnabled = this.isApproved(origin)
+    this.platform && this.platform.sendMessage({ action: 'answer-status-request', isEnabled }, { active: true })
+  }
+
+  handlePrivacyStatusRequest () {
+    const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
+    if (!privacyMode) {
+      this.platform && this.platform.sendMessage({ action: 'approve-provider-request' }, { active: true })
+      this.publicConfigStore.emit('update', this.publicConfigStore.getState())
+    }
   }
 
   /**
@@ -87,7 +97,6 @@ class ProviderApprovalController {
    */
   clearApprovedOrigins () {
     this.approvedOrigins = {}
-    extension.storage.local.set({ forcedOrigins: [] })
   }
 
   /**
@@ -97,18 +106,8 @@ class ProviderApprovalController {
    * @returns {boolean} - True if the origin has been approved
    */
   isApproved (origin) {
-    return new Promise(resolve => {
-      extension.storage.local.get(['forcedOrigins'], ({ forcedOrigins = [] }) => {
-        resolve(this.approvedOrigins[origin] || forcedOrigins.indexOf(origin) > -1)
-      })
-    })
-  }
-
-  /**
-   * Called when a user forces the exposure of a full Ethereum provider API
-   */
-  forceInjection () {
-    this.platform.sendMessage({ action: 'force-injection' }, { active: true })
+    const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
+    return !privacyMode || this.approvedOrigins[origin]
   }
 }
 
