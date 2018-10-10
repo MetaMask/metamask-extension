@@ -229,9 +229,9 @@ describe('GasModalPageContainer Component', function () {
       assert(renderedInfoRows.at(2).hasClass(`${baseClassName}__total-info`))
       assert(renderedInfoRows.at(3).hasClass(`${baseClassName}__fiat-total-info`))
 
-      assert.equal(renderedInfoRows.at(0).text(), 'Send Amount mockSendAmount')
-      assert.equal(renderedInfoRows.at(1).text(), 'Transaction Fee mockTransactionFee')
-      assert.equal(renderedInfoRows.at(2).text(), 'New Total mockNewTotalEth')
+      assert.equal(renderedInfoRows.at(0).text(), 'sendAmount mockSendAmount')
+      assert.equal(renderedInfoRows.at(1).text(), 'transactionFee mockTransactionFee')
+      assert.equal(renderedInfoRows.at(2).text(), 'newTotal mockNewTotalEth')
       assert.equal(renderedInfoRows.at(3).text(), 'mockNewTotalFiat')
     })
   })
