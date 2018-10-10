@@ -38,18 +38,16 @@ async function checkIfAuthWorks () {
   return itWorked
 }
 
-async function checkIfVersionExists () {
-  const versionAlreadyExists = await doesNotFail(async () => {
-    await exec(`sentry-cli releases --org 'metamask' --project 'metamask' info ${VERSION}`)
-  })
-  return versionAlreadyExists
-}
-
-async function doesNotFail (asyncFn) {
+async function checkIfVersionExists() {
   try {
-    await asyncFn()
-    return true
+    // releases are auto-generated if a ticket references one
+    // this can happen accidently during development and testing
+    // as a workaround, check if a release exists by checking if more than one file (source or sourcemap) exists
+    const [stdoutResult] = await exec(`sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} list`)
+    const versionAlreadyExists = stdoutResult.length > 1
+    return versionAlreadyExists
   } catch (err) {
+    console.error(err)
     return false
   }
 }
