@@ -140,7 +140,7 @@
   "close": {
     "message": "Fermer"
   },
-  "chromeRequiredForHardwareWallets":{
+  "chromeRequiredForHardwareWallets": {
     "message": "Pour connecter votre portefeuille hardware, vous devez utiliser MetaMask pour Google Chrome."
   },
   "confirm": {
@@ -498,7 +498,7 @@
     "message": "Importer un compte"
   },
   "importAccountMsg": {
-    "message":" Les comptes importés ne seront pas associés avec votre phrase Seed que vous avez créé au départ dans MetaMask. Obtenir plus d'information sur les comptes importés"
+    "message": " Les comptes importés ne seront pas associés avec votre phrase Seed que vous avez créé au départ dans MetaMask. Obtenir plus d'information sur les comptes importés"
   },
   "importAnAccount": {
     "message": "Importer un compte"
@@ -686,7 +686,7 @@
   "noDeposits": {
     "message": "Aucun dépôt reçu"
   },
-  "noConversionRateAvailable":{
+  "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
   },
   "noTransactionHistory": {

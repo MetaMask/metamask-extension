@@ -173,7 +173,7 @@
   },
   "decimal": {
     "message": "Decimalke natančnosti"
-  }, 
+  },
   "defaultNetwork": {
     "message": "Privzeto omrežje za transakcije je Main Net."
   },
@@ -351,7 +351,7 @@
     "message": "Uvozi račun"
   },
   "importAccountMsg": {
-    "message":" Uvoženi računi ne bodo povezani s prvotnim seedphaseom. Preberite več o uvoženih računih "
+    "message": " Uvoženi računi ne bodo povezani s prvotnim seedphaseom. Preberite več o uvoženih računih "
   },
   "importAnAccount": {
     "message": "Uvozi račun"
@@ -800,7 +800,7 @@
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"
-  }, 
+  },
   "warning": {
     "message": "Opozorilo"
   },

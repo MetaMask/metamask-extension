@@ -68,13 +68,13 @@
     "message": "Muss größer oder gleich $1 und kleiner oder gleich $2 sein.",
     "description": "Helfer für die Eingabe von hex als dezimal"
   },
-    "blockiesIdenticon": {
+  "blockiesIdenticon": {
     "message": "Blockies Identicon verwenden"
   },
   "borrowDharma": {
     "message": "Mit Dharma ausleihen (Beta)"
   },
-    "builtInCalifornia": {
+  "builtInCalifornia": {
     "message": "MetaMask wurde in Kalifornien entwickelt und gebaut."
   },
   "buy": {
@@ -86,13 +86,13 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase ist die weltweit bekannteste Art und Weise um Bitcoin, Ethereum und Litecoin zu kaufen und verkaufen."
   },
-    "ok": {
+  "ok": {
     "message": "Ok"
   },
   "cancel": {
     "message": "Abbrechen"
   },
-    "classicInterface": {
+  "classicInterface": {
     "message": "Klassische Oberfläche verwenden"
   },
   "clickCopy": {
@@ -101,7 +101,7 @@
   "confirm": {
     "message": "Bestätigen"
   },
-    "confirmed": {
+  "confirmed": {
     "message": "Bestätigt"
   },
   "confirmContract": {
@@ -369,7 +369,7 @@
     "message": "Account importieren"
   },
   "importAccountMsg": {
-    "message":" Importierte Accounts werden nicht mit der Seed-Wörterfolge  deines ursprünglichen MetaMask Accounts verknüpft. Erfahre mehr über importierte Accounts."
+    "message": " Importierte Accounts werden nicht mit der Seed-Wörterfolge  deines ursprünglichen MetaMask Accounts verknüpft. Erfahre mehr über importierte Accounts."
   },
   "importAnAccount": {
     "message": "Einen Account importieren"
@@ -709,7 +709,7 @@
     "message": "Einstellungen"
   },
   "info": {
-  "message": "Info"
+    "message": "Info"
   },
   "shapeshiftBuy": {
     "message": "Mit Shapeshift kaufen"
