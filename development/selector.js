@@ -11,7 +11,7 @@ function NewComponent () {
 
 NewComponent.prototype.render = function () {
   const props = this.props
-  let {
+  const {
     states,
     selectedKey,
     actions,
@@ -28,7 +28,7 @@ NewComponent.prototype.render = function () {
       margin: '20px 20px 0px',
     },
     value: selected,
-    onChange:(event) => {
+    onChange: (event) => {
       const selectedKey = event.target.value
       const backgroundConnectionModifier = backGroundConnectionModifiers[selectedKey]
       modifyBackgroundConnection(backgroundConnectionModifier || {})

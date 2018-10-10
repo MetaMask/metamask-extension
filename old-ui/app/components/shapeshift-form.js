@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../../ui/app/actions')
-const Qr = require('./qr-code')
 const isValidAddress = require('../util').isValidAddress
 module.exports = connect(mapStateToProps)(ShapeshiftForm)
 
@@ -11,7 +10,6 @@ function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
     isSubLoading: state.appState.isSubLoading,
-    qrRequested: state.appState.qrRequested,
   }
 }
 
@@ -23,7 +21,7 @@ function ShapeshiftForm () {
 }
 
 ShapeshiftForm.prototype.render = function () {
-  return this.props.qrRequested ? h(Qr, {key: 'qr'}) : this.renderMain()
+  return this.renderMain()
 }
 
 ShapeshiftForm.prototype.renderMain = function () {

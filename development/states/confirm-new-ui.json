@@ -141,6 +141,7 @@
     "accountDetail": {
       "subview": "transactions"
     },
+    "sidebar": {},
     "modal": {
       "modalState": {},
       "previousModalState": {}
@@ -156,5 +157,23 @@
     "fromDropdownOpen": false,
     "toDropdownOpen": false,
     "errors": {}
+  },
+  "confirmTransaction": {
+    "txData": {},
+    "tokenData": {},
+    "methodData": {},
+    "tokenProps": {
+      "tokenDecimals": "",
+      "tokenSymbol": ""
+    },
+    "fiatTransactionAmount": "",
+    "fiatTransactionFee": "",
+    "fiatTransactionTotal": "",
+    "ethTransactionAmount": "",
+    "ethTransactionFee": "",
+    "ethTransactionTotal": "",
+    "hexGasTotal": "",
+    "nonce": "",
+    "fetchingMethodData": false
   }
 }

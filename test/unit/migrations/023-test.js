@@ -1,12 +1,11 @@
 const assert = require('assert')
 const migration23 = require('../../../app/scripts/migrations/023')
-const properTime = (new Date()).getTime()
 const storage = {
-  "meta": {},
-  "data": {
-    "TransactionController": {
-      "transactions": [
-      ]
+  'meta': {},
+  'data': {
+    'TransactionController': {
+      'transactions': [
+      ],
     },
   },
 }
@@ -51,7 +50,6 @@ while (transactions20.length < 20) {
   status = txStates[Math.floor(Math.random() * Math.floor(txStates.length - 1))]
   transactions20.push({status})
 }
-
 
 
 storage.data.TransactionController.transactions = transactions

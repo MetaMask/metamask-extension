@@ -642,9 +642,30 @@
     display: flex;
     flex-flow: column nowrap;
     flex: 1;
+    align-items: center;
 
     @media screen and (max-width: 575px) {
       height: 0;
+    }
+
+    .shapeshift-form-wrapper {
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      align-items: center;
+      flex: 1 0 auto;
+
+      .shapeshift-form, .modal-shapeshift-form {
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, .05);
+        padding: 17px 15px;
+        margin-bottom: 10px;
+
+        &__caret {
+          width: auto;
+          flex: 1;
+        }
+      }
     }
   }
 
@@ -773,16 +794,14 @@
     margin-top: 28px;
     flex: 1 0 auto;
 
-    .shapeshift-form {
-      width: auto;
+    .shapeshift-form, .modal-shapeshift-form {
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, .05);
+      padding: 17px 15px;
 
       &__caret {
         width: auto;
         flex: 1;
-      }
-
-      @media screen and (max-width: 575px) {
-        width: auto;
       }
     }
   }

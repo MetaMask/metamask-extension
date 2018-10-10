@@ -20,7 +20,7 @@ function EnsInput () {
 EnsInput.prototype.render = function () {
   const props = this.props
 
-  function onInputChange() {
+  function onInputChange () {
     const network = this.props.network
     const networkHasEnsSupport = getNetworkEnsSupport(network)
     if (!networkHasEnsSupport) return

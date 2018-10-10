@@ -8,6 +8,7 @@ const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')
 const { compose } = require('recompose')
 const { withRouter } = require('react-router-dom')
+const { ObjectInspector } = require('react-inspector')
 
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 
@@ -21,6 +22,9 @@ const {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
 } = require('../selectors.js')
+
+import { clearConfirmTransaction } from '../ducks/confirm-transaction.duck'
+import Button from './button'
 
 const { DEFAULT_ROUTE } = require('../routes')
 
@@ -39,6 +43,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     goHome: () => dispatch(actions.goHome()),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
   }
 }
 
@@ -165,12 +170,29 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
   }
 }
 
+// eslint-disable-next-line react/display-name
+SignatureRequest.prototype.renderTypedDataV3 = function (data) {
+  const { domain, message } = JSON.parse(data)
+  return [
+    h('div.request-signature__typed-container', [
+      domain ? h('div', [
+        h('h1', 'Domain'),
+        h(ObjectInspector, { data: domain, expandLevel: 1, name: 'domain' }),
+      ]) : '',
+      message ? h('div', [
+        h('h1', 'Message'),
+        h(ObjectInspector, { data: message, expandLevel: 1, name: 'message' }),
+      ]) : '',
+    ]),
+  ]
+}
+
 SignatureRequest.prototype.renderBody = function () {
   let rows
   let notice = this.context.t('youSign') + ':'
 
   const { txData } = this.props
-  const { type, msgParams: { data } } = txData
+  const { type, msgParams: { data, version } } = txData
 
   if (type === 'personal_sign') {
     rows = [{ name: this.context.t('message'), value: this.msgHexToText(data) }]
@@ -201,17 +223,18 @@ SignatureRequest.prototype.renderBody = function () {
       }),
     }, [notice]),
 
-    h('div.request-signature__rows', [
-
-      ...rows.map(({ name, value }) => {
+    h('div.request-signature__rows', type === 'eth_signTypedData' && version === 'V3' ?
+      this.renderTypedDataV3(data) :
+      rows.map(({ name, value }) => {
+        if (typeof value === 'boolean') {
+          value = value.toString()
+        }
         return h('div.request-signature__row', [
           h('div.request-signature__row-title', [`${name}:`]),
           h('div.request-signature__row-value', value),
         ])
       }),
-
-    ]),
-
+    ),
   ])
 }
 
@@ -242,14 +265,25 @@ SignatureRequest.prototype.renderFooter = function () {
   }
 
   return h('div.request-signature__footer', [
-    h('button.btn-default.btn--large.request-signature__footer__cancel-button', {
+    h(Button, {
+      type: 'default',
+      large: true,
+      className: 'request-signature__footer__cancel-button',
       onClick: event => {
-        cancel(event).then(() => this.props.history.push(DEFAULT_ROUTE))
+        cancel(event).then(() => {
+          this.props.clearConfirmTransaction()
+          this.props.history.push(DEFAULT_ROUTE)
+        })
       },
     }, this.context.t('cancel')),
-    h('button.btn-primary.btn--large', {
+    h(Button, {
+      type: 'primary',
+      large: true,
       onClick: event => {
-        sign(event).then(() => this.props.history.push(DEFAULT_ROUTE))
+        sign(event).then(() => {
+          this.props.clearConfirmTransaction()
+          this.props.history.push(DEFAULT_ROUTE)
+        })
       },
     }, this.context.t('sign')),
   ])

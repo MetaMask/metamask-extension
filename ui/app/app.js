@@ -11,34 +11,36 @@ const log = require('loglevel')
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
 // accounts
-const SendTransactionScreen = require('./components/send_/send.container')
-const ConfirmTxScreen = require('./conf-tx')
+const SendTransactionScreen = require('./components/send/send.container')
+const ConfirmTransaction = require('./components/pages/confirm-transaction')
 
 // slideout menu
-const WalletView = require('./components/wallet-view')
+const Sidebar = require('./components/sidebars').default
 
 // other views
-const Home = require('./components/pages/home')
+import Home from './components/pages/home'
+import Settings from './components/pages/settings'
 const Authenticated = require('./components/pages/authenticated')
 const Initialized = require('./components/pages/initialized')
-const Settings = require('./components/pages/settings')
-const UnlockPage = require('./components/pages/unlock-page')
-const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
+const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
 const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
+const ConfirmAddSuggestedTokenPage = require('./components/pages/confirm-add-suggested-token')
 const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 
 const Loading = require('./components/loading-screen')
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
 const AccountMenu = require('./components/account-menu')
 
 // Global Modals
 const Modal = require('./components/modals/index').Modal
+// Global Alert
+const Alert = require('./components/alert')
 
-const AppHeader = require('./components/app-header')
+import AppHeader from './components/app-header'
+import UnlockPage from './components/pages/unlock-page'
 
 // Routes
 const {
@@ -49,6 +51,7 @@ const {
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
   CONFIRM_ADD_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
   SEND_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -76,10 +79,14 @@ class App extends Component {
         h(Authenticated, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedConfirmation }),
         h(Authenticated, { path: SETTINGS_ROUTE, component: Settings }),
         h(Authenticated, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
-        h(Authenticated, { path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`, component: ConfirmTxScreen }),
+        h(Authenticated, {
+          path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`,
+          component: ConfirmTransaction,
+        }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
+        h(Authenticated, { path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE, exact, component: ConfirmAddSuggestedTokenPage }),
         h(Authenticated, { path: NEW_ACCOUNT_ROUTE, component: CreateAccountPage }),
         h(Authenticated, { path: DEFAULT_ROUTE, exact, component: Home }),
       ])
@@ -89,6 +96,7 @@ class App extends Component {
   render () {
     const {
       isLoading,
+      alertMessage,
       loadingMessage,
       network,
       isMouseUser,
@@ -96,6 +104,7 @@ class App extends Component {
       frequentRpcList,
       currentView,
       setMouseUserState,
+      sidebar,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
@@ -122,10 +131,18 @@ class App extends Component {
         // global modal
         h(Modal, {}, []),
 
+        // global alert
+        h(Alert, {visible: this.props.alertOpen, msg: alertMessage}),
+
         h(AppHeader),
 
         // sidebar
-        this.renderSidebar(),
+        h(Sidebar, {
+          sidebarOpen: sidebar.isOpen,
+          hideSidebar: this.props.hideSidebar,
+          transitionName: sidebar.transitionName,
+          type: sidebar.type,
+        }),
 
         // network dropdown
         h(NetworkDropdown, {
@@ -135,67 +152,16 @@ class App extends Component {
 
         h(AccountMenu),
 
-        (isLoading || isLoadingNetwork) && h(Loading, {
-          loadingMessage: loadMessage,
-        }),
+        h('div.main-container-wrapper', [
+          (isLoading || isLoadingNetwork) && h(Loading, {
+            loadingMessage: loadMessage,
+          }),
 
-        // content
-        this.renderRoutes(),
+          // content
+          this.renderRoutes(),
+        ]),
       ])
     )
-  }
-
-  renderGlobalModal () {
-    return h(Modal, {
-      ref: 'modalRef',
-    }, [
-      // h(BuyOptions, {}, []),
-    ])
-  }
-
-  renderSidebar () {
-    return h('div', [
-      h('style', `
-        .sidebar-enter {
-          transition: transform 300ms ease-in-out;
-          transform: translateX(-100%);
-        }
-        .sidebar-enter.sidebar-enter-active {
-          transition: transform 300ms ease-in-out;
-          transform: translateX(0%);
-        }
-        .sidebar-leave {
-          transition: transform 200ms ease-out;
-          transform: translateX(0%);
-        }
-        .sidebar-leave.sidebar-leave-active {
-          transition: transform 200ms ease-out;
-          transform: translateX(-100%);
-        }
-      `),
-
-      h(ReactCSSTransitionGroup, {
-        transitionName: 'sidebar',
-        transitionEnterTimeout: 300,
-        transitionLeaveTimeout: 200,
-      }, [
-        // A second instance of Walletview is used for non-mobile viewports
-        this.props.sidebarOpen ? h(WalletView, {
-          responsiveDisplayClassname: '.sidebar',
-          style: {},
-        }) : undefined,
-
-      ]),
-
-      // overlay
-      // TODO: add onClick for overlay to close sidebar
-      this.props.sidebarOpen ? h('div.sidebar-overlay', {
-        style: {},
-        onClick: () => {
-          this.props.hideSidebar()
-        },
-      }, []) : undefined,
-    ])
   }
 
   toggleMetamaskActive () {
@@ -224,7 +190,7 @@ class App extends Component {
     } else if (providerName === 'ropsten') {
       name = this.context.t('connectingToRopsten')
     } else if (providerName === 'kovan') {
-      name = this.context.t('connectingToRopsten')
+      name = this.context.t('connectingToKovan')
     } else if (providerName === 'rinkeby') {
       name = this.context.t('connectingToRinkeby')
     } else {
@@ -261,11 +227,13 @@ App.propTypes = {
   setCurrentCurrencyToUSD: PropTypes.func,
   isLoading: PropTypes.bool,
   loadingMessage: PropTypes.string,
+  alertMessage: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
   frequentRpcList: PropTypes.array,
   currentView: PropTypes.object,
-  sidebarOpen: PropTypes.bool,
+  sidebar: PropTypes.object,
+  alertOpen: PropTypes.bool,
   hideSidebar: PropTypes.func,
   isMascara: PropTypes.bool,
   isOnboarding: PropTypes.bool,
@@ -300,7 +268,9 @@ function mapStateToProps (state) {
   const { appState, metamask } = state
   const {
     networkDropdownOpen,
-    sidebarOpen,
+    sidebar,
+    alertOpen,
+    alertMessage,
     isLoading,
     loadingMessage,
   } = appState
@@ -325,7 +295,9 @@ function mapStateToProps (state) {
   return {
     // state from plugin
     networkDropdownOpen,
-    sidebarOpen,
+    sidebar,
+    alertOpen,
+    alertMessage,
     isLoading,
     loadingMessage,
     noActiveNotices,

@@ -1,0 +1,54 @@
+.confirm-page-container-summary {
+  padding: 16px 24px 0;
+  background-color: #f9fafa;
+  height: 133px;
+  box-sizing: border-box;
+
+  &__action-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__action {
+    text-transform: uppercase;
+    color: $oslo-gray;
+    font-size: .75rem;
+    padding: 3px 8px;
+    border: 1px solid $oslo-gray;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  &__nonce {
+    color: $oslo-gray;
+  }
+
+  &__title {
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+  }
+
+  &__identicon {
+    flex: 0 0 auto;
+    margin-right: 8px;
+  }
+
+  &__title-text {
+    font-size: 2.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__subtitle {
+    color: $oslo-gray;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &--border {
+    border-bottom: 1px solid $geyser;
+  }
+}

@@ -1,5 +1,6 @@
 const ObservableStore = require('obs-store')
 const normalizeAddress = require('eth-sig-util').normalize
+const { isValidAddress } = require('ethereumjs-util')
 const extend = require('xtend')
 
 
@@ -13,6 +14,8 @@ class PreferencesController {
 	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
+   * @property {object} store.accountTokens The tokens stored per account and then per network type
+   * @property {object} store.assetImages Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
@@ -24,19 +27,42 @@ class PreferencesController {
     const initState = extend({
       frequentRpcList: [],
       currentAccountTab: 'history',
+      accountTokens: {},
+      assetImages: {},
       tokens: [],
+      suggestedTokens: {},
       useBlockie: false,
       featureFlags: {},
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
+      seedWords: null,
+      forgottenPassword: false,
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
-
+    this.network = opts.network
     this.store = new ObservableStore(initState)
+    this.showWatchAssetUi = opts.showWatchAssetUi
+    this._subscribeProviderType()
   }
 // PUBLIC METHODS
+
+  /**
+   * Sets the {@code forgottenPassword} state property
+   * @param {boolean} forgottenPassword whether or not the user has forgotten their password
+   */
+  setPasswordForgotten (forgottenPassword) {
+    this.store.updateState({ forgottenPassword })
+  }
+
+  /**
+   * Sets the {@code seedWords} seed words
+   * @param {string|null} seedWords the seed words
+   */
+  setSeedWords (seedWords) {
+    this.store.updateState({ seedWords })
+  }
 
   /**
    * Setter for the `useBlockie` property
@@ -46,6 +72,53 @@ class PreferencesController {
    */
   setUseBlockie (val) {
     this.store.updateState({ useBlockie: val })
+  }
+
+  getSuggestedTokens () {
+    return this.store.getState().suggestedTokens
+  }
+
+  getAssetImages () {
+    return this.store.getState().assetImages
+  }
+
+  addSuggestedERC20Asset (tokenOpts) {
+    this._validateERC20AssetParams(tokenOpts)
+    const suggested = this.getSuggestedTokens()
+    const { rawAddress, symbol, decimals, image } = tokenOpts
+    const address = normalizeAddress(rawAddress)
+    const newEntry = { address, symbol, decimals, image }
+    suggested[address] = newEntry
+    this.store.updateState({ suggestedTokens: suggested })
+  }
+
+  /**
+   * RPC engine middleware for requesting new asset added
+   *
+   * @param req
+   * @param res
+   * @param {Function} - next
+   * @param {Function} - end
+   */
+  async requestWatchAsset (req, res, next, end) {
+    if (req.method === 'metamask_watchAsset') {
+      const { type, options } = req.params
+      switch (type) {
+        case 'ERC20':
+          const result = await this._handleWatchAssetERC20(options)
+          if (result instanceof Error) {
+            end(result)
+          } else {
+            res.result = result
+            end()
+          }
+          break
+        default:
+          end(new Error(`Asset of type ${type} not supported`))
+      }
+    } else {
+      next()
+    }
   }
 
   /**
@@ -77,13 +150,46 @@ class PreferencesController {
    */
   setAddresses (addresses) {
     const oldIdentities = this.store.getState().identities
+    const oldAccountTokens = this.store.getState().accountTokens
+
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {}
       ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
       return ids
     }, {})
-    this.store.updateState({ identities })
+    const accountTokens = addresses.reduce((tokens, address) => {
+      const oldTokens = oldAccountTokens[address] || {}
+      tokens[address] = oldTokens
+      return tokens
+    }, {})
+    this.store.updateState({ identities, accountTokens })
   }
+
+  /**
+   * Removes an address from state
+   *
+   * @param {string} address A hex address
+   * @returns {string} the address that was removed
+   */
+  removeAddress (address) {
+    const identities = this.store.getState().identities
+    const accountTokens = this.store.getState().accountTokens
+    if (!identities[address]) {
+      throw new Error(`${address} can't be deleted cause it was not found`)
+    }
+    delete identities[address]
+    delete accountTokens[address]
+    this.store.updateState({ identities, accountTokens })
+
+    // If the selected account is no longer valid,
+    // select an arbitrary other account:
+    if (address === this.getSelectedAddress()) {
+      const selected = Object.keys(identities)[0]
+      this.setSelectedAddress(selected)
+    }
+    return address
+  }
+
 
   /**
    * Adds addresses to the identities object without removing identities
@@ -93,14 +199,17 @@ class PreferencesController {
    */
   addAddresses (addresses) {
     const identities = this.store.getState().identities
+    const accountTokens = this.store.getState().accountTokens
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) return
       // add missing identity
       const identityCount = Object.keys(identities).length
+
+      accountTokens[address] = {}
       identities[address] = { name: `Account ${identityCount + 1}`, address }
     })
-    this.store.updateState({ identities })
+    this.store.updateState({ identities, accountTokens })
   }
 
   /*
@@ -111,9 +220,9 @@ class PreferencesController {
    * @returns {Promise<string>} selectedAddress the selected address.
    */
   syncAddresses (addresses) {
-    let { identities, lostIdentities } = this.store.getState()
+    const { identities, lostIdentities } = this.store.getState()
 
-    let newlyLost = {}
+    const newlyLost = {}
     Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
         newlyLost[identity] = identities[identity]
@@ -128,7 +237,7 @@ class PreferencesController {
       if (this.diagnostics) this.diagnostics.reportOrphans(newlyLost)
 
       // store lost accounts
-      for (let key in newlyLost) {
+      for (const key in newlyLost) {
         lostIdentities[key] = newlyLost[key]
       }
     }
@@ -147,19 +256,26 @@ class PreferencesController {
     return selected
   }
 
+  removeSuggestedTokens () {
+    return new Promise((resolve, reject) => {
+      this.store.updateState({ suggestedTokens: {} })
+      resolve({})
+    })
+  }
+
   /**
    * Setter for the `selectedAddress` property
    *
    * @param {string} _address A new hex address for an account
-   * @returns {Promise<void>} Promise resolves with undefined
+   * @returns {Promise<void>} Promise resolves with tokens
    *
    */
   setSelectedAddress (_address) {
-    return new Promise((resolve, reject) => {
-      const address = normalizeAddress(_address)
-      this.store.updateState({ selectedAddress: address })
-      resolve()
-    })
+    const address = normalizeAddress(_address)
+    this._updateTokens(address)
+    this.store.updateState({ selectedAddress: address })
+    const tokens = this.store.getState().tokens
+    return Promise.resolve(tokens)
   }
 
   /**
@@ -193,11 +309,11 @@ class PreferencesController {
    * @returns {Promise<array>} Promises the new array of AddedToken objects.
    *
    */
-  async addToken (rawAddress, symbol, decimals) {
+  async addToken (rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
-
     const tokens = this.store.getState().tokens
+    const assetImages = this.getAssetImages()
     const previousEntry = tokens.find((token, index) => {
       return token.address === address
     })
@@ -208,9 +324,8 @@ class PreferencesController {
     } else {
       tokens.push(newEntry)
     }
-
-    this.store.updateState({ tokens })
-
+    assetImages[address] = image
+    this._updateAccountTokens(tokens, assetImages)
     return Promise.resolve(tokens)
   }
 
@@ -223,10 +338,10 @@ class PreferencesController {
    */
   removeToken (rawAddress) {
     const tokens = this.store.getState().tokens
-
+    const assetImages = this.getAssetImages()
     const updatedTokens = tokens.filter(token => token.address !== rawAddress)
-
-    this.store.updateState({ tokens: updatedTokens })
+    delete assetImages[rawAddress]
+    this._updateAccountTokens(updatedTokens, assetImages)
     return Promise.resolve(updatedTokens)
   }
 
@@ -260,11 +375,12 @@ class PreferencesController {
    * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
    *
    * @param {string} _url The the new rpc url to add to the updated list
+   * @param {bool} remove Remove selected url
    * @returns {Promise<void>} Promise resolves with undefined
    *
    */
-  updateFrequentRpcList (_url) {
-    return this.addToFrequentRpcList(_url)
+  updateFrequentRpcList (_url, remove = false) {
+    return this.addToFrequentRpcList(_url, remove)
       .then((rpcList) => {
         this.store.updateState({ frequentRpcList: rpcList })
         return Promise.resolve()
@@ -287,24 +403,22 @@ class PreferencesController {
 
   /**
    * Returns an updated rpcList based on the passed url and the current list.
-   * The returned list will have a max length of 2. If the _url currently exists it the list, it will be moved to the
+   * The returned list will have a max length of 3. If the _url currently exists it the list, it will be moved to the
    * end of the list. The current list is modified and returned as a promise.
    *
    * @param {string} _url The rpc url to add to the frequentRpcList.
+   * @param {bool} remove Remove selected url
    * @returns {Promise<array>} The updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (_url) {
+  addToFrequentRpcList (_url, remove = false) {
     const rpcList = this.getFrequentRpcList()
     const index = rpcList.findIndex((element) => { return element === _url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
-    if (_url !== 'http://localhost:8545') {
+    if (!remove && _url !== 'http://localhost:8545') {
       rpcList.push(_url)
-    }
-    if (rpcList.length > 2) {
-      rpcList.shift()
     }
     return Promise.resolve(rpcList)
   }
@@ -352,6 +466,99 @@ class PreferencesController {
   //
   // PRIVATE METHODS
   //
+
+  /**
+   * Subscription to network provider type.
+   *
+   *
+   */
+  _subscribeProviderType () {
+    this.network.providerStore.subscribe(() => {
+      const { tokens } = this._getTokenRelatedStates()
+      this.store.updateState({ tokens })
+    })
+  }
+
+  /**
+   * Updates `accountTokens` and `tokens` of current account and network according to it.
+   *
+   * @param {array} tokens Array of tokens to be updated.
+   *
+   */
+  _updateAccountTokens (tokens, assetImages) {
+    const { accountTokens, providerType, selectedAddress } = this._getTokenRelatedStates()
+    accountTokens[selectedAddress][providerType] = tokens
+    this.store.updateState({ accountTokens, tokens, assetImages })
+  }
+
+  /**
+   * Updates `tokens` of current account and network.
+   *
+   * @param {string} selectedAddress Account address to be updated with.
+   *
+   */
+  _updateTokens (selectedAddress) {
+    const { tokens } = this._getTokenRelatedStates(selectedAddress)
+    this.store.updateState({ tokens })
+  }
+
+  /**
+   * A getter for `tokens` and `accountTokens` related states.
+   *
+   * @param {string} selectedAddress A new hex address for an account
+   * @returns {Object.<array, object, string, string>} States to interact with tokens in `accountTokens`
+   *
+   */
+  _getTokenRelatedStates (selectedAddress) {
+    const accountTokens = this.store.getState().accountTokens
+    if (!selectedAddress) selectedAddress = this.store.getState().selectedAddress
+    const providerType = this.network.providerStore.getState().type
+    if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
+    if (!(providerType in accountTokens[selectedAddress])) accountTokens[selectedAddress][providerType] = []
+    const tokens = accountTokens[selectedAddress][providerType]
+    return { tokens, accountTokens, providerType, selectedAddress }
+  }
+
+  /**
+   * Handle the suggestion of an ERC20 asset through `watchAsset`
+   * *
+   * @param {Promise} promise Promise according to addition of ERC20 token
+   *
+   */
+  async _handleWatchAssetERC20 (options) {
+    const { address, symbol, decimals, image } = options
+    const rawAddress = address
+    try {
+      this._validateERC20AssetParams({ rawAddress, symbol, decimals })
+    } catch (err) {
+      return err
+    }
+    const tokenOpts = { rawAddress, decimals, symbol, image }
+    this.addSuggestedERC20Asset(tokenOpts)
+    return this.showWatchAssetUi().then(() => {
+      const tokenAddresses = this.getTokens().filter(token => token.address === normalizeAddress(rawAddress))
+      return tokenAddresses.length > 0
+    })
+  }
+
+  /**
+   * Validates that the passed options for suggested token have all required properties.
+   *
+   * @param {Object} opts The options object to validate
+   * @throws {string} Throw a custom error indicating that address, symbol and/or decimals
+   * doesn't fulfill requirements
+   *
+   */
+  _validateERC20AssetParams (opts) {
+    const { rawAddress, symbol, decimals } = opts
+    if (!rawAddress || !symbol || !decimals) throw new Error(`Cannot suggest token without address, symbol, and decimals`)
+    if (!(symbol.length < 6)) throw new Error(`Invalid symbol ${symbol} more than five characters`)
+    const numDecimals = parseInt(decimals, 10)
+    if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
+      throw new Error(`Invalid decimals ${decimals} must be at least 0, and not over 36`)
+    }
+    if (!isValidAddress(rawAddress)) throw new Error(`Invalid address ${rawAddress}`)
+  }
 }
 
 module.exports = PreferencesController

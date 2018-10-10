@@ -23,6 +23,25 @@
     }
   }
 
+  &__typed-container {
+    padding: 17px;
+
+    h1 {
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    * {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    > div {
+      margin-bottom: 10px;
+    }
+  }
+
   &__header {
     height: 64px;
     width: 100%;
@@ -181,6 +200,7 @@
     overflow-wrap: break-word;
     border-bottom: 1px solid #d2d8dd;
     padding: 6px 18px 15px;
+    white-space: pre-line;
   }
 
   &__help-link {

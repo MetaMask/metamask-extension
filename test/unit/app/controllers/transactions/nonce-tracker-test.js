@@ -1,12 +1,10 @@
 const assert = require('assert')
 const NonceTracker = require('../../../../../app/scripts/controllers/transactions/nonce-tracker')
 const MockTxGen = require('../../../../lib/mock-tx-gen')
-let providerResultStub = {}
+const providerResultStub = {}
 
 describe('Nonce Tracker', function () {
-  let nonceTracker, provider
-  let getPendingTransactions, pendingTxs
-  let getConfirmedTransactions, confirmedTxs
+  let nonceTracker, pendingTxs, confirmedTxs
 
   describe('#getNonceLock', function () {
 
@@ -182,8 +180,8 @@ describe('Nonce Tracker', function () {
     describe('When all three return different values', function () {
       beforeEach(function () {
         const txGen = new MockTxGen()
-        const confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 10 })
-        const pendingTxs = txGen.generate({
+        confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 10 })
+        pendingTxs = txGen.generate({
           status: 'submitted',
           nonce: 100,
         }, { count: 1 })
@@ -202,8 +200,8 @@ describe('Nonce Tracker', function () {
     describe('Faq issue 67', function () {
       beforeEach(function () {
         const txGen = new MockTxGen()
-        const confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 64 })
-        const pendingTxs = txGen.generate({
+        confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 64 })
+        pendingTxs = txGen.generate({
           status: 'submitted',
         }, { count: 10 })
                                          // 0x40 is 64 in hex:
@@ -226,14 +224,15 @@ function generateNonceTrackerWith (pending, confirmed, providerStub = '0x0') {
   providerResultStub.result = providerStub
   const provider = {
     sendAsync: (_, cb) => { cb(undefined, providerResultStub) },
-    _blockTracker: {
-      getCurrentBlock: () => '0x11b568',
-    },
+  }
+  const blockTracker = {
+    getCurrentBlock: () => '0x11b568',
+    getLatestBlock: async () => '0x11b568',
   }
   return new NonceTracker({
     provider,
+    blockTracker,
     getPendingTransactions,
     getConfirmedTransactions,
   })
 }
-

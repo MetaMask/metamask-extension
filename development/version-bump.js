@@ -1,6 +1,6 @@
 const clone = require('clone')
 
-async function versionBump(bumpType, changelog, oldManifest) {
+async function versionBump (bumpType, changelog, oldManifest) {
   const manifest = clone(oldManifest)
   const newVersion = newVersionFrom(manifest, bumpType)
 
@@ -19,13 +19,13 @@ async function versionBump(bumpType, changelog, oldManifest) {
   return {
     version: newVersion,
     manifest: manifest,
-    changelog: logLines.join('\n')
+    changelog: logLines.join('\n'),
   }
 }
 
 function newVersionFrom (manifest, bumpType) {
   const string = manifest.version
-  let segments = string.split('.').map((str) => parseInt(str))
+  const segments = string.split('.').map((str) => parseInt(str))
 
   switch (bumpType) {
     case 'major':
@@ -43,10 +43,6 @@ function newVersionFrom (manifest, bumpType) {
   }
 
   return segments.map(String).join('.')
-}
-
-function bumpManifest (manifest, bumpType) {
-
 }
 
 module.exports = versionBump

@@ -7,6 +7,6 @@ var changelog = fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.md')).toSt
 
 var log = changelog.split(version)[1].split('##')[0].trim()
 
-let msg = `*MetaMask ${version}* now published! It should auto-update soon!\n${log}`
+const msg = `*MetaMask ${version}* now published! It should auto-update soon!\n${log}`
 
 console.log(msg)

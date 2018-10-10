@@ -48,7 +48,14 @@ function reduceApp (state, action) {
         name: null,
       },
     },
-    sidebarOpen: false,
+    sidebar: {
+      isOpen: false,
+      transitionName: '',
+      type: '',
+    },
+    alertOpen: false,
+    alertMessage: null,
+    qrCodeData: null,
     networkDropdownOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
@@ -62,6 +69,12 @@ function reduceApp (state, action) {
     warning: null,
     buyView: {},
     isMouseUser: false,
+    gasIsLoading: false,
+    networkNonce: null,
+    defaultHdPaths: {
+      trezor: `m/44'/60'/0'/0`,
+      ledger: `m/44'/60'/0'/0/0`,
+    },
   }, state.appState)
 
   switch (action.type) {
@@ -79,13 +92,39 @@ function reduceApp (state, action) {
     // sidebar methods
     case actions.SIDEBAR_OPEN:
       return extend(appState, {
-        sidebarOpen: true,
+        sidebar: {
+          ...action.value,
+          isOpen: true,
+        },
       })
 
     case actions.SIDEBAR_CLOSE:
       return extend(appState, {
-        sidebarOpen: false,
+        sidebar: {
+          ...appState.sidebar,
+          isOpen: false,
+        },
       })
+
+    // alert methods
+    case actions.ALERT_OPEN:
+      return extend(appState, {
+        alertOpen: true,
+        alertMessage: action.value,
+      })
+
+    case actions.ALERT_CLOSE:
+      return extend(appState, {
+        alertOpen: false,
+        alertMessage: null,
+      })
+
+    // qr scanner methods
+    case actions.QR_CODE_DETECTED:
+      return extend(appState, {
+        qrCodeData: action.value,
+      })
+
 
     // modal methods:
     case actions.MODAL_OPEN:
@@ -175,6 +214,15 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'add-token',
+          context: appState.currentView.context,
+        },
+        transForward: action.value,
+      })
+
+    case actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'add-suggested-token',
           context: appState.currentView.context,
         },
         transForward: action.value,
@@ -500,6 +548,15 @@ function reduceApp (state, action) {
         warning: '',
       })
 
+    case actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH:
+      const { device, path } = action.value
+      const newDefaults = {...appState.defaultHdPaths}
+      newDefaults[device] = path
+
+      return extend(appState, {
+        defaultHdPaths: newDefaults,
+      })
+
     case actions.SHOW_LOADING:
       return extend(appState, {
         isLoading: true,
@@ -673,6 +730,21 @@ function reduceApp (state, action) {
     case actions.SET_MOUSE_USER_STATE:
       return extend(appState, {
         isMouseUser: action.value,
+      })
+
+    case actions.GAS_LOADING_STARTED:
+      return extend(appState, {
+        gasIsLoading: true,
+      })
+
+    case actions.GAS_LOADING_FINISHED:
+      return extend(appState, {
+        gasIsLoading: false,
+      })
+
+    case actions.SET_NETWORK_NONCE:
+      return extend(appState, {
+        networkNonce: action.value,
       })
 
     default:

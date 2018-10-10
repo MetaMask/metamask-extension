@@ -8,7 +8,12 @@ const { getCurrentViewContext } = require('../../../selectors')
 const classnames = require('classnames')
 const NewAccountCreateForm = require('./new-account')
 const NewAccountImportForm = require('./import-account')
-const { NEW_ACCOUNT_ROUTE, IMPORT_ACCOUNT_ROUTE } = require('../../../routes')
+const ConnectHardwareForm = require('./connect-hardware')
+const {
+  NEW_ACCOUNT_ROUTE,
+  IMPORT_ACCOUNT_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
+} = require('../../../routes')
 
 class CreateAccountPage extends Component {
   renderTabs () {
@@ -36,13 +41,26 @@ class CreateAccountPage extends Component {
       }, [
         this.context.t('import'),
       ]),
+      h(
+        'div.new-account__tabs__tab',
+        {
+          className: classnames('new-account__tabs__tab', {
+            'new-account__tabs__selected': matchPath(location.pathname, {
+              path: CONNECT_HARDWARE_ROUTE,
+              exact: true,
+            }),
+          }),
+          onClick: () => history.push(CONNECT_HARDWARE_ROUTE),
+        },
+        this.context.t('connect')
+      ),
     ])
   }
 
   render () {
     return h('div.new-account', {}, [
       h('div.new-account__header', [
-        h('div.new-account__title', this.context.t('newAccount') ),
+        h('div.new-account__title', this.context.t('newAccount')),
         this.renderTabs(),
       ]),
       h('div.new-account__form', [
@@ -56,6 +74,11 @@ class CreateAccountPage extends Component {
             exact: true,
             path: IMPORT_ACCOUNT_ROUTE,
             component: NewAccountImportForm,
+          }),
+          h(Route, {
+            exact: true,
+            path: CONNECT_HARDWARE_ROUTE,
+            component: ConnectHardwareForm,
           }),
         ]),
       ]),

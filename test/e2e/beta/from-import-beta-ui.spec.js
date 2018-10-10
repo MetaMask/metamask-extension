@@ -12,23 +12,24 @@ const {
 } = require('../func')
 const {
   checkBrowserForConsoleErrors,
-  loadExtension,
+  closeAllWindowHandlesExcept,
   verboseReportOnFailure,
   findElement,
   findElements,
+  loadExtension,
 } = require('./helpers')
 
 
 describe('Using MetaMask with an existing account', function () {
   let extensionId
   let driver
-  let tokenAddress
 
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
+  const testPrivateKey2 = '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
+  const tinyDelayMs = 500
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
-  const waitingNewPageDelayMs = regularDelayMs * 10
 
   this.timeout(0)
   this.bail(true)
@@ -76,36 +77,58 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('New UI setup', async function () {
     it('switches to first tab', async function () {
+      await delay(tinyDelayMs)
       const [firstTab] = await driver.getAllWindowHandles()
       await driver.switchTo().window(firstTab)
       await delay(regularDelayMs)
     })
 
-    it('use the local network', async function () {
-      const networkSelector = await findElement(driver, By.css('#network_component'))
-      await networkSelector.click()
-      await delay(regularDelayMs)
-
-      const [localhost] = await findElements(driver, By.xpath(`//li[contains(text(), 'Localhost')]`))
-      await localhost.click()
-      await delay(regularDelayMs)
-    })
-
     it('selects the new UI option', async () => {
-      const button = await findElement(driver, By.xpath("//p[contains(text(), 'Try Beta Version')]"))
+      try {
+        const overlay = await findElement(driver, By.css('.full-flex-height'))
+        await driver.wait(until.stalenessOf(overlay))
+      } catch (e) {}
+
+      let button
+      try {
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      } catch (e) {
+        await loadExtension(driver, extensionId)
+        await delay(largeDelayMs)
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      }
       await button.click()
       await delay(regularDelayMs)
 
       // Close all other tabs
-      let [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
-      newUi = newUi || infoPage
-      await driver.switchTo().window(oldUi)
-      await driver.close()
-      if (infoPage !== newUi) {
-        await driver.switchTo().window(infoPage)
-        await driver.close()
+      const [tab0, tab1, tab2] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(tab0)
+      await delay(tinyDelayMs)
+
+      let selectedUrl = await driver.getCurrentUrl()
+      await delay(tinyDelayMs)
+      if (tab0 && selectedUrl.match(/popup.html/)) {
+        await closeAllWindowHandlesExcept(driver, tab0)
+      } else if (tab1) {
+        await driver.switchTo().window(tab1)
+        selectedUrl = await driver.getCurrentUrl()
+        await delay(tinyDelayMs)
+        if (selectedUrl.match(/popup.html/)) {
+          await closeAllWindowHandlesExcept(driver, tab1)
+        } else if (tab2) {
+          await driver.switchTo().window(tab2)
+          selectedUrl = await driver.getCurrentUrl()
+          selectedUrl.match(/popup.html/) && await closeAllWindowHandlesExcept(driver, tab2)
+        }
+      } else {
+        throw new Error('popup.html not found')
       }
-      await driver.switchTo().window(newUi)
+      await delay(regularDelayMs)
+      const [appTab] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(appTab)
+      await delay(tinyDelayMs)
+
+      await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
       const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
@@ -166,8 +189,7 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('Show account information', () => {
     it('shows the correct account address', async () => {
-      const detailsButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Details')]`))
-      detailsButton.click()
+      await driver.findElement(By.css('.wallet-view__details-button')).click()
       await driver.findElement(By.css('.qr-wrapper')).isDisplayed()
       await delay(regularDelayMs)
 
@@ -210,6 +232,16 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   describe('Add an account', () => {
+    it('switches to localhost', async () => {
+      const networkDropdown = await findElement(driver, By.css('.network-name'))
+      await networkDropdown.click()
+      await delay(regularDelayMs)
+
+      const [localhost] = await findElements(driver, By.xpath(`//span[contains(text(), 'Localhost')]`))
+      await localhost.click()
+      await delay(largeDelayMs)
+    })
+
     it('choose Create Account from the account menu', async () => {
       await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)
@@ -263,8 +295,10 @@ describe('Using MetaMask with an existing account', function () {
       await configureGas.click()
       await delay(regularDelayMs)
 
+      const gasModal = await driver.findElement(By.css('span .modal'))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
       await delay(regularDelayMs)
 
       // Continue to next screen
@@ -280,151 +314,95 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
       assert.equal(transactions.length, 1)
 
-      const txValues = await findElements(driver, By.css('.tx-list-value'))
+      const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       assert.equal(txValues.length, 1)
-      assert.equal(await txValues[0].getText(), '1 ETH')
+      assert.equal(await txValues[0].getText(), '-1 ETH')
     })
   })
 
-  describe('Send ETH from Faucet', () => {
-    it('starts a send transaction inside Faucet', async () => {
-      await driver.executeScript('window.open("https://faucet.metamask.io")')
-      await delay(waitingNewPageDelayMs)
-
-      const [extension, faucet] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(faucet)
+  describe('Imports an account with private key', () => {
+    it('choose Create Account from the account menu', async () => {
+      await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)
 
-      const send1eth = await findElement(driver, By.xpath(`//button[contains(text(), '10 ether')]`), 14000)
-      await send1eth.click()
-      await delay(regularDelayMs)
-
-      await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
-      await delay(regularDelayMs)
-
-      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 14000)
-      await confirmButton.click()
-      await delay(regularDelayMs)
-
-      await driver.switchTo().window(faucet)
-      await delay(regularDelayMs)
-      await driver.close()
-      await delay(regularDelayMs)
-      await driver.switchTo().window(extension)
-      await delay(regularDelayMs)
-      await loadExtension(driver, extensionId)
-      await delay(regularDelayMs)
-    })
-  })
-
-  describe('Add existing token using search', () => {
-    it('clicks on the Add Token button', async () => {
-      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
-      await addToken.click()
+      const [importAccount] = await findElements(driver, By.xpath(`//div[contains(text(), 'Import Account')]`))
+      await importAccount.click()
       await delay(regularDelayMs)
     })
 
-    it('picks an existing token', async () => {
-      const tokenSearch = await findElement(driver, By.css('#search-tokens'))
-      await tokenSearch.sendKeys('BAT')
+    it('enter private key', async () => {
+      const privateKeyInput = await findElement(driver, By.css('#private-key-box'))
+      await privateKeyInput.sendKeys(testPrivateKey2)
       await delay(regularDelayMs)
-
-      const token = await findElement(driver, By.xpath("//span[contains(text(), 'BAT')]"))
-      await token.click()
+      const importButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Import')]`))
+      await importButtons[0].click()
       await delay(regularDelayMs)
-
-      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-
-      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
-      await addTokens.click()
-      await delay(largeDelayMs)
     })
 
-    it('renders the balance for the new token', async () => {
-      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
-      const tokenAmount = await balance.getText()
-      assert.equal(tokenAmount, '0BAT')
+    it('should show the correct account name', async () => {
+      const [accountName] = await findElements(driver, By.css('.account-name'))
+      assert.equal(await accountName.getText(), 'Account 3')
+      await delay(regularDelayMs)
+    })
+
+    it('should show the imported label', async () => {
+      const [importedLabel] = await findElements(driver, By.css('.wallet-view__keyring-label'))
+      assert.equal(await importedLabel.getText(), 'IMPORTED')
       await delay(regularDelayMs)
     })
   })
 
-  describe('Add a custom token from TokenFactory', () => {
-    it('creates a new token', async () => {
-      await driver.executeScript('window.open("https://tokenfactory.surge.sh/#/factory")')
-      await delay(waitingNewPageDelayMs)
-
-      const [extension, tokenFactory] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(tokenFactory)
-      const [
-        totalSupply,
-        tokenName,
-        tokenDecimal,
-        tokenSymbol,
-      ] = await findElements(driver, By.css('.form-control'))
-
-      await totalSupply.sendKeys('100')
-      await tokenName.sendKeys('Test')
-      await tokenDecimal.sendKeys('0')
-      await tokenSymbol.sendKeys('TST')
-
-      const createToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Create Token')]`))
-      await createToken.click()
+  describe('Connects to a Hardware wallet', () => {
+    it('choose Connect Hardware Wallet from the account menu', async () => {
+      await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)
 
-      await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
-      await delay(regularDelayMs)
-
-      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
-      await confirmButton.click()
-      await delay(regularDelayMs)
-
-      await driver.switchTo().window(tokenFactory)
-      await delay(regularDelayMs)
-      const tokenContactAddress = await driver.findElement(By.css('div > div > div:nth-child(2) > span:nth-child(3)'))
-      tokenAddress = await tokenContactAddress.getText()
-      await driver.close()
-      await driver.switchTo().window(extension)
-      await loadExtension(driver, extensionId)
+      const [connectAccount] = await findElements(driver, By.xpath(`//div[contains(text(), 'Connect Hardware Wallet')]`))
+      await connectAccount.click()
       await delay(regularDelayMs)
     })
 
-    it('clicks on the Add Token button', async () => {
-      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
-      await addToken.click()
+    it('should open the TREZOR Connect popup', async () => {
+      const trezorButton = await findElements(driver, By.css('.hw-connect__btn'))
+      await trezorButton[1].click()
       await delay(regularDelayMs)
+      const connectButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      await connectButtons[0].click()
+      await delay(regularDelayMs)
+      const allWindows = await driver.getAllWindowHandles()
+      switch (process.env.SELENIUM_BROWSER) {
+        case 'chrome':
+          assert.equal(allWindows.length, 2)
+          break
+        default:
+          assert.equal(allWindows.length, 1)
+      }
     })
 
-    it('picks the new Test token', async () => {
-      const addCustomToken = await findElement(driver, By.xpath("//div[contains(text(), 'Custom Token')]"))
-      await addCustomToken.click()
-      await delay(regularDelayMs)
+    it('should show the "Browser not supported" screen for non Chrome browsers', async () => {
+      if (process.env.SELENIUM_BROWSER !== 'chrome') {
+        const title = await findElements(driver, By.xpath(`//h3[contains(text(), 'Your Browser is not supported...')]`))
+        assert.equal(title.length, 1)
 
-      const newTokenAddress = await findElement(driver, By.css('#custom-address'))
-      await newTokenAddress.sendKeys(tokenAddress)
-      await delay(regularDelayMs)
+        const downloadChromeButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Download Google Chrome')]`))
+        assert.equal(downloadChromeButtons.length, 1)
 
-      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
-      await nextScreen.click()
-      await delay(regularDelayMs)
+        await downloadChromeButtons[0].click()
+        await delay(regularDelayMs)
 
-      const addTokens = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Tokens')]`))
-      await addTokens.click()
-      await delay(regularDelayMs)
-    })
+        const [newUITab, downloadChromeTab] = await driver.getAllWindowHandles()
 
-    it('renders the balance for the new token', async () => {
-      const balance = await findElement(driver, By.css('.tx-view .balance-display .token-amount'))
-      await driver.wait(until.elementTextIs(balance, '100TST'))
-      const tokenAmount = await balance.getText()
-      assert.equal(tokenAmount, '100TST')
-      await delay(regularDelayMs)
+        await driver.switchTo().window(downloadChromeTab)
+        await delay(regularDelayMs)
+        const tabUrl = await driver.getCurrentUrl()
+        assert.equal(tabUrl, 'https://www.google.com/chrome/')
+        await driver.close()
+        await delay(regularDelayMs)
+        await driver.switchTo().window(newUITab)
+      }
     })
   })
 })

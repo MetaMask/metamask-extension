@@ -1,6 +1,6 @@
 .loading-overlay {
   left: 0;
-  z-index: 50;
+  z-index: 51;
   position: absolute;
   flex-direction: column;
   display: flex;
@@ -8,24 +8,8 @@
   align-items: center;
   flex: 1 1 auto;
   width: 100%;
+  height: 100%;
   background: rgba(255, 255, 255, .8);
-
-  @media screen and (max-width: 575px) {
-    margin-top: 66px;
-    height: calc(100% - 66px);
-  }
-
-  @media screen and (min-width: 576px) {
-    margin-top: 75px;
-    height: calc(100% - 75px);
-  }
-
-  &--full-screen {
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
-    margin-top: 0;
-  }
 
   &__container {
     position: absolute;

@@ -9,6 +9,11 @@ package
 # IDEs
 .idea
 .vscode
+.sublime-project
+
+# VIM
+*.swp
+*.swo
 
 temp
 .tmp
@@ -16,6 +21,7 @@ temp
 .DS_Store
 app/.DS_Store
 
+coverage/
 dist
 builds/
 disc/
@@ -30,6 +36,7 @@ test/bundle.js
 test/test-bundle.js
 
 test-artifacts
+test-builds
 
 #ignore css output and sourcemaps
 ui/app/css/output/

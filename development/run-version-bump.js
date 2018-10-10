@@ -11,7 +11,7 @@ const bumpType = normalizeType(process.argv[2])
 
 start().catch(console.error)
 
-async function start() {
+async function start () {
 
   const changeBuffer = await readFile(changelogPath)
   const changelog = changeBuffer.toString()

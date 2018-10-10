@@ -22,6 +22,7 @@
         "name": "Send Account 4"
       }
     },
+    "assetImages": {},
     "unapprovedTxs": {},
     "currentCurrency": "USD",
     "conversionRate": 1200.88200327,
@@ -141,6 +142,7 @@
     "accountDetail": {
       "subview": "transactions"
     },
+    "sidebar": {},
     "modal": {
       "modalState": {},
       "previousModalState": {}
@@ -156,5 +158,23 @@
     "fromDropdownOpen": false,
     "toDropdownOpen": false,
     "errors": {}
+  },
+  "confirmTransaction": {
+    "txData": {},
+    "tokenData": {},
+    "methodData": {},
+    "tokenProps": {
+      "tokenDecimals": "",
+      "tokenSymbol": ""
+    },
+    "fiatTransactionAmount": "",
+    "fiatTransactionFee": "",
+    "fiatTransactionTotal": "",
+    "ethTransactionAmount": "",
+    "ethTransactionFee": "",
+    "ethTransactionTotal": "",
+    "hexGasTotal": "",
+    "nonce": "",
+    "fetchingMethodData": false
   }
 }

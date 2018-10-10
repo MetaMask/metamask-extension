@@ -1,0 +1,79 @@
+<html>
+<head>
+  <title>MetaMask Error</title>
+  <link href="https://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet">
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    img{
+      display: block;
+    }
+    html, body{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+    @keyframes logoAmin{
+      from {transform: scale(1);}
+      50%{transform: scale(1.1);}
+      to {transform: scale(1);}
+    }
+    .errorBox{
+      width: 70%;
+      height: auto;
+      overflow: hidden;
+      background-image: url("./images/deadface.png");
+      background-repeat: no-repeat;
+      background-position: 100% 50%;
+      background-size: auto 90%;
+      padding: 5px;
+    }
+    .errorBox > img{
+      width: 100px;
+      height: auto;
+      margin-bottom: 25px;
+      animation: logoAmin 1s infinite linear;
+    }
+    .errorBox > h1, .errorBox > h2{
+      letter-spacing: 2px;
+    }
+    .errorBox > h1{
+      color: #9b9b9b;
+      font-size: 40px;
+    }
+    .errorBox > h2{
+      color: #1b243d;
+      font-size: 20px;
+      padding-top: 5px;
+    }
+    .errorBox > h2 >a{
+      color: #1b243d;
+    }
+    .errorBox > h2 >a:hover{
+      color: #44588e;
+    }
+
+    .errorBox > h1 > span{
+      color: #33559f;
+    } 
+
+  </style>
+</head>
+<body>
+  <div class="errorBox">
+    <img src="./images/logo.png" alt="">
+    <h1><span id="name"></span> not found</h1>
+    <h2>Powered by <a href="https://www.portal.network/">Portal Network</a></h2>
+  </div>
+  <script>
+    let index = location.href.lastIndexOf("?name=")
+    let name = location.href.slice(index + 6)
+    document.getElementById("name").innerHTML = name
+  </script>
+</body>
+</html>

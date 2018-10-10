@@ -18,12 +18,12 @@ module.exports = getObjStructure
  * Creates an object that represents the structure of the given object. It replaces all values with the result of their
  * type.
  *
- * @param {object} obj The object for which a 'structure' will be returned. Usually a plain object and not a class. 
+ * @param {object} obj The object for which a 'structure' will be returned. Usually a plain object and not a class.
  * @returns {object} The "mapped" version of a deep clone of the passed object, with each non-object property value
  * replaced with the javascript type of that value.
  *
  */
-function getObjStructure(obj) {
+function getObjStructure (obj) {
   const structure = clone(obj)
   return deepMap(structure, (value) => {
     return value === null ? 'null' : typeof value
@@ -38,7 +38,7 @@ function getObjStructure(obj) {
  * @param {Function} visit The modifier to apply to each non-object property value
  * @returns {object} The modified object
  */
-function deepMap(target = {}, visit) {
+function deepMap (target = {}, visit) {
   Object.entries(target).forEach(([key, value]) => {
     if (typeof value === 'object' && value !== null) {
       target[key] = deepMap(value, visit)

@@ -29,6 +29,7 @@ class BlacklistController {
   constructor (opts = {}) {
     const initState = extend({
       phishing: PHISHING_DETECTION_CONFIG,
+      whitelist: [],
     }, opts.initState)
     this.store = new ObservableStore(initState)
     // phishing detector
@@ -36,6 +37,21 @@ class BlacklistController {
     this._setupPhishingDetector(initState.phishing)
     // polling references
     this._phishingUpdateIntervalRef = null
+  }
+
+  /**
+   * Adds the given hostname to the runtime whitelist
+   * @param {string} hostname the hostname to whitelist
+   */
+  whitelistDomain (hostname) {
+    if (!hostname) {
+      return
+    }
+
+    const { whitelist } = this.store.getState()
+    this.store.updateState({
+      whitelist: [...new Set([hostname, ...whitelist])],
+    })
   }
 
   /**
@@ -48,6 +64,12 @@ class BlacklistController {
    */
   checkForPhishing (hostname) {
     if (!hostname) return false
+
+    const { whitelist } = this.store.getState()
+    if (whitelist.some((e) => e === hostname)) {
+      return false
+    }
+
     const { result } = this._phishingDetector.check(hostname)
     return result
   }
@@ -87,7 +109,7 @@ class BlacklistController {
    *
    * @private
    * @param {object} config A config object like that found at {@link https://github.com/MetaMask/eth-phishing-detect/blob/master/src/config.json}
-   * 
+   *
    */
   _setupPhishingDetector (config) {
     this._phishingDetector = new PhishingDetector(config)

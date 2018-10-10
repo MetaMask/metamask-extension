@@ -1,5 +1,5 @@
 module.exports = {
-  "confirm sig requests": {
+  'confirm sig requests': {
     signMessage: (msgData, cb) => {
       const stateUpdate = {
         unapprovedMsgs: {},
@@ -10,7 +10,7 @@ module.exports = {
     signPersonalMessage: (msgData, cb) => {
       const stateUpdate = {
         unapprovedPersonalMsgs: {},
-        unapprovedPersonalMsgsCount: 0,
+        unapprovedPersonalMsgCount: 0,
       }
       return cb(null, stateUpdate)
     },

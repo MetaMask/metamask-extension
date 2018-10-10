@@ -18,7 +18,7 @@ class ComputedbalancesController {
   /**
    * Creates a new controller instance
    *
-   * @param {ComputedBalancesOptions} [opts] Controller configuration parameters 
+   * @param {ComputedBalancesOptions} [opts] Controller configuration parameters
    */
   constructor (opts = {}) {
     const { accountTracker, txController, blockTracker } = opts

@@ -720,7 +720,131 @@ div.message-container > div:first-child {
     transform: scale(1.1);
 }
 
-//Notification Modal
+.new-ui-announcement {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  color: #4D4D4D;
+  font-family: Roboto, Arial, sans-serif;
+  padding: 1.5rem;
+}
+
+.new-ui-announcement__announcement-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+.new-ui-announcement__announcement-header a.close {
+  cursor: pointer;
+  font-size: 32px;
+  line-height: 17px;
+}
+
+.new-ui-announcement__announcement-header a.close:hover {
+  color: inherit;
+}
+
+.new-ui-announcement__announcement-header h1 {
+  color: #33A4E7;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.new-ui-announcement__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-size: 10.5pt;
+  font-weight: 300;
+}
+
+.new-ui-announcement__body h1 {
+  font-size: 22px;
+  font-weight: 600;
+  padding-bottom: 1rem;
+}
+
+.new-ui-announcement__body a {
+  color: #33A4E7;
+}
+
+.new-ui-announcement__body .updates-list {
+  padding: .5rem 1rem;
+}
+
+.new-ui-announcement__body .updates-list h2 {
+  font-weight: 600;
+}
+
+.new-ui-announcement__body .updates-list ul {
+  list-style: disc inside;
+}
+
+.new-ui-announcement__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.new-ui-announcement__footer h1 {
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.new-ui-announcement__footer button:hover {
+  transform: none;
+}
+
+.new-ui-announcement__footer button.positive {
+  padding: 1rem;
+  margin: 1rem;
+  background: #33A4E7;
+  color: white;
+  text-transform: uppercase;
+  box-shadow: none;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  width: 90%;
+}
+
+.new-ui-announcement__footer button.negative {
+  margin: 0;
+  padding: 0;
+  background: white;
+  color: #33A4E7;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  box-shadow: none;
+}
+
+.app-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-bar__new-ui-banner {
+  background: #33A4E7;
+  color: white;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 8px;
+  font-family: Roboto, Arial, sans-serif;
+  font-weight: 400;
+  width: 100%;
+}
+
+.banner__link {
+  cursor: pointer;
+  text-decoration: underline;
+}
 
 .notification-modal-wrapper {
   display: flex;

@@ -1,6 +1,4 @@
 const assert = require('assert')
-const clone = require('clone')
-const ObservableStore = require('obs-store')
 const TxStateManager = require('../../../../../app/scripts/controllers/transactions/tx-state-manager')
 const txStateHistoryHelper = require('../../../../../app/scripts/controllers/transactions/lib/tx-state-history-helper')
 const noop = () => true
@@ -16,23 +14,23 @@ describe('TransactionStateManager', function () {
         transactions: [],
       },
       txHistoryLimit: 10,
-      getNetwork: () => currentNetworkId
+      getNetwork: () => currentNetworkId,
     })
   })
 
   describe('#setTxStatusSigned', function () {
     it('sets the tx status to signed', function () {
-      let tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx, noop)
       txStateManager.setTxStatusSigned(1)
-      let result = txStateManager.getTxList()
+      const result = txStateManager.getTxList()
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].status, 'signed')
     })
 
     it('should emit a signed event to signal the exciton of callback', (done) => {
-      let tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       const noop = function () {
         assert(true, 'event listener has been triggered and noop executed')
         done()
@@ -45,22 +43,24 @@ describe('TransactionStateManager', function () {
   })
 
   describe('#setTxStatusRejected', function () {
-    it('sets the tx status to rejected', function () {
-      let tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
+     it('sets the tx status to rejected and removes it from history', function () {
+      const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       txStateManager.setTxStatusRejected(1)
-      let result = txStateManager.getTxList()
+      const result = txStateManager.getTxList()
       assert.ok(Array.isArray(result))
-      assert.equal(result.length, 1)
-      assert.equal(result[0].status, 'rejected')
+      assert.equal(result.length, 0)
     })
 
     it('should emit a rejected event to signal the exciton of callback', (done) => {
-      let tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx)
       const noop = function (err, txId) {
-        assert(true, 'event listener has been triggered and noop executed')
-        done()
+          if (err) {
+            console.log('Error: ', err)
+          }
+          assert(true, 'event listener has been triggered and noop executed')
+          done()
       }
       txStateManager.on('1:rejected', noop)
       txStateManager.setTxStatusRejected(1)
@@ -69,7 +69,7 @@ describe('TransactionStateManager', function () {
 
   describe('#getFullTxList', function () {
     it('when new should return empty array', function () {
-      let result = txStateManager.getTxList()
+      const result = txStateManager.getTxList()
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 0)
     })
@@ -77,7 +77,7 @@ describe('TransactionStateManager', function () {
 
   describe('#getTxList', function () {
     it('when new should return empty array', function () {
-      let result = txStateManager.getTxList()
+      const result = txStateManager.getTxList()
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 0)
     })
@@ -85,21 +85,21 @@ describe('TransactionStateManager', function () {
 
   describe('#addTx', function () {
     it('adds a tx returned in getTxList', function () {
-      let tx = { id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const tx = { id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(tx, noop)
-      let result = txStateManager.getTxList()
+      const result = txStateManager.getTxList()
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].id, 1)
     })
 
     it('does not override txs from other networks', function () {
-      let tx = { id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
-      let tx2 = { id: 2, status: 'confirmed', metamaskNetworkId: otherNetworkId, txParams: {} }
+      const tx = { id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const tx2 = { id: 2, status: 'confirmed', metamaskNetworkId: otherNetworkId, txParams: {} }
       txStateManager.addTx(tx, noop)
       txStateManager.addTx(tx2, noop)
-      let result = txStateManager.getFullTxList()
-      let result2 = txStateManager.getTxList()
+      const result = txStateManager.getFullTxList()
+      const result2 = txStateManager.getTxList()
       assert.equal(result.length, 2, 'txs were deleted')
       assert.equal(result2.length, 1, 'incorrect number of txs on network.')
     })
@@ -110,7 +110,7 @@ describe('TransactionStateManager', function () {
         const tx = { id: i, time: new Date(), status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
         txStateManager.addTx(tx, noop)
       }
-      let result = txStateManager.getTxList()
+      const result = txStateManager.getTxList()
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
       assert.equal(result[0].id, 1, 'early txs truncted')
     })
@@ -121,20 +121,20 @@ describe('TransactionStateManager', function () {
         const tx = { id: i, time: new Date(), status: 'rejected', metamaskNetworkId: currentNetworkId, txParams: {} }
         txStateManager.addTx(tx, noop)
       }
-      let result = txStateManager.getTxList()
+      const result = txStateManager.getTxList()
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
       assert.equal(result[0].id, 1, 'early txs truncted')
     })
 
     it('cuts off early txs beyond a limit but does not cut unapproved txs', function () {
-      let unconfirmedTx = { id: 0, time: new Date(), status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
+      const unconfirmedTx = { id: 0, time: new Date(), status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
       txStateManager.addTx(unconfirmedTx, noop)
       const limit = txStateManager.txHistoryLimit
       for (let i = 1; i < limit + 1; i++) {
         const tx = { id: i, time: new Date(), status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
         txStateManager.addTx(tx, noop)
       }
-      let result = txStateManager.getTxList()
+      const result = txStateManager.getTxList()
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
       assert.equal(result[0].id, 0, 'first tx should still be there')
       assert.equal(result[0].status, 'unapproved', 'first tx should be unapproved')
@@ -149,7 +149,7 @@ describe('TransactionStateManager', function () {
       const txMeta = txStateManager.getTx('1')
       txMeta.hash = 'foo'
       txStateManager.updateTx(txMeta)
-      let result = txStateManager.getTx('1')
+      const result = txStateManager.getTx('1')
       assert.equal(result.hash, 'foo')
     })
 
@@ -165,8 +165,6 @@ describe('TransactionStateManager', function () {
           gasPrice: originalGasPrice,
         },
       }
-
-      const updatedMeta = clone(txMeta)
 
       txStateManager.addTx(txMeta)
       const updatedTx = txStateManager.getTx('1')
@@ -185,7 +183,7 @@ describe('TransactionStateManager', function () {
       // validate history was updated
       assert.equal(result.history.length, 2, 'two history items (initial + diff)')
       assert.equal(result.history[1].length, 1, 'two history state items (initial + diff)')
-      
+
       const expectedEntry = { op: 'replace', path: '/txParams/gasPrice', value: desiredGasPrice }
       assert.deepEqual(result.history[1][0].op, expectedEntry.op, 'two history items (initial + diff) operation')
       assert.deepEqual(result.history[1][0].path, expectedEntry.path, 'two history items (initial + diff) path')
@@ -286,6 +284,20 @@ describe('TransactionStateManager', function () {
       assert.equal(txsFromCurrentNetworkAndAddress.length, 0)
       assert.equal(txFromOtherNetworks.length, 2)
 
+    })
+  })
+
+  describe('#_removeTx', function () {
+    it('should remove the transaction from the storage', () => {
+      txStateManager._saveTxList([ {id: 1} ])
+      txStateManager._removeTx(1)
+      assert(!txStateManager.getFullTxList().length, 'txList should be empty')
+    })
+
+    it('should only remove the transaction with ID 1 from the storage', () => {
+      txStateManager._saveTxList([ {id: 1}, {id: 2} ])
+      txStateManager._removeTx(1)
+      assert.equal(txStateManager.getFullTxList()[0].id, 2, 'txList should have a id of 2')
     })
   })
 })

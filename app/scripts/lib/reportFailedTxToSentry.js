@@ -7,7 +7,7 @@ module.exports = reportFailedTxToSentry
 // for sending to sentry
 //
 
-function reportFailedTxToSentry({ raven, txMeta }) {
+function reportFailedTxToSentry ({ raven, txMeta }) {
   const errorMessage = 'Transaction Failed: ' + extractEthjsErrorMessage(txMeta.err.message)
   raven.captureMessage(errorMessage, {
     // "extra" key is required by Sentry

@@ -11,7 +11,7 @@ function timeout (time) {
   })
 }
 
-async function findAsync(container, selector, opts) {
+async function findAsync (container, selector, opts) {
   try {
     return await pollUntilTruthy(() => {
       const result = container.find(selector)
@@ -22,7 +22,7 @@ async function findAsync(container, selector, opts) {
   }
 }
 
-async function queryAsync(jQuery, selector, opts) {
+async function queryAsync (jQuery, selector, opts) {
   try {
     return await pollUntilTruthy(() => {
       const result = jQuery(selector)
@@ -33,7 +33,7 @@ async function queryAsync(jQuery, selector, opts) {
   }
 }
 
-async function pollUntilTruthy(fn, opts = {}){
+async function pollUntilTruthy (fn, opts = {}) {
   const pollingInterval = opts.pollingInterval || 100
   const timeoutInterval = opts.timeoutInterval || 5000
   const start = Date.now()

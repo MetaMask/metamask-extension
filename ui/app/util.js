@@ -9,7 +9,7 @@ const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 function formatDate (date) {
-  return vreme.format(new Date(date), 'March 16 2014 14:30')
+  return vreme.format(new Date(date), '3/16/2014 at 14:30')
 }
 
 var valueTable = {
@@ -36,6 +36,7 @@ module.exports = {
   miniAddressSummary: miniAddressSummary,
   isAllOneCase: isAllOneCase,
   isValidAddress: isValidAddress,
+  isValidENSAddress,
   numericBalance: numericBalance,
   parseBalance: parseBalance,
   formatBalance: formatBalance,
@@ -58,6 +59,7 @@ module.exports = {
   allNull,
   getTokenAddressFromTokenObject,
   checksumAddress,
+  addressSlicer,
 }
 
 function valuesFor (obj) {
@@ -85,6 +87,10 @@ function isValidAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') return false
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
+}
+
+function isValidENSAddress (address) {
+  return address.match(/^.{7,}\.(eth|test)$/)
 }
 
 function isInvalidChecksumAddress (address) {
@@ -265,9 +271,9 @@ function getContractAtAddress (tokenAddress) {
   return global.eth.contract(abi).at(tokenAddress)
 }
 
-function exportAsFile (filename, data) {
+function exportAsFile (filename, data, type = 'text/csv') {
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
-  const blob = new Blob([data], {type: 'text/csv'})
+  const blob = new Blob([data], {type})
   if (window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveBlob(blob, filename)
   } else {
@@ -297,4 +303,12 @@ function getTokenAddressFromTokenObject (token) {
  */
 function checksumAddress (address) {
   return address ? ethUtil.toChecksumAddress(address) : ''
+}
+
+function addressSlicer (address = '') {
+  if (address.length < 11) {
+    return address
+  }
+
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
 }

@@ -22,12 +22,16 @@ function isValidInput (text) {
   return re.test(text)
 }
 
+function removeLeadingZeroes (str) {
+  return str.replace(/^0*(?=\d)/, '')
+}
+
 InputNumber.prototype.setValue = function (newValue) {
+  newValue = removeLeadingZeroes(newValue)
   if (newValue && !isValidInput(newValue)) return
   const { fixed, min = -1, max = Infinity, onChange } = this.props
 
   newValue = fixed ? newValue.toFixed(4) : newValue
-
   const newValueGreaterThanMin = conversionGTE(
     { value: newValue || '0', fromNumericBase: 'dec' },
     { value: min, fromNumericBase: 'hex' },
@@ -47,7 +51,7 @@ InputNumber.prototype.setValue = function (newValue) {
 }
 
 InputNumber.prototype.render = function () {
-  const { unitLabel, step = 1, placeholder, value = 0 } = this.props
+  const { unitLabel, step = 1, placeholder, value } = this.props
 
   return h('div.customize-gas-input-wrapper', {}, [
     h('input', {
@@ -62,13 +66,16 @@ InputNumber.prototype.render = function () {
     }),
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
     h('div.gas-tooltip-input-arrows', {}, [
-      h('i.fa.fa-angle-up', {
-        onClick: () => this.setValue(addCurrencies(value, step)),
-      }),
-      h('i.fa.fa-angle-down', {
-        style: { cursor: 'pointer' },
-        onClick: () => this.setValue(subtractCurrencies(value, step)),
-      }),
+      h('div.gas-tooltip-input-arrow-wrapper', {
+        onClick: () => this.setValue(addCurrencies(value, step, { toNumericBase: 'dec' })),
+      }, [
+        h('i.fa.fa-angle-up'),
+      ]),
+      h('div.gas-tooltip-input-arrow-wrapper', {
+        onClick: () => this.setValue(subtractCurrencies(value, step, { toNumericBase: 'dec' })),
+      }, [
+        h('i.fa.fa-angle-down'),
+      ]),
     ]),
   ])
 }

@@ -81,7 +81,7 @@
     "message": "Compra su Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase è il servizio più popolare al mondo per comprare e vendere bitcoin, ethereum e litecoin."
+    "message": "Coinbase è il servizio più popolare al mondo per comprare e vendere Bitcoin, Ethereum e Litecoin."
   },
   "cancel": {
     "message": "Cancella"
@@ -126,7 +126,7 @@
     "message": "Copiato!"
   },
   "copiedSafe": {
-    "message": "Le ho copiate in un posto sicuro"    
+    "message": "Le ho copiate in un posto sicuro"
   },
   "copy": {
     "message": "Copia"
@@ -169,16 +169,16 @@
     "message": "RPC Personalizzata"
   },
   "decimalsMustZerotoTen": {
-    "message": "Il numero di decimali deve essere almeno 0, e non oltre 36."    
+    "message": "Il numero di decimali deve essere almeno 0, e non oltre 36."
   },
   "decimal": {
     "message": "Precisione Decimali"
-  }, 
+  },
   "defaultNetwork": {
     "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
   },
   "denExplainer": {
-    "message": "Il DEN è il tuo archivio crittato con password dentro Metamask."
+    "message": "Il DEN è il tuo archivio crittato con password dentro MetaMask."
   },
   "deposit": {
     "message": "Deposita"
@@ -218,7 +218,7 @@
     "message": "Deposita Direttamente Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."    
+    "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."
   },
   "done": {
     "message": "Finito"
@@ -341,7 +341,7 @@
     "message": "Come vuoi depositare Ether?"
   },
   "holdEther": {
-    "message": "Ti permette di tenere ether & token, e serve da ponte per le applicazioni decentralizzate."    
+    "message": "Ti permette di tenere ether & token, e serve da ponte per le applicazioni decentralizzate."
   },
   "import": {
     "message": "Importa",
@@ -351,7 +351,7 @@
     "message": "Importa Account"
   },
   "importAccountMsg": {
-    "message":" Gli account importati non saranno associati alla frase seed originariamente creata con MetaMask. Impara di più sugli account importati "    
+    "message": " Gli account importati non saranno associati alla frase seed originariamente creata con MetaMask. Impara di più sugli account importati "
   },
   "importAnAccount": {
     "message": "Importa un account"
@@ -391,7 +391,7 @@
     "message": "URI RPC invalido"
   },
   "jsonFail": {
-    "message": "Qualcosa è andato storto. Assicurati che il file JSON sia formattato correttamente."    
+    "message": "Qualcosa è andato storto. Assicurati che il file JSON sia formattato correttamente."
   },
   "jsonFile": {
     "message": "File JSON",
@@ -557,7 +557,7 @@
     "message": "Mostra Codice QR"
   },
   "readdToken": {
-    "message": "Puoi aggiungere nuovamente questo token in futuro andando in “Aggiungi token” nel menu delle opzioni del tuo account."    
+    "message": "Puoi aggiungere nuovamente questo token in futuro andando in “Aggiungi token” nel menu delle opzioni del tuo account."
   },
   "readMore": {
     "message": "Leggi di più qui."
@@ -670,7 +670,7 @@
     "message": "Firma Messaggio"
   },
   "signNotice": {
-    "message": "Firmare questo messaggio può avere effetti collaterali pericolosi. \nFirma messaggi da siti di cui ti fidi totalmente. \nQuesto metodo pericoloso sarà rimosso in versioni future."    
+    "message": "Firmare questo messaggio può avere effetti collaterali pericolosi. \nFirma messaggi da siti di cui ti fidi totalmente. \nQuesto metodo pericoloso sarà rimosso in versioni future."
   },
   "sigRequest": {
     "message": "Firma Richiesta"
@@ -752,7 +752,7 @@
     "message": "Abbiamo avuto un problema a caricare il bilancio dei tuoi token. Puoi vederlo ",
     "description": "Seguito da un link (qui) per vedere il bilancio dei token"
   },
-  "twelveWords": {    
+  "twelveWords": {
     "message": "Queste 12 parole sono l'unico modo per ripristinare i tuoi account MetaMask. \nSalvale in un posto sicuro e segreto."
   },
   "typePassword": {
@@ -762,7 +762,7 @@
     "message": "Benvenuto alla nuova interfaccia (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Stai utilizzanto la nuova interfaccia di MetaMask. Guarda in giro, prova nuove funzionalità come inviare token, e facci sapere se hai dei problemi."    
+    "message": "Stai utilizzanto la nuova interfaccia di MetaMask. Guarda in giro, prova nuove funzionalità come inviare token, e facci sapere se hai dei problemi."
   },
   "unavailable": {
     "message": "Non Disponibile"
@@ -800,7 +800,7 @@
   },
   "visitWebSite": {
     "message": "Visita il nostro sito web"
-  }, 
+  },
   "warning": {
     "message": "Attenzione"
   },

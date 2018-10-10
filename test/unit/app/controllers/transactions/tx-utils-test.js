@@ -27,7 +27,7 @@ describe('txUtils', function () {
 
   describe('#normalizeTxParams', () => {
     it('should normalize txParams', () => {
-      let txParams = {
+      const txParams = {
         chainId: '0x1',
         from: 'a7df1beDBF813f57096dF77FCd515f0B3900e402',
         to: null,
@@ -91,7 +91,7 @@ describe('txUtils', function () {
       assert.throws(() => { txUtils.validateFrom(txParams) }, Error, `Invalid from address`)
 
       // should run
-      txParams.from ='0x1678a085c290ebd122dc42cba69373b5953b831d'
+      txParams.from = '0x1678a085c290ebd122dc42cba69373b5953b831d'
       txUtils.validateFrom(txParams)
       })
   })

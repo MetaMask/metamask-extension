@@ -1,6 +1,5 @@
 .currency-display {
   height: 54px;
-  width: 100%ß;
   border: 1px solid $alto;
   border-radius: 4px;
   background-color: $white;
@@ -21,7 +20,7 @@
     line-height: 22px;
     border: none;
     outline: 0 !important;
-    max-width: 100%;
+    max-width: 22ch;
   }
 
   &__primary-currency {
@@ -47,14 +46,22 @@
   &__input-wrapper {
     position: relative;
     display: flex;
+    flex: 1;
+    max-width: 100%;
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
 
     input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
+      -moz-appearance: none;
       display: none;
     }
 
     input[type="number"]:hover::-webkit-inner-spin-button {
       -webkit-appearance: none;
+      -moz-appearance: none;
       display: none;
     }
   }
@@ -67,11 +74,13 @@
   .react-numeric-input {
     input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
+      -moz-appearance: none;
       display: none;
     }
 
     input[type="number"]:hover::-webkit-inner-spin-button {
       -webkit-appearance: none;
+      -moz-appearance: none;
       display: none;
     }
   }

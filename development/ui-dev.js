@@ -29,9 +29,8 @@ log.setDefaultLevel(1)
 
 // Query String
 const qs = require('qs')
-let queryString = qs.parse(window.location.href.split('#')[1])
+const queryString = qs.parse(window.location.href.split('#')[1])
 let selectedView = queryString.view || 'first time'
-const firstState = states[selectedView]
 updateQueryParams(selectedView)
 
 // CSS
@@ -39,15 +38,15 @@ const MetaMaskUiCss = require('../ui/css')
 const injectCss = require('inject-css')
 
 
-function updateQueryParams(newView) {
+function updateQueryParams (newView) {
   queryString.view = newView
   const params = qs.stringify(queryString)
   window.location.href = window.location.href.split('#')[0] + `#${params}`
 }
 
 const actions = {
-  _setBackgroundConnection(){},
-  update: function(stateName) {
+  _setBackgroundConnection () {},
+  update: function (stateName) {
     selectedView = stateName
     updateQueryParams(stateName)
     const newState = states[selectedView]
@@ -67,7 +66,7 @@ var store = configureStore(states[selectedView])
 // start app
 startApp()
 
-function startApp(){
+function startApp () {
   const body = document.body
   const container = document.createElement('div')
   container.id = 'test-container'

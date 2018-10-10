@@ -21,7 +21,7 @@ The core functionality of MetaMask all lives in what we call [The MetaMask Contr
 When calling `new MetaMask(opts)`, many platform-specific options are configured. The keys on `opts` are as follows:
 
 - initState: The last emitted state, used for restoring persistent state between sessions.
-- platform: The `platform` object defines a variety of platform-specific functions, including opening the confirmation view, and opening web sites.
+- platform: The `platform` object defines a variety of platform-specific functions, including opening the confirmation view, and opening websites.
 - encryptor - An object that provides access to the desired encryption methods.
 
 ##### Encryptor
@@ -89,8 +89,6 @@ MetaMask has two kinds of [duplex stream APIs](https://github.com/substack/strea
 
 If you are making a MetaMask-powered browser for a new platform, one of the trickiest tasks will be injecting the Web3 API into websites that are visited. On WebExtensions, we actually have to pipe data through a total of three JS contexts just to let sites talk to our background process (site -> contentscript -> background).
 
-To make this as easy as possible, we use one of our favorite internal tools, [web3-provider-engine](https://www.npmjs.com/package/web3-provider-engine) to construct a custom web3 provider object whose source of truth is a stream that we connect to remotely.
-
 To see how we do that, you can refer to the [inpage script](https://github.com/MetaMask/metamask-extension/blob/master/app/scripts/inpage.js) that we inject into every website. There you can see it creates a multiplex stream to the background, and uses it to initialize what we call the [inpage-provider](https://github.com/MetaMask/metamask-extension/blob/master/app/scripts/lib/inpage-provider.js), which you can see stubs a few methods out, but mostly just passes calls to `sendAsync` through the stream it's passed! That's really all the magic that's needed to create a web3-like API in a remote context, once you have a stream to MetaMask available.
 
 In `inpage.js` you can see we create a `PortStream`, that's just a class we use to wrap WebExtension ports as streams, so we can reuse our favorite stream abstraction over the more irregular API surface of the WebExtension. In a new platform, you will probably need to construct this stream differently. The key is that you need to construct a stream that talks from the site context to the background. Once you have that set up, it works like magic!
@@ -99,5 +97,5 @@ If streams seem new and confusing to you, that's ok, they can seem strange at fi
 
 ## Conclusion
 
-I hope this has been helpful to you! If you have any other questionsm, or points you think need clarification in this guide, please [open an issue on our GitHub](https://github.com/MetaMask/metamask-plugin/issues/new)!
+I hope this has been helpful to you! If you have any other questions, or points you think need clarification in this guide, please [open an issue on our GitHub](https://github.com/MetaMask/metamask-plugin/issues/new)!
 

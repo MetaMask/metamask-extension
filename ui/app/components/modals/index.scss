@@ -1,52 +1,9 @@
-.modal-container {
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  display: flex;
-  flex-flow: column;
-  border-radius: 8px;
+@import './cancel-transaction/index';
 
-  &__title {
-    font-size: 1.5rem;
-    font-weight: 500;
-    padding: 16px 0;
-    text-align: center;
-  }
+@import './confirm-remove-account/index';
 
-  &__description {
-    text-align: center;
-    font-size: .875rem;
-  }
+@import './customize-gas/index';
 
-  &__content {
-    overflow-y: auto;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 32px;
+@import './qr-scanner/index';
 
-    @media screen and (max-width: 575px) {
-      justify-content: center;
-      padding: 28px 20px;
-    }
-  }
-
-  &__footer {
-    display: flex;
-    flex-flow: row;
-    justify-content: center;
-    border-top: 1px solid #d2d8dd;
-    padding: 16px;
-    flex: 0 0 auto;
-
-    &-button {
-      min-width: 0;
-      margin-right: 16px;
-
-      &:last-of-type {
-        margin-right: 0;
-      }
-    }
-  }
-}
+@import './transaction-confirmed/index';

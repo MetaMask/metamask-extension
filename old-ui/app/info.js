@@ -138,7 +138,6 @@ InfoScreen.prototype.render = function () {
               h('div.fa.fa-envelope', [
                 h('a.info', {
                   target: '_blank',
-                  style: { width: '85vw' },
                   href: 'mailto:help@metamask.io?subject=Feedback',
                 }, 'Email us!'),
               ]),

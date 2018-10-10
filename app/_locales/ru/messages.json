@@ -84,7 +84,7 @@
     "message": "Купить на Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Биржа Coinbase – это наиболее популярный способ купить или продать bitcoin, ethereum и litecoin."
+    "message": "Биржа Coinbase – это наиболее популярный способ купить или продать Bitcoin, Ethereum и Litecoin."
   },
   "ok": {
     "message": "ОК"
@@ -366,7 +366,7 @@
     "message": "Импортировать счет"
   },
   "importAccountMsg": {
-    "message":" Импортированные счета не будут ассоциированы с вашей ключевой фразой, созданной MetaMask. Узнать больше про импорт счетов "
+    "message": " Импортированные счета не будут ассоциированы с вашей ключевой фразой, созданной MetaMask. Узнать больше про импорт счетов "
   },
   "importAnAccount": {
     "message": "Импортировать аккаунт"
@@ -784,7 +784,7 @@
     "message": "Тестовый кран"
   },
   "to": {
-    "message": "Получатель: "
+    "message": "Получатель"
   },
   "toETHviaShapeShift": {
     "message": "$1 в ETH через ShapeShift",

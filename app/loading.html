@@ -1,0 +1,35 @@
+<html>
+<head>
+  <title>MetaMask Loading</title>
+  <style>
+    #div-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 256px;
+    }
+    #logo {
+      width: 100%;
+      animation: pulse 1s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(0.95, 0.95);
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="div-logo">
+    <img id="logo" src="./images/loginglogo.svg">
+  </div>
+</body>
+</html>

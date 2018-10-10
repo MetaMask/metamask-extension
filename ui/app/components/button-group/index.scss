@@ -1,0 +1,38 @@
+.button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__button {
+    font-family: Roboto;
+    font-size: 1rem;
+    color: $tundora;
+    border-style: solid;
+    border-color: $alto;
+    border-width: 1px 1px 1px;
+    border-left: 0;
+    flex: 1;
+    padding: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:first-child {
+      border-left: 1px solid $alto;
+      border-radius: 4px 0 0 4px;
+    }
+
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+    }
+
+    &--active {
+      background-color: $dodger-blue;
+      color: $white;
+    }
+
+    &:disabled {
+      opacity: .5;
+    }
+  }
+}

@@ -81,7 +81,7 @@
     "message": "Comprar no Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase é a forma mais conhecida para comprar e vender bitcoin, ethereum, e litecoin."
+    "message": "Coinbase é a forma mais conhecida para comprar e vender Bitcoin, Ethereum, e Litecoin."
   },
   "cancel": {
     "message": "Cancelar"
@@ -173,7 +173,7 @@
   },
   "decimal": {
     "message": "Precisão em Decimais"
-  }, 
+  },
   "defaultNetwork": {
     "message": "A rede pré definida para transações em Ether é a Main Net."
   },
@@ -351,7 +351,7 @@
     "message": "Importar Conta"
   },
   "importAccountMsg": {
-    "message":"Contas importadas não irão ser associadas com a frase seed da conta criada originalmente pelo MetaMask. Saiba mais sobre contas importadas."
+    "message": "Contas importadas não irão ser associadas com a frase seed da conta criada originalmente pelo MetaMask. Saiba mais sobre contas importadas."
   },
   "importAnAccount": {
     "message": "Importar uma conta"
@@ -800,7 +800,7 @@
   },
   "visitWebSite": {
     "message": "Visite o nosso site"
-  }, 
+  },
   "warning": {
     "message": "Aviso"
   },

@@ -2,17 +2,25 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import TextField from '../../text-field'
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
+import getCaretCoordinates from 'textarea-caret'
+import { EventEmitter } from 'events'
+import Mascot from '../../mascot'
+import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../../routes'
 
-const { ENVIRONMENT_TYPE_POPUP } = require('../../../../../app/scripts/lib/enums')
-const { getEnvironmentType } = require('../../../../../app/scripts/lib/util')
-const getCaretCoordinates = require('textarea-caret')
-const EventEmitter = require('events').EventEmitter
-const Mascot = require('../../mascot')
-const { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } = require('../../../routes')
-
-class UnlockPage extends Component {
+export default class UnlockPage extends Component {
   static contextTypes = {
     t: PropTypes.func,
+  }
+
+  static propTypes = {
+    forgotPassword: PropTypes.func,
+    tryUnlockMetamask: PropTypes.func,
+    markPasswordForgotten: PropTypes.func,
+    history: PropTypes.object,
+    isUnlocked: PropTypes.bool,
+    useOldInterface: PropTypes.func,
   }
 
   constructor (props) {
@@ -23,6 +31,7 @@ class UnlockPage extends Component {
       error: null,
     }
 
+    this.submitting = false
     this.animationEventEmitter = new EventEmitter()
   }
 
@@ -41,20 +50,21 @@ class UnlockPage extends Component {
     const { password } = this.state
     const { tryUnlockMetamask, history } = this.props
 
-    if (password === '') {
+    if (password === '' || this.submitting) {
       return
     }
 
     this.setState({ error: null })
+    this.submitting = true
 
     try {
       await tryUnlockMetamask(password)
+      this.submitting = false
+      history.push(DEFAULT_ROUTE)
     } catch ({ message }) {
       this.setState({ error: message })
-      return
+      this.submitting = false
     }
-
-    history.push(DEFAULT_ROUTE)
   }
 
   handleInputChange ({ target }) {
@@ -98,7 +108,9 @@ class UnlockPage extends Component {
   }
 
   render () {
-    const { error } = this.state
+    const { password, error } = this.state
+    const { t } = this.context
+    const { markPasswordForgotten, history } = this.props
 
     return (
       <div className="unlock-page__container">
@@ -111,18 +123,18 @@ class UnlockPage extends Component {
             />
           </div>
           <h1 className="unlock-page__title">
-            { this.context.t('welcomeBack') }
+            { t('welcomeBack') }
           </h1>
-          <div>{ this.context.t('unlockMessage') }</div>
+          <div>{ t('unlockMessage') }</div>
           <form
             className="unlock-page__form"
             onSubmit={event => this.handleSubmit(event)}
           >
             <TextField
               id="password"
-              label={this.context.t('password')}
+              label={t('password')}
               type="password"
-              value={this.state.password}
+              value={password}
               onChange={event => this.handleInputChange(event)}
               error={error}
               autoFocus
@@ -136,28 +148,28 @@ class UnlockPage extends Component {
             <div
               className="unlock-page__link"
               onClick={() => {
-                this.props.markPasswordForgotten()
-                this.props.history.push(RESTORE_VAULT_ROUTE)
+                markPasswordForgotten()
+                history.push(RESTORE_VAULT_ROUTE)
 
                 if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
                   global.platform.openExtensionInBrowser()
                 }
               }}
             >
-              { this.context.t('restoreFromSeed') }
+              { t('restoreFromSeed') }
             </div>
             <div
               className="unlock-page__link unlock-page__link--import"
               onClick={() => {
-                this.props.markPasswordForgotten()
-                this.props.history.push(RESTORE_VAULT_ROUTE)
+                markPasswordForgotten()
+                history.push(RESTORE_VAULT_ROUTE)
 
                 if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
                   global.platform.openExtensionInBrowser()
                 }
               }}
             >
-              { this.context.t('importUsingSeed') }
+              { t('importUsingSeed') }
             </div>
           </div>
         </div>
@@ -165,15 +177,3 @@ class UnlockPage extends Component {
     )
   }
 }
-
-UnlockPage.propTypes = {
-  forgotPassword: PropTypes.func,
-  tryUnlockMetamask: PropTypes.func,
-  markPasswordForgotten: PropTypes.func,
-  history: PropTypes.object,
-  isUnlocked: PropTypes.bool,
-  t: PropTypes.func,
-  useOldInterface: PropTypes.func,
-}
-
-export default UnlockPage

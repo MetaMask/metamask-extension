@@ -39,6 +39,6 @@ extension.runtime.reload = noop
 extension.tabs.create = noop
 extension.runtime.getManifest = function () {
   return {
-    version: 'development'
+    version: 'development',
   }
 }

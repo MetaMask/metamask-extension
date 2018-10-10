@@ -1,5 +1,4 @@
 const assert = require('assert')
-const path = require('path')
 const ethUtil = require('ethereumjs-util')
 const accountImporter = require('../../../app/scripts/account-import-strategies/index')
 const { assertRejects } = require('../test-utils')
@@ -15,7 +14,7 @@ describe('Account Import Strategies', function () {
     })
 
     it('throws an error for empty string private key', async () => {
-      assertRejects(async function() {
+      assertRejects(async function () {
         await accountImporter.importAccount('Private Key', [ '' ])
       }, Error, 'no empty strings')
     })

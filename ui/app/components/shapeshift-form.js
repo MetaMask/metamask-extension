@@ -9,6 +9,8 @@ const { shapeShiftSubview, pairUpdate, buyWithShapeShift } = require('../actions
 const { isValidAddress } = require('../util')
 const SimpleDropdown = require('./dropdowns/simple-dropdown')
 
+import Button from './button'
+
 function mapStateToProps (state) {
   const {
     coinOptions,
@@ -181,7 +183,7 @@ ShapeshiftForm.prototype.render = function () {
   return h('div.shapeshift-form-wrapper', [
     showQrCode
       ? this.renderQrCode()
-      : h('div.shapeshift-form', [
+      : h('div.modal-shapeshift-form', [
           h('div.shapeshift-form__selectors', [
 
             h('div.shapeshift-form__selector', [
@@ -242,8 +244,10 @@ ShapeshiftForm.prototype.render = function () {
 
       ]),
 
-      !depositAddress && h('button.btn-primary.btn--large.shapeshift-form__shapeshift-buy-btn', {
-        className: btnClass,
+      !depositAddress && h(Button, {
+        type: 'primary',
+        large: true,
+        className: `${btnClass} shapeshift-form__shapeshift-buy-btn`,
         disabled: !token,
         onClick: () => this.onBuyWithShapeShift(),
       }, [this.context.t('buy')]),

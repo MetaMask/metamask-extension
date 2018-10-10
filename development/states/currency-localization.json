@@ -120,6 +120,7 @@
     "accountDetail": {
       "subview": "transactions"
     },
+    "sidebar": {},
     "modal": {
       "modalState": {},
       "previousModalState": {}
@@ -130,5 +131,23 @@
     "scrollToBottom": false,
     "forgottenPassword": null
   },
-  "identities": {}
+  "identities": {},
+  "confirmTransaction": {
+    "txData": {},
+    "tokenData": {},
+    "methodData": {},
+    "tokenProps": {
+      "tokenDecimals": "",
+      "tokenSymbol": ""
+    },
+    "fiatTransactionAmount": "",
+    "fiatTransactionFee": "",
+    "fiatTransactionTotal": "",
+    "ethTransactionAmount": "",
+    "ethTransactionFee": "",
+    "ethTransactionTotal": "",
+    "hexGasTotal": "",
+    "nonce": "",
+    "fetchingMethodData": false
+  }
 }

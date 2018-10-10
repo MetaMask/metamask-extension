@@ -2,7 +2,7 @@ const injectCss = require('inject-css')
 const OldMetaMaskUiCss = require('../../old-ui/css')
 const NewMetaMaskUiCss = require('../../ui/css')
 const startPopup = require('./popup-core')
-const PortStream = require('./lib/port-stream.js')
+const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('./lib/enums')
 const extension = require('extensionizer')
@@ -14,7 +14,7 @@ const log = require('loglevel')
 
 start().catch(log.error)
 
-async function start() {
+async function start () {
 
   // create platform global
   global.platform = new ExtensionPlatform()
@@ -64,7 +64,6 @@ async function start() {
         css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
         deleteInjectedCss = injectCss(css)
       }
-      if (state.appState.shouldClose) notificationManager.closePopup()
     })
   })
 

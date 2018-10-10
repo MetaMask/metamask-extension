@@ -5,9 +5,6 @@ const {
   getNetworkDisplayName,
 } = require('../../../../app/scripts/controllers/network/util')
 
-const { createTestProviderTools } = require('../../../stub/provider')
-const providerResultStub = {}
-
 describe('# Network Controller', function () {
   let networkController
   const noop = () => {}
@@ -35,9 +32,10 @@ describe('# Network Controller', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
         networkController.initializeProvider(networkControllerProviderConfig)
-        const proxy = networkController._proxy
-        proxy.setTarget({ test: true, on: () => {} })
-        assert.ok(proxy.test)
+        const providerProxy = networkController.getProviderAndBlockTracker().provider
+        assert.equal(providerProxy.test, undefined)
+        providerProxy.setTarget({ test: true })
+        assert.equal(providerProxy.test, true)
       })
     })
     describe('#getNetworkState', function () {

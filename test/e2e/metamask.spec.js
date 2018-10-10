@@ -1,49 +1,41 @@
-const fs = require('fs')
-const mkdirp = require('mkdirp')
 const path = require('path')
 const assert = require('assert')
-const pify = require('pify')
-const webdriver = require('selenium-webdriver')
-const { By, Key } = webdriver
-const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
+const { By, Key, until } = require('selenium-webdriver')
+const { delay, createModifiedTestBuild, setupBrowserAndExtension, verboseReportOnFailure } = require('./func')
 
 describe('Metamask popup page', function () {
-  let driver, accountAddress, tokenAddress, extensionId
+  const browser = process.env.SELENIUM_BROWSER
+  let driver, accountAddress, tokenAddress, extensionUri
 
   this.timeout(0)
 
   before(async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const extPath = path.resolve('dist/chrome')
-      driver = buildChromeWebDriver(extPath)
-      extensionId = await getExtensionIdChrome(driver)
-      await driver.get(`chrome-extension://${extensionId}/popup.html`)
+    const srcPath = path.resolve(`dist/${browser}`)
+    const { extPath } = await createModifiedTestBuild({ browser, srcPath })
+    const installResult = await setupBrowserAndExtension({ browser, extPath })
+    driver = installResult.driver
+    extensionUri = installResult.extensionUri
 
-    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-      const extPath = path.resolve('dist/firefox')
-      driver = buildFirefoxWebdriver()
-      await installWebExt(driver, extPath)
-      await delay(700)
-      extensionId = await getExtensionIdFirefox(driver)
-      await driver.get(`moz-extension://${extensionId}/popup.html`)
-    }
+    await driver.get(extensionUri)
+    await delay(300)
   })
 
   afterEach(async function () {
     // logs command not supported in firefox
     // https://github.com/SeleniumHQ/selenium/issues/2910
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (browser === 'chrome') {
       // check for console errors
       const errors = await checkBrowserForConsoleErrors()
       if (errors.length) {
         const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
-        this.test.error(new Error(errorMessage))
+        console.error(new Error(errorMessage))
+
       }
     }
     // gather extra data if test failed
     if (this.currentTest.state === 'failed') {
-      await verboseReportOnFailure(this.currentTest)
+      await verboseReportOnFailure({ browser, driver, title: this.currentTest.title })
     }
   })
 
@@ -54,9 +46,15 @@ describe('Metamask popup page', function () {
   describe('Setup', function () {
 
     it('switches to Chrome extensions list', async function () {
-      await delay(300)
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
+    })
+
+    it('does not select the new UI option', async () => {
+      await delay(300)
+      const button = await driver.findElement(By.xpath("//button[contains(text(), 'No thanks, maybe later')]"))
+      await button.click()
+      await delay(1000)
     })
 
     it('sets provider type to localhost', async function () {
@@ -91,6 +89,7 @@ describe('Metamask popup page', function () {
     it('allows the button to be clicked when scrolled to the bottom of TOU', async () => {
       const button = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-center.flex-grow > button'))
       await button.click()
+      await delay(300)
     })
 
     it('shows privacy notice', async () => {
@@ -101,7 +100,6 @@ describe('Metamask popup page', function () {
     })
 
     it('shows phishing notice', async () => {
-      await delay(300)
       const noticeHeader = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(noticeHeader, 'PHISHING WARNING', 'shows phishing warning')
       const element = await driver.findElement(By.css('.markdown'))
@@ -133,9 +131,9 @@ describe('Metamask popup page', function () {
     })
 
     it('adds a second account', async function () {
-      await driver.findElement(By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div')).click()
+      await driver.findElement(By.css('div.full-width > div > div:nth-child(2) > span > div')).click()
       await delay(300)
-      await driver.findElement(By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span')).click()
+      await driver.findElement(By.css('div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span')).click()
     })
 
     it('shows account address', async function () {
@@ -146,7 +144,7 @@ describe('Metamask popup page', function () {
     it('logs out of the vault', async () => {
       await driver.findElement(By.css('.sandwich-expando')).click()
       await delay(500)
-      const logoutButton = await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)'))
+      const logoutButton = await driver.findElement(By.css('.menu-droppo > li:nth-child(3)'))
       assert.equal(await logoutButton.getText(), 'Log Out')
       await logoutButton.click()
     })
@@ -178,7 +176,7 @@ describe('Metamask popup page', function () {
     it('logs out', async function () {
       await driver.findElement(By.css('.sandwich-expando')).click()
       await delay(200)
-      const logOut = await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)'))
+      const logOut = await driver.findElement(By.css('.menu-droppo > li:nth-child(3)'))
       assert.equal(await logOut.getText(), 'Log Out')
       await logOut.click()
       await delay(300)
@@ -203,17 +201,17 @@ describe('Metamask popup page', function () {
     })
 
     it('balance renders', async function () {
-      await delay(200)
+      await delay(500)
       const balance = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'))
       assert.equal(await balance.getText(), '100.000')
       await delay(200)
     })
 
     it('sends transaction', async function () {
-     const sendButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'))
-     assert.equal(await sendButton.getText(), 'SEND')
-     await sendButton.click()
-     await delay(200)
+      const sendButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'))
+      assert.equal(await sendButton.getText(), 'SEND')
+      await sendButton.click()
+      await delay(200)
     })
 
     it('adds recipient address and amount', async function () {
@@ -229,8 +227,12 @@ describe('Metamask popup page', function () {
 
     it('confirms transaction', async function () {
       await delay(300)
-      await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')).click()
-      await delay(500)
+      const bySubmitButton = By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+      const submitButton = await driver.wait(until.elementLocated(bySubmitButton))
+
+      submitButton.click()
+
+      await delay(1500)
     })
 
     it('finds the transaction in the transactions list', async function () {
@@ -269,7 +271,8 @@ describe('Metamask popup page', function () {
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-      const metamaskSubmit = await driver.findElement(By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'))
+      const byMetamaskSubmit = By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input')
+      const metamaskSubmit = await driver.wait(until.elementLocated(byMetamaskSubmit))
       await metamaskSubmit.click()
       await delay(1000)
     })
@@ -283,11 +286,7 @@ describe('Metamask popup page', function () {
     })
 
     it('navigates back to MetaMask popup in the tab', async function () {
-      if (process.env.SELENIUM_BROWSER === 'chrome') {
-        await driver.get(`chrome-extension://${extensionId}/popup.html`)
-      } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-        await driver.get(`moz-extension://${extensionId}/popup.html`)
-      }
+      await driver.get(extensionUri)
       await delay(700)
     })
   })
@@ -330,7 +329,7 @@ describe('Metamask popup page', function () {
     await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
-  async function checkBrowserForConsoleErrors() {
+  async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly
@@ -348,23 +347,6 @@ describe('Metamask popup page', function () {
     // ignore all errors that contain a message in `ignoredErrorMessages`
     const matchedErrorObjects = errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
     return matchedErrorObjects
-  }
-
-  async function verboseReportOnFailure (test) {
-    let artifactDir
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      artifactDir = `./test-artifacts/chrome/${test.title}`
-    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-      artifactDir = `./test-artifacts/firefox/${test.title}`
-    }
-    const filepathBase = `${artifactDir}/test-failure`
-    await pify(mkdirp)(artifactDir)
-    // capture screenshot
-    const screenshot = await driver.takeScreenshot()
-    await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
-    // capture dom source
-    const htmlSource = await driver.getPageSource()
-    await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
 
 })

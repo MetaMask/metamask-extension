@@ -1,11 +1,12 @@
 const fs = require('fs')
 const path = require('path')
 const pump = require('pump')
+const querystring = require('querystring')
 const LocalMessageDuplexStream = require('post-message-stream')
 const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
-const PortStream = require('./lib/port-stream.js')
+const PortStream = require('extension-port-stream')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
@@ -115,8 +116,8 @@ function logStreamDisconnectWarning (remoteLabel, err) {
  * @returns {boolean} {@code true} if Web3 should be injected
  */
 function shouldInjectWeb3 () {
-  return doctypeCheck() && suffixCheck()
-    && documentElementCheck() && !blacklistedDomainCheck()
+  return doctypeCheck() && suffixCheck() &&
+    documentElementCheck() && !blacklistedDomainCheck()
 }
 
 /**
@@ -177,6 +178,9 @@ function blacklistedDomainCheck () {
     'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
     'adyen.com',
     'gravityforms.com',
+    'harbourair.com',
+    'ani.gamer.com.tw',
+    'blueskybooking.com',
   ]
   var currentUrl = window.location.href
   var currentRegex
@@ -194,6 +198,10 @@ function blacklistedDomainCheck () {
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning () {
-  console.log('MetaMask - redirecting to phishing warning')
-  window.location.href = 'https://metamask.io/phishing.html'
+  console.log('MetaMask - routing to Phishing Warning component')
+  const extensionURL = extension.runtime.getURL('phishing.html')
+  window.location.href = `${extensionURL}#${querystring.stringify({
+    hostname: window.location.hostname,
+    href: window.location.href,
+  })}`
 }

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="302px" height="98px" viewBox="0 0 302 98" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>27B850D0-B3BA-4F98-8BB4-B542D8BFDE3B</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="294" height="32"></rect>
+        <filter x="-2.4%" y="-15.6%" width="104.8%" height="143.8%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.123075181 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Import-account" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="hardware-connect" transform="translate(-361.000000, -797.000000)">
+            <g id="Group-10" transform="translate(356.000000, 717.000000)">
+                <g id="accounts" transform="translate(9.000000, 80.000000)">
+                    <g id="Group-5" transform="translate(21.000000, 0.000000)">
+                        <g id="Group-7" transform="translate(0.000000, 45.000000)">
+                            <rect id="Rectangle-6-Copy" stroke="#AFDFFF" fill="#FFFFFF" x="0.5" y="0.5" width="250" height="26"></rect>
+                            <text id="3" font-family="Roboto-Regular, Roboto" font-size="12" font-weight="normal" fill="#ABB4BB">
+                                <tspan x="31" y="19">3</tspan>
+                            </text>
+                            <text id="OXz3…T3A4" font-family="Roboto-Regular, Roboto" font-size="12" font-weight="normal" fill="#ABB4BB">
+                                <tspan x="50" y="19">OXz3…T3A4</tspan>
+                            </text>
+                            <text id="0.020000-ETH" font-family="Roboto-Regular, Roboto" font-size="12" font-weight="normal" fill="#ABB4BB">
+                                <tspan x="142" y="19">0.020000 ETH</tspan>
+                            </text>
+                            <circle id="Oval-Copy" stroke="#AFDFFF" stroke-width="2" cx="16.5" cy="14.5" r="6.5"></circle>
+                        </g>
+                        <g id="Group-7-Copy">
+                            <rect id="Rectangle-6-Copy" stroke="#AFDFFF" fill="#FFFFFF" x="0.5" y="0.5" width="250" height="26"></rect>
+                            <text id="1" font-family="Roboto-Regular, Roboto" font-size="12" font-weight="normal" fill="#ABB4BB">
+                                <tspan x="31" y="19">1</tspan>
+                            </text>
+                            <text id="OXa4…s0a2" font-family="Roboto-Regular, Roboto" font-size="12" font-weight="normal" fill="#ABB4BB">
+                                <tspan x="50" y="19">OXa4…s0a2</tspan>
+                            </text>
+                            <text id="0.01500-ETH" font-family="Roboto-Regular, Roboto" font-size="12" font-weight="normal" fill="#ABB4BB">
+                                <tspan x="142" y="19">0.01500 ETH</tspan>
+                            </text>
+                            <circle id="Oval-Copy" stroke="#AFDFFF" stroke-width="2" cx="16.5" cy="14.5" r="6.5"></circle>
+                        </g>
+                        <g id="Group-8" transform="translate(0.000000, 71.000000)">
+                            <rect id="Rectangle-6-Copy-2" stroke="#AFDFFF" fill="#FFFFFF" x="0.5" y="0.5" width="250" height="26"></rect>
+                            <text id="4" font-family="Roboto-Regular, Roboto" font-size="12" font-weight="normal" fill="#ABB4BB">
+                                <tspan x="31" y="18">4</tspan>
+                            </text>
+                            <text id="OXd2…D0V4" font-family="Roboto-Regular, Roboto" font-size="12" font-weight="normal" fill="#ABB4BB">
+                                <tspan x="50" y="18">OXd2…D0V4</tspan>
+                            </text>
+                            <text id="0.030000-ETH" font-family="Roboto-Regular, Roboto" font-size="12" font-weight="normal" fill="#ABB4BB">
+                                <tspan x="142" y="18">0.030000 ETH</tspan>
+                            </text>
+                            <circle id="Oval-Copy-2" stroke="#AFDFFF" stroke-width="2" cx="16.5" cy="13.5" r="6.5"></circle>
+                        </g>
+                    </g>
+                    <g id="Group-4" transform="translate(0.000000, 21.000000)">
+                        <g id="Rectangle-6">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <rect stroke="#3098DC" stroke-width="1" stroke-linejoin="square" fill="#D9F0FF" fill-rule="evenodd" x="0.5" y="0.5" width="293" height="31"></rect>
+                        </g>
+                        <text id="2" font-family="Roboto-Regular, Roboto" font-size="16" font-weight="normal" fill="#4A4A4A">
+                            <tspan x="36" y="22">2</tspan>
+                        </text>
+                        <text id="OXe7…B0a1" font-family="Roboto-Regular, Roboto" font-size="16" font-weight="normal" fill="#4A4A4A">
+                            <tspan x="58" y="22">OXe7…B0a1</tspan>
+                        </text>
+                        <text id="0.041000-ETH" font-family="Roboto-Regular, Roboto" font-size="16" font-weight="normal" fill="#4A4A4A">
+                            <tspan x="166" y="22">0.041000 ETH</tspan>
+                        </text>
+                        <circle id="Oval" stroke="#3098DC" stroke-width="2" cx="19.5" cy="16.5" r="7.5"></circle>
+                        <polyline id="Path-5" stroke="#3098DC" stroke-width="2" points="15 17 17.5495098 19.5495098 24 13.9042921"></polyline>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

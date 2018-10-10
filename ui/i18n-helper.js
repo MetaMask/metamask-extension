@@ -1,27 +1,29 @@
 // cross-browser connection to extension i18n API
 const log = require('loglevel')
 
+/**
+ * Returns a localized message for the given key
+ * @param {object} locale The locale
+ * @param {string} key The message key
+ * @param {string[]} substitutions A list of message substitution replacements
+ * @return {null|string} The localized message
+ */
 const getMessage = (locale, key, substitutions) => {
-  // check locale is loaded
   if (!locale) {
-    // throw new Error('Translator - has not loaded a locale yet.')
-    return ''
+    return null
   }
-  // check entry is present
-  const { current, en } = locale
-  const entry = current[key] || en[key]
-  if (!entry) {
-    // throw new Error(`Translator - Unable to find value for "${key}"`)
-    log.error(`Translator - Unable to find value for "${key}"`)
-    return `[${key}]`
+  if (!locale[key]) {
+    log.error(`Translator - Unable to find value for key "${key}"`)
+    return null
   }
+  const entry = locale[key]
   let phrase = entry.message
   // perform substitutions
   if (substitutions && substitutions.length) {
-    phrase = phrase.replace(/\$1/g, substitutions[0])
-    if (substitutions.length > 1) {
-      phrase = phrase.replace(/\$2/g, substitutions[1])
-    }
+    substitutions.forEach((substitution, index) => {
+      const regex = new RegExp(`\\$${index + 1}`, 'g')
+      phrase = phrase.replace(regex, substitution)
+    })
   }
   return phrase
 }
@@ -29,8 +31,7 @@ const getMessage = (locale, key, substitutions) => {
 async function fetchLocale (localeName) {
   try {
     const response = await fetch(`./_locales/${localeName}/messages.json`)
-    const locale = await response.json()
-    return locale
+    return await response.json()
   } catch (error) {
     log.error(`failed to fetch ${localeName} locale because of ${error}`)
     return {}

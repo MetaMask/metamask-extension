@@ -43,6 +43,9 @@ function mapDispatchToProps (dispatch) {
     setRpcTarget: (target) => {
       dispatch(actions.setRpcTarget(target))
     },
+    delRpcTarget: (target) => {
+      dispatch(actions.delRpcTarget(target))
+    },
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
   }
@@ -71,7 +74,6 @@ NetworkDropdown.prototype.render = function () {
   const rpcList = props.frequentRpcList
   const isOpen = this.props.networkDropdownOpen
   const dropdownMenuItemStyle = {
-    fontFamily: 'DIN OT',
     fontSize: '16px',
     lineHeight: '20px',
     padding: '12px 0',
@@ -273,10 +275,12 @@ NetworkDropdown.prototype.getNetworkName = function () {
 
 NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
-  const rpcTarget = provider.rpcTarget
+  const reversedRpcList = rpcList.slice().reverse()
 
-  return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
+  return reversedRpcList.map((rpc) => {
+    const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
+
+    if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
       return null
     } else {
       return h(
@@ -286,20 +290,26 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
           closeMenu: () => this.props.hideNetworkDropdown(),
           onClick: () => props.setRpcTarget(rpc),
           style: {
-            fontFamily: 'DIN OT',
             fontSize: '16px',
             lineHeight: '20px',
             padding: '12px 0',
           },
         },
         [
-          rpcTarget === rpc ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+          currentRpcTarget ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
           h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
           h('span.network-name-item', {
             style: {
-              color: rpcTarget === rpc ? '#ffffff' : '#9b9b9b',
+              color: currentRpcTarget ? '#ffffff' : '#9b9b9b',
             },
           }, rpc),
+          h('i.fa.fa-times.delete',
+          {
+            onClick: (e) => {
+              e.stopPropagation()
+              props.delRpcTarget(rpc)
+            },
+          }),
         ]
       )
     }
@@ -325,7 +335,6 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
           onClick: () => props.setRpcTarget(rpcTarget),
           closeMenu: () => this.props.hideNetworkDropdown(),
           style: {
-            fontFamily: 'DIN OT',
             fontSize: '16px',
             lineHeight: '20px',
             padding: '12px 0',

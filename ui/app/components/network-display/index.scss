@@ -1,0 +1,54 @@
+.network-display {
+  &__container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: lighten(rgb(125, 128, 130), 45%);
+    padding: 0 10px;
+    border-radius: 4px;
+    height: 25px;
+
+    &--mainnet {
+      background-color: lighten($blue-lagoon, 68%);
+    }
+
+    &--ropsten {
+      background-color: lighten($crimson, 45%);
+    }
+
+    &--kovan {
+      background-color: lighten($purple, 65%);
+    }
+
+    &--rinkeby {
+      background-color: lighten($tulip-tree, 35%);
+    }
+  }
+
+  &__name {
+    font-size: .75rem;
+    padding-left: 5px;
+  }
+
+  &__icon {
+    height: 10px;
+    width: 10px;
+    border-radius: 10px;
+
+    &--mainnet {
+      background-color: $blue-lagoon;
+    }
+
+    &--ropsten {
+      background-color: $crimson;
+    }
+
+    &--kovan {
+      background-color: $purple;
+    }
+
+    &--rinkeby {
+      background-color: $tulip-tree;
+    }
+  }
+}

@@ -1,5 +1,8 @@
-const valuesFor = require('./util').valuesFor
 const abi = require('human-standard-token-abi')
+
+import {
+  transactionsSelector,
+} from './selectors/transactions'
 
 const {
   multiplyCurrencies,
@@ -11,13 +14,14 @@ const selectors = {
   getSelectedAccount,
   getSelectedToken,
   getSelectedTokenExchangeRate,
+  getSelectedTokenAssetImage,
+  getAssetImages,
   getTokenExchangeRate,
   conversionRateSelector,
   transactionsSelector,
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
-  getGasPrice,
-  getGasLimit,
+  getGasIsLoading,
   getForceGasMin,
   getAddressBook,
   getSendFrom,
@@ -28,6 +32,7 @@ const selectors = {
   autoAddToBetaUI,
   getSendMaxModeState,
   getCurrentViewContext,
+  getTotalUnapprovedCount,
 }
 
 module.exports = selectors
@@ -68,6 +73,18 @@ function getSelectedTokenExchangeRate (state) {
   return contractExchangeRates[address] || 0
 }
 
+function getSelectedTokenAssetImage (state) {
+  const assetImages = state.metamask.assetImages || {}
+  const selectedToken = getSelectedToken(state) || {}
+  const { address } = selectedToken
+  return assetImages[address]
+}
+
+function getAssetImages (state) {
+  const assetImages = state.metamask.assetImages || {}
+  return assetImages
+}
+
 function getTokenExchangeRate (state, address) {
   const contractExchangeRates = state.metamask.contractExchangeRates
   return contractExchangeRates[address] || 0
@@ -101,28 +118,8 @@ function getCurrentAccountWithSendEtherInfo (state) {
   return accounts.find(({ address }) => address === currentAddress)
 }
 
-function transactionsSelector (state) {
-  const { network, selectedTokenAddress } = state.metamask
-  const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
-  const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
-  const transactions = state.metamask.selectedAddressTxList || []
-  const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
-
-  // console.log({txsToRender, selectedTokenAddress})
-  return selectedTokenAddress
-    ? txsToRender
-      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
-      .sort((a, b) => b.time - a.time)
-    : txsToRender
-      .sort((a, b) => b.time - a.time)
-}
-
-function getGasPrice (state) {
-  return state.metamask.send.gasPrice
-}
-
-function getGasLimit (state) {
-  return state.metamask.send.gasLimit
+function getGasIsLoading (state) {
+  return state.appState.gasIsLoading
 }
 
 function getForceGasMin (state) {
@@ -185,4 +182,16 @@ function autoAddToBetaUI (state) {
 function getCurrentViewContext (state) {
   const { currentView = {} } = state.appState
   return currentView.context
+}
+
+function getTotalUnapprovedCount ({ metamask }) {
+  const {
+    unapprovedTxs = {},
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
+    unapprovedTypedMessagesCount,
+  } = metamask
+
+  return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
+    unapprovedTypedMessagesCount
 }

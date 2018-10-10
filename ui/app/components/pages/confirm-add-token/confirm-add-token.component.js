@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { DEFAULT_ROUTE, ADD_TOKEN_ROUTE } from '../../../routes'
 import Button from '../../button'
-import Identicon from '../../../components/identicon'
-import TokenBalance from './token-balance'
+import Identicon from '../../identicon'
+import TokenBalance from '../../token-balance'
 
 export default class ConfirmAddToken extends Component {
   static contextTypes = {
@@ -86,28 +86,30 @@ export default class ConfirmAddToken extends Component {
           </div>
         </div>
         <div className="page-container__footer">
-          <Button
-            type="default"
-            large
-            className="page-container__footer-button"
-            onClick={() => history.push(ADD_TOKEN_ROUTE)}
-          >
-            { this.context.t('back') }
-          </Button>
-          <Button
-            type="primary"
-            large
-            className="page-container__footer-button"
-            onClick={() => {
-              addTokens(pendingTokens)
-                .then(() => {
-                  clearPendingTokens()
-                  history.push(DEFAULT_ROUTE)
-                })
-            }}
-          >
-            { this.context.t('addTokens') }
-          </Button>
+          <header>
+            <Button
+              type="default"
+              large
+              className="page-container__footer-button"
+              onClick={() => history.push(ADD_TOKEN_ROUTE)}
+            >
+              { this.context.t('back') }
+            </Button>
+            <Button
+              type="primary"
+              large
+              className="page-container__footer-button"
+              onClick={() => {
+                addTokens(pendingTokens)
+                  .then(() => {
+                    clearPendingTokens()
+                    history.push(DEFAULT_ROUTE)
+                  })
+              }}
+            >
+              { this.context.t('addTokens') }
+            </Button>
+          </header>
         </div>
       </div>
     )

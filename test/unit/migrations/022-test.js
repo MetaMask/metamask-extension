@@ -2,14 +2,14 @@ const assert = require('assert')
 const migration22 = require('../../../app/scripts/migrations/022')
 const properTime = (new Date()).getTime()
 const storage = {
-  "meta": {},
-  "data": {
-    "TransactionController": {
-      "transactions": [
-        { "status": "submitted" },
-        { "status": "submitted", "submittedTime": properTime },
-        {"status": "confirmed"},
-      ]
+  'meta': {},
+  'data': {
+    'TransactionController': {
+      'transactions': [
+        { 'status': 'submitted' },
+        { 'status': 'submitted', 'submittedTime': properTime },
+        {'status': 'confirmed'},
+      ],
     },
   },
 }

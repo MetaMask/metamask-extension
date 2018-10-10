@@ -13,6 +13,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     tokens: state.metamask.tokens,
     userAddress: selectors.getSelectedAddress(state),
+    assetImages: state.metamask.assetImages,
   }
 }
 
@@ -44,10 +45,9 @@ function TokenList () {
 }
 
 TokenList.prototype.render = function () {
-  const { userAddress } = this.props
+  const { userAddress, assetImages } = this.props
   const state = this.state
   const { tokens, isLoading, error } = state
-
   if (isLoading) {
     return this.message(this.context.t('loadingTokens'))
   }
@@ -74,7 +74,10 @@ TokenList.prototype.render = function () {
     ])
   }
 
-  return h('div', tokens.map((tokenData) => h(TokenCell, tokenData)))
+  return h('div', tokens.map((tokenData) => {
+    tokenData.image = assetImages[tokenData.address]
+    return h(TokenCell, tokenData)
+  }))
 
 }
 
@@ -158,12 +161,17 @@ TokenList.prototype.componentDidUpdate = function (nextProps) {
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
+  if (!this.tracker.running) {
+    return
+  }
   this.setState({ tokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+  this.tracker.removeListener('update', this.balanceUpdater)
+  this.tracker.removeListener('error', this.showError)
 }
 
 // function uniqueMergeTokens (tokensA, tokensB = []) {

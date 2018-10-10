@@ -362,7 +362,7 @@
     "message": "你想怎麼存入 Ether？"
   },
   "holdEther": {
-    "message": "Metamask 讓您能保存 ether 和代幣, 並成為您接觸分散式應用程式的途徑."
+    "message": "MetaMask 讓您能保存 ether 和代幣, 並成為您接觸分散式應用程式的途徑."
   },
   "import": {
     "message": "導入",
@@ -372,7 +372,7 @@
     "message": "導入帳戶"
   },
   "importAccountMsg": {
-    "message":" 匯入的帳戶與您原有 MetaMask 帳戶的助憶詞並無關聯. 請查看與導入帳戶相關的資料 "
+    "message": " 匯入的帳戶與您原有 MetaMask 帳戶的助憶詞並無關聯. 請查看與導入帳戶相關的資料 "
   },
   "importAnAccount": {
     "message": "導入一個帳戶"

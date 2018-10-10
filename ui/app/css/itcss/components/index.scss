@@ -1,12 +1,12 @@
 @import './buttons.scss';
 
-@import './header.scss';
-
 @import './footer.scss';
 
 @import './network.scss';
 
 @import './modal.scss';
+
+@import './alert.scss';
 
 @import './newui-sections.scss';
 
@@ -19,8 +19,6 @@
 @import './loading-overlay.scss';
 
 // Balances
-@import './hero-balance.scss';
-
 @import './wallet-balance.scss';
 
 // Tx List and Sections
@@ -38,13 +36,13 @@
 
 @import './gas-slider.scss';
 
-@import './settings.scss';
-
 @import './tab-bar.scss';
 
 @import './simple-dropdown.scss';
 
 @import './request-signature.scss';
+
+@import './account-details-dropdown.scss';
 
 @import './account-dropdown-mini.scss';
 
@@ -57,7 +55,5 @@
 @import './tooltip.scss';
 
 @import './welcome-screen.scss';
-
-@import './sender-to-recipient.scss';
 
 @import '../../../components/index';

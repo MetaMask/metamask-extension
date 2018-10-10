@@ -75,7 +75,7 @@
     "message": "Pedir prestado con Dharma (Beta)"
   },
   "builtInCalifornia": {
-    "message": "Metamask fue diseñado y construido en California"
+    "message": "MetaMask fue diseñado y construido en California"
   },
   "buy": {
     "message": "Comprar"
@@ -772,7 +772,7 @@
     "message": "Probar Faucet"
   },
   "to": {
-    "message": "Para:"
+    "message": "Para"
   },
   "toETHviaShapeShift": {
     "message": "$1 a ETH via ShapeShift",
@@ -874,7 +874,7 @@
     "message": "Advertencia"
   },
   "welcomeBeta": {
-    "message": "Bienvenido a Metamask Beta"
+    "message": "Bienvenido a MetaMask Beta"
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

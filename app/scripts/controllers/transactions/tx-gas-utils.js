@@ -25,19 +25,15 @@ class TxGasUtil {
     @returns {object} the txMeta object with the gas written to the txParams
   */
   async analyzeGasUsage (txMeta) {
-    const block = await this.query.getBlockByNumber('latest', true)
+    const block = await this.query.getBlockByNumber('latest', false)
     let estimatedGasHex
     try {
       estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
     } catch (err) {
-      const simulationFailed = (
-        err.message.includes('Transaction execution error.') ||
-        err.message.includes('gas required exceeds allowance or always failing transaction')
-      )
-      if (simulationFailed) {
-        txMeta.simulationFails = true
-        return txMeta
+      txMeta.simulationFails = {
+        reason: err.message,
       }
+      return txMeta
     }
     this.setTxGas(txMeta, block.gasLimit, estimatedGasHex)
     return txMeta

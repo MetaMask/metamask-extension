@@ -1,0 +1,27 @@
+.confirm-page-container-header {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid $geyser;
+    padding: 13px 13px 13px 24px;
+    flex: 0 0 auto;
+  }
+
+  &__back-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__back-button {
+    color: #2f9ae0;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 400;
+    padding-left: 5px;
+  }
+}

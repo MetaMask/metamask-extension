@@ -17,6 +17,12 @@
   font-family: Roboto;
 }
 
+@media screen and (min-height: 576px) {
+  .first-time-flow {
+    height: 100vh;
+  }
+}
+
 .alpha-warning__container {
   display: flex;
   justify-content: center;
@@ -338,6 +344,19 @@
   line-height: 23px;
   font-family: Roboto;
   min-width: 0;
+}
+
+.backup-phrase__tips-text--link {
+  color: #2f9ae0;
+  cursor: pointer;
+}
+
+.backup-phrase__tips-text--link:hover {
+  color: #2f9ae0;
+}
+
+.backup-phrase__tips-text--strong {
+  font-weight: bold;
 }
 
 @media only screen and (max-width: 768px) {
