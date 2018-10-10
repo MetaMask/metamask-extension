@@ -94,7 +94,7 @@ async function runSendFlowTest (assert, done) {
   sendToDropdownList.children()[2].click()
 
   const sendToAccountAddress = sendToFieldInput.val()
-  assert.equal(sendToAccountAddress, '0x2f8d4a878cfa04a6e60d46362f5644deab66572d', 'send to dropdown selects the correct address')
+  assert.equal(sendToAccountAddress, '0x2f8D4a878cFA04A6E60D46362f5644DeAb66572D', 'send to dropdown selects the correct address')
 
   const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(2)')
   sendAmountField.find('.currency-display')[0].click()
