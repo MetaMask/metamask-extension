@@ -1222,7 +1222,7 @@
     "message": "Ooops! Something went wrong...."
   },
   "unknownCameraError": {
-    "message": "There was an error while trying to access you camera. Please try again..."
+    "message": "There was an error while trying to access your camera. Please try again..."
   },
   "unlock": {
     "message": "Unlock"
