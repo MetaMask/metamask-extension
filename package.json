@@ -263,6 +263,7 @@
     "eslint-plugin-react": "^7.4.0",
     "eth-json-rpc-middleware": "^3.1.1",
     "eth-keyring-controller": "^3.3.1",
+    "fetch-mock": "^6.5.2",
     "file-loader": "^1.1.11",
     "fs-extra": "^6.0.1",
     "fs-promise": "^2.0.3",
