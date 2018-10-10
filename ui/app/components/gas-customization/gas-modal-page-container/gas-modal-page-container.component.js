@@ -47,6 +47,7 @@ export default class GasModalPageContainer extends Component {
     customGasLimit,
     newTotalFiat,
     gasChartProps,
+    currentTimeEstimate,
   }) {
     const { transactionFee } = this.props
     return (
@@ -55,7 +56,7 @@ export default class GasModalPageContainer extends Component {
         updateCustomGasLimit={convertThenUpdateCustomGasLimit}
         customGasPrice={customGasPrice}
         customGasLimit={customGasLimit}
-        timeRemaining="1 min 31 sec"
+        timeRemaining={currentTimeEstimate}
         transactionFee={transactionFee}
         totalFee={newTotalFiat}
         gasChartProps={gasChartProps}

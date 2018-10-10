@@ -35,6 +35,43 @@ function appendOrUpdateCircle ({ circle, data, itemIndex, cx, cy, cssId, appendO
   }
 }
 
+function setSelectedCircle ({ chart, gasPrices, currentPrice, chartXStart, chartWidth }) {
+  const numberOfValues = chart.internal.data.xs.data1.length
+  const closestLowerValueIndex = gasPrices.findIndex((e, i, a) => {
+    return e <= currentPrice && a[i + 1] >= currentPrice
+  })
+  const closestHigherValueIndex = gasPrices.findIndex((e, i, a) => {
+    return e > currentPrice
+  })
+  const closestHigherValue = gasPrices[closestHigherValueIndex]
+  const closestLowerValue = gasPrices[closestLowerValueIndex]
+
+  if (closestHigherValue && closestLowerValue) {
+    const closestLowerCircle = d3.select(`.c3-circle-${closestLowerValueIndex}`)
+    const closestHigherCircle = d3.select(`.c3-circle-${closestHigherValueIndex}`)
+    const { x: lowerX, y: lowerY } = closestLowerCircle.node().getBoundingClientRect()
+    const { x: higherX, y: higherY } = closestHigherCircle.node().getBoundingClientRect()
+    const currentX = lowerX + (higherX - lowerX) * (currentPrice - closestLowerValue) / (closestHigherValue - closestLowerValue)
+    const slope = (higherY - lowerY) / (higherX - lowerX)
+    const newTimeEstimate = -1 * (slope * (higherX - currentX) - higherY)
+    chart.internal.selectPointB({
+      x: currentX,
+      value: newTimeEstimate,
+      id: 'data1',
+      index: numberOfValues,
+      name: 'data1',
+    }, numberOfValues)
+  } else {
+    const setCircle = d3.select('#set-circle')
+    if (!setCircle.empty()) {
+      setCircle.remove()
+    }
+    d3.select('.c3-tooltip-container').style('display', 'none !important')
+    chart.internal.hideXGridFocus()
+    return
+  }
+}
+
 export default class GasPriceChart extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -42,12 +79,15 @@ export default class GasPriceChart extends Component {
 
   static propTypes = {
     priceAndTimeEstimates: PropTypes.array,
+    currentPrice: PropTypes.number,
+    updateCustomGasPrice: PropTypes.func,
   }
 
-  renderChart (priceAndTimeEstimates) {
+  renderChart (currentPrice, priceAndTimeEstimates, updateCustomGasPrice) {
     const gasPrices = priceAndTimeEstimates.map(({ gasprice }) => gasprice)
     const gasPricesMax = gasPrices[gasPrices.length - 1] + 1
     const estimatedTimes = priceAndTimeEstimates.map(({ expectedTime }) => expectedTime)
+
     const estimatedTimesMax = estimatedTimes[0]
     const chart = c3.generate({
       size: {
@@ -187,6 +227,28 @@ export default class GasPriceChart extends Component {
       })
     }
 
+    chart.internal.selectPointB = function (data, itemIndex = (data.index || 0)) {
+      const { x: chartXStart, y: chartYStart } = d3.select('.c3-areas-data1')
+        .node()
+        .getBoundingClientRect()
+
+      d3.select('#set-circle').remove()
+
+      const circle = this.main
+        .select('.' + 'c3-selected-circles' + this.getTargetSelectorSuffix(data.id))
+        .selectAll('.' + 'c3-selected-circle' + '-' + itemIndex)
+
+      appendOrUpdateCircle.bind(this)({
+        circle,
+        data,
+        itemIndex,
+        cx: () => data.x - chartXStart + 11,
+        cy: () => data.value - chartYStart + 10,
+        cssId: 'set-circle',
+        appendOnly: true,
+      })
+    }
+
     chart.internal.overlayPoint = function (data, itemIndex) {
         const circle = this.main
           .select('.' + 'c3-selected-circles' + this.getTargetSelectorSuffix(data.id))
@@ -238,13 +300,13 @@ export default class GasPriceChart extends Component {
 
     setTimeout(function () {
       setTickPosition('y', 0, -5, 8)
-      setTickPosition('y', 1, -3)
-      setTickPosition('x', 0, 3, 20)
-      setTickPosition('x', 1, 3, -10)
+      setTickPosition('y', 1, -3, -5)
+      setTickPosition('x', 0, 3, 15)
+      setTickPosition('x', 1, 3, -8)
 
       // TODO: Confirm the below constants work with all data sets and screen sizes
       d3.select('.c3-axis-x-label').attr('transform', 'translate(0,-15)')
-      d3.select('.c3-axis-y-label').attr('transform', 'translate(32, 2) rotate(-90)')
+      d3.select('.c3-axis-y-label').attr('transform', 'translate(52, 2) rotate(-90)')
       d3.select('.c3-xgrid-focus line').attr('y2', 98)
 
       d3.select('.c3-chart').on('mouseout', () => {
@@ -262,6 +324,7 @@ export default class GasPriceChart extends Component {
         const overlayedCircle = d3.select('#overlayed-circle')
         const numberOfValues = chart.internal.data.xs.data1.length
         const { x: circleX, y: circleY } = overlayedCircle.node().getBoundingClientRect()
+        const { x: xData } = overlayedCircle.datum()
         chart.internal.selectPoint({
           x: circleX - chartXStart,
           value: circleY - 1.5,
@@ -269,12 +332,14 @@ export default class GasPriceChart extends Component {
           index: numberOfValues,
           name: 'data1',
         }, numberOfValues)
+        updateCustomGasPrice(xData)
       })
+
+      setSelectedCircle({ chart, gasPrices, currentPrice, chartXStart, chartWidth })
 
       d3.select('.c3-chart').on('mousemove', function () {
         const chartMouseXPos = d3.event.clientX - chartXStart
         const posPercentile = chartMouseXPos / chartWidth
-
 
         const currentPosValue = (gasPrices[gasPrices.length - 1] - gasPrices[0]) * posPercentile + gasPrices[0]
         const closestLowerValueIndex = gasPrices.findIndex((e, i, a) => {
@@ -326,11 +391,26 @@ export default class GasPriceChart extends Component {
       })
     }, 0)
 
+    this.chart = chart
+  }
 
+  componentDidUpdate (prevProps) {
+    if (prevProps.currentPrice !== this.props.currentPrice) {
+      const chartRect = d3.select('.c3-areas-data1')
+      const { x: chartXStart, width: chartWidth } = chartRect.node().getBoundingClientRect()
+      setSelectedCircle({
+        chart: this.chart,
+        currentPrice: this.props.currentPrice,
+        gasPrices: this.props.priceAndTimeEstimates.map(({ gasprice }) => gasprice),
+        chartXStart,
+        chartWidth,
+      })
+    }
   }
 
   componentDidMount () {
-    this.renderChart(this.props.priceAndTimeEstimates)
+    const { currentPrice, priceAndTimeEstimates, updateCustomGasPrice } = this.props
+    this.renderChart(currentPrice, priceAndTimeEstimates, updateCustomGasPrice)
   }
 
   render () {

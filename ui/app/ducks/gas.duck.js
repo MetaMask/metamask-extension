@@ -212,7 +212,7 @@ export function fetchGasEstimates (blockTime) {
         const estimatedPricesAndTimes = r.map(({ expectedTime, expectedWait, gasprice }) => ({ expectedTime, expectedWait, gasprice }))
         const estimatedTimeWithUniquePrices = uniqBy(({ expectedTime }) => expectedTime, estimatedPricesAndTimes)
         const timeMappedToSeconds = estimatedTimeWithUniquePrices.map(({ expectedWait, gasprice }) => {
-          const expectedTime = (new BigNumber(expectedWait)).times(Number(blockTime), 10).div(60, 10).toString(10)
+          const expectedTime = (new BigNumber(expectedWait)).times(Number(blockTime), 10).toString(10)
           return {
             expectedTime,
             expectedWait,
