@@ -272,6 +272,6 @@ function normalizeMsgData (data) {
     return data
   } else {
     // data is unicode, convert to hex
-    return ethUtil.bufferToHex(new Buffer(data, 'utf8'))
+    return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
   }
 }

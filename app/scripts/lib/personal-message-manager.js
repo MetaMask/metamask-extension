@@ -285,7 +285,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
       log.debug(`Message was not hex encoded, interpreting as utf8.`)
     }
 
-    return ethUtil.bufferToHex(new Buffer(data, 'utf8'))
+    return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
   }
 
 }
