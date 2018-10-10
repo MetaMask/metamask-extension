@@ -302,7 +302,7 @@
     "mocha-eslint": "^4.0.0",
     "mocha-jsdom": "^1.1.0",
     "mocha-sinon": "^2.0.0",
-    "nock": "^9.0.14",
+    "nock": "^10.0.1",
     "node-sass": "^4.9.2",
     "nsp": "^3.2.1",
     "nyc": "^13.0.0",
