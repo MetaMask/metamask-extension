@@ -125,7 +125,7 @@ describe('send container', () => {
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.updateGasData.getCall(0).args[0],
-          { gasPrice, selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value, }
+          { gasPrice, selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value, data }
         )
       })
     })
