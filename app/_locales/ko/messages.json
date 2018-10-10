@@ -481,7 +481,7 @@
   },
   "imported": {
     "message": "가져온 계정",
-    "description": "이 상태는 해당 계정이 keyring으로 완전히 적재된 상태임을 표시합니다"
+    "description": "이 상태는 해당 계정이 keyring으로 완전히 로드된 상태임을 표시합니다"
   },
   "importUsingSeed": {
     "message": "계정 시드 구문으로 가져오기"
@@ -490,7 +490,7 @@
     "message": "정보 및 도움말"
   },
   "initialTransactionConfirmed": {
-    "message": "초기 트랜잭션이 네트워크를 통해 확정되었습니다. 확인을 누르고 이전으로 돌아갑니다."
+    "message": "초기 트랜잭션이 네트워크를 통해 확정되었습니다. 확인을 누르면 이전으로 돌아갑니다."
   },
   "insufficientFunds": {
     "message": "충분하지 않은 자금."
