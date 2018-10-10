@@ -140,7 +140,7 @@
   "close": {
     "message": "Close"
   },
-  "chromeRequiredForHardwareWallets":{
+  "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
   "confirm": {
@@ -501,7 +501,7 @@
     "message": "Import Account"
   },
   "importAccountMsg": {
-    "message":" Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
+    "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
   "importAnAccount": {
     "message": "Import an account"
@@ -689,7 +689,7 @@
   "noDeposits": {
     "message": "No deposits received"
   },
-  "noConversionRateAvailable":{
+  "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
   },
   "noTransactionHistory": {
