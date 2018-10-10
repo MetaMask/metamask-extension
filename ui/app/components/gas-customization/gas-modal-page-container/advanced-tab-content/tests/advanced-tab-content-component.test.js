@@ -205,7 +205,7 @@ describe('AdvancedTabContent Component', function () {
     })
 
     it('should render an input, but not a GWEI symbol', () => {
-      assert.equal(gasInput.children().length, 1)
+      assert.equal(gasInput.children().length, 2)
       assert(gasInput.children().at(0).hasClass('advanced-tab__gas-edit-row__input'))
     })
 
@@ -219,6 +219,27 @@ describe('AdvancedTabContent Component', function () {
     it('should call the passed onChange method with the value of the input onChange event', () => {
       const inputOnChange = gasInput.find('input').props().onChange
       assert.equal(inputOnChange({ target: { value: 8} }), 15)
+    })
+
+    it('should have two input arrows', () => {
+      const upArrow = gasInput.find('.fa-angle-up')
+      assert.equal(upArrow.length, 1)
+      const downArrow = gasInput.find('.fa-angle-down')
+      assert.equal(downArrow.length, 1)
+    })
+
+    it('should call onChange with the value incremented decremented when its onchange method is called', () => {
+      gasInput = shallow(wrapper.instance().gasInput(
+        321,
+        value => value + 7,
+        0,
+        8,
+        false
+      ))
+      const upArrow = gasInput.find('.fa-angle-up')
+      assert.equal(upArrow.props().onClick(), 329)
+      const downArrow = gasInput.find('.fa-angle-down')
+      assert.equal(downArrow.props().onClick(), 327)
     })
   })
 
