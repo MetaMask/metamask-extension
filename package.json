@@ -328,7 +328,7 @@
     "sinon": "^5.0.0",
     "source-map": "^0.7.2",
     "static-server": "^2.2.1",
-    "style-loader": "^0.21.0",
+    "style-loader": "^0.23.1",
     "stylelint-config-standard": "^18.2.0",
     "tape": "^4.5.1",
     "testem": "^2.8.0",
