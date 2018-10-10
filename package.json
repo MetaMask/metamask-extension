@@ -204,7 +204,7 @@
     "react-transition-group": "^2.2.1",
     "react-trigger-change": "^1.0.2",
     "reactify": "^1.1.1",
-    "readable-stream": "^2.3.3",
+    "readable-stream": "^3.0.3",
     "recompose": "^0.25.0",
     "redux": "^3.0.5",
     "redux-logger": "^3.0.6",
