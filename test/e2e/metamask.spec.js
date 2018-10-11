@@ -828,6 +828,11 @@ describe('Metamask popup page', async function () {
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
+      it('token should not  be displayed in DAI network', async function () {
+        await setProvider(NETWORKS.DAI)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
       it('token should not  be displayed in SOKOL network', async function () {
         await setProvider(NETWORKS.SOKOL)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
@@ -1041,6 +1046,11 @@ describe('Metamask popup page', async function () {
 
         it('token should not  be displayed in POA network', async function () {
           await setProvider(NETWORKS.POA)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in DAI network', async function () {
+          await setProvider(NETWORKS.DAI)
           assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
@@ -1535,26 +1545,29 @@ describe('Metamask popup page', async function () {
       case NETWORKS.POA:
         counter = 0
         break
-      case NETWORKS.SOKOL:
+      case NETWORKS.DAI:
         counter = 1
         break
-      case NETWORKS.MAINNET:
+      case NETWORKS.SOKOL:
         counter = 2
         break
-      case NETWORKS.ROPSTEN:
+      case NETWORKS.MAINNET:
         counter = 3
         break
-      case NETWORKS.KOVAN:
+      case NETWORKS.ROPSTEN:
         counter = 4
         break
-      case NETWORKS.RINKEBY:
+      case NETWORKS.KOVAN:
         counter = 5
         break
-      case NETWORKS.LOCALHOST:
+      case NETWORKS.RINKEBY:
         counter = 6
         break
-      case NETWORKS.CUSTOM:
+      case NETWORKS.LOCALHOST:
         counter = 7
+        break
+      case NETWORKS.CUSTOM:
+        counter = 8
         break
       default:
         counter = 6
