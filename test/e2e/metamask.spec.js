@@ -958,8 +958,8 @@ describe('Metamask popup page', async function () {
         const addTokenScreen = await waitUntilShowUp(screens.addToken.title)
         assert.equal(await addTokenScreen.getText(), screens.addToken.titleText)
       })
-      it('open \'Add token\' tab', async function () {
-        const tab = await waitUntilShowUp(screens.addToken.tab.custom)
+      it('adds token parameters', async function () {
+        const tab = await waitUntilShowUp(screens.addToken.tab.custom, 30)
         if (!await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)) await tab.click()
       })
       it('address input is displayed and has correct placeholder', async function () {
