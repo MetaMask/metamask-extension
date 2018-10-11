@@ -208,7 +208,7 @@ App.prototype.renderAppBar = function () {
             alignItems: 'center',
           },
         }, [
-          props.isUnlocked && h(AccountDropdowns, {
+          h(AccountDropdowns, {
             style: {},
             enableAccountsSelector: true,
             identities: this.props.identities,
@@ -218,7 +218,7 @@ App.prototype.renderAppBar = function () {
           }, []),
 
           // hamburger
-          props.isUnlocked && h('div', {
+          h('div', {
             className: state.sandwichClass || 'sandwich-expando',
             style: {
               width: 16,
