@@ -60,6 +60,9 @@ Network.prototype.render = function () {
     } else if (providerName === 'poa' || parseInt(networkNumber) === 99) {
       displayName = 'POA Network'
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
+    } else if (providerName === 'dai' || parseInt(networkNumber) === 100) {
+      displayName = 'Dai Chain'
+      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else {
       displayName = 'Private Network'
       hoverText = `Private Network (${provider.rpcTarget})`

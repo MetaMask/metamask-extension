@@ -9,6 +9,7 @@ const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
 const { getNetworkDisplayName } = require('../../../app/scripts/controllers/network/util')
+const ethNetProps = require('eth-net-props')
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -47,9 +48,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
   const props = this.props
   const { network } = props
   const isLoading = props.isSubLoading
-  const isSokol = parseInt(network) === 77
-  const isPOA = parseInt(network) === 99
-  const coinName = isPOA ? 'POA' : isSokol ? 'SPOA' : 'ETH'
+  const coinName = ethNetProps.props.getNetworkCoinName(network)
   return (
 
     h('.flex-column', {
@@ -143,12 +142,13 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '1':
       return this.mainnetSubview()
 
-    // Ropsten, Rinkeby, Kovan, Sokol, POA
+    // Ropsten, Rinkeby, Kovan, Sokol, POA, DAI
     case '3':
     case '4':
     case '42':
     case '77':
     case '99':
+    case '100':
       const networkName = getNetworkDisplayName(network)
       const label = `${networkName} Test Faucet`
       return (
@@ -157,7 +157,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
             margin: '20px 30px',
           },
         }, [
-          network !== '99' ? h('p.exchanges.cursor-pointer', {
+          network !== '99' && network !== '100' ? h('p.exchanges.cursor-pointer', {
             onClick: () => this.props.dispatch(actions.buyEth({ network })),
           },
             [h('span', {style: {marginRight: '10px', color: '#6729a8'}}, label)]) : null,

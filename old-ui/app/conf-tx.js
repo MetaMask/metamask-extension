@@ -53,8 +53,11 @@ ConfirmTxScreen.prototype.render = function () {
   let { conversionRate } = props
 
   const isSokol = parseInt(network) === 77
+  const isDai = parseInt(network) === 100
   if (isSokol) {
     conversionRate = 0
+  } else if (isDai) {
+    conversionRate = 1
   }
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)

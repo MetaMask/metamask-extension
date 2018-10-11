@@ -1759,7 +1759,7 @@ function setProviderType (type) {
       dispatch(actions.setSelectedToken())
     })
 
-    const newCoin = type === 'poa' || type === 'sokol' ? 'poa' : 'eth'
+    const newCoin = type === 'poa' || type === 'sokol' ? 'poa' : type === 'dai' ? 'dai' : 'eth'
     background.setCurrentCoin(newCoin, (err, data) => {
       if (err) {
         log.error(err.stack)

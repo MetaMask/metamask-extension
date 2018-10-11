@@ -290,6 +290,23 @@ App.prototype.renderNetworkDropdown = function () {
     h(
       DropdownMenuItem,
       {
+        key: 'dai',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('dai')),
+        style: {
+          paddingLeft: '20px',
+          fontSize: '16px',
+          color: providerType === 'dai' ? 'white' : '',
+        },
+      },
+      [h(providerType === 'dai' ? 'div.selected-network' : ''),
+        ethNetProps.props.getNetworkDisplayName(100),
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
         key: 'sokol',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('sokol')),
