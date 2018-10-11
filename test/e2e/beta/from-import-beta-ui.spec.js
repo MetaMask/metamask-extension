@@ -159,7 +159,7 @@ describe('Using MetaMask with an existing account', function () {
 
     it('clicks through the ToS', async () => {
       // terms of use
-      await delay(regularDelayMs)
+      await delay(largeDelayMs)
       const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
       assert.equal(canClickThrough, false, 'disabled continue button')
       const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
