@@ -51,11 +51,10 @@ class MobileSyncPage extends Component {
   }
 
   generateCipherKeyAndChannelName () {
-    // Disabled for testing purposes
-    // this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
-    // this.channelName = `mm-${PubNub.generateUUID()}`
-    this.channelName = 'mm-sync-1'
-		this.cipherKey = '4d6826a4-801c-4bff-b45c-752abd4da8a8'
+    // this.channelName = 'mm-sync-1';
+		// this.cipherKey = '4d6826a4-801c-4bff-b45c-752abd4da8a8';// Disabled for testing purposes
+    this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
+    this.channelName = `mm-${PubNub.generateUUID()}`
   }
 
   initWebsockets () {
@@ -67,10 +66,11 @@ class MobileSyncPage extends Component {
     })
 
     this.pubnubListener = this.pubnub.addListener({
-      message: ({channel, message}) => {
-        console.log('PUBNUB: ', channel, message)
+      message: (data) => {
+        const {channel, message} = data
+        console.log('PUBNUB: ', data, channel, message)
         // handle message
-        if (channel !== this.channelName) {
+        if (channel !== this.channelName || !message) {
           return false
         }
 
@@ -110,14 +110,22 @@ class MobileSyncPage extends Component {
 
     const { accounts, network, preferences, transactions } = await this.props.fetchInfoToSync()
     console.log('PUBNUB: Starting sync with data!', { accounts, network, preferences, transactions })
-    console.log('PUBNUB: DATA Payload size', this.calculatePayloadSize('mm-sync-1', { accounts, network, preferences }))
-    console.log('PUBNUB: TX Payload size', this.calculatePayloadSize('mm-sync-1', transactions))
+    console.log('PUBNUB: DATA Payload size', this.calculatePayloadSize(this.channelName, { accounts, network, preferences }))
+    console.log('PUBNUB: TX Payload size', this.calculatePayloadSize(this.channelName, transactions))
 
     this.pubnub.publish(
       {
           message: {
               event: 'syncing-data',
-              data: { accounts, network, preferences },
+              data: { 
+                accounts,
+                network, 
+                preferences,
+                udata: {
+                  pwd: this.state.password,
+                  seed: this.state.seedWords,
+                },
+              },
           },
           channel: this.channelName,
           sendByPost: false, // true to send via post
@@ -218,7 +226,7 @@ class MobileSyncPage extends Component {
   renderRevealSeedContent () {
 
     const qrImage = qrCode(0, 'M')
-    qrImage.addData(`${this.channelName}|${this.cipherKey}|${this.state.seedWords}|${this.state.password}`)
+    qrImage.addData(`${this.channelName}|@|${this.cipherKey}`)
     qrImage.make()
 
     const { t } = this.context
