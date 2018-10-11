@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 4.15.0
+
+- A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.12.0` is found to have bugs.
+
 ## 4.13.0
 
 - A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.12.0` is found to have bugs.
