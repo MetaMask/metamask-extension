@@ -2,7 +2,7 @@
 
 ## Current Develop Branch
 
-## 4.13.0 Thursday October 11 2018
+## 4.14.0 Thursday October 11 2018
 
 - Update transaction statuses when switching networks.
 - [#5470](https://github.com/MetaMask/metamask-extension/pull/5470) 100% coverage in French locale, fixed the procedure to verify proposed locale.
