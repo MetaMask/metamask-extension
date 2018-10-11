@@ -1548,31 +1548,6 @@ describe('Metamask popup page', async function () {
     }
   }
 
-  async function addToken (tokenAddress, tokenName, tokenDecimals) {
-    try {
-      const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
-      await click(button)
-      do {
-        const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
-        try {
-          await tab.click()
-        } catch (err) {
-        }
-      }
-      while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
-      const field = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
-      await clearField(field)
-      await field.sendKeys(tokenAddress)
-
-      const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
-      await click(buttonAdd)
-      return true
-    } catch (err) {
-      console.log(err)
-      return false
-    }
-  }
-
   async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
