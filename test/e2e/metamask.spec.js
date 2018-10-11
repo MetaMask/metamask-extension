@@ -1570,7 +1570,7 @@ describe('Metamask popup page', async function () {
         counter = 8
         break
       default:
-        counter = 6
+        counter = 7
     }
     await driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
   }
