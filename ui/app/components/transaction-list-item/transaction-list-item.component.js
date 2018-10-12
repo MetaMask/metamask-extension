@@ -11,6 +11,7 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
 import { ETH } from '../../constants/common'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
+import { getStatusKey } from '../../helpers/transactions.util'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
@@ -167,7 +168,7 @@ export default class TransactionListItem extends PureComponent {
           </div>
           <TransactionStatus
             className="transaction-list-item__status"
-            statusKey={transaction.status}
+            statusKey={getStatusKey(transaction)}
             title={(
               (transaction.err && transaction.err.rpc)
                 ? transaction.err.rpc.message

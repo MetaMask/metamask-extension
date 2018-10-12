@@ -26,8 +26,11 @@ export default class TransactionBreakdown extends PureComponent {
   render () {
     const { t } = this.context
     const { transaction, className } = this.props
-    const { txParams: { gas, gasPrice, value } = {} } = transaction
-    const hexGasTotal = getHexGasTotal({ gasLimit: gas, gasPrice })
+    const { txParams: { gas, gasPrice, value } = {}, txReceipt: { gasUsed } = {} } = transaction
+
+    const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas
+
+    const hexGasTotal = getHexGasTotal({ gasLimit, gasPrice })
     const totalInHex = sumHexes(hexGasTotal, value)
 
     return (
@@ -52,6 +55,19 @@ export default class TransactionBreakdown extends PureComponent {
               value={gas}
             />
           </TransactionBreakdownRow>
+          {
+            typeof gasUsed === 'string' && (
+              <TransactionBreakdownRow
+                title={`${t('gasUsed')} (${t('units')})`}
+                className="transaction-breakdown__row-title"
+              >
+                <HexToDecimal
+                  className="transaction-breakdown__value"
+                  value={gasUsed}
+                />
+              </TransactionBreakdownRow>
+            )
+          }
           <TransactionBreakdownRow title={t('gasPrice')}>
             <CurrencyDisplay
               className="transaction-breakdown__value"
