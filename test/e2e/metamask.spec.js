@@ -828,6 +828,11 @@ describe('Metamask popup page', async function () {
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
+      it('token should not  be displayed in DAI network', async function () {
+        await setProvider(NETWORKS.DAI)
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
       it('token should not  be displayed in SOKOL network', async function () {
         await setProvider(NETWORKS.SOKOL)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
@@ -1032,99 +1037,6 @@ describe('Metamask popup page', async function () {
         assert.notEqual(item, false, 'item isn\'t displayed')
         assert.equal(await item.getText(), menus.token.sendText, 'incorrect name')
         await waitUntilShowUp(menus.token.menu)
-      })
-    })
-
-    describe('Check support of token per network basis ', async function () {
-
-      describe('Token should be displayed only for network, where it was added ', async function () {
-
-        it('token should not  be displayed in POA network', async function () {
-          await setProvider(NETWORKS.POA)
-          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-        })
-
-        it('token should not  be displayed in SOKOL network', async function () {
-          await setProvider(NETWORKS.SOKOL)
-          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-        })
-
-        it('token should not  be displayed in MAINNET network', async function () {
-          await setProvider(NETWORKS.MAINNET)
-          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-        })
-
-        it('token should not  be displayed in ROPSTEN network', async function () {
-          await setProvider(NETWORKS.ROPSTEN)
-          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-        })
-
-        it('token should not  be displayed in KOVAN network', async function () {
-          await setProvider(NETWORKS.KOVAN)
-          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-        })
-
-        it('token should not  be displayed in RINKEBY network', async function () {
-          await setProvider(NETWORKS.RINKEBY)
-          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
-        })
-      })
-
-      describe('Add token with the same address to each network  ', async function () {
-
-        const tokenName = 'DVT'
-        const tokenDecimals = '13'
-
-        it('adds token with  the same address to POA network', async function () {
-          await setProvider(NETWORKS.POA)
-          await addToken(tokenAddress, tokenName, tokenDecimals)
-          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-          assert.notEqual(await tokenBalance.getText(), '')
-        })
-
-        it('adds token with  the same address to SOKOL network', async function () {
-          await setProvider(NETWORKS.SOKOL)
-          await addToken(tokenAddress, tokenName, tokenDecimals)
-          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-          assert.notEqual(await tokenBalance.getText(), '')
-        })
-
-        it('adds token with  the same address to ROPSTEN network', async function () {
-          await setProvider(NETWORKS.ROPSTEN)
-          await addToken(tokenAddress, tokenName, tokenDecimals)
-          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-          assert.notEqual(await tokenBalance.getText(), '')
-        })
-
-        it('adds token with  the same address to KOVAN network', async function () {
-          await setProvider(NETWORKS.KOVAN)
-          await addToken(tokenAddress, tokenName, tokenDecimals)
-          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-          assert.notEqual(await tokenBalance.getText(), '')
-        })
-
-        it('adds token with  the same address to RINKEBY network', async function () {
-          await setProvider(NETWORKS.RINKEBY)
-          await addToken(tokenAddress, tokenName, tokenDecimals)
-          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-          assert.notEqual(await tokenBalance.getText(), '')
-        })
-
-        it('adds token with  the same address to MAINNET network', async function () {
-          await setProvider(NETWORKS.MAINNET)
-          await addToken(tokenAddress, tokenName, tokenDecimals)
-          const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-          assert.notEqual(await tokenBalance.getText(), '')
-        })
-
-        it('token still should be displayed in LOCALHOST network', async function () {
-          await setProvider(NETWORKS.LOCALHOST)
-          await waitUntilDisappear(screens.main.tokens.amount)
-          assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
-          const tokens = await driver.findElements(screens.main.tokens.amount)
-          assert.equal(tokens.length, 1, '\'Tokens\' section doesn\'t contain field with amount of tokens')
-          assert.equal(await tokens[0].getText(), screens.main.tokens.textYouOwn1token, 'Token isn\'t displayed')
-        })
       })
     })
 
@@ -1535,29 +1447,32 @@ describe('Metamask popup page', async function () {
       case NETWORKS.POA:
         counter = 0
         break
-      case NETWORKS.SOKOL:
+      case NETWORKS.DAI:
         counter = 1
         break
-      case NETWORKS.MAINNET:
+      case NETWORKS.SOKOL:
         counter = 2
         break
-      case NETWORKS.ROPSTEN:
+      case NETWORKS.MAINNET:
         counter = 3
         break
-      case NETWORKS.KOVAN:
+      case NETWORKS.ROPSTEN:
         counter = 4
         break
-      case NETWORKS.RINKEBY:
+      case NETWORKS.KOVAN:
         counter = 5
         break
-      case NETWORKS.LOCALHOST:
+      case NETWORKS.RINKEBY:
         counter = 6
         break
-      case NETWORKS.CUSTOM:
+      case NETWORKS.LOCALHOST:
         counter = 7
         break
+      case NETWORKS.CUSTOM:
+        counter = 8
+        break
       default:
-        counter = 6
+        counter = 7
     }
     await driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
   }
@@ -1626,31 +1541,6 @@ describe('Metamask popup page', async function () {
       // Check if token presents
       const tokens = await driver.findElements(screens.main.tokens.token)
       assert.equal(tokens.length, 0, 'Unexpected token presents')
-      return true
-    } catch (err) {
-      console.log(err)
-      return false
-    }
-  }
-
-  async function addToken (tokenAddress, tokenName, tokenDecimals) {
-    try {
-      const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
-      await click(button)
-      do {
-        const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
-        try {
-          await tab.click()
-        } catch (err) {
-        }
-      }
-      while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
-      const field = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
-      await clearField(field)
-      await field.sendKeys(tokenAddress)
-
-      const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
-      await click(buttonAdd)
       return true
     } catch (err) {
       console.log(err)
