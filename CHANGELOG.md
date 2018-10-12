@@ -11,6 +11,9 @@
 ## 4.12.0 Thursday September 27 2018
 
 - Reintroduces changes from 4.10.0
+## 4.13.0
+
+- A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.12.0` is found to have bugs.
 
 ## 4.11.1 Tuesday September 25 2018
 
