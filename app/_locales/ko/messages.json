@@ -65,7 +65,7 @@
     "message": "블록체인에 접속을 시도하는 중입니다."
   },
   "attemptToCancel": {
-    "message": "취소 시도하시겠습니까?"
+    "message": "취소 하시겠습니까?"
   },
   "attributions": {
     "message": "속성"
@@ -241,7 +241,7 @@
     "description": "거래 유형 (암호화폐)"
   },
   "currentConversion": {
-    "message": "선택된 단위"
+    "message": "현재 통화"
   },
   "currentLanguage": {
     "message": "현재 언어"
@@ -572,7 +572,7 @@
     "message": "최대"
   },
   "learnMore": {
-    "message": "더 배우기."
+    "message": "더 알아보기."
   },
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 최소 마지막 계정을 사용해야 합니다."
@@ -646,7 +646,7 @@
     "description": "사용자는 계정을 가져오기 위해서 파일을 추가후 계속 진행해야 합니다"
   },
   "needImportPassword": {
-    "message": "선택 된 파일에 대한 비밀번호를 입력해주세요.",
+    "message": "선택된 파일에 대한 비밀번호를 입력해주세요.",
     "description": "계정을 가져오기 위해서 비밀번호와 파일이 필요합니다."
   },
   "negativeETH": {
@@ -965,7 +965,7 @@
     "message": "토큰 전송"
   },
   "sentEther": {
-    "message": "이더 전송"
+    "message": "전송된 이더"
   },
   "sentTokens": {
     "message": "전송된 토큰"
@@ -1247,7 +1247,7 @@
     "message": "서명을 요청 중입니다."
   },
   "youSign": {
-    "message": "서명 중입니다"
+    "message": "서명합니다"
   },
   "yourPrivateSeedPhrase": {
     "message": "개인 시드 구문"
