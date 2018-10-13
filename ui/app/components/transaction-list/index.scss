@@ -3,11 +3,13 @@
   flex-direction: column;
   flex: 1;
   overflow-y: hidden;
+  margin-top: 8px;
+  border-top: 1px solid $geyser;
 
   &__completed-transactions {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
   }
 
   &__header {
@@ -15,7 +17,7 @@
     font-size: .875rem;
     color: $dusty-gray;
     border-bottom: 1px solid $geyser;
-    padding: 16px 0 8px 20px;
+    padding: 8px 0 8px 20px;
 
     @media screen and (max-width: $break-small) {
       padding: 8px 0 8px 16px;
@@ -35,6 +37,7 @@
     flex: 1;
     display: grid;
     grid-template-rows: 35% 1fr;
+    padding-top: 8px;
   }
 
   &__empty-text {

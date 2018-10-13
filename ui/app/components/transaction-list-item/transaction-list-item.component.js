@@ -1,45 +1,76 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import Identicon from '../identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
 import CurrencyDisplay from '../currency-display'
 import TokenCurrencyDisplay from '../token-currency-display'
-import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
+import TransactionListItemDetails from '../transaction-list-item-details'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
 import { ETH } from '../../constants/common'
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
+    assetImages: PropTypes.object,
     history: PropTypes.object,
-    transaction: PropTypes.object,
-    value: PropTypes.string,
     methodData: PropTypes.object,
-    showRetry: PropTypes.bool,
+    nonceAndDate: PropTypes.string,
     retryTransaction: PropTypes.func,
     setSelectedToken: PropTypes.func,
-    nonceAndDate: PropTypes.string,
+    showCancelModal: PropTypes.func,
+    showCancel: PropTypes.bool,
+    showRetry: PropTypes.bool,
+    showTransactionDetailsModal: PropTypes.func,
     token: PropTypes.object,
-    assetImages: PropTypes.object,
+    tokenData: PropTypes.object,
+    transaction: PropTypes.object,
+    value: PropTypes.string,
+  }
+
+  state = {
+    showTransactionDetails: false,
   }
 
   handleClick = () => {
-    const { transaction, history } = this.props
-    const { id, status, hash, metamaskNetworkId } = transaction
+    const {
+      transaction,
+      history,
+      showTransactionDetailsModal,
+      methodData,
+      showCancel,
+      showRetry,
+    } = this.props
+    const { id, status } = transaction
+    const { showTransactionDetails } = this.state
+    const windowType = window.METAMASK_UI_TYPE
 
     if (status === UNAPPROVED_STATUS) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`)
-    } else if (hash) {
-      const prefix = prefixForNetwork(metamaskNetworkId)
-      const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
-      global.platform.openWindow({ url: etherscanUrl })
+      return
+    }
+
+    if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
+      this.setState({ showTransactionDetails: !showTransactionDetails })
+    } else {
+      showTransactionDetailsModal({
+        transaction,
+        onRetry: this.handleRetry,
+        showRetry: showRetry && methodData.done,
+        onCancel: this.handleCancel,
+        showCancel,
+      })
     }
   }
 
-  handleRetryClick = event => {
-    event.stopPropagation()
+  handleCancel = () => {
+    const { transaction: { id, txParams: { gasPrice } } = {}, showCancelModal } = this.props
+    showCancelModal(id, gasPrice)
+  }
 
+  handleRetry = () => {
     const {
       transaction: { txParams: { to } = {} },
       methodData: { name } = {},
@@ -50,12 +81,12 @@ export default class TransactionListItem extends PureComponent {
       setSelectedToken(to)
     }
 
-    this.resubmit()
+    return this.resubmit()
   }
 
   resubmit () {
     const { transaction: { id }, retryTransaction, history } = this.props
-    retryTransaction(id)
+    return retryTransaction(id)
       .then(id => history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`))
   }
 
@@ -75,6 +106,8 @@ export default class TransactionListItem extends PureComponent {
           className="transaction-list-item__amount transaction-list-item__amount--primary"
           value={value}
           prefix="-"
+          numberOfDecimals={2}
+          currency={ETH}
         />
       )
   }
@@ -89,33 +122,37 @@ export default class TransactionListItem extends PureComponent {
           className="transaction-list-item__amount transaction-list-item__amount--secondary"
           prefix="-"
           value={value}
-          numberOfDecimals={2}
-          currency={ETH}
         />
       )
   }
 
   render () {
     const {
-      transaction,
-      methodData,
-      showRetry,
-      nonceAndDate,
       assetImages,
+      methodData,
+      nonceAndDate,
+      showCancel,
+      showRetry,
+      tokenData,
+      transaction,
     } = this.props
     const { txParams = {} } = transaction
+    const { showTransactionDetails } = this.state
+    const toAddress = tokenData
+      ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
+      : txParams.to
 
     return (
-      <div
-        className="transaction-list-item"
-        onClick={this.handleClick}
-      >
-        <div className="transaction-list-item__grid">
+      <div className="transaction-list-item">
+        <div
+          className="transaction-list-item__grid"
+          onClick={this.handleClick}
+        >
           <Identicon
             className="transaction-list-item__identicon"
-            address={txParams.to}
+            address={toAddress}
             diameter={34}
-            image={assetImages[txParams.to]}
+            image={assetImages[toAddress]}
           />
           <TransactionAction
             transaction={transaction}
@@ -131,20 +168,32 @@ export default class TransactionListItem extends PureComponent {
           <TransactionStatus
             className="transaction-list-item__status"
             statusKey={transaction.status}
+            title={(
+              (transaction.err && transaction.err.rpc)
+                ? transaction.err.rpc.message
+                : transaction.err && transaction.err.message
+            )}
           />
           { this.renderPrimaryCurrency() }
           { this.renderSecondaryCurrency() }
         </div>
-        {
-          showRetry && methodData.done && (
-            <div
-              className="transaction-list-item__retry"
-              onClick={this.handleRetryClick}
-            >
-              <span>Taking too long? Increase the gas price on your transaction</span>
-            </div>
-          )
-        }
+        <div className={classnames('transaction-list-item__expander', {
+          'transaction-list-item__expander--show': showTransactionDetails,
+        })}>
+          {
+            showTransactionDetails && (
+              <div className="transaction-list-item__details-container">
+                <TransactionListItemDetails
+                  transaction={transaction}
+                  onRetry={this.handleRetry}
+                  showRetry={showRetry && methodData.done}
+                  onCancel={this.handleCancel}
+                  showCancel={showCancel}
+                />
+              </div>
+            )
+          }
+        </div>
       </div>
     )
   }

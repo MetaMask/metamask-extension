@@ -1,2 +1,1 @@
-import ConfirmRemoveAccount from './confirm-remove-account.container'
-module.exports = ConfirmRemoveAccount
+export { default } from './confirm-remove-account.container'

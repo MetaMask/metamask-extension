@@ -201,17 +201,17 @@ describe('Metamask popup page', function () {
     })
 
     it('balance renders', async function () {
-      await delay(200)
+      await delay(500)
       const balance = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'))
       assert.equal(await balance.getText(), '100.000')
       await delay(200)
     })
 
     it('sends transaction', async function () {
-     const sendButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'))
-     assert.equal(await sendButton.getText(), 'SEND')
-     await sendButton.click()
-     await delay(200)
+      const sendButton = await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'))
+      assert.equal(await sendButton.getText(), 'SEND')
+      await sendButton.click()
+      await delay(200)
     })
 
     it('adds recipient address and amount', async function () {

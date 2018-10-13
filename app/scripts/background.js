@@ -406,6 +406,7 @@ function setupController (initState, initLangCode) {
   controller.txController.on('update:badge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
+  controller.typedMessageManager.on('updateBadge', updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.

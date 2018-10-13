@@ -2,11 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Tabs, Tab } from '../../tabs'
-import {
-  ConfirmPageContainerSummary,
-  ConfirmPageContainerError,
-  ConfirmPageContainerWarning,
-} from './'
+import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from './'
+import ErrorMessage from '../../error-message'
 
 export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
@@ -95,7 +92,7 @@ export default class ConfirmPageContainerContent extends Component {
         {
           (errorKey || errorMessage) && (
             <div className="confirm-page-container-content__error-container">
-              <ConfirmPageContainerError
+              <ErrorMessage
                 errorMessage={errorMessage}
                 errorKey={errorKey}
               />

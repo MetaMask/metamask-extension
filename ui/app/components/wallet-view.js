@@ -9,13 +9,15 @@ const classnames = require('classnames')
 const { checksumAddress } = require('../util')
 const Identicon = require('./identicon')
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
-const Tooltip = require('./tooltip-v2.js')
+const Tooltip = require('./tooltip-v2.js').default
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
 const selectors = require('../selectors')
 const { ADD_TOKEN_ROUTE } = require('../routes')
+
+import Button from './button'
 
 module.exports = compose(
   withRouter,
@@ -199,7 +201,9 @@ WalletView.prototype.render = function () {
 
     h(TokenList),
 
-    h('button.btn-primary.wallet-view__add-token-button', {
+    h(Button, {
+      type: 'primary',
+      className: 'wallet-view__add-token-button',
       onClick: () => {
         history.push(ADD_TOKEN_ROUTE)
         sidebarOpen && hideSidebar()

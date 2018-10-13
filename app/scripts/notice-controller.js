@@ -7,7 +7,7 @@ const uniqBy = require('lodash.uniqby')
 
 module.exports = class NoticeController extends EventEmitter {
 
-  constructor (opts) {
+  constructor (opts = {}) {
     super()
     this.noticePoller = null
     this.firstVersion = opts.firstVersion

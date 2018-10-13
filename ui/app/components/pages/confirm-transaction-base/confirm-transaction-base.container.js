@@ -97,8 +97,8 @@ const mapDispatchToProps = dispatch => {
   return {
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     clearSend: () => dispatch(clearSend()),
-    showTransactionConfirmedModal: ({ onHide }) => {
-      return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onHide }))
+    showTransactionConfirmedModal: ({ onSubmit }) => {
+      return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }))
     },
     showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
       return dispatch(showModal({ name: 'CONFIRM_CUSTOMIZE_GAS', txData, onSubmit, validate }))

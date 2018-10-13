@@ -17,6 +17,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "activityLog": {
+    "message": "activity log"
+  },
   "address": {
     "message": "Address"
   },
@@ -57,6 +60,12 @@
   },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
+  },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Attempting to cancel does not guarantee your original transaction will be cancelled. If cancelled, you are still required to pay a transaction fee to the network."
   },
   "attributions": {
     "message": "Attributions"
@@ -112,6 +121,12 @@
   },
   "cancel": {
     "message": "Cancel"
+  },
+  "cancelAttempt": {
+    "message": "Cancel Attempt"
+  },
+  "cancellationGasFee": {
+    "message": "Cancellation Gas Fee"
   },
   "classicInterface": {
     "message": "Use classic interface"
@@ -212,6 +227,9 @@
   },
   "currentConversion": {
     "message": "Current Conversion"
+  },
+  "currentLanguage": {
+    "message": "Current Language"
   },
   "currentNetwork": {
     "message": "Current Network"
@@ -593,6 +611,9 @@
   "metamaskSeedWords": {
     "message": "MetaMask Seed Words"
   },
+  "metamaskVersion": {
+    "message": "MetaMask Version"
+  },
   "min": {
     "message": "Minimum"
   },
@@ -857,6 +878,9 @@
   "save": {
     "message": "Save"
   },
+  "speedUp": {
+    "message": "speed up"
+  },
   "speedUpTitle": {
     "message": "Speed Up Transaction"
   },
@@ -899,6 +923,9 @@
   },
   "selectCurrency": {
     "message": "Select Currency"
+  },
+  "selectLocale": {
+    "message": "Select Locale"
   },
   "selectService": {
     "message": "Select Service"
@@ -1085,6 +1112,30 @@
   "total": {
     "message": "Total"
   },
+  "transaction": {
+    "message": "transaction"
+  },
+  "transactionConfirmed": {
+    "message": "Transaction confirmed on $2."
+  },
+  "transactionCreated": {
+    "message": "Transaction created with a value of $1 on $2."
+  },
+  "transactionWithNonce": {
+    "message": "Transaction $1"
+  },
+  "transactionDropped": {
+    "message": "Transaction dropped on $2."
+  },
+  "transactionSubmitted": {
+    "message": "Transaction submitted on $2."
+  },
+  "transactionUpdated": {
+    "message": "Transaction updated on $2."
+  },
+  "transactionUpdatedGas": {
+    "message": "Transaction updated with a gas price of $1 on $2."
+  },
   "transactions": {
     "message": "transactions"
   },
@@ -1131,6 +1182,9 @@
   "unavailable": {
     "message": "Unavailable"
   },
+  "units": {
+    "message": "units"
+  },
   "unknown": {
     "message": "Unknown"
   },
@@ -1157,6 +1211,9 @@
   },
   "unlockMessage": {
     "message": "The decentralized web awaits"
+  },
+  "updatedWithDate": {
+    "message": "Updated $1"
   },
   "uriErrorMsg": {
     "message": "URIs require the appropriate HTTP/HTTPS prefix."
@@ -1197,6 +1254,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "yesLetsTry": {
+    "message": "Yes, let's try"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

@@ -2,8 +2,31 @@
 
 ## Current Develop Branch
 
+## 4.12.0 Thursday September 27 2018
+
+- Reintroduces changes from 4.10.0
+
+## 4.11.1 Tuesday September 25 2018
+
+- Adds Ledger support.
+
+## 4.11.0 Monday September 24 2018
+
+- Identical to 4.9.3. A rollback version to give time to fix bugs in the 4.10.x branch.
+
+## 4.10.0 Mon Sep 17 2018
+
+- [#4803](https://github.com/MetaMask/metamask-extension/pull/4803): Implement EIP-712: Sign typed data, but continue to support v1.
+- [#4898](https://github.com/MetaMask/metamask-extension/pull/4898): Restore multiple consecutive accounts with balances.
+- [#4279](https://github.com/MetaMask/metamask-extension/pull/4279): New BlockTracker and Json-Rpc-Engine based Provider.
+- [#5050](https://github.com/MetaMask/metamask-extension/pull/5050): Add Ledger hardware wallet support.
+- [#4919](https://github.com/MetaMask/metamask-extension/pull/4919): Refactor and Redesign Transaction List.
+- [#5182](https://github.com/MetaMask/metamask-extension/pull/5182): Add Transaction Details to the Transaction List view.
+- [#5229](https://github.com/MetaMask/metamask-extension/pull/5229): Clear old seed words when importing new seed words.
+- [#5264](https://github.com/MetaMask/metamask-extension/pull/5264): Improve click area for adjustment arrows buttons.
 - [#4606](https://github.com/MetaMask/metamask-extension/pull/4606): Add new metamask_watchAsset method.
 - [#5189](https://github.com/MetaMask/metamask-extension/pull/5189): Fix bug where Ropsten loading message is shown when connecting to Kovan.
+- [#5256](https://github.com/MetaMask/metamask-extension/pull/5256): Add mock EIP-1102 support
 
 ## 4.9.3 Wed Aug 15 2018
 

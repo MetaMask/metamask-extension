@@ -32,9 +32,11 @@ async function runTxListItemsTest (assert, done) {
   const txListItems = await queryAsync($, '.transaction-list-item')
   assert.equal(txListItems.length, 8, 'all tx list items are rendered')
 
-  const retryTx = txListItems[1]
-  const retryTxLink = await findAsync($(retryTx), '.transaction-list-item__retry')
-  assert.equal(retryTxLink[0].textContent, 'Taking too long? Increase the gas price on your transaction', 'retryTx has expected link')
+  const retryTxGrid = await findAsync($(txListItems[1]), '.transaction-list-item__grid')
+  retryTxGrid[0].click()
+  const retryTxDetails = await findAsync($, '.transaction-list-item-details')
+  const headerButtons = await findAsync($(retryTxDetails[0]), '.transaction-list-item-details__header-button')
+  assert.equal(headerButtons[0].textContent, 'speed up')
 
   const approvedTx = txListItems[2]
   const approvedTxRenderedStatus = await findAsync($(approvedTx), '.transaction-list-item__status')

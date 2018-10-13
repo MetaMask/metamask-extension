@@ -237,6 +237,7 @@ var actions = {
   removeSuggestedTokens,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
+  delRpcTarget: delRpcTarget,
   setProviderType: setProviderType,
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   setHardwareWalletDefaultHdPath,
@@ -315,6 +316,8 @@ var actions = {
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
   setPendingTokens,
   clearPendingTokens,
+
+  createCancelTransaction,
 }
 
 module.exports = actions
@@ -1772,6 +1775,29 @@ function retryTransaction (txId) {
   }
 }
 
+function createCancelTransaction (txId, customGasPrice) {
+  log.debug('background.cancelTransaction')
+  let newTxId
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        newTxId = id
+        resolve(newState)
+      })
+    })
+    .then(newState => dispatch(actions.updateMetamaskState(newState)))
+    .then(() => newTxId)
+  }
+}
+
 //
 // config
 //
@@ -1805,6 +1831,19 @@ function setRpcTarget (newRpc) {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
+      }
+      dispatch(actions.setSelectedToken())
+    })
+  }
+}
+
+function delRpcTarget (oldRpc) {
+  return (dispatch) => {
+    log.debug(`background.delRpcTarget: ${oldRpc}`)
+    background.delCustomRpc(oldRpc, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Had a problem removing network!'))
       }
       dispatch(actions.setSelectedToken())
     })

@@ -25,8 +25,8 @@
       a {
         color: white;
       }
-
     </style>
+
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -43,9 +43,9 @@
       ga('create', 'UA-68598031-1', 'auto' {'allowLinker':true});
       ga('send', 'pageview');
       ga('require', 'linker');
-      ga('linker:autoLink', ['harrydenley.com', 'metamask.io'], false, true);
+      ga('linker:autoLink', ['metamask.io'], false, true);
     </script>
-
+    <script src="phishing-detect.js"></script>
   </head>
 
   <body>
@@ -55,6 +55,7 @@
       <h3>ATTENTION</h3>
       <p>MetaMask believes this domain could currently compromise your security and has prevented you from interacting with it.</p>
       <p>This is because the site tested positive on the <a href="https://github.com/metamask/eth-phishing-detect">Ethereum Phishing Detector</a>. This includes outright malicious websites and legitimate websites that have been compromised by a malicious actor.</p>
+      <p id="esdbLink"></p>
       <p>You can turn MetaMask off to interact with this site, but it is advised not to.</p>
       <p>If you think this domain is incorrectly flagged or if a blocked legitimate website has resolved its security issues, <a href="https://github.com/metamask/eth-phishing-detect/issues/new">please file an issue</a>.</p>
 
