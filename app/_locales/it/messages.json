@@ -39,7 +39,7 @@
     "message": "Aggiungi Token Suggeriti"
   },
   "addAcquiredTokens": {
-    "message": "Aggiungi i token che hai acquistato usando Metamask"
+    "message": "Aggiungi i token che hai acquistato usando MetaMask"
   },
   "amount": {
     "message": "Importo"
