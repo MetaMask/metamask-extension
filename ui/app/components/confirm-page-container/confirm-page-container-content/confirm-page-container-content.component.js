@@ -2,11 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Tabs, Tab } from '../../tabs'
-import {
-  ConfirmPageContainerSummary,
-  ConfirmPageContainerError,
-  ConfirmPageContainerWarning,
-} from './'
+import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from './'
+import ErrorMessage from '../../error-message'
 
 export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
@@ -18,6 +15,7 @@ export default class ConfirmPageContainerContent extends Component {
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
+    assetImage: PropTypes.string,
     subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     summaryComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -60,6 +58,7 @@ export default class ConfirmPageContainerContent extends Component {
       hideSubtitle,
       identiconAddress,
       nonce,
+      assetImage,
       summaryComponent,
       detailsComponent,
       dataComponent,
@@ -85,6 +84,7 @@ export default class ConfirmPageContainerContent extends Component {
               hideSubtitle={hideSubtitle}
               identiconAddress={identiconAddress}
               nonce={nonce}
+              assetImage={assetImage}
             />
           )
         }
@@ -92,7 +92,7 @@ export default class ConfirmPageContainerContent extends Component {
         {
           (errorKey || errorMessage) && (
             <div className="confirm-page-container-content__error-container">
-              <ConfirmPageContainerError
+              <ErrorMessage
                 errorMessage={errorMessage}
                 errorKey={errorKey}
               />

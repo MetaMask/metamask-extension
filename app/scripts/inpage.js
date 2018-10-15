@@ -4,10 +4,16 @@ require('web3/dist/web3.min.js')
 const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
-const MetamaskInpageProvider = require('./lib/inpage-provider.js')
+const MetamaskInpageProvider = require('metamask-inpage-provider')
+
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
+
+console.warn('ATTENTION: In an effort to improve user privacy, MetaMask will ' +
+'stop exposing user accounts to dapps by default beginning November 2nd, 2018. ' +
+'Dapps should call provider.enable() in order to view and use accounts. Please see ' +
+'https://bit.ly/2QQHXvF for complete information and up-to-date example code.')
 
 //
 // setup plugin communication
@@ -22,6 +28,33 @@ var metamaskStream = new LocalMessageDuplexStream({
 // compose the inpage provider
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
+// Augment the provider with its enable method
+inpageProvider.enable = function (options = {}) {
+  return new Promise((resolve, reject) => {
+    if (options.mockRejection) {
+      reject('User rejected account access')
+    } else {
+      inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(response.result)
+        }
+      })
+    }
+  })
+}
+
+// Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
+// `sendAsync` method on the prototype, causing `this` reference issues with drizzle
+const proxiedInpageProvider = new Proxy(inpageProvider, {
+  // straight up lie that we deleted the property so that it doesnt
+  // throw an error in strict mode
+  deleteProperty: () => true,
+})
+
+window.ethereum = proxiedInpageProvider
+
 //
 // setup web3
 //
@@ -33,7 +66,8 @@ if (typeof window.web3 !== 'undefined') {
      or MetaMask and another web3 extension. Please remove one
      and try again.`)
 }
-var web3 = new Web3(inpageProvider)
+
+var web3 = new Web3(proxiedInpageProvider)
 web3.setProvider = function () {
   log.debug('MetaMask - overrode web3.setProvider')
 }

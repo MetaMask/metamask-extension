@@ -73,11 +73,43 @@ module.exports = class PersonalMessageManager extends EventEmitter {
    * this.memStore.
    *
    * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} req (optional) The original request object possibly containing the origin
+   * @returns {promise} When the message has been signed or rejected
+   *
+   */
+  addUnapprovedMessageAsync (msgParams, req) {
+    return new Promise((resolve, reject) => {
+      if (!msgParams.from) {
+        reject(new Error('MetaMask Message Signature: from field is required.'))
+      }
+      const msgId = this.addUnapprovedMessage(msgParams, req)
+      this.once(`${msgId}:finished`, (data) => {
+        switch (data.status) {
+          case 'signed':
+            return resolve(data.rawSig)
+          case 'rejected':
+            return reject(new Error('MetaMask Message Signature: User denied message signature.'))
+          default:
+            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+        }
+      })
+    })
+  }
+
+  /**
+   * Creates a new PersonalMessage with an 'unapproved' status using the passed msgParams. this.addMsg is called to add
+   * the new PersonalMessage to this.messages, and to save the unapproved PersonalMessages from that list to
+   * this.memStore.
+   *
+   * @param {Object} msgParams The params for the eth_sign call to be made after the message is approved.
+   * @param {Object} req (optional) The original request object possibly containing the origin
    * @returns {number} The id of the newly created PersonalMessage.
    *
    */
-  addUnapprovedMessage (msgParams) {
+  addUnapprovedMessage (msgParams, req) {
     log.debug(`PersonalMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
+    // add origin from request
+    if (req) msgParams.origin = req.origin
     msgParams.data = this.normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
     var time = (new Date()).getTime()
@@ -253,8 +285,7 @@ module.exports = class PersonalMessageManager extends EventEmitter {
       log.debug(`Message was not hex encoded, interpreting as utf8.`)
     }
 
-    return ethUtil.bufferToHex(new Buffer(data, 'utf8'))
+    return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
   }
 
 }
-

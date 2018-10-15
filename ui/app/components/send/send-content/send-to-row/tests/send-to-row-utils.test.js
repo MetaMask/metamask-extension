@@ -29,6 +29,12 @@ describe('send-to-row utils', () => {
       })
     })
 
+    it('should return null if to is falsy and hexData is truthy', () => {
+      assert.deepEqual(getToErrorObject(null, undefined, true), {
+        to: null,
+      })
+    })
+
     it('should return an invalid recipient error if to is truthy but invalid', () => {
       assert.deepEqual(getToErrorObject('mockInvalidTo'), {
         to: INVALID_RECIPIENT_ADDRESS_ERROR,

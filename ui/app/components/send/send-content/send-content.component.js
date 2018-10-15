@@ -12,7 +12,10 @@ export default class SendContent extends Component {
   static propTypes = {
     updateGas: PropTypes.func,
     scanQrCode: PropTypes.func,
+    showHexData: PropTypes.bool,
   };
+
+  updateGas = (updateData) => this.props.updateGas(updateData)
 
   render () {
     return (
@@ -20,12 +23,16 @@ export default class SendContent extends Component {
         <div className="send-v2__form">
           <SendFromRow />
           <SendToRow
-            updateGas={(updateData) => this.props.updateGas(updateData)}
+            updateGas={this.updateGas}
             scanQrCode={ _ => this.props.scanQrCode()}
           />
-          <SendAmountRow updateGas={(updateData) => this.props.updateGas(updateData)} />
+          <SendAmountRow updateGas={this.updateGas} />
           <SendGasRow />
-          <SendHexDataRow />
+          {(this.props.showHexData && (
+            <SendHexDataRow
+              updateGas={this.updateGas}
+            />
+          ))}
         </div>
       </PageContainerContent>
     )

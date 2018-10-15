@@ -4,7 +4,7 @@ var BinaryRenderer = require('../../../old-ui/app/components/binary-renderer')
 describe('BinaryRenderer', function () {
   let binaryRenderer
   const message = 'Hello, world!'
-  const buffer = new Buffer(message, 'utf8')
+  const buffer = Buffer.from(message, 'utf8')
   const hex = buffer.toString('hex')
 
   beforeEach(function () {

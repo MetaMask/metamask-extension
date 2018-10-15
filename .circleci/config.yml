@@ -5,7 +5,6 @@ workflows:
   full_test:
     jobs:
       - prep-deps-npm
-      - prep-deps-firefox
       - prep-build:
           requires:
             - prep-deps-npm
@@ -28,7 +27,6 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox
             - prep-build
       - test-e2e-beta-chrome:
           requires:
@@ -37,11 +35,18 @@ workflows:
       - test-e2e-beta-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox
+            - prep-build
+      - test-e2e-beta-drizzle:
+          requires:
+            - prep-deps-npm
             - prep-build
       - test-unit:
           requires:
             - prep-deps-npm
+      - test-mozilla-lint:
+          requires:
+            - prep-deps-npm
+            - prep-build
       - test-integration-mascara-chrome:
           requires:
             - prep-deps-npm
@@ -49,7 +54,6 @@ workflows:
       - test-integration-mascara-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox
             - prep-scss
       - test-integration-flat-chrome:
           requires:
@@ -58,16 +62,17 @@ workflows:
       - test-integration-flat-firefox:
           requires:
             - prep-deps-npm
-            - prep-deps-firefox
             - prep-scss
       - all-tests-pass:
           requires:
             - test-lint
             - test-unit
+            - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
             - test-e2e-beta-chrome
             - test-e2e-beta-firefox
+            - test-e2e-beta-drizzle
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
@@ -103,46 +108,34 @@ jobs:
       - restore_cache:
           keys:
             - v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1.0-dependency-cache-
       - run:
           name: Install npm 6 + deps via npm
           command: |
-           sudo npm install -g npm@6.1.0 && npm install --no-save
+           sudo npm install -g npm@6 && npm install --no-save
+      - persist_to_workspace:
+          root: .
+          paths:
+          - node_modules
       - save_cache:
           key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-  prep-deps-firefox:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
-      - run:
-          name: Download Firefox If needed
-          command: ./.circleci/scripts/firefox-download.sh
-      - save_cache:
-          key: v1.0-dependency-cache-firefox-
-          paths:
-            - firefox
 
   prep-build:
     docker:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: .
       - run:
           name: build:dist
           command: npm run dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - save_cache:
-          key: build-cache-{{ .Revision }}
+      - persist_to_workspace:
+          root: .
           paths:
             - dist
             - builds
@@ -152,23 +145,23 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: .
       - run:
           name: build:dist
           command: npm run doc
-      - save_cache:
-          key: docs-cache-{{ .Revision }}
+      - persist_to_workspace:
+          root: .
           paths:
-            - docs/jsdoc
+            - docs/jsdocs
 
   prep-scss:
     docker:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: .
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
@@ -176,8 +169,8 @@ jobs:
       - run:
           name: Build for integration tests
           command: npm run test:integration:build
-      - save_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
+      - persist_to_workspace:
+          root: .
           paths:
             - ui/app/css/output
 
@@ -186,8 +179,8 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: .
       - run:
           name: Test
           command: npm run lint
@@ -197,8 +190,8 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: .
       - run:
           name: Test
           command: npx nsp check
@@ -208,10 +201,8 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
+      - attach_workspace:
+          at: .
       - run:
           name: test:e2e:chrome
           command: npm run test:e2e:chrome
@@ -224,15 +215,11 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
       - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install
+      - attach_workspace:
+          at: .
       - run:
           name: test:e2e:firefox
           command: npm run test:e2e:firefox
@@ -240,15 +227,26 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
+  test-e2e-beta-drizzle:
+    docker:
+      - image: circleci/node:8.11.3-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:e2e:drizzle:beta
+          command: npm run test:e2e:drizzle:beta
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
   test-e2e-beta-chrome:
     docker:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
+      - attach_workspace:
+          at: .
       - run:
           name: test:e2e:chrome:beta
           command: npm run test:e2e:chrome:beta
@@ -261,15 +259,11 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
       - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install
+      - attach_workspace:
+          at: .
       - run:
           name: test:e2e:firefox:beta
           command: npm run test:e2e:firefox:beta
@@ -282,15 +276,13 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
+      - attach_workspace:
+          at: .
       - run:
           name: Test
           command: npm run test:screens
-      - save_cache:
-          key: job-screens-{{ .Revision }}
+      - persist_to_workspace:
+          root: .
           paths:
             - test-artifacts
 
@@ -299,12 +291,8 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
-      - restore_cache:
-          key: job-screens-{{ .Revision }}
+      - attach_workspace:
+          at: .
       - store_artifacts:
           path: dist/mascara
           destination: builds/mascara
@@ -326,22 +314,16 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - restore_cache:
-          key: build-cache-{{ .Revision }}
-      - restore_cache:
-          key: docs-cache-{{ .Revision }}
-      - restore_cache:
-          key: job-screens-{{ .Revision }}
+      - attach_workspace:
+          at: .
       - run:
           name: sentry sourcemaps upload
           command: npm run sentry:publish
       - run:
           name: github gh-pages docs publish
           command: >
-            git config user.name metamaskbot
-            git config user.email admin@metamask.io
+            git config user.name metamaskbot &&
+            git config user.email admin@metamask.io &&
             gh-pages -d docs/jsdocs
 
   test-unit:
@@ -349,32 +331,32 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: .
       - run:
           name: test:coverage
           command: npm run test:coverage
-
-  test-integration-flat-firefox:
-    environment:
-      browsers: '["Firefox"]'
+  test-mozilla-lint:
     docker:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
+      - attach_workspace:
+          at: .
       - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
+          name: test:mozilla-lint
+          command: npm run mozilla-lint
+
+  test-integration-flat-firefox:
+    docker:
+      - image: circleci/node:8.11.3-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
       - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install
       - run:
           name: test:integration:flat
           command: npm run test:flat
@@ -386,38 +368,22 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
+      - attach_workspace:
+          at: .
       - run:
           name: test:integration:flat
           command: npm run test:flat
 
   test-integration-mascara-firefox:
-    environment:
-      browsers: '["Firefox"]'
     docker:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-firefox-
+      - attach_workspace:
+          at: .
       - run:
-          name: Install firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install
       - run:
           name: test:integration:mascara
           command: npm run test:mascara
@@ -429,14 +395,8 @@ jobs:
       - image: circleci/node:8.11.3-browsers
     steps:
       - checkout
-      - restore_cache:
-          key: v1.0-dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
+      - attach_workspace:
+          at: .
       - run:
           name: test:integration:mascara
           command: npm run test:mascara

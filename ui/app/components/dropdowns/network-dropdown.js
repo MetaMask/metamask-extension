@@ -43,6 +43,9 @@ function mapDispatchToProps (dispatch) {
     setRpcTarget: (target) => {
       dispatch(actions.setRpcTarget(target))
     },
+    delRpcTarget: (target) => {
+      dispatch(actions.delRpcTarget(target))
+    },
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
   }
@@ -272,10 +275,12 @@ NetworkDropdown.prototype.getNetworkName = function () {
 
 NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
-  const rpcTarget = provider.rpcTarget
+  const reversedRpcList = rpcList.slice().reverse()
 
-  return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
+  return reversedRpcList.map((rpc) => {
+    const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
+
+    if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
       return null
     } else {
       return h(
@@ -291,13 +296,20 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
           },
         },
         [
-          rpcTarget === rpc ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+          currentRpcTarget ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
           h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
           h('span.network-name-item', {
             style: {
-              color: rpcTarget === rpc ? '#ffffff' : '#9b9b9b',
+              color: currentRpcTarget ? '#ffffff' : '#9b9b9b',
             },
           }, rpc),
+          h('i.fa.fa-times.delete',
+          {
+            onClick: (e) => {
+              e.stopPropagation()
+              props.delRpcTarget(rpc)
+            },
+          }),
         ]
       )
     }

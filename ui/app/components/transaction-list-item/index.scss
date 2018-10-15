@@ -1,0 +1,131 @@
+.transaction-list-item {
+  box-sizing: border-box;
+  min-height: 74px;
+  border-bottom: 1px solid $geyser;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: $white;
+
+  &__grid {
+    cursor: pointer;
+    width: 100%;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 45px 1fr 1fr 1fr;
+    grid-template-areas:
+      "identicon action status primary-amount"
+      "identicon nonce status secondary-amount";
+
+    @media screen and (max-width: $break-small) {
+      padding: 8px 20px 12px;
+      grid-template-columns: 45px 5fr 3fr;
+      grid-template-areas:
+        "nonce nonce nonce"
+        "identicon action primary-amount"
+        "identicon status secondary-amount";
+    }
+
+    &:hover {
+      background: rgba($alto, .2);
+    }
+  }
+
+  &__identicon {
+    grid-area: identicon;
+    grid-row: 1 / span 2;
+    align-self: center;
+
+    @media screen and (max-width: $break-small) {
+      grid-row: 2 / span 2;
+    }
+  }
+
+  &__action {
+    text-transform: capitalize;
+    padding: 0 8px 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    grid-area: action;
+    align-self: end;
+  }
+
+  &__status {
+    grid-area: status;
+    grid-row: 1 / span 2;
+    align-self: center;
+
+    @media screen and (max-width: $break-small) {
+      grid-row: 3;
+    }
+  }
+
+  &__nonce {
+    font-size: .75rem;
+    color: #5e6064;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    grid-area: nonce;
+    align-self: start;
+
+    @media screen and (max-width: $break-small) {
+      padding-bottom: 4px;
+    }
+  }
+
+  &__amount {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--primary {
+      text-align: end;
+      grid-area: primary-amount;
+      align-self: end;
+
+      @media screen and (max-width: $break-small) {
+        padding-bottom: 2px;
+      }
+    }
+
+    &--secondary {
+      text-align: end;
+      font-size: .75rem;
+      color: #5e6064;
+      grid-area: secondary-amount;
+      align-self: start;
+    }
+  }
+
+  &__retry {
+    background: #d1edff;
+    border-radius: 12px;
+    font-size: .75rem;
+    padding: 4px 12px;
+    cursor: pointer;
+    margin-top: 8px;
+
+    @media screen and (max-width: $break-small) {
+      font-size: .5rem;
+    }
+  }
+
+  &__details-container {
+    padding: 8px 16px 16px;
+    background: #f3f4f7;
+    width: 100%;
+  }
+
+  &__expander {
+    max-height: 0px;
+    width: 100%;
+
+    &--show {
+      max-height: 1000px;
+      transition: max-height 700ms ease-out;
+    }
+  }
+}

@@ -2,6 +2,15 @@
 
 ## Current Develop Branch
 
+## 4.14.0 Thursday October 11 2018
+
+- Update transaction statuses when switching networks.
+- [#5470](https://github.com/MetaMask/metamask-extension/pull/5470) 100% coverage in French locale, fixed the procedure to verify proposed locale.
+- Added rudimentary support for the subscription API to support web3 1.0 and Truffle's Drizzle.
+
+## 4.12.0 Thursday September 27 2018
+
+- Reintroduces changes from 4.10.0
 ## 4.13.0
 
 - A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.12.0` is found to have bugs.
@@ -14,11 +23,25 @@
 
 - Identical to 4.9.3. A rollback version to give time to fix bugs in the 4.10.x branch.
 
+## 4.10.0 Mon Sep 17 2018
+
+- [#4803](https://github.com/MetaMask/metamask-extension/pull/4803): Implement EIP-712: Sign typed data, but continue to support v1.
+- [#4898](https://github.com/MetaMask/metamask-extension/pull/4898): Restore multiple consecutive accounts with balances.
+- [#4279](https://github.com/MetaMask/metamask-extension/pull/4279): New BlockTracker and Json-Rpc-Engine based Provider.
+- [#5050](https://github.com/MetaMask/metamask-extension/pull/5050): Add Ledger hardware wallet support.
+- [#4919](https://github.com/MetaMask/metamask-extension/pull/4919): Refactor and Redesign Transaction List.
+- [#5182](https://github.com/MetaMask/metamask-extension/pull/5182): Add Transaction Details to the Transaction List view.
+- [#5229](https://github.com/MetaMask/metamask-extension/pull/5229): Clear old seed words when importing new seed words.
+- [#5264](https://github.com/MetaMask/metamask-extension/pull/5264): Improve click area for adjustment arrows buttons.
+- [#4606](https://github.com/MetaMask/metamask-extension/pull/4606): Add new metamask_watchAsset method.
+- [#5189](https://github.com/MetaMask/metamask-extension/pull/5189): Fix bug where Ropsten loading message is shown when connecting to Kovan.
+- [#5256](https://github.com/MetaMask/metamask-extension/pull/5256): Add mock EIP-1102 support
+
 ## 4.9.3 Wed Aug 15 2018
 
-- (#4897)[https://github.com/MetaMask/metamask-extension/pull/4897]: QR code scan for recipient addresses.
-- (#4961)[https://github.com/MetaMask/metamask-extension/pull/4961]: Add a download seed phrase link.
-- (#5060)[https://github.com/MetaMask/metamask-extension/pull/5060]: Fix bug where gas was not updating properly.
+- [#4897](https://github.com/MetaMask/metamask-extension/pull/4897): QR code scan for recipient addresses.
+- [#4961](https://github.com/MetaMask/metamask-extension/pull/4961): Add a download seed phrase link.
+- [#5060](https://github.com/MetaMask/metamask-extension/pull/5060): Fix bug where gas was not updating properly.
 
 ## 4.9.2 Mon Aug 09 2018
 
@@ -45,6 +68,8 @@
 - [#4691](https://github.com/MetaMask/metamask-extension/pull/4691): Redesign of the Confirm Transaction Screen.
 - [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
 - [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): Allow the use of HTTP prefix for custom rpc urls.
+- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): network.js: convert rpc protocol to lower case.
+- [#4898](https://github.com/MetaMask/metamask-extension/pull/4898): Restore multiple consecutive accounts with balances.
 
 ## 4.8.0 Thur Jun 14 2018
 

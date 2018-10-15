@@ -372,7 +372,7 @@
     "message": "Import účtu"
   },
   "importAccountMsg": {
-    "message":"Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
+    "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
   },
   "importAnAccount": {
     "message": "Import účtu"
@@ -730,7 +730,7 @@
     "message": "Nastavení"
   },
   "info": {
-  "message": "Informace"
+    "message": "Informace"
   },
   "shapeshiftBuy": {
     "message": "Nakoupit na ShapeShift"
@@ -796,7 +796,7 @@
     "message": "Testovací faucet"
   },
   "to": {
-    "message": "Komu: "
+    "message": "Komu"
   },
   "toETHviaShapeShift": {
     "message": "$1 na ETH přes ShapeShift",

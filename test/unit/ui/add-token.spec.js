@@ -1,7 +1,7 @@
 const assert = require('assert')
 const { createMockStore } = require('redux-test-utils')
 const h = require('react-hyperscript')
-const { shallowWithStore } = require('../../lib/shallow-with-store')
+const { shallowWithStore } = require('../../lib/render-helpers')
 const AddTokenScreen = require('../../../old-ui/app/add-token')
 
 describe('Add Token Screen', function () {

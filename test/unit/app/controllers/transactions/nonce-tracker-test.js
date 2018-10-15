@@ -224,14 +224,15 @@ function generateNonceTrackerWith (pending, confirmed, providerStub = '0x0') {
   providerResultStub.result = providerStub
   const provider = {
     sendAsync: (_, cb) => { cb(undefined, providerResultStub) },
-    _blockTracker: {
-      getCurrentBlock: () => '0x11b568',
-    },
+  }
+  const blockTracker = {
+    getCurrentBlock: () => '0x11b568',
+    getLatestBlock: async () => '0x11b568',
   }
   return new NonceTracker({
     provider,
+    blockTracker,
     getPendingTransactions,
     getConfirmedTransactions,
   })
 }
-

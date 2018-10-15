@@ -167,6 +167,7 @@ var actions = {
   updateTransaction,
   updateAndApproveTx,
   cancelTx: cancelTx,
+  cancelTxs,
   completedTx: completedTx,
   txError: txError,
   nextTx: nextTx,
@@ -227,13 +228,17 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
+  SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
   showAddTokenPage,
+  showAddSuggestedTokenPage,
   addToken,
   addTokens,
   removeToken,
   updateTokens,
+  removeSuggestedTokens,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
+  delRpcTarget: delRpcTarget,
   setProviderType: setProviderType,
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   setHardwareWalletDefaultHdPath,
@@ -312,6 +317,8 @@ var actions = {
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
   setPendingTokens,
   clearPendingTokens,
+
+  createCancelTransaction,
 }
 
 module.exports = actions
@@ -410,12 +417,18 @@ function createNewVaultAndRestore (password, seed) {
     log.debug(`background.createNewVaultAndRestore`)
 
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, err => {
+      background.clearSeedWordCache((err) => {
         if (err) {
           return reject(err)
         }
 
-        resolve()
+        background.createNewVaultAndRestore(password, seed, (err) => {
+          if (err) {
+            return reject(err)
+          }
+
+          resolve()
+        })
       })
     })
       .then(() => dispatch(actions.unMarkPasswordForgotten()))
@@ -905,6 +918,7 @@ function updateGasData ({
   selectedToken,
   to,
   value,
+  data,
 }) {
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
@@ -925,6 +939,7 @@ function updateGasData ({
           to,
           value,
           estimateGasPrice,
+          data,
         }),
       ])
     })
@@ -1147,6 +1162,10 @@ function updateAndApproveTx (txData) {
 
         return txData
       })
+      .catch((err) => {
+        dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
+      })
   }
 }
 
@@ -1284,6 +1303,47 @@ function cancelTx (txData) {
   }
 }
 
+/**
+ * Cancels all of the given transactions
+ * @param {Array<object>} txDataList a list of tx data objects
+ * @return {function(*): Promise<void>}
+ */
+function cancelTxs (txDataList) {
+  return async (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    const txIds = txDataList.map(({id}) => id)
+    const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
+      background.cancelTransaction(id, (err) => {
+        if (err) {
+          return reject(err)
+        }
+
+        resolve()
+      })
+    }))
+
+    await Promise.all(cancellations)
+    const newState = await updateMetamaskStateFromBackground()
+    dispatch(actions.updateMetamaskState(newState))
+    dispatch(actions.clearSend())
+
+    txIds.forEach((id) => {
+      dispatch(actions.completedTx(id))
+    })
+
+    dispatch(actions.hideLoadingIndication())
+
+    if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+      return global.platform.closeCurrentWindow()
+    }
+  }
+}
+
+/**
+ * @deprecated
+ * @param {Array<object>} txsData
+ * @return {Function}
+ */
 function cancelAllTx (txsData) {
   return (dispatch) => {
     txsData.forEach((txData, i) => {
@@ -1589,11 +1649,18 @@ function showAddTokenPage (transitionForward = true) {
   }
 }
 
-function addToken (address, symbol, decimals) {
+function showAddSuggestedTokenPage (transitionForward = true) {
+  return {
+    type: actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE,
+    value: transitionForward,
+  }
+}
+
+function addToken (address, symbol, decimals, image) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, (err, tokens) => {
+      background.addToken(address, symbol, decimals, image, (err, tokens) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
@@ -1643,10 +1710,37 @@ function addTokens (tokens) {
   }
 }
 
+function removeSuggestedTokens () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeSuggestedTokens((err, suggestedTokens) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.clearPendingTokens())
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+          return global.platform.closeCurrentWindow()
+        }
+        resolve(suggestedTokens)
+      })
+    })
+    .then(() => updateMetamaskStateFromBackground())
+    .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+  }
+}
+
 function updateTokens (newTokens) {
   return {
     type: actions.UPDATE_TOKENS,
     newTokens,
+  }
+}
+
+function clearPendingTokens () {
+  return {
+    type: actions.CLEAR_PENDING_TOKENS,
   }
 }
 
@@ -1668,7 +1762,7 @@ function markNoticeRead (notice) {
       background.markNoticeRead(notice, (err, notice) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err))
+          dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
 
@@ -1725,6 +1819,29 @@ function retryTransaction (txId) {
   }
 }
 
+function createCancelTransaction (txId, customGasPrice) {
+  log.debug('background.cancelTransaction')
+  let newTxId
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        const { id } = selectedAddressTxList[selectedAddressTxList.length - 1]
+        newTxId = id
+        resolve(newState)
+      })
+    })
+    .then(newState => dispatch(actions.updateMetamaskState(newState)))
+    .then(() => newTxId)
+  }
+}
+
 //
 // config
 //
@@ -1735,7 +1852,7 @@ function setProviderType (type) {
     background.setProviderType(type, (err, result) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem changing networks!'))
+        return dispatch(actions.displayWarning('Had a problem changing networks!'))
       }
       dispatch(actions.updateProviderType(type))
       dispatch(actions.setSelectedToken())
@@ -1757,7 +1874,20 @@ function setRpcTarget (newRpc) {
     background.setCustomRpc(newRpc, (err, result) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem changing networks!'))
+        return dispatch(actions.displayWarning('Had a problem changing networks!'))
+      }
+      dispatch(actions.setSelectedToken())
+    })
+  }
+}
+
+function delRpcTarget (oldRpc) {
+  return (dispatch) => {
+    log.debug(`background.delRpcTarget: ${oldRpc}`)
+    background.delCustomRpc(oldRpc, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Had a problem removing network!'))
       }
       dispatch(actions.setSelectedToken())
     })
@@ -1812,9 +1942,13 @@ function hideModal (payload) {
   }
 }
 
-function showSidebar () {
+function showSidebar ({ transitionName, type }) {
   return {
     type: actions.SIDEBAR_OPEN,
+    value: {
+      transitionName,
+      type,
+    },
   }
 }
 
@@ -2175,6 +2309,10 @@ function updateNetworkNonce (address) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       global.ethQuery.getTransactionCount(address, (err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
         dispatch(setNetworkNonce(data))
         resolve(data)
       })
@@ -2262,7 +2400,7 @@ function setUseBlockie (val) {
 function updateCurrentLocale (key) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    fetchLocale(key)
+    return fetchLocale(key)
       .then((localeMessages) => {
         log.debug(`background.setCurrentLocale`)
         background.setCurrentLocale(key, (err) => {
@@ -2308,11 +2446,5 @@ function setPendingTokens (pendingTokens) {
   return {
     type: actions.SET_PENDING_TOKENS,
     payload: tokens,
-  }
-}
-
-function clearPendingTokens () {
-  return {
-    type: actions.CLEAR_PENDING_TOKENS,
   }
 }

@@ -58,7 +58,7 @@ async function runSendFlowTest (assert, done) {
   selectState.val('send new ui')
   reactTriggerChange(selectState[0])
 
-  const sendScreenButton = await queryAsync($, 'button.btn-primary.hero-balance-button')
+  const sendScreenButton = await queryAsync($, 'button.btn-primary.transaction-view-balance__button')
   assert.ok(sendScreenButton[1], 'send screen button present')
   sendScreenButton[1].click()
 
@@ -94,7 +94,7 @@ async function runSendFlowTest (assert, done) {
   sendToDropdownList.children()[2].click()
 
   const sendToAccountAddress = sendToFieldInput.val()
-  assert.equal(sendToAccountAddress, '0x2f8d4a878cfa04a6e60d46362f5644deab66572d', 'send to dropdown selects the correct address')
+  assert.equal(sendToAccountAddress, '0x2f8D4a878cFA04A6E60D46362f5644DeAb66572D', 'send to dropdown selects the correct address')
 
   const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(2)')
   sendAmountField.find('.currency-display')[0].click()
@@ -124,10 +124,10 @@ async function runSendFlowTest (assert, done) {
   selectState.val('send edit')
   reactTriggerChange(selectState[0])
 
-  const confirmFromName = (await queryAsync($, '.sender-to-recipient__sender-name')).first()
+  const confirmFromName = (await queryAsync($, '.sender-to-recipient__name')).first()
   assert.equal(confirmFromName[0].textContent, 'Send Account 4', 'confirm screen should show correct from name')
 
-  const confirmToName = (await queryAsync($, '.sender-to-recipient__recipient-name')).last()
+  const confirmToName = (await queryAsync($, '.sender-to-recipient__name')).last()
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
 
   const confirmScreenRowFiats = await queryAsync($, '.confirm-detail-row__fiat')

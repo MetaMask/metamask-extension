@@ -38,9 +38,12 @@ export default class ConfirmPageContainer extends Component {
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
+    assetImage: PropTypes.string,
     summaryComponent: PropTypes.node,
     warning: PropTypes.string,
+    unapprovedTxCount: PropTypes.number,
     // Footer
+    onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     disabled: PropTypes.bool,
@@ -66,12 +69,16 @@ export default class ConfirmPageContainer extends Component {
       summaryComponent,
       detailsComponent,
       dataComponent,
+      onCancelAll,
       onCancel,
       onSubmit,
       identiconAddress,
       nonce,
+      unapprovedTxCount,
+      assetImage,
       warning,
     } = this.props
+    const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
 
     return (
       <div className="page-container">
@@ -84,6 +91,7 @@ export default class ConfirmPageContainer extends Component {
             senderAddress={fromAddress}
             recipientName={toName}
             recipientAddress={toAddress}
+            assetImage={renderAssetImage ? assetImage : undefined}
           />
         </ConfirmPageContainerHeader>
         {
@@ -101,17 +109,25 @@ export default class ConfirmPageContainer extends Component {
               errorKey={errorKey}
               identiconAddress={identiconAddress}
               nonce={nonce}
+              assetImage={assetImage}
               warning={warning}
             />
           )
         }
         <PageContainerFooter
           onCancel={() => onCancel()}
+          cancelText={this.context.t('reject')}
           onSubmit={() => onSubmit()}
           submitText={this.context.t('confirm')}
           submitButtonType="confirm"
           disabled={disabled}
-        />
+        >
+          {unapprovedTxCount > 1 && (
+            <a onClick={() => onCancelAll()}>
+              {this.context.t('rejectTxsN', [unapprovedTxCount])}
+            </a>
+          )}
+        </PageContainerFooter>
       </div>
     )
   }

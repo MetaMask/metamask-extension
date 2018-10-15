@@ -1,11 +1,12 @@
 const fs = require('fs')
 const path = require('path')
 const pump = require('pump')
+const querystring = require('querystring')
 const LocalMessageDuplexStream = require('post-message-stream')
 const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
-const PortStream = require('./lib/port-stream.js')
+const PortStream = require('extension-port-stream')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
@@ -199,5 +200,8 @@ function blacklistedDomainCheck () {
 function redirectToPhishingWarning () {
   console.log('MetaMask - routing to Phishing Warning component')
   const extensionURL = extension.runtime.getURL('phishing.html')
-  window.location.href = extensionURL
+  window.location.href = `${extensionURL}#${querystring.stringify({
+    hostname: window.location.hostname,
+    href: window.location.href,
+  })}`
 }

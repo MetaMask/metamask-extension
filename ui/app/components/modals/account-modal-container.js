@@ -7,9 +7,9 @@ const actions = require('../../actions')
 const { getSelectedIdentity } = require('../../selectors')
 const Identicon = require('../identicon')
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
   return {
-    selectedIdentity: getSelectedIdentity(state),
+    selectedIdentity: ownProps.selectedIdentity || getSelectedIdentity(state),
   }
 }
 
