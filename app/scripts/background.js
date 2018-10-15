@@ -2,6 +2,9 @@
  * @file The entry point for the web extension singleton process.
  */
 
+// this needs to run before anything else
+require('./lib/setupFetchDebugging')()
+
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pump = require('pump')
