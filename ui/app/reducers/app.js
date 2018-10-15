@@ -219,6 +219,15 @@ function reduceApp (state, action) {
         transForward: action.value,
       })
 
+    case actions.SHOW_ADD_LAYER2APP_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'add-layer2App',
+          context: appState.currentView.context,
+        },
+        transForward: action.value,
+      })
+    
     case actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE:
       return extend(appState, {
         currentView: {

@@ -2,29 +2,29 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ethUtil from 'ethereumjs-util'
 import { checkExistingAddresses } from './util'
-import { tokenInfoGetter } from '../../../token-util'
-import { DEFAULT_ROUTE, CONFIRM_ADD_TOKEN_ROUTE } from '../../../routes'
+import { layer2AppInfoGetter } from '../../../layer2App-util'
+import { DEFAULT_ROUTE, CONFIRM_ADD_LAYER2APP_ROUTE } from '../../../routes'
 import TextField from '../../text-field'
-import TokenList from './token-list'
-import TokenSearch from './token-search'
+import Layer2AppList from './layer2App-list'
+import Layer2AppSearch from './layer2App-search'
 import PageContainer from '../../page-container'
 import { Tabs, Tab } from '../../tabs'
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 const SEARCH_TAB = 'SEARCH'
-const CUSTOM_TOKEN_TAB = 'CUSTOM_TOKEN'
+const CUSTOM_LAYER2APP_TAB = 'CUSTOM_LAYER2APP'
 
-class AddToken extends Component {
+class AddLayer2App extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
 
   static propTypes = {
     history: PropTypes.object,
-    setPendingTokens: PropTypes.func,
-    pendingTokens: PropTypes.object,
-    clearPendingTokens: PropTypes.func,
-    tokens: PropTypes.array,
+    setPendingLayer2Apps: PropTypes.func,
+    pendingLayer2Apps: PropTypes.object,
+    clearPendingLayer2Apps: PropTypes.func,
+    layer2Apps: PropTypes.array,
     identities: PropTypes.object,
   }
 
@@ -36,8 +36,8 @@ class AddToken extends Component {
       customSymbol: '',
       customDecimals: 0,
       searchResults: [],
-      selectedTokens: {},
-      tokenSelectorError: null,
+      selectedLayer2Apps: {},
+      layer2AppSelectorError: null,
       customAddressError: null,
       customSymbolError: null,
       customDecimalsError: null,
@@ -47,22 +47,22 @@ class AddToken extends Component {
   }
 
   componentDidMount () {
-    this.tokenInfoGetter = tokenInfoGetter()
-    const { pendingTokens = {} } = this.props
-    const pendingTokenKeys = Object.keys(pendingTokens)
+    this.layer2AppInfoGetter = layer2AppInfoGetter()
+    const { pendingLayer2Apps = {} } = this.props
+    const pendingLayer2AppsKeys = Object.keys(pendingLayer2Apps)
 
-    if (pendingTokenKeys.length > 0) {
-      let selectedTokens = {}
-      let customToken = {}
+    if (pendingLayer2AppsKeys.length > 0) {
+      let selectedLayer2Apps = {}
+      let customLayer2App = {}
 
-      pendingTokenKeys.forEach(tokenAddress => {
-        const token = pendingTokens[tokenAddress]
-        const { isCustom } = token
+      pendingLayer2AppsKeys.forEach(layer2AppAddress => {
+        const layer2App = pendingLayer2Apps[layer2AppAddress]
+        const { isCustom } = layer2App
 
         if (isCustom) {
-          customToken = { ...token }
+          customLayer2App = { ...layer2App }
         } else {
-          selectedTokens = { ...selectedTokens, [tokenAddress]: { ...token } }
+          selectedLayer2Apps = { ...selectedLayer2Apps, [layer2AppAddress]: { ...layer2App } }
         }
       })
 
@@ -70,44 +70,44 @@ class AddToken extends Component {
         address: customAddress = '',
         symbol: customSymbol = '',
         decimals: customDecimals = 0,
-      } = customToken
+      } = customLayer2App
 
-      const displayedTab = Object.keys(selectedTokens).length > 0 ? SEARCH_TAB : CUSTOM_TOKEN_TAB
-      this.setState({ selectedTokens, customAddress, customSymbol, customDecimals, displayedTab })
+      const displayedTab = Object.keys(selectedLayer2Apps).length > 0 ? SEARCH_TAB : CUSTOM_LAYER2APP_TAB
+      this.setState({ selectedLayer2Apps, customAddress, customSymbol, customDecimals, displayedTab })
     }
   }
 
-  handleToggleToken (token) {
-    const { address } = token
-    const { selectedTokens = {} } = this.state
-    const selectedTokensCopy = { ...selectedTokens }
+  handleToggleLayer2App (layer2App) {
+    const { address } = layer2App
+    const { selectedLayer2Apps = {} } = this.state
+    const selectedLayer2AppsCopy = { ...selectedLayer2Apps }
 
-    if (address in selectedTokensCopy) {
-      delete selectedTokensCopy[address]
+    if (address in selectedLayer2Apps) {
+      delete selectedLayer2Apps[address]
     } else {
-      selectedTokensCopy[address] = token
+      selectedLayer2AppsCopy[address] = layer2App
     }
 
     this.setState({
-      selectedTokens: selectedTokensCopy,
-      tokenSelectorError: null,
+      selectedLayer2Apps: selectedLayer2Apps,
+      layer2AppSelectorError: null,
     })
   }
 
   hasError () {
     const {
-      tokenSelectorError,
+      layer2AppSelectorError,
       customAddressError,
       customSymbolError,
       customDecimalsError,
     } = this.state
 
-    return tokenSelectorError || customAddressError || customSymbolError || customDecimalsError
+    return layer2AppSelectorError || customAddressError || customSymbolError || customDecimalsError
   }
 
   hasSelected () {
-    const { customAddress = '', selectedTokens = {} } = this.state
-    return customAddress || Object.keys(selectedTokens).length > 0
+    const { customAddress = '', selectedLayer2Apps = {} } = this.state
+    return customAddress || Object.keys(selectedLayer2Apps).length > 0
   }
 
   handleNext () {
@@ -116,32 +116,35 @@ class AddToken extends Component {
     }
 
     if (!this.hasSelected()) {
-      this.setState({ tokenSelectorError: this.context.t('mustSelectOne') })
+      this.setState({ layer2AppSelectorError: this.context.t('mustSelectOne') })
       return
     }
 
-    const { setPendingTokens, history } = this.props
+    const { setPendingLayer2Apps, history } = this.props
     const {
       customAddress: address,
       customSymbol: symbol,
       customDecimals: decimals,
-      selectedTokens,
+      selectedLayer2Apps,
     } = this.state
 
-    const customToken = {
+    const customLayer2App = {
       address,
       symbol,
       decimals,
     }
 
-    setPendingTokens({ customToken, selectedTokens })
-    history.push(CONFIRM_ADD_TOKEN_ROUTE)
+    setPendingLayer2Apps({ customLayer2App, selectedLayer2Apps })
+    console.log("DEBUG DEBUG DEBUG CONFIRM ROUTE", CONFIRM_ADD_LAYER2APP_ROUTE)
+    history.push(CONFIRM_ADD_LAYER2APP_ROUTE)
   }
 
-  async attemptToAutoFillTokenParams (address) {
-    const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(address)
+  async attemptToAutoFillLayer2AppParams (address) {
+    const { symbol = '', decimals = 0 } = await this.layer2AppInfoGetter(address)
 
     const autoFilled = Boolean(symbol && decimals)
+    console.log(autoFilled)
+    console.log(typeof(autoFilled))
     this.setState({ autoFilled })
     this.handleCustomSymbolChange(symbol || '')
     this.handleCustomDecimalsChange(decimals)
@@ -152,7 +155,7 @@ class AddToken extends Component {
     this.setState({
       customAddress,
       customAddressError: null,
-      tokenSelectorError: null,
+      layer2AppSelectorError: null,
       autoFilled: false,
     })
 
@@ -176,15 +179,15 @@ class AddToken extends Component {
         })
 
         break
-      case checkExistingAddresses(customAddress, this.props.tokens):
+      case checkExistingAddresses(customAddress, this.props.layer2Apps):
         this.setState({
-          customAddressError: this.context.t('tokenAlreadyAdded'),
+          customAddressError: this.context.t('layer2AppAlreadyAdded'),
         })
 
         break
       default:
         if (customAddress !== emptyAddr) {
-          this.attemptToAutoFillTokenParams(customAddress)
+          this.attemptToAutoFillLayer2AppParams(customAddress)
         }
     }
   }
@@ -216,7 +219,7 @@ class AddToken extends Component {
     this.setState({ customDecimals, customDecimalsError })
   }
 
-  renderCustomTokenForm () {
+  renderCustomLayer2AppForm () {
     const {
       customAddress,
       customSymbol,
@@ -228,10 +231,10 @@ class AddToken extends Component {
     } = this.state
 
     return (
-      <div className="add-token__custom-token-form">
+      <div className="add-layer2App__custom-layer2App-form">
         <TextField
           id="custom-address"
-          label={this.context.t('tokenAddress')}
+          label={this.context.t('layer2AppAddress')}
           type="text"
           value={customAddress}
           onChange={e => this.handleCustomAddressChange(e.target.value)}
@@ -241,7 +244,7 @@ class AddToken extends Component {
         />
         <TextField
           id="custom-symbol"
-          label={this.context.t('tokenSymbol')}
+          label={this.context.t('layer2AppSymbol')}
           type="text"
           value={customSymbol}
           onChange={e => this.handleCustomSymbolChange(e.target.value)}
@@ -265,20 +268,20 @@ class AddToken extends Component {
     )
   }
 
-  renderSearchToken () {
-    const { tokenSelectorError, selectedTokens, searchResults } = this.state
+  renderSearchLayer2App () {
+    const { layer2AppSelectorError, selectedLayer2Apps, searchResults } = this.state
 
     return (
-      <div className="add-token__search-token">
-        <TokenSearch
+      <div className="add-layer2App__search-layer2App">
+        <Layer2AppSearch
           onSearch={({ results = [] }) => this.setState({ searchResults: results })}
-          error={tokenSelectorError}
+          error={layer2AppSelectorError}
         />
-        <div className="add-token__token-list">
-          <TokenList
+        <div className="add-layer2App__layer2App-list">
+          <Layer2AppList
             results={searchResults}
-            selectedTokens={selectedTokens}
-            onToggleToken={token => this.handleToggleToken(token)}
+            selectedLayer2Apps={selectedLayer2Apps}
+            onToggleLayer2App={layer2App => this.handleToggleLayer2App(layer2App)}
           />
         </div>
       </div>
@@ -289,25 +292,25 @@ class AddToken extends Component {
     return (
       <Tabs>
         <Tab name={this.context.t('search')}>
-          { this.renderSearchToken() }
+          { this.renderSearchLayer2App() }
         </Tab>
-        <Tab name={this.context.t('customToken')}>
-          { this.renderCustomTokenForm() }
+        <Tab name={this.context.t('customLayer2App')}>
+          { this.renderCustomLayer2AppForm() }
         </Tab>
       </Tabs>
     )
   }
 
   render () {
-    const { history, clearPendingTokens } = this.props
+    const { history, clearPendingLayer2Apps } = this.props
     return (
       <PageContainer
-        title={this.context.t('addTokens')}
+        title={this.context.t('addLayer2App')}
         tabsComponent={this.renderTabs()}
         onSubmit={() => this.handleNext()}
         disabled={this.hasError() || !this.hasSelected()}
         onCancel={() => {
-          clearPendingTokens()
+          clearPendingLayer2Apps()
           history.push(DEFAULT_ROUTE)
         }}
       />
@@ -315,4 +318,4 @@ class AddToken extends Component {
   }
 }
 
-export default AddToken
+export default AddLayer2App

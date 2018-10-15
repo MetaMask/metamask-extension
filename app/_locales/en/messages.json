@@ -26,8 +26,14 @@
   "address": {
     "message": "Address"
   },
+  "addCustomLayer2App": {
+    "message": "Add custom layer 2 App"
+  },
   "addCustomToken": {
     "message": "Add custom token"
+  }, 
+ "addLayer2App": {
+    "message": "Add Layer 2 App"
   },
   "addToken": {
     "message": "Add Token"
@@ -258,6 +264,9 @@
   "customGas": {
     "message": "Customize Gas"
   },
+  "customLayer2App": {
+    "message": "Custom Layer 2 App"
+  },
   "customToken": {
     "message": "Custom Token"
   },
@@ -481,6 +490,9 @@
   "hide": {
     "message": "Hide"
   },
+  "hideLayer2App": {
+    "message": "Hide Layer 2 App"
+  },
   "hideToken": {
     "message": "Hide Token"
   },
@@ -574,6 +586,12 @@
   "max": {
     "message": "Max"
   },
+  "layer2AppAddress": {
+    "message": "Layer 2 App Address"
+  },
+  "layer2AppSymbol": {
+    "message": "Layer 2 App Symbol"
+  },
   "learnMore": {
     "message": "Learn more"
   },
@@ -595,6 +613,9 @@
   },
   "loading": {
     "message": "Loading..."
+  },
+  "loadingLayer2Apps": {
+    "message": "Loading Layer 2 Apps..."
   },
   "loadingTokens": {
     "message": "Loading Tokens..."

@@ -28,8 +28,10 @@ class PreferencesController {
       frequentRpcList: [],
       currentAccountTab: 'history',
       accountTokens: {},
+      accountLayer2Apps: {},      
       assetImages: {},
       tokens: [],
+      layer2Apps:[],
       suggestedTokens: {},
       useBlockie: false,
       featureFlags: {},
@@ -91,6 +93,7 @@ class PreferencesController {
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
   }
+
 
   /**
    * RPC engine middleware for requesting new asset added
@@ -175,7 +178,7 @@ class PreferencesController {
     const identities = this.store.getState().identities
     const accountTokens = this.store.getState().accountTokens
     if (!identities[address]) {
-      throw new Error(`${address} can't be deleted cause it was not found`)
+      throw new Error(`${address} can\'t be deleted cause it was not found`)
     }
     delete identities[address]
     delete accountTokens[address]
@@ -355,6 +358,77 @@ class PreferencesController {
     return this.store.getState().tokens
   }
 
+
+
+  /**
+   * Adds a new layer2App
+   * Modifies the existing from the store.
+   * @param {string} rawAddress Hex address of the token contract. May or may not be a checksum address.
+   * @param {string} name
+   * @returns {Promise<array>} Promises the new array of layer2Apps objects.
+   *
+   */
+
+  async addLayer2App (rawAddress, name) {
+//    this._validateERC20AssetParams(tokenOpts)
+    const layer2Apps = this.getLayer2Apps()
+//    const { rawAddress, name } = layer2AppOpts
+
+    const address = normalizeAddress(rawAddress)
+    const newEntry = { address, name }
+    layer2Apps[address] = newEntry
+    this.store.updateState({ layer2Apps: layer2Apps })
+  }
+
+  // async addToken (rawAddress, symbol, decimals, image) {
+  //   const address = normalizeAddress(rawAddress)
+  //   const newEntry = { address, symbol, decimals }
+  //   const tokens = this.store.getState().tokens
+  //   const assetImages = this.getAssetImages()
+  //   const previousEntry = tokens.find((token, index) => {
+  //     return token.address === address
+  //   })
+  //   const previousIndex = tokens.indexOf(previousEntry)
+
+  //   if (previousEntry) {
+  //     tokens[previousIndex] = newEntry
+  //   } else {
+  //     tokens.push(newEntry)
+  //   }
+  //   assetImages[address] = image
+  //   this._updateAccountTokens(tokens, assetImages)
+  //   return Promise.resolve(tokens)
+  // }
+
+  // /**
+  //  * Removes a specified token from the tokens array.
+  //  *
+  //  * @param {string} rawAddress Hex address of the token contract to remove.
+  //  * @returns {Promise<array>} The new array of AddedToken objects
+  //  *
+  //  */
+  removeLayer2App (rawAddress) {
+    const layer2Apps = this.store.getState().layer2Apps
+    const assetImages = this.getAssetImages()
+    const updatedLayer2Apps = layer2Apps.filter(layer2App => layer2App.address !== rawAddress)
+    delete assetImages[rawAddress]
+    this._updateAccountLayer2Apps(updatedLayer2Apps, assetImages)
+    return Promise.resolve(updatedLayer2Apps)
+  }
+
+  /**
+   * A getter for the `layer2Apps` property
+   *
+   * @returns {array} The current array of layer2Apps objects
+   *
+   */
+  getLayer2Apps () {
+    return this.store.getState().layer2Apps
+  }
+
+
+  
+
   /**
    * Sets a custom label for an account
    * @param {string} account the account to set a label for
@@ -491,6 +565,13 @@ class PreferencesController {
     this.store.updateState({ accountTokens, tokens, assetImages })
   }
 
+  _updateAccountLayer2Apps (layer2Apps, assetImages) {
+    const { accountLayer2Apps, providerType, selectedAddress } = this._getLayer2AppRelatedStates()
+    accountLayer2Apps[selectedAddress][providerType] = layer2Apps
+    this.store.updateState({ accountLayer2Apps, layer2Apps, assetImages })
+  }
+
+  
   /**
    * Updates `tokens` of current account and network.
    *
@@ -502,6 +583,13 @@ class PreferencesController {
     this.store.updateState({ tokens })
   }
 
+
+  _updateLayerApps (selectedAddress) {
+    const { layer2Apps } = this._getLayer2AppRelatedStates(selectedAddress)
+    this.store.updateState({ layer2Apps })
+  }
+
+  
   /**
    * A getter for `tokens` and `accountTokens` related states.
    *
@@ -519,6 +607,17 @@ class PreferencesController {
     return { tokens, accountTokens, providerType, selectedAddress }
   }
 
+  _getLayer2AppRelatedStates (selectedAddress) {
+    const accountLayer2Apps = this.store.getState().accountLayer2Apps
+    if (!selectedAddress) selectedAddress = this.store.getState().selectedAddress
+    const providerType = this.network.providerStore.getState().type
+    if (!(selectedAddress in accountLayer2Apps)) accountLayer2Apps[selectedAddress] = {}
+    if (!(providerType in accountLayer2Apps[selectedAddress])) accountLayer2Apps[selectedAddress][providerType] = []
+    const layer2Apps = accountLayer2Apps[selectedAddress][providerType]
+    return { layer2Apps, accountLayer2Apps, providerType, selectedAddress }
+  }
+
+  
   /**
    * Handle the suggestion of an ERC20 asset through `watchAsset`
    * *

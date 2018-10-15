@@ -347,6 +347,21 @@ class AccountDropdowns extends Component {
           },
           this.context.t('addToken'),
         ),
+        h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: () => {
+              actions.hideSidebar()
+              actions.showAddLayer2AppPage()
+            },
+            style: Object.assign(
+              dropdownMenuItemStyle,
+              menuItemStyles,
+            ),
+          },
+          this.context.t('addLayer2App'),
+        ),
 
       ]
     )

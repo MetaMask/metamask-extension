@@ -6,8 +6,11 @@ const REVEAL_SEED_ROUTE = '/seed'
 const CONFIRM_SEED_ROUTE = '/confirm-seed'
 const RESTORE_VAULT_ROUTE = '/restore-vault'
 const ADD_TOKEN_ROUTE = '/add-token'
+const ADD_LAYER2APP_ROUTE = '/add-layer2App'
 const CONFIRM_ADD_TOKEN_ROUTE = '/confirm-add-token'
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token'
+const CONFIRM_ADD_LAYER2APP_ROUTE = '/confirm-add-layer2App'
+const CONFIRM_ADD_SUGGESTED_LAYER2APP_ROUTE = '/confirm-add-suggested-layer2App'
 const NEW_ACCOUNT_ROUTE = '/new-account'
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
@@ -41,7 +44,10 @@ module.exports = {
   CONFIRM_SEED_ROUTE,
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
+  ADD_LAYER2APP_ROUTE,  
+  CONFIRM_ADD_LAYER2APP_ROUTE,
   CONFIRM_ADD_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_LAYER2APP_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,

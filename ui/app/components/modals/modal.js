@@ -17,6 +17,7 @@ const ExportPrivateKeyModal = require('./export-private-key-modal')
 const NewAccountModal = require('./new-account-modal')
 const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
+const HideLayer2AppConfirmationModal = require('./hide-layer2App-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
 const QRScanner = require('./qr-scanner')
@@ -200,6 +201,21 @@ const MODALS = {
     },
   },
 
+  HIDE_LAYER2APP_CONFIRMATION: {
+    contents: [
+      h(HideLayer2AppConfirmationModal, {}, []),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+  
+  
   BETA_UI_NOTIFICATION_MODAL: {
     contents: h(WelcomeBeta),
     mobileModalStyle: {

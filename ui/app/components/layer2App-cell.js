@@ -8,7 +8,7 @@ const selectors = require('../selectors')
 const actions = require('../actions')
 const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 
-const TokenMenuDropdown = require('./dropdowns/token-menu-dropdown.js')
+const Layer2AppMenuDropdown = require('./dropdowns/layer2App-menu-dropdown.js')
 
 function mapStateToProps (state) {
   return {
@@ -29,22 +29,23 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TokenCell)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(Layer2AppCell)
 
-inherits(TokenCell, Component)
-function TokenCell () {
+inherits(Layer2AppCell, Component)
+function Layer2AppCell () {
   Component.call(this)
 
   this.state = {
-    tokenMenuOpen: false,
+    layer2AppMenuOpen: false,
   }
 }
 
-TokenCell.prototype.render = function () {
-  const { tokenMenuOpen } = this.state
+Layer2AppCell.prototype.render = function () {
+  const { layer2AppMenuOpen } = this.state
   const props = this.props
   const {
     address,
+    name,
     symbol,
     string,
     network,
@@ -82,8 +83,8 @@ TokenCell.prototype.render = function () {
   const showFiat = Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
 
   return (
-    h('div.token-list-item', {
-      className: `token-list-item ${selectedTokenAddress === address ? 'token-list-item--active' : ''}`,
+    h('div.layer2App-list-item', {
+      className: `layer2App-list-item ${selectedTokenAddress === address ? 'layer2App-list-item--active' : ''}`,
       // style: { cursor: network === '1' ? 'pointer' : 'default' },
       // onClick: this.view.bind(this, address, userAddress, network),
       onClick: () => {
@@ -93,35 +94,36 @@ TokenCell.prototype.render = function () {
     }, [
 
       h(Identicon, {
-        className: 'token-list-item__identicon',
+        className: 'layer2App-list-item__identicon',
         diameter: 50,
         address,
         network,
         image,
       }),
 
-      h('div.token-list-item__balance-ellipsis', null, [
-        h('div.token-list-item__balance-wrapper', null, [
-          h('div.token-list-item__token-balance', `${string || 0}`),
-          h('div.token-list-item__token-symbol', symbol),	  
-          showFiat && h('div.token-list-item__fiat-amount', {
+      h('div.layer2App-list-item__balance-ellipsis', null, [
+        h('div.layer2App-list-item__balance-wrapper', null, [
+          h('div.layer2App-list-item__layer2App-balance', `${string || 0}` + " ETH locked"),
+          h('div.layer2App-list-item__layer2App-symbol', symbol),	  
+          h('div.layer2App-list-item__layer2App-name', name),
+          showFiat && h('div.layer2App-list-item__fiat-amount', {
             style: {},
           }, formattedFiat),
         ]),
 
-        h('i.fa.fa-ellipsis-h.fa-lg.token-list-item__ellipsis.cursor-pointer', {
+        h('i.fa.fa-ellipsis-h.fa-lg.layer2App-list-item__ellipsis.cursor-pointer', {
           onClick: (e) => {
             e.stopPropagation()
-            this.setState({ tokenMenuOpen: true })
+            this.setState({ layer2AppMenuOpen: true })
           },
         }),
 
       ]),
 
 
-      tokenMenuOpen && h(TokenMenuDropdown, {
-        onClose: () => this.setState({ tokenMenuOpen: false }),
-        token: { symbol, address },
+      layer2AppMenuOpen && h(Layer2AppMenuDropdown, {
+        onClose: () => this.setState({ layer2AppMenuOpen: false }),
+        layer2App: { symbol, address },
       }),
 
       /*
@@ -134,16 +136,16 @@ TokenCell.prototype.render = function () {
   )
 }
 
-TokenCell.prototype.send = function (address, event) {
+Layer2AppCell.prototype.send = function (address, event) {
   event.preventDefault()
   event.stopPropagation()
-  const url = tokenFactoryFor(address)
-  if (url) {
-    navigateTo(url)
-  }
+  // const url = tokenFactoryFor(address)
+  // if (url) {
+  //   navigateTo(url)
+  // }
 }
 
-TokenCell.prototype.view = function (address, userAddress, network, event) {
+Layer2AppCell.prototype.view = function (address, userAddress, network, event) {
   const url = etherscanLinkFor(address, userAddress, network)
   if (url) {
     navigateTo(url)
@@ -154,12 +156,8 @@ function navigateTo (url) {
   global.platform.openWindow({ url })
 }
 
-function etherscanLinkFor (tokenAddress, address, network) {
+function etherscanLinkFor (layer2AppAddress, address, network) {
   const prefix = prefixForNetwork(network)
   return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
-}
-
-function tokenFactoryFor (tokenAddress) {
-  return `https://tokenfactory.surge.sh/#/token/${tokenAddress}`
 }
 

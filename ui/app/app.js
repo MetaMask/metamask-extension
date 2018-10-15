@@ -25,6 +25,7 @@ const Initialized = require('./components/pages/initialized')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
+const AddLayer2AppPage = require('./components/pages/add-layer2App')
 const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('./components/pages/confirm-add-suggested-token')
 const CreateAccountPage = require('./components/pages/create-account')
@@ -49,6 +50,7 @@ const {
   SETTINGS_ROUTE,
   REVEAL_SEED_ROUTE,
   RESTORE_VAULT_ROUTE,
+  ADD_LAYER2APP_ROUTE,
   ADD_TOKEN_ROUTE,
   CONFIRM_ADD_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -85,6 +87,7 @@ class App extends Component {
         }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
+        h(Authenticated, { path: ADD_LAYER2APP_ROUTE, exact, component: AddLayer2AppPage }),	
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE, exact, component: ConfirmAddSuggestedTokenPage }),
         h(Authenticated, { path: NEW_ACCOUNT_ROUTE, component: CreateAccountPage }),

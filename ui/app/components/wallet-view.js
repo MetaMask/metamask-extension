@@ -14,8 +14,10 @@ const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
+const Layer2AppList = require('./layer2App-list')
 const selectors = require('../selectors')
 const { ADD_TOKEN_ROUTE } = require('../routes')
+const { ADD_LAYER2APP_ROUTE } = require('../routes')
 
 import Button from './button'
 
@@ -40,6 +42,7 @@ function mapStateToProps (state) {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     tokens: state.metamask.tokens,
+    layer2Apps: state.metamask.layer2Apps,
     keyrings: state.metamask.keyrings,
     selectedAddress: selectors.getSelectedAddress(state),
     selectedAccount: selectors.getSelectedAccount(state),
@@ -209,6 +212,19 @@ WalletView.prototype.render = function () {
         sidebarOpen && hideSidebar()
       },
     }, this.context.t('addToken')),
+
+    h(Layer2AppList),
+    
+    h(Button, {
+      type: 'primary',
+      className: 'wallet-view__add-layer2App-button',
+      onClick: () => {
+        history.push(ADD_LAYER2APP_ROUTE)
+        sidebarOpen && hideSidebar()
+      },
+    }, this.context.t('addLayer2App')),
+    
+
   ])
 }
 

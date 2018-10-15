@@ -28,6 +28,7 @@ function reduceMetamask (state, action) {
     contractExchangeRates: {},
     tokenExchangeRates: {},
     tokens: [],
+    layer2Apps: [],    
     pendingTokens: {},
     send: {
       gasLimit: null,

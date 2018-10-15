@@ -26,6 +26,9 @@
   "addCustomToken": {
     "message": "Ajouter un jeton personnalisé"
   },
+  "addLayer2App": {
+    "message": "Ajouter une App Layer 2"
+  },
   "addToken": {
     "message": "Ajouter un jeton"
   },

@@ -227,6 +227,19 @@ var actions = {
   SET_DEFAULT_RPC_TARGET: 'SET_DEFAULT_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
+
+  //LAYER 2 APPS
+  SHOW_ADD_LAYER2APP_PAGE: 'SHOW_ADD_LAYER2APP_PAGE',
+  SHOW_ADD_SUGGESTED_LAYER2APP_PAGE: 'SHOW_ADD_SUGGESTED_LAYER2APP_PAGE',
+  showAddLayer2AppPage,
+  showAddSuggestedLayer2AppPage,
+  addLayer2App,
+  addLayer2Apps,
+  removeLayer2App,
+  updateLayer2Apps,
+  removeSuggestedLayer2Apps,
+  UPDATE_LAYER2APPS: 'UPDATE_LAYER2APPS',
+
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
   showAddTokenPage,
@@ -318,6 +331,11 @@ var actions = {
   setPendingTokens,
   clearPendingTokens,
 
+  SET_PENDING_LAYER2APPS: 'SET_PENDING_LAYER2APPS',
+  CLEAR_PENDING_LAYER2APPS: 'CLEAR_PENDING_LAYER2APPS',
+  setPendingLayer2Apps,
+  clearPendingLayer2Apps,
+  
   createCancelTransaction,
 }
 
@@ -1642,6 +1660,109 @@ function showConfigPage (transitionForward = true) {
   }
 }
 
+function showAddLayer2AppPage (transitionForward = true) {
+  return {
+    type: actions.SHOW_ADD_LAYER2APP_PAGE,
+    value: transitionForward,
+  }
+}
+
+function showAddSuggestedLayer2AppPage (transitionForward = true) {
+  return {
+    type: actions.SHOW_ADD_SUGGESTED_LAYER2APP_PAGE,
+    value: transitionForward,
+  }
+}
+
+function addLayer2App (address, symbol, decimals, image) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.addLayer2App(address, symbol, decimals, image, (err, layer2Apps) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.updateLayer2Apps(layer2Apps))
+        resolve(layer2Apps)
+      })
+    })
+  }
+}
+
+function removeLayer2App (address) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeLayer2App(address, (err, layer2Apps) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.updateLayer2Apps(layer2Apps))
+        resolve(layer2Apps)
+      })
+    })
+  }
+}
+
+function addLayer2Apps (layer2App) {
+  return dispatch => {
+    if (Array.isArray(layer2Apps)) {
+      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
+      return Promise.all(layer2Apps.map(({ address, symbol, decimals }) => (
+        dispatch(addLayer2App(address, symbol, decimals))
+      )))
+    } else {
+      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
+      return Promise.all(
+        Object
+        .entries(tokens)
+        .map(([_, { address, symbol, decimals }]) => (
+          dispatch(addLayer2App(address, symbol, decimals))
+        ))
+      )
+    }
+  }
+}
+
+function removeSuggestedLayer2Apps () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeSuggestedLayer2Apps((err, suggestedLayer2Apps) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.clearPendingLayer2Apps())
+        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+          return global.platform.closeCurrentWindow()
+        }
+        resolve(suggestedLayer2Apps)
+      })
+    })
+    .then(() => updateMetamaskStateFromBackground())
+    .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedLayer2Apps})))
+  }
+}
+
+function updateLayer2Apps (newLayer2Apps) {
+  return {
+    type: actions.UPDATE_LAYER2APPS,
+    newLayer2Apps,
+  }
+}
+
+function clearPendingLayer2Apps () {
+  return {
+    type: actions.CLEAR_PENDING_LAYER2APPS,
+  }
+}
+
+
 function showAddTokenPage (transitionForward = true) {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
@@ -1743,6 +1864,7 @@ function clearPendingTokens () {
     type: actions.CLEAR_PENDING_TOKENS,
   }
 }
+
 
 function goBackToInitView () {
   return {
@@ -2448,3 +2570,20 @@ function setPendingTokens (pendingTokens) {
     payload: tokens,
   }
 }
+
+function setPendingLayer2Apps (pendingLayer2Apps) {
+  const { customLayer2App = {}, selectedLayer2Apps = {} } = pendingLayer2Apps
+  const { address, symbol, decimals } = customLayer2App
+  const layer2Apps = address && symbol && decimals
+    ? { ...selectedLayer2Apps, [address]: { ...customLayer2App, isCustom: true } }
+    : selectedLayer2Apps
+
+  return {
+    type: actions.SET_PENDING_LAYER2APPS,
+    payload: layer2Apps,
+  }
+}
+
+
+
+  
