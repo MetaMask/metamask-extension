@@ -7,6 +7,7 @@
 - Update transaction statuses when switching networks.
 - [#5470](https://github.com/MetaMask/metamask-extension/pull/5470) 100% coverage in French locale, fixed the procedure to verify proposed locale.
 - Added rudimentary support for the subscription API to support web3 1.0 and Truffle's Drizzle.
+- [#5502](https://github.com/MetaMask/metamask-extension/pull/5502) Update Italian translation.
 
 ## 4.12.0 Thursday September 27 2018
 
