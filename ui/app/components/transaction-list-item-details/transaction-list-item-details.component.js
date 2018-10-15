@@ -5,7 +5,7 @@ import { CARDS_VARIANT } from '../sender-to-recipient/sender-to-recipient.consta
 import TransactionActivityLog from '../transaction-activity-log'
 import TransactionBreakdown from '../transaction-breakdown'
 import Button from '../button'
-import Tooltip from "../tooltip"
+import Tooltip from '../tooltip'
 import prefixForNetwork from '../../../lib/etherscan-prefix-for-network'
 
 export default class TransactionListItemDetails extends PureComponent {
