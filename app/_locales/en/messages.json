@@ -433,6 +433,9 @@
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
   },
+  "gasUsed": {
+    "message": "Gas Used"
+  },
   "generatingSeed": {
     "message": "Generating Seed..."
   },
