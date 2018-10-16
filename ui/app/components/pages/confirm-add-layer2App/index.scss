@@ -1,4 +1,4 @@
-.confirm-add-token {
+.confirm-add-layer2App {
   padding: 16px;
 
   &__header {
@@ -6,7 +6,7 @@
     display: flex;
   }
 
-  &__token {
+  &__layer2App {
     flex: 1;
     min-width: 0;
   }
@@ -16,11 +16,11 @@
     min-width: 0;
   }
 
-  &__token-list {
+  &__layer2App-list {
     display: flex;
     flex-flow: column nowrap;
 
-    .token-balance {
+    .layer2App-balance {
       display: flex;
       flex-flow: row nowrap;
       align-items: flex-start;
@@ -41,7 +41,7 @@
     }
   }
 
-  &__token-list-item {
+  &__layer2App-list-item {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -62,7 +62,7 @@
     text-overflow: ellipsis;
   }
 
-  &__token-icon {
+  &__layer2App-icon {
     margin-right: 12px;
     flex: 0 0 auto;
   }

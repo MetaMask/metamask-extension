@@ -17,4 +17,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfirmAddLayer2Appy)
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmAddLayer2App)

@@ -25,13 +25,14 @@ export default class ConfirmAddLayer2App extends Component {
     }
   }
 
-  getLayer2AppName (name, symbol) {
+  Getlayer2appname (name, symbol) {
     return typeof name === 'undefined'
       ? symbol
       : `${name} (${symbol})`
   }
 
   render () {
+    console.log("RENDERING CONFIRM")
     const { history, addLayer2Apps, clearPendingLayer2Apps, pendingLayer2Apps } = this.props
 
     return (

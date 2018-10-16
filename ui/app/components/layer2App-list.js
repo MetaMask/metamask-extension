@@ -47,7 +47,7 @@ function TokenList () {
 TokenList.prototype.render = function () {
   const { userAddress, assetImages } = this.props
   const state = this.state
-  //  const { layer2Apps, isLoading, error } = state
+  //  const { s, isLoading, error } = state
   let { layer2Apps, isLoading, error } = state
   layer2Apps = []
   // layer2Apps = [{ name: "Rock Paper Scissors",
