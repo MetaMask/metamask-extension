@@ -798,7 +798,7 @@
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+    "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
   "privateNetwork": {
     "message": "Private Network"
@@ -1189,7 +1189,7 @@
     "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
-    "message": "Type Your Password"
+    "message": "Type your MetaMask password"
   },
   "uiWelcome": {
     "message": "Welcome to the New UI (Beta)"
