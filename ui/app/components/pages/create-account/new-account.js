@@ -49,7 +49,7 @@ class NewAccountCreateForm extends Component {
         h(Button, {
           type: 'primary',
           large: true,
-          className:'new-account-create-form__button',
+          className: 'new-account-create-form__button',
           onClick: () => {
             createAccount(newAccountName || defaultAccountName)
               .then(() => history.push(DEFAULT_ROUTE))

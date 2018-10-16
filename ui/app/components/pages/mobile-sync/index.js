@@ -7,6 +7,8 @@ const PubNub = require('pubnub')
 
 const { requestRevealSeedWords, fetchInfoToSync } = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../routes')
+const actions = require('../../../actions')
+
 const qrCode = require('qrcode-generator')
 
 import Button from '../../button'
@@ -51,10 +53,10 @@ class MobileSyncPage extends Component {
   }
 
   generateCipherKeyAndChannelName () {
-    // this.channelName = 'mm-sync-1';
-		// this.cipherKey = '4d6826a4-801c-4bff-b45c-752abd4da8a8';// Disabled for testing purposes
     this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
     this.channelName = `mm-${PubNub.generateUUID()}`
+    this.cipherKey = 'android';
+    this.channelName = 'android';
   }
 
   initWebsockets () {
@@ -68,7 +70,6 @@ class MobileSyncPage extends Component {
     this.pubnubListener = this.pubnub.addListener({
       message: (data) => {
         const {channel, message} = data
-        console.log('PUBNUB: ', data, channel, message)
         // handle message
         if (channel !== this.channelName || !message) {
           return false
@@ -103,55 +104,71 @@ class MobileSyncPage extends Component {
     ).length + 100
   }
 
+  chunkString (str, size) {
+    const numChunks = Math.ceil(str.length / size)
+    const chunks = new Array(numChunks)
+    for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+      chunks[i] = str.substr(o, size)
+    }
+    return chunks
+  }
+
   async startSyncing () {
     if (this.syncing) return false
     this.syncing = true
     this.setState({syncing: true})
 
     const { accounts, network, preferences, transactions } = await this.props.fetchInfoToSync()
-    console.log('PUBNUB: Starting sync with data!', { accounts, network, preferences, transactions })
-    console.log('PUBNUB: DATA Payload size', this.calculatePayloadSize(this.channelName, { accounts, network, preferences }))
-    console.log('PUBNUB: TX Payload size', this.calculatePayloadSize(this.channelName, transactions))
 
-    this.pubnub.publish(
-      {
-          message: {
-              event: 'syncing-data',
-              data: { 
-                accounts,
-                network, 
-                preferences,
-                udata: {
-                  pwd: this.state.password,
-                  seed: this.state.seedWords,
-                },
-              },
-          },
-          channel: this.channelName,
-          sendByPost: false, // true to send via post
-          storeInHistory: false,
+    const allDataStr = JSON.stringify({
+      accounts,
+      network,
+      preferences,
+      transactions,
+      udata: {
+        pwd: this.state.password,
+        seed: this.state.seedWords,
       },
-      (status, response) => {
-          console.log('PUBNUB: got response from syncing', status, response)
-          // handle status, response
-          this.pubnub.publish(
-            {
-                message: {
-                    event: 'syncing-tx',
-                    data: { transactions },
-                },
-                channel: this.channelName,
-                sendByPost: false, // true to send via post
-                storeInHistory: false,
-            },
-            (status, response) => {
-                console.log('PUBNUB: got response from syncing', status, response)
-                // handle status, response
-            }
-          )
+    })
+
+    const chunks = this.chunkString(allDataStr, 17000)
+    const totalChunks = chunks.length
+    try {
+      for (let i = 0; i < totalChunks; i++) {
+        await this.sendMessage(chunks[i], i + 1, totalChunks)
       }
-    )
+    } catch (e) {
+      this.props.displayWarning('Sync failed :(')
+      this.setState({syncing: false})
+      this.syncing = false
+    }
   }
+
+  sendMessage (data, pkg, count) {
+    return new Promise((resolve, reject) => {
+      this.pubnub.publish(
+         {
+            message: {
+              event: 'syncing-data',
+              data,
+              totalPkg: count,
+              currentPkg: pkg,
+            },
+            channel: this.channelName,
+            sendByPost: false, // true to send via post
+            storeInHistory: false,
+        },
+        (status, response) => {
+          if (!status.error) {
+            resolve()
+          } else {
+            reject(response)
+          }
+        }
+      )
+    })
+  }
+
 
   componentWillUnmount () {
     this.disconnectWebsockets()
@@ -226,7 +243,7 @@ class MobileSyncPage extends Component {
   renderRevealSeedContent () {
 
     const qrImage = qrCode(0, 'M')
-    qrImage.addData(`${this.channelName}|@|${this.cipherKey}`)
+    qrImage.addData(`metamask-sync:${this.channelName}|@|${this.cipherKey}`)
     qrImage.make()
 
     const { t } = this.context
@@ -321,7 +338,9 @@ const mapDispatchToProps = dispatch => {
   return {
     requestRevealSeedWords: password => dispatch(requestRevealSeedWords(password)),
     fetchInfoToSync: () => dispatch(fetchInfoToSync()),
+    displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
   }
+  
 }
 
 const mapStateToProps = state => {

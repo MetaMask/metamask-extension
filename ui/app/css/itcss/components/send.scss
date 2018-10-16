@@ -831,11 +831,13 @@
     &__error-message {
       display: block;
       position: absolute;
-      top: 4px;
-      right: 4px;
+      top: -18px;
+      right: 0;
       font-size: 12px;
       line-height: 12px;
       color: $red;
+      width: 100%;
+      text-align: center;
     }
 
     &__cancel {

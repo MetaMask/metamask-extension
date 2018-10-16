@@ -5,6 +5,7 @@ const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
+
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
@@ -44,7 +45,15 @@ inpageProvider.enable = function (options = {}) {
   })
 }
 
-window.ethereum = inpageProvider
+// Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
+// `sendAsync` method on the prototype, causing `this` reference issues with drizzle
+const proxiedInpageProvider = new Proxy(inpageProvider, {
+  // straight up lie that we deleted the property so that it doesnt
+  // throw an error in strict mode
+  deleteProperty: () => true,
+})
+
+window.ethereum = proxiedInpageProvider
 
 //
 // setup web3
@@ -58,7 +67,7 @@ if (typeof window.web3 !== 'undefined') {
      and try again.`)
 }
 
-var web3 = new Web3(inpageProvider)
+var web3 = new Web3(proxiedInpageProvider)
 web3.setProvider = function () {
   log.debug('MetaMask - overrode web3.setProvider')
 }

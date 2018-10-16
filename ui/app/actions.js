@@ -168,6 +168,7 @@ var actions = {
   updateTransaction,
   updateAndApproveTx,
   cancelTx: cancelTx,
+  cancelTxs,
   completedTx: completedTx,
   txError: txError,
   nextTx: nextTx,
@@ -238,6 +239,7 @@ var actions = {
   removeSuggestedTokens,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
+  delRpcTarget: delRpcTarget,
   setProviderType: setProviderType,
   SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
   setHardwareWalletDefaultHdPath,
@@ -932,6 +934,7 @@ function updateGasData ({
   selectedToken,
   to,
   value,
+  data,
 }) {
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
@@ -952,6 +955,7 @@ function updateGasData ({
           to,
           value,
           estimateGasPrice,
+          data,
         }),
       ])
     })
@@ -1315,6 +1319,47 @@ function cancelTx (txData) {
   }
 }
 
+/**
+ * Cancels all of the given transactions
+ * @param {Array<object>} txDataList a list of tx data objects
+ * @return {function(*): Promise<void>}
+ */
+function cancelTxs (txDataList) {
+  return async (dispatch, getState) => {
+    dispatch(actions.showLoadingIndication())
+    const txIds = txDataList.map(({id}) => id)
+    const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
+      background.cancelTransaction(id, (err) => {
+        if (err) {
+          return reject(err)
+        }
+
+        resolve()
+      })
+    }))
+
+    await Promise.all(cancellations)
+    const newState = await updateMetamaskStateFromBackground()
+    dispatch(actions.updateMetamaskState(newState))
+    dispatch(actions.clearSend())
+
+    txIds.forEach((id) => {
+      dispatch(actions.completedTx(id))
+    })
+
+    dispatch(actions.hideLoadingIndication())
+
+    if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+      return global.platform.closeCurrentWindow()
+    }
+  }
+}
+
+/**
+ * @deprecated
+ * @param {Array<object>} txsData
+ * @return {Function}
+ */
 function cancelAllTx (txsData) {
   return (dispatch) => {
     txsData.forEach((txData, i) => {
@@ -1733,7 +1778,7 @@ function markNoticeRead (notice) {
       background.markNoticeRead(notice, (err, notice) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err))
+          dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
 
@@ -1823,7 +1868,7 @@ function setProviderType (type) {
     background.setProviderType(type, (err, result) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem changing networks!'))
+        return dispatch(actions.displayWarning('Had a problem changing networks!'))
       }
       dispatch(actions.updateProviderType(type))
       dispatch(actions.setSelectedToken())
@@ -1845,7 +1890,20 @@ function setRpcTarget (newRpc) {
     background.setCustomRpc(newRpc, (err, result) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem changing networks!'))
+        return dispatch(actions.displayWarning('Had a problem changing networks!'))
+      }
+      dispatch(actions.setSelectedToken())
+    })
+  }
+}
+
+function delRpcTarget (oldRpc) {
+  return (dispatch) => {
+    log.debug(`background.delRpcTarget: ${oldRpc}`)
+    background.delCustomRpc(oldRpc, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Had a problem removing network!'))
       }
       dispatch(actions.setSelectedToken())
     })
@@ -2267,6 +2325,10 @@ function updateNetworkNonce (address) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       global.ethQuery.getTransactionCount(address, (err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
         dispatch(setNetworkNonce(data))
         resolve(data)
       })
@@ -2354,7 +2416,7 @@ function setUseBlockie (val) {
 function updateCurrentLocale (key) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    fetchLocale(key)
+    return fetchLocale(key)
       .then((localeMessages) => {
         log.debug(`background.setCurrentLocale`)
         background.setCurrentLocale(key, (err) => {

@@ -90,35 +90,31 @@ export default class ConfirmAddSuggestedToken extends Component {
           </div>
         </div>
         <div className="page-container__footer">
-          <Button
-            type="default"
-            large
-            className="page-container__footer-button"
-            onClick={() => {
-              removeSuggestedTokens()
-              .then(() => {
-                history.push(DEFAULT_ROUTE)
-              })
-          }}
-          >
-            { this.context.t('cancel') }
-          </Button>
-          <Button
-            type="primary"
-            large
-            className="page-container__footer-button"
-            onClick={() => {
-              addToken(pendingToken)
-                .then(() => {
-                  removeSuggestedTokens()
-                  .then(() => {
-                    history.push(DEFAULT_ROUTE)
-                  })
-                })
-            }}
-          >
-            { this.context.t('addToken') }
-          </Button>
+          <header>
+            <Button
+              type="default"
+              large
+              className="page-container__footer-button"
+              onClick={() => {
+                removeSuggestedTokens()
+                  .then(() => history.push(DEFAULT_ROUTE))
+              }}
+            >
+              { this.context.t('cancel') }
+            </Button>
+            <Button
+              type="primary"
+              large
+              className="page-container__footer-button"
+              onClick={() => {
+                addToken(pendingToken)
+                  .then(() => removeSuggestedTokens())
+                  .then(() => history.push(DEFAULT_ROUTE))
+              }}
+            >
+              { this.context.t('addToken') }
+            </Button>
+          </header>
         </div>
       </div>
     )

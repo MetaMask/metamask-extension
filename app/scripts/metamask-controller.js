@@ -15,6 +15,7 @@ const RpcEngine = require('json-rpc-engine')
 const debounce = require('debounce')
 const createEngineStream = require('json-rpc-middleware-stream/engineStream')
 const createFilterMiddleware = require('eth-json-rpc-filters')
+const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
@@ -380,6 +381,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
+      delCustomRpc: nodeify(this.delCustomRpc, this),
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
@@ -389,6 +391,9 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
+
+      // BlacklistController
+      whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
@@ -587,8 +592,6 @@ module.exports = class MetamaskController extends EventEmitter {
         accounts.simpleKeyPair.includes(checksummedTxFrom)
       )
     })
-    // delete history of each tx cause we don't need it
-    transactions.forEach(tx => delete tx.history)
 
     return {
       accounts,
@@ -617,6 +620,8 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     await this.preferencesController.syncAddresses(accounts)
+    await this.balancesController.updateAllBalances()
+    await this.txController.pendingTxTracker.updatePendingTxs()
     return this.keyringController.fullUpdate()
   }
 
@@ -1308,24 +1313,33 @@ module.exports = class MetamaskController extends EventEmitter {
   setupProviderConnection (outStream, origin) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
+    const provider = this.provider
+    const blockTracker = this.blockTracker
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-    })
+    const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
+    // create subscription polyfill middleware
+    const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
+    subscriptionManager.events.on('notification', (message) => engine.emit('notification', message))
 
+    // metadata
     engine.push(createOriginMiddleware({ origin }))
     engine.push(createLoggerMiddleware({ origin }))
+    // filter and subscription polyfills
     engine.push(filterMiddleware)
+    engine.push(subscriptionManager.middleware)
+    // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
+    // sign typed data middleware
     engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3', true).bind(this))
-    engine.push(createProviderMiddleware({ provider: this.provider }))
+    // forward to metamask primary provider
+    engine.push(createProviderMiddleware({ provider }))
 
     // setup connection
     const providerStream = createEngineStream({ engine })
+
     pump(
       outStream,
       providerStream,
@@ -1425,7 +1439,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     .map(number => number.div(GWEI_BN).toNumber())
 
-    const percentileNum = percentile(50, lowestPrices)
+    const percentileNum = percentile(65, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
   }
@@ -1503,6 +1517,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.setRpcTarget(rpcTarget)
     await this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
+  }
+
+  /**
+   * A method for deleting a selected custom URL.
+   * @param {string} rpcTarget - A RPC URL to delete.
+   */
+  async delCustomRpc (rpcTarget) {
+    await this.preferencesController.updateFrequentRpcList(rpcTarget, true)
   }
 
   /**
@@ -1597,5 +1619,13 @@ module.exports = class MetamaskController extends EventEmitter {
         next()
       }
     }
+  }
+
+  /**
+   * Adds a domain to the {@link BlacklistController} whitelist
+   * @param {string} hostname the domain to whitelist
+   */
+  whitelistPhishingDomain (hostname) {
+    return this.blacklistController.whitelistDomain(hostname)
   }
 }

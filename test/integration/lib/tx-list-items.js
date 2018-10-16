@@ -32,7 +32,7 @@ async function runTxListItemsTest (assert, done) {
   const txListItems = await queryAsync($, '.transaction-list-item')
   assert.equal(txListItems.length, 8, 'all tx list items are rendered')
 
-  const retryTxGrid = await findAsync($(txListItems[1]), '.transaction-list-item__grid')
+  const retryTxGrid = await findAsync($(txListItems[2]), '.transaction-list-item__grid')
   retryTxGrid[0].click()
   const retryTxDetails = await findAsync($, '.transaction-list-item-details')
   const headerButtons = await findAsync($(retryTxDetails[0]), '.transaction-list-item-details__header-button')
@@ -42,7 +42,7 @@ async function runTxListItemsTest (assert, done) {
   const approvedTxRenderedStatus = await findAsync($(approvedTx), '.transaction-list-item__status')
   assert.equal(approvedTxRenderedStatus[0].textContent, 'pending', 'approvedTx has correct label')
 
-  const unapprovedMsg = txListItems[3]
+  const unapprovedMsg = txListItems[0]
   const unapprovedMsgDescription = await findAsync($(unapprovedMsg), '.transaction-list-item__action')
   assert.equal(unapprovedMsgDescription[0].textContent, 'Signature Request', 'unapprovedMsg has correct description')
 
