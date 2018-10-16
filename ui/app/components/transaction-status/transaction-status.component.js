@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import Tooltip from '../tooltip-v2'
 import {
   UNAPPROVED_STATUS,
   REJECTED_STATUS,
@@ -29,6 +30,10 @@ const statusToTextHash = {
 }
 
 export default class TransactionStatus extends PureComponent {
+  static defaultProps = {
+    title: null,
+  }
+
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -36,15 +41,18 @@ export default class TransactionStatus extends PureComponent {
   static propTypes = {
     statusKey: PropTypes.string,
     className: PropTypes.string,
+    title: PropTypes.string,
   }
 
   render () {
-    const { className, statusKey } = this.props
+    const { className, statusKey, title } = this.props
     const statusText = this.context.t(statusToTextHash[statusKey] || statusKey)
 
     return (
       <div className={classnames('transaction-status', className, statusToClassNameHash[statusKey])}>
-        { statusText }
+        <Tooltip position="top" title={title}>
+          { statusText }
+        </Tooltip>
       </div>
     )
   }

@@ -56,7 +56,7 @@ export default class TransactionList extends PureComponent {
               </div>
               {
                 pendingTransactions.map((transaction, index) => (
-                  this.renderTransaction(transaction, index)
+                  this.renderTransaction(transaction, index, true)
                 ))
               }
             </div>
@@ -78,7 +78,7 @@ export default class TransactionList extends PureComponent {
     )
   }
 
-  renderTransaction (transaction, index) {
+  renderTransaction (transaction, index, showCancel) {
     const { selectedToken, assetImages } = this.props
 
     return transaction.key === TRANSACTION_TYPE_SHAPESHIFT
@@ -92,6 +92,7 @@ export default class TransactionList extends PureComponent {
           transaction={transaction}
           key={transaction.id}
           showRetry={this.shouldShowRetry(transaction)}
+          showCancel={showCancel}
           token={selectedToken}
           assetImages={assetImages}
         />

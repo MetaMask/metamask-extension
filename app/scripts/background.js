@@ -38,7 +38,6 @@ const {
 const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
 
 const STORAGE_KEY = 'metamask-config'
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -414,6 +413,7 @@ function setupController (initState, initLangCode) {
   controller.txController.on('update:badge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
+  controller.typedMessageManager.on('updateBadge', updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -469,11 +469,3 @@ function showWatchAssetUi () {
     }
   )
 }
-
-// On first install, open a window to MetaMask website to how-it-works.
-extension.runtime.onInstalled.addListener(function (details) {
-  if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
-    extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
-  }
-})
-

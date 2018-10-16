@@ -11,6 +11,14 @@ const txUtils = require('./lib/util')
 const cleanErrorStack = require('../../lib/cleanErrorStack')
 const log = require('loglevel')
 const recipientBlacklistChecker = require('./lib/recipient-blacklist-checker')
+const {
+  TRANSACTION_TYPE_CANCEL,
+  TRANSACTION_TYPE_RETRY,
+  TRANSACTION_TYPE_STANDARD,
+  TRANSACTION_STATUS_APPROVED,
+} = require('./enums')
+
+const { hexToBn, bnToHex, BnMultiplyByFraction } = require('../../lib/util')
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -158,9 +166,16 @@ class TransactionController extends EventEmitter {
   async addUnapprovedTransaction (txParams) {
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
+    // Assert the from address is the selected address
+    if (normalizedTxParams.from !== this.getSelectedAddress()) {
+      throw new Error(`Transaction from address isn't valid for this account`)
+    }
     txUtils.validateTxParams(normalizedTxParams)
     // construct txMeta
-    let txMeta = this.txStateManager.generateTxMeta({ txParams: normalizedTxParams })
+    let txMeta = this.txStateManager.generateTxMeta({
+      txParams: normalizedTxParams,
+      type: TRANSACTION_TYPE_STANDARD,
+    })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
 
@@ -214,10 +229,45 @@ class TransactionController extends EventEmitter {
       txParams: originalTxMeta.txParams,
       lastGasPrice,
       loadingDefaults: false,
+      type: TRANSACTION_TYPE_RETRY,
     })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     return txMeta
+  }
+
+  /**
+   * Creates a new approved transaction to attempt to cancel a previously submitted transaction. The
+   * new transaction contains the same nonce as the previous, is a basic ETH transfer of 0x value to
+   * the sender's address, and has a higher gasPrice than that of the previous transaction.
+   * @param {number} originalTxId - the id of the txMeta that you want to attempt to cancel
+   * @param {string=} customGasPrice - the hex value to use for the cancel transaction
+   * @returns {txMeta}
+   */
+  async createCancelTransaction (originalTxId, customGasPrice) {
+    const originalTxMeta = this.txStateManager.getTx(originalTxId)
+    const { txParams } = originalTxMeta
+    const { gasPrice: lastGasPrice, from, nonce } = txParams
+
+    const newGasPrice = customGasPrice || bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
+    const newTxMeta = this.txStateManager.generateTxMeta({
+      txParams: {
+        from,
+        to: from,
+        nonce,
+        gas: '0x5208',
+        value: '0x0',
+        gasPrice: newGasPrice,
+      },
+      lastGasPrice,
+      loadingDefaults: false,
+      status: TRANSACTION_STATUS_APPROVED,
+      type: TRANSACTION_TYPE_CANCEL,
+    })
+
+    this.addTx(newTxMeta)
+    await this.approveTransaction(newTxMeta.id)
+    return newTxMeta
   }
 
   /**
@@ -316,7 +366,40 @@ class TransactionController extends EventEmitter {
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 
-  confirmTransaction (txId) {
+  /**
+   * Sets the status of the transaction to confirmed and sets the status of nonce duplicates as
+   * dropped if the txParams have data it will fetch the txReceipt
+   * @param {number} txId - The tx's ID
+   * @returns {Promise<void>}
+   */
+  async confirmTransaction (txId) {
+    // get the txReceipt before marking the transaction confirmed
+    // to ensure the receipt is gotten before the ui revives the tx
+    const txMeta = this.txStateManager.getTx(txId)
+
+    if (!txMeta) {
+      return
+    }
+
+    try {
+      const txReceipt = await this.query.getTransactionReceipt(txMeta.hash)
+
+      // It seems that sometimes the numerical values being returned from
+      // this.query.getTransactionReceipt are BN instances and not strings.
+      const gasUsed = typeof txReceipt.gasUsed !== 'string'
+        ? txReceipt.gasUsed.toString(16)
+        : txReceipt.gasUsed
+
+      txMeta.txReceipt = {
+        ...txReceipt,
+        gasUsed,
+      }
+
+      this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
+    } catch (err) {
+      log.error(err)
+    }
+
     this.txStateManager.setTxStatusConfirmed(txId)
     this._markNonceDuplicatesDropped(txId)
   }
@@ -393,7 +476,7 @@ class TransactionController extends EventEmitter {
     })
 
     this.txStateManager.getFilteredTxList({
-      status: 'approved',
+      status: TRANSACTION_STATUS_APPROVED,
     }).forEach((txMeta) => {
       const txSignError = new Error('Transaction found as "approved" during boot - possibly stuck during signing')
       this.txStateManager.setTxStatusFailed(txMeta.id, txSignError)
@@ -484,6 +567,7 @@ class TransactionController extends EventEmitter {
     Updates the memStore in transaction controller
   */
   _updateMemstore () {
+    this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
     const selectedAddressTxList = this.txStateManager.getFilteredTxList({
       from: this.getSelectedAddress(),

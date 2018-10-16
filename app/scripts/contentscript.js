@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const pump = require('pump')
+const querystring = require('querystring')
 const LocalMessageDuplexStream = require('post-message-stream')
 const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
@@ -134,17 +135,22 @@ function doctypeCheck () {
 }
 
 /**
- * Checks the current document extension
+ * Returns whether or not the extension (suffix) of the current document is prohibited
  *
- * @returns {boolean} {@code true} if the current extension is not prohibited
+ * This checks {@code window.location.pathname} against a set of file extensions
+ * that should not have web3 injected into them. This check is indifferent of query parameters
+ * in the location.
+ *
+ * @returns {boolean} whether or not the extension of the current document is prohibited
  */
 function suffixCheck () {
-  var prohibitedTypes = ['xml', 'pdf']
-  var currentUrl = window.location.href
-  var currentRegex
+  const prohibitedTypes = [
+    /\.xml$/,
+    /\.pdf$/,
+  ]
+  const currentUrl = window.location.pathname
   for (let i = 0; i < prohibitedTypes.length; i++) {
-    currentRegex = new RegExp(`\\.${prohibitedTypes[i]}$`)
-    if (currentRegex.test(currentUrl)) {
+    if (prohibitedTypes[i].test(currentUrl)) {
       return false
     }
   }
@@ -199,5 +205,8 @@ function blacklistedDomainCheck () {
 function redirectToPhishingWarning () {
   console.log('MetaMask - routing to Phishing Warning component')
   const extensionURL = extension.runtime.getURL('phishing.html')
-  window.location.href = extensionURL
+  window.location.href = `${extensionURL}#${querystring.stringify({
+    hostname: window.location.hostname,
+    href: window.location.href,
+  })}`
 }

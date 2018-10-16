@@ -10,6 +10,8 @@ const genAccountLink = require('../../../lib/account-link.js')
 const QrView = require('../qr-code')
 const EditableLabel = require('../editable-label')
 
+import Button from '../button'
+
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
@@ -81,12 +83,17 @@ AccountDetailsModal.prototype.render = function () {
 
       h('div.account-modal-divider'),
 
-      h('button.btn-primary.account-modal__button', {
+      h(Button, {
+        type: 'primary',
+        className: 'account-modal__button',
         onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
       }, this.context.t('etherscanView')),
 
       // Holding on redesign for Export Private Key functionality
-      exportPrivateKeyFeatureEnabled ? h('button.btn-primary.account-modal__button', {
+
+      exportPrivateKeyFeatureEnabled ? h(Button, {
+        type: 'primary',
+        className: 'account-modal__button',
         onClick: () => showExportPrivateKeyModal(),
       }, this.context.t('exportPrivateKey')) : null,
 

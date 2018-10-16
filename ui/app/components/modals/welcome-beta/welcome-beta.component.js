@@ -1,23 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Modal, { ModalContent } from '../../modal'
 
 const TransactionConfirmed = (props, context) => {
   const { t } = context
+  const { hideModal } = props
 
   return (
-    <div className="modal-container__content">
-      <div className="modal-container__title">
-        { `${t('uiWelcome')}` }
-      </div>
-      <div className="modal-container__description">
-        { t('uiWelcomeMessage') }
-      </div>
-    </div>
+    <Modal
+      onSubmit={() => hideModal()}
+      submitText={t('ok')}
+    >
+      <ModalContent
+        title={t('uiWelcome')}
+        description={t('uiWelcomeMessage')}
+      />
+    </Modal>
   )
 }
 
 TransactionConfirmed.contextTypes = {
   t: PropTypes.func,
+}
+
+TransactionConfirmed.propTypes = {
+  hideModal: PropTypes.func,
 }
 
 export default TransactionConfirmed

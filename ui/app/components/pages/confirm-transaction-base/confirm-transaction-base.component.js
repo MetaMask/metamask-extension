@@ -8,6 +8,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
 } from '../../../constants/error-keys'
+import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../../constants/transactions'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -21,6 +22,7 @@ export default class ConfirmTransactionBase extends Component {
     // Redux props
     balance: PropTypes.string,
     cancelTransaction: PropTypes.func,
+    cancelAllTransactions: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
     clearSend: PropTypes.func,
     conversionRate: PropTypes.number,
@@ -42,12 +44,14 @@ export default class ConfirmTransactionBase extends Component {
     sendTransaction: PropTypes.func,
     showCustomizeGasModal: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
+    showRejectTransactionsConfirmationModal: PropTypes.func,
     toAddress: PropTypes.string,
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
     toName: PropTypes.string,
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
+    unapprovedTxCount: PropTypes.number,
     // Component props
     action: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -85,9 +89,9 @@ export default class ConfirmTransactionBase extends Component {
       clearConfirmTransaction,
     } = this.props
 
-    if (transactionStatus === 'dropped') {
+    if (transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS) {
       showTransactionConfirmedModal({
-        onHide: () => {
+        onSubmit: () => {
           clearConfirmTransaction()
           history.push(DEFAULT_ROUTE)
         },
@@ -248,6 +252,25 @@ export default class ConfirmTransactionBase extends Component {
     onEdit({ txData, tokenData, tokenProps })
   }
 
+  handleCancelAll () {
+    const {
+      cancelAllTransactions,
+      clearConfirmTransaction,
+      history,
+      showRejectTransactionsConfirmationModal,
+      unapprovedTxCount,
+    } = this.props
+
+    showRejectTransactionsConfirmationModal({
+      unapprovedTxCount,
+      async onSubmit () {
+        await cancelAllTransactions()
+        clearConfirmTransaction()
+        history.push(DEFAULT_ROUTE)
+      },
+    })
+  }
+
   handleCancel () {
     const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction } = this.props
 
@@ -313,6 +336,7 @@ export default class ConfirmTransactionBase extends Component {
       nonce,
       assetImage,
       warning,
+      unapprovedTxCount,
     } = this.props
     const { submitting, submitError } = this.state
 
@@ -336,6 +360,7 @@ export default class ConfirmTransactionBase extends Component {
         dataComponent={this.renderData()}
         contentComponent={contentComponent}
         nonce={nonce}
+        unapprovedTxCount={unapprovedTxCount}
         assetImage={assetImage}
         identiconAddress={identiconAddress}
         errorMessage={errorMessage || submitError}
@@ -343,6 +368,7 @@ export default class ConfirmTransactionBase extends Component {
         warning={warning}
         disabled={!propsValid || !valid || submitting}
         onEdit={() => this.handleEdit()}
+        onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
       />

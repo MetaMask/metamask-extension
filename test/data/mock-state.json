@@ -1,0 +1,1251 @@
+{
+  "metamask": {
+    "network": "4",
+    "identities": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+        "name": "Test Account"
+      },
+      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "name": "Test Account 2"
+      }
+    },
+    "unapprovedTxs": {
+      "8393540981007587": {
+        "id": 8393540981007587,
+        "time": 1536268017676,
+        "status": "unapproved",
+        "metamaskNetworkId": "4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "value": "0x0",
+          "gas": "0x5208",
+          "gasPrice": "0x3b9aca00"
+        },
+        "history": [
+          {
+            "id": 8393540981007587,
+            "time": 1536268017676,
+            "status": "unapproved",
+            "metamaskNetworkId": "4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+              "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+              "value": "0x0",
+              "gas": "0x5208",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1536268017685
+            },
+            {
+              "op": "add",
+              "path": "/gasPriceSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/gasLimitSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/estimatedGas",
+              "value": "0x5208"
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1536268017686
+            }
+          ]
+        ],
+        "gasPriceSpecified": true,
+        "gasLimitSpecified": true,
+        "estimatedGas": "0x5208",
+        "origin": "MetaMask"
+      }
+    },
+    "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "accounts": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "balance": "0x0",
+        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+      },
+      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "balance": "0x0"
+      }
+    },
+    "tokens": [
+      {
+        "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+        "symbol": "TEST",
+        "decimals": "0"
+      },
+      {
+        "address": "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5",
+        "decimals": "8",
+        "symbol": "TEST2"
+      },
+      {
+        "address": "0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4",
+        "symbol": "META",
+        "decimals": "18"
+      }
+    ],
+    "contractExchangeRates": {
+      "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": 0.00039345803819379796,
+      "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049
+    },
+    "currentCurrency": "usd",
+    "conversionRate": 556.12,
+    "addressBook": [
+      {
+        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "name": ""
+      }
+    ],
+    "selectedTokenAddress": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+    "unapprovedMsgs": {},
+    "unapprovedMsgCount": 0,
+    "unapprovedPersonalMsgs": {},
+    "unapprovedPersonalMsgCount": 0,
+    "unapprovedTypedMessages": {},
+    "unapprovedTypedMessagesCount": 0,
+    "send": {
+      "gasLimit": "0x5208",
+      "gasPrice": "0xee6b2800",
+      "gasTotal": "0x4c65c6294000",
+      "tokenBalance": null,
+      "from": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+      "to": "",
+      "amount": "1bc16d674ec80000",
+      "memo": "",
+      "errors": {},
+      "maxModeOn": false,
+      "editingTransactionId": null,
+      "forceGasMin": null,
+      "toNickname": ""
+    },
+    "selectedAddressTxList": [
+      {
+        "id": 3387511061307736,
+        "time": 1528133130531,
+        "status": "confirmed",
+        "metamaskNetworkId": "4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+          "value": "0x1bc16d674ec80000",
+          "gas": "0xcf08",
+          "gasPrice": "0x3b9aca00",
+          "nonce": "0xb5"
+        },
+        "history": [
+          {
+            "id": 3387511061307736,
+            "time": 1528133130531,
+            "status": "unapproved",
+            "metamaskNetworkId": "4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+              "value": "0x1bc16d674ec80000",
+              "gas": "0xcf08",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133130666
+            },
+            {
+              "op": "add",
+              "path": "/gasPriceSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/gasLimitSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/estimatedGas",
+              "value": "0xcf08"
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133130667
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133131716
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb5",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133131806
+            },
+            {
+              "op": "add",
+              "path": "/nonceDetails",
+              "value": {
+                "params": {
+                  "highestLocallyConfirmed": 0,
+                  "highestSuggested": 181,
+                  "nextNetworkNonce": 181
+                },
+                "local": {
+                  "name": "local",
+                  "nonce": 181,
+                  "details": {
+                    "startPoint": 181,
+                    "highest": 181
+                  }
+                },
+                "network": {
+                  "name": "network",
+                  "nonce": 181,
+                  "details": {
+                    "baseCount": 181
+                  }
+                }
+              }
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133131825
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf86c81b5843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba03f879cd33a31180da38545d0f809822e00ddf35954d8b0ece83bacf22347ce54a06ad050487978e425ca6a014ed55ea8e9a190069863ed96a0eefa88d729ea1eda"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x516b77569173a04c76fdb6545cf279ebd0c75f5d25d6e4ce019925205f0e3709",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133131951
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133131951,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133131952
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133131955
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af6b",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133134414
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133158516
+            }
+          ]
+        ],
+        "gasPriceSpecified": true,
+        "gasLimitSpecified": true,
+        "estimatedGas": "0xcf08",
+        "origin": "MetaMask",
+        "nonceDetails": {
+          "params": {
+            "highestLocallyConfirmed": 0,
+            "highestSuggested": 181,
+            "nextNetworkNonce": 181
+          },
+          "local": {
+            "name": "local",
+            "nonce": 181,
+            "details": {
+              "startPoint": 181,
+              "highest": 181
+            }
+          },
+          "network": {
+            "name": "network",
+            "nonce": 181,
+            "details": {
+              "baseCount": 181
+            }
+          }
+        },
+        "rawTx": "0xf86c81b5843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba03f879cd33a31180da38545d0f809822e00ddf35954d8b0ece83bacf22347ce54a06ad050487978e425ca6a014ed55ea8e9a190069863ed96a0eefa88d729ea1eda",
+        "hash": "0x516b77569173a04c76fdb6545cf279ebd0c75f5d25d6e4ce019925205f0e3709",
+        "submittedTime": 1528133131951,
+        "firstRetryBlockNumber": "0x24af6b"
+      },
+      {
+        "id": 3387511061307737,
+        "time": 1528133149983,
+        "status": "confirmed",
+        "metamaskNetworkId": "4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+          "value": "0x1bc16d674ec80000",
+          "gas": "0xcf08",
+          "gasPrice": "0x3b9aca00",
+          "nonce": "0xb6"
+        },
+        "history": [
+          {
+            "id": 3387511061307737,
+            "time": 1528133149983,
+            "status": "unapproved",
+            "metamaskNetworkId": "4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+              "value": "0x1bc16d674ec80000",
+              "gas": "0xcf08",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133150011
+            },
+            {
+              "op": "add",
+              "path": "/gasPriceSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/gasLimitSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/estimatedGas",
+              "value": "0xcf08"
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133150013
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133151102
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb6",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133151189
+            },
+            {
+              "op": "add",
+              "path": "/nonceDetails",
+              "value": {
+                "params": {
+                  "highestLocallyConfirmed": 0,
+                  "highestSuggested": 181,
+                  "nextNetworkNonce": 181
+                },
+                "local": {
+                  "name": "local",
+                  "nonce": 182,
+                  "details": {
+                    "startPoint": 181,
+                    "highest": 182
+                  }
+                },
+                "network": {
+                  "name": "network",
+                  "nonce": 181,
+                  "details": {
+                    "baseCount": 181
+                  }
+                }
+              }
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133151203
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf86c81b6843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba0692deaabf0d79544d41e7c475ad43760679a4f25d0fee908b1da308db1a291a7a0384db85fc6c843ea25986a0760f3c50ab6504fc559fc71fc7f23f60950eb316d"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x9271b266d05022cfa841362fae43763ebafcee540d84278b0157ef4a68d4e26f",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133151342
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133151347,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133151347
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133151368
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af6d",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133158532
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133190636
+            }
+          ]
+        ],
+        "gasPriceSpecified": true,
+        "gasLimitSpecified": true,
+        "estimatedGas": "0xcf08",
+        "origin": "MetaMask",
+        "nonceDetails": {
+          "params": {
+            "highestLocallyConfirmed": 0,
+            "highestSuggested": 181,
+            "nextNetworkNonce": 181
+          },
+          "local": {
+            "name": "local",
+            "nonce": 182,
+            "details": {
+              "startPoint": 181,
+              "highest": 182
+            }
+          },
+          "network": {
+            "name": "network",
+            "nonce": 181,
+            "details": {
+              "baseCount": 181
+            }
+          }
+        },
+        "rawTx": "0xf86c81b6843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba0692deaabf0d79544d41e7c475ad43760679a4f25d0fee908b1da308db1a291a7a0384db85fc6c843ea25986a0760f3c50ab6504fc559fc71fc7f23f60950eb316d",
+        "hash": "0x9271b266d05022cfa841362fae43763ebafcee540d84278b0157ef4a68d4e26f",
+        "submittedTime": 1528133151347,
+        "firstRetryBlockNumber": "0x24af6d"
+      },
+      {
+        "id": 3387511061307738,
+        "time": 1528133180635,
+        "status": "confirmed",
+        "metamaskNetworkId": "4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+          "value": "0x1bc16d674ec80000",
+          "gas": "0xcf08",
+          "gasPrice": "0x12a05f200",
+          "nonce": "0xb7"
+        },
+        "history": [
+          {
+            "id": 3387511061307738,
+            "time": 1528133180635,
+            "status": "unapproved",
+            "metamaskNetworkId": "4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
+              "value": "0x1bc16d674ec80000",
+              "gas": "0xcf08",
+              "gasPrice": "0x12a05f200"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133180720
+            },
+            {
+              "op": "add",
+              "path": "/gasPriceSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/gasLimitSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/estimatedGas",
+              "value": "0xcf08"
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133180722
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133181623
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb7",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133181726
+            },
+            {
+              "op": "add",
+              "path": "/nonceDetails",
+              "value": {
+                "params": {
+                  "highestLocallyConfirmed": 182,
+                  "highestSuggested": 182,
+                  "nextNetworkNonce": 182
+                },
+                "local": {
+                  "name": "local",
+                  "nonce": 183,
+                  "details": {
+                    "startPoint": 182,
+                    "highest": 183
+                  }
+                },
+                "network": {
+                  "name": "network",
+                  "nonce": 182,
+                  "details": {
+                    "baseCount": 182
+                  }
+                }
+              }
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133181749
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf86d81b785012a05f20082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba086f9846798be6988c39a5cf85f0dbe267e59ca0b96a6a7077e92cba33e10a258a064ffa52ac90c238ce21e6f085283216191b185a1eccd7daae6e2ab66ba26ada0"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x4e061e977c099735bc9e5203e717f7d9dccb3fcb2f82031a12a3ed326f95d43b",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133181885
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133181885,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133181885
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133181888
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af6f",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133190653
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133222745
+            }
+          ]
+        ],
+        "gasPriceSpecified": true,
+        "gasLimitSpecified": true,
+        "estimatedGas": "0xcf08",
+        "origin": "MetaMask",
+        "nonceDetails": {
+          "params": {
+            "highestLocallyConfirmed": 182,
+            "highestSuggested": 182,
+            "nextNetworkNonce": 182
+          },
+          "local": {
+            "name": "local",
+            "nonce": 183,
+            "details": {
+              "startPoint": 182,
+              "highest": 183
+            }
+          },
+          "network": {
+            "name": "network",
+            "nonce": 182,
+            "details": {
+              "baseCount": 182
+            }
+          }
+        },
+        "rawTx": "0xf86d81b785012a05f20082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba086f9846798be6988c39a5cf85f0dbe267e59ca0b96a6a7077e92cba33e10a258a064ffa52ac90c238ce21e6f085283216191b185a1eccd7daae6e2ab66ba26ada0",
+        "hash": "0x4e061e977c099735bc9e5203e717f7d9dccb3fcb2f82031a12a3ed326f95d43b",
+        "submittedTime": 1528133181885,
+        "firstRetryBlockNumber": "0x24af6f"
+      },
+      {
+        "id": 3387511061307739,
+        "time": 1528133223918,
+        "status": "confirmed",
+        "metamaskNetworkId": "4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
+          "value": "0xaa87bee538000",
+          "data": "0xea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de33",
+          "gasPrice": "0x3b9aca00",
+          "gas": "0x6169e",
+          "nonce": "0xb8"
+        },
+        "history": [
+          {
+            "id": 3387511061307739,
+            "time": 1528133223918,
+            "status": "unapproved",
+            "metamaskNetworkId": "4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
+              "value": "0xaa87bee538000",
+              "data": "0xea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de33",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "add",
+              "path": "/txParams/gas",
+              "value": "0x6169e",
+              "timestamp": 1528133225488
+            },
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false
+            },
+            {
+              "op": "add",
+              "path": "/gasPriceSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/gasLimitSpecified",
+              "value": false
+            },
+            {
+              "op": "add",
+              "path": "/estimatedGas",
+              "value": "40f14"
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/estimatedGas",
+              "value": "40f14",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133225492
+            },
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "crypko.ai"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133227279
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb8",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133227374
+            },
+            {
+              "op": "add",
+              "path": "/nonceDetails",
+              "value": {
+                "params": {
+                  "highestLocallyConfirmed": 184,
+                  "highestSuggested": 184,
+                  "nextNetworkNonce": 184
+                },
+                "local": {
+                  "name": "local",
+                  "nonce": 184,
+                  "details": {
+                    "startPoint": 184,
+                    "highest": 184
+                  }
+                },
+                "network": {
+                  "name": "network",
+                  "nonce": 184,
+                  "details": {
+                    "baseCount": 184
+                  }
+                }
+              }
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133227405
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf8b181b8843b9aca008306169e94fe2149773b3513703e79ad23d05a778a185016ee870aa87bee538000b844ea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de332ca07bb2efbb8529d67606f9f89e7934c594a31d50c7d24a3286c20a2944a3b8c2a9a07b55ebd8aa28728ce0e38dd3b3503b78fccedae80053626d8649c68346c7c49c"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x466ae7d4b7c270121f0a8d68fbc6c9091ffc4aa976a553a5bfa56a79cf9f63dd",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133227534
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133227538,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133227538
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133227543
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af72",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133238980
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133255035
+            }
+          ]
+        ],
+        "gasPriceSpecified": true,
+        "gasLimitSpecified": false,
+        "estimatedGas": "40f14",
+        "origin": "crypko.ai",
+        "nonceDetails": {
+          "params": {
+            "highestLocallyConfirmed": 184,
+            "highestSuggested": 184,
+            "nextNetworkNonce": 184
+          },
+          "local": {
+            "name": "local",
+            "nonce": 184,
+            "details": {
+              "startPoint": 184,
+              "highest": 184
+            }
+          },
+          "network": {
+            "name": "network",
+            "nonce": 184,
+            "details": {
+              "baseCount": 184
+            }
+          }
+        },
+        "rawTx": "0xf8b181b8843b9aca008306169e94fe2149773b3513703e79ad23d05a778a185016ee870aa87bee538000b844ea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de332ca07bb2efbb8529d67606f9f89e7934c594a31d50c7d24a3286c20a2944a3b8c2a9a07b55ebd8aa28728ce0e38dd3b3503b78fccedae80053626d8649c68346c7c49c",
+        "hash": "0x466ae7d4b7c270121f0a8d68fbc6c9091ffc4aa976a553a5bfa56a79cf9f63dd",
+        "submittedTime": 1528133227538,
+        "firstRetryBlockNumber": "0x24af72"
+      },
+      {
+        "id": 3387511061307740,
+        "time": 1528133291381,
+        "status": "confirmed",
+        "metamaskNetworkId": "4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+          "value": "0x0",
+          "data": "0xa9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb330000000000000000000000000000000000000000000000000000000000000002",
+          "gas": "0xd508",
+          "gasPrice": "0x3b9aca00",
+          "nonce": "0xb9"
+        },
+        "history": [
+          {
+            "id": 3387511061307740,
+            "time": 1528133291381,
+            "status": "unapproved",
+            "metamaskNetworkId": "4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+              "value": "0x0",
+              "data": "0xa9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb330000000000000000000000000000000000000000000000000000000000000002",
+              "gas": "0xd508",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1528133291486
+            },
+            {
+              "op": "add",
+              "path": "/gasPriceSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/gasLimitSpecified",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/estimatedGas",
+              "value": "0xd508"
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133291486
+            }
+          ],
+          [],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "approved",
+              "note": "txStateManager: setting status to approved",
+              "timestamp": 1528133293588
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0xb9",
+              "note": "transactions#approveTransaction",
+              "timestamp": 1528133293706
+            },
+            {
+              "op": "add",
+              "path": "/nonceDetails",
+              "value": {
+                "params": {
+                  "highestLocallyConfirmed": 185,
+                  "highestSuggested": 185,
+                  "nextNetworkNonce": 185
+                },
+                "local": {
+                  "name": "local",
+                  "nonce": 185,
+                  "details": {
+                    "startPoint": 185,
+                    "highest": 185
+                  }
+                },
+                "network": {
+                  "name": "network",
+                  "nonce": 185,
+                  "details": {
+                    "baseCount": 185
+                  }
+                }
+              }
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed",
+              "note": "transactions#publishTransaction",
+              "timestamp": 1528133293724
+            },
+            {
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf8a981b9843b9aca0082d50894108cf70c7d384c552f42c07c41c0e1e46d77ea0d80b844a9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb3300000000000000000000000000000000000000000000000000000000000000022ca04f05310490d3e3a9a159ae25f52cec9afb0a69527d30be832aaae12e64ff056ea075f81a5220bed481e764bab8830c57169c59fe528ca9cf3442f47f7618a9b4a9"
+            }
+          ],
+          [],
+          [
+            {
+              "op": "add",
+              "path": "/hash",
+              "value": "0x3680dc9815cd05b620b6dd0017d949604ca7d92f051d5542fc8a5ecaa876af09",
+              "note": "transactions#setTxHash",
+              "timestamp": 1528133293853
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1528133293859,
+              "note": "txStateManager - add submitted time stamp",
+              "timestamp": 1528133293862
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted",
+              "note": "txStateManager: setting status to submitted",
+              "timestamp": 1528133293867
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x24af76",
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "timestamp": 1528133295200
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed",
+              "note": "txStateManager: setting status to confirmed",
+              "timestamp": 1528133327522
+            }
+          ]
+        ],
+        "gasPriceSpecified": true,
+        "gasLimitSpecified": true,
+        "estimatedGas": "0xd508",
+        "origin": "MetaMask",
+        "nonceDetails": {
+          "params": {
+            "highestLocallyConfirmed": 185,
+            "highestSuggested": 185,
+            "nextNetworkNonce": 185
+          },
+          "local": {
+            "name": "local",
+            "nonce": 185,
+            "details": {
+              "startPoint": 185,
+              "highest": 185
+            }
+          },
+          "network": {
+            "name": "network",
+            "nonce": 185,
+            "details": {
+              "baseCount": 185
+            }
+          }
+        },
+        "rawTx": "0xf8a981b9843b9aca0082d50894108cf70c7d384c552f42c07c41c0e1e46d77ea0d80b844a9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb3300000000000000000000000000000000000000000000000000000000000000022ca04f05310490d3e3a9a159ae25f52cec9afb0a69527d30be832aaae12e64ff056ea075f81a5220bed481e764bab8830c57169c59fe528ca9cf3442f47f7618a9b4a9",
+        "hash": "0x3680dc9815cd05b620b6dd0017d949604ca7d92f051d5542fc8a5ecaa876af09",
+        "submittedTime": 1528133293859,
+        "firstRetryBlockNumber": "0x24af76"
+      },
+      {
+        "id": 3387511061307741,
+        "time": 1528133318440,
+        "status": "rejected",
+        "metamaskNetworkId": "4",
+        "loadingDefaults": false,
+        "txParams": {
+          "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+          "value": "0x0",
+          "gasPrice": "0x3b9aca00",
+          "gas": "0x5208"
+        },
+        "history": [
+          {
+            "id": 3387511061307741,
+            "time": 1528133318440,
+            "status": "unapproved",
+            "metamaskNetworkId": "4",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
+              "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62"
+            }
+          },
+          [
+            {
+              "op": "add",
+              "path": "/txParams/value",
+              "value": "0x0",
+              "timestamp": 1528133319641
+            },
+            {
+              "op": "add",
+              "path": "/txParams/gasPrice",
+              "value": "0x3b9aca00"
+            },
+            {
+              "op": "add",
+              "path": "/txParams/gas",
+              "value": "0x5208"
+            },
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false
+            },
+            {
+              "op": "add",
+              "path": "/gasPriceSpecified",
+              "value": false
+            },
+            {
+              "op": "add",
+              "path": "/gasLimitSpecified",
+              "value": false
+            },
+            {
+              "op": "add",
+              "path": "/simpleSend",
+              "value": true
+            },
+            {
+              "op": "add",
+              "path": "/estimatedGas",
+              "value": "0x5208"
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "tmashuang.github.io",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1528133319642
+            }
+          ],
+          [
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "rejected",
+              "note": "txStateManager: setting status to rejected",
+              "timestamp": 1528133320924
+            }
+          ]
+        ],
+        "gasPriceSpecified": false,
+        "gasLimitSpecified": false,
+        "simpleSend": true,
+        "estimatedGas": "0x5208",
+        "origin": "tmashuang.github.io"
+      }
+    ]
+  },
+  "appState": {
+    "gasIsLoading": false,
+    "currentView": {
+      "name": "accountDetail",
+      "detailView": null,
+      "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+    }
+  }
+}

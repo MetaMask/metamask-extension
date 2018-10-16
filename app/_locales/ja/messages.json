@@ -16,7 +16,7 @@
   },
   "addCustomToken": {
     "message": "カスタムトークンを追加"
-  },  
+  },
   "addToken": {
     "message": "トークンを追加"
   },
@@ -122,9 +122,6 @@
   "copy": {
     "message": "コピー"
   },
-  "copyContractAddress": {
-    "message": "コントラクトアドレスをコピー"
-  },
   "copyToClipboard": {
     "message": "クリップボードへコピー"
   },
@@ -164,7 +161,7 @@
   },
   "decimal": {
     "message": "小数点桁数"
-  }, 
+  },
   "defaultNetwork": {
     "message": "デフォルトのEther送受信ネットワークはメインネットです。"
   },
@@ -318,7 +315,7 @@
     "message": "アカウントのインポート"
   },
   "importAccountMsg": {
-    "message":"追加したアカウントはMetaMaskのアカウントパスフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
+    "message": "追加したアカウントはMetaMaskのアカウントパスフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
   },
   "importAnAccount": {
     "message": "アカウントをインポート"

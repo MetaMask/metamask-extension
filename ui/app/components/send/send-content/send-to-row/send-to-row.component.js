@@ -8,6 +8,7 @@ export default class SendToRow extends Component {
 
   static propTypes = {
     closeToDropdown: PropTypes.func,
+    hasHexData: PropTypes.bool.isRequired,
     inError: PropTypes.bool,
     network: PropTypes.string,
     openToDropdown: PropTypes.func,
@@ -25,8 +26,8 @@ export default class SendToRow extends Component {
   };
 
   handleToChange (to, nickname = '', toError) {
-    const { updateSendTo, updateSendToError, updateGas } = this.props
-    const toErrorObject = getToErrorObject(to, toError)
+    const { hasHexData, updateSendTo, updateSendToError, updateGas } = this.props
+    const toErrorObject = getToErrorObject(to, toError, hasHexData)
     updateSendTo(to, nickname)
     updateSendToError(toErrorObject)
     if (toErrorObject.to === null) {
