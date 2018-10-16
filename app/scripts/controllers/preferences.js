@@ -369,36 +369,25 @@ class PreferencesController {
    *
    */
 
-  async addLayer2App (rawAddress, name) {
-//    this._validateERC20AssetParams(tokenOpts)
-    const layer2Apps = this.getLayer2Apps()
-//    const { rawAddress, name } = layer2AppOpts
-
+  async addLayer2App (rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, name }
-    layer2Apps[address] = newEntry
-    this.store.updateState({ layer2Apps: layer2Apps })
+    const newEntry = { address, symbol, decimals }
+    const layer2Apps = this.store.getState().layer2Apps
+    const assetImages = this.getAssetImages()
+    const previousEntry = layer2Apps.find((layer2App, index) => {
+      return layer2App.address === address
+    })
+    const previousIndex = layer2Apps.indexOf(previousEntry)
+
+    if (previousEntry) {
+      layer2Apps[previousIndex] = newEntry
+    } else {
+      layer2Apps.push(newEntry)
+    }
+    assetImages[address] = image
+    this._updateAccountLayer2Apps(layer2Apps, assetImages)
+    return Promise.resolve(layer2Apps)
   }
-
-  // async addToken (rawAddress, symbol, decimals, image) {
-  //   const address = normalizeAddress(rawAddress)
-  //   const newEntry = { address, symbol, decimals }
-  //   const tokens = this.store.getState().tokens
-  //   const assetImages = this.getAssetImages()
-  //   const previousEntry = tokens.find((token, index) => {
-  //     return token.address === address
-  //   })
-  //   const previousIndex = tokens.indexOf(previousEntry)
-
-  //   if (previousEntry) {
-  //     tokens[previousIndex] = newEntry
-  //   } else {
-  //     tokens.push(newEntry)
-  //   }
-  //   assetImages[address] = image
-  //   this._updateAccountTokens(tokens, assetImages)
-  //   return Promise.resolve(tokens)
-  // }
 
   // /**
   //  * Removes a specified token from the tokens array.
@@ -584,7 +573,13 @@ class PreferencesController {
   }
 
 
-  _updateLayerApps (selectedAddress) {
+  _updateLayer2Apps (selectedAddress) {
+    console.log("-----------------DEBUG----------------",
+		"-----------------DEBUG----------------",
+		"-----------------DEBUG----------------",
+		"-----------------DEBUG----------------",
+		"-----------------DEBUG----------------",
+		"-----------------DEBUG----------------",)
     const { layer2Apps } = this._getLayer2AppRelatedStates(selectedAddress)
     this.store.updateState({ layer2Apps })
   }

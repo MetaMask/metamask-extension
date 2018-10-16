@@ -167,9 +167,15 @@ function autoAddToBetaUI (state) {
   const autoAddAccountsThreshold = 2
   const autoAddTokensThreshold = 1
 
+  // TODO: add threshold to layer 2 Apps?
+  // const autoAddLayer2AppsThreshold = 1  
+
   const numberOfTransactions = state.metamask.selectedAddressTxList.length
   const numberOfAccounts = Object.keys(state.metamask.accounts).length
-  const numberOfTokensAdded = state.metamask.tokens.length
+  if (state.metamask.tokens){
+    const numberOfTokensAdded = state.metamask.tokens.length
+  }    
+  // const numberOfLayer2AppsAdded = state.metamask.layer2Apps.length  
 
   const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
     (numberOfAccounts > autoAddAccountsThreshold) &&

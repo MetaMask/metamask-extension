@@ -111,7 +111,7 @@ class AddLayer2App extends Component {
   }
 
   handleNext () {
-    
+
     if (this.hasError()) {
       return
     }
@@ -134,9 +134,7 @@ class AddLayer2App extends Component {
       symbol,
       decimals,
     }
-
     setPendingLayer2Apps({ customLayer2App, selectedLayer2Apps })
-    console.log("HEREHEREHEREHEREHERHEREH")
     history.push(CONFIRM_ADD_LAYER2APP_ROUTE)
   }
 
@@ -306,8 +304,9 @@ class AddLayer2App extends Component {
       <PageContainer
         title={this.context.t('addLayer2App')}
         tabsComponent={this.renderTabs()}
-      onSubmit={() => {console.log("DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG")
-		       this.handleNext()}}
+      onSubmit={() => {
+		       this.handleNext()
+}}
         disabled={this.hasError() || !this.hasSelected()}
         onCancel={() => {
           clearPendingLayer2Apps()

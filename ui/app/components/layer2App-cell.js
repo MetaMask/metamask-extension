@@ -14,7 +14,7 @@ function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     currentCurrency: state.metamask.currentCurrency,
-    selectedTokenAddress: state.metamask.selectedTokenAddress,
+    selectedLayer2AppAddress: state.metamask.selectedLayer2AppAddress,
     userAddress: selectors.getSelectedAddress(state),
     contractExchangeRates: state.metamask.contractExchangeRates,
     conversionRate: state.metamask.conversionRate,
@@ -24,7 +24,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setSelectedToken: address => dispatch(actions.setSelectedToken(address)),
+    setSelectedLayer2App: address => dispatch(actions.setSelectedLayer2App(address)),
     hideSidebar: () => dispatch(actions.hideSidebar()),
   }
 }
@@ -49,8 +49,8 @@ Layer2AppCell.prototype.render = function () {
     symbol,
     string,
     network,
-    setSelectedToken,
-    selectedTokenAddress,
+    setSelectedLayer2App,
+    selectedLayer2AppAddress,
     contractExchangeRates,
     conversionRate,
     hideSidebar,
@@ -84,12 +84,12 @@ Layer2AppCell.prototype.render = function () {
 
   return (
     h('div.layer2App-list-item', {
-      className: `layer2App-list-item ${selectedTokenAddress === address ? 'layer2App-list-item--active' : ''}`,
+      className: `layer2App-list-item ${selectedLayer2AppAddress === address ? 'layer2App-list-item--active' : ''}`,
       // style: { cursor: network === '1' ? 'pointer' : 'default' },
       // onClick: this.view.bind(this, address, userAddress, network),
       onClick: () => {
-        setSelectedToken(address)
-        selectedTokenAddress !== address && sidebarOpen && hideSidebar()
+        setSelectedLayer2App(address)
+        selectedLayer2AppAddress !== address && sidebarOpen && hideSidebar()
       },
     }, [
 
@@ -103,8 +103,8 @@ Layer2AppCell.prototype.render = function () {
 
       h('div.layer2App-list-item__balance-ellipsis', null, [
         h('div.layer2App-list-item__balance-wrapper', null, [
-          h('div.layer2App-list-item__layer2App-balance', `${string || 0}` + " ETH locked"),
-          h('div.layer2App-list-item__layer2App-symbol', symbol),	  
+          h('div.layer2App-list-item__layer2App-balance', `${string || 0}` + ' ETH locked'),
+          h('div.layer2App-list-item__layer2App-symbol', symbol),
           h('div.layer2App-list-item__layer2App-name', name),
           showFiat && h('div.layer2App-list-item__fiat-amount', {
             style: {},
@@ -158,6 +158,6 @@ function navigateTo (url) {
 
 function etherscanLinkFor (layer2AppAddress, address, network) {
   const prefix = prefixForNetwork(network)
-  return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
+  return `https://${prefix}etherscan.io/token/${layer2AppAddress}?a=${address}`
 }
 

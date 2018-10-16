@@ -25,7 +25,7 @@ export default class ConfirmAddLayer2App extends Component {
     }
   }
 
-  Getlayer2appname (name, symbol) {
+  getLayer2AppName (name, symbol) {
     return typeof name === 'undefined'
       ? symbol
       : `${name} (${symbol})`
@@ -33,85 +33,85 @@ export default class ConfirmAddLayer2App extends Component {
 
   render () {
     const { history, addLayer2Apps, clearPendingLayer2Apps, pendingLayer2Apps } = this.props
-
     return (
       <div className="page-container">
         <div className="page-container__header">
+          <div className="page-container__title">
+            { this.context.t('addLayer2Apps') }
+          </div>
+          <div className="page-container__subtitle">
+            { this.context.t('likeToAddLayer2Apps') }
+          </div>
         </div>
+        <div className="page-container__content">
+          <div className="confirm-add-layer2App">
+            <div className="confirm-add-layer2App__header">
+              <div className="confirm-add-layer2App__layer2App">
+                { this.context.t('layer2App') }
+              </div>
+              <div className="confirm-add-layer2App__balance">
+                { this.context.t('balance') }
+              </div>
+            </div>
+            <div className="confirm-add-layer2App__layer2App-list">
+              {
+                Object.entries(pendingLayer2Apps)
+                  .map(([ address, layer2App ]) => {
+                    const { name, symbol } = layer2App
+
+                    return (
+                      <div
+                        className="confirm-add-layer2App__layer2App-list-item"
+                        key={address}
+                      >
+                        <div className="confirm-add-layer2App__layer2App confirm-add-layer2App__data">
+                          <Identicon
+                            className="confirm-add-layer2App__layer2App-icon"
+                            diameter={48}
+                            address={address}
+                          />
+                          <div className="confirm-add-layer2App__name">
+                            { this.getLayer2AppName(name, symbol) }
+                          </div>
+                        </div>
+                        <div className="confirm-add-layer2App__balance">
+                          <Layer2AppBalance layer2App={layer2App} />
+                        </div>
+                      </div>
+                    )
+                })
+              }
+            </div>
+          </div>
+        </div>
+        <div className="page-container__footer">
+          <header>
+            <Button
+              type="default"
+              large
+              className="page-container__footer-button"
+              onClick={() => history.push(ADD_LAYER2APP_ROUTE)}
+            >
+              { this.context.t('back') }
+            </Button>
+            <Button
+              type="primary"
+              large
+              className="page-container__footer-button"
+      onClick={() => {
+	console.log("---DEBUG ON CLICK---",pendingLayer2Apps)
+                addLayer2Apps(pendingLayer2Apps)
+                  .then(() => {
+                    clearPendingLayer2Apps()
+                    history.push(DEFAULT_ROUTE)
+                  })
+              }}
+            >
+              { this.context.t('addLayer2Apps') }
+            </Button>
+          </header>
+	</div>
       </div>
     )
   }
 }
-      //     <div className="page-container__title">
-      //       { this.context.t('addLayer2Apps') }
-      //     </div>
-      //     <div className="page-container__subtitle">
-      //       { this.context.t('likeToAddLayer2Apps') }
-      //     </div>
-      //   </div>
-      //   <div className="page-container__content">
-      //     <div className="confirm-add-layer2App">
-      //       <div className="confirm-add-layer2App__header">
-      //         <div className="confirm-add-layer2App__layer2App">
-      //           { this.context.t('layer2App') }
-      //         </div>
-      //         <div className="confirm-add-layer2App__balance">
-      //           { this.context.t('balance') }
-      //         </div>
-      //       </div>
-      //       <div className="confirm-add-layer2App__layer2App-list">
-      //         {
-      //           Object.entries(pendingLayer2Apps)
-      //             .map(([ address, layer2App ]) => {
-      //               const { name, symbol } = layer2App
-
-      //               return (
-      //                 <div
-      //                   className="confirm-add-layer2App__layer2App-list-item"
-      //                   key={address}
-      //                 >
-      //                   <div className="confirm-add-layer2App__layer2App confirm-add-layer2App__data">
-      //                     <Identicon
-      //                       className="confirm-add-layer2App__layer2App-icon"
-      //                       diameter={48}
-      //                       address={address}
-      //                     />
-      //                     <div className="confirm-add-layer2App__name">
-      //                       { this.getLayer2AppName(name, symbol) }
-      //                     </div>
-      //                   </div>
-      //                   <div className="confirm-add-layer2App__balance">
-      //                     <Layer2AppBalance layer2App={layer2App} />
-      //                   </div>
-      //                 </div>
-      //               )
-      //           })
-      //         }
-      //       </div>
-      //     </div>
-      //   </div>
-      //   <div className="page-container__footer">
-      //     <header>
-      //       <Button
-      //         type="default"
-      //         large
-      //         className="page-container__footer-button"
-      //         onClick={() => history.push(ADD_LAYER2APP_ROUTE)}
-      //       >
-      //         { this.context.t('back') }
-      //       </Button>
-      //       <Button
-      //         type="primary"
-      //         large
-      //         className="page-container__footer-button"
-      //         onClick={() => {
-      //           addLayer2Apps(pendingLayer2Apps)
-      //             .then(() => {
-      //               clearPendingLayer2Apps()
-      //               history.push(DEFAULT_ROUTE)
-      //             })
-      //         }}
-      //       >
-      //         { this.context.t('addLayer2Apps') }
-      //       </Button>
-      //     </header>

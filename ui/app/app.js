@@ -91,7 +91,7 @@ class App extends Component {
         }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
-        h(Authenticated, { path: ADD_LAYER2APP_ROUTE, exact, component: AddLayer2AppPage }),	
+        h(Authenticated, { path: ADD_LAYER2APP_ROUTE, exact, component: AddLayer2AppPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE, exact, component: ConfirmAddSuggestedTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_LAYER2APP_ROUTE, exact, component: ConfirmAddLayer2AppPage }),

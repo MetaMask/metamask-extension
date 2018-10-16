@@ -34,13 +34,8 @@ function BalanceComponent () {
 BalanceComponent.prototype.render = function () {
   const props = this.props
   const { token, network, assetImages } = props
-  console.log("---------------------------------------------------------------------------------------------------------------------------------------------------------------DEBUG render -- ", props)
-  console.log("---------------------------------------------------------------------------------------------------------------------------------------------------------------DEBUG render -- ", token)  
   const address = token && token.address
-  console.log("---------------------------------------------------------------------------------------------------------------------------------------------------------------DEBUG render -- ", address)  
   const image = assetImages && address ? assetImages[token.address] : undefined
-  console.log("---------------------------------------------------------------------------------------------------------------------------------------------------------------DEBUG render -- ", image)
-  console.log("---------------------------------------------------------------------------------------------------------------------------------------------------------------DEBUG render -- ", assetImages)  
   return h('div.balance-container', {}, [
 
     // TODO: balance icon needs to be passed in
@@ -61,7 +56,6 @@ BalanceComponent.prototype.render = function () {
 
 BalanceComponent.prototype.renderTokenBalance = function () {
   const { token } = this.props
-  console.log("-------------------------------------------------------------------------------------------------------------------------------------------DEBUGDEBUGDEBUG --renderTokenBalance ", token)
   return h('div.flex-column.balance-display', [
     h('div.token-amount', [ h(TokenBalance, { token }) ]),
   ])
@@ -70,7 +64,6 @@ BalanceComponent.prototype.renderTokenBalance = function () {
 BalanceComponent.prototype.renderBalance = function () {
   const props = this.props
   const { shorten, account } = props
-  console.log("-------------------------------------------------------------------------------------------------------------------------------------------DEBUGDEBUGDEBUG --renderBalance ", props)  
   const balanceValue = account && account.balance
   const needsParse = 'needsParse' in props ? props.needsParse : true
   const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse) : '...'
@@ -95,7 +88,6 @@ BalanceComponent.prototype.renderBalance = function () {
 }
 
 BalanceComponent.prototype.getTokenBalance = function (formattedBalance, shorten) {
-  console.log("-------------------------------------------------------------------------------------------------------------------------------------------DEBUGDEBUGDEBUG getTokenBalance -- ", formattedBalance)
   const balanceObj = generateBalanceObject(formattedBalance, shorten ? 1 : 3)
 
   const balanceValue = shorten ? balanceObj.shortBalance : balanceObj.balance

@@ -1,7 +1,7 @@
 const abi = require('human-standard-token-abi')
 const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
-const { getTokenAddressFromTokenObject } = require('./util')
+const { getTokenAddressFromTokenObject, getLayer2AppAddressFromLayer2AppObject } = require('./util')
 const {
   calcGasTotal,
   calcTokenBalance,
@@ -122,7 +122,9 @@ var actions = {
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
   SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
+  SET_SELECTED_LAYER2APP: 'SET_SELECTED_LAYER2APP',
   setSelectedToken,
+  setSelectedLayer2App,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -227,8 +229,7 @@ var actions = {
   SET_DEFAULT_RPC_TARGET: 'SET_DEFAULT_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
-
-  //LAYER 2 APPS
+  // Layer 2 Apps
   SHOW_ADD_LAYER2APP_PAGE: 'SHOW_ADD_LAYER2APP_PAGE',
   SHOW_ADD_SUGGESTED_LAYER2APP_PAGE: 'SHOW_ADD_SUGGESTED_LAYER2APP_PAGE',
   showAddLayer2AppPage,
@@ -239,7 +240,7 @@ var actions = {
   updateLayer2Apps,
   removeSuggestedLayer2Apps,
   UPDATE_LAYER2APPS: 'UPDATE_LAYER2APPS',
-
+  // Tokens
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
   showAddTokenPage,
@@ -335,7 +336,7 @@ var actions = {
   CLEAR_PENDING_LAYER2APPS: 'CLEAR_PENDING_LAYER2APPS',
   setPendingLayer2Apps,
   clearPendingLayer2Apps,
-  
+
   createCancelTransaction,
 }
 
@@ -1574,6 +1575,13 @@ function setSelectedToken (tokenAddress) {
   }
 }
 
+function setSelectedLayer2App (layer2AppAddress) {
+  return {
+    type: actions.SET_SELECTED_LAYER2APP,
+    value: layer2AppAddress || null,
+  }
+}
+
 function setSelectedAddress (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -1597,6 +1605,7 @@ function showAccountDetail (address) {
         return dispatch(actions.displayWarning(err.message))
       }
       dispatch(updateTokens(tokens))
+      dispatch(updateLayer2Apps(layer2Apps))      
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
@@ -1674,18 +1683,25 @@ function showAddSuggestedLayer2AppPage (transitionForward = true) {
   }
 }
 
-function addLayer2App (address, symbol, decimals, image) {
+function addLayer2App (address, symbol, decimals) {
+  console.log("ADD SINGLE APP FUNC.", address, symbol, decimals)
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addLayer2App(address, symbol, decimals, image, (err, layer2Apps) => {
+      console.log("ADD SINGLE APP FUNC. RETURN")
+      background.addLayer2App(address, symbol, decimals, (err, layer2Apps) => {
+	console.log("DEBUG: add Layer2Apps in background:", address, symbol, decimals, layer2Apps)
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
           reject(err)
         }
+	console.log("DEBUG: add Layer2Apps in background:", address, symbol, decimals, layer2Apps)
         dispatch(actions.updateLayer2Apps(layer2Apps))
+	console.log("DEBUG: add Layer2Apps in background:", address, symbol, decimals, layer2Apps)
         resolve(layer2Apps)
+	console.log("DEBUG: add Layer2Apps in background:", address, symbol, decimals, layer2Apps)
+	console.log("ADD SINGLE APP FUNC. RETURN END")
       })
     })
   }
@@ -1708,21 +1724,24 @@ function removeLayer2App (address) {
   }
 }
 
-function addLayer2Apps (layer2App) {
+function addLayer2Apps (layer2Apps) {
+  console.log("ADDING APPS", layer2Apps)
   return dispatch => {
     if (Array.isArray(layer2Apps)) {
-      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
+      dispatch(actions.setSelectedLayer2App(getLayer2AppAddressFromLayer2AppObject(layer2Apps[0])))
       return Promise.all(layer2Apps.map(({ address, symbol, decimals }) => (
         dispatch(addLayer2App(address, symbol, decimals))
       )))
     } else {
-      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
+      console.log("ELSE: ADDING SINGLE APP")
+      dispatch(actions.setSelectedLayer2App(getLayer2AppAddressFromLayer2AppObject(layer2Apps)))
       return Promise.all(
         Object
-        .entries(tokens)
+        .entries(layer2Apps)
         .map(([_, { address, symbol, decimals }]) => (
           dispatch(addLayer2App(address, symbol, decimals))
-        ))
+        )),
+	console.log("ELSE: ADDING SINGLE APP return end")
       )
     }
   }
@@ -1745,11 +1764,12 @@ function removeSuggestedLayer2Apps () {
       })
     })
     .then(() => updateMetamaskStateFromBackground())
-    .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedLayer2Apps})))
+    .then(suggestedLayer2Apps => dispatch(actions.updateMetamaskState({...suggestedLayer2Apps})))
   }
 }
 
 function updateLayer2Apps (newLayer2Apps) {
+  console.log("-----------DEBUG UPDATE LAYER 2 APPS---------------", newLayer2Apps)
   return {
     type: actions.UPDATE_LAYER2APPS,
     newLayer2Apps,
@@ -1782,13 +1802,17 @@ function addToken (address, symbol, decimals, image) {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.addToken(address, symbol, decimals, image, (err, tokens) => {
+	console.log("DEBUG BACKGROUND ADD TOKEN :", tokens)
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
           reject(err)
         }
+	console.log("DEBUG BACKGROUND ADD TOKEN :", tokens)
         dispatch(actions.updateTokens(tokens))
+	console.log("DEBUG BACKGROUND ADD TOKEN :", tokens)
         resolve(tokens)
+	console.log("DEBUG BACKGROUND ADD TOKEN :", tokens)
       })
     })
   }
@@ -2583,7 +2607,3 @@ function setPendingLayer2Apps (pendingLayer2Apps) {
     payload: layer2Apps,
   }
 }
-
-
-
-  

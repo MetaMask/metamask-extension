@@ -2,7 +2,7 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const TokenTracker = require('eth-token-tracker')
+//const Layer2AppTracker = require('eth-token-tracker')
 const Layer2AppCell = require('./layer2App-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
@@ -17,7 +17,7 @@ function mapStateToProps (state) {
   }
 }
 
-//const defaultLayer2Apps = 
+// const defaultLayer2Apps =
 // const contracts = require('eth-contract-metadata')
 // for (const address in contracts) {
 //   const contract = contracts[address]
@@ -27,15 +27,15 @@ function mapStateToProps (state) {
 //   }
 // }
 
-TokenList.contextTypes = {
+Layer2AppList.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps)(TokenList)
+module.exports = connect(mapStateToProps)(Layer2AppList)
 
 
-inherits(TokenList, Component)
-function TokenList () {
+inherits(Layer2AppList, Component)
+function Layer2AppList () {
   this.state = {
     layer2Apps: [],
     isLoading: true,
@@ -44,20 +44,10 @@ function TokenList () {
   Component.call(this)
 }
 
-TokenList.prototype.render = function () {
+Layer2AppList.prototype.render = function () {
   const { userAddress, assetImages } = this.props
   const state = this.state
-  //  const { s, isLoading, error } = state
-  let { layer2Apps, isLoading, error } = state
-  layer2Apps = []
-  // layer2Apps = [{ name: "Rock Paper Scissors",
-  // 		  address: "0x0000000000000000000",
-  // 		  symbol: "RPS"},
-  // 		{ name: "MetaMask Pay",
-  // 		  address: "0x0000000000000000001",
-  // 		  symbol:"MMP"}]
-  console.log("DEBUG", state)  
-  console.log("DEBUG", layer2Apps)
+  const { layer2Apps, isLoading, error } = state
   if (isLoading) {
     return this.message(this.context.t('loadingLayer2Apps'))
   }
@@ -69,7 +59,7 @@ TokenList.prototype.render = function () {
         padding: '80px',
       },
     }, [
-      this.context.t('troubleTokenBalances'),
+      this.context.t('troubleLayer2AppBalances'),
       h('span.hotFix', {
         style: {
           color: 'rgba(247, 134, 28, 1)',
@@ -91,7 +81,7 @@ TokenList.prototype.render = function () {
 
 }
 
-TokenList.prototype.message = function (body) {
+Layer2AppList.prototype.message = function (body) {
   return h('div', {
     style: {
       display: 'flex',
@@ -103,48 +93,48 @@ TokenList.prototype.message = function (body) {
   }, body)
 }
 
-TokenList.prototype.componentDidMount = function () {
-  this.createFreshTokenTracker()
+Layer2AppList.prototype.componentDidMount = function () {
+  this.createFreshLayer2AppTracker()
 }
 
-TokenList.prototype.createFreshTokenTracker = function () {
-  if (this.tracker) {
-    // Clean up old trackers when refreshing:
-    this.tracker.stop()
-    this.tracker.removeListener('update', this.balanceUpdater)
-    this.tracker.removeListener('error', this.showError)
-  }
+Layer2AppList.prototype.createFreshLayer2AppTracker = function () {
+  // if (this.tracker) {
+  //   // Clean up old trackers when refreshing:
+  //   this.tracker.stop()
+  //   this.tracker.removeListener('update', this.balanceUpdater)
+  //   this.tracker.removeListener('error', this.showError)
+  // }
 
-  if (!global.ethereumProvider) return
-  const { userAddress } = this.props
+  // if (!global.ethereumProvider) return
+  // const { userAddress } = this.props
 
-  this.tracker = new TokenTracker({
-    userAddress,
-    provider: global.ethereumProvider,
-    layer2Apps: this.props.layer2Apps,
-    pollingInterval: 8000,
-  })
+  // this.tracker = new Layer2AppTracker({
+  //   userAddress,
+  //   provider: global.ethereumProvider,
+  //   layer2Apps: this.props.layer2Apps,
+  //   pollingInterval: 8000,
+  // })
 
 
-  // Set up listener instances for cleaning up
-  this.balanceUpdater = this.updateBalances.bind(this)
-  this.showError = (error) => {
-    this.setState({ error, isLoading: false })
-  }
-  this.tracker.on('update', this.balanceUpdater)
-  this.tracker.on('error', this.showError)
+  // // Set up listener instances for cleaning up
+  // this.balanceUpdater = this.updateBalances.bind(this)
+  // this.showError = (error) => {
+  //   this.setState({ error, isLoading: false })
+  // }
+  // this.tracker.on('update', this.balanceUpdater)
+  // this.tracker.on('error', this.showError)
 
-  this.tracker.updateBalances()
-  .then(() => {
-    this.updateBalances(this.tracker.serialize())
-  })
-  .catch((reason) => {
-    log.error(`Problem updating balances`, reason)
-    this.setState({ isLoading: false })
-  })
+  // this.tracker.updateBalances()
+  // .then(() => {
+  //   this.updateBalances(this.tracker.serialize())
+  // })
+  // .catch((reason) => {
+  //   log.error(`Problem updating balances`, reason)
+  this.setState({ isLoading: false })
+  // })
 }
 
-TokenList.prototype.componentDidUpdate = function (nextProps) {
+Layer2AppList.prototype.componentDidUpdate = function (nextProps) {
   const {
     network: oldNet,
     userAddress: oldAddress,
@@ -164,20 +154,20 @@ TokenList.prototype.componentDidUpdate = function (nextProps) {
   const oldLayer2AppsLength = layer2Apps ? layer2Apps.length : 0
   const layer2AppsLengthUnchanged = oldLayer2AppsLength === newLayer2Apps.length
 
-  if (layer2AppsLengthUnchanged && shouldUpdateLayer2Apps) return
+ if (layer2AppsLengthUnchanged && shouldUpdateLayer2Apps) return
 
   this.setState({ isLoading: true })
-  this.createFreshTokenTracker()
+  this.createFreshLayer2AppTracker()
 }
 
-TokenList.prototype.updateBalances = function (layer2Apps) {
+Layer2AppList.prototype.updateBalances = function (layer2Apps) {
   if (!this.tracker.running) {
     return
   }
   this.setState({ layer2Apps, isLoading: false })
 }
 
-TokenList.prototype.componentWillUnmount = function () {
+Layer2AppList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
   this.tracker.removeListener('update', this.balanceUpdater)

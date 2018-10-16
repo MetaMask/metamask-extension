@@ -227,7 +227,7 @@ function reduceApp (state, action) {
         },
         transForward: action.value,
       })
-    
+
     case actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE:
       return extend(appState, {
         currentView: {

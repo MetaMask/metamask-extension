@@ -214,8 +214,8 @@ const MODALS = {
       top: 'calc(33% + 45px)',
     },
   },
-  
-  
+
+
   BETA_UI_NOTIFICATION_MODAL: {
     contents: h(WelcomeBeta),
     mobileModalStyle: {

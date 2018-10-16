@@ -32,8 +32,11 @@
   "addCustomToken": {
     "message": "Add custom token"
   }, 
- "addLayer2App": {
+  "addLayer2App": {
     "message": "Add Layer 2 App"
+  },
+  "addLayer2Apps": {
+    "message": "Add Layer 2 Apps"
   },
   "addToken": {
     "message": "Add Token"
@@ -589,6 +592,9 @@
   "max": {
     "message": "Max"
   },
+  "layer2App": {
+    "message": "Layer 2 App"
+  },
   "layer2AppAddress": {
     "message": "Layer 2 App Address"
   },
@@ -604,6 +610,9 @@
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
+  },
+  "likeToAddLayer2Apps": {
+    "message": "Would you like to add these layer 2 apps?"
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"

@@ -214,7 +214,7 @@ WalletView.prototype.render = function () {
     }, this.context.t('addToken')),
 
     h(Layer2AppList),
-    
+
     h(Button, {
       type: 'primary',
       className: 'wallet-view__add-layer2App-button',
@@ -223,7 +223,7 @@ WalletView.prototype.render = function () {
         sidebarOpen && hideSidebar()
       },
     }, this.context.t('addLayer2App')),
-    
+
 
   ])
 }

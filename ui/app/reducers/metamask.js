@@ -28,8 +28,9 @@ function reduceMetamask (state, action) {
     contractExchangeRates: {},
     tokenExchangeRates: {},
     tokens: [],
-    layer2Apps: [],    
+    layer2Apps: [],
     pendingTokens: {},
+    pendingLayer2Apps: {},
     send: {
       gasLimit: null,
       gasPrice: null,
@@ -165,6 +166,11 @@ function reduceMetamask (state, action) {
         selectedTokenAddress: action.value,
       })
 
+    case actions.SET_SELECTED_LAYER2APP:
+      return extend(metamaskState, {
+        selectedLayer2AppAddress: action.value,
+      })
+
     case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label
@@ -178,6 +184,11 @@ function reduceMetamask (state, action) {
         currentCurrency: action.value.currentCurrency,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
+      })
+
+    case actions.UPDATE_LAYER2APPS:
+      return extend(metamaskState, {
+        layer2Apps: action.newLayer2Apps,
       })
 
     case actions.UPDATE_TOKENS:
@@ -363,6 +374,16 @@ function reduceMetamask (state, action) {
     case actions.CLEAR_PENDING_TOKENS: {
       return extend(metamaskState, {
         pendingTokens: {},
+      })
+    }
+    case actions.SET_PENDING_LAYER2APPS:
+      return extend(metamaskState, {
+        pendingLayer2Apps: { ...action.payload },
+      })
+
+    case actions.CLEAR_PENDING_LAYER2APPS: {
+      return extend(metamaskState, {
+        pendingLayer2Apps: {},
       })
     }
 

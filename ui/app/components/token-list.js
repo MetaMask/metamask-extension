@@ -48,6 +48,7 @@ TokenList.prototype.render = function () {
   const { userAddress, assetImages } = this.props
   const state = this.state
   const { tokens, isLoading, error } = state
+
   if (isLoading) {
     return this.message(this.context.t('loadingTokens'))
   }
