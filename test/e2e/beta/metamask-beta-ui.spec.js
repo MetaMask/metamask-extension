@@ -662,7 +662,7 @@ describe('MetaMask', function () {
     })
 
     it('clicks on the Add Token button', async () => {
-      const addToken = await driver.findElement(By.css('.wallet-view__add-token-button'))
+      const addToken = await driver.findElement(By.xpath(`//div[contains(text(), 'Add Token')]`))
       await addToken.click()
       await delay(regularDelayMs)
     })
@@ -1002,7 +1002,7 @@ describe('MetaMask', function () {
 
   describe('Add existing token using search', () => {
     it('clicks on the Add Token button', async () => {
-      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
+      const addToken = await findElement(driver, By.xpath(`//div[contains(text(), 'Add Token')]`))
       await addToken.click()
       await delay(regularDelayMs)
     })
