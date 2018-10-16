@@ -383,7 +383,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmount.sendKeys('1')
 
@@ -702,7 +702,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmount.sendKeys('50')
 
@@ -834,8 +834,8 @@ describe('MetaMask', function () {
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
 
-      const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__eth'))
-      assert.equal(await gasFeeInputs[0].getText(), '♦ 0.0006')
+      const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
+      assert.equal(await gasFeeInputs[0].getText(), '0.0006')
     })
 
     it('submits the transaction', async function () {
@@ -957,8 +957,8 @@ describe('MetaMask', function () {
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
 
-      const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__eth'))
-      assert.equal(await gasFeeInputs[0].getText(), '♦ 0.0006')
+      const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
+      assert.equal(await gasFeeInputs[0].getText(), '0.0006')
     })
 
     it('submits the transaction', async function () {
