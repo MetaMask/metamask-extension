@@ -54,7 +54,6 @@ function iconExistsFor (address, networkID) {
 
 function imageElFor (address, networkID) {
   const contractMap = networkID === 1 ? contractMapETH : contractMapPOA
-  console.log(contractMap)
   const contract = contractMap[address]
   const fileName = contract.logo
   const imagesFolder = networkID === 1 ? 'images/contract' : 'images/contractPOA'
