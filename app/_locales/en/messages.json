@@ -1189,7 +1189,7 @@
     "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
-    "message": "Type Your Password"
+    "message": "Type your MetaMask password"
   },
   "uiWelcome": {
     "message": "Welcome to the New UI (Beta)"
