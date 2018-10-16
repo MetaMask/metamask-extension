@@ -835,7 +835,7 @@ describe('MetaMask', function () {
       await driver.wait(until.stalenessOf(gasModal))
 
       const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
-      assert.equal(await gasFeeInputs[0].getText(), '♦ 0.0006')
+      assert.equal(await gasFeeInputs[0].getText(), '0.0006')
     })
 
     it('submits the transaction', async function () {
@@ -958,7 +958,7 @@ describe('MetaMask', function () {
       await driver.wait(until.stalenessOf(gasModal))
 
       const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
-      assert.equal(await gasFeeInputs[0].getText(), '♦ 0.0006')
+      assert.equal(await gasFeeInputs[0].getText(), '0.0006')
     })
 
     it('submits the transaction', async function () {

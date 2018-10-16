@@ -11,7 +11,7 @@ import {
   updateCurrentLocale,
   setFeatureFlag,
   showModal,
-  setPreference,
+  setUseETHAsPrimaryCurrencyPreference,
 } from '../../../../actions'
 import { preferencesSelector } from '../../../../selectors'
 
@@ -55,7 +55,7 @@ const mapDispatchToProps = dispatch => {
     setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
     setUseETHAsPrimaryCurrencyPreference: value => {
-      return dispatch(setPreference('useETHAsPrimaryCurrency', value))
+      return dispatch(setUseETHAsPrimaryCurrencyPreference(value))
     },
   }
 }

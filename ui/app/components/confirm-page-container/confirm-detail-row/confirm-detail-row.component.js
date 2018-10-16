@@ -42,7 +42,8 @@ const ConfirmDetailRow = props => {
                 className="confirm-detail-row__primary"
                 type={PRIMARY}
                 value={value}
-                ethPrefix={'\u2666 '}
+                showEthLogo
+                ethLogoHeight="18"
                 style={{ color: primaryValueTextColor }}
                 hideLabel
               />
@@ -59,7 +60,7 @@ const ConfirmDetailRow = props => {
                 className="confirm-detail-row__secondary"
                 type={SECONDARY}
                 value={value}
-                ethPrefix={'\u2666 '}
+                showEthLogo
                 hideLabel
               />
             )
@@ -75,7 +76,7 @@ ConfirmDetailRow.propTypes = {
   label: PropTypes.string,
   onHeaderClick: PropTypes.func,
   primaryValueTextColor: PropTypes.string,
-  primaryText: PropTypes.string,
+  primaryText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   secondaryText: PropTypes.string,
   value: PropTypes.string,
 }

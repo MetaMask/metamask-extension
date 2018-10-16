@@ -58,10 +58,26 @@ export default class ConfirmTokenTransactionBase extends Component {
         <UserPreferencedCurrencyDisplay
           value={hexWeiValue}
           type={PRIMARY}
-          ethPrefix={'\u2666 '}
+          showEthLogo
           hideLabel
         />
       )
+  }
+
+  renderPrimaryTotalTextOverride () {
+    const { tokenAmount, tokenSymbol, ethTransactionTotal } = this.props
+    const tokensText = `${tokenAmount} ${tokenSymbol}`
+
+    return (
+      <div>
+        <span>{ `${tokensText} + ` }</span>
+        <img
+          src="/images/eth.svg"
+          height="18"
+        />
+        <span>{ ethTransactionTotal }</span>
+      </div>
+    )
   }
 
   getSecondaryTotalTextOverride () {
@@ -83,7 +99,6 @@ export default class ConfirmTokenTransactionBase extends Component {
       tokenAddress,
       tokenSymbol,
       tokenAmount,
-      ethTransactionTotal,
       ...restProps
     } = this.props
 
@@ -95,7 +110,7 @@ export default class ConfirmTokenTransactionBase extends Component {
         identiconAddress={tokenAddress}
         title={tokensText}
         subtitleComponent={this.renderSubtitleComponent()}
-        primaryTotalTextOverride={`${tokensText} + \u2666 ${ethTransactionTotal}`}
+        primaryTotalTextOverride={this.renderPrimaryTotalTextOverride()}
         secondaryTotalTextOverride={this.getSecondaryTotalTextOverride()}
         {...restProps}
       />

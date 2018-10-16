@@ -62,7 +62,7 @@ export default class ConfirmTransactionBase extends Component {
     detailsComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    primaryTotalTextOverride: PropTypes.string,
+    primaryTotalTextOverride: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     secondaryTotalTextOverride: PropTypes.string,
     hideData: PropTypes.bool,
     hideDetails: PropTypes.bool,
@@ -323,7 +323,8 @@ export default class ConfirmTransactionBase extends Component {
       <UserPreferencedCurrencyDisplay
         value={hexTransactionAmount}
         type={PRIMARY}
-        ethPrefix={'\u2666 '}
+        showEthLogo
+        ethLogoHeight="26"
         hideLabel
       />
     )
@@ -341,7 +342,7 @@ export default class ConfirmTransactionBase extends Component {
       <UserPreferencedCurrencyDisplay
         value={hexTransactionAmount}
         type={SECONDARY}
-        ethPrefix={'\u2666 '}
+        showEthLogo
         hideLabel
       />
     )

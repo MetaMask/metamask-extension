@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TokenInput from '../token-input'
 
-export default class UserPreferencedCurrencyInput extends PureComponent {
+export default class UserPreferencedTokenInput extends PureComponent {
   static propTypes = {
     useETHAsPrimaryCurrency: PropTypes.bool,
   }

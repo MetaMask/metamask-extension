@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display.component'
 import CurrencyDisplay from '../../currency-display'
 
-describe('UserPreferencedCurrencyInput Component', () => {
+describe('UserPreferencedCurrencyDisplay Component', () => {
   describe('rendering', () => {
     it('should render properly', () => {
       const wrapper = shallow(
