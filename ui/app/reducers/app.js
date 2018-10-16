@@ -297,6 +297,7 @@ function reduceApp (state, action) {
         currentView: {
           name: 'sendToken',
           context: appState.currentView.context,
+          tokenAddress: action.value,
         },
         transForward: true,
         warning: null,
@@ -438,6 +439,7 @@ function reduceApp (state, action) {
         currentView: {
           name: 'confTx',
           pendingTxIndex: action.id ? indexForPending(state, action.id) : 0,
+          screenParams: action.value,
         },
         transForward: action.transForward,
         warning: null,

@@ -16,22 +16,28 @@ const Loading = require('./components/loading')
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
 function mapStateToProps (state) {
+  const { metamask, appState } = state
+  const { screenParams, pendingTxIndex } = appState.currentView
   return {
-    identities: state.metamask.identities,
-    accounts: state.metamask.accounts,
-    selectedAddress: state.metamask.selectedAddress,
-    unapprovedTxs: state.metamask.unapprovedTxs,
-    unapprovedMsgs: state.metamask.unapprovedMsgs,
-    unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
-    unapprovedTypedMessages: state.metamask.unapprovedTypedMessages,
-    index: state.appState.currentView.pendingTxIndex || 0,
-    warning: state.appState.warning,
-    network: state.metamask.network,
-    provider: state.metamask.provider,
-    conversionRate: state.metamask.conversionRate,
-    currentCurrency: state.metamask.currentCurrency,
-    blockGasLimit: state.metamask.currentBlockGasLimit,
-    computedBalances: state.metamask.computedBalances,
+    identities: metamask.identities,
+    accounts: metamask.accounts,
+    selectedAddress: metamask.selectedAddress,
+    unapprovedTxs: metamask.unapprovedTxs,
+    unapprovedMsgs: metamask.unapprovedMsgs,
+    unapprovedPersonalMsgs: metamask.unapprovedPersonalMsgs,
+    unapprovedTypedMessages: metamask.unapprovedTypedMessages,
+    index: pendingTxIndex || 0,
+    warning: appState.warning,
+    network: metamask.network,
+    provider: metamask.provider,
+    conversionRate: metamask.conversionRate,
+    currentCurrency: metamask.currentCurrency,
+    blockGasLimit: metamask.currentBlockGasLimit,
+    computedBalances: metamask.computedBalances,
+    isToken: (screenParams && screenParams.isToken),
+    tokenSymbol: (screenParams && screenParams.tokenSymbol),
+    tokensToSend: (screenParams && screenParams.tokensToSend),
+    tokensTransferTo: (screenParams && screenParams.tokensTransferTo),
   }
 }
 
@@ -95,6 +101,10 @@ ConfirmTxScreen.prototype.render = function () {
         unconfTxListLength,
         computedBalances,
         network,
+        isToken: props.isToken,
+        tokenSymbol: props.tokenSymbol,
+        tokensToSend: props.tokensToSend,
+        tokensTransferTo: props.tokensTransferTo,
         // Actions
         buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
         sendTransaction: this.sendTransaction.bind(this),

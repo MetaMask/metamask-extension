@@ -47,9 +47,15 @@ function calcTokenAmount (value, decimals) {
   return new BigNumber(value).div(multiplier).toNumber()
 }
 
+function calcTokenAmountWithDec (valueWithoutDec, decimals) {
+  const multiplier = Math.pow(10, Number(decimals || 0))
+  return new BigNumber(valueWithoutDec).mul(multiplier).toNumber()
+}
+
 
 module.exports = {
   tokenInfoGetter,
   calcTokenAmount,
+  calcTokenAmountWithDec,
   getSymbolAndDecimals,
 }

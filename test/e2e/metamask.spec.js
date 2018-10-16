@@ -134,13 +134,13 @@ describe('Metamask popup page', async function () {
       await menu.click()
       const field = await waitUntilShowUp(screens.main.edit)
       await field.click()
-      const accountName = await waitUntilShowUp(screens.main.accountName)
+      const accountName = await waitUntilShowUp(screens.main.fieldAccountName)
       assert.notEqual(accountName, false, '\'Account name\' change dialog isn\'t opened')
       assert.equal(await accountName.getAttribute('value'), 'Account 1', 'incorrect account name')
     })
 
     it('fill out new account\'s name', async () => {
-      const field = await waitUntilShowUp(screens.main.accountName)
+      const field = await waitUntilShowUp(screens.main.fieldAccountName)
       await field.clear()
       await field.sendKeys(newAccountName)
     })
@@ -150,7 +150,7 @@ describe('Metamask popup page', async function () {
       assert.equal(await button.getText(), 'Save', 'button has incorrect name')
       assert.notEqual(button, true, 'button \'Save\' does not present')
       await click(button)
-      const accountName = await waitUntilShowUp(screens.main.accountName, 10)
+      const accountName = await waitUntilShowUp(screens.main.fieldAccountName, 10)
       assert.equal(accountName, false, '\'Account name\' change dialog isn\'t opened')
     })
 
@@ -587,8 +587,8 @@ describe('Metamask popup page', async function () {
     it('adds recipient address and amount', async function () {
       const sendTranscationScreen = await waitUntilShowUp(screens.sendTransaction.title)
       assert.equal(await sendTranscationScreen.getText(), screens.sendTransaction.titleText, 'Transaction screen has incorrect titlr')
-      const inputAddress = await waitUntilShowUp(screens.sendTransaction.fields.address)
-      const inputAmmount = await waitUntilShowUp(screens.sendTransaction.fields.amount)
+      const inputAddress = await waitUntilShowUp(screens.sendTransaction.field.address)
+      const inputAmmount = await waitUntilShowUp(screens.sendTransaction.field.amount)
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmmount.sendKeys('10')
       const button = await waitUntilShowUp(screens.sendTransaction.buttonNext)
@@ -597,7 +597,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('confirms transaction', async function () {
-      const button = await waitUntilShowUp(screens.confirmTransaction.buttons.submit)
+      const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
       assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
       await click(button)
     })
@@ -924,7 +924,7 @@ describe('Metamask popup page', async function () {
       it('confirms transaction in MetaMask popup', async function () {
         const windowHandles = await driver.getAllWindowHandles()
         await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-        const button = await waitUntilShowUp(screens.confirmTransaction.buttons.submit)
+        const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
         await click(button)
       })
 
@@ -949,6 +949,9 @@ describe('Metamask popup page', async function () {
 
       it('navigates to the add token screen', async function () {
         await waitUntilShowUp(screens.main.identicon)
+        const tab = await waitUntilShowUp(screens.main.tokens.menu)
+        await tab.click()
+
         const addTokenButton = await waitUntilShowUp(screens.main.tokens.buttonAdd)
         assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
         await click(addTokenButton)
@@ -1007,6 +1010,50 @@ describe('Metamask popup page', async function () {
         const title = await driver.getCurrentUrl()
         assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
         await switchToFirstPage()
+      })
+    })
+    describe('Token menu', function () {
+
+      it('token menu is displayed and clickable ', async function () {
+        const menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+      })
+
+      it('link \'View on blockexplorer...\' leads to correct page ', async function () {
+        const menu = await waitUntilShowUp(menus.token.view)
+        assert.notEqual(menu, false, 'item isn\'t displayed')
+        assert.equal(await menu.getText(), menus.token.viewText, 'incorrect name')
+        await menu.click()
+        await switchToLastPage()
+        const title = await driver.getCurrentUrl()
+        assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
+        await switchToFirstPage()
+      })
+
+      it('item \'Copy\' is displayed and clickable ', async function () {
+        let menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+        const item = await waitUntilShowUp(menus.token.copy)
+        assert.notEqual(item, false, 'item isn\'t displayed')
+        assert.equal(await item.getText(), menus.token.copyText, 'incorrect name')
+        await item.click()
+        menu = await waitUntilShowUp(menus.token.menu, 10)
+        assert.notEqual(menu, false, 'menu wasn\'t closed')
+      })
+
+      it('item \'Remove\' is displayed', async function () {
+        const menu = await waitUntilShowUp(menus.token.menu)
+        await menu.click()
+        const item = await waitUntilShowUp(menus.token.remove)
+        assert.notEqual(item, false, 'item isn\'t displayed')
+        assert.equal(await item.getText(), menus.token.removeText, 'incorrect name')
+      })
+
+      it('item \'Send \' is displayed', async function () {
+        const item = await waitUntilShowUp(menus.token.send)
+        assert.notEqual(item, false, 'item isn\'t displayed')
+        assert.equal(await item.getText(), menus.token.sendText, 'incorrect name')
+        await waitUntilShowUp(menus.token.menu)
       })
     })
 
@@ -1092,44 +1139,178 @@ describe('Metamask popup page', async function () {
       })
     })
 
-    describe('Token menu', function () {
+    describe('Transfer tokens', function () {
 
-      it('token menu is displayed and clickable ', async function () {
-        const menu = await waitUntilShowUp(menus.token.menu)
-        await menu.click()
-      })
-
-      it('link \'View on blockexplorer...\' leads to correct page ', async function () {
-        const menu = await waitUntilShowUp(menus.token.view)
-        assert.notEqual(menu, false, 'item isn\'t displayed')
-        assert.equal(await menu.getText(), menus.token.viewText, 'incorrect name')
-        await menu.click()
-        await switchToLastPage()
-        const title = await driver.getCurrentUrl()
-        assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
-        await switchToFirstPage()
-      })
-
-      it('item \'Copy\' is displayed and clickable ', async function () {
-        let menu = await waitUntilShowUp(menus.token.menu)
-        await menu.click()
-        const item = await waitUntilShowUp(menus.token.copy)
-        assert.notEqual(item, false, 'item isn\'t displayed')
-        assert.equal(await item.getText(), menus.token.copyText, 'incorrect name')
+      const account2 = '0x2f318C334780961FB129D2a6c30D0763d9a5C970'
+      const invalidAddress = '0xkqjefwblknnecwe'
+      const invalidAmount = 'eeeee'
+      const largeAmount = '123'
+      const preciseAmount = '0.123456789123456789123'
+      const negativeAmount = '-1'
+      it('switch to account 1 ', async function () {
+        const accountMenu = await waitUntilShowUp(menus.account.menu)
+        await accountMenu.click()
+        const item = await waitUntilShowUp(menus.account.account1)
         await item.click()
-        menu = await waitUntilShowUp(menus.token.menu, 10)
-        assert.notEqual(menu, false, 'menu wasn\'t closed')
+        await delay(2000)
+        const accountName = await waitUntilShowUp(screens.main.accountName)
+        assert.equal(await accountName.getText(), 'Account 1', 'account name incorrect')
       })
 
-      it('item \'Remove\' is displayed', async function () {
+      it('open screen \'Transfer tokens\' ', async function () {
         const menu = await waitUntilShowUp(menus.token.menu)
         await menu.click()
-        const item = await waitUntilShowUp(menus.token.remove)
-        assert.notEqual(item, false, 'item isn\'t displayed')
-        assert.equal(await item.getText(), menus.token.removeText, 'incorrect name')
+        const item = await waitUntilShowUp(menus.token.send)
+        await item.click()
+      })
+
+      it('field \'Amount\' is displayed and has correct placeholder ', async function () {
+        const item = await waitUntilShowUp(screens.sendTokens.field.amount)
+        assert.equal(await item.getAttribute('placeholder'), screens.sendTokens.field.amountPlaceholder, 'placeholder is incorrect')
+      })
+
+      it('field \'Address\' is displayed and has correct placeholder ', async function () {
+        const item = await waitUntilShowUp(screens.sendTokens.field.address)
+        assert.equal(await item.getAttribute('placeholder'), screens.sendTokens.field.addressPlaceholder, 'placeholder is incorrect')
+      })
+
+      it('token\'s balance is correct ', async function () {
+        const item = await waitUntilShowUp(screens.sendTokens.balance)
+        assert.equal(await item.getText(), '100', 'token\'s balance is incorrect')
+      })
+
+      it('token\'s symbol is correct ', async function () {
+        const item = await waitUntilShowUp(screens.sendTokens.symbol)
+        assert.equal(await item.getText(), 'TST', 'token\'s symbol is incorrect')
+      })
+
+      it('error message if invalid token\'s amount', async function () {
+        const button = await waitUntilShowUp(screens.sendTokens.button.next)
+        assert.equal(await button.getText(), 'Next', 'button \'Next\' has incorrect name')
+        await click(button)
+        const error = await waitUntilShowUp(screens.sendTokens.error)
+        assert.equal(await error.getText(), screens.sendTokens.errorText.invalidAmount, ' error message is incorrect')
+      })
+
+      it('error message if invalid address', async function () {
+        const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
+        await amount.sendKeys('1')
+        const address = await waitUntilShowUp(screens.sendTokens.field.address)
+        await address.sendKeys(invalidAddress)
+        const button = await waitUntilShowUp(screens.sendTokens.button.next)
+        await click(button)
+        await click(button)
+        await delay(2000)
+        const error = await waitUntilShowUp(screens.sendTokens.error)
+        assert.equal(await error.getText(), screens.sendTokens.errorText.address, ' error message is incorrect')
+      })
+
+      it('error message if amount is large', async function () {
+        const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
+        await amount.sendKeys(largeAmount)
+        const address = await waitUntilShowUp(screens.sendTokens.field.address)
+        await clearField(address)
+        await address.sendKeys(account2)
+        const button = await waitUntilShowUp(screens.sendTokens.button.next)
+        await click(button)
+        await click(button)
+        await delay(2000)
+        const error = await waitUntilShowUp(screens.sendTokens.error)
+        assert.equal(await error.getText(), screens.sendTokens.errorText.largeAmount, ' error message is incorrect')
+      })
+
+      it('error message if amount is invalid', async function () {
+        const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
+        await clearField(amount)
+        await amount.sendKeys(invalidAmount)
+        const button = await waitUntilShowUp(screens.sendTokens.button.next)
+        await click(button)
+        await click(button)
+        await delay(2000)
+        const error = await waitUntilShowUp(screens.sendTokens.error)
+        assert.equal(await error.getText(), screens.sendTokens.errorText.invalidAmount, ' error message is incorrect')
+      })
+      it.skip('error message if amount is too precise', async function () {
+        const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
+        await clearField(amount)
+        await amount.sendKeys(preciseAmount)
+        const button = await waitUntilShowUp(screens.sendTokens.button.next)
+        await click(button)
+        await click(button)
+        await delay(2000)
+        const error = await waitUntilShowUp(screens.sendTokens.error)
+        assert.equal(await error.getText(), screens.sendTokens.errorText.tooPrecise, ' error message is incorrect')
+      })
+
+      it('error message if amount is negative', async function () {
+        const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
+        await clearField(amount)
+        await amount.sendKeys(negativeAmount)
+        const button = await waitUntilShowUp(screens.sendTokens.button.next)
+        await click(button)
+        await click(button)
+        await delay(2000)
+        const error = await waitUntilShowUp(screens.sendTokens.error)
+        assert.equal(await error.getText(), screens.sendTokens.errorText.negativeAmount, ' error message is incorrect')
+      })
+
+      it('\'Confirm transaction\' screen is opened if address and amount are correct', async function () {
+        const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
+        await clearField(amount)
+        await amount.sendKeys('5')
+        const button = await waitUntilShowUp(screens.sendTokens.button.next)
+        await click(button)
+
+        const buttonSubmit = await waitUntilShowUp(screens.confirmTransaction.button.submit)
+        assert.notEqual(buttonSubmit, false, 'incorrect screen was opened')
+      })
+
+      it('\'Confirm transaction\' screen: token\'s amount is correct', async function () {
+        const amount = await waitUntilShowUp(screens.confirmTransaction.amount)
+        assert.equal(await amount.getText(), '5.000', ' amount is incorrect')
+      })
+
+      it('\'Confirm transaction\' screen: token\'s symbol is correct', async function () {
+        const symbol = await waitUntilShowUp(screens.confirmTransaction.symbol)
+        assert.equal(await symbol.getText(), 'TST', ' symbol is incorrect')
+      })
+
+      it('submit transaction', async function () {
+        await driver.navigate().refresh()
+        const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
+        await click(button)
+        const list = await waitUntilShowUp(screens.main.transactionList)
+        assert.notEqual(list, false, ' main screen isn\'t opened')
+      })
+
+      it('correct amount substracted from sender\'s tokens balance', async function () {
+        const tab = await waitUntilShowUp(screens.main.tokens.menu)
+        await tab.click()
+        await driver.navigate().refresh()
+        await delay(5000)
+        await driver.navigate().refresh()
+        await delay(5000)
+        await driver.navigate().refresh()
+        await delay(5000)
+        const balance = await waitUntilShowUp(screens.main.tokens.balance)
+
+        assert.equal(await balance.getText(), '95 TST', 'balance is incorrect')
+      })
+      it('switch to account 2 ', async function () {
+        const accountMenu = await waitUntilShowUp(menus.account.menu)
+        await accountMenu.click()
+        const item = await waitUntilShowUp(menus.account.account2)
+        await item.click()
+        await delay(2000)
+        const accountName = await waitUntilShowUp(screens.main.accountName)
+        assert.equal(await accountName.getText(), 'Account 2', 'account name incorrect')
+      })
+
+      it('receiver got correct amount of tokens', async function () {
+        const balance = await waitUntilShowUp(screens.main.tokens.balance)
+        assert.equal(await balance.getText(), '5 TST', 'balance is incorrect')
       })
     })
-
     describe('Remove token , provider is localhost', function () {
 
       it('remove option opens \'Remove token\' screen ', async function () {
