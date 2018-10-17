@@ -857,9 +857,6 @@
   "refundAddress": {
     "message": "환불받을 주소"
   },
-  "reject": {
-    "message": "거부"
-  },
   "rejectAll": {
     "message": "모두 거부"
   },
