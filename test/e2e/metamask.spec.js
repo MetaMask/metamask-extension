@@ -15,13 +15,13 @@ describe('Metamask popup page', async function () {
   this.timeout(0)
 
   before(async function () {
-    if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
       const extPath = path.resolve('dist/chrome')
       driver = buildChromeWebDriver(extPath)
       extensionId = await getExtensionIdChrome(driver)
       await driver.get(`chrome-extension://${extensionId}/popup.html`)
 
-    } else if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
+    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
       const extPath = path.resolve('dist/firefox')
       driver = buildFirefoxWebdriver()
       await installWebExt(driver, extPath)
@@ -34,17 +34,17 @@ describe('Metamask popup page', async function () {
   afterEach(async function () {
     // logs command not supported in firefox
     // https://github.com/SeleniumHQ/selenium/issues/2910
-    if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
       // check for console errors
       const errors = await checkBrowserForConsoleErrors()
-      if ( errors.length ) {
+      if (errors.length) {
         const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
         console.log(errorMessage)
       }
     }
     // gather extra data if test failed
-    if ( this.currentTest.state === 'failed' ) {
+    if (this.currentTest.state === 'failed') {
       await verboseReportOnFailure(this.currentTest)
     }
   })
@@ -942,9 +942,9 @@ describe('Metamask popup page', async function () {
       })
 
       it('navigates back to MetaMask popup in the tab', async function () {
-        if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
+        if (process.env.SELENIUM_BROWSER === 'chrome') {
           await driver.get(`chrome-extension://${extensionId}/popup.html`)
-        } else if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
+        } else if (process.env.SELENIUM_BROWSER === 'firefox') {
           await driver.get(`moz-extension://${extensionId}/popup.html`)
         }
         await delay(700)
@@ -968,7 +968,7 @@ describe('Metamask popup page', async function () {
       })
       it('adds token parameters', async function () {
         const tab = await waitUntilShowUp(screens.addToken.tab.custom, 30)
-        if ( !await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) ) await tab.click()
+        if (!await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)) await tab.click()
       })
       it('address input is displayed and has correct placeholder', async function () {
         const field = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
@@ -1476,7 +1476,7 @@ describe('Metamask popup page', async function () {
     it('user can add four more valid custom rpc', async function () {
       const fieldRpc = await waitUntilShowUp(screens.settings.fieldNewRPC)
       const customUrlElement = await waitUntilShowUp(screens.settings.currentNetwork)
-      for ( let i = 1; i < 5; i++ ) {
+      for (let i = 1; i < 5; i++) {
         await clearField(fieldRpc)
         await clearField(fieldRpc)
         await clearField(fieldRpc)
@@ -1543,12 +1543,12 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  async function setProvider(network) {
+  async function setProvider (network) {
     await delay(300)
     const menu = await waitUntilShowUp(screens.main.network)
     await menu.click()
     let counter
-    switch ( network ) {
+    switch (network) {
       case NETWORKS.POA:
         counter = 0
         break
@@ -1582,59 +1582,59 @@ describe('Metamask popup page', async function () {
     await driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
   }
 
-  async function scrollTo(element) {
+  async function scrollTo (element) {
     try {
       await driver.executeScript('arguments[0].scrollIntoView();', element)
       return true
-    } catch ( err ) {
+    } catch (err) {
       return false
     }
   }
 
-  async function click(element) {
+  async function click (element) {
     try {
       await element.sendKeys(Key.RETURN)
       return true
-    } catch ( err ) {
+    } catch (err) {
       return false
     }
   }
 
-  async function clearField(field, number) {
+  async function clearField (field, number) {
     await click(field)
-    if ( number === undefined ) number = 40
-    for ( let i = 0; i < number; i++ ) {
+    if (number === undefined) number = 40
+    for (let i = 0; i < number; i++) {
       await field.sendKeys(Key.BACK_SPACE)
     }
   }
 
-  async function waitUntilDisappear(by, Twait) {
-    if ( Twait === undefined ) Twait = 10
+  async function waitUntilDisappear (by, Twait) {
+    if (Twait === undefined) Twait = 10
     do {
-      if ( !await isElementDisplayed(by) ) return true
+      if (!await isElementDisplayed(by)) return true
 
-    } while ( Twait-- > 0 )
+    } while (Twait-- > 0)
     return false
   }
 
-  async function waitUntilShowUp(by, Twait) {
-    if ( Twait === undefined ) Twait = 200
+  async function waitUntilShowUp (by, Twait) {
+    if (Twait === undefined) Twait = 200
     do {
       await delay(100)
-      if ( await isElementDisplayed(by) ) return await driver.findElement(by)
-    } while ( Twait-- > 0 )
+      if (await isElementDisplayed(by)) return await driver.findElement(by)
+    } while (Twait-- > 0)
     return false
   }
 
-  async function isElementDisplayed(by) {
+  async function isElementDisplayed (by) {
     try {
       return await driver.findElement(by).isDisplayed()
-    } catch ( err ) {
+    } catch (err) {
       return false
     }
   }
 
-  async function assertTokensNotDisplayed() {
+  async function assertTokensNotDisplayed () {
     try {
       await delay(800)
       await waitUntilDisappear(elements.loader)
@@ -1647,13 +1647,13 @@ describe('Metamask popup page', async function () {
       const tokens = await driver.findElements(screens.main.tokens.token)
       assert.equal(tokens.length, 0, 'Unexpected token presents')
       return true
-    } catch ( err ) {
+    } catch (err) {
       console.log(err)
       return false
     }
   }
 
-  async function isDisabledAddInexistentToken(tokenAddress) {
+  async function isDisabledAddInexistentToken (tokenAddress) {
     try {
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
@@ -1661,11 +1661,11 @@ describe('Metamask popup page', async function () {
         const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
         try {
           await tab.click()
-        } catch ( err ) {
+        } catch (err) {
         }
       }
-      while ( await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false )
-    } catch ( err ) {
+      while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
+    } catch (err) {
       return false
     }
     const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
@@ -1673,20 +1673,20 @@ describe('Metamask popup page', async function () {
     await fieldAddress.sendKeys(tokenAddress)
 
     const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if ( await fieldSymbols.isEnabled() ) return false
+    if (await fieldSymbols.isEnabled()) return false
 
     const fieldDecimals = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if ( await fieldDecimals.isEnabled() ) return false
+    if (await fieldDecimals.isEnabled()) return false
 
     const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
-    if ( await buttonAdd.isEnabled() ) return false
+    if (await buttonAdd.isEnabled()) return false
 
     const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
     await click(buttonCancel)
     return true
   }
 
-  async function checkBrowserForConsoleErrors() {
+  async function checkBrowserForConsoleErrors () {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly
@@ -1706,11 +1706,11 @@ describe('Metamask popup page', async function () {
     return matchedErrorObjects
   }
 
-  async function verboseReportOnFailure(test) {
+  async function verboseReportOnFailure (test) {
     let artifactDir
-    if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
       artifactDir = `./test-artifacts/chrome/${test.title}`
-    } else if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
+    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
       artifactDir = `./test-artifacts/firefox/${test.title}`
     }
     const filepathBase = `${artifactDir}/test-failure`
@@ -1723,34 +1723,34 @@ describe('Metamask popup page', async function () {
     await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
 
-  async function switchToLastPage() {
+  async function switchToLastPage () {
     try {
       const allHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(allHandles[allHandles.length - 1])
       let counter = 100
       do {
         await delay(500)
-        if ( await driver.getCurrentUrl() !== '' ) return true
+        if (await driver.getCurrentUrl() !== '') return true
       }
-      while ( counter-- > 0 )
+      while (counter-- > 0)
       return true
-    } catch ( err ) {
+    } catch (err) {
       return false
     }
   }
 
-  async function switchToFirstPage() {
+  async function switchToFirstPage () {
     try {
       const allHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(allHandles[0])
       let counter = 100
       do {
         await delay(500)
-        if ( await driver.getCurrentUrl() !== '' ) return true
+        if (await driver.getCurrentUrl() !== '') return true
       }
-      while ( counter-- > 0 )
+      while (counter-- > 0)
       return true
-    } catch ( err ) {
+    } catch (err) {
       return false
     }
   }
