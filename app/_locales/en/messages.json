@@ -140,6 +140,9 @@
   "clickCopy": {
     "message": "Click to Copy"
   },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
   "close": {
     "message": "Close"
   },
@@ -640,6 +643,9 @@
   },
   "min": {
     "message": "Minimum"
+  },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
   },
   "myAccounts": {
     "message": "My Accounts"
