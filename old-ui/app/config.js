@@ -315,6 +315,11 @@ function currentProviderDisplay (metamaskState, state) {
       value = ethNetProps.props.getNetworkDisplayName(99)
       break
 
+    case 'dai':
+      title = 'Current Network'
+      value = ethNetProps.props.getNetworkDisplayName(100)
+      break
+
     default:
       title = 'Current RPC'
       value = metamaskState.provider.rpcTarget

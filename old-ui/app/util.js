@@ -1,4 +1,5 @@
 const ethUtil = require('ethereumjs-util')
+const ethNetProps = require('eth-net-props')
 
 var valueTable = {
   wei: '1000000000000000000',
@@ -112,9 +113,7 @@ function parseBalance (balance) {
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
 function formatBalance (balance, decimalsToKeep, needsParse = true, network, isToken, tokenSymbol) {
-  const isSokol = parseInt(network) === 77
-  const isPOA = parseInt(network) === 99
-  const coinName = isPOA ? 'POA' : isSokol ? 'SPOA' : 'ETH'
+  const coinName = ethNetProps.props.getNetworkCoinName(network)
   const assetName = isToken ? tokenSymbol : coinName
   var parsed = needsParse ? parseBalance(balance) : balance.split('.')
   var beforeDecimal = parsed[0]

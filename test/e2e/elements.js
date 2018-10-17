@@ -305,6 +305,7 @@ module.exports = {
   },
   NETWORKS: {
     POA: 'poa',
+    DAI: 'dai',
     SOKOL: 'sokol',
     MAINNET: 'mainnet',
     ROPSTEN: 'ropsten',
