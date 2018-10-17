@@ -29,9 +29,6 @@
   "clearApprovalData": {
     "message": "Cancella i dati di approvazione"
   },
-  "approve": {
-    "message": "Approvare"
-  },
   "reject": {
     "message": "Rifiutare"
   },
@@ -868,9 +865,6 @@
   },
   "refundAddress": {
     "message": "Indirizzo di Rimborso"
-  },
-  "reject": {
-    "message": "Reject"
   },
   "rejectAll": {
     "message": "Reject All"
