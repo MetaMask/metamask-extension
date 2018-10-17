@@ -72,6 +72,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('screen \'Terms of Use\' has not empty agreement', async () => {
+      await delay(5000)
       const terms = await waitUntilShowUp(screens.TOU.agreement, 300)
       const text = await terms.getText()
       assert.equal(text.length > 400, true, 'agreement is too short')
@@ -135,7 +136,7 @@ describe('Metamask popup page', async function () {
       await field.click()
       const accountName = await waitUntilShowUp(screens.main.fieldAccountName)
       assert.notEqual(accountName, false, '\'Account name\' change dialog isn\'t opened')
-      assert.equal(await accountName.getAttribute('value'), 'Account 1', 'incorrect placeholder')
+      assert.equal(await accountName.getAttribute('value'), 'Account 1', 'incorrect account name')
     })
 
     it('fill out new account\'s name', async () => {
@@ -894,6 +895,8 @@ describe('Metamask popup page', async function () {
   })
 
   describe('Add Token: Custom', function () {
+    const symbol = 'TST'
+    const decimals = '0'
 
     describe('Token Factory', function () {
 
@@ -916,8 +919,8 @@ describe('Metamask popup page', async function () {
 
         await totalSupply.sendKeys('100')
         await tokenName.sendKeys('Test')
-        await tokenDecimal.sendKeys('0')
-        await tokenSymbol.sendKeys('TST')
+        await tokenDecimal.sendKeys(decimals)
+        await tokenSymbol.sendKeys(symbol)
         await click(createToken)
         await delay(1000)
       })
@@ -947,7 +950,7 @@ describe('Metamask popup page', async function () {
         await delay(700)
       })
     })
-    describe('Add token', function () {
+    describe('Add token to LOCALHOST', function () {
 
       it('navigates to the add token screen', async function () {
         await waitUntilShowUp(screens.main.identicon)
@@ -963,19 +966,38 @@ describe('Metamask popup page', async function () {
         const addTokenScreen = await waitUntilShowUp(screens.addToken.title)
         assert.equal(await addTokenScreen.getText(), screens.addToken.titleText)
       })
-
       it('adds token parameters', async function () {
         const tab = await waitUntilShowUp(screens.addToken.tab.custom, 30)
         if (!await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)) await tab.click()
+      })
+      it('address input is displayed and has correct placeholder', async function () {
+        const field = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
+        assert.equal(await field.getAttribute('placeholder'), 'Token Contract Address', 'incorrect placeholder')
+      })
+
+      it('fill out address input', async function () {
         const tokenContractAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
         await tokenContractAddress.sendKeys(tokenAddress)
-        const button = await waitUntilShowUp(screens.addToken.custom.buttons.add)
-        await click(button)
+      })
+
+      it('field \'Symbol\' enabled and has correct value', async function () {
+        const field = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+        assert.equal(await field.isEnabled(), true, 'field disabled')
+        assert.equal(await field.getAttribute('placeholder'), 'Like "ETH"', 'incorrect placeholder')
+        assert.equal(await field.getAttribute('value'), symbol, 'incorrect value')
+      })
+
+      it('field \'Decimals\' enabled and has correct value', async function () {
+        const field = await waitUntilShowUp(screens.addToken.custom.fields.decimals)
+        assert.equal(await field.isEnabled(), false, 'field disabled')
+        assert.equal(await field.getAttribute('value'), decimals, 'incorrect value')
       })
 
       it('checks the token balance', async function () {
+        const button = await waitUntilShowUp(screens.addToken.custom.buttons.add)
+        await click(button)
         const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.equal(await tokenBalance.getText(), '100 TST')
+        assert.equal(await tokenBalance.getText(), '100 TST', 'balance is incorrect or not displayed')
       })
 
       it('token balance updates if switch account', async function () {
@@ -1039,6 +1061,90 @@ describe('Metamask popup page', async function () {
         await waitUntilShowUp(menus.token.menu)
       })
     })
+
+
+    describe('Check support of token per network basis ', async function () {
+
+      describe('Token should be displayed only for network, where it was added ', async function () {
+
+        it('token should not  be displayed in POA network', async function () {
+          await setProvider(NETWORKS.POA)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in SOKOL network', async function () {
+          await setProvider(NETWORKS.SOKOL)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in MAINNET network', async function () {
+          await setProvider(NETWORKS.MAINNET)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in ROPSTEN network', async function () {
+          await setProvider(NETWORKS.ROPSTEN)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in KOVAN network', async function () {
+          await setProvider(NETWORKS.KOVAN)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in RINKEBY network', async function () {
+          await setProvider(NETWORKS.RINKEBY)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+      })
+
+      describe('Custom tokens validation ', async function () {
+
+        it('can not add inexistent token to POA network', async function () {
+          await setProvider(NETWORKS.POA)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to SOKOL network', async function () {
+          await setProvider(NETWORKS.SOKOL)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to ROPSTEN network', async function () {
+          await setProvider(NETWORKS.ROPSTEN)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to KOVAN network', async function () {
+          await setProvider(NETWORKS.KOVAN)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to RINKEBY network', async function () {
+          await setProvider(NETWORKS.RINKEBY)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to MAINNET network', async function () {
+          await setProvider(NETWORKS.MAINNET)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to LOCALHOST network', async function () {
+          await setProvider(NETWORKS.LOCALHOST)
+          assert(await isDisabledAddInexistentToken(tokenAddress.slice(0, tokenAddress.length - 2) + '0'), true, 'can add inexistent token in POA network')
+        })
+
+        it('token still should be displayed in LOCALHOST network', async function () {
+          await waitUntilDisappear(screens.main.tokens.amount)
+          assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
+          const tokens = await driver.findElements(screens.main.tokens.amount)
+          assert.equal(tokens.length, 1, '\'Tokens\' section doesn\'t contain field with amount of tokens')
+          assert.equal(await tokens[0].getText(), screens.main.tokens.textYouOwn1token, 'Token isn\'t displayed')
+        })
+      })
+    })
+
 
     describe('Transfer tokens', function () {
 
@@ -1258,7 +1364,6 @@ describe('Metamask popup page', async function () {
         await click(button)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
-
 
       it('check if token was removed from SOKOL network', async function () {
         await setProvider(NETWORKS.SOKOL)
@@ -1546,6 +1651,39 @@ describe('Metamask popup page', async function () {
       console.log(err)
       return false
     }
+  }
+
+  async function isDisabledAddInexistentToken (tokenAddress) {
+    try {
+      const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
+      await click(button)
+      do {
+        const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
+        try {
+          await tab.click()
+        } catch (err) {
+        }
+      }
+      while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
+    } catch (err) {
+      return false
+    }
+    const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
+    await clearField(fieldAddress)
+    await fieldAddress.sendKeys(tokenAddress)
+
+    const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+    if (await fieldSymbols.isEnabled()) return false
+
+    const fieldDecimals = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+    if (await fieldDecimals.isEnabled()) return false
+
+    const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
+    if (await buttonAdd.isEnabled()) return false
+
+    const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
+    await click(buttonCancel)
+    return true
   }
 
   async function checkBrowserForConsoleErrors () {
