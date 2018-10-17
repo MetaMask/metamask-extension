@@ -42,14 +42,14 @@ class AddTokenScreen extends Component {
     this.state = {
       warning: null,
       customAddress: '',
-      customSymbol: 'Token',
-      customDecimals: 18,
+      customSymbol: '',
+      customDecimals: '',
       searchResults: [],
       selectedTokens: {},
       tokenSelectorError: null,
-      customAddressError: null,
-      customSymbolError: null,
-      customDecimalsError: null,
+      customAddressError: true,
+      customSymbolError: true,
+      customDecimalsError: true,
       autoFilled: false,
       displayedTab: SEARCH_TAB,
     }
@@ -79,7 +79,7 @@ class AddTokenScreen extends Component {
       const {
         address: customAddress = '',
         symbol: customSymbol = '',
-        decimals: customDecimals = 0,
+        decimals: customDecimals = '',
       } = customToken
 
       const displayedTab = Object.keys(selectedTokens).length > 0 ? SEARCH_TAB : CUSTOM_TOKEN_TAB
@@ -148,7 +148,7 @@ class AddTokenScreen extends Component {
   renderAddToken () {
     const props = this.props
     const state = this.state
-    const { warning, customSymbol, customDecimals } = state
+    const { warning, customAddress, customSymbol, customDecimals, autoFilled } = state
     const { network, goHome, addToken } = props
     return h('.flex-column.flex-justify-center.flex-grow.select-none', [
         warning ? h('div', {
@@ -183,6 +183,7 @@ class AddTokenScreen extends Component {
           h('input.large-input#token-address', {
             name: 'address',
             placeholder: 'Token Contract Address',
+            value: customAddress,
             style: {
               width: '100%',
               margin: '10px 0',
@@ -199,6 +200,7 @@ class AddTokenScreen extends Component {
 
         h('div', { style: {display: 'flex'} }, [
           h('input.large-input#token_symbol', {
+            disabled: !autoFilled,
             placeholder: `Like "ETH"`,
             value: customSymbol,
             style: {
@@ -217,6 +219,7 @@ class AddTokenScreen extends Component {
 
         h('div', { style: {display: 'flex'} }, [
           h('input.large-input#token_decimals', {
+            disabled: true,
             value: customDecimals,
             type: 'number',
             min: 0,
@@ -243,6 +246,7 @@ class AddTokenScreen extends Component {
             },
           }, 'Cancel' /* this.context.t('cancel')*/),
           h('button', {
+            disabled: this.hasError() || !this.hasSelected(),
             onClick: (event) => {
               const valid = this.validateInputs()
               if (!valid) return
@@ -294,7 +298,7 @@ class AddTokenScreen extends Component {
           }, 'Cancel' /* this.context.t('cancel')*/),
           h('button.btn-primary', {
             onClick: () => this.handleNext(),
-            disabled: this.hasError() || !this.hasSelected(),
+            disabled: !this.hasSelected(),
           }, 'Next' /* this.context.t('next')*/),
         ]),
       ]),
@@ -323,9 +327,13 @@ class AddTokenScreen extends Component {
     } = nextProps
 
     if (oldNet !== newNet) {
+      this.tokenInfoGetter = tokenInfoGetter()
       this.setState({
         selectedTokens: {},
         searchResults: [],
+        customAddress: '',
+        customSymbol: '',
+        customDecimals: '',
       })
     }
   }
@@ -358,7 +366,7 @@ class AddTokenScreen extends Component {
       msg = 'Personal address detected. Input the token contract address.'
     }
 
-    const isValid = validAddress && validDecimals && !ownAddress
+    const isValid = validAddress && validDecimals && validSymbol && !ownAddress
 
     if (!isValid) {
       this.setState({
@@ -400,15 +408,11 @@ class AddTokenScreen extends Component {
   }
 
   hasSelected = () => {
-    const { customAddress = '', selectedTokens = {} } = this.state
-    return customAddress || Object.keys(selectedTokens).length > 0
+    const { customAddress = '', customDecimals = '', customSymbol = '', selectedTokens = {} } = this.state
+    return (customAddress && customDecimals && customSymbol) || Object.keys(selectedTokens).length > 0
   }
 
   handleNext = () => {
-    if (this.hasError()) {
-      return
-    }
-
     if (!this.hasSelected()) {
       this.setState({ tokenSelectorError: 'Must select at least 1 token.' /* this.context.t('mustSelectOne')*/ })
       return
@@ -434,12 +438,12 @@ class AddTokenScreen extends Component {
   }
 
   attemptToAutoFillTokenParams = async (address) => {
-    const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(address)
+    const { symbol = '', decimals = '' } = await this.tokenInfoGetter(address)
 
     const autoFilled = Boolean(symbol && decimals)
     this.setState({ autoFilled })
     this.handleCustomSymbolChange(symbol || '')
-    this.handleCustomDecimalsChange(decimals)
+    this.handleCustomDecimalsChange(decimals || '')
   }
 
   handleCustomAddressChange = (value) => {
@@ -459,7 +463,7 @@ class AddTokenScreen extends Component {
         this.setState({
           customAddressError: 'Invalid address' /* this.context.t('invalidAddress')*/,
           customSymbol: '',
-          customDecimals: 0,
+          customDecimals: null,
           customSymbolError: null,
           customDecimalsError: null,
         })
@@ -497,7 +501,7 @@ class AddTokenScreen extends Component {
   }
 
   handleCustomDecimalsChange = (value) => {
-    const customDecimals = value.trim()
+    const customDecimals = (value && value.trim())
     const validDecimals = customDecimals !== null &&
       customDecimals !== '' &&
       customDecimals >= 0 &&

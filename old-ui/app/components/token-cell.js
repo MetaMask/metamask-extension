@@ -151,9 +151,7 @@ TokenCell.prototype.send = function (address, event) {
   event.preventDefault()
   event.stopPropagation()
   const url = tokenFactoryFor(address)
-  if (url) {
-    navigateTo(url)
-  }
+  navigateTo(url)
 }
 
 TokenCell.prototype.view = function (address, userAddress, network, event) {

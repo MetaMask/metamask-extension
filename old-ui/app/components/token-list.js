@@ -195,10 +195,11 @@ TokenList.prototype.createFreshTokenTracker = function () {
   if (!global.ethereumProvider) return
   const { userAddress } = this.props
 
+  const tokensFromCurrentNetwork = this.props.tokens.filter(token => (parseInt(token.network) === parseInt(this.props.network) || !token.network))
   this.tracker = new TokenTracker({
     userAddress,
     provider: global.ethereumProvider,
-    tokens: this.props.tokens,
+    tokens: tokensFromCurrentNetwork,
     pollingInterval: 8000,
   })
 
