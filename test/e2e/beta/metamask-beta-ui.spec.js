@@ -294,7 +294,7 @@ describe('MetaMask', function () {
       await customRpcButton.click()
       await delay(regularDelayMs)
 
-      const privacyToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(9) .settings-page__content-item-col > div'))
+      const privacyToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(10) .settings-page__content-item-col > div'))
       await privacyToggle.click()
       await delay(largeDelayMs * 2)
     })
