@@ -131,10 +131,15 @@ function listenForProviderRequest () {
           origin: source.location.hostname,
         })
         break
+      case 'METAMASK_UNLOCK_STATUS':
+        extension.runtime.sendMessage({
+          action: 'init-unlock-request',
+        })
+        break
     }
   })
 
-  extension.runtime.onMessage.addListener(({ action, isEnabled }) => {
+  extension.runtime.onMessage.addListener(({ action, isEnabled, isUnlocked }) => {
     if (!action) { return }
     switch (action) {
       case 'approve-provider-request':
@@ -146,6 +151,9 @@ function listenForProviderRequest () {
         break
       case 'answer-status-request':
         injectScript(`window.dispatchEvent(new CustomEvent('ethereumproviderstatus', { detail: { isEnabled: ${isEnabled}}}))`)
+        break
+      case 'answer-unlock-request':
+        injectScript(`window.dispatchEvent(new CustomEvent('metamaskunlockstatus', { detail: { isUnlocked: ${isUnlocked}}}))`)
         break
     }
   })
