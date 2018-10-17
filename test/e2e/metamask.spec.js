@@ -15,13 +15,13 @@ describe('Metamask popup page', async function () {
   this.timeout(0)
 
   before(async function () {
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
       const extPath = path.resolve('dist/chrome')
       driver = buildChromeWebDriver(extPath)
       extensionId = await getExtensionIdChrome(driver)
       await driver.get(`chrome-extension://${extensionId}/popup.html`)
 
-    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+    } else if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
       const extPath = path.resolve('dist/firefox')
       driver = buildFirefoxWebdriver()
       await installWebExt(driver, extPath)
@@ -34,17 +34,17 @@ describe('Metamask popup page', async function () {
   afterEach(async function () {
     // logs command not supported in firefox
     // https://github.com/SeleniumHQ/selenium/issues/2910
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
       // check for console errors
       const errors = await checkBrowserForConsoleErrors()
-      if (errors.length) {
+      if ( errors.length ) {
         const errorReports = errors.map(err => err.message)
         const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`
         console.log(errorMessage)
       }
     }
     // gather extra data if test failed
-    if (this.currentTest.state === 'failed') {
+    if ( this.currentTest.state === 'failed' ) {
       await verboseReportOnFailure(this.currentTest)
     }
   })
@@ -72,6 +72,7 @@ describe('Metamask popup page', async function () {
     })
 
     it('screen \'Terms of Use\' has not empty agreement', async () => {
+      await delay(5000)
       const terms = await waitUntilShowUp(screens.TOU.agreement, 300)
       const text = await terms.getText()
       assert.equal(text.length > 400, true, 'agreement is too short')
@@ -135,7 +136,7 @@ describe('Metamask popup page', async function () {
       await field.click()
       const accountName = await waitUntilShowUp(screens.main.fieldAccountName)
       assert.notEqual(accountName, false, '\'Account name\' change dialog isn\'t opened')
-      assert.equal(await accountName.getAttribute('value'), 'Account 1', 'incorrect placeholder')
+      assert.equal(await accountName.getAttribute('value'), 'Account 1', 'incorrect account name')
     })
 
     it('fill out new account\'s name', async () => {
@@ -894,6 +895,8 @@ describe('Metamask popup page', async function () {
   })
 
   describe('Add Token: Custom', function () {
+    const symbol = 'TST'
+    const decimals = '0'
 
     describe('Token Factory', function () {
 
@@ -916,8 +919,8 @@ describe('Metamask popup page', async function () {
 
         await totalSupply.sendKeys('100')
         await tokenName.sendKeys('Test')
-        await tokenDecimal.sendKeys('0')
-        await tokenSymbol.sendKeys('TST')
+        await tokenDecimal.sendKeys(decimals)
+        await tokenSymbol.sendKeys(symbol)
         await click(createToken)
         await delay(1000)
       })
@@ -939,15 +942,15 @@ describe('Metamask popup page', async function () {
       })
 
       it('navigates back to MetaMask popup in the tab', async function () {
-        if (process.env.SELENIUM_BROWSER === 'chrome') {
+        if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
           await driver.get(`chrome-extension://${extensionId}/popup.html`)
-        } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+        } else if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
           await driver.get(`moz-extension://${extensionId}/popup.html`)
         }
         await delay(700)
       })
     })
-    describe('Add token', function () {
+    describe('Add token to LOCALHOST', function () {
 
       it('navigates to the add token screen', async function () {
         await waitUntilShowUp(screens.main.identicon)
@@ -963,19 +966,38 @@ describe('Metamask popup page', async function () {
         const addTokenScreen = await waitUntilShowUp(screens.addToken.title)
         assert.equal(await addTokenScreen.getText(), screens.addToken.titleText)
       })
-
       it('adds token parameters', async function () {
         const tab = await waitUntilShowUp(screens.addToken.tab.custom, 30)
-        if (!await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)) await tab.click()
+        if ( !await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) ) await tab.click()
+      })
+      it('address input is displayed and has correct placeholder', async function () {
+        const field = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
+        assert.equal(await field.getAttribute('placeholder'), 'Token Contract Address', 'incorrect placeholder')
+      })
+
+      it('fill out address input', async function () {
         const tokenContractAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
         await tokenContractAddress.sendKeys(tokenAddress)
-        const button = await waitUntilShowUp(screens.addToken.custom.buttons.add)
-        await click(button)
+      })
+
+      it('field \'Symbol\' enabled and has correct value', async function () {
+        const field = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+        assert.equal(await field.isEnabled(), true, 'field disabled')
+        assert.equal(await field.getAttribute('placeholder'), 'Like "ETH"', 'incorrect placeholder')
+        assert.equal(await field.getAttribute('value'), symbol, 'incorrect value')
+      })
+
+      it('field \'Decimals\' enabled and has correct value', async function () {
+        const field = await waitUntilShowUp(screens.addToken.custom.fields.decimals)
+        assert.equal(await field.isEnabled(), false, 'field disabled')
+        assert.equal(await field.getAttribute('value'), decimals, 'incorrect value')
       })
 
       it('checks the token balance', async function () {
+        const button = await waitUntilShowUp(screens.addToken.custom.buttons.add)
+        await click(button)
         const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.equal(await tokenBalance.getText(), '100 TST')
+        assert.equal(await tokenBalance.getText(), '100 TST', 'balance is incorrect or not displayed')
       })
 
       it('token balance updates if switch account', async function () {
@@ -1039,6 +1061,90 @@ describe('Metamask popup page', async function () {
         await waitUntilShowUp(menus.token.menu)
       })
     })
+
+
+    describe('Check support of token per network basis ', async function () {
+
+      describe('Token should be displayed only for network, where it was added ', async function () {
+
+        it('token should not  be displayed in POA network', async function () {
+          await setProvider(NETWORKS.POA)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in SOKOL network', async function () {
+          await setProvider(NETWORKS.SOKOL)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in MAINNET network', async function () {
+          await setProvider(NETWORKS.MAINNET)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in ROPSTEN network', async function () {
+          await setProvider(NETWORKS.ROPSTEN)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in KOVAN network', async function () {
+          await setProvider(NETWORKS.KOVAN)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+
+        it('token should not  be displayed in RINKEBY network', async function () {
+          await setProvider(NETWORKS.RINKEBY)
+          assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+        })
+      })
+
+      describe('Custom tokens validation ', async function () {
+
+        it('can not add inexistent token to POA network', async function () {
+          await setProvider(NETWORKS.POA)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to SOKOL network', async function () {
+          await setProvider(NETWORKS.SOKOL)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to ROPSTEN network', async function () {
+          await setProvider(NETWORKS.ROPSTEN)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to KOVAN network', async function () {
+          await setProvider(NETWORKS.KOVAN)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to RINKEBY network', async function () {
+          await setProvider(NETWORKS.RINKEBY)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to MAINNET network', async function () {
+          await setProvider(NETWORKS.MAINNET)
+          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+        })
+
+        it('can not add inexistent token to LOCALHOST network', async function () {
+          await setProvider(NETWORKS.LOCALHOST)
+          assert(await isDisabledAddInexistentToken(tokenAddress.slice(0, tokenAddress.length - 2) + '0'), true, 'can add inexistent token in POA network')
+        })
+
+        it('token still should be displayed in LOCALHOST network', async function () {
+          await waitUntilDisappear(screens.main.tokens.amount)
+          assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
+          const tokens = await driver.findElements(screens.main.tokens.amount)
+          assert.equal(tokens.length, 1, '\'Tokens\' section doesn\'t contain field with amount of tokens')
+          assert.equal(await tokens[0].getText(), screens.main.tokens.textYouOwn1token, 'Token isn\'t displayed')
+        })
+      })
+    })
+
 
     describe('Transfer tokens', function () {
 
@@ -1259,7 +1365,6 @@ describe('Metamask popup page', async function () {
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-
       it('check if token was removed from SOKOL network', async function () {
         await setProvider(NETWORKS.SOKOL)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
@@ -1371,7 +1476,7 @@ describe('Metamask popup page', async function () {
     it('user can add four more valid custom rpc', async function () {
       const fieldRpc = await waitUntilShowUp(screens.settings.fieldNewRPC)
       const customUrlElement = await waitUntilShowUp(screens.settings.currentNetwork)
-      for (let i = 1; i < 5; i++) {
+      for ( let i = 1; i < 5; i++ ) {
         await clearField(fieldRpc)
         await clearField(fieldRpc)
         await clearField(fieldRpc)
@@ -1438,12 +1543,12 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  async function setProvider (network) {
+  async function setProvider(network) {
     await delay(300)
     const menu = await waitUntilShowUp(screens.main.network)
     await menu.click()
     let counter
-    switch (network) {
+    switch ( network ) {
       case NETWORKS.POA:
         counter = 0
         break
@@ -1477,59 +1582,59 @@ describe('Metamask popup page', async function () {
     await driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
   }
 
-  async function scrollTo (element) {
+  async function scrollTo(element) {
     try {
       await driver.executeScript('arguments[0].scrollIntoView();', element)
       return true
-    } catch (err) {
+    } catch ( err ) {
       return false
     }
   }
 
-  async function click (element) {
+  async function click(element) {
     try {
       await element.sendKeys(Key.RETURN)
       return true
-    } catch (err) {
+    } catch ( err ) {
       return false
     }
   }
 
-  async function clearField (field, number) {
+  async function clearField(field, number) {
     await click(field)
-    if (number === undefined) number = 40
-    for (let i = 0; i < number; i++) {
+    if ( number === undefined ) number = 40
+    for ( let i = 0; i < number; i++ ) {
       await field.sendKeys(Key.BACK_SPACE)
     }
   }
 
-  async function waitUntilDisappear (by, Twait) {
-    if (Twait === undefined) Twait = 10
+  async function waitUntilDisappear(by, Twait) {
+    if ( Twait === undefined ) Twait = 10
     do {
-      if (!await isElementDisplayed(by)) return true
+      if ( !await isElementDisplayed(by) ) return true
 
-    } while (Twait-- > 0)
+    } while ( Twait-- > 0 )
     return false
   }
 
-  async function waitUntilShowUp (by, Twait) {
-    if (Twait === undefined) Twait = 200
+  async function waitUntilShowUp(by, Twait) {
+    if ( Twait === undefined ) Twait = 200
     do {
       await delay(100)
-      if (await isElementDisplayed(by)) return await driver.findElement(by)
-    } while (Twait-- > 0)
+      if ( await isElementDisplayed(by) ) return await driver.findElement(by)
+    } while ( Twait-- > 0 )
     return false
   }
 
-  async function isElementDisplayed (by) {
+  async function isElementDisplayed(by) {
     try {
       return await driver.findElement(by).isDisplayed()
-    } catch (err) {
+    } catch ( err ) {
       return false
     }
   }
 
-  async function assertTokensNotDisplayed () {
+  async function assertTokensNotDisplayed() {
     try {
       await delay(800)
       await waitUntilDisappear(elements.loader)
@@ -1542,13 +1647,46 @@ describe('Metamask popup page', async function () {
       const tokens = await driver.findElements(screens.main.tokens.token)
       assert.equal(tokens.length, 0, 'Unexpected token presents')
       return true
-    } catch (err) {
+    } catch ( err ) {
       console.log(err)
       return false
     }
   }
 
-  async function checkBrowserForConsoleErrors () {
+  async function isDisabledAddInexistentToken(tokenAddress) {
+    try {
+      const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
+      await click(button)
+      do {
+        const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
+        try {
+          await tab.click()
+        } catch ( err ) {
+        }
+      }
+      while ( await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false )
+    } catch ( err ) {
+      return false
+    }
+    const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
+    await clearField(fieldAddress)
+    await fieldAddress.sendKeys(tokenAddress)
+
+    const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+    if ( await fieldSymbols.isEnabled() ) return false
+
+    const fieldDecimals = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+    if ( await fieldDecimals.isEnabled() ) return false
+
+    const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
+    if ( await buttonAdd.isEnabled() ) return false
+
+    const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
+    await click(buttonCancel)
+    return true
+  }
+
+  async function checkBrowserForConsoleErrors() {
     const ignoredLogTypes = ['WARNING']
     const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly
@@ -1568,11 +1706,11 @@ describe('Metamask popup page', async function () {
     return matchedErrorObjects
   }
 
-  async function verboseReportOnFailure (test) {
+  async function verboseReportOnFailure(test) {
     let artifactDir
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if ( process.env.SELENIUM_BROWSER === 'chrome' ) {
       artifactDir = `./test-artifacts/chrome/${test.title}`
-    } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+    } else if ( process.env.SELENIUM_BROWSER === 'firefox' ) {
       artifactDir = `./test-artifacts/firefox/${test.title}`
     }
     const filepathBase = `${artifactDir}/test-failure`
@@ -1585,34 +1723,34 @@ describe('Metamask popup page', async function () {
     await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
 
-  async function switchToLastPage () {
+  async function switchToLastPage() {
     try {
       const allHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(allHandles[allHandles.length - 1])
       let counter = 100
       do {
         await delay(500)
-        if (await driver.getCurrentUrl() !== '') return true
+        if ( await driver.getCurrentUrl() !== '' ) return true
       }
-      while (counter-- > 0)
+      while ( counter-- > 0 )
       return true
-    } catch (err) {
+    } catch ( err ) {
       return false
     }
   }
 
-  async function switchToFirstPage () {
+  async function switchToFirstPage() {
     try {
       const allHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(allHandles[0])
       let counter = 100
       do {
         await delay(500)
-        if (await driver.getCurrentUrl() !== '') return true
+        if ( await driver.getCurrentUrl() !== '' ) return true
       }
-      while (counter-- > 0)
+      while ( counter-- > 0 )
       return true
-    } catch (err) {
+    } catch ( err ) {
       return false
     }
   }
