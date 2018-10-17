@@ -27,9 +27,10 @@ var metamaskStream = new LocalMessageDuplexStream({
 
 // compose the inpage provider
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
+
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
-var originApproved = false
+var isEnabled = false
 
 // Augment the provider with its enable method
 inpageProvider.enable = function () {
@@ -38,11 +39,11 @@ inpageProvider.enable = function () {
       if (typeof detail.error !== 'undefined') {
         reject(detail.error)
       } else {
-        originApproved = true
         inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
           if (error) {
             reject(error)
           } else {
+            isEnabled = true
             resolve(response.result)
           }
         })
@@ -53,16 +54,24 @@ inpageProvider.enable = function () {
 }
 
 inpageProvider.isEnabled = function () {
+  return isEnabled
+}
+
+inpageProvider.isApproved = function () {
   return new Promise((resolve, reject) => {
     window.addEventListener('ethereumproviderstatus', ({ detail }) => {
       if (typeof detail.error !== 'undefined') {
         reject(detail.error)
       } else {
-        resolve(originApproved && !!detail.isEnabled)
+        resolve(!!detail.isEnabled)
       }
     })
     window.postMessage({ type: 'ETHEREUM_QUERY_STATUS' }, '*')
   })
+}
+
+inpageProvider.isUnlocked = function () {
+
 }
 
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
