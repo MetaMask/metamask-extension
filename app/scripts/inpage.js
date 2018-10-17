@@ -29,6 +29,7 @@ var metamaskStream = new LocalMessageDuplexStream({
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
+var originApproved = false
 
 // Augment the provider with its enable method
 inpageProvider.enable = function () {
@@ -37,6 +38,7 @@ inpageProvider.enable = function () {
       if (typeof detail.error !== 'undefined') {
         reject(detail.error)
       } else {
+        originApproved = true
         inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
           if (error) {
             reject(error)
@@ -56,7 +58,7 @@ inpageProvider.isEnabled = function () {
       if (typeof detail.error !== 'undefined') {
         reject(detail.error)
       } else {
-        resolve(!!detail.isEnabled)
+        resolve(originApproved && !!detail.isEnabled)
       }
     })
     window.postMessage({ type: 'ETHEREUM_QUERY_STATUS' }, '*')
