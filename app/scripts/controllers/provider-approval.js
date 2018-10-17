@@ -29,8 +29,10 @@ class ProviderApprovalController {
           break
         case 'init-unlock-request':
           this.handleUnlockRequest()
+          break
         case 'init-privacy-request':
           this.handlePrivacyStatusRequest()
+          break
       }
     })
   }
@@ -59,7 +61,7 @@ class ProviderApprovalController {
     this.platform && this.platform.sendMessage({ action: 'answer-status-request', isEnabled }, { active: true })
   }
 
-  handleUnlockRequest() {
+  handleUnlockRequest () {
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     this.platform && this.platform.sendMessage({ action: 'answer-unlock-request', isUnlocked }, { active: true })
   }
