@@ -9,7 +9,7 @@ class ProviderApprovalController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ closePopup, openPopup, platform, preferencesController, publicConfigStore } = {}) {
+  constructor ({ closePopup, openPopup, keyringController, platform, preferencesController, publicConfigStore } = {}) {
     this.store = new ObservableStore()
     this.closePopup = closePopup
     this.openPopup = openPopup
@@ -17,6 +17,7 @@ class ProviderApprovalController {
     this.publicConfigStore = publicConfigStore
     this.approvedOrigins = {}
     this.preferencesController = preferencesController
+    this.keyringController = keyringController
     platform && platform.addMessageListener && platform.addMessageListener(({ action, origin }) => {
       if (!action) { return }
       switch (action) {
@@ -26,6 +27,8 @@ class ProviderApprovalController {
         case 'init-status-request':
           this.handleProviderStatusRequest(origin)
           break
+        case 'init-unlock-request':
+          this.handleUnlockRequest()
         case 'init-privacy-request':
           this.handlePrivacyStatusRequest()
       }
@@ -54,6 +57,11 @@ class ProviderApprovalController {
   async handleProviderStatusRequest (origin) {
     const isEnabled = this.isApproved(origin)
     this.platform && this.platform.sendMessage({ action: 'answer-status-request', isEnabled }, { active: true })
+  }
+
+  handleUnlockRequest() {
+    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+    this.platform && this.platform.sendMessage({ action: 'answer-unlock-request', isUnlocked }, { active: true })
   }
 
   handlePrivacyStatusRequest () {

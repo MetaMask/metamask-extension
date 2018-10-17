@@ -71,7 +71,16 @@ inpageProvider.isApproved = function () {
 }
 
 inpageProvider.isUnlocked = function () {
-
+  return new Promise((resolve, reject) => {
+    window.addEventListener('metamaskunlockstatus', ({ detail }) => {
+      if (typeof detail.error !== 'undefined') {
+        reject(detail.error)
+      } else {
+        resolve(!!detail.isUnlocked)
+      }
+    })
+    window.postMessage({ type: 'METAMASK_UNLOCK_STATUS' }, '*')
+  })
 }
 
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
