@@ -2,7 +2,7 @@
 
 ## Current Develop Branch
 
-## 4.16.0 Thursday October 18 2018
+## 4.16.0 Wednesday October 17 2018
 
 - Feature: Add toggle for primary currency (eth/fiat)
 - Feature: add tooltip for view etherscan tx
