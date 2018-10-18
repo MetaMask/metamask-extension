@@ -112,7 +112,7 @@
     "eth-net-props": "^1.0.7",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
-    "eth-sig-util": "^1.4.2",
+    "eth-sig-util": "^2.0.2",
     "eth-token-watcher": "^1.1.5",
     "eth-trezor-keyring": "^0.1.0",
     "ethereumjs-abi": "^0.6.4",
