@@ -25,7 +25,6 @@ const mapStateToProps = state => {
     provider = {},
     isMascara,
     currentLocale,
-    ticker,
   } = metamask
   const { useETHAsPrimaryCurrency } = preferencesSelector(state)
 

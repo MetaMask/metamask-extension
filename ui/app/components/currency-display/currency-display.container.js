@@ -23,7 +23,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restOwnProps
   } = ownProps
 
-  const toCurrency = currency || currentCurrency
+  const toCurrency = currency === 'ETH' ? fromCurrency || currency : currency || currentCurrency
   const convertedValue = getValueFromWeiHex({
     value, fromCurrency, toCurrency, conversionRate, numberOfDecimals, toDenomination: denomination,
   })

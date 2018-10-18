@@ -57,12 +57,14 @@ export default class SettingsTab extends PureComponent {
     conversionDate: PropTypes.number,
     useETHAsPrimaryCurrency: PropTypes.bool,
     setUseETHAsPrimaryCurrencyPreference: PropTypes.func,
-    ticker: PropTypes.string,
   }
 
   state = {
     newRpc: '',
+    chainId: '',
     showOptions: false,
+    ticker: '',
+    nickname: '',
   }
 
   renderCurrentConversion () {

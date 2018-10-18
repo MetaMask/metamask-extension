@@ -13,7 +13,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { useETHAsPrimaryCurrency, ...restStateProps } = stateProps
+  const { useETHAsPrimaryCurrency, fromCurrency, ...restStateProps } = stateProps
   const {
     type,
     numberOfDecimals: propsNumberOfDecimals,
@@ -44,6 +44,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restStateProps,
     ...dispatchProps,
     ...restOwnProps,
+    fromCurrency,
     currency,
     numberOfDecimals,
     prefix,
