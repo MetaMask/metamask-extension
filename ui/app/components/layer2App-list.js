@@ -2,13 +2,15 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-//const Layer2AppTracker = require('eth-token-tracker')
+const Layer2AppTracker = require('eth-token-tracker')
 const Layer2AppCell = require('./layer2App-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
 const log = require('loglevel')
 
 function mapStateToProps (state) {
+  console.log("now")
+  console.log(state)
   return {
     network: state.metamask.network,
     layer2Apps: state.metamask.layer2Apps,
@@ -17,13 +19,14 @@ function mapStateToProps (state) {
   }
 }
 
-// const defaultLayer2Apps =
+//TODO REWORK
+// const defaultLayer2Apps = []
 // const contracts = require('eth-contract-metadata')
 // for (const address in contracts) {
 //   const contract = contracts[address]
 //   if (contract.erc20) {
 //     contract.address = address
-//     defaultTokens.push(contract)
+//     defaultLayer2Apps.push(contract)
 //   }
 // }
 
@@ -45,13 +48,26 @@ function Layer2AppList () {
 }
 
 Layer2AppList.prototype.render = function () {
+  console.log("--------DEBUG RENDER APP LIST==", this.props)
   const { userAddress, assetImages } = this.props
+  console.log("--------DEBUG RENDER APP LIST==", this.props)  
+  console.log("--------DEBUG RENDER APP LIST==", this.state)
   const state = this.state
-  const { layer2Apps, isLoading, error } = state
+  console.log("--------DEBUG RENDER APP LIST==", this.state)  
+
+
+  // TODO: WHY AM I NOT GETTING THE STATE HERE?
+  // SIMILAR TO TOKEN-LIST where I get the state in the logs.
+  // const { layer2Apps, isLoading, error } = state
+  const { isLoading, error } = state
+
+  //HOT FIX
+  let layer2Apps = this.props.layer2Apps
+  
   if (isLoading) {
     return this.message(this.context.t('loadingLayer2Apps'))
   }
-
+  console.log("--------DEBUG RENDER APP LIST==", layer2Apps)
   if (error) {
     log.error(error)
     return h('.hotFix', {
@@ -75,6 +91,7 @@ Layer2AppList.prototype.render = function () {
   }
 
   return h('div', layer2Apps.map((layer2AppData) => {
+    console.log("LOOOPING", layer2AppData)
     layer2AppData.image = assetImages[layer2AppData.address]
     return h(Layer2AppCell, layer2AppData)
   }))
@@ -98,40 +115,40 @@ Layer2AppList.prototype.componentDidMount = function () {
 }
 
 Layer2AppList.prototype.createFreshLayer2AppTracker = function () {
-  // if (this.tracker) {
-  //   // Clean up old trackers when refreshing:
-  //   this.tracker.stop()
-  //   this.tracker.removeListener('update', this.balanceUpdater)
-  //   this.tracker.removeListener('error', this.showError)
-  // }
+  if (this.tracker) {
+    // Clean up old trackers when refreshing:
+    this.tracker.stop()
+    this.tracker.removeListener('update', this.balanceUpdater)
+    this.tracker.removeListener('error', this.showError)
+  }
 
-  // if (!global.ethereumProvider) return
-  // const { userAddress } = this.props
+  if (!global.ethereumProvider) return
+  const { userAddress } = this.props
 
-  // this.tracker = new Layer2AppTracker({
-  //   userAddress,
-  //   provider: global.ethereumProvider,
-  //   layer2Apps: this.props.layer2Apps,
-  //   pollingInterval: 8000,
-  // })
+  this.tracker = new Layer2AppTracker({
+    userAddress,
+    provider: global.ethereumProvider,
+    layer2Apps: this.props.layer2Apps,
+    pollingInterval: 8000,
+  })
 
 
-  // // Set up listener instances for cleaning up
-  // this.balanceUpdater = this.updateBalances.bind(this)
-  // this.showError = (error) => {
-  //   this.setState({ error, isLoading: false })
-  // }
-  // this.tracker.on('update', this.balanceUpdater)
-  // this.tracker.on('error', this.showError)
+  // Set up listener instances for cleaning up
+  this.balanceUpdater = this.updateBalances.bind(this)
+  this.showError = (error) => {
+    this.setState({ error, isLoading: false })
+  }
+  this.tracker.on('update', this.balanceUpdater)
+  this.tracker.on('error', this.showError)
 
-  // this.tracker.updateBalances()
-  // .then(() => {
-  //   this.updateBalances(this.tracker.serialize())
-  // })
-  // .catch((reason) => {
-  //   log.error(`Problem updating balances`, reason)
+  this.tracker.updateBalances()
+  .then(() => {
+    this.updateBalances(this.tracker.serialize())
+  })
+  .catch((reason) => {
+    log.error(`Problem updating balances`, reason)
   this.setState({ isLoading: false })
-  // })
+  })
 }
 
 Layer2AppList.prototype.componentDidUpdate = function (nextProps) {

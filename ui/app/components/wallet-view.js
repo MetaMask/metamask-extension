@@ -213,6 +213,7 @@ WalletView.prototype.render = function () {
       },
     }, this.context.t('addToken')),
 
+    // console.log(this.props),
     h(Layer2AppList),
 
     h(Button, {
