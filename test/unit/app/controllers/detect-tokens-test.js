@@ -74,7 +74,7 @@ describe('DetectTokensController', () => {
         {address: '0xbc86727e770de68b1060c91f6bb6945c73e10388', decimals: 18, symbol: 'XNK', network: 1}])
   })
 
-  //todo: doesn't work
+  // todo: doesn't work
   // it('should not detect same token while in main network', async () => {
   //   network.setProviderType('mainnet')
   //   const preferences = new PreferencesController()
