@@ -18,12 +18,11 @@ export default class TransactionViewBalance extends PureComponent {
     history: PropTypes.object,
     network: PropTypes.string,
     balance: PropTypes.string,
-    fromCurrency: PropTypes.string,
     assetImage: PropTypes.string,
   }
 
   renderBalance () {
-    const { selectedToken, balance, fromCurrency } = this.props
+    const { selectedToken, balance } = this.props
 
     return selectedToken
       ? (

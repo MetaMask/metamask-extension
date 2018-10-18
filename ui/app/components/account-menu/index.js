@@ -40,7 +40,6 @@ function mapStateToProps (state) {
     selectedAddress: state.metamask.selectedAddress,
     isAccountMenuOpen: state.metamask.isAccountMenuOpen,
     keyrings: state.metamask.keyrings,
-    ticker: state.metamask.ticker,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
   }
@@ -153,7 +152,6 @@ AccountMenu.prototype.renderAccounts = function () {
     identities,
     accounts,
     selectedAddress,
-    ticker,
     keyrings,
     showAccountDetail,
   } = this.props
