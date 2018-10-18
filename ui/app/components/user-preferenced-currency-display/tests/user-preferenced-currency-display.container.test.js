@@ -18,6 +18,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
     it('should return the correct props', () => {
       const mockState = {
         metamask: {
+          fromCurrency: 'ETH',
           preferences: {
             useETHAsPrimaryCurrency: true,
           },
@@ -25,6 +26,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
       }
 
       assert.deepEqual(mapStateToProps(mockState), {
+        fromCurrency: 'ETH',
         useETHAsPrimaryCurrency: true,
       })
     })
