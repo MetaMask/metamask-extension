@@ -5,6 +5,11 @@ const {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  PLATFORM_FIREFOX,
+  PLATFORM_OPERA,
+  PLATFORM_CHROME,
+  PLATFORM_EDGE,
+  PLATFORM_BRAVE,
 } = require('./enums')
 
 /**
@@ -34,6 +39,29 @@ const getEnvironmentType = (url = window.location.href) => {
     return ENVIRONMENT_TYPE_FULLSCREEN
   } else {
     return ENVIRONMENT_TYPE_NOTIFICATION
+  }
+}
+
+/**
+ * Returns the platform (browser) where the extension is running.
+ *
+ * @returns {string} the platform ENUM
+ *
+ */
+const getPlatform = _ => {
+  const ua = navigator.userAgent
+  if (ua.search('Firefox') !== -1) {
+    return PLATFORM_FIREFOX
+  } else {
+    if (window && window.chrome && window.chrome.ipcRenderer) {
+      return PLATFORM_BRAVE
+    } else if (ua.search('Edge') !== -1) {
+      return PLATFORM_EDGE
+    } else if (ua.search('OPR') !== -1) {
+      return PLATFORM_OPERA
+    } else {
+      return PLATFORM_CHROME
+    }
   }
 }
 
@@ -100,6 +128,7 @@ function BnMultiplyByFraction (targetBN, numerator, denominator) {
 }
 
 module.exports = {
+  getPlatform,
   getStack,
   getEnvironmentType,
   sufficientBalance,

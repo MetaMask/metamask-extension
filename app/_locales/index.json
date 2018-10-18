@@ -17,6 +17,6 @@
   { "code": "tml", "name": "Tamil" },
   { "code": "tr", "name": "Turkish" },  
   { "code": "vi", "name": "Vietnamese" },
-  { "code": "zh_CN", "name": "Mandarin" },
-  { "code": "zh_TW", "name": "Taiwanese" }
+  { "code": "zh_CN", "name": "Chinese (Simplified)" },
+  { "code": "zh_TW", "name": "Chinese (Traditional)" }
 ]

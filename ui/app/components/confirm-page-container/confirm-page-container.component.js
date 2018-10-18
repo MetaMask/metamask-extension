@@ -43,7 +43,7 @@ export default class ConfirmPageContainer extends Component {
     // Footer
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
-    valid: PropTypes.bool,
+    disabled: PropTypes.bool,
   }
 
   render () {
@@ -54,7 +54,7 @@ export default class ConfirmPageContainer extends Component {
       fromAddress,
       toName,
       toAddress,
-      valid,
+      disabled,
       errorKey,
       errorMessage,
       contentComponent,
@@ -110,7 +110,7 @@ export default class ConfirmPageContainer extends Component {
           onSubmit={() => onSubmit()}
           submitText={this.context.t('confirm')}
           submitButtonType="confirm"
-          disabled={!valid}
+          disabled={disabled}
         />
       </div>
     )

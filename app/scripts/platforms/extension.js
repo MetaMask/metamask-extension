@@ -45,8 +45,13 @@ class ExtensionPlatform {
     return extension.runtime.getManifest().version
   }
 
-  openExtensionInBrowser (route = null) {
+  openExtensionInBrowser (route = null, queryString = null) {
     let extensionURL = extension.runtime.getURL('home.html')
+
+    if (queryString) {
+      extensionURL += `?${queryString}`
+    }
+
     if (route) {
       extensionURL += `#${route}`
     }

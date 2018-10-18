@@ -35,6 +35,7 @@ function mapStateToProps (state) {
     currentCurrency: getCurrentCurrency(state),
     contractExchangeRates: state.metamask.contractExchangeRates,
     selectedAddressTxList: state.metamask.selectedAddressTxList,
+    networkNonce: state.appState.networkNonce,
   }
 }
 
@@ -209,18 +210,24 @@ TxListItem.prototype.showRetryButton = function () {
     selectedAddressTxList,
     transactionId,
     txParams,
+    networkNonce,
   } = this.props
   if (!txParams) {
     return false
   }
+  let currentTxSharesEarliestNonce = false
   const currentNonce = txParams.nonce
   const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
+  const currentSubmittedTxs = selectedAddressTxList.filter(tx => tx.status === 'submitted')
   const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[currentNonceSubmittedTxs.length - 1]
   const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce &&
     lastSubmittedTxWithCurrentNonce.id === transactionId
+  if (currentSubmittedTxs.length > 0) {
+    currentTxSharesEarliestNonce = currentNonce === networkNonce
+  }
 
-  return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
+  return currentTxSharesEarliestNonce && currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
 }
 
 TxListItem.prototype.setSelectedToken = function (tokenAddress) {

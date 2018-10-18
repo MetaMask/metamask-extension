@@ -197,6 +197,7 @@ function blacklistedDomainCheck () {
  * Redirects the current page to a phishing information page
  */
 function redirectToPhishingWarning () {
-  console.log('Nifty Wallet - redirecting to phishing warning')
-  window.location.href = 'https://metamask.io/phishing.html'
+  console.log('Nifty Wallet - routing to Phishing Warning component')
+  const extensionURL = extension.runtime.getURL('phishing.html')
+  window.location.href = extensionURL
 }

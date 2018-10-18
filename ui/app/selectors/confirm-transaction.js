@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import txHelper from '../../lib/tx-helper'
 import { calcTokenAmount } from '../token-util'
+import { roundExponential } from '../helpers/confirm-transaction/util'
 
 const unapprovedTxsSelector = state => state.metamask.unapprovedTxs
 const unapprovedMsgsSelector = state => state.metamask.unapprovedMsgs
@@ -133,7 +134,8 @@ export const tokenAmountAndToAddressSelector = createSelector(
       const toParam = params.find(param => param.name === TOKEN_PARAM_TO)
       const valueParam = params.find(param => param.name === TOKEN_PARAM_VALUE)
       toAddress = toParam ? toParam.value : params[0].value
-      tokenAmount = valueParam ? Number(valueParam.value) : Number(params[1].value)
+      const value = valueParam ? Number(valueParam.value) : Number(params[1].value)
+      tokenAmount = roundExponential(value)
     }
 
     return {
@@ -145,13 +147,20 @@ export const tokenAmountAndToAddressSelector = createSelector(
 
 export const approveTokenAmountAndToAddressSelector = createSelector(
   tokenDataParamsSelector,
-  params => {
+  tokenDecimalsSelector,
+  (params, tokenDecimals) => {
     let toAddress = ''
     let tokenAmount = 0
 
     if (params && params.length) {
       toAddress = params.find(param => param.name === TOKEN_PARAM_SPENDER).value
-      tokenAmount = Number(params.find(param => param.name === TOKEN_PARAM_VALUE).value)
+      const value = Number(params.find(param => param.name === TOKEN_PARAM_VALUE).value)
+
+      if (tokenDecimals) {
+        tokenAmount = calcTokenAmount(value, tokenDecimals)
+      }
+
+      tokenAmount = roundExponential(tokenAmount)
     }
 
     return {
@@ -170,11 +179,13 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
 
     if (params && params.length) {
       toAddress = params.find(param => param.name === TOKEN_PARAM_TO).value
-      tokenAmount = Number(params.find(param => param.name === TOKEN_PARAM_VALUE).value)
+      let value = Number(params.find(param => param.name === TOKEN_PARAM_VALUE).value)
 
       if (tokenDecimals) {
-        tokenAmount = calcTokenAmount(tokenAmount, tokenDecimals)
+        value = calcTokenAmount(value, tokenDecimals)
       }
+
+      tokenAmount = roundExponential(value)
     }
 
     return {

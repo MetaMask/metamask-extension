@@ -5,6 +5,52 @@ const h = require('react-hyperscript')
 class ConnectScreen extends Component {
     constructor (props, context) {
         super(props)
+        this.state = {
+          selectedDevice: null,
+        }
+    }
+
+    connect = () => {
+      if (this.state.selectedDevice) {
+        this.props.connectToHardwareWallet(this.state.selectedDevice)
+      }
+      return null
+    }
+
+    renderConnectToTrezorButton () {
+        return h(
+            `button.hw-connect__btn${this.state.selectedDevice === 'trezor' ? '.selected' : ''}`,
+            { onClick: _ => this.setState({selectedDevice: 'trezor'}) },
+            h('img.hw-connect__btn__img', {
+              src: 'images/trezor-logo.svg',
+            })
+        )
+    }
+
+    renderConnectToLedgerButton () {
+        return h(
+          `button.hw-connect__btn${this.state.selectedDevice === 'ledger' ? '.selected' : ''}`,
+          { onClick: _ => this.setState({selectedDevice: 'ledger'}) },
+            h('img.hw-connect__btn__img', {
+              src: 'images/ledger-logo.svg',
+            })
+        )
+    }
+
+    renderButtons () {
+      return (
+        h('div', {}, [
+          h('div.hw-connect__btn-wrapper', {}, [
+            this.renderConnectToLedgerButton(),
+            this.renderConnectToTrezorButton(),
+          ]),
+          h(
+            `button.hw-connect__connect-btn${!this.state.selectedDevice ? '.disabled' : ''}`,
+            { onClick: this.connect },
+            this.context.t('connect')
+          ),
+        ])
+      )
     }
 
     renderUnsupportedBrowser () {
@@ -12,7 +58,7 @@ class ConnectScreen extends Component {
             h('div.new-account-connect-form.unsupported-browser', {}, [
                 h('div.hw-connect', [
                     h('h3.hw-connect__title', {}, this.context.t('browserNotSupported')),
-                    h('p.hw-connect__msg', {}, this.context.t('chromeRequiredForTrezor')),
+                    h('p.hw-connect__msg', {}, this.context.t('chromeRequiredForHardwareWallets')),
                 ]),
                 h(
                     'button.btn-primary.btn--large',
@@ -30,29 +76,31 @@ class ConnectScreen extends Component {
     renderHeader () {
         return (
             h('div.hw-connect__header', {}, [
-                h('h3.hw-connect__header__title', {}, this.context.t(`hardwareSupport`)),
-                h('p.hw-connect__header__msg', {}, this.context.t(`hardwareSupportMsg`)),
+                h('h3.hw-connect__header__title', {}, this.context.t(`hardwareWallets`)),
+                h('p.hw-connect__header__msg', {}, this.context.t(`hardwareWalletsMsg`)),
             ])
         )
     }
 
+    getAffiliateLinks () {
+      const links = {
+        trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
+        ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
+      }
+
+      const text = this.context.t('orderOneHere')
+      const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger)
+
+      return h('div.hw-connect__get-hw__msg', { dangerouslySetInnerHTML: {__html: response }})
+    }
+
     renderTrezorAffiliateLink () {
-        return h('div.hw-connect__get-trezor', {}, [
-            h('p.hw-connect__get-trezor__msg', {}, this.context.t(`dontHaveATrezorWallet`)),
-            h('a.hw-connect__get-trezor__link', {
-              href: 'https://shop.trezor.io/?a=metamask',
-              target: '_blank',
-            }, this.context.t('orderOneHere')),
+        return h('div.hw-connect__get-hw', {}, [
+            h('p.hw-connect__get-hw__msg', {}, this.context.t(`dontHaveAHardwareWallet`)),
+            this.getAffiliateLinks(),
           ])
     }
 
-    renderConnectToTrezorButton () {
-        return h(
-            'button.btn-primary.btn--large',
-            { onClick: this.props.connectToTrezor.bind(this) },
-            this.props.btnText
-        )
-    }
 
     scrollToTutorial = (e) => {
       if (this.referenceNode) this.referenceNode.scrollIntoView({behavior: 'smooth'})
@@ -102,7 +150,7 @@ class ConnectScreen extends Component {
         return (
             h('div.hw-connect__footer', {}, [
                 h('h3.hw-connect__footer__title', {}, this.context.t(`readyToConnect`)),
-                this.renderConnectToTrezorButton(),
+                this.renderButtons(),
                 h('p.hw-connect__footer__msg', {}, [
                     this.context.t(`havingTroubleConnecting`),
                     h('a.hw-connect__footer__link', {
@@ -118,8 +166,8 @@ class ConnectScreen extends Component {
         return (
             h('div.new-account-connect-form', {}, [
                 this.renderHeader(),
+                this.renderButtons(),
                 this.renderTrezorAffiliateLink(),
-                this.renderConnectToTrezorButton(),
                 this.renderLearnMore(),
                 this.renderTutorialSteps(),
                 this.renderFooter(),
@@ -136,8 +184,7 @@ class ConnectScreen extends Component {
 }
 
 ConnectScreen.propTypes = {
-    connectToTrezor: PropTypes.func.isRequired,
-    btnText: PropTypes.string.isRequired,
+    connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
 }
 

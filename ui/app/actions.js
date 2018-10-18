@@ -11,6 +11,7 @@ const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
+const WebcamUtils = require('../lib/webcam-utils')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -32,6 +33,8 @@ var actions = {
   ALERT_CLOSE: 'UI_ALERT_CLOSE',
   showAlert: showAlert,
   hideAlert: hideAlert,
+  QR_CODE_DETECTED: 'UI_QR_CODE_DETECTED',
+  qrCodeDetected,
   // network dropdown open
   NETWORK_DROPDOWN_OPEN: 'UI_NETWORK_DROPDOWN_OPEN',
   NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
@@ -87,7 +90,7 @@ var actions = {
   connectHardware,
   checkHardwareStatus,
   forgetDevice,
-  unlockTrezorAccount,
+  unlockHardwareWalletAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
   resetAccount,
@@ -125,7 +128,8 @@ var actions = {
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
-  setCurrentCurrency: setCurrentCurrency,
+  showQrScanner,
+  setCurrentCurrency,
   setCurrentAccountTab,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
@@ -143,6 +147,8 @@ var actions = {
   exportAccountComplete,
   SET_ACCOUNT_LABEL: 'SET_ACCOUNT_LABEL',
   setAccountLabel,
+  updateNetworkNonce,
+  SET_NETWORK_NONCE: 'SET_NETWORK_NONCE',
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
@@ -233,6 +239,8 @@ var actions = {
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
+  SET_HARDWARE_WALLET_DEFAULT_HD_PATH: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
+  setHardwareWalletDefaultHdPath,
   updateProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
@@ -671,12 +679,12 @@ function addNewAccount () {
   }
 }
 
-function checkHardwareStatus (deviceName) {
-  log.debug(`background.checkHardwareStatus`, deviceName)
+function checkHardwareStatus (deviceName, hdPath) {
+  log.debug(`background.checkHardwareStatus`, deviceName, hdPath)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.checkHardwareStatus(deviceName, (err, unlocked) => {
+      background.checkHardwareStatus(deviceName, hdPath, (err, unlocked) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -713,12 +721,12 @@ function forgetDevice (deviceName) {
   }
 }
 
-function connectHardware (deviceName, page) {
-  log.debug(`background.connectHardware`, deviceName, page)
+function connectHardware (deviceName, page, hdPath) {
+  log.debug(`background.connectHardware`, deviceName, page, hdPath)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.connectHardware(deviceName, page, (err, accounts) => {
+      background.connectHardware(deviceName, page, hdPath, (err, accounts) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -734,12 +742,12 @@ function connectHardware (deviceName, page) {
   }
 }
 
-function unlockTrezorAccount (index) {
-  log.debug(`background.unlockTrezorAccount`, index)
+function unlockHardwareWalletAccount (index, deviceName, hdPath) {
+  log.debug(`background.unlockHardwareWalletAccount`, index, deviceName, hdPath)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.unlockTrezorAccount(index, (err, accounts) => {
+      background.unlockHardwareWalletAccount(index, deviceName, hdPath, (err, accounts) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -756,6 +764,28 @@ function unlockTrezorAccount (index) {
 function showInfoPage () {
   return {
     type: actions.SHOW_INFO_PAGE,
+  }
+}
+
+function showQrScanner (ROUTE) {
+  return (dispatch, getState) => {
+    return WebcamUtils.checkStatus()
+    .then(status => {
+      if (!status.environmentReady) {
+         // We need to switch to fullscreen mode to ask for permission
+         global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
+      } else {
+        dispatch(actions.showModal({
+          name: 'QR_SCANNER',
+        }))
+      }
+    }).catch(e => {
+      dispatch(actions.showModal({
+        name: 'QR_SCANNER',
+        error: true,
+        errorType: e.type,
+      }))
+    })
   }
 }
 
@@ -1516,11 +1546,12 @@ function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
-    background.setSelectedAddress(address, (err) => {
+    background.setSelectedAddress(address, (err, tokens) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
+      dispatch(updateTokens(tokens))
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
@@ -1872,12 +1903,30 @@ function hideAlert () {
   }
 }
 
+/**
+ * This action will receive two types of values via qrCodeData
+ * an object with the following structure {type, values}
+ * or null (used to clear the previous value)
+ */
+function qrCodeDetected (qrCodeData) {
+  return {
+    type: actions.QR_CODE_DETECTED,
+    value: qrCodeData,
+  }
+}
 
 function showLoadingIndication (message) {
   return {
     type: actions.SHOW_LOADING,
     value: message,
   }
+}
+
+function setHardwareWalletDefaultHdPath ({ device, path }) {
+    return {
+      type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
+      value: {device, path},
+    }
 }
 
 function hideLoadingIndication () {
@@ -2180,6 +2229,24 @@ function updateFeatureFlags (updatedFeatureFlags) {
   return {
     type: actions.UPDATE_FEATURE_FLAGS,
     value: updatedFeatureFlags,
+  }
+}
+
+function setNetworkNonce (networkNonce) {
+  return {
+    type: actions.SET_NETWORK_NONCE,
+    value: networkNonce,
+  }
+}
+
+function updateNetworkNonce (address) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      global.ethQuery.getTransactionCount(address, (err, data) => {
+        dispatch(setNetworkNonce(data))
+        resolve(data)
+      })
+    })
   }
 }
 

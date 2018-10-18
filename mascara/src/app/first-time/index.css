@@ -340,6 +340,19 @@
   min-width: 0;
 }
 
+.backup-phrase__tips-text--link {
+  color: #2f9ae0;
+  cursor: pointer;
+}
+
+.backup-phrase__tips-text--link:hover {
+  color: #2f9ae0;
+}
+
+.backup-phrase__tips-text--strong {
+  font-weight: bold;
+}
+
 @media only screen and (max-width: 768px) {
   .backup-phrase__content-wrapper {
     flex-direction: column;

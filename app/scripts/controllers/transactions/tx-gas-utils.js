@@ -30,14 +30,10 @@ class TxGasUtil {
     try {
       estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
     } catch (err) {
-      const simulationFailed = (
-        err.message.includes('Transaction execution error.') ||
-        err.message.includes('gas required exceeds allowance or always failing transaction')
-      )
-      if (simulationFailed) {
-        txMeta.simulationFails = true
-        return txMeta
+      txMeta.simulationFails = {
+        reason: err.message,
       }
+      return txMeta
     }
     this.setTxGas(txMeta, block.gasLimit, estimatedGasHex)
     return txMeta

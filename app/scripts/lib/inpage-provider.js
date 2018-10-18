@@ -54,6 +54,11 @@ function MetamaskInpageProvider (connectionStream) {
 // also remap ids inbound and outbound
 MetamaskInpageProvider.prototype.sendAsync = function (payload, cb) {
   const self = this
+
+  if (payload.method === 'eth_signTypedData') {
+    console.warn('MetaMask: This experimental version of eth_signTypedData will be deprecated in the next release in favor of the standard as defined in EIP-712. See https://git.io/fNzPl for more information on the new standard.')
+  }
+
   self.rpcEngine.handle(payload, cb)
 }
 

@@ -11,6 +11,7 @@ export default class SendContent extends Component {
 
   static propTypes = {
     updateGas: PropTypes.func,
+    scanQrCode: PropTypes.func,
   };
 
   render () {
@@ -18,7 +19,10 @@ export default class SendContent extends Component {
       <PageContainerContent>
         <div className="send-v2__form">
           <SendFromRow />
-          <SendToRow updateGas={(updateData) => this.props.updateGas(updateData)} />
+          <SendToRow
+            updateGas={(updateData) => this.props.updateGas(updateData)}
+            scanQrCode={ _ => this.props.scanQrCode()}
+          />
           <SendAmountRow updateGas={(updateData) => this.props.updateGas(updateData)} />
           <SendGasRow />
           <SendHexDataRow />
