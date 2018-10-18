@@ -2,18 +2,36 @@
 
 ## Current Develop Branch
 
+## 4.16.0 Wednesday October 17 2018
+
+- Feature: Add toggle for primary currency (eth/fiat)
+- Feature: add tooltip for view etherscan tx
+- Feature: add Polish translations
+- Feature: improve Korean translations
+- Feature: improve Italian translations
+- Bug Fix: Fix bug with "pending" block reference
+- Bug Fix: Force AccountTracker to update balances on network change
+- Bug Fix: Fix document extension check when injecting web3
+- Bug Fix: Fix some support links
+
+## 4.15.0 Thursday October 11 2018
+
+- A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.14.0` is found to have bugs.
+
 ## 4.14.0 Thursday October 11 2018
 
 - Update transaction statuses when switching networks.
 - [#5470](https://github.com/MetaMask/metamask-extension/pull/5470) 100% coverage in French locale, fixed the procedure to verify proposed locale.
 - Added rudimentary support for the subscription API to support web3 1.0 and Truffle's Drizzle.
+- [#5502](https://github.com/MetaMask/metamask-extension/pull/5502) Update Italian translation.
+
+## 4.13.0
+
+- A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.12.0` is found to have bugs.
 
 ## 4.12.0 Thursday September 27 2018
 
 - Reintroduces changes from 4.10.0
-## 4.13.0
-
-- A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.12.0` is found to have bugs.
 
 ## 4.11.1 Tuesday September 25 2018
 

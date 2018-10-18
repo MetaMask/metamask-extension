@@ -16,8 +16,9 @@ export default class ConfirmPageContainer extends Component {
     onEdit: PropTypes.func,
     showEdit: PropTypes.bool,
     subtitle: PropTypes.string,
+    subtitleComponent: PropTypes.node,
     title: PropTypes.string,
-    titleComponent: PropTypes.func,
+    titleComponent: PropTypes.node,
     // Sender to Recipient
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
@@ -65,6 +66,7 @@ export default class ConfirmPageContainer extends Component {
       title,
       titleComponent,
       subtitle,
+      subtitleComponent,
       hideSubtitle,
       summaryComponent,
       detailsComponent,
@@ -101,6 +103,7 @@ export default class ConfirmPageContainer extends Component {
               title={title}
               titleComponent={titleComponent}
               subtitle={subtitle}
+              subtitleComponent={subtitleComponent}
               hideSubtitle={hideSubtitle}
               summaryComponent={summaryComponent}
               detailsComponent={detailsComponent}

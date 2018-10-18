@@ -366,7 +366,40 @@ class TransactionController extends EventEmitter {
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 
-  confirmTransaction (txId) {
+  /**
+   * Sets the status of the transaction to confirmed and sets the status of nonce duplicates as
+   * dropped if the txParams have data it will fetch the txReceipt
+   * @param {number} txId - The tx's ID
+   * @returns {Promise<void>}
+   */
+  async confirmTransaction (txId) {
+    // get the txReceipt before marking the transaction confirmed
+    // to ensure the receipt is gotten before the ui revives the tx
+    const txMeta = this.txStateManager.getTx(txId)
+
+    if (!txMeta) {
+      return
+    }
+
+    try {
+      const txReceipt = await this.query.getTransactionReceipt(txMeta.hash)
+
+      // It seems that sometimes the numerical values being returned from
+      // this.query.getTransactionReceipt are BN instances and not strings.
+      const gasUsed = typeof txReceipt.gasUsed !== 'string'
+        ? txReceipt.gasUsed.toString(16)
+        : txReceipt.gasUsed
+
+      txMeta.txReceipt = {
+        ...txReceipt,
+        gasUsed,
+      }
+
+      this.txStateManager.updateTx(txMeta, 'transactions#confirmTransaction - add txReceipt')
+    } catch (err) {
+      log.error(err)
+    }
+
     this.txStateManager.setTxStatusConfirmed(txId)
     this._markNonceDuplicatesDropped(txId)
   }

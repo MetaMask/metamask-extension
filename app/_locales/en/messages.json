@@ -140,6 +140,9 @@
   "clickCopy": {
     "message": "Click to Copy"
   },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
   "close": {
     "message": "Close"
   },
@@ -361,6 +364,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "eth": {
+    "message": "ETH"
+  },
   "etherscanView": {
     "message": "View account on Etherscan"
   },
@@ -380,7 +386,7 @@
     "message": "Failed"
   },
   "fiat": {
-    "message": "FIAT",
+    "message": "Fiat",
     "description": "Exchange type"
   },
   "fileImportFail": {
@@ -423,6 +429,9 @@
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
+  },
+  "gasUsed": {
+    "message": "Gas Used"
   },
   "generatingSeed": {
     "message": "Generating Seed..."
@@ -635,6 +644,9 @@
   "min": {
     "message": "Minimum"
   },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
   "myAccounts": {
     "message": "My Accounts"
   },
@@ -787,6 +799,12 @@
   "prev": {
     "message": "Prev"
   },
+  "primaryCurrencySetting": {
+    "message": "Primary Currency"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select ETH to prioritize displaying values in ETH. Select Fiat to prioritize displaying values in your selected currency."
+  },
   "privacyMsg": {
     "message": "Privacy Policy"
   },
@@ -795,7 +813,7 @@
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+    "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
   "privateNetwork": {
     "message": "Private Network"
@@ -1186,7 +1204,7 @@
     "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
-    "message": "Type Your Password"
+    "message": "Type your MetaMask password"
   },
   "uiWelcome": {
     "message": "Welcome to the New UI (Beta)"
