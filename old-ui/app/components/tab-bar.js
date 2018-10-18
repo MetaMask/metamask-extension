@@ -12,25 +12,25 @@ function TabBar () {
 TabBar.prototype.render = function () {
   const props = this.props
   const state = this.state || {}
-  const { tabs = [], defaultTab, tabSelected } = props
+  const { tabs = [], defaultTab, tabSelected, style } = props
   const { subview = defaultTab } = state
 
   return (
     h('.flex-row.space-around', {
       style: {
         background: '#60269c',
-        color: '#AEAEAE',
-        paddingTop: '10px',
+        paddingTop: (style && style.paddingTop) || '10px',
         minHeight: '45px',
         lineHeight: '45px',
       },
-    }, tabs.map((tab) => {
-      const { key, content } = tab
-      return h(subview === key ? subview === 'history' ? '.activeForm.left' : '.activeForm.right' : '.inactiveForm.pointer', {
+    }, tabs.map((tab, ind) => {
+      const { key, content, id } = tab
+      return h(`${key ? '#' + key : ''}${subview === key ? ind === 0 ? '.activeForm.left' : '.activeForm.right' : '.inactiveForm.pointer'}`, {
         onClick: () => {
           this.setState({ subview: key })
           tabSelected(key)
         },
+        id: id,
       }, content)
     }))
   )

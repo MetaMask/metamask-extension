@@ -118,9 +118,6 @@ RestoreVaultScreen.prototype.render = function () {
           // cancel
           h('button.btn-violet', {
             onClick: this.showInitializeMenu.bind(this),
-            style: {
-              marginRight: '10px',
-            },
           }, 'Cancel'),
 
           // submit
@@ -156,7 +153,6 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   var passwordConfirm = passwordConfirmBox.value
   if (password.length < 8) {
     this.warning = 'Password not long enough'
-
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }

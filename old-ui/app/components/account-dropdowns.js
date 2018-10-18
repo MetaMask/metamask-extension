@@ -119,11 +119,11 @@ class AccountDropdowns extends Component {
       {
         useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
         style: {
+          position: 'absolute',
           marginLeft: '-213px',
-          marginTop: '32px',
+          top: '38px',
           minWidth: '180px',
-          overflowY: 'auto',
-          maxHeight: '300px',
+          maxHeight: accountSelectorActive ? '300px' : '0px',
           width: '265px',
         },
         innerStyle: {
@@ -177,20 +177,18 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountOptions () {
-    const { actions, network } = this.props
+    const { actions } = this.props
     const { optionsMenuActive } = this.state
-
-    const isSokol = parseInt(network) === 77
-    const isPOA = parseInt(network) === 99
-    const explorerStr = (isSokol || isPOA) ? 'POA explorer' : 'Etherscan'
 
     return h(
       Dropdown,
       {
         style: {
+          position: 'relative',
           marginLeft: '-234px',
           minWidth: '180px',
-          marginTop: '30px',
+          // marginTop: '30px',
+          top: '30px',
           width: '280px',
         },
         isOpen: optionsMenuActive,
@@ -213,7 +211,7 @@ class AccountDropdowns extends Component {
               global.platform.openWindow({ url })
             },
           },
-          `View account on ${explorerStr}`,
+          `View on block explorer`,
         ),
         h(
           DropdownMenuItem,
@@ -237,7 +235,7 @@ class AccountDropdowns extends Component {
               copyToClipboard(checkSumAddress)
             },
           },
-          'Copy Address to clipboard',
+          'Copy address to clipboard',
         ),
         h(
           DropdownMenuItem,
@@ -264,11 +262,9 @@ class AccountDropdowns extends Component {
       },
       [
         enableAccountsSelector && h(
-          // 'i.fa.fa-angle-down',
           'div.accounts-selector',
           {
             style: {
-              // fontSize: '1.8em',
               background: 'url(images/switch_acc.svg) white center center no-repeat',
               height: '25px',
               width: '25px',
@@ -285,15 +281,8 @@ class AccountDropdowns extends Component {
           this.renderAccountSelector(),
         ),
         enableAccountOptions && h(
-          'div.account-dropdown',
+          'div.address-dropdown.account-dropdown',
           {
-            style: {
-              backgroundImage: 'url(../images/more.svg)',
-              width: '30px',
-              height: '24px',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-            },
             onClick: (event) => {
               event.stopPropagation()
               this.setState({

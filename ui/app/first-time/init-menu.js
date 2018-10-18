@@ -3,10 +3,8 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const Mascot = require('../components/mascot')
 const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
-const getCaretCoordinates = require('textarea-caret')
 const { RESTORE_VAULT_ROUTE, DEFAULT_ROUTE } = require('../routes')
 const { getEnvironmentType } = require('../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../app/scripts/lib/enums')
@@ -37,10 +35,6 @@ class InitializeMenuScreen extends Component {
 
     return (
       h('.initialize-screen.flex-column.flex-center', [
-
-        h(Mascot, {
-          animationEventEmitter: this.animationEventEmitter,
-        }),
 
         h('h1', {
           style: {
@@ -165,17 +159,6 @@ class InitializeMenuScreen extends Component {
 
     this.props.createNewVaultAndKeychain(password)
       .then(() => history.push(DEFAULT_ROUTE))
-  }
-
-  inputChanged (event) {
-    // tell mascot to look at page action
-    var element = event.target
-    var boundingRect = element.getBoundingClientRect()
-    var coordinates = getCaretCoordinates(element, element.selectionEnd)
-    this.animationEventEmitter.emit('point', {
-      x: boundingRect.left + coordinates.left - element.scrollLeft,
-      y: boundingRect.top + coordinates.top - element.scrollTop,
-    })
   }
 
   showRestoreVault () {

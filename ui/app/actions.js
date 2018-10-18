@@ -221,8 +221,10 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
+  SHOW_CONFIRM_ADD_TOKEN_PAGE: 'SHOW_CONFIRM_ADD_TOKEN_PAGE',
   SHOW_REMOVE_TOKEN_PAGE: 'SHOW_REMOVE_TOKEN_PAGE',
   showAddTokenPage,
+  showConfirmAddTokensPage,
   showRemoveTokenPage,
   addToken,
   addTokens,
@@ -348,6 +350,10 @@ function tryUnlockMetamask (password) {
       .then(() => {
         dispatch(actions.unlockSucceeded())
         return forceUpdateMetamaskState(dispatch)
+      })
+      .catch((err) => {
+        log.error(err)
+        return Promise.reject(err)
       })
       .then(() => {
         return new Promise((resolve, reject) => {
@@ -498,7 +504,7 @@ function requestRevealSeed (password) {
     return new Promise((resolve, reject) => {
       background.submitPassword(password, err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          dispatch(actions.displayWarning(err))
           return reject(err)
         }
 
@@ -515,6 +521,10 @@ function requestRevealSeed (password) {
         })
       })
     })
+      .catch((err) => {
+        dispatch(actions.displayWarning(err.message))
+        return Promise.reject(err)
+      })
   }
 }
 
@@ -564,10 +574,9 @@ function changePassword (oldPassword, newPassword) {
       background.changePassword(oldPassword, newPassword, (err, account) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          log.error(err)
           return reject(err)
         }
-
         log.info('Password is changed for ' + account)
         dispatch(actions.showAccountsPage())
         resolve(account)
@@ -1065,7 +1074,7 @@ function sendTx (txData) {
   }
 }
 
-function signTokenTx (tokenAddress, toAddress, amount, txData) {
+function signTokenTx (tokenAddress, toAddress, amount, txData, confTxScreenParams) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
     const token = global.eth.contract(abi).at(tokenAddress)
@@ -1074,7 +1083,7 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
         dispatch(actions.hideLoadingIndication())
         dispatch(actions.displayWarning(err.message))
       })
-    dispatch(actions.showConfTxPage({}))
+    dispatch(actions.showConfTxPage(confTxScreenParams || {}))
   }
 }
 
@@ -1100,7 +1109,7 @@ function updateTransaction (txData) {
     .then(() => updateMetamaskStateFromBackground())
     .then(newState => dispatch(actions.updateMetamaskState(newState)))
     .then(() => {
-        dispatch(actions.showConfTxPage({ id: txData.id }))
+        dispatch(actions.showConfTxPage({ id: txData.id}))
         dispatch(actions.hideLoadingIndication())
         return txData
       })
@@ -1134,6 +1143,7 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         dispatch(actions.hideLoadingIndication())
+        dispatch(actions.setCurrentAccountTab('history'))
 
         if (!hasUnconfirmedTransactions(getState())) {
           return global.platform.closeNotificationWindow()
@@ -1533,11 +1543,12 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage ({transForward = true, id}) {
+function showConfTxPage (screenParams) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
-    transForward,
-    id,
+    transForward: (screenParams.transForward || true),
+    id: screenParams.id,
+    value: screenParams,
   }
 }
 
@@ -1577,6 +1588,13 @@ function showConfigPage (transitionForward = true) {
 function showAddTokenPage (transitionForward = true) {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
+    value: transitionForward,
+  }
+}
+
+function showConfirmAddTokensPage (transitionForward = true) {
+  return {
+    type: actions.SHOW_CONFIRM_ADD_TOKEN_PAGE,
     value: transitionForward,
   }
 }
@@ -1668,7 +1686,7 @@ function markNoticeRead (notice) {
       background.markNoticeRead(notice, (err, notice) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err))
+          dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
 
@@ -1741,7 +1759,7 @@ function setProviderType (type) {
       dispatch(actions.setSelectedToken())
     })
 
-    const newCoin = type === 'poa' || type === 'sokol' ? 'poa' : 'eth'
+    const newCoin = type === 'poa' || type === 'sokol' ? 'poa' : type === 'dai' ? 'dai' : 'eth'
     background.setCurrentCoin(newCoin, (err, data) => {
       if (err) {
         log.error(err.stack)
@@ -1775,6 +1793,7 @@ function setRpcTarget (newRpc) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
+      dispatch(actions.displayWarning(''))
       dispatch(actions.setSelectedToken())
     })
   }
@@ -1977,9 +1996,11 @@ function showSendPage () {
   }
 }
 
-function showSendTokenPage () {
+
+function showSendTokenPage (address) {
   return {
     type: actions.SHOW_SEND_TOKEN_PAGE,
+    value: address,
   }
 }
 
@@ -2279,9 +2300,12 @@ function updateNetworkEndpointType (networkEndpointType) {
 }
 
 function setPendingTokens (pendingTokens) {
-  const { customToken = {}, selectedTokens = {} } = pendingTokens
-  const { address, symbol, decimals } = customToken
-  const tokens = address && symbol && decimals
+  const { selectedTokens = {}, customToken = {} } = pendingTokens
+  const { address, symbol, decimals, network } = customToken
+  Object.keys(selectedTokens).forEach(address => {
+    selectedTokens[address].network = parseInt(network)
+  })
+  const tokens = address && symbol && decimals && network
     ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }
     : selectedTokens
 

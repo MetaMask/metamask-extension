@@ -15,13 +15,15 @@ const UnlockScreen = require('./unlock')
 // accounts
 const AccountDetailScreen = require('./account-detail')
 const SendTransactionScreen = require('./send')
+const SendTokenScreen = require('./send-token')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
 const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
-const AddTokenScreen = require('./add-token')
+const AddTokenScreen = require('./components/add-token')
+const ConfirmAddTokenScreen = require('./components/confirm-add-token')
 const RemoveTokenScreen = require('./remove-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
@@ -91,10 +93,11 @@ function mapStateToProps (state) {
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, loadingMessage, transForward, network } = props
+  const { isLoading, loadingMessage, transForward, network, provider } = props
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config' && props.currentView.name !== 'delete-rpc'
+  const networkName = provider.type === 'rpc' ? `${this.getNetworkName()} (${provider.rpcTarget})` : this.getNetworkName()
   const loadMessage = loadingMessage || isLoadingNetwork ?
-    `Connecting to ${this.getNetworkName()}` : null
+    `Connecting to ${networkName}` : null
   log.debug('Main ui render function')
 
   return (
@@ -206,8 +209,7 @@ App.prototype.renderAppBar = function () {
             alignItems: 'center',
           },
         }, [
-
-          props.isUnlocked && h(AccountDropdowns, {
+          h(AccountDropdowns, {
             style: {},
             enableAccountsSelector: true,
             identities: this.props.identities,
@@ -217,7 +219,7 @@ App.prototype.renderAppBar = function () {
           }, []),
 
           // hamburger
-          props.isUnlocked && h('div', {
+          h('div', {
             className: state.sandwichClass || 'sandwich-expando',
             style: {
               width: 16,
@@ -259,8 +261,9 @@ App.prototype.renderNetworkDropdown = function () {
     style: {
       position: 'absolute',
       left: '2px',
-      top: '36px',
+      top: '38px',
       width: '270px',
+      maxHeight: isOpen ? '524px' : '0px',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',
@@ -281,6 +284,23 @@ App.prototype.renderNetworkDropdown = function () {
       },
       [h(providerType === 'poa' ? 'div.selected-network' : ''),
         ethNetProps.props.getNetworkDisplayName(99),
+      ]
+    ),
+
+    h(
+      DropdownMenuItem,
+      {
+        key: 'dai',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('dai')),
+        style: {
+          paddingLeft: '20px',
+          fontSize: '16px',
+          color: providerType === 'dai' ? 'white' : '',
+        },
+      },
+      [h(providerType === 'dai' ? 'div.selected-network' : ''),
+        ethNetProps.props.getNetworkDisplayName(100),
       ]
     ),
 
@@ -374,7 +394,10 @@ App.prototype.renderNetworkDropdown = function () {
       {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('localhost')),
+        onClick: () => {
+          props.dispatch(actions.setRpcTarget('http://localhost:8545'))
+          props.dispatch(actions.setProviderType('localhost'))
+        },
         style: {
           paddingLeft: '20px',
           fontSize: '16px',
@@ -385,9 +408,6 @@ App.prototype.renderNetworkDropdown = function () {
         'Localhost 8545',
       ]
     ),
-
-    this.renderCustomOption(props.provider),
-    this.renderCommonRpc(rpcList, props.provider),
 
     h(
       DropdownMenuItem,
@@ -405,6 +425,9 @@ App.prototype.renderNetworkDropdown = function () {
       ]
     ),
 
+    this.renderSelectedCustomOption(props.provider),
+    this.renderCommonRpc(rpcList, props.provider),
+
   ])
 }
 
@@ -417,6 +440,7 @@ App.prototype.renderDropdown = function () {
     useCssTransition: true,
     isOpen: isOpen,
     zIndex: 11,
+    constOverflow: true,
     onClickOutside: (event) => {
       const classList = event.target.classList
       const parentClassList = event.target.parentElement.classList
@@ -435,6 +459,9 @@ App.prototype.renderDropdown = function () {
       position: 'absolute',
       right: '2px',
       top: '38px',
+      width: '126px',
+      maxHeight: isOpen ? '186px' : '0px',
+      overflow: 'hidden',
     },
     innerStyle: {},
   }, [
@@ -568,6 +595,10 @@ App.prototype.renderPrimary = function () {
       log.debug('rendering send tx screen')
       return h(SendTransactionScreen, {key: 'send-transaction'})
 
+    case 'sendToken':
+      log.debug('rendering send tx screen')
+      return h(SendTokenScreen, {key: 'send-token'})
+
     case 'newKeychain':
       log.debug('rendering new keychain screen')
       return h(NewKeyChainScreen, {key: 'new-keychain'})
@@ -579,6 +610,10 @@ App.prototype.renderPrimary = function () {
     case 'add-token':
       log.debug('rendering add-token screen from unlock screen.')
       return h(AddTokenScreen, {key: 'add-token'})
+
+    case 'confirm-add-token':
+      log.debug('rendering confirm-add-token screen from unlock screen.')
+      return h(ConfirmAddTokenScreen, {key: 'confirm-add-token'})
 
     case 'remove-token':
       log.debug('rendering remove-token screen from unlock screen.')
@@ -668,10 +703,9 @@ App.prototype.toggleMetamaskActive = function () {
   }
 }
 
-App.prototype.renderCustomOption = function (provider) {
+App.prototype.renderSelectedCustomOption = function (provider) {
   const { rpcTarget, type } = provider
   const props = this.props
-
   if (type !== 'rpc') return null
 
   // Concatenate long URLs
@@ -681,9 +715,6 @@ App.prototype.renderCustomOption = function (provider) {
   }
 
   switch (rpcTarget) {
-
-    case 'http://localhost:8545':
-      return null
 
     default:
       return h(
@@ -720,10 +751,10 @@ App.prototype.getNetworkName = function () {
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {
   const props = this.props
-  const rpcTarget = provider.rpcTarget
+  const { rpcTarget, type } = provider
 
   return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (provider.type === 'rpc' && rpc === rpcTarget)) {
+    if (type === 'rpc' && rpc === rpcTarget) {
       return null
     } else {
       return h(

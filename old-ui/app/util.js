@@ -1,4 +1,5 @@
 const ethUtil = require('ethereumjs-util')
+const ethNetProps = require('eth-net-props')
 
 var valueTable = {
   wei: '1000000000000000000',
@@ -111,10 +112,9 @@ function parseBalance (balance) {
 
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
-function formatBalance (balance, decimalsToKeep, needsParse = true, network) {
-  const isSokol = parseInt(network) === 77
-  const isPOA = parseInt(network) === 99
-  const coinName = isPOA ? 'POA' : isSokol ? 'SPOA' : 'ETH'
+function formatBalance (balance, decimalsToKeep, needsParse = true, network, isToken, tokenSymbol) {
+  const coinName = ethNetProps.props.getNetworkCoinName(network)
+  const assetName = isToken ? tokenSymbol : coinName
   var parsed = needsParse ? parseBalance(balance) : balance.split('.')
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
@@ -124,14 +124,14 @@ function formatBalance (balance, decimalsToKeep, needsParse = true, network) {
       if (afterDecimal !== '0') {
         var sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
         if (sigFigs) { afterDecimal = sigFigs[0] }
-        formatted = '0.' + afterDecimal + ` ${coinName}`
+        formatted = '0.' + afterDecimal + ` ${assetName}`
       }
     } else {
-      formatted = beforeDecimal + '.' + afterDecimal.slice(0, 3) + ` ${coinName}`
+      formatted = beforeDecimal + '.' + afterDecimal.slice(0, 3) + ` ${assetName}`
     }
   } else {
     afterDecimal += Array(decimalsToKeep).join('0')
-    formatted = beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ` ${coinName}`
+    formatted = beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ` ${assetName}`
   }
   return formatted
 }

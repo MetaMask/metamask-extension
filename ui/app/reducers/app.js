@@ -187,12 +187,22 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: action.value,
+        warning: null,
       })
 
     case actions.SHOW_ADD_TOKEN_PAGE:
       return extend(appState, {
         currentView: {
           name: 'add-token',
+          context: appState.currentView.context,
+        },
+        transForward: action.value,
+      })
+
+    case actions.SHOW_CONFIRM_ADD_TOKEN_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'confirm-add-token',
           context: appState.currentView.context,
         },
         transForward: action.value,
@@ -287,6 +297,7 @@ function reduceApp (state, action) {
         currentView: {
           name: 'sendToken',
           context: appState.currentView.context,
+          tokenAddress: action.value,
         },
         transForward: true,
         warning: null,
@@ -428,6 +439,7 @@ function reduceApp (state, action) {
         currentView: {
           name: 'confTx',
           pendingTxIndex: action.id ? indexForPending(state, action.id) : 0,
+          screenParams: action.value,
         },
         transForward: action.transForward,
         warning: null,

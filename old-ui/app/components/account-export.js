@@ -80,9 +80,6 @@ ExportAccountView.prototype.render = function () {
             [
               h('button.btn-violet', {
                 onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-                style: {
-                  marginRight: '10px',
-                },
               }, 'Cancel'),
               h('button', {
                 onClick: () => this.onExportKeyPress({ key: 'Enter', preventDefault: () => {} }),
@@ -157,6 +154,10 @@ ExportAccountView.prototype.render = function () {
       ]),
     ])
   }
+}
+
+ExportAccountView.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
 }
 
 ExportAccountView.prototype.onExportKeyPress = function (event) {

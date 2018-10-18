@@ -15,8 +15,11 @@ FiatValue.prototype.render = function () {
   let { conversionRate } = props
   const { currentCurrency, network } = props
   const isSokol = parseInt(network) === 77
+  const isDai = parseInt(network) === 100
   if (isSokol) {
     conversionRate = 0
+  } else if (isDai) {
+    conversionRate = 1
   }
   const renderedCurrency = currentCurrency || ''
 

@@ -111,6 +111,10 @@ AccountImportSubview.prototype.render = function () {
   )
 }
 
+AccountImportSubview.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 AccountImportSubview.prototype.renderImportView = function () {
   const props = this.props
   const state = this.state || {}

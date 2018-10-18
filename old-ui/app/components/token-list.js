@@ -3,9 +3,38 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-watcher')
 const TokenCell = require('./token-cell.js')
+const connect = require('react-redux').connect
+const selectors = require('../../../ui/app/selectors')
 const log = require('loglevel')
 
-module.exports = TokenList
+function mapStateToProps (state) {
+  return {
+    network: state.metamask.network,
+    tokens: state.metamask.tokens,
+    userAddress: selectors.getSelectedAddress(state),
+  }
+}
+
+const defaultTokens = []
+
+const contractsETH = require('eth-contract-metadata')
+const contractsPOA = require('poa-contract-metadata')
+for (const address in contractsETH) {
+  const contract = contractsETH[address]
+  if (contract.erc20) {
+    contract.address = address
+    defaultTokens.push(contract)
+  }
+}
+for (const address in contractsPOA) {
+  const contract = contractsPOA[address]
+  if (contract.erc20) {
+    contract.address = address
+    defaultTokens.push(contract)
+  }
+}
+
+module.exports = connect(mapStateToProps)(TokenList)
 
 inherits(TokenList, Component)
 function TokenList () {
@@ -52,10 +81,13 @@ TokenList.prototype.render = function () {
 
   const tokenViews = tokensFromCurrentNetwork.map((tokenData, ind) => {
     tokenData.userAddress = userAddress
-    const isLastTokenCell = ind === (tokens.length - 1)
+    const isLastTokenCell = ind === (tokensFromCurrentNetwork.length - 1)
+    const menuToTop = true
     return h(TokenCell, {
+      ind,
       ...tokenData,
       isLastTokenCell,
+      menuToTop,
       removeToken: this.props.removeToken,
     })
   })
@@ -65,7 +97,6 @@ TokenList.prototype.render = function () {
 
     h('ol.full-flex-height.flex-column', {
       style: {
-        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
       },
@@ -120,7 +151,7 @@ TokenList.prototype.renderTokenStatusBar = function () {
     },
   }, [
     h('span', msg),
-    h('button', {
+    h('button.btn-primary.wallet-view__add-token-button', {
       key: 'reveal-account-bar',
       onClick: (event) => {
         event.preventDefault()
@@ -163,10 +194,12 @@ TokenList.prototype.createFreshTokenTracker = function () {
 
   if (!global.ethereumProvider) return
   const { userAddress } = this.props
+
+  const tokensFromCurrentNetwork = this.props.tokens.filter(token => (parseInt(token.network) === parseInt(this.props.network) || !token.network))
   this.tracker = new TokenTracker({
     userAddress,
     provider: global.ethereumProvider,
-    tokens: this.props.tokens,
+    tokens: tokensFromCurrentNetwork,
     pollingInterval: 8000,
   })
 
@@ -189,23 +222,42 @@ TokenList.prototype.createFreshTokenTracker = function () {
   })
 }
 
-TokenList.prototype.componentWillUpdate = function (nextProps) {
-  if (nextProps.network === 'loading') return
-  const oldNet = this.props.network
-  const newNet = nextProps.network
+TokenList.prototype.componentDidUpdate = function (nextProps) {
+  const {
+    network: oldNet,
+    userAddress: oldAddress,
+    tokens,
+  } = this.props
+  const {
+    network: newNet,
+    userAddress: newAddress,
+    tokens: newTokens,
+  } = nextProps
 
-  if (oldNet && newNet && newNet !== oldNet) {
-    this.setState({ isLoading: true })
-    this.createFreshTokenTracker()
-  }
+  const isLoading = newNet === 'loading'
+  const missingInfo = !oldNet || !newNet || !oldAddress || !newAddress
+  const sameUserAndNetwork = oldAddress === newAddress && oldNet === newNet
+  const shouldUpdateTokens = isLoading || missingInfo || sameUserAndNetwork
+
+  const oldTokensLength = tokens ? tokens.length : 0
+  const tokensLengthUnchanged = oldTokensLength === newTokens.length
+
+  if (tokensLengthUnchanged && shouldUpdateTokens) return
+
+  this.setState({ isLoading: true })
+  this.createFreshTokenTracker()
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
+  if (!this.tracker.running) {
+    return
+  }
   this.setState({ tokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+  this.tracker.removeListener('update', this.balanceUpdater)
+  this.tracker.removeListener('error', this.showError)
 }
-

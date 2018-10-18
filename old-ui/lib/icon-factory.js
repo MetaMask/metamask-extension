@@ -1,26 +1,28 @@
 var iconFactory
 const isValidAddress = require('ethereumjs-util').isValidAddress
 const toChecksumAddress = require('ethereumjs-util').toChecksumAddress
-const contractMap = require('eth-contract-metadata')
+const contractMapETH = require('eth-contract-metadata')
+const contractMapPOA = require('poa-contract-metadata')
 const colors = require('../../colors')
 
-module.exports = function (jazzicon) {
+module.exports = function (rockicon) {
   if (!iconFactory) {
-    iconFactory = new IconFactory(jazzicon)
+    iconFactory = new IconFactory(rockicon)
   }
   return iconFactory
 }
 
-function IconFactory (jazzicon) {
-  jazzicon.setColorsPalette(colors)
-  this.jazzicon = jazzicon
+function IconFactory (rockicon) {
+  rockicon.setColorsPalette(colors)
+  this.rockicon = rockicon
   this.cache = {}
 }
 
-IconFactory.prototype.iconForAddress = function (address, diameter) {
+IconFactory.prototype.iconForAddress = function (address, diameter, network) {
+  const networkID = parseInt(network)
   const addr = toChecksumAddress(address)
-  if (iconExistsFor(addr)) {
-    return imageElFor(addr)
+  if (iconExistsFor(addr, networkID)) {
+    return imageElFor(addr, networkID)
   }
 
   return this.generateIdenticonSvg(address, diameter)
@@ -39,20 +41,23 @@ IconFactory.prototype.generateIdenticonSvg = function (address, diameter) {
 // creates a new identicon
 IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
   var numericRepresentation = jsNumberForAddress(address)
-  var identicon = this.jazzicon.generateIdenticon(diameter, numericRepresentation)
+  var identicon = this.rockicon.generateIdenticon(diameter, numericRepresentation)
   return identicon
 }
 
 // util
 
-function iconExistsFor (address) {
+function iconExistsFor (address, networkID) {
+  const contractMap = networkID === 1 ? contractMapETH : contractMapPOA
   return contractMap[address] && isValidAddress(address) && contractMap[address].logo
 }
 
-function imageElFor (address) {
+function imageElFor (address, networkID) {
+  const contractMap = networkID === 1 ? contractMapETH : contractMapPOA
   const contract = contractMap[address]
   const fileName = contract.logo
-  const path = `images/contract/${fileName}`
+  const imagesFolder = networkID === 1 ? 'images/contract' : 'images/contractPOA'
+  const path = `${imagesFolder}/${fileName}`
   const img = document.createElement('img')
   img.src = path
   img.style.width = '75%'

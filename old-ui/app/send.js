@@ -234,6 +234,10 @@ SendTransactionScreen.prototype.render = function () {
   )
 }
 
+SendTransactionScreen.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 SendTransactionScreen.prototype.navigateToAccounts = function (event) {
   event.stopPropagation()
   this.props.dispatch(actions.showAccountsPage())
@@ -256,7 +260,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
   const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
   const nickname = state.nickname || ' '
   const input = document.querySelector('input[name="amount"]').value
-  const parts = input.split('')
+  const parts = input.split('.')
 
   let message
 

@@ -3,10 +3,8 @@ const EventEmitter = require('events').EventEmitter
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-// const Mascot = require('../components/mascot')
 const actions = require('../../../ui/app/actions')
 const Tooltip = require('../components/tooltip')
-const getCaretCoordinates = require('textarea-caret')
 
 module.exports = connect(mapStateToProps)(InitializeMenuScreen)
 
@@ -99,7 +97,6 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         type: 'password',
         id: 'password-box',
         placeholder: 'New Password (min 8 chars)',
-        onInput: this.inputChanged.bind(this),
         style: {
           width: 260,
           marginTop: 12,
@@ -113,7 +110,6 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         id: 'password-box-confirm',
         placeholder: 'Confirm Password',
         onKeyPress: this.createVaultOnEnter.bind(this),
-        onInput: this.inputChanged.bind(this),
         style: {
           width: 260,
           marginTop: 16,
@@ -154,6 +150,10 @@ InitializeMenuScreen.prototype.componentDidMount = function () {
   document.getElementById('password-box').focus()
 }
 
+InitializeMenuScreen.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 InitializeMenuScreen.prototype.showRestoreVault = function () {
   this.props.dispatch(actions.showRestoreVault())
 }
@@ -176,15 +176,4 @@ InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
   }
 
   this.props.dispatch(actions.createNewVaultAndKeychain(password))
-}
-
-InitializeMenuScreen.prototype.inputChanged = function (event) {
-  // tell mascot to look at page action
-  var element = event.target
-  var boundingRect = element.getBoundingClientRect()
-  var coordinates = getCaretCoordinates(element, element.selectionEnd)
-  this.animationEventEmitter.emit('point', {
-    x: boundingRect.left + coordinates.left - element.scrollLeft,
-    y: boundingRect.top + coordinates.top - element.scrollTop,
-  })
 }

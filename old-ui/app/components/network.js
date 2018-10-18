@@ -2,6 +2,15 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const ethNetProps = require('eth-net-props')
+const {
+  DROPDOWN_ROPSTEN_DISPLAY_NAME,
+  DROPDOWN_RINKEBY_DISPLAY_NAME,
+  DROPDOWN_KOVAN_DISPLAY_NAME,
+  DROPDOWN_POA_SOKOL_DISPLAY_NAME,
+  DROPDOWN_POA_DISPLAY_NAME,
+  DROPDOWN_DAI_DISPLAY_NAME,
+  DROPDOWN_MAINNET_DISPLAY_NAME,
+} = require('../../../app/scripts/controllers/network/enums')
 
 module.exports = Network
 
@@ -42,27 +51,30 @@ Network.prototype.render = function () {
       h('i.fa.fa-caret-down'),
     ])
   } else {
-    if (providerName === 'mainnet') {
-      displayName = 'Main Network'
+    if (providerName === 'mainnet' || parseInt(networkNumber) === 1) {
+      displayName = DROPDOWN_MAINNET_DISPLAY_NAME
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else if (providerName === 'ropsten' || parseInt(networkNumber) === 3) {
-      displayName = 'Ropsten Test Net'
+      displayName = DROPDOWN_ROPSTEN_DISPLAY_NAME
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'sokol') {
-      displayName = 'Sokol Network'
+    } else if (providerName === 'sokol' || parseInt(networkNumber) === 77) {
+      displayName = DROPDOWN_POA_SOKOL_DISPLAY_NAME
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'kovan') {
-      displayName = 'Kovan Test Net'
+    } else if (providerName === 'kovan' || parseInt(networkNumber) === 42) {
+      displayName = DROPDOWN_KOVAN_DISPLAY_NAME
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'rinkeby') {
-      displayName = 'Rinkeby Test Net'
+    } else if (providerName === 'rinkeby' || parseInt(networkNumber) === 4) {
+      displayName = DROPDOWN_RINKEBY_DISPLAY_NAME
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'poa') {
-      displayName = 'POA Network'
+    } else if (providerName === 'poa' || parseInt(networkNumber) === 99) {
+      displayName = DROPDOWN_POA_DISPLAY_NAME
+      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
+    } else if (providerName === 'dai' || parseInt(networkNumber) === 100) {
+      displayName = DROPDOWN_DAI_DISPLAY_NAME
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else {
-      hoverText = (provider.type === 'rpc') ? `Private Network (${provider.rpcTarget})` : `Private Network (${provider.type})`
       displayName = 'Private Network'
+      hoverText = `Private Network (${provider.rpcTarget})`
     }
   }
 

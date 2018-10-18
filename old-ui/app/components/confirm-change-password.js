@@ -91,9 +91,6 @@ ConfirmChangePassword.prototype.render = function () {
     }, [
       h('button.btn-violet',
         {
-          style: {
-            marginRight: '10px',
-          },
           onClick: () => {
             this.props.dispatch(actions.showConfigPage())
           },
@@ -110,6 +107,10 @@ ConfirmChangePassword.prototype.render = function () {
   ])
 }
 
+ConfirmChangePassword.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(''))
+}
+
 ConfirmChangePassword.prototype.createOnEnter = function (event) {
   if (event.key === 'Enter') {
     this.ChangePassword()
@@ -117,31 +118,36 @@ ConfirmChangePassword.prototype.createOnEnter = function (event) {
 }
 
 ConfirmChangePassword.prototype.ChangePassword = function () {
-  const oldPasswordBox = this.refs.OldPasswordBox
+  const { props, refs } = this
+  const oldPasswordBox = refs.OldPasswordBox
   const oldPassword = oldPasswordBox.value
-  const newPasswordBox = this.refs.NewPasswordBox
+  const newPasswordBox = refs.NewPasswordBox
   const newPassword = newPasswordBox.value
-  const newPasswordConfirmBox = this.refs.PasswordBoxConfirm
+  const newPasswordConfirmBox = refs.PasswordBoxConfirm
   const newPasswordConfirm = newPasswordConfirmBox.value
 
   if (newPassword.length < 8) {
     this.warning = 'Password not long enough'
 
-    this.props.dispatch(actions.displayWarning(this.warning))
+    props.dispatch(actions.displayWarning(this.warning))
     return
   }
   if (newPassword !== newPasswordConfirm) {
     this.warning = 'Passwords don\'t match'
-    this.props.dispatch(actions.displayWarning(this.warning))
+    props.dispatch(actions.displayWarning(this.warning))
     return
   }
   if (newPassword === oldPassword) {
     this.warning = 'New password should differ from the current one'
-    this.props.dispatch(actions.displayWarning(this.warning))
+    props.dispatch(actions.displayWarning(this.warning))
     return
   }
-  this.props.dispatch(actions.changePassword(oldPassword, newPassword))
+  props.dispatch(actions.changePassword(oldPassword, newPassword))
     .then(() => {
-      this.props.dispatch(actions.showConfigPage())
+      props.dispatch(actions.showConfigPage())
+    })
+    .catch((err) => {
+      this.warning = err.message
+      props.dispatch(actions.displayWarning(this.warning))
     })
 }

@@ -26,6 +26,15 @@ html, body {
 
 html {
   min-height: 500px;
+  overflow: -moz-scrollbars-none;
+}
+
+.address-dropdown {
+  background-image: url(../images/more.svg);
+  width: 30px;
+  height: 24px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .account-detail-section::-webkit-scrollbar {
@@ -111,6 +120,7 @@ button, input[type="submit"] {
 
 .btn-violet {
   background: #6729a8;
+  margin-right: 10px;
 }
 
 button[disabled], input[type="submit"][disabled] {
@@ -331,16 +341,20 @@ p.exchanges {
   height: 14px;
 }
 
-.arrow-right {
+.arrow-right::before {
   content: url('../images/arrow-right.svg');
   width: 14px;
   height: 14px;
 }
 
-.fa-clipboard {
+.clipboard::before {
   content: url('../images/copy.svg');
   width: 14px;
   height: 14px;
+}
+
+.clipboard.white::before {
+  content: url('../images/copy-white.svg');
 }
 
 .sandwich-expando {
@@ -402,7 +416,7 @@ p.exchanges {
   font-family: 'Nunito Semibold';
 }
 
-.trash {
+.trash:after {
   content: url('../images/close.svg');
   width: 12px;
   height: 12px;
@@ -467,7 +481,7 @@ p.exchanges {
 
 input.large-input, textarea.large-input {
   /*margin-bottom: 24px;*/
-  padding: 10px;
+  padding: 0px 10px;
   border-radius: 3px;
   border: 1px solid #e2e2e2;
   font-family: 'Nunito Regular';
@@ -593,7 +607,8 @@ input.large-input {
   display: flex;
   flex-wrap: wrap;
   overflow-x: hidden;
-  overflow-y: auto;
+  /*overflow-y: auto;*/
+  overflow-y: -moz-scrollbars-none;
   max-height: 585px;
   flex-direction: inherit;
 }
@@ -994,18 +1009,31 @@ div.message-container > div:first-child {
   word-wrap: break-word;
 }
 
-.contract {
+.contract::after {
   content: url('../images/contract.svg');
   width: 36px;
   height: 42px;
 }
 
-.contract-small {
+.contract-small::after {
   content: url('../images/contract-small.svg');
   width: 19px;
   height: 22px;
 }
 
+.menu-droppo-container::-webkit-scrollbar {
+  width: 0px;
+}
+ 
+.menu-droppo-container::-webkit-scrollbar-thumb {
+  border: none;
+  background-clip: content-box;
+}
+
 .hidden {
   visibility: hidden;
+}
+
+input[disabled] {
+  background: #FFFADE
 }

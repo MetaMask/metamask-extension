@@ -1,0 +1,59 @@
+.confirm-add-token {
+  padding: 20px;
+  height: 320px;
+}
+.confirm-add-token__header {
+  font-size: .75rem;
+  display: flex;
+}
+.confirm-add-token__token {
+  flex: 1;
+  min-width: 0;
+}
+.confirm-add-token__balance {
+  flex: 0 0 30%;
+  min-width: 0;
+}
+.confirm-add-token__token-list {
+  display: flex;
+  flex-flow: column nowrap;
+}
+.confirm-add-token__token-list .token-balance {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+}
+.confirm-add-token__token-list .token-balance__amount {
+  color: #5d5d5d;
+  font-size: 43px;
+  line-height: 43px;
+  margin-right: 8px;
+}
+.confirm-add-token__token-list .token-balance__symbol {
+  color: #5d5d5d;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+.confirm-add-token__token-list-item {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+.confirm-add-token__data {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+.confirm-add-token__name {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.confirm-add-token__token-icon {
+  margin-right: 12px;
+  flex: 0 0 auto;
+}

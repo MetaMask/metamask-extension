@@ -88,7 +88,7 @@
     "browser-passworder": "^2.0.3",
     "browserify-derequire": "^0.9.4",
     "browserify-unibabel": "^3.0.0",
-    "classnames": "^2.2.5",
+    "classnames": "^2.2.6",
     "clone": "^2.1.1",
     "copy-to-clipboard": "^3.0.8",
     "css-loader": "^0.28.11",
@@ -109,7 +109,7 @@
     "eth-json-rpc-filters": "^1.2.6",
     "eth-json-rpc-infura": "^3.0.0",
     "eth-method-registry": "^1.0.0",
-    "eth-net-props": "^1.0.2",
+    "eth-net-props": "^1.0.7",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
     "eth-sig-util": "^1.4.2",
@@ -136,6 +136,8 @@
     "gulp-eslint": "^4.0.0",
     "gulp-sass": "^4.0.0",
     "hat": "0.0.3",
+    "http": "0.0.0",
+    "https": "^1.0.0",
     "human-standard-token-abi": "^1.0.2",
     "idb-global": "^2.1.0",
     "identicon.js": "^2.3.1",
@@ -150,7 +152,6 @@
     "lodash.uniqby": "^4.7.0",
     "loglevel": "^1.4.1",
     "metamascara": "^2.0.0",
-    "metamask-logo": "^2.1.4",
     "mkdirp": "^0.5.1",
     "multihashes": "^0.4.12",
     "multiplex": "^6.7.0",
@@ -160,6 +161,7 @@
     "percentile": "^1.2.0",
     "pify": "^3.0.0",
     "ping-pong-stream": "^1.0.0",
+    "poa-contract-metadata": "github:poanetwork/poa-contract-metadata#master",
     "pojo-migrator": "^2.1.0",
     "polyfill-crypto.getrandomvalues": "^1.0.0",
     "post-message-stream": "^3.0.0",
@@ -201,7 +203,6 @@
     "superstatic": "^5.0.2",
     "sw-controller": "^1.0.3",
     "sw-stream": "^2.0.2",
-    "textarea-caret": "^3.0.1",
     "valid-url": "^1.0.9",
     "vreme": "^3.0.2",
     "web3": "^0.20.1",
@@ -245,7 +246,7 @@
     "eslint-plugin-mocha": "^5.0.0",
     "eslint-plugin-react": "^7.4.0",
     "eth-json-rpc-middleware": "^1.6.0",
-    "eth-keychain-controller": "^4.0.1",
+    "eth-keychain-controller": "^5.0.0",
     "file-loader": "^1.1.11",
     "fs-promise": "^2.0.3",
     "ganache-cli": "^6.1.0",
@@ -304,7 +305,7 @@
     "resolve-url-loader": "^2.3.0",
     "rimraf": "^2.6.2",
     "sass-loader": "^7.0.1",
-    "selenium-webdriver": "^3.5.0",
+    "selenium-webdriver": "^4.0.0-alpha.1",
     "shell-parallel": "^1.0.3",
     "sinon": "^5.0.0",
     "source-map": "^0.7.2",
@@ -318,7 +319,7 @@
     "watchify": "^3.11.0"
   },
   "engines": {
-    "node": "8.11.4",
-    "npm": "^6.1.0"
+    "node": "8.12.0",
+    "npm": "^6.4.1"
   }
 }
