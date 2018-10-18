@@ -2,9 +2,20 @@
 
 ## Current Master
 
+- [#153](https://github.com/poanetwork/metamask-extension/pull/153), [#154](https://github.com/poanetwork/metamask-extension/pull/154), [#158](https://github.com/poanetwork/metamask-extension/pull/158): (Feature) xDai chain support
+- [#149](https://github.com/poanetwork/metamask-extension/pull/149), [#150](https://github.com/poanetwork/metamask-extension/pull/150): (Fix) Add custom tokens validation
+- [#145](https://github.com/poanetwork/metamask-extension/pull/145), [#146](https://github.com/poanetwork/metamask-extension/pull/146): (Feature) Transfer tokens
+- [#142](https://github.com/poanetwork/metamask-extension/pull/142), [#143](https://github.com/poanetwork/metamask-extension/pull/143): (Feature) Token menu: view in explorer/copy/remove
+- [#140](https://github.com/poanetwork/metamask-extension/pull/140): (Feature) Search tokens in POA network
+- [#135](https://github.com/poanetwork/metamask-extension/pull/135), [#138](https://github.com/poanetwork/metamask-extension/pull/138), [#141](https://github.com/poanetwork/metamask-extension/pull/141): (Feature) Search tokens (in Mainnet)
+- [#132](https://github.com/poanetwork/metamask-extension/pull/132), [#133](https://github.com/poanetwork/metamask-extension/pull/133): (Fix) empty keyring on wrong password
+- [#130](https://github.com/poanetwork/metamask-extension/pull/130): (Fix) remove test domains form ENS resolver
+- [#128](https://github.com/poanetwork/metamask-extension/pull/128): (Fix) Clear an error on successful response from tokens balances
 - [#127](https://github.com/poanetwork/metamask-extension/pull/127): (Fix) Error is constantly shown through screens
+- [#122](https://github.com/poanetwork/metamask-extension/pull/122): (Fix) Remove fox animation components
 - [#120](https://github.com/poanetwork/metamask-extension/pull/120): (Feature) Update token's balance on account switch
 - [#119](https://github.com/poanetwork/metamask-extension/pull/119): (Fix) Shapeshift logo from local storage
+- [#118](https://github.com/poanetwork/metamask-extension/pull/118), [#123](https://github.com/poanetwork/metamask-extension/pull/123): (Feature) Copy button from main account page
 - [#104](https://github.com/poanetwork/metamask-extension/pull/104), [#108](https://github.com/poanetwork/metamask-extension/pull/108), [#109](https://github.com/poanetwork/metamask-extension/pull/109), [#116](https://github.com/poanetwork/metamask-extension/pull/116), [#121](https://github.com/poanetwork/metamask-extension/pull/121): (Feature) Support of Firefox
 - [#103](https://github.com/poanetwork/metamask-extension/pull/103): (Fix) to display localhost:8545 in Settings
 - [#101](https://github.com/poanetwork/metamask-extension/pull/101): (Fix) Catch Promises errors
