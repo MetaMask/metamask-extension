@@ -12,7 +12,6 @@ class AccountQrScreen extends PureComponent {
   }
 
   static propTypes = {
-    buyView: PropTypes.any.isRequired,
     Qr: PropTypes.object.isRequired,
     warning: PropTypes.node,
   }
@@ -36,7 +35,7 @@ class AccountQrScreen extends PureComponent {
       },
     }, [
 
-      warning ? warning && h('span.error.flex-center', warning) : null,
+      warning ? h('span.error.flex-center', warning) : null,
 
       h('#qr-container.flex-column', {
         style: {
@@ -64,7 +63,6 @@ class AccountQrScreen extends PureComponent {
 function mapStateToProps (state) {
   return {
     Qr: state.appState.Qr,
-    buyView: state.appState.buyView,
     warning: state.appState.warning,
   }
 }
