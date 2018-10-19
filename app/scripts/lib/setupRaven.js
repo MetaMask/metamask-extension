@@ -24,10 +24,11 @@ function setupRaven (opts) {
   const client = Raven.config(ravenTarget, {
     release,
     transport: function (opts) {
-      opts.data.extra.isBrave = isBrave
       const report = opts.data
 
       try {
+        // mark browser as brave or not
+        report.extra.isBrave = isBrave
         // handle error-like non-error exceptions
         rewriteErrorLikeExceptions(report)
         // simplify certain complex error messages (e.g. Ethjs)
