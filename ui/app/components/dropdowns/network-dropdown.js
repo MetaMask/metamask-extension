@@ -41,8 +41,8 @@ function mapDispatchToProps (dispatch) {
     setDefaultRpcTarget: type => {
       dispatch(actions.setDefaultRpcTarget(type))
     },
-    setRpcTarget: (target, network, ticker) => {
-      dispatch(actions.setRpcTarget(target, network, ticker))
+    setRpcTarget: (target, network, ticker, nickname) => {
+      dispatch(actions.setRpcTarget(target, network, ticker, nickname))
     },
     delRpcTarget: (target) => {
       dispatch(actions.delRpcTarget(target))
@@ -268,7 +268,7 @@ NetworkDropdown.prototype.getNetworkName = function () {
   } else if (providerName === 'rinkeby') {
     name = this.context.t('rinkeby')
   } else {
-    name = this.context.t('unknownNetwork')
+    name = provider.nickname || this.context.t('unknownNetwork')
   }
 
   return name
@@ -282,6 +282,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
   return reversedRpcListDetail.map((entry) => {
     const rpc = entry.rpcUrl
     const ticker = entry.ticker || 'ETH'
+    const nickname = entry.nickname || ''
     const currentRpcTarget = provider.type === 'rpc' && rpc === provider.rpcTarget
 
     if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
@@ -293,7 +294,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
         {
           key: `common${rpc}`,
           closeMenu: () => this.props.hideNetworkDropdown(),
-          onClick: () => props.setRpcTarget(rpc, chainId, ticker),
+          onClick: () => props.setRpcTarget(rpc, chainId, ticker, nickname),
           style: {
             fontSize: '16px',
             lineHeight: '20px',
@@ -307,7 +308,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
             style: {
               color: currentRpcTarget ? '#ffffff' : '#9b9b9b',
             },
-          }, rpc),
+          }, nickname || rpc),
           h('i.fa.fa-times.delete',
           {
             onClick: (e) => {
@@ -322,7 +323,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
 }
 
 NetworkDropdown.prototype.renderCustomOption = function (provider) {
-  const { rpcTarget, type, ticker } = provider
+  const { rpcTarget, type, ticker, nickname } = provider
   const props = this.props
   const network = props.network
 
@@ -338,7 +339,7 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
-          onClick: () => props.setRpcTarget(rpcTarget, network, ticker),
+          onClick: () => props.setRpcTarget(rpcTarget, network, ticker, nickname),
           closeMenu: () => this.props.hideNetworkDropdown(),
           style: {
             fontSize: '16px',
@@ -353,7 +354,7 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
             style: {
               color: '#ffffff',
             },
-          }, rpcTarget),
+          }, nickname || rpcTarget),
         ]
       )
   }

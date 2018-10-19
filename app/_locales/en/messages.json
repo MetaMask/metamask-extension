@@ -692,14 +692,26 @@
   "newRecipient": {
     "message": "New Recipient"
   },
-  "newRPC": {
+  "newNetwork": {
+    "message": "New Network"
+  },
+  "rpcURL": {
     "message": "New RPC URL"
   },
+  "showAdvancedOptions": {
+    "message": "Show Advanced Options"
+  },
+  "hideAdvancedOptions": {
+    "message": "Hide Advanced Options"
+  },
   "optionalChainId": {
-    "message": "ChainId (optional)"
+    "message": "ChainID (optional)"
   },
   "optionalSymbol": {
     "message": "Symbol (optional)"
+  },
+  "optionalNickname": {
+    "message": "Nickname (optional)"
   },
   "next": {
     "message": "Next"

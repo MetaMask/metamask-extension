@@ -1461,11 +1461,12 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} rpcTarget - A URL for a valid Ethereum RPC API.
    * @param {number} chainId - The chainId of the selected network.
    * @param {string} ticker - The ticker symbol of the selected network.
+   * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  async setCustomRpc (rpcTarget, chainId, ticker = 'ETH') {
-    this.networkController.setRpcTarget(rpcTarget, chainId, ticker)
-    await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker)
+  async setCustomRpc (rpcTarget, chainId, ticker = 'ETH', nickname = '') {
+    this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname)
+    await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname)
     return rpcTarget
   }
 

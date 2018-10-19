@@ -393,17 +393,19 @@ class PreferencesController {
    *
    * @param {string} url The RPC url to add to frequentRpcList.
    * @param {number} chainId Optional chainId of the selected network.
+   * @param {string} ticker   Optional ticker symbol of the selected network.
+   * @param {string} nickname Optional nickname of the selected network.
    * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (url, chainId, ticker) {
+  addToFrequentRpcList (url, chainId, ticker, nickname) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
     if (url !== 'http://localhost:8545') {
-      rpcList.push({ rpcUrl: url, chainId })
+      rpcList.push({ rpcUrl: url, chainId, ticker, nickname })
     }
     this.store.updateState({ frequentRpcListiDetail: rpcList })
     return Promise.resolve(rpcList)

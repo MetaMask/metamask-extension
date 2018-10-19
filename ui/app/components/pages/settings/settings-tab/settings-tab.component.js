@@ -57,10 +57,12 @@ export default class SettingsTab extends PureComponent {
     conversionDate: PropTypes.number,
     useETHAsPrimaryCurrency: PropTypes.bool,
     setUseETHAsPrimaryCurrencyPreference: PropTypes.func,
+    ticker: PropTypes.string,
   }
 
   state = {
     newRpc: '',
+    showOptions: false,
   }
 
   renderCurrentConversion () {
@@ -121,28 +123,28 @@ export default class SettingsTab extends PureComponent {
 
   renderNewRpcUrl () {
     const { t } = this.context
-    const { newRpc, chainId, ticker } = this.state
+    const { newRpc, chainId, ticker, nickname } = this.state
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('newRPC') }</span>
+          <span>{ t('newNetwork') }</span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <TextField
               type="text"
               id="new-rpc"
-              placeholder={t('newRPC')}
+              placeholder={t('rpcURL')}
               value={newRpc}
               onChange={e => this.setState({ newRpc: e.target.value })}
               onKeyPress={e => {
                 if (e.key === 'Enter') {
-                  this.validateRpc(newRpc, chainId, ticker)
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
                 }
               }}
               fullWidth
-              margin="none"
+              margin="dense"
             />
             <TextField
               type="text"
@@ -152,11 +154,14 @@ export default class SettingsTab extends PureComponent {
               onChange={e => this.setState({ chainId: e.target.value })}
               onKeyPress={e => {
                 if (e.key === 'Enter') {
-                  this.validateRpc(newRpc, chainId, ticker)
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
                 }
               }}
+              style={{
+                display: this.state.showOptions ? null : 'none',
+              }}
               fullWidth
-              margin="none"
+              margin="dense"
             />
             <TextField
               type="text"
@@ -166,20 +171,50 @@ export default class SettingsTab extends PureComponent {
               onChange={e => this.setState({ ticker: e.target.value })}
               onKeyPress={e => {
                 if (e.key === 'Enter') {
-                  this.validateRpc(newRpc, chainId, ticker)
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
                 }
               }}
-              fullWidth
-              margin="none"
-            />
-            <div
-              className="settings-tab__rpc-save-button"
-              onClick={e => {
-                e.preventDefault()
-                this.validateRpc(newRpc, chainId, ticker)
+              style={{
+                display: this.state.showOptions ? null : 'none',
               }}
-            >
-              { t('save') }
+              fullWidth
+              margin="dense"
+            />
+            <TextField
+              type="text"
+              id="nickname"
+              placeholder={t('optionalNickname')}
+              value={nickname}
+              onChange={e => this.setState({ nickname: e.target.value })}
+              onKeyPress={e => {
+                if (e.key === 'Enter') {
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
+                }
+              }}
+              style={{
+                display: this.state.showOptions ? null : 'none',
+              }}
+              fullWidth
+              margin="dense"
+            />
+            <div className="flex-row flex-align-center space-between">
+              <span className="settings-tab__advanced-link"
+                onClick={e => {
+                  e.preventDefault()
+                  this.setState({ showOptions: !this.state.showOptions })
+                }}
+              >
+                { t(this.state.showOptions ? 'hideAdvancedOptions' : 'showAdvancedOptions') }
+              </span>
+              <button
+                className="button btn-primary settings-tab__rpc-save-button"
+                onClick={e => {
+                  e.preventDefault()
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
+                }}
+              >
+                { t('save') }
+              </button>
             </div>
           </div>
         </div>
@@ -187,11 +222,11 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  validateRpc (newRpc, chainId, ticker = 'ETH') {
+  validateRpc (newRpc, chainId, ticker = 'ETH', nickname) {
     const { setRpcTarget, displayWarning } = this.props
 
     if (validUrl.isWebUri(newRpc)) {
-      setRpcTarget(newRpc, chainId, ticker)
+      setRpcTarget(newRpc, chainId, ticker, nickname)
     } else {
       const appendedRpc = `http://${newRpc}`
 

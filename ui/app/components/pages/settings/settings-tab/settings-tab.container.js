@@ -45,7 +45,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setCurrentCurrency: currency => dispatch(setCurrentCurrency(currency)),
-    setRpcTarget: (newRpc, chainId, ticker) => dispatch(setRpcTarget(newRpc, chainId, ticker)),
+    setRpcTarget: (newRpc, chainId, ticker, nickname) => dispatch(setRpcTarget(newRpc, chainId, ticker, nickname)),
     displayWarning: warning => dispatch(displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(revealSeedConfirmation()),
     setUseBlockie: value => dispatch(setUseBlockie(value)),

@@ -58,8 +58,8 @@ module.exports = class NetworkController extends EventEmitter {
 
   initializeProvider (providerParams) {
     this._baseProviderParams = providerParams
-    const { type, rpcTarget, chainId, ticker } = this.providerStore.getState()
-    this._configureProvider({ type, rpcTarget, chainId, ticker })
+    const { type, rpcTarget, chainId, ticker, nickname } = this.providerStore.getState()
+    this._configureProvider({ type, rpcTarget, chainId, ticker, nickname })
     this.lookupNetwork()
   }
 
@@ -114,12 +114,13 @@ module.exports = class NetworkController extends EventEmitter {
     })
   }
 
-  setRpcTarget (rpcTarget, chainId, ticker = 'ETH') {
+  setRpcTarget (rpcTarget, chainId, ticker = 'ETH', nickname = '') {
     const providerConfig = {
       type: 'rpc',
       rpcTarget,
       chainId,
       ticker,
+      nickname,
     }
     this.providerConfig = providerConfig
   }
@@ -155,7 +156,7 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureProvider (opts) {
-    const { type, rpcTarget, chainId, ticker } = opts
+    const { type, rpcTarget, chainId, ticker, nickname } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
@@ -165,7 +166,7 @@ module.exports = class NetworkController extends EventEmitter {
       this._configureLocalhostProvider()
     // url-based rpc endpoints
     } else if (type === 'rpc') {
-      this._configureStandardProvider({ rpcUrl: rpcTarget, chainId, ticker })
+      this._configureStandardProvider({ rpcUrl: rpcTarget, chainId, ticker, nickname })
     } else {
       throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
     }
@@ -188,14 +189,15 @@ module.exports = class NetworkController extends EventEmitter {
     this._setNetworkClient(networkClient)
   }
 
-  _configureStandardProvider ({ rpcUrl, chainId, ticker }) {
+  _configureStandardProvider ({ rpcUrl, chainId, ticker, nickname }) {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
     const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
     networks.networkList['rpc'] = {
       chainId: chainId,
       rpcUrl,
-      ticker,
+      ticker: ticker || 'ETH',
+      nickname,
     }
     // setup networkConfig
     var settings = {

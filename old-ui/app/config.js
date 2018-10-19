@@ -83,7 +83,8 @@ ConfigScreen.prototype.render = function () {
                   var newRpc = element.value
                   var chainid = document.querySelector('input#chainid')
                   var ticker = document.querySelector('input#ticker')
-                  rpcValidation(newRpc, chainid.value, ticker.value, state)
+                  var nickname = document.querySelector('input#nickname')
+                  rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
                 }
               },
             }),
@@ -102,7 +103,8 @@ ConfigScreen.prototype.render = function () {
                   var newRpc = element.value
                   var chainid = document.querySelector('input#chainid')
                   var ticker = document.querySelector('input#ticker')
-                  rpcValidation(newRpc, chainid.value, ticker.value, state)
+                  var nickname = document.querySelector('input#nickname')
+                  rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
                 }
               },
             }),
@@ -121,7 +123,28 @@ ConfigScreen.prototype.render = function () {
                   var newRpc = element.value
                   var chainid = document.querySelector('input#chainid')
                   var ticker = document.querySelector('input#ticker')
-                  rpcValidation(newRpc, chainid.value, ticker.value, state)
+                  var nickname = document.querySelector('input#nickname')
+                  rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
+                }
+              },
+            }),
+            h('br'),
+            h('input#nickname', {
+              placeholder: 'Nickname (optional)',
+              style: {
+                width: 'inherit',
+                flex: '1 0 auto',
+                height: '30px',
+                margin: '8px',
+              },
+              onKeyPress (event) {
+                if (event.key === 'Enter') {
+                  var element = document.querySelector('input#new_rpc')
+                  var newRpc = element.value
+                  var chainid = document.querySelector('input#chainid')
+                  var ticker = document.querySelector('input#ticker')
+                  var nickname = document.querySelector('input#nickname')
+                  rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
                 }
               },
             }),
@@ -135,7 +158,8 @@ ConfigScreen.prototype.render = function () {
                 var newRpc = element.value
                 var chainid = document.querySelector('input#chainid')
                 var ticker = document.querySelector('input#ticker')
-                rpcValidation(newRpc, chainid.value, ticker.value, state)
+                var nickname = document.querySelector('input#nickname')
+                rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
               },
             }, 'Save'),
           ]),
@@ -231,9 +255,9 @@ ConfigScreen.prototype.render = function () {
   )
 }
 
-function rpcValidation (newRpc, chainid, ticker, state) {
+function rpcValidation (newRpc, chainid, ticker = 'ETH', nickname = '', state) {
   if (validUrl.isWebUri(newRpc)) {
-    state.dispatch(actions.setRpcTarget(newRpc, chainid, ticker))
+    state.dispatch(actions.setRpcTarget(newRpc, chainid, ticker, nickname))
   } else {
     var appendedRpc = `http://${newRpc}`
     if (validUrl.isWebUri(appendedRpc)) {
