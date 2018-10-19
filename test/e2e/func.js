@@ -1,8 +1,10 @@
 require('chromedriver')
 require('geckodriver')
-const fs = require('fs')
+const fs = require('fs-extra')
 const os = require('os')
 const path = require('path')
+const pify = require('pify')
+const prependFile = pify(require('prepend-file'))
 const webdriver = require('selenium-webdriver')
 const Command = require('selenium-webdriver/lib/command').Command
 
@@ -10,6 +12,9 @@ const { By } = webdriver
 
 module.exports = {
   delay,
+  createModifiedTestBuild,
+  setupBrowserAndExtension,
+  verboseReportOnFailure,
   buildChromeWebDriver,
   buildFirefoxWebdriver,
   installWebExt,
@@ -19,6 +24,37 @@ module.exports = {
 
 function delay (time) {
   return new Promise(resolve => setTimeout(resolve, time))
+}
+
+async function createModifiedTestBuild ({ browser, srcPath }) {
+  // copy build to test-builds directory
+  const extPath = path.resolve(`test-builds/${browser}`)
+  await fs.ensureDir(extPath)
+  await fs.copy(srcPath, extPath)
+  // inject METAMASK_TEST_CONFIG setting default test network
+  const config = { NetworkController: { provider: { type: 'localhost' } } }
+  await prependFile(`${extPath}/background.js`, `window.METAMASK_TEST_CONFIG=${JSON.stringify(config)};\n`)
+  return { extPath }
+}
+
+async function setupBrowserAndExtension ({ browser, extPath }) {
+  let driver, extensionId, extensionUri
+
+  if (browser === 'chrome') {
+    driver = buildChromeWebDriver(extPath)
+    extensionId = await getExtensionIdChrome(driver)
+    extensionUri = `chrome-extension://${extensionId}/home.html`
+  } else if (browser === 'firefox') {
+    driver = buildFirefoxWebdriver()
+    await installWebExt(driver, extPath)
+    await delay(700)
+    extensionId = await getExtensionIdFirefox(driver)
+    extensionUri = `moz-extension://${extensionId}/home.html`
+  } else {
+    throw new Error(`Unknown Browser "${browser}"`)
+  }
+
+  return { driver, extensionId, extensionUri }
 }
 
 function buildChromeWebDriver (extPath) {
@@ -61,4 +97,14 @@ async function installWebExt (driver, extension) {
     .defineCommand(cmd.getName(), 'POST', '/session/:sessionId/moz/addon/install')
 
   return await driver.execute(cmd, 'installWebExt(' + extension + ')')
+}
+
+async function verboseReportOnFailure ({ browser, driver, title }) {
+  const artifactDir = `./test-artifacts/${browser}/${title}`
+  const filepathBase = `${artifactDir}/test-failure`
+  await fs.ensureDir(artifactDir)
+  const screenshot = await driver.takeScreenshot()
+  await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+  const htmlSource = await driver.getPageSource()
+  await fs.writeFile(`${filepathBase}-dom.html`, htmlSource)
 }

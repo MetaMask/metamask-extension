@@ -3,6 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const ethNetProps = require('eth-net-props')
 const Select = require('react-select').default
+import Button from '../../../button'
 
 class AccountList extends Component {
     constructor (props, context) {
@@ -143,22 +144,20 @@ class AccountList extends Component {
     }
 
     return h('div.new-account-connect-form__buttons', {}, [
-      h(
-        'button.btn-default.btn--large.new-account-connect-form__button',
-        {
-          onClick: this.props.onCancel.bind(this),
-        },
-        [this.context.t('cancel')]
-      ),
+      h(Button, {
+        type: 'default',
+        large: true,
+        className: 'new-account-connect-form__button',
+        onClick: this.props.onCancel.bind(this),
+      }, [this.context.t('cancel')]),
 
-      h(
-        `button.btn-primary.btn--large.new-account-connect-form__button.unlock ${disabled ? '.btn-primary--disabled' : ''}`,
-        {
-          onClick: this.props.onUnlockAccount.bind(this, this.props.device),
-          ...buttonProps,
-        },
-        [this.context.t('unlock')]
-      ),
+      h(Button, {
+        type: 'primary',
+        large: true,
+        className: 'new-account-connect-form__button unlock',
+        disabled,
+        onClick: this.props.onUnlockAccount.bind(this, this.props.device),
+      }, [this.context.t('unlock')]),
     ])
   }
 

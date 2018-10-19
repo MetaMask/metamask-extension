@@ -26,36 +26,43 @@ function mapStateToProps (state) {
 
 IdenticonComponent.prototype.render = function () {
   var props = this.props
-  const { className = '', address } = props
+  const { className = '', address, image } = props
   var diameter = props.diameter || this.defaultDiameter
-
-  return address
-    ? (
-      h('div', {
-        className: `${className} identicon`,
-        key: 'identicon-' + address,
-        style: {
-          display: 'flex',
-          flexShrink: 0,
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: diameter,
-          width: diameter,
-          borderRadius: diameter / 2,
-          overflow: 'hidden',
-        },
-      })
-    )
-    : (
-      h('img.balance-icon', {
-        src: './images/eth_logo.svg',
-        style: {
-          height: diameter,
-          width: diameter,
-          borderRadius: diameter / 2,
-        },
-      })
-    )
+  const style = {
+    height: diameter,
+    width: diameter,
+    borderRadius: diameter / 2,
+  }
+  if (image) {
+    return h('img', {
+      className: `${className} identicon`,
+      src: image,
+      style: {
+        ...style,
+      },
+    })
+  } else if (address) {
+    return h('div', {
+      className: `${className} identicon`,
+      key: 'identicon-' + address,
+      style: {
+        display: 'flex',
+        flexShrink: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        ...style,
+        overflow: 'hidden',
+      },
+    })
+  } else {
+    return h('img.balance-icon', {
+      className,
+      src: './images/eth_logo.svg',
+      style: {
+        ...style,
+      },
+    })
+  }
 }
 
 IdenticonComponent.prototype.componentDidMount = function () {

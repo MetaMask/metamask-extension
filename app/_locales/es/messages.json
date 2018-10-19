@@ -778,7 +778,7 @@
     "message": "Probar Faucet"
   },
   "to": {
-    "message": "Para:"
+    "message": "Para"
   },
   "toETHviaShapeShift": {
     "message": "$1 a ETH via ShapeShift",

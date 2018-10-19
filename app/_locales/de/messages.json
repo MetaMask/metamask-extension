@@ -781,7 +781,7 @@
     "message": "Testfaucet"
   },
   "to": {
-    "message": "An:"
+    "message": "An"
   },
   "toETHviaShapeShift": {
     "message": "$1 an ETH via ShapeShift",

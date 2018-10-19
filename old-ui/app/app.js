@@ -26,6 +26,7 @@ const ConfigScreen = require('./config')
 const AddTokenScreen = require('./components/add-token')
 const ConfirmAddTokenScreen = require('./components/confirm-add-token')
 const RemoveTokenScreen = require('./remove-token')
+const AddSuggestedTokenScreen = require('./add-suggested-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const AppBar = require('./components/app-bar')
@@ -80,6 +81,7 @@ function mapStateToProps (state) {
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
     featureFlags,
+    suggestedTokens: state.metamask.suggestedTokens,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -247,6 +249,10 @@ App.prototype.renderPrimary = function () {
     case 'remove-token':
       log.debug('rendering remove-token screen from unlock screen.')
       return h(RemoveTokenScreen, {key: 'remove-token', ...props.currentView.context })
+
+    case 'add-suggested-token':
+      log.debug('rendering add-suggested-token screen from unlock screen.')
+      return h(AddSuggestedTokenScreen, {key: 'add-suggested-token'})
 
     case 'config':
       log.debug('rendering config screen')

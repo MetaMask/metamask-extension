@@ -802,7 +802,7 @@
     "message": "Testovací faucet"
   },
   "to": {
-    "message": "Komu: "
+    "message": "Komu"
   },
   "toETHviaShapeShift": {
     "message": "$1 na ETH přes ShapeShift",

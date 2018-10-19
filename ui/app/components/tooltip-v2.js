@@ -1,33 +1,66 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
-const inherits = require('util').inherits
-const ReactTippy = require('react-tippy').Tooltip
+import PropTypes from 'prop-types'
+import React, {PureComponent} from 'react'
+import {Tooltip as ReactTippy} from 'react-tippy'
 
-module.exports = Tooltip
+export default class Tooltip extends PureComponent {
+  static defaultProps = {
+    arrow: true,
+    children: null,
+    containerClassName: '',
+    hideOnClick: false,
+    onHidden: null,
+    position: 'left',
+    size: 'small',
+    title: null,
+    trigger: 'mouseenter',
+    wrapperClassName: '',
+  }
 
-inherits(Tooltip, Component)
-function Tooltip () {
-  Component.call(this)
-}
+  static propTypes = {
+    arrow: PropTypes.bool,
+    children: PropTypes.node,
+    containerClassName: PropTypes.string,
+    onHidden: PropTypes.func,
+    position: PropTypes.oneOf([
+      'top',
+      'right',
+      'bottom',
+      'left',
+    ]),
+    size: PropTypes.oneOf([
+      'small', 'regular', 'big',
+    ]),
+    title: PropTypes.string,
+    trigger: PropTypes.any,
+    wrapperClassName: PropTypes.string,
+  }
 
-Tooltip.prototype.render = function () {
-  const props = this.props
-  const { position, title, children, wrapperClassName, containerClassName, onHidden } = props
+  render () {
+    const {arrow, children, containerClassName, position, size, title, trigger, onHidden, wrapperClassName } = this.props
 
-  return h('div', {
-      className: wrapperClassName,
-    }, [
+    if (!title) {
+      return (
+        <div className={wrapperClassName}>
+          {children}
+        </div>
+      )
+    }
 
-    h(ReactTippy, {
-      title,
-      position: position || 'left',
-      trigger: 'mouseenter',
-      hideOnClick: false,
-      size: 'small',
-      arrow: true,
-      className: containerClassName,
-      onHidden,
-    }, children),
-
-  ])
+    return (
+      <div className={wrapperClassName}>
+        <ReactTippy
+          className={containerClassName}
+          title={title}
+          position={position}
+          trigger={trigger}
+          hideOnClick={false}
+          size={size}
+          arrow={arrow}
+          onHidden={onHidden}
+        >
+          {children}
+        </ReactTippy>
+      </div>
+    )
+  }
 }

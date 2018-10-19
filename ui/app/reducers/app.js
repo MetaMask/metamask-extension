@@ -48,7 +48,11 @@ function reduceApp (state, action) {
         name: null,
       },
     },
-    sidebarOpen: false,
+    sidebar: {
+      isOpen: false,
+      transitionName: '',
+      type: '',
+    },
     alertOpen: false,
     alertMessage: null,
     qrCodeData: null,
@@ -90,12 +94,18 @@ function reduceApp (state, action) {
     // sidebar methods
     case actions.SIDEBAR_OPEN:
       return extend(appState, {
-        sidebarOpen: true,
+        sidebar: {
+          ...action.value,
+          isOpen: true,
+        },
       })
 
     case actions.SIDEBAR_CLOSE:
       return extend(appState, {
-        sidebarOpen: false,
+        sidebar: {
+          ...appState.sidebar,
+          isOpen: false,
+        },
       })
 
     // alert methods
@@ -216,6 +226,15 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'confirm-add-token',
+          context: appState.currentView.context,
+        },
+        transForward: action.value,
+      })
+
+    case actions.SHOW_ADD_SUGGESTED_TOKEN_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'add-suggested-token',
           context: appState.currentView.context,
         },
         transForward: action.value,
