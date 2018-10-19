@@ -83,8 +83,23 @@ class BlacklistController {
    *
    */
   async updatePhishingList () {
-    const response = await fetch('https://api.infura.io/v2/blacklist')
-    const phishing = await response.json()
+    // make request
+    let response
+    try {
+      response = await fetch('https://api.infura.io/v2/blacklist')
+    } catch (err) {
+      throw new Error(`BlacklistController - failed to fetch blacklist:\n${err.stack}`)
+    }
+    // parse response
+    let rawResponse
+    let phishing
+    try {
+      const rawResponse = await response.text()
+      phishing = JSON.parse(rawResponse)
+    } catch (err) {
+      throw new Error(`BlacklistController - failed to parse blacklist:\n${rawResponse}`)
+    }
+    // update current blacklist
     this.store.updateState({ phishing })
     this._setupPhishingDetector(phishing)
     return phishing
@@ -97,9 +112,9 @@ class BlacklistController {
    */
   scheduleUpdates () {
     if (this._phishingUpdateIntervalRef) return
-    this.updatePhishingList().catch(log.warn)
+    this.updatePhishingList()
     this._phishingUpdateIntervalRef = setInterval(() => {
-      this.updatePhishingList().catch(log.warn)
+      this.updatePhishingList()
     }, POLLING_INTERVAL)
   }
 
