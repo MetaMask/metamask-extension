@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.8.6 Thu Oct 18 2018
+
 - [#153](https://github.com/poanetwork/metamask-extension/pull/153), [#154](https://github.com/poanetwork/metamask-extension/pull/154), [#158](https://github.com/poanetwork/metamask-extension/pull/158): (Feature) xDai chain support
 - [#149](https://github.com/poanetwork/metamask-extension/pull/149), [#150](https://github.com/poanetwork/metamask-extension/pull/150): (Fix) Add custom tokens validation
 - [#145](https://github.com/poanetwork/metamask-extension/pull/145), [#146](https://github.com/poanetwork/metamask-extension/pull/146): (Feature) Transfer tokens
