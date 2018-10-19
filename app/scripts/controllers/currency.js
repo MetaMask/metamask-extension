@@ -1,5 +1,6 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
+const log = require('loglevel')
 
 // every ten minutes
 const POLLING_INTERVAL = 600000
@@ -110,7 +111,8 @@ class CurrencyController {
       try {
         response = await fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`)
       } catch (err) {
-        throw new Error(`CurrencyController - Failed to request currency from Infura:\n${err.stack}`)
+        log.error(new Error(`CurrencyController - Failed to request currency from Infura:\n${err.stack}`))
+        return
       }
       let rawResponse
       let parsedResponse
@@ -118,7 +120,8 @@ class CurrencyController {
         rawResponse = await response.text()
         parsedResponse = JSON.parse(rawResponse)
       } catch (err) {
-        throw new Error(`CurrencyController - Failed to parse response "${rawResponse}"`)
+        log.error(new Error(`CurrencyController - Failed to parse response "${rawResponse}"`))
+        return
       }
       this.setConversionRate(Number(parsedResponse.bid))
       this.setConversionDate(Number(parsedResponse.timestamp))
@@ -127,7 +130,8 @@ class CurrencyController {
       this.setConversionRate(0)
       this.setConversionDate('N/A')
       // throw error
-      throw new Error(`CurrencyController - Failed to query rate for currency "${currentCurrency}":\n${err.stack}`)
+      log.error(new Error(`CurrencyController - Failed to query rate for currency "${currentCurrency}":\n${err.stack}`))
+      return
     }
   }
 

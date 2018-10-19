@@ -1,6 +1,7 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
 const PhishingDetector = require('eth-phishing-detect/src/detector')
+const log = require('loglevel')
 
 // compute phishing lists
 const PHISHING_DETECTION_CONFIG = require('eth-phishing-detect/src/config.json')
@@ -87,7 +88,8 @@ class BlacklistController {
     try {
       response = await fetch('https://api.infura.io/v2/blacklist')
     } catch (err) {
-      throw new Error(`BlacklistController - failed to fetch blacklist:\n${err.stack}`)
+      log.error(new Error(`BlacklistController - failed to fetch blacklist:\n${err.stack}`))
+      return
     }
     // parse response
     let rawResponse
@@ -96,7 +98,8 @@ class BlacklistController {
       const rawResponse = await response.text()
       phishing = JSON.parse(rawResponse)
     } catch (err) {
-      throw new Error(`BlacklistController - failed to parse blacklist:\n${rawResponse}`)
+      log.error(new Error(`BlacklistController - failed to parse blacklist:\n${rawResponse}`))
+      return
     }
     // update current blacklist
     this.store.updateState({ phishing })
