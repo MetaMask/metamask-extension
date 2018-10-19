@@ -11,6 +11,6 @@ function reportFailedTxToSentry ({ raven, txMeta }) {
   const errorMessage = 'Transaction Failed: ' + extractEthjsErrorMessage(txMeta.err.message)
   raven.captureMessage(errorMessage, {
     // "extra" key is required by Sentry
-    extra: txMeta,
+    extra: { txMeta },
   })
 }
