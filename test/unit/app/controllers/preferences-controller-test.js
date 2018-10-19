@@ -479,5 +479,24 @@ describe('preferences controller', function () {
       assert.equal(preferencesController.store.getState().seedWords, 'foo bar baz')
     })
   })
+
+  describe('on updateFrequentRpcList', function () {
+    it('should add custom RPC url to state', function () {
+      preferencesController.addToFrequentRpcList('rpc_url')
+      preferencesController.addToFrequentRpcList('http://localhost:8545')
+      assert.deepEqual(preferencesController.store.getState().frequentRpcList, ['rpc_url'])
+      preferencesController.addToFrequentRpcList('rpc_url')
+      assert.deepEqual(preferencesController.store.getState().frequentRpcList, ['rpc_url'])
+    })
+
+    it('should remove custom RPC url from state', function () {
+      preferencesController.addToFrequentRpcList('rpc_url')
+      assert.deepEqual(preferencesController.store.getState().frequentRpcList, ['rpc_url'])
+      preferencesController.removeFromFrequentRpcList('other_rpc_url')
+      preferencesController.removeFromFrequentRpcList('http://localhost:8545')
+      preferencesController.removeFromFrequentRpcList('rpc_url')
+      assert.deepEqual(preferencesController.store.getState().frequentRpcList, [])
+    })
+  })
 })
 
