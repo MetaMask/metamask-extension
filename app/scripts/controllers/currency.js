@@ -1,6 +1,5 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
-const log = require('loglevel')
 
 // every ten minutes
 const POLLING_INTERVAL = 600000
@@ -118,7 +117,7 @@ class CurrencyController {
       try {
         rawResponse = await response.text()
         parsedResponse = JSON.parse(rawResponse)
-      } catch () {
+      } catch (err) {
         throw new Error(`CurrencyController - Failed to parse response "${rawResponse}"`)
       }
       this.setConversionRate(Number(parsedResponse.bid))
