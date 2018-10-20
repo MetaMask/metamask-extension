@@ -5,9 +5,9 @@
   { "code": "es", "name": "Español" },
   { "code": "fr", "name": "Français" },
   { "code": "ht", "name": "Kreyòl ayisyen" },
-  { "code": "hn", "name": "हिंदी" },
+  { "code": "hn", "name": "हिन्दी" },
   { "code": "it", "name": "Italiano" },
-  { "code": "ja", "name": "日本人" },
+  { "code": "ja", "name": "日本語" },
   { "code": "ko", "name": "한국어" },
   { "code": "nl", "name": "Nederlands" },
   { "code": "ph", "name": "Pilipino" },
@@ -17,8 +17,8 @@
   { "code": "sl", "name": "Slovenščina" },
   { "code": "th", "name": "ไทย" },
   { "code": "tml", "name": "தமிழ்" },
-  { "code": "tr", "name": "Türk" },  
+  { "code": "tr", "name": "Türkçe" },  
   { "code": "vi", "name": "Tiếng Việt" },
-  { "code": "zh_CN", "name": "汉语" }, 
-  { "code": "zh_TW", "name": "漢語" }
+  { "code": "zh_CN", "name": "中文(简体)" },
+  { "code": "zh_TW", "name": "中文(繁體)" }
 ]
