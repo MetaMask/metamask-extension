@@ -40,12 +40,14 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useETHAsPrimaryCurrency: true,
+            fromCurrency: 'ETH',
           },
           ownProps: {
             type: 'PRIMARY',
           },
           result: {
             currency: 'ETH',
+            fromCurrency: 'ETH',
             numberOfDecimals: 6,
             prefix: undefined,
           },
@@ -53,12 +55,14 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useETHAsPrimaryCurrency: false,
+            fromCurrency: 'ETH',
           },
           ownProps: {
             type: 'PRIMARY',
           },
           result: {
             currency: undefined,
+            fromCurrency: 'ETH',
             numberOfDecimals: 2,
             prefix: undefined,
           },
@@ -66,6 +70,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useETHAsPrimaryCurrency: true,
+            fromCurrency: 'ETH',
           },
           ownProps: {
             type: 'SECONDARY',
@@ -73,6 +78,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             fiatPrefix: '-',
           },
           result: {
+            fromCurrency: 'ETH',
             currency: undefined,
             numberOfDecimals: 4,
             prefix: '-',
@@ -81,6 +87,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         {
           stateProps: {
             useETHAsPrimaryCurrency: false,
+            fromCurrency: 'ETH',
           },
           ownProps: {
             type: 'SECONDARY',
@@ -91,6 +98,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           },
           result: {
             currency: 'ETH',
+            fromCurrency: 'ETH',
             numberOfDecimals: 3,
             prefix: 'b',
           },
