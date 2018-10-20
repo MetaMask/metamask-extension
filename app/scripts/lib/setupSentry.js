@@ -8,7 +8,7 @@ module.exports = setupSentry
 
 // Setup sentry remote error reporting
 function setupSentry (opts) {
-  const { release } = opts
+  const { release, getState } = opts
   let sentryTarget
   // detect brave
   const isBrave = Boolean(window.chrome.ipcRenderer)
@@ -38,9 +38,15 @@ function setupSentry (opts) {
       simplifyErrorMessages(report)
       // modify report urls
       rewriteReportUrls(report)
+      // append app state
+      if (getState) {
+        const appState = getState()
+        report.extra.appState = appState
+      }
     } catch (err) {
       console.warn(err)
     }
+    return report
   }
 
   return Sentry

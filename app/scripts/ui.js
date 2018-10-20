@@ -21,7 +21,17 @@ async function start () {
 
   // setup sentry error reporting
   const release = global.platform.getVersion()
-  setupSentry({ release })
+  setupSentry({ release, getState })
+  // provide app state to append to error logs
+  function getState() {
+    // get app state
+    const state = window.getCleanAppState()
+    // remove unnecessary data
+    delete state.localeMessages
+    delete state.metamask.recentBlocks
+    // return state to be added to request
+    return state
+  }
 
   // inject css
   // const css = MetaMaskUiCss()
