@@ -41,6 +41,7 @@ function setupSentry (opts) {
     } catch (err) {
       console.warn(err)
     }
+    return report
   }
 
   return Sentry
