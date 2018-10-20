@@ -48,4 +48,22 @@
       border-color: $ecstasy;
     }
   }
+
+  &__radio-buttons {
+    display: flex;
+    align-items: center;
+  }
+
+  &__radio-button {
+    display: flex;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: 16px;
+    }
+  }
+
+  &__radio-label {
+    padding-left: 4px;
+  }
 }

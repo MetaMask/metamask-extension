@@ -38,6 +38,9 @@ class PreferencesController {
       lostIdentities: {},
       seedWords: null,
       forgottenPassword: false,
+      preferences: {
+        useETHAsPrimaryCurrency: true,
+      },
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -372,22 +375,6 @@ class PreferencesController {
   }
 
   /**
-   * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
-   *
-   * @param {string} _url The the new rpc url to add to the updated list
-   * @param {bool} remove Remove selected url
-   * @returns {Promise<void>} Promise resolves with undefined
-   *
-   */
-  updateFrequentRpcList (_url, remove = false) {
-    return this.addToFrequentRpcList(_url, remove)
-      .then((rpcList) => {
-        this.store.updateState({ frequentRpcList: rpcList })
-        return Promise.resolve()
-      })
-  }
-
-  /**
    * Setter for the `currentAccountTab` property
    *
    * @param {string} currentAccountTab Specifies the new tab to be marked as current
@@ -402,24 +389,39 @@ class PreferencesController {
   }
 
   /**
-   * Returns an updated rpcList based on the passed url and the current list.
-   * The returned list will have a max length of 3. If the _url currently exists it the list, it will be moved to the
-   * end of the list. The current list is modified and returned as a promise.
+   * Adds custom RPC url to state.
    *
-   * @param {string} _url The rpc url to add to the frequentRpcList.
-   * @param {bool} remove Remove selected url
-   * @returns {Promise<array>} The updated frequentRpcList.
+   * @param {string} url The RPC url to add to frequentRpcList.
+   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (_url, remove = false) {
+  addToFrequentRpcList (url) {
     const rpcList = this.getFrequentRpcList()
-    const index = rpcList.findIndex((element) => { return element === _url })
+    const index = rpcList.findIndex((element) => { return element === url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
-    if (!remove && _url !== 'http://localhost:8545') {
-      rpcList.push(_url)
+    if (url !== 'http://localhost:8545') {
+      rpcList.push(url)
     }
+    this.store.updateState({ frequentRpcList: rpcList })
+    return Promise.resolve(rpcList)
+  }
+
+  /**
+   * Removes custom RPC url from state.
+   *
+   * @param {string} url The RPC url to remove from frequentRpcList.
+   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
+   *
+   */
+  removeFromFrequentRpcList (url) {
+    const rpcList = this.getFrequentRpcList()
+    const index = rpcList.findIndex((element) => { return element === url })
+    if (index !== -1) {
+      rpcList.splice(index, 1)
+    }
+    this.store.updateState({ frequentRpcList: rpcList })
     return Promise.resolve(rpcList)
   }
 
@@ -463,6 +465,33 @@ class PreferencesController {
   getFeatureFlags () {
     return this.store.getState().featureFlags
   }
+
+  /**
+   * Updates the `preferences` property, which is an object. These are user-controlled features
+   * found in the settings page.
+   * @param {string} preference The preference to enable or disable.
+   * @param {boolean} value Indicates whether or not the preference should be enabled or disabled.
+   * @returns {Promise<object>} Promises a new object; the updated preferences object.
+   */
+  setPreference (preference, value) {
+    const currentPreferences = this.getPreferences()
+    const updatedPreferences = {
+      ...currentPreferences,
+      [preference]: value,
+    }
+
+    this.store.updateState({ preferences: updatedPreferences })
+    return Promise.resolve(updatedPreferences)
+  }
+
+  /**
+   * A getter for the `preferences` property
+   * @returns {object} A key-boolean map of user-selected preferences.
+   */
+  getPreferences () {
+    return this.store.getState().preferences
+  }
+
   //
   // PRIVATE METHODS
   //

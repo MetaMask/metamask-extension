@@ -126,3 +126,21 @@ export function sumHexes (...args) {
 
   return ethUtil.addHexPrefix(total)
 }
+
+/**
+ * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
+ * txMeta.status because txMeta.status does not reflect on-chain errors.
+ * @param {Object} transaction - The txMeta object of a transaction.
+ * @param {Object} transaction.txReceipt - The transaction receipt.
+ * @returns {string}
+ */
+export function getStatusKey (transaction) {
+  const { txReceipt: { status } = {} } = transaction
+
+  // There was an on-chain failure
+  if (status === '0x0') {
+    return 'failed'
+  }
+
+  return transaction.status
+}
