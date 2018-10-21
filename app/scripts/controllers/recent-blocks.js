@@ -3,6 +3,10 @@ const extend = require('xtend')
 const EthQuery = require('eth-query')
 const log = require('loglevel')
 const pify = require('pify')
+const BN = require('ethereumjs-util').BN
+const percentile = require('percentile')
+
+const GWEI_BN = new BN('1000000000')
 
 class RecentBlocksController {
 
@@ -28,20 +32,57 @@ class RecentBlocksController {
     this.blockTracker = blockTracker
     this.ethQuery = new EthQuery(provider)
     this.historyLength = opts.historyLength || 40
+    this.store = new ObservableStore()
+  }
 
-    const initState = extend({
-      recentBlocks: [],
-    }, opts.initState)
-    this.store = new ObservableStore(initState)
+  /**
+   * A method for estimating a good gas price at recent prices.
+   * Returns the lowest price that would have been included in
+   * 50% of recent blocks.
+   *
+   * @returns {string} A hex representation of the suggested wei gas price.
+   */
+  async getGasPrice () {
+    const recentBlocks = await this.queryRecentBlocks()
 
-    this.blockTracker.on('latest', async (newBlockNumberHex) => {
-      try {
-        await this.processBlock(newBlockNumberHex)
-      } catch (err) {
-        log.error(err)
+    // Return 1 gwei if no blocks have been observed:
+    if (recentBlocks.length === 0) {
+      return '0x' + GWEI_BN.toString(16)
+    }
+
+    const lowestPrices = recentBlocks.map((block) => {
+      if (!block.gasPrices || block.gasPrices.length < 1) {
+        return GWEI_BN
       }
+      return block.gasPrices
+      .map(hexPrefix => hexPrefix.substr(2))
+      .map(hex => new BN(hex, 16))
+      .sort((a, b) => {
+        return a.gt(b) ? 1 : -1
+      })[0]
     })
-    this.backfill()
+    .map(number => number.div(GWEI_BN).toNumber())
+
+    const percentileNum = percentile(65, lowestPrices)
+    const percentileNumBn = new BN(percentileNum)
+    return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
+  }
+
+  async queryRecentBlocks () {
+    const blockNumberHex = await this.blockTracker.getLatestBlock()
+    const currentBlockNumber = Number.parseInt(blockNumberHex, 16)
+    const blocksToFetch = Math.min(currentBlockNumber, this.historyLength)
+    const prevBlockNumber = currentBlockNumber - 1
+    const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
+    const rawRecentBlocks = await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
+      try {
+        return await this.getBlockByNumber(targetBlockNumber, true)
+      } catch (err) {
+        return null
+      }
+    }))
+    const recentBlocks = rawRecentBlocks.filter(Boolean)
+    return recentBlocks
   }
 
   /**
