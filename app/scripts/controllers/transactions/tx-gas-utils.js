@@ -62,20 +62,21 @@ class TxGasUtil {
     const recipient = txParams.to
     const hasRecipient = Boolean(recipient)
 
-    // see if we can set the gas based on the recipient 
+    // see if we can set the gas based on the recipient
     if (hasRecipient) {
       const code = await this.query.getCode(recipient)
       // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
       const codeIsEmpty = !code || code === '0x' || code === '0x0'
-      
+
       if (codeIsEmpty) {
         // if there's data in the params, but there's no contract code, it's not a valid transaction
         if (txParams.data) {
-          const err = new Error()
+          const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
+          // set error key so ui can display localized error message
           err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
           throw err
         }
-        
+
         // This is a standard ether simple send, gas requirement is exactly 21k
         txParams.gas = SIMPLE_GAS_COST
         // prevents buffer addition
