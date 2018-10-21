@@ -43,7 +43,10 @@ class RecentBlocksController {
    */
   async getGasPrice () {
     const recentBlocks = await this.queryRecentBlocks()
+    return this.analyzeGasPrices(recentBlocks)
+  }
 
+  analyzeGasPrices (recentBlocks) {
     // Return 1 gwei if no blocks have been observed:
     if (recentBlocks.length === 0) {
       return '0x' + GWEI_BN.toString(16)
@@ -82,7 +85,7 @@ class RecentBlocksController {
     }))
     const recentBlocks = rawRecentBlocks
       .filter(Boolean)
-      .map(analyzeBlockGasPrices)
+      .map(appendBlockGasPrice)
     return recentBlocks
   }
 
@@ -110,7 +113,7 @@ module.exports = RecentBlocksController
  * @returns {object} The modified block.
  *
  */
-function analyzeBlockGasPrices (newBlock) {
+function appendBlockGasPrice (newBlock) {
   const block = extend(newBlock, {
     gasPrices: newBlock.transactions.map((tx) => {
       return tx.gasPrice
