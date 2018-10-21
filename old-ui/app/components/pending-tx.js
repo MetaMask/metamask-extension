@@ -488,8 +488,10 @@ PendingTx.prototype.verifyGasParams = function () {
   )
 }
 
-PendingTx.prototype._notZeroOrEmptyString = function (obj) {
-  return obj !== '' && obj !== '0x0' && obj !== '0x' // '0x' means null
+PendingTx.prototype._notZeroOrEmptyString = function (value) {
+  // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+  const valueIsEmpty = !value || value === '0x' || value === '0x0'
+  return !valueIsEmpty
 }
 
 PendingTx.prototype.bnMultiplyByFraction = function (targetBN, numerator, denominator) {
