@@ -26,9 +26,7 @@ function setupEnsIpfsResolver({ provider }) {
     if (tabId === -1) return
     // parse ens name
     const urlData = urlUtil.parse(url)
-    const name = urlData.hostname
-    const path = urlData.path
-    const search = urlData.search
+    const { hostname: name, path, search } = urlData
     const domainParts = name.split('.')
     const topLevelDomain = domainParts[domainParts.length - 1]
     // if unsupported TLD, abort
