@@ -1,7 +1,6 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
 const EthQuery = require('eth-query')
-const log = require('loglevel')
 const pify = require('pify')
 const BN = require('ethereumjs-util').BN
 const percentile = require('percentile')
@@ -88,24 +87,6 @@ class RecentBlocksController {
   }
 
   /**
-   * Receives a block and gets the gasPrice of each of its transactions. These gas prices are added to the block at a
-   * new property, and the block's transactions are removed.
-   *
-   * @param {object} newBlock The block to modify. It's transaction array will be replaced by a gasPrices array.
-   * @returns {object} The modified block.
-   *
-   */
-  analyzeBlockGasPrices (newBlock) {
-    const block = extend(newBlock, {
-      gasPrices: newBlock.transactions.map((tx) => {
-        return tx.gasPrice
-      }),
-    })
-    delete block.transactions
-    return block
-  }
-
-  /**
    * Uses EthQuery to get a block that has a given block number.
    *
    * @param {number} number The number of the block to get
@@ -120,3 +101,21 @@ class RecentBlocksController {
 }
 
 module.exports = RecentBlocksController
+
+/**
+ * Receives a block and gets the gasPrice of each of its transactions. These gas prices are added to the block at a
+ * new property, and the block's transactions are removed.
+ *
+ * @param {object} newBlock The block to modify. It's transaction array will be replaced by a gasPrices array.
+ * @returns {object} The modified block.
+ *
+ */
+function analyzeBlockGasPrices (newBlock) {
+  const block = extend(newBlock, {
+    gasPrices: newBlock.transactions.map((tx) => {
+      return tx.gasPrice
+    }),
+  })
+  delete block.transactions
+  return block
+}
