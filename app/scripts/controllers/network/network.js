@@ -86,6 +86,7 @@ module.exports = class NetworkController extends EventEmitter {
       return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
     }
     const ethQuery = new EthQuery(this._provider)
+    // first attempt to perform lookup via eth_chainId
     ethQuery.sendAsync({ method: 'eth_chainId' }, (err, chainIdHex) => {
       if (err) {
         // if eth_chainId is not supported, fallback to net_verion
