@@ -1,12 +1,9 @@
 const namehash = require('eth-ens-namehash')
 const multihash = require('multihashes')
-const HttpProvider = require('ethjs-provider-http')
 const Eth = require('ethjs-query')
 const EthContract = require('ethjs-contract')
 const registrarAbi = require('./contracts/registrar')
 const resolverAbi = require('./contracts/resolver')
-
-const supportedTopLevelDomains = ['eth', 'test']
 
 module.exports = resolveEnsToIpfsContentId
 
