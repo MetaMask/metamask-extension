@@ -45,7 +45,8 @@ describe('CurrencyDisplay container', () => {
             currency: 'usd',
           },
           result: {
-            displayValue: '$2.80 USD',
+            displayValue: '$2.80',
+            suffix: 'USD',
           },
         },
         {
@@ -53,7 +54,8 @@ describe('CurrencyDisplay container', () => {
             value: '0x2386f26fc10000',
           },
           result: {
-            displayValue: '$2.80 USD',
+            displayValue: '$2.80',
+            suffix: 'USD',
           },
         },
         {
@@ -63,7 +65,8 @@ describe('CurrencyDisplay container', () => {
             numberOfDecimals: 3,
           },
           result: {
-            displayValue: '1.266 ETH',
+            displayValue: '1.266',
+            suffix: 'ETH',
           },
         },
         {
@@ -75,6 +78,7 @@ describe('CurrencyDisplay container', () => {
           },
           result: {
             displayValue: '1.266',
+            suffix: undefined,
           },
         },
         {
@@ -86,6 +90,7 @@ describe('CurrencyDisplay container', () => {
           },
           result: {
             displayValue: '1',
+            suffix: undefined,
           },
         },
         {
@@ -97,6 +102,7 @@ describe('CurrencyDisplay container', () => {
           },
           result: {
             displayValue: '1000000000',
+            suffix: undefined,
           },
         },
         {
@@ -108,6 +114,7 @@ describe('CurrencyDisplay container', () => {
           },
           result: {
             displayValue: '1e-9',
+            suffix: undefined,
           },
         },
       ]

@@ -25,5 +25,5 @@ async function runCurrencyLocalizationTest (assert, done) {
   const txView = await queryAsync($, '.transaction-view')
   const heroBalance = await findAsync($(txView), '.transaction-view-balance__balance')
   const fiatAmount = await findAsync($(heroBalance), '.transaction-view-balance__secondary-balance')
-  assert.equal(fiatAmount[0].textContent, '₱102,707.97 PHP')
+  assert.equal(fiatAmount[0].textContent, '₱102,707.97PHP')
 }
