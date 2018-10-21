@@ -140,7 +140,7 @@
   "close": {
     "message": "Fermer"
   },
-  "chromeRequiredForHardwareWallets":{
+  "chromeRequiredForHardwareWallets": {
     "message": "Pour connecter votre portefeuille hardware, vous devez utiliser MetaMask pour Google Chrome."
   },
   "confirm": {
@@ -171,7 +171,7 @@
     "message": "Connection au réseau de test Kovan"
   },
   "connectingToMainnet": {
-    "message": "Connection au Réseau principal Ethereum"
+    "message": "Connection au réseau principal Ethereum"
   },
   "connectingToRopsten": {
     "message": "Connection au réseau de test Ropsten"
@@ -350,13 +350,13 @@
     "message": "Nom ENS inconnu"
   },
   "enterPassword": {
-    "message": "Entrer le mot de passe"
+    "message": "Entrez votre mot de passe"
   },
   "enterPasswordConfirm": {
-    "message": "Enter your password to confirm"
+    "message": "Entrez votre mot de passe pour confirmer"
   },
   "enterPasswordContinue": {
-    "message": "Enter password to continue"
+    "message": "Entrez votre mot de passe pour continuer"
   },
   "etherscanView": {
     "message": "Afficher le compte sur Etherscan"
@@ -498,7 +498,7 @@
     "message": "Importer un compte"
   },
   "importAccountMsg": {
-    "message":" Les comptes importés ne seront pas associés avec votre phrase Seed que vous avez créé au départ dans MetaMask. Obtenir plus d'information sur les comptes importés"
+    "message": " Les comptes importés ne seront pas associés avec votre phrase Seed que vous avez créé au départ dans MetaMask. Obtenir plus d'information sur les comptes importés"
   },
   "importAnAccount": {
     "message": "Importer un compte"
@@ -686,7 +686,7 @@
   "noDeposits": {
     "message": "Aucun dépôt reçu"
   },
-  "noConversionRateAvailable":{
+  "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
   },
   "noTransactionHistory": {

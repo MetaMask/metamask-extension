@@ -78,7 +78,7 @@ export default class ConfirmRemoveAccount extends Component {
             <a
               className="confirm-remove-account__link"
               rel="noopener noreferrer"
-              target="_blank" href="https://consensys.zendesk.com/hc/en-us/articles/360004180111-What-are-imported-accounts-New-UI-">
+              target="_blank" href="https://metamask.zendesk.com/hc/en-us/articles/360015289932">
               { t('learnMore') }
             </a>
           </div>

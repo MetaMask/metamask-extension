@@ -25,4 +25,9 @@
     background-color: #FFF2DB;
     color: #CA810A;
   }
+
+  &--failed {
+    background: lighten($monzo, 56%);
+    color: $monzo;
+  }
 }

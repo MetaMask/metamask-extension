@@ -5,6 +5,7 @@ import Identicon from '../identicon'
 import Tooltip from '../tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
 import { DEFAULT_VARIANT, CARDS_VARIANT } from './sender-to-recipient.constants'
+import { checksumAddress } from '../../util'
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
@@ -40,7 +41,7 @@ export default class SenderToRecipient extends PureComponent {
     return !this.props.addressOnly && (
       <div className="sender-to-recipient__sender-icon">
         <Identicon
-          address={this.props.senderAddress}
+          address={checksumAddress(this.props.senderAddress)}
           diameter={24}
         />
       </div>
@@ -50,6 +51,7 @@ export default class SenderToRecipient extends PureComponent {
   renderSenderAddress () {
     const { t } = this.context
     const { senderName, senderAddress, addressOnly } = this.props
+    const checksummedSenderAddress = checksumAddress(senderAddress)
 
     return (
       <Tooltip
@@ -60,7 +62,7 @@ export default class SenderToRecipient extends PureComponent {
         onHidden={() => this.setState({ senderAddressCopied: false })}
       >
       <div className="sender-to-recipient__name">
-        { addressOnly ? `${t('from')}: ${senderAddress}` : senderName }
+        { addressOnly ? `${t('from')}: ${checksummedSenderAddress}` : senderName }
       </div>
     </Tooltip>
     )
@@ -68,11 +70,12 @@ export default class SenderToRecipient extends PureComponent {
 
   renderRecipientIdenticon () {
     const { recipientAddress, assetImage } = this.props
+    const checksummedRecipientAddress = checksumAddress(recipientAddress)
 
     return !this.props.addressOnly && (
       <div className="sender-to-recipient__sender-icon">
         <Identicon
-          address={recipientAddress}
+          address={checksummedRecipientAddress}
           diameter={24}
           image={assetImage}
         />
@@ -83,13 +86,14 @@ export default class SenderToRecipient extends PureComponent {
   renderRecipientWithAddress () {
     const { t } = this.context
     const { recipientName, recipientAddress, addressOnly } = this.props
+    const checksummedRecipientAddress = checksumAddress(recipientAddress)
 
     return (
       <div
         className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
         onClick={() => {
           this.setState({ recipientAddressCopied: true })
-          copyToClipboard(recipientAddress)
+          copyToClipboard(checksummedRecipientAddress)
         }}
       >
         { this.renderRecipientIdenticon() }
@@ -103,7 +107,7 @@ export default class SenderToRecipient extends PureComponent {
           <div className="sender-to-recipient__name">
             {
               addressOnly
-                ? `${t('to')}: ${recipientAddress}`
+                ? `${t('to')}: ${checksummedRecipientAddress}`
                 : (recipientName || this.context.t('newContract'))
             }
           </div>
@@ -147,6 +151,7 @@ export default class SenderToRecipient extends PureComponent {
 
   render () {
     const { senderAddress, recipientAddress, variant } = this.props
+    const checksummedSenderAddress = checksumAddress(senderAddress)
 
     return (
       <div className={classnames(variantHash[variant])}>
@@ -154,7 +159,7 @@ export default class SenderToRecipient extends PureComponent {
           className={classnames('sender-to-recipient__party sender-to-recipient__party--sender')}
           onClick={() => {
             this.setState({ senderAddressCopied: true })
-            copyToClipboard(senderAddress)
+            copyToClipboard(checksummedSenderAddress)
           }}
         >
           { this.renderSenderIdenticon() }

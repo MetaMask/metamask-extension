@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import CurrencyDisplay from '../currency-display/currency-display.component'
 import { getTokenData } from '../../helpers/transactions.util'
-import { calcTokenAmount } from '../../token-util'
+import { getTokenValue, calcTokenAmount } from '../../token-util'
 
 export default class TokenCurrencyDisplay extends PureComponent {
   static propTypes = {
@@ -34,8 +34,8 @@ export default class TokenCurrencyDisplay extends PureComponent {
 
     let displayValue
 
-    if (tokenData.params && tokenData.params.length === 2) {
-      const tokenValue = tokenData.params[1].value
+    if (tokenData.params && tokenData.params.length) {
+      const tokenValue = getTokenValue(tokenData.params)
       const tokenAmount = calcTokenAmount(tokenValue, decimals)
       displayValue = `${tokenAmount} ${symbol}`
     }

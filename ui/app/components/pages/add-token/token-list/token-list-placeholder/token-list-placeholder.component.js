@@ -15,7 +15,7 @@ export default class TokenListPlaceholder extends Component {
         </div>
         <a
           className="token-list-placeholder__link"
-          href="https://consensys.zendesk.com/hc/en-us/articles/360004135092"
+          href="https://metamask.zendesk.com/hc/en-us/articles/360015489031"
           target="_blank"
           rel="noopener noreferrer"
         >

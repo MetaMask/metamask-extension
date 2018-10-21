@@ -4,13 +4,14 @@ import classnames from 'classnames'
 import Identicon from '../identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
-import CurrencyDisplay from '../currency-display'
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import TokenCurrencyDisplay from '../token-currency-display'
 import TransactionListItemDetails from '../transaction-list-item-details'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
-import { ETH } from '../../constants/common'
+import { PRIMARY, SECONDARY } from '../../constants/common'
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
+import { getStatusKey } from '../../helpers/transactions.util'
 
 export default class TransactionListItem extends PureComponent {
   static propTypes = {
@@ -102,12 +103,11 @@ export default class TransactionListItem extends PureComponent {
           prefix="-"
         />
       ) : (
-        <CurrencyDisplay
+        <UserPreferencedCurrencyDisplay
           className="transaction-list-item__amount transaction-list-item__amount--primary"
           value={value}
+          type={PRIMARY}
           prefix="-"
-          numberOfDecimals={2}
-          currency={ETH}
         />
       )
   }
@@ -118,10 +118,11 @@ export default class TransactionListItem extends PureComponent {
     return token
       ? null
       : (
-        <CurrencyDisplay
+        <UserPreferencedCurrencyDisplay
           className="transaction-list-item__amount transaction-list-item__amount--secondary"
-          prefix="-"
           value={value}
+          prefix="-"
+          type={SECONDARY}
         />
       )
   }
@@ -167,7 +168,7 @@ export default class TransactionListItem extends PureComponent {
           </div>
           <TransactionStatus
             className="transaction-list-item__status"
-            statusKey={transaction.status}
+            statusKey={getStatusKey(transaction)}
             title={(
               (transaction.err && transaction.err.rpc)
                 ? transaction.err.rpc.message

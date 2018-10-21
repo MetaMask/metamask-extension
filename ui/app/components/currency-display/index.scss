@@ -1,0 +1,10 @@
+.currency-display-component {
+  display: flex;
+  align-items: center;
+
+  &__text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

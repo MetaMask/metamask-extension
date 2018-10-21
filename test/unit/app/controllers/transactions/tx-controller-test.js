@@ -158,9 +158,19 @@ describe('Transaction Controller', function () {
   })
 
   describe('#addUnapprovedTransaction', function () {
+    const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d'
+
+    let getSelectedAddress
+    beforeEach(function () {
+      getSelectedAddress = sinon.stub(txController, 'getSelectedAddress').returns(selectedAddress)
+    })
+
+    afterEach(function () {
+      getSelectedAddress.restore()
+    })
 
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
-      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d' })
+      txController.addUnapprovedTransaction({ from: selectedAddress })
       .then((txMeta) => {
         assert(('id' in txMeta), 'should have a id')
         assert(('time' in txMeta), 'should have a time stamp')
@@ -180,17 +190,29 @@ describe('Transaction Controller', function () {
         assert(txMetaFromEmit, 'txMeta is falsey')
         done()
       })
-      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d' })
+      txController.addUnapprovedTransaction({ from: selectedAddress })
       .catch(done)
     })
 
     it('should fail if recipient is public', function (done) {
       txController.networkStore = new ObservableStore(1)
-      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d', to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
+      txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
       .catch((err) => {
         if (err.message === 'Recipient is a public account') done()
         else done(err)
       })
+    })
+
+    it('should fail if the from address isn\'t the selected address', function (done) {
+      txController.addUnapprovedTransaction({from: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2'})
+        .then(function () {
+          assert.fail('transaction should not have been added')
+          done()
+        })
+        .catch(function () {
+          assert.ok('pass')
+          done()
+        })
     })
 
     it('should not fail if recipient is public but not on mainnet', function (done) {
@@ -198,7 +220,7 @@ describe('Transaction Controller', function () {
         assert(txMetaFromEmit, 'txMeta is falsey')
         done()
       })
-      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d', to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
+      txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
       .catch(done)
     })
   })

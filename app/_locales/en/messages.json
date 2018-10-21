@@ -14,6 +14,9 @@
   "accountName": {
     "message": "Account Name"
   },
+  "accountOptions": {
+    "message": "Account Options"
+  },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
@@ -137,10 +140,13 @@
   "clickCopy": {
     "message": "Click to Copy"
   },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
   "close": {
     "message": "Close"
   },
-  "chromeRequiredForHardwareWallets":{
+  "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
   "confirm": {
@@ -358,11 +364,17 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "eth": {
+    "message": "ETH"
+  },
   "etherscanView": {
     "message": "View account on Etherscan"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
+  },
+  "expandView": {
+    "message": "Expand View"
   },
   "exportPrivateKey": {
     "message": "Export Private Key"
@@ -374,7 +386,7 @@
     "message": "Failed"
   },
   "fiat": {
-    "message": "FIAT",
+    "message": "Fiat",
     "description": "Exchange type"
   },
   "fileImportFail": {
@@ -417,6 +429,9 @@
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
+  },
+  "gasUsed": {
+    "message": "Gas Used"
   },
   "generatingSeed": {
     "message": "Generating Seed..."
@@ -498,7 +513,7 @@
     "message": "Import Account"
   },
   "importAccountMsg": {
-    "message":" Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
+    "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
   "importAnAccount": {
     "message": "Import an account"
@@ -629,6 +644,9 @@
   "min": {
     "message": "Minimum"
   },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
   "myAccounts": {
     "message": "My Accounts"
   },
@@ -686,7 +704,7 @@
   "noDeposits": {
     "message": "No deposits received"
   },
-  "noConversionRateAvailable":{
+  "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
   },
   "noTransactionHistory": {
@@ -739,21 +757,21 @@
   "parameters": {
     "message": "Parameters"
   },
-  "passwordNotLongEnough": {
-    "message": "Password not long enough"
-  },
-  "passwordsDontMatch": {
-    "message": "Passwords Don't Match"
-  },
   "password": {
     "message": "Password"
   },
   "passwordCorrect": {
     "message": "Please make sure your password is correct."
   },
+  "passwordsDontMatch": {
+    "message": "Passwords Don't Match"
+  },
   "passwordMismatch": {
     "message": "passwords don't match",
     "description": "in password creation process, the two new password fields did not match"
+  },
+  "passwordNotLongEnough": {
+    "message": "Password not long enough"
   },
   "passwordShort": {
     "message": "password not long enough",
@@ -781,6 +799,12 @@
   "prev": {
     "message": "Prev"
   },
+  "primaryCurrencySetting": {
+    "message": "Primary Currency"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select ETH to prioritize displaying values in ETH. Select Fiat to prioritize displaying values in your selected currency."
+  },
   "privacyMsg": {
     "message": "Privacy Policy"
   },
@@ -789,7 +813,7 @@
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+    "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
   "privateNetwork": {
     "message": "Private Network"
@@ -856,9 +880,6 @@
   },
   "retryWithMoreGas": {
     "message": "Retry with a higher gas price here"
-  },
-  "walletSeed": {
-    "message": "Wallet Seed"
   },
   "restore": {
     "message": "Restore"
@@ -1186,7 +1207,7 @@
     "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
-    "message": "Type Your Password"
+    "message": "Type your MetaMask password"
   },
   "uiWelcome": {
     "message": "Welcome to the New UI (Beta)"
@@ -1222,7 +1243,7 @@
     "message": "Ooops! Something went wrong...."
   },
   "unknownCameraError": {
-    "message": "There was an error while trying to access you camera. Please try again..."
+    "message": "There was an error while trying to access your camera. Please try again..."
   },
   "unlock": {
     "message": "Unlock"
@@ -1260,6 +1281,9 @@
   },
   "visitWebSite": {
     "message": "Visit our web site"
+  },
+  "walletSeed": {
+    "message": "Wallet Seed"
   },
   "warning": {
     "message": "Warning"

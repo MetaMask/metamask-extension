@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { checksumAddress } from '../../../util'
 import Identicon from '../../identicon'
-import CurrencyDisplay from '../currency-display'
+import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
+import { PRIMARY, SECONDARY } from '../../../constants/common'
 
 export default class AccountListItem extends Component {
 
@@ -25,8 +26,6 @@ export default class AccountListItem extends Component {
     const {
       account,
       className,
-      conversionRate,
-      currentCurrency,
       displayAddress = false,
       displayBalance = true,
       handleClick,
@@ -57,16 +56,20 @@ export default class AccountListItem extends Component {
         { checksumAddress(address) }
       </div>}
 
-      {displayBalance && <CurrencyDisplay
-        className="account-list-item__account-balances"
-        conversionRate={conversionRate}
-        convertedBalanceClassName="account-list-item__account-secondary-balance"
-        convertedCurrency={currentCurrency}
-        primaryBalanceClassName="account-list-item__account-primary-balance"
-        primaryCurrency="ETH"
-        readOnly={true}
-        value={balance}
-      />}
+      {
+        displayBalance && (
+          <div className="account-list-item__account-balances">
+            <UserPreferencedCurrencyDisplay
+              type={PRIMARY}
+              value={balance}
+            />
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              value={balance}
+            />
+          </div>
+        )
+      }
 
     </div>)
   }

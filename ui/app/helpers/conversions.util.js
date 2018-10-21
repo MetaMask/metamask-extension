@@ -61,3 +61,22 @@ export function getValueFromWeiHex ({
     conversionRate,
   })
 }
+
+export function getWeiHexFromDecimalValue ({
+  value,
+  fromCurrency,
+  conversionRate,
+  fromDenomination,
+  invertConversionRate,
+}) {
+  return conversionUtil(value, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
+    toCurrency: ETH,
+    fromCurrency,
+    conversionRate,
+    invertConversionRate,
+    fromDenomination,
+    toDenomination: WEI,
+  })
+}

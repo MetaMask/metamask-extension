@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import CurrencyDisplay from '../../../currency-display'
-import { ETH } from '../../../../constants/common'
+import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display'
+import { PRIMARY, SECONDARY } from '../../../../constants/common'
 
 export default class CancelTransaction extends PureComponent {
   static propTypes = {
@@ -13,15 +13,15 @@ export default class CancelTransaction extends PureComponent {
 
     return (
       <div className="cancel-transaction-gas-fee">
-        <CurrencyDisplay
+        <UserPreferencedCurrencyDisplay
           className="cancel-transaction-gas-fee__eth"
-          currency={ETH}
           value={value}
-          numberOfDecimals={6}
+          type={PRIMARY}
         />
-        <CurrencyDisplay
+        <UserPreferencedCurrencyDisplay
           className="cancel-transaction-gas-fee__fiat"
           value={value}
+          type={SECONDARY}
         />
       </div>
     )

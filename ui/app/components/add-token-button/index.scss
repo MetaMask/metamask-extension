@@ -1,0 +1,26 @@
+.add-token-button {
+  display: flex;
+  flex-direction: column;
+  color: lighten($scorpion, 25%);
+  width: 185px;
+  margin: 36px auto;
+  text-align: center;
+
+  &__help-header {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  &__help-desc {
+    font-size: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  &__button {
+    font-size: 0.75rem;
+    margin: 1rem;
+    text-transform: uppercase;
+    color: $curious-blue;
+    cursor: pointer;
+  }
+}
