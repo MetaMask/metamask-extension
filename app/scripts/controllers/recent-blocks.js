@@ -81,63 +81,10 @@ class RecentBlocksController {
         return null
       }
     }))
-    const recentBlocks = rawRecentBlocks.filter(Boolean)
+    const recentBlocks = rawRecentBlocks
+      .filter(Boolean)
+      .map(analyzeBlockGasPrices)
     return recentBlocks
-  }
-
-  /**
-   * Sets store.recentBlocks to an empty array
-   *
-   */
-  resetState () {
-    this.store.updateState({
-      recentBlocks: [],
-    })
-  }
-
-  /**
-   * Receives a new block and modifies it with this.mapTransactionsToPrices. Then adds that block to the recentBlocks
-   * array in storage. If the recentBlocks array contains the maximum number of blocks, the oldest block is removed.
-   *
-   * @param {object} newBlock The new block to modify and add to the recentBlocks array
-   *
-   */
-  async processBlock (newBlockNumberHex) {
-    const newBlockNumber = Number.parseInt(newBlockNumberHex, 16)
-    const newBlock = await this.getBlockByNumber(newBlockNumber, true)
-    if (!newBlock) return
-
-    const block = this.mapTransactionsToPrices(newBlock)
-
-    const state = this.store.getState()
-    state.recentBlocks.push(block)
-
-    while (state.recentBlocks.length > this.historyLength) {
-      state.recentBlocks.shift()
-    }
-
-    this.store.updateState(state)
-  }
-
-  /**
-   * Receives a new block and modifies it with this.mapTransactionsToPrices. Adds that block to the recentBlocks
-   * array in storage, but only if the recentBlocks array contains fewer than the maximum permitted.
-   *
-   * Unlike this.processBlock, backfillBlock adds the modified new block to the beginning of the recent block array.
-   *
-   * @param {object} newBlock The new block to modify and add to the beginning of the recentBlocks array
-   *
-   */
-  backfillBlock (newBlock) {
-    const block = this.mapTransactionsToPrices(newBlock)
-
-    const state = this.store.getState()
-
-    if (state.recentBlocks.length < this.historyLength) {
-      state.recentBlocks.unshift(block)
-    }
-
-    this.store.updateState(state)
   }
 
   /**
@@ -148,7 +95,7 @@ class RecentBlocksController {
    * @returns {object} The modified block.
    *
    */
-  mapTransactionsToPrices (newBlock) {
+  analyzeBlockGasPrices (newBlock) {
     const block = extend(newBlock, {
       gasPrices: newBlock.transactions.map((tx) => {
         return tx.gasPrice
@@ -156,35 +103,6 @@ class RecentBlocksController {
     })
     delete block.transactions
     return block
-  }
-
-  /**
-   * On this.blockTracker's first 'latest' event after this RecentBlocksController's instantiation, the store.recentBlocks
-   * array is populated with this.historyLength number of blocks. The block number of the this.blockTracker's first
-   * 'latest' event is used to iteratively generate all the numbers of the previous blocks, which are obtained by querying
-   * the blockchain. These blocks are backfilled so that the recentBlocks array is ordered from oldest to newest.
-   *
-   * Each iteration over the block numbers is delayed by 100 milliseconds.
-   *
-   * @returns {Promise<void>} Promises undefined
-   */
-  async backfill () {
-    this.blockTracker.once('latest', async (blockNumberHex) => {
-      const currentBlockNumber = Number.parseInt(blockNumberHex, 16)
-      const blocksToFetch = Math.min(currentBlockNumber, this.historyLength)
-      const prevBlockNumber = currentBlockNumber - 1
-      const targetBlockNumbers = Array(blocksToFetch).fill().map((_, index) => prevBlockNumber - index)
-      await Promise.all(targetBlockNumbers.map(async (targetBlockNumber) => {
-        try {
-          const newBlock = await this.getBlockByNumber(targetBlockNumber, true)
-          if (!newBlock) return
-
-          this.backfillBlock(newBlock)
-        } catch (e) {
-          log.error(e)
-        }
-      }))
-    })
   }
 
   /**
