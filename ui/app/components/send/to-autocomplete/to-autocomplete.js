@@ -93,6 +93,7 @@ ToAutoComplete.prototype.componentDidUpdate = function (nextProps, nextState) {
 ToAutoComplete.prototype.render = function () {
   const {
     to,
+    toEns,
     dropdownOpen,
     onChange,
     inError,
@@ -104,7 +105,7 @@ ToAutoComplete.prototype.render = function () {
     h(`input.send-v2__to-autocomplete__input${qrScanner ? '.with-qr' : ''}`, {
       placeholder: this.context.t('recipientAddress'),
       className: inError ? `send-v2__error-border` : '',
-      value: to,
+      value: typeof toEns === 'string' ? toEns : to,
       onChange: event => onChange(event.target.value),
       onFocus: event => this.handleInputEvent(event),
       style: {

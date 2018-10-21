@@ -7,7 +7,7 @@ const debounce = require('debounce')
 const copyToClipboard = require('copy-to-clipboard')
 const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
-const ensRE = /.+\..+$/
+const ensRE = /.+\.(eth|test)$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const connect = require('react-redux').connect
 const ToAutoComplete = require('./send/to-autocomplete').default
@@ -39,6 +39,7 @@ EnsInput.prototype.onChange = function (recipient) {
     return this.setState({
       loadingEns: false,
       ensResolution: null,
+      ensName: null,
       ensFailure: null,
       toError: null,
     })
@@ -52,7 +53,10 @@ EnsInput.prototype.onChange = function (recipient) {
 
 EnsInput.prototype.render = function () {
   const props = this.props
+  const { ensName } = this.state || {}
+
   const opts = extend(props, {
+    toEns: ensName,
     list: 'addresses',
     onChange: this.onChange.bind(this),
     qrScanner: true,
@@ -61,6 +65,7 @@ EnsInput.prototype.render = function () {
     style: { width: '100%', position: 'relative' },
   }, [
     h(ToAutoComplete, { ...opts }),
+    this.ensResolvedAddress(),
     this.ensIcon(),
   ])
 }
@@ -87,6 +92,7 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
+        ensName: recipient.trim(),
         ensResolution: address,
         nickname: recipient.trim(),
         hoverText: address + '\n' + this.context.t('clickCopy'),
@@ -98,6 +104,7 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
   .catch((reason) => {
     const setStateObj = {
       loadingEns: false,
+      ensName: null,
       ensResolution: recipient,
       ensFailure: true,
       toError: null,
@@ -115,6 +122,17 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
   })
 }
 
+EnsInput.prototype.componentWillReceiveProps = function (nextProps) {
+  if (nextProps.network !== this.props.network) {
+      this.setState({
+        ensName: null,
+        ensResolution: ZERO_ADDRESS,
+        ensFailure: false,
+        toError: null,
+      })
+    }
+}
+
 EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   const state = this.state || {}
   const ensResolution = state.ensResolution
@@ -130,6 +148,42 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
       ensResolution !== prevState.ensResolution) {
     this.props.onChange({ toAddress: ensResolution, nickname, toError: state.toError })
   }
+}
+
+EnsInput.prototype.hasResolvedEnsAddress = function () {
+  const { ensResolution, ensFailure, toError } = this.state || {}
+
+  return (
+    !ensFailure &&
+    !toError &&
+    ensResolution &&
+    ensResolution !== ZERO_ADDRESS
+  )
+}
+
+EnsInput.prototype.ensResolvedAddress = function (recipient) {
+  if (!this.hasResolvedEnsAddress()) return
+
+  const { ensResolution } = this.state || {}
+
+  return h('div.#ensResolvedAddress', {
+    style: {
+      height: '18px',
+      marginTop: '2px',
+    },
+  }, h('div', {
+      title: ensResolution,
+      style: {
+        position: 'absolute',
+        width: '100%',
+        color: 'green',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        cursor: 'help',
+      },
+    }, ensResolution)
+  )
 }
 
 EnsInput.prototype.ensIcon = function (recipient) {
