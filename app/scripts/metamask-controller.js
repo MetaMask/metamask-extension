@@ -1458,7 +1458,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async setCustomRpc (rpcTarget) {
     this.networkController.setRpcTarget(rpcTarget)
-    await this.preferencesController.updateFrequentRpcList(rpcTarget)
+    await this.preferencesController.addToFrequentRpcList(rpcTarget)
     return rpcTarget
   }
 
@@ -1467,7 +1467,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} rpcTarget - A RPC URL to delete.
    */
   async delCustomRpc (rpcTarget) {
-    await this.preferencesController.updateFrequentRpcList(rpcTarget, true)
+    await this.preferencesController.removeFromFrequentRpcList(rpcTarget)
   }
 
   /**
