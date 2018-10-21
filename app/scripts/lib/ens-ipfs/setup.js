@@ -41,7 +41,7 @@ function setupEnsIpfsResolver({ provider }) {
     extension.tabs.update(tabId, { url: `loading.html` })
     try {
       const ipfsContentId = await resolveEnsToIpfsContentId({ provider, name })
-      const url = `https://gateway.ipfs.io/ipfs/${ipfsContentId}${path}${search ? search : ''}`
+      let url = `https://gateway.ipfs.io/ipfs/${ipfsContentId}${path}${search || ''}`
       try {
         // check if ipfs gateway has result
         const response = await fetch(url, { method: 'HEAD' })
