@@ -2,7 +2,7 @@
 
 ## Current Develop Branch
 
-## 4.16.0 Thursday October 17 2018
+## 4.16.0 Wednesday October 17 2018
 
 - Feature: Add toggle for primary currency (eth/fiat)
 - Feature: add tooltip for view etherscan tx
@@ -14,7 +14,7 @@
 - Bug Fix: Fix document extension check when injecting web3
 - Bug Fix: Fix some support links
 
-## 4.15.0 Thursday October 17 2018
+## 4.15.0 Thursday October 11 2018
 
 - A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.14.0` is found to have bugs.
 
