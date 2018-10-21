@@ -8,11 +8,11 @@ const h = require('react-hyperscript')
 const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
-const { formatBalance } = require('../../util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
 const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const Tooltip = require('../tooltip')
-
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
+import { PRIMARY } from '../../constants/common'
 
 const {
   SETTINGS_ROUTE,
@@ -163,7 +163,6 @@ AccountMenu.prototype.renderAccounts = function () {
     const isSelected = identity.address === selectedAddress
 
     const balanceValue = accounts[address] ? accounts[address].balance : ''
-    const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
     const simpleAddress = identity.address.substring(2).toLowerCase()
 
     const keyring = keyrings.find((kr) => {
@@ -189,7 +188,11 @@ AccountMenu.prototype.renderAccounts = function () {
 
         h('div.account-menu__account-info', [
           h('div.account-menu__name', identity.name || ''),
-          h('div.account-menu__balance', formattedBalance),
+          h(UserPreferencedCurrencyDisplay, {
+            className: 'account-menu__balance',
+            value: balanceValue,
+            type: PRIMARY,
+          }),
         ]),
 
         this.renderKeyringType(keyring),

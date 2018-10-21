@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
 import AmountMaxButton from './amount-max-button/'
-import CurrencyDisplay from '../../currency-display'
+import UserPreferencedCurrencyInput from '../../../user-preferenced-currency-input'
+import UserPreferencedTokenInput from '../../../user-preferenced-token-input'
 
 export default class SendAmountRow extends Component {
 
@@ -84,16 +85,25 @@ export default class SendAmountRow extends Component {
     }
   }
 
+  renderInput () {
+    const { amount, inError, selectedToken } = this.props
+    const Component = selectedToken ? UserPreferencedTokenInput : UserPreferencedCurrencyInput
+
+    return (
+      <Component
+        onChange={newAmount => this.validateAmount(newAmount)}
+        onBlur={newAmount => {
+          this.updateGas(newAmount)
+          this.updateAmount(newAmount)
+        }}
+        error={inError}
+        value={amount}
+      />
+    )
+  }
+
   render () {
-    const {
-      amount,
-      amountConversionRate,
-      convertedCurrency,
-      gasTotal,
-      inError,
-      primaryCurrency,
-      selectedToken,
-    } = this.props
+    const { gasTotal, inError } = this.props
 
     return (
       <SendRowWrapper
@@ -102,20 +112,7 @@ export default class SendAmountRow extends Component {
         errorType={'amount'}
       >
         {!inError && gasTotal && <AmountMaxButton />}
-        <CurrencyDisplay
-          conversionRate={amountConversionRate}
-          convertedCurrency={convertedCurrency}
-          onBlur={newAmount => {
-            this.updateGas(newAmount)
-            this.updateAmount(newAmount)
-          }}
-          onChange={newAmount => this.validateAmount(newAmount)}
-          inError={inError}
-          primaryCurrency={primaryCurrency || 'ETH'}
-          selectedToken={selectedToken}
-          value={amount}
-          step="any"
-        />
+        { this.renderInput() }
       </SendRowWrapper>
     )
   }

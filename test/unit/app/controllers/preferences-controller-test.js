@@ -375,6 +375,11 @@ describe('preferences controller', function () {
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.called(stubEnd)
       sandbox.assert.notCalled(stubNext)
+      req.method = 'wallet_watchAsset'
+      req.params.type = 'someasset'
+      await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
+      sandbox.assert.calledTwice(stubEnd)
+      sandbox.assert.notCalled(stubNext)
     })
     it('should through error if method is supported but asset type is not', async function () {
       req.method = 'metamask_watchAsset'
@@ -477,6 +482,25 @@ describe('preferences controller', function () {
       preferencesController.setSeedWords('foo bar baz')
 
       assert.equal(preferencesController.store.getState().seedWords, 'foo bar baz')
+    })
+  })
+
+  describe('on updateFrequentRpcList', function () {
+    it('should add custom RPC url to state', function () {
+      preferencesController.addToFrequentRpcList('rpc_url')
+      preferencesController.addToFrequentRpcList('http://localhost:8545')
+      assert.deepEqual(preferencesController.store.getState().frequentRpcList, ['rpc_url'])
+      preferencesController.addToFrequentRpcList('rpc_url')
+      assert.deepEqual(preferencesController.store.getState().frequentRpcList, ['rpc_url'])
+    })
+
+    it('should remove custom RPC url from state', function () {
+      preferencesController.addToFrequentRpcList('rpc_url')
+      assert.deepEqual(preferencesController.store.getState().frequentRpcList, ['rpc_url'])
+      preferencesController.removeFromFrequentRpcList('other_rpc_url')
+      preferencesController.removeFromFrequentRpcList('http://localhost:8545')
+      preferencesController.removeFromFrequentRpcList('rpc_url')
+      assert.deepEqual(preferencesController.store.getState().frequentRpcList, [])
     })
   })
 })

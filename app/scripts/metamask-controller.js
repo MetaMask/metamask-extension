@@ -129,6 +129,7 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
     })
+
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
       if (activeControllerConnections > 0) {
@@ -137,7 +138,12 @@ module.exports = class MetamaskController extends EventEmitter {
         this.accountTracker.stop()
       }
     })
-
+     
+    // ensure accountTracker updates balances after network change
+    this.networkController.on('networkDidChange', () => {
+      this.accountTracker._updateAccounts()
+    })
+      
     // key mgmt
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
     this.keyringController = new KeyringController({
@@ -387,6 +393,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
+      setPreference: nodeify(preferencesController.setPreference, preferencesController),
 
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
@@ -1451,7 +1458,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async setCustomRpc (rpcTarget) {
     this.networkController.setRpcTarget(rpcTarget)
-    await this.preferencesController.updateFrequentRpcList(rpcTarget)
+    await this.preferencesController.addToFrequentRpcList(rpcTarget)
     return rpcTarget
   }
 
@@ -1460,7 +1467,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} rpcTarget - A RPC URL to delete.
    */
   async delCustomRpc (rpcTarget) {
-    await this.preferencesController.updateFrequentRpcList(rpcTarget, true)
+    await this.preferencesController.removeFromFrequentRpcList(rpcTarget)
   }
 
   /**
