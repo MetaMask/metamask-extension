@@ -375,6 +375,11 @@ describe('preferences controller', function () {
       await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
       sandbox.assert.called(stubEnd)
       sandbox.assert.notCalled(stubNext)
+      req.method = 'wallet_watchAsset'
+      req.params.type = 'someasset'
+      await preferencesController.requestWatchAsset(req, res, asy.next, asy.end)
+      sandbox.assert.calledTwice(stubEnd)
+      sandbox.assert.notCalled(stubNext)
     })
     it('should through error if method is supported but asset type is not', async function () {
       req.method = 'metamask_watchAsset'

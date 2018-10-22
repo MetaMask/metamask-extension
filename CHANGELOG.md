@@ -2,6 +2,7 @@
 
 ## Current Develop Branch
 
+- [#5563](https://github.com/MetaMask/metamask-extension/pull/5563#pullrequestreview-166769174) Feature: improve Hatian Creole translations
 - [#5559](https://github.com/MetaMask/metamask-extension/pull/5559) Localize language names in translation select list
 
 ## 4.16.0 Wednesday October 17 2018

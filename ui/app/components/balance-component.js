@@ -81,11 +81,12 @@ BalanceComponent.prototype.renderBalance = function () {
   }
 
   return h('div.flex-column.balance-display', {}, [
-    h('div.token-amount', {}, h(UserPreferencedCurrencyDisplay, {
+    h(UserPreferencedCurrencyDisplay, {
+      className: 'token-amount',
       value: balanceValue,
       type: PRIMARY,
       ethNumberOfDecimals: 3,
-    })),
+    }),
 
     showFiat && h(UserPreferencedCurrencyDisplay, {
       value: balanceValue,
