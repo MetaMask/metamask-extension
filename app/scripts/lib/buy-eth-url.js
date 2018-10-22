@@ -29,6 +29,10 @@ function getBuyEthUrl ({ network, amount, address }) {
     case '42':
       url = 'https://github.com/kovan-testnet/faucet'
       break
+
+    case '5':
+      url = `https://metamask.coinswitch.co/?address=${address}&to=eth`
+      break
   }
   return url
 }

@@ -86,6 +86,12 @@
   "buyCoinbaseExplainer": {
     "message": "கோஇன்பசே பிறகாய்ன் , எதெரியும் மற்றும் ளிட்டசோன் வாங்க மற்றும் விற்க உலகின் மிகவும் பிரபலமான வழி"
   },
+  "buyCoinSwitch": {
+    "message": "நாணயம் ஸ்விட்சில் வாங்கவும்"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "சிறந்த விகிதத்தில் 300 க்கும் அதிகமான cryptocurrencies ஐ பரிமாறிக்கொள்ள ஒரு நாணயமாற்று இலக்கு நாணயம் ஸ்விட்ச் ஆகும்."
+  },
   "ok": {
     "message": "சரி"
   },
@@ -118,6 +124,9 @@
   },
   "continueToCoinbase": {
     "message": "கோஇன்பசே ஐத் தொடரவும்"
+  },
+  "continueToCoinSwitch": {
+    "message": "நாணயம் மாறாமல் தொடர்க"
   },
   "contractDeployment": {
     "message": "ஒப்பந்த வரிசைப்படுத்தல்"

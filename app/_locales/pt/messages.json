@@ -83,6 +83,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase é a forma mais conhecida para comprar e vender Bitcoin, Ethereum, e Litecoin."
   },
+  "buyCoinSwitch": {
+    "message": "Comprar no CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch é o destino único para trocar mais de 300 moedas criptográficas com a melhor taxa."
+  },
   "cancel": {
     "message": "Cancelar"
   },
@@ -109,6 +115,9 @@
   },
   "continueToCoinbase": {
     "message": "Continuar para o Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Continuar para o CoinSwitch"
   },
   "contractDeployment": {
     "message": "Distribuição do Contrato"

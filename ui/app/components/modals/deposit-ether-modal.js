@@ -16,6 +16,8 @@ let COINBASE_ROW_TEXT
 let SHAPESHIFT_ROW_TITLE
 let SHAPESHIFT_ROW_TEXT
 let FAUCET_ROW_TITLE
+let COINSWITCH_ROW_TITLE
+let COINSWITCH_ROW_TEXT
 
 function mapStateToProps (state) {
   return {
@@ -28,6 +30,9 @@ function mapDispatchToProps (dispatch) {
   return {
     toCoinbase: (address) => {
       dispatch(actions.buyEth({ network: '1', address, amount: 0 }))
+    },
+    toCoinSwitch: (address) => {
+      dispatch(actions.buyEth({ network: '5', address, amount: 0 }))
     },
     hideModal: () => {
       dispatch(actions.hideModal())
@@ -54,6 +59,8 @@ function DepositEtherModal (props, context) {
   SHAPESHIFT_ROW_TITLE = context.t('depositShapeShift')
   SHAPESHIFT_ROW_TEXT = context.t('depositShapeShiftExplainer')
   FAUCET_ROW_TITLE = context.t('testFaucet')
+  COINSWITCH_ROW_TITLE = context.t('buyCoinSwitch')
+  COINSWITCH_ROW_TEXT = context.t('buyCoinSwitchExplainer')
 
   this.state = {
     buyingWithShapeshift: false,
@@ -123,7 +130,7 @@ DepositEtherModal.prototype.renderRow = function ({
 }
 
 DepositEtherModal.prototype.render = function () {
-  const { network, toCoinbase, address, toFaucet } = this.props
+  const { network, toCoinbase, toCoinSwitch, address, toFaucet } = this.props
   const { buyingWithShapeshift } = this.state
 
   const isTestNetwork = ['3', '4', '42'].find(n => n === network)
@@ -184,6 +191,20 @@ DepositEtherModal.prototype.render = function () {
           text: COINBASE_ROW_TEXT,
           buttonLabel: this.context.t('continueToCoinbase'),
           onButtonClick: () => toCoinbase(address),
+          hide: isTestNetwork || buyingWithShapeshift,
+        }),
+
+        this.renderRow({
+          logo: h('div.deposit-ether-modal__logo', {
+            style: {
+              backgroundImage: 'url(\'./images/coinswitch_logo.png\')',
+              height: '40px',
+            },
+          }),
+          title: COINSWITCH_ROW_TITLE,
+          text: COINSWITCH_ROW_TEXT,
+          buttonLabel: this.context.t('continueToCoinSwitch'),
+          onButtonClick: () => toCoinSwitch(address),
           hide: isTestNetwork || buyingWithShapeshift,
         }),
 

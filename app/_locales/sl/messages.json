@@ -83,6 +83,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase je najpopularnejši načun za kupovanje in prodajo bitcoinov, ethereuma, in litecoina."
   },
+  "buyCoinSwitch": {
+    "message": "Kupi na CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch je destinacija na enem mestu za izmenjavo več kot 300 kriptokotovitev po najboljši hitrosti."
+  },
   "cancel": {
     "message": "Prekliči"
   },
@@ -109,6 +115,9 @@
   },
   "continueToCoinbase": {
     "message": "Nadaljuj na Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Nadaljuj na CoinSwitch"
   },
   "contractDeployment": {
     "message": "Ustvarjanje pogodbe"

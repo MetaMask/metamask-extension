@@ -116,6 +116,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase is the world’s most popular way to buy and sell Bitcoin, Ethereum, and Litecoin."
   },
+  "buyCoinSwitch": {
+    "message": "Buy on CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch is the one-stop destination to exchange more than 300 cryptocurrencies at the best rate."
+  },
   "bytes": {
     "message": "Bytes"
   },
@@ -196,6 +202,9 @@
   },
   "continueToCoinbase": {
     "message": "Continue to Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Continue to CoinSwitch"
   },
   "contractDeployment": {
     "message": "Contract Deployment"

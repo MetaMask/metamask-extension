@@ -113,6 +113,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase est le moyen le plus populaire d'acheter et de vendre des Ethers."
   },
+  "buyCoinSwitch": {
+    "message": "Acheter sur CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch est la destination unique pour échanger plus de 300 crypto-devises au meilleur taux."
+  },
   "bytes": {
     "message": "Bytes"
   },
@@ -193,6 +199,9 @@
   },
   "continueToCoinbase": {
     "message": "Continuer vers Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Continuer vers CoinSwitch"
   },
   "contractDeployment": {
     "message": "Déploiement de contrat"

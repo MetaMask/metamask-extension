@@ -107,6 +107,12 @@
     "buyCoinbaseExplainer": {
         "message": "Coinbase se fason ki pi popilè nan mond lan yo achte ak vann Bitcoin, Ethereum, ak Litecoin."
     },
+    "buyCoinSwitch": {
+      "message": "Achte sou CoinSwitch"
+    },
+    "buyCoinSwitchExplainer": {
+      "message": "CoinSwitch se destinasyon nan yon sèl-Stop nan echanj plis pase 300 kriptoksèr nan pousantaj la pi byen."
+    },
     "bytes": {
         "message": "Bytes"
     },
@@ -163,6 +169,9 @@
     },
     "continueToCoinbase": {
         "message": "Kontinye Coinbase"
+    },
+    "continueToCoinSwitch": {
+      "message": "Kontinye CoinSwitch"
     },
     "contractDeployment": {
         "message": "Kontra Deplwaman"

@@ -77,6 +77,12 @@
   "buyCoinbaseExplainer": {
     "message": "Etherを購入できます。Coinbaseは、世界的なBitcoin、Ethereum、そしてLitecoinの取引所です。"
   },
+  "buyCoinSwitch": {
+    "message": "CoinSwitchのサイトで購入"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitchは、最高のレートで300以上の暗号化交換を行うワンストップの宛先です。"
+  },
   "cancel": {
     "message": "キャンセル"
   },
@@ -103,6 +109,9 @@
   },
   "continueToCoinbase": {
     "message": "Coinbaseを開く"
+  },
+  "continueToCoinSwitch": {
+    "message": "CoinSwitchを開く"
   },
   "contractDeployment": {
     "message": "コントラクトのデプロイ"

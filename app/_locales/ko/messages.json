@@ -101,6 +101,12 @@
   "buyCoinbaseExplainer": {
     "message": "코인베이스는 비트코인, 이더리움, 라이트코인을 거래할 수 있는 유명한 거래소입니다."
   },
+  "buyCoinSwitch": {
+    "message": "코인 스위치 구입"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "코인 스위치는 최상의 속도로 300 개 이상의 크립토 카드를 교환하는 원 스톱 목적지입니다."
+  },
   "bytes": {
     "message": "바이트"
   },
@@ -172,6 +178,9 @@
   },
   "continueToCoinbase": {
     "message": "코인베이스로 계속하기"
+  },
+  "continueToCoinSwitch": {
+    "message": "코인 스위치 계속하기"
   },
   "contractDeployment": {
     "message": "컨트랙트 배포"

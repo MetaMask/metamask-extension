@@ -65,6 +65,12 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase là dịch vụ ví điện tử thông dụng nhất thế giới để mua bán Bitcoin, Ethereum, và Litecoin"
   },
+  "buyCoinSwitch": {
+    "message": "Mua trên CoinSwitch"
+  },
+  "buyCoinSwitchExplainer": {
+    "message": "CoinSwitch là điểm đến duy nhất để trao đổi hơn 300 tiền điện tử với tốc độ tốt nhất."
+  },
   "cancel": {
     "message": "Hủy"
   },
@@ -85,6 +91,9 @@
   },
   "continueToCoinbase": {
     "message": "Tiếp tục đến Coinbase"
+  },
+  "continueToCoinSwitch": {
+    "message": "Tiếp tục đến CoinSwitch"
   },
   "contractDeployment": {
     "message": "Triển khai hợp đồng"
