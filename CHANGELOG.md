@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+- [#5563](https://github.com/MetaMask/metamask-extension/pull/5563#pullrequestreview-166769174) Feature: improve Hatian Creole translations
+
 ## 4.16.0 Wednesday October 17 2018
 
 - Feature: Add toggle for primary currency (eth/fiat)
