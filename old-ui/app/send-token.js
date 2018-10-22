@@ -244,7 +244,7 @@ SendTransactionScreen.prototype.getTokensMetadata = async function () {
   return Promise.resolve()
 }
 
-SendTransactionScreen.prototype.componentDidUnmount = function () {
+SendTransactionScreen.prototype.componentWillUnmount = function () {
   this.props.dispatch(actions.displayWarning(''))
   if (!this.tracker) return
   this.tracker.stop()
