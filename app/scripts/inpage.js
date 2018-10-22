@@ -10,8 +10,8 @@ restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
-console.warn('ATTENTION: In an effort to improve user privacy, MetaMask will ' +
-'stop exposing user accounts to dapps by default beginning November 2nd, 2018. ' +
+console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
+'stopped exposing user accounts to dapps by default beginning November 2nd, 2018. ' +
 'Dapps should call provider.enable() in order to view and use accounts. Please see ' +
 'https://bit.ly/2QQHXvF for complete information and up-to-date example code.')
 
@@ -31,8 +31,9 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 var isEnabled = false
+var warned = false
 
-// Augment the provider with its enable method
+// augment the provider with its enable method
 inpageProvider.enable = function () {
   return new Promise((resolve, reject) => {
     window.addEventListener('ethereumprovider', ({ detail }) => {
@@ -53,35 +54,61 @@ inpageProvider.enable = function () {
   })
 }
 
-inpageProvider.isEnabled = function () {
-  return isEnabled
-}
+// add metamask-specific convenience methods
+inpageProvider._metamask = new Proxy({
+  /**
+   * Determines if this domain is currently enabled
+   *
+   * @returns {boolean} - true if this domain is currently enabled
+   */
+  isEnabled: function () {
+    return isEnabled
+  },
 
-inpageProvider.isApproved = function () {
-  return new Promise((resolve, reject) => {
-    window.addEventListener('ethereumproviderstatus', ({ detail }) => {
-      if (typeof detail.error !== 'undefined') {
-        reject(detail.error)
-      } else {
-        resolve(!!detail.isEnabled)
-      }
+  /**
+   * Determines if this domain has been previously approved
+   *
+   * @returns {Promise<boolean>} - Promise resolving to true if this domain has been previously approved
+   */
+  isApproved: function() {
+    return new Promise((resolve, reject) => {
+      window.addEventListener('ethereumproviderstatus', ({ detail }) => {
+        if (typeof detail.error !== 'undefined') {
+          reject(detail.error)
+        } else {
+          resolve(!!detail.isEnabled)
+        }
+      })
+      window.postMessage({ type: 'ETHEREUM_QUERY_STATUS' }, '*')
     })
-    window.postMessage({ type: 'ETHEREUM_QUERY_STATUS' }, '*')
-  })
-}
+  },
 
-inpageProvider.isUnlocked = function () {
-  return new Promise((resolve, reject) => {
-    window.addEventListener('metamaskunlockstatus', ({ detail }) => {
-      if (typeof detail.error !== 'undefined') {
-        reject(detail.error)
-      } else {
-        resolve(!!detail.isUnlocked)
-      }
+  /**
+   * Determines if MetaMask is unlocked by the user
+   *
+   * @returns {Promise<boolean>} - Promise resolving to true if MetaMask is currently unlocked
+   */
+  isUnlocked: function () {
+    return new Promise((resolve, reject) => {
+      window.addEventListener('metamaskunlockstatus', ({ detail }) => {
+        if (typeof detail.error !== 'undefined') {
+          reject(detail.error)
+        } else {
+          resolve(!!detail.isUnlocked)
+        }
+      })
+      window.postMessage({ type: 'METAMASK_UNLOCK_STATUS' }, '*')
     })
-    window.postMessage({ type: 'METAMASK_UNLOCK_STATUS' }, '*')
-  })
-}
+  },
+}, {
+  get: function(obj, prop) {
+    !warned && console.warn('Heads up! ethereum._metamask exposes convenience methods that have ' +
+    'not been standardized yet. This means that these methods may not be implemented ' +
+    'in other dapp browsers.')
+    warned = true
+    return obj[prop]
+  },
+})
 
 // Work around for web3@1.0 deleting the bound `sendAsync` but not the unbound
 // `sendAsync` method on the prototype, causing `this` reference issues with drizzle
