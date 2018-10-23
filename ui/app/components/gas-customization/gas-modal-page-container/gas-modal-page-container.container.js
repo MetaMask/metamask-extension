@@ -69,6 +69,10 @@ const mapStateToProps = state => {
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 
+  const priceAndTimeEstimates = state.gas.priceAndTimeEstimates
+  const gasPrices = priceAndTimeEstimates.map(({ gasprice }) => gasprice)
+  const estimatedTimes = priceAndTimeEstimates.map(({ expectedTime }) => expectedTime)
+
   return {
     hideBasic,
     isConfirm: isConfirm(state),
@@ -77,7 +81,7 @@ const mapStateToProps = state => {
     customGasPrice,
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     newTotalFiat,
-    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, state.gas.priceAndTimeEstimates),
+    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, priceAndTimeEstimates),
     gasPriceButtonGroupProps: {
       buttonDataLoading,
       defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),
@@ -85,7 +89,10 @@ const mapStateToProps = state => {
     },
     gasChartProps: {
       currentPrice: customGasPrice,
-      priceAndTimeEstimates: state.gas.priceAndTimeEstimates,
+      gasPrices,
+      estimatedTimes,
+      gasPricesMax: gasPrices[gasPrices.length - 1] + 1,
+      estimatedTimesMax: estimatedTimes[0],
     },
     infoRowProps: {
       originalTotalFiat: addHexWEIsToRenderableFiat(value, gasTotal, currentCurrency, conversionRate),
