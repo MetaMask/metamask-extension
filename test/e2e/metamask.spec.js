@@ -937,8 +937,8 @@ describe('Metamask popup page', async function () {
       it('switches back to Token Factory to grab the token contract address', async function () {
         const windowHandles = await driver.getAllWindowHandles()
         await driver.switchTo().window(windowHandles[0])
+        await delay(5000)
         const tokenContactAddress = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > span:nth-child(3)'))
-        await delay(2000)
         tokenAddress = await tokenContactAddress.getText()
         await delay(500)
       })
@@ -1726,6 +1726,7 @@ describe('Metamask popup page', async function () {
     }
     const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
     await click(buttonCancel)
+    await delay(2000)
     return true
   }
 
