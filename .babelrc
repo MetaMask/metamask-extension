@@ -5,18 +5,24 @@
       {
         "targets": {
           "browsers": [
-            ">0.25%",
-            "not ie 11",
-            "not op_mini all"
+            "chrome 55",
+            "firefox 53",
+            "opera 42",
+            "edge 17",
           ]
         },
         "debug": true
       }
     ],
     "stage-0",
-    "react"
+    "react",
   ],
   "plugins": [
-    "transform-class-properties"
+    "transform-class-properties",
+    // from previous babel-preset-env target browser config,
+    // required to complete transpile
+    "transform-es2015-parameters",
+    "transform-es2015-computed-properties",
+    "transform-es2015-spread",
   ]
 }
