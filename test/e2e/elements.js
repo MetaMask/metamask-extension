@@ -65,7 +65,7 @@ module.exports = {
         amountPlaceholder: 'Amount',
       },
       button: {
-        next: By.xpath('//*[@id="app-content"]/div/div[4]/div/section[2]/button'),
+        next: By.xpath('//*[@id="app-content"]/div/div[2]/div/section[2]/button'),
         arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       },
     },
@@ -209,7 +209,7 @@ module.exports = {
     main: {
       identicon: By.className('identicon-wrapper select-none'),
       fieldAccountName: By.className('sizing-input'),
-      accountName: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.name-label > div > div > h2'),
+      accountName: By.className('font-medium color-forest'),
       edit: By.className('edit-text'),
       iconCopy: By.className('clipboard cursor-pointer white'),
       transactionList: By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'),
