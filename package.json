@@ -257,7 +257,7 @@
     "geckodriver": "^1.12.2",
     "gh-pages": "^1.2.0",
     "gifencoder": "^1.1.0",
-    "gulp": "github:gulpjs/gulp#6d71a658c61edb3090221579d8f97dbe086ba2ed",
+    "gulp": "github:gulpjs/gulp#v4.0.0",
     "gulp-babel": "^7.0.0",
     "gulp-json-editor": "^2.2.1",
     "gulp-livereload": "^3.8.1",
