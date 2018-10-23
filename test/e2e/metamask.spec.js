@@ -1107,6 +1107,7 @@ describe('Metamask popup page', async function () {
           assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
+
         it('can not add inexistent token to ROPSTEN network', async function () {
           await setProvider(NETWORKS.ROPSTEN)
           assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
