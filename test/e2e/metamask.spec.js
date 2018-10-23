@@ -1701,12 +1701,12 @@ describe('Metamask popup page', async function () {
       }
       while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
     } catch (err) {
+      console.log(err)
       return false
     }
     const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
     await clearField(fieldAddress)
     await fieldAddress.sendKeys(tokenAddress)
-    await delay
 
     const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
     if (await fieldSymbols.isEnabled()) {
