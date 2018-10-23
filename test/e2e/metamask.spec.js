@@ -7,6 +7,8 @@ const webdriver = require('selenium-webdriver')
 const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 const { menus, screens, elements, NETWORKS } = require('./elements')
+const testSeedPhrase = 'juice teach unaware view expand beef divorce spatial evolve rack scheme foster'
+const account2='0x27836ca9B60E2E1aE13852388edd9a130Be81475'
 
 describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
@@ -561,7 +563,6 @@ describe('Metamask popup page', async function () {
     })
 
     it('adds seed phrase', async function () {
-      const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
       const seedTextArea = await waitUntilShowUp(screens.restoreVault.textArea)
       await seedTextArea.sendKeys(testSeedPhrase)
 
@@ -589,7 +590,7 @@ describe('Metamask popup page', async function () {
       assert.equal(await sendTranscationScreen.getText(), screens.sendTransaction.titleText, 'Transaction screen has incorrect titlr')
       const inputAddress = await waitUntilShowUp(screens.sendTransaction.field.address)
       const inputAmmount = await waitUntilShowUp(screens.sendTransaction.field.amount)
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAddress.sendKeys(account2)
       await inputAmmount.sendKeys('10')
       const button = await waitUntilShowUp(screens.sendTransaction.buttonNext)
       assert.equal(await button.getText(), 'Next', 'button has incorrect name')
@@ -1154,7 +1155,6 @@ describe('Metamask popup page', async function () {
 
     describe('Transfer tokens', function () {
 
-      const account2 = '0x2f318C334780961FB129D2a6c30D0763d9a5C970'
       const invalidAddress = '0xkqjefwblknnecwe'
       const invalidAmount = 'eeeee'
       const largeAmount = '123'
