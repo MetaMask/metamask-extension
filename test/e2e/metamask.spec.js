@@ -52,7 +52,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    await driver.quit()
+   // await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -1006,14 +1006,15 @@ describe('Metamask popup page', async function () {
       it('click to token opens the etherscan', async function () {
         const link = await waitUntilShowUp(screens.main.tokens.token)
         await link.click()
+        await delay(2000)
         const allHandles = await driver.getAllWindowHandles()
         console.log('allHandles.length ' + allHandles.length)
         assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
         await switchToLastPage()
-        await delay(2000)
-        const title = await driver.getCurrentUrl()
+        const title = await waitUntilCurrentUrl()
+
         console.log(title)
-        assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
+        assert.equal(title.includes('https://etherscan.io/token/'), true, 'etherscan wasn\'t opened')
         await switchToFirstPage()
       })
     })
@@ -1029,14 +1030,15 @@ describe('Metamask popup page', async function () {
         assert.notEqual(menu, false, 'item isn\'t displayed')
         assert.equal(await menu.getText(), menus.token.viewText, 'incorrect name')
         await menu.click()
+        await delay(2000)
         const allHandles = await driver.getAllWindowHandles()
         console.log('allHandles.length ' + allHandles.length)
         assert.equal(allHandles.length, 3, 'etherscan wasn\'t opened')
         await switchToLastPage()
-        await delay(2000)
-        const title = await driver.getCurrentUrl()
+        const title = await waitUntilCurrentUrl()
+
         console.log(title)
-        assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
+        assert.equal(title.includes('https://etherscan.io/token/'), true, 'etherscan wasn\'t opened')
         await switchToFirstPage()
       })
 
@@ -1725,8 +1727,16 @@ describe('Metamask popup page', async function () {
       return false
     }
     const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
-    await click(buttonCancel)
-    await delay(2000)
+    let counter = 20
+    do {
+      await delay(500)
+      await click(buttonCancel)
+     }
+    while (((await waitUntilShowUp(screens.main.identicon)) === false) && (counter-- > 0))
+    if (counter < 1) {
+      console.log('button cancel doesn\'t work')
+      return false
+    }
     return true
   }
 
@@ -1797,5 +1807,25 @@ describe('Metamask popup page', async function () {
     } catch (err) {
       return false
     }
+  }
+
+  async function waitUntilCurrentUrl()
+  {
+    try {
+      let title
+      let counter = 20
+      do {
+        await delay(500)
+        title = await driver.getCurrentUrl()
+      } while ( (title === '') && (counter-- > 0) )
+      if ( counter < 1 ) return false
+      return title
+    }
+    catch(err)
+    {
+      console.log(err)
+      return false
+    }
+
   }
 })
