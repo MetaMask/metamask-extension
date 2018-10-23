@@ -839,7 +839,7 @@ describe('Metamask popup page', async function () {
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it.skip('token should not  be displayed in LOCALHOST network', async function () {
+      it('token should not  be displayed in LOCALHOST network', async function () {
         console.log('https://github.com/poanetwork/metamask-extension/issues/131')
         await setProvider(NETWORKS.LOCALHOST)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
@@ -977,6 +977,7 @@ describe('Metamask popup page', async function () {
 
       it('fill out address input', async function () {
         const tokenContractAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
+        console.log(tokenAddress)
         await tokenContractAddress.sendKeys(tokenAddress)
       })
 
@@ -998,15 +999,6 @@ describe('Metamask popup page', async function () {
         await click(button)
         const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
         assert.equal(await tokenBalance.getText(), '100 TST', 'balance is incorrect or not displayed')
-      })
-
-      it('token balance updates if switch account', async function () {
-        const accountMenu = await waitUntilShowUp(menus.account.menu)
-        await accountMenu.click()
-        const item = await waitUntilShowUp(menus.account.createAccount)
-        await item.click()
-        const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.equal(await tokenBalance.getText(), '0 TST')
       })
 
       it('click to token opens the etherscan', async function () {
@@ -1105,8 +1097,9 @@ describe('Metamask popup page', async function () {
           assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
-        it('can not add inexistent token to SOKOL network', async function () {
+        it.skip('can not add inexistent token to SOKOL network', async function () {
           await setProvider(NETWORKS.SOKOL)
+          console.log(tokenAddress)
           assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
@@ -1237,7 +1230,7 @@ describe('Metamask popup page', async function () {
         const error = await waitUntilShowUp(screens.sendTokens.error)
         assert.equal(await error.getText(), screens.sendTokens.errorText.invalidAmount, ' error message is incorrect')
       })
-      it.skip('error message if amount is too precise', async function () {
+      it('error message if amount is too precise', async function () {
         const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
         await clearField(amount)
         await amount.sendKeys(preciseAmount)
@@ -1313,12 +1306,41 @@ describe('Metamask popup page', async function () {
         assert.equal(await accountName.getText(), 'Account 2', 'account name incorrect')
       })
 
-      it('receiver got correct amount of tokens', async function () {
+      it('added token isn\'t displayed for another account in the same network', async function () {
+        const accountMenu = await waitUntilShowUp(menus.account.menu)
+        await accountMenu.click()
+        const item = await waitUntilShowUp(menus.account.createAccount)
+        await item.click()
+        assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
+      })
+
+      it('add token to another account in the same network', async function () {
+        const addTokenButton = await waitUntilShowUp(screens.main.tokens.buttonAdd)
+        assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
+        await click(addTokenButton)
+
+        const tokenContractAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
+        await tokenContractAddress.sendKeys(tokenAddress)
+
+        const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
+        await click(buttonAdd)
+      })
+
+      it('tokens were transfered, balance is updated', async function () {
         const balance = await waitUntilShowUp(screens.main.tokens.balance)
         assert.equal(await balance.getText(), '5 TST', 'balance is incorrect')
       })
     })
     describe('Remove token , provider is localhost', function () {
+      it('switch to account 1 ', async function () {
+        const accountMenu = await waitUntilShowUp(menus.account.menu)
+        await accountMenu.click()
+        const item = await waitUntilShowUp(menus.account.account1)
+        await item.click()
+        await delay(2000)
+        const accountName = await waitUntilShowUp(screens.main.accountName)
+        assert.equal(await accountName.getText(), 'Account 1', 'account name incorrect')
+      })
 
       it('remove option opens \'Remove token\' screen ', async function () {
         await setProvider(NETWORKS.LOCALHOST)
