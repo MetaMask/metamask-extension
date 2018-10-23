@@ -55,8 +55,8 @@ class MobileSyncPage extends Component {
   generateCipherKeyAndChannelName () {
     this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
     this.channelName = `mm-${PubNub.generateUUID()}`
-    this.cipherKey = 'android';
-    this.channelName = 'android';
+    this.cipherKey = 'android'
+    this.channelName = 'android'
   }
 
   initWebsockets () {
@@ -113,6 +113,28 @@ class MobileSyncPage extends Component {
     return chunks
   }
 
+  notifyError (errorMsg) {
+    return new Promise((resolve, reject) => {
+      this.pubnub.publish(
+        {
+          message: {
+            event: 'error-sync',
+            data: errorMsg,
+          },
+          channel: this.channelName,
+          sendByPost: false, // true to send via post
+          storeInHistory: false,
+      },
+      (status, response) => {
+        if (!status.error) {
+          resolve()
+        } else {
+          reject(response)
+        }
+      })
+    })
+  }
+
   async startSyncing () {
     if (this.syncing) return false
     this.syncing = true
@@ -141,6 +163,7 @@ class MobileSyncPage extends Component {
       this.props.displayWarning('Sync failed :(')
       this.setState({syncing: false})
       this.syncing = false
+      this.notifyError(e.toString())
     }
   }
 
@@ -340,7 +363,7 @@ const mapDispatchToProps = dispatch => {
     fetchInfoToSync: () => dispatch(fetchInfoToSync()),
     displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
   }
-  
+
 }
 
 const mapStateToProps = state => {

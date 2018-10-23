@@ -573,11 +573,12 @@ module.exports = class MetamaskController extends EventEmitter {
       tokens,
     }
 
+
     // Accounts
     const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     const hdAccounts = await hdKeyring.getAccounts()
     const accounts = {
-      hd: hdAccounts.map(address => ethUtil.toChecksumAddress(address)),
+      hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map(address => ethUtil.toChecksumAddress(address)),
       simpleKeyPair: [],
       ledger: [],
       trezor: [],
