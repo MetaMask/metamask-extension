@@ -1,18 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import * as d3 from 'd3'
-import c3 from 'c3'
 import {
-  appendOrUpdateCircle,
   generateChart,
-  generateDataUIObj,
-  getAdjacentGasPrices,
   getCoordinateData,
-  getNewXandTimeEstimate,
   handleChartUpdate,
   hideDataUI,
-  setSelectedCircle,
   setTickPosition,
+  handleMouseMove,
 } from './gas-price-chart.utils.js'
 
 export default class GasPriceChart extends Component {
@@ -37,7 +32,7 @@ export default class GasPriceChart extends Component {
     estimatedTimesMax,
     updateCustomGasPrice,
   }) {
-    const chart = generateChart(gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax) 
+    const chart = generateChart(gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax)
 
     setTimeout(function () {
       setTickPosition('y', 0, -5, 8)
@@ -61,7 +56,7 @@ export default class GasPriceChart extends Component {
 
       const { x: chartXStart, width: chartWidth } = getCoordinateData('.c3-areas-data1')
 
-      handleChartUpdate ({
+      handleChartUpdate({
         chart,
         gasPrices,
         newPrice: currentPrice,
@@ -69,24 +64,14 @@ export default class GasPriceChart extends Component {
       })
 
       d3.select('.c3-chart').on('mousemove', function () {
-        const { currentPosValue, newTimeEstimate } = getNewXandTimeEstimate({
+        handleMouseMove({
           xMousePos: d3.event.clientX,
           chartXStart,
           chartWidth,
           gasPrices,
           estimatedTimes,
+          chart,
         })
-
-        if (currentPosValue === null && newTimeEstimate === null) {
-          hideDataUI(chart, '#overlayed-circle')
-        }
-
-        const indexOfNewCircle = estimatedTimes.length + 1
-        const dataUIObj = generateDataUIObj(currentPosValue, indexOfNewCircle, newTimeEstimate)
-
-        chart.internal.overlayPoint(dataUIObj, indexOfNewCircle)
-        chart.internal.showTooltip([dataUIObj], d3.select('.c3-areas-data1')._groups[0])
-        chart.internal.showXGridFocus([dataUIObj])
       })
     }, 0)
 
@@ -97,7 +82,7 @@ export default class GasPriceChart extends Component {
     const { gasPrices, currentPrice: newPrice } = this.props
 
     if (prevProps.currentPrice !== newPrice) {
-      handleChartUpdate ({
+      handleChartUpdate({
         chart: this.chart,
         gasPrices,
         newPrice,
