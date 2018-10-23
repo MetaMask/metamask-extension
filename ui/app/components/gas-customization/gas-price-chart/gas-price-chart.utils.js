@@ -1,6 +1,27 @@
 import * as d3 from 'd3'
 import c3 from 'c3'
 
+export function handleMouseMove ({ xMousePos, chartXStart, chartWidth, gasPrices, estimatedTimes, chart }) {
+  const { currentPosValue, newTimeEstimate } = getNewXandTimeEstimate({
+    xMousePos,
+    chartXStart,
+    chartWidth,
+    gasPrices,
+    estimatedTimes,
+  })
+
+  if (currentPosValue === null && newTimeEstimate === null) {
+    hideDataUI(chart, '#overlayed-circle')
+  }
+
+  const indexOfNewCircle = estimatedTimes.length + 1
+  const dataUIObj = generateDataUIObj(currentPosValue, indexOfNewCircle, newTimeEstimate)
+
+  chart.internal.overlayPoint(dataUIObj, indexOfNewCircle)
+  chart.internal.showTooltip([dataUIObj], d3.select('.c3-areas-data1')._groups[0])
+  chart.internal.showXGridFocus([dataUIObj])
+}
+
 export function getCoordinateData (selector) {
    return d3.select(selector).node().getBoundingClientRect()
 }
@@ -37,7 +58,7 @@ export function handleChartUpdate ({ chart, gasPrices, newPrice, cssId }) {
   }
 }
 
-export function getAdjacentGasPrices({ gasPrices, priceToPosition }) {
+export function getAdjacentGasPrices ({ gasPrices, priceToPosition }) {
   const closestLowerValueIndex = gasPrices.findIndex((e, i, a) => e <= priceToPosition && a[i + 1] >= priceToPosition)
   const closestHigherValueIndex = gasPrices.findIndex((e, i, a) => e > priceToPosition)
   return {
@@ -69,14 +90,14 @@ export function getNewXandTimeEstimate ({ xMousePos, chartXStart, chartWidth, ga
     closestHigherValue,
   } = getAdjacentGasPrices({ gasPrices, priceToPosition: currentPosValue })
 
-  return  !closestHigherValue || !closestLowerValue
+  return !closestHigherValue || !closestLowerValue
     ? {
       currentPosValue: null,
       newTimeEstimate: null,
     }
     : {
       currentPosValue,
-      newTimeEstimate: extrapolateY ({
+      newTimeEstimate: extrapolateY({
         higherY: estimatedTimes[closestHigherValueIndex],
         lowerY: estimatedTimes[closestLowerValueIndex],
         higherX: closestHigherValue,
@@ -144,7 +165,7 @@ export function setSelectedCircle ({
   const { x: higherX, y: higherY } = getCoordinateData(`.c3-circle-${closestHigherValueIndex}`)
 
   const currentX = lowerX + (higherX - lowerX) * (newPrice - closestLowerValue) / (closestHigherValue - closestLowerValue)
-  const newTimeEstimate = extrapolateY ({ higherY, lowerY, higherX, lowerX, xForExtrapolation: currentX })
+  const newTimeEstimate = extrapolateY({ higherY, lowerY, higherX, lowerX, xForExtrapolation: currentX })
 
   chart.internal.selectPoint(
     generateDataUIObj(currentX, numberOfValues, newTimeEstimate),
