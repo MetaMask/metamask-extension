@@ -1809,20 +1809,17 @@ describe('Metamask popup page', async function () {
     }
   }
 
-  async function waitUntilCurrentUrl()
-  {
+  async function waitUntilCurrentUrl () {
     try {
       let title
       let counter = 20
       do {
         await delay(500)
         title = await driver.getCurrentUrl()
-      } while ( (title === '') && (counter-- > 0) )
-      if ( counter < 1 ) return false
+      } while ((title === '') && (counter-- > 0))
+      if (counter < 1) return false
       return title
-    }
-    catch(err)
-    {
+    } catch (err) {
       console.log(err)
       return false
     }
