@@ -1068,7 +1068,7 @@ describe('Metamask popup page', async function () {
 
 
     describe('Check support of token per network basis ', async function () {
-
+      const inexistentToken = '0xB8c77482e45F1F44dE1745F52C74426C631bDD51'
       describe('Token should be displayed only for network, where it was added ', async function () {
 
         it('token should not  be displayed in POA network', async function () {
@@ -1112,8 +1112,7 @@ describe('Metamask popup page', async function () {
 
         it('can not add inexistent token to SOKOL network', async function () {
           await setProvider(NETWORKS.SOKOL)
-          const BNBfromMainnet = '0xB8c77482e45F1F44dE1745F52C74426C631bDD52'
-          assert(await isDisabledAddInexistentToken(BNBfromMainnet), true, 'can add inexistent token in POA network')
+          assert(await isDisabledAddInexistentToken(inexistentToken), true, 'can add inexistent token in POA network')
         })
 
 
