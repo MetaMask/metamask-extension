@@ -922,7 +922,7 @@ describe('Metamask popup page', async function () {
         await tokenDecimal.sendKeys(decimals)
         await tokenSymbol.sendKeys(symbol)
         await click(createToken)
-        await delay(1000)
+        await delay(5000)
       })
 
       // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
@@ -937,6 +937,7 @@ describe('Metamask popup page', async function () {
         const windowHandles = await driver.getAllWindowHandles()
         await driver.switchTo().window(windowHandles[0])
         const tokenContactAddress = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > span:nth-child(3)'))
+        await delay(2000)
         tokenAddress = await tokenContactAddress.getText()
         await delay(500)
       })
@@ -1002,7 +1003,11 @@ describe('Metamask popup page', async function () {
       })
 
       it('click to token opens the etherscan', async function () {
-        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        const link = await waitUntilShowUp(screens.main.tokens.token)
+        await link.click()
+        const allHandles = await driver.getAllWindowHandles()
+        console.log('allHandles.length ' + allHandles.length)
+        assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
         await switchToLastPage()
         await delay(2000)
         const title = await driver.getCurrentUrl()
@@ -1023,6 +1028,9 @@ describe('Metamask popup page', async function () {
         assert.notEqual(menu, false, 'item isn\'t displayed')
         assert.equal(await menu.getText(), menus.token.viewText, 'incorrect name')
         await menu.click()
+        const allHandles = await driver.getAllWindowHandles()
+        console.log('allHandles.length ' + allHandles.length)
+        assert.equal(allHandles.length, 3, 'etherscan wasn\'t opened')
         await switchToLastPage()
         await delay(2000)
         const title = await driver.getCurrentUrl()
@@ -1098,13 +1106,14 @@ describe('Metamask popup page', async function () {
 
         it('can not add inexistent token to POA network', async function () {
           await setProvider(NETWORKS.POA)
+          console.log(tokenAddress)
           assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
-        it.skip('can not add inexistent token to SOKOL network', async function () {
+        it('can not add inexistent token to SOKOL network', async function () {
           await setProvider(NETWORKS.SOKOL)
-          console.log(tokenAddress)
-          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+          const BNBfromMainnet = '0xB8c77482e45F1F44dE1745F52C74426C631bDD52'
+          assert(await isDisabledAddInexistentToken(BNBfromMainnet), true, 'can add inexistent token in POA network')
         })
 
 
