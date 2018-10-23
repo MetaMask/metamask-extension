@@ -8,7 +8,7 @@ const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 const { menus, screens, elements, NETWORKS } = require('./elements')
 const testSeedPhrase = 'juice teach unaware view expand beef divorce spatial evolve rack scheme foster'
-const account2='0x27836ca9B60E2E1aE13852388edd9a130Be81475'
+const account2 = '0x27836ca9B60E2E1aE13852388edd9a130Be81475'
 
 describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
@@ -1706,16 +1706,24 @@ describe('Metamask popup page', async function () {
     const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
     await clearField(fieldAddress)
     await fieldAddress.sendKeys(tokenAddress)
+    await delay
 
     const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if (await fieldSymbols.isEnabled()) return false
+    if (await fieldSymbols.isEnabled()) {
+      console.log('field symbols enabled')
+      return false
+    }
 
     const fieldDecimals = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if (await fieldDecimals.isEnabled()) return false
-
+    if (await fieldDecimals.isEnabled()) {
+      console.log('field decimals enabled')
+      return false
+    }
     const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
-    if (await buttonAdd.isEnabled()) return false
-
+    if (await buttonAdd.isEnabled()) {
+      console.log('button add enabled')
+      return false
+    }
     const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
     await click(buttonCancel)
     return true
