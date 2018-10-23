@@ -127,7 +127,6 @@ WalletView.prototype.render = function () {
     identities,
   } = this.props
   // temporary logs + fake extra wallets
-  // console.log('walletview, selectedAccount:', selectedAccount)
 
   const checksummedAddress = checksumAddress(selectedAddress)
 
