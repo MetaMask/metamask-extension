@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- [#164](https://github.com/poanetwork/metamask-extension/pull/164): (Fix) Confirm token transfer page display fix
+
 ## 4.8.6 Thu Oct 18 2018
 
 - [#153](https://github.com/poanetwork/metamask-extension/pull/153), [#154](https://github.com/poanetwork/metamask-extension/pull/154), [#158](https://github.com/poanetwork/metamask-extension/pull/158): (Feature) xDai chain support
