@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SenderToRecipient from '../sender-to-recipient'
 import { PageContainerFooter } from '../page-container'
-import { ConfirmPageContainerHeader, ConfirmPageContainerContent } from './'
+import { ConfirmPageContainerHeader, ConfirmPageContainerContent, ConfirmPageContainerNavigation } from './'
 
 export default class ConfirmPageContainer extends Component {
   static contextTypes = {
@@ -53,6 +53,7 @@ export default class ConfirmPageContainer extends Component {
     firstTx: PropTypes.string,
     lastTx: PropTypes.string,
     ofText: PropTypes.string,
+    requestsWaitingText: PropTypes.string,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
@@ -98,11 +99,24 @@ export default class ConfirmPageContainer extends Component {
       firstTx,
       lastTx,
       ofText,
+      requestsWaitingText,
     } = this.props
     const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
 
     return (
       <div className="page-container">
+        <ConfirmPageContainerNavigation
+            totalTx={totalTx}
+            positionOfCurrentTx={positionOfCurrentTx}
+            nextTxId={nextTxId}
+            prevTxId={prevTxId}
+            showNavigation={showNavigation}
+            onNextTx={(txId) => onNextTx(txId)}
+            firstTx={firstTx}
+            lastTx={lastTx}
+            ofText={ofText}
+            requestsWaitingText={requestsWaitingText}
+        />
         <ConfirmPageContainerHeader
           showEdit={showEdit}
           onEdit={() => onEdit()}
@@ -133,15 +147,6 @@ export default class ConfirmPageContainer extends Component {
               nonce={nonce}
               assetImage={assetImage}
               warning={warning}
-              totalTx={totalTx}
-              positionOfCurrentTx={positionOfCurrentTx}
-              nextTxId={nextTxId}
-              prevTxId={prevTxId}
-              showNavigation={showNavigation}
-              onNextTx={(txId) => onNextTx(txId)}
-              firstTx={firstTx}
-              lastTx={lastTx}
-              ofText={ofText}
             />
           )
         }

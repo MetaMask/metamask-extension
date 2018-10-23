@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const ConfirmPageContainerNavigation = props => {
-  const { onNextTx, totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText } = props
+  const { onNextTx, totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = props
 
   return (
     <div className="confirm-page-container-navigation"
         style={{
-          visibility: showNavigation ? 'initial' : 'hidden',
+          display: showNavigation ? 'flex' : 'none',
         }}
     >
       <div className="confirm-page-container-navigation__container"
@@ -17,16 +17,21 @@ const ConfirmPageContainerNavigation = props => {
         <div
           className="confirm-page-container-navigation__arrow"
           onClick={() => onNextTx(firstTx)}>
-          {'<'}
+          <img src="/images/double-arrow.svg" />
         </div>
         <div
           className="confirm-page-container-navigation__arrow"
           onClick={() => onNextTx(prevTxId)}>
-          ◄
+          <img src="/images/single-arrow.svg" />
         </div>
       </div>
-      <div>
-        {positionOfCurrentTx} {ofText} {totalTx}
+      <div className="confirm-page-container-navigation__textcontainer">
+        <div className="confirm-page-container-navigation__navtext">
+          {positionOfCurrentTx} {ofText} {totalTx}
+        </div>
+        <div className="confirm-page-container-navigation__longtext">
+          {requestsWaitingText}
+        </div>
       </div>
       <div
         className="confirm-page-container-navigation__container"
@@ -36,12 +41,12 @@ const ConfirmPageContainerNavigation = props => {
         <div
           className="confirm-page-container-navigation__arrow"
           onClick={() => onNextTx(nextTxId)}>
-          ►
+          <img className="confirm-page-container-navigation__imageflip" src="/images/single-arrow.svg" />
         </div>
         <div
           className="confirm-page-container-navigation__arrow"
           onClick={() => onNextTx(lastTx)}>
-          {'>'}
+          <img className="confirm-page-container-navigation__imageflip" src="/images/double-arrow.svg" />
         </div>
       </div>
     </div>
@@ -58,6 +63,7 @@ ConfirmPageContainerNavigation.propTypes = {
   firstTx: PropTypes.string,
   lastTx: PropTypes.string,
   ofText: PropTypes.string,
+  requestsWaitingText: PropTypes.string,
 }
 
 export default ConfirmPageContainerNavigation

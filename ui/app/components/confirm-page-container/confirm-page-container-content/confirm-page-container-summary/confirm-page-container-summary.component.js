@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Identicon from '../../../identicon'
-import ConfirmPageContainerNavigation from './confirm-page-container-navigation'
 
 const ConfirmPageContainerSummary = props => {
   const {
@@ -24,19 +23,6 @@ const ConfirmPageContainerSummary = props => {
         <div className="confirm-page-container-summary__action">
           { action }
         </div>
-        {
-          <ConfirmPageContainerNavigation
-            totalTx={totalTx}
-            positionOfCurrentTx={positionOfCurrentTx}
-            nextTxId={nextTxId}
-            prevTxId={prevTxId}
-            showNavigation={showNavigation}
-            onNextTx={(txId) => onNextTx(txId)}
-            firstTx={firstTx}
-            lastTx={lastTx}
-            ofText={ofText}
-          />
-        }
         {
           nonce && (
             <div className="confirm-page-container-summary__nonce">

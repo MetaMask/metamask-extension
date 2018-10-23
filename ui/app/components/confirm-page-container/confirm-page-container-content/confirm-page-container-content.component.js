@@ -22,15 +22,6 @@ export default class ConfirmPageContainerContent extends Component {
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
-    totalTx: PropTypes.number,
-    positionOfCurrentTx: PropTypes.number,
-    nextTxId: PropTypes.string,
-    prevTxId: PropTypes.string,
-    showNavigation: PropTypes.bool,
-    onNextTx: PropTypes.func,
-    firstTx: PropTypes.string,
-    lastTx: PropTypes.string,
-    ofText: PropTypes.string,
   }
 
   renderContent () {
@@ -75,15 +66,6 @@ export default class ConfirmPageContainerContent extends Component {
       detailsComponent,
       dataComponent,
       warning,
-      totalTx,
-      positionOfCurrentTx,
-      nextTxId,
-      prevTxId,
-      showNavigation,
-      onNextTx,
-      firstTx,
-      lastTx,
-      ofText,
     } = this.props
 
     return (
@@ -108,15 +90,6 @@ export default class ConfirmPageContainerContent extends Component {
               identiconAddress={identiconAddress}
               nonce={nonce}
               assetImage={assetImage}
-              totalTx={totalTx}
-              positionOfCurrentTx={positionOfCurrentTx}
-              nextTxId={nextTxId}
-              prevTxId={prevTxId}
-              showNavigation={showNavigation}
-              onNextTx={(txId) => onNextTx(txId)}
-              firstTx={firstTx}
-              lastTx={lastTx}
-              ofText={ofText}
             />
           )
         }

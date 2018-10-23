@@ -359,7 +359,7 @@ export default class ConfirmTransactionBase extends Component {
 
   getNavigateTxData () {
     const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props
-    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs)
+    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs).reverse()
     const currentPosition = enumUnapprovedTxs.indexOf(id.toString())
 
     return {
@@ -371,6 +371,7 @@ export default class ConfirmTransactionBase extends Component {
       firstTx: enumUnapprovedTxs[0],
       lastTx: enumUnapprovedTxs[enumUnapprovedTxs.length - 1],
       ofText: this.context.t('ofTextNofM'),
+      requestsWaitingText: this.context.t('requestsAwaitingAcknowledgement'),
     }
   }
 
@@ -402,7 +403,7 @@ export default class ConfirmTransactionBase extends Component {
 
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()
-    const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText } = this.getNavigateTxData()
+    const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = this.getNavigateTxData()
 
     return (
       <ConfirmPageContainer
@@ -437,6 +438,7 @@ export default class ConfirmTransactionBase extends Component {
         firstTx={firstTx}
         lastTx={lastTx}
         ofText={ofText}
+        requestsWaitingText={requestsWaitingText}
         disabled={!propsValid || !valid || submitting}
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}

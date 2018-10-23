@@ -471,7 +471,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       await waitUntilXWindowHandles(driver, 2)
-      let windowHandles = await driver.getAllWindowHandles()
+      const windowHandles = await driver.getAllWindowHandles()
       const extension = windowHandles[0]
       const dapp = windowHandles[1]
 
@@ -490,10 +490,6 @@ describe('MetaMask', function () {
       await contractDeployment.click()
       await delay(regularDelayMs)
 
-      windowHandles = await driver.getAllWindowHandles()
-      await driver.switchTo().window(windowHandles[2])
-      await delay(regularDelayMs)
-
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
@@ -506,28 +502,22 @@ describe('MetaMask', function () {
       let navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
       assert.equal(navigateTxButtons.length, 4, 'navigation button present')
 
-      await navigateTxButtons[1].click()
+      await navigateTxButtons[2].click()
       let navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       let navigationText = await navigationElement.getText()
-      assert.equal(navigationText.includes('3'), true, 'changed transaction left')
+      assert.equal(navigationText.includes('2'), true, 'changed transaction right')
 
       navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[1].click()
+      await navigateTxButtons[2].click()
       navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
-      assert.equal(navigationText.includes('2'), true, 'changed transaction left')
+      assert.equal(navigationText.includes('3'), true, 'changed transaction right')
 
       navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[1].click()
+      await navigateTxButtons[2].click()
       navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
-      assert.equal(navigationText.includes('1'), true, 'changed transaction left')
-
-      navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[3].click()
-      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
-      navigationText = await navigationElement.getText()
-      assert.equal(navigationText.split('4').length, 3, 'navigate to last transaction')
+      assert.equal(navigationText.includes('4'), true, 'changed transaction right')
 
       navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
       await navigateTxButtons[0].click()
@@ -536,16 +526,46 @@ describe('MetaMask', function () {
       assert.equal(navigationText.includes('1'), true, 'navigate to first transaction')
 
       navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[2].click()
+      await navigateTxButtons[3].click()
       navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
-      assert.equal(navigationText.includes('2'), true, 'changed transaction right')
+      assert.equal(navigationText.split('4').length, 3, 'navigate to last transaction')
 
       navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
-      await navigateTxButtons[2].click()
+      await navigateTxButtons[1].click()
       navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       navigationText = await navigationElement.getText()
-      assert.equal(navigationText.includes('3'), true, 'changed transaction right')
+      assert.equal(navigationText.includes('3'), true, 'changed transaction left')
+
+      navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
+      await navigateTxButtons[1].click()
+      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('2'), true, 'changed transaction left')
+    })
+
+    it('adds a transaction while confirm screen is in focus', async () => {
+      let navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      let navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('2'), true, 'second transaction in focus')
+
+      const windowHandles = await driver.getAllWindowHandles()
+      const extension = windowHandles[0]
+      const dapp = windowHandles[1]
+
+      await driver.switchTo().window(dapp)
+      await delay(regularDelayMs)
+
+      const send3eth = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`), 10000)
+      await send3eth.click()
+      await delay(regularDelayMs)
+
+      await driver.switchTo().window(extension)
+      await delay(regularDelayMs)
+
+      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('3'), true, 'correct transaction in focus')
     })
 
     it('confirms a transaction', async () => {
@@ -555,7 +575,7 @@ describe('MetaMask', function () {
 
       const navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       const navigationText = await navigationElement.getText()
-      assert.equal(navigationText.split('3').length, 3, 'transaction confirmed')
+      assert.equal(navigationText.includes('4'), true, 'transaction confirmed')
     })
 
     it('rejects a transaction', async () => {
@@ -565,11 +585,11 @@ describe('MetaMask', function () {
 
       const navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
       const navigationText = await navigationElement.getText()
-      assert.equal(navigationText.split('2').length, 3, 'transaction rejected')
+      assert.equal(navigationText.includes('3'), true, 'transaction rejected')
     })
 
     it('rejects the rest of the transactions', async () => {
-      const rejectAllButton = await findElement(driver, By.xpath(`//a[contains(text(), 'Reject 2')]`), 10000)
+      const rejectAllButton = await findElement(driver, By.xpath(`//a[contains(text(), 'Reject 3')]`), 10000)
       await rejectAllButton.click()
       await delay(regularDelayMs)
 
