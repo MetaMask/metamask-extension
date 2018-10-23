@@ -10,6 +10,7 @@ export default class CurrencyDisplay extends PureComponent {
     prefix: PropTypes.string,
     prefixComponent: PropTypes.node,
     style: PropTypes.object,
+    suffix: PropTypes.string,
     // Used in container
     currency: PropTypes.oneOf([ETH]),
     denomination: PropTypes.oneOf([GWEI]),
@@ -19,17 +20,25 @@ export default class CurrencyDisplay extends PureComponent {
   }
 
   render () {
-    const { className, displayValue, prefix, prefixComponent, style } = this.props
+    const { className, displayValue, prefix, prefixComponent, style, suffix } = this.props
     const text = `${prefix || ''}${displayValue}`
+    const title = `${text} ${suffix}`
 
     return (
       <div
         className={classnames('currency-display-component', className)}
         style={style}
-        title={text}
+        title={title}
       >
         { prefixComponent}
         <span className="currency-display-component__text">{ text }</span>
+        {
+          suffix && (
+            <span className="currency-display-component__suffix">
+              { suffix }
+            </span>
+          )
+        }
       </div>
     )
   }

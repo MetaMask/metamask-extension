@@ -1,5 +1,9 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>MetaMask Loading</title>
   <style>
     #div-logo {
@@ -31,5 +35,11 @@
   <div id="div-logo">
     <img id="logo" src="./images/loginglogo.svg">
   </div>
+  <script type="text/javascript">
+    // redirect to 404 after one minute
+    setTimeout(() => {
+      location.href = './404.html'
+    }, 60000)
+  </script>
 </body>
 </html>
