@@ -40,14 +40,33 @@ inpageProvider.enable = function () {
       if (typeof detail.error !== 'undefined') {
         reject(detail.error)
       } else {
-        inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
-          if (error) {
-            reject(error)
+        const publicConfig = new Promise((resolve) => {
+          const { selectedAddress } = inpageProvider.publicConfigStore.getState()
+          if (selectedAddress) {
+            resolve()
           } else {
-            isEnabled = true
-            resolve(response.result)
+            inpageProvider.publicConfigStore.on('update', ({ selectedAddress }) => {
+              selectedAddress && resolve()
+            })
           }
         })
+
+        const ethAccounts = new Promise((resolveAccounts, rejectAccounts) => {
+          inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
+            if (error) {
+              rejectAccounts(error)
+            } else {
+              resolveAccounts(response.result)
+            }
+          })
+        })
+
+        Promise.all([ethAccounts, publicConfig])
+          .then(([selectedAddress]) => {
+            isEnabled = true
+            resolve(selectedAddress)
+          })
+          .catch(reject)
       }
     })
     window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER' }, '*')
