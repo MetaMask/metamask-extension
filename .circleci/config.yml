@@ -109,20 +109,6 @@ jobs:
         key: dependency-cache-{{ .Revision }}
         paths:
         - node_modules
-  prep-deps-firefox:
-    docker:
-    - image: circleci/node:8.12.0-browsers
-    steps:
-    - checkout
-    - restore_cache:
-        key: dependency-cache-firefox-{{ .Revision }}
-    - run:
-        name: Download Firefox
-        command: ./.circleci/scripts/firefox-download.sh
-    - save_cache:
-        key: dependency-cache-firefox-{{ .Revision }}
-        paths:
-        - firefox
 
   prep-build:
     docker:
