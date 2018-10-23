@@ -928,7 +928,7 @@ describe('Metamask popup page', async function () {
 
       // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
       it('confirms transaction in MetaMask popup', async function () {
-        //const windowHandles = await driver.getAllWindowHandles()
+        // const windowHandles = await driver.getAllWindowHandles()
        // await driver.switchTo().window(windowHandles[windowHandles.length - 1])
         await switchToLastPage()
         await waitUntilCurrentUrl()
@@ -937,7 +937,7 @@ describe('Metamask popup page', async function () {
       })
 
       it('switches back to Token Factory to grab the token contract address', async function () {
-        //const windowHandles = await driver.getAllWindowHandles()
+        // const windowHandles = await driver.getAllWindowHandles()
        // await driver.switchTo().window(windowHandles[0])
 
         await delay(5000)
@@ -1708,8 +1708,6 @@ describe('Metamask popup page', async function () {
       }
       while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
     } catch (err) {
-      console.log(err)
-      return false
     }
     const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
     await clearField(fieldAddress)
