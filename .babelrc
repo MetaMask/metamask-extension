@@ -1,4 +1,22 @@
 {
-  "presets": [["env", { "targets": { "browsers": [">0.25%", "not ie 11", "not op_mini all"] } } ], "react", "stage-0"],
-  "plugins": ["transform-runtime", "transform-async-to-generator", "transform-class-properties"]
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            ">0.25%",
+            "not ie 11",
+            "not op_mini all"
+          ]
+        },
+        "debug": true
+      }
+    ],
+    "stage-0",
+    "react"
+  ],
+  "plugins": [
+    "transform-class-properties"
+  ]
 }
