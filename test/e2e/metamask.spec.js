@@ -1004,7 +1004,9 @@ describe('Metamask popup page', async function () {
       it('click to token opens the etherscan', async function () {
         await (await waitUntilShowUp(screens.main.tokens.token)).click()
         await switchToLastPage()
+        await delay(2000)
         const title = await driver.getCurrentUrl()
+        console.log(title)
         assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
         await switchToFirstPage()
       })
@@ -1230,7 +1232,7 @@ describe('Metamask popup page', async function () {
         const error = await waitUntilShowUp(screens.sendTokens.error)
         assert.equal(await error.getText(), screens.sendTokens.errorText.invalidAmount, ' error message is incorrect')
       })
-      it('error message if amount is too precise', async function () {
+      it.skip('error message if amount is too precise', async function () {
         const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
         await clearField(amount)
         await amount.sendKeys(preciseAmount)
