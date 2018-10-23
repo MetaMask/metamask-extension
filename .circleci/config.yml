@@ -5,7 +5,6 @@ workflows:
   full_test:
     jobs:
     - prep-deps-npm
-    - prep-deps-firefox
     - prep-build:
         requires:
         - prep-deps-npm
@@ -28,7 +27,6 @@ workflows:
     - test-e2e-firefox:
         requires:
         - prep-deps-npm
-        - prep-deps-firefox
         - prep-build
     - test-unit:
         requires:
@@ -40,7 +38,6 @@ workflows:
     - test-integration-mascara-firefox:
         requires:
         - prep-deps-npm
-        - prep-deps-firefox
         - prep-scss
     - test-integration-flat-chrome:
         requires:
@@ -49,7 +46,6 @@ workflows:
     - test-integration-flat-firefox:
         requires:
         - prep-deps-npm
-        - prep-deps-firefox
         - prep-scss
     - all-tests-pass:
         requires:
