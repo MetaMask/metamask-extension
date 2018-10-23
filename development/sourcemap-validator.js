@@ -17,7 +17,7 @@ start().catch(console.error)
 
 async function start () {
   const targetFiles = [`inpage.js`, `contentscript.js`, `ui.js`, `background.js`]
-  for (buildName of targetFiles) {
+  for (let buildName of targetFiles) {
     await validateSourcemapForFile({ buildName })
   }
 }
@@ -69,11 +69,10 @@ async function validateSourcemapForFile({ buildName }) {
       // warn if source content is missing
       if (!result.source) {
         console.warn(`!! missing source for position: ${JSON.stringify(position)}`)
-        // const buildLine = buildLines[position.line-1]
         console.warn(`   origin in build:`)
-        console.warn(`   ${buildLines[position.line-2]}`)
-        console.warn(`-> ${buildLines[position.line-1]}`)
-        console.warn(`   ${buildLines[position.line-0]}`)
+        console.warn(`   ${buildLines[position.line - 2]}`)
+        console.warn(`-> ${buildLines[position.line - 1]}`)
+        console.warn(`   ${buildLines[position.line - 0]}`)
         return
       }
       const sourceContent = consumer.sourceContentFor(result.source)
