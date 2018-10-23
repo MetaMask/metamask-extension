@@ -27,10 +27,14 @@ export default class TransactionActivityLog extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    const { transaction: { history: prevHistory = [] } = {} } = prevProps
-    const { transaction: { history = [] } = {} } = this.props
+    const {
+      transaction: { history: prevHistory = [], txReceipt: { status: prevStatus } = {} } = {},
+    } = prevProps
+    const {
+      transaction: { history = [], txReceipt: { status } = {} } = {},
+    } = this.props
 
-    if (prevHistory.length !== history.length) {
+    if (prevHistory.length !== history.length || prevStatus !== status) {
       this.setActivites()
     }
   }

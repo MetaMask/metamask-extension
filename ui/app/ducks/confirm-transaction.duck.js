@@ -329,7 +329,6 @@ export function updateTxDataAndCalculate (txData) {
 
     const fiatTransactionTotal = addFiat(fiatTransactionFee, fiatTransactionAmount)
     const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount)
-    console.log('HIHIH', value, hexTransactionFee)
     const hexTransactionTotal = sumHexes(value, hexTransactionFee)
 
     dispatch(updateTransactionTotals({
