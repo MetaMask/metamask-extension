@@ -1,14 +1,24 @@
 const log = require('loglevel')
 const util = require('./util')
 const BigNumber = require('bignumber.js')
-import contractMap from 'eth-contract-metadata'
+import contractMapETH from 'eth-contract-metadata'
+import contractMapPOA from 'poa-contract-metadata'
 
-const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
+const casedContractMapETH = Object.keys(contractMapETH).reduce((acc, base) => {
   return {
     ...acc,
-    [base.toLowerCase()]: contractMap[base],
+    [base.toLowerCase()]: contractMapETH[base],
   }
 }, {})
+
+const casedContractMapPOA = Object.keys(contractMapPOA).reduce((acc, base) => {
+  return {
+    ...acc,
+    [base.toLowerCase()]: contractMapPOA[base],
+  }
+}, {})
+
+const casedContractMap = Object.assign(casedContractMapETH, casedContractMapPOA)
 
 const DEFAULT_SYMBOL = ''
 const DEFAULT_DECIMALS = '0'
