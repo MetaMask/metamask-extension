@@ -71,6 +71,10 @@ export default class ConfirmTransactionBase extends Component {
     warning: PropTypes.string,
   }
 
+  state = {
+    submitting: false,
+  }
+
   componentDidUpdate () {
     const {
       transactionStatus,
@@ -120,7 +124,7 @@ export default class ConfirmTransactionBase extends Component {
 
     if (simulationFails) {
       return {
-        valid: false,
+        valid: true,
         errorKey: TRANSACTION_ERROR_KEY,
       }
     }
@@ -258,15 +262,25 @@ export default class ConfirmTransactionBase extends Component {
 
   handleSubmit () {
     const { sendTransaction, clearConfirmTransaction, txData, history, onSubmit } = this.props
+    const { submitting } = this.state
+
+    if (submitting) {
+      return
+    }
+
+    this.setState({ submitting: true })
 
     if (onSubmit) {
-      onSubmit(txData)
+      Promise.resolve(onSubmit(txData))
+        .then(this.setState({ submitting: false }))
     } else {
       sendTransaction(txData)
         .then(() => {
           clearConfirmTransaction()
+          this.setState({ submitting: false })
           history.push(DEFAULT_ROUTE)
         })
+        .catch(() => this.setState({ submitting: false }))
     }
   }
 
@@ -280,7 +294,7 @@ export default class ConfirmTransactionBase extends Component {
       methodData,
       ethTransactionAmount,
       fiatTransactionAmount,
-      valid: propsValid,
+      valid: propsValid = true,
       errorMessage,
       errorKey: propsErrorKey,
       currentCurrency,
@@ -295,6 +309,7 @@ export default class ConfirmTransactionBase extends Component {
       nonce,
       warning,
     } = this.props
+    const { submitting } = this.state
 
     const { name } = methodData
     const fiatConvertedAmount = formatCurrency(fiatTransactionAmount, currentCurrency)
@@ -320,7 +335,7 @@ export default class ConfirmTransactionBase extends Component {
         errorMessage={errorMessage}
         errorKey={propsErrorKey || errorKey}
         warning={warning}
-        valid={propsValid || valid}
+        disabled={!propsValid || !valid || submitting}
         onEdit={() => this.handleEdit()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}

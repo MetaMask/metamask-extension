@@ -124,7 +124,7 @@ class InitializeMenuScreen extends Component {
               textDecoration: 'underline',
               marginTop: '32px',
             },
-          }, 'Use classic interface'),
+          }, this.context.t('classicInterface')),
         ]),
 
       ])

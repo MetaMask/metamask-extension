@@ -15,14 +15,21 @@
   &__details {
     flex: 1;
     text-align: end;
+    min-width: 0;
   }
 
   &__fiat {
     font-size: 1.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__eth {
     color: $oslo-gray;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__header-text {

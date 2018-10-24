@@ -8,7 +8,7 @@ module.exports = setupRaven
 
 // Setup raven / sentry remote error reporting
 function setupRaven (opts) {
-  const { releaseVersion } = opts
+  const { release } = opts
   let ravenTarget
   // detect brave
   const isBrave = Boolean(window.chrome.ipcRenderer)
@@ -22,7 +22,7 @@ function setupRaven (opts) {
   }
 
   const client = Raven.config(ravenTarget, {
-    releaseVersion,
+    release,
     transport: function (opts) {
       opts.data.extra.isBrave = isBrave
       const report = opts.data

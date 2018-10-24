@@ -13,6 +13,7 @@ class PreferencesController {
 	 * @property {array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
+   * @property {object} store.accountTokens The tokens stored per account and then per network type
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
@@ -24,6 +25,7 @@ class PreferencesController {
     const initState = extend({
       frequentRpcList: [],
       currentAccountTab: 'history',
+      accountTokens: {},
       tokens: [],
       useBlockie: false,
       featureFlags: {},
@@ -33,8 +35,9 @@ class PreferencesController {
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
-
+    this.network = opts.network
     this.store = new ObservableStore(initState)
+    this._subscribeProviderType()
   }
 // PUBLIC METHODS
 
@@ -77,12 +80,19 @@ class PreferencesController {
    */
   setAddresses (addresses) {
     const oldIdentities = this.store.getState().identities
+    const oldAccountTokens = this.store.getState().accountTokens
+
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {}
       ids[address] = {name: `Account ${index + 1}`, address, ...oldId}
       return ids
     }, {})
-    this.store.updateState({ identities })
+    const accountTokens = addresses.reduce((tokens, address) => {
+      const oldTokens = oldAccountTokens[address] || {}
+      tokens[address] = oldTokens
+      return tokens
+    }, {})
+    this.store.updateState({ identities, accountTokens })
   }
 
   /**
@@ -93,11 +103,13 @@ class PreferencesController {
    */
   removeAddress (address) {
     const identities = this.store.getState().identities
+    const accountTokens = this.store.getState().accountTokens
     if (!identities[address]) {
       throw new Error(`${address} can't be deleted cause it was not found`)
     }
     delete identities[address]
-    this.store.updateState({ identities })
+    delete accountTokens[address]
+    this.store.updateState({ identities, accountTokens })
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
@@ -117,14 +129,17 @@ class PreferencesController {
    */
   addAddresses (addresses) {
     const identities = this.store.getState().identities
+    const accountTokens = this.store.getState().accountTokens
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) return
       // add missing identity
       const identityCount = Object.keys(identities).length
+
+      accountTokens[address] = {}
       identities[address] = { name: `Account ${identityCount + 1}`, address }
     })
-    this.store.updateState({ identities })
+    this.store.updateState({ identities, accountTokens })
   }
 
   /*
@@ -175,15 +190,15 @@ class PreferencesController {
    * Setter for the `selectedAddress` property
    *
    * @param {string} _address A new hex address for an account
-   * @returns {Promise<void>} Promise resolves with undefined
+   * @returns {Promise<void>} Promise resolves with tokens
    *
    */
   setSelectedAddress (_address) {
-    return new Promise((resolve, reject) => {
-      const address = normalizeAddress(_address)
-      this.store.updateState({ selectedAddress: address })
-      resolve()
-    })
+    const address = normalizeAddress(_address)
+    this._updateTokens(address)
+    this.store.updateState({ selectedAddress: address })
+    const tokens = this.store.getState().tokens
+    return Promise.resolve(tokens)
   }
 
   /**
@@ -232,9 +247,7 @@ class PreferencesController {
     } else {
       tokens.push(newEntry)
     }
-
-    this.store.updateState({ tokens })
-
+    this._updateAccountTokens(tokens)
     return Promise.resolve(tokens)
   }
 
@@ -247,10 +260,8 @@ class PreferencesController {
    */
   removeToken (rawAddress) {
     const tokens = this.store.getState().tokens
-
     const updatedTokens = tokens.filter(token => token.address !== rawAddress)
-
-    this.store.updateState({ tokens: updatedTokens })
+    this._updateAccountTokens(updatedTokens)
     return Promise.resolve(updatedTokens)
   }
 
@@ -387,6 +398,57 @@ class PreferencesController {
   //
   // PRIVATE METHODS
   //
+  /**
+   * Subscription to network provider type.
+   *
+   *
+   */
+  _subscribeProviderType () {
+    this.network.providerStore.subscribe(() => {
+      const { tokens } = this._getTokenRelatedStates()
+      this.store.updateState({ tokens })
+    })
+  }
+
+  /**
+   * Updates `accountTokens` and `tokens` of current account and network according to it.
+   *
+   * @param {array} tokens Array of tokens to be updated.
+   *
+   */
+  _updateAccountTokens (tokens) {
+    const { accountTokens, providerType, selectedAddress } = this._getTokenRelatedStates()
+    accountTokens[selectedAddress][providerType] = tokens
+    this.store.updateState({ accountTokens, tokens })
+  }
+
+  /**
+   * Updates `tokens` of current account and network.
+   *
+   * @param {string} selectedAddress Account address to be updated with.
+   *
+   */
+  _updateTokens (selectedAddress) {
+    const { tokens } = this._getTokenRelatedStates(selectedAddress)
+    this.store.updateState({ tokens })
+  }
+
+  /**
+   * A getter for `tokens` and `accountTokens` related states.
+   *
+   * @param {string} selectedAddress A new hex address for an account
+   * @returns {Object.<array, object, string, string>} States to interact with tokens in `accountTokens`
+   *
+   */
+  _getTokenRelatedStates (selectedAddress) {
+    const accountTokens = this.store.getState().accountTokens
+    if (!selectedAddress) selectedAddress = this.store.getState().selectedAddress
+    const providerType = this.network.providerStore.getState().type
+    if (!(selectedAddress in accountTokens)) accountTokens[selectedAddress] = {}
+    if (!(providerType in accountTokens[selectedAddress])) accountTokens[selectedAddress][providerType] = []
+    const tokens = accountTokens[selectedAddress][providerType]
+    return { tokens, accountTokens, providerType, selectedAddress }
+  }
 }
 
 module.exports = PreferencesController

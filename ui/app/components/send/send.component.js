@@ -38,11 +38,29 @@ export default class SendTransactionScreen extends PersistentForm {
     updateAndSetGasTotal: PropTypes.func,
     updateSendErrors: PropTypes.func,
     updateSendTokenBalance: PropTypes.func,
+    scanQrCode: PropTypes.func,
+    qrCodeDetected: PropTypes.func,
+    qrCodeData: PropTypes.object,
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.qrCodeData) {
+      if (nextProps.qrCodeData.type === 'address') {
+        const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase()
+        const currentAddress = this.props.to && this.props.to.toLowerCase()
+        if (currentAddress !== scannedAddress) {
+          this.props.updateSendTo(scannedAddress)
+          this.updateGas({ to: scannedAddress })
+          // Clean up QR code data after handling
+          this.props.qrCodeDetected(null)
+        }
+      }
+    }
+  }
 
   updateGas ({ to: updatedToAddress, amount: value } = {}) {
     const {
@@ -158,6 +176,16 @@ export default class SendTransactionScreen extends PersistentForm {
       address,
     })
     this.updateGas()
+
+    // Show QR Scanner modal  if ?scan=true
+    if (window.location.search === '?scan=true') {
+      this.props.scanQrCode()
+
+      // Clear the queryString param after showing the modal
+      const cleanUrl = location.href.split('?')[0]
+      history.pushState({}, null, `${cleanUrl}`)
+      window.location.hash = '#send'
+    }
   }
 
   componentWillUnmount () {
@@ -170,7 +198,10 @@ export default class SendTransactionScreen extends PersistentForm {
     return (
       <div className="page-container">
         <SendHeader history={history}/>
-        <SendContent updateGas={(updateData) => this.updateGas(updateData)}/>
+        <SendContent
+          updateGas={(updateData) => this.updateGas(updateData)}
+          scanQrCode={_ => this.props.scanQrCode()}
+        />
         <SendFooter history={history}/>
       </div>
     )

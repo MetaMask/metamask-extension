@@ -46,6 +46,7 @@ const selectors = {
   getTokenExchangeRate,
   getUnapprovedTxs,
   transactionsSelector,
+  getQrCodeData,
 }
 
 module.exports = selectors
@@ -281,4 +282,8 @@ function transactionsSelector (state) {
       .sort((a, b) => b.time - a.time)
     : txsToRender
       .sort((a, b) => b.time - a.time)
+}
+
+function getQrCodeData (state) {
+  return state.appState.qrCodeData
 }

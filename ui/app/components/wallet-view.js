@@ -117,8 +117,18 @@ WalletView.prototype.render = function () {
     return kr.accounts.includes(selectedAddress)
   })
 
-  const type = keyring.type
-  const isLoose = type !== 'HD Key Tree'
+  let label = ''
+  let type
+  if (keyring) {
+    type = keyring.type
+    if (type !== 'HD Key Tree') {
+      if (type.toLowerCase().search('hardware') !== -1) {
+        label = this.context.t('hardware')
+      } else {
+        label = this.context.t('imported')
+      }
+    }
+  }
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {},
@@ -132,7 +142,7 @@ WalletView.prototype.render = function () {
         onClick: hideSidebar,
       }),
 
-      h('div.wallet-view__keyring-label.allcaps', isLoose ? this.context.t('imported') : ''),
+      h('div.wallet-view__keyring-label.allcaps', label),
 
       h('div.flex-column.flex-center.wallet-view__name-container', {
         style: { margin: '0 auto' },

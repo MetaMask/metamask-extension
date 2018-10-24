@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { withRouter, Switch, Route } from 'react-router-dom'
 import { compose } from 'recompose'
-import classnames from 'classnames'
 
 import CreatePasswordScreen from './create-password-screen'
 import UniqueImageScreen from './unique-image-screen'
@@ -44,28 +43,9 @@ class FirstTimeFlow extends Component {
     noActiveNotices: false,
   };
 
-  renderAppBar () {
-    const { welcomeScreenSeen } = this.props
-
-    return (
-      <div className="alpha-warning__container">
-        <h2 className={classnames({
-            'alpha-warning': welcomeScreenSeen,
-            'alpha-warning-welcome-screen': !welcomeScreenSeen,
-          })}
-        >
-          Please be aware that this version is still under development
-        </h2>
-      </div>
-    )
-  }
-
   render () {
-    const { isPopup } = this.props
-
     return (
       <div className="flex-column flex-grow">
-        { !isPopup && this.renderAppBar() }
         <div className="first-time-flow">
           <Switch>
             <Route exact path={INITIALIZE_IMPORT_ACCOUNT_ROUTE} component={ImportAccountScreen} />

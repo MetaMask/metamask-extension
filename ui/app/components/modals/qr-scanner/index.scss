@@ -1,0 +1,83 @@
+.qr-scanner {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-flow: column;
+  border-radius: 8px;
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 16px 0;
+    text-align: center;
+  }
+
+  &__content {
+    padding-left: 20px;
+    padding-right: 20px;
+
+    &__video-wrapper {
+      overflow: hidden;
+      width: 100%;
+      height: 275px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      video {
+        transform: scaleX(-1);
+        width: auto;
+        height: 275px;
+      }
+    }
+  }
+
+  &__status {
+    text-align: center;
+    font-size: 14px;
+    padding: 15px;
+  }
+
+  &__image {
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 16px 0 0;
+    text-align: center;
+  }
+
+  &__error {
+    text-align: center;
+    font-size: 16px;
+    padding: 15px;
+  }
+
+  &__footer {
+    padding: 20px;
+    flex-direction: row;
+    display: flex;
+
+    button {
+      margin-right: 15px;
+    }
+
+    button:last-of-type {
+      margin-right: 0;
+      background-color: #009eec;
+      border: none;
+      color: #fff;
+    }
+  }
+
+  &__close::after {
+    content: '\00D7';
+    font-size: 35px;
+    color: #9b9b9b;
+    position: absolute;
+    top: 4px;
+    right: 20px;
+    cursor: pointer;
+    font-weight: 300;
+  }
+}
+

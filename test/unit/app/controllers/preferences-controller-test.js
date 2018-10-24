@@ -1,11 +1,14 @@
 const assert = require('assert')
+const ObservableStore = require('obs-store')
 const PreferencesController = require('../../../../app/scripts/controllers/preferences')
 
 describe('preferences controller', function () {
   let preferencesController
+  let network
 
   beforeEach(() => {
-    preferencesController = new PreferencesController()
+    network = {providerStore: new ObservableStore({ type: 'mainnet' })}
+    preferencesController = new PreferencesController({ network })
   })
 
   describe('setAddresses', function () {
@@ -25,6 +28,20 @@ describe('preferences controller', function () {
           name: 'Account 2',
           address: '0x7e57e2',
         },
+      })
+    })
+
+    it('should create account tokens for each account in the store', function () {
+      preferencesController.setAddresses([
+        '0xda22le',
+        '0x7e57e2',
+      ])
+
+      const accountTokens = preferencesController.store.getState().accountTokens
+
+      assert.deepEqual(accountTokens, {
+        '0xda22le': {},
+        '0x7e57e2': {},
       })
     })
 
@@ -62,6 +79,17 @@ describe('preferences controller', function () {
       preferencesController.removeAddress('0xda22le')
 
       assert.equal(preferencesController.store.getState().identities['0xda22le'], undefined)
+    })
+
+    it('should remove an address from state and respective tokens', function () {
+      preferencesController.setAddresses([
+        '0xda22le',
+        '0x7e57e2',
+      ])
+
+      preferencesController.removeAddress('0xda22le')
+
+      assert.equal(preferencesController.store.getState().accountTokens['0xda22le'], undefined)
     })
 
     it('should switch accounts if the selected address is removed', function () {
@@ -161,6 +189,42 @@ describe('preferences controller', function () {
       await preferencesController.addToken(address, symbol, decimals, network)
       assert.equal(preferencesController.getTokens().length, 1, 'one token added for 2nd address')
     })
+
+    it('should add token per account', async function () {
+      const addressFirst = '0xabcdef1234567'
+      const addressSecond = '0xabcdef1234568'
+      const symbolFirst = 'ABBR'
+      const symbolSecond = 'ABBB'
+      const decimals = 5
+
+      await preferencesController.setSelectedAddress('0x7e57e2')
+      await preferencesController.addToken(addressFirst, symbolFirst, decimals)
+      const tokensFirstAddress = preferencesController.getTokens()
+
+      await preferencesController.setSelectedAddress('0xda22le')
+      await preferencesController.addToken(addressSecond, symbolSecond, decimals)
+      const tokensSeconAddress = preferencesController.getTokens()
+
+      assert.notEqual(tokensFirstAddress, tokensSeconAddress, 'add different tokens for two account and tokens are equal')
+    })
+
+    it('should add token per network', async function () {
+      const addressFirst = '0xabcdef1234567'
+      const addressSecond = '0xabcdef1234568'
+      const symbolFirst = 'ABBR'
+      const symbolSecond = 'ABBB'
+      const decimals = 5
+
+      network.providerStore.updateState({ type: 'mainnet' })
+      await preferencesController.addToken(addressFirst, symbolFirst, decimals)
+      const tokensFirstAddress = preferencesController.getTokens()
+
+      network.providerStore.updateState({ type: 'rinkeby' })
+      await preferencesController.addToken(addressSecond, symbolSecond, decimals)
+      const tokensSeconAddress = preferencesController.getTokens()
+
+      assert.notEqual(tokensFirstAddress, tokensSeconAddress, 'add different tokens for two networks and tokens are equal')
+    })
   })
 
   describe('removeToken', function () {
@@ -210,6 +274,98 @@ describe('preferences controller', function () {
 
       const updatedRpcList = preferencesController.getFrequentRpcList()
       assert.equal(updatedRpcList.length, 0, 'one rpc url removed')
+    })
+
+    it('should remove a token from its state on corresponding address', async function () {
+      await preferencesController.setSelectedAddress('0x7e57e2')
+      await preferencesController.addToken('0xa', 'A', 4, 1)
+      await preferencesController.addToken('0xb', 'B', 5, 1)
+      await preferencesController.setSelectedAddress('0x7e57e3')
+      await preferencesController.addToken('0xa', 'A', 4, 1)
+      await preferencesController.addToken('0xb', 'B', 5, 1)
+      const initialTokensSecond = preferencesController.getTokens()
+      await preferencesController.setSelectedAddress('0x7e57e2')
+      await preferencesController.removeToken('0xa')
+
+      const tokensFirst = preferencesController.getTokens()
+      assert.equal(tokensFirst.length, 1, 'one token removed in account')
+
+      const [token1] = tokensFirst
+      assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5, network: 1})
+
+      await preferencesController.setSelectedAddress('0x7e57e3')
+      const tokensSecond = preferencesController.getTokens()
+      assert.deepEqual(tokensSecond, initialTokensSecond, 'token deleted for account')
+    })
+
+    it('should remove a token from its state on corresponding network', async function () {
+      network.providerStore.updateState({ type: 'mainnet' })
+      await preferencesController.addToken('0xa', 'A', 4, 1)
+      await preferencesController.addToken('0xb', 'B', 5, 1)
+      network.providerStore.updateState({ type: 'rinkeby' })
+      await preferencesController.addToken('0xa', 'A', 4, 1)
+      await preferencesController.addToken('0xb', 'B', 5, 1)
+      const initialTokensSecond = preferencesController.getTokens()
+      network.providerStore.updateState({ type: 'mainnet' })
+      await preferencesController.removeToken('0xa')
+
+      const tokensFirst = preferencesController.getTokens()
+      assert.equal(tokensFirst.length, 1, 'one token removed in network')
+
+      const [token1] = tokensFirst
+      assert.deepEqual(token1, {address: '0xb', symbol: 'B', decimals: 5, network: 1})
+
+      network.providerStore.updateState({ type: 'rinkeby' })
+      const tokensSecond = preferencesController.getTokens()
+      assert.deepEqual(tokensSecond, initialTokensSecond, 'token deleted for network')
+    })
+  })
+
+  describe('on setSelectedAddress', function () {
+    it('should update tokens from its state on corresponding address', async function () {
+      await preferencesController.setSelectedAddress('0x7e57e2')
+      await preferencesController.addToken('0xa', 'A', 4)
+      await preferencesController.addToken('0xb', 'B', 5)
+      await preferencesController.setSelectedAddress('0x7e57e3')
+      await preferencesController.addToken('0xa', 'C', 4)
+      await preferencesController.addToken('0xb', 'D', 5)
+
+      await preferencesController.setSelectedAddress('0x7e57e2')
+      const initialTokensFirst = preferencesController.getTokens()
+      await preferencesController.setSelectedAddress('0x7e57e3')
+      const initialTokensSecond = preferencesController.getTokens()
+
+      assert.notDeepEqual(initialTokensFirst, initialTokensSecond, 'tokens not equal for different accounts and tokens')
+
+      await preferencesController.setSelectedAddress('0x7e57e2')
+      const tokensFirst = preferencesController.getTokens()
+      await preferencesController.setSelectedAddress('0x7e57e3')
+      const tokensSecond = preferencesController.getTokens()
+
+      assert.deepEqual(tokensFirst, initialTokensFirst, 'tokens equal for same account')
+      assert.deepEqual(tokensSecond, initialTokensSecond, 'tokens equal for same account')
+    })
+  })
+
+  describe('on updateStateNetworkType', function () {
+    it('should remove a token from its state on corresponding network', async function () {
+      network.providerStore.updateState({ type: 'mainnet' })
+      await preferencesController.addToken('0xa', 'A', 4)
+      await preferencesController.addToken('0xb', 'B', 5)
+      const initialTokensFirst = preferencesController.getTokens()
+      network.providerStore.updateState({ type: 'rinkeby' })
+      await preferencesController.addToken('0xa', 'C', 4)
+      await preferencesController.addToken('0xb', 'D', 5)
+      const initialTokensSecond = preferencesController.getTokens()
+
+      assert.notDeepEqual(initialTokensFirst, initialTokensSecond, 'tokens not equal for different networks and tokens')
+
+      network.providerStore.updateState({ type: 'mainnet' })
+      const tokensFirst = preferencesController.getTokens()
+      network.providerStore.updateState({ type: 'rinkeby' })
+      const tokensSecond = preferencesController.getTokens()
+      assert.deepEqual(tokensFirst, initialTokensFirst, 'tokens equal for same network')
+      assert.deepEqual(tokensSecond, initialTokensSecond, 'tokens equal for same network')
     })
   })
 })

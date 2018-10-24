@@ -27,6 +27,7 @@ function EnsInput () {
 }
 
 EnsInput.prototype.onChange = function (recipient) {
+
   const network = this.props.network
   const networkHasEnsSupport = getNetworkEnsSupport(network)
 
@@ -54,6 +55,7 @@ EnsInput.prototype.render = function () {
   const opts = extend(props, {
     list: 'addresses',
     onChange: this.onChange.bind(this),
+    qrScanner: true,
   })
   return h('div', {
     style: { width: '100%', position: 'relative' },

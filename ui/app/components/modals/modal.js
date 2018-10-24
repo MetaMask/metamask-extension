@@ -21,6 +21,7 @@ const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
 const ConfirmResetAccount = require('./confirm-reset-account')
 const ConfirmRemoveAccount = require('./confirm-remove-account')
+const QRScanner = require('./qr-scanner')
 const TransactionConfirmed = require('./transaction-confirmed')
 const WelcomeBeta = require('./welcome-beta')
 const Notification = require('./notification')
@@ -336,6 +337,18 @@ const MODALS = {
         h(TransactionConfirmed),
       ]),
     ],
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+  QR_SCANNER: {
+    contents: h(QRScanner),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
