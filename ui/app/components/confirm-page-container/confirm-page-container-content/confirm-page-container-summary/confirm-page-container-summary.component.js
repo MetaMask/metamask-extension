@@ -66,15 +66,6 @@ ConfirmPageContainerSummary.propTypes = {
   identiconAddress: PropTypes.string,
   nonce: PropTypes.string,
   assetImage: PropTypes.string,
-  totalTx: PropTypes.number,
-  positionOfCurrentTx: PropTypes.number,
-  onNextTx: PropTypes.func,
-  nextTxId: PropTypes.string,
-  prevTxId: PropTypes.string,
-  showNavigation: PropTypes.bool,
-  firstTx: PropTypes.string,
-  lastTx: PropTypes.string,
-  ofText: PropTypes.string,
 }
 
 export default ConfirmPageContainerSummary
