@@ -59,8 +59,7 @@ describe('Metamask popup page', async function () {
 
     it('switches to extensions list', async function () {
       await delay(300)
-      const windowHandles = await driver.getAllWindowHandles()
-      await driver.switchTo().window(windowHandles[0])
+      await switchToFirstPage()
       await delay(5000)
     })
   })
@@ -75,7 +74,7 @@ describe('Metamask popup page', async function () {
 
     it('screen \'Terms of Use\' has not empty agreement', async () => {
       await delay(5000)
-      const terms = await waitUntilShowUp(screens.TOU.agreement, 300)
+      const terms = await waitUntilShowUp(screens.TOU.agreement, 900)
       const text = await terms.getText()
       assert.equal(text.length > 400, true, 'agreement is too short')
     })
