@@ -24,13 +24,16 @@ import {
   getSelectedToken,
 } from '../../../selectors.js'
 import {
-  getCustomGasPrice,
-  getCustomGasLimit,
-  getRenderableBasicEstimateData,
-  getBasicGasEstimateLoadingStatus,
-  getAveragePriceEstimateInHexWEI,
-  getDefaultActiveButtonIndex,
   formatTimeEstimate,
+  getAveragePriceEstimateInHexWEI,
+  getBasicGasEstimateLoadingStatus,
+  getCustomGasLimit,
+  getCustomGasPrice,
+  getDefaultActiveButtonIndex,
+  getEstimatedGasPrices,
+  getEstimatedGasTimes,
+  getPriceAndTimeEstimates,
+  getRenderableBasicEstimateData,
 } from '../../../selectors/custom-gas'
 import {
   formatCurrency,
@@ -69,9 +72,8 @@ const mapStateToProps = state => {
 
   const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
 
-  const priceAndTimeEstimates = state.gas.priceAndTimeEstimates
-  const gasPrices = priceAndTimeEstimates.map(({ gasprice }) => gasprice)
-  const estimatedTimes = priceAndTimeEstimates.map(({ expectedTime }) => expectedTime)
+  const gasPrices = getEstimatedGasPrices(state)
+  const estimatedTimes = getEstimatedGasTimes(state)
 
   return {
     hideBasic,
@@ -81,7 +83,7 @@ const mapStateToProps = state => {
     customGasPrice,
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     newTotalFiat,
-    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, priceAndTimeEstimates),
+    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, getPriceAndTimeEstimates(state)),
     gasPriceButtonGroupProps: {
       buttonDataLoading,
       defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),
