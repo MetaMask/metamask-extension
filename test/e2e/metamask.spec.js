@@ -7,6 +7,8 @@ const webdriver = require('selenium-webdriver')
 const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 const { menus, screens, elements, NETWORKS } = require('./elements')
+const testSeedPhrase = 'juice teach unaware view expand beef divorce spatial evolve rack scheme foster'
+const account2 = '0x27836ca9B60E2E1aE13852388edd9a130Be81475'
 
 describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
@@ -50,15 +52,14 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    // await driver.quit()
+   // await driver.quit()
   })
 
   describe('Setup', async function () {
 
     it('switches to extensions list', async function () {
       await delay(300)
-      const windowHandles = await driver.getAllWindowHandles()
-      await driver.switchTo().window(windowHandles[0])
+      await switchToFirstPage()
       await delay(5000)
     })
   })
@@ -73,7 +74,7 @@ describe('Metamask popup page', async function () {
 
     it('screen \'Terms of Use\' has not empty agreement', async () => {
       await delay(5000)
-      const terms = await waitUntilShowUp(screens.TOU.agreement, 300)
+      const terms = await waitUntilShowUp(screens.TOU.agreement, 900)
       const text = await terms.getText()
       assert.equal(text.length > 400, true, 'agreement is too short')
     })
@@ -561,7 +562,6 @@ describe('Metamask popup page', async function () {
     })
 
     it('adds seed phrase', async function () {
-      const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
       const seedTextArea = await waitUntilShowUp(screens.restoreVault.textArea)
       await seedTextArea.sendKeys(testSeedPhrase)
 
@@ -589,7 +589,7 @@ describe('Metamask popup page', async function () {
       assert.equal(await sendTranscationScreen.getText(), screens.sendTransaction.titleText, 'Transaction screen has incorrect titlr')
       const inputAddress = await waitUntilShowUp(screens.sendTransaction.field.address)
       const inputAmmount = await waitUntilShowUp(screens.sendTransaction.field.amount)
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAddress.sendKeys(account2)
       await inputAmmount.sendKeys('10')
       const button = await waitUntilShowUp(screens.sendTransaction.buttonNext)
       assert.equal(await button.getText(), 'Next', 'button has incorrect name')
@@ -922,21 +922,22 @@ describe('Metamask popup page', async function () {
         await tokenDecimal.sendKeys(decimals)
         await tokenSymbol.sendKeys(symbol)
         await click(createToken)
-        await delay(1000)
+        await delay(5000)
       })
 
       // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
       it('confirms transaction in MetaMask popup', async function () {
-        const windowHandles = await driver.getAllWindowHandles()
-        await driver.switchTo().window(windowHandles[windowHandles.length - 1])
+        await switchToLastPage()
+        await waitUntilCurrentUrl()
         const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
         await click(button)
       })
 
       it('switches back to Token Factory to grab the token contract address', async function () {
-        const windowHandles = await driver.getAllWindowHandles()
-        await driver.switchTo().window(windowHandles[0])
+        await switchToFirstPage()
+        await waitUntilCurrentUrl()
         const tokenContactAddress = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > span:nth-child(3)'))
+        await delay(5000)
         tokenAddress = await tokenContactAddress.getText()
         await delay(500)
       })
@@ -1002,10 +1003,17 @@ describe('Metamask popup page', async function () {
       })
 
       it('click to token opens the etherscan', async function () {
-        await (await waitUntilShowUp(screens.main.tokens.token)).click()
+        const link = await waitUntilShowUp(screens.main.tokens.token)
+        await link.click()
+        await delay(2000)
+        const allHandles = await driver.getAllWindowHandles()
+        console.log('allHandles.length ' + allHandles.length)
+        assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
         await switchToLastPage()
-        const title = await driver.getCurrentUrl()
-        assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
+        const title = await waitUntilCurrentUrl()
+
+        console.log(title)
+        assert.equal(title.includes('https://etherscan.io/token/'), true, 'etherscan wasn\'t opened')
         await switchToFirstPage()
       })
     })
@@ -1021,9 +1029,15 @@ describe('Metamask popup page', async function () {
         assert.notEqual(menu, false, 'item isn\'t displayed')
         assert.equal(await menu.getText(), menus.token.viewText, 'incorrect name')
         await menu.click()
+        await delay(2000)
+        const allHandles = await driver.getAllWindowHandles()
+        console.log('allHandles.length ' + allHandles.length)
+        assert.equal(allHandles.length, 3, 'etherscan wasn\'t opened')
         await switchToLastPage()
-        const title = await driver.getCurrentUrl()
-        assert.equal(title.includes('https://etherscan.io/token/'), true, 'link leads to wrong page')
+        const title = await waitUntilCurrentUrl()
+
+        console.log(title)
+        assert.equal(title.includes('https://etherscan.io/token/'), true, 'etherscan wasn\'t opened')
         await switchToFirstPage()
       })
 
@@ -1056,7 +1070,7 @@ describe('Metamask popup page', async function () {
 
 
     describe('Check support of token per network basis ', async function () {
-
+      const inexistentToken = '0xB8c77482e45F1F44dE1745F52C74426C631bDD51'
       describe('Token should be displayed only for network, where it was added ', async function () {
 
         it('token should not  be displayed in POA network', async function () {
@@ -1094,14 +1108,15 @@ describe('Metamask popup page', async function () {
 
         it('can not add inexistent token to POA network', async function () {
           await setProvider(NETWORKS.POA)
-          assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
-        })
-
-        it.skip('can not add inexistent token to SOKOL network', async function () {
-          await setProvider(NETWORKS.SOKOL)
           console.log(tokenAddress)
           assert(await isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
+
+        it('can not add inexistent token to SOKOL network', async function () {
+          await setProvider(NETWORKS.SOKOL)
+          assert(await isDisabledAddInexistentToken(inexistentToken), true, 'can add inexistent token in POA network')
+        })
+
 
         it('can not add inexistent token to ROPSTEN network', async function () {
           await setProvider(NETWORKS.ROPSTEN)
@@ -1141,7 +1156,6 @@ describe('Metamask popup page', async function () {
 
     describe('Transfer tokens', function () {
 
-      const account2 = '0x2f318C334780961FB129D2a6c30D0763d9a5C970'
       const invalidAddress = '0xkqjefwblknnecwe'
       const invalidAmount = 'eeeee'
       const largeAmount = '123'
@@ -1230,7 +1244,7 @@ describe('Metamask popup page', async function () {
         const error = await waitUntilShowUp(screens.sendTokens.error)
         assert.equal(await error.getText(), screens.sendTokens.errorText.invalidAmount, ' error message is incorrect')
       })
-      it('error message if amount is too precise', async function () {
+      it.skip('error message if amount is too precise', async function () {
         const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
         await clearField(amount)
         await amount.sendKeys(preciseAmount)
@@ -1688,23 +1702,38 @@ describe('Metamask popup page', async function () {
       }
       while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
     } catch (err) {
-      return false
     }
     const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
     await clearField(fieldAddress)
     await fieldAddress.sendKeys(tokenAddress)
 
     const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if (await fieldSymbols.isEnabled()) return false
+    if (await fieldSymbols.isEnabled()) {
+      console.log('field symbols enabled')
+      return false
+    }
 
     const fieldDecimals = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if (await fieldDecimals.isEnabled()) return false
-
+    if (await fieldDecimals.isEnabled()) {
+      console.log('field decimals enabled')
+      return false
+    }
     const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
-    if (await buttonAdd.isEnabled()) return false
-
+    if (await buttonAdd.isEnabled()) {
+      console.log('button add enabled')
+      return false
+    }
     const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
-    await click(buttonCancel)
+    let counter = 20
+    do {
+      await delay(500)
+      await click(buttonCancel)
+     }
+    while (((await waitUntilShowUp(screens.main.identicon)) === false) && (counter-- > 0))
+    if (counter < 1) {
+      console.log('button cancel doesn\'t work')
+      return false
+    }
     return true
   }
 
@@ -1776,4 +1805,21 @@ describe('Metamask popup page', async function () {
       return false
     }
   }
+
+  async function waitUntilCurrentUrl () {
+    try {
+      let title
+      let counter = 20
+      do {
+        await delay(500)
+        title = await driver.getCurrentUrl()
+      } while ((title === '') && (counter-- > 0))
+      if (counter < 1) return false
+      return title
+    } catch (err) {
+      console.log(err)
+      return false
+    }
+  }
+
 })

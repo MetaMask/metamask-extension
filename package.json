@@ -36,7 +36,7 @@
     "test:mascara:build:locales": "mkdirp dist/chrome && cp -R app/_locales dist/chrome/_locales",
     "test:mascara:build:background": "browserify mascara/src/background.js -o dist/mascara/background.js",
     "test:mascara:build:tests": "browserify test/integration/lib/first-time.js -o dist/mascara/tests.js",
-    "ganache:start": "ganache-cli -m 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'",
+    "ganache:start": "ganache-cli -m 'juice teach unaware view expand beef divorce spatial evolve rack scheme foster'",
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
