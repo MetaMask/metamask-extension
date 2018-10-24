@@ -372,7 +372,7 @@
     "message": "Import účtu"
   },
   "importAccountMsg": {
-    "message":"Importované účty nebudou spojeny s vaší původní Nifty Walletovou klíčovou frází. Zjistěte více o importovaných účtech "
+    "message": "Importované účty nebudou spojeny s vaší původní Nifty Walletovou klíčovou frází. Zjistěte více o importovaných účtech "
   },
   "importAnAccount": {
     "message": "Import účtu"
@@ -736,7 +736,7 @@
     "message": "Nastavení"
   },
   "info": {
-  "message": "Informace"
+    "message": "Informace"
   },
   "shapeshiftBuy": {
     "message": "Nakoupit na ShapeShift"

@@ -11,7 +11,9 @@ import {
   updateCurrentLocale,
   setFeatureFlag,
   showModal,
+  setUseETHAsPrimaryCurrencyPreference,
 } from '../../../../actions'
+import { preferencesSelector } from '../../../../selectors'
 
 const mapStateToProps = state => {
   const { appState: { warning }, metamask } = state
@@ -24,6 +26,7 @@ const mapStateToProps = state => {
     isMascara,
     currentLocale,
   } = metamask
+  const { useETHAsPrimaryCurrency } = preferencesSelector(state)
 
   return {
     warning,
@@ -34,6 +37,7 @@ const mapStateToProps = state => {
     useBlockie,
     sendHexData,
     provider,
+    useETHAsPrimaryCurrency,
   }
 }
 
@@ -50,6 +54,9 @@ const mapDispatchToProps = dispatch => {
     },
     setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
+    setUseETHAsPrimaryCurrencyPreference: value => {
+      return dispatch(setUseETHAsPrimaryCurrencyPreference(value))
+    },
   }
 }
 

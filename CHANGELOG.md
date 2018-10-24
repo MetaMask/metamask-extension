@@ -64,9 +64,6 @@
 - Remove rejected transactions from transaction history
 - Add Trezor Support
 - Allow to remove accounts (Imported and Hardware Wallets)
-- [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
-- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): network.js: convert rpc protocol to lower case.
-## Current Develop Branch
 
 ## 4.8.0 Thur Jun 14 2018
 

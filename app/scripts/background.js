@@ -2,6 +2,9 @@
  * @file The entry point for the web extension singleton process.
  */
 
+// this needs to run before anything else
+require('./lib/setupFetchDebugging')()
+
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pump = require('pump')
@@ -406,6 +409,7 @@ function setupController (initState, initLangCode) {
   controller.txController.on('update:badge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
+  controller.typedMessageManager.on('updateBadge', updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -467,10 +471,3 @@ function showWatchAssetUi () {
     }
   )
 }
-
-// On first install, open a window to MetaMask website to how-it-works.
-extension.runtime.onInstalled.addListener(function (details) {
-  if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
-    extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
-  }
-})

@@ -34,21 +34,27 @@ export default class AmountMaxButton extends Component {
     })
   }
 
-  render () {
-    const { setMaxModeTo, maxModeOn } = this.props
+  onMaxClick = (event) => {
+    const { setMaxModeTo } = this.props
 
-    return (
-      <div
-        className="send-v2__amount-max"
-        onClick={(event) => {
-          event.preventDefault()
-          setMaxModeTo(true)
-          this.setMaxAmount()
-        }}
-      >
-        {!maxModeOn ? this.context.t('max') : ''}
-      </div>
-    )
+    event.preventDefault()
+    setMaxModeTo(true)
+    this.setMaxAmount()
+  }
+
+  render () {
+    return this.props.maxModeOn
+      ? null
+      : (
+        <div>
+          <span
+            className="send-v2__amount-max"
+            onClick={this.onMaxClick}
+          >
+            {this.context.t('max')}
+          </span>
+        </div>
+      )
   }
 
 }

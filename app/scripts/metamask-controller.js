@@ -15,6 +15,7 @@ const RpcEngine = require('json-rpc-engine')
 const debounce = require('debounce')
 const createEngineStream = require('json-rpc-middleware-stream/engineStream')
 const createFilterMiddleware = require('eth-json-rpc-filters')
+const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionManager')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
@@ -128,6 +129,7 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
     })
+
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
       if (activeControllerConnections > 0) {
@@ -135,6 +137,11 @@ module.exports = class MetamaskController extends EventEmitter {
       } else {
         this.accountTracker.stop()
       }
+    })
+
+    // ensure accountTracker updates balances after network change
+    this.networkController.on('networkDidChange', () => {
+      this.accountTracker._updateAccounts()
     })
 
     // key mgmt
@@ -252,6 +259,7 @@ module.exports = class MetamaskController extends EventEmitter {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
       },
+      version,
       // account mgmt
       getAccounts: async () => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
@@ -268,6 +276,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // msg signing
       processEthSignMessage: this.newUnsignedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      getPendingNonce: this.getPendingNonce.bind(this),
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -376,6 +385,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
+      delCustomRpc: nodeify(this.delCustomRpc, this),
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
@@ -386,6 +396,10 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
+      setPreference: nodeify(preferencesController.setPreference, preferencesController),
+
+      // BlacklistController
+      whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
 
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
@@ -552,6 +566,8 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     await this.preferencesController.syncAddresses(accounts)
+    await this.balancesController.updateAllBalances()
+    await this.txController.pendingTxTracker.updatePendingTxs()
     return this.keyringController.fullUpdate()
   }
 
@@ -1247,24 +1263,33 @@ module.exports = class MetamaskController extends EventEmitter {
   setupProviderConnection (outStream, origin) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
+    const provider = this.provider
+    const blockTracker = this.blockTracker
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-    })
+    const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
+    // create subscription polyfill middleware
+    const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
+    subscriptionManager.events.on('notification', (message) => engine.emit('notification', message))
 
+    // metadata
     engine.push(createOriginMiddleware({ origin }))
     engine.push(createLoggerMiddleware({ origin }))
+    // filter and subscription polyfills
     engine.push(filterMiddleware)
+    engine.push(subscriptionManager.middleware)
+    // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
+    // sign typed data middleware
     engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
-    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3').bind(this))
-    engine.push(createProviderMiddleware({ provider: this.provider }))
+    engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3', true).bind(this))
+    // forward to metamask primary provider
+    engine.push(createProviderMiddleware({ provider }))
 
     // setup connection
     const providerStream = createEngineStream({ engine })
+
     pump(
       outStream,
       providerStream,
@@ -1368,9 +1393,22 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     .map(number => number.div(GWEI_BN).toNumber())
 
-    const percentileNum = percentile(50, lowestPrices)
+    const percentileNum = percentile(65, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
+  }
+
+  /**
+   * Returns the nonce that will be associated with a transaction once approved
+   * @param address {string} - The hex string address for the transaction
+   * @returns Promise<number>
+   */
+  async getPendingNonce (address) {
+    const { nonceDetails, releaseLock} = await this.txController.nonceTracker.getNonceLock(address)
+    const pendingNonce = nonceDetails.params.highestSuggested
+
+    releaseLock()
+    return pendingNonce
   }
 
 //=============================================================================
@@ -1457,6 +1495,14 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
+   * A method for deleting a selected custom URL.
+   * @param {string} rpcTarget - A RPC URL to delete.
+   */
+  async delCustomRpc (rpcTarget) {
+    await this.preferencesController.updateFrequentRpcList(rpcTarget, true)
+  }
+
+  /**
    * Sets whether or not to use the blockie identicon format.
    * @param {boolean} val - True for bockie, false for jazzicon.
    * @param {Function} cb - A callback function called when complete.
@@ -1528,13 +1574,13 @@ module.exports = class MetamaskController extends EventEmitter {
   * @param {Function} - next
   * @param {Function} - end
   */
-  createTypedDataMiddleware (methodName, version) {
+  createTypedDataMiddleware (methodName, version, reverse) {
     return async (req, res, next, end) => {
       const { method, params } = req
       if (method === methodName) {
         const promise = this.typedMessageManager.addUnapprovedMessageAsync({
-          data: params.length >= 1 && params[0],
-          from: params.length >= 2 && params[1],
+          data: reverse ? params[1] : params[0],
+          from: reverse ? params[0] : params[1],
         }, req, version)
         this.sendUpdate()
         this.opts.showUnconfirmedMessage()
@@ -1548,5 +1594,13 @@ module.exports = class MetamaskController extends EventEmitter {
         next()
       }
     }
+  }
+
+  /**
+   * Adds a domain to the {@link BlacklistController} whitelist
+   * @param {string} hostname the domain to whitelist
+   */
+  whitelistPhishingDomain (hostname) {
+    return this.blacklistController.whitelistDomain(hostname)
   }
 }

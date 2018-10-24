@@ -351,7 +351,7 @@
     "message": "Importar Conta"
   },
   "importAccountMsg": {
-    "message":"Contas importadas não irão ser associadas com a frase seed da conta criada originalmente pelo Nifty Wallet. Saiba mais sobre contas importadas."
+    "message": "Contas importadas não irão ser associadas com a frase seed da conta criada originalmente pelo Nifty Wallet. Saiba mais sobre contas importadas."
   },
   "importAnAccount": {
     "message": "Importar uma conta"

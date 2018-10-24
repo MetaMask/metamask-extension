@@ -271,6 +271,17 @@ describe('MetaMask', function () {
       await driver.wait(until.stalenessOf(accountModal))
       await delay(regularDelayMs)
     })
+    it('show account details dropdown menu', async () => {
+
+      const {width, height} = await driver.manage().window().getSize()
+      driver.manage().window().setSize(320, 480)
+      await driver.findElement(By.css('div.menu-bar__open-in-browser')).click()
+      const options = await driver.findElements(By.css('div.menu.account-details-dropdown div.menu__item'))
+      assert.equal(options.length, 3) // HD Wallet type does not have to show the Remove Account option
+      await delay(regularDelayMs)
+      driver.manage().window().setSize(width, height)
+
+    })
   })
 
   describe('Log out an log back in', () => {
@@ -372,7 +383,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmount.sendKeys('1')
 
@@ -651,7 +662,7 @@ describe('MetaMask', function () {
     })
 
     it('clicks on the Add Token button', async () => {
-      const addToken = await driver.findElement(By.css('.wallet-view__add-token-button'))
+      const addToken = await driver.findElement(By.xpath(`//div[contains(text(), 'Add Token')]`))
       await addToken.click()
       await delay(regularDelayMs)
     })
@@ -691,7 +702,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmount.sendKeys('50')
 
@@ -823,8 +834,8 @@ describe('MetaMask', function () {
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
 
-      const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__eth'))
-      assert.equal(await gasFeeInputs[0].getText(), '♦ 0.0006')
+      const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
+      assert.equal(await gasFeeInputs[0].getText(), '0.0006')
     })
 
     it('submits the transaction', async function () {
@@ -946,8 +957,8 @@ describe('MetaMask', function () {
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
 
-      const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__eth'))
-      assert.equal(await gasFeeInputs[0].getText(), '♦ 0.0006')
+      const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
+      assert.equal(await gasFeeInputs[0].getText(), '0.0006')
     })
 
     it('submits the transaction', async function () {
@@ -991,7 +1002,7 @@ describe('MetaMask', function () {
 
   describe('Add existing token using search', () => {
     it('clicks on the Add Token button', async () => {
-      const addToken = await findElement(driver, By.xpath(`//button[contains(text(), 'Add Token')]`))
+      const addToken = await findElement(driver, By.xpath(`//div[contains(text(), 'Add Token')]`))
       await addToken.click()
       await delay(regularDelayMs)
     })
@@ -1030,7 +1041,7 @@ describe('MetaMask', function () {
     ]
 
     customRpcUrls.forEach(customRpcUrl => {
-      it('creates custom RPC: ' + customRpcUrl, async () => {
+      it(`creates custom RPC: ${customRpcUrl}`, async () => {
         const networkDropdown = await findElement(driver, By.css('.network-name'))
         await networkDropdown.click()
         await delay(regularDelayMs)
@@ -1059,25 +1070,15 @@ describe('MetaMask', function () {
       await delay(largeDelayMs * 2)
     })
 
-    it('finds 3 recent RPCs in history', async () => {
+    it('finds all recent RPCs in history', async () => {
       const networkDropdown = await findElement(driver, By.css('.network-name'))
       await networkDropdown.click()
       await delay(regularDelayMs)
 
-      // oldest selected RPC is not found
-      await assertElementNotPresent(webdriver, driver, By.xpath(`//span[contains(text(), '${customRpcUrls[0]}')]`))
-
       // only recent 3 are found and in correct order (most recent at the top)
       const customRpcs = await findElements(driver, By.xpath(`//span[contains(text(), 'https://mainnet.infura.io/')]`))
 
-      assert.equal(customRpcs.length, 3)
-
-      for (let i = 0; i < customRpcs.length; i++) {
-        const linkText = await customRpcs[i].getText()
-        const rpcUrl = customRpcUrls[customRpcUrls.length - i - 1]
-
-        assert.notEqual(linkText.indexOf(rpcUrl), -1)
-      }
+      assert.equal(customRpcs.length, customRpcUrls.length)
     })
   })
 })

@@ -39,7 +39,7 @@ export const transactionsSelector = createSelector(
 export const pendingTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => (
-    transactions.filter(transaction => transaction.status in pendingStatusHash)
+    transactions.filter(transaction => transaction.status in pendingStatusHash).reverse()
   )
 )
 

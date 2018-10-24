@@ -33,6 +33,7 @@ const selectors = {
   getSendMaxModeState,
   getCurrentViewContext,
   getTotalUnapprovedCount,
+  preferencesSelector,
 }
 
 module.exports = selectors
@@ -194,4 +195,8 @@ function getTotalUnapprovedCount ({ metamask }) {
 
   return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
     unapprovedTypedMessagesCount
+}
+
+function preferencesSelector ({ metamask }) {
+  return metamask.preferences
 }

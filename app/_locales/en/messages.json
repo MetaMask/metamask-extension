@@ -3,7 +3,7 @@
     "message": "Accept"
   },
   "accessingYourCamera": {
-    "message": "Accesing your camera..."
+    "message": "Accessing your camera..."
   },
   "account": {
     "message": "Account"
@@ -13,6 +13,9 @@
   },
   "accountName": {
     "message": "Account Name"
+  },
+  "accountOptions": {
+    "message": "Account Options"
   },
   "accountSelectionRequired": {
     "message": "You need to select an account!"
@@ -61,6 +64,12 @@
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
+  "attemptToCancel": {
+    "message": "Attempt to Cancel?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction fee above."
+  },
   "attributions": {
     "message": "Attributions"
   },
@@ -93,7 +102,7 @@
     "message": "Borrow With Dharma (Beta)"
   },
   "browserNotSupported": {
-  "message": "Your Browser is not supported..."
+    "message": "Your Browser is not supported..."
   },
   "builtInCalifornia": {
     "message": "Nifty Wallet is designed and built in California."
@@ -116,16 +125,28 @@
   "cancel": {
     "message": "Cancel"
   },
+  "cancelAttempt": {
+    "message": "Cancel Attempt"
+  },
+  "cancellationGasFee": {
+    "message": "Cancellation Gas Fee"
+  },
+  "cancelN": {
+    "message": "Cancel all $1 transactions"
+  },
   "classicInterface": {
     "message": "Use classic interface"
   },
   "clickCopy": {
     "message": "Click to Copy"
   },
+  "clickToAdd": {
+    "message": "Click on $1 to add them to your account"
+  },
   "close": {
     "message": "Close"
   },
-  "chromeRequiredForHardwareWallets":{
+  "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
   "confirm": {
@@ -151,6 +172,21 @@
   },
   "connecting": {
     "message": "Connecting..."
+  },
+  "connectingToKovan": {
+    "message": "Connecting to Kovan Test Network"
+  },
+  "connectingToMainnet": {
+    "message": "Connecting to Main Ethereum Network"
+  },
+  "connectingToRopsten": {
+    "message": "Connecting to Ropsten Test Network"
+  },
+  "connectingToRinkeby": {
+    "message": "Connecting to Rinkeby Test Network"
+  },
+  "connectingToUnknown": {
+    "message": "Connecting to Unknown Network"
   },
   "connectToLedger": {
     "message": "Connect to Ledger"
@@ -185,9 +221,6 @@
   "copy": {
     "message": "Copy"
   },
-  "copyContractAddress": {
-    "message": "Copy Contract Address"
-  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
@@ -221,6 +254,9 @@
   },
   "currentNetwork": {
     "message": "Current Network"
+  },
+  "currentRpc": {
+    "message": "Current RPC"
   },
   "customGas": {
     "message": "Customize Gas"
@@ -328,20 +364,17 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
-  "parameters": {
-    "message": "Parameters"
-  },
-  "passwordNotLongEnough": {
-    "message": "Password not long enough"
-  },
-  "passwordsDontMatch": {
-    "message": "Passwords Don't Match"
+  "eth": {
+    "message": "ETH"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
+  },
+  "expandView": {
+    "message": "Expand View"
   },
   "exportPrivateKey": {
     "message": "Export Private Key"
@@ -353,7 +386,7 @@
     "message": "Failed"
   },
   "fiat": {
-    "message": "FIAT",
+    "message": "Fiat",
     "description": "Exchange type"
   },
   "fileImportFail": {
@@ -396,6 +429,9 @@
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
+  },
+  "gasUsed": {
+    "message": "Gas Used"
   },
   "generatingSeed": {
     "message": "Generating Seed..."
@@ -477,7 +513,7 @@
     "message": "Import Account"
   },
   "importAccountMsg": {
-    "message":" Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase. Learn more about imported accounts "
+    "message": " Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase. Learn more about imported accounts "
   },
   "importAnAccount": {
     "message": "Import an account"
@@ -491,6 +527,9 @@
   },
   "importUsingSeed": {
     "message": "Import using account seed phrase"
+  },
+  "info": {
+    "message": "Info"
   },
   "infoHelp": {
     "message": "Info & Help"
@@ -520,7 +559,7 @@
     "message": "Invalid Request"
   },
   "invalidRPC": {
-    "message": "Invalid RPC URI"
+    "message": "Invalid RPC URL"
   },
   "invalidSeedPhrase": {
     "message": "Invalid seed phrase"
@@ -605,6 +644,9 @@
   "min": {
     "message": "Minimum"
   },
+  "missingYourTokens": {
+    "message": "Don't see your tokens?"
+  },
   "myAccounts": {
     "message": "My Accounts"
   },
@@ -644,6 +686,9 @@
   "newPassword": {
     "message": "New Password (min 8 chars)"
   },
+  "newPassword8Chars": {
+    "message": "New Password (min 8 chars)"
+  },
   "newRecipient": {
     "message": "New Recipient"
   },
@@ -659,7 +704,7 @@
   "noDeposits": {
     "message": "No deposits received"
   },
-  "noConversionRateAvailable":{
+  "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
   },
   "noTransactionHistory": {
@@ -686,6 +731,13 @@
   "oldUIMessage": {
     "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
   },
+  "onlySendToEtherAddress": {
+    "message": "Only send ETH to an Ethereum address."
+  },
+  "onlySendTokensToAccountAddress": {
+    "message": "Only send $1 to an Ethereum account address.",
+    "description": "displays token symbol"
+  },
   "openInTab": {
     "message": "Open in tab"
   },
@@ -693,8 +745,17 @@
     "message": "or",
     "description": "choice between creating or importing a new account"
   },
+  "orderOneHere": {
+    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
+  },
   "origin": {
     "message": "Origin"
+  },
+  "outgoing": {
+    "message": "Outgoing"
+  },
+  "parameters": {
+    "message": "Parameters"
   },
   "password": {
     "message": "Password"
@@ -702,9 +763,15 @@
   "passwordCorrect": {
     "message": "Please make sure your password is correct."
   },
+  "passwordsDontMatch": {
+    "message": "Passwords Don't Match"
+  },
   "passwordMismatch": {
     "message": "passwords don't match",
     "description": "in password creation process, the two new password fields did not match"
+  },
+  "passwordNotLongEnough": {
+    "message": "Password not long enough"
   },
   "passwordShort": {
     "message": "password not long enough",
@@ -732,6 +799,12 @@
   "prev": {
     "message": "Prev"
   },
+  "primaryCurrencySetting": {
+    "message": "Primary Currency"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Select ETH to prioritize displaying values in ETH. Select Fiat to prioritize displaying values in your selected currency."
+  },
   "privacyMsg": {
     "message": "Privacy Policy"
   },
@@ -740,7 +813,7 @@
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+    "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
   },
   "privateNetwork": {
     "message": "Private Network"
@@ -769,6 +842,18 @@
   "refundAddress": {
     "message": "Your Refund Address"
   },
+  "reject": {
+    "message": "Reject"
+  },
+  "rejectAll": {
+    "message": "Reject All"
+  },
+  "rejectTxsN": {
+    "message": "Reject $1 transactions"
+  },
+  "rejectTxsDescription": {
+    "message": "You are about to batch reject $1 transactions."
+  },
   "rejected": {
     "message": "Rejected"
   },
@@ -795,9 +880,6 @@
   },
   "retryWithMoreGas": {
     "message": "Retry with a higher gas price here"
-  },
-  "walletSeed": {
-    "message": "Wallet Seed"
   },
   "restore": {
     "message": "Restore"
@@ -872,15 +954,6 @@
   "save": {
     "message": "Save"
   },
-  "speedUp": {
-    "message": "speed up"
-  },
-  "speedUpTitle": {
-    "message": "Speed Up Transaction"
-  },
-  "speedUpSubtitle": {
-    "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
-  },
   "saveAsCsvFile": {
     "message": "Save as CSV File"
   },
@@ -891,6 +964,12 @@
   "saveSeedAsFile": {
     "message": "Save Seed Words As File"
   },
+  "scanInstructions": {
+    "message": "Place the QR code in front of your camera"
+  },
+  "scanQrCode": {
+    "message": "Scan QR Code"
+  },
   "search": {
     "message": "Search"
   },
@@ -899,15 +978,6 @@
   },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
-  },
-  "showHexData": {
-    "message": "Show Hex Data"
-  },
-  "showHexDataDescription": {
-    "message": "Select this to show the hex data field on the send screen"
-  },
-  "newPassword8Chars": {
-    "message": "New Password (min 8 chars)"
   },
   "seedPhraseReq": {
     "message": "Seed phrases are 12 words long"
@@ -945,19 +1015,6 @@
   "separateEachWord": {
     "message": "Separate each word with a single space"
   },
-  "onlySendToEtherAddress": {
-    "message": "Only send ETH to an Ethereum address."
-  },
-  "onlySendTokensToAccountAddress": {
-    "message": "Only send $1 to an Ethereum account address.",
-    "description": "displays token symbol"
-  },
-  "orderOneHere": {
-    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
-  },
-  "outgoing": {
-    "message": "Outgoing"
-  },
   "searchTokens": {
     "message": "Search Tokens"
   },
@@ -982,33 +1039,6 @@
   "settings": {
     "message": "Settings"
   },
-  "step1HardwareWallet": {
-    "message": "1. Connect Hardware Wallet"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Connect your hardware wallet directly to your computer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Select an Account"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Select the account you want to view. You can only choose one at a time."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Start using dApps and more!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
-  },
-  "info": {
-  "message": "Info"
-  },
-  "scanInstructions": {
-    "message": "Place the QR code in front of your camera"
-  },
-  "scanQrCode": {
-    "message": "Scan QR Code"
-  },
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
   },
@@ -1017,6 +1047,12 @@
   },
   "showQRCode": {
     "message": "Show QR Code"
+  },
+  "showHexData": {
+    "message": "Show Hex Data"
+  },
+  "showHexDataDescription": {
+    "message": "Select this to show the hex data field on the send screen"
   },
   "sign": {
     "message": "Sign"
@@ -1042,6 +1078,15 @@
   "spaceBetween": {
     "message": "there can only be a space between words"
   },
+  "speedUp": {
+    "message": "speed up"
+  },
+  "speedUpTitle": {
+    "message": "Speed Up Transaction"
+  },
+  "speedUpSubtitle": {
+    "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
+  },
   "status": {
     "message": "Status"
   },
@@ -1053,6 +1098,24 @@
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
+  },
+  "step1HardwareWallet": {
+    "message": "1. Connect Hardware Wallet"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "Connect your hardware wallet directly to your computer."
+  },
+  "step2HardwareWallet": {
+    "message": "2. Select an Account"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "Select the account you want to view. You can only choose one at a time."
+  },
+  "step3HardwareWallet": {
+    "message": "3. Start using dApps and more!"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
   },
   "submit": {
     "message": "Submit"
@@ -1115,6 +1178,9 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 on $2."
   },
+  "transactionWithNonce": {
+    "message": "Transaction $1"
+  },
   "transactionDropped": {
     "message": "Transaction dropped on $2."
   },
@@ -1142,6 +1208,9 @@
   "transfer": {
     "message": "Transfer"
   },
+  "transferFrom": {
+    "message": "Transfer From"
+  },
   "transfers": {
     "message": "Transfers"
   },
@@ -1159,7 +1228,7 @@
     "message": "These 12 words are the only way to restore your Nifty Wallet accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
-    "message": "Type Your Password"
+    "message": "Type your MetaMask password"
   },
   "uiWelcome": {
     "message": "Welcome to the New UI (Beta)"
@@ -1195,7 +1264,7 @@
     "message": "Ooops! Something went wrong...."
   },
   "unknownCameraError": {
-    "message": "There was an error while trying to access you camera. Please try again..."
+    "message": "There was an error while trying to access your camera. Please try again..."
   },
   "unlock": {
     "message": "Unlock"
@@ -1234,6 +1303,9 @@
   "visitWebSite": {
     "message": "Visit our web site"
   },
+  "walletSeed": {
+    "message": "Wallet Seed"
+  },
   "warning": {
     "message": "Warning"
   },
@@ -1245,6 +1317,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "yesLetsTry": {
+    "message": "Yes, let's try"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

@@ -17,7 +17,7 @@ const TokenList = require('./token-list')
 const selectors = require('../selectors')
 const { ADD_TOKEN_ROUTE } = require('../routes')
 
-import Button from './button'
+import AddTokenButton from './add-token-button'
 
 module.exports = compose(
   withRouter,
@@ -100,15 +100,30 @@ WalletView.prototype.renderWalletBalance = function () {
   ])
 }
 
+WalletView.prototype.renderAddToken = function () {
+  const {
+    sidebarOpen,
+    hideSidebar,
+    history,
+  } = this.props
+
+  return h(AddTokenButton, {
+    onClick () {
+      history.push(ADD_TOKEN_ROUTE)
+      if (sidebarOpen) {
+        hideSidebar()
+      }
+    },
+  })
+}
+
 WalletView.prototype.render = function () {
   const {
     responsiveDisplayClassname,
     selectedAddress,
     keyrings,
     showAccountDetailModal,
-    sidebarOpen,
     hideSidebar,
-    history,
     identities,
   } = this.props
   // temporary logs + fake extra wallets
@@ -200,14 +215,7 @@ WalletView.prototype.render = function () {
 
     h(TokenList),
 
-    h(Button, {
-      type: 'primary',
-      className: 'wallet-view__add-token-button',
-      onClick: () => {
-        history.push(ADD_TOKEN_ROUTE)
-        sidebarOpen && hideSidebar()
-      },
-    }, this.context.t('addToken')),
+    this.renderAddToken(),
   ])
 }
 

@@ -63,6 +63,15 @@
   font-weight: 500;
 }
 
+.dropdown-menu-item .fa.delete {
+    margin-right: 10px;
+    display: none;
+}
+
+.dropdown-menu-item:hover .fa.delete {
+    display: inherit;
+}
+
 .network-droppo {
   right: 2px;
 

@@ -86,28 +86,30 @@ export default class ConfirmAddToken extends Component {
           </div>
         </div>
         <div className="page-container__footer">
-          <Button
-            type="default"
-            large
-            className="page-container__footer-button"
-            onClick={() => history.push(ADD_TOKEN_ROUTE)}
-          >
-            { this.context.t('back') }
-          </Button>
-          <Button
-            type="primary"
-            large
-            className="page-container__footer-button"
-            onClick={() => {
-              addTokens(pendingTokens)
-                .then(() => {
-                  clearPendingTokens()
-                  history.push(DEFAULT_ROUTE)
-                })
-            }}
-          >
-            { this.context.t('addTokens') }
-          </Button>
+          <header>
+            <Button
+              type="default"
+              large
+              className="page-container__footer-button"
+              onClick={() => history.push(ADD_TOKEN_ROUTE)}
+            >
+              { this.context.t('back') }
+            </Button>
+            <Button
+              type="primary"
+              large
+              className="page-container__footer-button"
+              onClick={() => {
+                addTokens(pendingTokens)
+                  .then(() => {
+                    clearPendingTokens()
+                    history.push(DEFAULT_ROUTE)
+                  })
+              }}
+            >
+              { this.context.t('addTokens') }
+            </Button>
+          </header>
         </div>
       </div>
     )

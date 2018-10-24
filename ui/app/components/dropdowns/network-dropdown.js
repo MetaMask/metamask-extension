@@ -43,6 +43,9 @@ function mapDispatchToProps (dispatch) {
     setRpcTarget: (target) => {
       dispatch(actions.setRpcTarget(target))
     },
+    delRpcTarget: (target) => {
+      dispatch(actions.delRpcTarget(target))
+    },
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
   }
@@ -324,6 +327,13 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
               color: currentRpcTarget ? '#ffffff' : '#9b9b9b',
             },
           }, rpc),
+          h('i.fa.fa-times.delete',
+          {
+            onClick: (e) => {
+              e.stopPropagation()
+              props.delRpcTarget(rpc)
+            },
+          }),
         ]
       )
     }

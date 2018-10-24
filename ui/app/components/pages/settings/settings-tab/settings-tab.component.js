@@ -41,6 +41,7 @@ export default class SettingsTab extends PureComponent {
     setHexDataFeatureFlag: PropTypes.func,
     setCurrentCurrency: PropTypes.func,
     setRpcTarget: PropTypes.func,
+    delRpcTarget: PropTypes.func,
     displayWarning: PropTypes.func,
     revealSeedConfirmation: PropTypes.func,
     setFeatureFlagToBeta: PropTypes.func,
@@ -54,6 +55,8 @@ export default class SettingsTab extends PureComponent {
     sendHexData: PropTypes.bool,
     currentCurrency: PropTypes.string,
     conversionDate: PropTypes.number,
+    useETHAsPrimaryCurrency: PropTypes.bool,
+    setUseETHAsPrimaryCurrencyPreference: PropTypes.func,
   }
 
   state = {
@@ -338,6 +341,56 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+  renderUseEthAsPrimaryCurrency () {
+    const { t } = this.context
+    const { useETHAsPrimaryCurrency, setUseETHAsPrimaryCurrencyPreference } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('primaryCurrencySetting') }</span>
+          <div className="settings-page__content-description">
+            { t('primaryCurrencySettingDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <div className="settings-tab__radio-buttons">
+              <div className="settings-tab__radio-button">
+                <input
+                  type="radio"
+                  id="eth-primary-currency"
+                  onChange={() => setUseETHAsPrimaryCurrencyPreference(true)}
+                  checked={Boolean(useETHAsPrimaryCurrency)}
+                />
+                <label
+                  htmlFor="eth-primary-currency"
+                  className="settings-tab__radio-label"
+                >
+                  { t('eth') }
+                </label>
+              </div>
+              <div className="settings-tab__radio-button">
+                <input
+                  type="radio"
+                  id="fiat-primary-currency"
+                  onChange={() => setUseETHAsPrimaryCurrencyPreference(false)}
+                  checked={!useETHAsPrimaryCurrency}
+                />
+                <label
+                  htmlFor="fiat-primary-currency"
+                  className="settings-tab__radio-label"
+                >
+                  { t('fiat') }
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render () {
     const { warning, isMascara } = this.props
 
@@ -345,6 +398,7 @@ export default class SettingsTab extends PureComponent {
       <div className="settings-page__content">
         { warning && <div className="settings-tab__error">{ warning }</div> }
         { this.renderCurrentConversion() }
+        { this.renderUseEthAsPrimaryCurrency() }
         { this.renderCurrentLocale() }
         { this.renderNewRpcUrl() }
         { this.renderStateLogs() }

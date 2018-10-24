@@ -19,4 +19,39 @@ describe('Transactions utils', () => {
       assert.doesNotThrow(() => utils.getTokenData())
     })
   })
+
+  describe('getStatusKey', () => {
+    it('should return the correct status', () => {
+      const tests = [
+        {
+          transaction: {
+            status: 'confirmed',
+            txReceipt: {
+              status: '0x0',
+            },
+          },
+          expected: 'failed',
+        },
+        {
+          transaction: {
+            status: 'confirmed',
+            txReceipt: {
+              status: '0x1',
+            },
+          },
+          expected: 'confirmed',
+        },
+        {
+          transaction: {
+            status: 'pending',
+          },
+          expected: 'pending',
+        },
+      ]
+
+      tests.forEach(({ transaction, expected }) => {
+        assert.equal(utils.getStatusKey(transaction), expected)
+      })
+    })
+  })
 })

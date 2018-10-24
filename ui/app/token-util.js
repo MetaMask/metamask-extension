@@ -126,3 +126,8 @@ export function calcTokenAmountWithDec (valueWithoutDec, decimals) {
   const multiplier = Math.pow(10, Number(decimals || 0))
   return new BigNumber(valueWithoutDec).mul(multiplier).toNumber()
 }
+
+export function getTokenValue (tokenParams = []) {
+  const valueData = tokenParams.find(param => param.name === '_value')
+  return valueData && valueData.value
+}
