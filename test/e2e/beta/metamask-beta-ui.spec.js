@@ -494,7 +494,7 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const transactions = await findElements(driver, By.css('.transaction-list-item'))
-      await transactions[0].click()
+      await transactions[3].click()
       await delay(regularDelayMs)
     })
 
@@ -752,9 +752,9 @@ describe('MetaMask', function () {
       const balance = await findElement(driver, By.css('.transaction-view-balance__primary-balance'))
       await delay(regularDelayMs)
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        await driver.wait(until.elementTextMatches(balance, /^89.*ETH.*$/), 10000)
+        await driver.wait(until.elementTextMatches(balance, /^89.*\s*ETH.*$/), 10000)
         const tokenAmount = await balance.getText()
-        assert.ok(/^89.*ETH.*$/.test(tokenAmount))
+        assert.ok(/^89.*\s*ETH.*$/.test(tokenAmount))
         await delay(regularDelayMs)
       }
     })

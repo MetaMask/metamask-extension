@@ -148,6 +148,9 @@
     "isRevealingSeedWords": false,
     "welcomeScreenSeen": false,
     "currentLocale": "en",
+    "preferences": {
+      "useETHAsPrimaryCurrency": true
+    },
     "provider": {
       "type": "rinkeby"
     },
