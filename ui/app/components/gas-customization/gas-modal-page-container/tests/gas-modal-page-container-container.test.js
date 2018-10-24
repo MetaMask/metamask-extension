@@ -104,12 +104,10 @@ describe('gas-modal-page-container container', () => {
         customModalGasPriceInHex: 'ffffffff',
         gasChartProps: {
           'currentPrice': 4.294967295,
-          priceAndTimeEstimates: [
-            { gasprice: 3, expectedTime: '31' },
-            { gasprice: 4, expectedTime: '62' },
-            { gasprice: 5, expectedTime: '93' },
-            { gasprice: 6, expectedTime: '124' },
-          ],
+          estimatedTimes: ['31', '62', '93', '124'],
+          estimatedTimesMax: '31',
+          gasPrices: [3, 4, 5, 6],
+          gasPricesMax: 7,
         },
         gasPriceButtonGroupProps: {
           buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:4',
