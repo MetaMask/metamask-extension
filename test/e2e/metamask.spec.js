@@ -1826,5 +1826,4 @@ describe('Metamask popup page', async function () {
       return false
     }
   }
-
 })
