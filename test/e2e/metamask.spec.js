@@ -14,8 +14,6 @@ describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
   let password = '123456789'
 
-  this.timeout(0)
-
   before(async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const extPath = path.resolve('dist/chrome')
@@ -464,7 +462,6 @@ describe('Metamask popup page', async function () {
 
       })
 
-      // There is an issue with blank confirmation window in Firefox, but the button is still there and the driver is able to clicked (?.?)
       it('confirms transaction in MetaMask popup', async function () {
         const windowHandles = await driver.getAllWindowHandles()
         await driver.switchTo().window(windowHandles[windowHandles.length - 1])
@@ -551,7 +548,7 @@ describe('Metamask popup page', async function () {
         await delay(2000)
         const allHandles = await driver.getAllWindowHandles()
         console.log('allHandles.length ' + allHandles.length)
-        // assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
+        assert.equal(allHandles.length, 3, 'etherscan wasn\'t opened')
         await switchToLastPage()
         const title = await waitUntilCurrentUrl()
 
@@ -575,7 +572,7 @@ describe('Metamask popup page', async function () {
         await delay(2000)
         const allHandles = await driver.getAllWindowHandles()
         console.log('allHandles.length ' + allHandles.length)
-        // assert.equal(allHandles.length, 3, 'etherscan wasn\'t opened')
+        assert.equal(allHandles.length, 4, 'etherscan wasn\'t opened')
         await switchToLastPage()
         const title = await waitUntilCurrentUrl()
 
@@ -694,7 +691,6 @@ describe('Metamask popup page', async function () {
         })
       })
     })
-
 
     describe('Transfer tokens', function () {
 
@@ -849,7 +845,6 @@ describe('Metamask popup page', async function () {
         await driver.navigate().refresh()
         await delay(5000)
         const balance = await waitUntilShowUp(screens.main.tokens.balance)
-
         assert.equal(await balance.getText(), '95 TST', 'balance is incorrect')
       })
       it('switch to account 2 ', async function () {
@@ -1360,10 +1355,9 @@ describe('Metamask popup page', async function () {
       it('correct value of counter of owned tokens', async function () {
         const counter = await waitUntilShowUp(screens.main.tokens.counter)
         assert.equal(await counter.getText(), 'You own 2 tokens', 'incorrect value of counter')
-
       })
-
     })
+
     describe('Token should be displayed only for network, where it was added ', async function () {
 
       it('token should not  be displayed in POA network', async function () {
@@ -1827,5 +1821,4 @@ describe('Metamask popup page', async function () {
       return false
     }
   }
-
 })
