@@ -2,14 +2,13 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Layer2AppTracker = require('eth-token-tracker')
+const Layer2AppTracker = require('eth-layer2App-tracker')
 const Layer2AppCell = require('./layer2App-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
 const log = require('loglevel')
 
 function mapStateToProps (state) {
-  console.log("now")
   console.log(state)
   return {
     network: state.metamask.network,
@@ -48,26 +47,20 @@ function Layer2AppList () {
 }
 
 Layer2AppList.prototype.render = function () {
-  console.log("--------DEBUG RENDER APP LIST==", this.props)
+  console.log("--------DEBUG RENDER APP LIST== PROPS", this.props)
+  console.log("--------DEBUG RENDER APP LIST== STATE", this.state)
   const { userAddress, assetImages } = this.props
-  console.log("--------DEBUG RENDER APP LIST==", this.props)  
-  console.log("--------DEBUG RENDER APP LIST==", this.state)
   const state = this.state
-  console.log("--------DEBUG RENDER APP LIST==", this.state)  
 
 
-  // TODO: WHY AM I NOT GETTING THE STATE HERE?
-  // SIMILAR TO TOKEN-LIST where I get the state in the logs.
-  // const { layer2Apps, isLoading, error } = state
-  const { isLoading, error } = state
-
-  //HOT FIX
-  let layer2Apps = this.props.layer2Apps
+  const { layer2Apps, isLoading, error } = state
   
   if (isLoading) {
     return this.message(this.context.t('loadingLayer2Apps'))
   }
+  
   console.log("--------DEBUG RENDER APP LIST==", layer2Apps)
+  
   if (error) {
     log.error(error)
     return h('.hotFix', {

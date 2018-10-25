@@ -33,14 +33,11 @@ class AddLayer2App extends Component {
 
     this.state = {
       customAddress: '',
-      customSymbol: '',
-      customDecimals: 0,
+      customName: '',
       searchResults: [],
       selectedLayer2Apps: {},
       layer2AppSelectorError: null,
       customAddressError: null,
-      customSymbolError: null,
-      customDecimalsError: null,
       autoFilled: false,
       displayedTab: SEARCH_TAB,
     }
@@ -68,12 +65,11 @@ class AddLayer2App extends Component {
 
       const {
         address: customAddress = '',
-        symbol: customSymbol = '',
-        decimals: customDecimals = 0,
+        name: customName = '',
       } = customLayer2App
 
       const displayedTab = Object.keys(selectedLayer2Apps).length > 0 ? SEARCH_TAB : CUSTOM_LAYER2APP_TAB
-      this.setState({ selectedLayer2Apps, customAddress, customSymbol, customDecimals, displayedTab })
+      this.setState({ selectedLayer2Apps, customAddress, customName, displayedTab })
     }
   }
 
@@ -98,11 +94,10 @@ class AddLayer2App extends Component {
     const {
       layer2AppSelectorError,
       customAddressError,
-      customSymbolError,
-      customDecimalsError,
+      customNameError,      
     } = this.state
 
-    return layer2AppSelectorError || customAddressError || customSymbolError || customDecimalsError
+    return layer2AppSelectorError || customAddressError || customNameError
   }
 
   hasSelected () {
@@ -124,27 +119,26 @@ class AddLayer2App extends Component {
     const { setPendingLayer2Apps, history } = this.props
     const {
       customAddress: address,
-      customSymbol: symbol,
-      customDecimals: decimals,
+      customName: name,
       selectedLayer2Apps,
     } = this.state
 
     const customLayer2App = {
       address,
-      symbol,
-      decimals,
+      name,
     }
     setPendingLayer2Apps({ customLayer2App, selectedLayer2Apps })
     history.push(CONFIRM_ADD_LAYER2APP_ROUTE)
   }
 
   async attemptToAutoFillLayer2AppParams (address) {
-    const { symbol = '', decimals = 0 } = await this.layer2AppInfoGetter(address)
+    // const { symbol = '', decimals = 0 } = await this.layer2AppInfoGetter(address)
 
-    const autoFilled = Boolean(symbol && decimals)
+    //const autoFilled = Boolean(symbol && decimals)
+    const autoFilled = false
     this.setState({ autoFilled })
-    this.handleCustomSymbolChange(symbol || '')
-    this.handleCustomDecimalsChange(decimals)
+    this.handleCustomNameChange(name || '')
+    // this.handleCustomDecimalsChange(decimals)
   }
 
   handleCustomAddressChange (value) {
@@ -163,9 +157,8 @@ class AddLayer2App extends Component {
       case !isValidAddress:
         this.setState({
           customAddressError: this.context.t('invalidAddress'),
-          customSymbol: '',
-          customDecimals: 0,
-          customSymbolError: null,
+          customName: '',
+          customNameError: null,
           customDecimalsError: null,
         })
 
@@ -189,41 +182,24 @@ class AddLayer2App extends Component {
     }
   }
 
-  handleCustomSymbolChange (value) {
-    const customSymbol = value.trim()
-    const symbolLength = customSymbol.length
-    let customSymbolError = null
+  handleCustomNameChange (value) {
+    const customName = value.trim()
+    const nameLength = customName.length
+    let customNameError = null
 
-    if (symbolLength <= 0 || symbolLength >= 10) {
-      customSymbolError = this.context.t('symbolBetweenZeroTen')
+    if (nameLength <= 0 || nameLength >= 10) {
+      customNameError = this.context.t('symbolBetweenZeroTen')
     }
 
-    this.setState({ customSymbol, customSymbolError })
-  }
-
-  handleCustomDecimalsChange (value) {
-    const customDecimals = value.trim()
-    const validDecimals = customDecimals !== null &&
-      customDecimals !== '' &&
-      customDecimals >= 0 &&
-      customDecimals <= 36
-    let customDecimalsError = null
-
-    if (!validDecimals) {
-      customDecimalsError = this.context.t('decimalsMustZerotoTen')
-    }
-
-    this.setState({ customDecimals, customDecimalsError })
+    this.setState({ customName, customNameError})
   }
 
   renderCustomLayer2AppForm () {
     const {
       customAddress,
-      customSymbol,
-      customDecimals,
+      customName,
       customAddressError,
-      customSymbolError,
-      customDecimalsError,
+      customNameError,
       autoFilled,
     } = this.state
 
@@ -240,23 +216,12 @@ class AddLayer2App extends Component {
           margin="normal"
         />
         <TextField
-          id="custom-symbol"
-          label={this.context.t('layer2AppSymbol')}
+          id="custom-name"
+          label={this.context.t('layer2AppName')}
           type="text"
-          value={customSymbol}
-          onChange={e => this.handleCustomSymbolChange(e.target.value)}
-          error={customSymbolError}
-          fullWidth
-          margin="normal"
-          disabled={autoFilled}
-        />
-        <TextField
-          id="custom-decimals"
-          label={this.context.t('decimal')}
-          type="number"
-          value={customDecimals}
-          onChange={e => this.handleCustomDecimalsChange(e.target.value)}
-          error={customDecimalsError}
+          value={customName}
+          onChange={e => this.handleCustomNameChange(e.target.value)}
+          error={customNameError}
           fullWidth
           margin="normal"
           disabled={autoFilled}

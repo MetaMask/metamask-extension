@@ -45,13 +45,9 @@ function TokenList () {
 }
 
 TokenList.prototype.render = function () {
-  console.log("DEBUG TOKEN LIST",this.props)
   const { userAddress, assetImages } = this.props
-  console.log("DEBUG TOKEN LIST",this.props)  
   const state = this.state
-  console.log("DEBUG TOKEN LIST",this.state)  
   const { tokens, isLoading, error } = state
-  console.log("DEBUG TOKEN LIST",tokens)
   if (isLoading) {
     return this.message(this.context.t('loadingTokens'))
   }

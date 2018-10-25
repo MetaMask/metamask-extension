@@ -1683,24 +1683,20 @@ function showAddSuggestedLayer2AppPage (transitionForward = true) {
   }
 }
 
-function addLayer2App (address, symbol, decimals) {
-  console.log("ADD SINGLE APP FUNC.", address, symbol, decimals)
+function addLayer2App (address, name) {
+  console.log("ADD SINGLE APP FUNC.", address, name)
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      console.log("ADD SINGLE APP FUNC. RETURN")
-      background.addLayer2App(address, symbol, decimals, (err, layer2Apps) => {
-	console.log("DEBUG: add Layer2Apps in background:", address, symbol, decimals, layer2Apps)
+      background.addLayer2App(address, name, (err, layer2Apps) => {
+	console.log("DEBUG: add Layer2Apps in background:", address, name, layer2Apps)
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
           reject(err)
         }
-	console.log("DEBUG: add Layer2Apps in background:", address, symbol, decimals, layer2Apps)
         dispatch(actions.updateLayer2Apps(layer2Apps))
-	console.log("DEBUG: add Layer2Apps in background:", address, symbol, decimals, layer2Apps)
         resolve(layer2Apps)
-	console.log("DEBUG: add Layer2Apps in background:", address, symbol, decimals, layer2Apps)
 	console.log("ADD SINGLE APP FUNC. RETURN END")
       })
     })
@@ -1729,8 +1725,8 @@ function addLayer2Apps (layer2Apps) {
   return dispatch => {
     if (Array.isArray(layer2Apps)) {
       dispatch(actions.setSelectedLayer2App(getLayer2AppAddressFromLayer2AppObject(layer2Apps[0])))
-      return Promise.all(layer2Apps.map(({ address, symbol, decimals }) => (
-        dispatch(addLayer2App(address, symbol, decimals))
+      return Promise.all(layer2Apps.map(({ address, name }) => (
+        dispatch(addLayer2App(address, name))
       )))
     } else {
       console.log("ELSE: ADDING SINGLE APP")
@@ -1739,7 +1735,7 @@ function addLayer2Apps (layer2Apps) {
         Object
         .entries(layer2Apps)
         .map(([_, { address, symbol, decimals }]) => (
-          dispatch(addLayer2App(address, symbol, decimals))
+          dispatch(addLayer2App(address, name))
         )),
 	console.log("ELSE: ADDING SINGLE APP return end")
       )
@@ -1769,7 +1765,6 @@ function removeSuggestedLayer2Apps () {
 }
 
 function updateLayer2Apps (newLayer2Apps) {
-  console.log("-----------DEBUG UPDATE LAYER 2 APPS---------------", newLayer2Apps)
   return {
     type: actions.UPDATE_LAYER2APPS,
     newLayer2Apps,
@@ -1802,17 +1797,13 @@ function addToken (address, symbol, decimals, image) {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.addToken(address, symbol, decimals, image, (err, tokens) => {
-	console.log("DEBUG BACKGROUND ADD TOKEN :", tokens)
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
           reject(err)
         }
-	console.log("DEBUG BACKGROUND ADD TOKEN :", tokens)
         dispatch(actions.updateTokens(tokens))
-	console.log("DEBUG BACKGROUND ADD TOKEN :", tokens)
         resolve(tokens)
-	console.log("DEBUG BACKGROUND ADD TOKEN :", tokens)
       })
     })
   }
@@ -2597,8 +2588,8 @@ function setPendingTokens (pendingTokens) {
 
 function setPendingLayer2Apps (pendingLayer2Apps) {
   const { customLayer2App = {}, selectedLayer2Apps = {} } = pendingLayer2Apps
-  const { address, symbol, decimals } = customLayer2App
-  const layer2Apps = address && symbol && decimals
+  const { address, name } = customLayer2App
+  const layer2Apps = address && name
     ? { ...selectedLayer2Apps, [address]: { ...customLayer2App, isCustom: true } }
     : selectedLayer2Apps
 
