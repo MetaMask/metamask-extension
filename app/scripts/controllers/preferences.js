@@ -39,7 +39,7 @@ class PreferencesController {
       seedWords: null,
       forgottenPassword: false,
       preferences: {
-        useETHAsPrimaryCurrency: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
       },
     }, opts.initState)
 

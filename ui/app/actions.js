@@ -309,7 +309,7 @@ var actions = {
   setPreference,
   updatePreferences,
   UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
-  setUseETHAsPrimaryCurrencyPreference,
+  setUseNativeCurrencyAsPrimaryCurrencyPreference,
 
   setMouseUserState,
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
@@ -2330,8 +2330,8 @@ function updatePreferences (value) {
   }
 }
 
-function setUseETHAsPrimaryCurrencyPreference (value) {
-  return setPreference('useETHAsPrimaryCurrency', value)
+function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
+  return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
 }
 
 function setNetworkNonce (networkNonce) {

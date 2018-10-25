@@ -20,14 +20,14 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         metamask: {
           nativeCurrency: 'ETH',
           preferences: {
-            useETHAsPrimaryCurrency: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
           },
         },
       }
 
       assert.deepEqual(mapStateToProps(mockState), {
         nativeCurrency: 'ETH',
-        useETHAsPrimaryCurrency: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
       })
     })
   })
@@ -39,7 +39,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
       const tests = [
         {
           stateProps: {
-            useETHAsPrimaryCurrency: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
             nativeCurrency: 'ETH',
           },
           ownProps: {
@@ -54,7 +54,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         },
         {
           stateProps: {
-            useETHAsPrimaryCurrency: false,
+            useNativeCurrencyAsPrimaryCurrency: false,
             nativeCurrency: 'ETH',
           },
           ownProps: {
@@ -69,7 +69,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         },
         {
           stateProps: {
-            useETHAsPrimaryCurrency: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
             nativeCurrency: 'ETH',
           },
           ownProps: {
@@ -86,7 +86,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         },
         {
           stateProps: {
-            useETHAsPrimaryCurrency: false,
+            useNativeCurrencyAsPrimaryCurrency: false,
             nativeCurrency: 'ETH',
           },
           ownProps: {

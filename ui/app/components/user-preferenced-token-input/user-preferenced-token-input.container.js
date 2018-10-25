@@ -3,10 +3,10 @@ import UserPreferencedTokenInput from './user-preferenced-token-input.component'
 import { preferencesSelector } from '../../selectors'
 
 const mapStateToProps = state => {
-  const { useETHAsPrimaryCurrency } = preferencesSelector(state)
+  const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
 
   return {
-    useETHAsPrimaryCurrency,
+    useNativeCurrencyAsPrimaryCurrency,
   }
 }
 

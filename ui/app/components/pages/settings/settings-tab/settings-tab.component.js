@@ -55,8 +55,8 @@ export default class SettingsTab extends PureComponent {
     sendHexData: PropTypes.bool,
     currentCurrency: PropTypes.string,
     conversionDate: PropTypes.number,
-    useETHAsPrimaryCurrency: PropTypes.bool,
-    setUseETHAsPrimaryCurrencyPreference: PropTypes.func,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
+    setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
   }
 
   state = {
@@ -406,9 +406,9 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  renderUseEthAsPrimaryCurrency () {
+  renderUsePrimaryCurrencyOptions () {
     const { t } = this.context
-    const { useETHAsPrimaryCurrency, setUseETHAsPrimaryCurrencyPreference } = this.props
+    const { useNativeCurrencyAsPrimaryCurrency, setUseNativeCurrencyAsPrimaryCurrencyPreference } = this.props
 
     return (
       <div className="settings-page__content-row">
@@ -424,12 +424,12 @@ export default class SettingsTab extends PureComponent {
               <div className="settings-tab__radio-button">
                 <input
                   type="radio"
-                  id="eth-primary-currency"
-                  onChange={() => setUseETHAsPrimaryCurrencyPreference(true)}
-                  checked={Boolean(useETHAsPrimaryCurrency)}
+                  id="native-primary-currency"
+                  onChange={() => setUseNativeCurrencyAsPrimaryCurrencyPreference(true)}
+                  checked={Boolean(useNativeCurrencyAsPrimaryCurrency)}
                 />
                 <label
-                  htmlFor="eth-primary-currency"
+                  htmlFor="native-primary-currency"
                   className="settings-tab__radio-label"
                 >
                   { t('eth') }
@@ -439,8 +439,8 @@ export default class SettingsTab extends PureComponent {
                 <input
                   type="radio"
                   id="fiat-primary-currency"
-                  onChange={() => setUseETHAsPrimaryCurrencyPreference(false)}
-                  checked={!useETHAsPrimaryCurrency}
+                  onChange={() => setUseNativeCurrencyAsPrimaryCurrencyPreference(false)}
+                  checked={!useNativeCurrencyAsPrimaryCurrency}
                 />
                 <label
                   htmlFor="fiat-primary-currency"
@@ -463,7 +463,7 @@ export default class SettingsTab extends PureComponent {
       <div className="settings-page__content">
         { warning && <div className="settings-tab__error">{ warning }</div> }
         { this.renderCurrentConversion() }
-        { this.renderUseEthAsPrimaryCurrency() }
+        { this.renderUsePrimaryCurrencyOptions() }
         { this.renderCurrentLocale() }
         { this.renderNewRpcUrl() }
         { this.renderStateLogs() }
