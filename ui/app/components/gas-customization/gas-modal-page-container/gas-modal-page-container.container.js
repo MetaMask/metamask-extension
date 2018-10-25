@@ -51,6 +51,7 @@ import {
   calcGasTotal,
 } from '../../send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
+import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
 
 const mapStateToProps = state => {
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
@@ -83,7 +84,7 @@ const mapStateToProps = state => {
     customGasPrice,
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     newTotalFiat,
-    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, getPriceAndTimeEstimates(state)),
+    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
     gasPriceButtonGroupProps: {
       buttonDataLoading,
       defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),
@@ -93,7 +94,7 @@ const mapStateToProps = state => {
       currentPrice: customGasPrice,
       gasPrices,
       estimatedTimes,
-      gasPricesMax: gasPrices[gasPrices.length - 1] + 1,
+      gasPricesMax: gasPrices[gasPrices.length - 1],
       estimatedTimesMax: estimatedTimes[0],
     },
     infoRowProps: {
@@ -173,7 +174,6 @@ function calcCustomGasLimit (customGasLimitInHex) {
 
 function getTxParams (state) {
   const { confirmTransaction: { txData }, metamask: { send } } = state
-  console.log('txData', txData)
   return txData.txParams || {
     from: send.from,
     gas: send.gasLimit,
@@ -198,24 +198,21 @@ function addHexWEIsToRenderableFiat (aHexWEI, bHexWEI, convertedCurrency, conver
   )(aHexWEI, bHexWEI)
 }
 
-function getRenderableTimeEstimate (currentGasPrice, priceAndTimeEstimates) {
-  const gasPrices = priceAndTimeEstimates.map(({ gasprice }) => gasprice)
-  const estimatedTimes = priceAndTimeEstimates.map(({ expectedTime }) => expectedTime)
+function getRenderableTimeEstimate (currentGasPrice, gasPrices, estimatedTimes) {
+  const {
+    closestLowerValueIndex,
+    closestHigherValueIndex,
+    closestHigherValue,
+    closestLowerValue,
+  } = getAdjacentGasPrices({ gasPrices, priceToPosition: currentGasPrice })
 
-  const closestLowerValueIndex = gasPrices.findIndex((e, i, a) => {
-    return e <= currentGasPrice && a[i + 1] >= currentGasPrice
+  const newTimeEstimate = extrapolateY({
+    higherY: estimatedTimes[closestHigherValueIndex],
+    lowerY: estimatedTimes[closestLowerValueIndex],
+    higherX: closestHigherValue,
+    lowerX: closestLowerValue,
+    xForExtrapolation: currentGasPrice,
   })
-  const closestHigherValueIndex = gasPrices.findIndex((e, i, a) => {
-    return e > currentGasPrice
-  })
-
-  const closestLowerValue = gasPrices[closestLowerValueIndex]
-  const closestHigherValue = gasPrices[closestHigherValueIndex]
-  const estimatedClosestLowerTimeEstimate = estimatedTimes[closestLowerValueIndex]
-  const estimatedClosestHigherTimeEstimate = estimatedTimes[closestHigherValueIndex]
-
-  const slope = (estimatedClosestHigherTimeEstimate - estimatedClosestLowerTimeEstimate) / (closestHigherValue - closestLowerValue)
-  const newTimeEstimate = -1 * (slope * (closestHigherValue - currentGasPrice) - estimatedClosestHigherTimeEstimate)
 
   return formatTimeEstimate(newTimeEstimate)
 }
