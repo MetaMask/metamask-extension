@@ -6,7 +6,7 @@ const {
 } = require('../../lib/util')
 
 async function runFirstTimeUsageTest (assert, done) {
-  await timeout(4000)
+  await timeout(10000)
 
   const app = await queryAsync($, '#app-content')
 
@@ -14,12 +14,12 @@ async function runFirstTimeUsageTest (assert, done) {
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
     window.HTMLInputElement.prototype, 'value'
   ).set
-  //await timeout(40000)
-  //const loader = (await findAsync($, '.loading-overlay'))[0]
-  //await loader.setAttribute('style', 'display:none')
-  //await loader.click()
 
-  //await skipNotices(app)
+  // const loader = (await findAsync($, '.loading-overlay'))[0]
+  // await loader.setAttribute('style', 'display:none')
+  // await loader.click()
+
+  // await skipNotices(app)
 
   const welcomeButton = (await findAsync(app, '.welcome-screen__button'))[0]
   await welcomeButton.click()
