@@ -20,6 +20,7 @@ const mapStateToProps = state => {
   const {
     currentCurrency,
     conversionDate,
+    nativeCurrency,
     useBlockie,
     featureFlags: { sendHexData } = {},
     provider = {},
@@ -34,6 +35,7 @@ const mapStateToProps = state => {
     currentLocale,
     currentCurrency,
     conversionDate,
+    nativeCurrency,
     useBlockie,
     sendHexData,
     provider,

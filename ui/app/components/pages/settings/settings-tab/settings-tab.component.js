@@ -55,6 +55,7 @@ export default class SettingsTab extends PureComponent {
     sendHexData: PropTypes.bool,
     currentCurrency: PropTypes.string,
     conversionDate: PropTypes.number,
+    nativeCurrency: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
   }
@@ -408,7 +409,11 @@ export default class SettingsTab extends PureComponent {
 
   renderUsePrimaryCurrencyOptions () {
     const { t } = this.context
-    const { useNativeCurrencyAsPrimaryCurrency, setUseNativeCurrencyAsPrimaryCurrencyPreference } = this.props
+    const {
+      nativeCurrency,
+      setUseNativeCurrencyAsPrimaryCurrencyPreference,
+      useNativeCurrencyAsPrimaryCurrency,
+    } = this.props
 
     return (
       <div className="settings-page__content-row">
@@ -432,7 +437,7 @@ export default class SettingsTab extends PureComponent {
                   htmlFor="native-primary-currency"
                   className="settings-tab__radio-label"
                 >
-                  { t('eth') }
+                  { nativeCurrency }
                 </label>
               </div>
               <div className="settings-tab__radio-button">
