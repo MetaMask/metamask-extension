@@ -3,7 +3,7 @@
  */
 
 .button {
-  height: 44px;
+  min-height: 44px;
   background: $white;
   display: flex;
   justify-content: center;
@@ -87,7 +87,7 @@
 }
 
 .btn--large {
-  height: 54px;
+  min-height: 54px;
 }
 
 .btn-green {
