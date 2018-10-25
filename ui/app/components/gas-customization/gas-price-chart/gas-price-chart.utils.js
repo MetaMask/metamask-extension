@@ -133,8 +133,8 @@ export function setTickPosition (axis, n, newPosition, secondNewPosition) {
 
 export function appendOrUpdateCircle ({ data, itemIndex, cx, cy, cssId, appendOnly }) {
   const circle = this.main
-    .select('.' + 'c3-selected-circles' + this.getTargetSelectorSuffix(data.id))
-    .selectAll('.' + 'c3-selected-circle' + '-' + itemIndex)
+    .select('.c3-selected-circles' + this.getTargetSelectorSuffix(data.id))
+    .selectAll(`.c3-selected-circle-${itemIndex}`)
 
   if (appendOnly || circle.empty()) {
     circle.data([data])
@@ -175,6 +175,7 @@ export function setSelectedCircle ({
 
 
 export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax) {
+  const gasPricesMaxPadded = gasPricesMax + 1
   const chart = c3.generate({
     size: {
       height: 165,
@@ -202,13 +203,13 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
     axis: {
       x: {
         min: gasPrices[0],
-        max: gasPricesMax,
+        max: gasPricesMaxPadded,
         tick: {
-          values: [Math.floor(gasPrices[0]), Math.ceil(gasPricesMax)],
+          values: [Math.floor(gasPrices[0]), Math.ceil(gasPricesMaxPadded)],
           outer: false,
           format: function (val) { return val + ' GWEI' },
         },
-        padding: {left: gasPricesMax / 50, right: gasPricesMax / 50},
+        padding: {left: gasPricesMaxPadded / 50, right: gasPricesMaxPadded / 50},
         label: {
           text: 'Gas Price ($)',
           position: 'outer-center',
@@ -275,7 +276,7 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
 
         return {
           top: circleY - chartYStart - 19 + (flipTooltip ? circleWidth + 38 : 0),
-          left: circleX - chartXStart + circleWidth - (gasPricesMax / 50),
+          left: circleX - chartXStart + circleWidth - (gasPricesMaxPadded / 50),
         }
       },
       show: true,

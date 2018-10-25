@@ -107,7 +107,7 @@ describe('gas-modal-page-container container', () => {
           estimatedTimes: ['31', '62', '93', '124'],
           estimatedTimesMax: '31',
           gasPrices: [3, 4, 5, 6],
-          gasPricesMax: 7,
+          gasPricesMax: 6,
         },
         gasPriceButtonGroupProps: {
           buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:4',
