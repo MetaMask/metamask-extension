@@ -58,7 +58,7 @@ describe('Metamask popup page', async function () {
   describe('Setup', async function () {
 
     it('switches to extensions list', async function () {
-      await delay(3000000)
+      await delay(300)
       await switchToFirstPage()
       await delay(5000)
     })
