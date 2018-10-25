@@ -7,7 +7,7 @@ const {
 
 QUnit.module('currency localization')
 
-QUnit.test('renders localized currency', (assert) => {
+QUnit.skip('renders localized currency', (assert) => {
   const done = assert.async()
   runCurrencyLocalizationTest(assert).then(done).catch((err) => {
     assert.notOk(err, `Error was thrown: ${err.stack}`)
