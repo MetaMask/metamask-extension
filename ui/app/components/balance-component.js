@@ -6,7 +6,7 @@ const TokenBalance = require('./token-balance')
 const Identicon = require('./identicon')
 import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../constants/common'
-const { getFromCurrency, getAssetImages, conversionRateSelector, getCurrentCurrency} = require('../selectors')
+const { getNativeCurrency, getAssetImages, conversionRateSelector, getCurrentCurrency} = require('../selectors')
 
 const { formatBalance } = require('../util')
 
@@ -21,7 +21,7 @@ function mapStateToProps (state) {
   return {
     account,
     network,
-    fromCurrency: getFromCurrency(state),
+    nativeCurrency: getNativeCurrency(state),
     conversionRate: conversionRateSelector(state),
     currentCurrency: getCurrentCurrency(state),
     assetImages: getAssetImages(state),
@@ -67,10 +67,10 @@ BalanceComponent.prototype.renderTokenBalance = function () {
 
 BalanceComponent.prototype.renderBalance = function () {
   const props = this.props
-  const { account, fromCurrency } = props
+  const { account, nativeCurrency } = props
   const balanceValue = account && account.balance
   const needsParse = 'needsParse' in props ? props.needsParse : true
-  const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse, fromCurrency) : '...'
+  const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse, nativeCurrency) : '...'
   const showFiat = 'showFiat' in props ? props.showFiat : true
 
   if (formattedBalance === 'None' || formattedBalance === '...') {

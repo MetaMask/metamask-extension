@@ -21,14 +21,15 @@ class CurrencyController {
    * since midnight of January 1, 1970
    * @property {number} conversionInterval The id of the interval created by the scheduleConversionInterval method.
    * Used to clear an existing interval on subsequent calls of that method.
+   * @property {string} nativeCurrency The ticker/symbol of the native chain currency
    *
    */
   constructor (opts = {}) {
     const initState = extend({
-      fromCurrency: 'ETH',
       currentCurrency: 'usd',
       conversionRate: 0,
       conversionDate: 'N/A',
+      nativeCurrency: 'ETH',
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -38,23 +39,26 @@ class CurrencyController {
   //
 
   /**
-   * A getter for the fromCurrency property
+   * A getter for the nativeCurrency property
    *
    * @returns {string} A 2-4 character shorthand that describes the specific currency
    *
    */
-  getFromCurrency () {
-    return this.store.getState().fromCurrency
+  getNativeCurrency () {
+    return this.store.getState().nativeCurrency
   }
 
   /**
-   * A setter for the fromCurrency property
+   * A setter for the nativeCurrency property
    *
-   * @param {string} fromCurrency The new currency to set as the fromCurrency in the store
+   * @param {string} nativeCurrency The new currency to set as the nativeCurrency in the store
    *
    */
-  setFromCurrency (fromCurrency) {
-    this.store.updateState({ ticker: fromCurrency, fromCurrency })
+  setNativeCurrency (nativeCurrency) {
+    this.store.updateState({
+      nativeCurrency,
+      ticker: nativeCurrency,
+    })
   }
 
   /**
@@ -125,19 +129,19 @@ class CurrencyController {
    *
    */
   async updateConversionRate () {
-    let currentCurrency, fromCurrency
+    let currentCurrency, nativeCurrency
     try {
       currentCurrency = this.getCurrentCurrency()
-      fromCurrency = this.getFromCurrency()
+      nativeCurrency = this.getNativeCurrency()
       let apiUrl
-      if (fromCurrency === 'ETH') {
+      if (nativeCurrency === 'ETH') {
         apiUrl = `https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`
       } else {
-        apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${fromCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
+        apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
       }
       const response = await fetch(apiUrl)
       const parsedResponse = await response.json()
-      if (fromCurrency === 'ETH') {
+      if (nativeCurrency === 'ETH') {
         this.setConversionRate(Number(parsedResponse.bid))
         this.setConversionDate(Number(parsedResponse.timestamp))
       } else {
@@ -150,7 +154,7 @@ class CurrencyController {
         }
       }
     } catch (err) {
-      log.warn(`MetaMask - Failed to query currency conversion:`, fromCurrency, currentCurrency, err)
+      log.warn(`MetaMask - Failed to query currency conversion:`, nativeCurrency, currentCurrency, err)
       this.setConversionRate(0)
       this.setConversionDate('N/A')
     }

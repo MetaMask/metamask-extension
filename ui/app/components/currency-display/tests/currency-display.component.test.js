@@ -6,7 +6,7 @@ import CurrencyDisplay from '../currency-display.component'
 describe('CurrencyDisplay Component', () => {
   it('should render text with a className', () => {
     const wrapper = shallow(<CurrencyDisplay
-      fromCurrency={'ETH'}
+      nativeCurrency={'ETH'}
       displayValue="$123.45"
       className="currency-display"
     />)
@@ -17,7 +17,7 @@ describe('CurrencyDisplay Component', () => {
 
   it('should render text with a prefix', () => {
     const wrapper = shallow(<CurrencyDisplay
-      fromCurrency={'ETH'}
+      nativeCurrency={'ETH'}
       displayValue="$123.45"
       className="currency-display"
       prefix="-"

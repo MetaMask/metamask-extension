@@ -8,12 +8,12 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     useETHAsPrimaryCurrency,
-    fromCurrency: state.metamask.fromCurrency,
+    nativeCurrency: state.metamask.nativeCurrency,
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { useETHAsPrimaryCurrency, fromCurrency, ...restStateProps } = stateProps
+  const { useETHAsPrimaryCurrency, nativeCurrency, ...restStateProps } = stateProps
   const {
     type,
     numberOfDecimals: propsNumberOfDecimals,
@@ -30,7 +30,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   if (type === PRIMARY && useETHAsPrimaryCurrency ||
     type === SECONDARY && !useETHAsPrimaryCurrency) {
     // Display ETH
-    currency = fromCurrency || ETH
+    currency = nativeCurrency || ETH
     numberOfDecimals = propsNumberOfDecimals || ethNumberOfDecimals || 6
     prefix = propsPrefix || ethPrefix
   } else if (type === SECONDARY && useETHAsPrimaryCurrency ||
@@ -44,7 +44,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restStateProps,
     ...dispatchProps,
     ...restOwnProps,
-    fromCurrency,
+    nativeCurrency,
     currency,
     numberOfDecimals,
     prefix,

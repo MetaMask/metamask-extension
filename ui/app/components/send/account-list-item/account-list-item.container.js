@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {
     getConversionRate,
     getCurrentCurrency,
-    getFromCurrency,
+    getNativeCurrency,
 } from '../send.selectors.js'
 import AccountListItem from './account-list-item.component'
 
@@ -12,6 +12,6 @@ function mapStateToProps (state) {
   return {
     conversionRate: getConversionRate(state),
     currentCurrency: getCurrentCurrency(state),
-    fromCurrency: getFromCurrency(state),
+    nativeCurrency: getNativeCurrency(state),
   }
 }

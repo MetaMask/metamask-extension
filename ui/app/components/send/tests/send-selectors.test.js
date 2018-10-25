@@ -12,7 +12,7 @@ const {
   getCurrentCurrency,
   getCurrentNetwork,
   getCurrentViewContext,
-  getFromCurrency,
+  getNativeCurrency,
   getForceGasMin,
   getGasLimit,
   getGasPrice,
@@ -179,10 +179,10 @@ describe('send selectors', () => {
     })
   })
 
-  describe('getFromCurrency()', () => {
+  describe('getNativeCurrency()', () => {
     it('should return the ticker symbol of the selected network', () => {
       assert.equal(
-        getFromCurrency(mockState),
+        getNativeCurrency(mockState),
         'ETH'
       )
     })

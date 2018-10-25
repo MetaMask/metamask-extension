@@ -26,7 +26,7 @@ const selectors = {
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
-  getFromCurrency,
+  getNativeCurrency,
   getSendAmount,
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
@@ -144,8 +144,8 @@ function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
 }
 
-function getFromCurrency (state) {
-  return state.metamask.fromCurrency
+function getNativeCurrency (state) {
+  return state.metamask.nativeCurrency
 }
 
 function getSelectedTokenToFiatRate (state) {

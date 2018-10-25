@@ -138,12 +138,12 @@ module.exports = class MetamaskController extends EventEmitter {
         this.accountTracker.stop()
       }
     })
-     
+
     // ensure accountTracker updates balances after network change
     this.networkController.on('networkDidChange', () => {
       this.accountTracker._updateAccounts()
     })
-      
+
     // key mgmt
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
     this.keyringController = new KeyringController({
@@ -1416,11 +1416,11 @@ module.exports = class MetamaskController extends EventEmitter {
   setCurrentCurrency (currencyCode, cb) {
     const { ticker } = this.networkController.getNetworkConfig()
     try {
-      this.currencyController.setFromCurrency(ticker)
+      this.currencyController.setNativeCurrency(ticker)
       this.currencyController.setCurrentCurrency(currencyCode)
       this.currencyController.updateConversionRate()
       const data = {
-        fromCurrency: ticker || 'ETH',
+        nativeCurrency: ticker || 'ETH',
         conversionRate: this.currencyController.getConversionRate(),
         currentCurrency: this.currencyController.getCurrentCurrency(),
         conversionDate: this.currencyController.getConversionDate(),

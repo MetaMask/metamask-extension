@@ -20,14 +20,14 @@ describe('CurrencyDisplay container', () => {
         metamask: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
-          fromCurrency: 'ETH',
+          nativeCurrency: 'ETH',
         },
       }
 
       assert.deepEqual(mapStateToProps(mockState), {
         conversionRate: 280.45,
         currentCurrency: 'usd',
-        fromCurrency: 'ETH',
+        nativeCurrency: 'ETH',
       })
     })
   })
@@ -37,7 +37,7 @@ describe('CurrencyDisplay container', () => {
       const mockStateProps = {
         conversionRate: 280.45,
         currentCurrency: 'usd',
-        fromCurrency: 'ETH',
+        nativeCurrency: 'ETH',
       }
 
       const tests = [
@@ -46,48 +46,48 @@ describe('CurrencyDisplay container', () => {
             value: '0x2386f26fc10000',
             numberOfDecimals: 2,
             currency: 'usd',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
           },
           result: {
             displayValue: '$2.80',
             suffix: 'USD',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
           },
         },
         {
           props: {
             value: '0x2386f26fc10000',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
           },
           result: {
             displayValue: '$2.80',
             suffix: 'USD',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
           },
         },
         {
           props: {
             value: '0x1193461d01595930',
             currency: 'ETH',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
             numberOfDecimals: 3,
           },
           result: {
             displayValue: '1.266',
             suffix: 'ETH',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
           },
         },
         {
           props: {
             value: '0x1193461d01595930',
             currency: 'ETH',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
             numberOfDecimals: 3,
             hideLabel: true,
           },
           result: {
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
             displayValue: '1.266',
             suffix: undefined,
           },
@@ -96,12 +96,12 @@ describe('CurrencyDisplay container', () => {
           props: {
             value: '0x3b9aca00',
             currency: 'ETH',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
             denomination: 'GWEI',
             hideLabel: true,
           },
           result: {
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
             displayValue: '1',
             suffix: undefined,
           },
@@ -110,12 +110,12 @@ describe('CurrencyDisplay container', () => {
           props: {
             value: '0x3b9aca00',
             currency: 'ETH',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
             denomination: 'WEI',
             hideLabel: true,
           },
           result: {
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
             displayValue: '1000000000',
             suffix: undefined,
           },
@@ -124,12 +124,12 @@ describe('CurrencyDisplay container', () => {
           props: {
             value: '0x3b9aca00',
             currency: 'ETH',
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
             numberOfDecimals: 100,
             hideLabel: true,
           },
           result: {
-            fromCurrency: 'ETH',
+            nativeCurrency: 'ETH',
             displayValue: '1e-9',
             suffix: undefined,
           },

@@ -21,7 +21,7 @@ export default class UserPreferencedCurrencyDisplay extends PureComponent {
     fiatPrefix: PropTypes.string,
     // From container
     currency: PropTypes.string,
-    fromCurrency: PropTypes.string,
+    nativeCurrency: PropTypes.string,
   }
 
   renderEthLogo () {
