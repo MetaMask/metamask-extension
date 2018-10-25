@@ -980,8 +980,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params passed to eth_signTypedData.
    * @param {Function} cb - The callback function, called with the signature.
    */
-  newUnsignedTypedMessage (msgParams, req) {
-    const promise = this.typedMessageManager.addUnapprovedMessageAsync(msgParams, req)
+  newUnsignedTypedMessage (msgParams, req, version) {
+    const promise = this.typedMessageManager.addUnapprovedMessageAsync(msgParams, req, version)
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     return promise
