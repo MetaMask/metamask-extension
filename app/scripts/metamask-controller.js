@@ -980,8 +980,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params passed to eth_signTypedData.
    * @param {Function} cb - The callback function, called with the signature.
    */
-  newUnsignedTypedMessage (msgParams, req, version) {
-    const promise = this.typedMessageManager.addUnapprovedMessageAsync(msgParams, req, version)
+  newUnsignedTypedMessage (msgParams, req) {
+    const promise = this.typedMessageManager.addUnapprovedMessageAsync(msgParams, req)
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     return promise
@@ -1275,10 +1275,6 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(subscriptionManager.middleware)
     // watch asset
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
-    // sign typed data middleware
-    // engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
-    // engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
-    // engine.push(this.createTypedDataMiddleware('eth_signTypedData_v3', 'V3', true).bind(this))
     // forward to metamask primary provider
     engine.push(createProviderMiddleware({ provider }))
 
@@ -1544,27 +1540,6 @@ module.exports = class MetamaskController extends EventEmitter {
   * @param {Function} - next
   * @param {Function} - end
   */
-  // createTypedDataMiddleware (methodName, version, reverse) {
-  //   return async (req, res, next, end) => {
-  //     const { method, params } = req
-  //     if (method === methodName) {
-  //       const promise = this.typedMessageManager.addUnapprovedMessageAsync({
-  //         data: reverse ? params[1] : params[0],
-  //         from: reverse ? params[0] : params[1],
-  //       }, req, version)
-  //       this.sendUpdate()
-  //       this.opts.showUnconfirmedMessage()
-  //       try {
-  //         res.result = await promise
-  //         end()
-  //       } catch (error) {
-  //         end(error)
-  //       }
-  //     } else {
-  //       next()
-  //     }
-  //   }
-  // }
 
   /**
    * Adds a domain to the {@link BlacklistController} whitelist
