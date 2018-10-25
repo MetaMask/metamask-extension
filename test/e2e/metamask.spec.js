@@ -14,6 +14,8 @@ describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
   let password = '123456789'
 
+  this.timeout(0)
+
   before(async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const extPath = path.resolve('dist/chrome')
