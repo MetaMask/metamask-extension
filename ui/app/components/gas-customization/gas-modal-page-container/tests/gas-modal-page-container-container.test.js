@@ -75,6 +75,12 @@ describe('gas-modal-page-container container', () => {
             limit: 'aaaaaaaa',
             price: 'ffffffff',
           },
+          priceAndTimeEstimates: [
+            { gasprice: 3, expectedTime: '31' },
+            { gasprice: 4, expectedTime: '62' },
+            { gasprice: 5, expectedTime: '93' },
+            { gasprice: 6, expectedTime: '124' },
+          ],
         },
         confirmTransaction: {
           txData: {
@@ -92,9 +98,17 @@ describe('gas-modal-page-container container', () => {
         isConfirm: true,
         customGasPrice: 4.294967295,
         customGasLimit: 2863311530,
+        currentTimeEstimate: '~1 min 11 sec',
         newTotalFiat: '637.41',
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
+        gasChartProps: {
+          'currentPrice': 4.294967295,
+          estimatedTimes: ['31', '62', '93', '124'],
+          estimatedTimesMax: '31',
+          gasPrices: [3, 4, 5, 6],
+          gasPricesMax: 6,
+        },
         gasPriceButtonGroupProps: {
           buttonDataLoading: 'mockBasicGasEstimateLoadingStatus:4',
           defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:4ffffffff',

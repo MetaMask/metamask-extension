@@ -10,6 +10,7 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
   resetCustomData,
+  setCustomTimeEstimate,
 } from '../../../ducks/gas.duck'
 import {
   hideGasButtonGroup,
@@ -23,12 +24,16 @@ import {
   getSelectedToken,
 } from '../../../selectors.js'
 import {
-  getCustomGasPrice,
-  getCustomGasLimit,
-  getRenderableBasicEstimateData,
-  getBasicGasEstimateLoadingStatus,
+  formatTimeEstimate,
   getAveragePriceEstimateInHexWEI,
+  getBasicGasEstimateLoadingStatus,
+  getCustomGasLimit,
+  getCustomGasPrice,
   getDefaultActiveButtonIndex,
+  getEstimatedGasPrices,
+  getEstimatedGasTimes,
+  getPriceAndTimeEstimates,
+  getRenderableBasicEstimateData,
 } from '../../../selectors/custom-gas'
 import {
   formatCurrency,
@@ -46,6 +51,7 @@ import {
   calcGasTotal,
 } from '../../send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
+import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
 
 const mapStateToProps = state => {
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
@@ -65,18 +71,31 @@ const mapStateToProps = state => {
 
   const hideBasic = state.appState.modal.modalState.props.hideBasic
 
+  const customGasPrice = calcCustomGasPrice(customModalGasPriceInHex)
+
+  const gasPrices = getEstimatedGasPrices(state)
+  const estimatedTimes = getEstimatedGasTimes(state)
+
   return {
     hideBasic,
     isConfirm: isConfirm(state),
     customModalGasPriceInHex,
     customModalGasLimitInHex,
-    customGasPrice: calcCustomGasPrice(customModalGasPriceInHex),
+    customGasPrice,
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     newTotalFiat,
+    currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
     gasPriceButtonGroupProps: {
       buttonDataLoading,
       defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),
       gasButtonInfo,
+    },
+    gasChartProps: {
+      currentPrice: customGasPrice,
+      gasPrices,
+      estimatedTimes,
+      gasPricesMax: gasPrices[gasPrices.length - 1],
+      estimatedTimesMax: estimatedTimes[0],
     },
     infoRowProps: {
       originalTotalFiat: addHexWEIsToRenderableFiat(value, gasTotal, currentCurrency, conversionRate),
@@ -108,6 +127,7 @@ const mapDispatchToProps = dispatch => {
       return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
     },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
+    setCustomTimeEstimate: (timeEstimateInSeconds) => dispatch(setCustomTimeEstimate(timeEstimateInSeconds)),
   }
 }
 
@@ -154,7 +174,6 @@ function calcCustomGasLimit (customGasLimitInHex) {
 
 function getTxParams (state) {
   const { confirmTransaction: { txData }, metamask: { send } } = state
-
   return txData.txParams || {
     from: send.from,
     gas: send.gasLimit,
@@ -177,4 +196,23 @@ function addHexWEIsToRenderableFiat (aHexWEI, bHexWEI, convertedCurrency, conver
     partialRight(ethTotalToConvertedCurrency, [convertedCurrency, conversionRate]),
     partialRight(formatCurrency, [convertedCurrency]),
   )(aHexWEI, bHexWEI)
+}
+
+function getRenderableTimeEstimate (currentGasPrice, gasPrices, estimatedTimes) {
+  const {
+    closestLowerValueIndex,
+    closestHigherValueIndex,
+    closestHigherValue,
+    closestLowerValue,
+  } = getAdjacentGasPrices({ gasPrices, priceToPosition: currentGasPrice })
+
+  const newTimeEstimate = extrapolateY({
+    higherY: estimatedTimes[closestHigherValueIndex],
+    lowerY: estimatedTimes[closestLowerValueIndex],
+    higherX: closestHigherValue,
+    lowerX: closestLowerValue,
+    xForExtrapolation: currentGasPrice,
+  })
+
+  return formatTimeEstimate(newTimeEstimate)
 }

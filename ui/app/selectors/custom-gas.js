@@ -21,15 +21,19 @@ import {
 import { addHexPrefix } from 'ethereumjs-util'
 
 const selectors = {
+  formatTimeEstimate,
+  getAveragePriceEstimateInHexWEI,
+  getBasicGasEstimateLoadingStatus,
   getCustomGasErrors,
   getCustomGasLimit,
   getCustomGasPrice,
   getCustomGasTotal,
-  getRenderableEstimateDataForSmallButtons,
-  getRenderableBasicEstimateData,
-  getBasicGasEstimateLoadingStatus,
-  getAveragePriceEstimateInHexWEI,
   getDefaultActiveButtonIndex,
+  getEstimatedGasPrices,
+  getEstimatedGasTimes,
+  getPriceAndTimeEstimates,
+  getRenderableBasicEstimateData,
+  getRenderableEstimateDataForSmallButtons,
   priceEstimateToWei,
 }
 
@@ -55,6 +59,18 @@ function getCustomGasTotal (state) {
 
 function getBasicGasEstimateLoadingStatus (state) {
   return state.gas.basicEstimateIsLoading
+}
+
+function getPriceAndTimeEstimates (state) {
+  return state.gas.priceAndTimeEstimates
+}
+
+function getEstimatedGasPrices (state) {
+  return getPriceAndTimeEstimates(state).map(({ gasprice }) => gasprice)
+}
+
+function getEstimatedGasTimes (state) {
+  return getPriceAndTimeEstimates(state).map(({ expectedTime }) => expectedTime)
 }
 
 function getAveragePriceEstimateInHexWEI (state) {

@@ -37,6 +37,7 @@ import {
   updateSendErrors,
 } from '../../ducks/send.duck'
 import {
+  fetchBasicGasEstimates,
   fetchGasEstimates,
 } from '../../ducks/gas.duck'
 import {
@@ -107,6 +108,7 @@ function mapDispatchToProps (dispatch) {
     scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
-    fetchGasEstimates: () => dispatch(fetchGasEstimates()),
+    fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
+    fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
   }
 }

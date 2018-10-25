@@ -15,6 +15,7 @@ export default class AdvancedTabContent extends Component {
     millisecondsRemaining: PropTypes.number,
     totalFee: PropTypes.string,
     timeRemaining: PropTypes.string,
+    gasChartProps: PropTypes.object,
   }
 
   gasInput (value, onChange, min, precision, showGWEI) {
@@ -82,6 +83,7 @@ export default class AdvancedTabContent extends Component {
       customGasPrice,
       customGasLimit,
       totalFee,
+      gasChartProps,
     } = this.props
 
     return (
@@ -94,7 +96,12 @@ export default class AdvancedTabContent extends Component {
               customGasLimit,
               updateCustomGasLimit
           ) }
-          <GasPriceChart />
+          <div className="advanced-tab__fee-chart__title">Live Gas Price Predictions</div>
+          <GasPriceChart {...gasChartProps} updateCustomGasPrice={updateCustomGasPrice} />
+          <div className="advanced-tab__fee-chart__speed-buttons">
+            <span>Slower</span>
+            <span>Faster</span>
+          </div>
         </div>
       </div>
     )
