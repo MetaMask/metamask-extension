@@ -37,15 +37,11 @@
   .tooltip-arrow {
     background: black;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
-    /* top: 15px; */
-    /* left: 27px; */
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
     opacity: 1 !important;
     width: 9px;
     height: 9px;
-    /* position: absolute; */
-    /* display: inline-block; */
     margin-top: 4px;
   }
 
@@ -125,8 +121,6 @@
     cursor: pointer;
   }
 }
-
-@import url(//fonts.googleapis.com/css?family=Roboto:400,700,300);
 
 #chart {
   background: #F8F9FB
