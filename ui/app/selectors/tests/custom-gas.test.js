@@ -77,18 +77,21 @@ describe('custom-gas selectors', () => {
       {
         expectedResult: [
           {
+            labelKey: 'fastest',
             feeInPrimaryCurrency: '$0.05',
             feeInSecondaryCurrency: '0.00021 ETH',
             timeEstimate: '~7 sec',
             priceInHexWei: '0x2540be400',
           },
           {
+            labelKey: 'fast',
             feeInPrimaryCurrency: '$0.03',
             feeInSecondaryCurrency: '0.000105 ETH',
             timeEstimate: '~46 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
+            labelKey: 'slow',
             feeInPrimaryCurrency: '$0.01',
             feeInSecondaryCurrency: '0.0000525 ETH',
             timeEstimate: '~1 min 33 sec',
@@ -119,18 +122,21 @@ describe('custom-gas selectors', () => {
       {
         expectedResult: [
           {
+            labelKey: 'fastest',
             feeInPrimaryCurrency: '$1.07',
             feeInSecondaryCurrency: '0.00042 ETH',
             timeEstimate: '~14 sec',
             priceInHexWei: '0x4a817c800',
           },
           {
+            labelKey: 'fast',
             feeInPrimaryCurrency: '$0.54',
             feeInSecondaryCurrency: '0.00021 ETH',
             timeEstimate: '~1 min 33 sec',
             priceInHexWei: '0x2540be400',
           },
           {
+            labelKey: 'slow',
             feeInPrimaryCurrency: '$0.27',
             feeInSecondaryCurrency: '0.000105 ETH',
             timeEstimate: '~3 min 7 sec',

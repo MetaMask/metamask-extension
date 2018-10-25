@@ -189,18 +189,21 @@ function getRenderableBasicEstimateData (state) {
 
   return [
     {
+      labelKey: 'fastest',
       feeInPrimaryCurrency: getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate),
       feeInSecondaryCurrency: getRenderableEthFee(fast, gasLimit),
       timeEstimate: getRenderableTimeEstimate(fastWait, blockTime),
       priceInHexWei: getGasPriceInHexWei(fast),
     },
     {
+      labelKey: 'fast',
       feeInPrimaryCurrency: getRenderableConvertedCurrencyFee(average, gasLimit, currentCurrency, conversionRate),
       feeInSecondaryCurrency: getRenderableEthFee(average, gasLimit),
       timeEstimate: getRenderableTimeEstimate(avgWait, blockTime),
       priceInHexWei: getGasPriceInHexWei(average),
     },
     {
+      labelKey: 'slow',
       feeInPrimaryCurrency: getRenderableConvertedCurrencyFee(safeLow, gasLimit, currentCurrency, conversionRate),
       feeInSecondaryCurrency: getRenderableEthFee(safeLow, gasLimit),
       timeEstimate: getRenderableTimeEstimate(safeLowWait, blockTime),

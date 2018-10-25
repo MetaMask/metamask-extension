@@ -32,7 +32,6 @@ import {
   getDefaultActiveButtonIndex,
   getEstimatedGasPrices,
   getEstimatedGasTimes,
-  getPriceAndTimeEstimates,
   getRenderableBasicEstimateData,
 } from '../../../selectors/custom-gas'
 import {

@@ -448,6 +448,9 @@
   "fast": {
     "message": "Fast"
   },
+  "fastest": {
+    "message": "FASTEST"
+  },
   "feeChartTitle": {
     "message": "Live Transaction Fee Predictions"
   },
