@@ -790,7 +790,7 @@
     "message": "Тестовый кран"
   },
   "to": {
-    "message": "Получатель: "
+    "message": "Получатель"
   },
   "toETHviaShapeShift": {
     "message": "$1 в ETH через ShapeShift",

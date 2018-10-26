@@ -1,5 +1,6 @@
 const ObservableStore = require('obs-store')
 const normalizeAddress = require('eth-sig-util').normalize
+const { isValidAddress } = require('ethereumjs-util')
 const extend = require('xtend')
 
 
@@ -14,6 +15,7 @@ class PreferencesController {
    * @property {string} store.currentAccountTab Indicates the selected tab in the ui
    * @property {array} store.tokens The tokens the user wants display in their token lists
    * @property {object} store.accountTokens The tokens stored per account and then per network type
+   * @property {object} store.assetImages Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
@@ -26,20 +28,41 @@ class PreferencesController {
       frequentRpcList: [],
       currentAccountTab: 'history',
       accountTokens: {},
+      assetImages: {},
       tokens: [],
+      suggestedTokens: {},
       useBlockie: false,
       featureFlags: {},
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
+      seedWords: null,
+      forgottenPassword: false,
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
     this.network = opts.network
     this.store = new ObservableStore(initState)
+    this.showWatchAssetUi = opts.showWatchAssetUi
     this._subscribeProviderType()
   }
 // PUBLIC METHODS
+
+  /**
+   * Sets the {@code forgottenPassword} state property
+   * @param {boolean} forgottenPassword whether or not the user has forgotten their password
+   */
+  setPasswordForgotten (forgottenPassword) {
+    this.store.updateState({ forgottenPassword })
+  }
+
+  /**
+   * Sets the {@code seedWords} seed words
+   * @param {string|null} seedWords the seed words
+   */
+  setSeedWords (seedWords) {
+    this.store.updateState({ seedWords })
+  }
 
   /**
    * Setter for the `useBlockie` property
@@ -49,6 +72,53 @@ class PreferencesController {
    */
   setUseBlockie (val) {
     this.store.updateState({ useBlockie: val })
+  }
+
+  getSuggestedTokens () {
+    return this.store.getState().suggestedTokens
+  }
+
+  getAssetImages () {
+    return this.store.getState().assetImages
+  }
+
+  addSuggestedERC20Asset (tokenOpts) {
+    this._validateERC20AssetParams(tokenOpts)
+    const suggested = this.getSuggestedTokens()
+    const { rawAddress, symbol, decimals, image } = tokenOpts
+    const address = normalizeAddress(rawAddress)
+    const newEntry = { address, symbol, decimals, image }
+    suggested[address] = newEntry
+    this.store.updateState({ suggestedTokens: suggested })
+  }
+
+  /**
+   * RPC engine middleware for requesting new asset added
+   *
+   * @param req
+   * @param res
+   * @param {Function} - next
+   * @param {Function} - end
+   */
+  async requestWatchAsset (req, res, next, end) {
+    if (req.method === 'metamask_watchAsset') {
+      const { type, options } = req.params
+      switch (type) {
+        case 'ERC20':
+          const result = await this._handleWatchAssetERC20(options)
+          if (result instanceof Error) {
+            end(result)
+          } else {
+            res.result = result
+            end()
+          }
+          break
+        default:
+          end(new Error(`Asset of type ${type} not supported`))
+      }
+    } else {
+      next()
+    }
   }
 
   /**
@@ -186,6 +256,13 @@ class PreferencesController {
     return selected
   }
 
+  removeSuggestedTokens () {
+    return new Promise((resolve, reject) => {
+      this.store.updateState({ suggestedTokens: {} })
+      resolve({})
+    })
+  }
+
   /**
    * Setter for the `selectedAddress` property
    *
@@ -232,11 +309,12 @@ class PreferencesController {
    * @returns {Promise<array>} Promises the new array of AddedToken objects.
    *
    */
-  async addToken (rawAddress, symbol, decimals, network) {
+  async addToken (rawAddress, symbol, decimals, image, network) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals, network }
 
     const tokens = this.store.getState().tokens
+    const assetImages = this.getAssetImages()
     const previousEntry = tokens.find((token, index) => {
       return (token.address === address && parseInt(token.network) === parseInt(network))
     })
@@ -247,7 +325,8 @@ class PreferencesController {
     } else {
       tokens.push(newEntry)
     }
-    this._updateAccountTokens(tokens)
+    assetImages[address] = image
+    this._updateAccountTokens(tokens, assetImages)
     return Promise.resolve(tokens)
   }
 
@@ -260,8 +339,10 @@ class PreferencesController {
    */
   removeToken (rawAddress) {
     const tokens = this.store.getState().tokens
+    const assetImages = this.getAssetImages()
     const updatedTokens = tokens.filter(token => token.address !== rawAddress)
-    this._updateAccountTokens(updatedTokens)
+    delete assetImages[rawAddress]
+    this._updateAccountTokens(updatedTokens, assetImages)
     return Promise.resolve(updatedTokens)
   }
 
@@ -398,6 +479,7 @@ class PreferencesController {
   //
   // PRIVATE METHODS
   //
+
   /**
    * Subscription to network provider type.
    *
@@ -416,10 +498,10 @@ class PreferencesController {
    * @param {array} tokens Array of tokens to be updated.
    *
    */
-  _updateAccountTokens (tokens) {
+  _updateAccountTokens (tokens, assetImages) {
     const { accountTokens, providerType, selectedAddress } = this._getTokenRelatedStates()
     accountTokens[selectedAddress][providerType] = tokens
-    this.store.updateState({ accountTokens, tokens })
+    this.store.updateState({ accountTokens, tokens, assetImages })
   }
 
   /**
@@ -448,6 +530,47 @@ class PreferencesController {
     if (!(providerType in accountTokens[selectedAddress])) accountTokens[selectedAddress][providerType] = []
     const tokens = accountTokens[selectedAddress][providerType]
     return { tokens, accountTokens, providerType, selectedAddress }
+  }
+
+  /**
+   * Handle the suggestion of an ERC20 asset through `watchAsset`
+   * *
+   * @param {Promise} promise Promise according to addition of ERC20 token
+   *
+   */
+  async _handleWatchAssetERC20 (options) {
+    const { address, symbol, decimals, image } = options
+    const rawAddress = address
+    try {
+      this._validateERC20AssetParams({ rawAddress, symbol, decimals })
+    } catch (err) {
+      return err
+    }
+    const tokenOpts = { rawAddress, decimals, symbol, image }
+    this.addSuggestedERC20Asset(tokenOpts)
+    return this.showWatchAssetUi().then(() => {
+      const tokenAddresses = this.getTokens().filter(token => token.address === normalizeAddress(rawAddress))
+      return tokenAddresses.length > 0
+    })
+  }
+
+  /**
+   * Validates that the passed options for suggested token have all required properties.
+   *
+   * @param {Object} opts The options object to validate
+   * @throws {string} Throw a custom error indicating that address, symbol and/or decimals
+   * doesn't fulfill requirements
+   *
+   */
+  _validateERC20AssetParams (opts) {
+    const { rawAddress, symbol, decimals } = opts
+    if (!rawAddress || !symbol || !decimals) throw new Error(`Cannot suggest token without address, symbol, and decimals`)
+    if (!(symbol.length < 6)) throw new Error(`Invalid symbol ${symbol} more than five characters`)
+    const numDecimals = parseInt(decimals, 10)
+    if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
+      throw new Error(`Invalid decimals ${decimals} must be at least 0, and not over 36`)
+    }
+    if (!isValidAddress(rawAddress)) throw new Error(`Invalid address ${rawAddress}`)
   }
 }
 

@@ -37,6 +37,12 @@ If you're a web dapp developer, we've got two types of guides for you:
 
  Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
+## Contributing
+
+You can read [our internal docs here](https://metamask.github.io/metamask-extension/).
+
+You can re-generate the docs locally by running `npm run doc`, and contributors can update the hosted docs by running `npm run publish-docs`.
+
 ### Running Tests
 
 Requires `mocha` installed. Run `npm install -g mocha`.

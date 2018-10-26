@@ -124,12 +124,28 @@ Notice.prototype.render = function () {
   )
 }
 
+Notice.prototype.setInitialDisclaimerState = function () {
+  if (document.getElementsByClassName('notice-box')[0].clientHeight < 310) {
+    this.setState({disclaimerDisabled: false})
+  }
+}
+
 Notice.prototype.componentDidMount = function () {
   // eslint-disable-next-line react/no-find-dom-node
   var node = findDOMNode(this)
   linker.setupListener(node)
   if (document.getElementsByClassName('notice-box')[0].clientHeight < 300) {
     this.setState({disclaimerDisabled: false})
+  }
+  this.setInitialDisclaimerState()
+}
+
+Notice.prototype.componentDidUpdate = function (prevProps) {
+  const { notice: { id } = {} } = this.props
+  const { notice: { id: prevNoticeId } = {} } = prevProps
+
+  if (id !== prevNoticeId) {
+    this.setInitialDisclaimerState()
   }
 }
 

@@ -89,6 +89,7 @@ TokenList.prototype.render = function () {
       isLastTokenCell,
       menuToTop,
       removeToken: this.props.removeToken,
+      network: this.props.network,
     })
   })
 

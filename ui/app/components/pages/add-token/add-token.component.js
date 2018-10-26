@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import ethUtil from 'ethereumjs-util'
 import { checkExistingAddresses } from './util'
 import { tokenInfoGetter } from '../../../token-util'
 import { DEFAULT_ROUTE, CONFIRM_ADD_TOKEN_ROUTE } from '../../../routes'
-import Button from '../../button'
 import TextField from '../../text-field'
 import TokenList from './token-list'
 import TokenSearch from './token-search'
+import PageContainer from '../../page-container'
+import { Tabs, Tab } from '../../tabs'
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 const SEARCH_TAB = 'SEARCH'
@@ -206,7 +206,7 @@ class AddToken extends Component {
     const validDecimals = customDecimals !== null &&
       customDecimals !== '' &&
       customDecimals >= 0 &&
-      customDecimals < 36
+      customDecimals <= 36
     let customDecimalsError = null
 
     if (!validDecimals) {
@@ -285,65 +285,33 @@ class AddToken extends Component {
     )
   }
 
+  renderTabs () {
+    return (
+      <Tabs>
+        <Tab name={this.context.t('search')}>
+          { this.renderSearchToken() }
+        </Tab>
+        <Tab name={this.context.t('customToken')}>
+          { this.renderCustomTokenForm() }
+        </Tab>
+      </Tabs>
+    )
+  }
+
   render () {
-    const { displayedTab } = this.state
     const { history, clearPendingTokens } = this.props
 
     return (
-      <div className="page-container">
-        <div className="page-container__header page-container__header--no-padding-bottom">
-          <div className="page-container__title">
-            { this.context.t('addTokens') }
-          </div>
-          <div className="page-container__tabs">
-            <div
-              className={classnames('page-container__tab', {
-                'page-container__tab--selected': displayedTab === SEARCH_TAB,
-              })}
-              onClick={() => this.setState({ displayedTab: SEARCH_TAB })}
-            >
-              { this.context.t('search') }
-            </div>
-            <div
-              className={classnames('page-container__tab', {
-                'page-container__tab--selected': displayedTab === CUSTOM_TOKEN_TAB,
-              })}
-              onClick={() => this.setState({ displayedTab: CUSTOM_TOKEN_TAB })}
-            >
-              { this.context.t('customToken') }
-            </div>
-          </div>
-        </div>
-        <div className="page-container__content">
-          {
-            displayedTab === CUSTOM_TOKEN_TAB
-              ? this.renderCustomTokenForm()
-              : this.renderSearchToken()
-          }
-        </div>
-        <div className="page-container__footer">
-          <Button
-            type="default"
-            large
-            className="page-container__footer-button"
-            onClick={() => {
-              clearPendingTokens()
-              history.push(DEFAULT_ROUTE)
-            }}
-          >
-            { this.context.t('cancel') }
-          </Button>
-          <Button
-            type="primary"
-            large
-            className="page-container__footer-button"
-            onClick={() => this.handleNext()}
-            disabled={this.hasError() || !this.hasSelected()}
-          >
-            { this.context.t('next') }
-          </Button>
-        </div>
-      </div>
+      <PageContainer
+        title={this.context.t('addTokens')}
+        tabsComponent={this.renderTabs()}
+        onSubmit={() => this.handleNext()}
+        disabled={this.hasError() || !this.hasSelected()}
+        onCancel={() => {
+          clearPendingTokens()
+          history.push(DEFAULT_ROUTE)
+        }}
+      />
     )
   }
 }

@@ -23,6 +23,9 @@
   "addTokens": {
     "message": "添加代币"
   },
+  "addAcquiredTokens": {
+    "message": "在Metamask上添加已用的代币"
+  },
   "amount": {
     "message": "数量"
   },
@@ -115,6 +118,9 @@
   },
   "confirmTransaction": {
     "message": "确认交易"
+  },
+  "connectHardwareWallet": {
+    "message": "链接硬件钱包"
   },
   "continue": {
     "message": "继续"
@@ -719,6 +725,9 @@
   },
   "search": {
     "message": "搜索"
+  },
+  "searchResults": {
+    "message": "搜索结果"
   },
   "secretPhrase": {
     "message": "输入12位助记词以恢复金库."

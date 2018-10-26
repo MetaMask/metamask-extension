@@ -61,6 +61,7 @@
         "name": "Address Book Account 1"
       }
     ],
+    "assetImages": {},
     "tokens": [],
     "transactions": {},
     "selectedAddressTxList": [],
@@ -120,6 +121,7 @@
     "accountDetail": {
       "subview": "transactions"
     },
+    "sidebar": {},
     "modal": {
       "modalState": {},
       "previousModalState": {}

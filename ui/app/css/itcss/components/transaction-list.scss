@@ -243,7 +243,7 @@
 }
 
 .tx-list-item {
-  border-top: 1px solid rgb(231, 231, 231);
+  border-bottom: 1px solid $geyser;
   flex: 0 0 auto;
   display: flex;
   flex-flow: row nowrap;

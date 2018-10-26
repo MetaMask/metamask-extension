@@ -11,7 +11,9 @@ const ConfirmPageContainerError = (props, context) => {
         src="/images/alert-red.svg"
         className="confirm-page-container-error__icon"
       />
-      { `ALERT: ${error}` }
+      <div className="confirm-page-container-error__text">
+        { `ALERT: ${error}` }
+      </div>
     </div>
   )
 }

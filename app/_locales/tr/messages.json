@@ -802,7 +802,7 @@
       "message": "Test Musluğu"
     },
     "to": {
-      "message": "Kime: "
+      "message": "Kime"
     },
     "toETHviaShapeShift": {
       "message": "ShapeShift üstünden $1'dan ETH'e",

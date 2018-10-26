@@ -12,25 +12,27 @@ import {
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../routes'
-import { isConfirmDeployContract } from './confirm-transaction-switch.util'
+import { isConfirmDeployContract } from '../../../helpers/transactions.util'
 import {
   TOKEN_METHOD_TRANSFER,
   TOKEN_METHOD_APPROVE,
   TOKEN_METHOD_TRANSFER_FROM,
-} from './confirm-transaction-switch.constants'
+} from '../../../constants/transactions'
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {
     txData: PropTypes.object,
     methodData: PropTypes.object,
-    fetchingMethodData: PropTypes.bool,
+    fetchingData: PropTypes.bool,
+    isEtherTransaction: PropTypes.bool,
   }
 
   redirectToTransaction () {
     const {
       txData,
       methodData: { name },
-      fetchingMethodData,
+      fetchingData,
+      isEtherTransaction,
     } = this.props
     const { id, txParams: { data } = {} } = txData
 
@@ -39,8 +41,13 @@ export default class ConfirmTransactionSwitch extends Component {
       return <Redirect to={{ pathname }} />
     }
 
-    if (fetchingMethodData) {
+    if (fetchingData) {
       return <Loading />
+    }
+
+    if (isEtherTransaction) {
+      const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`
+      return <Redirect to={{ pathname }} />
     }
 
     if (data) {

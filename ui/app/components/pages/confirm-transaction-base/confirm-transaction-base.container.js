@@ -52,8 +52,9 @@ const mapStateToProps = (state, props) => {
     accounts,
     selectedAddress,
     selectedAddressTxList,
+    assetImages,
   } = metamask
-
+  const assetImage = assetImages[txParamsToAddress]
   const { balance } = accounts[selectedAddress]
   const { name: fromName } = identities[selectedAddress]
   const toAddress = propsToAddress || txParamsToAddress
@@ -88,6 +89,7 @@ const mapStateToProps = (state, props) => {
     conversionRate,
     transactionStatus,
     nonce,
+    assetImage,
   }
 }
 

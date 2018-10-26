@@ -62,7 +62,9 @@ class CreatePasswordScreen extends Component {
     return password === confirmPassword
   }
 
-  createAccount = () => {
+  createAccount = (event) => {
+    event.preventDefault()
+
     if (!this.isValid()) {
       return
     }
@@ -121,7 +123,7 @@ class CreatePasswordScreen extends Component {
               It allows you to hold ether & tokens, and interact with decentralized applications.
             </div>
           </div>}
-          <div className="create-password">
+          <form className="create-password">
             <div className="create-password__title">
               Create Password
             </div>
@@ -182,7 +184,7 @@ class CreatePasswordScreen extends Component {
             </a>
             { */ }
             <Breadcrumbs total={3} currentIndex={0} />
-          </div>
+          </form>
         </div>
       </div>
     )

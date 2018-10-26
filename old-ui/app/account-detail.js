@@ -33,6 +33,7 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     currentAccountTab: state.metamask.currentAccountTab,
     tokens: state.metamask.tokens,
+    suggestedTokens: state.metamask.suggestedTokens,
     computedBalances: state.metamask.computedBalances,
   }
 }
@@ -49,6 +50,10 @@ AccountDetailScreen.prototype.render = function () {
   var identity = props.identities[selected]
   var account = props.accounts[selected]
   const { network, conversionRate, currentCurrency } = props
+
+  if (Object.keys(props.suggestedTokens).length > 0) {
+    this.props.dispatch(actions.showAddSuggestedTokenPage())
+  }
 
   return (
 

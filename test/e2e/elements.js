@@ -136,7 +136,6 @@ module.exports = {
             cancel: By.className('btn-violet'),
           },
         },
-
     },
     deleteCustomRPC: {
       buttons: {
@@ -221,13 +220,13 @@ module.exports = {
       },
       network: By.className('network-name'),
       sent: {
-        menu: By.className('activeForm left'),
+        menu: By.className('wallet-view__tab-history'),
         tokens: By.className('activeForm right'),
       },
       balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),
       address: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div'),
       tokens: {
-        menu: By.className('inactiveForm pointer'),
+        menu: By.id('wallet-view__tab-tokens'),
         token: By.className('token-cell'),
         balance: By.css('#token-cell_0 > h3'),
         amount: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
@@ -236,6 +235,7 @@ module.exports = {
         buttonAdd: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > button:nth-child(2)'),
         buttonAddText: 'Add Token',
         counter: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
+        counterFF: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > span:nth-child(1)'),
       },
     },
     info: {
