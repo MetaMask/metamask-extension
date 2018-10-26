@@ -275,6 +275,29 @@ class TransactionController extends EventEmitter {
     return newTxMeta
   }
 
+  async createSpeedUpTransaction (originalTxId, customGasPrice) {
+    const originalTxMeta = this.txStateManager.getTx(originalTxId)
+    const { txParams } = originalTxMeta
+    const { gasPrice: lastGasPrice } = txParams
+
+    const newGasPrice = customGasPrice || bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
+
+    const newTxMeta = this.txStateManager.generateTxMeta({
+      txParams: {
+        ...txParams,
+        gasPrice: newGasPrice,
+      },
+      lastGasPrice,
+      loadingDefaults: false,
+      status: TRANSACTION_STATUS_APPROVED,
+      type: TRANSACTION_TYPE_RETRY,
+    })
+
+    this.addTx(newTxMeta)
+    await this.approveTransaction(newTxMeta.id)
+    return newTxMeta
+  }
+
   /**
   updates the txMeta in the txStateManager
   @param txMeta {Object} - the updated txMeta
