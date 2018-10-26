@@ -24,7 +24,7 @@ async function runFirstTimeUsageTest(assert, done) {
   const selectState = $('select')
   selectState.val('first time')
   reactTriggerChange(selectState[0])
-
+  await timeout(5000)
   const app = $('#app-content')
 
   // recurse notices

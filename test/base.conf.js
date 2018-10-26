@@ -7,7 +7,7 @@ module.exports = function (config) {
     basePath: process.cwd(),
 
     // Uncomment to allow for longer timeouts
-    // browserNoActivityTimeout: 100000000,
+    browserNoActivityTimeout: 100000000,
 
     browserConsoleLogOptions: {
       terminal: false,
