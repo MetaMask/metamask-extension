@@ -1169,6 +1169,9 @@
   "transactionUpdatedGas": {
     "message": "Transaction updated with a gas price of $1 on $2."
   },
+  "transactionErrored": {
+    "message": "Transaction encountered an error."
+  },
   "transactions": {
     "message": "transactions"
   },

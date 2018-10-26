@@ -324,7 +324,7 @@ jobs:
           command: >
             git config user.name metamaskbot &&
             git config user.email admin@metamask.io &&
-            gh-pages -d docs/jsdocs
+            npm run publish-docs
 
   test-unit:
     docker:

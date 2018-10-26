@@ -2,8 +2,8 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const TokenBalance = require('./token-balance')
-const Identicon = require('./identicon')
+import TokenBalance from './token-balance'
+import Identicon from './identicon'
 import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../constants/common'
 const { getAssetImages, conversionRateSelector, getCurrentCurrency} = require('../selectors')
@@ -81,11 +81,12 @@ BalanceComponent.prototype.renderBalance = function () {
   }
 
   return h('div.flex-column.balance-display', {}, [
-    h('div.token-amount', {}, h(UserPreferencedCurrencyDisplay, {
+    h(UserPreferencedCurrencyDisplay, {
+      className: 'token-amount',
       value: balanceValue,
       type: PRIMARY,
       ethNumberOfDecimals: 3,
-    })),
+    }),
 
     showFiat && h(UserPreferencedCurrencyDisplay, {
       value: balanceValue,

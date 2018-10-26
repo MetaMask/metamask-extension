@@ -27,10 +27,21 @@ export function getTokenData (data = '') {
 
 const registry = new MethodRegistry({ provider: global.ethereumProvider })
 
+/**
+ * Attempts to return the method data from the MethodRegistry library, if the method exists in the
+ * registry. Otherwise, returns an empty object.
+ * @param {string} data - The hex data (@code txParams.data) of a transaction
+ * @returns {Object}
+ */
 export async function getMethodData (data = '') {
   const prefixedData = ethUtil.addHexPrefix(data)
   const fourBytePrefix = prefixedData.slice(0, 10)
   const sig = await registry.lookup(fourBytePrefix)
+
+  if (!sig) {
+    return {}
+  }
+
   const parsedResult = registry.parse(sig)
 
   return {
