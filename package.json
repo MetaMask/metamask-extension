@@ -150,8 +150,6 @@
     "https": "^1.0.0",
     "human-standard-token-abi": "^2.0.0",
     "idb-global": "^2.1.0",
-    "identicon.js": "^2.3.1",
-    "iframe": "^1.0.0",
     "iframe-stream": "^3.0.0",
     "inject-css": "^0.1.1",
     "json-rpc-engine": "^3.8.0",
