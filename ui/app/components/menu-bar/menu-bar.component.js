@@ -52,7 +52,7 @@ export default class MenuBar extends PureComponent {
         {
           accountDetailsMenuOpen && (
             <AccountDetailsDropdown
-              className="menu-bar__account-details-dropdown" 
+              className="menu-bar__account-details-dropdown"
               onClose={() => this.setState({ accountDetailsMenuOpen: false })}
             />
           )

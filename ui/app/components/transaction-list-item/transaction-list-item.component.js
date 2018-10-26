@@ -27,6 +27,8 @@ export default class TransactionListItem extends PureComponent {
     tokenData: PropTypes.object,
     transaction: PropTypes.object,
     value: PropTypes.string,
+    fetchBasicGasEstimates: PropTypes.func,
+    fetchGasEstimates: PropTypes.func,
   }
 
   state = {
@@ -69,9 +71,12 @@ export default class TransactionListItem extends PureComponent {
   }
 
   resubmit () {
-    const { transaction: { id }, retryTransaction, history } = this.props
-    return retryTransaction(id)
-      .then(id => history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`))
+    const { transaction, retryTransaction, fetchBasicGasEstimates, fetchGasEstimates } = this.props
+    fetchBasicGasEstimates().then(basicEstimates => {
+      fetchGasEstimates(basicEstimates.blockTime)
+    }).then(() => {
+      retryTransaction(transaction)
+    })
   }
 
   renderPrimaryCurrency () {
