@@ -1348,8 +1348,8 @@
   "welcomeBack": {
     "message": "Dobrodošli nazaj!"
   },
-  "welcomeBeta": {
-    "message": "Dobrodošli v MetaMask Beta"
+  "welcome": {
+    "message": "Dobrodošli v MetaMask"
   },
   "whatsThis": {
     "message": "Kaj je to?"

@@ -942,8 +942,8 @@
   "warning": {
     "message": "Uyarı"
   },
-  "welcomeBeta": {
-    "message": "MetaMask Beta'ya Hoşgeldiniz"
+  "welcome": {
+    "message": "MetaMask'ya Hoşgeldiniz"
   },
   "whatsThis": {
     "message": "Bu nedir?"

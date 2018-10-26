@@ -942,8 +942,8 @@
   "warning": {
     "message": "Varování"
   },
-  "welcomeBeta": {
-    "message": "Vítejte v MetaMask Beta"
+  "welcome": {
+    "message": "Vítejte v MetaMask"
   },
   "whatsThis": {
     "message": "Co to je?"

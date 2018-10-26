@@ -849,8 +849,8 @@
   "warning": {
     "message": "Aviso"
   },
-  "welcomeBeta": {
-    "message": "Bem-vindo ao MetaMask Beta"
+  "welcome": {
+    "message": "Bem-vindo ao MetaMask"
   },
   "whatsThis": {
     "message": "O que é isto?"

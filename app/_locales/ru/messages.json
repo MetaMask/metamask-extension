@@ -927,8 +927,8 @@
   "warning": {
     "message": "Предупреждение"
   },
-  "welcomeBeta": {
-    "message": "Добро пожаловать в MetaMask Beta"
+  "welcome": {
+    "message": "Добро пожаловать в MetaMask"
   },
   "whatsThis": {
     "message": "Что это?"
