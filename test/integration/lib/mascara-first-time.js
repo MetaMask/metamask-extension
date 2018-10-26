@@ -6,7 +6,7 @@ const {
 } = require('../../lib/util')
 
 async function runFirstTimeUsageTest (assert, done) {
-  await timeout(10000)
+  await timeout(4000)
 
   const app = await queryAsync($, '#app-content')
 
@@ -21,7 +21,15 @@ async function runFirstTimeUsageTest (assert, done) {
 
   // await skipNotices(app)
 
-  const welcomeButton = (await findAsync(app, '.welcome-screen__button'))[0]
+  let welcomeButton
+  do{
+    try {
+      welcomeButton = (await findAsync($, '.welcome-screen__button'))[0]
+    }
+    catch(err){}
+  }
+  while (welcomeButton === undefined)
+
   await welcomeButton.click()
 
   // Scroll through terms
