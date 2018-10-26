@@ -206,7 +206,7 @@ jobs:
         key: dependency-cache-firefox-{{ .Revision }}
     - run:
         name: Install firefox
-        command: ./.circleci/scripts/firefox-install.sh
+        command: ./.circleci/scripts/firefox-install
     - restore_cache:
         key: dependency-cache-{{ .Revision }}
     - restore_cache:
@@ -243,7 +243,7 @@ jobs:
         key: dependency-cache-firefox-{{ .Revision }}
     - run:
         name: Install firefox
-        command: ./.circleci/scripts/firefox-install.sh
+        command: ./.circleci/scripts/firefox-install
     - restore_cache:
         key: dependency-cache-{{ .Revision }}
     - restore_cache:
@@ -357,7 +357,7 @@ jobs:
         key: dependency-cache-firefox-{{ .Revision }}
     - run:
         name: Install firefox
-        command: ./.circleci/scripts/firefox-install.sh
+        command: ./.circleci/scripts/firefox-install
     - restore_cache:
         key: dependency-cache-{{ .Revision }}
     - run:
@@ -400,7 +400,7 @@ jobs:
         key: dependency-cache-firefox-{{ .Revision }}
     - run:
         name: Install firefox
-        command: ./.circleci/scripts/firefox-install.sh
+        command: ./.circleci/scripts/firefox-install
     - restore_cache:
         key: dependency-cache-{{ .Revision }}
     - run:

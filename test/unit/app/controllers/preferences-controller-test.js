@@ -6,6 +6,7 @@ const sinon = require('sinon')
 describe('preferences controller', function () {
   let preferencesController
   let network
+  const image = 'image'
 
   beforeEach(() => {
     network = {providerStore: new ObservableStore({ type: 'mainnet' })}
@@ -161,10 +162,10 @@ describe('preferences controller', function () {
       const network = 1
 
       await preferencesController.setSelectedAddress('0x7e57e2')
-      await preferencesController.addToken(address, symbol, decimals, network)
+      await preferencesController.addToken(address, symbol, decimals, image, network)
 
       const newDecimals = 6
-      await preferencesController.addToken(address, symbol, newDecimals, network)
+      await preferencesController.addToken(address, symbol, newDecimals, image, network)
 
       const tokens = preferencesController.getTokens()
       assert.equal(tokens.length, 1, 'one token added')
@@ -240,8 +241,8 @@ describe('preferences controller', function () {
 
     it('should remove a token from its state', async function () {
       await preferencesController.setSelectedAddress('0x7e57e2')
-      await preferencesController.addToken('0xa', 'A', 4, 1)
-      await preferencesController.addToken('0xb', 'B', 5, 1)
+      await preferencesController.addToken('0xa', 'A', 4, image, 1)
+      await preferencesController.addToken('0xb', 'B', 5, image, 1)
       await preferencesController.removeToken('0xa')
 
       const tokens = preferencesController.getTokens()
@@ -279,11 +280,11 @@ describe('preferences controller', function () {
 
     it('should remove a token from its state on corresponding address', async function () {
       await preferencesController.setSelectedAddress('0x7e57e2')
-      await preferencesController.addToken('0xa', 'A', 4, 1)
-      await preferencesController.addToken('0xb', 'B', 5, 1)
+      await preferencesController.addToken('0xa', 'A', 4, image, 1)
+      await preferencesController.addToken('0xb', 'B', 5, image, 1)
       await preferencesController.setSelectedAddress('0x7e57e3')
-      await preferencesController.addToken('0xa', 'A', 4, 1)
-      await preferencesController.addToken('0xb', 'B', 5, 1)
+      await preferencesController.addToken('0xa', 'A', 4, image, 1)
+      await preferencesController.addToken('0xb', 'B', 5, image, 1)
       const initialTokensSecond = preferencesController.getTokens()
       await preferencesController.setSelectedAddress('0x7e57e2')
       await preferencesController.removeToken('0xa')
@@ -301,11 +302,11 @@ describe('preferences controller', function () {
 
     it('should remove a token from its state on corresponding network', async function () {
       network.providerStore.updateState({ type: 'mainnet' })
-      await preferencesController.addToken('0xa', 'A', 4, 1)
-      await preferencesController.addToken('0xb', 'B', 5, 1)
+      await preferencesController.addToken('0xa', 'A', 4, image, 1)
+      await preferencesController.addToken('0xb', 'B', 5, image, 1)
       network.providerStore.updateState({ type: 'rinkeby' })
-      await preferencesController.addToken('0xa', 'A', 4, 1)
-      await preferencesController.addToken('0xb', 'B', 5, 1)
+      await preferencesController.addToken('0xa', 'A', 4, image, 1)
+      await preferencesController.addToken('0xb', 'B', 5, image, 1)
       const initialTokensSecond = preferencesController.getTokens()
       network.providerStore.updateState({ type: 'mainnet' })
       await preferencesController.removeToken('0xa')
