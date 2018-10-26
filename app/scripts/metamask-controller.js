@@ -407,6 +407,7 @@ module.exports = class MetamaskController extends EventEmitter {
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
+      createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
@@ -1110,6 +1111,12 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async createCancelTransaction (originalTxId, customGasPrice, cb) {
     await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+    const state = await this.getState()
+    return state
+  }
+
+  async createSpeedUpTransaction (originalTxId, customGasPrice, cb) {
+    await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice)
     const state = await this.getState()
     return state
   }
