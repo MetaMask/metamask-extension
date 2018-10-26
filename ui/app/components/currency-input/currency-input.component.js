@@ -14,7 +14,7 @@ export default class CurrencyInput extends PureComponent {
   static propTypes = {
     conversionRate: PropTypes.number,
     currentCurrency: PropTypes.string,
-    fromCurrency: PropTypes.string,
+    nativeCurrency: PropTypes.string,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     suffix: PropTypes.string,
@@ -78,13 +78,13 @@ export default class CurrencyInput extends PureComponent {
   }
 
   renderConversionComponent () {
-    const { useFiat, currentCurrency, fromCurrency } = this.props
+    const { useFiat, currentCurrency, nativeCurrency } = this.props
     const { hexValue } = this.state
     let currency, numberOfDecimals
 
     if (useFiat) {
       // Display ETH
-      currency = fromCurrency || ETH
+      currency = nativeCurrency || ETH
       numberOfDecimals = 6
     } else {
       // Display Fiat
