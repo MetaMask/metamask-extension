@@ -56,9 +56,8 @@ describe('AmountMaxButton Component', function () {
   })
 
   describe('render', () => {
-    it('should render a div with a send-v2__amount-max class', () => {
-      assert.equal(wrapper.find('.send-v2__amount-max').length, 1)
-      assert(wrapper.find('.send-v2__amount-max').is('div'))
+    it('should render an element with a send-v2__amount-max class', () => {
+      assert(wrapper.exists('.send-v2__amount-max'))
     })
 
     it('should call setMaxModeTo and setMaxAmount when the send-v2__amount-max div is clicked', () => {
@@ -77,9 +76,9 @@ describe('AmountMaxButton Component', function () {
       )
     })
 
-    it('should not render text when maxModeOn is true', () => {
+    it('should not render anything when maxModeOn is true', () => {
       wrapper.setProps({ maxModeOn: true })
-      assert.equal(wrapper.find('.send-v2__amount-max').text(), '')
+      assert.ok(!wrapper.exists('.send-v2__amount-max'))
     })
 
     it('should render the expected text when maxModeOn is false', () => {

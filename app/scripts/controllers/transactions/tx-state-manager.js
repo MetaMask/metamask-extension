@@ -400,6 +400,11 @@ class TransactionStateManager extends EventEmitter {
   */
   _setTxStatus (txId, status) {
     const txMeta = this.getTx(txId)
+
+    if (!txMeta) {
+      return
+    }
+
     txMeta.status = status
     setTimeout(() => {
       try {

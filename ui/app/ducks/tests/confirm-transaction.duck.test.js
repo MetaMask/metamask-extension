@@ -19,7 +19,9 @@ const initialState = {
   ethTransactionAmount: '',
   ethTransactionFee: '',
   ethTransactionTotal: '',
-  hexGasTotal: '',
+  hexTransactionAmount: '',
+  hexTransactionFee: '',
+  hexTransactionTotal: '',
   nonce: '',
   toSmartContract: false,
   fetchingData: false,
@@ -34,7 +36,6 @@ const CLEAR_METHOD_DATA = 'metamask/confirm-transaction/CLEAR_METHOD_DATA'
 const UPDATE_TRANSACTION_AMOUNTS = 'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS'
 const UPDATE_TRANSACTION_FEES = 'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES'
 const UPDATE_TRANSACTION_TOTALS = 'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS'
-const UPDATE_HEX_GAS_TOTAL = 'metamask/confirm-transaction/UPDATE_HEX_GAS_TOTAL'
 const UPDATE_TOKEN_PROPS = 'metamask/confirm-transaction/UPDATE_TOKEN_PROPS'
 const UPDATE_NONCE = 'metamask/confirm-transaction/UPDATE_NONCE'
 const UPDATE_TO_SMART_CONTRACT = 'metamask/confirm-transaction/UPDATE_TO_SMART_CONTRACT'
@@ -65,7 +66,9 @@ describe('Confirm Transaction Duck', () => {
         ethTransactionAmount: '1',
         ethTransactionFee: '0.000021',
         ethTransactionTotal: '469.27',
-        hexGasTotal: '0x1319718a5000',
+        hexTransactionAmount: '',
+        hexTransactionFee: '0x1319718a5000',
+        hexTransactionTotal: '',
         nonce: '0x0',
         toSmartContract: false,
         fetchingData: false,
@@ -186,12 +189,14 @@ describe('Confirm Transaction Duck', () => {
           payload: {
             fiatTransactionAmount: '123.45',
             ethTransactionAmount: '.5',
+            hexTransactionAmount: '0x1',
           },
         }),
         {
           ...mockState.confirmTransaction,
           fiatTransactionAmount: '123.45',
           ethTransactionAmount: '.5',
+          hexTransactionAmount: '0x1',
         }
       )
     })
@@ -203,12 +208,14 @@ describe('Confirm Transaction Duck', () => {
           payload: {
             fiatTransactionFee: '123.45',
             ethTransactionFee: '.5',
+            hexTransactionFee: '0x1',
           },
         }),
         {
           ...mockState.confirmTransaction,
           fiatTransactionFee: '123.45',
           ethTransactionFee: '.5',
+          hexTransactionFee: '0x1',
         }
       )
     })
@@ -220,25 +227,14 @@ describe('Confirm Transaction Duck', () => {
           payload: {
             fiatTransactionTotal: '123.45',
             ethTransactionTotal: '.5',
+            hexTransactionTotal: '0x1',
           },
         }),
         {
           ...mockState.confirmTransaction,
           fiatTransactionTotal: '123.45',
           ethTransactionTotal: '.5',
-        }
-      )
-    })
-
-    it('should update hexGasTotal when receiving an UPDATE_HEX_GAS_TOTAL action', () => {
-      assert.deepEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: UPDATE_HEX_GAS_TOTAL,
-          payload: '0x0',
-        }),
-        {
-          ...mockState.confirmTransaction,
-          hexGasTotal: '0x0',
+          hexTransactionTotal: '0x1',
         }
       )
     })
@@ -435,19 +431,6 @@ describe('Confirm Transaction Duck', () => {
       )
     })
 
-    it('should create an action to update hexGasTotal', () => {
-      const hexGasTotal = '0x0'
-      const expectedAction = {
-        type: UPDATE_HEX_GAS_TOTAL,
-        payload: hexGasTotal,
-      }
-
-      assert.deepEqual(
-        actions.updateHexGasTotal(hexGasTotal),
-        expectedAction
-      )
-    })
-
     it('should create an action to update tokenProps', () => {
       const tokenProps = {
         tokenDecimals: '1',
@@ -568,7 +551,6 @@ describe('Confirm Transaction Duck', () => {
       const expectedActions = [
         'metamask/confirm-transaction/UPDATE_TX_DATA',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
-        'metamask/confirm-transaction/UPDATE_HEX_GAS_TOTAL',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ]
@@ -637,7 +619,6 @@ describe('Confirm Transaction Duck', () => {
       const expectedActions = [
         'metamask/confirm-transaction/UPDATE_TX_DATA',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
-        'metamask/confirm-transaction/UPDATE_HEX_GAS_TOTAL',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ]
@@ -687,7 +668,6 @@ describe('Confirm Transaction Duck', () => {
       const expectedActions = [
         'metamask/confirm-transaction/UPDATE_TX_DATA',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
-        'metamask/confirm-transaction/UPDATE_HEX_GAS_TOTAL',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ]

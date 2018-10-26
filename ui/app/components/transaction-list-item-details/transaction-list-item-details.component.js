@@ -5,6 +5,7 @@ import { CARDS_VARIANT } from '../sender-to-recipient/sender-to-recipient.consta
 import TransactionActivityLog from '../transaction-activity-log'
 import TransactionBreakdown from '../transaction-breakdown'
 import Button from '../button'
+import Tooltip from '../tooltip'
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -12,7 +13,9 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   static propTypes = {
+    onCancel: PropTypes.func,
     onRetry: PropTypes.func,
+    showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
     transaction: PropTypes.object,
   }
@@ -26,6 +29,13 @@ export default class TransactionListItemDetails extends PureComponent {
     this.setState({ showTransactionDetails: true })
   }
 
+  handleCancel = event => {
+    const { onCancel } = this.props
+
+    event.stopPropagation()
+    onCancel()
+  }
+
   handleRetry = event => {
     const { onRetry } = this.props
 
@@ -35,7 +45,7 @@ export default class TransactionListItemDetails extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { transaction, showRetry } = this.props
+    const { transaction, showCancel, showRetry } = this.props
     const { txParams: { to, from } = {} } = transaction
 
     return (
@@ -54,13 +64,26 @@ export default class TransactionListItemDetails extends PureComponent {
                 </Button>
               )
             }
-            <Button
-              type="raised"
-              onClick={this.handleEtherscanClick}
-              className="transaction-list-item-details__header-button"
-            >
-              <img src="/images/arrow-popout.svg" />
-            </Button>
+            {
+              showCancel && (
+                <Button
+                  type="raised"
+                  onClick={this.handleCancel}
+                  className="transaction-list-item-details__header-button"
+                >
+                  { t('cancel') }
+                </Button>
+              )
+            }
+            <Tooltip title={t('viewOnEtherscan')}>
+              <Button
+                type="raised"
+                onClick={this.handleEtherscanClick}
+                className="transaction-list-item-details__header-button"
+                >
+                <img src="/images/arrow-popout.svg" />
+              </Button>
+            </Tooltip>
           </div>
         </div>
         <div className="transaction-list-item-details__sender-to-recipient-container">

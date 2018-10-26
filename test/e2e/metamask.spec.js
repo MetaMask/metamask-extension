@@ -440,7 +440,7 @@ describe('Metamask popup page', async function () {
 
       it('navigates to token factory', async function () {
         await setProvider(NETWORKS.LOCALHOST)
-        await driver.get('https://tokenfactory.surge.sh/')
+        await driver.get('http://thetokenfactory.com/#/factory')
       })
 
       it('navigates to create token contract link', async function () {
@@ -550,7 +550,7 @@ describe('Metamask popup page', async function () {
         await delay(2000)
         const allHandles = await driver.getAllWindowHandles()
         console.log('allHandles.length ' + allHandles.length)
-        assert.equal(allHandles.length, 3, 'etherscan wasn\'t opened')
+        assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
         await switchToLastPage()
         const title = await waitUntilCurrentUrl()
 
@@ -574,7 +574,7 @@ describe('Metamask popup page', async function () {
         await delay(2000)
         const allHandles = await driver.getAllWindowHandles()
         console.log('allHandles.length ' + allHandles.length)
-        assert.equal(allHandles.length, 4, 'etherscan wasn\'t opened')
+        assert.equal(allHandles.length, 3, 'etherscan wasn\'t opened')
         await switchToLastPage()
         const title = await waitUntilCurrentUrl()
 

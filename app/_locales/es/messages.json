@@ -159,7 +159,7 @@
     "message": " Copiar "
   },
   "copyPrivateKey": {
-    "message": "Ésta es tu llave privada (haz click para copiar)"
+    "message": "Ésta es tu clave privada (haz click para copiar)"
   },
   "copyToClipboard": {
     "message": "Copiar al portapapeles"
@@ -281,10 +281,10 @@
     "message": "Tipo de cambio"
   },
   "exportPrivateKey": {
-    "message": "Exportar llave privada"
+    "message": "Exportar clave privada"
   },
   "exportPrivateKeyWarning": {
-    "message": "Exportar llaves privadas bajo TU PROPIO riesgo"
+    "message": "Exportar claves privadas bajo TU PROPIO riesgo"
   },
   "failed": {
     "message": "Fallo"
@@ -582,8 +582,8 @@
     "description": "En el proceso de creación de contraseña, esta no es lo suficientemente larga para ser segura"
   },
   "pastePrivateKey": {
-    "message": "Pega tu llave privada aqui",
-    "description": "Para importar una cuenta desde una llave privada"
+    "message": "Pega tu clave privada aqui",
+    "description": "Para importar una cuenta desde una clave privada"
   },
   "pasteSeed": {
     "message": "¡Pega tu frase semilla aquí!"
@@ -598,7 +598,7 @@
     "message": "Política de privacidad"
   },
   "privateKey": {
-    "message": "Llave privada",
+    "message": "Clave privada",
     "description": "Selecciona este tupo de archivo para importar una cuenta"
   },
   "privateKeyWarning": {
@@ -718,7 +718,7 @@
     "message": "Comprar con ShapeShift"
   },
   "showPrivateKeys": {
-    "message": "Mostrar llaves privadas"
+    "message": "Mostrar claves privadas"
   },
   "showQRCode": {
     "message": "Mostrar codigo QR"

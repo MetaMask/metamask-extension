@@ -3,7 +3,7 @@
 <html>
 
   <head>
-    <title>Dangerous Website Warning</title>
+    <title>Ethereum Phishing Detection - MetMask</title>
 
     <style>
       body {
@@ -24,9 +24,11 @@
 
       a {
         color: white;
+        cursor: pointer;
+        text-decoration: underline;
       }
-
     </style>
+
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -45,7 +47,7 @@
       ga('require', 'linker');
       ga('linker:autoLink', ['metamask.io'], false, true);
     </script>
-
+    <script src="phishing-detect.js"></script>
   </head>
 
   <body>
@@ -55,8 +57,13 @@
       <h3>ATTENTION</h3>
       <p>MetaMask believes this domain could currently compromise your security and has prevented you from interacting with it.</p>
       <p>This is because the site tested positive on the <a href="https://github.com/metamask/eth-phishing-detect">Ethereum Phishing Detector</a>. This includes outright malicious websites and legitimate websites that have been compromised by a malicious actor.</p>
+      <p id="esdbLink"></p>
       <p>You can turn MetaMask off to interact with this site, but it is advised not to.</p>
-      <p>If you think this domain is incorrectly flagged or if a blocked legitimate website has resolved its security issues, <a href="https://github.com/metamask/eth-phishing-detect/issues/new">please file an issue</a>.</p>
+      <p>
+        If you think this domain is incorrectly flagged or if a blocked legitimate website has resolved its security issues,
+        <a href="https://github.com/metamask/eth-phishing-detect/issues/new">please file an issue</a>. If you believe this website
+        is safe and understand the risks involved, you can <a id="unsafe-continue">visit this unsafe website at your own risk</a>.
+      </p>
 
     </div>
   </body>

@@ -122,9 +122,6 @@
   "copy": {
     "message": "コピー"
   },
-  "copyContractAddress": {
-    "message": "コントラクトアドレスをコピー"
-  },
   "copyToClipboard": {
     "message": "クリップボードへコピー"
   },
@@ -318,7 +315,7 @@
     "message": "アカウントのインポート"
   },
   "importAccountMsg": {
-    "message":"追加したアカウントはMetaMaskのアカウントパスフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
+    "message": "追加したアカウントはMetaMaskのアカウントパスフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
   },
   "importAnAccount": {
     "message": "アカウントをインポート"

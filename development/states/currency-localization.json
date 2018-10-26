@@ -108,7 +108,10 @@
       "maxModeOn": false,
       "editingTransactionId": null
     },
-    "currentLocale": "en"
+    "currentLocale": "en",
+    "preferences": {
+      "useETHAsPrimaryCurrency": true
+    }
   },
   "appState": {
     "menuOpen": false,

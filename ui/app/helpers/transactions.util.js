@@ -14,6 +14,7 @@ import {
   TRANSFER_FROM_ACTION_KEY,
   SIGNATURE_REQUEST_KEY,
   UNKNOWN_FUNCTION_KEY,
+  CANCEL_ATTEMPT_ACTION_KEY,
 } from '../constants/transactions'
 
 import { addCurrencies } from '../conversion-util'
@@ -43,8 +44,18 @@ export function isConfirmDeployContract (txData = {}) {
   return !txParams.to
 }
 
+/**
+ * Returns the action of a transaction as a key to be passed into the translator.
+ * @param {Object} transaction - txData object
+ * @param {Object} methodData - Data returned from eth-method-registry
+ * @returns {string|undefined}
+ */
 export async function getTransactionActionKey (transaction, methodData) {
-  const { txParams: { data, to } = {}, msgParams } = transaction
+  const { txParams: { data, to } = {}, msgParams, type } = transaction
+
+  if (type === 'cancel') {
+    return CANCEL_ATTEMPT_ACTION_KEY
+  }
 
   if (msgParams) {
     return SIGNATURE_REQUEST_KEY
@@ -76,7 +87,7 @@ export async function getTransactionActionKey (transaction, methodData) {
       case TOKEN_METHOD_TRANSFER_FROM:
         return TRANSFER_FROM_ACTION_KEY
       default:
-        return name
+        return undefined
     }
   } else {
     return SEND_ETHER_ACTION_KEY
@@ -114,4 +125,22 @@ export function sumHexes (...args) {
   })
 
   return ethUtil.addHexPrefix(total)
+}
+
+/**
+ * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
+ * txMeta.status because txMeta.status does not reflect on-chain errors.
+ * @param {Object} transaction - The txMeta object of a transaction.
+ * @param {Object} transaction.txReceipt - The transaction receipt.
+ * @returns {string}
+ */
+export function getStatusKey (transaction) {
+  const { txReceipt: { status } = {} } = transaction
+
+  // There was an on-chain failure
+  if (status === '0x0') {
+    return 'failed'
+  }
+
+  return transaction.status
 }

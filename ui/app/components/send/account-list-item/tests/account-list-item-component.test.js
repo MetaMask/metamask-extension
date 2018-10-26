@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 import Identicon from '../../../identicon'
-import CurrencyDisplay from '../../currency-display'
+import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display'
 
 const utilsMethodStubs = {
   checksumAddress: sinon.stub().returns('mockCheckSumAddress'),
@@ -114,17 +114,11 @@ describe('AccountListItem Component', function () {
 
     it('should render a CurrencyDisplay with the correct props if displayBalance is true', () => {
       wrapper.setProps({ displayBalance: true })
-      assert.equal(wrapper.find(CurrencyDisplay).length, 1)
+      assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 2)
       assert.deepEqual(
-        wrapper.find(CurrencyDisplay).props(),
+        wrapper.find(UserPreferencedCurrencyDisplay).at(0).props(),
         {
-          className: 'account-list-item__account-balances',
-          conversionRate: 4,
-          convertedBalanceClassName: 'account-list-item__account-secondary-balance',
-          convertedCurrency: 'mockCurrentyCurrency',
-          primaryBalanceClassName: 'account-list-item__account-primary-balance',
-          primaryCurrency: 'ETH',
-          readOnly: true,
+          type: 'PRIMARY',
           value: 'mockBalance',
         }
       )
@@ -132,7 +126,7 @@ describe('AccountListItem Component', function () {
 
     it('should not render a CurrencyDisplay if displayBalance is false', () => {
       wrapper.setProps({ displayBalance: false })
-      assert.equal(wrapper.find(CurrencyDisplay).length, 0)
+      assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 0)
     })
   })
 })

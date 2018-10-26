@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Button from '../../button'
+import Modal from '../../modal'
 import { addressSummary } from '../../../util'
 import Identicon from '../../identicon'
 import ethNetProps from 'eth-net-props'
 
-class ConfirmRemoveAccount extends Component {
+export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
@@ -17,30 +17,34 @@ class ConfirmRemoveAccount extends Component {
     t: PropTypes.func,
   }
 
-  handleRemove () {
+  handleRemove = () => {
     this.props.removeAccount(this.props.identity.address)
       .then(() => this.props.hideModal())
+  }
+
+  handleCancel = () => {
+    this.props.hideModal()
   }
 
   renderSelectedAccount () {
     const { identity } = this.props
     return (
-      <div className="modal-container__account">
-        <div className="modal-container__account__identicon">
+      <div className="confirm-remove-account__account">
+        <div className="confirm-remove-account__account__identicon">
           <Identicon
-              address={identity.address}
-              diameter={32}
+            address={identity.address}
+            diameter={32}
           />
         </div>
-        <div className="modal-container__account__name">
-            <span className="modal-container__account__label">Name</span>
-            <span className="account_value">{identity.name}</span>
+        <div className="confirm-remove-account__account__name">
+          <span className="confirm-remove-account__account__label">Name</span>
+          <span className="account_value">{identity.name}</span>
         </div>
-        <div className="modal-container__account__address">
-            <span className="modal-container__account__label">Public Address</span>
-            <span className="account_value">{ addressSummary(identity.address, 4, 4) }</span>
+        <div className="confirm-remove-account__account__address">
+          <span className="confirm-remove-account__account__label">Public Address</span>
+          <span className="account_value">{ addressSummary(identity.address, 4, 4) }</span>
         </div>
-        <div className="modal-container__account__link">
+        <div className="confirm-remove-account__account__link">
           <a
             className=""
             href={ethNetProps.explorerLinks.getExplorerAccountLinkFor(identity.address, this.props.network)}
@@ -58,36 +62,28 @@ class ConfirmRemoveAccount extends Component {
     const { t } = this.context
 
     return (
-      <div className="modal-container">
-        <div className="modal-container__content">
-          <div className="modal-container__title">
-            { `${t('removeAccount')}` }?
-          </div>
-            { this.renderSelectedAccount() }
-          <div className="modal-container__description">
+      <Modal
+        headerText={`${t('removeAccount')}?`}
+        onClose={this.handleCancel}
+        onSubmit={this.handleRemove}
+        onCancel={this.handleCancel}
+        submitText={t('remove')}
+        cancelText={t('nevermind')}
+        submitType="secondary"
+      >
+        <div>
+          { this.renderSelectedAccount() }
+          <div className="confirm-remove-account__description">
             { t('removeAccountDescription') }
-            <a className="modal-container__link" rel="noopener noreferrer" target="_blank" href="https://consensys.zendesk.com/hc/en-us/articles/360004180111-What-are-imported-accounts-New-UI-">{ t('learnMore') }</a>
+            <a
+              className="confirm-remove-account__link"
+              rel="noopener noreferrer"
+              target="_blank" href="https://metamask.zendesk.com/hc/en-us/articles/360015289932">
+              { t('learnMore') }
+            </a>
           </div>
         </div>
-        <div className="modal-container__footer">
-          <Button
-            type="default"
-            className="modal-container__footer-button"
-            onClick={() => this.props.hideModal()}
-          >
-            { t('nevermind') }
-          </Button>
-          <Button
-            type="secondary"
-            className="modal-container__footer-button"
-            onClick={() => this.handleRemove()}
-          >
-            { t('remove') }
-          </Button>
-        </div>
-      </div>
+      </Modal>
     )
   }
 }
-
-export default ConfirmRemoveAccount

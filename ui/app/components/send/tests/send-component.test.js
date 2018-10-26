@@ -289,6 +289,7 @@ describe('Send Component', function () {
           selectedToken: 'mockSelectedToken',
           to: '',
           value: 'mockAmount',
+          data: undefined,
         }
       )
     })

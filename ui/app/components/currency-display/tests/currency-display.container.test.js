@@ -1,12 +1,13 @@
 import assert from 'assert'
 import proxyquire from 'proxyquire'
 
-let mapStateToProps
+let mapStateToProps, mergeProps
 
 proxyquire('../currency-display.container.js', {
   'react-redux': {
-    connect: ms => {
+    connect: (ms, md, mp) => {
       mapStateToProps = ms
+      mergeProps = mp
       return () => ({})
     },
   },
@@ -20,6 +21,20 @@ describe('CurrencyDisplay container', () => {
           conversionRate: 280.45,
           currentCurrency: 'usd',
         },
+      }
+
+      assert.deepEqual(mapStateToProps(mockState), {
+        conversionRate: 280.45,
+        currentCurrency: 'usd',
+      })
+    })
+  })
+
+  describe('mergeProps()', () => {
+    it('should return the correct props', () => {
+      const mockStateProps = {
+        conversionRate: 280.45,
+        currentCurrency: 'usd',
       }
 
       const tests = [
@@ -98,7 +113,7 @@ describe('CurrencyDisplay container', () => {
       ]
 
       tests.forEach(({ props, result }) => {
-        assert.deepEqual(mapStateToProps(mockState, props), result)
+        assert.deepEqual(mergeProps(mockStateProps, {}, { ...props }), result)
       })
     })
   })

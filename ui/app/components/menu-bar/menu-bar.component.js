@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Tooltip from '../tooltip'
 import SelectedAccount from '../selected-account'
+import AccountDetailsDropdown from '../dropdowns/account-details-dropdown.js'
 
 export default class MenuBar extends PureComponent {
   static contextTypes = {
@@ -15,9 +16,12 @@ export default class MenuBar extends PureComponent {
     showSidebar: PropTypes.func,
   }
 
+  state = { accountDetailsMenuOpen: false }
+
   render () {
     const { t } = this.context
     const { isMascara, sidebarOpen, hideSidebar, showSidebar } = this.props
+    const { accountDetailsMenuOpen } = this.state
 
     return (
       <div className="menu-bar">
@@ -34,16 +38,23 @@ export default class MenuBar extends PureComponent {
         {
           !isMascara && (
             <Tooltip
-              title={t('openInTab')}
+              title={t('accountOptions')}
               position="bottom"
             >
               <div
-                className="menu-bar__open-in-browser"
-                onClick={() => global.platform.openExtensionInBrowser()}
+                className="fa fa-ellipsis-h fa-lg menu-bar__open-in-browser"
+                onClick={() => this.setState({ accountDetailsMenuOpen: true })}
               >
-                <img src="images/popout.svg" />
               </div>
             </Tooltip>
+          )
+        }
+        {
+          accountDetailsMenuOpen && (
+            <AccountDetailsDropdown
+              className="menu-bar__account-details-dropdown"
+              onClose={() => this.setState({ accountDetailsMenuOpen: false })}
+            />
           )
         }
       </div>
