@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../../../ui/app/actions')
@@ -19,7 +20,9 @@ const BNInput = require('./bn-as-decimal-input')
 const MIN_GAS_PRICE_BN = new BN('0')
 const MIN_GAS_LIMIT_BN = new BN('21000')
 
-module.exports = PendingTx
+module.exports = connect()(PendingTx)
+
+
 inherits(PendingTx, Component)
 function PendingTx () {
   Component.call(this)
@@ -445,7 +448,8 @@ PendingTx.prototype.onSubmit = function (event) {
   const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
   this.setState({ valid, submitting: true })
-  if (valid && this.verifyGasParams()) {
+  const validGasParams = this.verifyGasParams()
+  if (valid && validGasParams) {
     this.props.sendTransaction(txMeta, event)
   } else {
     this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
@@ -489,6 +493,8 @@ PendingTx.prototype.verifyGasParams = function () {
 }
 
 PendingTx.prototype._notZeroOrEmptyString = function (value) {
+  // allow undefined values
+  if (value === undefined) return true
   // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
   const valueIsEmpty = !value || value === '0x' || value === '0x0'
   return !valueIsEmpty
