@@ -48,6 +48,7 @@ export default class GasModalPageContainer extends Component {
     newTotalFiat,
     gasChartProps,
     currentTimeEstimate,
+    insufficientBalance,
   }) {
     const { transactionFee } = this.props
     return (
@@ -60,6 +61,7 @@ export default class GasModalPageContainer extends Component {
         transactionFee={transactionFee}
         totalFee={newTotalFiat}
         gasChartProps={gasChartProps}
+        insufficientBalance={insufficientBalance}
       />
     )
   }
@@ -139,7 +141,7 @@ export default class GasModalPageContainer extends Component {
           title={this.context.t('customGas')}
           subtitle={this.context.t('customGasSubTitle')}
           tabsComponent={this.renderTabs(infoRowProps, tabProps)}
-          disabled={false}
+          disabled={tabProps.insufficientBalance}
           onCancel={() => cancelAndClose()}
           onClose={() => cancelAndClose()}
           onSubmit={() => {

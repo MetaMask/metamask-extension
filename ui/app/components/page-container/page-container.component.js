@@ -112,17 +112,19 @@ export default class PageContainer extends PureComponent {
           tabs={this.renderTabs()}
           headerCloseText={headerCloseText}
         />
-        <div className="page-container__content">
-          { this.renderContent() }
+        <div className="page-container__bottom">
+          <div className="page-container__content">
+            { this.renderContent() }
+          </div>
+          <PageContainerFooter
+            onCancel={onCancel}
+            cancelText={cancelText}
+            hideCancel={hideCancel}
+            onSubmit={onSubmit}
+            submitText={submitText}
+            disabled={disabled}
+          />
         </div>
-        <PageContainerFooter
-          onCancel={onCancel}
-          cancelText={cancelText}
-          hideCancel={hideCancel}
-          onSubmit={onSubmit}
-          submitText={submitText}
-          disabled={disabled}
-        />
       </div>
     )
   }

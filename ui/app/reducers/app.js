@@ -52,6 +52,7 @@ function reduceApp (state, action) {
       isOpen: false,
       transitionName: '',
       type: '',
+      props: {},
     },
     alertOpen: false,
     alertMessage: null,

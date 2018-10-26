@@ -27,6 +27,7 @@ describe('AdvancedTabContent Component', function () {
       customGasLimit={23456}
       timeRemaining={21500}
       totalFee={'$0.25'}
+      insufficientBalance={false}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 
@@ -63,11 +64,13 @@ describe('AdvancedTabContent Component', function () {
       assert.equal(AdvancedTabContent.prototype.renderGasEditRows.callCount, 1)
       const renderDataSummaryArgs = AdvancedTabContent.prototype.renderDataSummary.getCall(0).args
       assert.deepEqual(renderDataSummaryArgs, ['$0.25', 21500])
+    })
 
+    it('should call renderGasEditRows with the expected params', () => {
       assert.equal(AdvancedTabContent.prototype.renderGasEditRows.callCount, 1)
       const renderGasEditRowArgs = AdvancedTabContent.prototype.renderGasEditRows.getCall(0).args
       assert.deepEqual(renderGasEditRowArgs, [
-        11, propsMethodSpies.updateCustomGasPrice, 23456, propsMethodSpies.updateCustomGasLimit,
+        11, propsMethodSpies.updateCustomGasPrice, 23456, propsMethodSpies.updateCustomGasLimit, false,
       ])
     })
   })
@@ -142,7 +145,8 @@ describe('AdvancedTabContent Component', function () {
         'mockGasPrice',
         () => 'mockUpdateCustomGasPriceReturn',
         'mockGasLimit',
-        () => 'mockUpdateCustomGasLimitReturn'
+        () => 'mockUpdateCustomGasLimitReturn',
+        false
       ))
     })
 
@@ -161,10 +165,10 @@ describe('AdvancedTabContent Component', function () {
       const renderGasEditRowSpyArgs = AdvancedTabContent.prototype.renderGasEditRow.args
       assert.equal(renderGasEditRowSpyArgs.length, 2)
       assert.deepEqual(renderGasEditRowSpyArgs[0].map(String), [
-        'gasPrice', 'mockGasPrice', () => 'mockUpdateCustomGasPriceReturn', 'mockGasPrice', 9, true,
+        'gasPrice', 'mockGasPrice', () => 'mockUpdateCustomGasPriceReturn', 'mockGasPrice', false, 9, true,
       ].map(String))
       assert.deepEqual(renderGasEditRowSpyArgs[1].map(String), [
-        'gasLimit', 'mockGasLimit', () => 'mockUpdateCustomGasLimitReturn', 'mockGasLimit', 0,
+        'gasLimit', 'mockGasLimit', () => 'mockUpdateCustomGasLimitReturn', 'mockGasLimit', false, 0,
       ].map(String))
     })
   })
@@ -195,8 +199,8 @@ describe('AdvancedTabContent Component', function () {
         321,
         value => value + 7,
         0,
-        8,
-        false
+        false,
+        8
       ))
     })
 
@@ -204,7 +208,7 @@ describe('AdvancedTabContent Component', function () {
       assert(gasInput.hasClass('advanced-tab__gas-edit-row__input-wrapper'))
     })
 
-    it('should render an input, but not a GWEI symbol', () => {
+    it('should render two children, including an input', () => {
       assert.equal(gasInput.children().length, 2)
       assert(gasInput.children().at(0).hasClass('advanced-tab__gas-edit-row__input'))
     })

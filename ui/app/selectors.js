@@ -33,6 +33,7 @@ const selectors = {
   getSendMaxModeState,
   getCurrentViewContext,
   getTotalUnapprovedCount,
+  getCurrentEthBalance,
 }
 
 module.exports = selectors
@@ -116,6 +117,10 @@ function getCurrentAccountWithSendEtherInfo (state) {
   const accounts = accountsWithSendEtherInfoSelector(state)
 
   return accounts.find(({ address }) => address === currentAddress)
+}
+
+function getCurrentEthBalance (state) {
+  return getCurrentAccountWithSendEtherInfo(state).balance
 }
 
 function getGasIsLoading (state) {

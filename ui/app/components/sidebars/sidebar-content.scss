@@ -1,0 +1,40 @@
+.sidebar-left {
+  .gas-modal-page-container {
+    .page-container {
+      max-width: 100%;
+    }
+
+    .gas-price-chart {
+      margin-left: 10px;
+    }
+
+    .page-container__bottom {
+      display: flex;
+      flex-direction: column;
+      flex-flow: space-between;
+      height: 100%;
+    }
+
+    .page-container__content {
+      overflow-y: inherit;
+    }
+
+    .basic-tab-content {
+      height: 377px;
+      margin-bottom: 0px;
+      border-bottom: 1px solid #d2d8dd;
+    }
+
+    .advanced-tab__fee-chart {
+      height: 320px;
+    }
+
+    .advanced-tab__fee-chart__speed-buttons {
+      bottom: 77px;
+    }
+
+    .gas-modal-content__info-row {
+      height: 170px;
+    }
+  }
+}
