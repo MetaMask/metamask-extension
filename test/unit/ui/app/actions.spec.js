@@ -680,7 +680,7 @@ describe('Actions', () => {
     })
   })
 
-  /*describe('#signMsg', () => {
+  /* describe('#signMsg', () => {
 
     let signMessageSpy, metamaskMsgs, msgId, messages
 
@@ -812,7 +812,7 @@ describe('Actions', () => {
     it('errors in when sendTransaction throws', () => {
       const store = mockStore()
       const expectedActions = [
-        { type: 'DISPLAY_WARNING', value: "error" },
+        { type: 'DISPLAY_WARNING', value: 'error' },
         { type: 'SHOW_CONF_TX_PAGE', transForward: true, id: undefined, value: {} },
       ]
       sendTransactionSpy.callsFake((txData, callback) => {
