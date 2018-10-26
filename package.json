@@ -146,8 +146,6 @@
     "gulp-eslint": "^4.0.0",
     "gulp-sass": "^4.0.0",
     "hat": "0.0.3",
-    "http": "0.0.0",
-    "https": "^1.0.0",
     "human-standard-token-abi": "^2.0.0",
     "idb-global": "^2.1.0",
     "iframe-stream": "^3.0.0",
