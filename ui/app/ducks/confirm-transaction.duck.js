@@ -2,6 +2,7 @@ import {
   conversionRateSelector,
   currentCurrencySelector,
   unconfirmedTransactionsHashSelector,
+  getNativeCurrency,
 } from '../selectors/confirm-transaction'
 
 import {
@@ -292,16 +293,17 @@ export function updateTxDataAndCalculate (txData) {
     const state = getState()
     const currentCurrency = currentCurrencySelector(state)
     const conversionRate = conversionRateSelector(state)
+    const nativeCurrency = getNativeCurrency(state)
 
     dispatch(updateTxData(txData))
 
     const { txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
 
     const fiatTransactionAmount = getValueFromWeiHex({
-      value, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
+      value, fromCurrency: nativeCurrency, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
     })
     const ethTransactionAmount = getValueFromWeiHex({
-      value, toCurrency: 'ETH', conversionRate, numberOfDecimals: 6,
+      value, fromCurrency: nativeCurrency, toCurrency: nativeCurrency, conversionRate, numberOfDecimals: 6,
     })
 
     dispatch(updateTransactionAmounts({
@@ -314,13 +316,15 @@ export function updateTxDataAndCalculate (txData) {
 
     const fiatTransactionFee = getTransactionFee({
       value: hexTransactionFee,
+      fromCurrency: nativeCurrency,
       toCurrency: currentCurrency,
       numberOfDecimals: 2,
       conversionRate,
     })
     const ethTransactionFee = getTransactionFee({
       value: hexTransactionFee,
-      toCurrency: 'ETH',
+      fromCurrency: nativeCurrency,
+      toCurrency: nativeCurrency,
       numberOfDecimals: 6,
       conversionRate,
     })
@@ -329,7 +333,6 @@ export function updateTxDataAndCalculate (txData) {
 
     const fiatTransactionTotal = addFiat(fiatTransactionFee, fiatTransactionAmount)
     const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount)
-    console.log('HIHIH', value, hexTransactionFee)
     const hexTransactionTotal = sumHexes(value, hexTransactionFee)
 
     dispatch(updateTransactionTotals({

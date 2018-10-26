@@ -13,6 +13,7 @@ proxyquire('../account-list-item.container.js', {
   '../send.selectors.js': {
     getConversionRate: (s) => `mockConversionRate:${s}`,
     getCurrentCurrency: (s) => `mockCurrentCurrency:${s}`,
+    getNativeCurrency: (s) => `mockNativeCurrency:${s}`,
   },
 })
 
@@ -24,6 +25,7 @@ describe('account-list-item container', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         conversionRate: 'mockConversionRate:mockState',
         currentCurrency: 'mockCurrentCurrency:mockState',
+        nativeCurrency: 'mockNativeCurrency:mockState',
       })
     })
 

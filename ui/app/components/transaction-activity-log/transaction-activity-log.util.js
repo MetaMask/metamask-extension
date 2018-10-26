@@ -18,6 +18,7 @@ const TRANSACTION_SUBMITTED_EVENT = 'transactionSubmitted'
 const TRANSACTION_CONFIRMED_EVENT = 'transactionConfirmed'
 const TRANSACTION_DROPPED_EVENT = 'transactionDropped'
 const TRANSACTION_UPDATED_EVENT = 'transactionUpdated'
+const TRANSACTION_ERRORED_EVENT = 'transactionErrored'
 
 const eventPathsHash = {
   [STATUS_PATH]: true,
@@ -39,9 +40,9 @@ function eventCreator (eventKey, timestamp, value) {
 }
 
 export function getActivities (transaction) {
-  const { history = [] } = transaction
+  const { history = [], txReceipt: { status } = {} } = transaction
 
-  return history.reduce((acc, base) => {
+  const historyActivities = history.reduce((acc, base) => {
     // First history item should be transaction creation
     if (!Array.isArray(base) && base.status === UNAPPROVED_STATUS && base.txParams) {
       const { time, txParams: { value } = {} } = base
@@ -83,4 +84,10 @@ export function getActivities (transaction) {
 
     return acc
   }, [])
+
+  // If txReceipt.status is '0x0', that means that an on-chain error occured for the transaction,
+  // so we add an error entry to the Activity Log.
+  return status === '0x0'
+    ? historyActivities.concat(eventCreator(TRANSACTION_ERRORED_EVENT))
+    : historyActivities
 }
