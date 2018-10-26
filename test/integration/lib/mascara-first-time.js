@@ -22,11 +22,10 @@ async function runFirstTimeUsageTest (assert, done) {
   // await skipNotices(app)
 
   let welcomeButton
-  do{
+  do {
     try {
       welcomeButton = (await findAsync($, '.welcome-screen__button'))[0]
-    }
-    catch(err){}
+    } catch (err) {}
   }
   while (welcomeButton === undefined)
 
