@@ -5,6 +5,8 @@ import {
   hideModal,
   setGasLimit,
   setGasPrice,
+  createSpeedUpTransaction,
+  hideSidebar,
 } from '../../../actions'
 import {
   setCustomGasPrice,
@@ -22,6 +24,7 @@ import {
   getCurrentCurrency,
   conversionRateSelector as getConversionRate,
   getSelectedToken,
+  getCurrentEthBalance,
 } from '../../../selectors.js'
 import {
   formatTimeEstimate,
@@ -34,6 +37,9 @@ import {
   getEstimatedGasTimes,
   getRenderableBasicEstimateData,
 } from '../../../selectors/custom-gas'
+import {
+  submittedPendingTransactionsSelector,
+} from '../../../selectors/transactions'
 import {
   formatCurrency,
 } from '../../../helpers/confirm-transaction/util'
@@ -48,17 +54,19 @@ import {
 } from '../../../helpers/formatters'
 import {
   calcGasTotal,
+  isBalanceSufficient,
 } from '../../send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
 import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+  const { transaction = {} } = ownProps
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
-  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state)
-  const gasTotal = calcGasTotal(currentGasLimit, currentGasPrice)
-
+  const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, transaction.id)
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit
+  const gasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
+
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
 
   const gasButtonInfo = getRenderableBasicEstimateData(state)
@@ -74,6 +82,14 @@ const mapStateToProps = state => {
 
   const gasPrices = getEstimatedGasPrices(state)
   const estimatedTimes = getEstimatedGasTimes(state)
+  const balance = getCurrentEthBalance(state)
+
+  const insufficientBalance = !isBalanceSufficient({
+    amount: value,
+    gasTotal,
+    balance,
+    conversionRate,
+  })
 
   return {
     hideBasic,
@@ -104,6 +120,9 @@ const mapStateToProps = state => {
       transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
       sendAmount: addHexWEIsToRenderableEth(value, '0x0'),
     },
+    isSpeedUp: transaction.status === 'submitted',
+    txId: transaction.id,
+    insufficientBalance,
   }
 }
 
@@ -125,18 +144,24 @@ const mapDispatchToProps = dispatch => {
     updateConfirmTxGasAndCalculate: (gasLimit, gasPrice) => {
       return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
     },
+    createSpeedUpTransaction: (txId, gasPrice) => {
+      return dispatch(createSpeedUpTransaction(txId, gasPrice))
+    },
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
     setCustomTimeEstimate: (timeEstimateInSeconds) => dispatch(setCustomTimeEstimate(timeEstimateInSeconds)),
+    hideSidebar: () => dispatch(hideSidebar()),
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { gasPriceButtonGroupProps, isConfirm } = stateProps
+  const { gasPriceButtonGroupProps, isConfirm, isSpeedUp, txId } = stateProps
   const {
     updateCustomGasPrice: dispatchUpdateCustomGasPrice,
     hideGasButtonGroup: dispatchHideGasButtonGroup,
     setGasData: dispatchSetGasData,
     updateConfirmTxGasAndCalculate: dispatchUpdateConfirmTxGasAndCalculate,
+    createSpeedUpTransaction: dispatchCreateSpeedUpTransaction,
+    hideSidebar: dispatchHideSidebar,
     ...otherDispatchProps
   } = dispatchProps
 
@@ -144,12 +169,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
-    onSubmit: isConfirm
-      ? dispatchUpdateConfirmTxGasAndCalculate
-      : (newLimit, newPrice) => {
-        dispatchSetGasData(newLimit, newPrice)
+    onSubmit: (gasLimit, gasPrice) => {
+      if (isConfirm) {
+        dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice)
+      } else if (isSpeedUp) {
+        dispatchCreateSpeedUpTransaction(txId, gasPrice)
+        dispatchHideSidebar()
+      } else {
+        dispatchSetGasData(gasLimit, gasPrice)
         dispatchHideGasButtonGroup()
-      },
+      }
+    },
     gasPriceButtonGroupProps: {
       ...gasPriceButtonGroupProps,
       handleGasPriceSelection: dispatchUpdateCustomGasPrice,
@@ -171,9 +201,12 @@ function calcCustomGasLimit (customGasLimitInHex) {
   return parseInt(customGasLimitInHex, 16)
 }
 
-function getTxParams (state) {
+function getTxParams (state, transactionId) {
   const { confirmTransaction: { txData }, metamask: { send } } = state
-  return txData.txParams || {
+  const pendingTransactions = submittedPendingTransactionsSelector(state)
+  const pendingTransaction = pendingTransactions.find(({ id }) => id === transactionId)
+  const { txParams: pendingTxParams } = pendingTransaction || {}
+  return txData.txParams || pendingTxParams || {
     from: send.from,
     gas: send.gasLimit,
     gasPrice: send.gasPrice || getAveragePriceEstimateInHexWEI(state),

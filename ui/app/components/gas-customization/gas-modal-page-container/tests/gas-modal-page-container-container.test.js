@@ -44,14 +44,16 @@ proxyquire('../gas-modal-page-container.container.js', {
   '../../../ducks/gas.duck': gasActionSpies,
   '../../../ducks/confirm-transaction.duck': confirmTransactionActionSpies,
   '../../../ducks/send.duck': sendActionSpies,
+  '../../../selectors.js': {
+    getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
+  },
 })
 
 describe('gas-modal-page-container container', () => {
 
   describe('mapStateToProps()', () => {
-
     it('should map the correct properties to props', () => {
-      const mockState2 = {
+      const baseMockState = {
         appState: {
           modal: {
             modalState: {
@@ -92,9 +94,7 @@ describe('gas-modal-page-container container', () => {
           },
         },
       }
-      const result2 = mapStateToProps(mockState2)
-
-      assert.deepEqual(result2, {
+      const baseExpectedResult = {
         isConfirm: true,
         customGasPrice: 4.294967295,
         customGasLimit: 2863311530,
@@ -116,13 +116,40 @@ describe('gas-modal-page-container container', () => {
         },
         hideBasic: true,
         infoRowProps: {
-          originalTotalFiat: '22.58',
-          originalTotalEth: '0.451569 ETH',
+          originalTotalFiat: '637.41',
+          originalTotalEth: '12.748189 ETH',
           newTotalFiat: '637.41',
           newTotalEth: '12.748189 ETH',
           sendAmount: '0.45036 ETH',
           transactionFee: '12.297829 ETH',
         },
+        insufficientBalance: true,
+        isSpeedUp: false,
+        txId: 34,
+      }
+      const baseMockOwnProps = { transaction: { id: 34 } }
+      const tests = [
+        { mockState: baseMockState, expectedResult: baseExpectedResult, mockOwnProps: baseMockOwnProps },
+        {
+          mockState: Object.assign({}, baseMockState, {
+            metamask: { ...baseMockState.metamask, balance: '0xfffffffffffffffffffff' },
+          }),
+          expectedResult: Object.assign({}, baseExpectedResult, { insufficientBalance: false }),
+          mockOwnProps: baseMockOwnProps,
+        },
+        {
+          mockState: baseMockState,
+          mockOwnProps: Object.assign({}, baseMockOwnProps, {
+            transaction: { id: 34, status: 'submitted' },
+          }),
+          expectedResult: Object.assign({}, baseExpectedResult, { isSpeedUp: true }),
+        },
+      ]
+
+      let result
+      tests.forEach(({ mockState, mockOwnProps, expectedResult}) => {
+        result = mapStateToProps(mockState, mockOwnProps)
+        assert.deepEqual(result, expectedResult)
       })
     })
 
@@ -230,8 +257,20 @@ describe('gas-modal-page-container container', () => {
           setGasData: sinon.spy(),
           updateConfirmTxGasAndCalculate: sinon.spy(),
           someOtherDispatchProp: sinon.spy(),
+          createSpeedUpTransaction: sinon.spy(),
+          hideSidebar: sinon.spy(),
         }
         ownProps = { someOwnProp: 123 }
+      })
+
+      afterEach(() => {
+        dispatchProps.updateCustomGasPrice.resetHistory()
+        dispatchProps.hideGasButtonGroup.resetHistory()
+        dispatchProps.setGasData.resetHistory()
+        dispatchProps.updateConfirmTxGasAndCalculate.resetHistory()
+        dispatchProps.someOtherDispatchProp.resetHistory()
+        dispatchProps.createSpeedUpTransaction.resetHistory()
+        dispatchProps.hideSidebar.resetHistory()
       })
     it('should return the expected props when isConfirm is true', () => {
       const result = mergeProps(stateProps, dispatchProps, ownProps)
@@ -288,6 +327,19 @@ describe('gas-modal-page-container container', () => {
       assert.equal(dispatchProps.someOtherDispatchProp.callCount, 0)
       result.someOtherDispatchProp()
       assert.equal(dispatchProps.someOtherDispatchProp.callCount, 1)
+    })
+
+    it('should dispatch the expected actions from obSubmit when isConfirm is false and isSpeedUp is true', () => {
+      const result = mergeProps(Object.assign({}, stateProps, { isSpeedUp: true, isConfirm: false }), dispatchProps, ownProps)
+
+      result.onSubmit()
+
+      assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
+      assert.equal(dispatchProps.setGasData.callCount, 0)
+      assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
+
+      assert.equal(dispatchProps.createSpeedUpTransaction.callCount, 1)
+      assert.equal(dispatchProps.hideSidebar.callCount, 1)
     })
   })
 

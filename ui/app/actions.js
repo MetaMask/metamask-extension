@@ -325,6 +325,8 @@ var actions = {
   clearPendingTokens,
 
   createCancelTransaction,
+  createSpeedUpTransaction,
+
   approveProviderRequest,
   rejectProviderRequest,
   clearApprovedOrigins,
@@ -1837,6 +1839,28 @@ function createCancelTransaction (txId, customGasPrice) {
   }
 }
 
+function createSpeedUpTransaction (txId, customGasPrice) {
+  log.debug('background.createSpeedUpTransaction')
+  let newTx
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
+        resolve(newState)
+      })
+    })
+    .then(newState => dispatch(actions.updateMetamaskState(newState)))
+    .then(() => newTx)
+  }
+}
+
 //
 // config
 //
@@ -1937,12 +1961,13 @@ function hideModal (payload) {
   }
 }
 
-function showSidebar ({ transitionName, type }) {
+function showSidebar ({ transitionName, type, props }) {
   return {
     type: actions.SIDEBAR_OPEN,
     value: {
       transitionName,
       type,
+      props,
     },
   }
 }

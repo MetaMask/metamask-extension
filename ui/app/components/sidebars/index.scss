@@ -1,3 +1,5 @@
+@import './sidebar-content';
+
 .sidebar-right-enter {
   transition: transform 300ms ease-in-out;
   transform: translateX(-100%);

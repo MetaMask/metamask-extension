@@ -68,6 +68,7 @@ describe('GasModalPageContainer Component', function () {
       currentTimeEstimate={'1 min 31 sec'}
       customGasPriceInHex={'mockCustomGasPriceInHex'}
       customGasLimitInHex={'mockCustomGasLimitInHex'}
+      insufficientBalance={false}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 
