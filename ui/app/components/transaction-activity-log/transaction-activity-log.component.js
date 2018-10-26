@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import { getActivities } from './transaction-activity-log.util'
 import Card from '../card'
 import { getEthConversionFromWeiHex, getValueFromWeiHex } from '../../helpers/conversions.util'
-import { ETH } from '../../constants/common'
 import { formatDate } from '../../util'
 
 export default class TransactionActivityLog extends PureComponent {
@@ -16,6 +15,7 @@ export default class TransactionActivityLog extends PureComponent {
     transaction: PropTypes.object,
     className: PropTypes.string,
     conversionRate: PropTypes.number,
+    nativeCurrency: PropTypes.string,
   }
 
   state = {
@@ -45,16 +45,17 @@ export default class TransactionActivityLog extends PureComponent {
   }
 
   renderActivity (activity, index) {
-    const { conversionRate } = this.props
+    const { conversionRate, nativeCurrency } = this.props
     const { eventKey, value, timestamp } = activity
     const ethValue = index === 0
       ? `${getValueFromWeiHex({
         value,
-        toCurrency: ETH,
+        fromCurrency: nativeCurrency,
+        toCurrency: nativeCurrency,
         conversionRate,
         numberOfDecimals: 6,
-      })} ${ETH}`
-      : getEthConversionFromWeiHex({ value, toCurrency: ETH, conversionRate })
+      })} ${nativeCurrency}`
+      : getEthConversionFromWeiHex({ value, fromCurrency: nativeCurrency, conversionRate })
     const formattedTimestamp = formatDate(timestamp)
     const activityText = this.context.t(eventKey, [ethValue, formattedTimestamp])
 

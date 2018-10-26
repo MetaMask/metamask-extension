@@ -6,7 +6,7 @@ import Card from '../card'
 import CurrencyDisplay from '../currency-display'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import HexToDecimal from '../hex-to-decimal'
-import { ETH, GWEI, PRIMARY, SECONDARY } from '../../constants/common'
+import { GWEI, PRIMARY, SECONDARY } from '../../constants/common'
 import { getHexGasTotal } from '../../helpers/confirm-transaction/util'
 import { sumHexes } from '../../helpers/transactions.util'
 
@@ -18,6 +18,7 @@ export default class TransactionBreakdown extends PureComponent {
   static propTypes = {
     transaction: PropTypes.object,
     className: PropTypes.string,
+    nativeCurrency: PropTypes.string.isRequired,
   }
 
   static defaultProps = {
@@ -26,7 +27,7 @@ export default class TransactionBreakdown extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { transaction, className } = this.props
+    const { transaction, className, nativeCurrency } = this.props
     const { txParams: { gas, gasPrice, value } = {}, txReceipt: { gasUsed } = {} } = transaction
 
     const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas
@@ -72,7 +73,7 @@ export default class TransactionBreakdown extends PureComponent {
           <TransactionBreakdownRow title={t('gasPrice')}>
             <CurrencyDisplay
               className="transaction-breakdown__value"
-              currency={ETH}
+              currency={nativeCurrency}
               denomination={GWEI}
               value={gasPrice}
               hideLabel

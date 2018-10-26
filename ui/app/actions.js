@@ -309,7 +309,7 @@ var actions = {
   setPreference,
   updatePreferences,
   UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
-  setUseETHAsPrimaryCurrencyPreference,
+  setUseNativeCurrencyAsPrimaryCurrencyPreference,
 
   setMouseUserState,
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
@@ -1874,10 +1874,10 @@ function updateProviderType (type) {
   }
 }
 
-function setRpcTarget (newRpc) {
+function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname = '') {
   return (dispatch) => {
-    log.debug(`background.setRpcTarget: ${newRpc}`)
-    background.setCustomRpc(newRpc, (err, result) => {
+    log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
+    background.setCustomRpc(newRpc, chainId, ticker, nickname, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))
@@ -2330,8 +2330,8 @@ function updatePreferences (value) {
   }
 }
 
-function setUseETHAsPrimaryCurrencyPreference (value) {
-  return setPreference('useETHAsPrimaryCurrency', value)
+function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
+  return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
 }
 
 function setNetworkNonce (networkNonce) {
