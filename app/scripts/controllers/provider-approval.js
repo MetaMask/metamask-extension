@@ -24,11 +24,11 @@ class ProviderApprovalController {
         case 'init-provider-request':
           this.handleProviderRequest(origin)
           break
-        case 'init-status-request':
-          this.handleProviderStatusRequest(origin)
+        case 'init-is-approved':
+          this.handleIsApproved(origin)
           break
-        case 'init-unlock-request':
-          this.handleUnlockRequest()
+        case 'init-is-unlocked':
+          this.handleIsUnlocked()
           break
         case 'init-privacy-request':
           this.handlePrivacyStatusRequest()
@@ -44,7 +44,8 @@ class ProviderApprovalController {
    */
   handleProviderRequest (origin) {
     this.store.updateState({ providerRequests: [{ origin }] })
-    if (this.isApproved(origin)) {
+    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+    if (isUnlocked && this.isApproved(origin)) {
       this.approveProviderRequest(origin)
       return
     }
@@ -56,14 +57,14 @@ class ProviderApprovalController {
    *
    * @param {string} origin - Origin of the window requesting provider status
    */
-  async handleProviderStatusRequest (origin) {
-    const isEnabled = this.isApproved(origin)
-    this.platform && this.platform.sendMessage({ action: 'answer-status-request', isEnabled }, { active: true })
+  async handleIsApproved (origin) {
+    const isApproved = this.isApproved(origin)
+    this.platform && this.platform.sendMessage({ action: 'answer-is-approved', isApproved }, { active: true })
   }
 
-  handleUnlockRequest () {
+  handleIsUnlocked () {
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-    this.platform && this.platform.sendMessage({ action: 'answer-unlock-request', isUnlocked }, { active: true })
+    this.platform && this.platform.sendMessage({ action: 'answer-is-unlocked', isUnlocked }, { active: true })
   }
 
   handlePrivacyStatusRequest () {
@@ -118,6 +119,10 @@ class ProviderApprovalController {
   isApproved (origin) {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
     return !privacyMode || this.approvedOrigins[origin]
+  }
+
+  setLocked () {
+    this.platform.sendMessage({ action: 'metamask-set-locked' })
   }
 }
 
