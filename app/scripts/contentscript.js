@@ -66,7 +66,7 @@ function setupStreams () {
         data.data.selectedAddress = undefined
       }
       done(null, { ...data })
-    }
+    },
   })
 
   // forward communication plugin->inpage
