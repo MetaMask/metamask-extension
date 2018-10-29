@@ -407,7 +407,7 @@ class PreferencesController {
     if (url !== 'http://localhost:8545') {
       rpcList.push({ rpcUrl: url, chainId, ticker, nickname })
     }
-    this.store.updateState({ frequentRpcListiDetail: rpcList })
+    this.store.updateState({ frequentRpcListDetail: rpcList })
     return Promise.resolve(rpcList)
   }
 
