@@ -7,6 +7,7 @@ const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('extension-port-stream')
+const TransformStream = require('stream').Transform
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
@@ -58,18 +59,21 @@ function setupStreams () {
 
   // Until this origin is approved, cut-off publicConfig stream writes at the content
   // script level so malicious sites can't snoop on the currently-selected address
-  pageStream._write = function (data, encoding, cb) {
-    if (typeof data === 'object' && data.name && data.name === 'publicConfig' && !originApproved) {
-      cb()
-      return
+  const approvalTransform = new TransformStream({
+    objectMode: true,
+    transform: (data, _, done) => {
+      if (typeof data === 'object' && data.name && data.name === 'publicConfig' && !originApproved) {
+        data.data.selectedAddress = undefined
+      }
+      done(null, { ...data })
     }
-    LocalMessageDuplexStream.prototype._write.apply(pageStream, arguments)
-  }
+  })
 
   // forward communication plugin->inpage
   pump(
     pageStream,
     pluginStream,
+    approvalTransform,
     pageStream,
     (err) => logStreamDisconnectWarning('MetaMask Contentscript Forwarding', err)
   )
