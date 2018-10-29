@@ -123,8 +123,8 @@ class ExtensionPlatform {
 
   _getExplorer (hash, networkId) {
     let explorerName
-    if (networkId === 99 || networkId === 77) {
-      explorerName = 'POA explorer'
+    if (networkId === 99 || networkId === 100 || networkId === 77) {
+      explorerName = 'BlockScout'
     } else {
       explorerName = 'Etherscan'
     }
