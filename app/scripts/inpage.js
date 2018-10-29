@@ -106,7 +106,7 @@ inpageProvider._metamask = new Proxy({
         if (typeof detail.error !== 'undefined') {
           reject(detail.error)
         } else {
-          if (!detail.caching) {
+          if (detail.caching) {
             resolve(!!detail.isApproved)
           } else {
             resolve(isEnabled)
@@ -136,9 +136,9 @@ inpageProvider._metamask = new Proxy({
   },
 }, {
   get: function(obj, prop) {
-    !warned && console.warn('Heads up! ethereum._metamask exposes convenience methods that have ' +
+    !warned && console.warn('Heads up! ethereum._metamask exposes methods that have ' +
     'not been standardized yet. This means that these methods may not be implemented ' +
-    'in other dapp browsers.')
+    'in other dapp browsers and may be removed from MetaMask in the future.')
     warned = true
     return obj[prop]
   },
