@@ -422,7 +422,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
 
       // KeyringController
-      setLocked: nodeify(keyringController.setLocked, keyringController),
+      setLocked: nodeify(this.setLocked, this),
       createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
@@ -1575,5 +1575,10 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   whitelistPhishingDomain (hostname) {
     return this.blacklistController.whitelistDomain(hostname)
+  }
+
+  setLocked() {
+    this.providerApprovalController.setLocked()
+    return this.keyringController.setLocked()
   }
 }

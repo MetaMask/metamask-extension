@@ -129,21 +129,21 @@ function listenForProviderRequest () {
           origin: source.location.hostname,
         })
         break
-      case 'ETHEREUM_QUERY_STATUS':
+      case 'ETHEREUM_IS_APPROVED':
         extension.runtime.sendMessage({
-          action: 'init-status-request',
+          action: 'init-is-approved',
           origin: source.location.hostname,
         })
         break
-      case 'METAMASK_UNLOCK_STATUS':
+      case 'METAMASK_IS_UNLOCKED':
         extension.runtime.sendMessage({
-          action: 'init-unlock-request',
+          action: 'init-is-unlocked',
         })
         break
     }
   })
 
-  extension.runtime.onMessage.addListener(({ action, isEnabled, isUnlocked }) => {
+  extension.runtime.onMessage.addListener(({ action, isEnabled, isApproved, isUnlocked }) => {
     if (!action) { return }
     switch (action) {
       case 'approve-provider-request':
@@ -153,11 +153,14 @@ function listenForProviderRequest () {
       case 'reject-provider-request':
         injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: { error: 'User rejected provider access' }}))`)
         break
-      case 'answer-status-request':
-        injectScript(`window.dispatchEvent(new CustomEvent('ethereumproviderstatus', { detail: { isEnabled: ${isEnabled}}}))`)
+      case 'answer-is-approved':
+        injectScript(`window.dispatchEvent(new CustomEvent('ethereumisapproved', { detail: { isApproved: ${isApproved}}}))`)
         break
-      case 'answer-unlock-request':
-        injectScript(`window.dispatchEvent(new CustomEvent('metamaskunlockstatus', { detail: { isUnlocked: ${isUnlocked}}}))`)
+      case 'answer-is-unlocked':
+        injectScript(`window.dispatchEvent(new CustomEvent('metamaskisunlocked', { detail: { isUnlocked: ${isUnlocked}}}))`)
+        break
+      case 'metamask-set-locked':
+        injectScript(`window.dispatchEvent(new CustomEvent('metamasksetlocked', { detail: {}}))`)
         break
     }
   })

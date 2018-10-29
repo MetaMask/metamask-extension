@@ -33,6 +33,10 @@ inpageProvider.setMaxListeners(100)
 var isEnabled = false
 var warned = false
 
+window.addEventListener('metamasksetlocked', () => {
+  isEnabled = false
+})
+
 // augment the provider with its enable method
 inpageProvider.enable = function () {
   return new Promise((resolve, reject) => {
@@ -91,14 +95,14 @@ inpageProvider._metamask = new Proxy({
    */
   isApproved: function() {
     return new Promise((resolve, reject) => {
-      window.addEventListener('ethereumproviderstatus', ({ detail }) => {
+      window.addEventListener('ethereumisapproved', ({ detail }) => {
         if (typeof detail.error !== 'undefined') {
           reject(detail.error)
         } else {
-          resolve(!!detail.isEnabled)
+          resolve(!!detail.isApproved)
         }
       })
-      window.postMessage({ type: 'ETHEREUM_QUERY_STATUS' }, '*')
+      window.postMessage({ type: 'ETHEREUM_IS_APPROVED' }, '*')
     })
   },
 
@@ -109,14 +113,14 @@ inpageProvider._metamask = new Proxy({
    */
   isUnlocked: function () {
     return new Promise((resolve, reject) => {
-      window.addEventListener('metamaskunlockstatus', ({ detail }) => {
+      window.addEventListener('metamaskisunlocked', ({ detail }) => {
         if (typeof detail.error !== 'undefined') {
           reject(detail.error)
         } else {
           resolve(!!detail.isUnlocked)
         }
       })
-      window.postMessage({ type: 'METAMASK_UNLOCK_STATUS' }, '*')
+      window.postMessage({ type: 'METAMASK_IS_UNLOCKED' }, '*')
     })
   },
 }, {
