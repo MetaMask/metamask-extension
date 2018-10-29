@@ -8,6 +8,9 @@ const MetamaskInpageProvider = require('metamask-inpage-provider')
 
 let isEnabled = false
 let warned = false
+let providerHandle
+let isApprovedHandle
+let isUnlockedHandle
 
 restoreContextAfterImports()
 
@@ -43,7 +46,8 @@ window.addEventListener('metamasksetlocked', () => {
 // augment the provider with its enable method
 inpageProvider.enable = function () {
   return new Promise((resolve, reject) => {
-    window.addEventListener('ethereumprovider', ({ detail }) => {
+    window.removeEventListener('ethereumprovider', providerHandle)
+    providerHandle = ({ detail }) => {
       if (typeof detail.error !== 'undefined') {
         reject(detail.error)
       } else {
@@ -79,7 +83,8 @@ inpageProvider.enable = function () {
           })
           .catch(reject)
       }
-    })
+    }
+    window.addEventListener('ethereumprovider', providerHandle)
     window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER' }, '*')
   })
 }
@@ -102,7 +107,8 @@ inpageProvider._metamask = new Proxy({
    */
   isApproved: function() {
     return new Promise((resolve, reject) => {
-      window.addEventListener('ethereumisapproved', ({ detail }) => {
+      window.removeEventListener('ethereumisapproved', isApprovedHandle)
+      isApprovedHandle = ({ detail }) => {
         if (typeof detail.error !== 'undefined') {
           reject(detail.error)
         } else {
@@ -112,7 +118,8 @@ inpageProvider._metamask = new Proxy({
             resolve(isEnabled)
           }
         }
-      })
+      }
+      window.addEventListener('ethereumisapproved', isApprovedHandle)
       window.postMessage({ type: 'ETHEREUM_IS_APPROVED' }, '*')
     })
   },
@@ -124,13 +131,15 @@ inpageProvider._metamask = new Proxy({
    */
   isUnlocked: function () {
     return new Promise((resolve, reject) => {
-      window.addEventListener('metamaskisunlocked', ({ detail }) => {
+      window.removeEventListener('metamaskisunlocked', isUnlockedHandle)
+      isUnlockedHandle = ({ detail }) => {
         if (typeof detail.error !== 'undefined') {
           reject(detail.error)
         } else {
           resolve(!!detail.isUnlocked)
         }
-      })
+      }
+      window.addEventListener('metamaskisunlocked', isUnlockedHandle)
       window.postMessage({ type: 'METAMASK_IS_UNLOCKED' }, '*')
     })
   },
