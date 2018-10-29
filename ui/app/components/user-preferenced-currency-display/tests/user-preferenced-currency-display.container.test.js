@@ -18,14 +18,16 @@ describe('UserPreferencedCurrencyDisplay container', () => {
     it('should return the correct props', () => {
       const mockState = {
         metamask: {
+          nativeCurrency: 'ETH',
           preferences: {
-            useETHAsPrimaryCurrency: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
           },
         },
       }
 
       assert.deepEqual(mapStateToProps(mockState), {
-        useETHAsPrimaryCurrency: true,
+        nativeCurrency: 'ETH',
+        useNativeCurrencyAsPrimaryCurrency: true,
       })
     })
   })
@@ -37,33 +39,38 @@ describe('UserPreferencedCurrencyDisplay container', () => {
       const tests = [
         {
           stateProps: {
-            useETHAsPrimaryCurrency: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
+            nativeCurrency: 'ETH',
           },
           ownProps: {
             type: 'PRIMARY',
           },
           result: {
             currency: 'ETH',
+            nativeCurrency: 'ETH',
             numberOfDecimals: 6,
             prefix: undefined,
           },
         },
         {
           stateProps: {
-            useETHAsPrimaryCurrency: false,
+            useNativeCurrencyAsPrimaryCurrency: false,
+            nativeCurrency: 'ETH',
           },
           ownProps: {
             type: 'PRIMARY',
           },
           result: {
             currency: undefined,
+            nativeCurrency: 'ETH',
             numberOfDecimals: 2,
             prefix: undefined,
           },
         },
         {
           stateProps: {
-            useETHAsPrimaryCurrency: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
+            nativeCurrency: 'ETH',
           },
           ownProps: {
             type: 'SECONDARY',
@@ -71,6 +78,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
             fiatPrefix: '-',
           },
           result: {
+            nativeCurrency: 'ETH',
             currency: undefined,
             numberOfDecimals: 4,
             prefix: '-',
@@ -78,7 +86,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
         },
         {
           stateProps: {
-            useETHAsPrimaryCurrency: false,
+            useNativeCurrencyAsPrimaryCurrency: false,
+            nativeCurrency: 'ETH',
           },
           ownProps: {
             type: 'SECONDARY',
@@ -89,6 +98,7 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           },
           result: {
             currency: 'ETH',
+            nativeCurrency: 'ETH',
             numberOfDecimals: 3,
             prefix: 'b',
           },

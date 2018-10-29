@@ -52,7 +52,7 @@ function reduceMetamask (state, action) {
     welcomeScreenSeen: false,
     currentLocale: '',
     preferences: {
-      useETHAsPrimaryCurrency: true,
+      useNativeCurrencyAsPrimaryCurrency: true,
     },
   }, state.metamask)
 

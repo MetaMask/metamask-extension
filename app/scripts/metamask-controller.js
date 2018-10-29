@@ -138,12 +138,12 @@ module.exports = class MetamaskController extends EventEmitter {
         this.accountTracker.stop()
       }
     })
-     
+
     // ensure accountTracker updates balances after network change
     this.networkController.on('networkDidChange', () => {
       this.accountTracker._updateAccounts()
     })
-      
+
     // key mgmt
     const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
     this.keyringController = new KeyringController({
@@ -197,6 +197,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
+      var currentCurrency = this.currencyController.getCurrentCurrency()
+      this.setCurrentCurrency(currentCurrency, function() {})
     })
     this.balancesController.updateAllBalances()
 
@@ -1412,10 +1414,13 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {Function} cb - A callback function returning currency info.
    */
   setCurrentCurrency (currencyCode, cb) {
+    const { ticker } = this.networkController.getNetworkConfig()
     try {
+      this.currencyController.setNativeCurrency(ticker)
       this.currencyController.setCurrentCurrency(currencyCode)
       this.currencyController.updateConversionRate()
       const data = {
+        nativeCurrency: ticker || 'ETH',
         conversionRate: this.currencyController.getConversionRate(),
         currentCurrency: this.currencyController.getCurrentCurrency(),
         conversionDate: this.currencyController.getConversionDate(),
@@ -1454,11 +1459,14 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * A method for selecting a custom URL for an ethereum RPC provider.
    * @param {string} rpcTarget - A URL for a valid Ethereum RPC API.
+   * @param {number} chainId - The chainId of the selected network.
+   * @param {string} ticker - The ticker symbol of the selected network.
+   * @param {string} nickname - Optional nickname of the selected network.
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
-  async setCustomRpc (rpcTarget) {
-    this.networkController.setRpcTarget(rpcTarget)
-    await this.preferencesController.addToFrequentRpcList(rpcTarget)
+  async setCustomRpc (rpcTarget, chainId, ticker = 'ETH', nickname = '') {
+    this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname)
+    await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname)
     return rpcTarget
   }
 

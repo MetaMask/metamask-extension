@@ -41,7 +41,7 @@ export default class NetworkDisplay extends Component {
   }
 
   render () {
-    const { network, provider: { type } } = this.props
+    const { network, provider: { type, nickname } } = this.props
     const networkClass = networkToClassHash[network]
 
     return (
@@ -61,7 +61,7 @@ export default class NetworkDisplay extends Component {
               />
         }
         <div className="network-display__name">
-          { this.context.t(type) }
+          { type === 'rpc' && nickname ? nickname : this.context.t(type) }
         </div>
       </div>
     )

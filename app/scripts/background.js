@@ -29,7 +29,7 @@ const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
-const ipfsContent = require('./lib/ipfsContent.js')
+const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
 
 const {
   ENVIRONMENT_TYPE_POPUP,
@@ -58,7 +58,6 @@ const isIE = !!document.documentMode
 // Edge 20+
 const isEdge = !isIE && !!window.StyleMedia
 
-let ipfsHandle
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
@@ -164,7 +163,6 @@ async function initialize () {
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
-  ipfsHandle = ipfsContent(initState.NetworkController.provider)
 }
 
 //
@@ -269,10 +267,8 @@ function setupController (initState, initLangCode) {
   })
   global.metamaskController = controller
 
-  controller.networkController.on('networkDidChange', () => {
-    ipfsHandle && ipfsHandle.remove()
-    ipfsHandle = ipfsContent(controller.networkController.providerStore.getState())
-  })
+  const provider = controller.provider
+  setupEnsIpfsResolver({ provider })
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
