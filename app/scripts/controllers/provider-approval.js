@@ -5,6 +5,11 @@ const ObservableStore = require('obs-store')
  */
 class ProviderApprovalController {
   /**
+   * Determines if caching is enabled
+   */
+  caching = false
+
+  /**
    * Creates a ProviderApprovalController
    *
    * @param {Object} [config] - Options to configure controller
@@ -44,7 +49,7 @@ class ProviderApprovalController {
    */
   _handleProviderRequest (origin) {
     this.store.updateState({ providerRequests: [{ origin }] })
-    if (this.isApproved(origin)) {
+    if (this.isApproved(origin) && this.caching) {
       this.approveProviderRequest(origin)
       return
     }
@@ -57,8 +62,9 @@ class ProviderApprovalController {
    * @param {string} origin - Origin of the window
    */
   _handleIsApproved (origin) {
-    const isApproved = this.isApproved(origin)
-    this.platform && this.platform.sendMessage({ action: 'answer-is-approved', isApproved }, { active: true })
+    const isApproved = this.isApproved(origin) && this.caching
+    const caching = this.caching
+    this.platform && this.platform.sendMessage({ action: 'answer-is-approved', isApproved, caching }, { active: true })
   }
 
   /**
@@ -124,6 +130,14 @@ class ProviderApprovalController {
   isApproved (origin) {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
     return !privacyMode || this.approvedOrigins[origin]
+  }
+
+  /**
+   * Tells all tabs that MetaMask is now locked. This is primarily used to set
+   * internal flags in the contentscript and inpage script.
+   */
+  setLocked () {
+    this.platform.sendMessage({ action: 'metamask-set-locked' })
   }
 }
 

@@ -1581,6 +1581,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked() {
+    this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
   }
 }

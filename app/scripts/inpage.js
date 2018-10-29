@@ -35,6 +35,11 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
+// set up a listener for when MetaMask is locked
+window.addEventListener('metamasksetlocked', () => {
+  isEnabled = false
+})
+
 // augment the provider with its enable method
 inpageProvider.enable = function () {
   return new Promise((resolve, reject) => {
@@ -101,7 +106,11 @@ inpageProvider._metamask = new Proxy({
         if (typeof detail.error !== 'undefined') {
           reject(detail.error)
         } else {
-          resolve(!!detail.isApproved)
+          if (!detail.caching) {
+            resolve(!!detail.isApproved)
+          } else {
+            resolve(isEnabled)
+          }
         }
       })
       window.postMessage({ type: 'ETHEREUM_IS_APPROVED' }, '*')
