@@ -9,29 +9,29 @@ class ProviderApprovalController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ closePopup, openPopup, keyringController, platform, preferencesController, publicConfigStore } = {}) {
-    this.store = new ObservableStore()
+  constructor ({ closePopup, keyringController, openPopup, platform, preferencesController, publicConfigStore } = {}) {
+    this.approvedOrigins = {}
     this.closePopup = closePopup
+    this.keyringController = keyringController
     this.openPopup = openPopup
     this.platform = platform
-    this.publicConfigStore = publicConfigStore
-    this.approvedOrigins = {}
     this.preferencesController = preferencesController
-    this.keyringController = keyringController
-    platform && platform.addMessageListener && platform.addMessageListener(({ action, origin }) => {
-      if (!action) { return }
+    this.publicConfigStore = publicConfigStore
+    this.store = new ObservableStore()
+
+    platform && platform.addMessageListener && platform.addMessageListener(({ action = '', origin }) => {
       switch (action) {
         case 'init-provider-request':
-          this.handleProviderRequest(origin)
+          this._handleProviderRequest(origin)
           break
         case 'init-is-approved':
-          this.handleIsApproved(origin)
+          this._handleIsApproved(origin)
           break
         case 'init-is-unlocked':
-          this.handleIsUnlocked()
+          this._handleIsUnlocked()
           break
         case 'init-privacy-request':
-          this.handlePrivacyStatusRequest()
+          this._handlePrivacyRequest()
           break
       }
     })
@@ -42,7 +42,7 @@ class ProviderApprovalController {
    *
    * @param {string} origin - Origin of the window requesting full provider access
    */
-  handleProviderRequest (origin) {
+  _handleProviderRequest (origin) {
     this.store.updateState({ providerRequests: [{ origin }] })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     if (isUnlocked && this.isApproved(origin)) {
@@ -53,21 +53,27 @@ class ProviderApprovalController {
   }
 
   /**
-   * Called by a tab to determine if a full Ethereum provider API is exposed
+   * Called by a tab to determine if an origin has been approved in the past
    *
-   * @param {string} origin - Origin of the window requesting provider status
+   * @param {string} origin - Origin of the window
    */
-  async handleIsApproved (origin) {
+  _handleIsApproved (origin) {
     const isApproved = this.isApproved(origin)
     this.platform && this.platform.sendMessage({ action: 'answer-is-approved', isApproved }, { active: true })
   }
 
-  handleIsUnlocked () {
+  /**
+   * Called by a tab to determine if MetaMask is currently locked or unlocked
+   */
+  _handleIsUnlocked () {
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     this.platform && this.platform.sendMessage({ action: 'answer-is-unlocked', isUnlocked }, { active: true })
   }
 
-  handlePrivacyStatusRequest () {
+  /**
+   * Called to check privacy mode; if privacy mode is off, this will automatically enable the provider (legacy behavior)
+   */
+  _handlePrivacyRequest () {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
     if (!privacyMode) {
       this.platform && this.platform.sendMessage({ action: 'approve-provider-request' }, { active: true })
@@ -121,6 +127,10 @@ class ProviderApprovalController {
     return !privacyMode || this.approvedOrigins[origin]
   }
 
+  /**
+   * Tells all tabs that MetaMask is now locked. This is primarily used to set
+   * internal flags in the contentscript and inpage script.
+   */
   setLocked () {
     this.platform.sendMessage({ action: 'metamask-set-locked' })
   }

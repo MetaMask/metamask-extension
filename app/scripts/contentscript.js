@@ -12,7 +12,7 @@ const TransformStream = require('stream').Transform
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
-let originApproved = false
+let isEnabled = false
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
@@ -40,7 +40,7 @@ function injectScript (content) {
     scriptTag.textContent = content
     container.insertBefore(scriptTag, container.children[0])
   } catch (e) {
-    console.error('Metamask script injection failed.', e)
+    console.error('MetaMask script injection failed', e)
   }
 }
 
@@ -57,12 +57,11 @@ function setupStreams () {
   const pluginPort = extension.runtime.connect({ name: 'contentscript' })
   const pluginStream = new PortStream(pluginPort)
 
-  // Until this origin is approved, cut-off publicConfig stream writes at the content
-  // script level so malicious sites can't snoop on the currently-selected address
+  // Filter out selectedAddress until this origin is enabled
   const approvalTransform = new TransformStream({
     objectMode: true,
     transform: (data, _, done) => {
-      if (typeof data === 'object' && data.name && data.name === 'publicConfig' && !originApproved) {
+      if (typeof data === 'object' && data.name && data.name === 'publicConfig' && !isEnabled) {
         data.data.selectedAddress = undefined
       }
       done(null, { ...data })
@@ -117,7 +116,7 @@ function setupStreams () {
  * Establishes listeners for requests to fully-enable the provider from the dapp context
  * and for full-provider approvals and rejections from the background script context. Dapps
  * should not post messages directly and should instead call provider.enable(), which
- * handles posting these messages automatically.
+ * handles posting these messages internally.
  */
 function listenForProviderRequest () {
   window.addEventListener('message', ({ source, data }) => {
@@ -143,11 +142,10 @@ function listenForProviderRequest () {
     }
   })
 
-  extension.runtime.onMessage.addListener(({ action, isEnabled, isApproved, isUnlocked }) => {
-    if (!action) { return }
+  extension.runtime.onMessage.addListener(({ action = '', isApproved, isUnlocked }) => {
     switch (action) {
       case 'approve-provider-request':
-        originApproved = true
+        isEnabled = true
         injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: {}}))`)
         break
       case 'reject-provider-request':
@@ -160,6 +158,7 @@ function listenForProviderRequest () {
         injectScript(`window.dispatchEvent(new CustomEvent('metamaskisunlocked', { detail: { isUnlocked: ${isUnlocked}}}))`)
         break
       case 'metamask-set-locked':
+        isEnabled = false
         injectScript(`window.dispatchEvent(new CustomEvent('metamasksetlocked', { detail: {}}))`)
         break
     }

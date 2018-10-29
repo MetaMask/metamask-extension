@@ -222,11 +222,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.providerApprovalController = new ProviderApprovalController({
       closePopup: opts.closePopup,
+      keyringController: this.keyringController,
       openPopup: opts.openPopup,
       platform: opts.platform,
       preferencesController: this.preferencesController,
       publicConfigStore: this.publicConfigStore,
-      keyringController: this.keyringController,
     })
 
     this.store.updateStructure({
@@ -1577,6 +1577,9 @@ module.exports = class MetamaskController extends EventEmitter {
     return this.blacklistController.whitelistDomain(hostname)
   }
 
+  /**
+   * Locks MetaMask
+   */
   setLocked() {
     this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
