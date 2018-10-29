@@ -157,10 +157,6 @@ function listenForProviderRequest () {
       case 'answer-is-unlocked':
         injectScript(`window.dispatchEvent(new CustomEvent('metamaskisunlocked', { detail: { isUnlocked: ${isUnlocked}}}))`)
         break
-      case 'metamask-set-locked':
-        isEnabled = false
-        injectScript(`window.dispatchEvent(new CustomEvent('metamasksetlocked', { detail: {}}))`)
-        break
     }
   })
 }

@@ -44,8 +44,7 @@ class ProviderApprovalController {
    */
   _handleProviderRequest (origin) {
     this.store.updateState({ providerRequests: [{ origin }] })
-    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-    if (isUnlocked && this.isApproved(origin)) {
+    if (this.isApproved(origin)) {
       this.approveProviderRequest(origin)
       return
     }
@@ -125,14 +124,6 @@ class ProviderApprovalController {
   isApproved (origin) {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
     return !privacyMode || this.approvedOrigins[origin]
-  }
-
-  /**
-   * Tells all tabs that MetaMask is now locked. This is primarily used to set
-   * internal flags in the contentscript and inpage script.
-   */
-  setLocked () {
-    this.platform.sendMessage({ action: 'metamask-set-locked' })
   }
 }
 

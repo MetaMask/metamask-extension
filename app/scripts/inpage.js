@@ -35,11 +35,6 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
-// set up a listener for when MetaMask is locked
-window.addEventListener('metamasksetlocked', () => {
-  isEnabled = false
-})
-
 // augment the provider with its enable method
 inpageProvider.enable = function () {
   return new Promise((resolve, reject) => {
@@ -50,13 +45,15 @@ inpageProvider.enable = function () {
         // wait for the publicConfig store to populate with an account
         const publicConfig = new Promise((resolve) => {
           const { selectedAddress } = inpageProvider.publicConfigStore.getState()
-          if (selectedAddress) {
-            resolve()
-          } else {
-            inpageProvider.publicConfigStore.on('update', ({ selectedAddress }) => {
-              selectedAddress && resolve()
-            })
-          }
+          inpageProvider._metamask.isUnlocked().then(unlocked => {
+            if (!unlocked || selectedAddress) {
+              resolve()
+            } else {
+              inpageProvider.publicConfigStore.on('update', ({ selectedAddress }) => {
+                selectedAddress && resolve()
+              })
+            }
+          })
         })
 
         // wait for the background to update with an accoount
