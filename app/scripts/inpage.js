@@ -6,14 +6,18 @@ const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
 
+let isEnabled = false
+let warned = false
+
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
 console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
-'stopped exposing user accounts to dapps by default beginning November 2nd, 2018. ' +
-'Dapps should call provider.enable() in order to view and use accounts. Please see ' +
-'https://bit.ly/2QQHXvF for complete information and up-to-date example code.')
+'stopped exposing user accounts to dapps if "privacy mode" is enabled on ' +
+'November 2nd, 2018. Dapps should now call provider.enable() in order to view and use ' +
+'accounts. Please see https://bit.ly/2QQHXvF for complete information and up-to-date ' +
+'example code.')
 
 //
 // setup plugin communication
@@ -30,9 +34,8 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
-var isEnabled = false
-var warned = false
 
+// set up a listener for when MetaMask is locked
 window.addEventListener('metamasksetlocked', () => {
   isEnabled = false
 })
@@ -44,6 +47,7 @@ inpageProvider.enable = function () {
       if (typeof detail.error !== 'undefined') {
         reject(detail.error)
       } else {
+        // wait for the publicConfig store to populate with an account
         const publicConfig = new Promise((resolve) => {
           const { selectedAddress } = inpageProvider.publicConfigStore.getState()
           if (selectedAddress) {
@@ -55,6 +59,7 @@ inpageProvider.enable = function () {
           }
         })
 
+        // wait for the background to update with an accoount
         const ethAccounts = new Promise((resolveAccounts, rejectAccounts) => {
           inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
             if (error) {
@@ -142,7 +147,6 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 })
 
 window.ethereum = proxiedInpageProvider
-
 
 //
 // setup web3
