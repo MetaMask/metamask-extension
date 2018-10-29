@@ -142,7 +142,7 @@ function listenForProviderRequest () {
     }
   })
 
-  extension.runtime.onMessage.addListener(({ action = '', isApproved, isUnlocked }) => {
+  extension.runtime.onMessage.addListener(({ action = '', isApproved, caching, isUnlocked }) => {
     switch (action) {
       case 'approve-provider-request':
         isEnabled = true
@@ -152,10 +152,14 @@ function listenForProviderRequest () {
         injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: { error: 'User rejected provider access' }}))`)
         break
       case 'answer-is-approved':
-        injectScript(`window.dispatchEvent(new CustomEvent('ethereumisapproved', { detail: { isApproved: ${isApproved}}}))`)
+        injectScript(`window.dispatchEvent(new CustomEvent('ethereumisapproved', { detail: { isApproved: ${isApproved}, caching: ${caching}}}))`)
         break
       case 'answer-is-unlocked':
         injectScript(`window.dispatchEvent(new CustomEvent('metamaskisunlocked', { detail: { isUnlocked: ${isUnlocked}}}))`)
+        break
+      case 'metamask-set-locked':
+        isEnabled = false
+        injectScript(`window.dispatchEvent(new CustomEvent('metamasksetlocked', { detail: {}}))`)
         break
     }
   })
