@@ -17,7 +17,7 @@ BinaryRenderer.prototype.render = function () {
   const text = this.hexToText(value)
 
   const defaultStyle = extend({
-    width: '315px',
+    width: '100%',
     maxHeight: '210px',
     resize: 'none',
     border: 'none',

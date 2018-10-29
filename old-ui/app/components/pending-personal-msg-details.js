@@ -27,7 +27,7 @@ PendingMsgDetails.prototype.render = function () {
     h('div', {
       key: msgData.id,
       style: {
-        margin: '10px 20px',
+        margin: '10px 0px',
       },
     }, [
 
@@ -43,6 +43,7 @@ PendingMsgDetails.prototype.render = function () {
       h('div', {
         style: {
           height: '260px',
+          margin: '0 30px',
         },
       }, [
         h('label.font-small', { style: { display: 'block' } }, 'MESSAGE'),

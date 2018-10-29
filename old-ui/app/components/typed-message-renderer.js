@@ -25,7 +25,7 @@ TypedMessageRenderer.prototype.render = function () {
   }
 
   const defaultStyle = extend({
-    width: '315px',
+    width: '100%',
     maxHeight: '210px',
     resize: 'none',
     border: 'none',

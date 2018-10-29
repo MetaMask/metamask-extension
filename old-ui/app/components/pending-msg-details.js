@@ -24,7 +24,7 @@ PendingMsgDetails.prototype.render = function () {
     h('div', {
       key: msgData.id,
       style: {
-        margin: '10px 20px',
+        margin: '10px 0px',
       },
     }, [
 
@@ -37,7 +37,11 @@ PendingMsgDetails.prototype.render = function () {
       }),
 
       // message data
-      h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
+      h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', {
+        style: {
+          margin: '0 30px'
+        }
+      }, [
         h('.flex-column.flex-space-between', [
           h('label.font-small', 'MESSAGE'),
           h('span.font-small', msgParams.data),

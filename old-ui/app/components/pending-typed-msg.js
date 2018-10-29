@@ -32,8 +32,14 @@ PendingMsg.prototype.render = function () {
       h(PendingTxDetails, state),
 
       // sign + cancel
-      h('.flex-row.flex-space-around', [
-        h('button', {
+      h('.flex-row.flex-space-around', {
+        style: {
+          marginRight: '30px',
+          float: 'right',
+          display: 'block',
+        }
+      }, [
+        h('button.btn-violet', {
           onClick: state.cancelTypedMessage,
         }, 'Cancel'),
         h('button', {

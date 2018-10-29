@@ -18,9 +18,6 @@ PendingMsg.prototype.render = function () {
 
     h('div', {
       key: msgData.id,
-      style: {
-        maxWidth: '350px',
-      },
     }, [
 
       // header
@@ -33,7 +30,8 @@ PendingMsg.prototype.render = function () {
 
       h('.error', {
         style: {
-          margin: '10px',
+          margin: '30px',
+          width: 'auto',
         },
       }, [
         `Signing this message can have
@@ -46,8 +44,14 @@ PendingMsg.prototype.render = function () {
       h(PendingTxDetails, state),
 
       // sign + cancel
-      h('.flex-row.flex-space-around', [
-        h('button', {
+      h('.flex-row.flex-space-around', {
+        style: {
+          marginRight: '30px',
+          float: 'right',
+          display: 'block',
+        }
+      }, [
+        h('button.btn-violet', {
           onClick: state.cancelMessage,
         }, 'Cancel'),
         h('button', {
@@ -58,4 +62,3 @@ PendingMsg.prototype.render = function () {
 
   )
 }
-
