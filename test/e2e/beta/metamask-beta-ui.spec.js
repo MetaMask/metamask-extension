@@ -459,7 +459,7 @@ describe('MetaMask', function () {
       dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
 
       await delay(regularDelayMs)
-      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Approve')]`), 10000)
+      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
       await approveButton.click()
     })
 
