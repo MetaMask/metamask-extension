@@ -207,7 +207,7 @@ class TransactionController extends EventEmitter {
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     let gasPrice = txParams.gasPrice
     if (!gasPrice) {
-      gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
+      gasPrice = this.getGasPrice ? await this.getGasPrice() : await this.query.gasPrice()
     }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     // set gasLimit

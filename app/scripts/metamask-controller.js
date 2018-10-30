@@ -359,7 +359,7 @@ module.exports = class MetamaskController extends EventEmitter {
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      getGasPrice: (cb) => cb(null, this.getGasPrice()),
+      getGasPrice: nodeify(this.getGasPrice, this),
 
       // coinbase
       buyEth: this.buyEth.bind(this),
@@ -1360,7 +1360,7 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns {string} A hex representation of the suggested wei gas price.
    */
-  getGasPrice () {
+  async getGasPrice () {
     return '0x' + GWEI_BN.toString(16)
   }
 
