@@ -1,7 +1,8 @@
 const Web3 = require('web3')
-const contracts = require('eth-contract-metadata')
+const contractsETH = require('eth-contract-metadata')
+const contractsPOA = require('poa-contract-metadata')
 const { warn } = require('loglevel')
-const { MAINNET } = require('./network/enums')
+const { MAINNET, POA } = require('./network/enums')
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
 const ERC20_ABI = [{'constant': true, 'inputs': [{'name': '_owner', 'type': 'address'}], 'name': 'balanceOf', 'outputs': [{'name': 'balance', 'type': 'uint256'}], 'payable': false, 'type': 'function'}]
@@ -28,9 +29,11 @@ class DetectTokensController {
    *
    */
   async detectNewTokens () {
+    const isTestnet = this._network.store.getState().provider.type !== MAINNET && this._network.store.getState().provider.type !== POA
     if (!this.isActive) { return }
-    if (this._network.store.getState().provider.type !== MAINNET) { return }
+    if (isTestnet) { return }
     this.web3.setProvider(this._network._provider)
+    const contracts = this.getContracts()
     for (const contractAddress in contracts) {
       if (contracts[contractAddress].erc20 && !(this.tokenAddresses.includes(contractAddress.toLowerCase()))) {
         this.detectTokenBalance(contractAddress)
@@ -47,6 +50,7 @@ class DetectTokensController {
    */
   async detectTokenBalance (contractAddress) {
     const ethContract = this.web3.eth.contract(ERC20_ABI).at(contractAddress)
+    const contracts = this.getContracts()
     ethContract.balanceOf(this.selectedAddress, (error, result) => {
       if (!error) {
         if (!result.isZero()) {
@@ -56,6 +60,18 @@ class DetectTokensController {
         warn(`MetaMask - DetectTokensController balance fetch failed for ${contractAddress}.`, error)
       }
     })
+  }
+
+  /**
+  * Returns corresponding contracts JSON object depending on chain
+  * @returns {Object}
+  */
+  getContracts () {
+    const isMainnet = this._network.store.getState().provider.type === MAINNET
+    const isPOA = this._network.store.getState().provider.type === POA
+    // todo: isDAI
+    const contracts = isMainnet ? contractsETH : isPOA ? contractsPOA : {}
+    return contracts
   }
 
   /**
