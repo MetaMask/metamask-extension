@@ -29,7 +29,7 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     align-items: center;
     margin: 20px 24px;
     flex-direction: row;
-    flex-grow: 3;
+    min-width: 0;
 
     @media #{$wallet-balance-breakpoint-range} {
       margin: 10% 4%;
@@ -38,8 +38,7 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
 
   .balance-display {
     margin-left: 15px;
-    justify-content: flex-start;
-    align-items: flex-start;
+    min-width: 0;
 
     .token-amount {
       font-size: 1.5rem;

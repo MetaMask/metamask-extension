@@ -1,5 +1,6 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
+const connect = require('react-redux').connect
 const { inherits } = require('util')
 const {
   formatBalance,
@@ -8,7 +9,12 @@ const {
 const Tooltip = require('./tooltip.js')
 const FiatValue = require('./fiat-value.js')
 
-module.exports = EthBalanceComponent
+module.exports = connect(mapStateToProps)(EthBalanceComponent)
+function mapStateToProps (state) {
+  return {
+    ticker: state.metamask.ticker,
+  }
+}
 
 inherits(EthBalanceComponent, Component)
 function EthBalanceComponent () {
@@ -17,9 +23,9 @@ function EthBalanceComponent () {
 
 EthBalanceComponent.prototype.render = function () {
   const props = this.props
-  const { value, style, width, needsParse = true } = props
+  const { ticker, value, style, width, needsParse = true } = props
 
-  const formattedValue = value ? formatBalance(value, 6, needsParse) : '...'
+  const formattedValue = value ? formatBalance(value, 6, needsParse, ticker) : '...'
 
   return (
 

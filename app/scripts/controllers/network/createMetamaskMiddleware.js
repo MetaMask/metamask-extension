@@ -11,6 +11,7 @@ function createMetamaskMiddleware ({
   processTransaction,
   processEthSignMessage,
   processTypedMessage,
+  processTypedMessageV3,
   processPersonalMessage,
   getPendingNonce,
 }) {
@@ -25,6 +26,7 @@ function createMetamaskMiddleware ({
       processTransaction,
       processEthSignMessage,
       processTypedMessage,
+      processTypedMessageV3,
       processPersonalMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),

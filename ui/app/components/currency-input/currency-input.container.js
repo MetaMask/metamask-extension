@@ -3,18 +3,19 @@ import CurrencyInput from './currency-input.component'
 import { ETH } from '../../constants/common'
 
 const mapStateToProps = state => {
-  const { metamask: { currentCurrency, conversionRate } } = state
+  const { metamask: { nativeCurrency, currentCurrency, conversionRate } } = state
 
   return {
+    nativeCurrency,
     currentCurrency,
     conversionRate,
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { currentCurrency } = stateProps
+  const { nativeCurrency, currentCurrency } = stateProps
   const { useFiat } = ownProps
-  const suffix = useFiat ? currentCurrency.toUpperCase() : ETH
+  const suffix = useFiat ? currentCurrency.toUpperCase() : nativeCurrency || ETH
 
   return {
     ...stateProps,

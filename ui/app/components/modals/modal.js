@@ -27,7 +27,6 @@ import TransactionConfirmed from './transaction-confirmed'
 import ConfirmCustomizeGasModal from './customize-gas'
 import CancelTransaction from './cancel-transaction'
 import WelcomeBeta from './welcome-beta'
-import TransactionDetails from './transaction-details'
 import RejectTransactions from './reject-transactions'
 
 const modalContainerBaseStyle = {
@@ -355,19 +354,6 @@ const MODALS = {
 
   CANCEL_TRANSACTION: {
     contents: h(CancelTransaction),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  TRANSACTION_DETAILS: {
-    contents: h(TransactionDetails),
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

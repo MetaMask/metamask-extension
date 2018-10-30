@@ -21,6 +21,7 @@ class CurrencyController {
    * since midnight of January 1, 1970
    * @property {number} conversionInterval The id of the interval created by the scheduleConversionInterval method.
    * Used to clear an existing interval on subsequent calls of that method.
+   * @property {string} nativeCurrency The ticker/symbol of the native chain currency
    *
    */
   constructor (opts = {}) {
@@ -28,6 +29,7 @@ class CurrencyController {
       currentCurrency: 'usd',
       conversionRate: 0,
       conversionDate: 'N/A',
+      nativeCurrency: 'ETH',
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -35,6 +37,29 @@ class CurrencyController {
   //
   // PUBLIC METHODS
   //
+
+  /**
+   * A getter for the nativeCurrency property
+   *
+   * @returns {string} A 2-4 character shorthand that describes the specific currency
+   *
+   */
+  getNativeCurrency () {
+    return this.store.getState().nativeCurrency
+  }
+
+  /**
+   * A setter for the nativeCurrency property
+   *
+   * @param {string} nativeCurrency The new currency to set as the nativeCurrency in the store
+   *
+   */
+  setNativeCurrency (nativeCurrency) {
+    this.store.updateState({
+      nativeCurrency,
+      ticker: nativeCurrency,
+    })
+  }
 
   /**
    * A getter for the currentCurrency property
@@ -104,16 +129,28 @@ class CurrencyController {
    *
    */
   async updateConversionRate () {
-    let currentCurrency
+    let currentCurrency, nativeCurrency
     try {
       currentCurrency = this.getCurrentCurrency()
+      nativeCurrency = this.getNativeCurrency()
+      // select api
+      let apiUrl
+      if (nativeCurrency === 'ETH') {
+        // ETH
+        apiUrl = `https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`
+      } else {
+        // ETC
+        apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
+      }
+      // attempt request
       let response
       try {
-        response = await fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`)
+        response = await fetch(apiUrl)
       } catch (err) {
         log.error(new Error(`CurrencyController - Failed to request currency from Infura:\n${err.stack}`))
         return
       }
+      // parse response
       let rawResponse
       let parsedResponse
       try {
@@ -123,8 +160,21 @@ class CurrencyController {
         log.error(new Error(`CurrencyController - Failed to parse response "${rawResponse}"`))
         return
       }
-      this.setConversionRate(Number(parsedResponse.bid))
-      this.setConversionDate(Number(parsedResponse.timestamp))
+      // set exhcange rate
+      if (nativeCurrency === 'ETH') {
+        // ETH
+        this.setConversionRate(Number(parsedResponse.bid))
+        this.setConversionDate(Number(parsedResponse.timestamp))
+      } else {
+        // ETC
+        if (parsedResponse[currentCurrency.toUpperCase()]) {
+          this.setConversionRate(Number(parsedResponse[currentCurrency.toUpperCase()]))
+          this.setConversionDate(parseInt((new Date()).getTime() / 1000))
+        } else {
+          this.setConversionRate(0)
+          this.setConversionDate('N/A')
+        }
+      }
     } catch (err) {
       // reset current conversion rate
       this.setConversionRate(0)

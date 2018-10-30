@@ -151,7 +151,6 @@ describe('SendAmountRow Component', function () {
     })
 
     it('should render a UserPreferencedTokenInput as the second child of the SendRowWrapper', () => {
-      console.log('HI', wrapper.find(SendRowWrapper).childAt(1))
       assert(wrapper.find(SendRowWrapper).childAt(1).is(UserPreferencedTokenInput))
     })
 
