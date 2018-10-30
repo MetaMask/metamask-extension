@@ -1,3 +1,4 @@
+const clone = require('clone')
 const extend = require('xtend')
 const copyToClipboard = require('copy-to-clipboard')
 
@@ -52,19 +53,24 @@ function rootReducer (state, action) {
   return state
 }
 
+window.getCleanAppState = function () {
+  const state = clone(window.METAMASK_CACHED_LOG_STATE)
+  // append additional information
+  state.version = global.platform.getVersion()
+  state.browser = window.navigator.userAgent
+  // ensure seedWords are not included
+  if (state.metamask) delete state.metamask.seedWords
+  if (state.appState.currentView) delete state.appState.currentView.seedWords
+  return state
+}
+
 window.logStateString = function (cb) {
-  const state = window.METAMASK_CACHED_LOG_STATE
-  const version = global.platform.getVersion()
-  const browser = window.navigator.userAgent
-  return global.platform.getPlatformInfo((err, platform) => {
-    if (err) {
-      return cb(err)
-    }
-    state.version = version
+  const state = window.getCleanAppState()
+  global.platform.getPlatformInfo((err, platform) => {
+    if (err) return cb(err)
     state.platform = platform
-    state.browser = browser
     const stateString = JSON.stringify(state, removeSeedWords, 2)
-    return cb(null, stateString)
+    cb(null, stateString)
   })
 }
 

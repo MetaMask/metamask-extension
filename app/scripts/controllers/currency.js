@@ -133,18 +133,40 @@ class CurrencyController {
     try {
       currentCurrency = this.getCurrentCurrency()
       nativeCurrency = this.getNativeCurrency()
+      // select api
       let apiUrl
       if (nativeCurrency === 'ETH') {
+        // ETH
         apiUrl = `https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`
       } else {
+       // ETC
         apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
       }
-      const response = await fetch(apiUrl)
-      const parsedResponse = await response.json()
+      // attempt request
+      let response
+      try {
+        response = await fetch(apiUrl)
+      } catch (err) {
+        log.error(new Error(`CurrencyController - Failed to request currency from Infura:\n${err.stack}`))
+        return
+      }
+      // parse response
+      let rawResponse
+      let parsedResponse
+      try {
+        rawResponse = await response.text()
+        parsedResponse = JSON.parse(rawResponse)
+      } catch (err) {
+        log.error(new Error(`CurrencyController - Failed to parse response "${rawResponse}"`))
+        return
+      }
+      // set conversion rate
       if (nativeCurrency === 'ETH') {
+        // ETH
         this.setConversionRate(Number(parsedResponse.bid))
         this.setConversionDate(Number(parsedResponse.timestamp))
       } else {
+        // ETC
         if (parsedResponse[currentCurrency.toUpperCase()]) {
           this.setConversionRate(Number(parsedResponse[currentCurrency.toUpperCase()]))
           this.setConversionDate(parseInt((new Date()).getTime() / 1000))
@@ -154,9 +176,13 @@ class CurrencyController {
         }
       }
     } catch (err) {
+      // reset current conversion rate
       log.warn(`MetaMask - Failed to query currency conversion:`, nativeCurrency, currentCurrency, err)
       this.setConversionRate(0)
       this.setConversionDate('N/A')
+      // throw error
+      log.error(new Error(`CurrencyController - Failed to query rate for currency "${currentCurrency}":\n${err.stack}`))
+      return
     }
   }
 
