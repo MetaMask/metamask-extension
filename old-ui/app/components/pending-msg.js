@@ -1,72 +1,38 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
-const inherits = require('util').inherits
-const PendingTxDetails = require('./pending-msg-details')
+import React, { Component } from 'react'
+import PendingTxDetails from './pending-msg-details'
 
-module.exports = PendingMsg
+export default class PendingMsg extends Component {
+  render () {
+    var state = this.props
+    var msgData = state.txData
 
-inherits(PendingMsg, Component)
-function PendingMsg () {
-  Component.call(this)
-}
-
-PendingMsg.prototype.render = function () {
-  var state = this.props
-  var msgData = state.txData
-
-  return (
-
-    h('div', {
-      key: msgData.id,
-      style: {
-        height: '100%',
-      },
-    }, [
-
-      // header
-      h('h3', {
-        style: {
+    return (
+      <div key={msgData.id} style={{height: '100%'}}>
+        <h3 style={{
           fontWeight: 'bold',
           textAlign: 'center',
           color: 'white',
           margin: '20px',
-        },
-      }, 'Sign Message'),
-
-      h('.error', {
-        style: {
+        }}>Sign message</h3>
+        <div className="error" style={{
           margin: '30px',
           width: 'auto',
-        },
-      }, [
-        `Signing this message can have
-        dangerous side effects. Only sign messages from
-        sites you fully trust with your entire account.
-        This dangerous method will be removed in a future version. `,
-      ]),
-
-      // message details
-      h(PendingTxDetails, state),
-
-      // sign + cancel
-      h('.flex-row.flex-space-around', {
-        style: {
+        }}>
+          Signing this message can have
+          dangerous side effects. Only sign messages from
+          sites you fully trust with your entire account.
+          This dangerous method will be removed in a future version.
+        </div>
+        <PendingTxDetails {...state}/>
+        <div className="flex-row flex-space-around" style={{
           marginRight: '30px',
           float: 'right',
           display: 'block',
-        },
-      }, [
-        h('button', {
-          style: {
-            marginRight: '10px',
-          },
-          onClick: state.cancelMessage,
-        }, 'Cancel'),
-        h('button', {
-          onClick: state.signMessage,
-        }, 'Sign'),
-      ]),
-    ])
-
-  )
+        }}>
+          <button style={{marginRight: '10px'}} onClick={state.cancelMessage}>Cancel</button>
+          <button onClick={state.signMessage}>Sign</button>
+        </div>
+      </div>
+    )
+  }
 }

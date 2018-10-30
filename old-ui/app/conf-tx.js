@@ -8,9 +8,9 @@ const txHelper = require('../lib/tx-helper')
 const log = require('loglevel')
 
 const PendingTx = require('./components/pending-tx')
-const PendingMsg = require('./components/pending-msg')
-const PendingPersonalMsg = require('./components/pending-personal-msg')
-const PendingTypedMsg = require('./components/pending-typed-msg')
+import PendingMsg from './components/pending-msg'
+import PendingPersonalMsg from './components/pending-personal-msg'
+import PendingTypedMsg from './components/pending-typed-msg'
 const Loading = require('./components/loading')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
