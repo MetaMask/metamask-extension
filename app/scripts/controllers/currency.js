@@ -139,7 +139,7 @@ class CurrencyController {
         // ETH
         apiUrl = `https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`
       } else {
-        // ETC
+       // ETC
         apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
       }
       // attempt request
@@ -160,7 +160,7 @@ class CurrencyController {
         log.error(new Error(`CurrencyController - Failed to parse response "${rawResponse}"`))
         return
       }
-      // set exhcange rate
+      // set conversion rate
       if (nativeCurrency === 'ETH') {
         // ETH
         this.setConversionRate(Number(parsedResponse.bid))
@@ -177,6 +177,7 @@ class CurrencyController {
       }
     } catch (err) {
       // reset current conversion rate
+      log.warn(`MetaMask - Failed to query currency conversion:`, nativeCurrency, currentCurrency, err)
       this.setConversionRate(0)
       this.setConversionDate('N/A')
       // throw error
