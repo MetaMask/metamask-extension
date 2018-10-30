@@ -29,7 +29,6 @@ const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
-const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
@@ -114,11 +113,6 @@ module.exports = class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
       preferences: this.preferencesController.store,
-    })
-
-    this.recentBlocksController = new RecentBlocksController({
-      blockTracker: this.blockTracker,
-      provider: this.provider,
     })
 
     // account tracker watches balances, nonces, and any code at their address.
@@ -239,7 +233,6 @@ module.exports = class MetamaskController extends EventEmitter {
       TypesMessageManager: this.typedMessageManager.memStore,
       KeyringController: this.keyringController.memStore,
       PreferencesController: this.preferencesController.store,
-      RecentBlocksController: this.recentBlocksController.store,
       AddressBookController: this.addressBookController.store,
       CurrencyController: this.currencyController.store,
       NoticeController: this.noticeController.memStore,
@@ -1358,12 +1351,10 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {string} A hex representation of the suggested wei gas price.
    */
   async getGasPrice () {
-    // const { recentBlocksController } = this
     const EthQuery = require('ethjs-query')
     const query = new EthQuery(this.provider)
     const gasPrice = await query.gasPrice()
     return ethUtil.toHex(gasPrice)
-    // return await recentBlocksController.getGasPrice()
   }
 
   /**
