@@ -52,7 +52,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-      await driver.quit()
+     // await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -256,6 +256,14 @@ describe('Metamask popup page', async function () {
       await menu.click()
       const importedLabel = await waitUntilShowUp(menus.account.labelImported)
       assert.equal(await importedLabel.getText(), 'IMPORTED')
+    })
+
+    it('Auto-detect tokens, owned added account, for POA core network ', async function () {
+      await setProvider(NETWORKS.POA)
+    })
+
+    it('Auto-detect tokens, owned added account, for MAIN core network ', async function () {
+      await setProvider(NETWORKS.MAINNET)
     })
 
     it('opens delete imported account screen', async function () {
