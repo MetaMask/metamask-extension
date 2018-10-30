@@ -258,11 +258,11 @@ describe('Metamask popup page', async function () {
       assert.equal(await importedLabel.getText(), 'IMPORTED')
     })
 
-    it('Auto-detect tokens, owned added account, for POA core network ', async function () {
+    it.skip('Auto-detect tokens, owned added account, for POA core network ', async function () {
       await setProvider(NETWORKS.POA)
     })
 
-    it('Auto-detect tokens, owned added account, for MAIN core network ', async function () {
+    it.skip('Auto-detect tokens, owned added account, for MAIN core network ', async function () {
       await setProvider(NETWORKS.MAINNET)
     })
 
