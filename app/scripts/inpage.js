@@ -115,7 +115,7 @@ inpageProvider._metamask = new Proxy({
           if (detail.caching) {
             resolve(!!detail.isApproved)
           } else {
-            resolve(isEnabled)
+            resolve(false)
           }
         }
       }
