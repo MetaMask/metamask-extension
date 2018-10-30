@@ -34,6 +34,9 @@ PendingMsgDetails.prototype.render = function () {
         identity: identity,
         account: account,
         imageifyIdenticons: state.imageifyIdenticons,
+        style: {
+          background: 'transparent'
+        }
       }),
 
       // message data
@@ -43,8 +46,10 @@ PendingMsgDetails.prototype.render = function () {
         }
       }, [
         h('.flex-column.flex-space-between', [
-          h('label.font-small', 'MESSAGE'),
-          h('span.font-small', msgParams.data),
+          h('label.font-small', {
+            style: { color: 'white', margin: '10px 0' }
+          }, 'MESSAGE'),
+          h('span.font-small', {style: {color: 'white', wordBreak: 'break-word'}}, msgParams.data),
         ]),
       ]),
 

@@ -37,6 +37,9 @@ PendingMsgDetails.prototype.render = function () {
         identity: identity,
         account: account,
         imageifyIdenticons: state.imageifyIdenticons,
+        style: {
+          background: 'transparent'
+        }
       }),
 
       // message data
@@ -46,7 +49,7 @@ PendingMsgDetails.prototype.render = function () {
           margin: '0 30px',
         },
       }, [
-        h('label.font-small', { style: { display: 'block' } }, 'YOU ARE SIGNING'),
+        h('label.font-small', { style: { display: 'block', color: 'white', margin: '10px 0' } }, 'YOU ARE SIGNING'),
         h(TypedMessageRenderer, {
           value: data,
           version,

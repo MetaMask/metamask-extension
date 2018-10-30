@@ -18,6 +18,9 @@ PendingMsg.prototype.render = function () {
 
     h('div', {
       key: msgData.id,
+      style: {
+        height: '100%'
+      }
     }, [
 
       // header
@@ -25,6 +28,8 @@ PendingMsg.prototype.render = function () {
         style: {
           fontWeight: 'bold',
           textAlign: 'center',
+          color: 'white',
+          margin: '20px',
         },
       }, 'Sign Message'),
 
@@ -39,7 +44,10 @@ PendingMsg.prototype.render = function () {
           display: 'block',
         }
       }, [
-        h('button.btn-violet', {
+        h('button', {
+          style: {
+            marginRight: '10px'
+          },
           onClick: state.cancelTypedMessage,
         }, 'Cancel'),
         h('button', {

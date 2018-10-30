@@ -21,8 +21,9 @@ BinaryRenderer.prototype.render = function () {
     maxHeight: '210px',
     resize: 'none',
     border: 'none',
-    background: 'white',
-    padding: '3px',
+    background: '#542289',
+    color: 'white',
+    padding: '20px',
   }, style)
 
   return (
