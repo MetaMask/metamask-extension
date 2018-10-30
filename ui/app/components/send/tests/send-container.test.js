@@ -34,7 +34,6 @@ proxyquire('../send.container.js', {
     getGasPrice: (s) => `mockGasPrice:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
     getPrimaryCurrency: (s) => `mockPrimaryCurrency:${s}`,
-    getRecentBlocks: (s) => `mockRecentBlocks:${s}`,
     getSelectedAddress: (s) => `mockSelectedAddress:${s}`,
     getSelectedToken: (s) => `mockSelectedToken:${s}`,
     getSelectedTokenContract: (s) => `mockTokenContract:${s}`,
@@ -71,7 +70,6 @@ describe('send container', () => {
         gasTotal: 'mockGasTotal:mockState',
         network: 'mockNetwork:mockState',
         primaryCurrency: 'mockPrimaryCurrency:mockState',
-        recentBlocks: 'mockRecentBlocks:mockState',
         selectedAddress: 'mockSelectedAddress:mockState',
         selectedToken: 'mockSelectedToken:mockState',
         showHexData: 'mockSendHexDataFeatureFlagState:mockState',
@@ -100,7 +98,6 @@ describe('send container', () => {
         editingTransactionId: '0x2',
         gasLimit: '0x3',
         gasPrice: '0x4',
-        recentBlocks: ['mockBlock'],
         selectedAddress: '0x4',
         selectedToken: { address: '0x1' },
         to: 'mockTo',
@@ -118,14 +115,14 @@ describe('send container', () => {
       })
 
       it('should dispatch an updateGasData action when editingTransactionId is falsy', () => {
-        const { selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value, data } = mockProps
+        const { selectedAddress, selectedToken, blockGasLimit, to, value, data } = mockProps
         mapDispatchToPropsObject.updateAndSetGasTotal(
           Object.assign({}, mockProps, {editingTransactionId: false})
         )
         assert(dispatchSpy.calledOnce)
         assert.deepEqual(
           actionSpies.updateGasData.getCall(0).args[0],
-          { selectedAddress, selectedToken, recentBlocks, blockGasLimit, to, value, data }
+          { selectedAddress, selectedToken, blockGasLimit, to, value, data }
         )
       })
     })

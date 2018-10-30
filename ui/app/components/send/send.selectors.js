@@ -3,9 +3,6 @@ const abi = require('human-standard-token-abi')
 const {
   multiplyCurrencies,
 } = require('../../conversion-util')
-const {
-  estimateGasPriceFromRecentBlocks,
-} = require('./send.utils')
 
 const selectors = {
   accountsWithSendEtherInfoSelector,
@@ -22,10 +19,8 @@ const selectors = {
   getNativeCurrency,
   getGasLimit,
   getGasPrice,
-  getGasPriceFromRecentBlocks,
   getGasTotal,
   getPrimaryCurrency,
-  getRecentBlocks,
   getSelectedAccount,
   getSelectedAddress,
   getSelectedIdentity,
@@ -137,10 +132,6 @@ function getGasPrice (state) {
   return state.metamask.send.gasPrice
 }
 
-function getGasPriceFromRecentBlocks (state) {
-  return estimateGasPriceFromRecentBlocks(state.metamask.recentBlocks)
-}
-
 function getGasTotal (state) {
   return state.metamask.send.gasTotal
 }
@@ -148,10 +139,6 @@ function getGasTotal (state) {
 function getPrimaryCurrency (state) {
   const selectedToken = getSelectedToken(state)
   return selectedToken && selectedToken.symbol
-}
-
-function getRecentBlocks (state) {
-  return state.metamask.recentBlocks
 }
 
 function getSelectedAccount (state) {

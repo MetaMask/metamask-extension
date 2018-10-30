@@ -11,7 +11,6 @@ import {
   getGasPrice,
   getGasTotal,
   getPrimaryCurrency,
-  getRecentBlocks,
   getSelectedAddress,
   getSelectedToken,
   getSelectedTokenContract,
@@ -62,7 +61,6 @@ function mapStateToProps (state) {
     gasTotal: getGasTotal(state),
     network: getCurrentNetwork(state),
     primaryCurrency: getPrimaryCurrency(state),
-    recentBlocks: getRecentBlocks(state),
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
     showHexData: getSendHexDataFeatureFlagState(state),
@@ -81,7 +79,6 @@ function mapDispatchToProps (dispatch) {
       editingTransactionId,
       gasLimit,
       gasPrice,
-      recentBlocks,
       selectedAddress,
       selectedToken,
       to,
@@ -89,7 +86,7 @@ function mapDispatchToProps (dispatch) {
       data,
     }) => {
       !editingTransactionId
-        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, blockGasLimit, to, value, data }))
+        ? dispatch(updateGasData({ selectedAddress, selectedToken, blockGasLimit, to, value, data }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {

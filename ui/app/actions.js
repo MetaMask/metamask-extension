@@ -919,7 +919,6 @@ function setGasTotal (gasTotal) {
 
 function updateGasData ({
   blockGasLimit,
-  recentBlocks,
   selectedAddress,
   selectedToken,
   to,
