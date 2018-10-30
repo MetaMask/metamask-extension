@@ -125,7 +125,9 @@ export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0')
 
 export async function isSmartContractAddress (address) {
   const code = await global.eth.getCode(address)
-  return code && code !== '0x'
+  // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+  const codeIsEmpty = !code || code === '0x' || code === '0x0'
+  return !codeIsEmpty
 }
 
 export function sumHexes (...args) {

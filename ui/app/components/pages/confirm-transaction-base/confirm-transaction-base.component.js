@@ -136,7 +136,7 @@ export default class ConfirmTransactionBase extends Component {
     if (simulationFails) {
       return {
         valid: true,
-        errorKey: TRANSACTION_ERROR_KEY,
+        errorKey: simulationFails.errorKey ? simulationFails.errorKey : TRANSACTION_ERROR_KEY,
       }
     }
 
