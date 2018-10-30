@@ -3,13 +3,8 @@ import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 import {
   BASE_TOKEN_GAS_COST,
-  ONE_GWEI_IN_WEI_HEX,
   SIMPLE_GAS_COST,
 } from '../send.constants'
-const {
-  addCurrencies,
-  subtractCurrencies,
-} = require('../../../conversion-util')
 
 const {
   INSUFFICIENT_FUNDS_ERROR,
