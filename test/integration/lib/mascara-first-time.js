@@ -77,7 +77,7 @@ async function runFirstTimeUsageTest (assert, done) {
   assert.ok(lock, 'Lock menu item found')
   lock.click()
 
-  await timeout(1000)
+  await timeout(5000)
 
   const pwBox2 = (await findAsync(app, '#password'))[0]
   pwBox2.focus()
