@@ -1360,7 +1360,7 @@ module.exports = class MetamaskController extends EventEmitter {
       query.gasPrice((err, result) => {
         if (err) return reject(err)
         resolve(result)
-      }
+      })
     })
     return result
   }
