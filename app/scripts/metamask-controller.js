@@ -596,8 +596,7 @@ module.exports = class MetamaskController extends EventEmitter {
     transactions = transactions.filter(tx => {
       const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from)
       return (
-        accounts.hd.includes(checksummedTxFrom) ||
-        accounts.simpleKeyPair.includes(checksummedTxFrom)
+        accounts.hd.includes(checksummedTxFrom)
       )
     })
 

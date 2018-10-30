@@ -299,17 +299,19 @@ class MobileSyncPage extends Component {
 
   renderPasswordPromptFooter () {
     return (
-      h('.page-container__footer', [
+      h('div.new-account-import-form__buttons', {style: {padding: 30}}, [
+
         h(Button, {
           type: 'default',
           large: true,
-          className: 'page-container__footer-button',
+          className: 'new-account-create-form__button',
           onClick: () => this.props.history.push(DEFAULT_ROUTE),
         }, this.context.t('cancel')),
+
         h(Button, {
           type: 'primary',
           large: true,
-          className: 'page-container__footer-button',
+          className: 'new-account-create-form__button',
           onClick: event => this.handleSubmit(event),
           disabled: this.state.password === '',
         }, this.context.t('next')),
@@ -319,7 +321,7 @@ class MobileSyncPage extends Component {
 
   renderRevealSeedFooter () {
     return (
-      h('.page-container__footer', [
+      h('.page-container__footer', {style: {padding: 30}}, [
         h(Button, {
           type: 'default',
           large: true,
