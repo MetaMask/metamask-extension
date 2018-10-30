@@ -1374,7 +1374,7 @@ module.exports = class MetamaskController extends EventEmitter {
        console.log('getGasPrice - end', result)
        return result
      } catch (err) {
-       console.log('getGasPrice - error', error.stack)
+       console.log('getGasPrice - error', err.stack)
        throw err
      }
    }
