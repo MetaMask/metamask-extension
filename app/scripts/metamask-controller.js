@@ -1361,7 +1361,23 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {string} A hex representation of the suggested wei gas price.
    */
   async getGasPrice () {
-    return '0x' + GWEI_BN.toString(16)
+    // return '0x' + GWEI_BN.toString(16)
+    try {
+      console.log('getGasPrice - start')
+      const EthQuery = require('eth-query')
+      const query = new EthQuery(this.provider)
+      const result = await new Promise((resolve, reject) => {
+        query.gasPrice((err, result) => {
+          if (err) return reject(err)
+          resolve(result)
+        })
+      })
+      console.log('getGasPrice - end', result)
+      return result
+    } catch (err) {
+      console.log('getGasPrice - error', err.stack)
+      throw err
+    }
   }
 
   /**
