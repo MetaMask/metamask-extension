@@ -47,14 +47,14 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
-      - test-integration-mascara-chrome:
-          requires:
-            - prep-deps-npm
-            - prep-scss
-      - test-integration-mascara-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-scss
+    #   - test-integration-mascara-chrome:
+    #       requires:
+    #         - prep-deps-npm
+    #         - prep-scss
+    #   - test-integration-mascara-firefox:
+    #       requires:
+    #         - prep-deps-npm
+    #         - prep-scss
       - test-integration-flat-chrome:
           requires:
             - prep-deps-npm
@@ -73,8 +73,8 @@ workflows:
             - test-e2e-beta-chrome
             - test-e2e-beta-firefox
             - test-e2e-beta-drizzle
-            - test-integration-mascara-chrome
-            - test-integration-mascara-firefox
+            # - test-integration-mascara-chrome
+            # - test-integration-mascara-firefox
             - test-integration-flat-chrome
             - test-integration-flat-firefox
       - job-screens:
@@ -293,9 +293,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - store_artifacts:
-          path: dist/mascara
-          destination: builds/mascara
+    #   - store_artifacts:
+    #       path: dist/mascara
+    #       destination: builds/mascara
       - store_artifacts:
           path: dist/sourcemaps
           destination: builds/sourcemaps
