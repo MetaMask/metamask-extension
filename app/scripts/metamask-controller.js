@@ -1358,8 +1358,11 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {string} A hex representation of the suggested wei gas price.
    */
   async getGasPrice () {
-    const { recentBlocksController } = this
-    return await recentBlocksController.getGasPrice()
+    // const { recentBlocksController } = this
+    const EthQuery = require('ethjs-query')
+    const query = new EthQuery(this.provider)
+    return await query.gasPrice()
+    // return await recentBlocksController.getGasPrice()
   }
 
   /**
