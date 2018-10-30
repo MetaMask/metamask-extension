@@ -1361,7 +1361,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // const { recentBlocksController } = this
     const EthQuery = require('ethjs-query')
     const query = new EthQuery(this.provider)
-    return await query.gasPrice()
+    const gasPrice = await query.gasPrice()
+    return ethUtil.toHex(gasPrice)
     // return await recentBlocksController.getGasPrice()
   }
 
