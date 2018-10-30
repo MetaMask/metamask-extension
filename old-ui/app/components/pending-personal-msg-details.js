@@ -38,8 +38,8 @@ PendingMsgDetails.prototype.render = function () {
         account: account,
         imageifyIdenticons: state.imageifyIdenticons,
         style: {
-          background: 'transparent'
-        }
+          background: 'transparent',
+        },
       }),
 
       // message data

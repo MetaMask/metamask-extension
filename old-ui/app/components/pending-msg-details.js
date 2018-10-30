@@ -35,19 +35,19 @@ PendingMsgDetails.prototype.render = function () {
         account: account,
         imageifyIdenticons: state.imageifyIdenticons,
         style: {
-          background: 'transparent'
-        }
+          background: 'transparent',
+        },
       }),
 
       // message data
       h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', {
         style: {
-          margin: '0 30px'
-        }
+          margin: '0 30px',
+        },
       }, [
         h('.flex-column.flex-space-between', [
           h('label.font-small', {
-            style: { color: 'white', margin: '10px 0' }
+            style: { color: 'white', margin: '10px 0' },
           }, 'MESSAGE'),
           h('span.font-small', {style: {color: 'white', wordBreak: 'break-word'}}, msgParams.data),
         ]),
