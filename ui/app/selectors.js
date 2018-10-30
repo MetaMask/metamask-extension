@@ -26,6 +26,7 @@ const selectors = {
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
+  getNativeCurrency,
   getSendAmount,
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
@@ -141,6 +142,10 @@ function getSendMaxModeState (state) {
 
 function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
+}
+
+function getNativeCurrency (state) {
+  return state.metamask.nativeCurrency
 }
 
 function getSelectedTokenToFiatRate (state) {

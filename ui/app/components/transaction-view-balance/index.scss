@@ -4,11 +4,13 @@
   align-items: center;
   flex: 1;
   height: 54px;
+  min-width: 0;
 
   &__balance {
-    margin-left: 12px;
+    margin: 0 12px;
     display: flex;
     flex-direction: column;
+    min-width: 0;
 
     @media screen and (max-width: $break-small) {
       align-items: center;
@@ -21,7 +23,8 @@
     font-size: 1.5rem;
 
     @media screen and (max-width: $break-small) {
-      margin-bottom: 12px;
+      margin: 12px 0;
+      margin-left: 0;
       font-size: 1.75rem;
     }
   }
@@ -30,7 +33,6 @@
     font-size: 1.5rem;
 
     @media screen and (max-width: $break-small) {
-      margin-bottom: 12px;
       font-size: 1.75rem;
     }
   }
@@ -45,6 +47,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    min-width: 0;
 
     @media screen and (max-width: $break-small) {
       flex-direction: column;

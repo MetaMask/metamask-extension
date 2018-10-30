@@ -5,12 +5,9 @@
     color: $crimson;
   }
 
-  &__rpc-save-button {
-    align-self: flex-end;
-    padding: 5px;
-    text-transform: uppercase;
-    color: $dusty-gray;
-    cursor: pointer;
+  &__advanced-link {
+    color: $curious-blue;
+    padding-left: 5px;
   }
 
   &__rpc-save-button {
@@ -19,6 +16,9 @@
     text-transform: uppercase;
     color: $dusty-gray;
     cursor: pointer;
+    width: 25%;
+    min-width: 80px;
+    height: 33px;
   }
 
   &__button--red {

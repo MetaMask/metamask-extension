@@ -3,10 +3,10 @@ import UserPreferencedCurrencyInput from './user-preferenced-currency-input.comp
 import { preferencesSelector } from '../../selectors'
 
 const mapStateToProps = state => {
-  const { useETHAsPrimaryCurrency } = preferencesSelector(state)
+  const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
 
   return {
-    useETHAsPrimaryCurrency,
+    useNativeCurrencyAsPrimaryCurrency,
   }
 }
 

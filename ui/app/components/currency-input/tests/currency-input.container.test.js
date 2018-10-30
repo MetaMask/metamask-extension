@@ -20,12 +20,14 @@ describe('CurrencyInput container', () => {
         metamask: {
           conversionRate: 280.45,
           currentCurrency: 'usd',
+          nativeCurrency: 'ETH',
         },
       }
 
       assert.deepEqual(mapStateToProps(mockState), {
         conversionRate: 280.45,
         currentCurrency: 'usd',
+        nativeCurrency: 'ETH',
       })
     })
   })
@@ -35,12 +37,14 @@ describe('CurrencyInput container', () => {
       const mockStateProps = {
         conversionRate: 280.45,
         currentCurrency: 'usd',
+        nativeCurrency: 'ETH',
       }
       const mockDispatchProps = {}
 
       assert.deepEqual(mergeProps(mockStateProps, mockDispatchProps, { useFiat: true }), {
         conversionRate: 280.45,
         currentCurrency: 'usd',
+        nativeCurrency: 'ETH',
         useFiat: true,
         suffix: 'USD',
       })
@@ -48,6 +52,7 @@ describe('CurrencyInput container', () => {
       assert.deepEqual(mergeProps(mockStateProps, mockDispatchProps, {}), {
         conversionRate: 280.45,
         currentCurrency: 'usd',
+        nativeCurrency: 'ETH',
         suffix: 'ETH',
       })
     })

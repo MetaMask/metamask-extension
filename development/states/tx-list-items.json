@@ -104,7 +104,7 @@
     "send": {},
     "currentLocale": "en",
     "preferences": {
-      "useETHAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true
     }
   },
   "appState": {
