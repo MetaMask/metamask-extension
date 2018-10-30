@@ -1362,7 +1362,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async getGasPrice () {
     await new Promise((resolve, reject) => {
-      setTimeout(resolve, 200)
+      setTimeout(resolve, 0)
     })
     return '0x' + GWEI_BN.toString(16)
   }
