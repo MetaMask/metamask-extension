@@ -96,7 +96,9 @@ class BlacklistController {
    *
    */
   scheduleUpdates () {
-    if (this._phishingUpdateIntervalRef) return
+    if (this._phishingUpdateIntervalRef) {
+      clearInterval(this._phishingUpdateIntervalRef)
+    }
     this.updatePhishingList().catch(log.warn)
     this._phishingUpdateIntervalRef = setInterval(() => {
       this.updatePhishingList().catch(log.warn)
