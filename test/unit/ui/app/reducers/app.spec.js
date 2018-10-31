@@ -3,19 +3,6 @@ import reduceApp from '../../../../../ui/app/reducers/app'
 import * as actions from '../../../../../ui/app/actions'
 
 describe('App State', () => {
-  let initState,
-    dropdownOpen,
-    openSidebar,
-    alertOpen,
-    opensModal,
-    transitionForwardState,
-    errorState,
-    loadingState,
-    subLoadingIndicatorState,
-    displayWarningState,
-    requestAccountExportState,
-    buyEthState,
-    gasLoadingState
 
   const metamaskState = {
     metamask: {
@@ -30,21 +17,22 @@ describe('App State', () => {
   }
 
   it('App init state', () => {
-    initState = reduceApp(metamaskState, {})
+    const initState = reduceApp(metamaskState, {})
 
     assert(initState)
   })
 
   it('sets networkd dropdown to true', () => {
-    dropdownOpen = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.NETWORK_DROPDOWN_OPEN,
     })
 
-    assert.equal(dropdownOpen.networkDropdownOpen, true)
+    assert.equal(state.networkDropdownOpen, true)
   })
 
   it('sets networkd dropdown to false', () => {
-    const state = {...metamaskState, ...dropdownOpen}
+    const dropdown = { networkDropdowopen: true }
+    const state = {...metamaskState, ...dropdown}
     const newState = reduceApp(state, {
       type: actions.NETWORK_DROPDOWN_CLOSE,
     })
@@ -58,15 +46,16 @@ describe('App State', () => {
       'type': 'wallet-view',
       'isOpen': true,
     }
-    openSidebar = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.SIDEBAR_OPEN,
       value,
     })
 
-    assert.deepEqual(openSidebar.sidebar, value)
+    assert.deepEqual(state.sidebar, value)
   })
 
   it('closes sidebar', () => {
+    const openSidebar = { sidebar: { isOpen: true }}
     const state = {...metamaskState, ...openSidebar}
 
     const newState = reduceApp(state, {
@@ -77,17 +66,18 @@ describe('App State', () => {
   })
 
   it('opens alert', () => {
-    alertOpen = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.ALERT_OPEN,
       value: 'test message',
     })
 
-    assert.equal(alertOpen.alertOpen, true)
-    assert.equal(alertOpen.alertMessage, 'test message')
+    assert.equal(state.alertOpen, true)
+    assert.equal(state.alertMessage, 'test message')
   })
 
   it('closes alert', () => {
-    const state = {...metamaskState, ...alertOpen}
+    const alert = { alertOpen: true, alertMessage: 'test message' }
+    const state = {...metamaskState, ...alert}
     const newState = reduceApp(state, {
       type: actions.ALERT_CLOSE,
     })
@@ -106,18 +96,27 @@ describe('App State', () => {
   })
 
   it('opens modal', () => {
-    opensModal = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.MODAL_OPEN,
       payload: {
         name: 'test',
       },
     })
 
-    assert.equal(opensModal.modal.open, true)
-    assert.equal(opensModal.modal.modalState.name, 'test')
+    assert.equal(state.modal.open, true)
+    assert.equal(state.modal.modalState.name, 'test')
   })
 
   it('closes modal, but moves open modal state to previous modal state', () => {
+    const opensModal = {
+      modal: {
+        open: true,
+        modalState: {
+          name: 'test',
+        },
+      },
+    }
+
     const state = { ...metamaskState, appState: { ...opensModal } }
     const newState = reduceApp(state, {
       type: actions.MODAL_CLOSE,
@@ -129,14 +128,16 @@ describe('App State', () => {
   })
 
   it('tansitions forwards', () => {
-    transitionForwardState = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.TRANSITION_FORWARD,
     })
 
-    assert.equal(transitionForwardState.transForward, true)
+    assert.equal(state.transForward, true)
   })
 
   it('transition backwards', () => {
+    const transitionForwardState = { transitionForward: true }
+
     const state = { ...metamaskState, ...transitionForwardState }
     const newState = reduceApp(state, {
       type: actions.TRANSITION_BACKWARD,
@@ -644,15 +645,16 @@ describe('App State', () => {
   })
 
   it('sets default warning when unlock fails', () => {
-    errorState = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.UNLOCK_FAILED,
       value: 'errors',
     })
 
-    assert.equal(errorState.warning, 'errors')
+    assert.equal(state.warning, 'errors')
   })
 
   it('sets warning to empty string when unlock succeeds', () => {
+    const errorState = { warning: 'errors' }
     const oldState = {...metamaskState, ...errorState}
     const state = reduceApp(oldState, {
       type: actions.UNLOCK_SUCCEEDED,
@@ -678,16 +680,17 @@ describe('App State', () => {
   })
 
   it('shows loading message', () => {
-    loadingState = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.SHOW_LOADING,
       value: 'loading',
     })
 
-    assert.equal(loadingState.isLoading, true)
-    assert.equal(loadingState.loadingMessage, 'loading')
+    assert.equal(state.isLoading, true)
+    assert.equal(state.loadingMessage, 'loading')
   })
 
   it('hides loading message', () => {
+    const loadingState = { isLoading: true}
     const oldState = {...metamaskState, ...loadingState}
 
     const state = reduceApp(oldState, {
@@ -698,11 +701,11 @@ describe('App State', () => {
   })
 
   it('shows sub loading indicator', () => {
-    subLoadingIndicatorState = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.SHOW_SUB_LOADING_INDICATION,
     })
 
-    assert.equal(subLoadingIndicatorState.isSubLoading, true)
+    assert.equal(state.isSubLoading, true)
   })
 
   it('hides sub loading indicator', () => {
@@ -715,16 +718,17 @@ describe('App State', () => {
   })
 
   it('displays warning', () => {
-    displayWarningState = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.DISPLAY_WARNING,
       value: 'warning',
     })
 
-    assert.equal(displayWarningState.isLoading, false)
-    assert.equal(displayWarningState.warning, 'warning')
+    assert.equal(state.isLoading, false)
+    assert.equal(state.warning, 'warning')
   })
 
   it('hides warning', () => {
+    const displayWarningState = { warning: 'warning'}
     const oldState = {...metamaskState, ...displayWarningState}
     const state = reduceApp(oldState, {
       type: actions.HIDE_WARNING,
@@ -734,16 +738,22 @@ describe('App State', () => {
   })
 
   it('request to display account export', () => {
-    requestAccountExportState = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.REQUEST_ACCOUNT_EXPORT,
     })
 
-    assert.equal(requestAccountExportState.transForward, true)
-    assert.equal(requestAccountExportState.accountDetail.subview, 'export')
-    assert.equal(requestAccountExportState.accountDetail.accountExport, 'requested')
+    assert.equal(state.transForward, true)
+    assert.equal(state.accountDetail.subview, 'export')
+    assert.equal(state.accountDetail.accountExport, 'requested')
   })
 
   it('completes account export', () => {
+    const requestAccountExportState = {
+      accountDetail: {
+        subview: 'something',
+        accountExport: 'progress',
+      },
+    }
     const oldState = {...metamaskState, ...requestAccountExportState}
     const state = reduceApp(oldState, {
       type: actions.EXPORT_ACCOUNT,
@@ -766,19 +776,19 @@ describe('App State', () => {
 
   it('shows buy eth view', () => {
 
-    buyEthState = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.BUY_ETH_VIEW,
       value: '0xAddress',
     })
 
-    assert.equal(buyEthState.currentView.name, 'buyEth')
-    assert.equal(buyEthState.currentView.context, 'accountDetail')
-    assert.equal(buyEthState.identity.address, '0xAddress')
-    assert.equal(buyEthState.buyView.subview, 'Coinbase')
-    assert.equal(buyEthState.buyView.amount, '15.00')
-    assert.equal(buyEthState.buyView.buyAddress, '0xAddress')
-    assert.equal(buyEthState.buyView.formView.coinbase, true)
-    assert.equal(buyEthState.buyView.formView.shapeshift, false)
+    assert.equal(state.currentView.name, 'buyEth')
+    assert.equal(state.currentView.context, 'accountDetail')
+    assert.equal(state.identity.address, '0xAddress')
+    assert.equal(state.buyView.subview, 'Coinbase')
+    assert.equal(state.buyView.amount, '15.00')
+    assert.equal(state.buyView.buyAddress, '0xAddress')
+    assert.equal(state.buyView.formView.coinbase, true)
+    assert.equal(state.buyView.formView.shapeshift, false)
   })
 
   it('shows onboarding subview to buy eth', () => {
@@ -960,14 +970,15 @@ describe('App State', () => {
   })
 
   it('sets gas loading', () => {
-    gasLoadingState = reduceApp(metamaskState, {
+    const state = reduceApp(metamaskState, {
       type: actions.GAS_LOADING_STARTED,
     })
 
-    assert.equal(gasLoadingState.gasIsLoading, true)
+    assert.equal(state.gasIsLoading, true)
   })
 
   it('unsets gas loading', () => {
+    const gasLoadingState = { gasIsLoading: true }
     const oldState = {...metamaskState, ...gasLoadingState}
     const state = reduceApp(oldState, {
       type: actions.GAS_LOADING_FINISHED,
