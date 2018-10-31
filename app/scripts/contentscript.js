@@ -126,6 +126,8 @@ function listenForProviderRequest () {
         extension.runtime.sendMessage({
           action: 'init-provider-request',
           origin: source.location.hostname,
+          siteImage: getSiteIcon(source),
+          siteTitle: getSiteName(source),
         })
         break
       case 'ETHEREUM_IS_APPROVED':
@@ -284,4 +286,32 @@ function redirectToPhishingWarning () {
     hostname: window.location.hostname,
     href: window.location.href,
   })}`
+}
+
+function getSiteName (window) {
+  const document = window.document
+  const siteName = document.querySelector('head > meta[property="og:site_name"]')
+  if (siteName) {
+    return siteName.content
+  }
+
+  return document.title
+}
+
+function getSiteIcon (window) {
+  const document = window.document
+
+  // Use the site's favicon if it exists
+  const shortcutIcon = document.querySelector('head > link[rel="shortcut icon"]')
+  if (shortcutIcon) {
+    return shortcutIcon.href
+  }
+
+  // Search through available icons in no particular order
+  const icon = Array.from(document.querySelectorAll('head > link[rel="icon"]')).find((icon) => Boolean(icon.href))
+  if (icon) {
+    return icon.href
+  }
+
+  return null
 }
