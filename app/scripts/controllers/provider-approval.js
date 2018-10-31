@@ -7,7 +7,7 @@ class ProviderApprovalController {
   /**
    * Determines if caching is enabled
    */
-  caching = false
+  caching = true
 
   /**
    * Creates a ProviderApprovalController
