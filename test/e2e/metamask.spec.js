@@ -270,8 +270,10 @@ describe('Metamask popup page', async function () {
         assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')
     })
 
-    it.skip('Auto-detect tokens for MAIN core network ', async function () {
+    it('Auto-detect tokens for MAIN core network ', async function () {
       await setProvider(NETWORKS.MAINNET)
+      await waitUntilShowUp(elements.loader, 25)
+      await waitUntilDisappear(elements.loader, 25)
       const balance = await waitUntilShowUp(screens.main.tokens.balance)
       console.log(await balance.getText())
       assert.equal(await balance.getText(), '0.001 WETH', 'token isnt\' auto-detected')
@@ -1400,7 +1402,6 @@ describe('Metamask popup page', async function () {
       })
 
       it('token should not  be displayed in LOCALHOST network', async function () {
-        console.log('https://github.com/poanetwork/metamask-extension/issues/131')
         await setProvider(NETWORKS.LOCALHOST)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
@@ -1423,12 +1424,15 @@ describe('Metamask popup page', async function () {
     describe('remove Mainnet\'s tokens', function () {
 
       it('remove tokens', async function () {
-        await setProvider(NETWORKS.MAINNET)
+
         let menu
         let button
         let counter
         let buttonYes
 
+        await setProvider(NETWORKS.MAINNET)
+        await waitUntilShowUp(elements.loader, 25)
+        await waitUntilDisappear(elements.loader, 50)
         menu = await waitUntilShowUp(menus.token.menu)
         await menu.click()
         button = await waitUntilShowUp(menus.token.remove)
