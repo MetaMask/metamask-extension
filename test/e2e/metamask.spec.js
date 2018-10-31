@@ -270,8 +270,10 @@ describe('Metamask popup page', async function () {
         assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')
     })
 
-    it.skip('Auto-detect tokens for MAIN core network ', async function () {
+    it('Auto-detect tokens for MAIN core network ', async function () {
       await setProvider(NETWORKS.MAINNET)
+      await waitUntilShowUp(elements.loader)
+      await waitUntilDisappear(elements.loader, 25)
       const balance = await waitUntilShowUp(screens.main.tokens.balance)
       console.log(await balance.getText())
       assert.equal(await balance.getText(), '0.001 WETH', 'token isnt\' auto-detected')
