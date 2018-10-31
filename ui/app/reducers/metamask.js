@@ -74,6 +74,7 @@ function reduceMetamask (state, action) {
     case actions.CLEAR_NOTICES:
       return extend(metamaskState, {
         noActiveNotices: true,
+        nextUnreadNotice: null,
       })
 
     case actions.UPDATE_METAMASK_STATE:

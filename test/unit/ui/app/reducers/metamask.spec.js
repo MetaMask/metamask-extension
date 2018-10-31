@@ -2,22 +2,15 @@ import assert from 'assert'
 import reduceMetamask from '../../../../../ui/app/reducers/metamask'
 import * as actions from '../../../../../ui/app/actions'
 
-describe('MetaMask Reducers', () => {
-  let initState,
-    noticesState,
-    unlockMetaMaskState,
-    seedWordsState,
-    showNewVaultSeedState,
-    sendState,
-    pendingTokensState
+describe.only('MetaMask Reducers', () => {
 
   it('init state', () => {
-    initState = reduceMetamask({metamask:{}}, {})
+    const initState = reduceMetamask({metamask:{}}, {})
     assert(initState)
   })
 
   it('sets revealing seed to true and adds seed words to new state', () => {
-    seedWordsState = reduceMetamask({}, {
+    const seedWordsState = reduceMetamask({}, {
       type: actions.SHOW_NEW_VAULT_SEED,
       value: 'test seed words',
     })
@@ -27,11 +20,17 @@ describe('MetaMask Reducers', () => {
   })
 
   it('shows account page', () => {
+    const seedWordsState = {
+      metamask: {
+        seedwords: 'test seed words',
+        isRevealing: true,
+      },
+    }
+
     const state = reduceMetamask(seedWordsState, {
       type: actions.SHOW_ACCOUNTS_PAGE,
     })
 
-    assert.equal(seedWordsState.seedWords, 'test seed words')
     assert.equal(state.seedWords, undefined)
     assert.equal(state.isRevealingSeedWords, false)
   })
@@ -44,35 +43,60 @@ describe('MetaMask Reducers', () => {
       title: 'Title',
       body: 'Body',
     }
-    noticesState = reduceMetamask({}, {
+
+    const state = reduceMetamask({}, {
       type: actions.SHOW_NOTICE,
       value: notice,
     })
 
-    assert.equal(noticesState.noActiveNotices, false)
-    assert.equal(noticesState.nextUnreadNotice, notice)
+    assert.equal(state.noActiveNotices, false)
+    assert.equal(state.nextUnreadNotice, notice)
   })
 
   it('clears notice', () => {
+
+    const notice = {
+      id: 0,
+      read: false,
+      date: 'Date',
+      title: 'Title',
+      body: 'Body',
+    }
+
+    const noticesState = {
+      metamask: {
+        noActiveNotices: false,
+        nextUnreadNotice: notice,
+      },
+    }
+
     const state = reduceMetamask(noticesState, {
       type: actions.CLEAR_NOTICES,
     })
 
     assert.equal(state.noActiveNotices, true)
+    assert.equal(state.nextUnreadNotice, null)
   })
 
   it('unlocks MetaMask', () => {
-    unlockMetaMaskState = reduceMetamask({}, {
+    const state = reduceMetamask({}, {
       type: actions.UNLOCK_METAMASK,
       value: 'test address',
     })
 
-    assert.equal(unlockMetaMaskState.isUnlocked, true)
-    assert.equal(unlockMetaMaskState.isInitialized, true)
-    assert.equal(unlockMetaMaskState.selectedAddress, 'test address')
+    assert.equal(state.isUnlocked, true)
+    assert.equal(state.isInitialized, true)
+    assert.equal(state.selectedAddress, 'test address')
   })
 
   it('locks MetaMask', () => {
+    const unlockMetaMaskState = {
+      metamask: {
+        isUnlocked: true,
+        isInitialzed: false,
+        selectedAddress: 'test address',
+      },
+    }
     const lockMetaMask = reduceMetamask(unlockMetaMaskState, {
       type: actions.LOCK_METAMASK,
     })
@@ -172,7 +196,7 @@ describe('MetaMask Reducers', () => {
   })
 
   it('shows new vault seed words and sets isRevealingSeedWords to true', () => {
-    showNewVaultSeedState = reduceMetamask({}, {
+    const showNewVaultSeedState = reduceMetamask({}, {
       type: actions.SHOW_NEW_VAULT_SEED,
       value: 'test seed words',
     })
@@ -182,7 +206,8 @@ describe('MetaMask Reducers', () => {
   })
 
   it('shows account detail', () => {
-    const state = reduceMetamask(showNewVaultSeedState, {
+
+    const state = reduceMetamask({}, {
       type: actions.SHOW_ACCOUNT_DETAIL,
       value: 'test address',
     })
@@ -365,7 +390,7 @@ describe('MetaMask Reducers', () => {
       forceGasMin: '0xGas',
     }
 
-    sendState = reduceMetamask({}, {
+    const sendState = reduceMetamask({}, {
       type: actions.UPDATE_SEND,
       value,
     })
@@ -374,10 +399,47 @@ describe('MetaMask Reducers', () => {
   })
 
   it('clears send', () => {
+    const initStateSend = {
+      send:
+      { gasLimit: null,
+        gasPrice: null,
+        gasTotal: null,
+        tokenBalance: null,
+        from: '',
+        to: '',
+        amount: '0x0',
+        memo: '',
+        errors: {},
+        maxModeOn: false,
+        editingTransactionId: null,
+        forceGasMin: null,
+        toNickname: '' },
+    }
+
+    const sendState = {
+      send: {
+        gasLimit: '0xGasLimit',
+        gasPrice: '0xGasPrice',
+        gasTotal: '0xGasTotal',
+        tokenBalance: '0xBalance',
+        from: '0xAddress',
+        to: '0xAddress',
+        toNickname: '',
+        maxModeOn: false,
+        amount: '0xAmount',
+        memo: '0xMemo',
+        errors: {},
+        editingTransactionId: 22,
+        forceGasMin: '0xGas',
+      },
+    }
+
+
     const state = reduceMetamask(sendState, {
       type: actions.CLEAR_SEND,
     })
-    assert.deepEqual(state.send, initState.send)
+
+    assert.deepEqual(state.send, initStateSend.send)
   })
 
   it('updates value of tx by id', () => {
@@ -486,7 +548,7 @@ describe('MetaMask Reducers', () => {
       'symbol': 'META',
     }
 
-    pendingTokensState = reduceMetamask({}, {
+    const pendingTokensState = reduceMetamask({}, {
       type: actions.SET_PENDING_TOKENS,
       payload,
     })
@@ -495,6 +557,16 @@ describe('MetaMask Reducers', () => {
   })
 
   it('clears pending tokens', () => {
+    const payload = {
+      'address': '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
+      'decimals': 18,
+      'symbol': 'META',
+    }
+
+    const pendingTokensState = {
+      pendingTokens: payload,
+    }
+
     const state = reduceMetamask(pendingTokensState, {
       type: actions.CLEAR_PENDING_TOKENS,
     })
