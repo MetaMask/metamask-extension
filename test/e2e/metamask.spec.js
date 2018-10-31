@@ -52,7 +52,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-      await driver.quit()
+     // await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -237,6 +237,7 @@ describe('Metamask popup page', async function () {
   describe('Import Account', () => {
 
     it('opens import account menu', async function () {
+      await setProvider(NETWORKS.POA)
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
       const item = await waitUntilShowUp(menus.account.import)
@@ -248,7 +249,7 @@ describe('Metamask popup page', async function () {
     it('imports account', async function () {
       await delay(2000)
       const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
-      await privateKeyBox.sendKeys('c6b81c1252415d1acfda94474ab8f662a44c045f96749c805ff12a6074081586')// demo private key
+      await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
       const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
       await click(button)
       assert.equal(await button.getText(), 'Import', 'button has incorrect name')
@@ -256,11 +257,32 @@ describe('Metamask popup page', async function () {
       await menu.click()
       const importedLabel = await waitUntilShowUp(menus.account.labelImported)
       assert.equal(await importedLabel.getText(), 'IMPORTED')
+
+      await menu.click()
+    })
+
+    it('Auto-detect tokens for POA core network ', async function () {
+      // await setProvider(NETWORKS.POA)
+        const tab = await waitUntilShowUp(screens.main.tokens.menu)
+        await tab.click()
+        const balance = await waitUntilShowUp(screens.main.tokens.balance)
+        console.log(await balance.getText())
+        assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')
+    })
+
+    it.skip('Auto-detect tokens for MAIN core network ', async function () {
+      await setProvider(NETWORKS.MAINNET)
+      const balance = await waitUntilShowUp(screens.main.tokens.balance)
+      console.log(await balance.getText())
+      assert.equal(await balance.getText(), '0.001 WETH', 'token isnt\' auto-detected')
     })
 
     it('opens delete imported account screen', async function () {
-      const menu = await waitUntilShowUp(menus.account.delete)
+      await setProvider(NETWORKS.LOCALHOST)
+      const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
+      const item = await waitUntilShowUp(menus.account.delete)
+      await item.click()
       const deleteImportedAccountTitle = await waitUntilShowUp(screens.deleteImportedAccount.title)
       assert.equal(await deleteImportedAccountTitle.getText(), screens.deleteImportedAccount.titleText)
     })
