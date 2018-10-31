@@ -142,6 +142,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // ensure accountTracker updates balances after network change
     this.networkController.on('networkDidChange', () => {
       this.accountTracker._updateAccounts()
+      this.detectTokensController.restartTokenDetection()
     })
 
     // key mgmt
