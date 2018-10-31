@@ -109,22 +109,23 @@ class ExtensionPlatform {
       })
   }
 
-  _subscribeToNotificationClicked () {
-    if (!extension.notifications.onClicked.hasListener(this._viewOnEtherScan)) {
-      extension.notifications.onClicked.addListener(this._viewOnEtherScan)
+  _subscribeToNotificationClicked = () => {
+    if (!extension.notifications.onClicked.hasListener(this._viewOnExplorer)) {
+      extension.notifications.onClicked.addListener((url) => this._viewOnExplorer(url))
     }
   }
 
-  _viewOnEtherScan (txId) {
-    if (txId.startsWith('http://') || txId.startsWith('https://')) {
-      global.metamaskController.platform.openWindow({ url: txId })
+  _viewOnExplorer (url) {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      extension.notifications.onClicked.removeListener(this._viewOnExplorer)
+      global.metamaskController.platform.openWindow({ url })
     }
   }
 
   _getExplorer (hash, networkId) {
     let explorerName
-    if (networkId === 99 || networkId === 77) {
-      explorerName = 'POA explorer'
+    if (networkId === 99 || networkId === 100 || networkId === 77) {
+      explorerName = 'BlockScout'
     } else {
       explorerName = 'Etherscan'
     }
