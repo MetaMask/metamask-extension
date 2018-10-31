@@ -7,6 +7,8 @@ const {
 const { addHexPrefix } = require('ethereumjs-util')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
+import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/constants/error-keys'
+
 /**
 tx-gas-utils are gas utility methods for Transaction manager
 its passed ethquery
@@ -32,6 +34,7 @@ class TxGasUtil {
     } catch (err) {
       txMeta.simulationFails = {
         reason: err.message,
+        errorKey: err.errorKey,
       }
       return txMeta
     }
@@ -56,24 +59,38 @@ class TxGasUtil {
       return txParams.gas
     }
 
-    // if recipient has no code, gas is 21k max:
     const recipient = txParams.to
     const hasRecipient = Boolean(recipient)
-    let code
-    if (recipient) code = await this.query.getCode(recipient)
 
-    if (hasRecipient && (!code || code === '0x')) {
-      txParams.gas = SIMPLE_GAS_COST
-      txMeta.simpleSend = true // Prevents buffer addition
-      return SIMPLE_GAS_COST
+    // see if we can set the gas based on the recipient
+    if (hasRecipient) {
+      const code = await this.query.getCode(recipient)
+      // For an address with no code, geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+      const codeIsEmpty = !code || code === '0x' || code === '0x0'
+
+      if (codeIsEmpty) {
+        // if there's data in the params, but there's no contract code, it's not a valid transaction
+        if (txParams.data) {
+          const err = new Error('TxGasUtil - Trying to call a function on a non-contract address')
+          // set error key so ui can display localized error message
+          err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY
+          throw err
+        }
+
+        // This is a standard ether simple send, gas requirement is exactly 21k
+        txParams.gas = SIMPLE_GAS_COST
+        // prevents buffer addition
+        txMeta.simpleSend = true
+        return SIMPLE_GAS_COST
+      }
     }
 
-    // if not, fall back to block gasLimit
+    // fallback to block gasLimit
     const blockGasLimitBN = hexToBn(blockGasLimitHex)
     const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
     txParams.gas = bnToHex(saferGasLimitBN)
 
-    // run tx
+    // estimate tx gas requirements
     return await this.query.estimateGas(txParams)
   }
 

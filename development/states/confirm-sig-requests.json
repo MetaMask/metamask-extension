@@ -150,7 +150,10 @@
       "maxModeOn": false,
       "editingTransactionId": null
     },
-    "currentLocale": "en"
+    "currentLocale": "en",
+    "preferences": {
+      "useNativeCurrencyAsPrimaryCurrency": true
+    }
   },
   "appState": {
     "menuOpen": false,

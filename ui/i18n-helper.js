@@ -13,7 +13,7 @@ const getMessage = (locale, key, substitutions) => {
     return null
   }
   if (!locale[key]) {
-    log.error(`Translator - Unable to find value for key "${key}"`)
+    log.warn(`Translator - Unable to find value for key "${key}"`)
     return null
   }
   const entry = locale[key]

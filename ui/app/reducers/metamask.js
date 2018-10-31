@@ -51,6 +51,9 @@ function reduceMetamask (state, action) {
     isRevealingSeedWords: false,
     welcomeScreenSeen: false,
     currentLocale: '',
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: true,
+    },
   }, state.metamask)
 
   switch (action.type) {
@@ -364,6 +367,12 @@ function reduceMetamask (state, action) {
     case actions.CLEAR_PENDING_TOKENS: {
       return extend(metamaskState, {
         pendingTokens: {},
+      })
+    }
+
+    case actions.UPDATE_PREFERENCES: {
+      return extend(metamaskState, {
+        preferences: { ...action.payload },
       })
     }
 

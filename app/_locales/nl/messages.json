@@ -351,7 +351,7 @@
     "message": "Account importeren"
   },
   "importAccountMsg": {
-    "message":" Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
+    "message": " Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
   },
   "importAnAccount": {
     "message": "Importeer een account"
@@ -435,7 +435,7 @@
     "message": "back-up woorden hebben alleen kleine letters"
   },
   "mainnet": {
-    "message": "belangrijkste Ethereum-netwerk"
+    "message": "Main Netwerk"
   },
   "message": {
     "message": "Bericht"

@@ -7,7 +7,7 @@ const { compose } = require('recompose')
 const inherits = require('util').inherits
 const classnames = require('classnames')
 const { checksumAddress } = require('../util')
-const Identicon = require('./identicon')
+import Identicon from './identicon'
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
 const Tooltip = require('./tooltip-v2.js').default
 const copyToClipboard = require('copy-to-clipboard')
@@ -17,7 +17,7 @@ const TokenList = require('./token-list')
 const selectors = require('../selectors')
 const { ADD_TOKEN_ROUTE } = require('../routes')
 
-import Button from './button'
+import AddTokenButton from './add-token-button'
 
 module.exports = compose(
   withRouter,
@@ -100,19 +100,33 @@ WalletView.prototype.renderWalletBalance = function () {
   ])
 }
 
+WalletView.prototype.renderAddToken = function () {
+  const {
+    sidebarOpen,
+    hideSidebar,
+    history,
+  } = this.props
+
+  return h(AddTokenButton, {
+    onClick () {
+      history.push(ADD_TOKEN_ROUTE)
+      if (sidebarOpen) {
+        hideSidebar()
+      }
+    },
+  })
+}
+
 WalletView.prototype.render = function () {
   const {
     responsiveDisplayClassname,
     selectedAddress,
     keyrings,
     showAccountDetailModal,
-    sidebarOpen,
     hideSidebar,
-    history,
     identities,
   } = this.props
   // temporary logs + fake extra wallets
-  // console.log('walletview, selectedAccount:', selectedAccount)
 
   const checksummedAddress = checksumAddress(selectedAddress)
 
@@ -201,14 +215,7 @@ WalletView.prototype.render = function () {
 
     h(TokenList),
 
-    h(Button, {
-      type: 'primary',
-      className: 'wallet-view__add-token-button',
-      onClick: () => {
-        history.push(ADD_TOKEN_ROUTE)
-        sidebarOpen && hideSidebar()
-      },
-    }, this.context.t('addToken')),
+    this.renderAddToken(),
   ])
 }
 

@@ -17,7 +17,7 @@
   font-family: Roboto;
 }
 
-@media screen and (min-height: 576px) {
+@media screen and (min-height: 601px) {
   .first-time-flow {
     height: 100vh;
   }

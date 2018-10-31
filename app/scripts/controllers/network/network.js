@@ -11,6 +11,8 @@ const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
+const extend = require('extend')
+const networks = { networkList: {} }
 
 const {
   ROPSTEN,
@@ -29,6 +31,10 @@ const defaultProviderConfig = {
   type: testMode ? RINKEBY : MAINNET,
 }
 
+const defaultNetworkConfig = {
+  ticker: 'ETH',
+}
+
 module.exports = class NetworkController extends EventEmitter {
 
   constructor (opts = {}) {
@@ -39,7 +45,8 @@ module.exports = class NetworkController extends EventEmitter {
     // create stores
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
-    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
+    this.networkConfig = new ObservableStore(defaultNetworkConfig)
+    this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore, settings: this.networkConfig })
     this.on('networkDidChange', this.lookupNetwork)
     // provider and block tracker
     this._provider = null
@@ -51,8 +58,8 @@ module.exports = class NetworkController extends EventEmitter {
 
   initializeProvider (providerParams) {
     this._baseProviderParams = providerParams
-    const { type, rpcTarget } = this.providerStore.getState()
-    this._configureProvider({ type, rpcTarget })
+    const { type, rpcTarget, chainId, ticker, nickname } = this.providerStore.getState()
+    this._configureProvider({ type, rpcTarget, chainId, ticker, nickname })
     this.lookupNetwork()
   }
 
@@ -72,7 +79,20 @@ module.exports = class NetworkController extends EventEmitter {
     return this.networkStore.getState()
   }
 
-  setNetworkState (network) {
+  getNetworkConfig () {
+    return this.networkConfig.getState()
+  }
+
+  setNetworkState (network, type) {
+    if (network === 'loading') {
+      return this.networkStore.putState(network)
+    }
+
+    // type must be defined
+    if (!type) {
+      return
+    }
+    network = networks.networkList[type] && networks.networkList[type].chainId ? networks.networkList[type].chainId : network
     return this.networkStore.putState(network)
   }
 
@@ -85,18 +105,32 @@ module.exports = class NetworkController extends EventEmitter {
     if (!this._provider) {
       return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
     }
+    var { type } = this.providerStore.getState()
     const ethQuery = new EthQuery(this._provider)
-    ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      if (err) return this.setNetworkState('loading')
-      log.info('web3.getNetwork returned ' + network)
-      this.setNetworkState(network)
+    // first attempt to perform lookup via eth_chainId
+    ethQuery.sendAsync({ method: 'eth_chainId' }, (err, chainIdHex) => {
+      if (err) {
+        // if eth_chainId is not supported, fallback to net_verion
+        ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
+          if (err) return this.setNetworkState('loading')
+          log.info(`net_version returned ${network}`)
+          this.setNetworkState(network, type)
+        })
+        return
+      }
+      const chainId = Number.parseInt(chainIdHex, 16)
+      log.info(`net_version returned ${chainId}`)
+      this.setNetworkState(chainId, type)
     })
   }
 
-  setRpcTarget (rpcTarget) {
+  setRpcTarget (rpcTarget, chainId, ticker = 'ETH', nickname = '') {
     const providerConfig = {
       type: 'rpc',
       rpcTarget,
+      chainId,
+      ticker,
+      nickname,
     }
     this.providerConfig = providerConfig
   }
@@ -132,7 +166,7 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureProvider (opts) {
-    const { type, rpcTarget } = opts
+    const { type, rpcTarget, chainId, ticker, nickname } = opts
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
@@ -142,7 +176,7 @@ module.exports = class NetworkController extends EventEmitter {
       this._configureLocalhostProvider()
     // url-based rpc endpoints
     } else if (type === 'rpc') {
-      this._configureStandardProvider({ rpcUrl: rpcTarget })
+      this._configureStandardProvider({ rpcUrl: rpcTarget, chainId, ticker, nickname })
     } else {
       throw new Error(`NetworkController - _configureProvider - unknown type "${type}"`)
     }
@@ -152,6 +186,11 @@ module.exports = class NetworkController extends EventEmitter {
     log.info('NetworkController - configureInfuraProvider', type)
     const networkClient = createInfuraClient({ network: type })
     this._setNetworkClient(networkClient)
+    // setup networkConfig
+    var settings = {
+      ticker: 'ETH',
+    }
+    this.networkConfig.putState(settings)
   }
 
   _configureLocalhostProvider () {
@@ -160,9 +199,22 @@ module.exports = class NetworkController extends EventEmitter {
     this._setNetworkClient(networkClient)
   }
 
-  _configureStandardProvider ({ rpcUrl }) {
+  _configureStandardProvider ({ rpcUrl, chainId, ticker, nickname }) {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
     const networkClient = createJsonRpcClient({ rpcUrl })
+    // hack to add a 'rpc' network with chainId
+    networks.networkList['rpc'] = {
+      chainId: chainId,
+      rpcUrl,
+      ticker: ticker || 'ETH',
+      nickname,
+    }
+    // setup networkConfig
+    var settings = {
+      network: chainId,
+    }
+    settings = extend(settings, networks.networkList['rpc'])
+    this.networkConfig.putState(settings)
     this._setNetworkClient(networkClient)
   }
 

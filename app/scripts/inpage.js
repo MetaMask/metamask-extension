@@ -27,6 +27,8 @@ var metamaskStream = new LocalMessageDuplexStream({
 
 // compose the inpage provider
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
+// set a high max listener count to avoid unnecesary warnings
+inpageProvider.setMaxListeners(100)
 
 // Augment the provider with its enable method
 inpageProvider.enable = function (options = {}) {

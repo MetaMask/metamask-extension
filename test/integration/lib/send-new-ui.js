@@ -40,7 +40,7 @@ async function customizeGas (assert, price, limit, ethFee, usdFee) {
   const sendGasField = await queryAsync($, '.send-v2__gas-fee-display')
 
   assert.equal(
-    (await findAsync(sendGasField, '.currency-display__input-wrapper > input')).val(),
+    (await findAsync(sendGasField, '.currency-display-component'))[0].textContent,
     ethFee,
     'send gas field should show customized gas total'
   )
@@ -94,12 +94,12 @@ async function runSendFlowTest (assert, done) {
   sendToDropdownList.children()[2].click()
 
   const sendToAccountAddress = sendToFieldInput.val()
-  assert.equal(sendToAccountAddress, '0x2f8d4a878cfa04a6e60d46362f5644deab66572d', 'send to dropdown selects the correct address')
+  assert.equal(sendToAccountAddress, '0x2f8D4a878cFA04A6E60D46362f5644DeAb66572D', 'send to dropdown selects the correct address')
 
   const sendAmountField = await queryAsync($, '.send-v2__form-row:eq(2)')
-  sendAmountField.find('.currency-display')[0].click()
+  sendAmountField.find('.unit-input')[0].click()
 
-  const sendAmountFieldInput = await findAsync(sendAmountField, '.currency-display__input')
+  const sendAmountFieldInput = await findAsync(sendAmountField, '.unit-input__input')
   sendAmountFieldInput.val('5.1')
   reactTriggerChange(sendAmountField.find('input')[0])
 
@@ -112,9 +112,9 @@ async function runSendFlowTest (assert, done) {
   errorMessage = $('.send-v2__error')
   assert.equal(errorMessage.length, 0, 'send should stop rendering amount error message after amount is corrected')
 
-  await customizeGas(assert, 0, 21000, '0', '$0.00 USD')
-  await customizeGas(assert, 1, 21000, '0.000021', '$0.03 USD')
-  await customizeGas(assert, 500, 60000, '0.03', '$36.03 USD')
+  await customizeGas(assert, 0, 21000, '0ETH', '$0.00USD')
+  await customizeGas(assert, 1, 21000, '0.000021ETH', '$0.03USD')
+  await customizeGas(assert, 500, 60000, '0.03ETH', '$36.03USD')
 
   const sendButton = await queryAsync($, 'button.btn-primary.btn--large.page-container__footer-button')
   assert.equal(sendButton[0].textContent, 'Next', 'next button rendered')
@@ -130,11 +130,11 @@ async function runSendFlowTest (assert, done) {
   const confirmToName = (await queryAsync($, '.sender-to-recipient__name')).last()
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
 
-  const confirmScreenRowFiats = await queryAsync($, '.confirm-detail-row__fiat')
+  const confirmScreenRowFiats = await queryAsync($, '.confirm-detail-row__secondary')
   const confirmScreenGas = confirmScreenRowFiats[0]
   assert.equal(confirmScreenGas.textContent, '$3.60', 'confirm screen should show correct gas')
   const confirmScreenTotal = confirmScreenRowFiats[1]
-  assert.equal(confirmScreenTotal.textContent, '$2,405.36', 'confirm screen should show correct total')
+  assert.equal(confirmScreenTotal.textContent, '$2,405.37', 'confirm screen should show correct total')
 
   const confirmScreenBackButton = await queryAsync($, '.confirm-page-container-header__back-button')
   confirmScreenBackButton[0].click()
@@ -150,9 +150,9 @@ async function runSendFlowTest (assert, done) {
   sendToFieldInputInEdit.val('0xd85a4b6a394794842887b8284293d69163007bbb')
 
   const sendAmountFieldInEdit = await queryAsync($, '.send-v2__form-row:eq(2)')
-  sendAmountFieldInEdit.find('.currency-display')[0].click()
+  sendAmountFieldInEdit.find('.unit-input')[0].click()
 
-  const sendAmountFieldInputInEdit = sendAmountFieldInEdit.find('.currency-display__input')
+  const sendAmountFieldInputInEdit = sendAmountFieldInEdit.find('.unit-input__input')
   sendAmountFieldInputInEdit.val('1.0')
   reactTriggerChange(sendAmountFieldInputInEdit[0])
 

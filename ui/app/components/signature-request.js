@@ -2,7 +2,7 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Identicon = require('./identicon')
+import Identicon from './identicon'
 const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')
@@ -204,7 +204,7 @@ SignatureRequest.prototype.renderBody = function () {
       h('span.request-signature__help-link', {
         onClick: () => {
           global.platform.openWindow({
-            url: 'https://consensys.zendesk.com/hc/en-us/articles/360004427792',
+            url: 'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
           })
         },
     }, this.context.t('learnMore'))]

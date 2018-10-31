@@ -46,7 +46,7 @@ AccountImportSubview.prototype.render = function () {
           },
           onClick: () => {
             global.platform.openWindow({
-              url: 'https://consensys.zendesk.com/hc/en-us/articles/360004180111-What-are-imported-accounts-New-UI',
+              url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
             })
           },
         }, this.context.t('here')),

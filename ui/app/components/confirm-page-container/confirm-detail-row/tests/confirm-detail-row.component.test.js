@@ -12,17 +12,19 @@ describe('Confirm Detail Row Component', function () {
   let wrapper
 
   beforeEach(() => {
-    wrapper = shallow(<ConfirmDetailRow
-      errorType={'mockErrorType'}
-      label={'mockLabel'}
-      showError={false}
-      fiatText = {'mockFiatText'}
-      ethText = {'mockEthText'}
-      fiatTextColor= {'mockColor'}
-      onHeaderClick= {propsMethodSpies.onHeaderClick}
-      headerText = {'mockHeaderText'}
-      headerTextClassName = {'mockHeaderClass'}
-    />)
+    wrapper = shallow(
+      <ConfirmDetailRow
+        errorType={'mockErrorType'}
+        label={'mockLabel'}
+        showError={false}
+        primaryText = {'mockFiatText'}
+        secondaryText = {'mockEthText'}
+        primaryValueTextColor= {'mockColor'}
+        onHeaderClick= {propsMethodSpies.onHeaderClick}
+        headerText = {'mockHeaderText'}
+        headerTextClassName = {'mockHeaderClass'}
+      />
+    )
   })
 
 	describe('render', () => {
@@ -38,16 +40,16 @@ describe('Confirm Detail Row Component', function () {
       assert.equal(wrapper.find('.confirm-detail-row__details > .confirm-detail-row__header-text').childAt(0).text(), 'mockHeaderText')
     })
 
-    it('should render the fiatText as a child of the confirm-detail-row__fiat', () => {
-      assert.equal(wrapper.find('.confirm-detail-row__details > .confirm-detail-row__fiat').childAt(0).text(), 'mockFiatText')
+    it('should render the primaryText as a child of the confirm-detail-row__primary', () => {
+      assert.equal(wrapper.find('.confirm-detail-row__details > .confirm-detail-row__primary').childAt(0).text(), 'mockFiatText')
     })
 
-    it('should render the ethText as a child of the confirm-detail-row__eth', () => {
-      assert.equal(wrapper.find('.confirm-detail-row__details > .confirm-detail-row__eth').childAt(0).text(), 'mockEthText')
+    it('should render the ethText as a child of the confirm-detail-row__secondary', () => {
+      assert.equal(wrapper.find('.confirm-detail-row__details > .confirm-detail-row__secondary').childAt(0).text(), 'mockEthText')
     })
 
-    it('should set the fiatTextColor on confirm-detail-row__fiat', () => {
-      assert.equal(wrapper.find('.confirm-detail-row__fiat').props().style.color, 'mockColor')
+    it('should set the fiatTextColor on confirm-detail-row__primary', () => {
+      assert.equal(wrapper.find('.confirm-detail-row__primary').props().style.color, 'mockColor')
     })
 
     it('should assure the confirm-detail-row__header-text classname is correct', () => {
@@ -58,7 +60,5 @@ describe('Confirm Detail Row Component', function () {
       wrapper.find('.confirm-detail-row__header-text').props().onClick()
       assert.equal(assert.equal(propsMethodSpies.onHeaderClick.callCount, 1))
     })
-
-
 	})
 })
