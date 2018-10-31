@@ -1431,7 +1431,7 @@ describe('Metamask popup page', async function () {
         let buttonYes
 
         await setProvider(NETWORKS.MAINNET)
-        await waitUntilShowUp(elements.loader,25)
+        await waitUntilShowUp(elements.loader, 25)
         await waitUntilDisappear(elements.loader, 25)
         menu = await waitUntilShowUp(menus.token.menu)
         await menu.click()
