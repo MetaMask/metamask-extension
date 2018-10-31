@@ -2,7 +2,7 @@ import assert from 'assert'
 import reduceMetamask from '../../../../../ui/app/reducers/metamask'
 import * as actions from '../../../../../ui/app/actions'
 
-describe.only('MetaMask Reducers', () => {
+describe('MetaMask Reducers', () => {
 
   it('init state', () => {
     const initState = reduceMetamask({metamask:{}}, {})
