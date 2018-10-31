@@ -1402,7 +1402,6 @@ describe('Metamask popup page', async function () {
       })
 
       it('token should not  be displayed in LOCALHOST network', async function () {
-        console.log('https://github.com/poanetwork/metamask-extension/issues/131')
         await setProvider(NETWORKS.LOCALHOST)
         assert.equal(await assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
@@ -1425,12 +1424,15 @@ describe('Metamask popup page', async function () {
     describe('remove Mainnet\'s tokens', function () {
 
       it('remove tokens', async function () {
-        await setProvider(NETWORKS.MAINNET)
+
         let menu
         let button
         let counter
         let buttonYes
 
+        await setProvider(NETWORKS.MAINNET)
+        await waitUntilShowUp(elements.loader,25)
+        await waitUntilDisappear(elements.loader, 25)
         menu = await waitUntilShowUp(menus.token.menu)
         await menu.click()
         button = await waitUntilShowUp(menus.token.remove)
