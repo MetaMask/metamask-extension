@@ -272,7 +272,7 @@ describe('Metamask popup page', async function () {
 
     it('Auto-detect tokens for MAIN core network ', async function () {
       await setProvider(NETWORKS.MAINNET)
-      await waitUntilShowUp(elements.loader)
+      await waitUntilShowUp(elements.loader, 25)
       await waitUntilDisappear(elements.loader, 25)
       const balance = await waitUntilShowUp(screens.main.tokens.balance)
       console.log(await balance.getText())
@@ -1432,7 +1432,7 @@ describe('Metamask popup page', async function () {
 
         await setProvider(NETWORKS.MAINNET)
         await waitUntilShowUp(elements.loader, 25)
-        await waitUntilDisappear(elements.loader, 25)
+        await waitUntilDisappear(elements.loader, 50)
         menu = await waitUntilShowUp(menus.token.menu)
         await menu.click()
         button = await waitUntilShowUp(menus.token.remove)
