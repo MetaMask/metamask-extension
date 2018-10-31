@@ -28,6 +28,7 @@ const ConfirmAddTokenScreen = require('./components/confirm-add-token')
 const RemoveTokenScreen = require('./remove-token')
 const AddSuggestedTokenScreen = require('./add-suggested-token')
 const Import = require('./accounts/import')
+import ConnectHardwareForm from './components/connect-hardware/index.js'
 const InfoScreen = require('./info')
 const AppBar = require('./components/app-bar')
 const Loading = require('./components/loading')
@@ -261,6 +262,10 @@ App.prototype.renderPrimary = function () {
     case 'import-menu':
       log.debug('rendering import screen')
       return h(Import, {key: 'import-menu'})
+
+    case 'hardware-wallets-menu':
+      log.debug('rendering hardware wallet menu screen')
+      return h(ConnectHardwareForm, {key: 'hardware-wallets-menu'})
 
     case 'reveal-seed-conf':
       log.debug('rendering reveal seed confirmation screen')

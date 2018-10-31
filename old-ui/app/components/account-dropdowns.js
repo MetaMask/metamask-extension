@@ -160,7 +160,11 @@ class AccountDropdowns extends Component {
               padding: '8px 0px',
             },
             closeMenu: () => {},
-            onClick: () => actions.showImportPage(),
+            onClick: () => {
+              console.log('ACTIONS')
+              console.log(actions)
+              actions.showImportPage()
+            },
           },
           [
             h('span', {
@@ -170,6 +174,25 @@ class AccountDropdowns extends Component {
                 color: '#60db97',
               },
             }, 'Import Account'),
+          ]
+        ),
+        h(
+          DropdownMenuItem,
+          {
+            style: {
+              padding: '8px 0px',
+            },
+            closeMenu: () => {},
+            onClick: () => actions.showConnectHWWalletPage(),
+          },
+          [
+            h('span', {
+              style: {
+                fontSize: '16px',
+                marginBottom: '5px',
+                color: '#60db97',
+              },
+            }, 'Connect hardware wallet'),
           ]
         ),
       ]
@@ -322,6 +345,7 @@ const mapDispatchToProps = (dispatch) => {
       showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
       addNewAccount: () => dispatch(actions.addNewAccount()),
       showImportPage: () => dispatch(actions.showImportPage()),
+      showConnectHWWalletPage: () => dispatch(actions.showConnectHWWalletPage()),
       showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
       showDeleteImportedAccount: (identity) => dispatch(actions.showDeleteImportedAccount(identity)),
     },
