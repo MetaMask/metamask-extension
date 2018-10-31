@@ -166,7 +166,7 @@ function reduceMetamask (state, action) {
         selectedTokenAddress: action.value,
       })
 
-    case actions.SET_SELECTED_LAYER2APP:
+    case actions.SET_SELECTED_LAYER2APP_ADDRESS:
       return extend(metamaskState, {
         selectedLayer2AppAddress: action.value,
       })

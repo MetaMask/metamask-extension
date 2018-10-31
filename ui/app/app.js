@@ -12,6 +12,7 @@ const log = require('loglevel')
 const InitializeScreen = require('../../mascara/src/app/first-time').default
 // accounts
 const SendTransactionScreen = require('./components/send/send.container')
+const DepositLayer2AppScreen = require('./components/depositLayer2App/depositLayer2App.container')
 const ConfirmTransaction = require('./components/pages/confirm-transaction')
 
 // slideout menu
@@ -60,6 +61,7 @@ const {
   CONFIRM_ADD_SUGGESTED_LAYER2APP_ROUTE,
   NEW_ACCOUNT_ROUTE,
   SEND_ROUTE,
+  DEPOSIT_LAYER2APP_ROUTE,  
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   NOTICE_ROUTE,
@@ -90,6 +92,7 @@ class App extends Component {
           component: ConfirmTransaction,
         }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
+        h(Authenticated, { path: DEPOSIT_LAYER2APP_ROUTE, exact, component: DepositLayer2AppScreen }),	
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
         h(Authenticated, { path: ADD_LAYER2APP_ROUTE, exact, component: AddLayer2AppPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),

@@ -122,9 +122,9 @@ var actions = {
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
   SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
-  SET_SELECTED_LAYER2APP: 'SET_SELECTED_LAYER2APP',
+  SET_SELECTED_LAYER2APP_ADDRESS: 'SET_SELECTED_LAYER2APP_ADDRESS',
   setSelectedToken,
-  setSelectedLayer2App,
+  setSelectedLayer2AppAddress,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -1575,9 +1575,9 @@ function setSelectedToken (tokenAddress) {
   }
 }
 
-function setSelectedLayer2App (layer2AppAddress) {
+function setSelectedLayer2AppAddress (layer2AppAddress) {
   return {
-    type: actions.SET_SELECTED_LAYER2APP,
+    type: actions.SET_SELECTED_LAYER2APP_ADDRESS,
     value: layer2AppAddress || null,
   }
 }
@@ -1724,13 +1724,14 @@ function addLayer2Apps (layer2Apps) {
   console.log("ADDING APPS", layer2Apps)
   return dispatch => {
     if (Array.isArray(layer2Apps)) {
-      dispatch(actions.setSelectedLayer2App(getLayer2AppAddressFromLayer2AppObject(layer2Apps[0])))
+      dispatch(actions.setSelectedToken(getLayer2AppAddressFromLayer2AppObject(layer2Apps[0])))
+      dispatch(actions.setSelectedLayer2AppAddress(getLayer2AppAddressFromLayer2AppObject(layer2Apps[0])))
       return Promise.all(layer2Apps.map(({ address, name }) => (
         dispatch(addLayer2App(address, name))
       )))
     } else {
-      console.log("ELSE: ADDING SINGLE APP")
-      dispatch(actions.setSelectedLayer2App(getLayer2AppAddressFromLayer2AppObject(layer2Apps)))
+      dispatch(actions.setSelectedToken(getLayer2AppAddressFromLayer2AppObject(layer2Apps)))
+      dispatch(actions.setSelectedLayer2AppAddress(getLayer2AppAddressFromLayer2AppObject(layer2Apps)))      
       return Promise.all(
         Object
         .entries(layer2Apps)

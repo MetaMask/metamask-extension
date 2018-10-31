@@ -18,17 +18,6 @@ function mapStateToProps (state) {
   }
 }
 
-//TODO REWORK
-// const defaultLayer2Apps = []
-// const contracts = require('eth-contract-metadata')
-// for (const address in contracts) {
-//   const contract = contracts[address]
-//   if (contract.erc20) {
-//     contract.address = address
-//     defaultLayer2Apps.push(contract)
-//   }
-// }
-
 Layer2AppList.contextTypes = {
   t: PropTypes.func,
 }
@@ -47,8 +36,6 @@ function Layer2AppList () {
 }
 
 Layer2AppList.prototype.render = function () {
-  console.log("--------DEBUG RENDER APP LIST== PROPS", this.props)
-  console.log("--------DEBUG RENDER APP LIST== STATE", this.state)
   const { userAddress, assetImages } = this.props
   const state = this.state
 
@@ -58,8 +45,6 @@ Layer2AppList.prototype.render = function () {
   if (isLoading) {
     return this.message(this.context.t('loadingLayer2Apps'))
   }
-  
-  console.log("--------DEBUG RENDER APP LIST==", layer2Apps)
   
   if (error) {
     log.error(error)
@@ -84,7 +69,6 @@ Layer2AppList.prototype.render = function () {
   }
 
   return h('div', layer2Apps.map((layer2AppData) => {
-    console.log("LOOOPING", layer2AppData)
     layer2AppData.image = assetImages[layer2AppData.address]
     return h(Layer2AppCell, layer2AppData)
   }))
@@ -171,6 +155,7 @@ Layer2AppList.prototype.componentDidUpdate = function (nextProps) {
 }
 
 Layer2AppList.prototype.updateBalances = function (layer2Apps) {
+  console.log("UPDATEBALANCES")
   if (!this.tracker.running) {
     return
   }

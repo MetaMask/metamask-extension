@@ -1,0 +1,32 @@
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
+import Media from 'react-media'
+import MenuBar from '../menu-bar'
+import Button from '../button'
+
+//import TransactionViewBalance from '../transaction-view-balance'
+//import TransactionList from '../transaction-list'
+
+export default class Layer2AppView extends PureComponent {
+  static contextTypes = {
+    t: PropTypes.func,
+    showDepositModal: PropTypes.func,
+  }
+
+  render () {
+    const { t } = this.context
+    const { showDepositModal, history } = this.props
+    return (
+	<div className="transaction-view">
+	<Button
+      type="primary"
+      className="transaction-view-balance__button"
+      onClick={() =>{showDepositModal()} }
+        >
+        {t("setupLayer2App") }
+      </Button>
+
+      </div>
+    )
+  }
+}

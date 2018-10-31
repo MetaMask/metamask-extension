@@ -14,7 +14,8 @@ function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     currentCurrency: state.metamask.currentCurrency,
-    selectedLayer2AppAddress: state.metamask.selectedLayer2AppAddress,
+    selectedTokenAddress: state.metamask.selectedTokenAddress,
+    selectedLayer2AppAddress: state.metamask.selectedLayer2AppAddress,    
     userAddress: selectors.getSelectedAddress(state),
     contractExchangeRates: state.metamask.contractExchangeRates,
     conversionRate: state.metamask.conversionRate,
@@ -24,7 +25,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setSelectedLayer2App: address => dispatch(actions.setSelectedLayer2App(address)),
+    setSelectedToken: address => dispatch(actions.setSelectedToken(address)),
+    setSelectedLayer2AppAddress: address => dispatch(actions.setSelectedLayer2AppAddress(address)),    
     hideSidebar: () => dispatch(actions.hideSidebar()),
   }
 }
@@ -49,8 +51,10 @@ Layer2AppCell.prototype.render = function () {
     symbol,
     string,
     network,
-    setSelectedLayer2App,
-    selectedLayer2AppAddress,
+    setSelectedToken,
+    selectedTokenAddress,
+    setSelectedLayer2AppAddress,
+    selectedLayer2App,
     contractExchangeRates,
     conversionRate,
     hideSidebar,
@@ -84,12 +88,13 @@ Layer2AppCell.prototype.render = function () {
 
   return (
     h('div.layer2App-list-item', {
-      className: `layer2App-list-item ${selectedLayer2AppAddress === address ? 'layer2App-list-item--active' : ''}`,
+      className: `layer2App-list-item ${selectedTokenAddress === address ? 'layer2App-list-item--active' : ''}`,
       // style: { cursor: network === '1' ? 'pointer' : 'default' },
       // onClick: this.view.bind(this, address, userAddress, network),
       onClick: () => {
-        setSelectedLayer2App(address)
-        selectedLayer2AppAddress !== address && sidebarOpen && hideSidebar()
+        setSelectedToken(address)
+        setSelectedLayer2AppAddress(address)	
+        selectedTokenAddress !== address && sidebarOpen && hideSidebar()
       },
     }, [
 

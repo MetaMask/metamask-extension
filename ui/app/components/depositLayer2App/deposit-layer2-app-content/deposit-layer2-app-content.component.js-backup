@@ -1,0 +1,35 @@
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import PageContainerContent from '../../page-container/page-container-content.component'
+import DepositLayer2AppAmountRow from './deposit-layer2-app-amount-row/'
+import DepositLayer2AppFromRow from './deposit-layer2-app-from-row/'
+import DepositLayer2AppGasRow from './deposit-layer2-app-gas-row/'
+import DepositLayer2AppToRow from './deposit-layer2-app-to-row/'
+
+export default class DepositLayer2AppContent extends Component {
+
+  static propTypes = {
+    updateGas: PropTypes.func,
+    scanQrCode: PropTypes.func,
+    showHexData: PropTypes.bool,
+  };
+
+  updateGas = (updateData) => this.props.updateGas(updateData)
+
+  render () {
+    return (
+      <PageContainerContent>
+        <div className="send-v2__form">
+          <DepositLayer2AppFromRow />
+          <DepositLayer2AppToRow
+            updateGas={this.updateGas}
+            scanQrCode={ _ => this.props.scanQrCode()}
+          />
+          <DepositLayer2AppAmountRow updateGas={this.updateGas} />
+          <DepositLayer2AppGasRow />
+        </div>
+      </PageContainerContent>
+    )
+  }
+
+}

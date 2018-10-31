@@ -4,6 +4,7 @@ import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import WalletView from '../../wallet-view'
 import TransactionView from '../../transaction-view'
+import Layer2AppView from '../../layer2App-view'
 import {
   INITIALIZE_BACKUP_PHRASE_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -69,9 +70,14 @@ export default class Home extends PureComponent {
             query="(min-width: 576px)"
             render={() => <WalletView />}
           />
-          <TransactionView />
-        </div>
-      </div>
+	  <TransactionView />
+	</div>
+        <Layer2AppView />	
+      </div>	
     )
   }
 }
+
+
+
+
