@@ -91,8 +91,6 @@ function mapStateToProps (state) {
 }
 
 App.prototype.render = function () {
-  console.log('props.currentView:')
-  console.log(this.props)
   var props = this.props
   const {
     currentView,
@@ -108,7 +106,7 @@ App.prototype.render = function () {
     `Connecting to ${networkName}` : null
   log.debug('Main ui render function')
 
-  const confirmTX = props.currentView.name === 'confTx'
+  const confirmMsgTx = (props.currentView.name === 'confTx' && Object.keys(props.unapprovedTxs).length === 0)
 
   return (
     h('.flex-column.full-height', {
@@ -128,8 +126,8 @@ App.prototype.render = function () {
       // panel content
       h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
         style: {
-          background: (props.isUnlocked || props.currentView.name === 'restoreVault' || props.currentView.name === 'config') ? confirmTX ? 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))' : 'white' : 'transparent',
-          height: confirmTX ? '100%' : 'auto',
+          background: (props.isUnlocked || props.currentView.name === 'restoreVault' || props.currentView.name === 'config') ? confirmMsgTx ? 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))' : 'white' : 'transparent',
+          height: (props.isUnlocked && confirmMsgTx) ? '100%' : 'auto',
         },
       }, [
         this.renderPrimary(),
