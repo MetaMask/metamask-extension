@@ -29,6 +29,7 @@ function reduceMetamask (state, action) {
     tokenExchangeRates: {},
     tokens: [],
     layer2Apps: [],
+    layer2AppsScripts: [],    
     pendingTokens: {},
     pendingLayer2Apps: {},
     send: {
@@ -160,7 +161,7 @@ function reduceMetamask (state, action) {
       })
       delete newState.seedWords
       return newState
-
+    
     case actions.SET_SELECTED_TOKEN:
       return extend(metamaskState, {
         selectedTokenAddress: action.value,
@@ -171,6 +172,10 @@ function reduceMetamask (state, action) {
         selectedLayer2AppAddress: action.value,
       })
 
+    case actions.REGISTER_LAYER2APPS_SCRIPTS:
+      return extend(metamaskState, {
+        layer2AppsScripts: action.value
+      })
     case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label

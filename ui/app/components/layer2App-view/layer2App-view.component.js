@@ -36,6 +36,5 @@ export default class Layer2AppView extends PureComponent {
   }
 }
 
-// Notes:
 // const { showDepositModal, history } = this.props
 // onClick={() =>{showDepositModal()} }

@@ -369,22 +369,22 @@ class PreferencesController {
    *
    */
 
-  async addLayer2App (rawAddress, symbol, decimals, image) {
+  async addLayer2App (rawAddress, name, contract, image) {
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, symbol, decimals }
+    const newEntry = { address, name, contract }
     const layer2Apps = this.store.getState().layer2Apps
     const assetImages = this.getAssetImages()
     const previousEntry = layer2Apps.find((layer2App, index) => {
       return layer2App.address === address
     })
     const previousIndex = layer2Apps.indexOf(previousEntry)
-
+    assetImages[address] = image
     if (previousEntry) {
       layer2Apps[previousIndex] = newEntry
     } else {
       layer2Apps.push(newEntry)
     }
-    assetImages[address] = image
+
     this._updateAccountLayer2Apps(layer2Apps, assetImages)
     return Promise.resolve(layer2Apps)
   }

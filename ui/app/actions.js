@@ -230,6 +230,8 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   showConfigPage,
   // Layer 2 Apps
+  REGISTER_LAYER2APPS_SCRIPTS: 'REGISTER_LAYER2APPS_SCRIPTS',
+  registerLayer2AppContract,
   SHOW_ADD_LAYER2APP_PAGE: 'SHOW_ADD_LAYER2APP_PAGE',
   SHOW_ADD_SUGGESTED_LAYER2APP_PAGE: 'SHOW_ADD_SUGGESTED_LAYER2APP_PAGE',
   showAddLayer2AppPage,
@@ -1703,6 +1705,14 @@ function addLayer2App (address, name) {
   }
 }
 
+function registerLayer2AppContract(layer2AppsScripts){
+  console.log("REGISTERING LAYER 2 SCRIPTS", layer2AppsScripts)
+  return {
+    type: actions.REGISTER_LAYER2APPS_SCRIPTS,
+    value: layer2AppsScripts,
+  }
+}
+
 function removeLayer2App (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -1735,8 +1745,8 @@ function addLayer2Apps (layer2Apps) {
       return Promise.all(
         Object
         .entries(layer2Apps)
-        .map(([_, { address, symbol, decimals }]) => (
-          dispatch(addLayer2App(address, name))
+          .map(([_, { address, name }]) => (
+            dispatch(addLayer2App(address, name))
         )),
 	console.log("ELSE: ADDING SINGLE APP return end")
       )

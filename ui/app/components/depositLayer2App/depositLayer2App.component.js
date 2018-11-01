@@ -194,16 +194,14 @@ export default class DepositLayer2AppScreen extends PersistentForm {
   }
 
   render () {
-    const { history, selectedLayer2AppAddress } = this.props
-
-    console.log("DEBUG DEBUG DEBUG ABOVE", this.props)
-
+    const { history, selectedLayer2AppAddress, selectedLayer2AppScript } = this.props
     return (
       <div className="page-container">
         <DepositLayer2AppHeader history={history}/>
         <DepositLayer2AppContent
           updateGas={(updateData) => this.updateGas(updateData)}
           selectedLayer2AppAddress={selectedLayer2AppAddress}
+          selectedLayer2AppScript={selectedLayer2AppScript}
         />
       </div>
     )
