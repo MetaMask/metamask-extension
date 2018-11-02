@@ -456,28 +456,28 @@ describe('preferences controller', function () {
     it('should validate ERC20 asset correctly', async function () {
       const validateSpy = sandbox.spy(preferencesController._validateERC20AssetParams)
       try { validateSpy({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC', decimals: 0}) } catch (e) {}
-      assert.equal(validateSpy.threw(), false, 'correct opts')
+      assert.equal(validateSpy.threw(), false, 'correct options object')
       const validateSpyAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
       try { validateSpyAddress({symbol: 'ABC', decimals: 0}) } catch (e) {}
-      assert.equal(validateSpyAddress.threw(), true, 'opts no address')
+      assert.equal(validateSpyAddress.threw(), true, 'options object with no address')
       const validateSpySymbol = sandbox.spy(preferencesController._validateERC20AssetParams)
       try { validateSpySymbol({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', decimals: 0}) } catch (e) {}
-      assert.equal(validateSpySymbol.threw(), true, 'opts no symbol')
+      assert.equal(validateSpySymbol.threw(), true, 'options object with no symbol')
       const validateSpyDecimals = sandbox.spy(preferencesController._validateERC20AssetParams)
       try { validateSpyDecimals({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABC'}) } catch (e) {}
-      assert.equal(validateSpyDecimals.threw(), true, 'opts no decimals')
+      assert.equal(validateSpyDecimals.threw(), true, 'options object with no decimals')
       const validateSpyInvalidSymbol = sandbox.spy(preferencesController._validateERC20AssetParams)
       try { validateSpyInvalidSymbol({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 0}) } catch (e) {}
-      assert.equal(validateSpyInvalidSymbol.threw(), true, 'opts no decimals')
+      assert.equal(validateSpyInvalidSymbol.threw(), true, 'options object with invalid symbol')
       const validateSpyInvalidDecimals1 = sandbox.spy(preferencesController._validateERC20AssetParams)
       try { validateSpyInvalidDecimals1({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: -1}) } catch (e) {}
-      assert.equal(validateSpyInvalidDecimals1.threw(), true, 'decimals less than zero')
+      assert.equal(validateSpyInvalidDecimals1.threw(), true, 'options object with decimals less than zero')
       const validateSpyInvalidDecimals2 = sandbox.spy(preferencesController._validateERC20AssetParams)
       try { validateSpyInvalidDecimals2({rawAddress: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07', symbol: 'ABCDEFGHI', decimals: 38}) } catch (e) {}
-      assert.equal(validateSpyInvalidDecimals2.threw(), true, 'decimals more than 36')
+      assert.equal(validateSpyInvalidDecimals2.threw(), true, 'options object with decimals more than 36')
       const validateSpyInvalidAddress = sandbox.spy(preferencesController._validateERC20AssetParams)
       try { validateSpyInvalidAddress({rawAddress: '0x123', symbol: 'ABC', decimals: 0}) } catch (e) {}
-      assert.equal(validateSpyInvalidAddress.threw(), true, 'address invalid')
+      assert.equal(validateSpyInvalidAddress.threw(), true, 'options object with address invalid')
     })
   })
 
