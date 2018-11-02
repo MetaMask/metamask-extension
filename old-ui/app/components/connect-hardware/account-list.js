@@ -9,7 +9,7 @@ class AccountList extends Component {
         super(props)
     }
 
-    getHdPaths () {
+    getHdPaths = () => {
       return [
         {
           label: `Ledger Live`,
@@ -35,21 +35,21 @@ class AccountList extends Component {
       this.props.getPage(this.props.device, -1, this.props.selectedPath)
     }
 
-    renderHdPathSelector () {
+    renderHdPathSelector = () => {
       const { onPathChange, selectedPath } = this.props
 
       const options = this.getHdPaths()
       return (
         <div>
-          <h3 className='hw-connect__hdPath__title'>this.context.t('selectHdPath')</h3>
-          <p className='hw-connect__msg'>this.context.t('selectPathHelp')</p>
-          <div className='hw-connect__hdPath'>
+          <h3 className="hw-connect__hdPath__title">Select HD Path</h3>
+          <p className="hw-connect__msg">{`If you don't see your existing Ledger accounts below, try switching paths to "Legacy (MEW / MyCrypto)"`}</p>
+          <div className="hw-connect__hdPath">
             <Select
-              className='hw-connect__hdPath__select'
-              name='hd-path-select'
+              className="hw-connect__hdPath__select"
+              name="hd-path-select"
               clearable={false}
               value={selectedPath}
-              options
+              options={options}
               onChange={(opt) => {
                 onPathChange(opt.value)
               }}
@@ -59,76 +59,76 @@ class AccountList extends Component {
       )
     }
 
-    capitalizeDevice (device) {
+    capitalizeDevice = (device) => {
       return device.slice(0, 1).toUpperCase() + device.slice(1)
     }
 
-    renderHeader () {
+    renderHeader = () => {
       const { device } = this.props
       return (
-        <div className='hw-connect'>
-          <h3 className='hw-connect'>
-            <h3 className='hw-connect__unlock-title'>`${this.context.t('unlock')} ${this.capitalizeDevice(device)}`</h3>
+        <div className="hw-connect">
+          <h3 className="hw-connect">
+            <h3 className="hw-connect__unlock-title">{`Unlock ${this.capitalizeDevice(device)}`}</h3>
             {device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null}
-            <h3 className='hw-connect__hdPath__title'>{this.context.t('selectAnAccount')}</h3>
-            <p className='hw-connect__msg'>{this.context.t('selectAnAccountHelp')}</p>
+            <p className="hw-connect__msg">Select the account to view in Nifty Wallet</p>
           </h3>
         </div>
       )
     }
 
-    renderAccounts () {
+    renderAccounts = () => {
       const rows = []
       this.props.accounts.map((a, i) => {
         rows.push(
-          <div className='hw-account-list__item' key={a.address}>
-            <div className='hw-account-list__item__radio'>
+          <div className="hw-account-list__item" key={a.address}>
+            <div className="hw-account-list__item__radio">
               <input
-                type='radio'
-                name='selectedAccount'
+                type="radio"
+                name="selectedAccount"
                 id={`address-${i}`}
                 value={a.index}
                 onChange={(e) => this.props.onAccountChange(e.target.value)}
                 checked={this.props.selectedAccount === a.index.toString()}
               />
-              <label className='hw-account-list__item__label' htmlFor={`address-${i}`}>
-                <span className='hw-account-list__item__index'>{a.index + 1}</span>
+              <label className="hw-account-list__item__label" htmlFor={`address-${i}`}>
+                <span className="hw-account-list__item__index">{a.index + 1}</span>
                 {`${a.address.slice(0, 4)}...${a.address.slice(-4)}`}
-                <span className='hw-account-list__item__balance'>{`${a.balance}`}</span>
+                <span className="hw-account-list__item__balance">{`${a.balance}`}</span>
               </label>
             </div>
-            <a 
-              className='hw-account-list__item__link'
+            <a
+              className="hw-account-list__item__link"
               href={ethNetProps.explorerLinks.getExplorerAccountLinkFor(a.address, this.props.network)}
-              target='_blank'
-              title={this.context.t('etherscanView')}
-            />
-            <img src='images/popout.svg' />
+              target="_blank"
+              title="View account on Etherscan"
+            >
+              <img src="images/popout.svg" />
+            </a>
           </div>
         )
       })
-      
+
       return (
-        <div className='hw-account-list'>{rows}</div>
+        <div className="hw-account-list">{rows}</div>
       )
     }
 
-  renderPagination () {
+  renderPagination = () => {
     return (
-      <div className='hw-list-pagination'>
-        <button 
-          className='hw-list-pagination__button'
-          onClick={this.goToPreviousPage}
-        >{`< ${this.context.t('prev')}`}</button>
-        <button 
-          className='hw-list-pagination__button'
+      <div className="hw-list-pagination">
+        <button
+          className="hw-list-pagination__button"
           onClick={this.goToNextPage}
-        >{`${this.context.t('next')} >`}</button>
+        >{`Next >`}</button>
+        <button
+          className="hw-list-pagination__button"
+          onClick={this.goToPreviousPage}
+        >{`< Prev`}</button>
       </div>
     )
   }
 
-  renderButtons () {
+  renderButtons = () => {
     const disabled = this.props.selectedAccount === null
     const buttonProps = {}
     if (disabled) {
@@ -136,35 +136,35 @@ class AccountList extends Component {
     }
 
     return (
-      <div className='new-account-connect-form__buttons'>
+      <div className="new-account-connect-form__buttons">
         <Button
-          type='default'
+          type="default"
           large={true}
-          className='new-account-connect-form__button'
+          className="new-account-connect-form__button btn-violet"
           onClick={this.props.onCancel.bind(this)}
-        >{this.context.t('cancel')}</Button>
+        >Cancel</Button>
         <Button
-          type='primary'
+          type="primary"
           large={true}
-          className='new-account-connect-form__button unlock'
+          className="new-account-connect-form__button unlock"
           disabled={disabled}
           onClick={this.props.onUnlockAccount.bind(this, this.props.device)}
-        >{this.context.t('unlock')}</Button>
+        >Unlock</Button>
       </div>
     )
   }
 
-  renderForgetDevice () {
+  renderForgetDevice = () => {
     return (
-      <div className='hw-forget-device-container'>
-        <a onClick={this.props.onForgetDevice.bind(this, this.props.device)}>{this.context.t('forgetDevice')}</a>
+      <div className="hw-forget-device-container">
+        <a onClick={this.props.onForgetDevice.bind(this, this.props.device)}>Forget this device</a>
       </div>
     )
   }
 
-  render () {
+  render = () => {
     return (
-      <div className='new-account-connect-form.account-list'>
+      <div className="new-account-connect-form.account-list">
         {this.renderHeader()}
         {this.renderAccounts()}
         {this.renderPagination()}
@@ -175,7 +175,6 @@ class AccountList extends Component {
   }
 
 }
-
 
 AccountList.propTypes = {
     onPathChange: PropTypes.func.isRequired,
@@ -191,10 +190,6 @@ AccountList.propTypes = {
     onUnlockAccount: PropTypes.func,
     onCancel: PropTypes.func,
     onAccountRestriction: PropTypes.func,
-}
-
-AccountList.contextTypes = {
-    t: PropTypes.func,
 }
 
 module.exports = AccountList

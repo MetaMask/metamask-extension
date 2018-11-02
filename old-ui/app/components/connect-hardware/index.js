@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import actions from '../../../../ui/app/actions'
 import ConnectScreen from './connect-screen'
 import AccountList from './account-list'
-import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
 import { formatBalance } from '../../../../ui/app/util'
 import { getPlatform } from '../../../../app/scripts/lib/util'
 import { PLATFORM_FIREFOX } from '../../../../app/scripts/lib/enums'
@@ -153,14 +152,14 @@ class ConnectHardwareForm extends Component {
 
     this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
     .then(_ => {
-      this.props.history.push(DEFAULT_ROUTE)
+      this.props.goHome()
     }).catch(e => {
       this.setState({ error: e.toString() })
     })
   }
 
   onCancel = () => {
-    this.props.history.push(DEFAULT_ROUTE)
+    this.props.goHome()
   }
 
   renderError () {
@@ -235,7 +234,6 @@ ConnectHardwareForm.propTypes = {
   goHome: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
   history: PropTypes.object,
-  t: PropTypes.func,
   network: PropTypes.string,
   accounts: PropTypes.object,
   address: PropTypes.string,

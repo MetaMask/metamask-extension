@@ -176,7 +176,7 @@ width: 100%;
   margin-bottom: 23px;
   align-self: flex-start;
   color: #5d5d5d;
-  font-family: Roboto;
+  font-family: Nunito Regular;
   font-size: 16px;
   line-height: 21px;
   font-weight: bold;
@@ -187,7 +187,7 @@ width: 100%;
   margin-bottom: 23px;
   align-self: flex-end;
   color: #5d5d5d;
-  font-family: Roboto;
+  font-family: Nunito Regular;
   font-size: 16px;
   line-height: 21px;
   font-weight: normal;
@@ -242,21 +242,71 @@ width: 100%;
   height: 15px;
 }
 .hw-list-pagination {
-display: flex;
-align-self: flex-end;
-margin-top: 10px;
+  margin-top: 10px;
 }
 .hw-list-pagination__button {
   height: 19px;
-  display: flex;
-  color: #33a4e7;
+  float: right;
+  color: #6729a8;
   font-size: 14px;
   line-height: 19px;
   border: none;
   min-width: 46px;
-  margin-right: 0px;
-  margin-left: 16px;
   padding: 0px;
-  text-transform: uppercase;
-  font-family: Roboto;
+  font-family: Nunito Regular;
+  background: transparent;
+}
+.hw-forget-device-container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  padding: 22px;
+}
+.hw-forget-device-container a {
+  color: #60db97;
+  font-size: 14px;
+  cursor: pointer;
+}
+.new-account-connect-form {
+  /*display: flex;*/
+  flex-flow: column;
+  align-items: center;
+  /*padding: 15px 30px 0;*/
+  height: 710px;
+  /*overflow: auto;*/
+}
+.new-account-connect-form.unsupported-browser {
+  height: 210px;
+}
+.new-account-connect-form.account-list {
+  height: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.new-account-connect-form__buttons {
+  margin-top: 39px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.new-account-connect-form__button {
+  width: 150px;
+  min-width: initial;
+}
+.new-account-connect-form .btn-primary {
+  background-color: #259DE5;
+  color: #FFFFFF;
+  border: none;
+  width: 100%;
+  min-height: 54px;
+  font-weight: 300;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.new-account-connect-form__button.unlock {
+  width: 50%;
+}
+.new-account-connect-form__button.btn-primary--disabled {
+  cursor: not-allowed;
+  opacity: .5;
 }
