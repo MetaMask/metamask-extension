@@ -93,6 +93,7 @@ export const unconfirmedTransactionsCountSelector = createSelector(
 
 export const currentCurrencySelector = state => state.metamask.currentCurrency
 export const conversionRateSelector = state => state.metamask.conversionRate
+export const getNativeCurrency = state => state.metamask.nativeCurrency
 
 const txDataSelector = state => state.confirmTransaction.txData
 const tokenDataSelector = state => state.confirmTransaction.tokenData

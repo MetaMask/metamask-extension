@@ -25,7 +25,7 @@ class PreferencesController {
    */
   constructor (opts = {}) {
     const initState = extend({
-      frequentRpcList: [],
+      frequentRpcListDetail: [],
       currentAccountTab: 'history',
       accountTokens: {},
       assetImages: {},
@@ -39,7 +39,7 @@ class PreferencesController {
       seedWords: null,
       forgottenPassword: false,
       preferences: {
-        useETHAsPrimaryCurrency: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
       },
     }, opts.initState)
 
@@ -104,7 +104,7 @@ class PreferencesController {
    * @param {Function} - end
    */
   async requestWatchAsset (req, res, next, end) {
-    if (req.method === 'metamask_watchAsset') {
+    if (req.method === 'metamask_watchAsset' || req.method === 'wallet_watchAsset') {
       const { type, options } = req.params
       switch (type) {
         case 'ERC20':
@@ -375,22 +375,6 @@ class PreferencesController {
   }
 
   /**
-   * Gets an updated rpc list from this.addToFrequentRpcList() and sets the `frequentRpcList` to this update list.
-   *
-   * @param {string} _url The the new rpc url to add to the updated list
-   * @param {bool} remove Remove selected url
-   * @returns {Promise<void>} Promise resolves with undefined
-   *
-   */
-  updateFrequentRpcList (_url, remove = false) {
-    return this.addToFrequentRpcList(_url, remove)
-      .then((rpcList) => {
-        this.store.updateState({ frequentRpcList: rpcList })
-        return Promise.resolve()
-      })
-  }
-
-  /**
    * Setter for the `currentAccountTab` property
    *
    * @param {string} currentAccountTab Specifies the new tab to be marked as current
@@ -405,35 +389,53 @@ class PreferencesController {
   }
 
   /**
-   * Returns an updated rpcList based on the passed url and the current list.
-   * The returned list will have a max length of 3. If the _url currently exists it the list, it will be moved to the
-   * end of the list. The current list is modified and returned as a promise.
+   * Adds custom RPC url to state.
    *
-   * @param {string} _url The rpc url to add to the frequentRpcList.
-   * @param {bool} remove Remove selected url
-   * @returns {Promise<array>} The updated frequentRpcList.
+   * @param {string} url The RPC url to add to frequentRpcList.
+   * @param {number} chainId Optional chainId of the selected network.
+   * @param {string} ticker   Optional ticker symbol of the selected network.
+   * @param {string} nickname Optional nickname of the selected network.
+   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
    *
    */
-  addToFrequentRpcList (_url, remove = false) {
-    const rpcList = this.getFrequentRpcList()
-    const index = rpcList.findIndex((element) => { return element === _url })
+  addToFrequentRpcList (url, chainId, ticker = 'ETH', nickname = '') {
+    const rpcList = this.getFrequentRpcListDetail()
+    const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
-    if (!remove && _url !== 'http://localhost:8545') {
-      rpcList.push(_url)
+    if (url !== 'http://localhost:8545') {
+      rpcList.push({ rpcUrl: url, chainId, ticker, nickname })
     }
+    this.store.updateState({ frequentRpcListDetail: rpcList })
     return Promise.resolve(rpcList)
   }
 
   /**
-   * Getter for the `frequentRpcList` property.
+   * Removes custom RPC url from state.
    *
-   * @returns {array<string>} An array of one or two rpc urls.
+   * @param {string} url The RPC url to remove from frequentRpcList.
+   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
    *
    */
-  getFrequentRpcList () {
-    return this.store.getState().frequentRpcList
+  removeFromFrequentRpcList (url) {
+    const rpcList = this.getFrequentRpcListDetail()
+    const index = rpcList.findIndex((element) => { return element.rpcUrl === url })
+    if (index !== -1) {
+      rpcList.splice(index, 1)
+    }
+    this.store.updateState({ frequentRpcListDetail: rpcList })
+    return Promise.resolve(rpcList)
+  }
+
+  /**
+   * Getter for the `frequentRpcListDetail` property.
+   *
+   * @returns {array<array>} An array of rpc urls.
+   *
+   */
+  getFrequentRpcListDetail () {
+    return this.store.getState().frequentRpcListDetail
   }
 
   /**

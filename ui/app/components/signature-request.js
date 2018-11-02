@@ -2,7 +2,7 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Identicon = require('./identicon')
+import Identicon from './identicon'
 const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')

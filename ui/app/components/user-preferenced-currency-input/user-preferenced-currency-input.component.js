@@ -4,16 +4,16 @@ import CurrencyInput from '../currency-input'
 
 export default class UserPreferencedCurrencyInput extends PureComponent {
   static propTypes = {
-    useETHAsPrimaryCurrency: PropTypes.bool,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   }
 
   render () {
-    const { useETHAsPrimaryCurrency, ...restProps } = this.props
+    const { useNativeCurrencyAsPrimaryCurrency, ...restProps } = this.props
 
     return (
       <CurrencyInput
         {...restProps}
-        useFiat={!useETHAsPrimaryCurrency}
+        useFiat={!useNativeCurrencyAsPrimaryCurrency}
       />
     )
   }
