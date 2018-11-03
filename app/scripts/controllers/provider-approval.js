@@ -49,7 +49,8 @@ class ProviderApprovalController {
    */
   _handleProviderRequest (origin) {
     this.store.updateState({ providerRequests: [{ origin }] })
-    if (this.isApproved(origin) && this.caching) {
+    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+    if (this.isApproved(origin) && this.caching && isUnlocked) {
       this.approveProviderRequest(origin)
       return
     }
@@ -128,8 +129,9 @@ class ProviderApprovalController {
    * @returns {boolean} - True if the origin has been approved
    */
   isApproved (origin) {
+    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
-    return !privacyMode || this.approvedOrigins[origin]
+    return !privacyMode || (isUnlocked && this.approvedOrigins[origin])
   }
 
   /**
