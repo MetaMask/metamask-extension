@@ -65,7 +65,7 @@ inpageProvider.enable = function () {
           })
         })
 
-        // wait for the background to update with an accoount
+        // wait for the background to update with an account
         const ethAccounts = new Promise((resolveAccounts, rejectAccounts) => {
           inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
             if (error) {
