@@ -22,6 +22,7 @@ describe('CurrencyInput Component', () => {
     it('should render properly with a suffix', () => {
       const mockStore = {
         metamask: {
+          nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -32,6 +33,7 @@ describe('CurrencyInput Component', () => {
         <Provider store={store}>
           <CurrencyInput
             suffix="ETH"
+            nativeCurrency="ETH"
           />
         </Provider>
       )
@@ -45,6 +47,7 @@ describe('CurrencyInput Component', () => {
     it('should render properly with an ETH value', () => {
       const mockStore = {
         metamask: {
+          nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -56,6 +59,7 @@ describe('CurrencyInput Component', () => {
           <CurrencyInput
             value="de0b6b3a7640000"
             suffix="ETH"
+            nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
           />
@@ -75,6 +79,7 @@ describe('CurrencyInput Component', () => {
     it('should render properly with a fiat value', () => {
       const mockStore = {
         metamask: {
+          nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -87,6 +92,7 @@ describe('CurrencyInput Component', () => {
             value="f602f2234d0ea"
             suffix="USD"
             useFiat
+            nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
           />
@@ -116,6 +122,7 @@ describe('CurrencyInput Component', () => {
     it('should call onChange and onBlur on input changes with the hex value for ETH', () => {
       const mockStore = {
         metamask: {
+          nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -127,6 +134,7 @@ describe('CurrencyInput Component', () => {
             onChange={handleChangeSpy}
             onBlur={handleBlurSpy}
             suffix="ETH"
+            nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
           />
@@ -160,6 +168,7 @@ describe('CurrencyInput Component', () => {
     it('should call onChange and onBlur on input changes with the hex value for fiat', () => {
       const mockStore = {
         metamask: {
+          nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -171,6 +180,7 @@ describe('CurrencyInput Component', () => {
             onChange={handleChangeSpy}
             onBlur={handleBlurSpy}
             suffix="USD"
+            nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
             useFiat
@@ -205,6 +215,7 @@ describe('CurrencyInput Component', () => {
     it('should change the state and pass in a new decimalValue when props.value changes', () => {
       const mockStore = {
         metamask: {
+          nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
         },
@@ -216,6 +227,7 @@ describe('CurrencyInput Component', () => {
             onChange={handleChangeSpy}
             onBlur={handleBlurSpy}
             suffix="USD"
+            nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
             useFiat

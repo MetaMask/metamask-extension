@@ -15,17 +15,17 @@ describe('UserPreferencedCurrencyInput Component', () => {
       assert.equal(wrapper.find(TokenInput).length, 1)
     })
 
-    it('should render showFiat for TokenInput based on preferences.useETHAsPrimaryCurrency', () => {
+    it('should render showFiat for TokenInput based on preferences.useNativeCurrencyAsPrimaryCurrency', () => {
       const wrapper = shallow(
         <UserPreferencedTokenInput
-          useETHAsPrimaryCurrency
+          useNativeCurrencyAsPrimaryCurrency
         />
       )
 
       assert.ok(wrapper)
       assert.equal(wrapper.find(TokenInput).length, 1)
       assert.equal(wrapper.find(TokenInput).props().showFiat, false)
-      wrapper.setProps({ useETHAsPrimaryCurrency: false })
+      wrapper.setProps({ useNativeCurrencyAsPrimaryCurrency: false })
       assert.equal(wrapper.find(TokenInput).props().showFiat, true)
     })
   })

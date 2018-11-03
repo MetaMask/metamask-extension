@@ -23,9 +23,10 @@ Network.prototype.render = function () {
   const props = this.props
   const context = this.context
   const networkNumber = props.network
-  let providerName
+  let providerName, providerNick
   try {
     providerName = props.provider.type
+    providerNick = props.provider.nickname || ''
   } catch (e) {
     providerName = null
   }
@@ -131,7 +132,7 @@ Network.prototype.render = function () {
                 },
               }),
 
-              h('.network-name', context.t('privateNetwork')),
+              h('.network-name', providerNick || context.t('privateNetwork')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
         }

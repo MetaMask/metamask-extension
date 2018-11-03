@@ -18,13 +18,13 @@ describe('UserPreferencedTokenInput container', () => {
       const mockState = {
         metamask: {
           preferences: {
-            useETHAsPrimaryCurrency: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
           },
         },
       }
 
       assert.deepEqual(mapStateToProps(mockState), {
-        useETHAsPrimaryCurrency: true,
+        useNativeCurrencyAsPrimaryCurrency: true,
       })
     })
   })

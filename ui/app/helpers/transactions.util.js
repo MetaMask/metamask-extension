@@ -27,10 +27,21 @@ export function getTokenData (data = '') {
 
 const registry = new MethodRegistry({ provider: global.ethereumProvider })
 
+/**
+ * Attempts to return the method data from the MethodRegistry library, if the method exists in the
+ * registry. Otherwise, returns an empty object.
+ * @param {string} data - The hex data (@code txParams.data) of a transaction
+ * @returns {Object}
+ */
 export async function getMethodData (data = '') {
   const prefixedData = ethUtil.addHexPrefix(data)
   const fourBytePrefix = prefixedData.slice(0, 10)
   const sig = await registry.lookup(fourBytePrefix)
+
+  if (!sig) {
+    return {}
+  }
+
   const parsedResult = registry.parse(sig)
 
   return {
@@ -114,7 +125,9 @@ export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0')
 
 export async function isSmartContractAddress (address) {
   const code = await global.eth.getCode(address)
-  return code && code !== '0x'
+  // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
+  const codeIsEmpty = !code || code === '0x' || code === '0x0'
+  return !codeIsEmpty
 }
 
 export function sumHexes (...args) {

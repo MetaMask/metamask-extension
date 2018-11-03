@@ -1,58 +1,55 @@
-const Raven = require('raven-js')
+const Sentry = require('@sentry/browser')
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 const extractEthjsErrorMessage = require('./extractEthjsErrorMessage')
-const PROD = 'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
-const DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
+const SENTRY_DSN_PROD = 'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505'
+const SENTRY_DSN_DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 
-module.exports = setupRaven
+module.exports = setupSentry
 
-// Setup raven / sentry remote error reporting
-function setupRaven (opts) {
-  const { release } = opts
-  let ravenTarget
+// Setup sentry remote error reporting
+function setupSentry (opts) {
+  const { release, getState } = opts
+  let sentryTarget
   // detect brave
   const isBrave = Boolean(window.chrome.ipcRenderer)
 
   if (METAMASK_DEBUG) {
-    console.log('Setting up Sentry Remote Error Reporting: DEV')
-    ravenTarget = DEV
+    console.log('Setting up Sentry Remote Error Reporting: SENTRY_DSN_DEV')
+    sentryTarget = SENTRY_DSN_DEV
   } else {
-    console.log('Setting up Sentry Remote Error Reporting: PROD')
-    ravenTarget = PROD
+    console.log('Setting up Sentry Remote Error Reporting: SENTRY_DSN_PROD')
+    sentryTarget = SENTRY_DSN_PROD
   }
 
-  const client = Raven.config(ravenTarget, {
+  Sentry.init({
+    dsn: sentryTarget,
+    debug: METAMASK_DEBUG,
     release,
-    transport: function (opts) {
-      opts.data.extra.isBrave = isBrave
-      const report = opts.data
+    beforeSend: (report) => rewriteReport(report),
+  })
 
-      try {
-        // handle error-like non-error exceptions
-        rewriteErrorLikeExceptions(report)
-        // simplify certain complex error messages (e.g. Ethjs)
-        simplifyErrorMessages(report)
-        // modify report urls
-        rewriteReportUrls(report)
-      } catch (err) {
-        console.warn(err)
+  Sentry.configureScope(scope => {
+    scope.setExtra('isBrave', isBrave)
+  })
+
+  function rewriteReport(report) {
+    try {
+      // simplify certain complex error messages (e.g. Ethjs)
+      simplifyErrorMessages(report)
+      // modify report urls
+      rewriteReportUrls(report)
+      // append app state
+      if (getState) {
+        const appState = getState()
+        report.extra.appState = appState
       }
-      // make request normally
-      client._makeRequest(opts)
-    },
-  })
-  client.install()
+    } catch (err) {
+      console.warn(err)
+    }
+    return report
+  }
 
-  return Raven
-}
-
-function rewriteErrorLikeExceptions (report) {
-  // handle errors that lost their error-ness in serialization (e.g. dnode)
-  rewriteErrorMessages(report, (errorMessage) => {
-    if (!errorMessage.includes('Non-Error exception captured with keys:')) return errorMessage
-    if (!(report.extra && report.extra.__serialized__ && report.extra.__serialized__.message)) return errorMessage
-    return `Non-Error Exception: ${report.extra.__serialized__.message}`
-  })
+  return Sentry
 }
 
 function simplifyErrorMessages (report) {

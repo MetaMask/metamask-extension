@@ -20,8 +20,8 @@ export function decimalToHex (decimal) {
   })
 }
 
-export function getEthConversionFromWeiHex ({ value, conversionRate, numberOfDecimals = 6 }) {
-  const denominations = [ETH, GWEI, WEI]
+export function getEthConversionFromWeiHex ({ value, fromCurrency = ETH, conversionRate, numberOfDecimals = 6 }) {
+  const denominations = [fromCurrency, GWEI, WEI]
 
   let nonZeroDenomination
 
@@ -29,7 +29,8 @@ export function getEthConversionFromWeiHex ({ value, conversionRate, numberOfDec
     const convertedValue = getValueFromWeiHex({
       value,
       conversionRate,
-      toCurrency: ETH,
+      fromCurrency,
+      toCurrency: fromCurrency,
       numberOfDecimals,
       toDenomination: denominations[i],
     })
@@ -45,6 +46,7 @@ export function getEthConversionFromWeiHex ({ value, conversionRate, numberOfDec
 
 export function getValueFromWeiHex ({
   value,
+  fromCurrency = ETH,
   toCurrency,
   conversionRate,
   numberOfDecimals,
@@ -53,7 +55,7 @@ export function getValueFromWeiHex ({
   return conversionUtil(value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromCurrency: ETH,
+    fromCurrency,
     toCurrency,
     numberOfDecimals,
     fromDenomination: WEI,

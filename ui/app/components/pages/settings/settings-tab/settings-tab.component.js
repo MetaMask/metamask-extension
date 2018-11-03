@@ -55,12 +55,17 @@ export default class SettingsTab extends PureComponent {
     sendHexData: PropTypes.bool,
     currentCurrency: PropTypes.string,
     conversionDate: PropTypes.number,
-    useETHAsPrimaryCurrency: PropTypes.bool,
-    setUseETHAsPrimaryCurrencyPreference: PropTypes.func,
+    nativeCurrency: PropTypes.string,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
+    setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
   }
 
   state = {
     newRpc: '',
+    chainId: '',
+    showOptions: false,
+    ticker: '',
+    nickname: '',
   }
 
   renderCurrentConversion () {
@@ -121,37 +126,98 @@ export default class SettingsTab extends PureComponent {
 
   renderNewRpcUrl () {
     const { t } = this.context
-    const { newRpc } = this.state
+    const { newRpc, chainId, ticker, nickname } = this.state
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('newRPC') }</span>
+          <span>{ t('newNetwork') }</span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <TextField
               type="text"
               id="new-rpc"
-              placeholder={t('newRPC')}
+              placeholder={t('rpcURL')}
               value={newRpc}
               onChange={e => this.setState({ newRpc: e.target.value })}
               onKeyPress={e => {
                 if (e.key === 'Enter') {
-                  this.validateRpc(newRpc)
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
                 }
               }}
               fullWidth
-              margin="none"
+              margin="dense"
             />
-            <div
-              className="settings-tab__rpc-save-button"
-              onClick={e => {
-                e.preventDefault()
-                this.validateRpc(newRpc)
+            <TextField
+              type="text"
+              id="chainid"
+              placeholder={t('optionalChainId')}
+              value={chainId}
+              onChange={e => this.setState({ chainId: e.target.value })}
+              onKeyPress={e => {
+                if (e.key === 'Enter') {
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
+                }
               }}
-            >
-              { t('save') }
+              style={{
+                display: this.state.showOptions ? null : 'none',
+              }}
+              fullWidth
+              margin="dense"
+            />
+            <TextField
+              type="text"
+              id="ticker"
+              placeholder={t('optionalSymbol')}
+              value={ticker}
+              onChange={e => this.setState({ ticker: e.target.value })}
+              onKeyPress={e => {
+                if (e.key === 'Enter') {
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
+                }
+              }}
+              style={{
+                display: this.state.showOptions ? null : 'none',
+              }}
+              fullWidth
+              margin="dense"
+            />
+            <TextField
+              type="text"
+              id="nickname"
+              placeholder={t('optionalNickname')}
+              value={nickname}
+              onChange={e => this.setState({ nickname: e.target.value })}
+              onKeyPress={e => {
+                if (e.key === 'Enter') {
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
+                }
+              }}
+              style={{
+                display: this.state.showOptions ? null : 'none',
+              }}
+              fullWidth
+              margin="dense"
+            />
+            <div className="flex-row flex-align-center space-between">
+              <span className="settings-tab__advanced-link"
+                onClick={e => {
+                  e.preventDefault()
+                  this.setState({ showOptions: !this.state.showOptions })
+                }}
+              >
+                { t(this.state.showOptions ? 'hideAdvancedOptions' : 'showAdvancedOptions') }
+              </span>
+              <button
+                className="button btn-primary settings-tab__rpc-save-button"
+                onClick={e => {
+                  e.preventDefault()
+                  this.validateRpc(newRpc, chainId, ticker, nickname)
+                }}
+              >
+                { t('save') }
+              </button>
             </div>
           </div>
         </div>
@@ -159,11 +225,11 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  validateRpc (newRpc) {
+  validateRpc (newRpc, chainId, ticker = 'ETH', nickname) {
     const { setRpcTarget, displayWarning } = this.props
 
     if (validUrl.isWebUri(newRpc)) {
-      setRpcTarget(newRpc)
+      setRpcTarget(newRpc, chainId, ticker, nickname)
     } else {
       const appendedRpc = `http://${newRpc}`
 
@@ -369,9 +435,13 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  renderUseEthAsPrimaryCurrency () {
+  renderUsePrimaryCurrencyOptions () {
     const { t } = this.context
-    const { useETHAsPrimaryCurrency, setUseETHAsPrimaryCurrencyPreference } = this.props
+    const {
+      nativeCurrency,
+      setUseNativeCurrencyAsPrimaryCurrencyPreference,
+      useNativeCurrencyAsPrimaryCurrency,
+    } = this.props
 
     return (
       <div className="settings-page__content-row">
@@ -387,23 +457,23 @@ export default class SettingsTab extends PureComponent {
               <div className="settings-tab__radio-button">
                 <input
                   type="radio"
-                  id="eth-primary-currency"
-                  onChange={() => setUseETHAsPrimaryCurrencyPreference(true)}
-                  checked={Boolean(useETHAsPrimaryCurrency)}
+                  id="native-primary-currency"
+                  onChange={() => setUseNativeCurrencyAsPrimaryCurrencyPreference(true)}
+                  checked={Boolean(useNativeCurrencyAsPrimaryCurrency)}
                 />
                 <label
-                  htmlFor="eth-primary-currency"
+                  htmlFor="native-primary-currency"
                   className="settings-tab__radio-label"
                 >
-                  { t('eth') }
+                  { nativeCurrency }
                 </label>
               </div>
               <div className="settings-tab__radio-button">
                 <input
                   type="radio"
                   id="fiat-primary-currency"
-                  onChange={() => setUseETHAsPrimaryCurrencyPreference(false)}
-                  checked={!useETHAsPrimaryCurrency}
+                  onChange={() => setUseNativeCurrencyAsPrimaryCurrencyPreference(false)}
+                  checked={!useNativeCurrencyAsPrimaryCurrency}
                 />
                 <label
                   htmlFor="fiat-primary-currency"
@@ -426,7 +496,7 @@ export default class SettingsTab extends PureComponent {
       <div className="settings-page__content">
         { warning && <div className="settings-tab__error">{ warning }</div> }
         { this.renderCurrentConversion() }
-        { this.renderUseEthAsPrimaryCurrency() }
+        { this.renderUsePrimaryCurrencyOptions() }
         { this.renderCurrentLocale() }
         { this.renderNewRpcUrl() }
         { this.renderStateLogs() }
