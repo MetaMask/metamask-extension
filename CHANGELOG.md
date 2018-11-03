@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 4.17.1 Saturday November 3 2018
+
+- Revert chain ID lookup change which introduced a bug which caused problems when connecting to mainnet via Infura's RESTful API.
+
 ## 4.17.0 Thursday November 1 2018
 
 - Fix bug where data lookups like balances would get stale data (stopped block-tracker bug)
