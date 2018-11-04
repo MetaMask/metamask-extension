@@ -322,8 +322,8 @@ jobs:
       - run:
           name: github gh-pages docs publish
           command: >
-            git config user.name metamaskbot &&
-            git config user.email admin@metamask.io &&
+            git config --global user.name "metamaskbot" &&
+            git config --global user.email "admin@metamask.io" &&
             npm run publish-docs
 
   test-unit:
