@@ -129,9 +129,8 @@ class ProviderApprovalController {
    * @returns {boolean} - True if the origin has been approved
    */
   isApproved (origin) {
-    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
-    return !privacyMode || (isUnlocked && this.approvedOrigins[origin])
+    return !privacyMode || this.approvedOrigins[origin]
   }
 
   /**
