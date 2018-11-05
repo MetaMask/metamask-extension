@@ -89,19 +89,6 @@ inpageProvider.enable = function ({ force } = {}) {
   })
 }
 
-// detect eth_requestAccounts and pipe to enable for now
-function detectAccountRequest(method) {
-  const originalMethod = inpageProvider[method]
-  inpageProvider[method] = function ({ method }) {
-    if (method === 'eth_requestAccounts') {
-      return ethereum.enable()
-    }
-    return originalMethod.apply(this, arguments)
-  }
-}
-detectAccountRequest('send')
-detectAccountRequest('sendAsync')
-
 // add metamask-specific convenience methods
 inpageProvider._metamask = new Proxy({
   /**
@@ -175,6 +162,19 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 })
 
 window.ethereum = proxiedInpageProvider
+
+// detect eth_requestAccounts and pipe to enable for now
+function detectAccountRequest(method) {
+  const originalMethod = inpageProvider[method]
+  inpageProvider[method] = function ({ method }) {
+    if (method === 'eth_requestAccounts') {
+      return window.ethereum.enable()
+    }
+    return originalMethod.apply(this, arguments)
+  }
+}
+detectAccountRequest('send')
+detectAccountRequest('sendAsync')
 
 //
 // setup web3
