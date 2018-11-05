@@ -583,8 +583,8 @@ class PreferencesController {
    */
   _validateERC20AssetParams (opts) {
     const { rawAddress, symbol, decimals } = opts
-    if (!rawAddress || !symbol || !decimals) throw new Error(`Cannot suggest token without address, symbol, and decimals`)
-    if (!(symbol.length < 6)) throw new Error(`Invalid symbol ${symbol} more than five characters`)
+    if (!rawAddress || !symbol || typeof decimals === 'undefined') throw new Error(`Cannot suggest token without address, symbol, and decimals`)
+    if (!(symbol.length < 7)) throw new Error(`Invalid symbol ${symbol} more than six characters`)
     const numDecimals = parseInt(decimals, 10)
     if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
       throw new Error(`Invalid decimals ${decimals} must be at least 0, and not over 36`)
