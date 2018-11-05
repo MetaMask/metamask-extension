@@ -29,32 +29,32 @@ function createInfuraClient ({ network }) {
 }
 
 function createNetworkAndChainIdMiddleware({ network }) {
-  let eth_chainId
-  let net_version
+  let chainId
+  let netId
 
   switch (network) {
     case 'mainnet':
-      net_version = '1'
-      eth_chainId = '0x01'
+      netId = '1'
+      chainId = '0x01'
       break
     case 'ropsten':
-      net_version = '3'
-      eth_chainId = '0x03'
+      netId = '3'
+      chainId = '0x03'
       break
     case 'rinkeby':
-      net_version = '4'
-      eth_chainId = '0x04'
+      netId = '4'
+      chainId = '0x04'
       break
     case 'kovan':
-      net_version = '42'
-      eth_chainId = '0x2a'
+      netId = '42'
+      chainId = '0x2a'
       break
     default:
       throw new Error(`createInfuraClient - unknown network "${network}"`)
   }
 
   return createScaffoldMiddleware({
-    eth_chainId,
-    net_version,
+    eth_chainId: chainId,
+    net_version: netId,
   })
 }
