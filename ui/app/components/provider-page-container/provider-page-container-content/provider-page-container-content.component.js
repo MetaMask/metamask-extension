@@ -59,7 +59,13 @@ export default class ProviderPageContainerContent extends PureComponent {
           <p>
             {t('providerRequestInfo')}
             <br/>
-            <a href="#">{t('learnMore')}.</a>
+            <a
+              href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('learnMore')}.
+            </a>
           </p>
         </section>
         <section className="secure-badge">
