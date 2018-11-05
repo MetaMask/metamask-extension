@@ -44,7 +44,7 @@ window.addEventListener('metamasksetlocked', () => {
 })
 
 // augment the provider with its enable method
-inpageProvider.enable = function () {
+inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
     window.removeEventListener('ethereumprovider', providerHandle)
     providerHandle = ({ detail }) => {
@@ -85,9 +85,22 @@ inpageProvider.enable = function () {
       }
     }
     window.addEventListener('ethereumprovider', providerHandle)
-    window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER' }, '*')
+    window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER', force }, '*')
   })
 }
+
+// detect eth_requestAccounts and pipe to enable for now
+function detectAccountRequest(method) {
+  const originalMethod = inpageProvider[method]
+  inpageProvider[method] = function ({ method }) {
+    if (method === 'eth_requestAccounts') {
+      return ethereum.enable()
+    }
+    return originalMethod.apply(this, arguments)
+  }
+}
+detectAccountRequest('send')
+detectAccountRequest('sendAsync')
 
 // add metamask-specific convenience methods
 inpageProvider._metamask = new Proxy({
