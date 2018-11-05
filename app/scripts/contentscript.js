@@ -125,6 +125,7 @@ function listenForProviderRequest () {
       case 'ETHEREUM_ENABLE_PROVIDER':
         extension.runtime.sendMessage({
           action: 'init-provider-request',
+          force: data.force,
           origin: source.location.hostname,
           siteImage: getSiteIcon(source),
           siteTitle: getSiteName(source),

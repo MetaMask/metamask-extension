@@ -25,10 +25,10 @@ class ProviderApprovalController {
     this.store = new ObservableStore()
 
     if (platform && platform.addMessageListener) {
-      platform.addMessageListener(({ action = '', origin, siteTitle, siteImage }) => {
+      platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }) => {
         switch (action) {
           case 'init-provider-request':
-            this._handleProviderRequest(origin, siteTitle, siteImage)
+            this._handleProviderRequest(origin, siteTitle, siteImage, force)
             break
           case 'init-is-approved':
             this._handleIsApproved(origin)
@@ -51,10 +51,10 @@ class ProviderApprovalController {
    * @param {string} siteTitle - The title of the document requesting full provider access
    * @param {string} siteImage - The icon of the window requesting full provider access
    */
-  _handleProviderRequest (origin, siteTitle, siteImage) {
+  _handleProviderRequest (origin, siteTitle, siteImage, force) {
     this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage }] })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-    if (this.isApproved(origin) && this.caching && isUnlocked) {
+    if (!force && this.isApproved(origin) && this.caching && isUnlocked) {
       this.approveProviderRequest(origin)
       return
     }
