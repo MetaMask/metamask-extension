@@ -51,7 +51,7 @@ const testProps = {
   gasPrices: [1.5, 2.5, 4, 8],
   estimatedTimes: [100, 80, 40, 10],
   gasPricesMax: 9,
-  estimatedTimesMax: 100,
+  estimatedTimesMax: '100',
   currentPrice: 6,
   updateCustomGasPrice: propsMethodSpies.updateCustomGasPrice,
 }
