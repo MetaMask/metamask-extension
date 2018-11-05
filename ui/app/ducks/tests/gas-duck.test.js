@@ -1,7 +1,16 @@
 import assert from 'assert'
 import sinon from 'sinon'
+import proxyquire from 'proxyquire'
 
-import GasReducer, {
+
+const GasDuck = proxyquire('../gas.duck.js', {
+  '../../lib/local-storage-helpers': {
+    loadLocalStorageData: sinon.spy(),
+    saveLocalStorageData: sinon.spy(),
+  },
+})
+
+const {
   basicGasEstimatesLoadingStarted,
   basicGasEstimatesLoadingFinished,
   setBasicGasEstimateData,
@@ -16,7 +25,8 @@ import GasReducer, {
   setPricesAndTimeEstimates,
   fetchGasEstimates,
   setApiEstimatesLastRetrieved,
-} from '../gas.duck.js'
+} = GasDuck
+const GasReducer = GasDuck.default
 
 describe('Gas Duck', () => {
   let tempFetch
@@ -312,6 +322,11 @@ describe('Gas Duck', () => {
 
   describe('fetchGasEstimates', () => {
     const mockDistpatch = sinon.spy()
+
+    beforeEach(() => {
+      mockDistpatch.resetHistory()
+    })
+
     it('should call fetch with the expected params', async () => {
       global.fetch.resetHistory()
       await fetchGasEstimates(5)(mockDistpatch, () => ({ gas: Object.assign(
@@ -374,6 +389,46 @@ describe('Gas Duck', () => {
       )
       assert.deepEqual(
         mockDistpatch.getCall(3).args,
+        [{ type: GAS_ESTIMATE_LOADING_FINISHED }]
+      )
+    })
+
+    it('should not call fetch if the estimates were retrieved < 75000 ms ago', async () => {
+      global.fetch.resetHistory()
+      await fetchGasEstimates(5)(mockDistpatch, () => ({ gas: Object.assign(
+        {},
+        initState,
+        {
+          priceAndTimeEstimatesLastRetrieved: Date.now(),
+          priceAndTimeEstimates: [{
+            expectedTime: '10',
+            expectedWait: 2,
+            gasprice: 50,
+          }],
+        }
+      ) }))
+      assert.deepEqual(
+        mockDistpatch.getCall(0).args,
+        [{ type: GAS_ESTIMATE_LOADING_STARTED} ]
+      )
+      assert.equal(global.fetch.callCount, 0)
+
+      assert.deepEqual(
+        mockDistpatch.getCall(1).args,
+        [{
+          type: SET_PRICE_AND_TIME_ESTIMATES,
+          value: [
+            {
+              expectedTime: '10',
+              expectedWait: 2,
+              gasprice: 50,
+            },
+          ],
+
+        }]
+      )
+      assert.deepEqual(
+        mockDistpatch.getCall(2).args,
         [{ type: GAS_ESTIMATE_LOADING_FINISHED }]
       )
     })

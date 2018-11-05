@@ -15,6 +15,10 @@ const sendDuckSpies = {
   showGasButtonGroup: sinon.spy(),
 }
 
+const gasDuckSpies = {
+  resetCustomData: sinon.spy(),
+}
+
 proxyquire('../send-gas-row.container.js', {
   'react-redux': {
     connect: (ms, md, mp) => {
@@ -42,6 +46,7 @@ proxyquire('../send-gas-row.container.js', {
     getDefaultActiveButtonIndex: (gasButtonInfo, gasPrice) => gasButtonInfo.length + gasPrice.length,
   },
   '../../../../ducks/send.duck': sendDuckSpies,
+  '../../../../ducks/gas.duck': gasDuckSpies,
 })
 
 describe('send-gas-row container', () => {
@@ -101,6 +106,14 @@ describe('send-gas-row container', () => {
         mapDispatchToPropsObject.showGasButtonGroup()
         assert(dispatchSpy.calledOnce)
         assert(sendDuckSpies.showGasButtonGroup.calledOnce)
+      })
+    })
+
+    describe('resetCustomData()', () => {
+      it('should dispatch an action', () => {
+        mapDispatchToPropsObject.resetCustomData()
+        assert(dispatchSpy.calledOnce)
+        assert(gasDuckSpies.resetCustomData.calledOnce)
       })
     })
 

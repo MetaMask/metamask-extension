@@ -10,6 +10,7 @@ import GasPriceButtonGroup from '../../../../gas-customization/gas-price-button-
 
 const propsMethodSpies = {
   showCustomizeGasModal: sinon.spy(),
+  resetGasButtons: sinon.spy(),
 }
 
 describe('SendGasRow Component', function () {
@@ -22,9 +23,9 @@ describe('SendGasRow Component', function () {
       gasFeeError={'mockGasFeeError'}
       gasLoadingError={false}
       gasTotal={'mockGasTotal'}
-      showGasButtonGroup={'mockShowGasPriceButtonGroup'}
       gasButtonGroupShown={false}
       showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
+      resetGasButtons={propsMethodSpies.resetGasButtons}
       gasPriceButtonGroupProps={{
         someGasPriceButtonGroupProp: 'foo',
         anotherGasPriceButtonGroupProp: 'bar',
@@ -33,7 +34,7 @@ describe('SendGasRow Component', function () {
   })
 
   afterEach(() => {
-    propsMethodSpies.showCustomizeGasModal.resetHistory()
+    propsMethodSpies.resetGasButtons.resetHistory()
   })
 
   describe('render', () => {
@@ -63,17 +64,15 @@ describe('SendGasRow Component', function () {
         convertedCurrency,
         gasLoadingError,
         gasTotal,
-        onClick,
-        showGasButtonGroup,
+        onReset,
       } = wrapper.find(SendRowWrapper).childAt(0).props()
       assert.equal(conversionRate, 20)
       assert.equal(convertedCurrency, 'mockConvertedCurrency')
       assert.equal(gasLoadingError, false)
       assert.equal(gasTotal, 'mockGasTotal')
-      assert.equal(showGasButtonGroup, 'mockShowGasPriceButtonGroup')
-      assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 0)
-      onClick()
-      assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 1)
+      assert.equal(propsMethodSpies.resetGasButtons.callCount, 0)
+      onReset()
+      assert.equal(propsMethodSpies.resetGasButtons.callCount, 1)
     })
 
     it('should render the GasPriceButtonGroup if gasButtonGroupShown is true', () => {
