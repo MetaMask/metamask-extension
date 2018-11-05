@@ -41,6 +41,10 @@ function createNetworkAndChainIdMiddleware({ network }) {
       net_version = '3'
       eth_chainId = '0x03'
       break
+    case 'rinkeby':
+      net_version = '4'
+      eth_chainId = '0x04'
+      break
     case 'kovan':
       net_version = '42'
       eth_chainId = '0x2a'
