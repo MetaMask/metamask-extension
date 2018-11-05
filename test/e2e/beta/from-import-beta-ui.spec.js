@@ -17,6 +17,7 @@ const {
   findElement,
   findElements,
 } = require('./helpers')
+const fetchMockResponses = require('./fetch-mocks.js')
 
 
 describe('Using MetaMask with an existing account', function () {
@@ -60,6 +61,18 @@ describe('Using MetaMask with an existing account', function () {
     await closeAllWindowHandlesExcept(driver, [tab1])
     await driver.switchTo().window(tab1)
     await driver.get(extensionUrl)
+  })
+
+  beforeEach(async function () {
+    await driver.executeScript(
+      'window.fetch = ' +
+      '(...args) => { ' +
+      'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
+      '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } ' +
+      'return window.fetch(...args); }'
+    )
   })
 
   afterEach(async function () {
@@ -230,7 +243,7 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   describe('Send ETH from inside MetaMask', () => {
-    it('starts to send a transaction', async function () {
+    it('starts a send transaction', async function () {
       const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
       await sendButton.click()
       await delay(regularDelayMs)
@@ -241,7 +254,7 @@ describe('Using MetaMask with an existing account', function () {
       await inputAmount.sendKeys('1')
 
       // Set the gas limit
-      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
+      const configureGas = await findElement(driver, By.css('.advanced-gas-options-btn'))
       await configureGas.click()
       await delay(regularDelayMs)
 
