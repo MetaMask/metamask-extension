@@ -67,7 +67,9 @@ export default class Home extends PureComponent {
     }
 
     if (providerRequests && providerRequests.length > 0) {
-      return <ProviderApproval origin={providerRequests[0].origin} />
+      return (
+        <ProviderApproval providerRequest={providerRequests[0]} />
+      )
     }
 
     return (

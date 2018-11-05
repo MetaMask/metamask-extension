@@ -32,14 +32,11 @@
   "reject": {
     "message": "Reject"
   },
-  "providerAPIRequest": {
-    "message": "Ethereum API Request"
-  },
-  "reviewProviderRequest": {
-    "message": "Please review this Ethereum API request."
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
   },
   "providerRequestInfo": {
-    "message": "The domain listed below is requesting access to the Ethereum blockchain and to view your current account. Always double check that you're on the correct site before approving access."
+    "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
   },
   "accept": {
     "message": "Accept"
@@ -211,6 +208,9 @@
   },
   "connect": {
     "message": "Connect"
+  },
+  "connectRequest": {
+    "message": "Connect Request"
   },
   "connecting": {
     "message": "Connecting..."

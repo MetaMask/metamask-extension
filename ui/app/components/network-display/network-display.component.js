@@ -16,7 +16,12 @@ const networkToClassHash = {
 }
 
 export default class NetworkDisplay extends Component {
+  static defaultProps = {
+    colored: true,
+  }
+
   static propTypes = {
+    colored: PropTypes.bool,
     network: PropTypes.string,
     provider: PropTypes.object,
   }
@@ -41,14 +46,16 @@ export default class NetworkDisplay extends Component {
   }
 
   render () {
-    const { network, provider: { type, nickname } } = this.props
+    const { colored, network, provider: { type, nickname } } = this.props
     const networkClass = networkToClassHash[network]
 
     return (
-      <div className={classnames(
-        'network-display__container',
-        networkClass && ('network-display__container--' + networkClass)
-      )}>
+      <div
+        className={classnames('network-display__container', {
+          'network-display__container--colored': colored,
+          ['network-display__container--' + networkClass]: colored && networkClass,
+        })}
+      >
         {
           networkClass
             ? <div className={`network-display__icon network-display__icon--${networkClass}`} />

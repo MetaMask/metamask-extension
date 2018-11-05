@@ -24,31 +24,35 @@ class ProviderApprovalController {
     this.publicConfigStore = publicConfigStore
     this.store = new ObservableStore()
 
-    platform && platform.addMessageListener && platform.addMessageListener(({ action = '', origin }) => {
-      switch (action) {
-        case 'init-provider-request':
-          this._handleProviderRequest(origin)
-          break
-        case 'init-is-approved':
-          this._handleIsApproved(origin)
-          break
-        case 'init-is-unlocked':
-          this._handleIsUnlocked()
-          break
-        case 'init-privacy-request':
-          this._handlePrivacyRequest()
-          break
-      }
-    })
+    if (platform && platform.addMessageListener) {
+      platform.addMessageListener(({ action = '', origin, siteTitle, siteImage }) => {
+        switch (action) {
+          case 'init-provider-request':
+            this._handleProviderRequest(origin, siteTitle, siteImage)
+            break
+          case 'init-is-approved':
+            this._handleIsApproved(origin)
+            break
+          case 'init-is-unlocked':
+            this._handleIsUnlocked()
+            break
+          case 'init-privacy-request':
+            this._handlePrivacyRequest()
+            break
+        }
+      })
+    }
   }
 
   /**
    * Called when a tab requests access to a full Ethereum provider API
    *
    * @param {string} origin - Origin of the window requesting full provider access
+   * @param {string} siteTitle - The title of the document requesting full provider access
+   * @param {string} siteImage - The icon of the window requesting full provider access
    */
-  _handleProviderRequest (origin) {
-    this.store.updateState({ providerRequests: [{ origin }] })
+  _handleProviderRequest (origin, siteTitle, siteImage) {
+    this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage }] })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     if (this.isApproved(origin) && this.caching && isUnlocked) {
       this.approveProviderRequest(origin)
