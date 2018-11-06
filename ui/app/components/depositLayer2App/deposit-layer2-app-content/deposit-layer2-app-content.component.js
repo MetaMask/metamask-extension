@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerContent from '../../page-container/page-container-content.component'
-
+import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../routes'
 import DepositLayer2AppFromRow from './deposit-layer2-app-from-row/'
 import Button from '../../button'
 
@@ -14,9 +14,23 @@ export default class DepositLayer2AppContent extends Component {
   static propTypes = {
   };
 
+  onSubmit () {
+    console.log("DEBUG DEBUG DEBUG CONTENT: ", this.props)
+    const { history } = this.props
+    const script = this.props.selectedLayer2AppScript
+    const layer2SolutionContract = script.contract
+    const tx = layer2SolutionContract.setup(0,{from: script.owner, value: 1e18, data:"0x"})
+    console.log(layer2SolutionContract)
+    console.log("HIIII", DEFAULT_ROUTE)
+    console.log("HIIII", CONFIRM_TRANSACTION_ROUTE)	
+    history.push(CONFIRM_TRANSACTION_ROUTE)
+    
+  }
+
   render () {
     console.log("DEBUG DEBUG DEBUG CONTENT: ", this.props)
     const { t } = this.context
+
     return (
       <PageContainerContent>
         <div className="send-v2__form">
@@ -28,12 +42,7 @@ export default class DepositLayer2AppContent extends Component {
 	<Button
       type="primary"
       className="layer2App-view__button"
-      onClick={async () =>{
-	const script = this.props.selectedLayer2AppScript
-	const layer2SolutionContract = script.contract
-	const tx = await layer2SolutionContract.setup(0,{from: script.owner, value: 1e18, data:0x})
-	console.log(layer2SolutionContract)
-      }}
+      onClick={() => {this.onSubmit()} }
         >
        Deposit in Layer2 Solution
       </Button>

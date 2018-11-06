@@ -202,6 +202,7 @@ export default class DepositLayer2AppScreen extends PersistentForm {
           updateGas={(updateData) => this.updateGas(updateData)}
           selectedLayer2AppAddress={selectedLayer2AppAddress}
           selectedLayer2AppScript={selectedLayer2AppScript}
+          history={history}
         />
       </div>
     )
