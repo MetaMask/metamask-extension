@@ -25,12 +25,13 @@ TypedMessageRenderer.prototype.render = function () {
   }
 
   const defaultStyle = extend({
-    width: '315px',
+    width: '100%',
     maxHeight: '210px',
     resize: 'none',
     border: 'none',
-    background: 'white',
-    padding: '3px',
+    background: '#542289',
+    color: 'white',
+    padding: '20px',
     overflow: 'scroll',
   }, style)
 

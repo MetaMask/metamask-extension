@@ -1,46 +1,29 @@
-const Component = require('react').Component
-const h = require('react-hyperscript')
-const inherits = require('util').inherits
-const PendingTxDetails = require('./pending-typed-msg-details')
+import React, { Component } from 'react'
+import PendingTxDetails from './pending-typed-msg-details'
 
-module.exports = PendingMsg
+export default class PendingMsg extends Component {
+  render () {
+    var state = this.props
+    var msgData = state.txData
 
-inherits(PendingMsg, Component)
-function PendingMsg () {
-  Component.call(this)
-}
-
-PendingMsg.prototype.render = function () {
-  var state = this.props
-  var msgData = state.txData
-
-  return (
-
-    h('div', {
-      key: msgData.id,
-    }, [
-
-      // header
-      h('h3', {
-        style: {
+    return (
+      <div key={msgData.id} style={{height: '100%'}}>
+        <h3 style={{
           fontWeight: 'bold',
           textAlign: 'center',
-        },
-      }, 'Sign Message'),
-
-      // message details
-      h(PendingTxDetails, state),
-
-      // sign + cancel
-      h('.flex-row.flex-space-around', [
-        h('button', {
-          onClick: state.cancelTypedMessage,
-        }, 'Cancel'),
-        h('button', {
-          onClick: state.signTypedMessage,
-        }, 'Sign'),
-      ]),
-    ])
-
-  )
+          color: 'white',
+          margin: '20px',
+        }}>Sign message</h3>
+        <PendingTxDetails {...state}/>
+        <div className="flex-row flex-space-around" style={{
+          marginRight: '30px',
+          float: 'right',
+          display: 'block',
+        }}>
+          <button style={{marginRight: '10px'}} onClick={state.cancelTypedMessage}>Cancel</button>
+          <button onClick={state.signTypedMessage}>Sign</button>
+        </div>
+      </div>
+    )
+  }
 }

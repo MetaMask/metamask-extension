@@ -232,7 +232,64 @@ describe('Metamask popup page', async function () {
       const button = await waitUntilShowUp(screens.info.buttonArrow)
       await button.click()
     })
+  })
 
+  describe('Sign Data', () => {
+
+    it('simulate sign request ', async function () {
+      await driver.get('https://danfinlay.github.io/js-eth-personal-sign-examples/')
+      const button = await waitUntilShowUp(By.id('ethSignButton'))
+      await button.click()
+    })
+
+    it('navigates back to MetaMask popup in the tab', async function () {
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
+        await driver.get(`chrome-extension://${extensionId}/popup.html`)
+      } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+        await driver.get(`moz-extension://${extensionId}/popup.html`)
+      }
+      await delay(700)
+    })
+
+    it('error message is displayed and contains text', async function () {
+      const error = await waitUntilShowUp(screens.signMessage.error)
+      assert.notEqual(error, false, 'error message isn\'t displayed')
+      const text = await error.getText()
+      assert.equal(text.length > 183, true, 'error message hasn\'t text')
+    })
+
+    it('account name is displayed and correct', async function () {
+      const name = await waitUntilShowUp(screens.signMessage.accountName)
+      assert.notEqual(name, false, 'account name isn\'t displayed')
+      assert.equal(await name.getText(), 'Account 2', 'account name is incorrect')
+    })
+
+    it('title is displayed and correct', async function () {
+      const title = await waitUntilShowUp(screens.signMessage.title)
+      assert.notEqual(title, false, 'title isn\'t displayed')
+      assert.equal(await title.getText(), 'Sign message', 'title is incorrect')
+    })
+
+    it('message is displayed and correct', async function () {
+      const message = await waitUntilShowUp(screens.signMessage.message)
+      assert.notEqual(message, false, 'message isn\'t displayed')
+      assert.equal((await message.getText()).length > 32, true, 'message is incorrect')
+    })
+
+    it('button \'Cancel\' is enabled and lead to main screen ', async function () {
+      const button = await waitUntilShowUp(screens.signMessage.buttons.cancel)
+      assert.equal(await button.isEnabled(), true, 'button isn\'t enabled')
+      assert.equal(await button.getText(), 'Cancel', 'button has incorrect name')
+    })
+
+    it('button \'Sign\' is enabled and lead to main screen ', async function () {
+      const button = await waitUntilShowUp(screens.signMessage.buttons.sign)
+      assert.equal(await button.isEnabled(), true, 'button isn\'t enabled')
+      assert.equal(await button.getText(), 'Sign', 'button has incorrect name')
+      await click(button)
+      const identicon = await waitUntilShowUp(screens.main.identicon)
+      assert.notEqual(identicon, false, 'main screen didn\'t opened')
+    })
   })
   describe('Import Account', () => {
 
