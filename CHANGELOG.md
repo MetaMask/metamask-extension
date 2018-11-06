@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 5.0.0 Tuesday November 6 2018
+
+- Implements EIP 1102 as a user-activated "Privacy Mode".
+
 ## 4.17.1 Saturday November 3 2018
 
 - Revert chain ID lookup change which introduced a bug which caused problems when connecting to mainnet via Infura's RESTful API.
