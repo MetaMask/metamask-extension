@@ -15,16 +15,11 @@ export default class DepositLayer2AppContent extends Component {
   };
 
   onSubmit () {
-    console.log("DEBUG DEBUG DEBUG CONTENT: ", this.props)
     const { history } = this.props
     const script = this.props.selectedLayer2AppScript
     const layer2SolutionContract = script.contract
     const tx = layer2SolutionContract.setup(0,{from: script.owner, value: 1e18, data:"0x"})
-    console.log(layer2SolutionContract)
-    console.log("HIIII", DEFAULT_ROUTE)
-    console.log("HIIII", CONFIRM_TRANSACTION_ROUTE)	
     history.push(CONFIRM_TRANSACTION_ROUTE)
-    
   }
 
   render () {

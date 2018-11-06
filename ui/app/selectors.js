@@ -13,7 +13,8 @@ const selectors = {
   getSelectedIdentity,
   getSelectedAccount,
   getSelectedToken,
-  getSelectedLayer2AppAddress,  
+  getSelectedLayer2AppAddress,
+  getSelectedLayer2AppScript,    
   getSelectedTokenExchangeRate,
   getSelectedTokenAssetImage,
   getAssetImages,
@@ -60,6 +61,13 @@ function getSelectedAccount (state) {
 
 function getSelectedLayer2AppAddress (state) {
   return state.metamask.selectedLayer2AppAddress
+}
+
+function getSelectedLayer2AppScript (state) {
+  const layer2AppsScripts = state.metamask.layer2AppsScripts || []
+  const selectedLayer2AppAddress = state.metamask.selectedLayer2AppAddress
+  const selectedLayer2AppScript = layer2AppsScripts.filter(({ address }) => address === selectedLayer2AppAddress)[0]
+  return selectedLayer2AppScript
 }
 
 

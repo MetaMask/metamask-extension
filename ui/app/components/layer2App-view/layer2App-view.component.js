@@ -5,9 +5,6 @@ import MenuBar from '../menu-bar'
 import Button from '../button'
 import { DEPOSIT_LAYER2APP_ROUTE } from '../../routes'
 
-
-
-
 //import TransactionViewBalance from '../transaction-view-balance'
 //import TransactionList from '../transaction-list'
 
@@ -21,6 +18,7 @@ export default class Layer2AppView extends PureComponent {
   render () {
     const { t } = this.context
     const { history } = this.props
+    const script = this.props.selectedLayer2AppScript    
     return (
 	<div className="transaction-view">
 	<Button
@@ -29,6 +27,20 @@ export default class Layer2AppView extends PureComponent {
       onClick={() => history.push(DEPOSIT_LAYER2APP_ROUTE)}
         >
         {t("depositLayer2App") }
+      </Button>
+	<Button
+      type="primary"
+      className="layer2App-view__button"
+      onClick={() => console.log("action1", script.layer2Abi.action1)}
+        >
+        {t("layer2-action1") }
+      </Button>
+	<Button
+      type="primary"
+      className="layer2App-view__button"
+      onClick={() => console.log("action2", script.layer2Abi.action2)}
+        >
+        {t("layer2-action2") }
       </Button>
 
       </div>
