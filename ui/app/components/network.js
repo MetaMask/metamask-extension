@@ -32,24 +32,7 @@ Network.prototype.render = function () {
   }
   let iconName, hoverText
 
-  if (networkNumber === 'loading') {
-    return h('span.pointer.network-indicator', {
-      style: {
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'row',
-      },
-      onClick: (event) => this.props.onClick(event),
-    }, [
-      h('img', {
-        title: context.t('attemptingConnect'),
-        style: {
-          width: '27px',
-        },
-        src: 'images/loading.svg',
-      }),
-    ])
-  } else if (providerName === 'mainnet') {
+  if (providerName === 'mainnet') {
     hoverText = context.t('mainnet')
     iconName = 'ethereum-network'
   } else if (providerName === 'ropsten') {
@@ -85,6 +68,14 @@ Network.prototype.render = function () {
         }
       },
     }, [
+      networkNumber === 'loading' && h('img', {
+        title: context.t('attemptingConnect'),
+        style: {
+          height: '27px',
+          width: '27px',
+        },
+        src: 'images/loading.svg',
+      }),
       (function () {
         switch (iconName) {
           case 'ethereum-network':
