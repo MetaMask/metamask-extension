@@ -46,6 +46,16 @@ module.exports = {
     },
   },
   screens: {
+    signMessage: {
+      buttons: {
+        sign: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row.flex-space-around > button:nth-child(2)'),
+        cancel: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row.flex-space-around > button:nth-child(1)'),
+      },
+      title: By.css('#app-content > div > div.app-primary.from-right > div > div > h3'),
+      error: By.className('error'),
+      accountName: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(3) > div.identity-panel.flex-row.flex-space-between > div.identity-data.flex-column.flex-justify-center.flex-grow.select-none > h2'),
+      message: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(3) > div.tx-data.flex-column.flex-justify-center.flex-grow.select-none > div > span'),
+     },
     sendTokens: {
       error: By.className('error flex-center'),
       errorText: {

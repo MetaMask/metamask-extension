@@ -106,6 +106,8 @@ App.prototype.render = function () {
     `Connecting to ${networkName}` : null
   log.debug('Main ui render function')
 
+  const confirmMsgTx = (props.currentView.name === 'confTx' && Object.keys(props.unapprovedTxs).length === 0)
+
   return (
     h('.flex-column.full-height', {
       style: {
@@ -124,7 +126,8 @@ App.prototype.render = function () {
       // panel content
       h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
         style: {
-          background: (props.isUnlocked || props.currentView.name === 'restoreVault' || props.currentView.name === 'config') ? 'white' : 'transparent',
+          background: (props.isUnlocked || props.currentView.name === 'restoreVault' || props.currentView.name === 'config') ? confirmMsgTx ? 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))' : 'white' : 'transparent',
+          height: (props.isUnlocked && confirmMsgTx) ? '100%' : 'auto',
         },
       }, [
         this.renderPrimary(),
