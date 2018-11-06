@@ -21,37 +21,6 @@ global.ethQuery = {
 
 global.ethereumProvider = {}
 
-async function customizeGas (assert, price, limit, ethFee, usdFee) {
-  const sendGasOpenCustomizeModalButton = await queryAsync($, '.sliders-icon-container')
-  sendGasOpenCustomizeModalButton[0].click()
-
-  const customizeGasModal = await queryAsync($, '.send-v2__customize-gas')
-  assert.ok(customizeGasModal[0], 'should render the customize gas modal')
-
-  const customizeGasPriceInput = (await queryAsync($, '.send-v2__gas-modal-card')).first().find('input')
-  customizeGasPriceInput.val(price)
-  reactTriggerChange(customizeGasPriceInput[0])
-  const customizeGasLimitInput = (await queryAsync($, '.send-v2__gas-modal-card')).last().find('input')
-  customizeGasLimitInput.val(limit)
-  reactTriggerChange(customizeGasLimitInput[0])
-
-  const customizeGasSaveButton = await queryAsync($, '.send-v2__customize-gas__save')
-  customizeGasSaveButton[0].click()
-  const sendGasField = await queryAsync($, '.send-v2__gas-fee-display')
-
-  assert.equal(
-    (await findAsync(sendGasField, '.currency-display-component'))[0].textContent,
-    ethFee,
-    'send gas field should show customized gas total'
-  )
-
-  assert.equal(
-    (await findAsync(sendGasField, '.currency-display__converted-value'))[0].textContent,
-    usdFee,
-    'send gas field should show customized gas total converted to USD'
-  )
-}
-
 async function runSendFlowTest (assert, done) {
   console.log('*** start runSendFlowTest')
   const selectState = await queryAsync($, 'select')
@@ -111,10 +80,6 @@ async function runSendFlowTest (assert, done) {
   await timeout()
   errorMessage = $('.send-v2__error')
   assert.equal(errorMessage.length, 0, 'send should stop rendering amount error message after amount is corrected')
-
-  await customizeGas(assert, 0, 21000, '0ETH', '$0.00USD')
-  await customizeGas(assert, 1, 21000, '0.000021ETH', '$0.03USD')
-  await customizeGas(assert, 500, 60000, '0.03ETH', '$36.03USD')
 
   const sendButton = await queryAsync($, 'button.btn-primary.btn--large.page-container__footer-button')
   assert.equal(sendButton[0].textContent, 'Next', 'next button rendered')
