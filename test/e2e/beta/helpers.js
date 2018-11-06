@@ -2,8 +2,8 @@ const fs = require('fs')
 const mkdirp = require('mkdirp')
 const pify = require('pify')
 const assert = require('assert')
-const {until} = require('selenium-webdriver')
 const { delay } = require('../func')
+const { until } = require('selenium-webdriver')
 
 module.exports = {
   assertElementNotPresent,
@@ -122,12 +122,11 @@ async function closeAllWindowHandlesExcept (driver, exceptions, windowHandles) {
 }
 
 async function assertElementNotPresent (webdriver, driver, by) {
+  let dataTab
   try {
-    const dataTab = await findElement(driver, by, 4000)
-    if (dataTab) {
-      assert(false, 'Data tab should not be present')
-    }
+    dataTab = await findElement(driver, by, 4000)
   } catch (err) {
-    assert(err instanceof webdriver.error.NoSuchElementError)
+    assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
   }
+  assert.ok(!dataTab, 'Found element that should not be present')
 }

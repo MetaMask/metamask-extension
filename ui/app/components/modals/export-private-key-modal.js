@@ -1,3 +1,4 @@
+const log = require('loglevel')
 const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
@@ -10,20 +11,35 @@ const { getSelectedIdentity } = require('../../selectors')
 const ReadOnlyInput = require('../readonly-input')
 const copyToClipboard = require('copy-to-clipboard')
 const { checksumAddress } = require('../../util')
+import Button from '../button'
 
-function mapStateToProps (state) {
-  return {
-    warning: state.appState.warning,
-    privateKey: state.appState.accountDetail.privateKey,
-    network: state.metamask.network,
-    selectedIdentity: getSelectedIdentity(state),
-    previousModalState: state.appState.modal.previousModalState.name,
+function mapStateToPropsFactory () {
+  let selectedIdentity = null
+  return function mapStateToProps (state) {
+    // We should **not** change the identity displayed here even if it changes from underneath us.
+    // If we do, we will be showing the user one private key and a **different** address and name.
+    // Note that the selected identity **will** change from underneath us when we unlock the keyring
+    // which is the expected behavior that we are side-stepping.
+    selectedIdentity = selectedIdentity || getSelectedIdentity(state)
+    return {
+      warning: state.appState.warning,
+      privateKey: state.appState.accountDetail.privateKey,
+      network: state.metamask.network,
+      selectedIdentity,
+      previousModalState: state.appState.modal.previousModalState.name,
+    }
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    exportAccount: (password, address) => dispatch(actions.exportAccount(password, address)),
+    exportAccount: (password, address) => {
+      return dispatch(actions.exportAccount(password, address))
+        .then((res) => {
+          dispatch(actions.hideWarning())
+          return res
+        })
+    },
     showAccountDetailModal: () => dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' })),
     hideModal: () => dispatch(actions.hideModal()),
   }
@@ -36,6 +52,7 @@ function ExportPrivateKeyModal () {
   this.state = {
     password: '',
     privateKey: null,
+    showWarning: true,
   }
 }
 
@@ -43,14 +60,18 @@ ExportPrivateKeyModal.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ExportPrivateKeyModal)
+module.exports = connect(mapStateToPropsFactory, mapDispatchToProps)(ExportPrivateKeyModal)
 
 
 ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (password, address) {
   const { exportAccount } = this.props
 
   exportAccount(password, address)
-    .then(privateKey => this.setState({ privateKey }))
+    .then(privateKey => this.setState({
+      privateKey,
+      showWarning: false,
+    }))
+    .catch((e) => log.error(e))
 }
 
 ExportPrivateKeyModal.prototype.renderPasswordLabel = function (privateKey) {
@@ -77,24 +98,31 @@ ExportPrivateKeyModal.prototype.renderPasswordInput = function (privateKey) {
     })
 }
 
-ExportPrivateKeyModal.prototype.renderButton = function (className, onClick, label) {
-  return h('button', {
-    className,
-    onClick,
-  }, label)
-}
-
 ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, address, hideModal) {
   return h('div.export-private-key-buttons', {}, [
-    !privateKey && this.renderButton(
-      'btn-default btn--large export-private-key__button export-private-key__button--cancel',
-      () => hideModal(),
-      'Cancel'
-    ),
+    !privateKey && h(Button, {
+      type: 'default',
+      large: true,
+      className: 'export-private-key__button export-private-key__button--cancel',
+      onClick: () => hideModal(),
+    }, this.context.t('cancel')),
 
     (privateKey
-      ? this.renderButton('btn-primary btn--large export-private-key__button', () => hideModal(), this.context.t('done'))
-      : this.renderButton('btn-primary btn--large export-private-key__button', () => this.exportAccountAndGetPrivateKey(this.state.password, address), this.context.t('confirm'))
+      ? (
+          h(Button, {
+          type: 'primary',
+          large: true,
+          className: 'export-private-key__button',
+          onClick: () => hideModal(),
+        }, this.context.t('done'))
+      ) : (
+          h(Button, {
+          type: 'primary',
+          large: true,
+          className: 'export-private-key__button',
+          onClick: () => this.exportAccountAndGetPrivateKey(this.state.password, address),
+        }, this.context.t('confirm'))
+      )
     ),
 
   ])
@@ -110,9 +138,13 @@ ExportPrivateKeyModal.prototype.render = function () {
   } = this.props
   const { name, address } = selectedIdentity
 
-  const { privateKey } = this.state
+  const {
+    privateKey,
+    showWarning,
+  } = this.state
 
   return h(AccountModalContainer, {
+    selectedIdentity,
     showBackButton: previousModalState === 'ACCOUNT_DETAILS',
     backButtonAction: () => showAccountDetailModal(),
   }, [
@@ -134,7 +166,7 @@ ExportPrivateKeyModal.prototype.render = function () {
 
         this.renderPasswordInput(privateKey),
 
-        !warning ? null : h('span.private-key-password-error', warning),
+        showWarning && warning ? h('span.private-key-password-error', warning) : null,
       ]),
 
       h('div.private-key-password-warning', this.context.t('privateKeyWarning')),

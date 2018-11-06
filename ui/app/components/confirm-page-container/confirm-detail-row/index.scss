@@ -15,14 +15,17 @@
   &__details {
     flex: 1;
     text-align: end;
+    min-width: 0;
   }
 
-  &__fiat {
+  &__primary {
     font-size: 1.5rem;
+    justify-content: flex-end;
   }
 
-  &__eth {
+  &__secondary {
     color: $oslo-gray;
+    justify-content: flex-end;
   }
 
   &__header-text {

@@ -18,14 +18,19 @@ import {
   getSelectedTokenToFiatRate,
   getSendAmount,
   getSendEditingTransactionId,
+  getSendHexDataFeatureFlagState,
   getSendFromObject,
   getSendTo,
   getTokenBalance,
+  getQrCodeData,
 } from './send.selectors'
 import {
+  updateSendTo,
   updateSendTokenBalance,
   updateGasData,
   setGasTotal,
+  showQrScanner,
+  qrCodeDetected,
 } from '../../actions'
 import {
   resetSendState,
@@ -34,6 +39,10 @@ import {
 import {
   calcGasTotal,
 } from './send.utils.js'
+
+import {
+  SEND_ROUTE,
+} from '../../routes'
 
 module.exports = compose(
   withRouter,
@@ -56,10 +65,12 @@ function mapStateToProps (state) {
     recentBlocks: getRecentBlocks(state),
     selectedAddress: getSelectedAddress(state),
     selectedToken: getSelectedToken(state),
+    showHexData: getSendHexDataFeatureFlagState(state),
     to: getSendTo(state),
     tokenBalance: getTokenBalance(state),
     tokenContract: getSelectedTokenContract(state),
     tokenToFiatRate: getSelectedTokenToFiatRate(state),
+    qrCodeData: getQrCodeData(state),
   }
 }
 
@@ -75,9 +86,10 @@ function mapDispatchToProps (dispatch) {
       selectedToken,
       to,
       value,
+      data,
     }) => {
       !editingTransactionId
-        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, blockGasLimit, to, value }))
+        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, blockGasLimit, to, value, data }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {
@@ -89,5 +101,8 @@ function mapDispatchToProps (dispatch) {
     },
     updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
+    scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
+    qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
+    updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
   }
 }

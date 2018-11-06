@@ -108,7 +108,10 @@
       "editingTransactionId": null
     },
     "currentLocale": "en",
-    "currentAccountTab": "tokens"
+    "currentAccountTab": "tokens",
+    "preferences": {
+      "useETHAsPrimaryCurrency": true
+    }
   },
   "appState": {
     "menuOpen": false,
@@ -124,6 +127,7 @@
       "modalState": {},
       "previousModalState": {}
     },
+    "sidebar": {},
     "transForward": true,
     "isLoading": false,
     "warning": null,

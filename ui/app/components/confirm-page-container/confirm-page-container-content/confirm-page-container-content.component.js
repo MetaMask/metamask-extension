@@ -2,11 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { Tabs, Tab } from '../../tabs'
-import {
-  ConfirmPageContainerSummary,
-  ConfirmPageContainerError,
-  ConfirmPageContainerWarning,
-} from './'
+import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from './'
+import ErrorMessage from '../../error-message'
 
 export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
@@ -18,10 +15,12 @@ export default class ConfirmPageContainerContent extends Component {
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
+    assetImage: PropTypes.string,
     subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    subtitleComponent: PropTypes.node,
     summaryComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    titleComponent: PropTypes.func,
+    titleComponent: PropTypes.node,
     warning: PropTypes.string,
   }
 
@@ -56,10 +55,13 @@ export default class ConfirmPageContainerContent extends Component {
       errorKey,
       errorMessage,
       title,
+      titleComponent,
       subtitle,
+      subtitleComponent,
       hideSubtitle,
       identiconAddress,
       nonce,
+      assetImage,
       summaryComponent,
       detailsComponent,
       dataComponent,
@@ -81,10 +83,13 @@ export default class ConfirmPageContainerContent extends Component {
               })}
               action={action}
               title={title}
+              titleComponent={titleComponent}
               subtitle={subtitle}
+              subtitleComponent={subtitleComponent}
               hideSubtitle={hideSubtitle}
               identiconAddress={identiconAddress}
               nonce={nonce}
+              assetImage={assetImage}
             />
           )
         }
@@ -92,7 +97,7 @@ export default class ConfirmPageContainerContent extends Component {
         {
           (errorKey || errorMessage) && (
             <div className="confirm-page-container-content__error-container">
-              <ConfirmPageContainerError
+              <ErrorMessage
                 errorMessage={errorMessage}
                 errorKey={errorKey}
               />

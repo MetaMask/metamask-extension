@@ -13,17 +13,17 @@ const getMessage = (locale, key, substitutions) => {
     return null
   }
   if (!locale[key]) {
-    log.error(`Translator - Unable to find value for key "${key}"`)
+    log.warn(`Translator - Unable to find value for key "${key}"`)
     return null
   }
   const entry = locale[key]
   let phrase = entry.message
   // perform substitutions
   if (substitutions && substitutions.length) {
-    phrase = phrase.replace(/\$1/g, substitutions[0])
-    if (substitutions.length > 1) {
-      phrase = phrase.replace(/\$2/g, substitutions[1])
-    }
+    substitutions.forEach((substitution, index) => {
+      const regex = new RegExp(`\\$${index + 1}`, 'g')
+      phrase = phrase.replace(regex, substitution)
+    })
   }
   return phrase
 }

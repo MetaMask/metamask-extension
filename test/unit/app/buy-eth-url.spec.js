@@ -34,7 +34,7 @@ describe('', function () {
 
   it('returns POA Sokol faucet for network 77', function () {
     const ropstenUrl = getBuyEthUrl(sokol)
-    assert.equal(ropstenUrl, 'https://faucet-sokol.herokuapp.com/')
+    assert.equal(ropstenUrl, 'https://faucet.poa.network/')
   })
 
   it('returns metamask ropsten faucet for network 3', function () {

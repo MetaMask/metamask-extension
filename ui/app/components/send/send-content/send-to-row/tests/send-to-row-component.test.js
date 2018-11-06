@@ -102,7 +102,7 @@ describe('SendToRow Component', function () {
 
       assert.equal(errorType, 'to')
 
-      assert.equal(label, 'to_t')
+      assert.equal(label, 'to_t: ')
 
       assert.equal(showError, false)
     })

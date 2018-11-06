@@ -1,13 +1,7 @@
 import currencyFormatter from 'currency-formatter'
 import currencies from 'currency-formatter/currencies'
-import abi from 'human-standard-token-abi'
-import abiDecoder from 'abi-decoder'
 import ethUtil from 'ethereumjs-util'
-
-abiDecoder.addABI(abi)
-
-import MethodRegistry from 'eth-method-registry'
-const registry = new MethodRegistry({ provider: global.ethereumProvider })
+import BigNumber from 'bignumber.js'
 
 import {
   conversionUtil,
@@ -17,22 +11,6 @@ import {
 } from '../../conversion-util'
 
 import { unconfirmedTransactionsCountSelector } from '../../selectors/confirm-transaction'
-
-export function getTokenData (data = {}) {
-  return abiDecoder.decodeMethod(data)
-}
-
-export async function getMethodData (data = {}) {
-  const prefixedData = ethUtil.addHexPrefix(data)
-  const fourBytePrefix = prefixedData.slice(0, 10)
-  const sig = await registry.lookup(fourBytePrefix)
-  const parsedResult = registry.parse(sig)
-
-  return {
-    name: parsedResult.name,
-    params: parsedResult.args,
-  }
-}
 
 export function increaseLastGasPrice (lastGasPrice) {
   return ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
@@ -75,11 +53,12 @@ export function addFiat (...args) {
   })
 }
 
-export function getTransactionAmount ({
+export function getValueFromWeiHex ({
   value,
   toCurrency,
   conversionRate,
   numberOfDecimals,
+  toDenomination,
 }) {
   return conversionUtil(value, {
     fromNumericBase: 'hex',
@@ -88,6 +67,7 @@ export function getTransactionAmount ({
     toCurrency,
     numberOfDecimals,
     fromDenomination: 'WEI',
+    toDenomination,
     conversionRate,
   })
 }
@@ -136,4 +116,12 @@ export function convertTokenToFiat ({
 
 export function hasUnconfirmedTransactions (state) {
   return unconfirmedTransactionsCountSelector(state) > 0
+}
+
+export function roundExponential (value) {
+  const PRECISION = 4
+  const bigNumberValue = new BigNumber(String(value))
+
+  // In JS, numbers with exponentials greater than 20 get displayed as an exponential.
+  return bigNumberValue.e > 20 ? Number(bigNumberValue.toPrecision(PRECISION)) : value
 }

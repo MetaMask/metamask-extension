@@ -47,6 +47,7 @@ describe('Send Component', function () {
       recentBlocks={['mockBlock']}
       selectedAddress={'mockSelectedAddress'}
       selectedToken={'mockSelectedToken'}
+      showHexData={true}
       tokenBalance={'mockTokenBalance'}
       tokenContract={'mockTokenContract'}
       updateAndSetGasTotal={propsMethodSpies.updateAndSetGasTotal}
@@ -288,6 +289,7 @@ describe('Send Component', function () {
           selectedToken: 'mockSelectedToken',
           to: '',
           value: 'mockAmount',
+          data: undefined,
         }
       )
     })
@@ -327,6 +329,10 @@ describe('Send Component', function () {
           history: { mockProp: 'history-abc' },
         }
       )
+    })
+
+    it('should pass showHexData to SendContent', () => {
+      assert.equal(wrapper.find(SendContent).props().showHexData, true)
     })
   })
 })

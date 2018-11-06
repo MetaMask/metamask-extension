@@ -1,6 +1,7 @@
 import assert from 'assert'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
+import sinon from 'sinon'
 
 import ConfirmTransactionReducer, * as actions from '../confirm-transaction.duck.js'
 
@@ -18,9 +19,12 @@ const initialState = {
   ethTransactionAmount: '',
   ethTransactionFee: '',
   ethTransactionTotal: '',
-  hexGasTotal: '',
+  hexTransactionAmount: '',
+  hexTransactionFee: '',
+  hexTransactionTotal: '',
   nonce: '',
-  fetchingMethodData: false,
+  toSmartContract: false,
+  fetchingData: false,
 }
 
 const UPDATE_TX_DATA = 'metamask/confirm-transaction/UPDATE_TX_DATA'
@@ -32,11 +36,11 @@ const CLEAR_METHOD_DATA = 'metamask/confirm-transaction/CLEAR_METHOD_DATA'
 const UPDATE_TRANSACTION_AMOUNTS = 'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS'
 const UPDATE_TRANSACTION_FEES = 'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES'
 const UPDATE_TRANSACTION_TOTALS = 'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS'
-const UPDATE_HEX_GAS_TOTAL = 'metamask/confirm-transaction/UPDATE_HEX_GAS_TOTAL'
 const UPDATE_TOKEN_PROPS = 'metamask/confirm-transaction/UPDATE_TOKEN_PROPS'
 const UPDATE_NONCE = 'metamask/confirm-transaction/UPDATE_NONCE'
-const FETCH_METHOD_DATA_START = 'metamask/confirm-transaction/FETCH_METHOD_DATA_START'
-const FETCH_METHOD_DATA_END = 'metamask/confirm-transaction/FETCH_METHOD_DATA_END'
+const UPDATE_TO_SMART_CONTRACT = 'metamask/confirm-transaction/UPDATE_TO_SMART_CONTRACT'
+const FETCH_DATA_START = 'metamask/confirm-transaction/FETCH_DATA_START'
+const FETCH_DATA_END = 'metamask/confirm-transaction/FETCH_DATA_END'
 const CLEAR_CONFIRM_TRANSACTION = 'metamask/confirm-transaction/CLEAR_CONFIRM_TRANSACTION'
 
 describe('Confirm Transaction Duck', () => {
@@ -62,9 +66,12 @@ describe('Confirm Transaction Duck', () => {
         ethTransactionAmount: '1',
         ethTransactionFee: '0.000021',
         ethTransactionTotal: '469.27',
-        hexGasTotal: '0x1319718a5000',
+        hexTransactionAmount: '',
+        hexTransactionFee: '0x1319718a5000',
+        hexTransactionTotal: '',
         nonce: '0x0',
-        fetchingMethodData: false,
+        toSmartContract: false,
+        fetchingData: false,
       },
     }
 
@@ -182,12 +189,14 @@ describe('Confirm Transaction Duck', () => {
           payload: {
             fiatTransactionAmount: '123.45',
             ethTransactionAmount: '.5',
+            hexTransactionAmount: '0x1',
           },
         }),
         {
           ...mockState.confirmTransaction,
           fiatTransactionAmount: '123.45',
           ethTransactionAmount: '.5',
+          hexTransactionAmount: '0x1',
         }
       )
     })
@@ -199,12 +208,14 @@ describe('Confirm Transaction Duck', () => {
           payload: {
             fiatTransactionFee: '123.45',
             ethTransactionFee: '.5',
+            hexTransactionFee: '0x1',
           },
         }),
         {
           ...mockState.confirmTransaction,
           fiatTransactionFee: '123.45',
           ethTransactionFee: '.5',
+          hexTransactionFee: '0x1',
         }
       )
     })
@@ -216,25 +227,14 @@ describe('Confirm Transaction Duck', () => {
           payload: {
             fiatTransactionTotal: '123.45',
             ethTransactionTotal: '.5',
+            hexTransactionTotal: '0x1',
           },
         }),
         {
           ...mockState.confirmTransaction,
           fiatTransactionTotal: '123.45',
           ethTransactionTotal: '.5',
-        }
-      )
-    })
-
-    it('should update hexGasTotal when receiving an UPDATE_HEX_GAS_TOTAL action', () => {
-      assert.deepEqual(
-        ConfirmTransactionReducer(mockState, {
-          type: UPDATE_HEX_GAS_TOTAL,
-          payload: '0x0',
-        }),
-        {
-          ...mockState.confirmTransaction,
-          hexGasTotal: '0x0',
+          hexTransactionTotal: '0x1',
         }
       )
     })
@@ -271,30 +271,43 @@ describe('Confirm Transaction Duck', () => {
       )
     })
 
-    it('should set fetchingMethodData to true when receiving a FETCH_METHOD_DATA_START action', () => {
+    it('should update nonce when receiving an UPDATE_TO_SMART_CONTRACT action', () => {
       assert.deepEqual(
         ConfirmTransactionReducer(mockState, {
-          type: FETCH_METHOD_DATA_START,
+          type: UPDATE_TO_SMART_CONTRACT,
+          payload: true,
         }),
         {
           ...mockState.confirmTransaction,
-          fetchingMethodData: true,
+          toSmartContract: true,
         }
       )
     })
 
-    it('should set fetchingMethodData to false when receiving a FETCH_METHOD_DATA_END action', () => {
+    it('should set fetchingData to true when receiving a FETCH_DATA_START action', () => {
       assert.deepEqual(
-        ConfirmTransactionReducer({ confirmTransaction: { fetchingMethodData: true } }, {
-          type: FETCH_METHOD_DATA_END,
+        ConfirmTransactionReducer(mockState, {
+          type: FETCH_DATA_START,
         }),
         {
-          fetchingMethodData: false,
+          ...mockState.confirmTransaction,
+          fetchingData: true,
         }
       )
     })
 
-    it('should clear confirmTransaction when receiving a FETCH_METHOD_DATA_END action', () => {
+    it('should set fetchingData to false when receiving a FETCH_DATA_END action', () => {
+      assert.deepEqual(
+        ConfirmTransactionReducer({ confirmTransaction: { fetchingData: true } }, {
+          type: FETCH_DATA_END,
+        }),
+        {
+          fetchingData: false,
+        }
+      )
+    })
+
+    it('should clear confirmTransaction when receiving a FETCH_DATA_END action', () => {
       assert.deepEqual(
         ConfirmTransactionReducer(mockState, {
           type: CLEAR_CONFIRM_TRANSACTION,
@@ -418,19 +431,6 @@ describe('Confirm Transaction Duck', () => {
       )
     })
 
-    it('should create an action to update hexGasTotal', () => {
-      const hexGasTotal = '0x0'
-      const expectedAction = {
-        type: UPDATE_HEX_GAS_TOTAL,
-        payload: hexGasTotal,
-      }
-
-      assert.deepEqual(
-        actions.updateHexGasTotal(hexGasTotal),
-        expectedAction
-      )
-    })
-
     it('should create an action to update tokenProps', () => {
       const tokenProps = {
         tokenDecimals: '1',
@@ -460,24 +460,24 @@ describe('Confirm Transaction Duck', () => {
       )
     })
 
-    it('should create an action to set fetchingMethodData to true', () => {
+    it('should create an action to set fetchingData to true', () => {
       const expectedAction = {
-        type: FETCH_METHOD_DATA_START,
+        type: FETCH_DATA_START,
       }
 
       assert.deepEqual(
-        actions.setFetchingMethodData(true),
+        actions.setFetchingData(true),
         expectedAction
       )
     })
 
-    it('should create an action to set fetchingMethodData to false', () => {
+    it('should create an action to set fetchingData to false', () => {
       const expectedAction = {
-        type: FETCH_METHOD_DATA_END,
+        type: FETCH_DATA_END,
       }
 
       assert.deepEqual(
-        actions.setFetchingMethodData(false),
+        actions.setFetchingData(false),
         expectedAction
       )
     })
@@ -495,6 +495,18 @@ describe('Confirm Transaction Duck', () => {
   })
 
   describe('Thunk actions', done => {
+    beforeEach(() => {
+      global.eth = {
+        getCode: sinon.stub().callsFake(
+          address => Promise.resolve(address && address.match(/isContract/) ? 'not-0x' : '0x')
+        ),
+      }
+    })
+
+    afterEach(() => {
+      global.eth.getCode.resetHistory()
+    })
+
     it('updates txData and gas on an existing transaction in confirmTransaction', () => {
       const mockState = {
         metamask: {
@@ -505,7 +517,7 @@ describe('Confirm Transaction Duck', () => {
           ethTransactionAmount: '1',
           ethTransactionFee: '0.000021',
           ethTransactionTotal: '1.000021',
-          fetchingMethodData: false,
+          fetchingData: false,
           fiatTransactionAmount: '469.26',
           fiatTransactionFee: '0.01',
           fiatTransactionTotal: '469.27',
@@ -539,7 +551,6 @@ describe('Confirm Transaction Duck', () => {
       const expectedActions = [
         'metamask/confirm-transaction/UPDATE_TX_DATA',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
-        'metamask/confirm-transaction/UPDATE_HEX_GAS_TOTAL',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ]
@@ -581,7 +592,7 @@ describe('Confirm Transaction Duck', () => {
           ethTransactionAmount: '1',
           ethTransactionFee: '0.000021',
           ethTransactionTotal: '1.000021',
-          fetchingMethodData: false,
+          fetchingData: false,
           fiatTransactionAmount: '469.26',
           fiatTransactionFee: '0.01',
           fiatTransactionTotal: '469.27',
@@ -608,7 +619,6 @@ describe('Confirm Transaction Duck', () => {
       const expectedActions = [
         'metamask/confirm-transaction/UPDATE_TX_DATA',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
-        'metamask/confirm-transaction/UPDATE_HEX_GAS_TOTAL',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ]
@@ -658,7 +668,6 @@ describe('Confirm Transaction Duck', () => {
       const expectedActions = [
         'metamask/confirm-transaction/UPDATE_TX_DATA',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
-        'metamask/confirm-transaction/UPDATE_HEX_GAS_TOTAL',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
       ]
@@ -667,6 +676,7 @@ describe('Confirm Transaction Duck', () => {
         .then(() => {
           const storeActions = store.getActions()
           assert.equal(storeActions.length, expectedActions.length)
+
           storeActions.forEach((action, index) => assert.equal(action.type, expectedActions[index]))
           done()
         })

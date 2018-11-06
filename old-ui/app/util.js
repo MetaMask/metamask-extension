@@ -118,7 +118,7 @@ function formatBalance (balance, decimalsToKeep, needsParse = true, network, isT
   var parsed = needsParse ? parseBalance(balance) : balance.split('.')
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
-  var formatted = 'None'
+  var formatted = '0'
   if (decimalsToKeep === undefined) {
     if (beforeDecimal === '0') {
       if (afterDecimal !== '0') {

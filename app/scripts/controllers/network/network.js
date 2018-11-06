@@ -1,15 +1,17 @@
 const assert = require('assert')
 const EventEmitter = require('events')
-const createMetamaskProvider = require('web3-provider-engine/zero.js')
-const SubproviderFromProvider = require('web3-provider-engine/subproviders/provider.js')
-const createInfuraProvider = require('eth-json-rpc-infura/src/createProvider')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
-const extend = require('xtend')
 const EthQuery = require('eth-query')
-const createEventEmitterProxy = require('../../lib/events-proxy.js')
+const JsonRpcEngine = require('json-rpc-engine')
+const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
 const log = require('loglevel')
-const urlUtil = require('url')
+const createMetamaskMiddleware = require('./createMetamaskMiddleware')
+const createInfuraClient = require('./createInfuraClient')
+const createJsonRpcClient = require('./createJsonRpcClient')
+const createLocalhostClient = require('./createLocalhostClient')
+const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
+
 const {
   ROPSTEN,
   RINKEBY,
@@ -20,7 +22,6 @@ const {
   POA,
   DAI,
 } = require('./enums')
-const LOCALHOST_RPC_URL = 'http://localhost:8545'
 const POA_RPC_URL = 'https://core.poa.network'
 const DAI_RPC_URL = 'https://dai.poa.network'
 const SOKOL_RPC_URL = 'https://sokol.poa.network'
@@ -45,21 +46,27 @@ module.exports = class NetworkController extends EventEmitter {
     this.providerStore = new ObservableStore(providerConfig)
     this.networkStore = new ObservableStore('loading')
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
-    // create event emitter proxy
-    this._proxy = createEventEmitterProxy()
-
     this.on('networkDidChange', this.lookupNetwork)
+    // provider and block tracker
+    this._provider = null
+    this._blockTracker = null
+    // provider and block tracker proxies - because the network changes
+    this._providerProxy = null
+    this._blockTrackerProxy = null
   }
 
-  initializeProvider (_providerParams) {
-    this._baseProviderParams = _providerParams
+  initializeProvider (providerParams) {
+    this._baseProviderParams = providerParams
     const { type, rpcTarget } = this.providerStore.getState()
     this._configureProvider({ type, rpcTarget })
-    this._proxy.on('block', this._logBlock.bind(this))
-    this._proxy.on('error', this.verifyNetwork.bind(this))
-    this.ethQuery = new EthQuery(this._proxy)
     this.lookupNetwork()
-    return this._proxy
+  }
+
+  // return the proxies so the references will always be good
+  getProviderAndBlockTracker () {
+    const provider = this._providerProxy
+    const blockTracker = this._blockTrackerProxy
+    return { provider, blockTracker }
   }
 
   verifyNetwork () {
@@ -81,10 +88,11 @@ module.exports = class NetworkController extends EventEmitter {
 
   lookupNetwork () {
     // Prevent firing when provider is not defined.
-    if (!this.ethQuery || !this.ethQuery.sendAsync) {
-      return log.warn('NetworkController - lookupNetwork aborted due to missing ethQuery')
+    if (!this._provider) {
+      return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
     }
-    this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
+    const ethQuery = new EthQuery(this._provider)
+    ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) return this.setNetworkState('loading')
       log.info('web3.getNetwork returned ' + network)
       this.setNetworkState(network)
@@ -143,7 +151,7 @@ module.exports = class NetworkController extends EventEmitter {
     } else if (type === POA_SOKOL) {
       this._configureStandardProvider({ rpcUrl: SOKOL_RPC_URL })
     } else if (type === LOCALHOST) {
-      this._configureStandardProvider({ rpcUrl: LOCALHOST_RPC_URL })
+      this._configureLocalhostProvider()
     // url-based rpc endpoints
     } else if (type === 'rpc') {
       this._configureStandardProvider({ rpcUrl: rpcTarget })
@@ -153,49 +161,47 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureInfuraProvider ({ type }) {
-    log.info('_configureInfuraProvider', type)
-    const infuraProvider = createInfuraProvider({ network: type })
-    const infuraSubprovider = new SubproviderFromProvider(infuraProvider)
-    const providerParams = extend(this._baseProviderParams, {
-      engineParams: {
-        pollingInterval: 8000,
-        blockTrackerProvider: infuraProvider,
-      },
-      dataSubprovider: infuraSubprovider,
-    })
-    const provider = createMetamaskProvider(providerParams)
-    this._setProvider(provider)
+    log.info('NetworkController - configureInfuraProvider', type)
+    const networkClient = createInfuraClient({ network: type })
+    this._setNetworkClient(networkClient)
+  }
+
+  _configureLocalhostProvider () {
+    log.info('NetworkController - configureLocalhostProvider')
+    const networkClient = createLocalhostClient()
+    this._setNetworkClient(networkClient)
   }
 
   _configureStandardProvider ({ rpcUrl }) {
-    // urlUtil handles malformed urls
-    rpcUrl = urlUtil.parse(rpcUrl).format()
-    const providerParams = extend(this._baseProviderParams, {
-      rpcUrl,
-      engineParams: {
-        pollingInterval: 8000,
-      },
-    })
-    const provider = createMetamaskProvider(providerParams)
-    this._setProvider(provider)
+    log.info('NetworkController - configureStandardProvider', rpcUrl)
+    const networkClient = createJsonRpcClient({ rpcUrl })
+    this._setNetworkClient(networkClient)
   }
 
-  _setProvider (provider) {
-    // collect old block tracker events
-    const oldProvider = this._provider
-    let blockTrackerHandlers
-    if (oldProvider) {
-      // capture old block handlers
-      blockTrackerHandlers = oldProvider._blockTracker.proxyEventHandlers
-      // tear down
-      oldProvider.removeAllListeners()
-      oldProvider.stop()
+  _setNetworkClient ({ networkMiddleware, blockTracker }) {
+    const metamaskMiddleware = createMetamaskMiddleware(this._baseProviderParams)
+    const engine = new JsonRpcEngine()
+    engine.push(metamaskMiddleware)
+    engine.push(networkMiddleware)
+    const provider = providerFromEngine(engine)
+    this._setProviderAndBlockTracker({ provider, blockTracker })
+  }
+
+  _setProviderAndBlockTracker ({ provider, blockTracker }) {
+    // update or intialize proxies
+    if (this._providerProxy) {
+      this._providerProxy.setTarget(provider)
+    } else {
+      this._providerProxy = createSwappableProxy(provider)
     }
-    // override block tracler
-    provider._blockTracker = createEventEmitterProxy(provider._blockTracker, blockTrackerHandlers)
-    // set as new provider
+    if (this._blockTrackerProxy) {
+      this._blockTrackerProxy.setTarget(blockTracker)
+    } else {
+      this._blockTrackerProxy = createEventEmitterProxy(blockTracker, { eventFilter: 'skipInternal' })
+    }
+    // set new provider and blockTracker
     this._provider = provider
-    this._proxy.setTarget(provider)
+    this._blockTracker = blockTracker
   }
 
   _logBlock (block) {

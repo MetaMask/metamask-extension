@@ -104,7 +104,7 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   if (prevTx && prevTx.status === 'dropped') {
     this.props.dispatch(actions.showModal({
       name: 'TRANSACTION_CONFIRMED',
-      onHide: () => history.push(DEFAULT_ROUTE),
+      onSubmit: () => history.push(DEFAULT_ROUTE),
     }))
 
     return

@@ -34,6 +34,7 @@ const selectors = {
   getSelectedTokenToFiatRate,
   getSendAmount,
   getSendHexData,
+  getSendHexDataFeatureFlagState,
   getSendEditingTransactionId,
   getSendErrors,
   getSendFrom,
@@ -46,6 +47,7 @@ const selectors = {
   getTokenExchangeRate,
   getUnapprovedTxs,
   transactionsSelector,
+  getQrCodeData,
 }
 
 module.exports = selectors
@@ -215,6 +217,10 @@ function getSendHexData (state) {
   return state.metamask.send.data
 }
 
+function getSendHexDataFeatureFlagState (state) {
+  return state.metamask.featureFlags.sendHexData
+}
+
 function getSendEditingTransactionId (state) {
   return state.metamask.send.editingTransactionId
 }
@@ -281,4 +287,8 @@ function transactionsSelector (state) {
       .sort((a, b) => b.time - a.time)
     : txsToRender
       .sort((a, b) => b.time - a.time)
+}
+
+function getQrCodeData (state) {
+  return state.appState.qrCodeData
 }

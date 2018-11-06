@@ -19,20 +19,20 @@ module.exports = {
     },
     sandwich: {
       menu: By.css('.sandwich-expando'),
-      settings: By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(2)'),
-      logOut: By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)'),
+      settings: By.css('#app-content > div > div.full-width > div:nth-child(3) > span > div > li:nth-child(2)'),
+      logOut: By.css('#app-content > div > div.full-width > div:nth-child(3) > span > div > li:nth-child(3)'),
       textLogOut: 'Log Out',
       textSettings: 'Settings',
       info: By.css('li.dropdown-menu-item:nth-child(4)'),
     },
     account: {
-      account1: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(2) > span'),
-      account2: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
-      menu: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div'),
-      delete: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
-      createAccount: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
-      import: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span'),
-      labelImported: By.css('#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label'),
+      account1: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(2) > span'),
+      account2: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
+      menu: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div'),
+      delete: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
+      createAccount: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
+      import: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span'),
+      labelImported: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label'),
     },
     dot: {
       menu: By.className('account-dropdown'),
@@ -46,6 +46,16 @@ module.exports = {
     },
   },
   screens: {
+    signMessage: {
+      buttons: {
+        sign: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row.flex-space-around > button:nth-child(2)'),
+        cancel: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row.flex-space-around > button:nth-child(1)'),
+      },
+      title: By.css('#app-content > div > div.app-primary.from-right > div > div > h3'),
+      error: By.className('error'),
+      accountName: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(3) > div.identity-panel.flex-row.flex-space-between > div.identity-data.flex-column.flex-justify-center.flex-grow.select-none > h2'),
+      message: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(3) > div.tx-data.flex-column.flex-justify-center.flex-grow.select-none > div > span'),
+     },
     sendTokens: {
       error: By.className('error flex-center'),
       errorText: {
@@ -65,7 +75,7 @@ module.exports = {
         amountPlaceholder: 'Amount',
       },
       button: {
-        next: By.xpath('//*[@id="app-content"]/div/div[4]/div/section[2]/button'),
+        next: By.xpath('//*[@id="app-content"]/div/div[2]/div/section[2]/button'),
         arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       },
     },
@@ -136,7 +146,6 @@ module.exports = {
             cancel: By.className('btn-violet'),
           },
         },
-
     },
     deleteCustomRPC: {
       buttons: {
@@ -209,7 +218,7 @@ module.exports = {
     main: {
       identicon: By.className('identicon-wrapper select-none'),
       fieldAccountName: By.className('sizing-input'),
-      accountName: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.name-label > div > div > h2'),
+      accountName: By.className('font-medium color-forest'),
       edit: By.className('edit-text'),
       iconCopy: By.className('clipboard cursor-pointer white'),
       transactionList: By.css('#app-content > div > div.app-primary.from-left > div > section > section > div > div > div > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'),
@@ -221,13 +230,13 @@ module.exports = {
       },
       network: By.className('network-name'),
       sent: {
-        menu: By.className('activeForm left'),
+        menu: By.className('wallet-view__tab-history'),
         tokens: By.className('activeForm right'),
       },
       balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),
       address: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div'),
       tokens: {
-        menu: By.className('inactiveForm pointer'),
+        menu: By.id('wallet-view__tab-tokens'),
         token: By.className('token-cell'),
         balance: By.css('#token-cell_0 > h3'),
         amount: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
@@ -236,6 +245,7 @@ module.exports = {
         buttonAdd: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > button:nth-child(2)'),
         buttonAddText: 'Add Token',
         counter: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
+        counterFF: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > span:nth-child(1)'),
       },
     },
     info: {

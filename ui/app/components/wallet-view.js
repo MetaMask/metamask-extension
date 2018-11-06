@@ -9,13 +9,15 @@ const classnames = require('classnames')
 const { checksumAddress } = require('../util')
 const Identicon = require('./identicon')
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
-const Tooltip = require('./tooltip-v2.js')
+const Tooltip = require('./tooltip-v2.js').default
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
 const selectors = require('../selectors')
 const { ADD_TOKEN_ROUTE } = require('../routes')
+
+import AddTokenButton from './add-token-button'
 
 module.exports = compose(
   withRouter,
@@ -26,11 +28,15 @@ WalletView.contextTypes = {
   t: PropTypes.func,
 }
 
+WalletView.defaultProps = {
+  responsiveDisplayClassname: '',
+}
+
 function mapStateToProps (state) {
 
   return {
     network: state.metamask.network,
-    sidebarOpen: state.appState.sidebarOpen,
+    sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     tokens: state.metamask.tokens,
@@ -94,15 +100,30 @@ WalletView.prototype.renderWalletBalance = function () {
   ])
 }
 
+WalletView.prototype.renderAddToken = function () {
+  const {
+    sidebarOpen,
+    hideSidebar,
+    history,
+  } = this.props
+
+  return h(AddTokenButton, {
+    onClick () {
+      history.push(ADD_TOKEN_ROUTE)
+      if (sidebarOpen) {
+        hideSidebar()
+      }
+    },
+  })
+}
+
 WalletView.prototype.render = function () {
   const {
     responsiveDisplayClassname,
     selectedAddress,
     keyrings,
     showAccountDetailModal,
-    sidebarOpen,
     hideSidebar,
-    history,
     identities,
   } = this.props
   // temporary logs + fake extra wallets
@@ -117,11 +138,22 @@ WalletView.prototype.render = function () {
     return kr.accounts.includes(selectedAddress)
   })
 
-  const type = keyring.type
-  const isLoose = type !== 'HD Key Tree'
+  let label = ''
+  let type
+  if (keyring) {
+    type = keyring.type
+    if (type !== 'HD Key Tree') {
+      if (type.toLowerCase().search('hardware') !== -1) {
+        label = this.context.t('hardware')
+      } else {
+        label = this.context.t('imported')
+      }
+    }
+  }
 
-  return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
+  return h('div.wallet-view.flex-column', {
     style: {},
+    className: responsiveDisplayClassname,
   }, [
 
     // TODO: Separate component: wallet account details
@@ -132,7 +164,7 @@ WalletView.prototype.render = function () {
         onClick: hideSidebar,
       }),
 
-      h('div.wallet-view__keyring-label.allcaps', isLoose ? this.context.t('imported') : ''),
+      h('div.wallet-view__keyring-label.allcaps', label),
 
       h('div.flex-column.flex-center.wallet-view__name-container', {
         style: { margin: '0 auto' },
@@ -183,12 +215,7 @@ WalletView.prototype.render = function () {
 
     h(TokenList),
 
-    h('button.btn-primary.wallet-view__add-token-button', {
-      onClick: () => {
-        history.push(ADD_TOKEN_ROUTE)
-        sidebarOpen && hideSidebar()
-      },
-    }, this.context.t('addToken')),
+    this.renderAddToken(),
   ])
 }
 

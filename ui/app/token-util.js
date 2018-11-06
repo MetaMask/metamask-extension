@@ -1,8 +1,109 @@
 const log = require('loglevel')
 const util = require('./util')
 const BigNumber = require('bignumber.js')
+import contractMapETH from 'eth-contract-metadata'
+import contractMapPOA from 'poa-contract-metadata'
 
-function tokenInfoGetter () {
+const casedContractMapETH = Object.keys(contractMapETH).reduce((acc, base) => {
+  return {
+    ...acc,
+    [base.toLowerCase()]: contractMapETH[base],
+  }
+}, {})
+
+const casedContractMapPOA = Object.keys(contractMapPOA).reduce((acc, base) => {
+  return {
+    ...acc,
+    [base.toLowerCase()]: contractMapPOA[base],
+  }
+}, {})
+
+const casedContractMap = Object.assign(casedContractMapETH, casedContractMapPOA)
+
+const DEFAULT_SYMBOL = ''
+const DEFAULT_DECIMALS = '0'
+
+async function getSymbolFromContract (tokenAddress) {
+  const token = util.getContractAtAddress(tokenAddress)
+
+  try {
+    const result = await token.symbol()
+    return result[0]
+  } catch (error) {
+    log.warn(`symbol() call for token at address ${tokenAddress} resulted in error:`, error)
+  }
+}
+
+async function getDecimalsFromContract (tokenAddress) {
+  const token = util.getContractAtAddress(tokenAddress)
+
+  try {
+    const result = await token.decimals()
+    const decimalsBN = result[0]
+    return decimalsBN && decimalsBN.toString()
+  } catch (error) {
+    log.warn(`decimals() call for token at address ${tokenAddress} resulted in error:`, error)
+  }
+}
+
+function getContractMetadata (tokenAddress) {
+  return tokenAddress && casedContractMap[tokenAddress.toLowerCase()]
+}
+
+async function getSymbol (tokenAddress) {
+  let symbol = await getSymbolFromContract(tokenAddress)
+
+  if (!symbol) {
+    const contractMetadataInfo = getContractMetadata(tokenAddress)
+
+    if (contractMetadataInfo) {
+      symbol = contractMetadataInfo.symbol
+    }
+  }
+
+  return symbol
+}
+
+async function getDecimals (tokenAddress) {
+  let decimals = await getDecimalsFromContract(tokenAddress)
+
+  if (!decimals || decimals === '0') {
+    const contractMetadataInfo = getContractMetadata(tokenAddress)
+
+    if (contractMetadataInfo) {
+      decimals = contractMetadataInfo.decimals
+    }
+  }
+
+  return decimals
+}
+
+export async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
+  const existingToken = existingTokens.find(({ address }) => tokenAddress === address)
+
+  if (existingToken) {
+    return {
+      symbol: existingToken.symbol,
+      decimals: existingToken.decimals,
+    }
+  }
+
+  let symbol, decimals
+
+  try {
+    symbol = await getSymbol(tokenAddress)
+    decimals = await getDecimals(tokenAddress)
+  } catch (error) {
+    log.warn(`symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`, error)
+  }
+
+  return {
+    symbol: symbol || DEFAULT_SYMBOL,
+    decimals: decimals || DEFAULT_DECIMALS,
+  }
+}
+
+export function tokenInfoGetter () {
   const tokens = {}
 
   return async (address) => {
@@ -16,46 +117,17 @@ function tokenInfoGetter () {
   }
 }
 
-async function getSymbolAndDecimals (tokenAddress, existingTokens = []) {
-  const existingToken = existingTokens.find(({ address }) => tokenAddress === address)
-  if (existingToken) {
-    return existingToken
-  }
-
-  let result = []
-  try {
-    const token = util.getContractAtAddress(tokenAddress)
-
-    result = await Promise.all([
-      token.symbol(),
-      token.decimals(),
-    ])
-  } catch (err) {
-    log.warn(`symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`, err)
-  }
-
-  const [ symbol = [], decimals = [] ] = result
-
-  return {
-    symbol: symbol[0] || null,
-    decimals: decimals[0] && decimals[0].toString() || null,
-  }
-}
-
-function calcTokenAmount (value, decimals) {
+export function calcTokenAmount (value, decimals) {
   const multiplier = Math.pow(10, Number(decimals || 0))
-  return new BigNumber(value).div(multiplier).toNumber()
+  return new BigNumber(String(value)).div(multiplier).toNumber()
 }
 
-function calcTokenAmountWithDec (valueWithoutDec, decimals) {
+export function calcTokenAmountWithDec (valueWithoutDec, decimals) {
   const multiplier = Math.pow(10, Number(decimals || 0))
   return new BigNumber(valueWithoutDec).mul(multiplier).toNumber()
 }
 
-
-module.exports = {
-  tokenInfoGetter,
-  calcTokenAmount,
-  calcTokenAmountWithDec,
-  getSymbolAndDecimals,
+export function getTokenValue (tokenParams = []) {
+  const valueData = tokenParams.find(param => param.name === '_value')
+  return valueData && valueData.value
 }

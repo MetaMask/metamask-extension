@@ -36,14 +36,23 @@ TransactionListItem.prototype.showRetryButton = function () {
     return false
   }
 
+  let currentTxSharesEarliestNonce = false
   const currentNonce = txParams.nonce
   const currentNonceTxs = transactions.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
+  const currentSubmittedTxs = transactions.filter(tx => tx.status === 'submitted')
   const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[0]
   const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce &&
     lastSubmittedTxWithCurrentNonce.id === transaction.id
+  if (currentSubmittedTxs.length > 0) {
+    const earliestSubmitted = currentSubmittedTxs.reduce((tx1, tx2) => {
+      if (tx1.submittedTime < tx2.submittedTime) return tx1
+      return tx2
+    })
+    currentTxSharesEarliestNonce = currentNonce === earliestSubmitted.txParams.nonce
+  }
 
-  return currentTxIsLatestWithNonce && Date.now() - submittedTime > 30000
+  return currentTxSharesEarliestNonce && currentTxIsLatestWithNonce && Date.now() - submittedTime > 30000
 }
 
 TransactionListItem.prototype.render = function () {
@@ -56,7 +65,7 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42 || numericNet === 77 || numericNet === 99
+  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42 || numericNet === 77 || numericNet === 99 || numericNet === 100
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)

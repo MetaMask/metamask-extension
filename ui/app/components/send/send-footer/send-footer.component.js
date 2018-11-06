@@ -86,9 +86,9 @@ export default class SendFooter extends Component {
   }
 
   formShouldBeDisabled () {
-    const { inError, selectedToken, tokenBalance, gasTotal, to } = this.props
+    const { data, inError, selectedToken, tokenBalance, gasTotal, to } = this.props
     const missingTokenBalance = selectedToken && !tokenBalance
-    return inError || !gasTotal || missingTokenBalance || !to
+    return inError || !gasTotal || missingTokenBalance || !(data || to)
   }
 
   render () {

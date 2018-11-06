@@ -2,6 +2,13 @@
 
 ## Current Master
 
+## 4.8.7 Tue Nov 06 2018
+
+- [#180](https://github.com/poanetwork/metamask-extension/pull/180), [#172](https://github.com/poanetwork/metamask-extension/pull/172), [#169](https://github.com/poanetwork/metamask-extension/pull/169), [#165](https://github.com/poanetwork/metamask-extension/pull/165), [#160](https://github.com/poanetwork/metamask-extension/pull/160): (Fix) Memory leaks
+- [#177](https://github.com/poanetwork/metamask-extension/pull/177): (Fix) Zero balance display instead of "None"
+- [#175](https://github.com/poanetwork/metamask-extension/pull/175), [#176](https://github.com/poanetwork/metamask-extension/pull/176), [#178](https://github.com/poanetwork/metamask-extension/pull/178): (Feature) Auto-detect tokens for POA
+- [#164](https://github.com/poanetwork/metamask-extension/pull/164): (Fix) Confirm token transfer page display fix
+
 ## 4.8.6 Thu Oct 18 2018
 
 - [#153](https://github.com/poanetwork/metamask-extension/pull/153), [#154](https://github.com/poanetwork/metamask-extension/pull/154), [#158](https://github.com/poanetwork/metamask-extension/pull/158): (Feature) xDai chain support
@@ -62,8 +69,6 @@
 - Remove rejected transactions from transaction history
 - Add Trezor Support
 - Allow to remove accounts (Imported and Hardware Wallets)
-- [#4840](https://github.com/MetaMask/metamask-extension/pull/4840): Now shows notifications when transactions are completed.
-- [#4855](https://github.com/MetaMask/metamask-extension/pull/4855): network.js: convert rpc protocol to lower case.
 
 ## 4.8.0 Thur Jun 14 2018
 

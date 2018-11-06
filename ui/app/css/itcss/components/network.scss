@@ -63,6 +63,15 @@
   font-weight: 500;
 }
 
+.dropdown-menu-item .fa.delete {
+    margin-right: 10px;
+    display: none;
+}
+
+.dropdown-menu-item:hover .fa.delete {
+    display: inherit;
+}
+
 .network-droppo {
   right: 2px;
 
@@ -80,7 +89,6 @@
 }
 
 .network-name-item {
-  font-weight: 100;
   flex: 1;
   color: $dusty-gray;
   text-overflow: ellipsis;

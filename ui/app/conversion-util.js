@@ -35,6 +35,7 @@ BigNumber.config({
 // Big Number Constants
 const BIG_NUMBER_WEI_MULTIPLIER = new BigNumber('1000000000000000000')
 const BIG_NUMBER_GWEI_MULTIPLIER = new BigNumber('1000000000')
+const BIG_NUMBER_ETH_MULTIPLIER = new BigNumber('1')
 
 // Individual Setters
 const convert = R.invoker(1, 'times')
@@ -46,16 +47,18 @@ const decToBigNumberViaString = n => R.pipe(String, toBigNumber['dec'])
 // Setter Maps
 const toBigNumber = {
   hex: n => new BigNumber(stripHexPrefix(n), 16),
-  dec: n => new BigNumber(n, 10),
+  dec: n => new BigNumber(String(n), 10),
   BN: n => new BigNumber(n.toString(16), 16),
 }
 const toNormalizedDenomination = {
   WEI: bigNumber => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER),
   GWEI: bigNumber => bigNumber.div(BIG_NUMBER_GWEI_MULTIPLIER),
+  ETH: bigNumber => bigNumber.div(BIG_NUMBER_ETH_MULTIPLIER),
 }
 const toSpecifiedDenomination = {
   WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
   GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(9),
+  ETH: bigNumber => bigNumber.times(BIG_NUMBER_ETH_MULTIPLIER).round(9),
 }
 const baseChange = {
   hex: n => n.toString(16),
@@ -154,7 +157,7 @@ const subtractCurrencies = (a, b, options = {}) => {
     bBase,
     ...conversionOptions
   } = options
-  const value = (new BigNumber(a, aBase)).minus(b, bBase)
+  const value = (new BigNumber(String(a), aBase)).minus(b, bBase)
 
   return converter({
     value,

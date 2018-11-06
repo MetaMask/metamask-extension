@@ -12,9 +12,11 @@ const {
 } = require('../func')
 const {
   checkBrowserForConsoleErrors,
+  closeAllWindowHandlesExcept,
   verboseReportOnFailure,
   findElement,
   findElements,
+  loadExtension,
 } = require('./helpers')
 
 
@@ -25,6 +27,7 @@ describe('Using MetaMask with an existing account', function () {
   const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const testAddress = '0xE18035BF8712672935FDB4e5e431b1a0183d2DFC'
   const testPrivateKey2 = '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6'
+  const tinyDelayMs = 500
   const regularDelayMs = 1000
   const largeDelayMs = regularDelayMs * 2
 
@@ -74,37 +77,58 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('New UI setup', async function () {
     it('switches to first tab', async function () {
+      await delay(tinyDelayMs)
       const [firstTab] = await driver.getAllWindowHandles()
       await driver.switchTo().window(firstTab)
       await delay(regularDelayMs)
     })
 
-    it('use the local network', async function () {
-      const networkSelector = await findElement(driver, By.css('#network_component'))
-      await networkSelector.click()
-      await delay(regularDelayMs)
-
-      const [localhost] = await findElements(driver, By.xpath(`//li[contains(text(), 'Localhost')]`))
-      await localhost.click()
-      await delay(regularDelayMs)
-    })
-
     it('selects the new UI option', async () => {
-      const button = await findElement(driver, By.xpath("//p[contains(text(), 'Try Beta Version')]"))
+      try {
+        const overlay = await findElement(driver, By.css('.full-flex-height'))
+        await driver.wait(until.stalenessOf(overlay))
+      } catch (e) {}
+
+      let button
+      try {
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      } catch (e) {
+        await loadExtension(driver, extensionId)
+        await delay(largeDelayMs)
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      }
       await button.click()
       await delay(regularDelayMs)
 
       // Close all other tabs
-      const [oldUi, infoPage, newUi] = await driver.getAllWindowHandles()
+      const [tab0, tab1, tab2] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(tab0)
+      await delay(tinyDelayMs)
 
-      const newUiOrInfoPage = newUi || infoPage
-      await driver.switchTo().window(oldUi)
-      await driver.close()
-      if (infoPage !== newUiOrInfoPage) {
-        await driver.switchTo().window(infoPage)
-        await driver.close()
+      let selectedUrl = await driver.getCurrentUrl()
+      await delay(tinyDelayMs)
+      if (tab0 && selectedUrl.match(/popup.html/)) {
+        await closeAllWindowHandlesExcept(driver, tab0)
+      } else if (tab1) {
+        await driver.switchTo().window(tab1)
+        selectedUrl = await driver.getCurrentUrl()
+        await delay(tinyDelayMs)
+        if (selectedUrl.match(/popup.html/)) {
+          await closeAllWindowHandlesExcept(driver, tab1)
+        } else if (tab2) {
+          await driver.switchTo().window(tab2)
+          selectedUrl = await driver.getCurrentUrl()
+          selectedUrl.match(/popup.html/) && await closeAllWindowHandlesExcept(driver, tab2)
+        }
+      } else {
+        throw new Error('popup.html not found')
       }
-      await driver.switchTo().window(newUiOrInfoPage)
+      await delay(regularDelayMs)
+      const [appTab] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(appTab)
+      await delay(tinyDelayMs)
+
+      await loadExtension(driver, extensionId)
       await delay(regularDelayMs)
 
       const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
@@ -208,6 +232,16 @@ describe('Using MetaMask with an existing account', function () {
   })
 
   describe('Add an account', () => {
+    it('switches to localhost', async () => {
+      const networkDropdown = await findElement(driver, By.css('.network-name'))
+      await networkDropdown.click()
+      await delay(regularDelayMs)
+
+      const [localhost] = await findElements(driver, By.xpath(`//span[contains(text(), 'Localhost')]`))
+      await localhost.click()
+      await delay(largeDelayMs)
+    })
+
     it('choose Create Account from the account menu', async () => {
       await driver.findElement(By.css('.account-menu__icon')).click()
       await delay(regularDelayMs)
@@ -252,7 +286,7 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
 
       const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmount.sendKeys('1')
 
@@ -280,12 +314,12 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      const transactions = await findElements(driver, By.css('.tx-list-item'))
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
       assert.equal(transactions.length, 1)
 
-      const txValues = await findElements(driver, By.css('.tx-list-value'))
+      const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       assert.equal(txValues.length, 1)
-      assert.equal(await txValues[0].getText(), '1 ETH')
+      assert.equal(await txValues[0].getText(), '-1 ETH')
     })
   })
 
@@ -332,7 +366,10 @@ describe('Using MetaMask with an existing account', function () {
     })
 
     it('should open the TREZOR Connect popup', async () => {
-      const connectButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Connect to Trezor')]`))
+      const trezorButton = await findElements(driver, By.css('.hw-connect__btn'))
+      await trezorButton[1].click()
+      await delay(regularDelayMs)
+      const connectButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
       await connectButtons[0].click()
       await delay(regularDelayMs)
       const allWindows = await driver.getAllWindowHandles()

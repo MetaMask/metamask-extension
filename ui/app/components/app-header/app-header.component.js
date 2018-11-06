@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { matchPath } from 'react-router-dom'
@@ -11,7 +11,7 @@ const { DEFAULT_ROUTE, INITIALIZE_ROUTE, CONFIRM_TRANSACTION_ROUTE } = require('
 const Identicon = require('../identicon')
 const NetworkIndicator = require('../network')
 
-class AppHeader extends Component {
+export default class AppHeader extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     location: PropTypes.object,
@@ -107,20 +107,19 @@ class AppHeader extends Component {
             onClick={() => history.push(DEFAULT_ROUTE)}
           >
             <img
-              className="app-header__metafox"
-              src="/images/metamask-fox.svg"
+              className="app-header__metafox-logo app-header__metafox-logo--horizontal"
+              src="/images/logo/metamask-logo-horizontal-beta.svg"
+              height={30}
+            />
+            <img
+              className="app-header__metafox-logo app-header__metafox-logo--icon"
+              src="/images/logo/metamask-fox.svg"
               height={42}
               width={42}
             />
-            <div className="flex-row">
-              <h1>{ this.context.t('appName') }</h1>
-              <div className="app-header__beta-label">
-                { this.context.t('beta') }
-              </div>
-            </div>
           </div>
           <div className="app-header__account-menu-container">
-            <div className="network-component-wrapper">
+            <div className="app-header__network-component-wrapper">
               <NetworkIndicator
                 network={network}
                 provider={provider}
@@ -135,5 +134,3 @@ class AppHeader extends Component {
     )
   }
 }
-
-export default AppHeader

@@ -5,9 +5,7 @@ import {
 } from '../selectors/confirm-transaction'
 
 import {
-  getTokenData,
-  getMethodData,
-  getTransactionAmount,
+  getValueFromWeiHex,
   getTransactionFee,
   getHexGasTotal,
   addFiat,
@@ -15,6 +13,13 @@ import {
   increaseLastGasPrice,
   hexGreaterThan,
 } from '../helpers/confirm-transaction/util'
+
+import {
+  getTokenData,
+  getMethodData,
+  isSmartContractAddress,
+  sumHexes,
+} from '../helpers/transactions.util'
 
 import { getSymbolAndDecimals } from '../token-util'
 import { conversionUtil } from '../conversion-util'
@@ -32,11 +37,11 @@ const CLEAR_CONFIRM_TRANSACTION = createActionType('CLEAR_CONFIRM_TRANSACTION')
 const UPDATE_TRANSACTION_AMOUNTS = createActionType('UPDATE_TRANSACTION_AMOUNTS')
 const UPDATE_TRANSACTION_FEES = createActionType('UPDATE_TRANSACTION_FEES')
 const UPDATE_TRANSACTION_TOTALS = createActionType('UPDATE_TRANSACTION_TOTALS')
-const UPDATE_HEX_GAS_TOTAL = createActionType('UPDATE_HEX_GAS_TOTAL')
 const UPDATE_TOKEN_PROPS = createActionType('UPDATE_TOKEN_PROPS')
 const UPDATE_NONCE = createActionType('UPDATE_NONCE')
-const FETCH_METHOD_DATA_START = createActionType('FETCH_METHOD_DATA_START')
-const FETCH_METHOD_DATA_END = createActionType('FETCH_METHOD_DATA_END')
+const UPDATE_TO_SMART_CONTRACT = createActionType('UPDATE_TO_SMART_CONTRACT')
+const FETCH_DATA_START = createActionType('FETCH_DATA_START')
+const FETCH_DATA_END = createActionType('FETCH_DATA_END')
 
 // Initial state
 const initState = {
@@ -53,9 +58,12 @@ const initState = {
   ethTransactionAmount: '',
   ethTransactionFee: '',
   ethTransactionTotal: '',
-  hexGasTotal: '',
+  hexTransactionAmount: '',
+  hexTransactionFee: '',
+  hexTransactionTotal: '',
   nonce: '',
-  fetchingMethodData: false,
+  toSmartContract: false,
+  fetchingData: false,
 }
 
 // Reducer
@@ -98,30 +106,28 @@ export default function reducer ({ confirmTransaction: confirmState = initState 
         methodData: {},
       }
     case UPDATE_TRANSACTION_AMOUNTS:
-      const { fiatTransactionAmount, ethTransactionAmount } = action.payload
+      const { fiatTransactionAmount, ethTransactionAmount, hexTransactionAmount } = action.payload
       return {
         ...confirmState,
         fiatTransactionAmount: fiatTransactionAmount || confirmState.fiatTransactionAmount,
         ethTransactionAmount: ethTransactionAmount || confirmState.ethTransactionAmount,
+        hexTransactionAmount: hexTransactionAmount || confirmState.hexTransactionAmount,
       }
     case UPDATE_TRANSACTION_FEES:
-      const { fiatTransactionFee, ethTransactionFee } = action.payload
+      const { fiatTransactionFee, ethTransactionFee, hexTransactionFee } = action.payload
       return {
         ...confirmState,
         fiatTransactionFee: fiatTransactionFee || confirmState.fiatTransactionFee,
         ethTransactionFee: ethTransactionFee || confirmState.ethTransactionFee,
+        hexTransactionFee: hexTransactionFee || confirmState.hexTransactionFee,
       }
     case UPDATE_TRANSACTION_TOTALS:
-      const { fiatTransactionTotal, ethTransactionTotal } = action.payload
+      const { fiatTransactionTotal, ethTransactionTotal, hexTransactionTotal } = action.payload
       return {
         ...confirmState,
         fiatTransactionTotal: fiatTransactionTotal || confirmState.fiatTransactionTotal,
         ethTransactionTotal: ethTransactionTotal || confirmState.ethTransactionTotal,
-      }
-    case UPDATE_HEX_GAS_TOTAL:
-      return {
-        ...confirmState,
-        hexGasTotal: action.payload,
+        hexTransactionTotal: hexTransactionTotal || confirmState.hexTransactionTotal,
       }
     case UPDATE_TOKEN_PROPS:
       const { tokenSymbol = '', tokenDecimals = '' } = action.payload
@@ -138,15 +144,20 @@ export default function reducer ({ confirmTransaction: confirmState = initState 
         ...confirmState,
         nonce: action.payload,
       }
-    case FETCH_METHOD_DATA_START:
+    case UPDATE_TO_SMART_CONTRACT:
       return {
         ...confirmState,
-        fetchingMethodData: true,
+        toSmartContract: action.payload,
       }
-    case FETCH_METHOD_DATA_END:
+    case FETCH_DATA_START:
       return {
         ...confirmState,
-        fetchingMethodData: false,
+        fetchingData: true,
+      }
+    case FETCH_DATA_END:
+      return {
+        ...confirmState,
+        fetchingData: false,
       }
     case CLEAR_CONFIRM_TRANSACTION:
       return initState
@@ -216,13 +227,6 @@ export function updateTransactionTotals (totals) {
   }
 }
 
-export function updateHexGasTotal (hexGasTotal) {
-  return {
-    type: UPDATE_HEX_GAS_TOTAL,
-    payload: hexGasTotal,
-  }
-}
-
 export function updateTokenProps (tokenProps) {
   return {
     type: UPDATE_TOKEN_PROPS,
@@ -237,9 +241,16 @@ export function updateNonce (nonce) {
   }
 }
 
-export function setFetchingMethodData (isFetching) {
+export function updateToSmartContract (toSmartContract) {
   return {
-    type: isFetching ? FETCH_METHOD_DATA_START : FETCH_METHOD_DATA_END,
+    type: UPDATE_TO_SMART_CONTRACT,
+    payload: toSmartContract,
+  }
+}
+
+export function setFetchingData (isFetching) {
+  return {
+    type: isFetching ? FETCH_DATA_START : FETCH_DATA_END,
   }
 }
 
@@ -284,40 +295,48 @@ export function updateTxDataAndCalculate (txData) {
 
     dispatch(updateTxData(txData))
 
-    const { txParams: { value, gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
+    const { txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {} } = txData
 
-    const fiatTransactionAmount = getTransactionAmount({
+    const fiatTransactionAmount = getValueFromWeiHex({
       value, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
     })
-    const ethTransactionAmount = getTransactionAmount({
+    const ethTransactionAmount = getValueFromWeiHex({
       value, toCurrency: 'ETH', conversionRate, numberOfDecimals: 6,
     })
 
-    dispatch(updateTransactionAmounts({ fiatTransactionAmount, ethTransactionAmount }))
+    dispatch(updateTransactionAmounts({
+      fiatTransactionAmount,
+      ethTransactionAmount,
+      hexTransactionAmount: value,
+    }))
 
-    const hexGasTotal = getHexGasTotal({ gasLimit, gasPrice })
-
-    dispatch(updateHexGasTotal(hexGasTotal))
+    const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice })
 
     const fiatTransactionFee = getTransactionFee({
-      value: hexGasTotal,
+      value: hexTransactionFee,
       toCurrency: currentCurrency,
       numberOfDecimals: 2,
       conversionRate,
     })
     const ethTransactionFee = getTransactionFee({
-      value: hexGasTotal,
+      value: hexTransactionFee,
       toCurrency: 'ETH',
       numberOfDecimals: 6,
       conversionRate,
     })
 
-    dispatch(updateTransactionFees({ fiatTransactionFee, ethTransactionFee }))
+    dispatch(updateTransactionFees({ fiatTransactionFee, ethTransactionFee, hexTransactionFee }))
 
     const fiatTransactionTotal = addFiat(fiatTransactionFee, fiatTransactionAmount)
     const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount)
+    console.log('HIHIH', value, hexTransactionFee)
+    const hexTransactionTotal = sumHexes(value, hexTransactionFee)
 
-    dispatch(updateTransactionTotals({ fiatTransactionTotal, ethTransactionTotal }))
+    dispatch(updateTransactionTotals({
+      fiatTransactionTotal,
+      ethTransactionTotal,
+      hexTransactionTotal,
+    }))
   }
 }
 
@@ -338,19 +357,22 @@ export function setTransactionToConfirm (transactionId) {
       dispatch(updateTxDataAndCalculate(txData))
 
       const { txParams } = transaction
+      const { to } = txParams
 
       if (txParams.data) {
         const { tokens: existingTokens } = state
         const { data, to: tokenAddress } = txParams
 
         try {
-          dispatch(setFetchingMethodData(true))
+          dispatch(setFetchingData(true))
           const methodData = await getMethodData(data)
           dispatch(updateMethodData(methodData))
-          dispatch(setFetchingMethodData(false))
+          const toSmartContract = await isSmartContractAddress(to)
+          dispatch(updateToSmartContract(toSmartContract))
+          dispatch(setFetchingData(false))
         } catch (error) {
           dispatch(updateMethodData({}))
-          dispatch(setFetchingMethodData(false))
+          dispatch(setFetchingData(false))
         }
 
         const tokenData = getTokenData(data)

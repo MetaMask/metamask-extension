@@ -66,13 +66,16 @@ InputNumber.prototype.render = function () {
     }),
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
     h('div.gas-tooltip-input-arrows', {}, [
-      h('i.fa.fa-angle-up', {
+      h('div.gas-tooltip-input-arrow-wrapper', {
         onClick: () => this.setValue(addCurrencies(value, step, { toNumericBase: 'dec' })),
-      }),
-      h('i.fa.fa-angle-down', {
-        style: { cursor: 'pointer' },
+      }, [
+        h('i.fa.fa-angle-up'),
+      ]),
+      h('div.gas-tooltip-input-arrow-wrapper', {
         onClick: () => this.setValue(subtractCurrencies(value, step, { toNumericBase: 'dec' })),
-      }),
+      }, [
+        h('i.fa.fa-angle-down'),
+      ]),
     ]),
   ])
 }

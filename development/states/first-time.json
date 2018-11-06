@@ -37,7 +37,10 @@
     "shapeShiftTxList": [],
     "lostAccounts": [],
     "tokens": [],
-    "currentLocale": "en"
+    "currentLocale": "en",
+    "preferences": {
+      "useETHAsPrimaryCurrency": true
+    }
   },
   "appState": {
     "menuOpen": false,
@@ -48,6 +51,7 @@
     "accountDetail": {
       "subview": "transactions"
     },
+    "sidebar": {},
     "transForward": true,
     "isLoading": false,
     "warning": null,

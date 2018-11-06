@@ -6,7 +6,6 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
  */
 
 // Component Colors
-$tx-view-bg: $white;
 $wallet-view-bg: $alabaster;
 
 // Main container
@@ -23,37 +22,17 @@ $wallet-view-bg: $alabaster;
   display: none;
 }
 
+.main-container-wrapper {
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+}
+
 //Account and transaction details
 .account-and-transaction-details {
   display: flex;
   flex: 1 1 auto;
   min-width: 0;
-}
-
-// tx view
-
-.tx-view {
-  flex: 1 1 66.5%;
-  background: $tx-view-bg;
-  min-width: 0;
-
-  // No title on mobile
-  @media screen and (max-width: 575px) {
-    .identicon-wrapper {
-      display: none;
-    }
-
-    .account-name {
-      display: none;
-    }
-  }
-}
-
-.open-in-browser {
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  padding: 10px;
 }
 
 // wallet view and sidebar
@@ -141,18 +120,6 @@ $wallet-view-bg: $alabaster;
       }
     }
   }
-
-  &__add-token-button {
-    flex: 0 0 auto;
-    margin: 36px auto;
-    background: none;
-    transition: border-color .3s ease;
-    width: 150px;
-
-    &:hover {
-      border-color: $curious-blue;
-    }
-  }
 }
 
 @media screen and (min-width: 576px) {
@@ -175,7 +142,7 @@ $wallet-view-bg: $alabaster;
   }
 }
 
-.wallet-view.sidebar {
+.wallet-view.sidebar-right {
   flex: 1 0 230px;
   background: rgb(250, 250, 250);
   z-index: $sidebar-z-index;
@@ -191,20 +158,6 @@ $wallet-view-bg: $alabaster;
   box-shadow: rgba(0, 0, 0, .15) 2px 2px 4px;
   width: 85%;
   height: calc(100% - 56px);
-}
-
-.sidebar-overlay {
-  z-index: $sidebar-overlay-z-index;
-  position: fixed;
-  // top: 41px;
-  height: 100%;
-  width: 100%;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 1;
-  visibility: visible;
-  background-color: rgba(0, 0, 0, .3);
 }
 
 // main-container media queries
@@ -259,6 +212,10 @@ $wallet-view-bg: $alabaster;
     width: 100%;
     overflow-y: auto;
     background-color: $white;
+  }
+
+  .main-container-wrapper {
+    height: 100%;
   }
 }
 

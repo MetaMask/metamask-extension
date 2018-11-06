@@ -61,6 +61,7 @@
         "name": "Address Book Account 1"
       }
     ],
+    "assetImages": {},
     "tokens": [],
     "transactions": {},
     "selectedAddressTxList": [],
@@ -108,7 +109,10 @@
       "maxModeOn": false,
       "editingTransactionId": null
     },
-    "currentLocale": "en"
+    "currentLocale": "en",
+    "preferences": {
+      "useETHAsPrimaryCurrency": true
+    }
   },
   "appState": {
     "menuOpen": false,
@@ -120,6 +124,7 @@
     "accountDetail": {
       "subview": "transactions"
     },
+    "sidebar": {},
     "modal": {
       "modalState": {},
       "previousModalState": {}

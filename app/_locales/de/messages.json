@@ -68,13 +68,13 @@
     "message": "Muss größer oder gleich $1 und kleiner oder gleich $2 sein.",
     "description": "Helfer für die Eingabe von hex als dezimal"
   },
-    "blockiesIdenticon": {
+  "blockiesIdenticon": {
     "message": "Blockies Identicon verwenden"
   },
   "borrowDharma": {
     "message": "Mit Dharma ausleihen (Beta)"
   },
-    "builtInCalifornia": {
+  "builtInCalifornia": {
     "message": "Nifty Wallet wurde in Kalifornien entwickelt und gebaut."
   },
   "buy": {
@@ -84,15 +84,15 @@
     "message": "Auf Coinbase kaufen"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase ist die weltweit bekannteste Art und Weise um bitcoin, ethereum und litecoin zu kaufen und verkaufen."
+    "message": "Coinbase ist die weltweit bekannteste Art und Weise um Bitcoin, Ethereum und Litecoin zu kaufen und verkaufen."
   },
-    "ok": {
+  "ok": {
     "message": "Ok"
   },
   "cancel": {
     "message": "Abbrechen"
   },
-    "classicInterface": {
+  "classicInterface": {
     "message": "Klassische Oberfläche verwenden"
   },
   "clickCopy": {
@@ -101,7 +101,7 @@
   "confirm": {
     "message": "Bestätigen"
   },
-    "confirmed": {
+  "confirmed": {
     "message": "Bestätigt"
   },
   "confirmContract": {
@@ -369,7 +369,7 @@
     "message": "Account importieren"
   },
   "importAccountMsg": {
-    "message":" Importierte Accounts werden nicht mit der Seed-Wörterfolge  deines ursprünglichen Nifty Wallet Accounts verknüpft. Erfahre mehr über importierte Accounts."
+    "message": " Importierte Accounts werden nicht mit der Seed-Wörterfolge  deines ursprünglichen Nifty Wallet Accounts verknüpft. Erfahre mehr über importierte Accounts."
   },
   "importAnAccount": {
     "message": "Einen Account importieren"
@@ -715,7 +715,7 @@
     "message": "Einstellungen"
   },
   "info": {
-  "message": "Info"
+    "message": "Info"
   },
   "shapeshiftBuy": {
     "message": "Mit Shapeshift kaufen"
@@ -781,7 +781,7 @@
     "message": "Testfaucet"
   },
   "to": {
-    "message": "An:"
+    "message": "An"
   },
   "toETHviaShapeShift": {
     "message": "$1 an ETH via ShapeShift",

@@ -9,7 +9,7 @@ const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 function formatDate (date) {
-  return vreme.format(new Date(date), 'March 16 2014 14:30')
+  return vreme.format(new Date(date), '3/16/2014 at 14:30')
 }
 
 var valueTable = {
@@ -271,9 +271,9 @@ function getContractAtAddress (tokenAddress) {
   return global.eth.contract(abi).at(tokenAddress)
 }
 
-function exportAsFile (filename, data) {
+function exportAsFile (filename, data, type = 'text/csv') {
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
-  const blob = new Blob([data], {type: 'text/csv'})
+  const blob = new Blob([data], {type})
   if (window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveBlob(blob, filename)
   } else {
