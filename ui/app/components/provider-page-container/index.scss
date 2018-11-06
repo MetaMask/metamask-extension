@@ -1,0 +1,121 @@
+.provider-approval-container {
+  display: flex;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    border-bottom: 1px solid $geyser;
+    padding: 9px;
+  }
+
+  &__content {
+    display: flex;
+    overflow-y: auto;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #7C808E;
+
+    h1, h2 {
+      color: #4A4A4A;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 16px;
+      line-height: 18px;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 22px;
+      line-height: 26px;
+      padding: 20px;
+    }
+
+    p {
+      padding: 0 40px;
+      text-align: center;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    a, a:hover {
+      color: $dodger-blue;
+    }
+
+    .provider-approval-visual {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      position: relative;
+      margin: 0 32px;
+
+      section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+      }
+
+      h1 {
+        font-size: 14px;
+        line-height: 18px;
+        padding: 8px 0 0;
+      }
+
+      h2 {
+        font-size: 10px;
+        line-height: 14px;
+        padding: 0;
+        color: #A2A4AC;
+      }
+
+      &__check {
+        width: 40px;
+        height: 40px;
+        background: white url("/images/provider-approval-check.svg") no-repeat;
+        margin-top: 14px;
+      }
+
+      &__identicon {
+        width: 64px;
+        height: 64px;
+
+        &--default {
+          background-color: #777A87;
+          color: white;
+          width: 64px;
+          height: 64px;
+          border-radius: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+        }
+      }
+
+      &:before {
+        border-top: 2px dashed #CDD1E4;
+        content: "";
+        margin: 0 auto;
+        position: absolute;
+        top: 32px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        width: 65%;
+        z-index: -1;
+      }
+    }
+
+    .secure-badge {
+      display: flex;
+      justify-content: center;
+      padding: 25px;
+    }
+  }
+}

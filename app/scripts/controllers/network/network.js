@@ -107,20 +107,10 @@ module.exports = class NetworkController extends EventEmitter {
     }
     var { type } = this.providerStore.getState()
     const ethQuery = new EthQuery(this._provider)
-    // first attempt to perform lookup via eth_chainId
-    ethQuery.sendAsync({ method: 'eth_chainId' }, (err, chainIdHex) => {
-      if (err) {
-        // if eth_chainId is not supported, fallback to net_verion
-        ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-          if (err) return this.setNetworkState('loading')
-          log.info(`net_version returned ${network}`)
-          this.setNetworkState(network, type)
-        })
-        return
-      }
-      const chainId = Number.parseInt(chainIdHex, 16)
-      log.info(`net_version returned ${chainId}`)
-      this.setNetworkState(chainId, type)
+    ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
+      if (err) return this.setNetworkState('loading')
+      log.info('web3.getNetwork returned ' + network)
+      this.setNetworkState(network, type)
     })
   }
 

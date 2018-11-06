@@ -1,4 +1,43 @@
 {
+  "privacyMode": {
+    "message": "Privacy Mode"
+  },
+  "privacyModeDescription": {
+    "message": "Websites must request access to view your account information."
+  },
+  "exposeAccounts": {
+    "message": "Expose Accounts"
+  },
+  "exposeDescription": {
+    "message": "Expose accounts to the current website. Useful for legacy dapps."
+  },
+  "confirmExpose": {
+    "message": "Are you sure you want to expose your accounts to the current website?"
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Approved website data cleared successfully."
+  },
+  "approvalData": {
+    "message": "Privacy Data"
+  },
+  "approvalDataDescription": {
+    "message": "Clear privacy data so all websites must request access to view account information again."
+  },
+  "clearApprovalData": {
+    "message": "Clear Privacy Data"
+  },
+  "reject": {
+    "message": "Reject"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
+  },
   "accept": {
     "message": "Accept"
   },
@@ -169,6 +208,9 @@
   },
   "connect": {
     "message": "Connect"
+  },
+  "connectRequest": {
+    "message": "Connect Request"
   },
   "connecting": {
     "message": "Connecting..."
@@ -865,9 +907,6 @@
   },
   "refundAddress": {
     "message": "Your Refund Address"
-  },
-  "reject": {
-    "message": "Reject"
   },
   "rejectAll": {
     "message": "Reject All"

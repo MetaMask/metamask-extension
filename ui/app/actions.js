@@ -326,6 +326,9 @@ var actions = {
   clearPendingTokens,
 
   createCancelTransaction,
+  approveProviderRequest,
+  rejectProviderRequest,
+  clearApprovedOrigins,
 }
 
 module.exports = actions
@@ -2498,5 +2501,23 @@ function setPendingTokens (pendingTokens) {
   return {
     type: actions.SET_PENDING_TOKENS,
     payload: tokens,
+  }
+}
+
+function approveProviderRequest (origin) {
+  return (dispatch) => {
+    background.approveProviderRequest(origin)
+  }
+}
+
+function rejectProviderRequest (origin) {
+  return (dispatch) => {
+    background.rejectProviderRequest(origin)
+  }
+}
+
+function clearApprovedOrigins () {
+  return (dispatch) => {
+    background.clearApprovedOrigins()
   }
 }

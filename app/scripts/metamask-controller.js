@@ -37,6 +37,7 @@ const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
 const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
+const ProviderApprovalController = require('./controllers/provider-approval')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -90,7 +91,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      showWatchAssetUi: opts.showWatchAssetUi,
+      openPopup: opts.openPopup,
       network: this.networkController,
     })
 
@@ -220,6 +221,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
     this.publicConfigStore = this.initPublicConfigStore()
 
+    this.providerApprovalController = new ProviderApprovalController({
+      closePopup: opts.closePopup,
+      keyringController: this.keyringController,
+      openPopup: opts.openPopup,
+      platform: opts.platform,
+      preferencesController: this.preferencesController,
+      publicConfigStore: this.publicConfigStore,
+    })
+
     this.store.updateStructure({
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
@@ -249,6 +259,7 @@ module.exports = class MetamaskController extends EventEmitter {
       NoticeController: this.noticeController.memStore,
       ShapeshiftController: this.shapeshiftController.store,
       InfuraController: this.infuraController.store,
+      ProviderApprovalController: this.providerApprovalController.store,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -264,7 +275,11 @@ module.exports = class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: async () => {
+      getAccounts: async ({ origin }) => {
+        // Expose no accounts if this origin has not been approved, preventing
+        // account-requring RPC methods from completing successfully
+        const isApproved = this.providerApprovalController.isApproved(origin)
+        if (origin !== 'MetaMask' && !isApproved) { return [] }
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const selectedAddress = this.preferencesController.getSelectedAddress()
         // only show address if account is unlocked
@@ -350,6 +365,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const noticeController = this.noticeController
     const addressBookController = this.addressBookController
     const networkController = this.networkController
+    const providerApprovalController = this.providerApprovalController
 
     return {
       // etc
@@ -410,7 +426,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
 
       // KeyringController
-      setLocked: nodeify(keyringController.setLocked, keyringController),
+      setLocked: nodeify(this.setLocked, this),
       createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
@@ -441,6 +457,10 @@ module.exports = class MetamaskController extends EventEmitter {
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
       markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
+
+      approveProviderRequest: providerApprovalController.approveProviderRequest.bind(providerApprovalController),
+      clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
+      rejectProviderRequest: providerApprovalController.rejectProviderRequest.bind(providerApprovalController),
     }
   }
 
@@ -1619,5 +1639,13 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   whitelistPhishingDomain (hostname) {
     return this.blacklistController.whitelistDomain(hostname)
+  }
+
+  /**
+   * Locks MetaMask
+   */
+  setLocked() {
+    this.providerApprovalController.setLocked()
+    return this.keyringController.setLocked()
   }
 }
