@@ -70,7 +70,7 @@ class ProviderApprovalController {
     this.platform && this.platform.sendMessage({
       action: 'answer-is-approved',
       isApproved: this.approvedOrigins[origin] && this.caching,
-      caching: this.caching
+      caching: this.caching,
     }, { active: true })
   }
 
