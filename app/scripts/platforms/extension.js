@@ -110,14 +110,14 @@ class ExtensionPlatform {
   }
 
   _subscribeToNotificationClicked = () => {
-    if (!extension.notifications.onClicked.hasListener(this._viewOnExplorer)) {
-      extension.notifications.onClicked.addListener((url) => this._viewOnExplorer(url))
+    if (extension.notifications.onClicked.hasListener(this._viewOnExplorer)) {
+      extension.notifications.onClicked.removeListener(this._viewOnExplorer)
     }
+    extension.notifications.onClicked.addListener(this._viewOnExplorer)
   }
 
   _viewOnExplorer (url) {
     if (url.startsWith('http://') || url.startsWith('https://')) {
-      extension.notifications.onClicked.removeListener(this._viewOnExplorer)
       global.metamaskController.platform.openWindow({ url })
     }
   }
