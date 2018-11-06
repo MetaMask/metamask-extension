@@ -31,14 +31,14 @@ export default class Layer2AppView extends PureComponent {
 	<Button
       type="primary"
       className="layer2App-view__button"
-      onClick={() => console.log("action1", script.layer2Abi.action1)}
+      onClick={() => console.log("action1", script.layer2Abi)}
         >
         {t("layer2-action1") }
       </Button>
 	<Button
       type="primary"
       className="layer2App-view__button"
-      onClick={() => console.log("action2", script.layer2Abi.action2)}
+      onClick={() => console.log("action2", script.layer2Abi.actions, script.layer2Abi.getters)}
         >
         {t("layer2-action2") }
       </Button>
