@@ -272,7 +272,7 @@ describe('MetaMask', function () {
     let popup
     let dapp
 
-    it('be able to connect the account', async () => {
+    it('should be able to connect the account', async () => {
       await openNewPage(driver, 'http://127.0.0.1:3000/')
       await delay(regularDelayMs)
 
