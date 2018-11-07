@@ -54,12 +54,12 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 inpageProvider.setMaxListeners(100)
 
 // set up a listener for when MetaMask is locked
-onMessage('metamasksetlocked', ({ data: { type } }) => { isEnabled = false })
+onMessage('metamasksetlocked', () => { isEnabled = false })
 
 // augment the provider with its enable method
 inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
-    providerHandle = ({ data: { type, error } }) => {
+    providerHandle = ({ data: { error } }) => {
       if (typeof error !== 'undefined') {
         reject(error)
       } else {
@@ -119,16 +119,12 @@ inpageProvider._metamask = new Proxy({
    * @returns {Promise<boolean>} - Promise resolving to true if this domain has been previously approved
    */
   isApproved: function() {
-    return new Promise((resolve, reject) => {
-      isApprovedHandle = ({ data: { caching, isApproved, error, type } }) => {
-        if (typeof error !== 'undefined') {
-          reject(error)
+    return new Promise((resolve) => {
+      isApprovedHandle = ({ data: { caching, isApproved } }) => {
+        if (caching) {
+          resolve(!!isApproved)
         } else {
-          if (caching) {
-            resolve(!!isApproved)
-          } else {
-            resolve(false)
-          }
+          resolve(false)
         }
       }
       onMessage('ethereumisapproved', isApprovedHandle, true)
@@ -142,13 +138,9 @@ inpageProvider._metamask = new Proxy({
    * @returns {Promise<boolean>} - Promise resolving to true if MetaMask is currently unlocked
    */
   isUnlocked: function () {
-    return new Promise((resolve, reject) => {
-      isUnlockedHandle = ({ data: { isUnlocked, error, type } }) => {
-        if (typeof error !== 'undefined') {
-          reject(error)
-        } else {
-          resolve(!!isUnlocked)
-        }
+    return new Promise((resolve) => {
+      isUnlockedHandle = ({ data: { isUnlocked } }) => {
+        resolve(!!isUnlocked)
       }
       onMessage('metamaskisunlocked', isUnlockedHandle, true)
       window.postMessage({ type: 'METAMASK_IS_UNLOCKED' }, '*')
