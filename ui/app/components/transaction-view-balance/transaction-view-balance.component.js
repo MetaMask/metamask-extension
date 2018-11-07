@@ -26,11 +26,13 @@ export default class TransactionViewBalance extends PureComponent {
 
     return selectedToken
       ? (
-        <TokenBalance
-          token={selectedToken}
-          withSymbol
-          className="transaction-view-balance__token-balance"
-        />
+        <div className="transaction-view-balance__balance">
+          <TokenBalance
+            token={selectedToken}
+            withSymbol
+            className="transaction-view-balance__primary-balance"
+          />
+        </div>
       ) : (
         <div className="transaction-view-balance__balance">
           <UserPreferencedCurrencyDisplay

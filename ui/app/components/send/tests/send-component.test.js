@@ -158,14 +158,12 @@ describe('Send Component', function () {
       assert.deepEqual(
         utilsMethodStubs.getGasFeeErrorObject.getCall(0).args[0],
         {
-          amount: 'mockAmount',
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
           gasTotal: 'mockGasTotal',
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: 'mockSelectedToken',
-          tokenBalance: 'mockTokenBalance',
         }
       )
     })

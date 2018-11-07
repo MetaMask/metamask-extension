@@ -12,11 +12,11 @@ export default class SendGasRow extends Component {
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
     showCustomizeGasModal: PropTypes.func,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   render () {
     const {

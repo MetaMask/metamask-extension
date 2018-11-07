@@ -11,6 +11,7 @@ import {
 import SendHeader from './send-header/'
 import SendContent from './send-content/'
 import SendFooter from './send-footer/'
+import BigNumber from 'bignumber.js'
 
 export default class SendTransactionScreen extends PersistentForm {
 
@@ -33,7 +34,7 @@ export default class SendTransactionScreen extends PersistentForm {
     recentBlocks: PropTypes.array,
     selectedAddress: PropTypes.string,
     selectedToken: PropTypes.object,
-    tokenBalance: PropTypes.string,
+    tokenBalance: PropTypes.instanceOf(BigNumber),
     tokenContract: PropTypes.object,
     updateAndSetGasTotal: PropTypes.func,
     updateSendErrors: PropTypes.func,
@@ -138,14 +139,12 @@ export default class SendTransactionScreen extends PersistentForm {
       })
       const gasFeeErrorObject = selectedToken
         ? getGasFeeErrorObject({
-          amount,
           amountConversionRate,
           balance,
           conversionRate,
           gasTotal,
           primaryCurrency,
           selectedToken,
-          tokenBalance,
         })
         : { gasFee: null }
       updateSendErrors(Object.assign(amountErrorObject, gasFeeErrorObject))

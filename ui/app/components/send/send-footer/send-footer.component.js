@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerFooter from '../../page-container/page-container-footer'
 import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../routes'
+import BigNumber from 'bignumber.js'
 
 export default class SendFooter extends Component {
 
@@ -23,14 +24,14 @@ export default class SendFooter extends Component {
     sign: PropTypes.func,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
-    tokenBalance: PropTypes.string,
+    tokenBalance: PropTypes.instanceOf(BigNumber),
     unapprovedTxs: PropTypes.object,
     update: PropTypes.func,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   onCancel () {
     this.props.clearSend()

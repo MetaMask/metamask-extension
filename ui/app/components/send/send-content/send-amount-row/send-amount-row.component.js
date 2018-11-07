@@ -4,6 +4,7 @@ import SendRowWrapper from '../send-row-wrapper/'
 import AmountMaxButton from './amount-max-button/'
 import UserPreferencedCurrencyInput from '../../../user-preferenced-currency-input'
 import UserPreferencedTokenInput from '../../../user-preferenced-token-input'
+import BigNumber from 'bignumber.js'
 
 export default class SendAmountRow extends Component {
 
@@ -21,16 +22,16 @@ export default class SendAmountRow extends Component {
     primaryCurrency: PropTypes.string,
     selectedToken: PropTypes.object,
     setMaxModeTo: PropTypes.func,
-    tokenBalance: PropTypes.string,
+    tokenBalance: PropTypes.instanceOf(BigNumber),
     updateGasFeeError: PropTypes.func,
     updateSendAmount: PropTypes.func,
     updateSendAmountError: PropTypes.func,
     updateGas: PropTypes.func,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   validateAmount (amount) {
     const {
@@ -58,7 +59,6 @@ export default class SendAmountRow extends Component {
 
     if (selectedToken) {
       updateGasFeeError({
-        amount,
         amountConversionRate,
         balance,
         conversionRate,

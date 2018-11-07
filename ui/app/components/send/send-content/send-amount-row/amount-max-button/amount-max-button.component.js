@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
 
 export default class AmountMaxButton extends Component {
 
@@ -10,12 +11,12 @@ export default class AmountMaxButton extends Component {
     selectedToken: PropTypes.object,
     setAmountToMax: PropTypes.func,
     setMaxModeTo: PropTypes.func,
-    tokenBalance: PropTypes.string,
-  };
+    tokenBalance: PropTypes.instanceOf(BigNumber),
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   setMaxAmount () {
     const {
