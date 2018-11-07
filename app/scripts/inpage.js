@@ -22,6 +22,14 @@ console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
 'accounts. Please see https://bit.ly/2QQHXvF for complete information and up-to-date ' +
 'example code.')
 
+function once(messageType, handler) {
+  window.addEventListener('message', function ({ data: { type } }) {
+    if (type !== messageType) { return }
+    window.removeEventListener('message', handler)
+    handler.apply(window, arguments)
+  })
+}
+
 //
 // setup plugin communication
 //
@@ -39,18 +47,21 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 inpageProvider.setMaxListeners(100)
 
 // set up a listener for when MetaMask is locked
-window.addEventListener('metamasksetlocked', () => {
+window.addEventListener('message', ({ data: { type } }) => {
+  if (type !== 'metamasksetlocked') { return }
   isEnabled = false
 })
 
 // augment the provider with its enable method
 inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
-    window.removeEventListener('ethereumprovider', providerHandle)
-    providerHandle = ({ detail }) => {
-      if (typeof detail.error !== 'undefined') {
-        reject(detail.error)
+    window.removeEventListener('message', providerHandle)
+    providerHandle = ({ data: { type, error } }) => {
+      if (type !== 'ethereumprovider') { return }
+      if (typeof error !== 'undefined') {
+        reject(error)
       } else {
+        window.removeEventListener('message', providerHandle)
         // wait for the publicConfig store to populate with an account
         const publicConfig = new Promise((resolve) => {
           const { selectedAddress } = inpageProvider.publicConfigStore.getState()
@@ -84,7 +95,7 @@ inpageProvider.enable = function ({ force } = {}) {
           .catch(reject)
       }
     }
-    window.addEventListener('ethereumprovider', providerHandle)
+    window.addEventListener('message', providerHandle)
     window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER', force }, '*')
   })
 }
@@ -107,19 +118,21 @@ inpageProvider._metamask = new Proxy({
    */
   isApproved: function() {
     return new Promise((resolve, reject) => {
-      window.removeEventListener('ethereumisapproved', isApprovedHandle)
-      isApprovedHandle = ({ detail }) => {
-        if (typeof detail.error !== 'undefined') {
-          reject(detail.error)
+      window.removeEventListener('message', isApprovedHandle)
+      isApprovedHandle = ({ data: { caching, isApproved, error, type } }) => {
+        if (type !== 'ethereumisapproved') { return }
+        window.removeEventListener('message', isApprovedHandle)
+        if (typeof error !== 'undefined') {
+          reject(error)
         } else {
-          if (detail.caching) {
-            resolve(!!detail.isApproved)
+          if (caching) {
+            resolve(!!isApproved)
           } else {
             resolve(false)
           }
         }
       }
-      window.addEventListener('ethereumisapproved', isApprovedHandle)
+      window.addEventListener('message', isApprovedHandle)
       window.postMessage({ type: 'ETHEREUM_IS_APPROVED' }, '*')
     })
   },
@@ -131,15 +144,17 @@ inpageProvider._metamask = new Proxy({
    */
   isUnlocked: function () {
     return new Promise((resolve, reject) => {
-      window.removeEventListener('metamaskisunlocked', isUnlockedHandle)
-      isUnlockedHandle = ({ detail }) => {
-        if (typeof detail.error !== 'undefined') {
-          reject(detail.error)
+      window.removeEventListener('message', isUnlockedHandle)
+      isUnlockedHandle = ({ data: { isUnlocked, error, type } }) => {
+        if (type !== 'metamaskisunlocked') { return }
+        window.removeEventListener('message', isUnlockedHandle)
+        if (typeof error !== 'undefined') {
+          reject(error)
         } else {
-          resolve(!!detail.isUnlocked)
+          resolve(!!isUnlocked)
         }
       }
-      window.addEventListener('metamaskisunlocked', isUnlockedHandle)
+      window.addEventListener('message', isUnlockedHandle)
       window.postMessage({ type: 'METAMASK_IS_UNLOCKED' }, '*')
     })
   },
