@@ -151,20 +151,20 @@ function listenForProviderRequest () {
     switch (action) {
       case 'approve-provider-request':
         isEnabled = true
-        injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: {}}))`)
+        window.postMessage({ type: 'ethereumprovider' }, '*')
         break
       case 'reject-provider-request':
-        injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: { error: 'User rejected provider access' }}))`)
+        window.postMessage({ type: 'ethereumprovider', error: 'User rejected provider access' }, '*')
         break
       case 'answer-is-approved':
-        injectScript(`window.dispatchEvent(new CustomEvent('ethereumisapproved', { detail: { isApproved: ${isApproved}, caching: ${caching}}}))`)
+        window.postMessage({ type: 'ethereumisapproved', isApproved, caching }, '*')
         break
       case 'answer-is-unlocked':
-        injectScript(`window.dispatchEvent(new CustomEvent('metamaskisunlocked', { detail: { isUnlocked: ${isUnlocked}}}))`)
+        window.postMessage({ type: 'metamaskisunlocked', isUnlocked }, '*')
         break
       case 'metamask-set-locked':
         isEnabled = false
-        injectScript(`window.dispatchEvent(new CustomEvent('metamasksetlocked', { detail: {}}))`)
+        window.postMessage({ type: 'metamasksetlocked' }, '*')
         break
     }
   })
