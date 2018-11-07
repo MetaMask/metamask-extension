@@ -158,7 +158,7 @@
     "hexGasTotal": "",
     "nonce": "",
     "fetchingMethodData": false
-  }
+  },
   "gas": {
     "customData": {
       "price": null,
@@ -473,5 +473,5 @@
     ],
     "priceAndTimeEstimatesLastRetrieved": 1541527901281,
     "errors": {}
-  },
+  }
 }
