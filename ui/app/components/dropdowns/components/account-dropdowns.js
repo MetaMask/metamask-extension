@@ -6,7 +6,7 @@ const genAccountLink = require('../../../../lib/account-link.js')
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
-const Identicon = require('../../identicon')
+import Identicon from '../../identicon'
 const { checksumAddress } = require('../../../util')
 const copyToClipboard = require('copy-to-clipboard')
 const { formatBalance } = require('../../../util')
@@ -26,14 +26,14 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, accounts, selected, menuItemStyles, actions, keyrings } = this.props
+    const { identities, accounts, selected, menuItemStyles, actions, keyrings, ticker } = this.props
 
     return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
       const isSelected = identity.address === selected
 
       const balanceValue = accounts[key].balance
-      const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
+      const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, true, ticker) : '...'
       const simpleAddress = identity.address.substring(2).toLowerCase()
 
       const keyring = keyrings.find((kr) => {
@@ -436,6 +436,7 @@ AccountDropdowns.propTypes = {
   network: PropTypes.number,
   // actions.showExportPrivateKeyModal: ,
   style: PropTypes.object,
+  ticker: PropTypes.string,
   enableAccountsSelector: PropTypes.bool,
   enableAccountOption: PropTypes.bool,
   enableAccountOptions: PropTypes.bool,
@@ -473,6 +474,7 @@ const mapDispatchToProps = (dispatch) => {
 
 function mapStateToProps (state) {
   return {
+    ticker: state.metamask.ticker,
     keyrings: state.metamask.keyrings,
     sidebarOpen: state.appState.sidebar.isOpen,
   }

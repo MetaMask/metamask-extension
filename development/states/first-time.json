@@ -37,7 +37,10 @@
     "shapeShiftTxList": [],
     "lostAccounts": [],
     "tokens": [],
-    "currentLocale": "en"
+    "currentLocale": "en",
+    "preferences": {
+      "useNativeCurrencyAsPrimaryCurrency": true
+    }
   },
   "appState": {
     "menuOpen": false,

@@ -54,6 +54,9 @@ function reduceMetamask (state, action) {
     isRevealingSeedWords: false,
     welcomeScreenSeen: false,
     currentLocale: '',
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: true,
+    },
   }, state.metamask)
 
   switch (action.type) {
@@ -74,6 +77,7 @@ function reduceMetamask (state, action) {
     case actions.CLEAR_NOTICES:
       return extend(metamaskState, {
         noActiveNotices: true,
+        nextUnreadNotice: undefined,
       })
 
     case actions.UPDATE_METAMASK_STATE:
@@ -308,8 +312,10 @@ function reduceMetamask (state, action) {
           amount: '0x0',
           memo: '',
           errors: {},
+          maxModeOn: false,
           editingTransactionId: null,
           forceGasMin: null,
+          toNickname: '',
         },
       })
 
@@ -347,9 +353,9 @@ function reduceMetamask (state, action) {
       })
 
     case actions.SET_USE_BLOCKIE:
-          return extend(metamaskState, {
-            useBlockie: action.value,
-          })
+      return extend(metamaskState, {
+        useBlockie: action.value,
+      })
 
     case actions.UPDATE_FEATURE_FLAGS:
       return extend(metamaskState, {
@@ -389,6 +395,12 @@ function reduceMetamask (state, action) {
     case actions.CLEAR_PENDING_LAYER2APPS: {
       return extend(metamaskState, {
         pendingLayer2Apps: {},
+      })
+    }
+
+    case actions.UPDATE_PREFERENCES: {
+      return extend(metamaskState, {
+        preferences: { ...action.payload },
       })
     }
 

@@ -1,1 +1,1 @@
-export { default } from './transaction-breakdown.component'
+export { default } from './transaction-breakdown.container'

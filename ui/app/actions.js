@@ -321,6 +321,12 @@ var actions = {
   updateFeatureFlags,
   UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
 
+  // Preferences
+  setPreference,
+  updatePreferences,
+  UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
+  setUseNativeCurrencyAsPrimaryCurrencyPreference,
+
   setMouseUserState,
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
@@ -340,6 +346,9 @@ var actions = {
   clearPendingLayer2Apps,
 
   createCancelTransaction,
+  approveProviderRequest,
+  rejectProviderRequest,
+  clearApprovedOrigins,
 }
 
 module.exports = actions
@@ -2016,10 +2025,10 @@ function updateProviderType (type) {
   }
 }
 
-function setRpcTarget (newRpc) {
+function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname = '') {
   return (dispatch) => {
-    log.debug(`background.setRpcTarget: ${newRpc}`)
-    background.setCustomRpc(newRpc, (err, result) => {
+    log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
+    background.setCustomRpc(newRpc, chainId, ticker, nickname, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))
@@ -2446,6 +2455,36 @@ function updateFeatureFlags (updatedFeatureFlags) {
   }
 }
 
+function setPreference (preference, value) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.setPreference(preference, value, (err, updatedPreferences) => {
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.updatePreferences(updatedPreferences))
+        resolve(updatedPreferences)
+      })
+    })
+  }
+}
+
+function updatePreferences (value) {
+  return {
+    type: actions.UPDATE_PREFERENCES,
+    value,
+  }
+}
+
+function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
+  return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
+}
+
 function setNetworkNonce (networkNonce) {
   return {
     type: actions.SET_NETWORK_NONCE,
@@ -2607,5 +2646,23 @@ function setPendingLayer2Apps (pendingLayer2Apps) {
   return {
     type: actions.SET_PENDING_LAYER2APPS,
     payload: layer2Apps,
+  }
+}
+
+function approveProviderRequest (origin) {
+  return (dispatch) => {
+    background.approveProviderRequest(origin)
+  }
+}
+
+function rejectProviderRequest (origin) {
+  return (dispatch) => {
+    background.rejectProviderRequest(origin)
+  }
+}
+
+function clearApprovedOrigins () {
+  return (dispatch) => {
+    background.clearApprovedOrigins()
   }
 }

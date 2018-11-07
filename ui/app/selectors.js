@@ -28,6 +28,7 @@ const selectors = {
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
+  getNativeCurrency,
   getSendAmount,
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
@@ -35,6 +36,7 @@ const selectors = {
   getSendMaxModeState,
   getCurrentViewContext,
   getTotalUnapprovedCount,
+  preferencesSelector,
 }
 
 module.exports = selectors
@@ -156,6 +158,10 @@ function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
 }
 
+function getNativeCurrency (state) {
+  return state.metamask.nativeCurrency
+}
+
 function getSelectedTokenToFiatRate (state) {
   const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
   const conversionRate = conversionRateSelector(state)
@@ -214,4 +220,8 @@ function getTotalUnapprovedCount ({ metamask }) {
 
   return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
     unapprovedTypedMessagesCount
+}
+
+function preferencesSelector ({ metamask }) {
+  return metamask.preferences
 }

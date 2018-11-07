@@ -4,7 +4,18 @@ import classnames from 'classnames'
 import Identicon from '../../../identicon'
 
 const ConfirmPageContainerSummary = props => {
-  const { action, title, subtitle, hideSubtitle, className, identiconAddress, nonce, assetImage } = props
+  const {
+    action,
+    title,
+    titleComponent,
+    subtitle,
+    subtitleComponent,
+    hideSubtitle,
+    className,
+    identiconAddress,
+    nonce,
+    assetImage,
+  } = props
 
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
@@ -32,12 +43,12 @@ const ConfirmPageContainerSummary = props => {
           )
         }
         <div className="confirm-page-container-summary__title-text">
-          { title }
+          { titleComponent || title }
         </div>
       </div>
       {
         hideSubtitle || <div className="confirm-page-container-summary__subtitle">
-          { subtitle }
+          { subtitleComponent || subtitle }
         </div>
       }
     </div>
@@ -47,7 +58,9 @@ const ConfirmPageContainerSummary = props => {
 ConfirmPageContainerSummary.propTypes = {
   action: PropTypes.string,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  titleComponent: PropTypes.node,
   subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  subtitleComponent: PropTypes.node,
   hideSubtitle: PropTypes.bool,
   className: PropTypes.string,
   identiconAddress: PropTypes.string,

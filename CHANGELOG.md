@@ -2,12 +2,52 @@
 
 ## Current Develop Branch
 
+## 5.0.0 Tuesday November 6 2018
+
+- Implements EIP 1102 as a user-activated "Privacy Mode".
+
+## 4.17.1 Saturday November 3 2018
+
+- Revert chain ID lookup change which introduced a bug which caused problems when connecting to mainnet via Infura's RESTful API.
+
+## 4.17.0 Thursday November 1 2018
+
+- Fix bug where data lookups like balances would get stale data (stopped block-tracker bug)
+- Transaction Details now show entry for onchain failure
+- [#5559](https://github.com/MetaMask/metamask-extension/pull/5559) Localize language names in translation select list
+- [#5283](https://github.com/MetaMask/metamask-extension/pull/5283): Fix bug when eth.getCode() called with no contract
+- [#5563](https://github.com/MetaMask/metamask-extension/pull/5563#pullrequestreview-166769174) Feature: improve Hatian Creole translations
+- Feature: improve Slovenian translations
+- Add support for alternate `wallet_watchAsset` rpc method name
+- Attempt chain ID lookup via `eth_chainId` before `net_version`
+- Fix account display width for large currency values
+
+## 4.16.0 Wednesday October 17 2018
+
+- Feature: Add toggle for primary currency (eth/fiat)
+- Feature: add tooltip for view etherscan tx
+- Feature: add Polish translations
+- Feature: improve Korean translations
+- Feature: improve Italian translations
+- Bug Fix: Fix bug with "pending" block reference
+- Bug Fix: Force AccountTracker to update balances on network change
+- Bug Fix: Fix document extension check when injecting web3
+- Bug Fix: Fix some support links
+
+## 4.15.0 Thursday October 11 2018
+
+- A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.14.0` is found to have bugs.
+
 ## 4.14.0 Thursday October 11 2018
 
 - Update transaction statuses when switching networks.
 - [#5470](https://github.com/MetaMask/metamask-extension/pull/5470) 100% coverage in French locale, fixed the procedure to verify proposed locale.
 - Added rudimentary support for the subscription API to support web3 1.0 and Truffle's Drizzle.
 - [#5502](https://github.com/MetaMask/metamask-extension/pull/5502) Update Italian translation.
+
+## 4.13.0
+
+- A rollback release, equivalent to `v4.11.1` to be deployed in the case that `v4.12.0` is found to have bugs.
 
 ## 4.12.0 Thursday September 27 2018
 

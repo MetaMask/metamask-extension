@@ -5,6 +5,8 @@ import { Redirect } from 'react-router-dom'
 import WalletView from '../../wallet-view'
 import TransactionView from '../../transaction-view'
 import Layer2AppView from '../../layer2App-view'
+import ProviderApproval from '../provider-approval'
+
 import {
   INITIALIZE_BACKUP_PHRASE_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -22,6 +24,7 @@ export default class Home extends PureComponent {
     seedWords: PropTypes.string,
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
+    providerRequests: PropTypes.array,
   }
 
   componentDidMount () {
@@ -47,6 +50,7 @@ export default class Home extends PureComponent {
       lostAccounts,
       forgottenPassword,
       seedWords,
+      providerRequests,
     } = this.props
 
     // notices
@@ -61,6 +65,12 @@ export default class Home extends PureComponent {
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
+    }
+
+    if (providerRequests && providerRequests.length > 0) {
+      return (
+        <ProviderApproval providerRequest={providerRequests[0]} />
+      )
     }
 
     return (

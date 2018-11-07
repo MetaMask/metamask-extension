@@ -286,7 +286,7 @@ describe('Using MetaMask with an existing account', function () {
       await delay(regularDelayMs)
 
       const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
-      const inputAmount = await findElement(driver, By.css('.currency-display__input'))
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
       await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
       await inputAmount.sendKeys('1')
 
@@ -319,7 +319,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       assert.equal(txValues.length, 1)
-      assert.equal(await txValues[0].getText(), '-1 ETH')
+      assert.ok(/-1\s*ETH/.test(await txValues[0].getText()))
     })
   })
 

@@ -7,10 +7,12 @@ const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('extension-port-stream')
+const TransformStream = require('stream').Transform
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
+let isEnabled = false
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
@@ -20,24 +22,27 @@ const inpageBundle = inpageContent + inpageSuffix
 // MetaMask will be much faster loading and performant on Firefox.
 
 if (shouldInjectWeb3()) {
-  setupInjection()
+  injectScript(inpageBundle)
   setupStreams()
+  listenForProviderRequest()
+  checkPrivacyMode()
 }
 
 /**
- * Creates a script tag that injects inpage.js
+ * Injects a script tag into the current document
+ *
+ * @param {string} content - Code to be executed in the current document
  */
-function setupInjection () {
+function injectScript (content) {
   try {
-    // inject in-page script
-    var scriptTag = document.createElement('script')
-    scriptTag.textContent = inpageBundle
-    scriptTag.onload = function () { this.parentNode.removeChild(this) }
-    var container = document.head || document.documentElement
-    // append as first child
+    const container = document.head || document.documentElement
+    const scriptTag = document.createElement('script')
+    scriptTag.setAttribute('async', false)
+    scriptTag.textContent = content
     container.insertBefore(scriptTag, container.children[0])
+    container.removeChild(scriptTag)
   } catch (e) {
-    console.error('Metamask injection failed.', e)
+    console.error('MetaMask script injection failed', e)
   }
 }
 
@@ -54,10 +59,22 @@ function setupStreams () {
   const pluginPort = extension.runtime.connect({ name: 'contentscript' })
   const pluginStream = new PortStream(pluginPort)
 
+  // Filter out selectedAddress until this origin is enabled
+  const approvalTransform = new TransformStream({
+    objectMode: true,
+    transform: (data, _, done) => {
+      if (typeof data === 'object' && data.name && data.name === 'publicConfig' && !isEnabled) {
+        data.data.selectedAddress = undefined
+      }
+      done(null, { ...data })
+    },
+  })
+
   // forward communication plugin->inpage
   pump(
     pageStream,
     pluginStream,
+    approvalTransform,
     pageStream,
     (err) => logStreamDisconnectWarning('MetaMask Contentscript Forwarding', err)
   )
@@ -97,6 +114,69 @@ function setupStreams () {
   mux.ignoreStream('publicConfig')
 }
 
+/**
+ * Establishes listeners for requests to fully-enable the provider from the dapp context
+ * and for full-provider approvals and rejections from the background script context. Dapps
+ * should not post messages directly and should instead call provider.enable(), which
+ * handles posting these messages internally.
+ */
+function listenForProviderRequest () {
+  window.addEventListener('message', ({ source, data }) => {
+    if (source !== window || !data || !data.type) { return }
+    switch (data.type) {
+      case 'ETHEREUM_ENABLE_PROVIDER':
+        extension.runtime.sendMessage({
+          action: 'init-provider-request',
+          force: data.force,
+          origin: source.location.hostname,
+          siteImage: getSiteIcon(source),
+          siteTitle: getSiteName(source),
+        })
+        break
+      case 'ETHEREUM_IS_APPROVED':
+        extension.runtime.sendMessage({
+          action: 'init-is-approved',
+          origin: source.location.hostname,
+        })
+        break
+      case 'METAMASK_IS_UNLOCKED':
+        extension.runtime.sendMessage({
+          action: 'init-is-unlocked',
+        })
+        break
+    }
+  })
+
+  extension.runtime.onMessage.addListener(({ action = '', isApproved, caching, isUnlocked }) => {
+    switch (action) {
+      case 'approve-provider-request':
+        isEnabled = true
+        injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: {}}))`)
+        break
+      case 'reject-provider-request':
+        injectScript(`window.dispatchEvent(new CustomEvent('ethereumprovider', { detail: { error: 'User rejected provider access' }}))`)
+        break
+      case 'answer-is-approved':
+        injectScript(`window.dispatchEvent(new CustomEvent('ethereumisapproved', { detail: { isApproved: ${isApproved}, caching: ${caching}}}))`)
+        break
+      case 'answer-is-unlocked':
+        injectScript(`window.dispatchEvent(new CustomEvent('metamaskisunlocked', { detail: { isUnlocked: ${isUnlocked}}}))`)
+        break
+      case 'metamask-set-locked':
+        isEnabled = false
+        injectScript(`window.dispatchEvent(new CustomEvent('metamasksetlocked', { detail: {}}))`)
+        break
+    }
+  })
+}
+
+/**
+ * Checks if MetaMask is currently operating in "privacy mode", meaning
+ * dapps must call ethereum.enable in order to access user accounts
+ */
+function checkPrivacyMode () {
+  extension.runtime.sendMessage({ action: 'init-privacy-request' })
+}
 
 /**
  * Error handler for page to plugin stream disconnections
@@ -135,17 +215,22 @@ function doctypeCheck () {
 }
 
 /**
- * Checks the current document extension
+ * Returns whether or not the extension (suffix) of the current document is prohibited
  *
- * @returns {boolean} {@code true} if the current extension is not prohibited
+ * This checks {@code window.location.pathname} against a set of file extensions
+ * that should not have web3 injected into them. This check is indifferent of query parameters
+ * in the location.
+ *
+ * @returns {boolean} whether or not the extension of the current document is prohibited
  */
 function suffixCheck () {
-  var prohibitedTypes = ['xml', 'pdf']
-  var currentUrl = window.location.href
-  var currentRegex
+  const prohibitedTypes = [
+    /\.xml$/,
+    /\.pdf$/,
+  ]
+  const currentUrl = window.location.pathname
   for (let i = 0; i < prohibitedTypes.length; i++) {
-    currentRegex = new RegExp(`\\.${prohibitedTypes[i]}$`)
-    if (currentRegex.test(currentUrl)) {
+    if (prohibitedTypes[i].test(currentUrl)) {
       return false
     }
   }
@@ -204,4 +289,32 @@ function redirectToPhishingWarning () {
     hostname: window.location.hostname,
     href: window.location.href,
   })}`
+}
+
+function getSiteName (window) {
+  const document = window.document
+  const siteName = document.querySelector('head > meta[property="og:site_name"]')
+  if (siteName) {
+    return siteName.content
+  }
+
+  return document.title
+}
+
+function getSiteIcon (window) {
+  const document = window.document
+
+  // Use the site's favicon if it exists
+  const shortcutIcon = document.querySelector('head > link[rel="shortcut icon"]')
+  if (shortcutIcon) {
+    return shortcutIcon.href
+  }
+
+  // Search through available icons in no particular order
+  const icon = Array.from(document.querySelectorAll('head > link[rel="icon"]')).find((icon) => Boolean(icon.href))
+  if (icon) {
+    return icon.href
+  }
+
+  return null
 }

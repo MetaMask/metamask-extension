@@ -1133,7 +1133,11 @@ describe('Actions', () => {
         { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
       ]
 
+<<<<<<< HEAD
       setRpcTargetSpy.callsFake((newRpc, callback) => {
+=======
+      setRpcTargetSpy.callsFake((newRpc, chainId, ticker, nickname, callback) => {
+>>>>>>> develop
         callback(new Error('error'))
       })
 

@@ -9,7 +9,7 @@ const extension = require('extensionizer')
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
-const setupRaven = require('./lib/setupRaven')
+const setupSentry = require('./lib/setupSentry')
 const log = require('loglevel')
 
 start().catch(log.error)
@@ -21,7 +21,17 @@ async function start () {
 
   // setup sentry error reporting
   const release = global.platform.getVersion()
-  setupRaven({ release })
+  setupSentry({ release, getState })
+  // provide app state to append to error logs
+  function getState() {
+    // get app state
+    const state = window.getCleanAppState()
+    // remove unnecessary data
+    delete state.localeMessages
+    delete state.metamask.recentBlocks
+    // return state to be added to request
+    return state
+  }
 
   // inject css
   // const css = MetaMaskUiCss()

@@ -4,13 +4,12 @@ import classnames from 'classnames'
 import Identicon from '../identicon'
 import TransactionStatus from '../transaction-status'
 import TransactionAction from '../transaction-action'
-import CurrencyDisplay from '../currency-display'
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import TokenCurrencyDisplay from '../token-currency-display'
 import TransactionListItemDetails from '../transaction-list-item-details'
 import { CONFIRM_TRANSACTION_ROUTE } from '../../routes'
 import { UNAPPROVED_STATUS, TOKEN_METHOD_TRANSFER } from '../../constants/transactions'
-import { ETH } from '../../constants/common'
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../app/scripts/lib/enums'
+import { PRIMARY, SECONDARY } from '../../constants/common'
 import { getStatusKey } from '../../helpers/transactions.util'
 
 export default class TransactionListItem extends PureComponent {
@@ -24,7 +23,6 @@ export default class TransactionListItem extends PureComponent {
     showCancelModal: PropTypes.func,
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
-    showTransactionDetailsModal: PropTypes.func,
     token: PropTypes.object,
     tokenData: PropTypes.object,
     transaction: PropTypes.object,
@@ -39,31 +37,16 @@ export default class TransactionListItem extends PureComponent {
     const {
       transaction,
       history,
-      showTransactionDetailsModal,
-      methodData,
-      showCancel,
-      showRetry,
     } = this.props
     const { id, status } = transaction
     const { showTransactionDetails } = this.state
-    const windowType = window.METAMASK_UI_TYPE
 
     if (status === UNAPPROVED_STATUS) {
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`)
       return
     }
 
-    if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
-      this.setState({ showTransactionDetails: !showTransactionDetails })
-    } else {
-      showTransactionDetailsModal({
-        transaction,
-        onRetry: this.handleRetry,
-        showRetry: showRetry && methodData.done,
-        onCancel: this.handleCancel,
-        showCancel,
-      })
-    }
+    this.setState({ showTransactionDetails: !showTransactionDetails })
   }
 
   handleCancel = () => {
@@ -103,12 +86,11 @@ export default class TransactionListItem extends PureComponent {
           prefix="-"
         />
       ) : (
-        <CurrencyDisplay
+        <UserPreferencedCurrencyDisplay
           className="transaction-list-item__amount transaction-list-item__amount--primary"
           value={value}
+          type={PRIMARY}
           prefix="-"
-          numberOfDecimals={2}
-          currency={ETH}
         />
       )
   }
@@ -119,10 +101,11 @@ export default class TransactionListItem extends PureComponent {
     return token
       ? null
       : (
-        <CurrencyDisplay
+        <UserPreferencedCurrencyDisplay
           className="transaction-list-item__amount transaction-list-item__amount--secondary"
-          prefix="-"
           value={value}
+          prefix="-"
+          type={SECONDARY}
         />
       )
   }
