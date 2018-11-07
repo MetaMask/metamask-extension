@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 5.0.1 Wednesday November 7 2018
+
+- Fixed bug in privacy mode that made it not work correctly on Firefox.
+
 ## 5.0.0 Tuesday November 6 2018
 
 - Implements EIP 1102 as a user-activated "Privacy Mode".
