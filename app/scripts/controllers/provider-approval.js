@@ -54,7 +54,7 @@ class ProviderApprovalController {
   _handleProviderRequest (origin, siteTitle, siteImage, force) {
     this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage }] })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-    if (!force && this.isApproved(origin) && this.caching && isUnlocked) {
+    if (!force && this.approvedOrigins[origin] && this.caching && isUnlocked) {
       this.approveProviderRequest(origin)
       return
     }
@@ -67,9 +67,11 @@ class ProviderApprovalController {
    * @param {string} origin - Origin of the window
    */
   _handleIsApproved (origin) {
-    const isApproved = this.isApproved(origin) && this.caching
-    const caching = this.caching
-    this.platform && this.platform.sendMessage({ action: 'answer-is-approved', isApproved, caching }, { active: true })
+    this.platform && this.platform.sendMessage({
+      action: 'answer-is-approved',
+      isApproved: this.approvedOrigins[origin] && this.caching,
+      caching: this.caching,
+    }, { active: true })
   }
 
   /**
@@ -117,6 +119,7 @@ class ProviderApprovalController {
     this.platform && this.platform.sendMessage({ action: 'reject-provider-request' }, { active: true })
     const providerRequests = requests.filter(request => request.origin !== origin)
     this.store.updateState({ providerRequests })
+    delete this.approvedOrigins[origin]
   }
 
   /**
@@ -127,12 +130,12 @@ class ProviderApprovalController {
   }
 
   /**
-   * Determines if a given origin has been approved
+   * Determines if a given origin should have accounts exposed
    *
    * @param {string} origin - Domain origin to check for approval status
    * @returns {boolean} - True if the origin has been approved
    */
-  isApproved (origin) {
+  shouldExposeAccounts (origin) {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
     return !privacyMode || this.approvedOrigins[origin]
   }
