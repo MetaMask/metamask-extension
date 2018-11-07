@@ -6,27 +6,27 @@ describe('', function () {
     network: '1',
     amount: 5,
     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-    ind: 0
+    ind: 0,
   }
   const sokol = {
     network: '77',
-    ind: 0
+    ind: 0,
   }
   const ropsten = {
     network: '3',
-    ind: 0
+    ind: 0,
   }
   const rinkeby = {
     network: '4',
-    ind: 0
+    ind: 0,
   }
   const kovan1 = {
     network: '42',
-    ind: 0
+    ind: 0,
   }
   const kovan2 = {
     network: '42',
-    ind: 1
+    ind: 1,
   }
 
   it('returns coinbase url with amount and address for network 1', function () {
