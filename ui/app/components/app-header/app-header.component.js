@@ -2,13 +2,13 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { matchPath } from 'react-router-dom'
+import Identicon from '../identicon'
 
 const {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } = require('../../../../app/scripts/lib/enums')
 const { DEFAULT_ROUTE, INITIALIZE_ROUTE, CONFIRM_TRANSACTION_ROUTE } = require('../../routes')
-const Identicon = require('../identicon')
 const NetworkIndicator = require('../network')
 
 export default class AppHeader extends PureComponent {

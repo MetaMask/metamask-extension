@@ -7,10 +7,10 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
-const Identicon = require('../identicon')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
 const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const Tooltip = require('../tooltip')
+import Identicon from '../identicon'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY } from '../../constants/common'
 

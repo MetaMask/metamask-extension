@@ -11,7 +11,7 @@ import {
   updateCurrentLocale,
   setFeatureFlag,
   showModal,
-  setUseETHAsPrimaryCurrencyPreference,
+  setUseNativeCurrencyAsPrimaryCurrencyPreference,
 } from '../../../../actions'
 import { preferencesSelector } from '../../../../selectors'
 
@@ -20,13 +20,17 @@ const mapStateToProps = state => {
   const {
     currentCurrency,
     conversionDate,
+    nativeCurrency,
     useBlockie,
-    featureFlags: { sendHexData } = {},
+    featureFlags: {
+      sendHexData,
+      privacyMode,
+    } = {},
     provider = {},
     isMascara,
     currentLocale,
   } = metamask
-  const { useETHAsPrimaryCurrency } = preferencesSelector(state)
+  const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
 
   return {
     warning,
@@ -34,17 +38,19 @@ const mapStateToProps = state => {
     currentLocale,
     currentCurrency,
     conversionDate,
+    nativeCurrency,
     useBlockie,
     sendHexData,
+    privacyMode,
     provider,
-    useETHAsPrimaryCurrency,
+    useNativeCurrencyAsPrimaryCurrency,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     setCurrentCurrency: currency => dispatch(setCurrentCurrency(currency)),
-    setRpcTarget: newRpc => dispatch(setRpcTarget(newRpc)),
+    setRpcTarget: (newRpc, chainId, ticker, nickname) => dispatch(setRpcTarget(newRpc, chainId, ticker, nickname)),
     displayWarning: warning => dispatch(displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(revealSeedConfirmation()),
     setUseBlockie: value => dispatch(setUseBlockie(value)),
@@ -53,10 +59,12 @@ const mapDispatchToProps = dispatch => {
       return dispatch(setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
     },
     setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
+    setPrivacyMode: enabled => dispatch(setFeatureFlag('privacyMode', enabled)),
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setUseETHAsPrimaryCurrencyPreference: value => {
-      return dispatch(setUseETHAsPrimaryCurrencyPreference(value))
+    setUseNativeCurrencyAsPrimaryCurrencyPreference: value => {
+      return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value))
     },
+    showClearApprovalModal: () => dispatch(showModal({ name: 'CLEAR_APPROVED_ORIGINS' })),
   }
 }
 

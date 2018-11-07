@@ -2,9 +2,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow-y: hidden;
   margin-top: 8px;
-  border-top: 1px solid $geyser;
 
   &__completed-transactions {
     display: flex;
@@ -26,7 +24,6 @@
 
   &__transactions {
     flex: 1;
-    overflow-y: auto;
   }
 
   &__pending-transactions {

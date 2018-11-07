@@ -39,7 +39,7 @@
     "tokens": [],
     "currentLocale": "en",
     "preferences": {
-      "useETHAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true
     }
   },
   "appState": {

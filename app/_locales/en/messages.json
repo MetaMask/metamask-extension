@@ -1,4 +1,43 @@
 {
+  "privacyMode": {
+    "message": "Privacy Mode"
+  },
+  "privacyModeDescription": {
+    "message": "Websites must request access to view your account information."
+  },
+  "exposeAccounts": {
+    "message": "Expose Accounts"
+  },
+  "exposeDescription": {
+    "message": "Expose accounts to the current website. Useful for legacy dapps."
+  },
+  "confirmExpose": {
+    "message": "Are you sure you want to expose your accounts to the current website?"
+  },
+  "confirmClear": {
+    "message": "Are you sure you want to clear approved websites?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Approved website data cleared successfully."
+  },
+  "approvalData": {
+    "message": "Privacy Data"
+  },
+  "approvalDataDescription": {
+    "message": "Clear privacy data so all websites must request access to view account information again."
+  },
+  "clearApprovalData": {
+    "message": "Clear Privacy Data"
+  },
+  "reject": {
+    "message": "Reject"
+  },
+  "providerRequest": {
+    "message": "$1 would like to connect to your account"
+  },
+  "providerRequestInfo": {
+    "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
+  },
   "accept": {
     "message": "Accept"
   },
@@ -169,6 +208,9 @@
   },
   "connect": {
     "message": "Connect"
+  },
+  "connectRequest": {
+    "message": "Connect Request"
   },
   "connecting": {
     "message": "Connecting..."
@@ -692,8 +734,26 @@
   "newRecipient": {
     "message": "New Recipient"
   },
-  "newRPC": {
+  "newNetwork": {
+    "message": "New Network"
+  },
+  "rpcURL": {
     "message": "New RPC URL"
+  },
+  "showAdvancedOptions": {
+    "message": "Show Advanced Options"
+  },
+  "hideAdvancedOptions": {
+    "message": "Hide Advanced Options"
+  },
+  "optionalChainId": {
+    "message": "ChainID (optional)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (optional)"
+  },
+  "optionalNickname": {
+    "message": "Nickname (optional)"
   },
   "next": {
     "message": "Next"
@@ -803,7 +863,7 @@
     "message": "Primary Currency"
   },
   "primaryCurrencySettingDescription": {
-    "message": "Select ETH to prioritize displaying values in ETH. Select Fiat to prioritize displaying values in your selected currency."
+    "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
   "privacyMsg": {
     "message": "Privacy Policy"
@@ -841,9 +901,6 @@
   },
   "refundAddress": {
     "message": "Your Refund Address"
-  },
-  "reject": {
-    "message": "Reject"
   },
   "rejectAll": {
     "message": "Reject All"
@@ -1169,11 +1226,17 @@
   "transactionUpdatedGas": {
     "message": "Transaction updated with a gas price of $1 on $2."
   },
+  "transactionErrored": {
+    "message": "Transaction encountered an error."
+  },
   "transactions": {
     "message": "transactions"
   },
   "transactionError": {
     "message": "Transaction Error. Exception thrown in contract code."
+  },
+  "transactionErrorNoContract": {
+    "message": "Trying to call a function on a non-contract address."
   },
   "transactionMemo": {
     "message": "Transaction memo (optional)"

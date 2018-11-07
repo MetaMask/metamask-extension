@@ -319,7 +319,7 @@ describe('Using MetaMask with an existing account', function () {
 
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       assert.equal(txValues.length, 1)
-      assert.equal(await txValues[0].getText(), '-1 ETH')
+      assert.ok(/-1\s*ETH/.test(await txValues[0].getText()))
     })
   })
 
