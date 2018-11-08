@@ -39,7 +39,6 @@ const TokenRatesController = require('./controllers/token-rates')
 const DetectTokensController = require('./controllers/detect-tokens')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
-const getBuyEthUrl = require('./lib/buy-eth-url')
 const Mutex = require('await-semaphore').Mutex
 const version = require('../manifest.json').version
 const BN = require('ethereumjs-util').BN
@@ -359,8 +358,6 @@ module.exports = class MetamaskController extends EventEmitter {
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getGasPrice: (cb) => cb(null, this.getGasPrice()),
 
-      // coinbase
-      buyEth: this.buyEth.bind(this),
       // shapeshift
       createShapeShiftTx: this.createShapeShiftTx.bind(this),
 
@@ -1457,20 +1454,6 @@ module.exports = class MetamaskController extends EventEmitter {
     } catch (err) {
       cb(err)
     }
-  }
-
-  /**
-   * A method for forwarding the user to the easiest way to obtain ether,
-   * or the network "gas" currency, for the current selected network.
-   *
-   * @param {string} address - The address to fund.
-   * @param {string} amount - The amount of ether desired, as a base 10 string.
-   */
-  buyEth (address, amount, exchange) {
-    if (!amount) amount = '5'
-    const network = this.networkController.getNetworkState()
-    const url = getBuyEthUrl({ network, address, amount, exchange })
-    if (url) this.platform.openWindow({ url })
   }
 
   /**
