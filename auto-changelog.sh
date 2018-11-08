@@ -16,7 +16,11 @@ while read -r line; do
         BODY=$(echo $line | sed -E 's/(.*):{2}(.*)/\2/') 
     fi
     # add entry to CHANGELOG
-    sed -i'' '/## Current Develop Branch/a\
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        sed -i'' '/## Current Develop Branch/a\
+- [#'"$PR"']('"$URL"'/pull/'"$PR"'): '"$BODY"''$'\n' CHANGELOG.md; else
+        sed -i '' '/## Current Develop Branch/a\
 - [#'"$PR"']('"$URL"'/pull/'"$PR"'): '"$BODY"''$'\n' CHANGELOG.md;
+    fi
 done <<< "$LOG"
 echo 'CHANGELOG updated'
