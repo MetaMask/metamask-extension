@@ -24,6 +24,13 @@ html, body {
   height: 100%;
 }
 
+@-moz-document url-prefix() {
+  .ff-body-style {
+    width:357px;
+    height:600px;
+  }
+}
+
 html {
   min-height: 500px;
   overflow: -moz-scrollbars-none;
