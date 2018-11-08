@@ -160,11 +160,7 @@ class AccountDropdowns extends Component {
               padding: '8px 0px',
             },
             closeMenu: () => {},
-            onClick: () => {
-              console.log('ACTIONS')
-              console.log(actions)
-              actions.showImportPage()
-            },
+            onClick: () => actions.showImportPage(),
           },
           [
             h('span', {
