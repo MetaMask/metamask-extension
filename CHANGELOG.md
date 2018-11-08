@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Develop Branch
+- [#5694](https://github.com/MetaMask/metamask-extension/pull/5694): Version 5.0.1 
+- [#5547](https://github.com/MetaMask/metamask-extension/pull/5547): Bundle some ui dependencies separately to limit the build size of ui.js
 
 ## 5.0.1 Wednesday November 7 2018
 
