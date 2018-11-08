@@ -188,7 +188,6 @@ class ConnectHardwareForm extends Component {
         onAccountChange={this.onAccountChange}
         network={this.props.network}
         getPage={this.getPage}
-        history={this.props.history}
         onUnlockAccount={this.onUnlockAccount}
         onForgetDevice={this.onForgetDevice}
         onCancel={this.onCancel}
@@ -221,7 +220,6 @@ class ConnectHardwareForm extends Component {
 }
 
 ConnectHardwareForm.propTypes = {
-  hideModal: PropTypes.func,
   showImportPage: PropTypes.func,
   showConnectPage: PropTypes.func,
   connectHardware: PropTypes.func,
@@ -233,7 +231,6 @@ ConnectHardwareForm.propTypes = {
   setHardwareWalletDefaultHdPath: PropTypes.func,
   goHome: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
-  history: PropTypes.object,
   network: PropTypes.string,
   accounts: PropTypes.object,
   address: PropTypes.string,
