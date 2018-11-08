@@ -78,7 +78,7 @@ class AccountList extends Component {
 
     renderAccounts = () => {
       const rows = []
-      this.props.accounts.map((a, i) => {
+      this.props.accounts.forEach((a, i) => {
         rows.push(
           <div className="hw-account-list__item" key={a.address}>
             <div className="hw-account-list__item__radio">
