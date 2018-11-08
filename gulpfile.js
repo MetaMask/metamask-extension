@@ -26,6 +26,16 @@ const pify = require('pify')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 
+const packageJSON = require('./package.json')
+const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
+const materialUIDependencies = ['@material-ui/core']
+const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
+
+const uiDependenciesToBundle = [
+  ...materialUIDependencies,
+  ...reactDepenendencies,
+]
+
 function gulpParallel (...args) {
   return function spawnGulpChildProcess (cb) {
     return gulpMultiProcess(args, cb, true)
@@ -279,10 +289,31 @@ const buildJsFiles = [
 ]
 
 // bundle tasks
+createTasksForBuildJsUIDeps({ dependenciesToBundle: uiDependenciesToBundle, filename: 'libs' })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
 createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js' })
 createTasksForBuildJsMascara({ taskPrefix: 'build:mascara:js' })
 createTasksForBuildJsMascara({ taskPrefix: 'dev:mascara:js', devMode: true })
+
+function createTasksForBuildJsUIDeps ({ dependenciesToBundle, filename }) {
+  const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
+
+  const bundleTaskOpts = Object.assign({
+    buildSourceMaps: true,
+    sourceMapDir: '../sourcemaps',
+    minifyBuild: true,
+    devMode: false,
+  })
+
+  gulp.task('build:extension:js:uideps', bundleTask(Object.assign({
+    label: filename,
+    filename: `${filename}.js`,
+    destinations,
+    buildLib: true,
+    dependenciesToBundle: uiDependenciesToBundle,
+  }, bundleTaskOpts)))
+}
+
 
 function createTasksForBuildJsExtension ({ buildJsFiles, taskPrefix, devMode, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
@@ -326,6 +357,7 @@ function createTasksForBuildJs ({ rootDir, taskPrefix, bundleTaskOpts, destinati
       label: jsFile,
       filename: `${jsFile}.js`,
       filepath: `${rootDir}/${jsFile}.js`,
+      externalDependencies: jsFile === 'ui' && !bundleTaskOpts.devMode && uiDependenciesToBundle,
       destinations,
     }, bundleTaskOpts)))
   })
@@ -402,6 +434,7 @@ gulp.task('build',
     'clean',
     'build:scss',
     gulpParallel(
+      'build:extension:js:uideps',
       'build:extension:js',
       'build:mascara:js',
       'copy'
@@ -450,13 +483,24 @@ function zipTask (target) {
 
 function generateBundler (opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
-    entries: [opts.filepath],
     plugin: 'browserify-derequire',
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
   })
 
+  if (!opts.buildLib) {
+    browserifyOpts['entries'] = [opts.filepath]
+  }
+
   let bundler = browserify(browserifyOpts)
+
+  if (opts.buildLib) {
+    bundler = bundler.require(opts.dependenciesToBundle)
+  }
+
+  if (opts.externalDependencies) {
+    bundler = bundler.external(opts.externalDependencies)
+  }
 
   // inject variables into bundle
   bundler.transform(envify({

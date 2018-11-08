@@ -22,6 +22,21 @@ console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
 'accounts. Please see https://bit.ly/2QQHXvF for complete information and up-to-date ' +
 'example code.')
 
+/**
+ * Adds a postMessage listener for a specific message type
+ *
+ * @param {string} messageType - postMessage type to listen for
+ * @param {Function} handler - event handler
+ * @param {boolean} remove - removes this handler after being triggered
+ */
+function onMessage(messageType, handler, remove) {
+  window.addEventListener('message', function ({ data: { type } }) {
+    if (type !== messageType) { return }
+    remove && window.removeEventListener('message', handler)
+    handler.apply(window, arguments)
+  })
+}
+
 //
 // setup plugin communication
 //
@@ -39,18 +54,16 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 inpageProvider.setMaxListeners(100)
 
 // set up a listener for when MetaMask is locked
-window.addEventListener('metamasksetlocked', () => {
-  isEnabled = false
-})
+onMessage('metamasksetlocked', () => { isEnabled = false })
 
 // augment the provider with its enable method
 inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
-    window.removeEventListener('ethereumprovider', providerHandle)
-    providerHandle = ({ detail }) => {
-      if (typeof detail.error !== 'undefined') {
-        reject(detail.error)
+    providerHandle = ({ data: { error } }) => {
+      if (typeof error !== 'undefined') {
+        reject(error)
       } else {
+        window.removeEventListener('message', providerHandle)
         // wait for the publicConfig store to populate with an account
         const publicConfig = new Promise((resolve) => {
           const { selectedAddress } = inpageProvider.publicConfigStore.getState()
@@ -84,7 +97,7 @@ inpageProvider.enable = function ({ force } = {}) {
           .catch(reject)
       }
     }
-    window.addEventListener('ethereumprovider', providerHandle)
+    onMessage('ethereumprovider', providerHandle, true)
     window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER', force }, '*')
   })
 }
@@ -106,20 +119,15 @@ inpageProvider._metamask = new Proxy({
    * @returns {Promise<boolean>} - Promise resolving to true if this domain has been previously approved
    */
   isApproved: function() {
-    return new Promise((resolve, reject) => {
-      window.removeEventListener('ethereumisapproved', isApprovedHandle)
-      isApprovedHandle = ({ detail }) => {
-        if (typeof detail.error !== 'undefined') {
-          reject(detail.error)
+    return new Promise((resolve) => {
+      isApprovedHandle = ({ data: { caching, isApproved } }) => {
+        if (caching) {
+          resolve(!!isApproved)
         } else {
-          if (detail.caching) {
-            resolve(!!detail.isApproved)
-          } else {
-            resolve(false)
-          }
+          resolve(false)
         }
       }
-      window.addEventListener('ethereumisapproved', isApprovedHandle)
+      onMessage('ethereumisapproved', isApprovedHandle, true)
       window.postMessage({ type: 'ETHEREUM_IS_APPROVED' }, '*')
     })
   },
@@ -130,16 +138,11 @@ inpageProvider._metamask = new Proxy({
    * @returns {Promise<boolean>} - Promise resolving to true if MetaMask is currently unlocked
    */
   isUnlocked: function () {
-    return new Promise((resolve, reject) => {
-      window.removeEventListener('metamaskisunlocked', isUnlockedHandle)
-      isUnlockedHandle = ({ detail }) => {
-        if (typeof detail.error !== 'undefined') {
-          reject(detail.error)
-        } else {
-          resolve(!!detail.isUnlocked)
-        }
+    return new Promise((resolve) => {
+      isUnlockedHandle = ({ data: { isUnlocked } }) => {
+        resolve(!!isUnlocked)
       }
-      window.addEventListener('metamaskisunlocked', isUnlockedHandle)
+      onMessage('metamaskisunlocked', isUnlockedHandle, true)
       window.postMessage({ type: 'METAMASK_IS_UNLOCKED' }, '*')
     })
   },
