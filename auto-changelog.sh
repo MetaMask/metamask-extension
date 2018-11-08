@@ -17,6 +17,8 @@ while read -r line; do
         BODY=$(echo $line | sed -E 's/(.*):{2}(.*)/\2/') 
     fi
     # add entry to CHANGELOG
-    sed -i'' -e "/## Current Develop Branch/a \- [#$PR]($URL/pull/$PR): $BODY" CHANGELOG.md;
+    sed -i'' -e "/## Current Develop Branch/a \
+    - [#$PR]($URL/pull/$PR): $BODY
+    " CHANGELOG.md;
 done <<< "$LOG"
 echo 'CHANGELOG updated'
