@@ -52,7 +52,7 @@ async function checkIfVersionExists () {
 }
 
 async function checkIfVersionHasArtifacts () {
-  const artifacts = await exec(`sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} list`)
+  const artifacts = await exec(`sentry-cli releases --org 'poa-network' --project 'nifty-wallet' files ${VERSION} list`)
   // When there's no artifacts, we get a response from the shell like this ['', '']
   return artifacts[0] && artifacts[0].length > 0
 }
