@@ -21,6 +21,9 @@ const { ADD_LAYER2APP_ROUTE } = require('../routes')
 
 import AddTokenButton from './add-token-button'
 
+import Button from './button'
+
+
 module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
@@ -128,6 +131,7 @@ WalletView.prototype.render = function () {
     showAccountDetailModal,
     hideSidebar,
     identities,
+    history
   } = this.props
   // temporary logs + fake extra wallets
 
@@ -219,18 +223,7 @@ WalletView.prototype.render = function () {
     h(TokenList),
     this.renderAddToken(),
 
-    h(Button, {
-      type: 'primary',
-      className: 'wallet-view__add-token-button',
-      onClick: () => {
-        history.push(ADD_TOKEN_ROUTE)
-        sidebarOpen && hideSidebar()
-      },
-    }, this.context.t('addToken')),
-
-    // console.log(this.props),
     h(Layer2AppList),
-
     h(Button, {
       type: 'primary',
       className: 'wallet-view__add-layer2App-button',

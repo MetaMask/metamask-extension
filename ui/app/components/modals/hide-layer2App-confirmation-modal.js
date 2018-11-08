@@ -42,7 +42,7 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(HideLayer2AppConfi
 
 HideLayer2AppConfirmationModal.prototype.render = function () {
   const { layer2App, network, hideLayer2App, hideModal, assetImages } = this.props
-  const { symbol, address } = layer2App
+  const { name, address } = layer2App
   const image = assetImages[address]
 
   return h('div.hide-layer2App-confirmation', {}, [
@@ -52,15 +52,7 @@ HideLayer2AppConfirmationModal.prototype.render = function () {
         this.context.t('hideLayer2AppPrompt'),
       ]),
 
-      h(Identicon, {
-        className: 'hide-layer2App-confirmation__identicon',
-        diameter: 45,
-        address,
-        network,
-        image,
-      }),
-
-      h('div.hide-layer2App-confirmation__symbol', {}, symbol),
+      h('div.hide-layer2App-confirmation__name', {}, name),
 
       h('div.hide-layer2App-confirmation__copy', {}, [
         this.context.t('readdLayer2App'),

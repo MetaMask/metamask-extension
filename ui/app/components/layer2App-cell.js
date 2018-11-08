@@ -63,80 +63,32 @@ Layer2AppCell.prototype.render = function () {
     // userAddress,
     image,
   } = props
-  let currentTokenToFiatRate
-  let currentTokenInFiat
-  let formattedFiat = ''
+  console.log(this.props)
 
-  if (contractExchangeRates[address]) {
-    currentTokenToFiatRate = multiplyCurrencies(
-      contractExchangeRates[address],
-      conversionRate
-    )
-    currentTokenInFiat = conversionUtil(string, {
-      fromNumericBase: 'dec',
-      fromCurrency: symbol,
-      toCurrency: currentCurrency.toUpperCase(),
-      numberOfDecimals: 2,
-      conversionRate: currentTokenToFiatRate,
-    })
-    formattedFiat = currentTokenInFiat.toString() === '0'
-      ? ''
-      : `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`
-  }
-
-  const showFiat = Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
 
   return (
     h('div.layer2App-list-item', {
       className: `layer2App-list-item ${selectedTokenAddress === address ? 'layer2App-list-item--active' : ''}`,
-      // style: { cursor: network === '1' ? 'pointer' : 'default' },
-      // onClick: this.view.bind(this, address, userAddress, network),
       onClick: () => {
         setSelectedToken(address)
         setSelectedLayer2AppAddress(address)	
         selectedTokenAddress !== address && sidebarOpen && hideSidebar()
       },
     }, [
-
-      h(Identicon, {
-        className: 'layer2App-list-item__identicon',
-        diameter: 50,
-        address,
-        network,
-        image,
-      }),
-
-      h('div.layer2App-list-item__balance-ellipsis', null, [
-        h('div.layer2App-list-item__balance-wrapper', null, [
-          h('div.layer2App-list-item__layer2App-balance', `${string || 0}` + ' ETH locked'),
-          h('div.layer2App-list-item__layer2App-symbol', symbol),
-          h('div.layer2App-list-item__layer2App-name', name),
-          showFiat && h('div.layer2App-list-item__fiat-amount', {
-            style: {},
-          }, formattedFiat),
-        ]),
-
-        h('i.fa.fa-ellipsis-h.fa-lg.layer2App-list-item__ellipsis.cursor-pointer', {
+      h('div', name),
+      h('div', address),      
+      h('div', string + " ETH locked"),
+      
+      h('i.fa.fa-ellipsis-h.fa-lg.layer2App-list-item__ellipsis.cursor-pointer', {
           onClick: (e) => {
             e.stopPropagation()
             this.setState({ layer2AppMenuOpen: true })
           },
         }),
-
-      ]),
-
-
       layer2AppMenuOpen && h(Layer2AppMenuDropdown, {
         onClose: () => this.setState({ layer2AppMenuOpen: false }),
-        layer2App: { symbol, address },
+        layer2App: { name, address },
       }),
-
-      /*
-      h('button', {
-        onClick: this.send.bind(this, address),
-      }, 'SEND'),
-      */
-
     ])
   )
 }

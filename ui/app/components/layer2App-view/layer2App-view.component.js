@@ -5,9 +5,6 @@ import MenuBar from '../menu-bar'
 import Button from '../button'
 import { DEPOSIT_LAYER2APP_ROUTE } from '../../routes'
 
-//import TransactionViewBalance from '../transaction-view-balance'
-//import TransactionList from '../transaction-list'
-
 export default class Layer2AppView extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -20,7 +17,7 @@ export default class Layer2AppView extends PureComponent {
     const { history } = this.props
     const script = this.props.selectedLayer2AppScript    
     return (
-	<div className="transaction-view">
+	<div className="layer2App-view">
 	<Button
       type="primary"
       className="layer2App-view__button"

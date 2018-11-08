@@ -417,11 +417,7 @@
     "message": "Import účtu"
   },
   "importAccountMsg": {
-<<<<<<< HEAD
-    "message": " Uvoženi računi ne bodo povezani s prvotnim seedphaseom. Preberite več o uvoženih računih "
-=======
     "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
->>>>>>> develop
   },
   "importAnAccount": {
     "message": "Import účtu"
@@ -941,11 +937,7 @@
     "message": "Zobrazit účet"
   },
   "visitWebSite": {
-<<<<<<< HEAD
-    "message": "Obiščite našo spletno stran"
-=======
     "message": "Navštivte naši stránku"
->>>>>>> develop
   },
   "warning": {
     "message": "Varování"

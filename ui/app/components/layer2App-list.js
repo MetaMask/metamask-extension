@@ -79,6 +79,7 @@ class Layer2AppList extends Component {
     }
 
     return h('div', layer2Apps.map((layer2AppData) => {
+      console.log(layer2AppData)
       layer2AppData.image = assetImages[layer2AppData.address]
       return h(Layer2AppCell, layer2AppData)
     }))
@@ -115,6 +116,7 @@ class Layer2AppList extends Component {
 
     this.tracker = new Layer2AppTracker({
       userAddress,
+      name,
       provider: global.ethereumProvider,
       layer2Apps: this.props.layer2Apps,
       pollingInterval: 8000,
