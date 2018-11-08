@@ -116,7 +116,6 @@ class Layer2AppList extends Component {
 
     this.tracker = new Layer2AppTracker({
       userAddress,
-      name,
       provider: global.ethereumProvider,
       layer2Apps: this.props.layer2Apps,
       pollingInterval: 8000,
@@ -152,11 +151,13 @@ class Layer2AppList extends Component {
     const {
       network: oldNet,
       userAddress: oldAddress,
+      name,
       layer2Apps,
     } = this.props
     const {
       network: newNet,
       userAddress: newAddress,
+      name,
       layer2Apps: newLayer2Apps,
     } = nextProps
 
