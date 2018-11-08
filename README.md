@@ -1,5 +1,5 @@
 # Nifty Wallet Browser Extension
-[![Build Status](https://circleci.com/gh/poanetwork/metamask-extension.svg?style=shield)](https://circleci.com/gh/poanetwork/metamask-extension) <!--[![Coverage Status](https://coveralls.io/repos/github/poanetwork/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/poanetwork/metamask-extension?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/poanetwork/metamask-extension.svg)](https://greenkeeper.io/)--> [![Stories in Ready](https://badge.waffle.io/poanetwork/metamask-extension.png?label=in%20progress&title=waffle.io)](https://waffle.io/poanetwork/metamask-extension)
+[![Build Status](https://circleci.com/gh/poanetwork/nifty-wallet.svg?style=shield)](https://circleci.com/gh/poanetwork/nifty-wallet) <!--[![Coverage Status](https://coveralls.io/repos/github/poanetwork/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/poanetwork/metamask-extension?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/poanetwork/metamask-extension.svg)](https://greenkeeper.io/)--> [![Stories in Ready](https://badge.waffle.io/poanetwork/nifty-wallet.png?label=in%20progress&title=waffle.io)](https://waffle.io/poanetwork/nifty-wallet)
 
 ## Introduction
 
