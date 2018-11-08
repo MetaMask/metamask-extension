@@ -59,7 +59,7 @@ class ConnectScreen extends Component {
             <div className="new-account-connect-form unsupported-browser">
                 <div className="hw-connect">
                     <h3 className="hw-connect__title">Your Browser is not supported...</h3>
-                    <p className="hw-connect__msg">You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet.</p>
+                    <p className="hw-connect__msg">You need to use Nifty Wallet on Google Chrome in order to connect to your Hardware Wallet.</p>
                 </div>
                 <Button
                     type="primary"
@@ -75,15 +75,15 @@ class ConnectScreen extends Component {
     renderHeader () {
         return (
             <div className="hw-connect__header">
-                <p className="hw-connect__header__msg">{`Select a hardware wallet you'd like to use with MetaMask`}</p>
+                <p className="hw-connect__header__msg">{`Select a hardware wallet you'd like to use with Nifty Wallet`}</p>
             </div>
         )
     }
 
     getAffiliateLinks () {
         const links = {
-            trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
-            ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
+            trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=niftywallet' target='_blank'>Trezor</a>`,
+            ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s' target='_blank'>Ledger</a>`,
         }
 
         const text = 'Order a Trezor or Ledger and keep your funds in cold storage'

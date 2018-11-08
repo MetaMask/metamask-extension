@@ -91,19 +91,18 @@ class AccountList extends Component {
                 checked={this.props.selectedAccount === a.index.toString()}
               />
               <label className="hw-account-list__item__label" htmlFor={`address-${i}`}>
-                <span className="hw-account-list__item__index">{a.index + 1}</span>
                 {`${a.address.slice(0, 4)}...${a.address.slice(-4)}`}
-                <span className="hw-account-list__item__balance">{`${a.balance}`}</span>
+                <span
+                  className="hw-account-list__item__balance"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    global.platform.openWindow({
+                        url: ethNetProps.explorerLinks.getExplorerAccountLinkFor(a.address, this.props.network),
+                    })
+                  }}
+                >{`${a.balance}`}</span>
               </label>
             </div>
-            <a
-              className="hw-account-list__item__link"
-              href={ethNetProps.explorerLinks.getExplorerAccountLinkFor(a.address, this.props.network)}
-              target="_blank"
-              title="View account on Etherscan"
-            >
-              <img src="images/popout.svg" />
-            </a>
           </div>
         )
       })

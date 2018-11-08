@@ -201,13 +201,13 @@ width: 100%;
   padding-right: 10px;
 }
 .hw-account-list__item:nth-of-type(even) {
-  background-color: #fbfbfb;
+  background-color: rgba(103, 41, 168, 0.1);
 }
 .hw-account-list__item:nth-of-type(odd) {
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(103, 41, 168, 0.2);
 }
 .hw-account-list__item:hover {
-  background-color: rgba(0, 0, 0, 0.06);
+  background-color: rgba(103, 41, 168, 0.06);
 }
 .hw-account-list__item__index {
   display: flex;
@@ -232,6 +232,8 @@ width: 100%;
   display: flex;
   flex: 1;
   justify-content: center;
+  font-family: 'Nunito Bold';
+  cursor: pointer;
 }
 .hw-account-list__item__link {
   display: flex;
@@ -268,12 +270,8 @@ width: 100%;
   cursor: pointer;
 }
 .new-account-connect-form {
-  /*display: flex;*/
   flex-flow: column;
   align-items: center;
-  /*padding: 15px 30px 0;*/
-  height: 710px;
-  /*overflow: auto;*/
 }
 .new-account-connect-form.unsupported-browser {
   height: 210px;

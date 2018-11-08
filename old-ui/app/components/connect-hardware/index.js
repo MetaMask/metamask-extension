@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import actions from '../../../../ui/app/actions'
 import ConnectScreen from './connect-screen'
 import AccountList from './account-list'
-import { formatBalance } from '../../../../ui/app/util'
+import { formatBalance } from '../../util'
 import { getPlatform } from '../../../../app/scripts/lib/util'
 import { PLATFORM_FIREFOX } from '../../../../app/scripts/lib/enums'
 
@@ -22,11 +22,11 @@ class ConnectHardwareForm extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { accounts } = nextProps
+    const { accounts, network } = nextProps
     const newAccounts = this.state.accounts.map(a => {
       const normalizedAddress = a.address.toLowerCase()
       const balanceValue = accounts[normalizedAddress] && accounts[normalizedAddress].balance || null
-      a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
+      a.balance = balanceValue ? formatBalance(balanceValue, 4, undefined, network) : '...'
       return a
     })
     this.setState({accounts: newAccounts})
@@ -114,7 +114,7 @@ class ConnectHardwareForm extends Component {
           newState.accounts = accounts.map(account => {
             const normalizedAddress = account.address.toLowerCase()
             const balanceValue = this.props.accounts[normalizedAddress] && this.props.accounts[normalizedAddress].balance || null
-            account.balance = balanceValue ? formatBalance(balanceValue, 6) : '...'
+            account.balance = balanceValue ? formatBalance(balanceValue, 4, undefined, this.props.network) : '...'
             return account
           })
 
