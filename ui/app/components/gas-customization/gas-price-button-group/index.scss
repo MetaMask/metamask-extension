@@ -67,6 +67,10 @@
   justify-content: stretch;
   max-width: 260px;
 
+  @media screen and (max-width: $break-small) {
+    max-width: 230px;
+  }
+
   &__button-fiat-price {
     font-size: 13px;
   }
@@ -97,6 +101,10 @@
     color: $scorpion;
     padding-top: 9px;
     padding-left: 8.5px;
+
+    @media screen and (max-width: $break-small) {
+      padding-left: 4px;
+    }
 
     div {
       display: flex;

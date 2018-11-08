@@ -6,6 +6,10 @@
     max-width: 391px;
     min-height: 585px;
 
+    @media screen and (max-width: $break-small) {
+      max-width: 344px;
+    }
+
     &__header {
       padding: 0px;
       padding-top: 16px;
@@ -60,6 +64,10 @@
 }
 
 .gas-modal-content {
+  @media screen and (max-width: $break-small) {
+    width: 100%;
+  }
+
   &__basic-tab {
     height: 219px;
   }
