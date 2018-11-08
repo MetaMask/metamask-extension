@@ -119,7 +119,7 @@
     "eth-keychain-controller": "^5.0.0",
     "eth-ledger-bridge-keyring": "^0.1.0",
     "eth-method-registry": "^1.0.0",
-    "eth-net-props": "^1.0.7",
+    "eth-net-props": "^1.0.10",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
     "eth-sig-util": "^2.0.2",
