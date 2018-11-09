@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- [#186](https://github.com/poanetwork/nifty-wallet/pull/186): (Fix) Do not retrieve token metadata for non-token pending tx
+- [#182](https://github.com/poanetwork/nifty-wallet/pull/182): (Refactoring) Generalizing of retrieving of faucets/exchanges links
+
 ## 4.8.7 Tue Nov 06 2018
 
 - [#180](https://github.com/poanetwork/metamask-extension/pull/180), [#172](https://github.com/poanetwork/metamask-extension/pull/172), [#169](https://github.com/poanetwork/metamask-extension/pull/169), [#165](https://github.com/poanetwork/metamask-extension/pull/165), [#160](https://github.com/poanetwork/metamask-extension/pull/160): (Fix) Memory leaks
