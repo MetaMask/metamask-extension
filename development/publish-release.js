@@ -51,15 +51,15 @@ async function publishRelease () {
     releaseId = JSON.parse(response).id
     console.log(`releaseId: ${releaseId}`)
 
-    return uploadAsset(`./builds/metamask-chrome-${VERSION}.zip`, `metamask-chrome-${VERSION}.zip`, releaseId)
+    return uploadAsset(`./builds/niftywallet-chrome-${VERSION}.zip`, `niftywallet-chrome-${VERSION}.zip`, releaseId)
       .then(() => {
-        return uploadAsset(`./builds/metamask-firefox-${VERSION}.zip`, `metamask-firefox-${VERSION}.zip`, releaseId)
+        return uploadAsset(`./builds/niftywallet-firefox-${VERSION}.zip`, `niftywallet-firefox-${VERSION}.zip`, releaseId)
       })
       .then(() => {
-        return uploadAsset(`./builds/metamask-edge-${VERSION}.zip`, `metamask-edge-${VERSION}.zip`, releaseId)
+        return uploadAsset(`./builds/niftywallet-edge-${VERSION}.zip`, `niftywallet-edge-${VERSION}.zip`, releaseId)
       })
       .then(() => {
-        return uploadAsset(`./builds/metamask-opera-${VERSION}.zip`, `metamask-opera-${VERSION}.zip`, releaseId)
+        return uploadAsset(`./builds/niftywallet-opera-${VERSION}.zip`, `niftywallet-opera-${VERSION}.zip`, releaseId)
       })
   }).catch(function (err) {
     console.error('error in request:' + err)
