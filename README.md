@@ -1,28 +1,9 @@
-# MetaMask Browser Extension
-[![Build Status](https://circleci.com/gh/poanetwork/metamask-extension.svg?style=shield)](https://circleci.com/gh/poanetwork/metamask-extension) <!--[![Coverage Status](https://coveralls.io/repos/github/poanetwork/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/poanetwork/metamask-extension?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/poanetwork/metamask-extension.svg)](https://greenkeeper.io/)--> [![Stories in Ready](https://badge.waffle.io/poanetwork/metamask-extension.png?label=in%20progress&title=waffle.io)](https://waffle.io/poanetwork/metamask-extension)
-
-## Support
-
-If you're a user seeking support, [here is our support site](https://metamask.helpscoutdocs.com/).
+# Nifty Wallet Browser Extension
+[![Build Status](https://circleci.com/gh/poanetwork/nifty-wallet.svg?style=shield)](https://circleci.com/gh/poanetwork/nifty-wallet) [![Coverage Status](https://coveralls.io/repos/github/poanetwork/nifty-wallet/badge.svg?branch=master)](https://coveralls.io/github/poanetwork/nifty-wallet?branch=master) [![Stories in Ready](https://badge.waffle.io/poanetwork/nifty-wallet.png?label=in%20progress&title=waffle.io)](https://waffle.io/poanetwork/nifty-wallet)
 
 ## Introduction
 
-[Mission Statement](./MISSION.md)
-
 [Internal documentation](./docs#documentation)
-
-## Developing Compatible Dapps
-
-If you're a web dapp developer, we've got two types of guides for you:
-
-### New Dapp Developers
-
-- We recommend this [Learning Solidity](https://karl.tech/learning-solidity-part-1-deploy-a-contract/) tutorial series by Karl Floersch.
-- We wrote a (slightly outdated now) gentle introduction on [Developing Dapps with Truffle and MetaMask](https://medium.com/metamask/developing-ethereum-dapps-with-truffle-and-metamask-aa8ad7e363ba).
-
-### Current Dapp Developers
-
-- If you have a Dapp, and you want to ensure compatibility, [here is our guide on building MetaMask-compatible Dapps](https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md)
 
 ## Building locally
 
@@ -38,8 +19,6 @@ If you're a web dapp developer, we've got two types of guides for you:
  Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
 ## Contributing
-
-You can read [our internal docs here](https://metamask.github.io/metamask-extension/).
 
 You can re-generate the docs locally by running `npm run doc`, and contributors can update the hosted docs by running `npm run publish-docs`.
 
@@ -79,14 +58,9 @@ To write tests that will be run in the browser using QUnit, add your test files 
 - [How to add custom build to Chrome](./docs/add-to-chrome.md)
 - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 - [How to develop a live-reloading UI](./docs/ui-dev-mode.md)
-- [How to add a new translation to MetaMask](./docs/translating-guide.md)
-- [Publishing Guide](./docs/publishing.md)
-- [The MetaMask Team](./docs/team.md)
 - [How to develop an in-browser mocked UI](./docs/ui-mock-mode.md)
 - [How to live reload on local dependency changes](./docs/developing-on-deps.md)
-- [How to add new networks to the Provider Menu](./docs/adding-new-networks.md)
 - [How to manage notices that appear when the app starts up](./docs/notices.md)
-- [How to port MetaMask to a new platform](./docs/porting_to_new_environment.md)
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [How to generate a visualization of this repository's development](./docs/development-visualization.md)
 

@@ -16,7 +16,7 @@ async function publishRelease () {
   const CIRCLE_SHA1 = process.env.CIRCLE_SHA1
   console.log(`VERSION: ${VERSION}, CIRCLE_SHA1: ${CIRCLE_SHA1}`)
   let releaseId
-  const CREATE_RELEASE_URI = `https://api.github.com/repos/poanetwork/metamask-extension/releases`
+  const CREATE_RELEASE_URI = `https://api.github.com/repos/poanetwork/nifty-wallet/releases`
   console.log(`CREATE_RELEASE_URI: ${CREATE_RELEASE_URI}`)
   let changelog = ''
   try {
@@ -51,15 +51,15 @@ async function publishRelease () {
     releaseId = JSON.parse(response).id
     console.log(`releaseId: ${releaseId}`)
 
-    return uploadAsset(`./builds/metamask-chrome-${VERSION}.zip`, `metamask-chrome-${VERSION}.zip`, releaseId)
+    return uploadAsset(`./builds/niftywallet-chrome-${VERSION}.zip`, `niftywallet-chrome-${VERSION}.zip`, releaseId)
       .then(() => {
-        return uploadAsset(`./builds/metamask-firefox-${VERSION}.zip`, `metamask-firefox-${VERSION}.zip`, releaseId)
+        return uploadAsset(`./builds/niftywallet-firefox-${VERSION}.zip`, `niftywallet-firefox-${VERSION}.zip`, releaseId)
       })
       .then(() => {
-        return uploadAsset(`./builds/metamask-edge-${VERSION}.zip`, `metamask-edge-${VERSION}.zip`, releaseId)
+        return uploadAsset(`./builds/niftywallet-edge-${VERSION}.zip`, `niftywallet-edge-${VERSION}.zip`, releaseId)
       })
       .then(() => {
-        return uploadAsset(`./builds/metamask-opera-${VERSION}.zip`, `metamask-opera-${VERSION}.zip`, releaseId)
+        return uploadAsset(`./builds/niftywallet-opera-${VERSION}.zip`, `niftywallet-opera-${VERSION}.zip`, releaseId)
       })
   }).catch(function (err) {
     console.error('error in request:' + err)
@@ -75,7 +75,7 @@ async function publishRelease () {
  * @returns {Promise.<*>}
  */
 async function uploadAsset (path, name, releaseId) {
-  const UPLOAD_ASSET_URL = `https://uploads.github.com/repos/poanetwork/metamask-extension/releases/${releaseId}/assets?name=${name}&label=${name}`
+  const UPLOAD_ASSET_URL = `https://uploads.github.com/repos/poanetwork/nifty-wallet/releases/${releaseId}/assets?name=${name}&label=${name}`
   console.log(`UPLOAD_ASSET_URL: ${UPLOAD_ASSET_URL}`)
   return request({
     method: 'POST',

@@ -66,7 +66,9 @@ function mapStateToProps (state) {
 
 PendingTx.prototype.render = function () {
   const state = this.state
-  if (!state.tokenDataRetrieved) return null
+  if (this.props.isToken) {
+    if (!state.tokenDataRetrieved) return null
+  }
   const props = this.props
   const { currentCurrency, blockGasLimit, network, provider, isUnlocked } = props
 
@@ -588,7 +590,9 @@ PendingTx.prototype.miniAccountPanelForRecipient = function (isToken, tokensTran
 PendingTx.prototype.componentWillMount = function () {
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  this.updateTokenInfo(txParams)
+  if (this.props.isToken) {
+    this.updateTokenInfo(txParams)
+  }
 }
 
 PendingTx.prototype.componentWillUnmount = function () {
