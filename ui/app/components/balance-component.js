@@ -86,13 +86,13 @@ BalanceComponent.prototype.renderBalance = function () {
       className: 'token-amount',
       value: balanceValue,
       type: PRIMARY,
-      ethNumberOfDecimals: 3,
+      ethNumberOfDecimals: 4,
     }),
 
     showFiat && h(UserPreferencedCurrencyDisplay, {
       value: balanceValue,
       type: SECONDARY,
-      ethNumberOfDecimals: 3,
+      ethNumberOfDecimals: 4,
     }),
   ])
 }
