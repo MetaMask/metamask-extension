@@ -26,24 +26,32 @@ const DEFAULT_DECIMALS = '0'
 async function getSymbolFromContract (tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress)
 
-  try {
-    const result = await token.symbol()
-    return result[0]
-  } catch (error) {
-    log.warn(`symbol() call for token at address ${tokenAddress} resulted in error:`, error)
+  if (token.bytecode !== '0x') {
+    try {
+      const result = await token.symbol()
+      return result[0]
+    } catch (error) {
+      log.warn(`symbol() call for token at address ${tokenAddress} resulted in error:`, error)
+      return ''
+    }
   }
+  return ''
 }
 
 async function getDecimalsFromContract (tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress)
 
-  try {
-    const result = await token.decimals()
-    const decimalsBN = result[0]
-    return decimalsBN && decimalsBN.toString()
-  } catch (error) {
-    log.warn(`decimals() call for token at address ${tokenAddress} resulted in error:`, error)
+  if (token.bytecode !== '0x') {
+    try {
+      const result = await token.decimals()
+      const decimalsBN = result[0]
+      return decimalsBN && decimalsBN.toString()
+    } catch (error) {
+      log.warn(`decimals() call for token at address ${tokenAddress} resulted in error:`, error)
+      return '0'
+    }
   }
+  return '0'
 }
 
 function getContractMetadata (tokenAddress) {
