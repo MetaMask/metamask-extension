@@ -606,8 +606,8 @@ PendingTx.prototype.componentWillUnmount = function () {
 PendingTx.prototype.updateTokenInfo = async function (txParams) {
   const tokenParams = await this.tokenInfoGetter(txParams.to)
   this.setState({
-    tokenSymbol: (tokenParams.symbol),
-    tokenDecimals: (tokenParams.decimals),
+    tokenSymbol: tokenParams.symbol,
+    tokenDecimals: tokenParams.decimals,
     tokenDataRetrieved: true,
   })
 }
