@@ -16,7 +16,7 @@ async function publishRelease () {
   const CIRCLE_SHA1 = process.env.CIRCLE_SHA1
   console.log(`VERSION: ${VERSION}, CIRCLE_SHA1: ${CIRCLE_SHA1}`)
   let releaseId
-  const CREATE_RELEASE_URI = `https://api.github.com/repos/poanetwork/metamask-extension/releases`
+  const CREATE_RELEASE_URI = `https://api.github.com/repos/poanetwork/nifty-wallet/releases`
   console.log(`CREATE_RELEASE_URI: ${CREATE_RELEASE_URI}`)
   let changelog = ''
   try {
@@ -75,7 +75,7 @@ async function publishRelease () {
  * @returns {Promise.<*>}
  */
 async function uploadAsset (path, name, releaseId) {
-  const UPLOAD_ASSET_URL = `https://uploads.github.com/repos/poanetwork/metamask-extension/releases/${releaseId}/assets?name=${name}&label=${name}`
+  const UPLOAD_ASSET_URL = `https://uploads.github.com/repos/poanetwork/nifty-wallet/releases/${releaseId}/assets?name=${name}&label=${name}`
   console.log(`UPLOAD_ASSET_URL: ${UPLOAD_ASSET_URL}`)
   return request({
     method: 'POST',
