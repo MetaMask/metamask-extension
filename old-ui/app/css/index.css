@@ -24,6 +24,13 @@ html, body {
   height: 100%;
 }
 
+@-moz-document url-prefix() {
+  .ff-body-style {
+    width:357px;
+    height:600px;
+  }
+}
+
 html {
   min-height: 500px;
   overflow: -moz-scrollbars-none;
@@ -292,8 +299,10 @@ app sections
   color: #60db97;
 }
 
-p.exchanges {
+p.buy-option {
   margin-bottom: 10px;
+  margin-right: 10px;
+  color: #6729a8;
 }
 
 .new-tx {
@@ -756,7 +765,24 @@ input.large-input {
 }
 
 .selected-exchange {
+  position: relative;
+  margin-left: 30px;
+  margin-bottom: 20px;
+}
 
+.buy-title {
+  width: 100vw;
+  background: #ffffff;
+  color: #333333;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.select-service {
+  color: #333333;
+  padding: 0px 0px 20px 30px;
+  justify-content: left;
+  font-family: Nunito Semibold;
 }
 
 .buy-radio {

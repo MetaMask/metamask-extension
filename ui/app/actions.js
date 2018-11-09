@@ -1,6 +1,6 @@
 const abi = require('human-standard-token-abi')
 const pify = require('pify')
-const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
+const { getBuyEthUrl } = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const {
   calcGasTotal,
