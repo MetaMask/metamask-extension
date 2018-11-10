@@ -147,11 +147,15 @@ function listenForProviderRequest () {
     }
   })
 
-  extension.runtime.onMessage.addListener(({ action = '', isApproved, caching, isUnlocked }) => {
+  extension.runtime.onMessage.addListener(({ action = '', isApproved, caching, isUnlocked, selectedAddress }) => {
     switch (action) {
       case 'approve-provider-request':
         isEnabled = true
-        window.postMessage({ type: 'ethereumprovider' }, '*')
+        window.postMessage({ type: 'ethereumprovider', selectedAddress }, '*')
+        break
+      case 'approve-legacy-provider-request':
+        isEnabled = true
+        window.postMessage({ type: 'ethereumproviderlegacy', selectedAddress }, '*')
         break
       case 'reject-provider-request':
         window.postMessage({ type: 'ethereumprovider', error: 'User rejected provider access' }, '*')
