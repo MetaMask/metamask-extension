@@ -2,6 +2,11 @@
 
 ## Current Develop Branch
 
+## 5.0.2 Friday November 9 2018
+
+- Fixed bug that caused accounts to update slowly to sites. #5717
+- Fixed bug that could lead to some sites crashing. #5709
+
 ## 5.0.1 Wednesday November 7 2018
 
 - Fixed bug in privacy mode that made it not work correctly on Firefox.
