@@ -14,6 +14,7 @@ module.exports = {
   loadExtension,
   openNewPage,
   switchToWindowWithTitle,
+  switchToWindowWithUrlThatMatches,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
 }
@@ -129,4 +130,20 @@ async function assertElementNotPresent (webdriver, driver, by) {
     assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
   }
   assert.ok(!dataTab, 'Found element that should not be present')
+}
+
+async function switchToWindowWithUrlThatMatches (driver, regexp, windowHandles) {
+  if (!windowHandles) {
+    windowHandles = await driver.getAllWindowHandles()
+  } else if (windowHandles.length === 0) {
+    throw new Error('No window that matches: ' + regexp)
+  }
+  const firstHandle = windowHandles[0]
+  await driver.switchTo().window(firstHandle)
+  const windowUrl = await driver.getCurrentUrl()
+  if (windowUrl.match(regexp)) {
+    return firstHandle
+  } else {
+     return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
+  }
 }

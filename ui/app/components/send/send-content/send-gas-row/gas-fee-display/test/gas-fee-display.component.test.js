@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import {shallow} from 'enzyme'
 import GasFeeDisplay from '../gas-fee-display.component'
-import CurrencyDisplay from '../../../../../send/currency-display'
+import UserPreferencedCurrencyDisplay from '../../../../../user-preferenced-currency-display'
 import sinon from 'sinon'
 
 
@@ -29,17 +29,15 @@ describe('SendGasRow Component', function () {
 
   describe('render', () => {
     it('should render a CurrencyDisplay component', () => {
-      assert.equal(wrapper.find(CurrencyDisplay).length, 1)
+      assert.equal(wrapper.find(UserPreferencedCurrencyDisplay).length, 2)
     })
 
     it('should render the CurrencyDisplay with the correct props', () => {
       const {
-        conversionRate,
-        convertedCurrency,
+        type,
         value,
-      } = wrapper.find(CurrencyDisplay).props()
-      assert.equal(conversionRate, 20)
-      assert.equal(convertedCurrency, 'mockConvertedCurrency')
+      } = wrapper.find(UserPreferencedCurrencyDisplay).at(0).props()
+      assert.equal(type, 'PRIMARY')
       assert.equal(value, 'mockGasTotal')
     })
 

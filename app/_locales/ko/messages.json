@@ -1,4 +1,46 @@
 {
+  "privacyMode": {
+    "message": "개인 정보 보호 모드"
+  },
+  "privacyModeDescription": {
+    "message": "웹 사이트는 계정 정보를 볼 수있는 액세스 권한을 요청해야합니다."
+  },
+  "exposeAccounts": {
+    "message": "계정 노출"
+  },
+  "exposeDescription": {
+    "message": "계정을 현재 웹 사이트에 노출하십시오. 기존 dapps에 유용합니다."
+  },
+  "confirmExpose": {
+    "message": "계정을 현재 웹 사이트에 공개 하시겠습니까?"
+  },
+  "confirmClear": {
+    "message": "승인 된 웹 사이트를 삭제 하시겠습니까?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "승인 된 웹 사이트 데이터가 성공적으로 삭제되었습니다."
+  },
+  "approvalData": {
+    "message": "승인 데이터"
+  },
+  "approvalDataDescription": {
+    "message": "승인 된 웹 사이트 데이터를 삭제하여 모든 사이트에서 승인을 다시 요청해야합니다."
+  },
+  "clearApprovalData": {
+    "message": "승인 데이터 삭제"
+  },
+  "reject": {
+    "message": "받지 않다"
+  },
+  "providerAPIRequest": {
+    "message": "Web3 API 요청"
+  },
+  "reviewProviderRequest": {
+    "message": "이 Ethereum API 요청을 검토하십시오."
+  },
+  "providerRequestInfo": {
+    "message": "아래 나열된 도메인은 Web3 API에 대한 액세스를 요청하여 Ethereum 블록 체인과 상호 작용할 수 있습니다. Ethereum 액세스를 승인하기 전에 항상 올바른 사이트에 있는지 다시 확인하십시오."
+  },
   "accept": {
     "message": "수락"
   },
@@ -14,8 +56,14 @@
   "accountName": {
     "message": "계정 이름"
   },
+  "accountOptions": {
+    "message": "계정 옵션"
+  },
   "accountSelectionRequired": {
     "message": "계정을 선택하셔야 합니다!"
+  },
+  "activityLog": {
+    "message": "활동 로그"
   },
   "address": {
     "message": "주소"
@@ -28,6 +76,9 @@
   },
   "addTokens": {
     "message": "토큰 추가"
+  },
+  "addSuggestedTokens": {
+    "message": "제안된 토큰 추가"
   },
   "addAcquiredTokens": {
     "message": "메타마스크를 통해 획득한 토큰 추가"
@@ -54,6 +105,9 @@
   },
   "attemptingConnect": {
     "message": "블록체인에 접속을 시도하는 중입니다."
+  },
+  "attemptToCancel": {
+    "message": "취소 하시겠습니까?"
   },
   "attributions": {
     "message": "속성"
@@ -115,6 +169,15 @@
   },
   "cancel": {
     "message": "취소"
+  },
+  "cancelAttempt": {
+    "message": "취소 시도"
+  },
+  "cancellationGasFee": {
+    "message": "취소 가스 수수료"
+  },
+  "cancelN": {
+    "message": "모든 $1 트랜잭션 취소"
   },
   "classicInterface": {
     "message": "예전 인터페이스"
@@ -229,7 +292,10 @@
     "description": "거래 유형 (암호화폐)"
   },
   "currentConversion": {
-    "message": "선택된 단위"
+    "message": "현재 통화"
+  },
+  "currentLanguage": {
+    "message": "현재 언어"
   },
   "currentNetwork": {
     "message": "현재 네트워크"
@@ -349,6 +415,9 @@
   "exchangeRate": {
     "message": "환율"
   },
+  "expandView": {
+    "message": "큰 화면으로 보기"
+  },
   "exportPrivateKey": {
     "message": "개인키 내보내기"
   },
@@ -466,6 +535,9 @@
   "hideTokenPrompt": {
     "message": "토큰 숨기기?"
   },
+  "history": {
+    "message": "히스토리"
+  },
   "howToDeposit": {
     "message": "어떤 방법으로 이더를 입금하시겠습니까?"
   },
@@ -494,6 +566,9 @@
   },
   "importUsingSeed": {
     "message": "계정 시드 구문으로 가져오기"
+  },
+  "info": {
+    "message": "정보"
   },
   "infoHelp": {
     "message": "정보 및 도움말"
@@ -548,7 +623,7 @@
     "message": "최대"
   },
   "learnMore": {
-    "message": "더 배우기."
+    "message": "더 알아보기."
   },
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 최소 마지막 계정을 사용해야 합니다."
@@ -599,6 +674,9 @@
   "metamaskDescription": {
     "message": "메타마스크는 이더리움을 위한 안전한 신분 저장소입니다."
   },
+  "metamaskVersion": {
+    "message": "메타마스크 버전"
+  },
   "metamaskSeedWords": {
     "message": "메타마스크 시드 단어"
   },
@@ -619,7 +697,7 @@
     "description": "사용자는 계정을 가져오기 위해서 파일을 추가후 계속 진행해야 합니다"
   },
   "needImportPassword": {
-    "message": "선택 된 파일에 대한 비밀번호를 입력해주세요.",
+    "message": "선택된 파일에 대한 비밀번호를 입력해주세요.",
     "description": "계정을 가져오기 위해서 비밀번호와 파일이 필요합니다."
   },
   "negativeETH": {
@@ -736,6 +814,9 @@
   "pasteSeed": {
     "message": "시드 구문을 이곳에 붙여넣어 주세요!"
   },
+  "pending": {
+    "message": "펜딩 중"
+  },
   "personalAddressDetected": {
     "message": "개인 주소가 탐지됨. 토큰 컨트랙트 주소를 입력하세요."
   },
@@ -764,6 +845,9 @@
   "qrCode": {
     "message": "QR 코드 보기"
   },
+  "queue": {
+    "message": "큐"
+  },
   "readdToken": {
     "message": "옵션 메뉴에서 “토큰 추가”를 눌러서 추후에 다시 이 토큰을 추가하실 수 있습니다."
   },
@@ -781,6 +865,15 @@
   },
   "refundAddress": {
     "message": "환불받을 주소"
+  },
+  "rejectAll": {
+    "message": "모두 거부"
+  },
+  "rejectTxsN": {
+    "message": "$1 트랜잭션 거부"
+  },
+  "rejectTxsDescription": {
+    "message": "$1 트랜잭션을 거부합니다."
   },
   "rejected": {
     "message": "거부됨"
@@ -901,6 +994,9 @@
   "selectCurrency": {
     "message": "통화 선택"
   },
+  "selectLocale": {
+    "message": "언어 선택"
+  },
   "selectService": {
     "message": "서비스 선택"
   },
@@ -915,6 +1011,12 @@
   },
   "sendTokens": {
     "message": "토큰 전송"
+  },
+  "sentEther": {
+    "message": "전송된 이더"
+  },
+  "sentTokens": {
+    "message": "전송된 토큰"
   },
   "separateEachWord": {
     "message": "각 단어는 공백 한칸으로 분리합니다"
@@ -943,9 +1045,6 @@
   "settings": {
     "message": "설정"
   },
-  "info": {
-    "message": "정보"
-  },
   "shapeshiftBuy": {
     "message": "Shapeshift를 통해서 구매하기"
   },
@@ -955,11 +1054,20 @@
   "showQRCode": {
     "message": "QR 코드 보기"
   },
+  "showHexData": {
+    "message": "Hex 데이터 보기"
+  },
+  "showHexDataDescription": {
+    "message": "선택하면 전송화면의 hex 데이터 필드 값을 보여줍니다."
+  },
   "sign": {
     "message": "서명"
   },
   "signed": {
     "message": "서명됨"
+  },
+  "signatureRequest": {
+    "message": "서명 요청"
   },
   "signMessage": {
     "message": "메시지 서명"
@@ -1058,6 +1166,9 @@
   "total": {
     "message": "합계"
   },
+  "transaction": {
+    "message": "트랜잭션"
+  },
   "transactions": {
     "message": "트랜잭션"
   },
@@ -1103,6 +1214,9 @@
   },
   "unavailable": {
     "message": "이용할 수 없음"
+  },
+  "units": {
+    "message": "단위"
   },
   "unknown": {
     "message": "알 수 없음"
@@ -1174,11 +1288,14 @@
   "whatsThis": {
     "message": "이것은 무엇인가요?"
   },
+  "yesLetsTry": {
+    "message": "네, 시도해보겠습니다."
+  },
   "yourSigRequested": {
     "message": "서명을 요청 중입니다."
   },
   "youSign": {
-    "message": "서명 중입니다"
+    "message": "서명합니다"
   },
   "yourPrivateSeedPhrase": {
     "message": "개인 시드 구문"

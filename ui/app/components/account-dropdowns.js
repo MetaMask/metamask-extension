@@ -6,9 +6,10 @@ const genAccountLink = require('etherscan-link').createAccountLink
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
-const Identicon = require('./identicon')
 const copyToClipboard = require('copy-to-clipboard')
 const { checksumAddress } = require('../util')
+
+import Identicon from './identicon'
 
 class AccountDropdowns extends Component {
   constructor (props) {

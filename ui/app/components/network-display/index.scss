@@ -3,10 +3,13 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    background-color: lighten(rgb(125, 128, 130), 45%);
     padding: 0 10px;
     border-radius: 4px;
     height: 25px;
+
+    &--colored {
+      background-color: lighten(rgb(125, 128, 130), 45%);
+    }
 
     &--mainnet {
       background-color: lighten($blue-lagoon, 68%);

@@ -1,4 +1,49 @@
 {
+  "privacyMode": {
+    "message": "プライバシーモード"
+  },
+  "privacyModeDescription": {
+    "message": "ウェブサイトはあなたのアカウント情報を閲覧するためのアクセスを要求する必要があります。"
+  },
+  "exposeAccounts": {
+    "message": "アカウントを公開する"
+  },
+  "exposeDescription": {
+    "message": "アカウントを現在のウェブサイトに公開する。従来のdappsに役立ちます。"
+  },
+  "confirmExpose": {
+    "message": "現在のウェブサイトにアカウントを公開してもよろしいですか？"
+  },
+  "confirmClear": {
+    "message": "承認されたウェブサイトをクリアしてもよろしいですか？"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "承認されたウェブサイトデータが正常に消去されました。"
+  },
+  "approvalData": {
+    "message": "承認データ"
+  },
+  "approvalDataDescription": {
+    "message": "承認されたウェブサイトのデータをクリアすると、すべてのサイトで承認を再度要求する必要があります"
+  },
+  "clearApprovalData": {
+    "message": "承認データのクリア"
+  },
+  "approve": {
+    "message": "承認する"
+  },
+  "reject": {
+    "message": "拒否"
+  },
+  "providerAPIRequest": {
+    "message": "Web3 APIリクエスト"
+  },
+  "reviewProviderRequest": {
+    "message": "このEthereum APIリクエストを確認してください。"
+  },
+  "providerRequestInfo": {
+    "message": "下記のドメインは、Ethereumブロックチェーンとやり取りできるようにEthereum APIへのアクセスをリクエストしようとしています。 Web3アクセスを承認する前に、正しいサイトにいることを常に確認してください。"
+  },
   "accept": {
     "message": "承認"
   },

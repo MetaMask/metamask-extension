@@ -2,6 +2,9 @@
  * @file The entry point for the web extension singleton process.
  */
 
+// this needs to run before anything else
+require('./lib/setupFetchDebugging')()
+
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pump = require('pump')
@@ -20,13 +23,13 @@ const createStreamSink = require('./lib/createStreamSink')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const rawFirstTimeState = require('./first-time-state')
-const setupRaven = require('./lib/setupRaven')
+const setupSentry = require('./lib/setupSentry')
 const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 const getObjStructure = require('./lib/getObjStructure')
-const ipfsContent = require('./lib/ipfsContent.js')
+const setupEnsIpfsResolver = require('./lib/ens-ipfs/setup')
 
 const {
   ENVIRONMENT_TYPE_POPUP,
@@ -47,7 +50,7 @@ global.METAMASK_NOTIFIER = notificationManager
 
 // setup sentry error reporting
 const release = platform.getVersion()
-const raven = setupRaven({ release })
+const sentry = setupSentry({ release })
 
 // browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
 // Internet Explorer 6-11
@@ -55,7 +58,6 @@ const isIE = !!document.documentMode
 // Edge 20+
 const isEdge = !isIE && !!window.StyleMedia
 
-let ipfsHandle
 let popupIsOpen = false
 let notificationIsOpen = false
 const openMetamaskTabsIDs = {}
@@ -161,7 +163,6 @@ async function initialize () {
   const initLangCode = await getFirstPreferredLangCode()
   await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
-  ipfsHandle = ipfsContent(initState.NetworkController.provider)
 }
 
 //
@@ -194,14 +195,14 @@ async function loadStateFromPersistence () {
       // we were able to recover (though it might be old)
       versionedData = diskStoreState
       const vaultStructure = getObjStructure(versionedData)
-      raven.captureMessage('MetaMask - Empty vault found - recovered from diskStore', {
+      sentry.captureMessage('MetaMask - Empty vault found - recovered from diskStore', {
         // "extra" key is required by Sentry
         extra: { vaultStructure },
       })
     } else {
       // unable to recover, clear state
       versionedData = migrator.generateInitialState(firstTimeState)
-      raven.captureMessage('MetaMask - Empty vault found - unable to recover')
+      sentry.captureMessage('MetaMask - Empty vault found - unable to recover')
     }
   }
 
@@ -209,7 +210,7 @@ async function loadStateFromPersistence () {
   migrator.on('error', (err) => {
     // get vault structure without secrets
     const vaultStructure = getObjStructure(versionedData)
-    raven.captureException(err, {
+    sentry.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
     })
@@ -255,7 +256,8 @@ function setupController (initState, initLangCode) {
     showUnconfirmedMessage: triggerUi,
     unlockAccountMessage: triggerUi,
     showUnapprovedTx: triggerUi,
-    showWatchAssetUi: showWatchAssetUi,
+    openPopup: openPopup,
+    closePopup: notificationManager.closePopup.bind(notificationManager),
     // initial state
     initState,
     // initial locale code
@@ -266,17 +268,15 @@ function setupController (initState, initLangCode) {
   })
   global.metamaskController = controller
 
-  controller.networkController.on('networkDidChange', () => {
-    ipfsHandle && ipfsHandle.remove()
-    ipfsHandle = ipfsContent(controller.networkController.providerStore.getState())
-  })
+  const provider = controller.provider
+  setupEnsIpfsResolver({ provider })
 
   // report failed transactions to Sentry
   controller.txController.on(`tx:status-update`, (txId, status) => {
     if (status !== 'failed') return
     const txMeta = controller.txController.txStateManager.getTx(txId)
     try {
-      reportFailedTxToSentry({ raven, txMeta })
+      reportFailedTxToSentry({ sentry, txMeta })
     } catch (e) {
       console.error(e)
     }
@@ -448,7 +448,7 @@ function triggerUi () {
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-function showWatchAssetUi () {
+function openPopup () {
   triggerUi()
   return new Promise(
     (resolve) => {

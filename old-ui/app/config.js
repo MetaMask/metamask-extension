@@ -68,7 +68,7 @@ ConfigScreen.prototype.render = function () {
 
           currentProviderDisplay(metamaskState),
 
-          h('div', { style: {display: 'flex'} }, [
+          h('div', { style: {display: 'block'} }, [
             h('input#new_rpc', {
               placeholder: 'New RPC URL',
               style: {
@@ -81,7 +81,70 @@ ConfigScreen.prototype.render = function () {
                 if (event.key === 'Enter') {
                   var element = event.target
                   var newRpc = element.value
-                  rpcValidation(newRpc, state)
+                  var chainid = document.querySelector('input#chainid')
+                  var ticker = document.querySelector('input#ticker')
+                  var nickname = document.querySelector('input#nickname')
+                  rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
+                }
+              },
+            }),
+            h('br'),
+            h('input#chainid', {
+              placeholder: 'ChainId (optional)',
+              style: {
+                width: 'inherit',
+                flex: '1 0 auto',
+                height: '30px',
+                margin: '8px',
+              },
+              onKeyPress (event) {
+                if (event.key === 'Enter') {
+                  var element = document.querySelector('input#new_rpc')
+                  var newRpc = element.value
+                  var chainid = document.querySelector('input#chainid')
+                  var ticker = document.querySelector('input#ticker')
+                  var nickname = document.querySelector('input#nickname')
+                  rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
+                }
+              },
+            }),
+            h('br'),
+            h('input#ticker', {
+              placeholder: 'Symbol (optional)',
+              style: {
+                width: 'inherit',
+                flex: '1 0 auto',
+                height: '30px',
+                margin: '8px',
+              },
+              onKeyPress (event) {
+                if (event.key === 'Enter') {
+                  var element = document.querySelector('input#new_rpc')
+                  var newRpc = element.value
+                  var chainid = document.querySelector('input#chainid')
+                  var ticker = document.querySelector('input#ticker')
+                  var nickname = document.querySelector('input#nickname')
+                  rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
+                }
+              },
+            }),
+            h('br'),
+            h('input#nickname', {
+              placeholder: 'Nickname (optional)',
+              style: {
+                width: 'inherit',
+                flex: '1 0 auto',
+                height: '30px',
+                margin: '8px',
+              },
+              onKeyPress (event) {
+                if (event.key === 'Enter') {
+                  var element = document.querySelector('input#new_rpc')
+                  var newRpc = element.value
+                  var chainid = document.querySelector('input#chainid')
+                  var ticker = document.querySelector('input#ticker')
+                  var nickname = document.querySelector('input#nickname')
+                  rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
                 }
               },
             }),
@@ -93,7 +156,10 @@ ConfigScreen.prototype.render = function () {
                 event.preventDefault()
                 var element = document.querySelector('input#new_rpc')
                 var newRpc = element.value
-                rpcValidation(newRpc, state)
+                var chainid = document.querySelector('input#chainid')
+                var ticker = document.querySelector('input#ticker')
+                var nickname = document.querySelector('input#nickname')
+                rpcValidation(newRpc, chainid.value, ticker.value, nickname.value, state)
               },
             }, 'Save'),
           ]),
@@ -132,6 +198,62 @@ ConfigScreen.prototype.render = function () {
             }, 'Download State Logs'),
           ]),
 
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
+            h('p', {
+              style: {
+                fontFamily: 'Montserrat Light',
+                fontSize: '13px',
+              },
+            }, 'Clear privacy data so all websites must request access to view account information again.'),
+            h('br'),
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                event.preventDefault()
+                state.dispatch(actions.clearApprovedOrigins())
+              },
+            }, 'Clear privacy data'),
+          ]),
+          
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
+            h('p', {
+              style: {
+                fontFamily: 'Montserrat Light',
+                fontSize: '13px',
+              },
+            }, metamaskState.featureFlags.privacyMode ?
+              'Websites will be able to view your account information.' :
+              'Websites must request access to view your account information.'
+            ),
+            h('br'),
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                event.preventDefault()
+                state.dispatch(actions.setFeatureFlag('privacyMode', !metamaskState.featureFlags.privacyMode))
+              },
+            }, metamaskState.featureFlags.privacyMode ?
+              'Disable privacy mode' :
+              'Enable privacy mode'
+            ),
+          ]),
+          
           h('hr.horizontal-line'),
 
           h('div', {
@@ -189,9 +311,9 @@ ConfigScreen.prototype.render = function () {
   )
 }
 
-function rpcValidation (newRpc, state) {
+function rpcValidation (newRpc, chainid, ticker = 'ETH', nickname = '', state) {
   if (validUrl.isWebUri(newRpc)) {
-    state.dispatch(actions.setRpcTarget(newRpc))
+    state.dispatch(actions.setRpcTarget(newRpc, chainid, ticker, nickname))
   } else {
     var appendedRpc = `http://${newRpc}`
     if (validUrl.isWebUri(appendedRpc)) {
