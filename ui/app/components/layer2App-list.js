@@ -157,7 +157,7 @@ class Layer2AppList extends Component {
     const {
       network: newNet,
       userAddress: newAddress,
-      name,
+      name: newName,
       layer2Apps: newLayer2Apps,
     } = nextProps
 
