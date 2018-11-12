@@ -42,7 +42,7 @@ class FiatValue extends Component {
   }
 
   /**
-   * returns the truncated fiat value with the definite length of significant decimals
+   * returns the length of truncated significant decimals for fiat value
    * @param {float} val The float value to be truncated
    * @param {number} len The length of significant decimals
    * returns {number} The length of truncated significant decimals
