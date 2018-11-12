@@ -2,7 +2,7 @@ import React from 'react'
 import assert from 'assert'
 import FiatValue from '../../../../../old-ui/app/components/fiat-value'
 import expect from 'expect'
-import { configure, shallow } from 'enzyme';
+import { shallow } from 'enzyme'
 
 let fiatValue
 
@@ -17,23 +17,23 @@ describe('FiatValue component', () => {
 			assert.equal(4, fiatValue.countSignificantDecimals(0.00010000003454305430504350, 2))
 			assert.equal(0, fiatValue.countSignificantDecimals(1.0000, 2))
 			assert.equal(0, fiatValue.countSignificantDecimals(2, 2))
-			assert.equal(3, fiatValue.countSignificantDecimals("2.03243", 2))
+			assert.equal(3, fiatValue.countSignificantDecimals('2.03243', 2))
 		})
 	})
 
 	describe('fiatDisplay(fiatDisplayNumber, valueStyle, dimStyle, fiatSuffix) function', () => {
 		const valueStyle = {
-	      width: '100%',
-	      textAlign: 'right',
-	      fontSize: '14px',
-	      color: '#ffffff',
-	    }
+			width: '100%',
+			textAlign: 'right',
+			fontSize: '14px',
+			color: '#ffffff',
+		}
 
-	    const dimStyle = {
-	      color: '#60db97',
-	      marginLeft: '5px',
-	      fontSize: '14px',
-	    }
+		const dimStyle = {
+			color: '#60db97',
+			marginLeft: '5px',
+			fontSize: '14px',
+		}
 
 		it('returns correct object', () => {
 			expect(fiatValue.fiatDisplay('N/A')).toEqual(<div/>)

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { formatBalance } from '../util'
+import PropTypes from 'prop-types'
 
 class FiatValue extends Component {
   render = () => {
@@ -71,21 +72,27 @@ class FiatValue extends Component {
     if (fiatDisplayNumber !== 'N/A') {
       return (
         <div
-          className='flex-row'
+          className="flex-row"
           style={{
             alignItems: 'flex-end',
             lineHeight: '14px',
             textRendering: 'geometricPrecision',
           }}
         >
-          <div className='fiat-val' style={valueStyle}>{fiatDisplayNumber}</div>
-          <div className='fiat-dim' style={dimStyle}>{fiatSuffix}</div>
+          <div className="fiat-val" style={valueStyle}>{fiatDisplayNumber}</div>
+          <div className="fiat-dim" style={dimStyle}>{fiatSuffix}</div>
         </div>
       )
     } else {
       return <div/>
     }
   }
+}
+
+FiatValue.propTypes = {
+  conversionRate: PropTypes.number,
+  currentCurrency: PropTypes.string,
+  network: PropTypes.string,
 }
 
 module.exports = FiatValue
