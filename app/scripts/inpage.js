@@ -30,8 +30,8 @@ console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
  * @param {boolean} remove - removes this handler after being triggered
  */
 function onMessage(messageType, handler, remove) {
-  window.addEventListener('message', function ({ data: { type } }) {
-    if (type !== messageType) { return }
+  window.addEventListener('message', function ({ data }) {
+    if (!data || data.type !== messageType) { return }
     remove && window.removeEventListener('message', handler)
     handler.apply(window, arguments)
   })
@@ -56,45 +56,31 @@ inpageProvider.setMaxListeners(100)
 // set up a listener for when MetaMask is locked
 onMessage('metamasksetlocked', () => { isEnabled = false })
 
+// set up a listener for privacy mode responses
+onMessage('ethereumproviderlegacy', ({ data: { selectedAddress } }) => {
+  isEnabled = true
+  inpageProvider.publicConfigStore.updateState({ selectedAddress })
+}, true)
+
 // augment the provider with its enable method
 inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
-    providerHandle = ({ data: { error } }) => {
+    providerHandle = ({ data: { error, selectedAddress } }) => {
       if (typeof error !== 'undefined') {
         reject(error)
       } else {
         window.removeEventListener('message', providerHandle)
-        // wait for the publicConfig store to populate with an account
-        const publicConfig = new Promise((resolve) => {
-          const { selectedAddress } = inpageProvider.publicConfigStore.getState()
-          inpageProvider._metamask.isUnlocked().then(unlocked => {
-            if (!unlocked || selectedAddress) {
-              resolve()
-            } else {
-              inpageProvider.publicConfigStore.on('update', ({ selectedAddress }) => {
-                selectedAddress && resolve()
-              })
-            }
-          })
-        })
+        inpageProvider.publicConfigStore.updateState({ selectedAddress })
 
         // wait for the background to update with an account
-        const ethAccounts = new Promise((resolveAccounts, rejectAccounts) => {
-          inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
-            if (error) {
-              rejectAccounts(error)
-            } else {
-              resolveAccounts(response.result)
-            }
-          })
-        })
-
-        Promise.all([ethAccounts, publicConfig])
-          .then(([selectedAddress]) => {
+        inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
+          if (error) {
+            reject(error)
+          } else {
             isEnabled = true
-            resolve(selectedAddress)
-          })
-          .catch(reject)
+            resolve(response.result)
+          }
+        })
       }
     }
     onMessage('ethereumprovider', providerHandle, true)
