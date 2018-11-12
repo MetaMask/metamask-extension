@@ -14,10 +14,11 @@
   { "code": "pl", "name": "Polskie" },
   { "code": "pt", "name": "Português" },
   { "code": "ru", "name": "Русский" },
+  { "code": "sk", "name": "Slovenčina" },
   { "code": "sl", "name": "Slovenščina" },
   { "code": "th", "name": "ไทย" },
   { "code": "tml", "name": "தமிழ்" },
-  { "code": "tr", "name": "Türkçe" },  
+  { "code": "tr", "name": "Türkçe" },
   { "code": "vi", "name": "Tiếng Việt" },
   { "code": "zh_CN", "name": "中文(简体)" },
   { "code": "zh_TW", "name": "中文(繁體)" }
