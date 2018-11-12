@@ -63,7 +63,7 @@ export default class TokenInput extends PureComponent {
       invertConversionRate: true,
     })
 
-    return Number(decimalValueString) || 0
+    return decimalValueString || 0
   }
 
   handleChange = decimalValue => {

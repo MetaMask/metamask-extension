@@ -62,7 +62,7 @@ const toSpecifiedDenomination = {
 }
 const baseChange = {
   hex: n => n.toString(16),
-  dec: n => Number(n).toString(10),
+  dec: n => (new BigNumber(n)).toString(10),
   BN: n => new BN(n.toString(16)),
 }
 
