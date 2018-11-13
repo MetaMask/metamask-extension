@@ -14,8 +14,9 @@ class TokenRatesController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor ({ interval = DEFAULT_INTERVAL, preferences } = {}) {
+  constructor ({ interval = DEFAULT_INTERVAL, currency, preferences } = {}) {
     this.store = new ObservableStore()
+    this.currency = currency
     this.preferences = preferences
     this.interval = interval
   }
@@ -26,30 +27,21 @@ class TokenRatesController {
   async updateExchangeRates () {
     if (!this.isActive) { return }
     const contractExchangeRates = {}
-    // copy array to ensure its not modified during iteration
-    const tokens = this._tokens.slice()
-    for (const token of tokens) {
-      if (!token) return log.error(`TokenRatesController - invalid tokens state:\n${JSON.stringify(tokens, null, 2)}`)
-      const address = token.address
-      contractExchangeRates[address] = await this.fetchExchangeRate(address)
+    const nativeCurrency = this.currency ? this.currency.getState().nativeCurrency.toUpperCase() : 'ETH'
+    const pairs = this._tokens.map(token => `pairs[]=${token.address}/${nativeCurrency}`)
+    const query = pairs.join('&')
+    if (this._tokens.length > 0) {
+      try {
+        const response = await fetch(`https://exchanges.balanc3.net/pie?${query}&autoConversion=true`)
+        const { prices = [] } = await response.json()
+        prices.forEach(({ pair, price }) => {
+          contractExchangeRates[pair.split('/')[0]] = typeof price === 'number' ? price : 0
+        })
+      } catch (error) {
+        log.warn(`MetaMask - TokenRatesController exchange rate fetch failed.`, error)
+      }
     }
     this.store.putState({ contractExchangeRates })
-  }
-
-  /**
-   * Fetches a token exchange rate by address
-   *
-   * @param {String} address - Token contract address
-   */
-  async fetchExchangeRate (address) {
-    try {
-      const response = await fetch(`https://metamask.balanc3.net/prices?from=${address}&to=ETH&autoConversion=false&summaryOnly=true`)
-      const json = await response.json()
-      return json && json.length ? json[0].averagePrice : 0
-    } catch (error) {
-      log.warn(`MetaMask - TokenRatesController exchange rate fetch failed for ${address}.`, error)
-      return 0
-    }
   }
 
   /**

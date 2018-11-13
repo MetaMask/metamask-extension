@@ -117,6 +117,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
+      currency: this.currencyController.store,
       preferences: this.preferencesController.store,
     })
 
