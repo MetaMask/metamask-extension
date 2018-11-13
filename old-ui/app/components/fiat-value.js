@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { formatBalance } from '../util'
-import { countSignificantDecimals } from '../../../app/scripts/lib/util'
+import { formatBalance, countSignificantDecimals } from '../util'
 import PropTypes from 'prop-types'
 
 class FiatValue extends Component {
@@ -20,11 +19,10 @@ class FiatValue extends Component {
     const value = formatBalance(props.value, 6, undefined, props.network)
 
     if (value === 'None') return value
-    let fiatDisplayNumber, fiatTooltipNumber
     const splitBalance = value.split(' ')
 
-    fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
-    fiatDisplayNumber = fiatTooltipNumber.toFixed(countSignificantDecimals(fiatTooltipNumber, 2))
+    const fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
+    const fiatDisplayNumber = fiatTooltipNumber.toFixed(countSignificantDecimals(fiatTooltipNumber, 2))
 
     const valueStyle = props.valueStyle ? props.valueStyle : {
       width: '100%',
