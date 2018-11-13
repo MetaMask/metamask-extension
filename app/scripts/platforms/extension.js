@@ -94,8 +94,16 @@ class ExtensionPlatform {
 
     const nonce = parseInt(txMeta.txParams.nonce, 16)
     const title = 'Failed transaction'
-    const message = `Transaction ${nonce} failed! ${txMeta.err.message}`
+    const message = `Transaction ${nonce} failed! ${this._capitalizeFirstLetter(txMeta.err.message)}`
     this._showNotification(title, message)
+  }
+
+  _capitalizeFirstLetter (msg) {
+    if (!msg) {
+      return ''
+    }
+
+    return msg.charAt(0).toUpperCase() + msg.slice(1)
   }
 
   _showNotification (title, message, url) {
