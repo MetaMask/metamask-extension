@@ -1,5 +1,6 @@
 const extension = require('extensionizer')
 const explorerLinks = require('eth-net-props').explorerLinks
+const { capitalizeFirstLetter } = require('../lib/util')
 
 class ExtensionPlatform {
 
@@ -94,16 +95,8 @@ class ExtensionPlatform {
 
     const nonce = parseInt(txMeta.txParams.nonce, 16)
     const title = 'Failed transaction'
-    const message = `Transaction ${nonce} failed! ${this._capitalizeFirstLetter(txMeta.err.message)}`
+    const message = `Transaction ${nonce} failed! ${capitalizeFirstLetter(txMeta.err.message)}`
     this._showNotification(title, message)
-  }
-
-  _capitalizeFirstLetter (msg) {
-    if (!msg) {
-      return ''
-    }
-
-    return msg.charAt(0).toUpperCase() + msg.slice(1)
   }
 
   _showNotification (title, message, url) {
