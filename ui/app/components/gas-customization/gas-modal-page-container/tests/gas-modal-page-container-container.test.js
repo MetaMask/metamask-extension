@@ -80,6 +80,7 @@ describe('gas-modal-page-container container', () => {
             limit: 'aaaaaaaa',
             price: 'ffffffff',
           },
+          gasEstimatesLoading: false,
           priceAndTimeEstimates: [
             { gasprice: 3, expectedTime: '31' },
             { gasprice: 4, expectedTime: '62' },
@@ -118,6 +119,7 @@ describe('gas-modal-page-container container', () => {
           defaultActiveButtonIndex: 'mockRenderableBasicEstimateData:4ffffffff',
           gasButtonInfo: 'mockRenderableBasicEstimateData:4',
         },
+        gasEstimatesLoading: false,
         hideBasic: true,
         infoRowProps: {
           originalTotalFiat: '637.41',

@@ -33,6 +33,7 @@ const selectors = {
   getDefaultActiveButtonIndex,
   getEstimatedGasPrices,
   getEstimatedGasTimes,
+  getGasEstimatesLoadingStatus,
   getPriceAndTimeEstimates,
   getRenderableBasicEstimateData,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
@@ -61,6 +62,10 @@ function getCustomGasTotal (state) {
 
 function getBasicGasEstimateLoadingStatus (state) {
   return state.gas.basicEstimateIsLoading
+}
+
+function getGasEstimatesLoadingStatus (state) {
+  return state.gas.gasEstimatesLoading
 }
 
 function getPriceAndTimeEstimates (state) {

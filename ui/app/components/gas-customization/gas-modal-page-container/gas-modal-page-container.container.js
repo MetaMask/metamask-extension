@@ -32,6 +32,7 @@ import {
   formatTimeEstimate,
   getFastPriceEstimateInHexWEI,
   getBasicGasEstimateLoadingStatus,
+  getGasEstimatesLoadingStatus,
   getCustomGasLimit,
   getCustomGasPrice,
   getDefaultActiveButtonIndex,
@@ -65,6 +66,8 @@ import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price
 const mapStateToProps = (state, ownProps) => {
   const { transaction = {} } = ownProps
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state)
+  const gasEstimatesLoading = getGasEstimatesLoadingStatus(state)
+
   const { gasPrice: currentGasPrice, gas: currentGasLimit, value } = getTxParams(state, transaction.id)
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice
   const customModalGasLimitInHex = getCustomGasLimit(state) || currentGasLimit
@@ -127,6 +130,7 @@ const mapStateToProps = (state, ownProps) => {
     isSpeedUp: transaction.status === 'submitted',
     txId: transaction.id,
     insufficientBalance,
+    gasEstimatesLoading,
   }
 }
 
