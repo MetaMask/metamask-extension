@@ -12,6 +12,7 @@ export function handleMouseMove ({ xMousePos, chartXStart, chartWidth, gasPrices
 
   if (currentPosValue === null && newTimeEstimate === null) {
     hideDataUI(chart, '#overlayed-circle')
+    return
   }
 
   const indexOfNewCircle = estimatedTimes.length + 1
@@ -162,7 +163,13 @@ export function setSelectedCircle ({
 }) {
   const numberOfValues = chart.internal.data.xs.data1.length
   const { x: lowerX, y: lowerY } = getCoordinateData(`.c3-circle-${closestLowerValueIndex}`)
-  const { x: higherX, y: higherY } = getCoordinateData(`.c3-circle-${closestHigherValueIndex}`)
+  let { x: higherX, y: higherY } = getCoordinateData(`.c3-circle-${closestHigherValueIndex}`)
+
+  if (lowerX === higherX) {
+    const { x: higherXAdjusted, y: higherYAdjusted } = getCoordinateData(`.c3-circle-${closestHigherValueIndex + 1}`)
+    higherY = higherYAdjusted
+    higherX = higherXAdjusted
+  }
 
   const currentX = lowerX + (higherX - lowerX) * (newPrice - closestLowerValue) / (closestHigherValue - closestLowerValue)
   const newTimeEstimate = extrapolateY({ higherY, lowerY, higherX, lowerX, xForExtrapolation: currentX })
@@ -203,13 +210,13 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
     axis: {
       x: {
         min: gasPrices[0],
-        max: gasPricesMaxPadded,
+        max: gasPricesMax,
         tick: {
-          values: [Math.floor(gasPrices[0]), Math.ceil(gasPricesMaxPadded)],
+          values: [Math.floor(gasPrices[0]), Math.ceil(gasPricesMax)],
           outer: false,
           format: function (val) { return val + ' GWEI' },
         },
-        padding: {left: gasPricesMaxPadded / 50, right: gasPricesMaxPadded / 50},
+        padding: {left: gasPricesMax / 50, right: gasPricesMax / 50},
         label: {
           text: 'Gas Price ($)',
           position: 'outer-center',

@@ -136,7 +136,7 @@ describe('GasPriceChart Component', function () {
       assert.equal(gasPriceChartUtilsSpies.setTickPosition.callCount, 4)
       assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(0).args, ['y', 0, -5, 8])
       assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(1).args, ['y', 1, -3, -5])
-      assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(2).args, ['x', 0, 3, 15])
+      assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(2).args, ['x', 0, 3])
       assert.deepEqual(gasPriceChartUtilsSpies.setTickPosition.getCall(3).args, ['x', 1, 3, -8])
     })
 
