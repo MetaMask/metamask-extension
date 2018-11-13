@@ -1,4 +1,4 @@
-import { clone, uniqBy } from 'ramda'
+import { clone, uniqBy, flatten } from 'ramda'
 import BigNumber from 'bignumber.js'
 import {
   loadLocalStorageData,
@@ -266,6 +266,56 @@ export function fetchBasicGasAndTimeEstimates () {
   }
 }
 
+function extrapolateY ({ higherY, lowerY, higherX, lowerX, xForExtrapolation }) {
+  higherY = new BigNumber(higherY, 10)
+  lowerY = new BigNumber(lowerY, 10)
+  higherX = new BigNumber(higherX, 10)
+  lowerX = new BigNumber(lowerX, 10)
+  xForExtrapolation = new BigNumber(xForExtrapolation, 10)
+  const slope = (higherY.minus(lowerY)).div(higherX.minus(lowerX))
+  const newTimeEstimate = slope.times(higherX.minus(xForExtrapolation)).minus(higherY).negated()
+
+  return Number(newTimeEstimate.toPrecision(10))
+}
+
+function getRandomArbitrary (min, max) {
+  min = new BigNumber(min, 10)
+  max = new BigNumber(max, 10)
+  const random = new BigNumber(String(Math.random()), 10)
+  return new BigNumber(random.times(max.minus(min)).plus(min)).toPrecision(10)
+}
+
+function calcMedian (list) {
+  const medianPos = (Math.floor(list.length / 2) + Math.ceil(list.length / 2)) / 2
+  return medianPos === Math.floor(medianPos)
+    ? (list[medianPos - 1] + list[medianPos]) / 2
+    : list[Math.floor(medianPos)]
+}
+
+function quartiles (data) {
+  const lowerHalf = data.slice(0, Math.floor(data.length / 2))
+  const upperHalf = data.slice(Math.floor(data.length / 2) + (data.length % 2 === 0 ? 0 : 1))
+  const median = calcMedian(data)
+  const lowerQuartile = calcMedian(lowerHalf)
+  const upperQuartile = calcMedian(upperHalf)
+  return {
+    median,
+    lowerQuartile,
+    upperQuartile,
+  }
+}
+
+function inliersByIQR (data, prop) {
+  const { lowerQuartile, upperQuartile } = quartiles(data.map(d => prop ? d[prop] : d))
+  const IQR = upperQuartile - lowerQuartile
+  const lowerBound = lowerQuartile - 1.5 * IQR
+  const upperBound = upperQuartile + 1.5 * IQR
+  return data.filter(d => {
+    const value = prop ? d[prop] : d
+    return value >= lowerBound && value <= upperBound
+  })
+}
+
 export function fetchGasEstimates (blockTime) {
   return (dispatch, getState) => {
     const {
@@ -289,21 +339,50 @@ export function fetchGasEstimates (blockTime) {
         .then(r => {
           const estimatedPricesAndTimes = r.map(({ expectedTime, expectedWait, gasprice }) => ({ expectedTime, expectedWait, gasprice }))
           const estimatedTimeWithUniquePrices = uniqBy(({ expectedTime }) => expectedTime, estimatedPricesAndTimes)
-          const timeMappedToSeconds = estimatedTimeWithUniquePrices.map(({ expectedWait, gasprice }) => {
-            const expectedTime = (new BigNumber(expectedWait)).times(Number(blockTime), 10).toString(10)
+
+          const withSupplementalTimeEstimates = flatten(estimatedTimeWithUniquePrices.map(({ expectedWait, gasprice }, i, arr) => {
+            const next = arr[i + 1]
+            if (!next) {
+              return [{ expectedWait, gasprice }]
+            } else {
+              const supplementalPrice = getRandomArbitrary(gasprice, next.gasprice)
+              const supplementalTime = extrapolateY({
+                higherY: next.expectedWait,
+                lowerY: expectedWait,
+                higherX: next.gasprice,
+                lowerX: gasprice,
+                xForExtrapolation: supplementalPrice,
+              })
+              const supplementalPrice2 = getRandomArbitrary(supplementalPrice, next.gasprice)
+              const supplementalTime2 = extrapolateY({
+                higherY: next.expectedWait,
+                lowerY: supplementalTime,
+                higherX: next.gasprice,
+                lowerX: supplementalPrice,
+                xForExtrapolation: supplementalPrice2,
+              })
+              return [
+                { expectedWait, gasprice },
+                { expectedWait: supplementalTime, gasprice: supplementalPrice },
+                { expectedWait: supplementalTime2, gasprice: supplementalPrice2 },
+              ]
+            }
+          }))
+          const withOutliersRemoved = inliersByIQR(withSupplementalTimeEstimates.slice(0).reverse(), 'expectedWait').reverse()
+          const timeMappedToSeconds = withOutliersRemoved.map(({ expectedWait, gasprice }) => {
+            const expectedTime = (new BigNumber(expectedWait)).times(Number(blockTime), 10).toNumber()
             return {
               expectedTime,
-              expectedWait,
-              gasprice,
+              gasprice: (new BigNumber(gasprice, 10).toNumber()),
             }
           })
 
           const timeRetrieved = Date.now()
           dispatch(setApiEstimatesLastRetrieved(timeRetrieved))
           saveLocalStorageData(timeRetrieved, 'GAS_API_ESTIMATES_LAST_RETRIEVED')
-          saveLocalStorageData(timeMappedToSeconds.slice(1), 'GAS_API_ESTIMATES')
+          saveLocalStorageData(timeMappedToSeconds, 'GAS_API_ESTIMATES')
 
-          return timeMappedToSeconds.slice(1)
+          return timeMappedToSeconds
         })
       : Promise.resolve(priceAndTimeEstimates.length
           ? priceAndTimeEstimates

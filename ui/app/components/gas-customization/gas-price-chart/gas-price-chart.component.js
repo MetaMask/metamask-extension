@@ -33,16 +33,19 @@ export default class GasPriceChart extends Component {
     updateCustomGasPrice,
   }) {
     const chart = generateChart(gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax)
-
     setTimeout(function () {
       setTickPosition('y', 0, -5, 8)
       setTickPosition('y', 1, -3, -5)
-      setTickPosition('x', 0, 3, 15)
+      setTickPosition('x', 0, 3)
       setTickPosition('x', 1, 3, -8)
 
-      // TODO: Confirm the below constants work with all data sets and screen sizes
+      const { x: domainX } = getCoordinateData('.domain')
+      const { x: yAxisX } = getCoordinateData('.c3-axis-y-label')
+      const { x: tickX } = getCoordinateData('.c3-axis-x .tick')
+
+      d3.select('.c3-axis-x .tick').attr('transform', 'translate(' + (domainX - tickX) / 2 + ', 0)')
       d3.select('.c3-axis-x-label').attr('transform', 'translate(0,-15)')
-      d3.select('.c3-axis-y-label').attr('transform', 'translate(52, 2) rotate(-90)')
+      d3.select('.c3-axis-y-label').attr('transform', 'translate(' + (domainX - yAxisX - 12) + ', 2) rotate(-90)')
       d3.select('.c3-xgrid-focus line').attr('y2', 98)
 
       d3.select('.c3-chart').on('mouseout', () => {

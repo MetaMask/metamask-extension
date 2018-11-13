@@ -45,10 +45,25 @@ describe('Gas Duck', () => {
     speed: 'mockSpeed',
   }
   const mockPredictTableResponse = [
+    { expectedTime: 400, expectedWait: 40, gasprice: 0.25, somethingElse: 'foobar' },
+    { expectedTime: 200, expectedWait: 20, gasprice: 0.5, somethingElse: 'foobar' },
     { expectedTime: 100, expectedWait: 10, gasprice: 1, somethingElse: 'foobar' },
+    { expectedTime: 75, expectedWait: 7.5, gasprice: 1.5, somethingElse: 'foobar' },
     { expectedTime: 50, expectedWait: 5, gasprice: 2, somethingElse: 'foobar' },
+    { expectedTime: 35, expectedWait: 4.5, gasprice: 3, somethingElse: 'foobar' },
+    { expectedTime: 34, expectedWait: 4.4, gasprice: 3.1, somethingElse: 'foobar' },
+    { expectedTime: 25, expectedWait: 4.2, gasprice: 3.5, somethingElse: 'foobar' },
     { expectedTime: 20, expectedWait: 4, gasprice: 4, somethingElse: 'foobar' },
+    { expectedTime: 19, expectedWait: 3.9, gasprice: 4.1, somethingElse: 'foobar' },
+    { expectedTime: 15, expectedWait: 3, gasprice: 7, somethingElse: 'foobar' },
+    { expectedTime: 14, expectedWait: 2.9, gasprice: 7.1, somethingElse: 'foobar' },
+    { expectedTime: 12, expectedWait: 2.5, gasprice: 8, somethingElse: 'foobar' },
     { expectedTime: 10, expectedWait: 2, gasprice: 10, somethingElse: 'foobar' },
+    { expectedTime: 9, expectedWait: 1.9, gasprice: 10.1, somethingElse: 'foobar' },
+    { expectedTime: 5, expectedWait: 1, gasprice: 15, somethingElse: 'foobar' },
+    { expectedTime: 4, expectedWait: 0.9, gasprice: 15.1, somethingElse: 'foobar' },
+    { expectedTime: 2, expectedWait: 0.8, gasprice: 17, somethingElse: 'foobar' },
+    { expectedTime: 1.1, expectedWait: 0.6, gasprice: 19.9, somethingElse: 'foobar' },
     { expectedTime: 1, expectedWait: 0.5, gasprice: 20, somethingElse: 'foobar' },
   ]
   const fetchStub = sinon.stub().callsFake((url) => new Promise(resolve => {
@@ -382,35 +397,13 @@ describe('Gas Duck', () => {
         [{ type: SET_API_ESTIMATES_LAST_RETRIEVED, value: 2000000 }]
       )
 
-      assert.deepEqual(
-        mockDistpatch.getCall(2).args,
-        [{
-          type: SET_PRICE_AND_TIME_ESTIMATES,
-          value: [
-            {
-              expectedTime: '25',
-              expectedWait: 5,
-              gasprice: 2,
-            },
-            {
-              expectedTime: '20',
-              expectedWait: 4,
-              gasprice: 4,
-            },
-            {
-              expectedTime: '10',
-              expectedWait: 2,
-              gasprice: 10,
-            },
-            {
-              expectedTime: '2.5',
-              expectedWait: 0.5,
-              gasprice: 20,
-            },
-          ],
+      const { type: thirdDispatchCallType, value: priceAndTimeEstimateResult } = mockDistpatch.getCall(2).args[0]
+      assert.equal(thirdDispatchCallType, SET_PRICE_AND_TIME_ESTIMATES)
+      assert(priceAndTimeEstimateResult.length < mockPredictTableResponse.length * 3 - 2)
+      assert(!priceAndTimeEstimateResult.find(d => d.expectedTime > 100))
+      assert(!priceAndTimeEstimateResult.find((d, i, a) => a[a + 1] && d.expectedTime > a[a + 1].expectedTime))
+      assert(!priceAndTimeEstimateResult.find((d, i, a) => a[a + 1] && d.gasprice > a[a + 1].gasprice))
 
-        }]
-      )
       assert.deepEqual(
         mockDistpatch.getCall(3).args,
         [{ type: GAS_ESTIMATE_LOADING_FINISHED }]
