@@ -20,7 +20,7 @@ class FiatValue extends Component {
 
     if (value === 'None') return value
     let fiatDisplayNumber, fiatTooltipNumber
-    var splitBalance = value.split(' ')
+    const splitBalance = value.split(' ')
 
     fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
     fiatDisplayNumber = fiatTooltipNumber.toFixed(this.countSignificantDecimals(fiatTooltipNumber, 2))
