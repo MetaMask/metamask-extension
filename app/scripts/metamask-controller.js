@@ -821,7 +821,11 @@ module.exports = class MetamaskController extends EventEmitter {
     this.accountTracker.removeAccount([address])
 
     // Remove account from the keyring
-    await this.keyringController.removeAccount(address)
+    try {
+      await this.keyringController.removeAccount(address)
+    } catch (e) {
+      log.error(e)
+    }
     return address
   }
 

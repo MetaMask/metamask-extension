@@ -125,7 +125,7 @@ class ConnectHardwareForm extends Component {
         if (e === 'Window blocked') {
           this.setState({ browserSupported: false, error: null})
         } else if (e !== 'Window closed') {
-          this.setState({ error: e.toString() })
+          this.setState({ error: (e.message || e.toString()) })
         }
       })
   }
@@ -140,7 +140,7 @@ class ConnectHardwareForm extends Component {
         unlocked: false,
       })
     }).catch(e => {
-      this.setState({ error: e.toString() })
+      this.setState({ error: (e.message || e.toString()) })
     })
   }
 
@@ -154,7 +154,7 @@ class ConnectHardwareForm extends Component {
     .then(_ => {
       this.props.goHome()
     }).catch(e => {
-      this.setState({ error: e.toString() })
+      this.setState({ error: (e.message || e.toString()) })
     })
   }
 

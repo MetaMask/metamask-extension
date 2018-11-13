@@ -27,6 +27,9 @@ class AccountDropdowns extends Component {
 
     return accountOrder.map((address, index) => {
       const identity = identities[address]
+      if (!identity) {
+        return null
+      }
       const isSelected = identity.address === selected
 
       const simpleAddress = identity.address.substring(2).toLowerCase()
