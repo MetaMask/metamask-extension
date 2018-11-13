@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const FadeModal = require('boron').FadeModal
 const actions = require('../../actions')
+const { resetCustomData: resetCustomGasData } = require('../../ducks/gas.duck')
 const isMobileView = require('../../../lib/is-mobile-view')
 const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
@@ -317,6 +318,10 @@ const MODALS = {
     contentStyle: {
       borderRadius: '8px',
     },
+    customOnHideOpts: {
+      action: resetCustomGasData,
+      args: [],
+    },
   },
 
   TRANSACTION_CONFIRMED: {
@@ -392,8 +397,11 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    hideModal: () => {
+    hideModal: (customOnHideOpts) => {
       dispatch(actions.hideModal())
+      if (customOnHideOpts.action) {
+        dispatch(customOnHideOpts.action(...customOnHideOpts.args))
+      }
     },
     hideWarning: () => {
       dispatch(actions.hideWarning())
@@ -425,7 +433,7 @@ Modal.prototype.render = function () {
         if (modal.onHide) {
           modal.onHide(this.props)
         }
-        this.onHide()
+        this.onHide(modal.customOnHideOpts)
       },
       ref: (ref) => {
         this.modalRef = ref
@@ -447,11 +455,11 @@ Modal.prototype.componentWillReceiveProps = function (nextProps) {
   }
 }
 
-Modal.prototype.onHide = function () {
+Modal.prototype.onHide = function (customOnHideOpts) {
   if (this.props.onHideCallback) {
     this.props.onHideCallback()
   }
-  this.props.hideModal()
+  this.props.hideModal(customOnHideOpts)
 }
 
 Modal.prototype.hide = function () {
