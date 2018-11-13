@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { formatBalance } from '../util'
+import { countSignificantDecimals } from '../../../app/scripts/lib/util'
 import PropTypes from 'prop-types'
 
 class FiatValue extends Component {
@@ -23,7 +24,7 @@ class FiatValue extends Component {
     var splitBalance = value.split(' ')
 
     fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
-    fiatDisplayNumber = fiatTooltipNumber.toFixed(this.countSignificantDecimals(fiatTooltipNumber, 2))
+    fiatDisplayNumber = fiatTooltipNumber.toFixed(countSignificantDecimals(fiatTooltipNumber, 2))
 
     const valueStyle = props.valueStyle ? props.valueStyle : {
       width: '100%',
@@ -39,32 +40,6 @@ class FiatValue extends Component {
     }
 
     return this.fiatDisplay(fiatDisplayNumber, valueStyle, dimStyle, renderedCurrency.toUpperCase())
-  }
-
-  /**
-   * returns the length of truncated significant decimals for fiat value
-   * @param {float} val The float value to be truncated
-   * @param {number} len The length of significant decimals
-   * returns {number} The length of truncated significant decimals
-  **/
-  countSignificantDecimals = (val, len) => {
-      if (Math.floor(val) === val) {
-        return 0
-      }
-      const decimals = val.toString().split('.')[1]
-      const decimalsArr = decimals.split('')
-      let decimalsLen = decimalsArr.slice(0).reduce((res, val, ind, arr) => {
-        if (Number(val) === 0) {
-          res += 1
-        } else {
-          arr.splice(1) // break reduce function
-        }
-        return res
-      }, 0)
-      decimalsLen += len
-      const valWithSignificantDecimals = `${Math.floor(val)}.${decimalsArr.slice(0, decimalsLen).join('')}`
-      decimalsLen = parseFloat(valWithSignificantDecimals).toString().split('.')[1].length
-      return decimalsLen || 0
   }
 
   fiatDisplay = (fiatDisplayNumber, valueStyle, dimStyle, fiatSuffix) => {
