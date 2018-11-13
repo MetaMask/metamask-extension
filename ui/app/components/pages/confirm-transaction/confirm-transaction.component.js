@@ -32,7 +32,7 @@ export default class ConfirmTransaction extends Component {
     setTransactionToConfirm: PropTypes.func,
     confirmTransaction: PropTypes.object,
     clearConfirmTransaction: PropTypes.func,
-    fetchBasicGasEstimates: PropTypes.func,
+    fetchBasicGasAndTimeEstimates: PropTypes.func,
   }
 
   getParamsTransactionId () {
@@ -46,7 +46,7 @@ export default class ConfirmTransaction extends Component {
       send = {},
       history,
       confirmTransaction: { txData: { id: transactionId } = {} },
-      fetchBasicGasEstimates,
+      fetchBasicGasAndTimeEstimates,
     } = this.props
 
     if (!totalUnapprovedCount && !send.to) {
@@ -55,7 +55,7 @@ export default class ConfirmTransaction extends Component {
     }
 
     if (!transactionId) {
-      fetchBasicGasEstimates()
+      fetchBasicGasAndTimeEstimates()
       this.setTransactionToConfirm()
     }
   }

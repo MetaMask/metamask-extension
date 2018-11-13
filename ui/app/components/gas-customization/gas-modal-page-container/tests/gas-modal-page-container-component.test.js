@@ -3,14 +3,21 @@ import assert from 'assert'
 import shallow from '../../../../../lib/shallow-with-context'
 import sinon from 'sinon'
 import GasModalPageContainer from '../gas-modal-page-container.component.js'
+import timeout from '../../../../../lib/test-timeout'
 
 import PageContainer from '../../../page-container'
 
 import { Tab } from '../../../tabs'
 
+const mockBasicGasEstimates = {
+  blockTime: 'mockBlockTime',
+}
+
 const propsMethodSpies = {
   cancelAndClose: sinon.spy(),
   onSubmit: sinon.spy(),
+  fetchBasicGasAndTimeEstimates: sinon.stub().returns(Promise.resolve(mockBasicGasEstimates)),
+  fetchGasEstimates: sinon.spy(),
 }
 
 const mockGasPriceButtonGroupProps = {
@@ -59,6 +66,8 @@ describe('GasModalPageContainer Component', function () {
     wrapper = shallow(<GasModalPageContainer
       cancelAndClose={propsMethodSpies.cancelAndClose}
       onSubmit={propsMethodSpies.onSubmit}
+      fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+      fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
       updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
       updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
       customGasPrice={21}
@@ -74,6 +83,24 @@ describe('GasModalPageContainer Component', function () {
 
   afterEach(() => {
     propsMethodSpies.cancelAndClose.resetHistory()
+  })
+
+  describe('componentDidMount', () => {
+    it('should call props.fetchBasicGasAndTimeEstimates', () => {
+      propsMethodSpies.fetchBasicGasAndTimeEstimates.resetHistory()
+      assert.equal(propsMethodSpies.fetchBasicGasAndTimeEstimates.callCount, 0)
+      wrapper.instance().componentDidMount()
+      assert.equal(propsMethodSpies.fetchBasicGasAndTimeEstimates.callCount, 1)
+    })
+
+    it('should call props.fetchGasEstimates with the block time returned by fetchBasicGasAndTimeEstimates', async () => {
+      propsMethodSpies.fetchGasEstimates.resetHistory()
+      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 0)
+      wrapper.instance().componentDidMount()
+      await timeout(250)
+      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 1)
+      assert.equal(propsMethodSpies.fetchGasEstimates.getCall(0).args[0], 'mockBlockTime')
+    })
   })
 
   describe('render', () => {
@@ -106,7 +133,10 @@ describe('GasModalPageContainer Component', function () {
 
     it('should pass the correct renderTabs property to PageContainer', () => {
       sinon.stub(GP, 'renderTabs').returns('mockTabs')
-      const renderTabsWrapperTester = shallow(<GasModalPageContainer />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
+      const renderTabsWrapperTester = shallow(<GasModalPageContainer
+        fetchBasicGasAndTimeEstimates={propsMethodSpies.fetchBasicGasAndTimeEstimates}
+        fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+      />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
       const { tabsComponent } = renderTabsWrapperTester.find(PageContainer).props()
       assert.equal(tabsComponent, 'mockTabs')
       GasModalPageContainer.prototype.renderTabs.restore()

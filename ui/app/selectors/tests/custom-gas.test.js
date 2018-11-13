@@ -10,7 +10,7 @@ const {
   getEstimatedGasTimes,
   getPriceAndTimeEstimates,
   getRenderableBasicEstimateData,
-  getRenderableEstimateDataForSmallButtons,
+  getRenderableEstimateDataForSmallButtonsFromGWEI,
 } = proxyquire('../custom-gas', {})
 
 describe('custom-gas selectors', () => {
@@ -80,21 +80,21 @@ describe('custom-gas selectors', () => {
             labelKey: 'fastest',
             feeInPrimaryCurrency: '$0.05',
             feeInSecondaryCurrency: '0.00021 ETH',
-            timeEstimate: '~7 sec',
+            timeEstimate: '~30 sec',
             priceInHexWei: '0x2540be400',
           },
           {
             labelKey: 'fast',
             feeInPrimaryCurrency: '$0.03',
             feeInSecondaryCurrency: '0.000105 ETH',
-            timeEstimate: '~46 sec',
+            timeEstimate: '~3 min 18 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
             labelKey: 'slow',
             feeInPrimaryCurrency: '$0.01',
             feeInSecondaryCurrency: '0.0000525 ETH',
-            timeEstimate: '~1 min 33 sec',
+            timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x9502f900',
           },
         ],
@@ -111,10 +111,10 @@ describe('custom-gas selectors', () => {
               blockTime: 14.16326530612245,
               safeLow: 25,
               safeLowWait: 6.6,
-              average: 50,
-              avgWait: 3.3,
-              fast: 100,
-              fastWait: 0.5,
+              fast: 50,
+              fastWait: 3.3,
+              fastest: 100,
+              fastestWait: 0.5,
             },
           },
         },
@@ -125,21 +125,21 @@ describe('custom-gas selectors', () => {
             labelKey: 'fastest',
             feeInPrimaryCurrency: '$1.07',
             feeInSecondaryCurrency: '0.00042 ETH',
-            timeEstimate: '~14 sec',
+            timeEstimate: '~1 min',
             priceInHexWei: '0x4a817c800',
           },
           {
             labelKey: 'fast',
             feeInPrimaryCurrency: '$0.54',
             feeInSecondaryCurrency: '0.00021 ETH',
-            timeEstimate: '~1 min 33 sec',
+            timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
           {
             labelKey: 'slow',
             feeInPrimaryCurrency: '$0.27',
             feeInSecondaryCurrency: '0.000105 ETH',
-            timeEstimate: '~3 min 7 sec',
+            timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
         ],
@@ -156,10 +156,10 @@ describe('custom-gas selectors', () => {
               blockTime: 14.16326530612245,
               safeLow: 50,
               safeLowWait: 13.2,
-              average: 100,
-              avgWait: 6.6,
-              fast: 200,
-              fastWait: 1.0,
+              fast: 100,
+              fastWait: 6.6,
+              fastest: 200,
+              fastestWait: 1.0,
             },
           },
         },
@@ -176,27 +176,27 @@ describe('custom-gas selectors', () => {
 
   })
 
-  describe('getRenderableEstimateDataForSmallButtons()', () => {
+  describe('getRenderableEstimateDataForSmallButtonsFromGWEI()', () => {
     const tests = [
       {
         expectedResult: [
           {
-            feeInSecondaryCurrency: '$0.05',
-            feeInPrimaryCurrency: '0.00021 ETH',
+            feeInSecondaryCurrency: '$0.54',
+            feeInPrimaryCurrency: '0.0021 ETH',
+            labelKey: 'fastest',
+            priceInHexWei: '0x174876e800',
+          },
+          {
+            feeInSecondaryCurrency: '$0.27',
+            feeInPrimaryCurrency: '0.00105 ETH',
             labelKey: 'fast',
-            priceInHexWei: '0x2540be400',
+            priceInHexWei: '0xba43b7400',
           },
           {
-            feeInSecondaryCurrency: '$0.03',
-            feeInPrimaryCurrency: '0.0001 ETH',
-            labelKey: 'average',
-            priceInHexWei: '0x12a05f200',
-          },
-          {
-            feeInSecondaryCurrency: '$0.01',
-            feeInPrimaryCurrency: '0.00005 ETH',
+            feeInSecondaryCurrency: '$0.13',
+            feeInPrimaryCurrency: '0.00052 ETH',
             labelKey: 'slow',
-            priceInHexWei: '0x9502f900',
+            priceInHexWei: '0x5d21dba00',
           },
         ],
         mockState: {
@@ -212,10 +212,10 @@ describe('custom-gas selectors', () => {
               blockTime: 14.16326530612245,
               safeLow: 25,
               safeLowWait: 6.6,
-              average: 50,
-              avgWait: 3.3,
-              fast: 100,
-              fastWait: 0.5,
+              fast: 50,
+              fastWait: 3.3,
+              fastest: 100,
+              fastestWait: 0.5,
             },
           },
         },
@@ -223,22 +223,22 @@ describe('custom-gas selectors', () => {
       {
         expectedResult: [
           {
-            feeInSecondaryCurrency: '$1.07',
-            feeInPrimaryCurrency: '0.00042 ETH',
+            feeInSecondaryCurrency: '$10.74',
+            feeInPrimaryCurrency: '0.0042 ETH',
+            labelKey: 'fastest',
+            priceInHexWei: '0x2e90edd000',
+          },
+          {
+            feeInSecondaryCurrency: '$5.37',
+            feeInPrimaryCurrency: '0.0021 ETH',
             labelKey: 'fast',
-            priceInHexWei: '0x4a817c800',
+            priceInHexWei: '0x174876e800',
           },
           {
-            feeInSecondaryCurrency: '$0.54',
-            feeInPrimaryCurrency: '0.00021 ETH',
-            labelKey: 'average',
-            priceInHexWei: '0x2540be400',
-          },
-          {
-            feeInSecondaryCurrency: '$0.27',
-            feeInPrimaryCurrency: '0.0001 ETH',
+            feeInSecondaryCurrency: '$2.68',
+            feeInPrimaryCurrency: '0.00105 ETH',
             labelKey: 'slow',
-            priceInHexWei: '0x12a05f200',
+            priceInHexWei: '0xba43b7400',
           },
         ],
         mockState: {
@@ -254,10 +254,10 @@ describe('custom-gas selectors', () => {
               blockTime: 14.16326530612245,
               safeLow: 50,
               safeLowWait: 13.2,
-              average: 100,
-              avgWait: 6.6,
-              fast: 200,
-              fastWait: 1.0,
+              fast: 100,
+              fastWait: 6.6,
+              fastest: 200,
+              fastestWait: 1.0,
             },
           },
         },
@@ -266,7 +266,7 @@ describe('custom-gas selectors', () => {
     it('should return renderable data about basic estimates appropriate for buttons with less info', () => {
       tests.forEach(test => {
         assert.deepEqual(
-          getRenderableEstimateDataForSmallButtons(test.mockState),
+          getRenderableEstimateDataForSmallButtonsFromGWEI(test.mockState),
           test.expectedResult
         )
       })

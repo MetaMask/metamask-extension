@@ -8,7 +8,7 @@ import { hexToDecimal } from '../../helpers/conversions.util'
 import { getTokenData } from '../../helpers/transactions.util'
 import { formatDate } from '../../util'
 import {
-  fetchBasicGasEstimates,
+  fetchBasicGasAndTimeEstimates,
   fetchGasEstimates,
   setCustomGasPrice,
   setCustomGasLimit,
@@ -29,7 +29,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
+    fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     setSelectedToken: tokenAddress => dispatch(setSelectedToken(tokenAddress)),
     retryTransaction: (transaction) => {

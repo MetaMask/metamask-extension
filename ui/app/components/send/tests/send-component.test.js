@@ -3,16 +3,11 @@ import assert from 'assert'
 import proxyquire from 'proxyquire'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
+import timeout from '../../../../lib/test-timeout'
 
 import SendHeader from '../send-header/send-header.container'
 import SendContent from '../send-content/send-content.component'
 import SendFooter from '../send-footer/send-footer.container'
-
-function timeout (time) {
-  return new Promise((resolve, reject) => {
-    setTimeout(resolve, time || 1500)
-  })
-}
 
 const mockBasicGasEstimates = {
   blockTime: 'mockBlockTime',
@@ -88,7 +83,7 @@ describe('Send Component', function () {
   })
 
   describe('componentDidMount', () => {
-    it('should call props.fetchBasicGasEstimates', () => {
+    it('should call props.fetchBasicGasAndTimeEstimates', () => {
       propsMethodSpies.fetchBasicGasEstimates.resetHistory()
       assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
       wrapper.instance().componentDidMount()
@@ -102,15 +97,6 @@ describe('Send Component', function () {
       wrapper.instance().componentDidMount()
       await timeout(250)
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
-    })
-
-    it('should call props.fetchGasEstimates with the block time returned by fetchBasicGasEstimates', async () => {
-      propsMethodSpies.fetchGasEstimates.resetHistory()
-      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 0)
-      wrapper.instance().componentDidMount()
-      await timeout(250)
-      assert.equal(propsMethodSpies.fetchGasEstimates.callCount, 1)
-      assert.equal(propsMethodSpies.fetchGasEstimates.getCall(0).args[0], 'mockBlockTime')
     })
   })
 

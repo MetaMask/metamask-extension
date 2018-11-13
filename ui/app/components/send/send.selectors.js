@@ -8,7 +8,7 @@ const {
   calcGasTotal,
 } = require('./send.utils')
 import {
-  getAveragePriceEstimateInHexWEI,
+  getFastPriceEstimateInHexWEI,
 } from '../../selectors/custom-gas'
 
 const selectors = {
@@ -138,7 +138,7 @@ function getGasLimit (state) {
 }
 
 function getGasPrice (state) {
-  return state.metamask.send.gasPrice || getAveragePriceEstimateInHexWEI(state)
+  return state.metamask.send.gasPrice || getFastPriceEstimateInHexWEI(state)
 }
 
 function getGasPriceFromRecentBlocks (state) {

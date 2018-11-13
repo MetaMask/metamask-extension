@@ -13,6 +13,8 @@ import {
   setCustomGasLimit,
   resetCustomData,
   setCustomTimeEstimate,
+  fetchGasEstimates,
+  fetchBasicGasAndTimeEstimates,
 } from '../../../ducks/gas.duck'
 import {
   hideGasButtonGroup,
@@ -28,7 +30,7 @@ import {
 } from '../../../selectors.js'
 import {
   formatTimeEstimate,
-  getAveragePriceEstimateInHexWEI,
+  getFastPriceEstimateInHexWEI,
   getBasicGasEstimateLoadingStatus,
   getCustomGasLimit,
   getCustomGasPrice,
@@ -36,6 +38,7 @@ import {
   getEstimatedGasPrices,
   getEstimatedGasTimes,
   getRenderableBasicEstimateData,
+  getBasicGasEstimateBlockTime,
 } from '../../../selectors/custom-gas'
 import {
   submittedPendingTransactionsSelector,
@@ -100,6 +103,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     newTotalFiat,
     currentTimeEstimate: getRenderableTimeEstimate(customGasPrice, gasPrices, estimatedTimes),
+    blockTime: getBasicGasEstimateBlockTime(state),
     gasPriceButtonGroupProps: {
       buttonDataLoading,
       defaultActiveButtonIndex: getDefaultActiveButtonIndex(gasButtonInfo, customModalGasPriceInHex),
@@ -150,6 +154,8 @@ const mapDispatchToProps = dispatch => {
     hideGasButtonGroup: () => dispatch(hideGasButtonGroup()),
     setCustomTimeEstimate: (timeEstimateInSeconds) => dispatch(setCustomTimeEstimate(timeEstimateInSeconds)),
     hideSidebar: () => dispatch(hideSidebar()),
+    fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
+    fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
   }
 }
 
@@ -209,7 +215,7 @@ function getTxParams (state, transactionId) {
   return txData.txParams || pendingTxParams || {
     from: send.from,
     gas: send.gasLimit,
-    gasPrice: send.gasPrice || getAveragePriceEstimateInHexWEI(state),
+    gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
     to: send.to,
     value: getSelectedToken(state) ? '0x0' : send.amount,
   }

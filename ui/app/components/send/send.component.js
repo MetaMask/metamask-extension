@@ -35,6 +35,7 @@ export default class SendTransactionScreen extends PersistentForm {
     selectedToken: PropTypes.object,
     tokenBalance: PropTypes.string,
     tokenContract: PropTypes.object,
+    fetchBasicGasEstimates: PropTypes.func,
     updateAndSetGasTotal: PropTypes.func,
     updateSendErrors: PropTypes.func,
     updateSendTokenBalance: PropTypes.func,
@@ -166,9 +167,8 @@ export default class SendTransactionScreen extends PersistentForm {
 
   componentDidMount () {
     this.props.fetchBasicGasEstimates()
-    .then(basicEstimates => {
+    .then(() => {
       this.updateGas()
-      this.props.fetchGasEstimates(basicEstimates.blockTime)
     })
   }
 
