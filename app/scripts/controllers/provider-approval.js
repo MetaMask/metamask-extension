@@ -88,7 +88,10 @@ class ProviderApprovalController {
   _handlePrivacyRequest () {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
     if (!privacyMode) {
-      this.platform && this.platform.sendMessage({ action: 'approve-provider-request' }, { active: true })
+      this.platform && this.platform.sendMessage({
+        action: 'approve-legacy-provider-request',
+        selectedAddress: this.publicConfigStore.getState().selectedAddress,
+      }, { active: true })
       this.publicConfigStore.emit('update', this.publicConfigStore.getState())
     }
   }
@@ -101,7 +104,10 @@ class ProviderApprovalController {
   approveProviderRequest (origin) {
     this.closePopup && this.closePopup()
     const requests = this.store.getState().providerRequests || []
-    this.platform && this.platform.sendMessage({ action: 'approve-provider-request' }, { active: true })
+    this.platform && this.platform.sendMessage({
+      action: 'approve-provider-request',
+      selectedAddress: this.publicConfigStore.getState().selectedAddress,
+    }, { active: true })
     this.publicConfigStore.emit('update', this.publicConfigStore.getState())
     const providerRequests = requests.filter(request => request.origin !== origin)
     this.store.updateState({ providerRequests })

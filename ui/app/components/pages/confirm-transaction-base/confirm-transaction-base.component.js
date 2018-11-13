@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../confirm-page-container'
 import { isBalanceSufficient } from '../../send/send.utils'
-import { DEFAULT_ROUTE } from '../../../routes'
+import { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } from '../../../routes'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
@@ -55,6 +55,7 @@ export default class ConfirmTransactionBase extends Component {
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
+    currentNetworkUnapprovedTxs: PropTypes.object,
     // Component props
     action: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -347,6 +348,32 @@ export default class ConfirmTransactionBase extends Component {
       />
     )
   }
+  
+  handleNextTx (txId) {
+    const { history, clearConfirmTransaction } = this.props
+    if (txId) {
+      clearConfirmTransaction()
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`)
+    }
+  }
+
+  getNavigateTxData () {
+    const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props
+    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs).reverse()
+    const currentPosition = enumUnapprovedTxs.indexOf(id.toString())
+
+    return {
+      totalTx: enumUnapprovedTxs.length,
+      positionOfCurrentTx: currentPosition + 1,
+      nextTxId: enumUnapprovedTxs[currentPosition + 1],
+      prevTxId: enumUnapprovedTxs[currentPosition - 1],
+      showNavigation: enumUnapprovedTxs.length > 1,
+      firstTx: enumUnapprovedTxs[0],
+      lastTx: enumUnapprovedTxs[enumUnapprovedTxs.length - 1],
+      ofText: this.context.t('ofTextNofM'),
+      requestsWaitingText: this.context.t('requestsAwaitingAcknowledgement'),
+    }
+  }
 
   render () {
     const {
@@ -376,6 +403,7 @@ export default class ConfirmTransactionBase extends Component {
 
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()
+    const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = this.getNavigateTxData()
 
     return (
       <ConfirmPageContainer
@@ -401,6 +429,16 @@ export default class ConfirmTransactionBase extends Component {
         errorMessage={errorMessage || submitError}
         errorKey={propsErrorKey || errorKey}
         warning={warning}
+        totalTx={totalTx}
+        positionOfCurrentTx={positionOfCurrentTx}
+        nextTxId={nextTxId}
+        prevTxId={prevTxId}
+        showNavigation={showNavigation}
+        onNextTx={(txId) => this.handleNextTx(txId)}
+        firstTx={firstTx}
+        lastTx={lastTx}
+        ofText={ofText}
+        requestsWaitingText={requestsWaitingText}
         disabled={!propsValid || !valid || submitting}
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}

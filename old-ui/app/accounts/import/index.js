@@ -59,7 +59,7 @@ AccountImportSubview.prototype.render = function () {
           },
           onClick: () => {
             global.platform.openWindow({
-              url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
+              url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289592-What-Are-Loose-Accounts-',
             })
           },
         }, 'here.'),

@@ -73,9 +73,9 @@ const mapStateToProps = (state, props) => {
 
   const currentNetworkUnapprovedTxs = R.filter(
     ({ metamaskNetworkId }) => metamaskNetworkId === network,
-    valuesFor(unapprovedTxs),
+    unapprovedTxs,
   )
-  const unapprovedTxCount = currentNetworkUnapprovedTxs.length
+  const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length
 
   return {
     balance,
@@ -104,6 +104,7 @@ const mapStateToProps = (state, props) => {
     assetImage,
     unapprovedTxs,
     unapprovedTxCount,
+    currentNetworkUnapprovedTxs,
   }
 }
 
