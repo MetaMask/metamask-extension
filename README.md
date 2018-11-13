@@ -3,7 +3,7 @@
 
 ## Support
 
-If you're a user seeking support, [here is our support site](https://metamask.helpscoutdocs.com/).
+If you're a user seeking support, [here is our support site](https://metamask.zendesk.com/hc/en-us).
 
 ## Introduction
 
