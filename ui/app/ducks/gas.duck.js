@@ -19,6 +19,7 @@ const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE'
 const SET_CUSTOM_GAS_TOTAL = 'metamask/gas/SET_CUSTOM_GAS_TOTAL'
 const SET_PRICE_AND_TIME_ESTIMATES = 'metamask/gas/SET_PRICE_AND_TIME_ESTIMATES'
 const SET_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_API_ESTIMATES_LAST_RETRIEVED'
+const SET_BASIC_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_BASIC_API_ESTIMATES_LAST_RETRIEVED'
 
 // TODO: determine if this approach to initState is consistent with conventional ducks pattern
 const initState = {
@@ -42,7 +43,9 @@ const initState = {
   basicEstimateIsLoading: true,
   gasEstimatesLoading: true,
   priceAndTimeEstimates: [],
+  basicPriceAndTimeEstimates: [],
   priceAndTimeEstimatesLastRetrieved: 0,
+  basicPriceAndTimeEstimatesLastRetrieved: 0,
   errors: {},
 }
 
@@ -118,6 +121,11 @@ export default function reducer ({ gas: gasState = initState }, action = {}) {
         ...newState,
         priceAndTimeEstimatesLastRetrieved: action.value,
       }
+    case SET_BASIC_API_ESTIMATES_LAST_RETRIEVED:
+      return {
+        ...newState,
+        basicPriceAndTimeEstimatesLastRetrieved: action.value,
+      }
     case RESET_CUSTOM_DATA:
       return {
         ...newState,
@@ -159,9 +167,9 @@ export function fetchBasicGasEstimates () {
   return (dispatch) => {
     dispatch(basicGasEstimatesLoadingStarted())
 
-    return fetch('https://ethgasstation.info/json/ethgasAPI.json', {
+    return fetch('https://dev.blockscale.net/api/gasexpress.json', {
       'headers': {},
-      'referrer': 'http://ethgasstation.info/json/',
+      'referrer': 'https://dev.blockscale.net/api/',
       'referrerPolicy': 'no-referrer-when-downgrade',
       'body': null,
       'method': 'GET',
@@ -169,22 +177,52 @@ export function fetchBasicGasEstimates () {
     )
       .then(r => r.json())
       .then(({
-        average,
-        avgWait,
-        block_time: blockTime,
-        blockNum,
+        safeLow,
+        standard: average,
         fast,
         fastest,
-        fastestWait,
-        fastWait,
-        safeLow,
-        safeLowWait,
-        speed,
+        block_time: blockTime,
+        blockNum,
       }) => {
         const basicEstimates = {
+          safeLow,
+          average,
+          fast,
+          fastest,
+          blockTime,
+          blockNum,
+        }
+        dispatch(setBasicGasEstimateData(basicEstimates))
+        dispatch(basicGasEstimatesLoadingFinished())
+        return basicEstimates
+      })
+  }
+}
+
+export function fetchBasicGasAndTimeEstimates () {
+  return (dispatch, getState) => {
+    const {
+      basicPriceAndTimeEstimatesLastRetrieved,
+      basicPriceAndTimeEstimates,
+    } = getState().gas
+    const timeLastRetrieved = basicPriceAndTimeEstimatesLastRetrieved || loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED') || 0
+
+    dispatch(basicGasEstimatesLoadingStarted())
+
+    const promiseToFetch = Date.now() - timeLastRetrieved > 75000
+      ? fetch('https://ethgasstation.info/json/ethgasAPI.json', {
+        'headers': {},
+        'referrer': 'http://ethgasstation.info/json/',
+        'referrerPolicy': 'no-referrer-when-downgrade',
+        'body': null,
+        'method': 'GET',
+        'mode': 'cors'}
+      )
+        .then(r => r.json())
+        .then(({
           average,
           avgWait,
-          blockTime,
+          block_time: blockTime,
           blockNum,
           fast,
           fastest,
@@ -193,7 +231,34 @@ export function fetchBasicGasEstimates () {
           safeLow,
           safeLowWait,
           speed,
-        }
+        }) => {
+          const basicEstimates = {
+            average,
+            avgWait,
+            blockTime,
+            blockNum,
+            fast,
+            fastest,
+            fastestWait,
+            fastWait,
+            safeLow,
+            safeLowWait,
+            speed,
+          }
+
+          const timeRetrieved = Date.now()
+          dispatch(setBasicApiEstimatesLastRetrieved(timeRetrieved))
+          saveLocalStorageData(timeRetrieved, 'BASIC_GAS_AND_TIME_API_ESTIMATES_LAST_RETRIEVED')
+          saveLocalStorageData(basicEstimates, 'BASIC_GAS_AND_TIME_API_ESTIMATES')
+
+          return basicEstimates
+        })
+      : Promise.resolve(basicPriceAndTimeEstimates.length
+          ? basicPriceAndTimeEstimates
+          : loadLocalStorageData('BASIC_GAS_AND_TIME_API_ESTIMATES')
+        )
+
+      return promiseToFetch.then(basicEstimates => {
         dispatch(setBasicGasEstimateData(basicEstimates))
         dispatch(basicGasEstimatesLoadingFinished())
         return basicEstimates
@@ -297,6 +362,13 @@ export function setCustomGasErrors (newErrors) {
 export function setApiEstimatesLastRetrieved (retrievalTime) {
   return {
     type: SET_API_ESTIMATES_LAST_RETRIEVED,
+    value: retrievalTime,
+  }
+}
+
+export function setBasicApiEstimatesLastRetrieved (retrievalTime) {
+  return {
+    type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED,
     value: retrievalTime,
   }
 }

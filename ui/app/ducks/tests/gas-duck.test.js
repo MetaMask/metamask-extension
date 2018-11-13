@@ -19,7 +19,7 @@ const {
   setCustomGasTotal,
   setCustomGasErrors,
   resetCustomGasState,
-  fetchBasicGasEstimates,
+  fetchBasicGasAndTimeEstimates,
   gasEstimatesLoadingStarted,
   gasEstimatesLoadingFinished,
   setPricesAndTimeEstimates,
@@ -100,6 +100,9 @@ describe('Gas Duck', () => {
     gasEstimatesLoading: true,
     priceAndTimeEstimates: [],
     priceAndTimeEstimatesLastRetrieved: 0,
+    basicPriceAndTimeEstimates: [],
+    basicPriceAndTimeEstimatesLastRetrieved: 0,
+
 
   }
   const BASIC_GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'
@@ -114,6 +117,7 @@ describe('Gas Duck', () => {
   const SET_CUSTOM_GAS_TOTAL = 'metamask/gas/SET_CUSTOM_GAS_TOTAL'
   const SET_PRICE_AND_TIME_ESTIMATES = 'metamask/gas/SET_PRICE_AND_TIME_ESTIMATES'
   const SET_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_API_ESTIMATES_LAST_RETRIEVED'
+  const SET_BASIC_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_BASIC_API_ESTIMATES_LAST_RETRIEVED'
 
   describe('GasReducer()', () => {
     it('should initialize state', () => {
@@ -224,13 +228,23 @@ describe('Gas Duck', () => {
       )
     })
 
-    it('should set priceAndTimeEstimatesLastRetrieved when receivinga SET_API_ESTIMATES_LAST_RETRIEVED action', () => {
+    it('should set priceAndTimeEstimatesLastRetrieved when receiving a SET_API_ESTIMATES_LAST_RETRIEVED action', () => {
       assert.deepEqual(
         GasReducer(mockState, {
           type: SET_API_ESTIMATES_LAST_RETRIEVED,
           value: 1500000000000,
         }),
         Object.assign({ priceAndTimeEstimatesLastRetrieved: 1500000000000 }, mockState.gas)
+      )
+    })
+
+    it('should set priceAndTimeEstimatesLastRetrieved when receiving a SET_BASIC_API_ESTIMATES_LAST_RETRIEVED action', () => {
+      assert.deepEqual(
+        GasReducer(mockState, {
+          type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED,
+          value: 1700000000000,
+        }),
+        Object.assign({ basicPriceAndTimeEstimatesLastRetrieved: 1700000000000 }, mockState.gas)
       )
     })
 
@@ -272,10 +286,14 @@ describe('Gas Duck', () => {
     })
   })
 
-  describe('fetchBasicGasEstimates', () => {
+  describe('fetchBasicGasAndTimeEstimates', () => {
     const mockDistpatch = sinon.spy()
     it('should call fetch with the expected params', async () => {
-      await fetchBasicGasEstimates()(mockDistpatch)
+      await fetchBasicGasAndTimeEstimates()(mockDistpatch, () => ({ gas: Object.assign(
+        {},
+        initState,
+        { basicPriceAndTimeEstimatesLastRetrieved: 1000000 }
+      ) }))
       assert.deepEqual(
         mockDistpatch.getCall(0).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
@@ -294,8 +312,14 @@ describe('Gas Duck', () => {
           },
         ]
       )
+
       assert.deepEqual(
         mockDistpatch.getCall(1).args,
+        [{ type: SET_BASIC_API_ESTIMATES_LAST_RETRIEVED, value: 2000000 } ]
+      )
+
+      assert.deepEqual(
+        mockDistpatch.getCall(2).args,
         [{
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -314,7 +338,7 @@ describe('Gas Duck', () => {
         }]
       )
       assert.deepEqual(
-        mockDistpatch.getCall(2).args,
+        mockDistpatch.getCall(3).args,
         [{ type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }]
       )
     })

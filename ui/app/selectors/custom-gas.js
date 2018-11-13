@@ -23,7 +23,9 @@ import { addHexPrefix } from 'ethereumjs-util'
 const selectors = {
   formatTimeEstimate,
   getAveragePriceEstimateInHexWEI,
+  getFastPriceEstimateInHexWEI,
   getBasicGasEstimateLoadingStatus,
+  getBasicGasEstimateBlockTime,
   getCustomGasErrors,
   getCustomGasLimit,
   getCustomGasPrice,
@@ -33,7 +35,7 @@ const selectors = {
   getEstimatedGasTimes,
   getPriceAndTimeEstimates,
   getRenderableBasicEstimateData,
-  getRenderableEstimateDataForSmallButtons,
+  getRenderableEstimateDataForSmallButtonsFromGWEI,
   priceEstimateToWei,
 }
 
@@ -78,10 +80,19 @@ function getAveragePriceEstimateInHexWEI (state) {
   return getGasPriceInHexWei(averagePriceEstimate || '0x0')
 }
 
+function getFastPriceEstimateInHexWEI (state, convertFromDecGWEI) {
+  const fastPriceEstimate = state.gas.basicEstimates.fast
+  return getGasPriceInHexWei(fastPriceEstimate || '0x0', convertFromDecGWEI)
+}
+
 function getDefaultActiveButtonIndex (gasButtonInfo, customGasPriceInHex, gasPrice) {
   return gasButtonInfo.findIndex(({ priceInHexWei }) => {
     return priceInHexWei === addHexPrefix(customGasPriceInHex || gasPrice)
   })
+}
+
+function getBasicGasEstimateBlockTime (state) {
+  return state.gas.basicEstimates.blockTime
 }
 
 function apiEstimateModifiedToGWEI (estimate) {
@@ -102,26 +113,34 @@ function basicPriceEstimateToETHTotal (estimate, gasLimit, numberOfDecimals = 9)
   })
 }
 
-function getRenderableEthFee (estimate, gasLimit, numberOfDecimals = 9) {
+function getRenderableEthFee (estimate, gasLimit, numberOfDecimals = 9, convertFromDecGWEI) {
+  const initialConversion = convertFromDecGWEI
+    ? x => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' })
+    : apiEstimateModifiedToGWEI
+
   return pipe(
-    apiEstimateModifiedToGWEI,
+    initialConversion,
     partialRight(basicPriceEstimateToETHTotal, [gasLimit, numberOfDecimals]),
     formatETHFee
   )(estimate, gasLimit)
 }
 
 
-function getRenderableConvertedCurrencyFee (estimate, gasLimit, convertedCurrency, conversionRate) {
+function getRenderableConvertedCurrencyFee (estimate, gasLimit, convertedCurrency, conversionRate, convertFromDecGWEI) {
+  const initialConversion = convertFromDecGWEI
+    ? x => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' })
+    : apiEstimateModifiedToGWEI
+
   return pipe(
-    apiEstimateModifiedToGWEI,
+    initialConversion,
     partialRight(basicPriceEstimateToETHTotal, [gasLimit]),
     partialRight(ethTotalToConvertedCurrency, [convertedCurrency, conversionRate]),
     partialRight(formatCurrency, [convertedCurrency])
   )(estimate, gasLimit, convertedCurrency, conversionRate)
 }
 
-function getTimeEstimateInSeconds (blockWaitEstimate, currentBlockTime) {
-  return multiplyCurrencies(blockWaitEstimate, currentBlockTime, {
+function getTimeEstimateInSeconds (blockWaitEstimate) {
+  return multiplyCurrencies(blockWaitEstimate, 60, {
     toNumericBase: 'dec',
     multiplicandBase: 10,
     multiplierBase: 10,
@@ -141,11 +160,11 @@ function formatTimeEstimate (totalSeconds) {
   return formattedCombined
 }
 
-function getRenderableTimeEstimate (blockWaitEstimate, currentBlockTime) {
+function getRenderableTimeEstimate (blockWaitEstimate) {
   return pipe(
     getTimeEstimateInSeconds,
     formatTimeEstimate
-  )(blockWaitEstimate, currentBlockTime)
+  )(blockWaitEstimate)
 }
 
 function priceEstimateToWei (priceEstimate) {
@@ -158,9 +177,13 @@ function priceEstimateToWei (priceEstimate) {
   })
 }
 
-function getGasPriceInHexWei (price) {
+function getGasPriceInHexWei (price, convertFromDecGWEI) {
+  const initialConversion = convertFromDecGWEI
+    ? x => conversionUtil(x, { fromNumericBase: 'dec', toNumericBase: 'hex' })
+    : apiEstimateModifiedToGWEI
+
   return pipe(
-    apiEstimateModifiedToGWEI,
+    initialConversion,
     priceEstimateToWei,
     addHexPrefix
   )(price)
@@ -177,11 +200,10 @@ function getRenderableBasicEstimateData (state) {
     gas: {
       basicEstimates: {
         safeLow,
-        average,
         fast,
-        blockTime,
+        fastest,
         safeLowWait,
-        avgWait,
+        fastestWait,
         fastWait,
       },
     },
@@ -190,29 +212,29 @@ function getRenderableBasicEstimateData (state) {
   return [
     {
       labelKey: 'fastest',
-      feeInPrimaryCurrency: getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate),
-      feeInSecondaryCurrency: getRenderableEthFee(fast, gasLimit),
-      timeEstimate: getRenderableTimeEstimate(fastWait, blockTime),
-      priceInHexWei: getGasPriceInHexWei(fast),
+      feeInPrimaryCurrency: getRenderableConvertedCurrencyFee(fastest, gasLimit, currentCurrency, conversionRate),
+      feeInSecondaryCurrency: getRenderableEthFee(fastest, gasLimit),
+      timeEstimate: fastestWait && getRenderableTimeEstimate(fastestWait),
+      priceInHexWei: getGasPriceInHexWei(fastest),
     },
     {
       labelKey: 'fast',
-      feeInPrimaryCurrency: getRenderableConvertedCurrencyFee(average, gasLimit, currentCurrency, conversionRate),
-      feeInSecondaryCurrency: getRenderableEthFee(average, gasLimit),
-      timeEstimate: getRenderableTimeEstimate(avgWait, blockTime),
-      priceInHexWei: getGasPriceInHexWei(average),
+      feeInPrimaryCurrency: getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate),
+      feeInSecondaryCurrency: getRenderableEthFee(fast, gasLimit),
+      timeEstimate: fastWait && getRenderableTimeEstimate(fastWait),
+      priceInHexWei: getGasPriceInHexWei(fast),
     },
     {
       labelKey: 'slow',
       feeInPrimaryCurrency: getRenderableConvertedCurrencyFee(safeLow, gasLimit, currentCurrency, conversionRate),
       feeInSecondaryCurrency: getRenderableEthFee(safeLow, gasLimit),
-      timeEstimate: getRenderableTimeEstimate(safeLowWait, blockTime),
+      timeEstimate: safeLowWait && getRenderableTimeEstimate(safeLowWait),
       priceInHexWei: getGasPriceInHexWei(safeLow),
     },
   ]
 }
 
-function getRenderableEstimateDataForSmallButtons (state) {
+function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return []
   }
@@ -223,30 +245,30 @@ function getRenderableEstimateDataForSmallButtons (state) {
     gas: {
       basicEstimates: {
         safeLow,
-        average,
         fast,
+        fastest,
       },
     },
   } = state
 
   return [
     {
-      labelKey: 'fast',
-      feeInSecondaryCurrency: getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate),
-      feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS),
-      priceInHexWei: getGasPriceInHexWei(fast),
+      labelKey: 'fastest',
+      feeInSecondaryCurrency: getRenderableConvertedCurrencyFee(fastest, gasLimit, currentCurrency, conversionRate, true),
+      feeInPrimaryCurrency: getRenderableEthFee(fastest, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS, true),
+      priceInHexWei: getGasPriceInHexWei(fastest, true),
     },
     {
-      labelKey: 'average',
-      feeInSecondaryCurrency: getRenderableConvertedCurrencyFee(average, gasLimit, currentCurrency, conversionRate),
-      feeInPrimaryCurrency: getRenderableEthFee(average, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS),
-      priceInHexWei: getGasPriceInHexWei(average),
+      labelKey: 'fast',
+      feeInSecondaryCurrency: getRenderableConvertedCurrencyFee(fast, gasLimit, currentCurrency, conversionRate, true),
+      feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS, true),
+      priceInHexWei: getGasPriceInHexWei(fast, true),
     },
     {
       labelKey: 'slow',
-      feeInSecondaryCurrency: getRenderableConvertedCurrencyFee(safeLow, gasLimit, currentCurrency, conversionRate),
-      feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS),
-      priceInHexWei: getGasPriceInHexWei(safeLow),
+      feeInSecondaryCurrency: getRenderableConvertedCurrencyFee(safeLow, gasLimit, currentCurrency, conversionRate, true),
+      feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit, NUMBER_OF_DECIMALS_SM_BTNS, true),
+      priceInHexWei: getGasPriceInHexWei(safeLow, true),
     },
   ]
 }

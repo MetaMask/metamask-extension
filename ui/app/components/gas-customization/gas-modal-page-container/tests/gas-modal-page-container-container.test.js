@@ -73,6 +73,9 @@ describe('gas-modal-page-container container', () => {
           conversionRate: 50,
         },
         gas: {
+          basicEstimates: {
+            blockTime: 12,
+          },
           customData: {
             limit: 'aaaaaaaa',
             price: 'ffffffff',
@@ -100,6 +103,7 @@ describe('gas-modal-page-container container', () => {
         customGasLimit: 2863311530,
         currentTimeEstimate: '~1 min 11 sec',
         newTotalFiat: '637.41',
+        blockTime: 12,
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
         gasChartProps: {
