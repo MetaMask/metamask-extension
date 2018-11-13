@@ -5,6 +5,7 @@ import sinon from 'sinon'
 import AdvancedTabContent from '../advanced-tab-content.component.js'
 
 import GasPriceChart from '../../../gas-price-chart'
+import Loading from '../../../../loading-screen'
 
 const propsMethodSpies = {
   updateCustomGasPrice: sinon.spy(),
@@ -57,6 +58,22 @@ describe('AdvancedTabContent Component', function () {
       assert(feeChartDiv.childAt(0).hasClass('advanced-tab__gas-edit-rows'))
       assert(feeChartDiv.childAt(1).hasClass('advanced-tab__fee-chart__title'))
       assert(feeChartDiv.childAt(2).is(GasPriceChart))
+      assert(feeChartDiv.childAt(3).hasClass('advanced-tab__fee-chart__speed-buttons'))
+    })
+
+    it('should render a loading component instead of the chart if gasEstimatesLoading is true', () => {
+      wrapper.setProps({ gasEstimatesLoading: true })
+      const advancedTabChildren = wrapper.children()
+      assert.equal(advancedTabChildren.length, 2)
+
+      assert(advancedTabChildren.at(0).hasClass('advanced-tab__transaction-data-summary'))
+      assert(advancedTabChildren.at(1).hasClass('advanced-tab__fee-chart'))
+
+      const feeChartDiv = advancedTabChildren.at(1)
+
+      assert(feeChartDiv.childAt(0).hasClass('advanced-tab__gas-edit-rows'))
+      assert(feeChartDiv.childAt(1).hasClass('advanced-tab__fee-chart__title'))
+      assert(feeChartDiv.childAt(2).is(Loading))
       assert(feeChartDiv.childAt(3).hasClass('advanced-tab__fee-chart__speed-buttons'))
     })
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import Loading from '../../../loading-screen'
 import GasPriceChart from '../../gas-price-chart'
 
 export default class AdvancedTabContent extends Component {
@@ -13,6 +14,7 @@ export default class AdvancedTabContent extends Component {
     updateCustomGasLimit: PropTypes.func,
     customGasPrice: PropTypes.number,
     customGasLimit: PropTypes.number,
+    gasEstimatesLoading: PropTypes.bool,
     millisecondsRemaining: PropTypes.number,
     totalFee: PropTypes.string,
     timeRemaining: PropTypes.string,
@@ -98,6 +100,7 @@ export default class AdvancedTabContent extends Component {
       insufficientBalance,
       totalFee,
       gasChartProps,
+      gasEstimatesLoading,
     } = this.props
 
     return (
@@ -112,7 +115,10 @@ export default class AdvancedTabContent extends Component {
               insufficientBalance
           ) }
           <div className="advanced-tab__fee-chart__title">Live Gas Price Predictions</div>
-          <GasPriceChart {...gasChartProps} updateCustomGasPrice={updateCustomGasPrice} />
+          {!gasEstimatesLoading
+            ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={updateCustomGasPrice} />
+            : <Loading />
+          }
           <div className="advanced-tab__fee-chart__speed-buttons">
             <span>Slower</span>
             <span>Faster</span>

@@ -68,6 +68,7 @@ export default class GasModalPageContainer extends Component {
     gasChartProps,
     currentTimeEstimate,
     insufficientBalance,
+    gasEstimatesLoading,
   }) {
     const { transactionFee } = this.props
     return (
@@ -81,6 +82,7 @@ export default class GasModalPageContainer extends Component {
         totalFee={newTotalFiat}
         gasChartProps={gasChartProps}
         insufficientBalance={insufficientBalance}
+        gasEstimatesLoading={gasEstimatesLoading}
       />
     )
   }

@@ -232,6 +232,7 @@ describe('GasModalPageContainer Component', function () {
         customGasLimit: 456,
         newTotalFiat: '$0.30',
         currentTimeEstimate: '1 min 31 sec',
+        gasEstimatesLoading: 'mockGasEstimatesLoading',
       })
       const advancedTabContentProps = renderAdvancedTabContentResult.props
       assert.equal(advancedTabContentProps.updateCustomGasPrice(), 'mockConvertThenUpdateCustomGasPrice')
@@ -240,6 +241,7 @@ describe('GasModalPageContainer Component', function () {
       assert.equal(advancedTabContentProps.customGasLimit, 456)
       assert.equal(advancedTabContentProps.timeRemaining, '1 min 31 sec')
       assert.equal(advancedTabContentProps.totalFee, '$0.30')
+      assert.equal(advancedTabContentProps.gasEstimatesLoading, 'mockGasEstimatesLoading')
     })
   })
 
