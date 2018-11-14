@@ -470,9 +470,11 @@ describe('Transaction Controller', function () {
         { id: 7, status: 'failed', metamaskNetworkId: currentNetworkId, txParams: {} },
       ])
     })
-    it('should show only submitted transactions as pending transasction', function () {
-      assert(txController.pendingTxTracker.getPendingTransactions().length, 1)
-      assert(txController.pendingTxTracker.getPendingTransactions()[0].status, 'submitted')
+    it('should show only submitted and approved transactions as pending transasction', function () {
+      assert(txController.pendingTxTracker.getPendingTransactions().length, 2)
+      const states = txController.pendingTxTracker.getPendingTransactions().map(tx => tx.status)
+      assert(states.includes('approved'), 'includes approved')
+      assert(states.includes('submitted'), 'includes submitted')
     })
   })
 })
