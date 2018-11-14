@@ -83,8 +83,8 @@ class TransactionController extends EventEmitter {
       nonceTracker: this.nonceTracker,
       publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
       getPendingTransactions: () => {
-        const pending = this.txStateManager.getPendingTransactions.bind(this.txStateManager)
-        const approved = this.txStateManager.getApprovedTransactions.bind(this.txStateManager)
+        const pending = this.txStateManager.getPendingTransactions()
+        const approved = this.txStateManager.getApprovedTransactions()
         return [...pending, ...approved]
       },
       approveTransaction: this.approveTransaction.bind(this),

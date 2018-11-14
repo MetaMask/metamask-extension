@@ -87,7 +87,7 @@ class TransactionStateManager extends EventEmitter {
     returns all txMetas who's status is approved for the current network
   */
   getApprovedTransactions(address) {
-    const opts = { status: 'submitted' }
+    const opts = { status: 'approved' }
     if (address) opts.from = address
     return this.getFilteredTxList(opts)
   }
