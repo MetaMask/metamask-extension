@@ -313,7 +313,7 @@ describe('Transaction Controller', function () {
         assert.equal(params.gas, originalValue, 'gas unmodified')
         assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
         assert.equal(result.hash, originalValue, `hash was set \n got: ${result.hash} \n expected: ${originalValue}`)
-        assert.equal(result.status, 'submitted' ,'Should have reached the submitted status.')
+        assert.equal(result.status, 'submitted', 'Should have reached the submitted status.')
         signStub.restore()
         pubStub.restore()
         done()
