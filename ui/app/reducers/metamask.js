@@ -4,7 +4,6 @@ const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
 const { getEnvironmentType } = require('../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../app/scripts/lib/enums')
 const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/controllers/network/enums')
-import BigNumber from 'bignumber.js'
 
 module.exports = reduceMetamask
 
@@ -34,7 +33,7 @@ function reduceMetamask (state, action) {
       gasLimit: null,
       gasPrice: null,
       gasTotal: null,
-      tokenBalance: new BigNumber('0'),
+      tokenBalance: '0x0',
       from: '',
       to: '',
       amount: '0x0',

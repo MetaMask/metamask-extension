@@ -11,7 +11,6 @@ import {
 import SendHeader from './send-header/'
 import SendContent from './send-content/'
 import SendFooter from './send-footer/'
-import BigNumber from 'bignumber.js'
 
 export default class SendTransactionScreen extends PersistentForm {
 
@@ -34,7 +33,7 @@ export default class SendTransactionScreen extends PersistentForm {
     recentBlocks: PropTypes.array,
     selectedAddress: PropTypes.string,
     selectedToken: PropTypes.object,
-    tokenBalance: PropTypes.instanceOf(BigNumber),
+    tokenBalance: PropTypes.string,
     tokenContract: PropTypes.object,
     updateAndSetGasTotal: PropTypes.func,
     updateSendErrors: PropTypes.func,
@@ -42,11 +41,11 @@ export default class SendTransactionScreen extends PersistentForm {
     scanQrCode: PropTypes.func,
     qrCodeDetected: PropTypes.func,
     qrCodeData: PropTypes.object,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.qrCodeData) {

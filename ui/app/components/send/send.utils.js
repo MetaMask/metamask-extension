@@ -20,7 +20,6 @@ const {
 } = require('./send.constants')
 const abi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
-import BigNumber from 'bignumber.js'
 
 module.exports = {
   addGasBuffer,
@@ -90,7 +89,7 @@ function isTokenBalanceSufficient ({
   const tokenBalanceIsSufficient = conversionGTE(
     {
       value: tokenBalance,
-      fromNumericBase: 'dec',
+      fromNumericBase: 'hex',
     },
     {
       value: calcTokenAmount(amountInDec, decimals),
@@ -179,15 +178,7 @@ function getGasFeeErrorObject ({
 
 function calcTokenBalance ({ selectedToken, usersToken }) {
   const { decimals } = selectedToken || {}
-  return calcTokenAmount(usersToken.balance.toString(), decimals)
-}
-
-function tokenBalanceIsEqual (tokenBalance, prevTokenBalance) {
-  if (!(tokenBalance instanceof BigNumber) || !(prevTokenBalance instanceof BigNumber)) {
-    return tokenBalance === prevTokenBalance
-  }
-
-  return tokenBalance.equals(prevTokenBalance)
+  return calcTokenAmount(usersToken.balance.toString(), decimals).toString(16)
 }
 
 function doesAmountErrorRequireUpdate ({
@@ -201,7 +192,7 @@ function doesAmountErrorRequireUpdate ({
 }) {
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
-  const tokenBalanceHasChanged = selectedToken && !tokenBalanceIsEqual(tokenBalance, prevTokenBalance)
+  const tokenBalanceHasChanged = selectedToken && tokenBalance !== prevTokenBalance
   const amountErrorRequiresUpdate = balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
 
   return amountErrorRequiresUpdate

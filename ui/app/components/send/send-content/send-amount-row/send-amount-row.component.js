@@ -4,7 +4,6 @@ import SendRowWrapper from '../send-row-wrapper/'
 import AmountMaxButton from './amount-max-button/'
 import UserPreferencedCurrencyInput from '../../../user-preferenced-currency-input'
 import UserPreferencedTokenInput from '../../../user-preferenced-token-input'
-import BigNumber from 'bignumber.js'
 
 export default class SendAmountRow extends Component {
 
@@ -22,7 +21,7 @@ export default class SendAmountRow extends Component {
     primaryCurrency: PropTypes.string,
     selectedToken: PropTypes.object,
     setMaxModeTo: PropTypes.func,
-    tokenBalance: PropTypes.instanceOf(BigNumber),
+    tokenBalance: PropTypes.string,
     updateGasFeeError: PropTypes.func,
     updateSendAmount: PropTypes.func,
     updateSendAmountError: PropTypes.func,
