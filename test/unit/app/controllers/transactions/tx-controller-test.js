@@ -313,10 +313,49 @@ describe('Transaction Controller', function () {
         assert.equal(params.gas, originalValue, 'gas unmodified')
         assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
         assert.equal(result.hash, originalValue, `hash was set \n got: ${result.hash} \n expected: ${originalValue}`)
+        assert.equal(result.status, 'submitted' ,'Should have reached the submitted status.')
         signStub.restore()
         pubStub.restore()
         done()
       }).catch(done)
+    })
+
+    it('continues operating after a listener throws', async function () {
+      this.timeout(15000)
+      const wrongValue = '0x05'
+
+      txController.addTx(txMeta)
+      providerResultStub.eth_gasPrice = wrongValue
+      providerResultStub.eth_estimateGas = '0x5209'
+
+      const signStub = sinon.stub(txController, 'signTransaction').callsFake(() => Promise.resolve())
+      const setStatusStub = sinon.stub(txController.txStateManager, 'setTxStatusSubmitted').throws()
+      const setStatusStub2 = sinon.stub(txController.txStateManager, 'setTxStatusFailed').throws()
+
+      const pubStub = sinon.stub(txController, 'publishTransaction').callsFake(() => {
+        txController.setTxHash('1', originalValue)
+        txController.txStateManager.setTxStatusSubmitted('1')
+      })
+
+      try {
+        await txController.approveTransaction(txMeta.id)
+      } catch (e) {
+        assert.ok(e, 'stub throws deliberately')
+      }
+      const result = txController.txStateManager.getTx(txMeta.id)
+      const params = result.txParams
+
+      assert.equal(params.gas, originalValue, 'gas unmodified')
+      assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
+      assert.equal(result.hash, originalValue, `hash was set \n got: ${result.hash} \n expected: ${originalValue}`)
+      assert.equal(result.status, 'approved' ,'Should have only reached the approved status.')
+
+      // TODO: Add a way of detecting whether the Controller will continue trying to submit this transaction.
+
+      signStub.restore()
+      pubStub.restore()
+      setStatusStub.restore()
+      setStatusStub2.restore()
     })
   })
 
