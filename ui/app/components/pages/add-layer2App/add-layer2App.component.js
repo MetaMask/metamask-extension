@@ -34,12 +34,13 @@ class AddLayer2App extends Component {
     this.state = {
       customAddress: '',
       customName: '',
+      customNodeUrl: '',      
       searchResults: [],
       selectedLayer2Apps: {},
       layer2AppSelectorError: null,
       customAddressError: null,
       autoFilled: false,
-      displayedTab: SEARCH_TAB,
+      displayedTab: CUSTOM_LAYER2APP_TAB,
     }
   }
 
@@ -66,10 +67,12 @@ class AddLayer2App extends Component {
       const {
         address: customAddress = '',
         name: customName = '',
+        nodeUrl: customNodeUrl = '',	
       } = customLayer2App
 
       const displayedTab = Object.keys(selectedLayer2Apps).length > 0 ? SEARCH_TAB : CUSTOM_LAYER2APP_TAB
-      this.setState({ selectedLayer2Apps, customAddress, customName, displayedTab })
+
+      this.setState({ selectedLayer2Apps, customAddress, customName, customeNodeUrl, displayedTab })
     }
   }
 
@@ -94,10 +97,11 @@ class AddLayer2App extends Component {
     const {
       layer2AppSelectorError,
       customAddressError,
-      customNameError,      
+      customNameError,
+      customNodeUrlError,            
     } = this.state
 
-    return layer2AppSelectorError || customAddressError || customNameError
+    return layer2AppSelectorError || customAddressError || customNameError || customNodeUrlError
   }
 
   hasSelected () {
@@ -120,12 +124,14 @@ class AddLayer2App extends Component {
     const {
       customAddress: address,
       customName: name,
+      customNodeUrl: nodeUrl,      
       selectedLayer2Apps,
     } = this.state
 
     const customLayer2App = {
       address,
       name,
+      nodeUrl
     }
     setPendingLayer2Apps({ customLayer2App, selectedLayer2Apps })
     history.push(CONFIRM_ADD_LAYER2APP_ROUTE)
@@ -194,12 +200,20 @@ class AddLayer2App extends Component {
     this.setState({ customName, customNameError})
   }
 
+  handleCustomNodeUrlChange (value) {
+    const customNodeUrl = value.trim()
+    let customNodeUrlError = null
+    this.setState({ customNodeUrl, customNodeUrlError})
+  }
+  
   renderCustomLayer2AppForm () {
     const {
       customAddress,
       customName,
+      customNodeUrl,
       customAddressError,
       customNameError,
+      customNodeUrlError,      
       autoFilled,
     } = this.state
 
@@ -222,6 +236,17 @@ class AddLayer2App extends Component {
           value={customName}
           onChange={e => this.handleCustomNameChange(e.target.value)}
           error={customNameError}
+          fullWidth
+          margin="normal"
+          disabled={autoFilled}
+        />
+        <TextField
+          id="custom-node-url"
+          label={this.context.t('layer2AppNodeUrl')}
+          type="text"
+          value={customNodeUrl}
+          onChange={e => this.handleCustomNodeUrlChange(e.target.value)}
+          error={customNodeUrlError}
           fullWidth
           margin="normal"
           disabled={autoFilled}
@@ -253,11 +278,11 @@ class AddLayer2App extends Component {
   renderTabs () {
     return (
       <Tabs>
-        <Tab name={this.context.t('search')}>
-          { this.renderSearchLayer2App() }
-        </Tab>
         <Tab name={this.context.t('customLayer2App')}>
           { this.renderCustomLayer2AppForm() }
+        </Tab>
+        <Tab name={this.context.t('searchLayer2')}>
+          { this.renderSearchLayer2App() }
         </Tab>
       </Tabs>
     )

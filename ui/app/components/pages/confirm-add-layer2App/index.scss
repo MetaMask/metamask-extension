@@ -43,7 +43,7 @@
 
   &__layer2App-list-item {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
     align-items: center;
     margin-top: 8px;
     box-sizing: border-box;

@@ -57,7 +57,7 @@ export default class ConfirmAddLayer2App extends Component {
               {
                 Object.entries(pendingLayer2Apps)
                   .map(([ address, layer2App ]) => {
-                    const { name, symbol } = layer2App
+                    const { name, symbol, nodeUrl } = layer2App
 
                     return (
                       <div
@@ -72,6 +72,9 @@ export default class ConfirmAddLayer2App extends Component {
                           />
                           <div className="confirm-add-layer2App__name">
                             { this.getLayer2AppName(name, symbol) }
+                          </div>
+                          <div className="confirm-add-layer2App__nodeUrl">
+                            { nodeUrl }
                           </div>
                         </div>
                         <div className="confirm-add-layer2App__balance">

@@ -3,7 +3,7 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
 
 .layer2App-list-item {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   align-items: center;
   padding: 20px 24px;
   cursor: pointer;
