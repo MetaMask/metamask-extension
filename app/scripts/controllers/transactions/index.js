@@ -86,7 +86,8 @@ class TransactionController extends EventEmitter {
         const pending = this.txStateManager.getPendingTransactions.bind(this.txStateManager)
         const approved = this.txStateManager.getApprovedTransactions.bind(this.txStateManager)
         return [...pending, ...approved]
-      }
+      },
+      approveTransaction: this.approveTransaction.bind(this),
       getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     })
 
