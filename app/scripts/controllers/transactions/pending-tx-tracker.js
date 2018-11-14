@@ -130,9 +130,12 @@ class PendingTransactionTracker extends EventEmitter {
     const txHash = txMeta.hash
     const txId = txMeta.id
 
+    // Only check submitted txs
+    if (txMeta.status !== 'submitted') return
+
     // extra check in case there was an uncaught error during the
     // signature and submission process
-    if (!txHash && txMeta.status === 'submitted') {
+    if (!txHash) {
       const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
       noTxHashErr.name = 'NoTxHashError'
       this.emit('tx:failed', txId, noTxHashErr)
