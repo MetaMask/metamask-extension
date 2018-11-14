@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+- Resubmit approved transactions on new block, to fix bug where an error can stick transactions in this state.
+
 ## 5.0.2 Friday November 9 2018
 
 - Fixed bug that caused accounts to update slowly to sites. #5717
