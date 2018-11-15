@@ -194,10 +194,14 @@
   .page-container {
     height: 100%;
     width: 100%;
-    overflow-y: auto;
     background-color: $white;
     border-radius: 0;
     flex: 1;
+
+    &__content {
+      display: flex;
+      overflow-y: initial;
+    }
   }
 }
 
