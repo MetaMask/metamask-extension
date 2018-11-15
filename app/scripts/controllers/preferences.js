@@ -372,9 +372,9 @@ class PreferencesController {
    *
    */
 
-  async addLayer2App (rawAddress, name, contract, image) {
+  async addLayer2App (rawAddress, name, nodeUrl, contract, image) {
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, name, contract }
+    const newEntry = { address, name, nodeUrl, contract }
     const layer2Apps = this.store.getState().layer2Apps
     const assetImages = this.getAssetImages()
     const previousEntry = layer2Apps.find((layer2App, index) => {

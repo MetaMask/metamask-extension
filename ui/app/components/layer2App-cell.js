@@ -48,6 +48,7 @@ Layer2AppCell.prototype.render = function () {
   const {
     address,
     name,
+    nodeUrl,
     symbol,
     string,
     network,
@@ -76,7 +77,8 @@ Layer2AppCell.prototype.render = function () {
       },
     }, [
       h('div', name),
-      h('div', address),      
+      h('div', address),
+      h('div', "node: " + nodeUrl),            
       h('div', string + " ETH locked"),
       
       h('i.fa.fa-ellipsis-h.fa-lg.layer2App-list-item__ellipsis.cursor-pointer', {
@@ -87,7 +89,7 @@ Layer2AppCell.prototype.render = function () {
         }),
       layer2AppMenuOpen && h(Layer2AppMenuDropdown, {
         onClose: () => this.setState({ layer2AppMenuOpen: false }),
-        layer2App: { name, address },
+        layer2App: { name, address, nodeUrl },
       }),
     ])
   )

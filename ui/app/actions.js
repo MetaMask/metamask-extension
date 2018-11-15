@@ -1694,13 +1694,11 @@ function showAddSuggestedLayer2AppPage (transitionForward = true) {
   }
 }
 
-function addLayer2App (address, name) {
-  console.log("ADD SINGLE APP FUNC.", address, name)
+function addLayer2App (address, name, nodeUrl) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addLayer2App(address, name, (err, layer2Apps) => {
-	console.log("DEBUG: add Layer2Apps in background:", address, name, layer2Apps)
+      background.addLayer2App(address, name, nodeUrl, (err, layer2Apps) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
@@ -1740,13 +1738,12 @@ function removeLayer2App (address) {
 }
 
 function addLayer2Apps (layer2Apps) {
-  console.log("ADDING APPS", layer2Apps)
   return dispatch => {
     if (Array.isArray(layer2Apps)) {
       dispatch(actions.setSelectedToken(getLayer2AppAddressFromLayer2AppObject(layer2Apps[0])))
       dispatch(actions.setSelectedLayer2AppAddress(getLayer2AppAddressFromLayer2AppObject(layer2Apps[0])))
-      return Promise.all(layer2Apps.map(({ address, name }) => (
-        dispatch(addLayer2App(address, name))
+      return Promise.all(layer2Apps.map(({ address, name, nodeUrl }) => (
+        dispatch(addLayer2App(address, name, nodeUrl))
       )))
     } else {
       dispatch(actions.setSelectedToken(getLayer2AppAddressFromLayer2AppObject(layer2Apps)))
@@ -1754,10 +1751,9 @@ function addLayer2Apps (layer2Apps) {
       return Promise.all(
         Object
         .entries(layer2Apps)
-          .map(([_, { address, name }]) => (
-            dispatch(addLayer2App(address, name))
+          .map(([_, { address, name, nodeUrl }]) => (
+            dispatch(addLayer2App(address, name, nodeUrl))
         )),
-	console.log("ELSE: ADDING SINGLE APP return end")
       )
     }
   }

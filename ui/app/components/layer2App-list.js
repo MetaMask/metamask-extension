@@ -18,7 +18,6 @@ function mapDispatchToProps(dispatch) {
 
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     network: state.metamask.network,
     layer2Apps: state.metamask.layer2Apps,
@@ -51,7 +50,8 @@ class Layer2AppList extends Component {
 
 
     const { layer2Apps, isLoading, error } = state
-    
+    console.log("render list")
+    console.log(layer2Apps)
     if (isLoading) {
       return this.message(this.context.t('loadingLayer2Apps'))
     }
@@ -79,6 +79,7 @@ class Layer2AppList extends Component {
     }
 
     return h('div', layer2Apps.map((layer2AppData) => {
+      console.log("layer2 app list")
       console.log(layer2AppData)
       layer2AppData.image = assetImages[layer2AppData.address]
       return h(Layer2AppCell, layer2AppData)
@@ -152,12 +153,14 @@ class Layer2AppList extends Component {
       network: oldNet,
       userAddress: oldAddress,
       name,
+      nodeUrl,
       layer2Apps,
     } = this.props
     const {
       network: newNet,
       userAddress: newAddress,
       name: newName,
+      nodeUrl: newNodeUrl,
       layer2Apps: newLayer2Apps,
     } = nextProps
 
