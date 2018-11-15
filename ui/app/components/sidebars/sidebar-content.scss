@@ -2,10 +2,24 @@
   .gas-modal-page-container {
     .page-container {
       max-width: 100%;
+
+      &__content {
+        display: flex;
+        overflow-y: initial;
+      }
+
+      @media screen and (max-width: $break-small) {
+        max-width: 344px;
+        min-height: auto;
+      }
     }
 
     .gas-price-chart {
       margin-left: 10px;
+
+      &__root {
+        max-height: 160px !important;
+      }
     }
 
     .page-container__bottom {
@@ -20,21 +34,53 @@
     }
 
     .basic-tab-content {
-      height: 377px;
+      height: 318px;
       margin-bottom: 0px;
       border-bottom: 1px solid #d2d8dd;
+
+      @media screen and (max-width: $break-small) {
+        padding-left: 14px;
+        padding-bottom: 21px;
+      }
+
+      .gas-price-button-group--alt {
+        @media screen and (max-width: $break-small) {
+          max-width: 318px;
+
+          &__time-estimate {
+            font-size: 12px;
+          }
+        }
+      }
     }
 
-    .advanced-tab__fee-chart {
-      height: 320px;
+    .advanced-tab {
+      &__fee-chart {
+        height: 320px;
+
+        @media screen and (max-width: $break-small) {
+          height: initial;
+        }
+      }
+
+      &__fee-chart__speed-buttons {
+        bottom: 77px;
+
+        @media screen and (max-width: $break-small) {
+          display: none;
+        }
+      }
     }
 
-    .advanced-tab__fee-chart__speed-buttons {
-      bottom: 77px;
-    }
 
     .gas-modal-content__info-row {
       height: 170px;
+
+      @media screen and (max-width: $break-small) {
+        height: initial;
+        display: flex;
+        justify-content: center;
+      }
     }
   }
 }
