@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+- Resubmit approved transactions on new block, to fix bug where an error can stick transactions in this state.
+
 ## 5.0.2 Friday November 9 2018
 
 - Fixed bug that caused accounts to update slowly to sites. #5717
@@ -164,6 +166,7 @@
 - Font weight changed from 300 to 400.
 - New reveal screen design.
 - Styling improvements to labels in first time flow and signature request headers.
+- Allow other extensions to make access our ethereum provider API ([#3997](https://github.com/MetaMask/metamask-extension/pull/3997))
 
 ## 4.6.1 Mon Apr 30 2018
 

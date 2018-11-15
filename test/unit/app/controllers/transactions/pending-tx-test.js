@@ -24,7 +24,7 @@ describe('PendingTransactionTracker', function () {
     }
     txMetaNoHash = {
       id: 2,
-      status: 'signed',
+      status: 'submitted',
       txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d'},
     }
 
@@ -212,6 +212,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.publishTransaction = async (rawTx) => {
         assert.equal(rawTx, txMeta.rawTx, 'Should pass the rawTx')
       }
+      pendingTxTracker.approveTransaction = async () => {}
       sinon.spy(pendingTxTracker, 'publishTransaction')
 
       txMetaToTestExponentialBackoff = Object.assign({}, txMeta, {
@@ -265,6 +266,18 @@ describe('PendingTransactionTracker', function () {
       })
 
       assert.equal(pendingTxTracker.publishTransaction.callCount, 1, 'Should call publish transaction')
+    })
+
+    it('should call opts.approveTransaction with the id if the tx is not signed', async () => {
+      const stubTx = {
+        id: 40,
+      }
+      const approveMock = sinon.stub(pendingTxTracker, 'approveTransaction')
+
+      pendingTxTracker._resubmitTx(stubTx)
+
+      assert.ok(approveMock.called)
+      approveMock.restore()
     })
   })
 
