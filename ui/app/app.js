@@ -120,8 +120,9 @@ class App extends Component {
       isOpen: sidebarIsOpen,
       transitionName: sidebarTransitionName,
       type: sidebarType,
-      props: { transaction: sidebarTransaction },
+      props,
     } = sidebar
+    const { transaction: sidebarTransaction } = props || {}
 
     return (
       h('.flex-column.full-height', {

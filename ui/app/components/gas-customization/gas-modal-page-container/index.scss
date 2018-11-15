@@ -6,12 +6,23 @@
     max-width: 391px;
     min-height: 585px;
 
+    @media screen and (max-width: $break-small) {
+      max-width: 344px;
+    }
+
     &__header {
       padding: 0px;
       padding-top: 16px;
 
       &--no-padding-bottom {
         padding-bottom: 0;
+      }
+    }
+
+    &__footer {
+      header {
+        padding-top: 12px;
+        padding-bottom: 12px;
       }
     }
 
@@ -60,6 +71,10 @@
 }
 
 .gas-modal-content {
+  @media screen and (max-width: $break-small) {
+    width: 100%;
+  }
+
   &__basic-tab {
     height: 219px;
   }
@@ -74,6 +89,10 @@
     color: $scorpion;
     font-size: 12px;
 
+    @media screen and (max-width: $break-small) {
+      padding: 4px 21px;
+    }
+
     &__send-info, &__transaction-info, &__total-info, &__fiat-total-info {
       display: flex;
       flex-flow: row;
@@ -87,11 +106,19 @@
     &__total-info {
       &__label {
         font-size: 16px;
+
+        @media screen and (max-width: $break-small) {
+          font-size: 14px;
+        }
       }
 
       &__value {
         font-size: 16px;
         font-weight: bold;
+
+        @media screen and (max-width: $break-small) {
+          font-size: 14px;
+        }
       }
     }
 

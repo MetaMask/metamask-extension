@@ -60,6 +60,11 @@
     width: 408px;
     left: calc(100% - 408px);
   }
+
+  @media screen and (max-width: $break-small) {
+    width: 100%;
+    left: 0%;
+  }
 }
 
 .sidebar-overlay {

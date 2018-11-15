@@ -11,7 +11,7 @@ export default class GasFeeDisplay extends Component {
     convertedCurrency: PropTypes.string,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
-    showGasButtonGroup: PropTypes.func,
+    onReset: PropTypes.func,
   };
 
   static contextTypes = {
@@ -19,7 +19,7 @@ export default class GasFeeDisplay extends Component {
   };
 
   render () {
-    const { gasTotal, onClick, gasLoadingError } = this.props
+    const { gasTotal, gasLoadingError, onReset } = this.props
 
     return (
       <div className="send-v2__gas-fee-display">
@@ -47,7 +47,7 @@ export default class GasFeeDisplay extends Component {
         }
         <button
           className="gas-fee-reset"
-          onClick={showGasButtonGroup}
+          onClick={onReset}
         >
           { this.context.t('reset') }
         </button>

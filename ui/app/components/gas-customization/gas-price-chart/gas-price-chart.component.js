@@ -19,7 +19,7 @@ export default class GasPriceChart extends Component {
     gasPrices: PropTypes.array,
     estimatedTimes: PropTypes.array,
     gasPricesMax: PropTypes.number,
-    estimatedTimesMax: PropTypes.number,
+    estimatedTimesMax: PropTypes.string,
     currentPrice: PropTypes.number,
     updateCustomGasPrice: PropTypes.func,
   }

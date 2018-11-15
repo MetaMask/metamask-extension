@@ -14,8 +14,8 @@ export default class SendGasRow extends Component {
     gasTotal: PropTypes.string,
     showCustomizeGasModal: PropTypes.func,
     gasPriceButtonGroupProps: PropTypes.object,
-    showGasButtonGroup: PropTypes.func,
     gasButtonGroupShown: PropTypes.bool,
+    resetGasButtons: PropTypes.func,
   };
 
   static contextTypes = {
@@ -32,7 +32,7 @@ export default class SendGasRow extends Component {
       showCustomizeGasModal,
       gasPriceButtonGroupProps,
       gasButtonGroupShown,
-      showGasButtonGroup,
+      resetGasButtons,
     } = this.props
 
     return (
@@ -57,7 +57,7 @@ export default class SendGasRow extends Component {
             convertedCurrency={convertedCurrency}
             gasLoadingError={gasLoadingError}
             gasTotal={gasTotal}
-            showGasButtonGroup={showGasButtonGroup}
+            onReset={resetGasButtons}
             onClick={() => showCustomizeGasModal()}
           />}
 

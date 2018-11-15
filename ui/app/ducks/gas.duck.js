@@ -207,7 +207,7 @@ export function fetchGasEstimates (blockTime) {
       priceAndTimeEstimatesLastRetrieved,
       priceAndTimeEstimates,
     } = getState().gas
-    const timeLastRetrieved = priceAndTimeEstimatesLastRetrieved || loadLocalStorageData('GAS_API_ESTIMATES_LAST_RETRIEVED')
+    const timeLastRetrieved = priceAndTimeEstimatesLastRetrieved || loadLocalStorageData('GAS_API_ESTIMATES_LAST_RETRIEVED') || 0
 
     dispatch(gasEstimatesLoadingStarted())
 

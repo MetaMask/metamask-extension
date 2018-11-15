@@ -8,9 +8,10 @@ import sinon from 'sinon'
 
 const propsMethodSpies = {
   showCustomizeGasModal: sinon.spy(),
+  onReset: sinon.spy(),
 }
 
-describe('SendGasRow Component', function () {
+describe('GasFeeDisplay Component', function () {
   let wrapper
 
   beforeEach(() => {
@@ -20,6 +21,7 @@ describe('SendGasRow Component', function () {
       primaryCurrency={'mockPrimaryCurrency'}
       convertedCurrency={'mockConvertedCurrency'}
       showGasButtonGroup={propsMethodSpies.showCustomizeGasModal}
+      onReset={propsMethodSpies.onReset}
     />, {context: {t: str => str + '_t'}})
   })
 
@@ -47,9 +49,9 @@ describe('SendGasRow Component', function () {
         className,
       } = wrapper.find('button').props()
       assert.equal(className, 'gas-fee-reset')
-      assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 0)
+      assert.equal(propsMethodSpies.onReset.callCount, 0)
       onClick()
-      assert.equal(propsMethodSpies.showCustomizeGasModal.callCount, 1)
+      assert.equal(propsMethodSpies.onReset.callCount, 1)
     })
 
     it('should render the reset button with the correct text', () => {

@@ -1,12 +1,17 @@
 .gas-price-chart {
   display: flex;
   position: relative;
+  justify-content: center;
 
   &__root {
     max-height: 154px;
     max-width: 391px;
     position: relative;
     overflow: hidden;
+
+    @media screen and (max-width: $break-small) {
+      max-width: 326px;
+    }
   }
 
   .tick text, .c3-axis-x-label, .c3-axis-y-label {
