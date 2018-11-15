@@ -19,6 +19,13 @@
       }
     }
 
+    &__footer {
+      header {
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+    }
+
     &__header-close-text {
       font-size: 14px;
       color: #4EADE7;
@@ -82,6 +89,10 @@
     color: $scorpion;
     font-size: 12px;
 
+    @media screen and (max-width: $break-small) {
+      padding: 4px 21px;
+    }
+
     &__send-info, &__transaction-info, &__total-info, &__fiat-total-info {
       display: flex;
       flex-flow: row;
@@ -95,11 +106,19 @@
     &__total-info {
       &__label {
         font-size: 16px;
+
+        @media screen and (max-width: $break-small) {
+          font-size: 14px;
+        }
       }
 
       &__value {
         font-size: 16px;
         font-weight: bold;
+
+        @media screen and (max-width: $break-small) {
+          font-size: 14px;
+        }
       }
     }
 
