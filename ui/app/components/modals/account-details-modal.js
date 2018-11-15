@@ -67,7 +67,6 @@ AccountDetailsModal.prototype.render = function () {
     exportPrivateKeyFeatureEnabled = false
   }
 
-
   return h(AccountModalContainer, {}, [
       h(EditableLabel, {
         className: 'account-modal__name',
