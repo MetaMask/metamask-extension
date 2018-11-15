@@ -1,6 +1,10 @@
 # Changelog
 
 ## Current Develop Branch
+- [#5694](https://github.com/MetaMask/metamask-extension/pull/5694): Version 5.0.1 
+- [#5547](https://github.com/MetaMask/metamask-extension/pull/5547): Bundle some ui dependencies separately to limit the build size of ui.js
+
+- Resubmit approved transactions on new block, to fix bug where an error can stick transactions in this state.
 
 ## 5.0.2 Friday November 9 2018
 
@@ -164,6 +168,7 @@
 - Font weight changed from 300 to 400.
 - New reveal screen design.
 - Styling improvements to labels in first time flow and signature request headers.
+- Allow other extensions to make access our ethereum provider API ([#3997](https://github.com/MetaMask/metamask-extension/pull/3997))
 
 ## 4.6.1 Mon Apr 30 2018
 

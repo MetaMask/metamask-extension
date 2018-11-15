@@ -83,6 +83,17 @@ class TransactionStateManager extends EventEmitter {
 
   /**
     @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
+    @returns {array} the tx list whos status is approved if no address is provide
+    returns all txMetas who's status is approved for the current network
+  */
+  getApprovedTransactions(address) {
+    const opts = { status: 'approved' }
+    if (address) opts.from = address
+    return this.getFilteredTxList(opts)
+  }
+
+  /**
+    @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
     @returns {array} the tx list whos status is submitted if no address is provide
     returns all txMetas who's status is submitted for the current network
   */

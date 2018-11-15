@@ -302,6 +302,11 @@ function getSiteName (window) {
     return siteName.content
   }
 
+  const metaTitle = document.querySelector('head > meta[name="title"]')
+  if (metaTitle) {
+    return metaTitle.content
+  }
+
   return document.title
 }
 
