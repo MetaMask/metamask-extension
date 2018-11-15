@@ -12,10 +12,13 @@ export default class GasModalPageContainer extends Component {
 
   static propTypes = {
     hideModal: PropTypes.func,
+    hideBasic: PropTypes.bool,
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
     customGasPrice: PropTypes.number,
     customGasLimit: PropTypes.number,
+    fetchBasicGasAndTimeEstimates: PropTypes.func,
+    fetchGasEstimates: PropTypes.func,
     gasPriceButtonGroupProps: PropTypes.object,
     infoRowProps: PropTypes.shape({
       originalTotalFiat: PropTypes.string,
@@ -28,9 +31,25 @@ export default class GasModalPageContainer extends Component {
     customModalGasLimitInHex: PropTypes.string,
     cancelAndClose: PropTypes.func,
     transactionFee: PropTypes.string,
+    blockTime: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
   }
 
   state = {}
+
+  componentDidMount () {
+    const promise = this.props.hideBasic
+      ? Promise.resolve(this.props.blockTime)
+      : this.props.fetchBasicGasAndTimeEstimates()
+          .then(basicEstimates => basicEstimates.blockTime)
+
+    promise
+      .then(blockTime => {
+        this.props.fetchGasEstimates(blockTime)
+      })
+  }
 
   renderBasicTabContent (gasPriceButtonGroupProps) {
     return (

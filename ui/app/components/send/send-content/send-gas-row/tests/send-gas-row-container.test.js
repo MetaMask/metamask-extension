@@ -42,7 +42,7 @@ proxyquire('../send-gas-row.container.js', {
   '../../../../actions': actionSpies,
   '../../../../selectors/custom-gas': {
     getBasicGasEstimateLoadingStatus: (s) => `mockBasicGasEstimateLoadingStatus:${s}`,
-    getRenderableEstimateDataForSmallButtons: (s) => `mockGasButtonInfo:${s}`,
+    getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => `mockGasButtonInfo:${s}`,
     getDefaultActiveButtonIndex: (gasButtonInfo, gasPrice) => gasButtonInfo.length + gasPrice.length,
   },
   '../../../../ducks/send.duck': sendDuckSpies,

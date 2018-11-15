@@ -7,7 +7,7 @@ import {
 } from '../../send.selectors.js'
 import {
   getBasicGasEstimateLoadingStatus,
-  getRenderableEstimateDataForSmallButtons,
+  getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
 } from '../../../../selectors/custom-gas'
 import {
@@ -23,7 +23,7 @@ import SendGasRow from './send-gas-row.component'
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)
 
 function mapStateToProps (state) {
-  const gasButtonInfo = getRenderableEstimateDataForSmallButtons(state)
+  const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, getGasPrice(state))
 
   return {
