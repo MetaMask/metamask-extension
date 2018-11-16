@@ -52,9 +52,9 @@ describe('Transaction Controller', function () {
   describe('#getUnapprovedTxCount', function () {
     it('should return the number of unapproved txs', function () {
       txController.txStateManager._saveTxList([
-        { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {}, history: [] },
-        { id: 2, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {}, history: [] },
-        { id: 3, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {}, history: [] },
+        { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+        { id: 2, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+        { id: 3, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
       ])
       const unapprovedTxCount = txController.getUnapprovedTxCount()
       assert.equal(unapprovedTxCount, 3, 'should be 3')
@@ -64,9 +64,9 @@ describe('Transaction Controller', function () {
   describe('#getPendingTxCount', function () {
     it('should return the number of pending txs', function () {
       txController.txStateManager._saveTxList([
-        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {}, history: [] },
-        { id: 2, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {}, history: [] },
-        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {}, history: [] },
+        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+        { id: 2, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
       ])
       const pendingTxCount = txController.getPendingTxCount()
       assert.equal(pendingTxCount, 3, 'should be 3')
@@ -82,15 +82,15 @@ describe('Transaction Controller', function () {
         'to': '0xc684832530fcbddae4b4230a47e991ddcec2831d',
       }
       txController.txStateManager._saveTxList([
-        {id: 0, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [] },
-        {id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [] },
-        {id: 2, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [] },
-        {id: 3, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams, history: [] },
-        {id: 4, status: 'rejected', metamaskNetworkId: currentNetworkId, txParams, history: [] },
-        {id: 5, status: 'approved', metamaskNetworkId: currentNetworkId, txParams, history: [] },
-        {id: 6, status: 'signed', metamaskNetworkId: currentNetworkId, txParams, history: [] },
-        {id: 7, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [] },
-        {id: 8, status: 'failed', metamaskNetworkId: currentNetworkId, txParams, history: [] },
+        {id: 0, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        {id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        {id: 2, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        {id: 3, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        {id: 4, status: 'rejected', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        {id: 5, status: 'approved', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        {id: 6, status: 'signed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        {id: 7, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+        {id: 8, status: 'failed', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
       ])
     })
 
@@ -112,7 +112,7 @@ describe('Transaction Controller', function () {
         id: 1,
         metamaskNetworkId: currentNetworkId,
         txParams,
-        history: [],
+        history: [{}],
       }
       txController.txStateManager._saveTxList([txMeta])
       stub = sinon.stub(txController, 'addUnapprovedTransaction').callsFake(() => {
@@ -232,7 +232,7 @@ describe('Transaction Controller', function () {
           from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
           to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
         },
-        history: [],
+        history: [{}],
       }
       providerResultStub.eth_gasPrice = '4a817c800'
       providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' }
@@ -423,7 +423,7 @@ describe('Transaction Controller', function () {
         data: '0x0',
       }
       txController.txStateManager._saveTxList([
-        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [] },
+        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
       ])
       txController.retryTransaction(1)
       .then((txMeta) => {
@@ -462,12 +462,12 @@ describe('Transaction Controller', function () {
     beforeEach(function () {
       txController.txStateManager._saveTxList([
         { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} },
-        { id: 2, status: 'rejected', metamaskNetworkId: currentNetworkId, txParams: {} },
-        { id: 3, status: 'approved', metamaskNetworkId: currentNetworkId, txParams: {} },
-        { id: 4, status: 'signed', metamaskNetworkId: currentNetworkId, txParams: {} },
-        { id: 5, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {} },
-        { id: 6, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} },
-        { id: 7, status: 'failed', metamaskNetworkId: currentNetworkId, txParams: {} },
+        { id: 2, status: 'rejected', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+        { id: 3, status: 'approved', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+        { id: 4, status: 'signed', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+        { id: 5, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+        { id: 6, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
+        { id: 7, status: 'failed', metamaskNetworkId: currentNetworkId, txParams: {}, history: [{}] },
       ])
     })
     it('should show only submitted and approved transactions as pending transasction', function () {
