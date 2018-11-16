@@ -21,6 +21,6 @@ module.exports = {
     const createdTime = txMeta.submittedTime
     const now = Date.now()
     return now - createdTime > unacceptableDelay
-  })
+  }),
 }
 
