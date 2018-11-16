@@ -7,21 +7,21 @@ const storage = {
     'TransactionController': {
       'transactions': [
         { 'status': 'approved', id: 1, submittedTime: 0 },
-        { 'status': 'approved', id: 2, 'submittedTime': properTime },
-        {'status': 'confirmed', id: 3, submittedTime: properTime},
-        {'status': 'submitted', id: 4, submittedTime: properTime},
-        { 'status': 'submitted', id: 5, 'submittedTime': 0 },
+        { 'status': 'approved', id: 2, submittedTime: properTime },
+        { 'status': 'confirmed', id: 3, submittedTime: properTime },
+        { 'status': 'submitted', id: 4, submittedTime: properTime },
+        { 'status': 'submitted', id: 5, submittedTime: 0 },
       ],
     },
   },
 }
 
-describe.only('storage is migrated successfully where transactions that are submitted have submittedTimes', () => {
+describe('storage is migrated successfully where transactions that are submitted have submittedTimes', () => {
   it('should auto fail transactions more than 12 hours old', (done) => {
     migration29.migrate(storage)
     .then((migratedData) => {
       const txs = migratedData.data.TransactionController.transactions
-      const [txMeta1, txMeta2, txMeta3 ] = txs
+      const [ txMeta1 ] = txs
       assert.equal(migratedData.meta.version, 29)
 
       assert.equal(txMeta1.status, 'failed', 'old tx is auto failed')
