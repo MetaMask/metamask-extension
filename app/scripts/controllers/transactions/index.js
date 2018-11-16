@@ -545,10 +545,11 @@ class TransactionController extends EventEmitter {
 
     function updateSubscription () {
       const pendingTxs = txStateManager.getPendingTransactions()
-      if (!listenersAreActive && pendingTxs.length > 0) {
+      const approvedTxs = txStateManager.getApprovedTransactions()
+      if (!listenersAreActive && pendingTxs.length > 0 && approvedTxs.length > 0) {
         blockTracker.on('latest', latestBlockHandler)
         listenersAreActive = true
-      } else if (listenersAreActive && !pendingTxs.length) {
+      } else if (listenersAreActive && !pendingTxs.length && !approvedTxs.length) {
         blockTracker.removeListener('latest', latestBlockHandler)
         listenersAreActive = false
       }
