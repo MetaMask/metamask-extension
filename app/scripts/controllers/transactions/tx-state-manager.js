@@ -71,7 +71,7 @@ class TransactionStateManager extends EventEmitter {
   }
 
   /**
-    @returns {array} the tx list whos status is unapproved
+    @returns {object} the tx list whos status is unapproved
   */
   getUnapprovedTxList () {
     const txList = this.getTxsByMetaData('status', 'unapproved')
