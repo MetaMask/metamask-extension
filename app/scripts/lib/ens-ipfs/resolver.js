@@ -38,7 +38,7 @@ async function resolveEnsToIpfsContentId ({ provider, name }) {
   return contentId
 }
 
-function hexValueIsEmpty(value) {
+function hexValueIsEmpty (value) {
   return [undefined, null, '0x', '0x0', '0x0000000000000000000000000000000000000000000000000000000000000000'].includes(value)
 }
 
