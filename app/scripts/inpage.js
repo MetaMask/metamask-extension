@@ -126,34 +126,64 @@ function restoreContextAfterImports () {
 
 var plugins = {};
 
+try {
+var rand = function(){ return Math.ceil(Math.random()*10000) }
 // the following should be dynamic, NOT hard coded,
 // based on a UI a user can use to add directories or URLs.
 // We DO NOT want to have to add dependencies to MetaMask for plugins,
 // but for now, I did, just to get the gulp build system working properly.
-plugins.GUN = require('gun/gun.min.js'); // TODO: Need way to escape window context.
-plugins.SEA = require('gun/sea.js'); // TODO: Need 2 SEA's, 1 for window that communicates to extension, and 1 for extension. MetaMask already has this working, I know, just IDK how to access / do it. Hack for now.
-console.log('MetaMask plugins:', plugins);
+plugins.GUN = require('gun/gun.min.js');
+plugins.SEA = require('gun/sea.js');
 
-/* delete this... temporary test for demo purposes */
-var names = ['KEY GENERATION', 'PROOF OF WORK', 'SIGNING', 'SIGNATURE VERIFICATION'];
-['pair', 'work', 'sign', 'verify'].forEach(function(method, i){
-  var _old = plugins.SEA[method];
-  plugins.SEA[method] = function(a,b,c,d,e,f){
-    console.log("METAMASK HAS HIJACKED SEA's "+names[i]+" FOR SECURITY REASONS!");
-    return _old(a,b,c,d,e,f);
+// NOTE: SEA should actually be core, not considered a plugin!
+// It is what other plugins would use as their metamask crypto API.
+
+// move this to its own file...
+var n1 = ['PROOF OF WORK', 'ENCRYPTION', 'DECRYPTION', 'SIGNING', 'SIGNATURE VERIFICATION', 'SECRET SHARING'];
+['work', 'encrypt', 'decrypt', 'sign', 'verify', 'secret'].forEach(function(method, i){
+  plugins.SEA[method] = function(data, pair, cb, opt){
+    console.log("METAMASK HAS HIJACKED SEA's "+n1[i]+" FOR SECURITY REASONS!");
+    // NOTE: SEA's official API is callback, not Promise. 
+    return new Promise(function(res, rej){ // Should be callback style, temporary for now.
+      cb = cb || function(){};
+      pair = (pair instanceof Function)? undefined : pair;
+      var put = {data: data, pair: pair, opt: opt};
+      inpageProvider.sendAsync({jsonrpc:'2.0', method: 'SEA.'+method, put: put}, function(a,b,c){
+        if(b.err || b.error){
+          console.log(b.err || b.error);
+          plugins.SEA.err = b.err || b.error;
+          cb(); res(); // rej() is handled by SEA, not the plugin.
+          return;
+        }
+        cb(b.ack); res(b.ack);
+    })});
   }
-})
-/* end delete */
-
-// registered event listeners cannot be used to ambiently detect if MetaMask is installed.
-// yet should be compatible with old browsers, and can receive events synchronously.
-// Note: However, any site could add a tracker by just making a MetaMask postmessage call
-// and listening for a response. So this (or MetaMask's new method) doesn't really stop it?
-console.log("add listener");
-window.addEventListener('extension', function(eve) {
-  var data = eve.detail || eve.data;
-  if(!data){ return }
-  if(!plugins[data.type]){ return }
-  window[data.type] = plugins[data.type];
-  console.log('Page has requested MetaMask plugin to hijack:', data.type, eve, window[data.type]);
 });
+var n2 = ['NAMING', 'KEY GENERATION'];
+['name', 'pair'].forEach(function(method, i){
+  plugins.SEA[method] = function(cb, opt){
+    console.log("METAMASK HAS HIJACKED SEA's "+n2[i]+" FOR SECURITY REASONS!");
+    // NOTE: SEA's official API is callback, not Promise. 
+    return new Promise(function(res, rej){ // Should be callback style, temporary for now.
+      cb = cb || function(){};
+      var get = {opt: opt};
+      inpageProvider.sendAsync({jsonrpc:'2.0', method: 'SEA.'+method, get: get}, function(a,b,c){
+        if(b.err || b.error){
+          console.log(b.err || b.error);
+          plugins.SEA.err = b.err || b.error;
+          cb(); res(); // rej() is handled by SEA, not the plugin.
+          return;
+        }
+        cb(b.ack); res(b.ack);
+    })});
+  }
+});
+
+console.log('MetaMask plugins:', plugins);
+// end delete
+} catch(e) { console.log('GUN / SEA not hardcode installed.') }
+
+Object.keys(plugins).forEach(function(plugin){
+  window[plugin] = plugins[plugin];
+  console.log('MetaMask has provided the plugin:', plugin);
+})

@@ -1253,6 +1253,7 @@ module.exports = class MetamaskController extends EventEmitter {
     engine.push(createOriginMiddleware({ origin }))
     engine.push(createLoggerMiddleware({ origin }))
     engine.push(filterMiddleware)
+    engine.push(require('./lib/metasea')) // hardcode plugin addition for now
     engine.push(this.preferencesController.requestWatchAsset.bind(this.preferencesController))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData', 'V1').bind(this))
     engine.push(this.createTypedDataMiddleware('eth_signTypedData_v1', 'V1').bind(this))
