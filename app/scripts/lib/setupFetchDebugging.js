@@ -6,13 +6,13 @@ module.exports = setupFetchDebugging
 // https://github.com/getsentry/sentry-javascript/pull/1293
 //
 
-function setupFetchDebugging() {
+function setupFetchDebugging () {
   if (!global.fetch) return
   const originalFetch = global.fetch
 
   global.fetch = wrappedFetch
 
-  async function wrappedFetch(...args) {
+  async function wrappedFetch (...args) {
     const initialStack = getCurrentStack()
     try {
       return await originalFetch.call(window, ...args)
@@ -20,14 +20,14 @@ function setupFetchDebugging() {
       if (!err.stack) {
         console.warn('FetchDebugger - fetch encountered an Error without a stack', err)
         console.warn('FetchDebugger - overriding stack to point of original call')
-        err.stack = initialStack  
+        err.stack = initialStack
       }
       throw err
     }
   }
 }
 
-function getCurrentStack() {
+function getCurrentStack () {
   try {
     throw new Error('Fake error for generating stack trace')
   } catch (err) {

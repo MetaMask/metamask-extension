@@ -348,7 +348,7 @@ export default class ConfirmTransactionBase extends Component {
       />
     )
   }
-  
+
   handleNextTx (txId) {
     const { history, clearConfirmTransaction } = this.props
     if (txId) {

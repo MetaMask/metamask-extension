@@ -29,7 +29,7 @@ console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
  * @param {Function} handler - event handler
  * @param {boolean} remove - removes this handler after being triggered
  */
-function onMessage(messageType, handler, remove) {
+function onMessage (messageType, handler, remove) {
   window.addEventListener('message', function ({ data }) {
     if (!data || data.type !== messageType) { return }
     remove && window.removeEventListener('message', handler)
@@ -104,7 +104,7 @@ inpageProvider._metamask = new Proxy({
    *
    * @returns {Promise<boolean>} - Promise resolving to true if this domain has been previously approved
    */
-  isApproved: function() {
+  isApproved: function () {
     return new Promise((resolve) => {
       isApprovedHandle = ({ data: { caching, isApproved } }) => {
         if (caching) {
@@ -133,7 +133,7 @@ inpageProvider._metamask = new Proxy({
     })
   },
 }, {
-  get: function(obj, prop) {
+  get: function (obj, prop) {
     !warned && console.warn('Heads up! ethereum._metamask exposes methods that have ' +
     'not been standardized yet. This means that these methods may not be implemented ' +
     'in other dapp browsers and may be removed from MetaMask in the future.')
@@ -153,7 +153,7 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 window.ethereum = proxiedInpageProvider
 
 // detect eth_requestAccounts and pipe to enable for now
-function detectAccountRequest(method) {
+function detectAccountRequest (method) {
   const originalMethod = inpageProvider[method]
   inpageProvider[method] = function ({ method }) {
     if (method === 'eth_requestAccounts') {
