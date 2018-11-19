@@ -19,5 +19,3 @@ mascara/test/jquery-3.1.0.min.js
 test/integration/bundle.js
 test/integration/jquery-3.1.0.min.js
 test/integration/helpers.js
-test/integration/lib/first-time.js
-
