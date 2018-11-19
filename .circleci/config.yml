@@ -20,14 +20,6 @@ workflows:
       - test-deps:
           requires:
             - prep-deps-npm
-      - test-e2e-chrome:
-          requires:
-            - prep-deps-npm
-            - prep-build
-      - test-e2e-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-build
       - test-e2e-beta-chrome:
           requires:
             - prep-deps-npm
@@ -60,8 +52,6 @@ workflows:
             - test-lint
             - test-unit
             - test-mozilla-lint
-            - test-e2e-chrome
-            - test-e2e-firefox
             - test-e2e-beta-chrome
             - test-e2e-beta-firefox
             - test-e2e-beta-drizzle
@@ -185,37 +175,6 @@ jobs:
       - run:
           name: Test
           command: npx nsp check
-
-  test-e2e-chrome:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:e2e:chrome
-          command: npm run test:e2e:chrome
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-
-  test-e2e-firefox:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:e2e:firefox
-          command: npm run test:e2e:firefox
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
 
   test-e2e-beta-drizzle:
     docker:
