@@ -288,7 +288,7 @@ ConfigScreen.prototype.render = function () {
             }, [
               'Resetting is for developer use only. ',
               h('a', {
-                href: 'http://metamask.helpscoutdocs.com/article/36-resetting-an-account',
+                href: 'https://metamask.zendesk.com/hc/en-us/articles/360015489231-Resetting-an-Account-Old-UI-',
                 target: '_blank',
               }, 'Read more.'),
             ]),

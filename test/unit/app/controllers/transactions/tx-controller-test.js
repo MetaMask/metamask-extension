@@ -313,6 +313,7 @@ describe('Transaction Controller', function () {
         assert.equal(params.gas, originalValue, 'gas unmodified')
         assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
         assert.equal(result.hash, originalValue, `hash was set \n got: ${result.hash} \n expected: ${originalValue}`)
+        assert.equal(result.status, 'submitted', 'Should have reached the submitted status.')
         signStub.restore()
         pubStub.restore()
         done()
@@ -469,9 +470,11 @@ describe('Transaction Controller', function () {
         { id: 7, status: 'failed', metamaskNetworkId: currentNetworkId, txParams: {} },
       ])
     })
-    it('should show only submitted transactions as pending transasction', function () {
-      assert(txController.pendingTxTracker.getPendingTransactions().length, 1)
-      assert(txController.pendingTxTracker.getPendingTransactions()[0].status, 'submitted')
+    it('should show only submitted and approved transactions as pending transasction', function () {
+      assert(txController.pendingTxTracker.getPendingTransactions().length, 2)
+      const states = txController.pendingTxTracker.getPendingTransactions().map(tx => tx.status)
+      assert(states.includes('approved'), 'includes approved')
+      assert(states.includes('submitted'), 'includes submitted')
     })
   })
 })

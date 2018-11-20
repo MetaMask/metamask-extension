@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SenderToRecipient from '../sender-to-recipient'
 import { PageContainerFooter } from '../page-container'
-import { ConfirmPageContainerHeader, ConfirmPageContainerContent } from './'
+import { ConfirmPageContainerHeader, ConfirmPageContainerContent, ConfirmPageContainerNavigation } from './'
 
 export default class ConfirmPageContainer extends Component {
   static contextTypes = {
@@ -43,6 +43,17 @@ export default class ConfirmPageContainer extends Component {
     summaryComponent: PropTypes.node,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
+    // Navigation
+    totalTx: PropTypes.number,
+    positionOfCurrentTx: PropTypes.number,
+    nextTxId: PropTypes.string,
+    prevTxId: PropTypes.string,
+    showNavigation: PropTypes.bool,
+    onNextTx: PropTypes.func,
+    firstTx: PropTypes.string,
+    lastTx: PropTypes.string,
+    ofText: PropTypes.string,
+    requestsWaitingText: PropTypes.string,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
@@ -79,11 +90,33 @@ export default class ConfirmPageContainer extends Component {
       unapprovedTxCount,
       assetImage,
       warning,
+      totalTx,
+      positionOfCurrentTx,
+      nextTxId,
+      prevTxId,
+      showNavigation,
+      onNextTx,
+      firstTx,
+      lastTx,
+      ofText,
+      requestsWaitingText,
     } = this.props
     const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
 
     return (
       <div className="page-container">
+        <ConfirmPageContainerNavigation
+            totalTx={totalTx}
+            positionOfCurrentTx={positionOfCurrentTx}
+            nextTxId={nextTxId}
+            prevTxId={prevTxId}
+            showNavigation={showNavigation}
+            onNextTx={(txId) => onNextTx(txId)}
+            firstTx={firstTx}
+            lastTx={lastTx}
+            ofText={ofText}
+            requestsWaitingText={requestsWaitingText}
+        />
         <ConfirmPageContainerHeader
           showEdit={showEdit}
           onEdit={() => onEdit()}

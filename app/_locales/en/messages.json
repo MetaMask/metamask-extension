@@ -791,6 +791,9 @@
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
   },
+  "ofTextNofM": {
+    "message": "of"
+  },
   "oldUI": {
     "message": "Old UI"
   },
@@ -937,6 +940,9 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restore your Account with Seed Phrase"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "requests waiting to be acknowledged"
   },
   "required": {
     "message": "Required"

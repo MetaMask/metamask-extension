@@ -16,16 +16,14 @@ const {
   findElement,
   findElements,
   loadExtension,
-  openNewPage,
   verboseReportOnFailure,
-  waitUntilXWindowHandles,
-  switchToWindowWithTitle,
 } = require('./helpers')
 
 describe('MetaMask', function () {
   let extensionId
   let driver
 
+  const testSeedPhrase = 'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent'
   const tinyDelayMs = 200
   const regularDelayMs = tinyDelayMs * 2
   const largeDelayMs = regularDelayMs * 2
@@ -37,14 +35,14 @@ describe('MetaMask', function () {
     switch (process.env.SELENIUM_BROWSER) {
       case 'chrome': {
         const extPath = path.resolve('dist/chrome')
-        driver = buildChromeWebDriver(extPath)
+        driver = buildChromeWebDriver(extPath, { responsive: true })
         extensionId = await getExtensionIdChrome(driver)
         await driver.get(`chrome-extension://${extensionId}/popup.html`)
         break
       }
       case 'firefox': {
         const extPath = path.resolve('dist/firefox')
-        driver = buildFirefoxWebdriver()
+        driver = buildFirefoxWebdriver({ responsive: true })
         await installWebExt(driver, extPath)
         await delay(700)
         extensionId = await getExtensionIdFirefox(driver)
@@ -70,7 +68,6 @@ describe('MetaMask', function () {
   after(async function () {
     await driver.quit()
   })
-
 
   describe('New UI setup', async function () {
     it('switches to first tab', async function () {
@@ -254,6 +251,46 @@ describe('MetaMask', function () {
       await driver.wait(until.stalenessOf(buyModal))
       await delay(regularDelayMs)
     })
+  })
+
+  describe('Show account information', () => {
+    it('show account details dropdown menu', async () => {
+      await driver.findElement(By.css('div.menu-bar__open-in-browser')).click()
+      const options = await driver.findElements(By.css('div.menu.account-details-dropdown div.menu__item'))
+      assert.equal(options.length, 3) // HD Wallet type does not have to show the Remove Account option
+      await delay(regularDelayMs)
+    })
+  })
+
+  describe('Import seed phrase', () => {
+    it('logs out of the vault', async () => {
+      await driver.findElement(By.css('.account-menu__icon')).click()
+      await delay(regularDelayMs)
+
+      const logoutButton = await findElement(driver, By.css('.account-menu__logout-button'))
+      assert.equal(await logoutButton.getText(), 'Log out')
+      await logoutButton.click()
+      await delay(regularDelayMs)
+    })
+
+    it('imports seed phrase', async () => {
+      const restoreSeedLink = await findElement(driver, By.css('.unlock-page__link--import'))
+      assert.equal(await restoreSeedLink.getText(), 'Import using account seed phrase')
+      await restoreSeedLink.click()
+      await delay(regularDelayMs)
+
+      const seedTextArea = await findElement(driver, By.css('textarea'))
+      await seedTextArea.sendKeys(testSeedPhrase)
+      await delay(regularDelayMs)
+
+      const passwordInputs = await driver.findElements(By.css('input'))
+      await delay(regularDelayMs)
+
+      await passwordInputs[0].sendKeys('correct horse battery staple')
+      await passwordInputs[1].sendKeys('correct horse battery staple')
+      await driver.findElement(By.css('.first-time-flow__button')).click()
+      await delay(regularDelayMs)
+    })
 
     it('switches to localhost', async () => {
       const networkDropdown = await findElement(driver, By.css('.network-name'))
@@ -264,38 +301,60 @@ describe('MetaMask', function () {
       await localhost.click()
       await delay(largeDelayMs * 2)
     })
+
+    it('balance renders', async () => {
+      const balance = await findElement(driver, By.css('.transaction-view-balance__primary-balance'))
+      await driver.wait(until.elementTextMatches(balance, /100\s*ETH/))
+      await delay(regularDelayMs)
+    })
   })
 
-  describe('Drizzle', () => {
-    let windowHandles
-    let extension
-    let popup
-    let dapp
-
-    it('should be able to connect the account', async () => {
-      await openNewPage(driver, 'http://127.0.0.1:3000/')
+  describe('Send ETH from inside MetaMask', () => {
+    it('starts to send a transaction', async function () {
+      const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
+      await sendButton.click()
       await delay(regularDelayMs)
 
-      await waitUntilXWindowHandles(driver, 3)
-      windowHandles = await driver.getAllWindowHandles()
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
+      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAmount.sendKeys('1')
 
-      extension = windowHandles[0]
-      popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
-      dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
+      const inputValue = await inputAmount.getAttribute('value')
+      assert.equal(inputValue, '1')
 
+      // Set the gas limit
+      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
+      await configureGas.click()
       await delay(regularDelayMs)
-      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
-      await approveButton.click()
+
+      const gasModal = await driver.findElement(By.css('span .modal'))
+
+      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
+      await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
+      await delay(regularDelayMs)
+
+      // Continue to next screen
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await nextScreen.click()
+      await delay(regularDelayMs)
     })
 
-    it('should be able to detect our eth address', async () => {
-      // Check if address exposed
-      await driver.switchTo().window(dapp)
-      await delay(regularDelayMs)
+    it('confirms the transaction', async function () {
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+      await delay(largeDelayMs)
+    })
 
-      const addressElement = await findElement(driver, By.css(`.pure-u-1-1 h4`))
-      const addressText = await addressElement.getText()
-      assert(addressText.match(/^0x[a-fA-F0-9]{40}$/))
+    it('finds the transaction in the transactions list', async function () {
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
+      assert.equal(transactions.length, 1)
+
+      if (process.env.SELENIUM_BROWSER !== 'firefox') {
+        const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
+        await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
+      }
     })
   })
 })
