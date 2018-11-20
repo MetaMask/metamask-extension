@@ -114,7 +114,7 @@
     "eth-contract-metadata": "github:MetaMask/eth-contract-metadata#master",
     "eth-ens-namehash": "^2.0.8",
     "eth-hd-keyring": "^2.0.0",
-    "eth-json-rpc-filters": "^3.0.1",
+    "eth-json-rpc-filters": "github:poanetwork/eth-json-rpc-filters#3.0.2",
     "eth-json-rpc-infura": "^3.0.0",
     "eth-keychain-controller": "^5.0.0",
     "eth-ledger-bridge-keyring": "^0.1.0",
