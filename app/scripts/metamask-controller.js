@@ -1041,7 +1041,7 @@ module.exports = class MetamaskController extends EventEmitter {
             break
         }
       } else {
-        signature = await keyring.signTypedData(address, cleanMsgParams.data);
+        signature = await keyring.signTypedData(address, cleanMsgParams.data)
       }
       this.typedMessageManager.setMsgStatusSigned(msgId, signature)
       return this.getState()
