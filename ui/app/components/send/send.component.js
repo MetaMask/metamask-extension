@@ -41,11 +41,11 @@ export default class SendTransactionScreen extends PersistentForm {
     scanQrCode: PropTypes.func,
     qrCodeDetected: PropTypes.func,
     qrCodeData: PropTypes.object,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.qrCodeData) {
@@ -138,14 +138,12 @@ export default class SendTransactionScreen extends PersistentForm {
       })
       const gasFeeErrorObject = selectedToken
         ? getGasFeeErrorObject({
-          amount,
           amountConversionRate,
           balance,
           conversionRate,
           gasTotal,
           primaryCurrency,
           selectedToken,
-          tokenBalance,
         })
         : { gasFee: null }
       updateSendErrors(Object.assign(amountErrorObject, gasFeeErrorObject))

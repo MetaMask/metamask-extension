@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import CurrencyDisplay from '../currency-display'
 
 export default class TokenBalance extends PureComponent {
   static propTypes = {
@@ -12,12 +12,14 @@ export default class TokenBalance extends PureComponent {
   }
 
   render () {
-    const { className, string, withSymbol, symbol } = this.props
+    const { className, string, symbol } = this.props
 
     return (
-      <div className={classnames('hide-text-overflow', className)}>
-        { string + (withSymbol ? ` ${symbol}` : '') }
-      </div>
+      <CurrencyDisplay
+        className={className}
+        displayValue={string}
+        suffix={symbol}
+      />
     )
   }
 }

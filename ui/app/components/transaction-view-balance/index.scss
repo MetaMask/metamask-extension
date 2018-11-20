@@ -6,6 +6,12 @@
   height: 54px;
   min-width: 0;
 
+  @media screen and (max-width: $break-small) {
+    flex-direction: column;
+    height: initial;
+    width: 100%;
+  }
+
   &__balance {
     margin: 0 12px;
     display: flex;
@@ -15,17 +21,8 @@
     @media screen and (max-width: $break-small) {
       align-items: center;
       margin: 16px 0;
-    }
-  }
-
-  &__token-balance {
-    margin-left: 12px;
-    font-size: 1.5rem;
-
-    @media screen and (max-width: $break-small) {
-      margin: 12px 0;
-      margin-left: 0;
-      font-size: 1.75rem;
+      padding: 0 16px;
+      max-width: 100%;
     }
   }
 
@@ -34,6 +31,7 @@
 
     @media screen and (max-width: $break-small) {
       font-size: 1.75rem;
+      width: 100%;
     }
   }
 
@@ -51,6 +49,7 @@
 
     @media screen and (max-width: $break-small) {
       flex-direction: column;
+      width: 100%;
     }
   }
 
@@ -70,10 +69,5 @@
     &:not(:last-child) {
       margin-right: 12px;
     }
-  }
-
-  @media screen and (max-width: $break-small) {
-    flex-direction: column;
-    height: initial
   }
 }

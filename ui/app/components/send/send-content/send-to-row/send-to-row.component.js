@@ -19,11 +19,11 @@ export default class SendToRow extends Component {
     updateSendTo: PropTypes.func,
     updateSendToError: PropTypes.func,
     scanQrCode: PropTypes.func,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   handleToChange (to, nickname = '', toError) {
     const { hasHexData, updateSendTo, updateSendToError, updateGas } = this.props

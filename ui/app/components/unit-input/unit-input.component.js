@@ -66,7 +66,7 @@ export default class UnitInput extends PureComponent {
     const valueString = String(value)
     const valueLength = valueString.length || 1
     const decimalPointDeficit = valueString.match(/\./) ? -0.5 : 0
-    return (valueLength + decimalPointDeficit + 0.75) + 'ch'
+    return (valueLength + decimalPointDeficit + 0.5) + 'ch'
   }
 
   render () {
