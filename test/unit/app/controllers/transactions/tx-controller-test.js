@@ -28,7 +28,7 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop
     txController = new TransactionController({
       provider,
-      getGasPrice: function () { return '0xee6b2800'} ,
+      getGasPrice: function () { return '0xee6b2800' },
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
