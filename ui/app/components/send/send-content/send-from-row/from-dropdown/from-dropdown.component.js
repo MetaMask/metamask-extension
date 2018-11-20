@@ -12,11 +12,11 @@ export default class FromDropdown extends Component {
     onSelect: PropTypes.func,
     openDropdown: PropTypes.func,
     selectedAccount: PropTypes.object,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   render () {
     const {

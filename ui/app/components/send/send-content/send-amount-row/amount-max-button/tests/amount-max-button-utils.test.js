@@ -19,7 +19,7 @@ describe('amount-max-button utils', () => {
         selectedToken: {
           decimals: 10,
         },
-        tokenBalance: 100,
+        tokenBalance: '64',
       }), 'e8d4a51000')
     })
   })

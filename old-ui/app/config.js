@@ -222,7 +222,7 @@ ConfigScreen.prototype.render = function () {
               },
             }, 'Clear privacy data'),
           ]),
-          
+
           h('hr.horizontal-line'),
 
           h('div', {
@@ -253,7 +253,7 @@ ConfigScreen.prototype.render = function () {
               'Enable privacy mode'
             ),
           ]),
-          
+
           h('hr.horizontal-line'),
 
           h('div', {

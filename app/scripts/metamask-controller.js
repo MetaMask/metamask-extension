@@ -200,7 +200,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
       var currentCurrency = this.currencyController.getCurrentCurrency()
-      this.setCurrentCurrency(currentCurrency, function() {})
+      this.setCurrentCurrency(currentCurrency, function () {})
     })
     this.balancesController.updateAllBalances()
 
@@ -1581,7 +1581,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Locks MetaMask
    */
-  setLocked() {
+  setLocked () {
     this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
   }
