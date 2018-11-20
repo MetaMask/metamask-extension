@@ -1021,20 +1021,27 @@ module.exports = class MetamaskController extends EventEmitter {
     log.info('MetaMaskController - eth_signTypedData')
     const msgId = msgParams.metamaskId
     const version = msgParams.version
+    const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
     try {
       const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
       const address = sigUtil.normalize(cleanMsgParams.from)
       const keyring = await this.keyringController.getKeyringForAccount(address)
-      const wallet = keyring._getWalletForAccount(address)
-      const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
       let signature
-      switch (version) {
-        case 'V1':
-          signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
-          break
-        case 'V3':
-          signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
-          break
+      // HW Wallet keyrings don't expose private keys so
+      // we need to handle it separately
+      if (HW_WALLETS_KEYRINGS.indexOf(keyring.type) === -1) {
+        const wallet = keyring._getWalletForAccount(address)
+        const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
+        switch (version) {
+          case 'V1':
+            signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
+            break
+          case 'V3':
+            signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
+            break
+        }
+      } else {
+        signature = await keyring.signTypedData(address, cleanMsgParams.data);
       }
       this.typedMessageManager.setMsgStatusSigned(msgId, signature)
       return this.getState()
