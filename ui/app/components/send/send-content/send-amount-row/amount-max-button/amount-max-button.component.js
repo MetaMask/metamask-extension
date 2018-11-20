@@ -11,11 +11,11 @@ export default class AmountMaxButton extends Component {
     setAmountToMax: PropTypes.func,
     setMaxModeTo: PropTypes.func,
     tokenBalance: PropTypes.string,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   setMaxAmount () {
     const {

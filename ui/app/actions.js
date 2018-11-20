@@ -1011,7 +1011,7 @@ function updateSendTokenBalance ({
       .then(usersToken => {
         if (usersToken) {
           const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
-          dispatch(setSendTokenBalance(newTokenBalance.toString(10)))
+          dispatch(setSendTokenBalance(newTokenBalance))
         }
       })
       .catch(err => {

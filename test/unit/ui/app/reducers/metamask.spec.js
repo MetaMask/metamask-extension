@@ -5,7 +5,7 @@ import * as actions from '../../../../../ui/app/actions'
 describe('MetaMask Reducers', () => {
 
   it('init state', () => {
-    const initState = reduceMetamask({metamask:{}}, {})
+    const initState = reduceMetamask({metamask: {}}, {})
     assert(initState)
   })
 

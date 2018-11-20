@@ -32,7 +32,7 @@ function setupSentry (opts) {
     scope.setExtra('isBrave', isBrave)
   })
 
-  function rewriteReport(report) {
+  function rewriteReport (report) {
     try {
       // simplify certain complex error messages (e.g. Ethjs)
       simplifyErrorMessages(report)

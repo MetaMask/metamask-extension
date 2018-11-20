@@ -38,6 +38,10 @@
     align-items: center;
   }
 
+  &__suffix {
+    margin-left: 3px;
+  }
+
   &--error {
     border-color: $red;
   }

@@ -23,7 +23,7 @@ async function start () {
   const release = global.platform.getVersion()
   setupSentry({ release, getState })
   // provide app state to append to error logs
-  function getState() {
+  function getState () {
     // get app state
     const state = window.getCleanAppState()
     // remove unnecessary data

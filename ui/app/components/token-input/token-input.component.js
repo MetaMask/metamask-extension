@@ -32,7 +32,7 @@ export default class TokenInput extends PureComponent {
     super(props)
 
     const { value: hexValue } = props
-    const decimalValue = hexValue ? this.getDecimalValue(props) : 0
+    const decimalValue = hexValue ? this.getValue(props) : 0
 
     this.state = {
       decimalValue,
@@ -46,12 +46,12 @@ export default class TokenInput extends PureComponent {
     const { hexValue: stateHexValue } = this.state
 
     if (prevPropsHexValue !== propsHexValue && propsHexValue !== stateHexValue) {
-      const decimalValue = this.getDecimalValue(this.props)
+      const decimalValue = this.getValue(this.props)
       this.setState({ hexValue: propsHexValue, decimalValue })
     }
   }
 
-  getDecimalValue (props) {
+  getValue (props) {
     const { value: hexValue, selectedToken: { decimals, symbol } = {} } = props
 
     const multiplier = Math.pow(10, Number(decimals || 0))
@@ -63,7 +63,7 @@ export default class TokenInput extends PureComponent {
       invertConversionRate: true,
     })
 
-    return Number(decimalValueString) || 0
+    return Number(decimalValueString) ? decimalValueString : ''
   }
 
   handleChange = decimalValue => {

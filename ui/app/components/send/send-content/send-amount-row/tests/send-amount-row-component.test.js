@@ -82,7 +82,6 @@ describe('SendAmountRow Component', function () {
       assert.deepEqual(
         propsMethodSpies.updateGasFeeError.getCall(0).args,
         [{
-          amount: 'someAmount',
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 7,

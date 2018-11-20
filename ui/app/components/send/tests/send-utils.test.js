@@ -285,11 +285,10 @@ describe('send utils', () => {
         [
           {
             value: 123,
-            fromNumericBase: 'dec',
+            fromNumericBase: 'hex',
           },
           {
             value: 'calc:1610',
-            fromNumericBase: 'dec',
           },
         ]
       )

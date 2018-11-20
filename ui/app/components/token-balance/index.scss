@@ -1,0 +1,14 @@
+.token-balance-component {
+  display: flex;
+  align-items: center;
+
+  &__text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__suffix {
+    padding-left: 4px;
+  }
+}

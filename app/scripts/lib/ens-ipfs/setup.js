@@ -6,7 +6,7 @@ const supportedTopLevelDomains = ['eth']
 
 module.exports = setupEnsIpfsResolver
 
-function setupEnsIpfsResolver({ provider }) {
+function setupEnsIpfsResolver ({ provider }) {
 
   // install listener
   const urlPatterns = supportedTopLevelDomains.map(tld => `*://*.${tld}/*`)
@@ -35,11 +35,11 @@ function setupEnsIpfsResolver({ provider }) {
     attemptResolve({ tabId, name, path, search })
   }
 
-  async function attemptResolve({ tabId, name, path, search }) {
+  async function attemptResolve ({ tabId, name, path, search }) {
     extension.tabs.update(tabId, { url: `loading.html` })
     try {
       const ipfsContentId = await resolveEnsToIpfsContentId({ provider, name })
-      let url = `https://gateway.ipfs.io/ipfs/${ipfsContentId}${path}${search || ''}`
+      const url = `https://gateway.ipfs.io/ipfs/${ipfsContentId}${path}${search || ''}`
       try {
         // check if ipfs gateway has result
         const response = await fetch(url, { method: 'HEAD' })
