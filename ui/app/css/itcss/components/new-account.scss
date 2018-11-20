@@ -3,6 +3,7 @@
   background-color: #FFFFFF;
   box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
   z-index: 25;
+  height: 100%;
 
   &__header {
     display: flex;
@@ -186,22 +187,8 @@
   }
 
   &__connect-btn {
-    background-color: #259De5;
-    color: #fff;
-    border: none;
     width: 315px;
-    min-height: 54px;
-    font-weight: 300;
-    font-size: 14px;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    border-radius: 5px;
-    display: flex;
-    flex: 1;
-    margin-left: 20px;
-    margin-right: 20px;
-    justify-content: center;
-    text-transform: uppercase;
+    margin: 20px;
   }
 
   &__connect-btn.disabled {
@@ -489,29 +476,8 @@
     justify-content: space-between;
   }
 
-  &__button {
-    width: 150px;
-    min-width: initial;
-  }
-
-  .btn-primary {
-    background-color: #259DE5;
-    color: #FFFFFF;
-    border: none;
-    width: 100%;
-    min-height: 54px;
-    font-weight: 300;
-    font-size: 14px;
-    margin-bottom: 20px
-  }
-
-  &__button.unlock {
-    width: 50%;
-  }
-
-  &__button.btn-primary--disabled {
-    cursor: not-allowed;
-    opacity: .5;
+  &__button:not(:last-child) {
+    margin-right: 16px;
   }
 }
 
