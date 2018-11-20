@@ -1,10 +1,12 @@
 # Changelog
 
 ## Current Develop Branch
-- [#5694](https://github.com/MetaMask/metamask-extension/pull/5694): Version 5.0.1 
-- [#5547](https://github.com/MetaMask/metamask-extension/pull/5547): Bundle some ui dependencies separately to limit the build size of ui.js
 
+## 5.0.3 Mon Nov 19 2018
+
+- [#5547](https://github.com/MetaMask/metamask-extension/pull/5547): Bundle some ui dependencies separately to limit the build size of ui.js
 - Resubmit approved transactions on new block, to fix bug where an error can stick transactions in this state.
+- Fixed a bug that could cause an error when sending the max number of tokens.
 
 ## 5.0.2 Friday November 9 2018
 
