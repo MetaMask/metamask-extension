@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { sufficientBalance } = require('../../../app/scripts/lib/util')
+const { sufficientBalance, capitalizeFirstLetter } = require('../../../app/scripts/lib/util')
 
 
 describe('SufficientBalance', function () {
@@ -37,5 +37,16 @@ describe('SufficientBalance', function () {
 
     const result = sufficientBalance(tx, balance)
     assert.ok(!result, 'insufficient balance found.')
+  })
+})
+
+describe('capitalizeFirstLetter', () => {
+  it('returns correct output with capitalized first letter of the first word', () => {
+    assert.equal('T', capitalizeFirstLetter('t'))
+    assert.equal('Test', capitalizeFirstLetter('test'))
+    assert.equal('Test with multiple words', capitalizeFirstLetter('test with multiple words'))
+    assert.equal('Test with multiple words', capitalizeFirstLetter('Test with multiple words'))
+    assert.equal('', capitalizeFirstLetter(''))
+    assert.equal('', capitalizeFirstLetter())
   })
 })

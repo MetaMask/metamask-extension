@@ -258,6 +258,15 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.SHOW_HARDWARE_WALLET_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'hardware-wallets-menu',
+        },
+        transForward: true,
+        warning: null,
+      })
+
     case actions.SHOW_NEW_ACCOUNT_PAGE:
       return extend(appState, {
         currentView: {

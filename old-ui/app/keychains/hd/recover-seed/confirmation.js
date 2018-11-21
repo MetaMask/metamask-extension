@@ -40,7 +40,7 @@ RevealSeedConfirmation.prototype.render = function () {
         h('.page-subtitle', 'Reveal Seed Words'),
       ]),
 
-      h('.div', {
+      h('div', {
         style: {
           display: 'flex',
           flexDirection: 'column',
