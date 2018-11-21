@@ -8,6 +8,7 @@ const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 const { menus, screens, elements, NETWORKS } = require('./elements')
 const testSeedPhrase = 'juice teach unaware view expand beef divorce spatial evolve rack scheme foster'
+const account1 = '0x00caA30bb79b3a1CDbdAE146e17e0D7d8710b5EF'
 const account2 = '0x27836ca9B60E2E1aE13852388edd9a130Be81475'
 const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 
@@ -519,11 +520,23 @@ describe('Metamask popup page', async function () {
 
     it('emit event', async function () {
       await setProvider(NETWORKS.SOKOL)
+      let account
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
+        account = account1
+      } else if (process.env.SELENIUM_BROWSER === 'firefox') {
+        account = account2
+        const accountMenu = await waitUntilShowUp(menus.account.menu)
+        await accountMenu.click()
+        const item = await waitUntilShowUp(menus.account.account2)
+        await item.click()
+      }
+
       const balanceField = await waitUntilShowUp(screens.main.balance)
       await delay(2000)
       const balance = await balanceField.getText()
+      console.log('Account = ' + account)
       console.log('Balance = ' + balance)
-      assert.equal(parseInt(balance) > 0.001, true, 'Balance of account 0x00caA30bb79b3a1CDbdAE146e17e0D7d8710b5EF TOO LOW !!! Please refill with Sokol eth!!!!')
+      assert.equal(parseInt(balance) > 0.001, true, 'Balance of account ' + account + ' TOO LOW !!! Please refill with Sokol eth!!!!')
       await driver.get(eventsEmitter)
       const button = await waitUntilShowUp(screens.eventsEmitter.button)
       await button.click()
@@ -552,14 +565,17 @@ describe('Metamask popup page', async function () {
           const events = await driver.findElements(screens.eventsEmitter.event)
           assert.equal(events.length, 1, 'More than 1 event was fired: ' + events.length + ' events')
         }
-      }
-    )
+      })
 
     it('open app', async function () {
       if (process.env.SELENIUM_BROWSER === 'chrome') {
         await driver.get(`chrome-extension://${extensionId}/popup.html`)
       } else if (process.env.SELENIUM_BROWSER === 'firefox') {
         await driver.get(`moz-extension://${extensionId}/popup.html`)
+        const accountMenu = await waitUntilShowUp(menus.account.menu)
+        await accountMenu.click()
+        const item = await waitUntilShowUp(menus.account.account1)
+        await item.click()
       }
     })
   })
