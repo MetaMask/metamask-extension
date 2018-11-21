@@ -9,6 +9,13 @@ $orange: #ffa500;
 $red: #f00;
 $gray: #808080;
 
+// Dark User Interface Palette
+$ui-dark-background: lighten(black, 10%);
+$ui-dark-background-accent: lighten(black, 15%);
+
+$ui-dark-foreground: white;
+$ui-dark-foreground-accent: darken(white, 10%);
+
 /*
   Colors
   http://chir.ag/projects/name-that-color

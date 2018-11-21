@@ -25,6 +25,7 @@ const mapStateToProps = state => {
     featureFlags: {
       sendHexData,
       privacyMode,
+      darkMode,
     } = {},
     provider = {},
     isMascara,
@@ -42,6 +43,7 @@ const mapStateToProps = state => {
     useBlockie,
     sendHexData,
     privacyMode,
+    darkMode,
     provider,
     useNativeCurrencyAsPrimaryCurrency,
   }
@@ -60,6 +62,7 @@ const mapDispatchToProps = dispatch => {
     },
     setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
     setPrivacyMode: enabled => dispatch(setFeatureFlag('privacyMode', enabled)),
+    setDarkMode: enabled => dispatch(setFeatureFlag('darkMode', enabled)),
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
     setUseNativeCurrencyAsPrimaryCurrencyPreference: value => {
       return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value))

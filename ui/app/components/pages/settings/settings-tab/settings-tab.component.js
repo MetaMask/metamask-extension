@@ -61,6 +61,8 @@ export default class SettingsTab extends PureComponent {
     nativeCurrency: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
+    darkMode: PropTypes.bool,
+    setDarkMode: PropTypes.func,
   }
 
   state = {
@@ -69,6 +71,28 @@ export default class SettingsTab extends PureComponent {
     showOptions: false,
     ticker: '',
     nickname: '',
+  }
+
+  renderUiMode () {
+    const { darkMode, setDarkMode } = this.props
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>Dark UI Mode</span>
+          <span className="settings-page__content-description">
+            Toggle between Dark or Light UI.
+          </span>
+        </div>
+        <div className="settings-page__content-item">
+          <ToggleButton
+            value={darkMode}
+            onToggle={value => setDarkMode(!value)}
+            activeLabel=""
+            inactiveLabel=""
+          />
+        </div>
+      </div>
+    )
   }
 
   renderCurrentConversion () {
@@ -526,6 +550,7 @@ export default class SettingsTab extends PureComponent {
     return (
       <div className="settings-page__content">
         { warning && <div className="settings-tab__error">{ warning }</div> }
+        { this.renderUiMode() }
         { this.renderCurrentConversion() }
         { this.renderUsePrimaryCurrencyOptions() }
         { this.renderCurrentLocale() }

@@ -63,6 +63,8 @@ class App extends Component {
   componentWillMount () {
     const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
+    console.log('Current state', this.props)
+
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
     }
@@ -105,60 +107,65 @@ class App extends Component {
       currentView,
       setMouseUserState,
       sidebar,
+      darkMode,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
 
+    const darkModeClass = darkMode ? 'div.app-wrapper.dark-mode' : 'div.app-wrapper.light-mode'
+
     return (
-      h('.flex-column.full-height', {
-        className: classnames({ 'mouse-user-styles': isMouseUser }),
-        style: {
-          overflowX: 'hidden',
-          position: 'relative',
-          alignItems: 'center',
-        },
-        tabIndex: '0',
-        onClick: () => setMouseUserState(true),
-        onKeyDown: (e) => {
-          if (e.keyCode === 9) {
-            setMouseUserState(false)
-          }
-        },
-      }, [
+      h(darkModeClass, [
+        h('.flex-column.full-height', {
+          className: classnames({ 'mouse-user-styles': isMouseUser }),
+          style: {
+            overflowX: 'hidden',
+            position: 'relative',
+            alignItems: 'center',
+          },
+          tabIndex: '0',
+          onClick: () => setMouseUserState(true),
+          onKeyDown: (e) => {
+            if (e.keyCode === 9) {
+              setMouseUserState(false)
+            }
+          },
+        }, [
 
-        // global modal
-        h(Modal, {}, []),
+          // global modal
+          h(Modal, {}, []),
 
-        // global alert
-        h(Alert, {visible: this.props.alertOpen, msg: alertMessage}),
+          // global alert
+          h(Alert, {visible: this.props.alertOpen, msg: alertMessage}),
 
-        h(AppHeader),
+          h(AppHeader),
 
-        // sidebar
-        h(Sidebar, {
-          sidebarOpen: sidebar.isOpen,
-          hideSidebar: this.props.hideSidebar,
-          transitionName: sidebar.transitionName,
-          type: sidebar.type,
-        }),
-
-        // network dropdown
-        h(NetworkDropdown, {
-          provider,
-          frequentRpcListDetail,
-        }, []),
-
-        h(AccountMenu),
-
-        h('div.main-container-wrapper', [
-          (isLoading || isLoadingNetwork) && h(Loading, {
-            loadingMessage: loadMessage,
+          // sidebar
+          h(Sidebar, {
+            sidebarOpen: sidebar.isOpen,
+            hideSidebar: this.props.hideSidebar,
+            transitionName: sidebar.transitionName,
+            type: sidebar.type,
           }),
 
-          // content
-          this.renderRoutes(),
+          // network dropdown
+          h(NetworkDropdown, {
+            provider,
+            frequentRpcListDetail,
+          }, []),
+
+          h(AccountMenu),
+
+          h('div.main-container-wrapper', [
+            (isLoading || isLoadingNetwork) && h(Loading, {
+              loadingMessage: loadMessage,
+            }),
+
+            // content
+            this.renderRoutes(),
+          ]),
         ]),
       ])
     )
@@ -227,6 +234,7 @@ App.propTypes = {
   setCurrentCurrencyToUSD: PropTypes.func,
   isLoading: PropTypes.bool,
   loadingMessage: PropTypes.string,
+  darkMode: PropTypes.bool,
   alertMessage: PropTypes.string,
   network: PropTypes.string,
   provider: PropTypes.object,
@@ -326,6 +334,7 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
     betaUI: state.metamask.featureFlags.betaUI,
+    darkMode: state.metamask.featureFlags.darkMode,
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,
     Qr: state.appState.Qr,
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,

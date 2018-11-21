@@ -1,0 +1,44 @@
+@import "./variables.scss";
+
+div.app-wrapper.dark-mode {
+    div.app-header {
+        background-color: $ui-dark-background-accent;
+        div.app-header__contents {
+            div.app-header__account-menu-container {
+                div.app-header__network-component-wrapper {
+                    div.network-component.pointer {
+                        border: 2px solid $ui-dark-foreground;
+                        color: $ui-dark-foreground;
+                        div.network-indicator {
+                            div.network-name {
+                                color: $ui-dark-foreground;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } // div.app-header
+
+    div.main-container-wrapper {
+
+        div.unlock-page__container {
+            div.unlock-page {
+                background: $ui-dark-background;
+                color: $ui-dark-foreground;
+                h1 {
+                    color: $ui-dark-foreground-accent;
+                }
+                form.unlock-page__form {
+                    label {
+                        color: $ui-dark-foreground-accent;
+                    }
+                    input {
+                        color: $ui-dark-foreground;
+                    }
+                }
+            }
+        } // div.unlock-page__container
+
+    } // div.main-container-wrapper
+} // div.app-wrapper.dark-mode

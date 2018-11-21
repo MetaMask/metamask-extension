@@ -11,6 +11,7 @@ const I18nProvider = require('./i18n-provider')
 
 function mapStateToProps (state) {
   return {
+    darkMode: state.metamask.featureFlags.darkMode,
     betaUI: state.metamask.featureFlags.betaUI,
     autoAdd: autoAddToBetaUI(state),
     isUnlocked: state.metamask.isUnlocked,
