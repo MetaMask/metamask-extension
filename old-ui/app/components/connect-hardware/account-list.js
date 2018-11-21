@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import ethNetProps from 'eth-net-props'
 import { default as Select } from 'react-select'
 import Button from '../../../../ui/app/components/button'
+import { capitalizeFirstLetter } from '../../../../app/scripts/lib/util'
 
 class AccountList extends Component {
     constructor (props, context) {
@@ -59,16 +60,12 @@ class AccountList extends Component {
       )
     }
 
-    capitalizeDevice = (device) => {
-      return device.slice(0, 1).toUpperCase() + device.slice(1)
-    }
-
     renderHeader = () => {
       const { device } = this.props
       return (
         <div className="hw-connect">
           <h3 className="hw-connect">
-            <h3 className="hw-connect__unlock-title">{`Unlock ${this.capitalizeDevice(device)}`}</h3>
+            <h3 className="hw-connect__unlock-title">{`Unlock ${capitalizeFirstLetter(device)}`}</h3>
             {device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null}
             <p className="hw-connect__msg">Select the account to view in Nifty Wallet</p>
           </h3>
