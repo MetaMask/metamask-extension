@@ -1,3 +1,4 @@
+import ethUtil from 'ethereumjs-util'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../confirm-page-container'
@@ -239,7 +240,7 @@ export default class ConfirmTransactionBase extends Component {
           )
         }
         <div className="confirm-page-container-content__data-box-label">
-          {`${t('hexData')}:`}
+          {`${t('hexData')}: ${ethUtil.toBuffer(data).length} bytes`}
         </div>
         <div className="confirm-page-container-content__data-box">
           { data }
