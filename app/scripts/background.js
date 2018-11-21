@@ -332,6 +332,10 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
+  const metamaskBlacklistedPorts = [
+    'trezor-connect',
+  ]
+
   const isClientOpenStatus = () => {
     return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
   }
@@ -351,6 +355,10 @@ function setupController (initState, initLangCode) {
   function connectRemote (remotePort) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
+
+    if (metamaskBlacklistedPorts.includes(remotePort.name)) {
+      return false
+    }
 
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort)

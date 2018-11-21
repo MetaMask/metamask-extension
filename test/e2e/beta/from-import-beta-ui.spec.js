@@ -315,36 +315,7 @@ describe('Using MetaMask with an existing account', function () {
       await connectButtons[0].click()
       await delay(regularDelayMs)
       const allWindows = await driver.getAllWindowHandles()
-      switch (process.env.SELENIUM_BROWSER) {
-        case 'chrome':
-          assert.equal(allWindows.length, 2)
-          break
-        default:
-          assert.equal(allWindows.length, 1)
-      }
-    })
-
-    it('should show the "Browser not supported" screen for non Chrome browsers', async () => {
-      if (process.env.SELENIUM_BROWSER !== 'chrome') {
-        const title = await findElements(driver, By.xpath(`//h3[contains(text(), 'Your Browser is not supported...')]`))
-        assert.equal(title.length, 1)
-
-        const downloadChromeButtons = await findElements(driver, By.xpath(`//button[contains(text(), 'Download Google Chrome')]`))
-        assert.equal(downloadChromeButtons.length, 1)
-
-        await downloadChromeButtons[0].click()
-        await delay(regularDelayMs)
-
-        const [newUITab, downloadChromeTab] = await driver.getAllWindowHandles()
-
-        await driver.switchTo().window(downloadChromeTab)
-        await delay(regularDelayMs)
-        const tabUrl = await driver.getCurrentUrl()
-        assert.equal(tabUrl, 'https://www.google.com/chrome/')
-        await driver.close()
-        await delay(regularDelayMs)
-        await driver.switchTo().window(newUITab)
-      }
+      assert.equal(allWindows.length, 2)
     })
   })
 })
