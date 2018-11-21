@@ -31,6 +31,7 @@ const selectors = {
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
   autoAddToBetaUI,
+  getShouldUseNewUi,
   getSendMaxModeState,
   getCurrentViewContext,
   getTotalUnapprovedCount,
@@ -183,6 +184,13 @@ function autoAddToBetaUI (state) {
   const userIsNotInBeta = !state.metamask.featureFlags.betaUI
 
   return userIsNotInBeta && userPassesThreshold
+}
+
+function getShouldUseNewUi (state) {
+  const isAlreadyUsingBetaUi = state.metamask.featureFlags.betaUI
+  const isMascara = state.metamask.isMascara
+  const isFreshInstall = Object.keys(state.metamask.identities).length === 0
+  return isAlreadyUsingBetaUi || isMascara || isFreshInstall
 }
 
 function getCurrentViewContext (state) {

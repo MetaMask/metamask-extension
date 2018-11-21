@@ -1357,8 +1357,8 @@
   "welcomeBack": {
     "message": "Welcome Back!"
   },
-  "welcomeBeta": {
-    "message": "Welcome to MetaMask Beta"
+  "welcome": {
+    "message": "Welcome to MetaMask"
   },
   "whatsThis": {
     "message": "What's this?"

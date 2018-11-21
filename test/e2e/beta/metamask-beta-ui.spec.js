@@ -42,7 +42,7 @@ describe('MetaMask', function () {
         const extPath = path.resolve('dist/chrome')
         driver = buildChromeWebDriver(extPath)
         extensionId = await getExtensionIdChrome(driver)
-        await driver.get(`chrome-extension://${extensionId}/popup.html`)
+        await driver.get(`chrome-extension://${extensionId}/home.html`)
         break
       }
       case 'firefox': {
@@ -51,7 +51,7 @@ describe('MetaMask', function () {
         await installWebExt(driver, extPath)
         await delay(700)
         extensionId = await getExtensionIdFirefox(driver)
-        await driver.get(`moz-extension://${extensionId}/popup.html`)
+        await driver.get(`moz-extension://${extensionId}/home.html`)
       }
     }
   })
@@ -74,69 +74,13 @@ describe('MetaMask', function () {
     await driver.quit()
   })
 
-  describe('New UI setup', async function () {
-    it('switches to first tab', async function () {
-      await delay(tinyDelayMs)
-      const [firstTab] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(firstTab)
-      await delay(regularDelayMs)
-    })
-
-    it('selects the new UI option', async () => {
-      try {
-        const overlay = await findElement(driver, By.css('.full-flex-height'))
-        await driver.wait(until.stalenessOf(overlay))
-      } catch (e) {}
-
-      let button
-      try {
-        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
-      } catch (e) {
-        await loadExtension(driver, extensionId)
-        await delay(largeDelayMs)
-        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
-      }
-      await button.click()
-      await delay(regularDelayMs)
-
-      // Close all other tabs
-      const [tab0, tab1, tab2] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(tab0)
-      await delay(tinyDelayMs)
-
-      let selectedUrl = await driver.getCurrentUrl()
-      await delay(tinyDelayMs)
-      if (tab0 && selectedUrl.match(/popup.html/)) {
-        await closeAllWindowHandlesExcept(driver, tab0)
-      } else if (tab1) {
-        await driver.switchTo().window(tab1)
-        selectedUrl = await driver.getCurrentUrl()
-        await delay(tinyDelayMs)
-        if (selectedUrl.match(/popup.html/)) {
-          await closeAllWindowHandlesExcept(driver, tab1)
-        } else if (tab2) {
-          await driver.switchTo().window(tab2)
-          selectedUrl = await driver.getCurrentUrl()
-          selectedUrl.match(/popup.html/) && await closeAllWindowHandlesExcept(driver, tab2)
-        }
-      } else {
-        throw new Error('popup.html not found')
-      }
-      await delay(regularDelayMs)
-      const [appTab] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(appTab)
-      await delay(tinyDelayMs)
-
-      await loadExtension(driver, extensionId)
-      await delay(regularDelayMs)
-
-      const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
-      await continueBtn.click()
-      await delay(regularDelayMs)
-    })
-  })
-
   describe('Going through the first time flow', () => {
+    it('clicks the continue button on the welcome screen', async () => {
+      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-screen__button'))
+      welcomeScreenBtn.click()
+      await delay(largeDelayMs)
+    })
+
     it('accepts a secure password', async () => {
       const passwordBox = await findElement(driver, By.css('.create-password #create-password'))
       const passwordBoxConfirm = await findElement(driver, By.css('.create-password #confirm-password'))

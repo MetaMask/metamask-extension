@@ -1303,7 +1303,7 @@
   "welcomeBack": {
     "message": "Bienvenue à nouveau !"
   },
-  "welcomeBeta": {
+  "welcome": {
     "message": "Bienvenue dans la Beta de MetaMask"
   },
   "whatsThis": {

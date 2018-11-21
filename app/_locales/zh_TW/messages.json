@@ -933,8 +933,8 @@
   "warning": {
     "message": "警告"
   },
-  "welcomeBeta": {
-    "message": "歡迎到 MetaMask Beta"
+  "welcome": {
+    "message": "歡迎到 MetaMask"
   },
   "whatsThis": {
     "message": "這是什麼？"

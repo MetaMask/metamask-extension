@@ -85,11 +85,22 @@ async function openNewPage (driver, url) {
   await delay(1000)
 }
 
-async function waitUntilXWindowHandles (driver, x) {
-  const windowHandles = await driver.getAllWindowHandles()
-  if (windowHandles.length === x) return
-  await delay(1000)
-  return await waitUntilXWindowHandles(driver, x)
+async function waitUntilXWindowHandles (driver, x, delayStep = 1000, timeout = 5000) {
+  let timeElapsed = 0
+  async function _pollWindowHandles () {
+    const windowHandles = await driver.getAllWindowHandles()
+    if (windowHandles.length === x) {
+      return
+    }
+    await delay(delayStep)
+    timeElapsed += delayStep
+    if (timeElapsed > timeout) {
+      throw new Error('waitUntilXWindowHandles timed out polling window handles')
+    } else {
+      await _pollWindowHandles()
+    }
+  }
+  return await _pollWindowHandles()
 }
 
 async function switchToWindowWithTitle (driver, title, windowHandles) {

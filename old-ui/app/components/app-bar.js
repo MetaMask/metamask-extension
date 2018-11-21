@@ -422,7 +422,7 @@ module.exports = class AppBar extends Component {
         onClick: () => {
           dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
         },
-      }, 'Try Beta!'),
+      }, 'Try New UI!'),
     ])
   }
 

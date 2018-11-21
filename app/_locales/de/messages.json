@@ -918,8 +918,8 @@
   "warning": {
     "message": "Warnung"
   },
-  "welcomeBeta": {
-    "message": "Willkommen zu MetaMask Beta"
+  "welcome": {
+    "message": "Willkommen zu MetaMask"
   },
   "whatsThis": {
     "message": "Was ist das?"
