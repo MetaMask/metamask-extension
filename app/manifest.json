@@ -55,7 +55,7 @@
     },
     {
       "matches": [
-        "*://connect.trezor.io/5/popup.html"
+        "*://connect.trezor.io/*/popup.html"
       ],
       "js": [
         "vendor/trezor/content-script.js"
