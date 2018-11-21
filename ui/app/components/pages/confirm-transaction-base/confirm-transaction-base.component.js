@@ -295,22 +295,35 @@ export default class ConfirmTransactionBase extends Component {
       return
     }
 
-    this.setState({ submitting: true, submitError: null })
-
-    if (onSubmit) {
-      Promise.resolve(onSubmit(txData))
-        .then(this.setState({ submitting: false }))
-    } else {
-      sendTransaction(txData)
-        .then(() => {
-          clearConfirmTransaction()
-          this.setState({ submitting: false })
-          history.push(DEFAULT_ROUTE)
-        })
-        .catch(error => {
-          this.setState({ submitting: false, submitError: error.message })
-        })
-    }
+    this.setState({
+      submitting: true,
+      submitError: null,
+    }, () => {
+      if (onSubmit) {
+        Promise.resolve(onSubmit(txData))
+          .then(() => {
+            this.setState({
+              submitting: false,
+            })
+          })
+      } else {
+        sendTransaction(txData)
+          .then(() => {
+            clearConfirmTransaction()
+            this.setState({
+              submitting: false,
+            }, () => {
+              history.push(DEFAULT_ROUTE)
+            })
+          })
+          .catch(error => {
+            this.setState({
+              submitting: false,
+              submitError: error.message,
+            })
+          })
+      }
+    })
   }
 
   renderTitleComponent () {
