@@ -120,6 +120,7 @@ class Layer2AppList extends Component {
       provider: global.ethereumProvider,
       layer2Apps: this.props.layer2Apps,
       pollingInterval: 8000,
+      networkId: this.props.network
     })
 
     // TODO ADAPT HERE

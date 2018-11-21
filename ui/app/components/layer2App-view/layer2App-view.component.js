@@ -19,31 +19,37 @@ export default class Layer2AppView extends PureComponent {
     if (!script) return (	<div>       </div>)
     for (var k = 0; k< script.layer2Abi.actions.length; k++){
       const index = k
+
+      let paramValues = []      
+      for (var i = 0; i< script.layer2Abi.actions[index].params.length; i++){
+	const subIndex = i
+	const param = script.layer2Abi.actions[index].params[subIndex]
+	elements.push(h('input', {
+	  key: "input"+index+subIndex,
+	  className: 'customize-gas-input',
+	  value: paramValues[subIndex],
+	  placeholder: param.name,
+	  type: param.type,
+	  onChange: e => {
+	    console.log("changed")
+	    paramValues[subIndex] = e.target.value
+	  },
+	}))
+	
+      }
+
       elements.push(<Button
 		   key={"button"+k}
 		   type="primary"
 		   className="layer2App-view__button"
 		   onClick={() => {
 		     console.log(script.layer2Abi)
-		     script.layer2Abi.actions[index].call()}
+		     script.layer2Abi.actions[index].call(paramValues)}
 			   }
 		   >
 		   {script.layer2Abi.actions[index].name}
-		   </Button>)
-      for (var i = 0; i< script.layer2Abi.actions[index].params.length; i++){
-	console.log(script.layer2Abi.actions[index].params[i])
-	elements.push(h('input', {
-	  className: 'customize-gas-input',
-	  value: "a",
-	  placeholder: "temp element",
-	  type: 'number',
-	  onChange: e => {
-	    console.log("changed")
-	  },
-	  min: 0,
-	}))
-	
-      }
+		    </Button>)
+
     }
     return elements
   }
