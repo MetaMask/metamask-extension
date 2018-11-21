@@ -139,6 +139,19 @@ function removeListeners (listeners, emitter) {
   })
 }
 
+/**
+ * Capitalizes first letter in the first word of the message
+ * @param {string} msg The input message
+ * returns {string} The message with capitalized first letter of the first word
+**/
+function capitalizeFirstLetter (msg) {
+  if (!msg) {
+    return ''
+  }
+
+  return msg.charAt(0).toUpperCase() + msg.slice(1)
+}
+
 module.exports = {
   removeListeners,
   applyListeners,
@@ -149,4 +162,5 @@ module.exports = {
   hexToBn,
   bnToHex,
   BnMultiplyByFraction,
+  capitalizeFirstLetter,
 }
