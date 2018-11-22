@@ -804,8 +804,8 @@
   "supportCenter": {
     "message": "Visita nuestro centro de atención"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Símbolo debe ser entre 0 y 10 caracteres"
+  "symbolBetweenZeroTwelve": {
+    "message": "Símbolo debe ser entre 0 y 12 caracteres"
   },
   "takesTooLong": {
     "message": "¿Está tardando demasiado?"
