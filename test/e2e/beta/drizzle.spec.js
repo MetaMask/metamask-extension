@@ -19,6 +19,7 @@ const {
   openNewPage,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
+  switchToWindowWithTitle,
 } = require('./helpers')
 
 describe('MetaMask', function () {
@@ -80,22 +81,6 @@ describe('MetaMask', function () {
     })
 
     it('selects the new UI option', async () => {
-      try {
-        const overlay = await findElement(driver, By.css('.full-flex-height'))
-        await driver.wait(until.stalenessOf(overlay))
-      } catch (e) {}
-
-      let button
-      try {
-        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
-      } catch (e) {
-        await loadExtension(driver, extensionId)
-        await delay(largeDelayMs)
-        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
-      }
-      await button.click()
-      await delay(regularDelayMs)
-
       // Close all other tabs
       const [tab0, tab1, tab2] = await driver.getAllWindowHandles()
       await driver.switchTo().window(tab0)
@@ -266,17 +251,31 @@ describe('MetaMask', function () {
   })
 
   describe('Drizzle', () => {
-    it('should be able to detect our eth address', async () => {
+    let windowHandles
+    let extension
+    let popup
+    let dapp
+
+    it('should be able to connect the account', async () => {
       await openNewPage(driver, 'http://127.0.0.1:3000/')
       await delay(regularDelayMs)
 
-      await waitUntilXWindowHandles(driver, 2)
-      const windowHandles = await driver.getAllWindowHandles()
-      const dapp = windowHandles[1]
+      await waitUntilXWindowHandles(driver, 3)
+      windowHandles = await driver.getAllWindowHandles()
 
+      extension = windowHandles[0]
+      popup = await switchToWindowWithTitle(driver, 'MetaMask Notification', windowHandles)
+      dapp = windowHandles.find(handle => handle !== extension && handle !== popup)
+
+      await delay(regularDelayMs)
+      const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
+      await approveButton.click()
+    })
+
+    it('should be able to detect our eth address', async () => {
+      // Check if address exposed
       await driver.switchTo().window(dapp)
       await delay(regularDelayMs)
-
 
       const addressElement = await findElement(driver, By.css(`.pure-u-1-1 h4`))
       const addressText = await addressElement.getText()

@@ -1,4 +1,49 @@
 {
+  "privacyMode": {
+    "message": "Datenschutzmodus"
+  },
+  "privacyModeDescription": {
+    "message": "Websites müssen Zugriff anfordern, um Ihre Kontoinformationen anzuzeigen."
+  },
+  "exposeAccounts": {
+    "message": "Expose Konten"
+  },
+  "exposeDescription": {
+    "message": "Expose Konten auf der aktuellen Website. Nützlich für ältere Dapps."
+  },
+  "confirmExpose": {
+    "message": "Möchten Sie Ihre Konten wirklich der aktuellen Website zugänglich machen?"
+  },
+  "confirmClear": {
+    "message": "Möchten Sie die genehmigten Websites wirklich löschen?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Genehmigte Website-Daten wurden erfolgreich gelöscht."
+  },
+  "approvalData": {
+    "message": "Genehmigungsdaten"
+  },
+  "approvalDataDescription": {
+    "message": "Löschen Sie die genehmigten Website-Daten, damit alle Websites erneut eine Genehmigung anfordern müssen."
+  },
+  "clearApprovalData": {
+    "message": "Genehmigungsdaten löschen"
+  },
+  "approve": {
+    "message": "Genehmigen"
+  },
+  "reject": {
+    "message": "Ablehnen"
+  },
+  "providerAPIRequest": {
+    "message": "Web3-API-Anfrage"
+  },
+  "reviewProviderRequest": {
+    "message": "Bitte lesen Sie diese Ethereum-API-Anfrage."
+  },
+  "providerRequestInfo": {
+    "message": "Die unten aufgeführte Domäne versucht, Zugriff auf die Ethereum-API anzufordern, damit sie mit der Ethereum-Blockchain interagieren kann. Überprüfen Sie immer, dass Sie sich auf der richtigen Website befinden, bevor Sie den Web3-Zugriff genehmigen."
+  },
   "accept": {
     "message": "Annehmen"
   },
@@ -873,8 +918,8 @@
   "warning": {
     "message": "Warnung"
   },
-  "welcomeBeta": {
-    "message": "Willkommen zu MetaMask Beta"
+  "welcome": {
+    "message": "Willkommen zu MetaMask"
   },
   "whatsThis": {
     "message": "Was ist das?"

@@ -39,12 +39,15 @@ export default class SettingsTab extends PureComponent {
     metamask: PropTypes.object,
     setUseBlockie: PropTypes.func,
     setHexDataFeatureFlag: PropTypes.func,
+    setPrivacyMode: PropTypes.func,
+    privacyMode: PropTypes.bool,
     setCurrentCurrency: PropTypes.func,
     setRpcTarget: PropTypes.func,
     delRpcTarget: PropTypes.func,
     displayWarning: PropTypes.func,
     revealSeedConfirmation: PropTypes.func,
     setFeatureFlagToBeta: PropTypes.func,
+    showClearApprovalModal: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
     warning: PropTypes.string,
     history: PropTypes.object,
@@ -276,6 +279,36 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+  renderClearApproval () {
+    const { t } = this.context
+    const { showClearApprovalModal } = this.props
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('approvalData') }</span>
+          <span className="settings-page__content-description">
+            { t('approvalDataDescription') }
+          </span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Button
+              type="secondary"
+              large
+              className="settings-tab__button--orange"
+              onClick={event => {
+                event.preventDefault()
+                showClearApprovalModal()
+              }}
+            >
+              { t('clearApprovalData') }
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderSeedWords () {
     const { t } = this.context
     const { history } = this.props
@@ -461,6 +494,32 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+  renderPrivacyOptIn () {
+    const { t } = this.context
+    const { privacyMode, setPrivacyMode } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('privacyMode') }</span>
+          <div className="settings-page__content-description">
+            { t('privacyModeDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={privacyMode}
+              onToggle={value => setPrivacyMode(!value)}
+              activeLabel=""
+              inactiveLabel=""
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render () {
     const { warning, isMascara } = this.props
 
@@ -475,8 +534,10 @@ export default class SettingsTab extends PureComponent {
         { this.renderSeedWords() }
         { !isMascara && this.renderOldUI() }
         { this.renderResetAccount() }
-        { this.renderBlockieOptIn() }
+        { this.renderClearApproval() }
+        { this.renderPrivacyOptIn() }
         { this.renderHexDataOptIn() }
+        { this.renderBlockieOptIn() }
       </div>
     )
   }

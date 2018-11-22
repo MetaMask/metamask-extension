@@ -32,7 +32,10 @@ class PreferencesController {
       tokens: [],
       suggestedTokens: {},
       useBlockie: false,
-      featureFlags: {},
+      featureFlags: {
+        betaUI: true,
+        skipAnnounceBetaUI: true,
+      },
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -46,7 +49,7 @@ class PreferencesController {
     this.diagnostics = opts.diagnostics
     this.network = opts.network
     this.store = new ObservableStore(initState)
-    this.showWatchAssetUi = opts.showWatchAssetUi
+    this.openPopup = opts.openPopup
     this._subscribeProviderType()
   }
 // PUBLIC METHODS
@@ -567,7 +570,7 @@ class PreferencesController {
     }
     const tokenOpts = { rawAddress, decimals, symbol, image }
     this.addSuggestedERC20Asset(tokenOpts)
-    return this.showWatchAssetUi().then(() => {
+    return this.openPopup().then(() => {
       const tokenAddresses = this.getTokens().filter(token => token.address === normalizeAddress(rawAddress))
       return tokenAddresses.length > 0
     })
@@ -583,8 +586,8 @@ class PreferencesController {
    */
   _validateERC20AssetParams (opts) {
     const { rawAddress, symbol, decimals } = opts
-    if (!rawAddress || !symbol || !decimals) throw new Error(`Cannot suggest token without address, symbol, and decimals`)
-    if (!(symbol.length < 6)) throw new Error(`Invalid symbol ${symbol} more than five characters`)
+    if (!rawAddress || !symbol || typeof decimals === 'undefined') throw new Error(`Cannot suggest token without address, symbol, and decimals`)
+    if (!(symbol.length < 7)) throw new Error(`Invalid symbol ${symbol} more than six characters`)
     const numDecimals = parseInt(decimals, 10)
     if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
       throw new Error(`Invalid decimals ${decimals} must be at least 0, and not over 36`)

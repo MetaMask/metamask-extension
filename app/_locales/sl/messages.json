@@ -1,9 +1,9 @@
 {
   "privacyMode": {
-    "message": "Način zasebnosti"
+    "message": "Zasebnostni način"
   },
   "privacyModeDescription": {
-    "message": "Spletne strani morajo zahtevati dostop za ogled podatkov o vašem računu."
+    "message": "Spletne strani morajo zahtevati dovoljenje za ogled podatkov o vašem računu."
   },
   "exposeAccounts": {
     "message": "Razkrij račune"
@@ -21,13 +21,13 @@
     "message": "Odobrene spletne strani uspešno počiščene."
   },
   "approvalData": {
-    "message": "Zasebni podatki"
+    "message": "Podatki o odobritvi"
   },
   "approvalDataDescription": {
-    "message": "Počistite zasebne podatke, tako da bodo morale vse spletne strani ponovno zahtevati dovoljenje."
+    "message": "Počistite seznam odobrenih spletnih strani, tako da bodo morale ponovno zahtevati odobritev."
   },
   "clearApprovalData": {
-    "message": "Počisti zasebne podatke"
+    "message": "Počisti podatke o odobritvi"
   },
   "providerAPIRequest": {
     "message": "Zahteva za Ethereum API"
@@ -1348,8 +1348,8 @@
   "welcomeBack": {
     "message": "Dobrodošli nazaj!"
   },
-  "welcomeBeta": {
-    "message": "Dobrodošli v MetaMask Beta"
+  "welcome": {
+    "message": "Dobrodošli v MetaMask"
   },
   "whatsThis": {
     "message": "Kaj je to?"

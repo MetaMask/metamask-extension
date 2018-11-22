@@ -1,5 +1,5 @@
 const extend = require('xtend')
-const EventEmitter = require('events')
+const EventEmitter = require('safe-event-emitter')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const log = require('loglevel')
@@ -79,6 +79,17 @@ class TransactionStateManager extends EventEmitter {
       result[tx.id] = tx
       return result
     }, {})
+  }
+
+  /**
+    @param [address] {string} - hex prefixed address to sort the txMetas for [optional]
+    @returns {array} the tx list whos status is approved if no address is provide
+    returns all txMetas who's status is approved for the current network
+  */
+  getApprovedTransactions (address) {
+    const opts = { status: 'approved' }
+    if (address) opts.from = address
+    return this.getFilteredTxList(opts)
   }
 
   /**

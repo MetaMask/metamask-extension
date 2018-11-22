@@ -2,6 +2,29 @@
 
 ## Current Develop Branch
 
+## 5.0.3 Mon Nov 19 2018
+
+- [#5547](https://github.com/MetaMask/metamask-extension/pull/5547): Bundle some ui dependencies separately to limit the build size of ui.js
+- Resubmit approved transactions on new block, to fix bug where an error can stick transactions in this state.
+- Fixed a bug that could cause an error when sending the max number of tokens.
+
+## 5.0.2 Friday November 9 2018
+
+- Fixed bug that caused accounts to update slowly to sites. #5717
+- Fixed bug that could lead to some sites crashing. #5709
+
+## 5.0.1 Wednesday November 7 2018
+
+- Fixed bug in privacy mode that made it not work correctly on Firefox.
+
+## 5.0.0 Tuesday November 6 2018
+
+- Implements EIP 1102 as a user-activated "Privacy Mode".
+
+## 4.17.1 Saturday November 3 2018
+
+- Revert chain ID lookup change which introduced a bug which caused problems when connecting to mainnet via Infura's RESTful API.
+
 ## 4.17.0 Thursday November 1 2018
 
 - Fix bug where data lookups like balances would get stale data (stopped block-tracker bug)
@@ -147,6 +170,7 @@
 - Font weight changed from 300 to 400.
 - New reveal screen design.
 - Styling improvements to labels in first time flow and signature request headers.
+- Allow other extensions to make access our ethereum provider API ([#3997](https://github.com/MetaMask/metamask-extension/pull/3997))
 
 ## 4.6.1 Mon Apr 30 2018
 

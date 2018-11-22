@@ -1,4 +1,4 @@
-const EventEmitter = require('events')
+const EventEmitter = require('safe-event-emitter')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
@@ -82,7 +82,12 @@ class TransactionController extends EventEmitter {
       provider: this.provider,
       nonceTracker: this.nonceTracker,
       publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
-      getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
+      getPendingTransactions: () => {
+        const pending = this.txStateManager.getPendingTransactions()
+        const approved = this.txStateManager.getApprovedTransactions()
+        return [...pending, ...approved]
+      },
+      approveTransaction: this.approveTransaction.bind(this),
       getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     })
 

@@ -1,4 +1,49 @@
 {
+  "privacyMode": {
+    "message": "โหมดความเป็นส่วนตัว"
+  },
+  "privacyModeDescription": {
+    "message": "เว็บไซต์ต้องขอเข้าถึงเพื่อดูข้อมูลบัญชีของคุณ"
+  },
+  "exposeAccounts": {
+    "message": "เปิดเผยบัญชี"
+  },
+  "exposeDescription": {
+    "message": "เปิดเผยบัญชีไปยังเว็บไซต์ปัจจุบัน มีประโยชน์สำหรับ dapps แบบเดิม"
+  },
+  "confirmExpose": {
+    "message": "คุณแน่ใจหรือไม่ว่าต้องการเปิดเผยบัญชีของคุณไปยังเว็บไซต์ปัจจุบัน"
+  },
+  "confirmClear": {
+    "message": "คุณแน่ใจหรือไม่ว่าต้องการล้างเว็บไซต์ที่ผ่านการอนุมัติ"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "อนุมัติข้อมูลเว็บไซต์ที่ได้รับอนุมัติแล้ว"
+  },
+  "approvalData": {
+    "message": "ข้อมูลการอนุมัติ"
+  },
+  "approvalDataDescription": {
+    "message": "ล้างข้อมูลเว็บไซต์ที่ได้รับการอนุมัติเพื่อให้ทุกไซต์ต้องขออนุมัติอีกครั้ง"
+  },
+  "clearApprovalData": {
+    "message": "ล้างข้อมูลการอนุมัติ"
+  },
+  "approve": {
+    "message": "อนุมัติ"
+  },
+  "reject": {
+    "message": "ปฏิเสธ"
+  },
+  "providerAPIRequest": {
+    "message": "คำขอ Web3 API"
+  },
+  "reviewProviderRequest": {
+    "message": "โปรดอ่านคำขอ Ethereum API นี้"
+  },
+  "providerRequestInfo": {
+    "message": "โดเมนที่แสดงด้านล่างกำลังพยายามขอเข้าถึง API ของ Ethereum เพื่อให้สามารถโต้ตอบกับบล็อค Ethereum ได้ ตรวจสอบว่าคุณอยู่ในไซต์ที่ถูกต้องก่อนที่จะอนุมัติการเข้าถึง Ethereum เสมอ"
+  },
   "accept": {
     "message": "ยอมรับ"
   },
@@ -804,7 +849,7 @@
   "warning": {
     "message": "คำเตือน"
   },
-  "welcomeBeta": {
+  "welcome": {
     "message": "ยินดีต้อนรับสู่ MetaMask เบต้า"
   },
   "whatsThis": {

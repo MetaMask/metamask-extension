@@ -1,4 +1,43 @@
 {
+  "privacyMode": {
+    "message": "Les sites Web doivent demander un accès pour afficher les informations de votre compte."
+  },
+  "privacyModeDescription": {
+    "message": "Les sites Web doivent demander un accès pour afficher les informations de votre compte."
+  },
+  "exposeAccounts": {
+    "message": "Exposer les comptes"
+  },
+  "exposeDescription": {
+    "message": "Exposer des comptes sur le site Web actuel. Utile pour les dapps hérités."
+  },
+  "confirmExpose": {
+    "message": "Êtes-vous sûr de vouloir exposer vos comptes au site Web actuel?"
+  },
+  "confirmClear": {
+    "message": "Êtes-vous sûr de vouloir supprimer les sites Web approuvés?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Les données de site Web approuvées ont été supprimées."
+  },
+  "approvalData": {
+    "message": "Données d'approbation"
+  },
+  "approvalDataDescription": {
+    "message": "Effacer les données de site Web approuvées afin que tous les sites doivent à nouveau demander l'approbation."
+  },
+  "clearApprovalData": {
+    "message": "Effacer les données d'approbation"
+  },
+  "providerAPIRequest": {
+    "message": "Demande d'API Web3"
+  },
+  "reviewProviderRequest": {
+    "message": "Veuillez consulter cette demande d'API Ethereum."
+  },
+  "providerRequestInfo": {
+    "message": "Le domaine répertorié ci-dessous tente de demander l'accès à l'API Ethereum pour pouvoir interagir avec la chaîne de blocs Ethereum. Vérifiez toujours que vous êtes sur le bon site avant d'autoriser l'accès à Ethereum."
+  },
   "accept": {
     "message": "Accepter"
   },
@@ -1264,7 +1303,7 @@
   "welcomeBack": {
     "message": "Bienvenue à nouveau !"
   },
-  "welcomeBeta": {
+  "welcome": {
     "message": "Bienvenue dans la Beta de MetaMask"
   },
   "whatsThis": {

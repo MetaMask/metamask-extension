@@ -108,7 +108,7 @@ export default class AppHeader extends PureComponent {
           >
             <img
               className="app-header__metafox-logo app-header__metafox-logo--horizontal"
-              src="/images/logo/metamask-logo-horizontal-beta.svg"
+              src="/images/logo/metamask-logo-horizontal.svg"
               height={30}
             />
             <img

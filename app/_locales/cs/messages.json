@@ -1,4 +1,49 @@
 {
+  "privacyMode": {
+    "message": "Režim súkromia"
+  },
+  "privacyModeDescription": {
+    "message": "Webové stránky musia požiadať o prístup k zobrazeniu informácií o vašom účte."
+  },
+  "exposeAccounts": {
+    "message": "Vystavte účty"
+  },
+  "exposeDescription": {
+    "message": "Vystavte účty na aktuální webové stránky. Užitečné pro starší dappy."
+  },
+  "confirmExpose": {
+    "message": "Opravdu chcete své účty vystavit na stávajícím webu?"
+  },
+  "confirmClear": {
+    "message": "Naozaj chcete vymazať schválené webové stránky?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Schválené údaje webových stránek byly úspěšně zrušeny."
+  },
+  "approvalData": {
+    "message": "Údaje o schválení"
+  },
+  "approvalDataDescription": {
+    "message": "Vymažte schválené údaje webových stránek, aby všechny weby znovu požádaly o schválení."
+  },
+  "clearApprovalData": {
+    "message": "Jasné údaje o schválení"
+  },
+  "approve": {
+    "message": "Schválit"
+  },
+  "reject": {
+    "message": "Odmítnout"
+  },
+  "providerAPIRequest": {
+    "message": "Požadavek API Ethereum"
+  },
+  "reviewProviderRequest": {
+    "message": "Přečtěte si prosím tuto žádost API Ethereum."
+  },
+  "providerRequestInfo": {
+    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
+  },
   "accept": {
     "message": "Přijmout"
   },
@@ -897,8 +942,8 @@
   "warning": {
     "message": "Varování"
   },
-  "welcomeBeta": {
-    "message": "Vítejte v MetaMask Beta"
+  "welcome": {
+    "message": "Vítejte v MetaMask"
   },
   "whatsThis": {
     "message": "Co to je?"

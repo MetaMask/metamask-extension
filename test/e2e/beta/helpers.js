@@ -14,6 +14,7 @@ module.exports = {
   loadExtension,
   openNewPage,
   switchToWindowWithTitle,
+  switchToWindowWithUrlThatMatches,
   verboseReportOnFailure,
   waitUntilXWindowHandles,
 }
@@ -84,11 +85,22 @@ async function openNewPage (driver, url) {
   await delay(1000)
 }
 
-async function waitUntilXWindowHandles (driver, x) {
-  const windowHandles = await driver.getAllWindowHandles()
-  if (windowHandles.length === x) return
-  await delay(1000)
-  return await waitUntilXWindowHandles(driver, x)
+async function waitUntilXWindowHandles (driver, x, delayStep = 1000, timeout = 5000) {
+  let timeElapsed = 0
+  async function _pollWindowHandles () {
+    const windowHandles = await driver.getAllWindowHandles()
+    if (windowHandles.length === x) {
+      return
+    }
+    await delay(delayStep)
+    timeElapsed += delayStep
+    if (timeElapsed > timeout) {
+      throw new Error('waitUntilXWindowHandles timed out polling window handles')
+    } else {
+      await _pollWindowHandles()
+    }
+  }
+  return await _pollWindowHandles()
 }
 
 async function switchToWindowWithTitle (driver, title, windowHandles) {
@@ -129,4 +141,20 @@ async function assertElementNotPresent (webdriver, driver, by) {
     assert(err instanceof webdriver.error.NoSuchElementError || err instanceof webdriver.error.TimeoutError)
   }
   assert.ok(!dataTab, 'Found element that should not be present')
+}
+
+async function switchToWindowWithUrlThatMatches (driver, regexp, windowHandles) {
+  if (!windowHandles) {
+    windowHandles = await driver.getAllWindowHandles()
+  } else if (windowHandles.length === 0) {
+    throw new Error('No window that matches: ' + regexp)
+  }
+  const firstHandle = windowHandles[0]
+  await driver.switchTo().window(firstHandle)
+  const windowUrl = await driver.getCurrentUrl()
+  if (windowUrl.match(regexp)) {
+    return firstHandle
+  } else {
+     return await switchToWindowWithUrlThatMatches(driver, regexp, windowHandles.slice(1))
+  }
 }

@@ -25,7 +25,6 @@ const statusToClassNameHash = {
 }
 
 const statusToTextHash = {
-  [APPROVED_STATUS]: 'pending',
   [SUBMITTED_STATUS]: 'pending',
 }
 

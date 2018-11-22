@@ -205,6 +205,62 @@ ConfigScreen.prototype.render = function () {
               marginTop: '20px',
             },
           }, [
+            h('p', {
+              style: {
+                fontFamily: 'Montserrat Light',
+                fontSize: '13px',
+              },
+            }, 'Clear privacy data so all websites must request access to view account information again.'),
+            h('br'),
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                event.preventDefault()
+                state.dispatch(actions.clearApprovedOrigins())
+              },
+            }, 'Clear privacy data'),
+          ]),
+
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
+            h('p', {
+              style: {
+                fontFamily: 'Montserrat Light',
+                fontSize: '13px',
+              },
+            }, metamaskState.featureFlags.privacyMode ?
+              'Websites will be able to view your account information.' :
+              'Websites must request access to view your account information.'
+            ),
+            h('br'),
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                event.preventDefault()
+                state.dispatch(actions.setFeatureFlag('privacyMode', !metamaskState.featureFlags.privacyMode))
+              },
+            }, metamaskState.featureFlags.privacyMode ?
+              'Disable privacy mode' :
+              'Enable privacy mode'
+            ),
+          ]),
+
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
             h('button', {
               style: {
                 alignSelf: 'center',
@@ -232,7 +288,7 @@ ConfigScreen.prototype.render = function () {
             }, [
               'Resetting is for developer use only. ',
               h('a', {
-                href: 'http://metamask.helpscoutdocs.com/article/36-resetting-an-account',
+                href: 'https://metamask.zendesk.com/hc/en-us/articles/360015489231-Resetting-an-Account-Old-UI-',
                 target: '_blank',
               }, 'Read more.'),
             ]),

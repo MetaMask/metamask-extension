@@ -89,11 +89,10 @@ function isTokenBalanceSufficient ({
   const tokenBalanceIsSufficient = conversionGTE(
     {
       value: tokenBalance,
-      fromNumericBase: 'dec',
+      fromNumericBase: 'hex',
     },
     {
       value: calcTokenAmount(amountInDec, decimals),
-      fromNumericBase: 'dec',
     },
   )
 
@@ -151,7 +150,6 @@ function getAmountErrorObject ({
 }
 
 function getGasFeeErrorObject ({
-  amount,
   amountConversionRate,
   balance,
   conversionRate,
@@ -180,7 +178,7 @@ function getGasFeeErrorObject ({
 
 function calcTokenBalance ({ selectedToken, usersToken }) {
   const { decimals } = selectedToken || {}
-  return calcTokenAmount(usersToken.balance.toString(), decimals) + ''
+  return calcTokenAmount(usersToken.balance.toString(), decimals).toString(16)
 }
 
 function doesAmountErrorRequireUpdate ({

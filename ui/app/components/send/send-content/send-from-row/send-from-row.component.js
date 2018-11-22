@@ -15,11 +15,11 @@ export default class SendFromRow extends Component {
     tokenContract: PropTypes.object,
     updateSendFrom: PropTypes.func,
     setSendTokenBalance: PropTypes.func,
-  };
+  }
 
   static contextTypes = {
     t: PropTypes.func,
-  };
+  }
 
   async handleFromChange (newFrom) {
     const {
@@ -32,6 +32,7 @@ export default class SendFromRow extends Component {
       const usersToken = await tokenContract.balanceOf(newFrom.address)
       setSendTokenBalance(usersToken)
     }
+
     updateSendFrom(newFrom)
   }
 

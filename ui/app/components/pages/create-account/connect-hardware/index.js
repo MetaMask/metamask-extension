@@ -50,9 +50,8 @@ class ConnectHardwareForm extends Component {
   }
 
   connectToHardwareWallet = (device) => {
-    // None of the hardware wallets are supported
-    // At least for now
-    if (getPlatform() === PLATFORM_FIREFOX) {
+    // Ledger hardware wallets are not supported on firefox
+    if (getPlatform() === PLATFORM_FIREFOX && device === 'ledger') {
       this.setState({ browserSupported: false, error: null})
       return null
     }
@@ -126,7 +125,7 @@ class ConnectHardwareForm extends Component {
       .catch(e => {
         if (e === 'Window blocked') {
           this.setState({ browserSupported: false, error: null})
-        } else if (e !== 'Window closed') {
+        } else if (e !== 'Window closed' && e !== 'Popup closed') {
           this.setState({ error: e.toString() })
         }
       })

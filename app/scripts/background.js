@@ -256,7 +256,8 @@ function setupController (initState, initLangCode) {
     showUnconfirmedMessage: triggerUi,
     unlockAccountMessage: triggerUi,
     showUnapprovedTx: triggerUi,
-    showWatchAssetUi: showWatchAssetUi,
+    openPopup: openPopup,
+    closePopup: notificationManager.closePopup.bind(notificationManager),
     // initial state
     initState,
     // initial locale code
@@ -331,6 +332,10 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
+  const metamaskBlacklistedPorts = [
+    'trezor-connect',
+  ]
+
   const isClientOpenStatus = () => {
     return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
   }
@@ -350,6 +355,10 @@ function setupController (initState, initLangCode) {
   function connectRemote (remotePort) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
+
+    if (metamaskBlacklistedPorts.includes(remotePort.name)) {
+      return false
+    }
 
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort)
@@ -439,6 +448,7 @@ function triggerUi () {
     const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
     if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
       notificationManager.showPopup()
+      notificationIsOpen = true
     }
   })
 }
@@ -447,7 +457,7 @@ function triggerUi () {
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
  */
-function showWatchAssetUi () {
+function openPopup () {
   triggerUi()
   return new Promise(
     (resolve) => {

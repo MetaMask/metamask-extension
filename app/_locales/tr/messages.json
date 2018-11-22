@@ -1,4 +1,49 @@
 {
+  "privacyMode": {
+    "message": "Gizlilik modu"
+  },
+  "privacyModeDescription": {
+    "message": "Web siteleri, hesap bilgilerinizi görmek için erişim istemek zorundadır."
+  },
+  "exposeAccounts": {
+    "message": "Hesapları Açığa Çıkar"
+  },
+  "exposeDescription": {
+    "message": "Hesapları mevcut web sitesine gösterin. Eski dapps için kullanışlıdır."
+  },
+  "confirmExpose": {
+    "message": "Hesaplarınızı mevcut web sitesine taşımak istediğinizden emin misiniz?"
+  },
+  "confirmClear": {
+    "message": "Onaylanmış web sitelerini silmek istediğinizden emin misiniz?"
+  },
+  "clearApprovalDataSuccess": {
+    "message": "Onaylanan web sitesi verileri başarıyla temizlendi."
+  },
+  "approvalData": {
+    "message": "Onay Verileri"
+  },
+  "approvalDataDescription": {
+    "message": "Onaylanan web sitesi verilerini temizle, tüm sitelerin tekrar onay isteğinde bulunması gerekir."
+  },
+  "clearApprovalData": {
+    "message": "Onay verilerini temizle"
+  },
+  "approve": {
+    "message": "Onaylamak"
+  },
+  "reject": {
+    "message": "Reddetmek"
+  },
+  "providerAPIRequest": {
+    "message": "Web3 API İsteği"
+  },
+  "reviewProviderRequest": {
+    "message": "Lütfen bu Ethereum API isteğini inceleyin."
+  },
+  "providerRequestInfo": {
+    "message": "Aşağıda listelenen etki alanı, Ethereum API'sine erişim talep etmeye çalışmaktadır, böylece Ethereum blockchain ile etkileşime girebilir. Web3 erişimini onaylamadan önce her zaman doğru sitede olduğunuzu kontrol edin."
+  },
   "accept": {
     "message": "Kabul et"
   },
@@ -897,8 +942,8 @@
   "warning": {
     "message": "Uyarı"
   },
-  "welcomeBeta": {
-    "message": "MetaMask Beta'ya Hoşgeldiniz"
+  "welcome": {
+    "message": "MetaMask'ya Hoşgeldiniz"
   },
   "whatsThis": {
     "message": "Bu nedir?"
