@@ -409,7 +409,8 @@ class AddTokenScreen extends Component {
 
   hasSelected = () => {
     const { customAddress = '', customDecimals = '', customSymbol = '', selectedTokens = {} } = this.state
-    return (customAddress && customDecimals && customSymbol) || Object.keys(selectedTokens).length > 0
+    const validDecimals = this.isValidDecimals(customDecimals)
+    return (customAddress && validDecimals && customSymbol) || Object.keys(selectedTokens).length > 0
   }
 
   handleNext = () => {
@@ -503,10 +504,7 @@ class AddTokenScreen extends Component {
   handleCustomDecimalsChange = (value) => {
     let customDecimals = Number(value && value.toString().trim())
     customDecimals = isNaN(customDecimals) ? '' : customDecimals
-    const validDecimals = customDecimals !== null &&
-      customDecimals !== '' &&
-      customDecimals >= 0 &&
-      customDecimals < 36
+    const validDecimals = this.isValidDecimals(customDecimals)
     let customDecimalsError = null
 
     if (!validDecimals) {
@@ -514,6 +512,21 @@ class AddTokenScreen extends Component {
     }
 
     this.setState({ customDecimals, customDecimalsError })
+  }
+
+  /**
+   * Returns validity status of token decimals
+   *
+   * @param {number} customDecimals A token decimals number to validate
+   * @returns {boolean} The status of validatity of token decimals
+   *
+   */
+  isValidDecimals = (customDecimals) => {
+    const validDecimals = customDecimals !== null &&
+      customDecimals !== '' &&
+      customDecimals >= 0 &&
+      customDecimals < 36
+    return validDecimals
   }
 }
 

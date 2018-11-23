@@ -77,4 +77,23 @@ describe('Add Token Screen', function () {
       assert.equal(state.customDecimalsError, 'Decimals must be at least 0, and not over 36.')
     })
   })
+
+  describe('#isValidDecimals', () => {
+    it('returns valid status of token decimals', () => {
+      assert.equal(addTokenComponent.instance().isValidDecimals(0), true)
+      assert.equal(addTokenComponent.instance().isValidDecimals(1), true)
+      assert.equal(addTokenComponent.instance().isValidDecimals(18), true)
+      assert.equal(addTokenComponent.instance().isValidDecimals(35), true)
+    })
+
+    it('returns invalid status of token decimals', () => {
+      assert.equal(addTokenComponent.instance().isValidDecimals(36), false)
+      assert.equal(addTokenComponent.instance().isValidDecimals(-1), false)
+      assert.equal(addTokenComponent.instance().isValidDecimals('test'), false)
+      assert.equal(addTokenComponent.instance().isValidDecimals({}), false)
+      assert.equal(addTokenComponent.instance().isValidDecimals(), false)
+      assert.equal(addTokenComponent.instance().isValidDecimals(null), false)
+      assert.equal(addTokenComponent.instance().isValidDecimals(undefined), false)
+    })
+  })
 })
