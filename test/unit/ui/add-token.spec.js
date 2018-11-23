@@ -40,4 +40,41 @@ describe('Add Token Screen', function () {
     })
 
   })
+
+  describe('#HandleCustomDecimalsChange', () => {
+    it.only('sets correct decimals', () => {
+      addTokenComponent.instance().handleCustomDecimalsChange(18)
+      const state = addTokenComponent.state()
+      assert.equal(state.customDecimals, 18)
+      assert.equal(state.customDecimalsError, null)
+    })
+
+    it.only('sets correct decimals', () => {
+      addTokenComponent.instance().handleCustomDecimalsChange(0)
+      const state = addTokenComponent.state()
+      assert.equal(state.customDecimals, 0)
+      assert.equal(state.customDecimalsError, null)
+    })
+
+    it.only('sets customDecimalsError', () => {
+      addTokenComponent.instance().handleCustomDecimalsChange('test')
+      const state = addTokenComponent.state()
+      assert.equal(state.customDecimals, '')
+      assert.equal(state.customDecimalsError, 'Decimals must be at least 0, and not over 36.')
+    })
+
+    it.only('sets customDecimalsError', () => {
+      addTokenComponent.instance().handleCustomDecimalsChange({})
+      const state = addTokenComponent.state()
+      assert.equal(state.customDecimals, '')
+      assert.equal(state.customDecimalsError, 'Decimals must be at least 0, and not over 36.')
+    })
+
+    it.only('sets customDecimalsError', () => {
+      addTokenComponent.instance().handleCustomDecimalsChange()
+      const state = addTokenComponent.state()
+      assert.equal(state.customDecimals, '')
+      assert.equal(state.customDecimalsError, 'Decimals must be at least 0, and not over 36.')
+    })
+  })
 })

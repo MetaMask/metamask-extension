@@ -501,7 +501,8 @@ class AddTokenScreen extends Component {
   }
 
   handleCustomDecimalsChange = (value) => {
-    const customDecimals = (value && value.trim())
+    let customDecimals = Number(value && value.toString().trim())
+    customDecimals = isNaN(customDecimals) ? '' : customDecimals
     const validDecimals = customDecimals !== null &&
       customDecimals !== '' &&
       customDecimals >= 0 &&
