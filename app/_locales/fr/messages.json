@@ -36,7 +36,7 @@
     "message": "Ajouter les jetons suggérés"
   },
   "addAcquiredTokens": {
-    "message": "Ajouter les jetons que vous avez acquis par l'intermédiaire de MetaMask"
+    "message": "Ajouter les jetons que vous avez acquis par l'intermédiaire de Nifty Wallet"
   },
   "amount": {
     "message": "Montant"
@@ -102,7 +102,7 @@
     "message": "Votre navigateur internet n'est pas supporté..."
   },
   "builtInCalifornia": {
-    "message": "MetaMask est designé et developpé en Californie."
+    "message": "Nifty Wallet est designé et developpé en Californie."
   },
   "buy": {
     "message": "Acheter"
@@ -141,7 +141,7 @@
     "message": "Fermer"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Pour connecter votre portefeuille hardware, vous devez utiliser MetaMask pour Google Chrome."
+    "message": "Pour connecter votre portefeuille hardware, vous devez utiliser Nifty Wallet pour Google Chrome."
   },
   "confirm": {
     "message": "Confirmer"
@@ -457,7 +457,7 @@
     "message": "Connecter un portefeuille hardware"
   },
   "hardwareWalletsMsg": {
-    "message": "Selectionnez le portefeuille hardware que vous voulez utiliser avec MetaMask"
+    "message": "Selectionnez le portefeuille hardware que vous voulez utiliser avec Nifty Wallet"
   },
   "havingTroubleConnecting": {
     "message": "Un problème de connection ?"
@@ -498,7 +498,7 @@
     "message": "Importer un compte"
   },
   "importAccountMsg": {
-    "message": " Les comptes importés ne seront pas associés avec votre phrase Seed que vous avez créé au départ dans MetaMask. Obtenir plus d'information sur les comptes importés"
+    "message": " Les comptes importés ne seront pas associés avec votre phrase Seed que vous avez créé au départ dans Nifty Wallet. Obtenir plus d'information sur les comptes importés"
   },
   "importAnAccount": {
     "message": "Importer un compte"
@@ -557,7 +557,7 @@
     "description": "format d'importation d'un compte"
   },
   "keepTrackTokens": {
-    "message": "Garder la trace des jetons que vous avez acheté avec votre compte MetaMask."
+    "message": "Garder la trace des jetons que vous avez acheté avec votre compte Nifty Wallet."
   },
   "kovan": {
     "message": "Réseau de test Kovan"
@@ -618,13 +618,13 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "MetaMask est un coffre sécurisé pour votre identité sur Ethereum."
+    "message": "Nifty Wallet est un coffre sécurisé pour votre identité sur Ethereum."
   },
   "metamaskSeedWords": {
-    "message": "Mots Seed pour MetaMask"
+    "message": "Mots Seed pour Nifty Wallet"
   },
   "metamaskVersion": {
-    "message": "Version de MetaMask"
+    "message": "Version de Nifty Wallet"
   },
   "min": {
     "message": "Minimum"
@@ -983,7 +983,7 @@
     "message": "Selectionner un compte"
   },
   "selectAnAccountHelp": {
-    "message": "Selectionner le compte à afficher dans MetaMask"
+    "message": "Selectionner le compte à afficher dans Nifty Wallet"
   },
   "selectHdPath": {
     "message": "Selectioner le \"Path HD\""
@@ -1122,7 +1122,7 @@
     "message": "Symbole du Jeton"
   },
   "tokenWarning1": {
-    "message": "Garder la trace des jetons achetésvia MetaMask. Si vous en avez acheté avec un autre compte, ces jetons n'apparaîtront pas ici."
+    "message": "Garder la trace des jetons achetésvia Nifty Wallet. Si vous en avez acheté avec un autre compte, ces jetons n'apparaîtront pas ici."
   },
   "total": {
     "message": "Total"
@@ -1183,7 +1183,7 @@
     "message": "Essayez à nouveau"
   },
   "twelveWords": {
-    "message": "Ces 12 mots sont la seule manière de restaurer vos comptes MetaMask.\nEnregistrez les quelquepart de sûr et secret."
+    "message": "Ces 12 mots sont la seule manière de restaurer vos comptes Nifty Wallet.\nEnregistrez les quelquepart de sûr et secret."
   },
   "typePassword": {
     "message": "Entrez votre mot de passe"
@@ -1268,7 +1268,7 @@
     "message": "Bienvenue à nouveau !"
   },
   "welcomeBeta": {
-    "message": "Bienvenue dans la Beta de MetaMask"
+    "message": "Bienvenue dans la Beta de Nifty Wallet"
   },
   "whatsThis": {
     "message": "Qu'est-ce que c'est?"
