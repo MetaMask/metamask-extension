@@ -32,12 +32,7 @@ class AccountDropdowns extends Component {
       }
       const isSelected = identity.address === selected
 
-      const simpleAddress = identity.address.substring(2).toLowerCase()
-
-      const keyring = keyrings.find((kr) => {
-        return kr.accounts.includes(simpleAddress) ||
-          kr.accounts.includes(identity.address)
-      })
+      const keyring = this.getCurrentKeyring(address)
 
       return h(
         DropdownMenuItem,
@@ -107,6 +102,26 @@ class AccountDropdowns extends Component {
       const isLoose = type !== 'HD Key Tree'
       return isLoose
     } catch (e) { return }
+  }
+
+  ifHardwareAcc (address) {
+    const keyring = this.getCurrentKeyring(address)
+    if (keyring && keyring.type.search('Hardware') !== -1) {
+      return true
+    }
+    return false
+  }
+
+  getCurrentKeyring (address) {
+    const { identities, keyrings } = this.props
+    const identity = identities[address]
+    const simpleAddress = identity.address.substring(2).toLowerCase()
+    const keyring = keyrings && keyrings.find((kr) => {
+      return kr.accounts.includes(simpleAddress) ||
+        kr.accounts.includes(address)
+    })
+
+    return keyring
   }
 
   indicateIfLoose (keyring) {
@@ -199,7 +214,7 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountOptions () {
-    const { actions } = this.props
+    const { actions, selected } = this.props
     const { optionsMenuActive } = this.state
 
     return h(
@@ -259,7 +274,7 @@ class AccountDropdowns extends Component {
           },
           'Copy address to clipboard',
         ),
-        h(
+        !this.ifHardwareAcc(selected) ? h(
           DropdownMenuItem,
           {
             closeMenu: () => {},
@@ -268,7 +283,7 @@ class AccountDropdowns extends Component {
             },
           },
           'Export Private Key',
-        ),
+        ) : null,
       ]
     )
   }
