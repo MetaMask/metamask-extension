@@ -741,8 +741,8 @@
   "supportCenter": {
     "message": "Visitar o nosso Centro de Suporte"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Símbolo deve conter entre 0 e 10 characters."
+  "symbolBetweenZeroTwelve": {
+    "message": "Símbolo deve conter entre 0 e 12 characters."
   },
   "takesTooLong": {
     "message": "A demorar muito?"

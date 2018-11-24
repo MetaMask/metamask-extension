@@ -828,8 +828,8 @@
   "supportCenter": {
     "message": "Navštivte naše centrum podpory"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Symbol musí být mezi 0 a 10 znaky."
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbol musí být mezi 0 a 12 znaky."
   },
   "takesTooLong": {
     "message": "Trvá to dlouho?"
