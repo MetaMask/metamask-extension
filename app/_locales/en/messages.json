@@ -147,7 +147,7 @@
     "message": "Close"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+    "message": "You need to use Nifty Wallet on Google Chrome in order to connect to your Hardware Wallet."
   },
   "confirm": {
     "message": "Confirm"
@@ -472,7 +472,7 @@
     "message": "Connect a hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
+    "message": "Select a hardware wallet you'd like to use with Nifty Wallet"
   },
   "havingTroubleConnecting": {
     "message": "Having trouble connecting?"
@@ -639,7 +639,7 @@
     "message": "Nifty Wallet Seed Words"
   },
   "metamaskVersion": {
-    "message": "MetaMask Version"
+    "message": "Nifty Wallet Version"
   },
   "min": {
     "message": "Minimum"
@@ -1025,7 +1025,7 @@
     "message": "Select an Account"
   },
   "selectAnAccountHelp": {
-    "message": "Select the account to view in MetaMask"
+    "message": "Select the account to view in Nifty Wallet"
   },
   "selectHdPath": {
     "message": "Select HD Path"
@@ -1228,7 +1228,7 @@
     "message": "These 12 words are the only way to restore your Nifty Wallet accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
-    "message": "Type your MetaMask password"
+    "message": "Type your Nifty Wallet password"
   },
   "uiWelcome": {
     "message": "Welcome to the New UI (Beta)"

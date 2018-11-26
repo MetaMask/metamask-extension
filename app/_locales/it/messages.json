@@ -39,7 +39,7 @@
     "message": "Aggiungi Token Suggeriti"
   },
   "addAcquiredTokens": {
-    "message": "Aggiungi i token che hai acquistato usando MetaMask"
+    "message": "Aggiungi i token che hai acquistato usando Nifty Wallet"
   },
   "amount": {
     "message": "Importo"
@@ -144,7 +144,7 @@
     "message": "Chiudi"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Devi usare MetaMask con Google Chrome per connettere il tuo Portafoglio Hardware"
+    "message": "Devi usare Nifty Wallet con Google Chrome per connettere il tuo Portafoglio Hardware"
   },
   "confirm": {
     "message": "Conferma"
@@ -463,7 +463,7 @@
     "message": "Connetti portafoglio hardware"
   },
   "hardwareWalletsMsg": {
-    "message": "Selezione un portafoglio hardware che vuoi utilizzare con MetaMask"
+    "message": "Selezione un portafoglio hardware che vuoi utilizzare con Nifty Wallet"
   },
   "havingTroubleConnecting": {
     "message": "Problemi di connessione?"
@@ -563,7 +563,7 @@
     "description": "formato per importare un account"
   },
   "keepTrackTokens": {
-    "message": "Tieni traccia dei tokens che hai acquistato con il tuo account MetaMask."
+    "message": "Tieni traccia dei tokens che hai acquistato con il tuo account Nifty Wallet."
   },
   "kovan": {
     "message": "Rete di test Kovan"
@@ -627,10 +627,10 @@
     "message": "Nifty Wallet è una cassaforte sicura per identità su Ethereum."
   },
   "metamaskSeedWords": {
-    "message": "Parole Seed di MetaMask"
+    "message": "Parole Seed di Nifty Wallet"
   },
   "metamaskVersion": {
-    "message": "versione di MetaMask"
+    "message": "versione di Nifty Wallet"
   },
   "min": {
     "message": "Minimo"
@@ -986,7 +986,7 @@
     "message": "Seleziona un Account"
   },
   "selectAnAccountHelp": {
-    "message": "Selezione l'account da visualizzare in MetaMask"
+    "message": "Selezione l'account da visualizzare in Nifty Wallet"
   },
   "selectHdPath": {
     "message": "Seleziona Percorso HD"
