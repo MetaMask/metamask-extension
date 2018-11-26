@@ -22,6 +22,7 @@ function mapStateToProps (state) {
   return {
     metamask: state.metamask,
     identities: state.metamask.identities,
+    keyrings: state.metamask.keyrings,
     accounts: state.metamask.accounts,
     address: state.metamask.selectedAddress,
     accountDetail: state.appState.accountDetail,
@@ -147,6 +148,7 @@ AccountDetailScreen.prototype.render = function () {
                       selected,
                       network,
                       identities: props.identities,
+                      keyrings: props.keyrings,
                       enableAccountOptions: true,
                     },
                   ),
