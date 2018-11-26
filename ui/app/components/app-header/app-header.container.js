@@ -11,6 +11,7 @@ const mapStateToProps = state => {
   const {
     network,
     provider,
+    providerRequests,
     selectedAddress,
     isUnlocked,
   } = metamask
@@ -19,6 +20,7 @@ const mapStateToProps = state => {
     networkDropdownOpen,
     network,
     provider,
+    providerRequests,
     selectedAddress,
     isUnlocked,
   }
