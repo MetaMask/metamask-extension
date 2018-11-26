@@ -517,7 +517,8 @@ class TransactionController extends EventEmitter {
   _markNonceDuplicatesDropped (txId) {
     // get the confirmed transactions nonce and from address
     const txMeta = this.txStateManager.getTx(txId)
-    const { nonce, from } = txMeta.txParams
+    const txParams = (txMeta && txMeta.txParams) || {}
+    const { nonce, from } = txParams
     const sameNonceTxs = this.txStateManager.getFilteredTxList({nonce, from})
     if (!sameNonceTxs.length) return
     // mark all same nonce transactions as dropped and give i a replacedBy hash
