@@ -78,11 +78,11 @@ module.exports = class TypedMessageManager extends EventEmitter {
           case 'signed':
             return resolve(data.rawSig)
           case 'rejected':
-            return reject(new Error('MetaMask Message Signature: User denied message signature.'))
+            return reject(new Error('Nifty Wallet Message Signature: User denied message signature.'))
           case 'errored':
-            return reject(new Error(`MetaMask Message Signature: ${data.error}`))
+            return reject(new Error(`Nifty Wallet Message Signature: ${data.error}`))
           default:
-            return reject(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+            return reject(new Error(`Nifty Wallet Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
         }
       })
     })

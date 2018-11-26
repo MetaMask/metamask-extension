@@ -36,7 +36,7 @@
         "message": "Ajoute Token Yo Sikjere W"
     },
     "addAcquiredTokens": {
-        "message": "Ajoute tokens yo ou te achte lè l sèvi avèk MetaMask"
+        "message": "Ajoute tokens yo ou te achte lè l sèvi avèk Nifty Wallet"
     },
     "amount": {
         "message": "Kantite lajan"
@@ -49,7 +49,7 @@
         "description": "The description of the application"
     },
     "appName": {
-        "message": "MetaMask",
+        "message": "Nifty Wallet",
         "description": "The name of the application"
     },
     "approve": {
@@ -96,7 +96,7 @@
         "message": "Navigatè ou a pa sipòte..."
     },
     "builtInCalifornia": {
-        "message": "MetaMask fèt e bati nan California."
+        "message": "Nifty Wallet fèt e bati nan California."
     },
     "buy": {
         "message": "Achte"
@@ -126,7 +126,7 @@
         "message": "Fèmen"
     },
     "chromeRequiredForHardwareWallets": {
-        "message": "Ou bezwen sèvi ak MetaMask sou Google Chrome yo nan lòd yo konekte sou Hardware Wallet."
+        "message": "Ou bezwen sèvi ak Nifty Wallet sou Google Chrome yo nan lòd yo konekte sou Hardware Wallet."
     },
     "confirm": {
         "message": "Konfime"
@@ -238,7 +238,7 @@
         "message": "Dfo rezo a pou tranzaksyon Ether se Mainnet."
     },
     "denExplainer": {
-        "message": "DEN ou se depo modpas avèk chif ou nan MetaMask."
+        "message": "DEN ou se depo modpas avèk chif ou nan Nifty Wallet."
     },
     "deposit": {
         "message": "Depo"
@@ -266,7 +266,7 @@
         "message": "Depo avèk ShapeShift"
     },
     "depositShapeShiftExplainer": {
-        "message": "Si ou posede lòt cryptocurrencies, ou ka chanje ak depo Ether dirèkteman nan Wallet MetaMask ou. Pa gen kont ki nesesè."
+        "message": "Si ou posede lòt cryptocurrencies, ou ka chanje ak depo Ether dirèkteman nan Wallet Nifty Wallet ou. Pa gen kont ki nesesè."
     },
     "details": {
         "message": "Detay yo"
@@ -430,7 +430,7 @@
         "message": "Hardware Wallet konekte"
     },
     "hardwareWalletsMsg": {
-        "message": "Chwazi yon Hardware Wallet ou ta renmen itilize ak MetaMask"
+        "message": "Chwazi yon Hardware Wallet ou ta renmen itilize ak Nifty Wallet"
     },
     "havingTroubleConnecting": {
         "message": "Èske w gen pwoblèm pou konekte?"
@@ -471,7 +471,7 @@
         "message": "Pòte Kont"
     },
     "importAccountMsg": {
-        "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
+        "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont Nifty Wallet seed fraz. Aprann plis sou kont enpòte "
     },
     "importAnAccount": {
         "message": "Pòte yon kont"
@@ -527,7 +527,7 @@
         "description": "format for importing an account"
     },
     "keepTrackTokens": {
-        "message": "Gade tokens yo ou te achte ak kont MetaMask ou."
+        "message": "Gade tokens yo ou te achte ak kont Nifty Wallet ou."
     },
     "kovan": {
         "message": "Kovan Tès Rezo"
@@ -588,10 +588,10 @@
         "message": "Mesaje"
     },
     "metamaskDescription": {
-        "message": "MetaMask sekirize idantite pou Ethereum."
+        "message": "Nifty Wallet sekirize idantite pou Ethereum."
     },
     "metamaskSeedWords": {
-        "message": "MetaMask Seed Mo"
+        "message": "Nifty Wallet Seed Mo"
     },
     "min": {
         "message": "Minimòm"
@@ -603,7 +603,7 @@
         "message": "Ou dwe chwazi omwen 1 token."
     },
     "needEtherInWallet": {
-        "message": "Pou kominike avèk aplikasyon desantralize ou dwe itilize MetaMask, ou pral bezwen Ether nan Wallet ou."
+        "message": "Pou kominike avèk aplikasyon desantralize ou dwe itilize Nifty Wallet, ou pral bezwen Ether nan Wallet ou."
     },
     "needImportFile": {
         "message": "Ou dwe chwazi yon dosye pou enpòte.",
@@ -950,7 +950,7 @@
         "message": "Chwazi yon kont"
     },
     "selectAnAccountHelp": {
-        "message": "Chwazi kont pou wè nan MetaMask"
+        "message": "Chwazi kont pou wè nan Nifty Wallet"
     },
     "selectHdPath": {
         "message": "Chwazi chemen HD"
@@ -1083,7 +1083,7 @@
         "message": "Token Senbòl"
     },
     "tokenWarning1": {
-        "message": "Kenbe tras token yo ou te achte ak kont MetaMask ou. Si ou te achte tokens pandan wap itilize yon kont diferan tokens sa yo pa pral parèt la."
+        "message": "Kenbe tras token yo ou te achte ak kont Nifty Wallet ou. Si ou te achte tokens pandan wap itilize yon kont diferan tokens sa yo pa pral parèt la."
     },
     "total": {
         "message": "Total"
@@ -1135,7 +1135,7 @@
         "message": "Eseye anko"
     },
     "twelveWords": {
-        "message": "12 mo sa yo se sèl fason pou retabli kont MetaMask ou yo. \nKenbe yo yon kote ki an sekirite ak sekrè."
+        "message": "12 mo sa yo se sèl fason pou retabli kont Nifty Wallet ou yo. \nKenbe yo yon kote ki an sekirite ak sekrè."
     },
     "typePassword": {
         "message": "Tape modpas ou"
@@ -1144,7 +1144,7 @@
         "message": "Byenveni nan New itilizatè koòdone (Beta)"
     },
     "uiWelcomeMessage": {
-        "message": "Kounya w ap itilize nouvo MetaMask UI (itilizatè koòdone) a."
+        "message": "Kounya w ap itilize nouvo Nifty Wallet UI (itilizatè koòdone) a."
     },
     "unapproved": {
         "message": "Pa apwouve"
@@ -1217,7 +1217,7 @@
         "message": "Bon retou!"
     },
     "welcomeBeta": {
-        "message": "Byenveni nan MetaMask Beta"
+        "message": "Byenveni nan Nifty Wallet Beta"
     },
     "whatsThis": {
         "message": "Kisa sa ye?"

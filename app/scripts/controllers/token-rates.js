@@ -27,8 +27,10 @@ class TokenRatesController {
     if (!this.isActive) { return }
     const contractExchangeRates = {}
     for (const i in this._tokens) {
-      const address = this._tokens[i].address
-      contractExchangeRates[address] = await this.fetchExchangeRate(address)
+      if (this._tokens[i]) {
+        const address = this._tokens[i].address
+        contractExchangeRates[address] = await this.fetchExchangeRate(address)
+      }
     }
     this.store.putState({ contractExchangeRates })
   }

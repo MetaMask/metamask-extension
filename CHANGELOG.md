@@ -2,6 +2,18 @@
 
 ## Current Master
 
+## 4.9.0 Mon Nov 26 2018
+
+- [#183](https://github.com/poanetwork/nifty-wallet/pull/183), [#205](https://github.com/poanetwork/nifty-wallet/pull/205): HD wallets support
+- [#199](https://github.com/poanetwork/nifty-wallet/pull/199): (Fix) Doubled fired events
+- [#190](https://github.com/poanetwork/nifty-wallet/pull/190): (Fix) Display non-zero fiat value
+- [#189](https://github.com/poanetwork/nifty-wallet/pull/189): (Fix) Branding of phishing detection page
+- [#207](https://github.com/poanetwork/nifty-wallet/pull/207): (Fix) Format of token balance in the tokens list
+- [#191](https://github.com/poanetwork/nifty-wallet/pull/191): (Fix) Handle: Cannot read property address of undefined
+- [#202](https://github.com/poanetwork/nifty-wallet/pull/202): (Fix) Detect tokens: handle undefined tokenAddresses
+- [#203](https://github.com/poanetwork/nifty-wallet/pull/203): (Fix) Handle undefined txParams
+- [#204](https://github.com/poanetwork/nifty-wallet/pull/204): (Fix) Handle e.trim is not a function
+
 ## 4.8.8 Fri Nov 09 2018
 
 - [#186](https://github.com/poanetwork/nifty-wallet/pull/186): (Fix) Do not retrieve token metadata for non-token pending tx

@@ -27,14 +27,12 @@ class AccountDropdowns extends Component {
 
     return accountOrder.map((address, index) => {
       const identity = identities[address]
+      if (!identity) {
+        return null
+      }
       const isSelected = identity.address === selected
 
-      const simpleAddress = identity.address.substring(2).toLowerCase()
-
-      const keyring = keyrings.find((kr) => {
-        return kr.accounts.includes(simpleAddress) ||
-          kr.accounts.includes(identity.address)
-      })
+      const keyring = this.getCurrentKeyring(address)
 
       return h(
         DropdownMenuItem,
@@ -106,6 +104,26 @@ class AccountDropdowns extends Component {
     } catch (e) { return }
   }
 
+  ifHardwareAcc (address) {
+    const keyring = this.getCurrentKeyring(address)
+    if (keyring && keyring.type.search('Hardware') !== -1) {
+      return true
+    }
+    return false
+  }
+
+  getCurrentKeyring (address) {
+    const { identities, keyrings } = this.props
+    const identity = identities[address]
+    const simpleAddress = identity.address.substring(2).toLowerCase()
+    const keyring = keyrings && keyrings.find((kr) => {
+      return kr.accounts.includes(simpleAddress) ||
+        kr.accounts.includes(address)
+    })
+
+    return keyring
+  }
+
   indicateIfLoose (keyring) {
     return this.ifLooseAcc(keyring) ? h('.keyring-label', 'IMPORTED') : null
   }
@@ -172,12 +190,31 @@ class AccountDropdowns extends Component {
             }, 'Import Account'),
           ]
         ),
+        h(
+          DropdownMenuItem,
+          {
+            style: {
+              padding: '8px 0px',
+            },
+            closeMenu: () => {},
+            onClick: () => actions.showConnectHWWalletPage(),
+          },
+          [
+            h('span', {
+              style: {
+                fontSize: '16px',
+                marginBottom: '5px',
+                color: '#60db97',
+              },
+            }, 'Connect hardware wallet'),
+          ]
+        ),
       ]
     )
   }
 
   renderAccountOptions () {
-    const { actions } = this.props
+    const { actions, selected } = this.props
     const { optionsMenuActive } = this.state
 
     return h(
@@ -237,7 +274,7 @@ class AccountDropdowns extends Component {
           },
           'Copy address to clipboard',
         ),
-        h(
+        !this.ifHardwareAcc(selected) ? h(
           DropdownMenuItem,
           {
             closeMenu: () => {},
@@ -246,7 +283,7 @@ class AccountDropdowns extends Component {
             },
           },
           'Export Private Key',
-        ),
+        ) : null,
       ]
     )
   }
@@ -322,6 +359,7 @@ const mapDispatchToProps = (dispatch) => {
       showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
       addNewAccount: () => dispatch(actions.addNewAccount()),
       showImportPage: () => dispatch(actions.showImportPage()),
+      showConnectHWWalletPage: () => dispatch(actions.showConnectHWWalletPage()),
       showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
       showDeleteImportedAccount: (identity) => dispatch(actions.showDeleteImportedAccount(identity)),
     },

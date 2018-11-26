@@ -71,6 +71,7 @@ var actions = {
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
+  SHOW_HARDWARE_WALLET_PAGE: 'SHOW_HARDWARE_WALLET_PAGE',
   SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
@@ -80,6 +81,7 @@ var actions = {
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
   showImportPage,
+  showConnectHWWalletPage: showConnectHWWalletPage,
   showNewAccountPage,
   setNewAccountForm,
   createNewVaultAndKeychain: createNewVaultAndKeychain,
@@ -1114,8 +1116,9 @@ function sendTx (txData) {
     log.debug(`actions calling background.approveTransaction`)
     background.approveTransaction(txData.id, (err) => {
       if (err) {
+        err = err.message || err.error || err
         dispatch(actions.txError(err))
-        return log.error(err.message)
+        return log.error(err)
       }
       dispatch(actions.completedTx(txData.id))
 
@@ -1149,6 +1152,7 @@ function updateTransaction (txData) {
       background.updateTransaction(txData, (err) => {
         dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
         if (err) {
+          err = err.message || err.error || err
           dispatch(actions.txError(err))
           dispatch(actions.goHome())
           log.error(err.message)
@@ -1180,9 +1184,10 @@ function updateAndApproveTx (txData) {
         dispatch(actions.clearSend())
 
         if (err) {
+          err = err.message || err.error || err
           dispatch(actions.txError(err))
           dispatch(actions.goHome())
-          log.error(err.message)
+          log.error(err)
           reject(err)
         }
 
@@ -1228,7 +1233,7 @@ function updateTransactionParams (id, txParams) {
 function txError (err) {
   return {
     type: actions.TRANSACTION_ERROR,
-    message: err.message,
+    message: (err.message || err.error || err),
   }
 }
 
@@ -1448,6 +1453,12 @@ function showInitializeMenu () {
 function showImportPage () {
   return {
     type: actions.SHOW_IMPORT_PAGE,
+  }
+}
+
+function showConnectHWWalletPage () {
+  return {
+    type: actions.SHOW_HARDWARE_WALLET_PAGE,
   }
 }
 

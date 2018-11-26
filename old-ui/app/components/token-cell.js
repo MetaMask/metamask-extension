@@ -9,6 +9,7 @@ const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../../../ui/app/actions')
 const connect = require('react-redux').connect
+import { countSignificantDecimals } from '../util'
 
 const tokenCellDropDownPrefix = 'token-cell_dropdown_'
 
@@ -25,6 +26,9 @@ function TokenCell () {
 TokenCell.prototype.render = function () {
   const { address, symbol, string, network, userAddress, isLastTokenCell, menuToTop, ind } = this.props
   const { optionsMenuActive } = this.state
+
+  const tokenBalanceRaw = Number.parseFloat(string)
+  const tokenBalance = tokenBalanceRaw.toFixed(countSignificantDecimals(tokenBalanceRaw, 2))
 
   return (
     h(`li#token-cell_${ind}.token-cell`, {
@@ -48,7 +52,7 @@ TokenCell.prototype.render = function () {
           fontFamily: 'Nunito Bold',
           fontSize: '14px',
         },
-      }, `${string || 0} ${symbol}`),
+      }, `${tokenBalance || 0} ${symbol}`),
 
       h('span', { style: { flex: '1 0 auto' } }),
 

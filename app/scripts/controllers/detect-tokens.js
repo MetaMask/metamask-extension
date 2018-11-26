@@ -35,7 +35,9 @@ class DetectTokensController {
     this.web3.setProvider(this._network._provider)
     const contracts = this.getContracts()
     for (const contractAddress in contracts) {
-      if (contracts[contractAddress].erc20 && !(this.tokenAddresses.includes(contractAddress.toLowerCase()))) {
+      const isERC20 = contracts[contractAddress].erc20
+      const isIncluded = this.tokenAddresses ? this.tokenAddresses.includes(contractAddress.toLowerCase()) : false
+      if (isERC20 && !isIncluded) {
         this.detectTokenBalance(contractAddress)
       }
     }
@@ -57,7 +59,7 @@ class DetectTokensController {
           this._preferences.addToken(contractAddress, contracts[contractAddress].symbol, contracts[contractAddress].decimals, this.network)
         }
       } else {
-        warn(`MetaMask - DetectTokensController balance fetch failed for ${contractAddress}.`, error)
+        warn(`Nifty Wallet - DetectTokensController balance fetch failed for ${contractAddress}.`, error)
       }
     })
   }

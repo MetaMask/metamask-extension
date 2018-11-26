@@ -46,7 +46,7 @@ async function start () {
   `
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody })
-  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${CIRCLE_PR_NUMBER}/comments`
+  const POST_COMMENT_URI = `https://api.github.com/repos/poanetwork/nifty-wallet/issues/${CIRCLE_PR_NUMBER}/comments`
   console.log(`Announcement:\n${commentBody}`)
   console.log(`Posting to: ${POST_COMMENT_URI}`)
 
