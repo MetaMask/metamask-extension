@@ -474,10 +474,9 @@ function openPopup () {
   )
 }
 
-// On first install, open a window to MetaMask website to how-it-works.
-extension.runtime.onInstalled.addListener(function (details) {
-  if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
-    extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
+// On first install, open a new tab with MetaMask
+extension.runtime.onInstalled.addListener(({reason}) => {
+  if ((reason === 'install') && (!METAMASK_DEBUG)) {
+    platform.openExtensionInBrowser()
   }
 })
-
