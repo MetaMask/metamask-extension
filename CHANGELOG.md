@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.9.0 Mon Nov 26 2018
+
 - [#183](https://github.com/poanetwork/nifty-wallet/pull/183), [#205](https://github.com/poanetwork/nifty-wallet/pull/205): HD wallets support
 - [#199](https://github.com/poanetwork/nifty-wallet/pull/199): (Fix) Doubled fired events
 - [#190](https://github.com/poanetwork/nifty-wallet/pull/190): (Fix) Display non-zero fiat value
