@@ -26,7 +26,7 @@ export default class DepositLayer2AppContent extends Component {
     console.log("DEBUG DEBUG DEBUG CONTENT: ", this.props)
     const { t } = this.context
 
-    return (
+     return (
       <PageContainerContent>
         <div className="send-v2__form">
           <DepositLayer2AppFromRow />

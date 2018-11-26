@@ -6,6 +6,8 @@ import Button from '../button'
 const h = require('react-hyperscript')
 import { DEPOSIT_LAYER2APP_ROUTE } from '../../routes'
 
+const BN = require('ethereumjs-util').BN
+
 export default class Layer2AppView extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -16,7 +18,7 @@ export default class Layer2AppView extends PureComponent {
   renderLayer2Buttons () {
     let elements = []
     const script = this.props.selectedLayer2AppScript
-    if (!script) return (	<div>       </div>)
+
     for (var k = 0; k< script.layer2Abi.actions.length; k++){
       const index = k
 
@@ -60,6 +62,30 @@ export default class Layer2AppView extends PureComponent {
 
     //the deposit layer2app button should probably also be delegated to the script logic
     //for now it is in the depositLayer2 components
+    const script = this.props.selectedLayer2AppScript
+    if (!script) return (	<div>       </div>)
+    let deposit
+    let received
+    let paid
+    console.log(script.layer2State.deposited)
+    if (script.layer2State.deposited){
+      deposit = new BN(script.layer2State.deposited, 16).toString(10)/1e18
+    }
+    else {
+      deposit = 0
+    }
+    if (script.layer2State.received){
+      received = new BN(script.layer2State.received, 16).toString(10)/1e18
+    }
+    else {
+      received = 0
+    }
+    if (script.layer2State.paid){
+      paid = script.layer2State.paid
+    }
+    else {
+      paid = {}
+    }
     return (
 	<div className="layer2App-view">
 	<Button
@@ -71,6 +97,15 @@ export default class Layer2AppView extends PureComponent {
       </Button>
 	{this.renderLayer2Buttons.bind(this)()}
 
+      	<div>
+	{"Deposit available: " + deposit + " eth"}
+      </div>
+      	<div>	
+	{"Payments received: " + received + " eth"}
+      </div>
+      	<div>	
+	{"Payments made: " + JSON.stringify(paid)}
+      </div>
       </div>
     )
   }

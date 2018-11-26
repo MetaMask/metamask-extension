@@ -12,6 +12,7 @@ const Layer2AppMenuDropdown = require('./dropdowns/layer2App-menu-dropdown.js')
 
 function mapStateToProps (state) {
   return {
+    layer2AppsScripts: state.metamask.layer2AppsScripts,
     network: state.metamask.network,
     currentCurrency: state.metamask.currentCurrency,
     selectedTokenAddress: state.metamask.selectedTokenAddress,
@@ -78,7 +79,8 @@ Layer2AppCell.prototype.render = function () {
     }, [
       h('div', name),
       h('div', address),
-      h('div', "node: " + nodeUrl),            
+      h('div', "node: " + nodeUrl),
+      
       h('div', string + " ETH locked"),
       
       h('i.fa.fa-ellipsis-h.fa-lg.layer2App-list-item__ellipsis.cursor-pointer', {
