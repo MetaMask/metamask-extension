@@ -109,11 +109,11 @@ describe('custom-gas selectors', () => {
           gas: {
             basicEstimates: {
               blockTime: 14.16326530612245,
-              safeLow: 25,
+              safeLow: 2.5,
               safeLowWait: 6.6,
-              fast: 50,
+              fast: 5,
               fastWait: 3.3,
-              fastest: 100,
+              fastest: 10,
               fastestWait: 0.5,
             },
           },
@@ -154,11 +154,11 @@ describe('custom-gas selectors', () => {
           gas: {
             basicEstimates: {
               blockTime: 14.16326530612245,
-              safeLow: 50,
+              safeLow: 5,
               safeLowWait: 13.2,
-              fast: 100,
+              fast: 10,
               fastWait: 6.6,
-              fastest: 200,
+              fastest: 20,
               fastestWait: 1.0,
             },
           },

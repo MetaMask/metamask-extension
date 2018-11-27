@@ -220,18 +220,25 @@ export function fetchBasicGasAndTimeEstimates () {
       )
         .then(r => r.json())
         .then(({
-          average,
+          average: averageTimes10,
           avgWait,
           block_time: blockTime,
           blockNum,
-          fast,
-          fastest,
+          fast: fastTimes10,
+          fastest: fastestTimes10,
           fastestWait,
           fastWait,
-          safeLow,
+          safeLow: safeLowTimes10,
           safeLowWait,
           speed,
         }) => {
+          const [average, fast, fastest, safeLow] = [
+            averageTimes10,
+            fastTimes10,
+            fastestTimes10,
+            safeLowTimes10,
+          ].map(price => (new BigNumber(price)).div(10).toNumber())
+
           const basicEstimates = {
             average,
             avgWait,

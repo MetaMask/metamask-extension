@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import Loading from '../../../loading-screen'
 import GasPriceChart from '../../gas-price-chart'
+import debounce from 'lodash.debounce'
 
 export default class AdvancedTabContent extends Component {
   static contextTypes = {
@@ -22,7 +23,21 @@ export default class AdvancedTabContent extends Component {
     insufficientBalance: PropTypes.bool,
   }
 
-  gasInput (value, onChange, min, insufficientBalance, precision, showGWEI) {
+  constructor (props) {
+    super(props)
+
+    this.debouncedGasLimitReset = debounce((dVal) => {
+      if (dVal < 21000) {
+        props.updateCustomGasLimit(21000)
+      }
+    }, 1000, { trailing: true })
+    this.onChangeGasLimit = (val) => {
+      props.updateCustomGasLimit(val)
+      this.debouncedGasLimitReset(val)
+    }
+  }
+
+  gasInput (value, onChange, min, insufficientBalance, showGWEI) {
     return (
       <div className="advanced-tab__gas-edit-row__input-wrapper">
         <input
@@ -32,14 +47,13 @@ export default class AdvancedTabContent extends Component {
           type="number"
           value={value}
           min={min}
-          precision={precision}
           onChange={event => onChange(Number(event.target.value))}
         />
         <div className={classnames('advanced-tab__gas-edit-row__input-arrows', {
           'advanced-tab__gas-edit-row__input-arrows--error': insufficientBalance,
         })}>
-          <div className="advanced-tab__gas-edit-row__input-arrows__i-wrap"><i className="fa fa-sm fa-angle-up" onClick={() => onChange(value + 1)} /></div>
-          <div className="advanced-tab__gas-edit-row__input-arrows__i-wrap"><i className="fa fa-sm fa-angle-down" onClick={() => onChange(value - 1)} /></div>
+          <div className="advanced-tab__gas-edit-row__input-arrows__i-wrap" onClick={() => onChange(value + 1)}><i className="fa fa-sm fa-angle-up" /></div>
+          <div className="advanced-tab__gas-edit-row__input-arrows__i-wrap" onClick={() => onChange(value - 1)}><i className="fa fa-sm fa-angle-down" /></div>
         </div>
         {insufficientBalance && <div className="advanced-tab__gas-edit-row__insufficient-balance">
           Insufficient Balance
@@ -84,8 +98,8 @@ export default class AdvancedTabContent extends Component {
   renderGasEditRows (customGasPrice, updateCustomGasPrice, customGasLimit, updateCustomGasLimit, insufficientBalance) {
     return (
       <div className="advanced-tab__gas-edit-rows">
-        { this.renderGasEditRow('gasPrice', customGasPrice, updateCustomGasPrice, customGasPrice, insufficientBalance, 9, true) }
-        { this.renderGasEditRow('gasLimit', customGasLimit, updateCustomGasLimit, customGasLimit, insufficientBalance, 0) }
+        { this.renderGasEditRow('gasPrice', customGasPrice, updateCustomGasPrice, customGasPrice, insufficientBalance, true) }
+        { this.renderGasEditRow('gasLimit', customGasLimit, this.onChangeGasLimit, customGasLimit, insufficientBalance) }
       </div>
     )
   }

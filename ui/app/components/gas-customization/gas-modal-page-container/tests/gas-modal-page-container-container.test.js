@@ -82,10 +82,10 @@ describe('gas-modal-page-container container', () => {
           },
           gasEstimatesLoading: false,
           priceAndTimeEstimates: [
-            { gasprice: 3, expectedTime: '31' },
-            { gasprice: 4, expectedTime: '62' },
-            { gasprice: 5, expectedTime: '93' },
-            { gasprice: 6, expectedTime: '124' },
+            { gasprice: 3, expectedTime: 31 },
+            { gasprice: 4, expectedTime: 62 },
+            { gasprice: 5, expectedTime: 93 },
+            { gasprice: 6, expectedTime: 124 },
           ],
         },
         confirmTransaction: {
@@ -235,7 +235,7 @@ describe('gas-modal-page-container container', () => {
     describe('updateConfirmTxGasAndCalculate()', () => {
       it('should dispatch a updateGasAndCalculate action with the correct props', () => {
         mapDispatchToPropsObject.updateConfirmTxGasAndCalculate('ffff', 'aaaa')
-        assert(dispatchSpy.calledOnce)
+        assert.equal(dispatchSpy.callCount, 3)
         assert(confirmTransactionActionSpies.updateGasAndCalculate.calledOnce)
         assert.deepEqual(confirmTransactionActionSpies.updateGasAndCalculate.getCall(0).args[0], { gasLimit: 'ffff', gasPrice: 'aaaa' })
       })
@@ -265,6 +265,8 @@ describe('gas-modal-page-container container', () => {
           someOtherDispatchProp: sinon.spy(),
           createSpeedUpTransaction: sinon.spy(),
           hideSidebar: sinon.spy(),
+          hideModal: sinon.spy(),
+          cancelAndClose: sinon.spy(),
         }
         ownProps = { someOwnProp: 123 }
       })
@@ -277,6 +279,7 @@ describe('gas-modal-page-container container', () => {
         dispatchProps.someOtherDispatchProp.resetHistory()
         dispatchProps.createSpeedUpTransaction.resetHistory()
         dispatchProps.hideSidebar.resetHistory()
+        dispatchProps.hideModal.resetHistory()
       })
     it('should return the expected props when isConfirm is true', () => {
       const result = mergeProps(stateProps, dispatchProps, ownProps)
@@ -290,12 +293,14 @@ describe('gas-modal-page-container container', () => {
       assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
       assert.equal(dispatchProps.setGasData.callCount, 0)
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
+      assert.equal(dispatchProps.hideModal.callCount, 0)
 
       result.onSubmit()
 
       assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 1)
       assert.equal(dispatchProps.setGasData.callCount, 0)
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
+      assert.equal(dispatchProps.hideModal.callCount, 1)
 
       assert.equal(dispatchProps.updateCustomGasPrice.callCount, 0)
       result.gasPriceButtonGroupProps.handleGasPriceSelection()
@@ -318,6 +323,7 @@ describe('gas-modal-page-container container', () => {
       assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
       assert.equal(dispatchProps.setGasData.callCount, 0)
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
+      assert.equal(dispatchProps.cancelAndClose.callCount, 0)
 
       result.onSubmit('mockNewLimit', 'mockNewPrice')
 
@@ -325,6 +331,7 @@ describe('gas-modal-page-container container', () => {
       assert.equal(dispatchProps.setGasData.callCount, 1)
       assert.deepEqual(dispatchProps.setGasData.getCall(0).args, ['mockNewLimit', 'mockNewPrice'])
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 1)
+      assert.equal(dispatchProps.cancelAndClose.callCount, 1)
 
       assert.equal(dispatchProps.updateCustomGasPrice.callCount, 0)
       result.gasPriceButtonGroupProps.handleGasPriceSelection()
@@ -343,6 +350,7 @@ describe('gas-modal-page-container container', () => {
       assert.equal(dispatchProps.updateConfirmTxGasAndCalculate.callCount, 0)
       assert.equal(dispatchProps.setGasData.callCount, 0)
       assert.equal(dispatchProps.hideGasButtonGroup.callCount, 0)
+      assert.equal(dispatchProps.cancelAndClose.callCount, 1)
 
       assert.equal(dispatchProps.createSpeedUpTransaction.callCount, 1)
       assert.equal(dispatchProps.hideSidebar.callCount, 1)

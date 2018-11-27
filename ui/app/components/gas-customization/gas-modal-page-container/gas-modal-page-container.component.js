@@ -89,7 +89,7 @@ export default class GasModalPageContainer extends Component {
 
   renderInfoRows (newTotalFiat, newTotalEth, sendAmount, transactionFee) {
     return (
-      <div>
+      <div className="gas-modal-content__info-row-wrapper">
         <div className="gas-modal-content__info-row">
           <div className="gas-modal-content__info-row__send-info">
             <span className="gas-modal-content__info-row__send-info__label">{this.context.t('sendAmount')}</span>
@@ -167,7 +167,6 @@ export default class GasModalPageContainer extends Component {
           onClose={() => cancelAndClose()}
           onSubmit={() => {
             onSubmit(customModalGasLimitInHex, customModalGasPriceInHex)
-            cancelAndClose()
           }}
           submitText={this.context.t('save')}
           headerCloseText={'Close'}

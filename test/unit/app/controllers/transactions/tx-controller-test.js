@@ -413,7 +413,7 @@ describe('Transaction Controller', function () {
         gasPrice: '0xa',
       }
       txController.txStateManager._saveTxList([
-        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [] },
+        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
       ])
 
       expectedTxParams = Object.assign({}, txParams, { gasPrice: '0xb'})

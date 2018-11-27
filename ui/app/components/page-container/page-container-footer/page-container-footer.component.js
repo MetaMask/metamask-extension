@@ -12,7 +12,7 @@ export default class PageContainerFooter extends Component {
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
     submitButtonType: PropTypes.string,
-    hideCancel: PropTypes.func,
+    hideCancel: PropTypes.bool,
   }
 
   static contextTypes = {

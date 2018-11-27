@@ -1,5 +1,11 @@
 import * as d3 from 'd3'
 import c3 from 'c3'
+import BigNumber from 'bignumber.js'
+
+const newBigSigDig = n => (new BigNumber(n.toPrecision(15)))
+const createOp = (a, b, op) => (newBigSigDig(a))[op](newBigSigDig(b))
+const bigNumMinus = (a = 0, b = 0) => createOp(a, b, 'minus')
+const bigNumDiv = (a = 0, b = 1) => createOp(a, b, 'div')
 
 export function handleMouseMove ({ xMousePos, chartXStart, chartWidth, gasPrices, estimatedTimes, chart }) {
   const { currentPosValue, newTimeEstimate } = getNewXandTimeEstimate({
@@ -24,7 +30,8 @@ export function handleMouseMove ({ xMousePos, chartXStart, chartWidth, gasPrices
 }
 
 export function getCoordinateData (selector) {
-   return d3.select(selector).node().getBoundingClientRect()
+  const node = d3.select(selector).node()
+  return node ? node.getBoundingClientRect() : {}
 }
 
 export function generateDataUIObj (x, index, value) {
@@ -70,19 +77,22 @@ export function getAdjacentGasPrices ({ gasPrices, priceToPosition }) {
   }
 }
 
-export function extrapolateY ({ higherY, lowerY, higherX, lowerX, xForExtrapolation }) {
-  const slope = (higherY - lowerY) / (higherX - lowerX)
-  const newTimeEstimate = -1 * (slope * (higherX - xForExtrapolation) - higherY)
+export function extrapolateY ({ higherY = 0, lowerY = 0, higherX = 0, lowerX = 0, xForExtrapolation = 0 }) {
+  const slope = bigNumMinus(higherY, lowerY).div(bigNumMinus(higherX, lowerX))
+  const newTimeEstimate = slope.times(bigNumMinus(higherX, xForExtrapolation)).minus(newBigSigDig(higherY)).negated()
 
-  return newTimeEstimate
+  return newTimeEstimate.toNumber()
 }
 
 
 export function getNewXandTimeEstimate ({ xMousePos, chartXStart, chartWidth, gasPrices, estimatedTimes }) {
-  const chartMouseXPos = xMousePos - chartXStart
-  const posPercentile = chartMouseXPos / chartWidth
+  const chartMouseXPos = bigNumMinus(xMousePos, chartXStart)
+  const posPercentile = bigNumDiv(chartMouseXPos, chartWidth)
 
-  const currentPosValue = (gasPrices[gasPrices.length - 1] - gasPrices[0]) * posPercentile + gasPrices[0]
+  const currentPosValue = (bigNumMinus(gasPrices[gasPrices.length - 1], gasPrices[0]))
+    .times(newBigSigDig(posPercentile))
+    .plus(newBigSigDig(gasPrices[0]))
+    .toNumber()
 
   const {
     closestLowerValueIndex,
@@ -162,20 +172,28 @@ export function setSelectedCircle ({
   closestHigherValue,
 }) {
   const numberOfValues = chart.internal.data.xs.data1.length
+
   const { x: lowerX, y: lowerY } = getCoordinateData(`.c3-circle-${closestLowerValueIndex}`)
   let { x: higherX, y: higherY } = getCoordinateData(`.c3-circle-${closestHigherValueIndex}`)
+  let count = closestHigherValueIndex + 1
 
-  if (lowerX === higherX) {
-    const { x: higherXAdjusted, y: higherYAdjusted } = getCoordinateData(`.c3-circle-${closestHigherValueIndex + 1}`)
-    higherY = higherYAdjusted
-    higherX = higherXAdjusted
+  if (lowerX && higherX) {
+    while (lowerX === higherX) {
+      higherX = getCoordinateData(`.c3-circle-${count}`).x
+      higherY = getCoordinateData(`.c3-circle-${count}`).y
+      count++
+    }
   }
 
-  const currentX = lowerX + (higherX - lowerX) * (newPrice - closestLowerValue) / (closestHigherValue - closestLowerValue)
+  const currentX = bigNumMinus(higherX, lowerX)
+    .times(bigNumMinus(newPrice, closestLowerValue))
+    .div(bigNumMinus(closestHigherValue, closestLowerValue))
+    .plus(newBigSigDig(lowerX))
+
   const newTimeEstimate = extrapolateY({ higherY, lowerY, higherX, lowerX, xForExtrapolation: currentX })
 
   chart.internal.selectPoint(
-    generateDataUIObj(currentX, numberOfValues, newTimeEstimate),
+    generateDataUIObj(currentX.toNumber(), numberOfValues, newTimeEstimate),
     numberOfValues
   )
 }
@@ -282,8 +300,8 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
         .style('margin-top', flipTooltip ? '-16px' : '4px')
 
         return {
-          top: circleY - chartYStart - 19 + (flipTooltip ? circleWidth + 38 : 0),
-          left: circleX - chartXStart + circleWidth - (gasPricesMaxPadded / 50),
+          top: bigNumMinus(circleY, chartYStart).minus(19).plus(flipTooltip ? circleWidth + 38 : 0).toNumber(),
+          left: bigNumMinus(circleX, chartXStart).plus(newBigSigDig(circleWidth)).minus(bigNumDiv(gasPricesMaxPadded, 50)).toNumber(),
         }
       },
       show: true,
@@ -298,8 +316,8 @@ export function generateChart (gasPrices, estimatedTimes, gasPricesMax, estimate
     appendOrUpdateCircle.bind(this)({
       data,
       itemIndex,
-      cx: () => data.x - chartXStart + 11,
-      cy: () => data.value - chartYStart + 10,
+      cx: () => bigNumMinus(data.x, chartXStart).plus(11).toNumber(),
+      cy: () => bigNumMinus(data.value, chartYStart).plus(10).toNumber(),
       cssId: 'set-circle',
       appendOnly: true,
     })

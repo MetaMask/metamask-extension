@@ -32,15 +32,15 @@ describe('Gas Duck', () => {
   let tempFetch
   let tempDateNow
   const mockEthGasApiResponse = {
-    average: 'mockAverage',
+    average: 20,
     avgWait: 'mockAvgWait',
     block_time: 'mockBlock_time',
     blockNum: 'mockBlockNum',
-    fast: 'mockFast',
-    fastest: 'mockFastest',
+    fast: 30,
+    fastest: 40,
     fastestWait: 'mockFastestWait',
     fastWait: 'mockFastWait',
-    safeLow: 'mockSafeLow',
+    safeLow: 10,
     safeLowWait: 'mockSafeLowWait',
     speed: 'mockSpeed',
   }
@@ -338,15 +338,15 @@ describe('Gas Duck', () => {
         [{
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 'mockAverage',
+            average: 2,
             avgWait: 'mockAvgWait',
             blockTime: 'mockBlock_time',
             blockNum: 'mockBlockNum',
-            fast: 'mockFast',
-            fastest: 'mockFastest',
+            fast: 3,
+            fastest: 4,
             fastestWait: 'mockFastestWait',
             fastWait: 'mockFastWait',
-            safeLow: 'mockSafeLow',
+            safeLow: 1,
             safeLowWait: 'mockSafeLowWait',
             speed: 'mockSpeed',
           },

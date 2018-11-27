@@ -399,7 +399,7 @@ function mapDispatchToProps (dispatch) {
   return {
     hideModal: (customOnHideOpts) => {
       dispatch(actions.hideModal())
-      if (customOnHideOpts.action) {
+      if (customOnHideOpts && customOnHideOpts.action) {
         dispatch(customOnHideOpts.action(...customOnHideOpts.args))
       }
     },

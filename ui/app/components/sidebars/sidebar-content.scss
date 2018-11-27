@@ -1,6 +1,11 @@
 .sidebar-left {
+  display: flex;
+
   .gas-modal-page-container {
+    display: flex;
+
     .page-container {
+      flex: 1;
       max-width: 100%;
 
       &__content {
@@ -11,6 +16,10 @@
       @media screen and (max-width: $break-small) {
         max-width: 344px;
         min-height: auto;
+      }
+
+      @media screen and (min-width: $break-small) {
+        max-height: none;
       }
     }
 
@@ -34,9 +43,10 @@
     }
 
     .basic-tab-content {
-      height: 318px;
+      height: auto;
       margin-bottom: 0px;
       border-bottom: 1px solid #d2d8dd;
+      flex: 1 1 70%;
 
       @media screen and (max-width: $break-small) {
         padding-left: 14px;
@@ -55,6 +65,10 @@
     }
 
     .advanced-tab {
+      @media screen and (min-width: $break-small) {
+        flex: 1 1 70%;
+      }
+
       &__fee-chart {
         height: 320px;
 
@@ -72,14 +86,26 @@
       }
     }
 
+    .gas-modal-content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
 
-    .gas-modal-content__info-row {
-      height: 170px;
-
-      @media screen and (max-width: $break-small) {
-        height: initial;
+      &__info-row-wrapper {
         display: flex;
-        justify-content: center;
+        @media screen and (min-width: $break-small) {
+          flex: 1 1 30%;
+        }
+      }
+
+      &__info-row {
+        height: 170px;
+
+        @media screen and (max-width: $break-small) {
+          height: initial;
+          display: flex;
+          justify-content: center;
+        }
       }
     }
   }

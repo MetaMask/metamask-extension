@@ -155,8 +155,11 @@ describe('AdvancedTabContent Component', function () {
 
   describe('renderGasEditRows()', () => {
     let gasEditRows
+    let tempOnChangeGasLimit
 
     beforeEach(() => {
+      tempOnChangeGasLimit = wrapper.instance().onChangeGasLimit
+      wrapper.instance().onChangeGasLimit = () => 'mockOnChangeGasLimit'
       AdvancedTabContent.prototype.renderGasEditRow.resetHistory()
       gasEditRows = shallow(wrapper.instance().renderGasEditRows(
         'mockGasPrice',
@@ -165,6 +168,10 @@ describe('AdvancedTabContent Component', function () {
         () => 'mockUpdateCustomGasLimitReturn',
         false
       ))
+    })
+
+    afterEach(() => {
+      wrapper.instance().onChangeGasLimit = tempOnChangeGasLimit
     })
 
     it('should render the gas-edit-rows root node', () => {
@@ -182,10 +189,10 @@ describe('AdvancedTabContent Component', function () {
       const renderGasEditRowSpyArgs = AdvancedTabContent.prototype.renderGasEditRow.args
       assert.equal(renderGasEditRowSpyArgs.length, 2)
       assert.deepEqual(renderGasEditRowSpyArgs[0].map(String), [
-        'gasPrice', 'mockGasPrice', () => 'mockUpdateCustomGasPriceReturn', 'mockGasPrice', false, 9, true,
+        'gasPrice', 'mockGasPrice', () => 'mockUpdateCustomGasPriceReturn', 'mockGasPrice', false, true,
       ].map(String))
       assert.deepEqual(renderGasEditRowSpyArgs[1].map(String), [
-        'gasLimit', 'mockGasLimit', () => 'mockUpdateCustomGasLimitReturn', 'mockGasLimit', false, 0,
+        'gasLimit', 'mockGasLimit', () => 'mockOnChangeGasLimit', 'mockGasLimit', false,
       ].map(String))
     })
   })
@@ -234,7 +241,6 @@ describe('AdvancedTabContent Component', function () {
       const inputProps = gasInput.find('input').props()
       assert.equal(inputProps.min, 0)
       assert.equal(inputProps.value, 321)
-      assert.equal(inputProps.precision, 8)
     })
 
     it('should call the passed onChange method with the value of the input onChange event', () => {
@@ -257,9 +263,9 @@ describe('AdvancedTabContent Component', function () {
         8,
         false
       ))
-      const upArrow = gasInput.find('.fa-angle-up')
+      const upArrow = gasInput.find('.advanced-tab__gas-edit-row__input-arrows__i-wrap').at(0)
       assert.equal(upArrow.props().onClick(), 329)
-      const downArrow = gasInput.find('.fa-angle-down')
+      const downArrow = gasInput.find('.advanced-tab__gas-edit-row__input-arrows__i-wrap').at(1)
       assert.equal(downArrow.props().onClick(), 327)
     })
   })
