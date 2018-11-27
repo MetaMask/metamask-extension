@@ -40,7 +40,9 @@ class ComposableObservableStore extends ObservableStore {
   getFlatState () {
     let flatState = {}
     for (const key in this.config) {
-      flatState = { ...flatState, ...this.config[key].getState() }
+      const controller = this.config[key]
+      const state = controller.getState ? controller.getState() : controller.state
+      flatState = { ...flatState, ...state }
     }
     return flatState
   }
