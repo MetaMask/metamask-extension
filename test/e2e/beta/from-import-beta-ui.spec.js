@@ -12,6 +12,7 @@ const {
 } = require('../func')
 const {
   checkBrowserForConsoleErrors,
+  closeAllWindowHandlesExcept,
   verboseReportOnFailure,
   findElement,
   findElements,
@@ -32,13 +33,14 @@ describe('Using MetaMask with an existing account', function () {
   this.bail(true)
 
   before(async function () {
+    let extensionUrl
     switch (process.env.SELENIUM_BROWSER) {
       case 'chrome': {
         const extensionPath = path.resolve('dist/chrome')
         driver = buildChromeWebDriver(extensionPath)
         extensionId = await getExtensionIdChrome(driver)
-        await driver.get(`chrome-extension://${extensionId}/home.html`)
         await delay(regularDelayMs)
+        extensionUrl = `chrome-extension://${extensionId}/home.html`
         break
       }
       case 'firefox': {
@@ -47,11 +49,17 @@ describe('Using MetaMask with an existing account', function () {
         await installWebExt(driver, extensionPath)
         await delay(regularDelayMs)
         extensionId = await getExtensionIdFirefox(driver)
-        await driver.get(`moz-extension://${extensionId}/home.html`)
-        await delay(regularDelayMs)
+        extensionUrl = `moz-extension://${extensionId}/home.html`
         break
       }
     }
+    // Depending on the state of the application built into the above directory (extPath) and the value of
+    // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
+    // are closing any extraneous windows to reset us to a single window before continuing.
+    const [tab1] = await driver.getAllWindowHandles()
+    await closeAllWindowHandlesExcept(driver, [tab1])
+    await driver.switchTo().window(tab1)
+    await driver.get(extensionUrl)
   })
 
   afterEach(async function () {

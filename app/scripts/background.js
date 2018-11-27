@@ -41,6 +41,7 @@ const {
 const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
 
 const STORAGE_KEY = 'metamask-config'
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -472,3 +473,10 @@ function openPopup () {
     }
   )
 }
+
+// On first install, open a new tab with MetaMask
+extension.runtime.onInstalled.addListener(({reason}) => {
+  if ((reason === 'install') && (!METAMASK_DEBUG)) {
+    platform.openExtensionInBrowser()
+  }
+})
