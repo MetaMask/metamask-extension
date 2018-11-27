@@ -240,7 +240,7 @@ ConfigScreen.prototype.componentWillUnmount = function () {
   this.props.dispatch(actions.displayWarning(''))
 }
 
-ConfigScreen.prototype.rpcValidation = (newRpc, state) => {
+ConfigScreen.prototype.rpcValidation = function (newRpc, state) {
   this.setState({
     loading: true,
   })
