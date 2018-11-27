@@ -65,7 +65,8 @@ export default class Layer2AppView extends PureComponent {
     const script = this.props.selectedLayer2AppScript
     if (!script) return (	<div>       </div>)
     let deposit
-    let received
+    let totalReceived
+    let received    
     let paid
     console.log(script.layer2State.deposited)
     if (script.layer2State.deposited){
@@ -74,17 +75,23 @@ export default class Layer2AppView extends PureComponent {
     else {
       deposit = 0
     }
-    if (script.layer2State.received){
-      received = new BN(script.layer2State.received, 16).toString(10)/1e18
+    if (script.layer2State.totalReceived){
+      totalReceived = new BN(script.layer2State.totalReceived, 16).toString(10)/1e18
     }
     else {
-      received = 0
+      totalReceived = 0
+    }
+    if (script.layer2State.received){
+      received = script.layer2State.received
+    }
+    else {
+      received = "No payments received yet"
     }
     if (script.layer2State.paid){
       paid = script.layer2State.paid
     }
     else {
-      paid = {}
+      paid = "No payments made yet"
     }
     return (
 	<div className="layer2App-view">
@@ -101,10 +108,13 @@ export default class Layer2AppView extends PureComponent {
 	{"Deposit available: " + deposit + " eth"}
       </div>
       	<div>	
-	{"Payments received: " + received + " eth"}
+	{"Total value received: " + totalReceived + " eth"}
       </div>
       	<div>	
 	{"Payments made: " + JSON.stringify(paid)}
+      </div>
+      	<div>	
+	{"Payments received: " + JSON.stringify(received)}
       </div>
       </div>
     )
