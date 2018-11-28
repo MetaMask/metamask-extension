@@ -241,10 +241,10 @@ ConfigScreen.prototype.componentWillUnmount = function () {
 }
 
 ConfigScreen.prototype.rpcValidation = function (newRpc, state) {
-  this.setState({
-    loading: true,
-  })
   if (validUrl.isWebUri(newRpc)) {
+    this.setState({
+      loading: true,
+    })
     const web3 = new Web3(new Web3.providers.HttpProvider(newRpc))
     web3.eth.getBlockNumber((err, res) => {
       if (err) {
@@ -257,15 +257,7 @@ ConfigScreen.prototype.rpcValidation = function (newRpc, state) {
       })
     })
   } else {
-    const appendedRpc = `http://${newRpc}`
-    if (validUrl.isWebUri(appendedRpc)) {
-      state.dispatch(actions.displayWarning('URIs require the appropriate HTTP/HTTPS prefix.'))
-    } else {
-      state.dispatch(actions.displayWarning('Invalid RPC URI'))
-    }
-    this.setState({
-      loading: false,
-    })
+    state.dispatch(actions.displayWarning('URIs require the appropriate HTTP/HTTPS prefix.'))
   }
 }
 
