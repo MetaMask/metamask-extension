@@ -1,34 +1,33 @@
 const inherits = require('util').inherits
-const PersistentForm = require('../lib/persistent-form')
+const PersistentForm = require('../../../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const Identicon = require('./components/identicon')
-const actions = require('../../ui/app/actions')
-const util = require('./util')
-const numericBalance = require('./util').numericBalance
-const addressSummary = require('./util').addressSummary
-const isHex = require('./util').isHex
-const EthBalance = require('./components/eth-balance')
-const EnsInput = require('./components/ens-input')
+const actions = require('../../../../ui/app/actions')
+const {
+  numericBalance,
+  isHex,
+  normalizeEthStringToWei,
+  isInvalidChecksumAddress,
+  isValidAddress,
+} = require('../../util')
+const EnsInput = require('../ens-input')
 const ethUtil = require('ethereumjs-util')
+import SendProfile from './send-profile'
+import SendHeader from './send-header'
+import SendError from './send-error'
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
   var result = {
     address: state.metamask.selectedAddress,
-    accounts: state.metamask.accounts,
     identities: state.metamask.identities,
     warning: state.appState.warning,
     network: state.metamask.network,
     addressBook: state.metamask.addressBook,
-    conversionRate: state.metamask.conversionRate,
-    currentCurrency: state.metamask.currentCurrency,
   }
 
   result.error = result.warning && result.warning.split('.')[0]
 
-  result.account = result.accounts[result.address]
-  result.identity = result.identities[result.address]
   result.balance = result.account ? numericBalance(result.account.balance) : null
 
   return result
@@ -44,14 +43,10 @@ SendTransactionScreen.prototype.render = function () {
 
   const props = this.props
   const {
-    address,
-    account,
-    identity,
     network,
     identities,
     addressBook,
-    conversionRate,
-    currentCurrency,
+    error,
   } = props
 
   return (
@@ -62,112 +57,20 @@ SendTransactionScreen.prototype.render = function () {
       // Sender Profile
       //
 
-      h('.account-data-subsection.flex-row.flex-grow', {
-        style: {
-          background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
-          padding: '30px',
-        },
-      }, [
-
-        // header - identicon + nav
-        h('.flex-row.flex-space-between', [
-
-          // large identicon
-          h('.identicon-wrapper.flex-column.flex-center.select-none', {
-            style: {
-              display: 'inline-block',
-            },
-          }, [
-            h(Identicon, {
-              diameter: 62,
-              address: address,
-            }),
-          ]),
-
-          // invisible place holder
-          h('i.fa.fa-users.fa-lg.invisible', {
-            style: {
-              marginTop: '28px',
-            },
-          }),
-
-        ]),
-
-        // account label
-
-        h('.flex-column', {
-          style: {
-            alignItems: 'flex-start',
-          },
-        }, [
-          h('h2.font-medium.flex-center', {
-            style: {
-              color: '#ffffff',
-              paddingTop: '8px',
-              marginBottom: '8px',
-            },
-          }, identity && identity.name),
-
-          // address and getter actions
-          h('.flex-row.flex-center', {
-            style: {
-              color: 'rgba(255, 255, 255, 0.7)',
-              marginBottom: '30px',
-            },
-          }, [
-
-            h('div', {
-              style: {
-                lineHeight: '16px',
-                fontSize: '14px',
-              },
-            }, addressSummary(address)),
-
-          ]),
-
-          // balance
-          h('.flex-row.flex-center', [
-
-            h(EthBalance, {
-              value: account && account.balance,
-              conversionRate,
-              currentCurrency,
-              network,
-            }),
-
-          ]),
-        ]),
-      ]),
+      h(SendProfile),
 
       //
-      // Required Fields
+      // Send Header
       //
 
-      h('h3.flex-center', {
-        style: {
-          color: '#333333',
-          marginTop: '18px',
-          marginBottom: '14px',
-        },
-      }, [
-        // back button
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          style: {
-            position: 'absolute',
-            left: '30px',
-          },
-          onClick: this.back.bind(this),
-        }),
-        'Send Transaction',
-      ]),
+      h(SendHeader, {
+        title: 'Send Transaction',
+      }),
 
       // error message
-      props.error && h('div', {style: {
-        marginLeft: '30px',
-        marginRight: '30px',
-      }}, [
-        h('div.error.flex-center', props.error),
-      ]),
+      h(SendError, {
+        error,
+      }),
 
       // 'to' field
       h('section.flex-row.flex-center', [
@@ -243,11 +146,6 @@ SendTransactionScreen.prototype.navigateToAccounts = function (event) {
   this.props.dispatch(actions.showAccountsPage())
 }
 
-SendTransactionScreen.prototype.back = function () {
-  var address = this.props.address
-  this.props.dispatch(actions.backToAccountDetail(address))
-}
-
 SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickname) {
   this.setState({
     recipient: recipient,
@@ -277,7 +175,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
     }
   }
 
-  const value = util.normalizeEthStringToWei(input)
+  const value = normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
   const balance = this.props.balance
 
@@ -291,12 +189,12 @@ SendTransactionScreen.prototype.onSubmit = function () {
     return this.props.dispatch(actions.displayWarning(message))
   }
 
-  if ((util.isInvalidChecksumAddress(recipient))) {
+  if ((isInvalidChecksumAddress(recipient))) {
     message = 'Recipient address checksum is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 
-  if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
+  if ((!isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
     message = 'Recipient address is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
   }

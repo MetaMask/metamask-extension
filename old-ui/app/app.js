@@ -15,8 +15,9 @@ const UnlockScreen = require('./unlock')
 // accounts
 const AccountDetailScreen = require('./account-detail')
 const AccountQrScreen = require('./account-qr')
-const SendTransactionScreen = require('./send')
-const SendTokenScreen = require('./send-token')
+const SendTransactionScreen = require('./components/send/send')
+const SendTokenScreen = require('./components/send/send-token')
+const SendMultisigScreen = require('./components/send/send-multisig')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
@@ -231,8 +232,12 @@ App.prototype.renderPrimary = function () {
       return h(SendTransactionScreen, {key: 'send-transaction'})
 
     case 'sendToken':
-      log.debug('rendering send tx screen')
+      log.debug('rendering send token tx screen')
       return h(SendTokenScreen, {key: 'send-token'})
+
+    case 'sendMultisig':
+      log.debug('rendering send multisig tx screen')
+      return h(SendMultisigScreen, {key: 'send-multisig'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')

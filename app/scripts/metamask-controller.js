@@ -407,6 +407,7 @@ module.exports = class MetamaskController extends EventEmitter {
       createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
+      addNewMultisig: nodeify(keyringController.addNewMultisig, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
       // txController
@@ -558,7 +559,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const accounts = await this.keyringController.getAccounts()
 
     // verify keyrings
-    const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair')
+    const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair' && keyring.type !== 'Simple Address')
     if (nonSimpleKeyrings.length > 1 && this.diagnostics) {
       await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
@@ -840,8 +841,13 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param  {Function} cb - A callback function called with a state update on success.
    */
   async importAccountWithStrategy (strategy, args) {
-    const privateKey = await accountImporter.importAccount(strategy, args)
-    const keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    let keyring
+    if (strategy === 'Multisig') {
+      keyring = await this.keyringController.addNewKeyring('Simple Address', args)
+    } else {
+      const privateKey = await accountImporter.importAccount(strategy, args)
+      keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    }
     const accounts = await keyring.getAccounts()
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts()

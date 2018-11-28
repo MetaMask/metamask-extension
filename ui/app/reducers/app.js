@@ -344,6 +344,16 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.SHOW_SEND_MULTISIG_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'sendMultisig',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+        warning: null,
+      })
+
     case actions.SHOW_NEW_KEYCHAIN:
       return extend(appState, {
         currentView: {

@@ -139,6 +139,8 @@ var actions = {
   showSendPage: showSendPage,
   SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
   showSendTokenPage,
+  SHOW_SEND_MULTISIG_PAGE: 'SHOW_SEND_MULTISIG_PAGE',
+  showSendMultisigPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
@@ -2201,6 +2203,13 @@ function showSendPage () {
 function showSendTokenPage (address) {
   return {
     type: actions.SHOW_SEND_TOKEN_PAGE,
+    value: address,
+  }
+}
+
+function showSendMultisigPage (address) {
+  return {
+    type: actions.SHOW_SEND_MULTISIG_PAGE,
     value: address,
   }
 }

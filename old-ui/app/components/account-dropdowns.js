@@ -9,6 +9,7 @@ const Identicon = require('./identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const ethNetProps = require('eth-net-props')
+const { getCurrentKeyring, ifLooseAcc, ifMultisigAcc } = require('../util')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -32,7 +33,7 @@ class AccountDropdowns extends Component {
       }
       const isSelected = identity.address === selected
 
-      const keyring = this.getCurrentKeyring(address)
+      const keyring = getCurrentKeyring(address, keyrings, identities)
 
       return h(
         DropdownMenuItem,
@@ -80,7 +81,7 @@ class AccountDropdowns extends Component {
             },
           }, identity.name || ''),
           this.indicateIfLoose(keyring),
-          this.ifLooseAcc(keyring) ? h('.remove', {
+          ifLooseAcc(keyring) ? h('.remove', {
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -96,36 +97,26 @@ class AccountDropdowns extends Component {
     })
   }
 
-  ifLooseAcc (keyring) {
-    try { // Sometimes keyrings aren't loaded yet:
-      const type = keyring.type
-      const isLoose = type !== 'HD Key Tree'
-      return isLoose
-    } catch (e) { return }
-  }
-
   ifHardwareAcc (address) {
-    const keyring = this.getCurrentKeyring(address)
+    const keyring = getCurrentKeyring(address, this.props.keyrings, this.props.identities)
     if (keyring && keyring.type.search('Hardware') !== -1) {
       return true
     }
     return false
   }
 
-  getCurrentKeyring (address) {
-    const { identities, keyrings } = this.props
-    const identity = identities[address]
-    const simpleAddress = identity.address.substring(2).toLowerCase()
-    const keyring = keyrings && keyrings.find((kr) => {
-      return kr.accounts.includes(simpleAddress) ||
-        kr.accounts.includes(address)
-    })
-
-    return keyring
-  }
-
   indicateIfLoose (keyring) {
-    return this.ifLooseAcc(keyring) ? h('.keyring-label', 'IMPORTED') : null
+    if (ifLooseAcc(keyring)) {
+      let label
+      if (ifMultisigAcc(keyring)) {
+        label = 'MULTISIG'
+      } else {
+        label = 'IMPORTED'
+      }
+      return h('.keyring-label', label)
+    }
+
+    return null
   }
 
   renderAccountSelector () {
