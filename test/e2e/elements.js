@@ -267,7 +267,7 @@ module.exports = {
       title: By.className('page-subtitle'),
       titleText: 'Remove Token',
       label: By.className('confirm-label'),
-      labelText: 'Are you sure you want to remove token "TST"?',
+      labelText: 'Are you sure you want to remove token "',
       buttons: {
         back: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
         no: By.className('btn-violet'),
