@@ -257,7 +257,11 @@ ConfigScreen.prototype.rpcValidation = function (newRpc, state) {
       })
     })
   } else {
-    state.dispatch(actions.displayWarning('URIs require the appropriate HTTP/HTTPS prefix.'))
+    if (!newRpc.startsWith('http')) {
+      state.dispatch(actions.displayWarning('URIs require the appropriate HTTP/HTTPS prefix.'))
+    } else {
+      state.dispatch(actions.displayWarning('Invalid RPC URI'))
+    }
   }
 }
 
