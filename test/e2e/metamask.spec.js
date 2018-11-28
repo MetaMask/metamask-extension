@@ -568,7 +568,7 @@ describe('Metamask popup page', async function () {
       const event = await waitUntilShowUp(screens.eventsEmitter.event, 1200)
       const events = await driver.findElements(screens.eventsEmitter.event)
       console.log('number of events = ' + events.length)
-      if (!event) console.log("event wasn't created or transaction failed")
+      if (!event) console.log("event wasn't created or transaction failed".toUpperCase())
       else {
         const events = await driver.findElements(screens.eventsEmitter.event)
         assert.equal(events.length, 1, 'More than 1 event was fired: ' + events.length + ' events')
@@ -890,7 +890,7 @@ describe('Metamask popup page', async function () {
         const error = await waitUntilShowUp(screens.sendTokens.error)
         assert.equal(await error.getText(), screens.sendTokens.errorText.invalidAmount, ' error message is incorrect')
       })
-      it('error message if amount is too precise', async function () {
+      it.skip('error message if amount is too precise', async function () {
         const amount = await waitUntilShowUp(screens.sendTokens.field.amount)
         await clearField(amount)
         await amount.sendKeys(preciseAmount)
