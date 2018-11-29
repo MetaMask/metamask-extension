@@ -139,6 +139,9 @@
   "balance": {
     "message": "Balance"
   },
+  "balanceOutdated": {
+    "message": "Balance may be outdated"
+  },
   "balances": {
     "message": "Token balance(s)"
   },

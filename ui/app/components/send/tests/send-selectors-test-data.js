@@ -22,6 +22,7 @@ module.exports = {
         'name': 'Send Account 4',
       },
     },
+    'cachedBalances': {},
     'currentBlockGasLimit': '0x4c1878',
     'currentCurrency': 'USD',
     'conversionRate': 1200.88200327,

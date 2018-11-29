@@ -17,6 +17,7 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    position: relative;
 
     @media screen and (max-width: $break-small) {
       align-items: center;
@@ -26,6 +27,10 @@
     }
   }
 
+  &__primary-container {
+    display: flex;
+  }
+
   &__primary-balance {
     font-size: 1.5rem;
 
@@ -33,6 +38,19 @@
       font-size: 1.75rem;
       width: 100%;
     }
+  }
+
+  &__cached-star {
+    margin-left: 4px;
+  }
+
+  &__cached-balance, &__cached-star {
+    color: $web-orange;
+  }
+
+  &__cached-secondary-balance {
+    color: rgba(220, 153, 18, 0.6901960784313725);
+    font-size: 1.15rem;
   }
 
   &__secondary-balance {
