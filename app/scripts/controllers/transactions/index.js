@@ -488,7 +488,7 @@ class TransactionController extends EventEmitter {
         txMeta.loadingDefaults = false
         this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
       }).catch((error) => {
-        txMeta.loadingDefaults = false
+        tx.loadingDefaults = false
         this.txStateManager.setTxStatusFailed(tx.id, error)
       })
     })
