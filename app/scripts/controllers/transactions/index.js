@@ -192,9 +192,12 @@ class TransactionController extends EventEmitter {
     } catch (error) {
       log.warn(error)
       this.txStateManager.setTxStatusFailed(txMeta.id, error)
+      txMeta.loadingDefaults = false
       throw error
     }
+
     txMeta.loadingDefaults = false
+
     // save txMeta
     this.txStateManager.updateTx(txMeta)
 
@@ -485,6 +488,7 @@ class TransactionController extends EventEmitter {
         txMeta.loadingDefaults = false
         this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
       }).catch((error) => {
+        txMeta.loadingDefaults = false
         this.txStateManager.setTxStatusFailed(tx.id, error)
       })
     })
@@ -588,6 +592,7 @@ class TransactionController extends EventEmitter {
       metamaskNetworkId: this.getNetwork(),
     })
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
+    this._onBootCleanUp()
   }
 }
 
