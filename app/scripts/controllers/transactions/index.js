@@ -195,7 +195,7 @@ class TransactionController extends EventEmitter {
     } catch (error) {
       log.warn(error)
       txMeta.loadingDefaults = false
-      this.txStateManager.updateTx(txMeta)
+      this.txStateManager.updateTx(txMeta, 'Failed to calculate gas defaults.')
       throw error
     }
 
@@ -492,7 +492,7 @@ class TransactionController extends EventEmitter {
         this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
       }).catch((error) => {
         tx.loadingDefaults = false
-        this.txStateManager.updateTx(tx)
+        this.txStateManager.updateTx(tx, 'failed to estimate gas during boot cleanup.')
         this.txStateManager.setTxStatusFailed(tx.id, error)
       })
     })
