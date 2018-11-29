@@ -96,7 +96,10 @@ class TransactionController extends EventEmitter {
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.txStateManager.store.subscribe(() => this._updateMemstore())
-    this.networkStore.subscribe(() => this._updateMemstore())
+    this.networkStore.subscribe(() => {
+      this._onBootCleanUp()
+      this._updateMemstore()
+    })
     this.preferencesStore.subscribe(() => this._updateMemstore())
 
     // request state update to finalize initialization
@@ -191,8 +194,8 @@ class TransactionController extends EventEmitter {
       txMeta = await this.addTxGasDefaults(txMeta)
     } catch (error) {
       log.warn(error)
-      this.txStateManager.setTxStatusFailed(txMeta.id, error)
       txMeta.loadingDefaults = false
+      this.txStateManager.updateTx(txMeta)
       throw error
     }
 
@@ -489,6 +492,7 @@ class TransactionController extends EventEmitter {
         this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
       }).catch((error) => {
         tx.loadingDefaults = false
+        this.txStateManager.updateTx(tx)
         this.txStateManager.setTxStatusFailed(tx.id, error)
       })
     })
@@ -592,7 +596,6 @@ class TransactionController extends EventEmitter {
       metamaskNetworkId: this.getNetwork(),
     })
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
-    this._onBootCleanUp()
   }
 }
 
