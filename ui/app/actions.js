@@ -98,6 +98,7 @@ var actions = {
   navigateToNewAccountScreen,
   resetAccount,
   changePassword,
+  getMultisig,
   removeAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
@@ -612,6 +613,25 @@ function changePassword (oldPassword, newPassword) {
         log.info('Password is changed for ' + account)
         dispatch(actions.showAccountsPage())
         resolve(account)
+      })
+    })
+  }
+}
+
+function getMultisig (address) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      background.getMultisig(address, (err, props) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.info('Multisig retrieved: ' + JSON.stringify(props))
+        resolve(props)
       })
     })
   }

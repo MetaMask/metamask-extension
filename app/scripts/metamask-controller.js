@@ -369,6 +369,7 @@ module.exports = class MetamaskController extends EventEmitter {
       resetAccount: nodeify(this.resetAccount, this),
       changePassword: nodeify(this.changePassword, this),
       removeAccount: nodeify(this.removeAccount, this),
+      getMultisig: nodeify(this.getMultisig, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // hardware wallets
@@ -803,6 +804,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.resetConnection()
 
     return selectedAddress
+  }
+
+  async getMultisig (address) {
+    let props
+    if (this.keyringController.getProps) {
+      props = await this.keyringController.getProps(address)
+    }
+    return props
   }
 
   async changePassword (oldPassword, newPassword) {

@@ -24,6 +24,7 @@ class SendProfile extends Component {
 				style={{
 					background: 'linear-gradient(rgb(84, 36, 147), rgb(104, 45, 182))',
 					padding: '30px',
+					minHeight: '178px',
 				}}
 			>
 				{/* header - identicon + nav */}

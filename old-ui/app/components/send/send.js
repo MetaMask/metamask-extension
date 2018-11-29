@@ -20,6 +20,7 @@ module.exports = connect(mapStateToProps)(SendTransactionScreen)
 function mapStateToProps (state) {
   var result = {
     address: state.metamask.selectedAddress,
+    accounts: state.metamask.accounts,
     identities: state.metamask.identities,
     warning: state.appState.warning,
     network: state.metamask.network,
@@ -27,7 +28,7 @@ function mapStateToProps (state) {
   }
 
   result.error = result.warning && result.warning.split('.')[0]
-
+  result.account = result.accounts[result.address]
   result.balance = result.account ? numericBalance(result.account.balance) : null
 
   return result

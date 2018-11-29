@@ -115,7 +115,7 @@
     "eth-ens-namehash": "^2.0.8",
     "eth-json-rpc-filters": "github:poanetwork/eth-json-rpc-filters#3.0.2",
     "eth-json-rpc-infura": "^3.0.0",
-    "eth-keychain-controller": "github:vbaranov/KeyringController#simple-address",
+    "eth-keychain-controller": "file:../eth-keychain-controller",
     "eth-ledger-bridge-keyring": "^0.1.0",
     "eth-method-registry": "^1.0.0",
     "eth-net-props": "^1.0.10",
@@ -208,6 +208,7 @@
     "valid-url": "^1.0.9",
     "vreme": "^3.0.2",
     "web3": "^0.20.1",
+    "web3-eth-abi": "^1.0.0-beta.36",
     "web3-stream-provider": "^3.0.1",
     "xtend": "^4.0.1"
   },

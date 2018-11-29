@@ -3,12 +3,21 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../../../ui/app/actions')
+const Web3 = require('web3')
 
-module.exports = connect(mapStateToProps)(MultisigImportView)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(MultisigImportView)
 
 function mapStateToProps (state) {
   return {
     error: state.appState.warning,
+    network: state.metamask.network,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    displayWarning: warning => dispatch(actions.displayWarning(warning)),
+    importNewAccount: (strategy, args) => dispatch(actions.importNewAccount(strategy, args)),
   }
 }
 
@@ -33,12 +42,27 @@ MultisigImportView.prototype.render = function () {
 
       h('input.large-input', {
         id: 'address-box',
-        onKeyPress: this.createKeyringOnEnter.bind(this),
         style: {
           width: '100%',
-          marginTop: 12,
+          marginTop: '12px',
           border: '1px solid #e2e2e2',
         },
+      }),
+
+      h('span', {
+        style: {
+            marginTop: '20px',
+          },
+        }, 'Paste ABI of multisig here'),
+
+      h('textarea', {
+        id: 'abi-box',
+        style: {
+          marginTop: '12px',
+          width: '100%',
+          height: '50px',
+        },
+        onKeyPress: this.createKeyringOnEnter.bind(this),
       }),
 
       h('button', {
@@ -61,9 +85,26 @@ MultisigImportView.prototype.createKeyringOnEnter = function (event) {
 }
 
 MultisigImportView.prototype.createNewKeychain = function () {
-  const input = document.getElementById('address-box')
-  const addr = input.value
-  this.props.dispatch(actions.importNewAccount('Multisig', [ addr ]))
-    // JS runtime requires caught rejections but failures are handled by Redux
-    .catch()
+  const web3 = new Web3()
+  const addressInput = document.getElementById('address-box')
+  const abiInput = document.getElementById('abi-box')
+  const addr = addressInput.value
+  let abi
+  try {
+    abi = JSON.parse(abiInput.value)
+  } catch (e) {
+    this.props.displayWarning('Invalid ABI')
+  }
+
+  if (!addr || !web3.isAddress(addr)) {
+    return this.props.displayWarning('Invalid multisig address')
+  }
+
+  if (!abi) {
+    return this.props.displayWarning('Invalid multisig ABI')
+  }
+
+  this.props.importNewAccount('Multisig', { addr, network: this.props.network, abi })
+  // JS runtime requires caught rejections but failures are handled by Redux
+  .catch()
 }

@@ -1162,6 +1162,6 @@ div.message-container > div:first-child {
   visibility: hidden;
 }
 
-input[disabled] {
+input[disabled],textarea[disabled] {
   background: #FFFADE
 }
