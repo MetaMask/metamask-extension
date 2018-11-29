@@ -75,6 +75,7 @@ describe('gas-modal-page-container container', () => {
         gas: {
           basicEstimates: {
             blockTime: 12,
+            safeLow: 2,
           },
           customData: {
             limit: 'aaaaaaaa',
@@ -107,9 +108,10 @@ describe('gas-modal-page-container container', () => {
         blockTime: 12,
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
+        customPriceIsSafe: true,
         gasChartProps: {
           'currentPrice': 4.294967295,
-          estimatedTimes: ['31', '62', '93', '124'],
+          estimatedTimes: [31, 62, 93, 124],
           estimatedTimesMax: '31',
           gasPrices: [3, 4, 5, 6],
           gasPricesMax: 6,

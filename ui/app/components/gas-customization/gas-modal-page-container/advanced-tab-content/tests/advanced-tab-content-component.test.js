@@ -16,6 +16,7 @@ sinon.spy(AdvancedTabContent.prototype, 'renderGasEditRow')
 sinon.spy(AdvancedTabContent.prototype, 'gasInput')
 sinon.spy(AdvancedTabContent.prototype, 'renderGasEditRows')
 sinon.spy(AdvancedTabContent.prototype, 'renderDataSummary')
+sinon.spy(AdvancedTabContent.prototype, 'gasInputError')
 
 describe('AdvancedTabContent Component', function () {
   let wrapper
@@ -29,6 +30,8 @@ describe('AdvancedTabContent Component', function () {
       timeRemaining={21500}
       totalFee={'$0.25'}
       insufficientBalance={false}
+      customPriceIsSafe={true}
+      isSpeedUp={false}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 
@@ -86,9 +89,15 @@ describe('AdvancedTabContent Component', function () {
     it('should call renderGasEditRows with the expected params', () => {
       assert.equal(AdvancedTabContent.prototype.renderGasEditRows.callCount, 1)
       const renderGasEditRowArgs = AdvancedTabContent.prototype.renderGasEditRows.getCall(0).args
-      assert.deepEqual(renderGasEditRowArgs, [
-        11, propsMethodSpies.updateCustomGasPrice, 23456, propsMethodSpies.updateCustomGasLimit, false,
-      ])
+      assert.deepEqual(renderGasEditRowArgs, [{
+        customGasPrice: 11,
+        customGasLimit: 23456,
+        insufficientBalance: false,
+        customPriceIsSafe: true,
+        updateCustomGasPrice: propsMethodSpies.updateCustomGasPrice,
+        updateCustomGasLimit: propsMethodSpies.updateCustomGasLimit,
+        isSpeedUp: false,
+      }])
     })
   })
 
@@ -124,9 +133,10 @@ describe('AdvancedTabContent Component', function () {
 
     beforeEach(() => {
       AdvancedTabContent.prototype.gasInput.resetHistory()
-      gasEditRow = shallow(wrapper.instance().renderGasEditRow(
-        'mockLabelKey', 'argA', 'argB'
-      ))
+      gasEditRow = shallow(wrapper.instance().renderGasEditRow({
+        labelKey: 'mockLabelKey',
+        someArg: 'argA',
+      }))
     })
 
     it('should render the gas-edit-row root node', () => {
@@ -149,7 +159,7 @@ describe('AdvancedTabContent Component', function () {
 
     it('should call this.gasInput with the correct args', () => {
       const gasInputSpyArgs = AdvancedTabContent.prototype.gasInput.args
-      assert.deepEqual(gasInputSpyArgs[0], [ 'argA', 'argB' ])
+      assert.deepEqual(gasInputSpyArgs[0], [ { labelKey: 'mockLabelKey', someArg: 'argA' } ])
     })
   })
 
@@ -188,12 +198,22 @@ describe('AdvancedTabContent Component', function () {
     it('should call this.renderGasEditRow twice, with the expected args', () => {
       const renderGasEditRowSpyArgs = AdvancedTabContent.prototype.renderGasEditRow.args
       assert.equal(renderGasEditRowSpyArgs.length, 2)
-      assert.deepEqual(renderGasEditRowSpyArgs[0].map(String), [
-        'gasPrice', 'mockGasPrice', () => 'mockUpdateCustomGasPriceReturn', 'mockGasPrice', false, true,
-      ].map(String))
-      assert.deepEqual(renderGasEditRowSpyArgs[1].map(String), [
-        'gasLimit', 'mockGasLimit', () => 'mockOnChangeGasLimit', 'mockGasLimit', false,
-      ].map(String))
+      assert.deepEqual(renderGasEditRowSpyArgs[0].map(String), [{
+        labelKey: 'gasPrice',
+        value: 'mockGasLimit',
+        onChange: () => 'mockOnChangeGasLimit',
+        insufficientBalance: false,
+        customPriceIsSafe: true,
+        showGWEI: true,
+      }].map(String))
+      assert.deepEqual(renderGasEditRowSpyArgs[1].map(String), [{
+        labelKey: 'gasPrice',
+        value: 'mockGasPrice',
+        onChange: () => 'mockUpdateCustomGasPriceReturn',
+        insufficientBalance: false,
+        customPriceIsSafe: true,
+        showGWEI: true,
+      }].map(String))
     })
   })
 
@@ -219,13 +239,16 @@ describe('AdvancedTabContent Component', function () {
 
     beforeEach(() => {
       AdvancedTabContent.prototype.renderGasEditRow.resetHistory()
-      gasInput = shallow(wrapper.instance().gasInput(
-        321,
-        value => value + 7,
-        0,
-        false,
-        8
-      ))
+      AdvancedTabContent.prototype.gasInputError.resetHistory()
+      gasInput = shallow(wrapper.instance().gasInput({
+        labelKey: 'gasPrice',
+        value: 321,
+        onChange: value => value + 7,
+        insufficientBalance: false,
+        showGWEI: true,
+        customPriceIsSafe: true,
+        isSpeedUp: false,
+      }))
     })
 
     it('should render the input-wrapper root node', () => {
@@ -235,12 +258,6 @@ describe('AdvancedTabContent Component', function () {
     it('should render two children, including an input', () => {
       assert.equal(gasInput.children().length, 2)
       assert(gasInput.children().at(0).hasClass('advanced-tab__gas-edit-row__input'))
-    })
-
-    it('should pass the correct value min and precision props to the input', () => {
-      const inputProps = gasInput.find('input').props()
-      assert.equal(inputProps.min, 0)
-      assert.equal(inputProps.value, 321)
     })
 
     it('should call the passed onChange method with the value of the input onChange event', () => {
@@ -256,17 +273,91 @@ describe('AdvancedTabContent Component', function () {
     })
 
     it('should call onChange with the value incremented decremented when its onchange method is called', () => {
-      gasInput = shallow(wrapper.instance().gasInput(
-        321,
-        value => value + 7,
-        0,
-        8,
-        false
-      ))
       const upArrow = gasInput.find('.advanced-tab__gas-edit-row__input-arrows__i-wrap').at(0)
       assert.equal(upArrow.props().onClick(), 329)
       const downArrow = gasInput.find('.advanced-tab__gas-edit-row__input-arrows__i-wrap').at(1)
       assert.equal(downArrow.props().onClick(), 327)
+    })
+
+    it('should call gasInputError with the expected params', () => {
+      assert.equal(AdvancedTabContent.prototype.gasInputError.callCount, 1)
+      const gasInputErrorArgs = AdvancedTabContent.prototype.gasInputError.getCall(0).args
+      assert.deepEqual(gasInputErrorArgs, [{
+        labelKey: 'gasPrice',
+        insufficientBalance: false,
+        customPriceIsSafe: true,
+        value: 321,
+        isSpeedUp: false,
+      }])
+    })
+  })
+
+  describe('gasInputError()', () => {
+    let gasInputError
+
+    beforeEach(() => {
+      AdvancedTabContent.prototype.renderGasEditRow.resetHistory()
+      gasInputError = wrapper.instance().gasInputError({
+        labelKey: '',
+        insufficientBalance: false,
+        customPriceIsSafe: true,
+        isSpeedUp: false,
+      })
+    })
+
+    it('should return an insufficientBalance error', () => {
+      const gasInputError = wrapper.instance().gasInputError({
+        labelKey: 'gasPrice',
+        insufficientBalance: true,
+        customPriceIsSafe: true,
+        isSpeedUp: false,
+        value: 1,
+      })
+      assert.deepEqual(gasInputError, {
+        isInError: true,
+        errorText: 'Insufficient Balance',
+        errorType: 'error',
+      })
+    })
+
+    it('should return a zero gas on retry error', () => {
+      const gasInputError = wrapper.instance().gasInputError({
+        labelKey: 'gasPrice',
+        insufficientBalance: false,
+        customPriceIsSafe: false,
+        isSpeedUp: true,
+        value: 0,
+      })
+      assert.deepEqual(gasInputError, {
+        isInError: true,
+        errorText: 'Zero gas price on speed up',
+        errorType: 'error',
+      })
+    })
+
+    it('should return a low gas warning', () => {
+      const gasInputError = wrapper.instance().gasInputError({
+        labelKey: 'gasPrice',
+        insufficientBalance: false,
+        customPriceIsSafe: false,
+        isSpeedUp: false,
+        value: 1,
+      })
+      assert.deepEqual(gasInputError, {
+        isInError: true,
+        errorText: 'Gas Price Extremely Low',
+        errorType: 'warning',
+      })
+    })
+
+    it('should return isInError false if there is no error', () => {
+      gasInputError = wrapper.instance().gasInputError({
+        labelKey: 'gasPrice',
+        insufficientBalance: false,
+        customPriceIsSafe: true,
+        value: 1
+      })
+      assert.equal(gasInputError.isInError, false)
     })
   })
 
