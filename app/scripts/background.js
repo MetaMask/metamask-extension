@@ -326,6 +326,28 @@ function setupController (initState, initLangCode) {
   //
   extension.runtime.onConnect.addListener(connectRemote)
   extension.runtime.onConnectExternal.addListener(connectExternal)
+  extension.runtime.onSuspend.addListener(handleSuspension)
+   // Chrome Ports error logging / handling
+  function handleSuspension (port) {
+    const processName = port.name
+    if (metamaskBlacklistedPorts.includes(processName)) {
+      return false
+    }
+    log.debug(`Port ${processName} got suspended`, extension.runtime.lastError)
+    sentry.captureMessage(`Port ${processName} got suspended`, {
+      lastError: extension.runtime.lastError || 'unknown',
+    })
+  }
+   function handleDisconnection (port) {
+    const processName = port.name
+    if (metamaskBlacklistedPorts.includes(processName)) {
+      return false
+    }
+    log.debug(`Port ${processName} got disconnected`, extension.runtime.lastError)
+    sentry.captureMessage(`Port ${processName} got disconnected`, {
+      lastError: extension.runtime.lastError || 'unknown',
+    })
+  }
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
@@ -360,6 +382,8 @@ function setupController (initState, initLangCode) {
     if (metamaskBlacklistedPorts.includes(remotePort.name)) {
       return false
     }
+
+    remotePort.onDisconnect.addListener(handleDisconnection)
 
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort)
