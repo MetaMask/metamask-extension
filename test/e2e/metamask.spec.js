@@ -8,9 +8,9 @@ const webdriver = require('selenium-webdriver')
 const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 const { menus, screens, elements, NETWORKS } = require('./elements')
-const testSeedPhrase = 'juice teach unaware view expand beef divorce spatial evolve rack scheme foster'
-const account1 = '0x00caA30bb79b3a1CDbdAE146e17e0D7d8710b5EF'
-const account2 = '0x27836ca9B60E2E1aE13852388edd9a130Be81475'
+const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
+const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
+const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
 const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 
 describe('Metamask popup page', async function () {
@@ -26,6 +26,10 @@ describe('Metamask popup page', async function () {
   this.timeout(0)
 
   before(async function () {
+  /*  tokenAddress = await createToken(account1, token, true)
+    console.log('Token contract address: ' + tokenAddress)
+    await delay(100000)
+    throw('werwerwer')*/
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const extPath = path.resolve('dist/chrome')
@@ -594,9 +598,7 @@ describe('Metamask popup page', async function () {
 
       it('Create custom token in LOCALHOST', async function () {
         await setProvider(NETWORKS.LOCALHOST)
-        await createToken(account1, token, false)// skip address 0xa6... since POA core accidentally contains token with the same address
-        await createToken(account1, token, false) // skip address 0x5c... since POA core accidentally contains token with the same address
-        tokenAddress = await createToken(account1, token, {})
+        tokenAddress = await createToken(account1, token, true)
         console.log('Token contract address: ' + tokenAddress)
         assert.equal(tokenAddress.length, 42, 'failed to create token')
       })
@@ -2218,12 +2220,12 @@ describe('Metamask popup page', async function () {
     const tokenContract = web3.eth.contract(abi)
     const contractInstance = await tokenContract.new(supply, name, decimals, ticker, {
       data: bin, from: owner, gas: 4500000, function (err, tokenContract) {
-        if (!err) {
+        if (err) {
           console.log('Error of token creation: ' + err)
         }
       },
     })
-    if (!(isDelayed === false)) await delay(5000)
+    if (isDelayed) await delay(5000)
 
     return contractInstance.address
   }
