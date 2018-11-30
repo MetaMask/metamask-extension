@@ -23,19 +23,33 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, selected, keyrings } = this.props
-    const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
+      const { identities, selected, keyrings, network } = this.props
+      const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
 
-    return accountOrder.map((address, index) => {
-      const identity = identities[address]
-      if (!identity) {
-        return null
-      }
-      const isSelected = identity.address === selected
+      return accountOrder.map((address, index) => {
+        const identity = identities[address]
+        if (!identity) {
+          return null
+        }
+        const isSelected = identity.address === selected
 
-      const keyring = getCurrentKeyring(address, keyrings, identities)
+        const keyring = getCurrentKeyring(address, keyrings, identities)
 
-      return h(
+        // display multisig acc only for network where it was created
+        if (ifMultisigAcc(keyring)) {
+          if (keyring.network !== network) {
+            return null
+          } else {
+            return this.accountsDropdownItemView(index, isSelected, keyring, identity)
+          }
+        } else {
+          return this.accountsDropdownItemView(index, isSelected, keyring, identity)
+        }
+      })
+  }
+
+  accountsDropdownItemView (index, isSelected, keyring, identity) {
+    return h(
         DropdownMenuItem,
         {
           closeMenu: () => {},
@@ -94,7 +108,6 @@ class AccountDropdowns extends Component {
           }) : null,
         ]
       )
-    })
   }
 
   ifHardwareAcc (address) {
@@ -323,6 +336,24 @@ class AccountDropdowns extends Component {
         ),
       ]
     )
+  }
+
+  // switch to the first account in the list on network switch, if unlocked account was multisig before change
+  componentDidUpdate (prevProps) {
+    if (!isNaN(this.props.network)) {
+      const { selected, network, keyrings, identities } = this.props
+      if (network !== prevProps.network) {
+        const keyring = getCurrentKeyring(selected, keyrings, identities)
+        if (ifMultisigAcc(keyring)) {
+          if (keyring.network !== this.props.network) {
+            const firstKeyring = keyrings[0]
+            if (firstKeyring && firstKeyring.accounts && firstKeyring.accounts[0]) {
+              this.props.actions.showAccountDetail(firstKeyring.accounts[0])
+            }
+          }
+        }
+      }
+    }
   }
 }
 

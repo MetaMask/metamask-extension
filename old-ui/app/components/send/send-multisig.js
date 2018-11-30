@@ -89,7 +89,7 @@ class SendTransactionScreen extends PersistentForm {
 						this.generateMethodInputsView(opt.metadata)
 					}}
 				/>
-				<div style={{ overflow: 'auto', maxHeight: '210px' }}>
+				<div style={{ overflow: 'auto', maxHeight: this.state.isConstantMethod ? '130px' : '210px' }}>
 					{this.state.methodInputsView}
 				</div>
 					{this.state.isConstantMethod && this.methodOutput()}
@@ -154,7 +154,6 @@ class SendTransactionScreen extends PersistentForm {
 
 	generateMethodInputsView (metadata) {
 		const methodInputsView = []
-		console.log(metadata)
 		const methodInputs = metadata && metadata.inputs
 		methodInputs.forEach((input, ind) => {
 			methodInputsView.push(this.generateMethodInput(input, ind))
@@ -225,24 +224,33 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	callData = () => {
+		const { abi, methodSelected } = this.state
+		const { address } = this.props
 		const web3 = new Web3(global.ethereumProvider)
 		const args = []
-		web3.eth.contract(this.state.abi).at(this.props.address)[this.state.methodSelected].call(...args, (err, output) => {
-			if (err) {
-				return this.props.displayWarning(err)
-			}
-			this.setState({
-				output,
+		try {
+			web3.eth.contract(abi).at(address)[methodSelected].call(...args, (err, output) => {
+				if (err) {
+					return this.props.displayWarning(err)
+				}
+				if (output) {
+					this.setState({
+						output,
+					})
+				}
 			})
-		})
+		} catch (e) {
+			return this.props.displayWarning(e)
+		}
 	}
 
 	onSubmit = () => {
-		const { inputValues } = this.state
+		const { inputValues, methodABI } = this.state
+		const { address } = this.props
 		const inputValuesArray = Object.keys(inputValues).map(key => inputValues[key])
 		let txData
 		try {
-			txData = abiEncoder.encodeFunctionCall(this.state.methodABI, inputValuesArray)
+			txData = abiEncoder.encodeFunctionCall(methodABI, inputValuesArray)
 		} catch (e) {
 			return this.props.displayWarning(e)
 		}
@@ -251,9 +259,9 @@ class SendTransactionScreen extends PersistentForm {
 		this.props.hideWarning()
 
 		const txParams = {
-			from: this.props.address,
+			from: address,
 			value: '0x',
-			to: this.props.address,
+			to: address,
 		}
 
 		this.props.signTx(txParams)

@@ -620,16 +620,12 @@ function changePassword (oldPassword, newPassword) {
 
 function getMultisig (address) {
   return dispatch => {
-    dispatch(actions.showLoadingIndication())
-
     return new Promise((resolve, reject) => {
       background.getMultisig(address, (err, props) => {
-        dispatch(actions.hideLoadingIndication())
         if (err) {
-          dispatch(actions.displayWarning(err.message))
+          log.error(err)
           return reject(err)
         }
-
         log.info('Multisig retrieved: ' + JSON.stringify(props))
         resolve(props)
       })

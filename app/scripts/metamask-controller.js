@@ -809,7 +809,7 @@ module.exports = class MetamaskController extends EventEmitter {
   async getMultisig (address) {
     let props
     if (this.keyringController.getProps) {
-      props = await this.keyringController.getProps(address)
+      props = this.keyringController.getProps(address)
     }
     return props
   }
