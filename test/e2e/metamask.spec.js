@@ -558,17 +558,17 @@ describe('Metamask popup page', async function () {
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-
+      await delay(5000)
       const gasPrice = await waitUntilShowUp(screens.confirmTransaction.fields.gasPrice)
       await gasPrice.sendKeys('10')
       const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
       await click(button)
-      await delay(5000)
     })
 
     it('check  number of events', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
+      await delay(5000)
       const event = await waitUntilShowUp(screens.eventsEmitter.event, 1200)
       const events = await driver.findElements(screens.eventsEmitter.event)
       console.log('number of events = ' + events.length)
@@ -2226,7 +2226,6 @@ describe('Metamask popup page', async function () {
       },
     })
     if (isDelayed) await delay(5000)
-
     return contractInstance.address
   }
 
