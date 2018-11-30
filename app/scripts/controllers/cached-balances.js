@@ -3,9 +3,9 @@ const extend = require('xtend')
 
 /**
  * @typedef {Object} CachedBalancesOptions
- * @property {Object} accountTracker Account tracker store reference
- * @property {Function} getNetwork Returns the current network
- * @property {Object} initState Initial state to with which to populate
+ * @property {Object} accountTracker An {@code AccountTracker} reference
+ * @property {Function} getNetwork A function to get the current network
+ * @property {Object} initState The initial controller state
  */
 
 /**
@@ -36,8 +36,8 @@ class CachedBalancesController {
    * Updates the cachedBalances property for the current network. Cached balances will be updated to those in the passed accounts
    * if balances in the passed accounts are truthy.
    *
-   * @param {accounts} [object] Contains the recently updated accounts for the current network
-   * @returns {Promise<void>} Promises undefined
+   * @param {Object} obj The the recently updated accounts object for the current network
+   * @returns {Promise<void>}
    */
   async updateCachedBalances ({ accounts }) {
     const network = await this.getNetwork()

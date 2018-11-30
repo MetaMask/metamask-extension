@@ -227,7 +227,7 @@ const mapStateToProps = state => {
   const {
     metamask: { network, selectedAddress, identities = {} },
   } = state
-  const accounts = getMetaMaskAccounts(state) || []
+  const accounts = getMetaMaskAccounts(state)
   const numberOfExistingAccounts = Object.keys(identities).length
   const {
     appState: { defaultHdPaths },
