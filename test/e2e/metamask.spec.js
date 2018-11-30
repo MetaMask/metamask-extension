@@ -26,10 +26,6 @@ describe('Metamask popup page', async function () {
   this.timeout(0)
 
   before(async function () {
-  /*  tokenAddress = await createToken(account1, token, true)
-    console.log('Token contract address: ' + tokenAddress)
-    await delay(100000)
-    throw('werwerwer')*/
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const extPath = path.resolve('dist/chrome')
@@ -66,7 +62,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    // await driver.quit()
+    await driver.quit()
   })
 
   describe('Setup', async function () {
