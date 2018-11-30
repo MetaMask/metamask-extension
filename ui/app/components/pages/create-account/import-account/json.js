@@ -7,6 +7,7 @@ const connect = require('react-redux').connect
 const actions = require('../../../../actions')
 const FileInput = require('react-simple-file-input').default
 const { DEFAULT_ROUTE } = require('../../../../routes')
+const { getMetaMaskAccounts } = require('../../../../selectors')
 const HELP_LINK = 'https://support.metamask.io/kb/article/7-importing-accounts'
 import Button from '../../../button'
 
@@ -136,7 +137,7 @@ JsonImportSubview.propTypes = {
 const mapStateToProps = state => {
   return {
     error: state.appState.warning,
-    firstAddress: Object.keys(state.metamask.accounts)[0],
+    firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
   }
 }
 

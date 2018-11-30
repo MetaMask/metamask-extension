@@ -38,7 +38,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
-    accounts: state.metamask.accounts,
+    accounts: selectors.getMetaMaskAccounts(state),
     tokens: state.metamask.tokens,
     keyrings: state.metamask.keyrings,
     selectedAddress: selectors.getSelectedAddress(state),

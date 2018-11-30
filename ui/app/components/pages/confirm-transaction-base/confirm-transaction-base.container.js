@@ -18,6 +18,7 @@ import { isBalanceSufficient } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
 import { addressSlicer, valuesFor } from '../../../util'
+import { getMetaMaskAccounts } from '../../../selectors'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -47,11 +48,11 @@ const mapStateToProps = (state, props) => {
   } = confirmTransaction
   const { txParams = {}, lastGasPrice, id: transactionId } = txData
   const { from: fromAddress, to: txParamsToAddress } = txParams
+  const accounts = getMetaMaskAccounts(state)
   const {
     conversionRate,
     identities,
     currentCurrency,
-    accounts,
     selectedAddress,
     selectedAddressTxList,
     assetImages,
