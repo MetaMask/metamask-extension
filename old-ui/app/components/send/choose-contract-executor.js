@@ -7,6 +7,7 @@ import SendHeader from './send-header'
 import SendError from './send-error'
 import actions from '../../../../ui/app/actions'
 import { ifContractAcc } from '../../util'
+import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
 
 class ChooseContractExecutor extends Component {
 	constructor (props) {
@@ -152,9 +153,10 @@ class ChooseContractExecutor extends Component {
 }
 
 function mapStateToProps (state) {
+	const accounts = getMetaMaskAccounts(state)
 	const result = {
 		selected: state.metamask.selectedAddress,
-		accounts: state.metamask.accounts,
+		accounts,
 		keyrings: state.metamask.keyrings,
 		identities: state.metamask.identities,
 		warning: state.appState.warning,

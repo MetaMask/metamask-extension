@@ -12,6 +12,7 @@ describe('ChooseContractExecutor component', () => {
 			metamask: {
 				selectedAddress: '0x99a22ce737b6a48f44cad6331432ce98693cad07',
 				accounts: ['0x99a22ce737b6a48f44cad6331432ce98693cad07'],
+				cachedBalances: {'0x99a22ce737b6a48f44cad6331432ce98693cad07': 1},
 				keyrings: [
 					{
 						'type': 'HD Key Tree',

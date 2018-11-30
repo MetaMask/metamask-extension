@@ -15,15 +15,17 @@ const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 const CopyButton = require('./components/copyButton')
+import { getMetaMaskAccounts } from '../../ui/app/selectors'
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
+  const accounts = getMetaMaskAccounts(state)
   return {
     metamask: state.metamask,
     identities: state.metamask.identities,
     keyrings: state.metamask.keyrings,
-    accounts: state.metamask.accounts,
+    accounts,
     address: state.metamask.selectedAddress,
     accountDetail: state.appState.accountDetail,
     network: state.metamask.network,

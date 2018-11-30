@@ -13,6 +13,7 @@ const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const Tooltip = require('../tooltip')
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY } from '../../constants/common'
+import { getMetaMaskAccounts } from '../../selectors'
 
 const {
   SETTINGS_ROUTE,
@@ -41,7 +42,7 @@ function mapStateToProps (state) {
     isAccountMenuOpen: state.metamask.isAccountMenuOpen,
     keyrings: state.metamask.keyrings,
     identities: state.metamask.identities,
-    accounts: state.metamask.accounts,
+    accounts: getMetaMaskAccounts(state),
   }
 }
 
