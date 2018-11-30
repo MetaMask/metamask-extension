@@ -92,4 +92,4 @@ function mapStateToProps (state) {
 	return result
 }
 
-module.exports = connect(mapStateToProps, null)(SendProfile)
+module.exports = connect(mapStateToProps)(SendProfile)

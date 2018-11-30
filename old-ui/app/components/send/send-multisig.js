@@ -12,8 +12,16 @@ import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
 
 class SenTransactionInput extends Component {
+	constructor (props) {
+		super(props)
+		this.state = {
+			inputVal: props.defaultValue,
+		}
+	}
+
 	static propTypes = {
 		placeholder: PropTypes.string,
+		defaultValue: PropTypes.string,
 		value: PropTypes.string,
 		onChange: PropTypes.func,
 	}
@@ -24,8 +32,14 @@ class SenTransactionInput extends Component {
 				type="text"
 				className="input large-input"
 				placeholder={this.props.placeholder}
-				value={this.props.value}
-				onChange={e => this.props.onChange(e)}
+				value={this.state.inputVal}
+				onChange={e => {
+						this.setState({
+							inputVal: e.target.value,
+						})
+						this.props.onChange(e)
+					}
+				}
 				style={{ marginTop: '5px' }}
 			/>
 			)
@@ -40,8 +54,8 @@ class SendTransactionScreen extends PersistentForm {
 			abi: [],
 			methodSelected: '',
 			methodABI: {},
-			methodInputs: null,
-			methodInputsView: null,
+			methodInputs: [],
+			methodInputsView: [],
 			methodOutput: null,
 			isConstantMethod: false,
 			inputValues: {},
@@ -72,31 +86,31 @@ class SendTransactionScreen extends PersistentForm {
 					}}
 				/>
 				<div style={{ padding: '0 30px' }}>
-				<Select
-					clearable={false}
-					value={this.state.methodSelected}
-					options={this.state.options}
-					style={{
-						marginBottom: '10px',
-					}}
-					onChange={(opt) => {
-						this.setState({
-							methodSelected: opt.value,
-							isConstantMethod: opt.metadata.constant,
-							methodABI: opt.metadata,
-							output: '',
-						})
-						this.generateMethodInputsView(opt.metadata)
-					}}
-				/>
-				<div style={{ overflow: 'auto', maxHeight: this.state.isConstantMethod ? '130px' : '210px' }}>
-					{this.state.methodInputsView}
-				</div>
+					<Select
+						clearable={false}
+						value={this.state.methodSelected}
+						options={this.state.options}
+						style={{
+							marginBottom: '10px',
+						}}
+						onChange={(opt) => {
+							this.setState({
+								methodSelected: opt.value,
+								isConstantMethod: opt.metadata.constant,
+								methodABI: opt.metadata,
+								output: '',
+							})
+							this.generateMethodInputsView(opt.metadata)
+						}}
+					/>
+					<div style={{ overflow: 'auto', maxHeight: this.state.isConstantMethod ? '130px' : '210px' }}>
+						{this.state.methodInputsView}
+					</div>
 					{this.state.isConstantMethod && this.methodOutput()}
 					{this.buttonsSection()}
 				</div>
 			</div>
-			)
+		)
 	}
 
 	async getMultisigMethods () {
@@ -118,20 +132,17 @@ class SendTransactionScreen extends PersistentForm {
 		const label = (
 			<h3
 				key={`method_label_${ind}`}
-				style={{
-					marginTop: '10px',
-				}}
+				style={{ marginTop: '10px' }}
 			>
 				{params.name || `Input ${ind + 1}`}
 			</h3>
 		)
-		const inputKey = `method_input_${ind}`
 		const input = (
 			<SenTransactionInput
-				key={inputKey}
+				key={Math.random()}
 				ind={ind}
 				placeholder={params.type}
-				value={this.state.inputValues[ind]}
+				defaultValue=""
 				onChange={e => this.handleInputChange(e, ind)}
 			/>
 		)
@@ -153,14 +164,19 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	generateMethodInputsView (metadata) {
+		this.setState({
+			methodInputs: [],
+			methodInputsView: [],
+			inputValues: {},
+		})
 		const methodInputsView = []
 		const methodInputs = metadata && metadata.inputs
 		methodInputs.forEach((input, ind) => {
 			methodInputsView.push(this.generateMethodInput(input, ind))
 		})
 		this.setState({
-			methodInputs: methodInputs,
-			methodInputsView: methodInputsView,
+			methodInputs,
+			methodInputsView,
 		})
 	}
 
@@ -200,10 +216,10 @@ class SendTransactionScreen extends PersistentForm {
 	buttonsSection () {
 		const callButton = (
 			<button onClick={() => this.callData() }>Call data</button>
-			)
+		)
 		const nextButton = (
 			<button onClick={() => this.onSubmit() }>Next</button>
-			)
+		)
 		let executeButton
 		if (this.state.isConstantMethod) {
 			executeButton = callButton
@@ -224,12 +240,18 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	callData = () => {
-		const { abi, methodSelected } = this.state
+		this.props.showLoadingIndication()
+		const { abi, methodSelected, inputValues } = this.state
 		const { address } = this.props
 		const web3 = new Web3(global.ethereumProvider)
-		const args = []
+
+		const inputValuesArray = Object.keys(inputValues).map(key => inputValues[key])
 		try {
-			web3.eth.contract(abi).at(address)[methodSelected].call(...args, (err, output) => {
+			web3.eth.contract(abi).at(address)[methodSelected].call(...inputValuesArray, (err, output) => {
+				this.setState({
+					inputValues: {},
+				})
+				this.props.hideLoadingIndication()
 				if (err) {
 					return this.props.displayWarning(err)
 				}
@@ -259,12 +281,12 @@ class SendTransactionScreen extends PersistentForm {
 		this.props.hideWarning()
 
 		const txParams = {
-			from: address,
 			value: '0x',
+			data: txData,
 			to: address,
 		}
 
-		this.props.signTx(txParams)
+		this.props.showChooseMultisigOwnerPage(txParams)
 	}
 }
 
@@ -293,10 +315,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
 	return {
+		showLoadingIndication: () => dispatch(actions.showLoadingIndication()),
+		hideLoadingIndication: () => dispatch(actions.hideLoadingIndication()),
 		getMultisig: (addr) => dispatch(actions.getMultisig(addr)),
 		displayWarning: (msg) => dispatch(actions.displayWarning(msg)),
 		hideWarning: () => dispatch(actions.hideWarning()),
-		signTx: (txParams) => dispatch(actions.signTx(txParams)),
+		showChooseMultisigOwnerPage: (txParams) => dispatch(actions.showChooseMultisigOwnerPage(txParams)),
 	}
 }
 

@@ -18,6 +18,7 @@ const AccountQrScreen = require('./account-qr')
 const SendTransactionScreen = require('./components/send/send')
 const SendTokenScreen = require('./components/send/send-token')
 const SendMultisigScreen = require('./components/send/send-multisig')
+const ChooseMultisigOwnerScreen = require('./components/send/choose-multisig-owner')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
@@ -238,6 +239,10 @@ App.prototype.renderPrimary = function () {
     case 'sendMultisig':
       log.debug('rendering send multisig tx screen')
       return h(SendMultisigScreen, {key: 'send-multisig'})
+
+    case 'show-choose-multisig-owner-page':
+      log.debug('rendering choose multisig owner screen')
+      return h(ChooseMultisigOwnerScreen, {key: 'show-choose-multisig-owner-page'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')

@@ -220,6 +220,8 @@ var actions = {
   setSelectedAddress,
   gasLoadingStarted,
   gasLoadingFinished,
+  SHOW_CHOOSE_MULTISIG_OWNER_PAGE: 'SHOW_CHOOSE_MULTISIG_OWNER_PAGE',
+  showChooseMultisigOwnerPage,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -1032,6 +1034,13 @@ function gasLoadingStarted () {
 function gasLoadingFinished () {
   return {
     type: actions.GAS_LOADING_FINISHED,
+  }
+}
+
+function showChooseMultisigOwnerPage (txParams) {
+  return {
+    type: actions.SHOW_CHOOSE_MULTISIG_OWNER_PAGE,
+    value: txParams,
   }
 }
 

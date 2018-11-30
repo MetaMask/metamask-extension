@@ -294,7 +294,7 @@ function reduceApp (state, action) {
         transForward: true,
       })
 
-  case actions.CREATE_NEW_VAULT_IN_PROGRESS:
+    case actions.CREATE_NEW_VAULT_IN_PROGRESS:
       return extend(appState, {
         currentView: {
           name: 'createVault',
@@ -814,6 +814,15 @@ function reduceApp (state, action) {
     case actions.SET_NETWORK_NONCE:
       return extend(appState, {
         networkNonce: action.value,
+      })
+
+    case actions.SHOW_CHOOSE_MULTISIG_OWNER_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'show-choose-multisig-owner-page',
+          context: appState.currentView.context,
+        },
+        txParams: action.value,
       })
 
     default:
