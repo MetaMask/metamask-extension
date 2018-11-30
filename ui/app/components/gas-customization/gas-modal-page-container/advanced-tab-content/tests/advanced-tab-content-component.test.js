@@ -355,7 +355,7 @@ describe('AdvancedTabContent Component', function () {
         labelKey: 'gasPrice',
         insufficientBalance: false,
         customPriceIsSafe: true,
-        value: 1
+        value: 1,
       })
       assert.equal(gasInputError.isInError, false)
     })
