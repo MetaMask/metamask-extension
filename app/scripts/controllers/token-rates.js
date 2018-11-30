@@ -1,5 +1,6 @@
 const ObservableStore = require('obs-store')
 const log = require('loglevel')
+const normalizeAddress = require('eth-sig-util').normalize
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
@@ -35,7 +36,8 @@ class TokenRatesController {
         const response = await fetch(`https://exchanges.balanc3.net/pie?${query}&autoConversion=true`)
         const { prices = [] } = await response.json()
         prices.forEach(({ pair, price }) => {
-          contractExchangeRates[pair.split('/')[0]] = typeof price === 'number' ? price : 0
+          const address = pair.split('/')[0]
+          contractExchangeRates[normalizeAddress(address)] = typeof price === 'number' ? price : 0
         })
       } catch (error) {
         log.warn(`MetaMask - TokenRatesController exchange rate fetch failed.`, error)
