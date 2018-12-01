@@ -267,7 +267,6 @@ function setupController (initState, initLangCode) {
     platform,
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
   })
-  global.metamaskController = controller
 
   const provider = controller.provider
   setupEnsIpfsResolver({ provider })
