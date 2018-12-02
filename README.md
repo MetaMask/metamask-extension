@@ -9,7 +9,9 @@ If you're a user seeking support, [here is our support site](https://metamask.ze
 
 [Mission Statement](./MISSION.md)
 
-[Internal documentation](./docs#documentation)
+[Documentation](https://metamask.github.io/metamask-docs/)
+
+[Internal Code Documentation](./docs#documentation)
 
 ## Developing Compatible Dapps
 
