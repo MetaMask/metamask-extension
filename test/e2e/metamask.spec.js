@@ -8,9 +8,9 @@ const webdriver = require('selenium-webdriver')
 const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 const { menus, screens, elements, NETWORKS } = require('./elements')
-const testSeedPhrase = 'juice teach unaware view expand beef divorce spatial evolve rack scheme foster'
-const account1 = '0x00caA30bb79b3a1CDbdAE146e17e0D7d8710b5EF'
-const account2 = '0x27836ca9B60E2E1aE13852388edd9a130Be81475'
+const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
+const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
+const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
 const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 
 describe('Metamask popup page', async function () {
@@ -62,7 +62,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    // await driver.quit()
+    await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -554,17 +554,17 @@ describe('Metamask popup page', async function () {
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-
+      await delay(5000)
       const gasPrice = await waitUntilShowUp(screens.confirmTransaction.fields.gasPrice)
       await gasPrice.sendKeys('10')
       const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
       await click(button)
-      await delay(5000)
     })
 
     it('check  number of events', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
+      await delay(5000)
       const event = await waitUntilShowUp(screens.eventsEmitter.event, 1200)
       const events = await driver.findElements(screens.eventsEmitter.event)
       console.log('number of events = ' + events.length)
@@ -594,9 +594,7 @@ describe('Metamask popup page', async function () {
 
       it('Create custom token in LOCALHOST', async function () {
         await setProvider(NETWORKS.LOCALHOST)
-        await createToken(account1, token, false)// skip address 0xa6... since POA core accidentally contains token with the same address
-        await createToken(account1, token, false) // skip address 0x5c... since POA core accidentally contains token with the same address
-        tokenAddress = await createToken(account1, token, {})
+        tokenAddress = await createToken(account1, token, true)
         console.log('Token contract address: ' + tokenAddress)
         assert.equal(tokenAddress.length, 42, 'failed to create token')
       })
@@ -2218,13 +2216,12 @@ describe('Metamask popup page', async function () {
     const tokenContract = web3.eth.contract(abi)
     const contractInstance = await tokenContract.new(supply, name, decimals, ticker, {
       data: bin, from: owner, gas: 4500000, function (err, tokenContract) {
-        if (!err) {
+        if (err) {
           console.log('Error of token creation: ' + err)
         }
       },
     })
-    if (!(isDelayed === false)) await delay(5000)
-
+    if (isDelayed) await delay(5000)
     return contractInstance.address
   }
 
