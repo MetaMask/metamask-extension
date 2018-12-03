@@ -67,10 +67,6 @@
   justify-content: stretch;
   max-width: 260px;
 
-  @media screen and (max-width: $break-small) {
-    max-width: 230px;
-  }
-
   &__button-fiat-price {
     font-size: 13px;
   }
@@ -85,10 +81,18 @@
 
   &__primary-currency {
     font-size: 12px;
+
+    @media screen and (max-width: 575px) {
+      font-size: 10px;
+    }
   }
 
   &__secondary-currency {
     font-size: 12px;
+
+    @media screen and (max-width: 575px) {
+      font-size: 10px;
+    }
   }
 
   &__loading-container {

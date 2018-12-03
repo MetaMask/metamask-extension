@@ -6,6 +6,7 @@
   display: flex;
   flex-flow: column;
   border-radius: 8px;
+  overflow-y: auto;
 
   &__header {
     display: flex;
@@ -197,11 +198,7 @@
     background-color: $white;
     border-radius: 0;
     flex: 1;
-
-    &__content {
-      display: flex;
-      overflow-y: initial;
-    }
+    overflow-y: auto;
   }
 }
 

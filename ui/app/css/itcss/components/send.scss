@@ -530,7 +530,6 @@
     @media screen and (max-width: $break-small) {
       margin: 0;
       flex: 1 1 auto;
-      width: 100%;
     }
   }
 
@@ -580,7 +579,7 @@
     font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
-    width: 112px;
+    width: 88px;
     font-weight: 400;
     flex: 0 0 auto;
   }
@@ -623,7 +622,6 @@
 
   &__to-autocomplete {
     position: relative;
-    max-width: 260px;
 
     &__down-caret {
       z-index: 1026;
