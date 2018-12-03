@@ -4,6 +4,7 @@
 
 ## 5.0.4 Thu Nov 29 2018
 
+- [#5878](https://github.com/MetaMask/metamask-extension/pull/5878): Formats 32-length byte strings passed to personal_sign as hex, rather than UTF8.
 - [#5840](https://github.com/MetaMask/metamask-extension/pull/5840): transactions/tx-gas-utils - add the acctual response for eth_getCode for NO_CONTRACT_ERROR's && add a debug object to simulationFailed
 - [#5848](https://github.com/MetaMask/metamask-extension/pull/5848): Soften accusatory language on phishing warning
 - [#5835](https://github.com/MetaMask/metamask-extension/pull/5835): Open full-screen UI on install
