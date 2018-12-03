@@ -352,6 +352,11 @@ function reduceApp (state, action) {
         },
         transForward: true,
         warning: null,
+        multisig: {
+          methodSelected: action.methodSelected,
+          methodABI: action.methodABI,
+          inputValues: action.inputValues,
+        },
       })
 
     case actions.SHOW_NEW_KEYCHAIN:
@@ -822,7 +827,12 @@ function reduceApp (state, action) {
           name: 'show-choose-multisig-owner-page',
           context: appState.currentView.context,
         },
-        txParams: action.value,
+        txParams: action.txParams,
+        multisig: {
+          methodSelected: action.methodSelected,
+          methodABI: action.methodABI,
+          inputValues: action.inputValues,
+        },
       })
 
     default:

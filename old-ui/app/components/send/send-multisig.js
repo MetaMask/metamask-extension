@@ -52,13 +52,13 @@ class SendTransactionScreen extends PersistentForm {
 		this.state = {
 			options: [],
 			abi: [],
-			methodSelected: '',
-			methodABI: {},
+			methodSelected: props.methodSelected,
+			methodABI: props.methodABI,
 			methodInputs: [],
 			methodInputsView: [],
 			methodOutput: null,
 			isConstantMethod: false,
-			inputValues: {},
+			inputValues: props.inputValues || {},
 			output: '',
 		}
 		PersistentForm.call(this)
@@ -113,6 +113,12 @@ class SendTransactionScreen extends PersistentForm {
 		)
 	}
 
+	componentDidMount () {
+		if (this.props.methodSelected) {
+			this.generateMethodInputsView(this.props.methodABI)
+		}
+	}
+
 	async getMultisigMethods () {
 		const multisigProps = await this.props.getMultisig(this.props.address)
 		const abi = multisigProps && multisigProps.abi
@@ -142,7 +148,7 @@ class SendTransactionScreen extends PersistentForm {
 				key={Math.random()}
 				ind={ind}
 				placeholder={params.type}
-				defaultValue=""
+				defaultValue={(this.props.inputValues && this.props.inputValues[ind]) || ''}
 				onChange={e => this.handleInputChange(e, ind)}
 			/>
 		)
@@ -167,7 +173,7 @@ class SendTransactionScreen extends PersistentForm {
 		this.setState({
 			methodInputs: [],
 			methodInputsView: [],
-			inputValues: {},
+			// inputValues: {},
 		})
 		const methodInputsView = []
 		const methodInputs = metadata && metadata.inputs
@@ -267,7 +273,7 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	onSubmit = () => {
-		const { inputValues, methodABI } = this.state
+		const { inputValues, methodABI, methodSelected } = this.state
 		const { address } = this.props
 		const inputValuesArray = Object.keys(inputValues).map(key => inputValues[key])
 		let txData
@@ -276,7 +282,6 @@ class SendTransactionScreen extends PersistentForm {
 		} catch (e) {
 			return this.props.displayWarning(e)
 		}
-		console.log(txData)
 
 		this.props.hideWarning()
 
@@ -286,7 +291,7 @@ class SendTransactionScreen extends PersistentForm {
 			to: address,
 		}
 
-		this.props.showChooseMultisigOwnerPage(txParams)
+		this.props.showChooseMultisigOwnerPage({methodSelected, methodABI, inputValues, txParams})
 	}
 }
 
@@ -302,6 +307,9 @@ function mapStateToProps (state) {
 		conversionRate: state.metamask.conversionRate,
 		currentCurrency: state.metamask.currentCurrency,
 		provider: state.metamask.provider,
+		methodSelected: state.appState.multisig && state.appState.multisig.methodSelected,
+		methodABI: state.appState.multisig && state.appState.multisig.methodABI,
+		inputValues: state.appState.multisig && state.appState.multisig.inputValues,
 	}
 
 	result.error = result.warning && result.warning.message
@@ -320,7 +328,7 @@ function mapDispatchToProps (dispatch) {
 		getMultisig: (addr) => dispatch(actions.getMultisig(addr)),
 		displayWarning: (msg) => dispatch(actions.displayWarning(msg)),
 		hideWarning: () => dispatch(actions.hideWarning()),
-		showChooseMultisigOwnerPage: (txParams) => dispatch(actions.showChooseMultisigOwnerPage(txParams)),
+		showChooseMultisigOwnerPage: ({methodSelected, methodABI, inputValues, txParams}) => dispatch(actions.showChooseMultisigOwnerPage({methodSelected, methodABI, inputValues, txParams})),
 	}
 }
 

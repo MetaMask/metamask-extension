@@ -1037,10 +1037,13 @@ function gasLoadingFinished () {
   }
 }
 
-function showChooseMultisigOwnerPage (txParams) {
+function showChooseMultisigOwnerPage ({methodSelected, methodABI, inputValues, txParams}) {
   return {
     type: actions.SHOW_CHOOSE_MULTISIG_OWNER_PAGE,
-    value: txParams,
+    methodSelected,
+    methodABI,
+    inputValues,
+    txParams,
   }
 }
 
@@ -2232,10 +2235,12 @@ function showSendTokenPage (address) {
   }
 }
 
-function showSendMultisigPage (address) {
+function showSendMultisigPage ({methodSelected, methodABI, inputValues}) {
   return {
     type: actions.SHOW_SEND_MULTISIG_PAGE,
-    value: address,
+    methodSelected,
+    methodABI,
+    inputValues,
   }
 }
 

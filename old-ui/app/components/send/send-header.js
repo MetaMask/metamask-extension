@@ -5,6 +5,7 @@ import actions from '../../../../ui/app/actions'
 
 class SendHeader extends Component {
 	static propTypes = {
+		back: PropTypes.func,
 		dispatch: PropTypes.func,
 		address: PropTypes.string,
 		title: PropTypes.string,
@@ -25,7 +26,7 @@ class SendHeader extends Component {
 						position: 'absolute',
 						left: '30px',
 					}}
-					onClick={() => this.back()}
+					onClick={() => { this.props.back ? this.props.back() : this.back() }}
 				/>
 				{ this.props.title }
 			</h3>
@@ -46,4 +47,4 @@ function mapStateToProps (state) {
 	return result
 }
 
-module.exports = connect(mapStateToProps, null)(SendHeader)
+module.exports = connect(mapStateToProps)(SendHeader)

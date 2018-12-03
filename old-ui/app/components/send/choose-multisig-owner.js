@@ -17,8 +17,13 @@ class ChooseMultisigOwner extends Component {
 	}
 
 	static propTypes = {
+		methodSelected: PropTypes.string,
+		methodABI: PropTypes.object,
+		inputValues: PropTypes.object,
 		hideWarning: PropTypes.func,
 		signTx: PropTypes.func,
+		setSelectedAddress: PropTypes.func,
+		showSendMultisigPage: PropTypes.func,
 		txParams: PropTypes.object,
 		identities: PropTypes.object,
 		keyrings: PropTypes.array,
@@ -30,7 +35,7 @@ class ChooseMultisigOwner extends Component {
 		return (
 			<div className="send-screen flex-column flex-grow">
 				<SendProfile />
-				<SendHeader title="Choose multisig owner" />
+				<SendHeader title="Choose multisig owner" back={() => this.back()} />
 				<SendError
 					error={error}
 					onClose={() => {
@@ -38,7 +43,7 @@ class ChooseMultisigOwner extends Component {
 					}}
 				/>
 				<div style={{ padding: '0 30px' }}>
-					<span className='hw-connect__header__msg'>Transaction to multisig will be sent from selected account</span>
+					<span className="hw-connect__header__msg">Transaction to multisig will be sent from selected account</span>
 				</div>
 				<div style={{
 					padding: '0 30px',
@@ -123,6 +128,11 @@ class ChooseMultisigOwner extends Component {
 	isAccountSelected (address) {
 		return address === this.state.selectedOwner
 	}
+
+	back () {
+		const { methodSelected, methodABI, inputValues } = this.props
+		this.props.showSendMultisigPage({methodSelected, methodABI, inputValues})
+	}
 }
 
 function mapStateToProps (state) {
@@ -133,6 +143,9 @@ function mapStateToProps (state) {
 		identities: state.metamask.identities,
 		warning: state.appState.warning,
 		txParams: state.appState.txParams,
+		methodSelected: state.appState.multisig && state.appState.multisig.methodSelected,
+		methodABI: state.appState.multisig && state.appState.multisig.methodABI,
+		inputValues: state.appState.multisig && state.appState.multisig.inputValues,
 	}
 
 	result.error = result.warning && result.warning.message
@@ -144,6 +157,7 @@ function mapDispatchToProps (dispatch) {
 		hideWarning: () => dispatch(actions.hideWarning()),
 		signTx: (txParams) => dispatch(actions.signTx(txParams)),
 		setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
+		showSendMultisigPage: ({methodSelected, methodABI, inputValues}) => dispatch(actions.showSendMultisigPage({methodSelected, methodABI, inputValues})),
 	}
 }
 
