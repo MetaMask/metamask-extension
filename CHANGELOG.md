@@ -2,6 +2,35 @@
 
 ## Current Develop Branch
 
+## 5.1.0 Mon Dec 03 2018
+
+- [#5860](https://github.com/MetaMask/metamask-extension/pull/5860): Fixed an infinite spinner bug.
+- [#5875](https://github.com/MetaMask/metamask-extension/pull/5875): Update phishing warning copy
+- [#5863](https://github.com/MetaMask/metamask-extension/pull/5863): bugfix: normalize contract addresss when fetching exchange rates
+- [#5843](https://github.com/MetaMask/metamask-extension/pull/5843): Use selector for state.metamask.accounts in all cases.
+
+## 5.0.4 Thu Nov 29 2018
+
+- [#5840](https://github.com/MetaMask/metamask-extension/pull/5840): transactions/tx-gas-utils - add the acctual response for eth_getCode for NO_CONTRACT_ERROR's && add a debug object to simulationFailed
+- [#5848](https://github.com/MetaMask/metamask-extension/pull/5848): Soften accusatory language on phishing warning
+- [#5835](https://github.com/MetaMask/metamask-extension/pull/5835): Open full-screen UI on install
+- Locked versions for some dependencies to avoid possible issues from event-stream hack.
+- [#5831](https://github.com/MetaMask/metamask-extension/pull/5831): Hide app-header when provider request pending
+- [#5786](https://github.com/MetaMask/metamask-extension/pull/5786): * transactions - autofill gasPrice for retry attempts with either the recomened gasprice or a %10 bump
+- [#5801](https://github.com/MetaMask/metamask-extension/pull/5801): transactions - ensure err is defined when setting tx failed
+- [#5792](https://github.com/MetaMask/metamask-extension/pull/5792): Consider HW Wallets for signTypedMessage
+- [#5829](https://github.com/MetaMask/metamask-extension/pull/5829): Show disabled cursor in .network-disabled state
+- [#5827](https://github.com/MetaMask/metamask-extension/pull/5827): Trim whitespace from seed phrase during import
+- [#5832](https://github.com/MetaMask/metamask-extension/pull/5832): Show Connect Requests count in extension badge
+- [#5816](https://github.com/MetaMask/metamask-extension/pull/5816): Increase Token Symbol length to twelve
+- [#5819](https://github.com/MetaMask/metamask-extension/pull/5819): With the EIP 1102 updates, MetaMask *does* now open itself when visiting some websites. Changed the wording here to clarify that MetaMask will not open itself to ask you for your seed phrase.
+- [#5810](https://github.com/MetaMask/metamask-extension/pull/5810): Bump Node version to 8.13
+- [#5797](https://github.com/MetaMask/metamask-extension/pull/5797): Add Firefox and Brave support for Trezor
+- [#5799](https://github.com/MetaMask/metamask-extension/pull/5799): Fix usage of setState in ConfirmTransactionBase#handleSubmit
+- [#5798](https://github.com/MetaMask/metamask-extension/pull/5798): Show byte count for hex data on confirm screen
+- [#5334](https://github.com/MetaMask/metamask-extension/pull/5334): Default to the new UI for first time users
+- [#5791](https://github.com/MetaMask/metamask-extension/pull/5791): Bump eth-ledger-bridge-keyring
+
 ## 5.0.3 Mon Nov 19 2018
 
 - [#5547](https://github.com/MetaMask/metamask-extension/pull/5547): Bundle some ui dependencies separately to limit the build size of ui.js

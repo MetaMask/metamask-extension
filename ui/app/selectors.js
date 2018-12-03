@@ -1,9 +1,7 @@
 const abi = require('human-standard-token-abi')
-
 import {
   transactionsSelector,
 } from './selectors/transactions'
-
 const {
   multiplyCurrencies,
 } = require('./conversion-util')
@@ -36,12 +34,13 @@ const selectors = {
   getCurrentViewContext,
   getTotalUnapprovedCount,
   preferencesSelector,
+  getMetaMaskAccounts,
 }
 
 module.exports = selectors
 
 function getSelectedAddress (state) {
-  const selectedAddress = state.metamask.selectedAddress || Object.keys(state.metamask.accounts)[0]
+  const selectedAddress = state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
 
   return selectedAddress
 }
@@ -53,8 +52,27 @@ function getSelectedIdentity (state) {
   return identities[selectedAddress]
 }
 
+function getMetaMaskAccounts (state) {
+  const currentAccounts = state.metamask.accounts
+  const cachedBalances = state.metamask.cachedBalances
+  const selectedAccounts = {}
+
+  Object.keys(currentAccounts).forEach(accountID => {
+    const account = currentAccounts[accountID]
+    if (account && account.balance === null || account.balance === undefined) {
+      selectedAccounts[accountID] = {
+        ...account,
+        balance: cachedBalances[accountID],
+      }
+    } else {
+      selectedAccounts[accountID] = account
+    }
+  })
+  return selectedAccounts
+}
+
 function getSelectedAccount (state) {
-  const accounts = state.metamask.accounts
+  const accounts = getMetaMaskAccounts(state)
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
@@ -102,10 +120,8 @@ function getAddressBook (state) {
 }
 
 function accountsWithSendEtherInfoSelector (state) {
-  const {
-    accounts,
-    identities,
-  } = state.metamask
+  const accounts = getMetaMaskAccounts(state)
+  const { identities } = state.metamask
 
   const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
     return Object.assign({}, account, identities[key])
@@ -175,7 +191,7 @@ function autoAddToBetaUI (state) {
   const autoAddTokensThreshold = 1
 
   const numberOfTransactions = state.metamask.selectedAddressTxList.length
-  const numberOfAccounts = Object.keys(state.metamask.accounts).length
+  const numberOfAccounts = Object.keys(getMetaMaskAccounts(state)).length
   const numberOfTokensAdded = state.metamask.tokens.length
 
   const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&

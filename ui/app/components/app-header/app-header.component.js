@@ -23,6 +23,7 @@ export default class AppHeader extends PureComponent {
     toggleAccountMenu: PropTypes.func,
     selectedAddress: PropTypes.string,
     isUnlocked: PropTypes.bool,
+    providerRequests: PropTypes.array,
   }
 
   static contextTypes = {
@@ -40,12 +41,23 @@ export default class AppHeader extends PureComponent {
       : hideNetworkDropdown()
   }
 
+  /**
+   * Returns whether or not the user is in the middle of a confirmation prompt
+   *
+   * This accounts for both tx confirmations as well as provider approvals
+   *
+   * @returns {boolean}
+   */
   isConfirming () {
-    const { location } = this.props
+    const { location, providerRequests } = this.props
+    const confirmTxRouteMatch = matchPath(location.pathname, {
+      exact: false,
+      path: CONFIRM_TRANSACTION_ROUTE,
+    })
+    const isConfirmingTx = Boolean(confirmTxRouteMatch)
+    const hasPendingProviderApprovals = Array.isArray(providerRequests) && providerRequests.length > 0
 
-    return Boolean(matchPath(location.pathname, {
-      path: CONFIRM_TRANSACTION_ROUTE, exact: false,
-    }))
+    return isConfirmingTx || hasPendingProviderApprovals
   }
 
   renderAccountMenu () {

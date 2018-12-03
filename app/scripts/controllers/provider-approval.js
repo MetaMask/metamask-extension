@@ -22,7 +22,9 @@ class ProviderApprovalController {
     this.platform = platform
     this.preferencesController = preferencesController
     this.publicConfigStore = publicConfigStore
-    this.store = new ObservableStore()
+    this.store = new ObservableStore({
+      providerRequests: [],
+    })
 
     if (platform && platform.addMessageListener) {
       platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }) => {
@@ -103,7 +105,7 @@ class ProviderApprovalController {
    */
   approveProviderRequest (origin) {
     this.closePopup && this.closePopup()
-    const requests = this.store.getState().providerRequests || []
+    const requests = this.store.getState().providerRequests
     this.platform && this.platform.sendMessage({
       action: 'approve-provider-request',
       selectedAddress: this.publicConfigStore.getState().selectedAddress,
@@ -121,7 +123,7 @@ class ProviderApprovalController {
    */
   rejectProviderRequest (origin) {
     this.closePopup && this.closePopup()
-    const requests = this.store.getState().providerRequests || []
+    const requests = this.store.getState().providerRequests
     this.platform && this.platform.sendMessage({ action: 'reject-provider-request' }, { active: true })
     const providerRequests = requests.filter(request => request.origin !== origin)
     this.store.updateState({ providerRequests })

@@ -1159,8 +1159,8 @@
   "supportCenter": {
     "message": "Obiščite naše središče za podporo"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Simbol mora imeti med 0 in 10 znakov."
+  "symbolBetweenZeroTwelve": {
+    "message": "Simbol mora imeti med 0 in 12 znakov."
   },
   "takesTooLong": {
     "message": "Trava predolgo?"

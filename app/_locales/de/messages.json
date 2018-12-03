@@ -807,8 +807,8 @@
   "supportCenter": {
     "message": "Gehe zu unserem Support Center"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Das Symbol muss zwischen 0 und 10 Zeichen haben."
+  "symbolBetweenZeroTwelve": {
+    "message": "Das Symbol muss zwischen 0 und 12 Zeichen haben."
   },
   "takesTooLong": {
     "message": "Dauert es zu lang?"

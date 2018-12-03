@@ -361,13 +361,15 @@ class TransactionStateManager extends EventEmitter {
     @param err {erroObject} - error object
   */
   setTxStatusFailed (txId, err) {
+    const error = !err ? new Error('Internal metamask failure') : err
+
     const txMeta = this.getTx(txId)
     txMeta.err = {
-      message: err.toString(),
-      rpc: err.value,
-      stack: err.stack,
+      message: error.toString(),
+      rpc: error.value,
+      stack: error.stack,
     }
-    this.updateTx(txMeta)
+    this.updateTx(txMeta, 'transactions:tx-state-manager#fail - add error')
     this._setTxStatus(txId, 'failed')
   }
 
