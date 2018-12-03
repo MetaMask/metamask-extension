@@ -38,7 +38,7 @@ class ChooseMultisigOwner extends Component {
 					}}
 				/>
 				<div style={{ padding: '0 30px' }}>
-					<h4>Transaction to multisig will be sent from selected account</h4>
+					<span className='hw-connect__header__msg'>Transaction to multisig will be sent from selected account</span>
 				</div>
 				<div style={{
 					padding: '0 30px',
@@ -108,8 +108,9 @@ class ChooseMultisigOwner extends Component {
 
 	onSubmit = () => {
 		const { txParams } = this.props
-		txParams.from = this.state.selectedOwner
-
+		const { selectedOwner } = this.state
+		this.props.setSelectedAddress(selectedOwner)
+		txParams.from = selectedOwner
 		this.props.signTx(txParams)
 	}
 
@@ -142,6 +143,7 @@ function mapDispatchToProps (dispatch) {
 	return {
 		hideWarning: () => dispatch(actions.hideWarning()),
 		signTx: (txParams) => dispatch(actions.signTx(txParams)),
+		setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
 	}
 }
 

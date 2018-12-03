@@ -1,6 +1,8 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('../../ui/app/actions')
 const log = require('loglevel')
@@ -43,7 +45,10 @@ const DeleteImportedAccount = require('./components/delete-imported-account')
 const ConfirmChangePassword = require('./components/confirm-change-password')
 const ethNetProps = require('eth-net-props')
 
-module.exports = connect(mapStateToProps)(App)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps)
+)(App)
 
 inherits(App, Component)
 function App () { Component.call(this) }
