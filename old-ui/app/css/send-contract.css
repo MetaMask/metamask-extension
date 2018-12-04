@@ -1,11 +1,11 @@
-.owner-cell-container {
+.executor-cell-container {
   padding: 5px;
   cursor: pointer;
   border: 3px solid white;
   border-radius: 5px;
 }
 
-.owner-cell-container-selected {
+.executor-cell-container-selected {
   padding: 5px;
   cursor: pointer;
   border: 3px solid #60db97;
