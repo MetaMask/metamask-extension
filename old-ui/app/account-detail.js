@@ -56,7 +56,7 @@ AccountDetailScreen.prototype.render = function () {
     this.props.dispatch(actions.showAddSuggestedTokenPage())
   }
 
-  const currentKeyring = getCurrentKeyring(props.address, props.keyrings, props.identities)
+  const currentKeyring = getCurrentKeyring(props.address, network, props.keyrings, props.identities)
 
   return (
 

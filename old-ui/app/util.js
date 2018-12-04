@@ -293,12 +293,17 @@ function countSignificantDecimals (val, len) {
  *
  * returns {object} keyring object corresponding to unlocked address
 **/
-function getCurrentKeyring (address, keyrings, identities) {
+function getCurrentKeyring (address, network, keyrings, identities) {
   const identity = identities[address]
   const simpleAddress = identity && identity.address.substring(2).toLowerCase()
   const keyring = keyrings && keyrings.find((kr) => {
-    return kr.accounts.includes(simpleAddress) ||
-      kr.accounts.includes(address)
+    if (kr.type === 'Simple Address') {
+      return kr.network === network && (kr.accounts.includes(simpleAddress) ||
+        kr.accounts.includes(address))
+    } else {
+      return kr.accounts.includes(simpleAddress) ||
+        kr.accounts.includes(address)
+    }
   })
 
   return keyring

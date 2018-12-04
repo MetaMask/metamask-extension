@@ -29,7 +29,7 @@ const keyrings = [
   },
 ]
 
-describe('getCurrentKeyring(address, keyrings, identities) function', () => {
+describe('getCurrentKeyring(address, keyrings, network, identities) function', () => {
   const address = '0xb55e278d3e8ff77ec95749b51b526a236502b6fe'
   const identities = {
     '0x99a22ce737b6a48f44cad6331432ce98693cad07': {name: 'Account 1', address: '0x99a22ce737b6a48f44cad6331432ce98693cad07'},
@@ -44,11 +44,11 @@ describe('getCurrentKeyring(address, keyrings, identities) function', () => {
          '0x99a22ce737b6a48f44cad6331432ce98693cad07',
          '0xa37bd195eebfc4ccd02529125b3e691fb6fe3a53',
       ],
-   }, getCurrentKeyring(address, keyrings, identities))
+   }, getCurrentKeyring(address, 1, keyrings, identities))
   })
 
-  it('returns keyring matched to address', () => {
-    assert.deepEqual(null, getCurrentKeyring('0x9053a0Fe25fc45367d06B2e04528BDb4c1A03eaB', keyrings, identities))
+  it('doesn\'t return keyring matched to address', () => {
+    assert.deepEqual(null, getCurrentKeyring('0x9053a0Fe25fc45367d06B2e04528BDb4c1A03eaB', 1, keyrings, identities))
   })
 })
 

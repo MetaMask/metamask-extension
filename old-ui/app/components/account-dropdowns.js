@@ -24,7 +24,15 @@ class AccountDropdowns extends Component {
 
   renderAccounts () {
       const { identities, selected, keyrings, network } = this.props
-      const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
+      const simpleAddressType = 'Simple Address'
+      const accountOrder = keyrings.reduce((list, keyring) => {
+        if (keyring.type === simpleAddressType && keyring.network === network) {
+          list = list.concat(keyring.accounts)
+        } else if (keyring.type !== simpleAddressType) {
+          list = list.concat(keyring.accounts)
+        }
+        return list
+      }, [])
 
       return accountOrder.map((address, index) => {
         const identity = identities[address]
@@ -33,7 +41,7 @@ class AccountDropdowns extends Component {
         }
         const isSelected = identity.address === selected
 
-        const keyring = getCurrentKeyring(address, keyrings, identities)
+        const keyring = getCurrentKeyring(address, network, keyrings, identities)
 
         // display contract acc only for network where it was created
         if (ifContractAcc(keyring)) {
@@ -111,7 +119,7 @@ class AccountDropdowns extends Component {
   }
 
   ifHardwareAcc (address) {
-    const keyring = getCurrentKeyring(address, this.props.keyrings, this.props.identities)
+    const keyring = getCurrentKeyring(address, this.props.network, this.props.keyrings, this.props.identities)
     if (keyring && keyring.type.search('Hardware') !== -1) {
       return true
     }
@@ -343,7 +351,7 @@ class AccountDropdowns extends Component {
     if (!isNaN(this.props.network)) {
       const { selected, network, keyrings, identities } = this.props
       if (network !== prevProps.network) {
-        const keyring = getCurrentKeyring(selected, keyrings, identities)
+        const keyring = getCurrentKeyring(selected, this.props.network, keyrings, identities)
         if (ifContractAcc(keyring)) {
           if (keyring.network !== this.props.network) {
             const firstKeyring = keyrings[0]
