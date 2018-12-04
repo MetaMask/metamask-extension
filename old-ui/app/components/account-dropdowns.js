@@ -24,11 +24,10 @@ class AccountDropdowns extends Component {
 
   renderAccounts () {
       const { identities, selected, keyrings, network } = this.props
-      const simpleAddressType = 'Simple Address'
       const accountOrder = keyrings.reduce((list, keyring) => {
-        if (keyring.type === simpleAddressType && keyring.network === network) {
+        if (ifContractAcc(keyring) && keyring.network === network) {
           list = list.concat(keyring.accounts)
-        } else if (keyring.type !== simpleAddressType) {
+        } else if (!ifContractAcc(keyring)) {
           list = list.concat(keyring.accounts)
         }
         return list

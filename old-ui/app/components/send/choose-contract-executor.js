@@ -6,6 +6,7 @@ import ExecutorCell from './executor-cell'
 import SendHeader from './send-header'
 import SendError from './send-error'
 import actions from '../../../../ui/app/actions'
+import { ifContractAcc } from '../../util'
 
 class ChooseContractExecutor extends Component {
 	constructor (props) {
@@ -90,7 +91,7 @@ class ChooseContractExecutor extends Component {
 		const { keyrings, identities } = this.props
 		const accountsCells = []
 		keyrings.forEach((keyring) => {
-			if (keyring.type !== 'Simple Address') {
+			if (!ifContractAcc(keyring)) {
 				keyring.accounts.forEach((address) => {
 					const identity = identities[address]
 					accountsCells.push(
