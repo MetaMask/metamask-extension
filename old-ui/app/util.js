@@ -43,7 +43,7 @@ module.exports = {
   countSignificantDecimals,
   getCurrentKeyring,
   ifLooseAcc,
-  ifMultisigAcc,
+  ifContractAcc,
 }
 
 function valuesFor (obj) {
@@ -295,7 +295,7 @@ function countSignificantDecimals (val, len) {
 **/
 function getCurrentKeyring (address, keyrings, identities) {
   const identity = identities[address]
-  const simpleAddress = identity.address.substring(2).toLowerCase()
+  const simpleAddress = identity && identity.address.substring(2).toLowerCase()
   const keyring = keyrings && keyrings.find((kr) => {
     return kr.accounts.includes(simpleAddress) ||
       kr.accounts.includes(address)
@@ -326,7 +326,7 @@ function ifLooseAcc (keyring) {
  *
  * returns {boolean} true, if keyring is multisig and false, if it is not
 **/
-function ifMultisigAcc (keyring) {
+function ifContractAcc (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
     const isMultisig = type === 'Simple Address'

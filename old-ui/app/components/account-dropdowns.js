@@ -9,7 +9,7 @@ const Identicon = require('./identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const ethNetProps = require('eth-net-props')
-const { getCurrentKeyring, ifLooseAcc, ifMultisigAcc } = require('../util')
+const { getCurrentKeyring, ifLooseAcc, ifContractAcc } = require('../util')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -36,7 +36,7 @@ class AccountDropdowns extends Component {
         const keyring = getCurrentKeyring(address, keyrings, identities)
 
         // display multisig acc only for network where it was created
-        if (ifMultisigAcc(keyring)) {
+        if (ifContractAcc(keyring)) {
           if (keyring.network !== network) {
             return null
           } else {
@@ -121,7 +121,7 @@ class AccountDropdowns extends Component {
   indicateIfLoose (keyring) {
     if (ifLooseAcc(keyring)) {
       let label
-      if (ifMultisigAcc(keyring)) {
+      if (ifContractAcc(keyring)) {
         label = 'CONTRACT'
       } else {
         label = 'IMPORTED'
@@ -344,7 +344,7 @@ class AccountDropdowns extends Component {
       const { selected, network, keyrings, identities } = this.props
       if (network !== prevProps.network) {
         const keyring = getCurrentKeyring(selected, keyrings, identities)
-        if (ifMultisigAcc(keyring)) {
+        if (ifContractAcc(keyring)) {
           if (keyring.network !== this.props.network) {
             const firstKeyring = keyrings[0]
             if (firstKeyring && firstKeyring.accounts && firstKeyring.accounts[0]) {

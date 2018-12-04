@@ -69,12 +69,14 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	render () {
+		console.log('#####')
+		console.log(this.props.keyrings)
+		console.log(this.props.identities)
 		this.persistentFormParentId = 'send-multisig-tx-form'
 
-		const props = this.props
 		const {
 			error,
-		} = props
+		} = this.props
 		return (
 			<div className="send-screen flex-column flex-grow">
 				<SendProfile />
