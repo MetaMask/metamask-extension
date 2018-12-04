@@ -7,6 +7,7 @@ const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
 const log = require('loglevel')
+const { getMetaMaskAccounts } = require('./selectors')
 
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
@@ -283,9 +284,10 @@ function mapStateToProps (state) {
     loadingMessage,
   } = appState
 
+  const accounts = getMetaMaskAccounts(state)
+
   const {
     identities,
-    accounts,
     address,
     keyrings,
     isInitialized,

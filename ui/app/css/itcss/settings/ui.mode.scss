@@ -1,17 +1,21 @@
 @import "./variables.scss";
 
 div.app-wrapper.dark-mode {
+    background: var(--custom-ui-b);
+    color: var(--custom-ui-text);
+    height: 100%;
+
     div.app-header {
-        background-color: $ui-dark-background-accent;
+        background-color: var(--custom-ui-a);
         div.app-header__contents {
             div.app-header__account-menu-container {
                 div.app-header__network-component-wrapper {
                     div.network-component.pointer {
-                        border: 2px solid $ui-dark-foreground;
-                        color: $ui-dark-foreground;
+                        border: 2px solid var(--custom-ui-text);
+                        color: var(--custom-ui-text);
                         div.network-indicator {
                             div.network-name {
-                                color: $ui-dark-foreground;
+                                color: var(--custom-ui-text);
                             }
                         }
                     }
@@ -20,25 +24,397 @@ div.app-wrapper.dark-mode {
         }
     } // div.app-header
 
+    div.full-height, div.app-header--back-drop::after {
+        background: var(--custom-ui-b);
+        color: var(--custom-ui-text);
+    }
+
+    div.wallet-view, div.wallet-view.sidebar-right {
+        background: var(--custom-ui-d);
+        color: var(--custom-ui-text);
+
+        div.wallet-view-account-details {
+            background: var(--custom-ui-d);
+            color: var(--custom-ui-text);
+        }
+
+        div.wallet-balance {
+            background: var(--custom-ui-e);
+            border-top: none;
+        }
+        span.account-name {
+            color: var(--custom-ui-text);
+        }
+        button.btn-clear {
+            border: none;
+            background: var(--custom-ui-e);
+            color: var(--custom-ui-text);
+        }
+    } // div.wallet-view
+
     div.main-container-wrapper {
+        background: var(--custom-ui-b);
+        color: var(--custom-ui-text);
 
         div.unlock-page__container {
+            background: var(--custom-ui-c);
+            color: var(--custom-ui-text);
+
             div.unlock-page {
-                background: $ui-dark-background;
-                color: $ui-dark-foreground;
                 h1 {
-                    color: $ui-dark-foreground-accent;
+                    color: var(--custom-ui-text);
                 }
                 form.unlock-page__form {
                     label {
-                        color: $ui-dark-foreground-accent;
+                        color: var(--custom-ui-text);
                     }
                     input {
-                        color: $ui-dark-foreground;
+                        color: var(--custom-ui-text);
                     }
                 }
             }
         } // div.unlock-page__container
 
+        div.main-container {
+            background: var(--custom-ui-b);
+            color: var(--custom-ui-text);
+
+            div.account-and-transaction-details {
+                div.transaction-view {
+                    background: var(--custom-ui-c);
+                    color: var(--custom-ui-text);
+
+                    div.menu-bar {
+                        border-bottom: 1px solid var(--custom-ui-e);
+                    }
+
+                    button.button.btn-primary {
+                        background: var(--custom-ui-d);
+                        border: none;
+                    }
+                }
+            } // div.account-and-transaction-details
+
+            div.settings-page__header {
+                background: var(--custom-ui-c);
+                div.tab-bar {
+                    div.tab-bar__tab {
+                        border-bottom: 1px solid var(--custom-ui-e);
+                        &.tab-bar__tab--active {
+                            border-bottom: 1px solid var(--custom-ui-text);
+                        }
+                    }
+                }
+            }
+
+            div.settings-page__content {
+                div.simple-dropdown {
+                    border: none;
+                    background: var(--custom-ui-d);
+                    color: var(--custom-ui-text);
+                    div.simple-dropdown__options {
+                        border: none;
+                        background: var(--custom-ui-d);
+                        color: var(--custom-ui-text);
+                    }
+                }
+                input.MuiInput-input-136 {
+                    color: var(--custom-ui-text);
+                }
+                div.TextField-inputRoot-121 {
+                    border: none;
+                    background: var(--custom-ui-d);
+                    color: var(--custom-ui-text);
+                }
+                button.settings-tab__rpc-save-button {
+                    border: none;
+                    background: var(--custom-ui-e);
+                    color: var(--custom-ui-text);
+                }
+                button.btn-default {
+                    background: var(--custom-ui-c);
+                    color: var(--custom-ui-text);
+                    border: none;
+                }
+                button.btn-primary, button.btn-secondary, button.settings-tab__button--orange {
+                    background: var(--custom-ui-d);
+                    border: none;
+                }
+            }
+
+        } // div.main-container
+
+        div.page-container {
+            background: var(--custom-ui-c);
+            color: var(--custom-ui-text);
+            border: none;
+
+            div.page-container__header {
+                background: var(--custom-ui-d);
+                border-bottom: none;
+            }
+
+            div.page-container__title {
+                color: var(--custom-ui-text);
+            }
+
+            div.page-container__subtitle {
+                color: var(--custom-ui-text-accent);
+            }
+
+            div.send-v2__form {
+                div.send-v2__form-label {
+                    color: var(--custom-ui-text-accent);
+                }
+                div.send-v2__form-field {
+                    div.send-v2__from-dropdown {
+                        background: var(--custom-ui-d);
+                        color: var(--custom-ui-text);
+                        border: none;
+                        padding: 5px;
+
+                        div.account-list-item__account-balances {
+                            color: var(--custom-ui-text-accent);
+                        }
+                    }
+
+                    div.send-v2__from-dropdown__list {
+                        background: var(--custom-ui-d);
+                        color: var(--custom-ui-text);
+                        border: none;
+                        div.account-list-item__account-balances {
+                            color: var(--custom-ui-text-accent);
+                        }
+                    }
+
+                    div.send-v2__to-autocomplete {
+                        input {
+                            background: var(--custom-ui-d);
+                            color: var(--custom-ui-text);
+                            border: none;
+                        }
+                        i.send-v2__to-autocomplete__qr-code {
+                            &:hover {
+                                background: var(--custom-ui-e);
+                            }
+                        }
+                    }
+
+                    div.unit-input {
+                        background: var(--custom-ui-d);
+                        color: var(--custom-ui-text-accent);
+                        border: none;
+
+                        div.unit-input__input-container {
+                            input {
+                                background: var(--custom-ui-d);
+                                color: var(--custom-ui-text);
+                            }
+                        }
+                    }
+
+                    div.currency-display {
+                        background: var(--custom-ui-d);
+                        color: var(--custom-ui-text-accent);
+                        border: none;
+                        div.currency-display-component {
+                            color: var(--custom-ui-text-accent);
+                        }
+                        div.sliders-icon-container {
+                            background: var(--custom-ui-d);
+                        }
+                    }
+                }
+            } // div.div.send-v2__form
+
+            div.page-container__footer {
+                border-top: 1px solid var(--custom-ui-e);
+                color: var(--custom-ui-text);
+
+                button.btn-default {
+                    background: var(--custom-ui-c);
+                    color: var(--custom-ui-text);
+                    border: none;
+                }
+                button.btn-primary {
+                    background: var(--custom-ui-d);
+                    border: none;
+                }
+            }
+
+        } // div.page-container
+
+        div.new-account {
+            background: var(--custom-ui-b);
+            div.new-account__header {
+                background: var(--custom-ui-c);
+                div.new-account__title {
+                    color: var(--custom-ui-text);
+                }
+                div.new-account__tabs__tab {
+                    color: var(--custom-ui-text-accent);
+                }
+            }
+
+            div.new-account__form {
+                color: var(--custom-ui-text);
+                div.hw-connect__header__msg {
+                    color: var(--custom-ui-text-accent);
+                }
+                div.hw-connect__btn-wrapper {
+                    button.hw-connect__btn {
+                        background: var(--custom-ui-e);
+                        border: 2px solid var(--custom-ui-e);
+                        &.selected {
+                            border: 2px solid $curious-blue;
+                        }
+                    }
+                }
+                div.hw-connect__get-hw__msg {
+                    color: var(--custom-ui-text-accent);
+                }
+                div.hw-connect__learn-more {
+                    color: var(--custom-ui-text);
+                }
+                div.hw-tutorial {
+                    border-top: 1px solid var(--custom-ui-e);
+                    border-bottom: 1px solid var(--custom-ui-e);
+                    div.hw-connect__msg {
+                        color: var(--custom-ui-text-accent);
+                    }
+                }
+                div.hw-connect__footer {
+                    div.hw-connect__footer__msg {
+                        color: var(--custom-ui-text-accent);
+                    }
+                }
+
+                div.new-account-import-disclaimer {
+                    background: var(--custom-ui-c);
+                }
+
+                div.new-account-import-form__select-label {
+                    color: var(--custom-ui-text-accent);
+                }
+
+                div.new-account-import-form__select {
+                    border: none;
+                    background: var(--custom-ui-d);
+                    color: var(--custom-ui-text);
+                    div.Select-value, div.Select-control {
+                        background: var(--custom-ui-d);
+                        color: var(--custom-ui-text);
+                        span.Select-value-label {
+                            color: var(--custom-ui-text);
+                        }
+                    }
+                    div.Select-menu-outer, div.listbox, div.Select-option {
+                        background: var(--custom-ui-d);
+                        color: var(--custom-ui-text);
+                        border: none;
+                    }
+                }
+
+                div.new-account-import-form__private-key-password-container {
+                    input {
+                        border: none;
+                        background: var(--custom-ui-d);
+                        color: var(--custom-ui-text);
+                    }
+                }
+
+                div.new-account-create-form__input-wrapper {
+                    input {
+                        border: none;
+                        background: var(--custom-ui-d);
+                        color: var(--custom-ui-text);
+                    }
+                }
+
+                div.new-account-import-form__buttons, div.new-account-create-form__buttons {
+                    button.btn-default {
+                        background: var(--custom-ui-c);
+                        color: var(--custom-ui-text);
+                        border: none;
+                    }
+                    button.btn-primary {
+                        background: var(--custom-ui-d);
+                        border: none;
+                    }
+                }
+
+            } // div.new-account__form
+        } // div.new-account
+
     } // div.main-container-wrapper
+
+    div.modal {
+
+        div.qr-scanner {
+            background: var(--custom-ui-d);
+            color: var(--custom-ui-text);
+            border: none;
+        }
+
+        div.account-modal-container {
+            background: var(--custom-ui-b);
+            color: var(--custom-ui-text);
+            border: none;
+
+            div.ellip-address-wrapper {
+                background: var(--custom-ui-d);
+                border: none;
+
+                input.qr-ellip-address {
+                    background: var(--custom-ui-d);
+                    color: var(--custom-ui-text);
+                }
+            }
+
+            div.account-modal-divider {
+                background: var(--custom-ui-e);
+            }
+
+            div.qr-wrapper {
+                background: white;
+            }
+            button.btn-primary {
+                background: var(--custom-ui-d);
+                border: none;
+            }
+        } // div.account-modal-container
+
+        div.page-container {
+            background: var(--custom-ui-b);
+            color: var(--custom-ui-text);
+            border: none;
+
+            div.page-container__header {
+                border-bottom: 1px solid var(--custom-ui-e);
+            }
+
+            div.page-container__title {
+                color: var(--custom-ui-text);
+            }
+
+            div.page-container__subtitle {
+                color: var(--custom-ui-text-accent);
+            }
+
+            div.deposit-ether-modal__buy-row {
+                border-bottom: 1px solid var(--custom-ui-e);
+            }
+
+            div.deposit-ether-modal__buy-row__description {
+                color: var(--custom-ui-text-accent);
+            }
+
+            button.btn-primary {
+                background: var(--custom-ui-d);
+                border: none;
+            }
+        } // div.page-container
+
+    } // div.modal
+
 } // div.app-wrapper.dark-mode

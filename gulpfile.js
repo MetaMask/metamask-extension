@@ -84,6 +84,10 @@ createCopyTasks('fonts', {
   source: './app/fonts/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/fonts`),
 })
+createCopyTasks('vendor', {
+  source: './app/vendor/',
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/vendor`),
+})
 createCopyTasks('reload', {
   devOnly: true,
   source: './app/scripts/',

@@ -1123,8 +1123,8 @@
   "supportCenter": {
     "message": "Visita il nostro Centro di Supporto"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Il simbolo deve essere lungo tra 0 e 10 caratteri."
+  "symbolBetweenZeroTwelve": {
+    "message": "Il simbolo deve essere lungo tra 0 e 12 caratteri."
   },
   "takesTooLong": {
     "message": "Ci sta mettendo troppo?"
@@ -1309,7 +1309,7 @@
   "welcomeBack": {
     "message": "Bentornato!"
   },
-  "welcomeBeta": {
+  "welcome": {
     "message": "Benvenuto nella Beta di MetaMask"
   },
   "whatsThis": {

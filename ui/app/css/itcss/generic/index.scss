@@ -46,9 +46,8 @@ textarea:focus {
   flex-direction: column;
 
   @media screen and (max-width: $break-small) {
-    background-color: $ui-light-background;
     &.dark-ui {
-      background-color: $ui-dark-background;
+      background-color: var(--custom-ui-a);
     }
   }
 }

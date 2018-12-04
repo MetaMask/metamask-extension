@@ -28,6 +28,7 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop
     txController = new TransactionController({
       provider,
+      getGasPrice: function () { return '0xee6b2800' },
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
@@ -415,8 +416,9 @@ describe('Transaction Controller', function () {
   })
 
   describe('#retryTransaction', function () {
-    it('should create a new txMeta with the same txParams as the original one', function (done) {
+    it('should create a new txMeta with the same txParams as the original one but with a higher gasPrice', function (done) {
       const txParams = {
+        gasPrice: '0xee6b2800',
         nonce: '0x00',
         from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
         to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
@@ -427,6 +429,7 @@ describe('Transaction Controller', function () {
       ])
       txController.retryTransaction(1)
       .then((txMeta) => {
+        assert.equal(txMeta.txParams.gasPrice, '0x10642ac00', 'gasPrice should have a %10 gasPrice bump')
         assert.equal(txMeta.txParams.nonce, txParams.nonce, 'nonce should be the same')
         assert.equal(txMeta.txParams.from, txParams.from, 'from should be the same')
         assert.equal(txMeta.txParams.to, txParams.to, 'to should be the same')

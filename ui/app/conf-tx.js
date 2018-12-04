@@ -12,6 +12,7 @@ const R = require('ramda')
 const SignatureRequest = require('./components/signature-request')
 const Loading = require('./components/loading-screen')
 const { DEFAULT_ROUTE } = require('./routes')
+const { getMetaMaskAccounts } = require('./selectors')
 
 module.exports = compose(
   withRouter,
@@ -28,7 +29,7 @@ function mapStateToProps (state) {
 
   return {
     identities: state.metamask.identities,
-    accounts: state.metamask.accounts,
+    accounts: getMetaMaskAccounts(state),
     selectedAddress: state.metamask.selectedAddress,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
