@@ -122,7 +122,7 @@ class AccountDropdowns extends Component {
     if (ifLooseAcc(keyring)) {
       let label
       if (ifMultisigAcc(keyring)) {
-        label = 'MULTISIG'
+        label = 'CONTRACT'
       } else {
         label = 'IMPORTED'
       }

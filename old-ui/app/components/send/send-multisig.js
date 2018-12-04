@@ -120,7 +120,7 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	async getMultisigMethods () {
-		const multisigProps = await this.props.getMultisig(this.props.address)
+		const multisigProps = await this.props.getContract(this.props.address)
 		const abi = multisigProps && multisigProps.abi
 		const options = abi && abi.reduce((filtered, obj) => {
 			if (obj.type === 'function') {
@@ -128,6 +128,7 @@ class SendTransactionScreen extends PersistentForm {
 			}
 			return filtered
 		}, [])
+		options.sort((option1, option2) => (option1.label).localeCompare(option2.label))
 		this.setState({
 			options,
 			abi,
@@ -325,7 +326,7 @@ function mapDispatchToProps (dispatch) {
 	return {
 		showLoadingIndication: () => dispatch(actions.showLoadingIndication()),
 		hideLoadingIndication: () => dispatch(actions.hideLoadingIndication()),
-		getMultisig: (addr) => dispatch(actions.getMultisig(addr)),
+		getContract: (addr) => dispatch(actions.getContract(addr)),
 		displayWarning: (msg) => dispatch(actions.displayWarning(msg)),
 		hideWarning: () => dispatch(actions.hideWarning()),
 		showChooseMultisigOwnerPage: ({methodSelected, methodABI, inputValues, txParams}) => dispatch(actions.showChooseMultisigOwnerPage({methodSelected, methodABI, inputValues, txParams})),

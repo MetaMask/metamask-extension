@@ -98,7 +98,7 @@ var actions = {
   navigateToNewAccountScreen,
   resetAccount,
   changePassword,
-  getMultisig,
+  getContract,
   removeAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
@@ -620,15 +620,15 @@ function changePassword (oldPassword, newPassword) {
   }
 }
 
-function getMultisig (address) {
+function getContract (address) {
   return dispatch => {
     return new Promise((resolve, reject) => {
-      background.getMultisig(address, (err, props) => {
+      background.getContract(address, (err, props) => {
         if (err) {
           log.error(err)
           return reject(err)
         }
-        log.info('Multisig retrieved: ' + JSON.stringify(props))
+        log.info('Contract retrieved: ' + JSON.stringify(props))
         resolve(props)
       })
     })

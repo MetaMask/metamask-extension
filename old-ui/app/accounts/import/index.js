@@ -13,7 +13,7 @@ const MultisugImportView = require('./multisig.js')
 const menuItems = [
   'Private Key',
   'JSON File',
-  'Multisig',
+  'Contract',
 ]
 
 module.exports = connect(mapStateToProps)(AccountImportSubview)
@@ -129,7 +129,7 @@ AccountImportSubview.prototype.renderImportView = function () {
       return h(PrivateKeyImportView)
     case 'JSON File':
       return h(JsonImportView)
-    case 'Multisig':
+    case 'Contract':
       return h(MultisugImportView)
     default:
       return h(JsonImportView)

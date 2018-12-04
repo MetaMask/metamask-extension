@@ -369,7 +369,7 @@ module.exports = class MetamaskController extends EventEmitter {
       resetAccount: nodeify(this.resetAccount, this),
       changePassword: nodeify(this.changePassword, this),
       removeAccount: nodeify(this.removeAccount, this),
-      getMultisig: nodeify(this.getMultisig, this),
+      getContract: nodeify(this.getContract, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // hardware wallets
@@ -806,7 +806,7 @@ module.exports = class MetamaskController extends EventEmitter {
     return selectedAddress
   }
 
-  async getMultisig (address) {
+  async getContract (address) {
     let props
     if (this.keyringController.getProps) {
       props = this.keyringController.getProps(address)
@@ -851,7 +851,7 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async importAccountWithStrategy (strategy, args) {
     let keyring
-    if (strategy === 'Multisig') {
+    if (strategy === 'Contract') {
       keyring = await this.keyringController.addNewKeyring('Simple Address', args)
     } else {
       const privateKey = await accountImporter.importAccount(strategy, args)

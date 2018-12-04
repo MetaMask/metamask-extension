@@ -104,7 +104,7 @@ MultisigImportView.prototype.createNewKeychain = function () {
     return this.props.displayWarning('Invalid multisig ABI')
   }
 
-  this.props.importNewAccount('Multisig', { addr, network: this.props.network, abi })
+  this.props.importNewAccount('Contract', { addr, network: this.props.network, abi })
   // JS runtime requires caught rejections but failures are handled by Redux
   .catch()
 }
