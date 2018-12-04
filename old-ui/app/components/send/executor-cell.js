@@ -7,12 +7,11 @@ class ExecutorCell extends Component {
 	constructor (props) {
 		super(props)
 		this.state = {
-			isSelected: props.isAccountSelected,
+			isSelected: false,
 		}
 	}
 
 	static propTypes = {
-		isAccountSelected: PropTypes.bool,
 		address: PropTypes.string,
 		identity: PropTypes.object,
 		onClick: PropTypes.func,
@@ -32,7 +31,7 @@ class ExecutorCell extends Component {
 					this.setState({
 						isSelected: !isSelected,
 					})
-					this.props.onClick(e)
+					this.props.onClick(e, !isSelected)
 				}}
 			>
 				<div

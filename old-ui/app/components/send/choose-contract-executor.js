@@ -14,6 +14,7 @@ class ChooseContractExecutor extends Component {
 		this.state = {
 			selectedExecutor: '',
 			accountsCells: [],
+			nextDisabled: true,
 		}
 	}
 
@@ -64,15 +65,15 @@ class ChooseContractExecutor extends Component {
 		this.generateListOfAccounts()
 	}
 
-	componentDidUpdate (prevProps, prevState) {
-		if (prevState.selectedExecutor !== this.state.selectedExecutor) {
-			this.generateListOfAccounts()
-		}
-	}
-
 	buttonsSection () {
 		const nextButton = (
-			<button className="choose-contract-next-button" onClick={() => this.onSubmit() }>Next</button>
+			<button
+				disabled={this.state.nextDisabled}
+				className="choose-contract-next-button"
+				onClick={() => this.onSubmit() }
+			>
+				Next
+			</button>
 		)
 
 		const buttonContainer = (
@@ -99,8 +100,7 @@ class ChooseContractExecutor extends Component {
 							key={Math.random()}
 							address={address}
 							identity={identity}
-							isAccountSelected={this.isAccountSelected(address)}
-							onClick={(e) => this.selectExecutor(e, address)}
+							onClick={(e, isSelected) => this.selectExecutor(e, isSelected, address)}
 						/>
 					)
 				})
@@ -120,14 +120,18 @@ class ChooseContractExecutor extends Component {
 		this.props.signTx(txParams)
 	}
 
-	selectExecutor (e, address) {
-		this.setState({
-			selectedExecutor: address,
-		})
-	}
-
-	isAccountSelected (address) {
-		return address === this.state.selectedExecutor
+	selectExecutor (e, isSelected, address) {
+		if (isSelected) {
+			this.setState({
+				selectedExecutor: address,
+				nextDisabled: false,
+			})
+		} else {
+			this.setState({
+				selectedExecutor: '',
+				nextDisabled: true,
+			})
+		}
 	}
 
 	back () {
@@ -158,7 +162,7 @@ function mapDispatchToProps (dispatch) {
 		hideWarning: () => dispatch(actions.hideWarning()),
 		signTx: (txParams) => dispatch(actions.signTx(txParams)),
 		setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
-		showSendContractPage: ({methodSelected, methodABI, inputValues}) => dispatch(actions.showSendContractPage({methodSelected, methodABI, inputValues})),
+		showSendContractPage: ({ methodSelected, methodABI, inputValues }) => dispatch(actions.showSendContractPage({methodSelected, methodABI, inputValues})),
 	}
 }
 
