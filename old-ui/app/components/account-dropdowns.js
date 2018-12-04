@@ -352,7 +352,7 @@ class AccountDropdowns extends Component {
       const { selected, network, keyrings, identities } = this.props
       if (network !== prevProps.network) {
         const keyringsFiltered = keyrings.filter(keyring => {
-          if(ifContractAcc(keyring)) {
+          if (ifContractAcc(keyring)) {
             return keyring.network === this.props.network
           }
 
