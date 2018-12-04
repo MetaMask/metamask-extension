@@ -1,3 +1,4 @@
+const Web3 = require('web3')
 const fs = require('fs')
 const mkdirp = require('mkdirp')
 const path = require('path')
@@ -7,18 +8,25 @@ const webdriver = require('selenium-webdriver')
 const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
 const { menus, screens, elements, NETWORKS } = require('./elements')
-const testSeedPhrase = 'juice teach unaware view expand beef divorce spatial evolve rack scheme foster'
-const account1 = '0x00caA30bb79b3a1CDbdAE146e17e0D7d8710b5EF'
-const account2 = '0x27836ca9B60E2E1aE13852388edd9a130Be81475'
+const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
+const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
+const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
 const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 
 describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
   let password = '123456789'
+  const newPassword = {
+    correct: 'abcDEF123!@#',
+    short: '123',
+    incorrect: '1234567890',
+  }
+  const token = { supply: 101, name: 'Test', decimals: 0, ticker: 'ABC' }
 
   this.timeout(0)
 
   before(async function () {
+
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const extPath = path.resolve('dist/chrome')
       driver = buildChromeWebDriver(extPath)
@@ -54,7 +62,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    // await driver.quit()
+    await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -329,7 +337,7 @@ describe('Metamask popup page', async function () {
       assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')
     })
 
-    it('Auto-detect tokens for MAIN core network ', async function () {
+    it.skip('Auto-detect tokens for MAIN core network ', async function () {
       await setProvider(NETWORKS.MAINNET)
       await waitUntilShowUp(elements.loader, 25)
       await waitUntilDisappear(elements.loader, 25)
@@ -546,26 +554,26 @@ describe('Metamask popup page', async function () {
     it('confirms transaction in MetaMask popup', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-
+      await delay(5000)
       const gasPrice = await waitUntilShowUp(screens.confirmTransaction.fields.gasPrice)
       await gasPrice.sendKeys('10')
       const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
       await click(button)
-      await delay(5000)
     })
 
     it('check  number of events', async function () {
-        const windowHandles = await driver.getAllWindowHandles()
-        await driver.switchTo().window(windowHandles[0])
-        const event = await waitUntilShowUp(screens.eventsEmitter.event, 1200)
+      const windowHandles = await driver.getAllWindowHandles()
+      await driver.switchTo().window(windowHandles[0])
+      await delay(5000)
+      const event = await waitUntilShowUp(screens.eventsEmitter.event, 1200)
+      const events = await driver.findElements(screens.eventsEmitter.event)
+      console.log('number of events = ' + events.length)
+      if (!event) console.log("event wasn't created or transaction failed".toUpperCase())
+      else {
         const events = await driver.findElements(screens.eventsEmitter.event)
-        console.log('number of events = ' + events.length)
-        if (!event) console.log("event wasn't created or transaction failed")
-        else {
-          const events = await driver.findElements(screens.eventsEmitter.event)
-          assert.equal(events.length, 1, 'More than 1 event was fired: ' + events.length + ' events')
-        }
-      })
+        assert.equal(events.length, 1, 'More than 1 event was fired: ' + events.length + ' events')
+      }
+    })
 
     it('open app', async function () {
       if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -581,66 +589,15 @@ describe('Metamask popup page', async function () {
   })
 
   describe('Add Token: Custom', function () {
-    const symbol = 'TST'
-    const decimals = '0'
 
-    describe('Token Factory', function () {
+   describe('Add token to LOCALHOST', function () {
 
-      it('navigates to token factory', async function () {
+      it('Create custom token in LOCALHOST', async function () {
         await setProvider(NETWORKS.LOCALHOST)
-        await driver.get('http://thetokenfactory.com/#/factory')
+        tokenAddress = await createToken(account1, token, true)
+        console.log('Token contract address: ' + tokenAddress)
+        assert.equal(tokenAddress.length, 42, 'failed to create token')
       })
-
-      it('navigates to create token contract link', async function () {
-        const createToken = await waitUntilShowUp(By.css('#bs-example-navbar-collapse-1 > ul > li:nth-child(3) > a'))
-        await createToken.click()
-      })
-
-      it('adds input for token', async function () {
-        const totalSupply = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(5) > input'))
-        const tokenName = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(6) > input'))
-        const tokenDecimal = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(7) > input'))
-        const tokenSymbol = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > div:nth-child(8) > input'))
-        const createToken = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > div > button'))
-
-        await totalSupply.sendKeys('100')
-        await tokenName.sendKeys('Test')
-        await tokenDecimal.sendKeys('0')
-        await tokenSymbol.sendKeys('TST')
-        await click(createToken)
-        await delay(1000)
-      })
-
-      it('confirms transaction in MetaMask popup', async function () {
-        const windowHandles = await driver.getAllWindowHandles()
-        await driver.switchTo().window(windowHandles[windowHandles.length - 1])
-        const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
-        await click(button)
-
-        await delay(10000)
-      })
-
-      it('switches back to Token Factory to grab the token contract address', async function () {
-        const windowHandles = await driver.getAllWindowHandles()
-        await driver.switchTo().window(windowHandles[0])
-        const tokenContactAddress = await waitUntilShowUp(By.css('#main > div > div > div > div:nth-child(2) > span:nth-child(3)'))
-        tokenAddress = await tokenContactAddress.getText()
-        console.log(tokenAddress)
-
-        await delay(500)
-      })
-
-      it('navigates back to MetaMask popup in the tab', async function () {
-        if (process.env.SELENIUM_BROWSER === 'chrome') {
-          await driver.get(`chrome-extension://${extensionId}/popup.html`)
-        } else if (process.env.SELENIUM_BROWSER === 'firefox') {
-          await driver.get(`moz-extension://${extensionId}/popup.html`)
-        }
-
-        await delay(700)
-      })
-    })
-    describe('Add token to LOCALHOST', function () {
 
       it('navigates to the add token screen', async function () {
         await waitUntilShowUp(screens.main.identicon)
@@ -667,28 +624,28 @@ describe('Metamask popup page', async function () {
 
       it('fill out address input', async function () {
         const tokenContractAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
-        console.log(tokenAddress)
         await tokenContractAddress.sendKeys(tokenAddress)
+        await delay(2000)
       })
 
       it('field \'Symbol\' enabled and has correct value', async function () {
         const field = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
         assert.equal(await field.isEnabled(), true, 'field disabled')
         assert.equal(await field.getAttribute('placeholder'), 'Like "ETH"', 'incorrect placeholder')
-        assert.equal(await field.getAttribute('value'), symbol, 'incorrect value')
+        assert.equal(await field.getAttribute('value'), token.ticker, 'incorrect value')
       })
 
       it('field \'Decimals\' enabled and has correct value', async function () {
         const field = await waitUntilShowUp(screens.addToken.custom.fields.decimals)
         assert.equal(await field.isEnabled(), false, 'field disabled')
-        assert.equal(await field.getAttribute('value'), decimals, 'incorrect value')
+        assert.equal(await field.getAttribute('value'), token.decimals, 'incorrect value')
       })
 
       it('checks the token balance', async function () {
         const button = await waitUntilShowUp(screens.addToken.custom.buttons.add)
         await click(button)
         const tokenBalance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.equal(await tokenBalance.getText(), '100 TST', 'balance is incorrect or not displayed')
+        assert.equal(await tokenBalance.getText(), token.supply + ' ' + token.ticker, 'balance is incorrect or not displayed')
       })
 
       it('click to token opens the etherscan', async function () {
@@ -877,12 +834,12 @@ describe('Metamask popup page', async function () {
 
       it('token\'s balance is correct ', async function () {
         const item = await waitUntilShowUp(screens.sendTokens.balance)
-        assert.equal(await item.getText(), '100', 'token\'s balance is incorrect')
+        assert.equal(await item.getText(), token.supply, 'token\'s balance is incorrect')
       })
 
       it('token\'s symbol is correct ', async function () {
         const item = await waitUntilShowUp(screens.sendTokens.symbol)
-        assert.equal(await item.getText(), 'TST', 'token\'s symbol is incorrect')
+        assert.equal(await item.getText(), token.ticker, 'token\'s symbol is incorrect')
       })
 
       it('error message if invalid token\'s amount', async function () {
@@ -973,7 +930,7 @@ describe('Metamask popup page', async function () {
 
       it('\'Confirm transaction\' screen: token\'s symbol is correct', async function () {
         const symbol = await waitUntilShowUp(screens.confirmTransaction.symbol)
-        assert.equal(await symbol.getText(), 'TST', ' symbol is incorrect')
+        assert.equal(await symbol.getText(), token.ticker, ' symbol is incorrect')
       })
 
       it('submit transaction', async function () {
@@ -994,7 +951,7 @@ describe('Metamask popup page', async function () {
         await driver.navigate().refresh()
         await delay(5000)
         const balance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.equal(await balance.getText(), '95 TST', 'balance is incorrect')
+        assert.equal(await balance.getText(), (token.supply - 5) + ' ' + token.ticker, 'balance is incorrect')
       })
       it('switch to account 2 ', async function () {
         const accountMenu = await waitUntilShowUp(menus.account.menu)
@@ -1028,7 +985,7 @@ describe('Metamask popup page', async function () {
 
       it('tokens were transfered, balance is updated', async function () {
         const balance = await waitUntilShowUp(screens.main.tokens.balance)
-        assert.equal(await balance.getText(), '5 TST', 'balance is incorrect')
+        assert.equal(await balance.getText(), '5 ' + token.ticker, 'balance is incorrect')
       })
     })
     describe('Remove token , provider is localhost', function () {
@@ -1057,7 +1014,7 @@ describe('Metamask popup page', async function () {
 
       it('screen \'Remove token\' has correct label', async function () {
         const title = await waitUntilShowUp(screens.removeToken.label)
-        assert.equal(await title.getText(), screens.removeToken.labelText, 'label is incorrect')
+        assert.equal((await title.getText()).includes(screens.removeToken.labelText + token.ticker), true, 'label is incorrect')
       })
 
       it('button "No" bring back to "Main" screen', async function () {
@@ -1120,11 +1077,7 @@ describe('Metamask popup page', async function () {
   })
 
   describe('Change password', async () => {
-    const newPassword = {
-      correct: 'abcDEF123!@#',
-      short: '123',
-      incorrect: '1234567890',
-    }
+
     let fieldNewPassword
     let fieldConfirmNewPassword
     let fieldOldPassword
@@ -1972,4 +1925,304 @@ describe('Metamask popup page', async function () {
       return false
     }
   }
+
+  async function createToken (owner, { supply, name, decimals, ticker }, isDelayed) {
+
+    const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545/'))
+    const abi = [
+      {
+        'constant': true,
+        'inputs': [],
+        'name': 'name',
+        'outputs': [
+          {
+            'name': '',
+            'type': 'string',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function',
+      },
+      {
+        'constant': false,
+        'inputs': [
+          {
+            'name': '_spender',
+            'type': 'address',
+          },
+          {
+            'name': '_value',
+            'type': 'uint256',
+          },
+        ],
+        'name': 'approve',
+        'outputs': [
+          {
+            'name': 'success',
+            'type': 'bool',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'nonpayable',
+        'type': 'function',
+      },
+      {
+        'constant': true,
+        'inputs': [],
+        'name': 'totalSupply',
+        'outputs': [
+          {
+            'name': '',
+            'type': 'uint256',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function',
+      },
+      {
+        'constant': false,
+        'inputs': [
+          {
+            'name': '_from',
+            'type': 'address',
+          },
+          {
+            'name': '_to',
+            'type': 'address',
+          },
+          {
+            'name': '_value',
+            'type': 'uint256',
+          },
+        ],
+        'name': 'transferFrom',
+        'outputs': [
+          {
+            'name': 'success',
+            'type': 'bool',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'nonpayable',
+        'type': 'function',
+      },
+      {
+        'constant': true,
+        'inputs': [
+          {
+            'name': '',
+            'type': 'address',
+          },
+        ],
+        'name': 'balances',
+        'outputs': [
+          {
+            'name': '',
+            'type': 'uint256',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function',
+      },
+      {
+        'constant': true,
+        'inputs': [],
+        'name': 'decimals',
+        'outputs': [
+          {
+            'name': '',
+            'type': 'uint8',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function',
+      },
+      {
+        'constant': true,
+        'inputs': [
+          {
+            'name': '',
+            'type': 'address',
+          },
+          {
+            'name': '',
+            'type': 'address',
+          },
+        ],
+        'name': 'allowed',
+        'outputs': [
+          {
+            'name': '',
+            'type': 'uint256',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function',
+      },
+      {
+        'constant': true,
+        'inputs': [
+          {
+            'name': '_owner',
+            'type': 'address',
+          },
+        ],
+        'name': 'balanceOf',
+        'outputs': [
+          {
+            'name': 'balance',
+            'type': 'uint256',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function',
+      },
+      {
+        'constant': true,
+        'inputs': [],
+        'name': 'symbol',
+        'outputs': [
+          {
+            'name': '',
+            'type': 'string',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function',
+      },
+      {
+        'constant': false,
+        'inputs': [
+          {
+            'name': '_to',
+            'type': 'address',
+          },
+          {
+            'name': '_value',
+            'type': 'uint256',
+          },
+        ],
+        'name': 'transfer',
+        'outputs': [
+          {
+            'name': 'success',
+            'type': 'bool',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'nonpayable',
+        'type': 'function',
+      },
+      {
+        'constant': true,
+        'inputs': [
+          {
+            'name': '_owner',
+            'type': 'address',
+          },
+          {
+            'name': '_spender',
+            'type': 'address',
+          },
+        ],
+        'name': 'allowance',
+        'outputs': [
+          {
+            'name': 'remaining',
+            'type': 'uint256',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function',
+      },
+      {
+        'inputs': [
+          {
+            'name': '_initialAmount',
+            'type': 'uint256',
+          },
+          {
+            'name': '_tokenName',
+            'type': 'string',
+          },
+          {
+            'name': '_decimalUnits',
+            'type': 'uint8',
+          },
+          {
+            'name': '_tokenSymbol',
+            'type': 'string',
+          },
+        ],
+        'payable': false,
+        'stateMutability': 'nonpayable',
+        'type': 'constructor',
+      },
+      {
+        'anonymous': false,
+        'inputs': [
+          {
+            'indexed': true,
+            'name': '_from',
+            'type': 'address',
+          },
+          {
+            'indexed': true,
+            'name': '_to',
+            'type': 'address',
+          },
+          {
+            'indexed': false,
+            'name': '_value',
+            'type': 'uint256',
+          },
+        ],
+        'name': 'Transfer',
+        'type': 'event',
+      },
+      {
+        'anonymous': false,
+        'inputs': [
+          {
+            'indexed': true,
+            'name': '_owner',
+            'type': 'address',
+          },
+          {
+            'indexed': true,
+            'name': '_spender',
+            'type': 'address',
+          },
+          {
+            'indexed': false,
+            'name': '_value',
+            'type': 'uint256',
+          },
+        ],
+        'name': 'Approval',
+        'type': 'event',
+      },
+    ]
+    const bin = '608060405234801561001057600080fd5b50604051610e30380380610e308339810180604052810190808051906020019092919080518201929190602001805190602001909291908051820192919050505083600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508360008190555082600390805190602001906100b29291906100ee565b5081600460006101000a81548160ff021916908360ff16021790555080600590805190602001906100e49291906100ee565b5050505050610193565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061012f57805160ff191683800117855561015d565b8280016001018555821561015d579182015b8281111561015c578251825591602001919060010190610141565b5b50905061016a919061016e565b5090565b61019091905b8082111561018c576000816000905550600101610174565b5090565b90565b610c8e806101a26000396000f3006080604052600436106100af576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306fdde03146100b4578063095ea7b31461014457806318160ddd146101a957806323b872dd146101d457806327e235e314610259578063313ce567146102b05780635c658165146102e157806370a082311461035857806395d89b41146103af578063a9059cbb1461043f578063dd62ed3e146104a4575b600080fd5b3480156100c057600080fd5b506100c961051b565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156101095780820151818401526020810190506100ee565b50505050905090810190601f1680156101365780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561015057600080fd5b5061018f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506105b9565b604051808215151515815260200191505060405180910390f35b3480156101b557600080fd5b506101be6106ab565b6040518082815260200191505060405180910390f35b3480156101e057600080fd5b5061023f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506106b1565b604051808215151515815260200191505060405180910390f35b34801561026557600080fd5b5061029a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061094b565b6040518082815260200191505060405180910390f35b3480156102bc57600080fd5b506102c5610963565b604051808260ff1660ff16815260200191505060405180910390f35b3480156102ed57600080fd5b50610342600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610976565b6040518082815260200191505060405180910390f35b34801561036457600080fd5b50610399600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061099b565b6040518082815260200191505060405180910390f35b3480156103bb57600080fd5b506103c46109e4565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156104045780820151818401526020810190506103e9565b50505050905090810190601f1680156104315780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561044b57600080fd5b5061048a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610a82565b604051808215151515815260200191505060405180910390f35b3480156104b057600080fd5b50610505600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610bdb565b6040518082815260200191505060405180910390f35b60038054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156105b15780601f10610586576101008083540402835291602001916105b1565b820191906000526020600020905b81548152906001019060200180831161059457829003601f168201915b505050505081565b600081600260003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925846040518082815260200191505060405180910390a36001905092915050565b60005481565b600080600260008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054905082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054101580156107825750828110155b151561078d57600080fd5b82600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254019250508190555082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8110156108da5782600260008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055505b8373ffffffffffffffffffffffffffffffffffffffff168573ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef856040518082815260200191505060405180910390a360019150509392505050565b60016020528060005260406000206000915090505481565b600460009054906101000a900460ff1681565b6002602052816000526040600020602052806000526040600020600091509150505481565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60058054600181600116156101000203166002900480601f016020809104026020016040519081016040528092919081815260200182805460018160011615610100020316600290048015610a7a5780601f10610a4f57610100808354040283529160200191610a7a565b820191906000526020600020905b815481529060010190602001808311610a5d57829003601f168201915b505050505081565b600081600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000205410151515610ad257600080fd5b81600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254039250508190555081600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b6000600260008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050929150505600a165627a7a72305820979c62ae45244f66d713b9272cd9a32a6b8c2ba4778ec9fb58a39dc893cb9cde0029'
+
+    const tokenContract = web3.eth.contract(abi)
+    const contractInstance = await tokenContract.new(supply, name, decimals, ticker, {
+      data: bin, from: owner, gas: 4500000, function (err, tokenContract) {
+        if (err) {
+          console.log('Error of token creation: ' + err)
+        }
+      },
+    })
+    if (isDelayed) await delay(5000)
+    return contractInstance.address
+  }
+
 })
