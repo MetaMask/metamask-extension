@@ -320,16 +320,16 @@ function ifLooseAcc (keyring) {
 }
 
 /**
- * checks, if keyring is multisig
+ * checks, if keyring is contract
  *
  * @param {object} keyring
  *
- * returns {boolean} true, if keyring is multisig and false, if it is not
+ * returns {boolean} true, if keyring is contract and false, if it is not
 **/
 function ifContractAcc (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
-    const isMultisig = type === 'Simple Address'
-    return isMultisig
+    const isContract = type === 'Simple Address'
+    return isContract
   } catch (e) { return }
 }

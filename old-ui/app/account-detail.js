@@ -223,7 +223,7 @@ AccountDetailScreen.prototype.render = function () {
           h('button', {
             onClick: () => {
               if (ifContractAcc(currentKeyring)) {
-                return props.dispatch(actions.showSendMultisigPage({}))
+                return props.dispatch(actions.showSendContractPage({}))
               } else {
                 return props.dispatch(actions.showSendPage())
               }

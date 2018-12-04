@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../../../../ui/app/actions')
 const Web3 = require('web3')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(MultisigImportView)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(ContractImportView)
 
 function mapStateToProps (state) {
   return {
@@ -21,12 +21,12 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-inherits(MultisigImportView, Component)
-function MultisigImportView () {
+inherits(ContractImportView, Component)
+function ContractImportView () {
   Component.call(this)
 }
 
-MultisigImportView.prototype.render = function () {
+ContractImportView.prototype.render = function () {
   const { error } = this.props
 
   return (
@@ -38,7 +38,7 @@ MultisigImportView.prototype.render = function () {
         padding: '5px 0px 0px 0px',
       },
     }, [
-      h('span', 'Paste address of multisig here'),
+      h('span', 'Paste address of contract here'),
 
       h('input.large-input', {
         id: 'address-box',
@@ -53,7 +53,7 @@ MultisigImportView.prototype.render = function () {
         style: {
             marginTop: '20px',
           },
-        }, 'Paste ABI of multisig here'),
+        }, 'Paste ABI of contract here'),
 
       h('textarea', {
         id: 'abi-box',
@@ -77,14 +77,14 @@ MultisigImportView.prototype.render = function () {
   )
 }
 
-MultisigImportView.prototype.createKeyringOnEnter = function (event) {
+ContractImportView.prototype.createKeyringOnEnter = function (event) {
   if (event.key === 'Enter') {
     event.preventDefault()
     this.createNewKeychain()
   }
 }
 
-MultisigImportView.prototype.createNewKeychain = function () {
+ContractImportView.prototype.createNewKeychain = function () {
   const web3 = new Web3()
   const addressInput = document.getElementById('address-box')
   const abiInput = document.getElementById('abi-box')
@@ -97,11 +97,11 @@ MultisigImportView.prototype.createNewKeychain = function () {
   }
 
   if (!addr || !web3.isAddress(addr)) {
-    return this.props.displayWarning('Invalid multisig address')
+    return this.props.displayWarning('Invalid contract address')
   }
 
   if (!abi) {
-    return this.props.displayWarning('Invalid multisig ABI')
+    return this.props.displayWarning('Invalid contract ABI')
   }
 
   this.props.importNewAccount('Contract', { addr, network: this.props.network, abi })

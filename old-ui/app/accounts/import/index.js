@@ -8,7 +8,7 @@ import Select from 'react-select'
 // Subviews
 const JsonImportView = require('./json.js')
 const PrivateKeyImportView = require('./private-key.js')
-const MultisugImportView = require('./multisig.js')
+const ContractImportView = require('./contract.js')
 
 const menuItems = [
   'Private Key',
@@ -130,7 +130,7 @@ AccountImportSubview.prototype.renderImportView = function () {
     case 'JSON File':
       return h(JsonImportView)
     case 'Contract':
-      return h(MultisugImportView)
+      return h(ContractImportView)
     default:
       return h(JsonImportView)
   }

@@ -2,16 +2,16 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import SendProfile from './send-profile'
-import OwnerCell from './owner-cell'
+import ExecutorCell from './executor-cell'
 import SendHeader from './send-header'
-import SendError from './send-multisig-error'
+import SendError from './send-contract-error'
 import actions from '../../../../ui/app/actions'
 
-class ChooseMultisigOwner extends Component {
+class ChooseContractExecutor extends Component {
 	constructor (props) {
 		super(props)
 		this.state = {
-			selectedOwner: '',
+			selectedExecutor: '',
 			accountsCells: [],
 		}
 	}
@@ -23,7 +23,7 @@ class ChooseMultisigOwner extends Component {
 		hideWarning: PropTypes.func,
 		signTx: PropTypes.func,
 		setSelectedAddress: PropTypes.func,
-		showSendMultisigPage: PropTypes.func,
+		showSendContractPage: PropTypes.func,
 		txParams: PropTypes.object,
 		identities: PropTypes.object,
 		keyrings: PropTypes.array,
@@ -35,7 +35,7 @@ class ChooseMultisigOwner extends Component {
 		return (
 			<div className="send-screen flex-column flex-grow">
 				<SendProfile />
-				<SendHeader title="Choose multisig owner" back={() => this.back()} />
+				<SendHeader title="Choose contract executor" back={() => this.back()} />
 				<SendError
 					error={error}
 					onClose={() => {
@@ -43,7 +43,7 @@ class ChooseMultisigOwner extends Component {
 					}}
 				/>
 				<div style={{ padding: '0 30px' }}>
-					<span className="hw-connect__header__msg">Transaction to multisig will be sent from selected account</span>
+					<span className="hw-connect__header__msg">contract transaction will be executed from selected account</span>
 				</div>
 				<div style={{
 					padding: '0 30px',
@@ -64,14 +64,14 @@ class ChooseMultisigOwner extends Component {
 	}
 
 	componentDidUpdate (prevProps, prevState) {
-		if (prevState.selectedOwner !== this.state.selectedOwner) {
+		if (prevState.selectedExecutor !== this.state.selectedExecutor) {
 			this.generateListOfAccounts()
 		}
 	}
 
 	buttonsSection () {
 		const nextButton = (
-			<button onClick={() => this.onSubmit() }>Next</button>
+			<button className="choose-contract-next-button" onClick={() => this.onSubmit() }>Next</button>
 		)
 
 		const buttonContainer = (
@@ -94,12 +94,12 @@ class ChooseMultisigOwner extends Component {
 				keyring.accounts.forEach((address) => {
 					const identity = identities[address]
 					accountsCells.push(
-						<OwnerCell
+						<ExecutorCell
 							key={Math.random()}
 							address={address}
 							identity={identity}
 							isAccountSelected={this.isAccountSelected(address)}
-							onClick={(e) => this.selectOwner(e, address)}
+							onClick={(e) => this.selectExecutor(e, address)}
 						/>
 					)
 				})
@@ -113,25 +113,25 @@ class ChooseMultisigOwner extends Component {
 
 	onSubmit = () => {
 		const { txParams } = this.props
-		const { selectedOwner } = this.state
-		this.props.setSelectedAddress(selectedOwner)
-		txParams.from = selectedOwner
+		const { selectedExecutor } = this.state
+		this.props.setSelectedAddress(selectedExecutor)
+		txParams.from = selectedExecutor
 		this.props.signTx(txParams)
 	}
 
-	selectOwner (e, address) {
+	selectExecutor (e, address) {
 		this.setState({
-			selectedOwner: address,
+			selectedExecutor: address,
 		})
 	}
 
 	isAccountSelected (address) {
-		return address === this.state.selectedOwner
+		return address === this.state.selectedExecutor
 	}
 
 	back () {
 		const { methodSelected, methodABI, inputValues } = this.props
-		this.props.showSendMultisigPage({methodSelected, methodABI, inputValues})
+		this.props.showSendContractPage({methodSelected, methodABI, inputValues})
 	}
 }
 
@@ -143,9 +143,9 @@ function mapStateToProps (state) {
 		identities: state.metamask.identities,
 		warning: state.appState.warning,
 		txParams: state.appState.txParams,
-		methodSelected: state.appState.multisig && state.appState.multisig.methodSelected,
-		methodABI: state.appState.multisig && state.appState.multisig.methodABI,
-		inputValues: state.appState.multisig && state.appState.multisig.inputValues,
+		methodSelected: state.appState.contractAcc && state.appState.contractAcc.methodSelected,
+		methodABI: state.appState.contractAcc && state.appState.contractAcc.methodABI,
+		inputValues: state.appState.contractAcc && state.appState.contractAcc.inputValues,
 	}
 
 	result.error = result.warning && result.warning.message
@@ -157,8 +157,8 @@ function mapDispatchToProps (dispatch) {
 		hideWarning: () => dispatch(actions.hideWarning()),
 		signTx: (txParams) => dispatch(actions.signTx(txParams)),
 		setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
-		showSendMultisigPage: ({methodSelected, methodABI, inputValues}) => dispatch(actions.showSendMultisigPage({methodSelected, methodABI, inputValues})),
+		showSendContractPage: ({methodSelected, methodABI, inputValues}) => dispatch(actions.showSendContractPage({methodSelected, methodABI, inputValues})),
 	}
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ChooseMultisigOwner)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(ChooseContractExecutor)

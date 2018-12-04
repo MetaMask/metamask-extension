@@ -9,7 +9,7 @@ var cssFiles = {
   'lib.css': fs.readFileSync(path.join(__dirname, '/app/css/lib.css'), 'utf8'),
   'search-token.css': fs.readFileSync(path.join(__dirname, '/app/css/search-token.css'), 'utf8'),
   'hw.css': fs.readFileSync(path.join(__dirname, '/app/css/hw.css'), 'utf8'),
-  'send-multisig.css': fs.readFileSync(path.join(__dirname, '/app/css/send-multisig.css'), 'utf8'),
+  'send-contract.css': fs.readFileSync(path.join(__dirname, '/app/css/send-contract.css'), 'utf8'),
   'confirm-add-token.css': fs.readFileSync(path.join(__dirname, '/app/css/confirm-add-token.css'), 'utf8'),
   'page-container.css': fs.readFileSync(path.join(__dirname, '/app/css/page-container.css'), 'utf8'),
   'index.css': fs.readFileSync(path.join(__dirname, '/app/css/index.css'), 'utf8'),

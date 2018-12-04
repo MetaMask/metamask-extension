@@ -42,22 +42,22 @@ class SendProfile extends Component {
 				{/* account label */}
 				<div className="flex-column" style={{ alignItems: 'flex-start' }} >
 					<h2
-					className="font-medium flex-center"
-					style={{
-						color: '#ffffff',
-						paddingTop: '8px',
-						marginBottom: '8px',
-					}}
+						className="send-profile-identity-name font-medium flex-center"
+						style={{
+							color: '#ffffff',
+							paddingTop: '8px',
+							marginBottom: '8px',
+						}}
 					>{identity && identity.name}</h2>
 					{/* address and getter actions */}
 					<div
-					className="flex-row flex-center"
-					style={{
-						color: 'rgba(255, 255, 255, 0.7)',
-						marginBottom: '30px',
-					}}
+						className="flex-row flex-center"
+						style={{
+							color: 'rgba(255, 255, 255, 0.7)',
+							marginBottom: '30px',
+						}}
 					>
-						<div style={{ lineHeight: '16px', fontSize: '14px' }}>
+						<div className="send-profile-address" style={{ lineHeight: '16px', fontSize: '14px' }}>
 							{addressSummary(address)}
 						</div>
 					</div>

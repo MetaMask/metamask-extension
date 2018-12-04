@@ -140,8 +140,8 @@ var actions = {
   showSendPage: showSendPage,
   SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
   showSendTokenPage,
-  SHOW_SEND_MULTISIG_PAGE: 'SHOW_SEND_MULTISIG_PAGE',
-  showSendMultisigPage,
+  SHOW_SEND_CONTRACT_PAGE: 'SHOW_SEND_CONTRACT_PAGE',
+  showSendContractPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
@@ -220,8 +220,8 @@ var actions = {
   setSelectedAddress,
   gasLoadingStarted,
   gasLoadingFinished,
-  SHOW_CHOOSE_MULTISIG_OWNER_PAGE: 'SHOW_CHOOSE_MULTISIG_OWNER_PAGE',
-  showChooseMultisigOwnerPage,
+  SHOW_CHOOSE_CONTRACT_EXECUTOR_PAGE: 'SHOW_CHOOSE_CONTRACT_EXECUTOR_PAGE',
+  showChooseContractExecutorPage,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -1037,9 +1037,9 @@ function gasLoadingFinished () {
   }
 }
 
-function showChooseMultisigOwnerPage ({methodSelected, methodABI, inputValues, txParams}) {
+function showChooseContractExecutorPage ({methodSelected, methodABI, inputValues, txParams}) {
   return {
-    type: actions.SHOW_CHOOSE_MULTISIG_OWNER_PAGE,
+    type: actions.SHOW_CHOOSE_CONTRACT_EXECUTOR_PAGE,
     methodSelected,
     methodABI,
     inputValues,
@@ -2235,9 +2235,9 @@ function showSendTokenPage (address) {
   }
 }
 
-function showSendMultisigPage ({methodSelected, methodABI, inputValues}) {
+function showSendContractPage ({methodSelected, methodABI, inputValues}) {
   return {
-    type: actions.SHOW_SEND_MULTISIG_PAGE,
+    type: actions.SHOW_SEND_CONTRACT_PAGE,
     methodSelected,
     methodABI,
     inputValues,

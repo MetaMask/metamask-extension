@@ -62,7 +62,7 @@ describe('ifLooseAcc(keyring) function', () => {
 })
 
 describe('ifContractAcc(keyring) function', () => {
-  it('Checks if keyring is multisig', () => {
+  it('Checks if keyring is contract', () => {
     assert.equal(false, ifContractAcc(keyrings[0]))
     assert.equal(true, ifContractAcc(keyrings[1]))
     assert.equal(null, ifContractAcc())

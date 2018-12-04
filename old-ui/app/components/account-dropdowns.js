@@ -35,7 +35,7 @@ class AccountDropdowns extends Component {
 
         const keyring = getCurrentKeyring(address, keyrings, identities)
 
-        // display multisig acc only for network where it was created
+        // display contract acc only for network where it was created
         if (ifContractAcc(keyring)) {
           if (keyring.network !== network) {
             return null
@@ -338,7 +338,7 @@ class AccountDropdowns extends Component {
     )
   }
 
-  // switch to the first account in the list on network switch, if unlocked account was multisig before change
+  // switch to the first account in the list on network switch, if unlocked account was contract before change
   componentDidUpdate (prevProps) {
     if (!isNaN(this.props.network)) {
       const { selected, network, keyrings, identities } = this.props

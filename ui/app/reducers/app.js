@@ -344,15 +344,15 @@ function reduceApp (state, action) {
         warning: null,
       })
 
-    case actions.SHOW_SEND_MULTISIG_PAGE:
+    case actions.SHOW_SEND_CONTRACT_PAGE:
       return extend(appState, {
         currentView: {
-          name: 'sendMultisig',
+          name: 'sendContract',
           context: appState.currentView.context,
         },
         transForward: true,
         warning: null,
-        multisig: {
+        contractAcc: {
           methodSelected: action.methodSelected,
           methodABI: action.methodABI,
           inputValues: action.inputValues,
@@ -821,14 +821,14 @@ function reduceApp (state, action) {
         networkNonce: action.value,
       })
 
-    case actions.SHOW_CHOOSE_MULTISIG_OWNER_PAGE:
+    case actions.SHOW_CHOOSE_CONTRACT_EXECUTOR_PAGE:
       return extend(appState, {
         currentView: {
-          name: 'show-choose-multisig-owner-page',
+          name: 'show-choose-contract-executor-page',
           context: appState.currentView.context,
         },
         txParams: action.txParams,
-        multisig: {
+        contractAcc: {
           methodSelected: action.methodSelected,
           methodABI: action.methodABI,
           inputValues: action.inputValues,

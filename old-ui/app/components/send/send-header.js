@@ -14,7 +14,7 @@ class SendHeader extends Component {
 	render () {
 		return (
 			<h3
-				className="flex-center"
+				className="flex-center send-header"
 				style={{
 					marginTop: '18px',
 					marginBottom: '14px',

@@ -19,8 +19,8 @@ const AccountDetailScreen = require('./account-detail')
 const AccountQrScreen = require('./account-qr')
 const SendTransactionScreen = require('./components/send/send')
 const SendTokenScreen = require('./components/send/send-token')
-const SendMultisigScreen = require('./components/send/send-multisig')
-const ChooseMultisigOwnerScreen = require('./components/send/choose-multisig-owner')
+const SendContractScreen = require('./components/send/send-contract')
+const ChooseContractExecutorScreen = require('./components/send/choose-contract-executor')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
@@ -241,13 +241,13 @@ App.prototype.renderPrimary = function () {
       log.debug('rendering send token tx screen')
       return h(SendTokenScreen, {key: 'send-token'})
 
-    case 'sendMultisig':
-      log.debug('rendering send multisig tx screen')
-      return h(SendMultisigScreen, {key: 'send-multisig'})
+    case 'sendContract':
+      log.debug('rendering send contract tx screen')
+      return h(SendContractScreen, {key: 'send-contract'})
 
-    case 'show-choose-multisig-owner-page':
-      log.debug('rendering choose multisig owner screen')
-      return h(ChooseMultisigOwnerScreen, {key: 'show-choose-multisig-owner-page'})
+    case 'show-choose-contract-executor-page':
+      log.debug('rendering choose contract executor screen')
+      return h(ChooseContractExecutorScreen, {key: 'show-choose-contract-executor-page'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')

@@ -5,7 +5,7 @@ import PersistentForm from '../../../lib/persistent-form'
 import { numericBalance } from '../../util'
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
-import SendError from './send-multisig-error'
+import SendError from './send-contract-error'
 import Select from 'react-select'
 import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
@@ -65,14 +65,11 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	componentWillMount () {
-		this.getMultisigMethods()
+		this.getContractMethods()
 	}
 
 	render () {
-		console.log('#####')
-		console.log(this.props.keyrings)
-		console.log(this.props.identities)
-		this.persistentFormParentId = 'send-multisig-tx-form'
+		this.persistentFormParentId = 'send-contract-tx-form'
 
 		const {
 			error,
@@ -105,7 +102,7 @@ class SendTransactionScreen extends PersistentForm {
 							this.generateMethodInputsView(opt.metadata)
 						}}
 					/>
-					<div style={{ overflow: 'auto', maxHeight: this.state.isConstantMethod ? '130px' : '210px' }}>
+					<div style={{ overflow: 'auto', maxHeight: this.state.isConstantMethod ? '120px' : '210px' }}>
 						{this.state.methodInputsView}
 					</div>
 					{this.state.isConstantMethod && this.methodOutput()}
@@ -121,9 +118,9 @@ class SendTransactionScreen extends PersistentForm {
 		}
 	}
 
-	async getMultisigMethods () {
-		const multisigProps = await this.props.getContract(this.props.address)
-		const abi = multisigProps && multisigProps.abi
+	async getContractMethods () {
+		const contractProps = await this.props.getContract(this.props.address)
+		const abi = contractProps && contractProps.abi
 		const options = abi && abi.reduce((filtered, obj) => {
 			if (obj.type === 'function') {
 				filtered.push({ label: obj.name, value: obj.name, metadata: obj })
@@ -294,7 +291,7 @@ class SendTransactionScreen extends PersistentForm {
 			to: address,
 		}
 
-		this.props.showChooseMultisigOwnerPage({methodSelected, methodABI, inputValues, txParams})
+		this.props.showChooseContractExecutorPage({methodSelected, methodABI, inputValues, txParams})
 	}
 }
 
@@ -310,9 +307,9 @@ function mapStateToProps (state) {
 		conversionRate: state.metamask.conversionRate,
 		currentCurrency: state.metamask.currentCurrency,
 		provider: state.metamask.provider,
-		methodSelected: state.appState.multisig && state.appState.multisig.methodSelected,
-		methodABI: state.appState.multisig && state.appState.multisig.methodABI,
-		inputValues: state.appState.multisig && state.appState.multisig.inputValues,
+		methodSelected: state.appState.contractAcc && state.appState.contractAcc.methodSelected,
+		methodABI: state.appState.contractAcc && state.appState.contractAcc.methodABI,
+		inputValues: state.appState.contractAcc && state.appState.contractAcc.inputValues,
 	}
 
 	result.error = result.warning && result.warning.message
@@ -331,7 +328,7 @@ function mapDispatchToProps (dispatch) {
 		getContract: (addr) => dispatch(actions.getContract(addr)),
 		displayWarning: (msg) => dispatch(actions.displayWarning(msg)),
 		hideWarning: () => dispatch(actions.hideWarning()),
-		showChooseMultisigOwnerPage: ({methodSelected, methodABI, inputValues, txParams}) => dispatch(actions.showChooseMultisigOwnerPage({methodSelected, methodABI, inputValues, txParams})),
+		showChooseContractExecutorPage: ({methodSelected, methodABI, inputValues, txParams}) => dispatch(actions.showChooseContractExecutorPage({methodSelected, methodABI, inputValues, txParams})),
 	}
 }
 
