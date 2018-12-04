@@ -71,6 +71,9 @@ SendTransactionScreen.prototype.render = function () {
       // error message
       h(SendError, {
         error,
+        onClose: () => {
+          this.props.dispatch(actions.hideWarning())
+        },
       }),
 
       // 'to' field

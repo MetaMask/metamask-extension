@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import SendProfile from './send-profile'
 import ExecutorCell from './executor-cell'
 import SendHeader from './send-header'
-import SendError from './send-contract-error'
+import SendError from './send-error'
 import actions from '../../../../ui/app/actions'
 
 class ChooseContractExecutor extends Component {
