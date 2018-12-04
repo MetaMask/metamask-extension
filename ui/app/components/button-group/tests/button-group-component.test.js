@@ -35,6 +35,20 @@ describe('ButtonGroup Component', function () {
     ButtonGroup.prototype.renderButtons.resetHistory()
   })
 
+  describe('componentDidUpdate', () => {
+    it('should set the activeButtonIndex to the updated newActiveButtonIndex', () => {
+      assert.equal(wrapper.state('activeButtonIndex'), 1)
+      wrapper.setProps({ newActiveButtonIndex: 2 })
+      assert.equal(wrapper.state('activeButtonIndex'), 2)
+    })
+
+    it('should not set the activeButtonIndex to an updated newActiveButtonIndex that is not a number', () => {
+      assert.equal(wrapper.state('activeButtonIndex'), 1)
+      wrapper.setProps({ newActiveButtonIndex: null })
+      assert.equal(wrapper.state('activeButtonIndex'), 1)
+    })
+  })
+
   describe('handleButtonClick', () => {
     it('should set the activeButtonIndex', () => {
       assert.equal(wrapper.state('activeButtonIndex'), 1)

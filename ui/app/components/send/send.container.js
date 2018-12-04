@@ -37,6 +37,9 @@ import {
   updateSendErrors,
 } from '../../ducks/send.duck'
 import {
+  fetchBasicGasEstimates,
+} from '../../ducks/gas.duck'
+import {
   calcGasTotal,
 } from './send.utils.js'
 
@@ -76,7 +79,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    updateAndSetGasTotal: ({
+    updateAndSetGasLimit: ({
       blockGasLimit,
       editingTransactionId,
       gasLimit,
@@ -89,7 +92,7 @@ function mapDispatchToProps (dispatch) {
       data,
     }) => {
       !editingTransactionId
-        ? dispatch(updateGasData({ recentBlocks, selectedAddress, selectedToken, blockGasLimit, to, value, data }))
+        ? dispatch(updateGasData({ gasPrice, recentBlocks, selectedAddress, selectedToken, blockGasLimit, to, value, data }))
         : dispatch(setGasTotal(calcGasTotal(gasLimit, gasPrice)))
     },
     updateSendTokenBalance: ({ selectedToken, tokenContract, address }) => {
@@ -104,5 +107,6 @@ function mapDispatchToProps (dispatch) {
     scanQrCode: () => dispatch(showQrScanner(SEND_ROUTE)),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
+    fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
   }
 }

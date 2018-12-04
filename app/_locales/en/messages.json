@@ -65,6 +65,9 @@
   "address": {
     "message": "Address"
   },
+  "advancedOptions": {
+    "message": "Advanced Options"
+  },
   "addCustomToken": {
     "message": "Add custom token"
   },
@@ -80,11 +83,17 @@
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
+  "advanced": {
+    "message": "Advanced"
+  },
   "amount": {
     "message": "Amount"
   },
   "amountPlusGas": {
     "message": "Amount + Gas"
+  },
+  "amountPlusTxFee": {
+    "message": "Amount + TX Fee"
   },
   "appDescription": {
     "message": "Ethereum Browser Extension",
@@ -115,6 +124,9 @@
   "available": {
     "message": "Available"
   },
+  "average": {
+    "message": "Average"
+  },
   "back": {
     "message": "Back"
   },
@@ -126,6 +138,9 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
+  },
+  "basic": {
+    "message": "Basic"
   },
   "beta": {
     "message": "BETA"
@@ -303,6 +318,9 @@
   "customGas": {
     "message": "Customize Gas"
   },
+  "customGasSubTitle": {
+    "message": "Increasing fee may decrease processing times, but it is not guaranteed."
+  },
   "customToken": {
     "message": "Custom Token"
   },
@@ -427,6 +445,15 @@
   "failed": {
     "message": "Failed"
   },
+  "fast": {
+    "message": "Fast"
+  },
+  "fastest": {
+    "message": "Fastest"
+  },
+  "feeChartTitle": {
+    "message": "Live Transaction Fee Predictions"
+  },
   "fiat": {
     "message": "Fiat",
     "description": "Exchange type"
@@ -480,6 +507,9 @@
   },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas Price"
   },
   "gasPriceCalculation": {
     "message": "We calculate the suggested gas prices based on network success rates."
@@ -689,6 +719,9 @@
   "missingYourTokens": {
     "message": "Don't see your tokens?"
   },
+  "minutesShorthand": {
+    "message": "Min"
+  },
   "myAccounts": {
     "message": "My Accounts"
   },
@@ -755,6 +788,12 @@
   "optionalNickname": {
     "message": "Nickname (optional)"
   },
+  "newTotal": {
+    "message": "New Total"
+  },
+  "newTransactionFee": {
+    "message": "New Transaction Fee"
+  },
   "next": {
     "message": "Next"
   },
@@ -819,6 +858,9 @@
   },
   "parameters": {
     "message": "Parameters"
+  },
+  "originalTotal": {
+    "message": "Original Total"
   },
   "password": {
     "message": "Password"
@@ -993,6 +1035,9 @@
   "save": {
     "message": "Save"
   },
+  "slow": {
+    "message": "Slow"
+  },
   "saveAsCsvFile": {
     "message": "Save as CSV File"
   },
@@ -1018,6 +1063,9 @@
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
   },
+  "secondsShorthand": {
+    "message": "Sec"
+  },
   "seedPhraseReq": {
     "message": "Seed phrases are 12 words long"
   },
@@ -1038,6 +1086,9 @@
   },
   "send": {
     "message": "Send"
+  },
+  "sendAmount": {
+    "message": "Send Amount"
   },
   "sendETH": {
     "message": "Send ETH"
@@ -1244,11 +1295,17 @@
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
   },
+  "transactionFee": {
+    "message": "Transaction Fee"
+  },
   "transactionMemo": {
     "message": "Transaction memo (optional)"
   },
   "transactionNumber": {
     "message": "Transaction Number"
+  },
+  "transactionTime": {
+    "message": "Transaction Time"
   },
   "transfer": {
     "message": "Transfer"

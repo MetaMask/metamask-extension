@@ -1,3 +1,5 @@
+@import './sidebar-content';
+
 .sidebar-right-enter {
   transition: transform 300ms ease-in-out;
   transform: translateX(-100%);
@@ -57,6 +59,11 @@
   @media screen and (min-width: 769px) {
     width: 408px;
     left: calc(100% - 408px);
+  }
+
+  @media screen and (max-width: $break-small) {
+    width: 100%;
+    left: 0%;
   }
 }
 
