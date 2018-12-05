@@ -4,9 +4,10 @@ import AddToken from './add-token.component'
 const { setPendingTokens, clearPendingTokens, displayWarning, goHome, addToken, showConfirmAddTokensPage } = require('../../../../ui/app/actions')
 
 const mapStateToProps = ({ metamask }) => {
-  const { identities, tokens, pendingTokens, network } = metamask
+  const { identities, keyrings, tokens, pendingTokens, network } = metamask
   return {
     identities,
+    keyrings,
     tokens,
     network,
     pendingTokens,

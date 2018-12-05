@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const Tooltip = require('../tooltip.js')
 const TabBar = require('../tab-bar')
 const { checkExistingAddresses } = require('./util')
+const { getCurrentKeyring, ifContractAcc } = require('../../util')
 const TokenList = require('./token-list')
 const TokenSearch = require('./token-search')
 const { tokenInfoGetter } = require('../../../../ui/app/token-util')
@@ -32,6 +33,7 @@ class AddTokenScreen extends Component {
     displayWarning: PropTypes.func,
     tokens: PropTypes.array,
     identities: PropTypes.object,
+    keyrings: PropTypes.array,
     address: PropTypes.string,
     dispatch: PropTypes.func,
     network: PropTypes.string,
@@ -448,6 +450,7 @@ class AddTokenScreen extends Component {
   }
 
   handleCustomAddressChange = (value) => {
+    const { identities, keyrings, tokens, network } = this.props
     const customAddress = value.trim()
     this.setState({
       customAddress,
@@ -459,10 +462,13 @@ class AddTokenScreen extends Component {
     const isValidAddress = ethUtil.isValidAddress(customAddress)
     const standardAddress = ethUtil.addHexPrefix(customAddress).toLowerCase()
 
+    let warning
     switch (true) {
       case !isValidAddress:
+        warning = 'Invalid address'
         this.setState({
-          customAddressError: 'Invalid address' /* this.context.t('invalidAddress')*/,
+          warning,
+          customAddressError: warning /* this.context.t('invalidAddress')*/,
           customSymbol: '',
           customDecimals: null,
           customSymbolError: null,
@@ -470,15 +476,23 @@ class AddTokenScreen extends Component {
         })
 
         break
-      case Boolean(this.props.identities[standardAddress]):
-        this.setState({
-          customAddressError: 'Personal address detected. Input the token contract address.' /* this.context.t('personalAddressDetected')*/,
-        })
-
+      case Boolean(identities[standardAddress]):
+        const keyring = getCurrentKeyring(standardAddress, network, keyrings, identities)
+        if (!ifContractAcc(keyring)) {
+          warning = 'Personal address detected. Input the token contract address.' /* this.context.t('personalAddressDetected')*/
+          this.setState({
+            warning,
+            customAddressError: warning /* this.context.t('personalAddressDetected')*/,
+          })
+        } else {
+          this.attemptToAutoFillTokenParams(customAddress)
+        }
         break
-      case checkExistingAddresses(customAddress, this.props.tokens):
+      case checkExistingAddresses(customAddress, tokens):
+        warning = 'Token has already been added.'
         this.setState({
-          customAddressError: 'Token has already been added.' /* this.context.t('tokenAlreadyAdded')*/,
+          warning,
+          customAddressError: warning /* this.context.t('tokenAlreadyAdded')*/,
         })
 
         break
