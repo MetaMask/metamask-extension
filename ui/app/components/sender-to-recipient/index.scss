@@ -1,12 +1,13 @@
 .sender-to-recipient {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+  flex: 0 0 auto;
+
   &--default {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
     border-bottom: 1px solid $geyser;
-    position: relative;
-    flex: 0 0 auto;
     height: 42px;
 
     .sender-to-recipient {
@@ -74,13 +75,6 @@
   }
 
   &--cards {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    position: relative;
-    flex: 0 0 auto;
-
     .sender-to-recipient {
       &__party {
         display: flex;
@@ -108,6 +102,41 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         font-size: .5rem;
+      }
+
+      &__arrow-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
+  &--flat {
+    .sender-to-recipient {
+      &__party {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        padding: 6px;
+        cursor: pointer;
+        min-width: 0;
+        color: $dusty-gray;
+      }
+
+      &__tooltip-wrapper {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &__name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: .6875rem;
       }
 
       &__arrow-container {

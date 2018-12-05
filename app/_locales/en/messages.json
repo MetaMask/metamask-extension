@@ -17,6 +17,9 @@
   "confirmClear": {
     "message": "Are you sure you want to clear approved websites?"
   },
+  "contractInteraction": {
+    "message": "Contract Interaction"
+  },
   "clearApprovalDataSuccess": {
     "message": "Approved website data cleared successfully."
   },
@@ -184,6 +187,9 @@
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
+  },
+  "cancelled": {
+    "message": "Cancelled"
   },
   "cancelN": {
     "message": "Cancel all $1 transactions"
@@ -1177,6 +1183,12 @@
   "speedUpSubtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
   },
+  "speedUpCancellation": {
+    "message": "Speed up this cancellation"
+  },
+  "speedUpTransaction": {
+    "message": "Speed up this transaction"
+  },
   "status": {
     "message": "Status"
   },
@@ -1263,28 +1275,37 @@
     "message": "transaction"
   },
   "transactionConfirmed": {
-    "message": "Transaction confirmed on $2."
+    "message": "Transaction confirmed at $2."
   },
   "transactionCreated": {
-    "message": "Transaction created with a value of $1 on $2."
+    "message": "Transaction created with a value of $1 at $2."
   },
   "transactionWithNonce": {
     "message": "Transaction $1"
   },
   "transactionDropped": {
-    "message": "Transaction dropped on $2."
+    "message": "Transaction dropped at $2."
   },
   "transactionSubmitted": {
-    "message": "Transaction submitted on $2."
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
   },
   "transactionUpdated": {
-    "message": "Transaction updated on $2."
+    "message": "Transaction updated at $2."
   },
   "transactionUpdatedGas": {
-    "message": "Transaction updated with a gas price of $1 on $2."
+    "message": "Transaction updated with a gas fee of $1 at $2."
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
   },
   "transactions": {
     "message": "transactions"
@@ -1349,9 +1370,6 @@
   },
   "unknown": {
     "message": "Unknown"
-  },
-  "unknownFunction": {
-    "message": "Unknown Function"
   },
   "unknownNetwork": {
     "message": "Unknown Private Network"
