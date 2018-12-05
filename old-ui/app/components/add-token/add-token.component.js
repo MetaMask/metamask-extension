@@ -342,7 +342,7 @@ class AddTokenScreen extends Component {
 
   validateInputs () {
     let msg = ''
-    const  { network, keyrings, identities } = this.props
+    const { network, keyrings, identities } = this.props
     const state = this.state
     const identitiesList = Object.keys(this.props.identities)
     const { customAddress: address, customSymbol: symbol, customDecimals: decimals } = state
