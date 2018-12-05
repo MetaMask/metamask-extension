@@ -36,9 +36,17 @@ const selectors = {
   preferencesSelector,
   getMetaMaskAccounts,
   getCurrentEthBalance,
+  getNetworkIdentifier,
 }
 
 module.exports = selectors
+
+function getNetworkIdentifier (state) {
+  const { metamask: { provider: { type, nickname, rpcTarget } } } = state
+
+  return nickname || rpcTarget || type
+
+}
 
 function getSelectedAddress (state) {
   const selectedAddress = state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]

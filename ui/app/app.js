@@ -7,7 +7,7 @@ const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
 const log = require('loglevel')
-const { getMetaMaskAccounts } = require('./selectors')
+const { getMetaMaskAccounts, getNetworkIdentifier } = require('./selectors')
 
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
@@ -196,7 +196,7 @@ class App extends Component {
     if (loadingMessage) {
       return loadingMessage
     }
-    const { provider } = this.props
+    const { provider, providerId } = this.props
     const providerName = provider.type
 
     let name
@@ -210,7 +210,7 @@ class App extends Component {
     } else if (providerName === 'rinkeby') {
       name = this.context.t('connectingToRinkeby')
     } else {
-      name = this.context.t('connectingToUnknown')
+      name = this.context.t('connectingTo', [providerId])
     }
 
     return name
@@ -279,6 +279,7 @@ App.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   t: PropTypes.func,
+  providerId: PropTypes.string,
 }
 
 function mapStateToProps (state) {
@@ -348,6 +349,7 @@ function mapStateToProps (state) {
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,
     Qr: state.appState.Qr,
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,
+    providerId: getNetworkIdentifier(state),
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,

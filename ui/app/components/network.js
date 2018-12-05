@@ -23,14 +23,17 @@ Network.prototype.render = function () {
   const props = this.props
   const context = this.context
   const networkNumber = props.network
-  let providerName, providerNick
+  let providerName, providerNick, providerUrl
   try {
     providerName = props.provider.type
     providerNick = props.provider.nickname || ''
+    providerUrl = props.provider.rpcTarget
   } catch (e) {
     providerName = null
   }
-  let iconName, hoverText
+  const providerId = providerNick || providerName || providerUrl || null
+  let iconName
+  let hoverText
 
   if (providerName === 'mainnet') {
     hoverText = context.t('mainnet')
@@ -48,8 +51,8 @@ Network.prototype.render = function () {
     hoverText = context.t('rinkeby')
     iconName = 'rinkeby-test-network'
   } else {
-    hoverText = context.t('unknownNetwork')
-    iconName = 'unknown-private-network'
+    hoverText = providerId
+    iconName = 'private-network'
   }
 
   return (
