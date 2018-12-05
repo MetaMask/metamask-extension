@@ -98,6 +98,7 @@ class SendTransactionScreen extends PersistentForm {
 								isConstantMethod: opt.metadata.constant,
 								methodABI: opt.metadata,
 								output: '',
+								inputValues: {},
 							})
 							this.generateMethodInputsView(opt.metadata)
 						}}
@@ -254,9 +255,6 @@ class SendTransactionScreen extends PersistentForm {
 		const inputValuesArray = Object.keys(inputValues).map(key => inputValues[key])
 		try {
 			web3.eth.contract(abi).at(address)[methodSelected].call(...inputValuesArray, (err, output) => {
-				this.setState({
-					inputValues: {},
-				})
 				this.props.hideLoadingIndication()
 				if (err) {
 					return this.props.displayWarning(err)
