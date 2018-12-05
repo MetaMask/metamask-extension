@@ -297,12 +297,11 @@ function getCurrentKeyring (address, network, keyrings, identities) {
   const identity = identities[address]
   const simpleAddress = identity && identity.address.substring(2).toLowerCase()
   const keyring = keyrings && keyrings.find((kr) => {
+    const isAddressIncluded = kr.accounts.includes(simpleAddress) || kr.accounts.includes(address)
     if (ifContractAcc(kr)) {
-      return kr.network === network && (kr.accounts.includes(simpleAddress) ||
-        kr.accounts.includes(address))
+      return kr.network === network && isAddressIncluded
     } else {
-      return kr.accounts.includes(simpleAddress) ||
-        kr.accounts.includes(address)
+      return isAddressIncluded
     }
   })
 

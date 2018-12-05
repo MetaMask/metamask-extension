@@ -352,25 +352,11 @@ class AccountDropdowns extends Component {
     if (!isNaN(this.props.network)) {
       const { selected, network, keyrings, identities } = this.props
       if (network !== prevProps.network) {
-        const keyringsFiltered = keyrings.filter(keyring => {
-          if (ifContractAcc(keyring)) {
-            return keyring.network === this.props.network
-          }
-
-          return true
-        })
-        const keyring = getCurrentKeyring(selected, this.props.network, keyringsFiltered, identities)
-        if (!keyring) {
-          const firstKeyring = keyrings[0]
-          return this.props.actions.showAccountDetail(firstKeyring.accounts[0])
-        }
-        if (ifContractAcc(keyring)) {
-          if (keyring.network !== this.props.network) {
-            const firstKeyring = keyrings[0]
-            if (firstKeyring && firstKeyring.accounts && firstKeyring.accounts[0]) {
-              this.props.actions.showAccountDetail(firstKeyring.accounts[0])
-            }
-          }
+        const keyring = getCurrentKeyring(selected, this.props.network, keyrings, identities)
+        const firstKeyring = keyrings && keyrings[0]
+        const firstKeyRingAcc = firstKeyring && firstKeyring.accounts && firstKeyring.accounts[0]
+        if (!keyring || (ifContractAcc(keyring) && firstKeyRingAcc)) {
+          return this.props.actions.showAccountDetail(firstKeyRingAcc)
         }
       }
     }
