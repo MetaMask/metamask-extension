@@ -342,6 +342,7 @@ class AddTokenScreen extends Component {
 
   validateInputs () {
     let msg = ''
+    const  { network, keyrings, identities } = this.props
     const state = this.state
     const identitiesList = Object.keys(this.props.identities)
     const { customAddress: address, customSymbol: symbol, customDecimals: decimals } = state
@@ -363,9 +364,14 @@ class AddTokenScreen extends Component {
       msg += 'Symbol must be between 0 and 10 characters.'
     }
 
-    const ownAddress = identitiesList.includes(standardAddress)
+    let ownAddress = identitiesList.includes(standardAddress)
     if (ownAddress) {
-      msg = 'Personal address detected. Input the token contract address.'
+      const keyring = getCurrentKeyring(standardAddress, network, keyrings, identities)
+      if (!ifContractAcc(keyring)) {
+        msg = 'Personal address detected. Input the token contract address.'
+      } else {
+        ownAddress = false
+      }
     }
 
     const isValid = validAddress && validDecimals && validSymbol && !ownAddress
