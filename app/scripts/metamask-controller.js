@@ -304,6 +304,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // msg signing
       processEthSignMessage: this.newUnsignedMessage.bind(this),
       processTypedMessage: this.newUnsignedTypedMessage.bind(this),
+      processTypedMessageV0: this.newUnsignedTypedMessage.bind(this),
       processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
@@ -1043,6 +1044,9 @@ module.exports = class MetamaskController extends EventEmitter {
         const wallet = keyring._getWalletForAccount(address)
         const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
         switch (version) {
+          case 'V0':
+            signature = sigUtil.signTypedDataV0(privKey, { data: cleanMsgParams.data })
+            break
           case 'V1':
             signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
             break

@@ -2,6 +2,7 @@ const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const createId = require('./random-id')
 const assert = require('assert')
+const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 const log = require('loglevel')
 const jsonschema = require('jsonschema')
@@ -130,6 +131,17 @@ module.exports = class TypedMessageManager extends EventEmitter {
    */
   validateParams (params) {
     switch (params.version) {
+      case 'V0':
+        assert.equal(typeof params, 'object', 'Params should be an object.')
+        assert.ok('data' in params, 'Params must include a data field.')
+        assert.ok('from' in params, 'Params must include a from field.')
+        assert.ok(Array.isArray(params.data), 'Data should be an array.')
+        assert.ok(ethUtil.isValidAddress(params.data[0]), 'First data argument should be an address.')
+        assert.doesNotThrow(() => {
+          sigUtil.typedSignatureHashV0(params.data)
+        }, 'Expected ERC191v0 typed data')
+        assert.equal(typeof params.from, 'string', 'From field must be a string.')
+        break
       case 'V1':
         assert.equal(typeof params, 'object', 'Params should ben an object.')
         assert.ok('data' in params, 'Params must include a data field.')

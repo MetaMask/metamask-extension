@@ -170,6 +170,39 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
   }
 }
 
+SignatureRequest.prototype.renderTypedDataV0 = function ([ address, ...dynamicParameters ]) {
+  console.log(address)
+  console.log(dynamicParameters)
+
+  const formattedAddress = [
+    h('div.request-signature__row', [
+      h('div.request-signature__row-title', ['address:']),
+      h('div.request-signature__row-value', address),
+    ]),
+  ]
+
+  const formattedDynamicParameters = dynamicParameters.map(({ type, value }) => {
+    return h('div.request-signature__row', [
+      h('div.request-signature__row-title', [`${type}:`]),
+      h('div.request-signature__row-value', value),
+    ])
+  })
+
+  return formattedAddress.concat(formattedDynamicParameters)
+}
+
+SignatureRequest.prototype.renderTypedDataV1 = function (data) {
+  return data.map(({ name, value }) => {
+    if (typeof value === 'boolean') {
+      value = value.toString()
+    }
+    return h('div.request-signature__row', [
+      h('div.request-signature__row-title', [`${name}:`]),
+      h('div.request-signature__row-value', value),
+    ])
+  })
+}
+
 // eslint-disable-next-line react/display-name
 SignatureRequest.prototype.renderTypedDataV3 = function (data) {
   const { domain, message } = JSON.parse(data)
@@ -223,19 +256,26 @@ SignatureRequest.prototype.renderBody = function () {
       }),
     }, [notice]),
 
-    h('div.request-signature__rows', type === 'eth_signTypedData' && version === 'V3' ?
-      this.renderTypedDataV3(data) :
-      rows.map(({ name, value }) => {
-        if (typeof value === 'boolean') {
-          value = value.toString()
-        }
-        return h('div.request-signature__row', [
-          h('div.request-signature__row-title', [`${name}:`]),
-          h('div.request-signature__row-value', value),
-        ])
-      }),
-    ),
+    h('div.request-signature__rows', type === 'eth_signTypedData' && this.getTypedDataRenderer(version)(rows)),
   ])
+}
+
+SignatureRequest.prototype.getTypedDataRenderer = function (version) {
+  let versionRenderer
+  switch (version) {
+    case 'V0':
+      versionRenderer = this.renderTypedDataV0
+      break
+    case 'V1':
+      versionRenderer = this.renderTypedDataV1
+      break
+    case 'V3':
+      versionRenderer = this.renderTypedDataV3
+      break
+    default:
+      throw Error('Uncrecognized version.')
+  }
+  return versionRenderer
 }
 
 SignatureRequest.prototype.renderFooter = function () {
