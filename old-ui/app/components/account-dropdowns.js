@@ -225,8 +225,10 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountOptions () {
-    const { actions, selected } = this.props
+    const { actions, selected, network, keyrings, identities } = this.props
     const { optionsMenuActive } = this.state
+
+    const keyring = getCurrentKeyring(selected, network, keyrings, identities)
 
     return h(
       Dropdown,
@@ -285,7 +287,7 @@ class AccountDropdowns extends Component {
           },
           'Copy address to clipboard',
         ),
-        !this.ifHardwareAcc(selected) ? h(
+        (!this.ifHardwareAcc(selected) && !(ifContractAcc(keyring))) ? h(
           DropdownMenuItem,
           {
             closeMenu: () => {},

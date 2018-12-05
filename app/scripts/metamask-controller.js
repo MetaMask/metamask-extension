@@ -824,7 +824,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string[]} address A hex address
    *
    */
-  async removeAccount (address) {
+  async removeAccount (address, network) {
     // Remove account from the preferences controller
     this.preferencesController.removeAddress(address)
     // Remove account from the account tracker controller
@@ -832,7 +832,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // Remove account from the keyring
     try {
-      await this.keyringController.removeAccount(address)
+      await this.keyringController.removeAccount(address, network)
     } catch (e) {
       log.error(e)
     }

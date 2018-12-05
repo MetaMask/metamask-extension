@@ -66,7 +66,7 @@ describe('ChooseContractExecutor component', () => {
 		})
 
 		it('shows correct description', () => {
-			assert.equal(wrapper.find('.hw-connect__header__msg').text(), 'contract transaction will be executed from selected account')
+			assert.equal(wrapper.find('.hw-connect__header__msg').text(), 'Contract transaction will be executed from selected account')
 		})
 
 		it('shows Next button', () => {

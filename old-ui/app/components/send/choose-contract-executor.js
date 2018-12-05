@@ -45,11 +45,11 @@ class ChooseContractExecutor extends Component {
 					}}
 				/>
 				<div style={{ padding: '0 30px' }}>
-					<span className="hw-connect__header__msg">contract transaction will be executed from selected account</span>
+					<span className="hw-connect__header__msg">Contract transaction will be executed from selected account</span>
 				</div>
 				<div style={{
 					padding: '0 30px',
-					maxHeight: '350px',
+					maxHeight: '220px',
 					overflow: 'auto',
 				}}>
 					{this.state.accountsCells}
@@ -100,6 +100,7 @@ class ChooseContractExecutor extends Component {
 							key={Math.random()}
 							address={address}
 							identity={identity}
+							isAccountSelected={this.isAccountSelected(address)}
 							onClick={(e, isSelected) => this.selectExecutor(e, isSelected, address)}
 						/>
 					)
@@ -110,6 +111,12 @@ class ChooseContractExecutor extends Component {
 		this.setState({
 			accountsCells,
 		})
+	}
+
+	componentDidUpdate (prevProps, prevState) {
+		if (prevState.selectedExecutor !== this.state.selectedExecutor) {
+			this.generateListOfAccounts()
+		}
 	}
 
 	onSubmit = () => {
@@ -132,6 +139,10 @@ class ChooseContractExecutor extends Component {
 				nextDisabled: true,
 			})
 		}
+	}
+
+	isAccountSelected (address) {
+		return address === this.state.selectedExecutor
 	}
 
 	back () {

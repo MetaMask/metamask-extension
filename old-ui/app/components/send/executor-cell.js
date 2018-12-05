@@ -7,11 +7,12 @@ class ExecutorCell extends Component {
 	constructor (props) {
 		super(props)
 		this.state = {
-			isSelected: false,
+			isSelected: props.isAccountSelected,
 		}
 	}
 
 	static propTypes = {
+		isAccountSelected: PropTypes.bool,
 		address: PropTypes.string,
 		identity: PropTypes.object,
 		onClick: PropTypes.func,

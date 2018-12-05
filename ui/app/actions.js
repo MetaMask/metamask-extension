@@ -635,12 +635,12 @@ function getContract (address) {
   }
 }
 
-function removeAccount (address) {
+function removeAccount (address, network) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
-      background.removeAccount(address, (err, account) => {
+      background.removeAccount(address, network, (err, account) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
