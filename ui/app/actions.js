@@ -226,6 +226,7 @@ var actions = {
   SET_RPC_TARGET: 'SET_RPC_TARGET',
   SET_DEFAULT_RPC_TARGET: 'SET_DEFAULT_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
+  SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
@@ -1866,13 +1867,15 @@ function createSpeedUpTransaction (txId, customGasPrice) {
 //
 
 function setProviderType (type) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { type: currentProviderType } = getState().metamask.provider
     log.debug(`background.setProviderType`, type)
     background.setProviderType(type, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))
       }
+      dispatch(setPreviousProvider(currentProviderType))
       dispatch(actions.updateProviderType(type))
       dispatch(actions.setSelectedToken())
     })
@@ -1883,6 +1886,13 @@ function setProviderType (type) {
 function updateProviderType (type) {
   return {
     type: actions.SET_PROVIDER_TYPE,
+    value: type,
+  }
+}
+
+function setPreviousProvider (type) {
+  return {
+    type: actions.SET_PREVIOUS_PROVIDER,
     value: type,
   }
 }

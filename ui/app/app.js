@@ -32,6 +32,7 @@ const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 
 const Loading = require('./components/loading-screen')
+const LoadingNetwork = require('./components/loading-network-screen').default
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
 const AccountMenu = require('./components/account-menu')
 
@@ -169,9 +170,10 @@ class App extends Component {
         h(AccountMenu),
 
         h('div.main-container-wrapper', [
-          (isLoading || isLoadingNetwork) && h(Loading, {
+          isLoading && h(Loading, {
             loadingMessage: loadMessage,
           }),
+          !isLoading && isLoadingNetwork && h(LoadingNetwork),
 
           // content
           this.renderRoutes(),
