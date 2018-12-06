@@ -268,7 +268,7 @@
     "fs-extra": "^6.0.1",
     "fs-promise": "^2.0.3",
     "ganache-cli": "^6.1.0",
-    "ganache-core": "^2.2.1",
+    "ganache-core": "^2.3.1",
     "geckodriver": "^1.14.1",
     "gh-pages": "^1.2.0",
     "gifencoder": "^1.1.0",
