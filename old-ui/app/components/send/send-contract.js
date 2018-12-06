@@ -11,7 +11,7 @@ import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
 
-class SenTransactionInput extends Component {
+class SendTransactionInput extends Component {
 	constructor (props) {
 		super(props)
 		this.state = {
@@ -145,7 +145,7 @@ class SendTransactionScreen extends PersistentForm {
 			</h3>
 		)
 		const input = (
-			<SenTransactionInput
+			<SendTransactionInput
 				key={Math.random()}
 				ind={ind}
 				placeholder={params.type}
