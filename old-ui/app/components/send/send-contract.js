@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import PersistentForm from '../../../lib/persistent-form'
-import { numericBalance } from '../../util'
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
 import SendError from './send-error'
@@ -337,26 +336,14 @@ function mapStateToProps (state) {
 	const contractAcc = state.appState.contractAcc
 	const result = {
 		address: state.metamask.selectedAddress,
-		accounts: state.metamask.accounts,
-		keyrings: state.metamask.keyrings,
-		identities: state.metamask.identities,
 		warning: state.appState.warning,
 		toastMsg: state.appState.toastMsg,
-		network: state.metamask.network,
-		addressBook: state.metamask.addressBook,
-		conversionRate: state.metamask.conversionRate,
-		currentCurrency: state.metamask.currentCurrency,
-		provider: state.metamask.provider,
 		methodSelected: contractAcc && contractAcc.methodSelected,
 		methodABI: contractAcc && contractAcc.methodABI,
 		inputValues: contractAcc && contractAcc.inputValues,
 	}
 
 	result.error = result.warning && result.warning.message
-
-	result.account = result.accounts[result.address]
-	result.identity = result.identities[result.address]
-	result.balance = result.account ? numericBalance(result.account.balance) : null
 
 	return result
 }
