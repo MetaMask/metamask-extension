@@ -281,30 +281,22 @@ describe('Metamask popup page', async function () {
       it("Button 'Import' is displayed", async function () {
         const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
         assert.notEqual(button, false, "button 'Import' isn't displayed")
-        await button.click()
+        assert.equal(await button.getText(), 'Import', 'wrong name of button')
       })
 
-      it('Error message if incorrect address', async function () {
-        const field = await waitUntilShowUp(screens.importAccounts.error)
-        assert.notEqual(field, false, 'no error message')
-        assert.equal(await field.getText(), 'Invalid contract address', 'incorrect text')
-      })
-
-      it('No error if contract address is correct', async function () {
-        const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
-        assert.notEqual(field, false, "field 'Address' isn't displayed")
-        await field.sendKeys(poaContract)
-      })
-
-      it("Click button 'Import' ", async function () {
+      it("Button 'Import' is disabled  if incorrect address", async function () {
         const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-        await button.click()
-        assert.notEqual(button, false, "button 'Import' isn't displayed")
+        assert.equal(await button.isEnabled(), false, 'button enabled')
       })
 
       it("Field 'ABI' is displayed", async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
         assert.notEqual(field, false, "field 'ABI' isn't displayed")
+      })
+
+      it('icon copy is displayed for ABI ', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.iconCopy)
+        assert.notEqual(field, false, "icon copy isn't displayed")
       })
 
       it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
@@ -316,29 +308,29 @@ describe('Metamask popup page', async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
         await clearField(field, 100)
         await field.sendKeys(notContractAddress)
-        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-        await button.click()
-        await waitUntilShowUp(elements.loader, 60)
-        await waitUntilDisappear(elements.loader, 60)
       })
 
-      it.skip('Error message if not contract address', async function () {
-        const field = await waitUntilShowUp(screens.importAccounts.error)
-        assert.notEqual(field, false, 'no error message')
-        assert.equal(await field.getText(), 'This is not a contract address', 'incorrect text')
+      it("Button 'Import' is disabled  if not contract address", async function () {
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        assert.equal(await button.isEnabled(), false, 'button enabled')
       })
 
       it("Fill 'Address' with valid contract , POA core", async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
         await clearField(field, 100)
         await field.sendKeys(poaContract)
-        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-        await button.click()
       })
 
-      it.skip('Correct ABI fetched ', async function () {
+      it("Button 'Import' is enabled if contract address is correct", async function () {
+        await delay(5000)
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        assert.equal(await button.isEnabled(), true, 'button enabled')
+      })
+
+      it('ABI is fetched ', async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
-        assert.equal(await field.getText(), elements.poaABI, "ABI isn't fetched")
+        const abi = await field.getText()
+        assert.equal(abi.length, 2800, "ABI isn't fetched")
       })
 
       it("Click button 'Import', main screen opens", async function () {
@@ -935,8 +927,8 @@ describe('Metamask popup page', async function () {
         console.log('allHandles.length ' + allHandles.length)
         assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
         await switchToLastPage()
+        await delay(2000)
         const title = await waitUntilCurrentUrl()
-
         console.log(title)
         assert.equal(title.includes('https://etherscan.io/token/'), true, 'etherscan wasn\'t opened')
         await switchToFirstPage()
