@@ -804,7 +804,7 @@ describe('Metamask popup page', async function () {
       const balance = await balanceField.getText()
       console.log('Account = ' + account)
       console.log('Balance = ' + balance)
-      assert.equal(parseInt(balance) > 0.001, true, 'Balance of account ' + account + ' TOO LOW !!! Please refill with Sokol eth!!!!')
+      assert.equal(parseFloat(balance) > 0.001, true, 'Balance of account ' + account + ' TOO LOW !!! Please refill with Sokol eth!!!!')
       await driver.get(eventsEmitter)
       const button = await waitUntilShowUp(screens.eventsEmitter.button)
       await button.click()
