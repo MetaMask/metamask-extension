@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import actions from '../../../../ui/app/actions'
 import Web3 from 'web3'
 import log from 'loglevel'
+import copyToClipboard from 'copy-to-clipboard'
 
 class ContractImportView extends Component {
   constructor (props) {
@@ -74,7 +75,13 @@ class ContractImportView extends Component {
             marginTop: '12px',
           }}
         />
-        <span style={{ marginTop: '20px' }}>Paste ABI of contract here</span>
+        <span style={{ marginTop: '20px' }}>Paste ABI of contract here
+          <i
+            className="clipboard cursor-pointer"
+            style={{ marginLeft: '10px' }}
+            onClick={(e) => { copyToClipboard(this.state.abi) }}
+          />
+        </span>
         <textarea
           id="abi-box"
           disabled={this.state.abiInputDisabled}
@@ -202,7 +209,7 @@ class ContractImportView extends Component {
     this.setState({
       abi: '',
       abiInputDisabled: false,
-      importDisabled: true
+      importDisabled: true,
     })
   }
 
