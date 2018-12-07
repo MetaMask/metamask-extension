@@ -119,7 +119,11 @@ var actions = {
   lockMetamask: lockMetamask,
   unlockInProgress: unlockInProgress,
   // error handling
+  displayToast: displayToast,
   displayWarning: displayWarning,
+  DISPLAY_TOAST: 'DISPLAY_TOAST',
+  HIDE_TOAST: 'HIDE_TOAST',
+  hideToast: hideToast,
   DISPLAY_WARNING: 'DISPLAY_WARNING',
   HIDE_WARNING: 'HIDE_WARNING',
   hideWarning: hideWarning,
@@ -2139,6 +2143,19 @@ function displayWarning (text) {
 function hideWarning () {
   return {
     type: actions.HIDE_WARNING,
+  }
+}
+
+function displayToast (text) {
+  return {
+    type: actions.DISPLAY_TOAST,
+    value: text,
+  }
+}
+
+function hideToast () {
+  return {
+    type: actions.HIDE_TOAST,
   }
 }
 

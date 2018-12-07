@@ -10,6 +10,7 @@ import Select from 'react-select'
 import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
+import copyToClipboard from 'copy-to-clipboard'
 
 class SendTransactionInput extends Component {
 	constructor (props) {
@@ -17,6 +18,7 @@ class SendTransactionInput extends Component {
 		this.state = {
 			inputVal: props.defaultValue,
 		}
+		this.timerID = null
 	}
 
 	static propTypes = {
@@ -60,8 +62,14 @@ class SendTransactionScreen extends PersistentForm {
 			isConstantMethod: false,
 			inputValues: props.inputValues || {},
 			output: '',
+			copyDisabled: true,
 		}
 		PersistentForm.call(this)
+	}
+
+	componentWillUnmount () {
+		this.props.hideToast()
+		clearTimeout(this.timerID)
 	}
 
 	componentWillMount () {
@@ -80,18 +88,15 @@ class SendTransactionScreen extends PersistentForm {
 				<SendHeader title="Execute Method" />
 				<SendError
 					error={error}
-					onClose={() => {
-						this.props.hideWarning()
-					}}
+					onClose={() => { this.props.hideWarning() }}
 				/>
+				{this.props.toastMsg ? <div className="toast">{this.props.toastMsg}</div> : null}
 				<div style={{ padding: '0 30px' }}>
 					<Select
 						clearable={false}
 						value={this.state.methodSelected}
 						options={this.state.options}
-						style={{
-							marginBottom: '10px',
-						}}
+						style={{ marginBottom: '10px' }}
 						onChange={(opt) => {
 							this.setState({
 								methodSelected: opt.value,
@@ -164,7 +169,11 @@ class SendTransactionScreen extends PersistentForm {
 
 	handleInputChange (e, ind) {
 		const { inputValues } = this.state
-		inputValues[ind] = e.target.value
+		if (e.target.value) {
+			inputValues[ind] = e.target.value
+		} else {
+			delete inputValues[ind]
+		}
 		this.setState({
 			inputValues,
 		})
@@ -174,7 +183,6 @@ class SendTransactionScreen extends PersistentForm {
 		this.setState({
 			methodInputs: [],
 			methodInputsView: [],
-			// inputValues: {},
 		})
 		const methodInputsView = []
 		const methodInputs = metadata && metadata.inputs
@@ -221,18 +229,23 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	buttonsSection () {
+		const { isConstantMethod } = this.state
 		const callButton = (
-			<button onClick={() => this.callData() }>Call data</button>
+			<button disabled={this.buttonDisabled()} onClick={() => this.callData()}>Call data</button>
 		)
 		const nextButton = (
-			<button onClick={() => this.onSubmit() }>Next</button>
+			<div>
+				<button
+					disabled={this.buttonDisabled()}
+					style={{ marginRight: '20px' }}
+					className="btn-violet"
+					onClick={() => this.copyAbiEncoded()}
+				>Copy ABI encoded
+				</button>
+				<button disabled={this.buttonDisabled()} onClick={() => this.onSubmit()}>Next</button>
+			</div>
 		)
-		let executeButton
-		if (this.state.isConstantMethod) {
-			executeButton = callButton
-		} else {
-			executeButton = nextButton
-		}
+		const executeButton = isConstantMethod ? callButton : nextButton
 
 		const buttonContainer = (
 			<div
@@ -246,6 +259,11 @@ class SendTransactionScreen extends PersistentForm {
 		return buttonContainer
 	}
 
+	buttonDisabled = () => {
+		const { methodSelected, methodInputs, inputValues } = this.state
+		return !methodSelected || (methodInputs.length !== Object.keys(inputValues).length)
+	}
+
 	callData = () => {
 		this.props.showLoadingIndication()
 		const { abi, methodSelected, inputValues } = this.state
@@ -257,6 +275,7 @@ class SendTransactionScreen extends PersistentForm {
 			web3.eth.contract(abi).at(address)[methodSelected].call(...inputValuesArray, (err, output) => {
 				this.props.hideLoadingIndication()
 				if (err) {
+					this.props.hideToast()
 					return this.props.displayWarning(err)
 				}
 				if (output) {
@@ -266,20 +285,41 @@ class SendTransactionScreen extends PersistentForm {
 				}
 			})
 		} catch (e) {
+			this.props.hideToast()
 			return this.props.displayWarning(e)
+		}
+	}
+
+	encodeFunctionCall = () => {
+		const { inputValues, methodABI } = this.state
+		const inputValuesArray = Object.keys(inputValues).map(key => inputValues[key])
+		let txData
+		try {
+			txData = abiEncoder.encodeFunctionCall(methodABI, inputValuesArray)
+			this.props.hideWarning()
+		} catch (e) {
+			this.props.hideToast()
+			this.props.displayWarning(e)
+		}
+
+		return txData
+	}
+
+	copyAbiEncoded = () => {
+		const txData = this.encodeFunctionCall()
+		if (txData) {
+			copyToClipboard(txData)
+			this.props.displayToast('Contract ABI encoded method call has been successfully copied to clipboard')
+			this.timerID = setTimeout(() => {
+				this.props.hideToast()
+			}, 4000)
 		}
 	}
 
 	onSubmit = () => {
 		const { inputValues, methodABI, methodSelected } = this.state
 		const { address } = this.props
-		const inputValuesArray = Object.keys(inputValues).map(key => inputValues[key])
-		let txData
-		try {
-			txData = abiEncoder.encodeFunctionCall(methodABI, inputValuesArray)
-		} catch (e) {
-			return this.props.displayWarning(e)
-		}
+		const txData = this.encodeFunctionCall()
 
 		this.props.hideWarning()
 
@@ -294,20 +334,22 @@ class SendTransactionScreen extends PersistentForm {
 }
 
 function mapStateToProps (state) {
+	const contractAcc = state.appState.contractAcc
 	const result = {
 		address: state.metamask.selectedAddress,
 		accounts: state.metamask.accounts,
 		keyrings: state.metamask.keyrings,
 		identities: state.metamask.identities,
 		warning: state.appState.warning,
+		toastMsg: state.appState.toastMsg,
 		network: state.metamask.network,
 		addressBook: state.metamask.addressBook,
 		conversionRate: state.metamask.conversionRate,
 		currentCurrency: state.metamask.currentCurrency,
 		provider: state.metamask.provider,
-		methodSelected: state.appState.contractAcc && state.appState.contractAcc.methodSelected,
-		methodABI: state.appState.contractAcc && state.appState.contractAcc.methodABI,
-		inputValues: state.appState.contractAcc && state.appState.contractAcc.inputValues,
+		methodSelected: contractAcc && contractAcc.methodSelected,
+		methodABI: contractAcc && contractAcc.methodABI,
+		inputValues: contractAcc && contractAcc.inputValues,
 	}
 
 	result.error = result.warning && result.warning.message
@@ -324,9 +366,21 @@ function mapDispatchToProps (dispatch) {
 		showLoadingIndication: () => dispatch(actions.showLoadingIndication()),
 		hideLoadingIndication: () => dispatch(actions.hideLoadingIndication()),
 		getContract: (addr) => dispatch(actions.getContract(addr)),
+		displayToast: (msg) => dispatch(actions.displayToast(msg)),
+		hideToast: () => dispatch(actions.hideToast()),
 		displayWarning: (msg) => dispatch(actions.displayWarning(msg)),
 		hideWarning: () => dispatch(actions.hideWarning()),
-		showChooseContractExecutorPage: ({methodSelected, methodABI, inputValues, txParams}) => dispatch(actions.showChooseContractExecutorPage({methodSelected, methodABI, inputValues, txParams})),
+		showChooseContractExecutorPage: ({
+			methodSelected,
+			methodABI,
+			inputValues,
+			txParams,
+		}) => dispatch(actions.showChooseContractExecutorPage({
+			methodSelected,
+			methodABI,
+			inputValues,
+			txParams,
+		})),
 	}
 }
 

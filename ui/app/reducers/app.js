@@ -636,6 +636,17 @@ function reduceApp (state, action) {
         },
       })
 
+    case actions.DISPLAY_TOAST:
+      return extend(appState, {
+        toastMsg: action.value,
+        isLoading: false,
+      })
+
+    case actions.HIDE_TOAST:
+      return extend(appState, {
+        toastMsg: undefined,
+      })
+
     case actions.DISPLAY_WARNING:
       return extend(appState, {
         warning: action.value,
