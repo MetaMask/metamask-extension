@@ -224,6 +224,7 @@ module.exports = {
       },
     },
     importAccounts: {
+      iconCopy: By.className('clipboard cursor-pointer'),
       warning: By.className('error'),
       error: By.css('span.error'),
       selectArrow: By.className('Select-arrow-zone'),
