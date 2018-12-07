@@ -14,6 +14,7 @@ class ContractImportView extends Component {
       contractAddr: '',
       abi: '',
       abiInputDisabled: false,
+      importDisabled: true,
       web3,
     }
   }
@@ -43,9 +44,11 @@ class ContractImportView extends Component {
         this.setState({
           abi,
           abiInputDisabled: true,
+          importDisabled: false,
         })
       }
     } catch (e) {
+      this.clearAbi()
       log.debug('ABI can not be parsed')
     }
   }
@@ -85,6 +88,7 @@ class ContractImportView extends Component {
           onKeyPress={(e) => this.createKeyringOnEnter(e)}
         />
         <button
+          disabled={this.state.importDisabled}
           onClick={(e) => this.createNewKeychain(e)}
           style={{ margin: '20px' }}
         >Import</button>
@@ -96,6 +100,7 @@ class ContractImportView extends Component {
   autodetectContractAbi = () => {
     const { contractAddr, web3 } = this.state
     if (!contractAddr || !web3.isAddress(contractAddr)) {
+      this.clearAbi()
       return
     }
 
@@ -112,6 +117,7 @@ class ContractImportView extends Component {
         this.abiOnChange(responseJson && responseJson.result)
       })
       .catch((e) => {
+        this.clearAbi()
         log.debug(e)
       })
   }
@@ -142,11 +148,13 @@ class ContractImportView extends Component {
     const { contractAddr, web3 } = this.state
 
     if (!contractAddr || !web3.isAddress(contractAddr)) {
+      this.clearAbi()
       return this.props.displayWarning('Invalid contract address')
     }
 
     const contractAddrCode = await this.getContractCode()
     if (contractAddrCode === '0x') {
+      this.clearAbi()
       return this.props.displayWarning('This is not a contract address')
     }
 
@@ -154,10 +162,12 @@ class ContractImportView extends Component {
     try {
       abi = JSON.parse(this.state.abi)
     } catch (e) {
+      this.clearAbi()
       this.props.displayWarning('Invalid ABI')
     }
 
     if (!abi) {
+      this.clearAbi()
       return this.props.displayWarning('Invalid contract ABI')
     }
 
@@ -186,6 +196,14 @@ class ContractImportView extends Component {
       default:
         return ''
     }
+  }
+
+  clearAbi () {
+    this.setState({
+      abi: '',
+      abiInputDisabled: false,
+      importDisabled: true
+    })
   }
 
 }
