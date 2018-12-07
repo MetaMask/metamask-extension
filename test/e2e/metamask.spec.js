@@ -927,8 +927,8 @@ describe('Metamask popup page', async function () {
         console.log('allHandles.length ' + allHandles.length)
         assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
         await switchToLastPage()
+        await delay(2000)
         const title = await waitUntilCurrentUrl()
-
         console.log(title)
         assert.equal(title.includes('https://etherscan.io/token/'), true, 'etherscan wasn\'t opened')
         await switchToFirstPage()
