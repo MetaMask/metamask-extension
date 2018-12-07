@@ -345,7 +345,7 @@ describe('Metamask popup page', async function () {
     it("Click button 'Import', main screen opens", async function () {
       const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
       await click(button)
-      const identicon = await waitUntilShowUp(screens.main.identicon)
+      const identicon = await waitUntilShowUp(screens.main.identicon, 20)
       assert.notEqual(identicon, false, "main screen isn't opened")
     })
 
@@ -483,6 +483,23 @@ describe('Metamask popup page', async function () {
       const identicon = await waitUntilShowUp(screens.main.identicon)
       assert.notEqual(identicon, false, 'main screen didn\'t opened')
     })
+    it("Label 'CONTRACT' present", async function () {
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      await waitUntilShowUp(menus.account.labelImported)
+      const label = (await driver.findElements(menus.account.labelImported))[0]
+      assert.equal(await label.getText(), 'CONTRACT', 'label incorrect')
+    })
+    it('Delete imported account', async function () {
+      const item = await waitUntilShowUp(menus.account.delete)
+      await item.click()
+      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+      await button.click()
+      const buttonArrow = await waitUntilShowUp(screens.settings.buttons.arrow)
+      await buttonArrow.click()
+      const identicon = await waitUntilShowUp(screens.main.identicon)
+      assert.notEqual(identicon, false, 'main screen didn\'t opened')
+    })
   })
 
 
@@ -548,6 +565,7 @@ describe('Metamask popup page', async function () {
 
     it('opens import account menu', async function () {
       await setProvider(NETWORKS.POA)
+      await delay(2000)
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
       const item = await waitUntilShowUp(menus.account.import)
@@ -557,7 +575,6 @@ describe('Metamask popup page', async function () {
     })
 
     it('imports account', async function () {
-      await delay(2000)
       const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
       await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
       const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
@@ -566,7 +583,7 @@ describe('Metamask popup page', async function () {
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
       await waitUntilShowUp(menus.account.labelImported)
-      const label = (await driver.findElements(menus.account.labelImported))[1]
+      const label = (await driver.findElements(menus.account.labelImported))[0]
       assert.equal(await label.getText(), 'IMPORTED')
       await menu.click()
     })
@@ -809,7 +826,7 @@ describe('Metamask popup page', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
       await delay(5000)
-      const event = await waitUntilShowUp(screens.eventsEmitter.event, 1200)
+      const event = await waitUntilShowUp(screens.eventsEmitter.event, 600)
       const events = await driver.findElements(screens.eventsEmitter.event)
       console.log('number of events = ' + events.length)
       if (!event) console.log("event wasn't created or transaction failed".toUpperCase())

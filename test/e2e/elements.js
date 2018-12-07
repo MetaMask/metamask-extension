@@ -32,7 +32,8 @@ module.exports = {
       menu: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div'),
       delete: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
       createAccount: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
-      import: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span'),
+      // import: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span'),
+      import: By.css('li.dropdown-menu-item:nth-child(5) > span:nth-child(1)'),
       labelImported: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label'),
     },
     dot: {
@@ -217,7 +218,8 @@ module.exports = {
       titleText: 'Delete Imported Account',
       buttons: {
         no: By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-right > button.btn-violet'),
-        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
+        yes: By.css('div.flex-row:nth-child(4) > button:nth-child(2)'),
+        arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       },
     },
     importAccounts: {
@@ -245,6 +247,7 @@ module.exports = {
       titleText: 'Settings',
       title: By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'),
       buttons: {
+        arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
         changePassword: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(10) > button:nth-child(5)'),
         delete: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button'),
       },
