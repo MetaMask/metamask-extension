@@ -244,264 +244,263 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Import Contract', async () => {
+  describe('Import Contract account', async () => {
     const poaContract = '0xc6468767214c577013a904900ada0a0dd6653bc3'
     const wrongAddress = '0xB87b6077D59B01Ab9fa8cd5A1A21D02a4d60D35'
     const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
+    describe('Import Contract', async () => {
+      it('opens import account menu', async function () {
+        await setProvider(NETWORKS.ROPSTEN)
+        const menu = await waitUntilShowUp(menus.account.menu)
+        await menu.click()
+        const item = await waitUntilShowUp(menus.account.import)
+        await item.click()
+        const importAccountTitle = await waitUntilShowUp(screens.importAccounts.title)
+        assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
+      })
 
-    it('opens import account menu', async function () {
-      await setProvider(NETWORKS.ROPSTEN)
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      const item = await waitUntilShowUp(menus.account.import)
-      await item.click()
-      const importAccountTitle = await waitUntilShowUp(screens.importAccounts.title)
-      assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
-    })
+      it("Warning's  text is correct", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.warning)
+        assert.equal(await field.getText(), 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.', "incorrect warning's text")
+      })
 
-    it("Warning's  text is correct", async function () {
-      const field = await waitUntilShowUp(screens.importAccounts.warning)
-      assert.equal(await field.getText(), 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.', "incorrect warning's text")
-    })
+      it("Select type 'Contract'", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.selectArrow)
+        await field.click()
+        const item = await waitUntilShowUp(screens.importAccounts.itemContract)
+        await item.click()
+      })
 
-    it("Select type 'Contract'", async function () {
-      const field = await waitUntilShowUp(screens.importAccounts.selectArrow)
-      await field.click()
-      const item = await waitUntilShowUp(screens.importAccounts.itemContract)
-      await item.click()
-    })
+      it("Field 'Address' is displayed", async function () {
+        await delay(2000)
+        const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
+        assert.notEqual(field, false, "field 'Address' isn't displayed")
+        await field.sendKeys(wrongAddress)
+      })
 
-    it("Field 'Address' is displayed", async function () {
-      await delay(2000)
-      const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
-      assert.notEqual(field, false, "field 'Address' isn't displayed")
-      await field.sendKeys(wrongAddress)
-    })
+      it("Button 'Import' is displayed", async function () {
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        assert.notEqual(button, false, "button 'Import' isn't displayed")
+        await button.click()
+      })
 
-    it("Button 'Import' is displayed", async function () {
-      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-      assert.notEqual(button, false, "button 'Import' isn't displayed")
-      await button.click()
-    })
+      it('Error message if incorrect address', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.error)
+        assert.notEqual(field, false, 'no error message')
+        assert.equal(await field.getText(), 'Invalid contract address', 'incorrect text')
+      })
 
-    it('Error message if incorrect address', async function () {
-      const field = await waitUntilShowUp(screens.importAccounts.error)
-      assert.notEqual(field, false, 'no error message')
-      assert.equal(await field.getText(), 'Invalid contract address', 'incorrect text')
-    })
+      it('No error if contract address is correct', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
+        assert.notEqual(field, false, "field 'Address' isn't displayed")
+        await field.sendKeys(poaContract)
+      })
 
-    it('No error if contract address is correct', async function () {
-      const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
-      assert.notEqual(field, false, "field 'Address' isn't displayed")
-      await field.sendKeys(poaContract)
-    })
+      it("Click button 'Import' ", async function () {
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        await button.click()
+        assert.notEqual(button, false, "button 'Import' isn't displayed")
+      })
 
-    it("Click button 'Import' ", async function () {
-      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-      await button.click()
-      assert.notEqual(button, false, "button 'Import' isn't displayed")
-    })
+      it("Field 'ABI' is displayed", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.contractABI)
+        assert.notEqual(field, false, "field 'ABI' isn't displayed")
+      })
 
-    it("Field 'ABI' is displayed", async function () {
-      const field = await waitUntilShowUp(screens.importAccounts.contractABI)
-      assert.notEqual(field, false, "field 'ABI' isn't displayed")
-    })
+      it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.contractABI)
+        assert.equal(await field.getText(), '', "field 'ABI' isn't displayed")
+      })
+      it("Fill 'Address' with not contract address , POA core", async function () {
+        await setProvider(NETWORKS.POA)
+        const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
+        await clearField(field, 100)
+        await field.sendKeys(notContractAddress)
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        await button.click()
+        await waitUntilShowUp(elements.loader, 60)
+        await waitUntilDisappear(elements.loader, 60)
+      })
 
-    it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
-      const field = await waitUntilShowUp(screens.importAccounts.contractABI)
-      assert.equal(await field.getText(), '', "field 'ABI' isn't displayed")
-    })
-    it("Fill 'Address' with not contract address , POA core", async function () {
-      await setProvider(NETWORKS.POA)
-      const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
-      await clearField(field, 100)
-      await field.sendKeys(notContractAddress)
-      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-      await button.click()
-      await waitUntilShowUp(elements.loader, 25)
-      await delay(2000)
-      await waitUntilDisappear(elements.loader, 25)
-    })
+      it.skip('Error message if not contract address', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.error)
+        assert.notEqual(field, false, 'no error message')
+        assert.equal(await field.getText(), 'This is not a contract address', 'incorrect text')
+      })
 
-    it.skip('Error message if not contract address', async function () {
-      const field = await waitUntilShowUp(screens.importAccounts.error)
-      assert.notEqual(field, false, 'no error message')
-      assert.equal(await field.getText(), 'This is not a contract address', 'incorrect text')
-    })
+      it("Fill 'Address' with valid contract , POA core", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
+        await clearField(field, 100)
+        await field.sendKeys(poaContract)
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        await button.click()
+      })
 
-    it("Fill 'Address' with valid contract , POA core", async function () {
-      const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
-      await clearField(field, 100)
-      await field.sendKeys(poaContract)
-      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-      await button.click()
-    })
+      it.skip('Correct ABI fetched ', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.contractABI)
+        assert.equal(await field.getText(), elements.poaABI, "ABI isn't fetched")
+      })
 
-    it.skip('Correct ABI fetched ', async function () {
-      const field = await waitUntilShowUp(screens.importAccounts.contractABI)
-      assert.equal(await field.getText(), elements.poaABI, "ABI isn't fetched")
-    })
+      it("Click button 'Import', main screen opens", async function () {
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        await click(button)
+        const identicon = await waitUntilShowUp(screens.main.identicon, 20)
+        assert.notEqual(identicon, false, "main screen isn't opened")
+      })
 
-    it("Click button 'Import', main screen opens", async function () {
-      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-      await click(button)
-      const identicon = await waitUntilShowUp(screens.main.identicon, 20)
-      assert.notEqual(identicon, false, "main screen isn't opened")
+      it("Click button 'Send', 'Execute Method' screen opens", async function () {
+        const button = await waitUntilShowUp(screens.main.buttons.send)
+        await click(button)
+        const identicon = await waitUntilShowUp(screens.main.identicon, 40)
+        assert.notEqual(identicon, false, "main screen isn't opened")
+      })
     })
+    describe('Execute Method', () => {
+      const outputData = '0xd70befce3cf1cc88119c8f4eb583ccd4c39d06e2'
+      const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
+      it("Click button 'Send', 'Execute Method' screen opens", async function () {
+        await driver.navigate().refresh()
+        await delay(2000)
+        const button = await waitUntilShowUp(screens.main.buttons.send)
+        await click(button)
+      })
 
-    it("Click button 'Send', 'Execute Method' screen opens", async function () {
-      const button = await waitUntilShowUp(screens.main.buttons.send)
-      await click(button)
-      const identicon = await waitUntilShowUp(screens.main.identicon, 40)
-      assert.notEqual(identicon, false, "main screen isn't opened")
+      it('title is displayed and correct', async function () {
+        const title = await waitUntilShowUp(screens.executeMethod.title)
+        assert.notEqual(title, false, 'title isn\'t displayed')
+        assert.equal(await title.getText(), screens.executeMethod.titleText, 'incorrect text')
+      })
+
+      it("Select method 'abstractStorageAddr'", async function () {
+        const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+        await field.click()
+        const item = await waitUntilShowUp(screens.executeMethod.item0)
+        assert.notEqual(item, false, 'no drop down menu')
+        await click(item)
+      })
+
+      it("Button 'Call data' is displayed", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+        assert.notEqual(button, false, "button 'Call data' isn't displayed")
+        await button.click()
+      })
+
+      it('method returns correct value', async function () {
+        const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
+        assert.notEqual(field, false, "field 'Output'  isn't displayed")
+        const text = await waitUntilHasText(field)
+        assert.equal(text, outputData, 'incorrect value was returned')
+      })
+
+      it("2nd call doesn't throw the error", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+        assert.notEqual(button, false, "button 'Call data' isn't displayed")
+        await button.click()
+        const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
+        assert.notEqual(field, false, "field 'Output'  isn't displayed")
+        const text = await waitUntilHasText(field)
+        assert.equal(text, outputData, 'incorrect value was returned')
+      })
+      it('Click arrow  button leads to main screen', async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonArrow)
+        await click(button)
+        const identicon = await waitUntilShowUp(screens.main.identicon, 40)
+        assert.notEqual(identicon, false, "main screen isn't opened")
+      })
+      it("Click button 'Send', 'Execute Method' screen opens", async function () {
+        await driver.navigate().refresh()
+        await delay(2000)
+        const button = await waitUntilShowUp(screens.main.buttons.send)
+        await click(button)
+      })
+      it("Select method 'changeAbstractStorage'", async function () {
+        const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+        await field.click()
+        const items = await waitUntilShowUp(screens.executeMethod.item1)
+        assert.notEqual(items, false, 'no drop down menu')
+        const item = (await driver.findElements(screens.executeMethod.item1))[1]
+        // await click(item)
+        await item.click()
+      })
+
+      it("Fill out parameter '_newAbstractStorageAddr'", async function () {
+        const field = await waitUntilShowUp(screens.executeMethod.fieldParametr1)
+        await field.sendKeys(notContractAddress)
+        assert.notEqual(field, false, "field address isn't displayed")
+      })
+
+      it("Click button 'Next'", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+        assert.notEqual(button, false, "button 'Next' isn't displayed")
+        await button.click()
+      })
+
+    })
+    describe('Choose Contract Executor', () => {
+
+      it('title is displayed and correct', async function () {
+        const title = await waitUntilShowUp(screens.chooseContractExecutor.title)
+        assert.notEqual(title, false, 'title isn\'t displayed')
+        assert.equal(await title.getText(), screens.chooseContractExecutor.titleText, 'incorrect text')
+      })
+
+      it('two accounts displayed', async function () {
+        const accs = await waitUntilShowUp(screens.chooseContractExecutor.account)
+        assert.notEqual(accs, false, 'accounts aren\'t displayed')
+        const accounts = await driver.findElements(screens.chooseContractExecutor.account)
+        assert.equal(accounts.length, 3, "number of accounts isn't 2")
+      })
+      it("Button 'Next' is disabled by default", async function () {
+        const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
+        assert.notEqual(button, false, 'button isn\'t displayed')
+        assert.equal(await button.isEnabled(), false, 'button enabled by default')
+      })
+
+      it('User is able to select account', async function () {
+        await waitUntilShowUp(screens.chooseContractExecutor.account)
+        const accounts = await driver.findElements(screens.chooseContractExecutor.account)
+        const account = accounts[1]
+        await account.click()
+        const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
+        assert.equal(selected.length, 1, "account isn't selected")
+      })
+
+      it('User is able to select only one account', async function () {
+        const account = (await driver.findElements(screens.chooseContractExecutor.account))[2]
+        await account.click()
+        const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
+        assert.equal(selected.length, 1, 'more than one accounts are selected')
+      })
+
+      it("Click button 'Next' open 'Confirm transaction' screen", async function () {
+        const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
+        await button.click()
+        await delay(5000)
+        const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
+        assert.notEqual(reject, false, "button reject isn't displayed")
+        await click(reject)
+        const identicon = await waitUntilShowUp(screens.main.identicon)
+        assert.notEqual(identicon, false, 'main screen didn\'t opened')
+      })
+      it("Label 'CONTRACT' present", async function () {
+        const menu = await waitUntilShowUp(menus.account.menu)
+        await menu.click()
+        await waitUntilShowUp(menus.account.labelImported)
+        const label = (await driver.findElements(menus.account.labelImported))[0]
+        assert.equal(await label.getText(), 'CONTRACT', 'label incorrect')
+      })
+      it('Delete imported account', async function () {
+        const item = await waitUntilShowUp(menus.account.delete)
+        await item.click()
+        const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+        await button.click()
+        const buttonArrow = await waitUntilShowUp(screens.settings.buttons.arrow)
+        await buttonArrow.click()
+        const identicon = await waitUntilShowUp(screens.main.identicon)
+        assert.notEqual(identicon, false, 'main screen didn\'t opened')
+      })
     })
   })
-  describe('Execute Method', () => {
-    const outputData = '0xd70befce3cf1cc88119c8f4eb583ccd4c39d06e2'
-    const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
-    it("Click button 'Send', 'Execute Method' screen opens", async function () {
-      await driver.navigate().refresh()
-      await delay(2000)
-      const button = await waitUntilShowUp(screens.main.buttons.send)
-      await click(button)
-    })
-
-    it('title is displayed and correct', async function () {
-      const title = await waitUntilShowUp(screens.executeMethod.title)
-      assert.notEqual(title, false, 'title isn\'t displayed')
-      assert.equal(await title.getText(), screens.executeMethod.titleText, 'incorrect text')
-    })
-
-    it("Select method 'abstractStorageAddr'", async function () {
-      const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
-      await field.click()
-      const item = await waitUntilShowUp(screens.executeMethod.item0)
-      assert.notEqual(item, false, 'no drop down menu')
-      await click(item)
-    })
-
-    it("Button 'Call data' is displayed", async function () {
-      const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
-      assert.notEqual(button, false, "button 'Call data' isn't displayed")
-      await button.click()
-    })
-
-    it('method returns correct value', async function () {
-      const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
-      assert.notEqual(field, false, "field 'Output'  isn't displayed")
-      const text = await waitUntilHasText(field)
-      assert.equal(text, outputData, 'incorrect value was returned')
-    })
-
-    it("2nd call doesn't throw the error", async function () {
-      const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
-      assert.notEqual(button, false, "button 'Call data' isn't displayed")
-      await button.click()
-      const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
-      assert.notEqual(field, false, "field 'Output'  isn't displayed")
-      const text = await waitUntilHasText(field)
-      assert.equal(text, outputData, 'incorrect value was returned')
-    })
-    it('Click arrow  button leads to main screen', async function () {
-      const button = await waitUntilShowUp(screens.executeMethod.buttonArrow)
-      await click(button)
-      const identicon = await waitUntilShowUp(screens.main.identicon, 40)
-      assert.notEqual(identicon, false, "main screen isn't opened")
-    })
-    it("Click button 'Send', 'Execute Method' screen opens", async function () {
-      await driver.navigate().refresh()
-      await delay(2000)
-      const button = await waitUntilShowUp(screens.main.buttons.send)
-      await click(button)
-    })
-    it("Select method 'changeAbstractStorage'", async function () {
-      const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
-      await field.click()
-      const items = await waitUntilShowUp(screens.executeMethod.item1)
-      assert.notEqual(items, false, 'no drop down menu')
-      const item = (await driver.findElements(screens.executeMethod.item1))[1]
-      // await click(item)
-      await item.click()
-    })
-
-    it("Fill out parameter '_newAbstractStorageAddr'", async function () {
-      const field = await waitUntilShowUp(screens.executeMethod.fieldParametr1)
-      await field.sendKeys(notContractAddress)
-      assert.notEqual(field, false, "field address isn't displayed")
-    })
-
-    it("Click button 'Next'", async function () {
-      const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
-      assert.notEqual(button, false, "button 'Next' isn't displayed")
-      await button.click()
-    })
-
-  })
-  describe('Choose Contract Executor', () => {
-
-    it('title is displayed and correct', async function () {
-      const title = await waitUntilShowUp(screens.chooseContractExecutor.title)
-      assert.notEqual(title, false, 'title isn\'t displayed')
-      assert.equal(await title.getText(), screens.chooseContractExecutor.titleText, 'incorrect text')
-    })
-
-    it('two accounts displayed', async function () {
-      const accs = await waitUntilShowUp(screens.chooseContractExecutor.account)
-      assert.notEqual(accs, false, 'accounts aren\'t displayed')
-      const accounts = await driver.findElements(screens.chooseContractExecutor.account)
-      assert.equal(accounts.length, 3, "number of accounts isn't 2")
-    })
-    it("Button 'Next' is disabled by default", async function () {
-      const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
-      assert.notEqual(button, false, 'button isn\'t displayed')
-      assert.equal(await button.isEnabled(), false, 'button enabled by default')
-    })
-
-    it('User is able to select account', async function () {
-      await waitUntilShowUp(screens.chooseContractExecutor.account)
-      const accounts = await driver.findElements(screens.chooseContractExecutor.account)
-      const account = accounts[1]
-      await account.click()
-      const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
-      assert.equal(selected.length, 1, "account isn't selected")
-    })
-
-    it('User is able to select only one account', async function () {
-      const account = (await driver.findElements(screens.chooseContractExecutor.account))[2]
-      await account.click()
-      const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
-      assert.equal(selected.length, 1, 'more than one accounts are selected')
-    })
-
-    it("Click button 'Next' open 'Confirm transaction' screen", async function () {
-      const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
-      await button.click()
-      await delay(5000)
-      const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
-      assert.notEqual(reject, false, "button reject isn't displayed")
-      await click(reject)
-      const identicon = await waitUntilShowUp(screens.main.identicon)
-      assert.notEqual(identicon, false, 'main screen didn\'t opened')
-    })
-    it("Label 'CONTRACT' present", async function () {
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      await waitUntilShowUp(menus.account.labelImported)
-      const label = (await driver.findElements(menus.account.labelImported))[0]
-      assert.equal(await label.getText(), 'CONTRACT', 'label incorrect')
-    })
-    it('Delete imported account', async function () {
-      const item = await waitUntilShowUp(menus.account.delete)
-      await item.click()
-      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
-      await button.click()
-      const buttonArrow = await waitUntilShowUp(screens.settings.buttons.arrow)
-      await buttonArrow.click()
-      const identicon = await waitUntilShowUp(screens.main.identicon)
-      assert.notEqual(identicon, false, 'main screen didn\'t opened')
-    })
-  })
-
 
   describe('Sign Data', () => {
 
