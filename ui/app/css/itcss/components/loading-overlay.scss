@@ -11,6 +11,12 @@
   height: 100%;
   background: rgba(255, 255, 255, .8);
 
+  &__screen-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   &__container {
     position: absolute;
     top: 33%;
