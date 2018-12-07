@@ -54,6 +54,7 @@ module.exports = {
       buttonNext: By.css('.choose-contract-next-button'),
       account: By.className('account-data-subsection flex-row flex-grow'),
       selectedAccount: By.className('executor-cell-container-selected'),
+      buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
 
     },
     executeMethod: {

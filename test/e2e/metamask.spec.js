@@ -439,6 +439,7 @@ describe('Metamask popup page', async function () {
     describe('Choose Contract Executor', () => {
 
       it('title is displayed and correct', async function () {
+        await delay(5000)
         const title = await waitUntilShowUp(screens.chooseContractExecutor.title)
         assert.notEqual(title, false, 'title isn\'t displayed')
         assert.equal(await title.getText(), screens.chooseContractExecutor.titleText, 'incorrect text')
@@ -450,6 +451,24 @@ describe('Metamask popup page', async function () {
         const accounts = await driver.findElements(screens.chooseContractExecutor.account)
         assert.equal(accounts.length, 3, "number of accounts isn't 2")
       })
+
+      it("Click arrow  button leads to 'Execute Method' screen ", async function () {
+        const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonArrow)
+        assert.notEqual(button, false, 'button isn\'t displayed')
+        await button.click()
+        await delay(2000)
+
+        const title = await waitUntilShowUp(screens.executeMethod.title)
+        assert.notEqual(title, false, 'title isn\'t displayed')
+        assert.equal(await title.getText(), screens.executeMethod.titleText, "'Execute Method' screen isn't opened")
+      })
+
+      it("Return back to 'Choose Contract Executor' screen", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+        assert.notEqual(button, false, "button 'Next' isn't displayed")
+        await button.click()
+      })
+
       it("Button 'Next' is disabled by default", async function () {
         const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
         assert.notEqual(button, false, 'button isn\'t displayed')
