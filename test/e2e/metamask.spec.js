@@ -431,30 +431,30 @@ describe('Metamask popup page', async function () {
         assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
       })
 
-      it ("Fill out parameter '_newAbstractStorageAddr with wrong data'", async function () {
+      it("Fill out parameter '_newAbstractStorageAddr with wrong data'", async function () {
         const field = await waitUntilShowUp(screens.executeMethod.fieldParametr1)
         assert.notEqual(field, false, "field address isn't displayed")
         await field.sendKeys(wrongAddress)
       })
 
-      it.skip ("Button 'Copy ABI encoded' is disabled", async function () {
+      it.skip("Button 'Copy ABI encoded' is disabled", async function () {
         const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
         assert.equal(await button.isEnabled(), false, "button 'Copy ABI encoded' enabled")
       })
 
-      it.skip ("Button 'Next' is disabled", async function () {
+      it.skip("Button 'Next' is disabled", async function () {
         const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
         assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
       })
 
-      it ("Error message if wrong parameter", async function () {
+      it('Error message if wrong parameter', async function () {
         const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
         await button.click()
         const error = await waitUntilShowUp(elements.error)
-        assert.notEqual(error, false, "no error message")
+        assert.notEqual(error, false, 'no error message')
       })
 
-      it ("Close error message", async function () {
+      it('Close error message', async function () {
         const button = await waitUntilShowUp(elements.errorClose)
         await button.click()
         const title = await waitUntilShowUp(screens.executeMethod.title)
