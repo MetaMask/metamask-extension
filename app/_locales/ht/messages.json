@@ -1130,7 +1130,7 @@
     "message": "3. Kòmanse itilize dApps ak plis ankò!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Sèvi ak kont materyèl ou menm jan ou t ap fè pou kont Etherum. Ouvri sesyon an nan dApps, voye Eth, achte ak stòke ERC20 tokens ak e ki pake chanje tokens tankou CryptoKitties."
+    "message": "Sèvi ak kont materyèl ou menm jan ou t ap fè pou kont Etherum. Ouvri sesyon an nan dApps, voye Eth, achte ak stòke ERC20 tokens."
   },
   "submit": {
     "message": "Soumèt"
