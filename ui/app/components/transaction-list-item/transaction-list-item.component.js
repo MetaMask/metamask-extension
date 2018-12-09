@@ -18,6 +18,7 @@ export default class TransactionListItem extends PureComponent {
     history: PropTypes.object,
     methodData: PropTypes.object,
     nonceAndDate: PropTypes.string,
+    primaryTransaction: PropTypes.object,
     retryTransaction: PropTypes.func,
     setSelectedToken: PropTypes.func,
     showCancelModal: PropTypes.func,
@@ -26,6 +27,7 @@ export default class TransactionListItem extends PureComponent {
     token: PropTypes.object,
     tokenData: PropTypes.object,
     transaction: PropTypes.object,
+    transactionGroup: PropTypes.object,
     value: PropTypes.string,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
@@ -51,36 +53,48 @@ export default class TransactionListItem extends PureComponent {
     this.setState({ showTransactionDetails: !showTransactionDetails })
   }
 
-  handleCancel = () => {
-    const { transaction: { id, txParams: { gasPrice } } = {}, showCancelModal } = this.props
-    showCancelModal(id, gasPrice)
+  handleCancel = id => {
+    const {
+      primaryTransaction: { txParams: { gasPrice } } = {},
+      transaction: { id: initialTransactionId },
+      showCancelModal,
+    } = this.props
+
+    const cancelId = id || initialTransactionId
+    showCancelModal(cancelId, gasPrice)
   }
 
-  handleRetry = () => {
+  /**
+   * @name handleRetry
+   * @description Resubmits a transaction. Retrying a transaction within a list of transactions with
+   * the same nonce requires keeping the original value while increasing the gas price of the latest
+   * transaction.
+   * @param {number} id - Transaction id
+   */
+  handleRetry = id => {
     const {
-      transaction: { txParams: { to } = {} },
+      primaryTransaction: { txParams: { gasPrice } } = {},
+      transaction: { txParams: { to } = {}, id: initialTransactionId },
       methodData: { name } = {},
       setSelectedToken,
+      retryTransaction,
+      fetchBasicGasAndTimeEstimates,
+      fetchGasEstimates,
     } = this.props
 
     if (name === TOKEN_METHOD_TRANSFER) {
       setSelectedToken(to)
     }
 
-    return this.resubmit()
-  }
+    const retryId = id || initialTransactionId
 
-  resubmit () {
-    const { transaction, retryTransaction, fetchBasicGasAndTimeEstimates, fetchGasEstimates } = this.props
-    fetchBasicGasAndTimeEstimates().then(basicEstimates => {
-      fetchGasEstimates(basicEstimates.blockTime)
-    }).then(() => {
-      retryTransaction(transaction)
-    })
+    return fetchBasicGasAndTimeEstimates()
+      .then(basicEstimates => fetchGasEstimates(basicEstimates.blockTime))
+      .then(retryTransaction(retryId, gasPrice))
   }
 
   renderPrimaryCurrency () {
-    const { token, transaction: { txParams: { data } = {} } = {}, value } = this.props
+    const { token, primaryTransaction: { txParams: { data } = {} } = {}, value } = this.props
 
     return token
       ? (
@@ -118,12 +132,14 @@ export default class TransactionListItem extends PureComponent {
   render () {
     const {
       assetImages,
+      transaction,
       methodData,
       nonceAndDate,
+      primaryTransaction,
       showCancel,
       showRetry,
       tokenData,
-      transaction,
+      transactionGroup,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
@@ -156,11 +172,11 @@ export default class TransactionListItem extends PureComponent {
           </div>
           <TransactionStatus
             className="transaction-list-item__status"
-            statusKey={getStatusKey(transaction)}
+            statusKey={getStatusKey(primaryTransaction)}
             title={(
-              (transaction.err && transaction.err.rpc)
-                ? transaction.err.rpc.message
-                : transaction.err && transaction.err.message
+              (primaryTransaction.err && primaryTransaction.err.rpc)
+                ? primaryTransaction.err.rpc.message
+                : primaryTransaction.err && primaryTransaction.err.message
             )}
           />
           { this.renderPrimaryCurrency() }
@@ -173,7 +189,7 @@ export default class TransactionListItem extends PureComponent {
             showTransactionDetails && (
               <div className="transaction-list-item__details-container">
                 <TransactionListItemDetails
-                  transaction={transaction}
+                  transactionGroup={transactionGroup}
                   onRetry={this.handleRetry}
                   showRetry={showRetry && methodData.done}
                   onCancel={this.handleCancel}

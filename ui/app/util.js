@@ -8,8 +8,8 @@ const GWEI_FACTOR = new ethUtil.BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
-function formatDate (date) {
-  return vreme.format(new Date(date), '3/16/2014 at 14:30')
+function formatDate (date, format = '3/16/2014 at 14:30') {
+  return vreme.format(new Date(date), format)
 }
 
 var valueTable = {

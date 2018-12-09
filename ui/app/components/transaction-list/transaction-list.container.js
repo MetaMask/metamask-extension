@@ -3,24 +3,17 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import TransactionList from './transaction-list.component'
 import {
-  pendingTransactionsSelector,
-  submittedPendingTransactionsSelector,
-  completedTransactionsSelector,
+  nonceSortedCompletedTransactionsSelector,
+  nonceSortedPendingTransactionsSelector,
 } from '../../selectors/transactions'
 import { getSelectedAddress, getAssetImages } from '../../selectors'
 import { selectedTokenSelector } from '../../selectors/tokens'
-import { getLatestSubmittedTxWithNonce } from '../../helpers/transactions.util'
 import { updateNetworkNonce } from '../../actions'
 
 const mapStateToProps = state => {
-  const pendingTransactions = pendingTransactionsSelector(state)
-  const submittedPendingTransactions = submittedPendingTransactionsSelector(state)
-  const networkNonce = state.appState.networkNonce
-
   return {
-    completedTransactions: completedTransactionsSelector(state),
-    pendingTransactions,
-    transactionToRetry: getLatestSubmittedTxWithNonce(submittedPendingTransactions, networkNonce),
+    completedTransactions: nonceSortedCompletedTransactionsSelector(state),
+    pendingTransactions: nonceSortedPendingTransactionsSelector(state),
     selectedToken: selectedTokenSelector(state),
     selectedAddress: getSelectedAddress(state),
     assetImages: getAssetImages(state),

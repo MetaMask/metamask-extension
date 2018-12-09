@@ -230,13 +230,15 @@ class TransactionController extends EventEmitter {
     to allow the user to resign the transaction with a higher gas values
     @param  originalTxId {number} - the id of the txMeta that
     you want to attempt to retry
+    @param  gasPrice {string=} - Optional gas price to be increased to use as the retry
+    transaction's gas price
     @return {txMeta}
   */
 
-  async retryTransaction (originalTxId) {
+  async retryTransaction (originalTxId, gasPrice) {
     const originalTxMeta = this.txStateManager.getTx(originalTxId)
     const { txParams } = originalTxMeta
-    const lastGasPrice = originalTxMeta.txParams.gasPrice
+    const lastGasPrice = gasPrice || originalTxMeta.txParams.gasPrice
     const suggestedGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(this.getGasPrice()), 16)
     const lastGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(lastGasPrice), 16)
     // essentially lastGasPrice * 1.1 but

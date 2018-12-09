@@ -1,7 +1,8 @@
 .transaction-activity-log {
-  &__card {
-    background: $white;
-    height: 100%;
+  &__title {
+    border-bottom: 1px solid #d8d8d8;
+    padding-bottom: 4px;
+    text-transform: capitalize;
   }
 
   &__activities-container {
@@ -21,8 +22,8 @@
       left: 0;
       top: 0;
       height: 100%;
-      width: 6px;
-      border-right: 1px solid $scorpion;
+      width: 7px;
+      border-right: 1px solid #909090;
     }
 
     &:first-child::after {
@@ -40,28 +41,41 @@
   }
 
   &__activity-icon {
-    width: 13px;
-    height: 13px;
+    width: 15px;
+    height: 15px;
     margin-right: 6px;
     border-radius: 50%;
-    background: $scorpion;
+    background: #909090;
     flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
   }
 
   &__activity-text {
-    color: $scorpion;
+    color: $dusty-gray;
     font-size: .75rem;
+    cursor: pointer;
 
-    @media screen and (min-width: $break-large) {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    &:hover {
+      color: $black;
     }
   }
 
   &__value {
     display: inline;
     font-weight: 500;
+  }
+
+  &__entry-container {
+    min-width: 0;
+  }
+
+  &__action-link {
+    font-size: .75rem;
+    cursor: pointer;
+    color: $curious-blue;
   }
 
   b {
