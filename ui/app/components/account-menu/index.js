@@ -239,6 +239,9 @@ AccountMenu.prototype.renderKeyringType = function (keyring) {
       case 'Simple Key Pair':
         label = this.context.t('imported')
       break
+      case 'External Account':
+        label = this.context.t('external')
+      break
       default:
         label = ''
     }

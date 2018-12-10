@@ -6,6 +6,7 @@ export default class SendRowErrorMessage extends Component {
   static propTypes = {
     errors: PropTypes.object,
     errorType: PropTypes.string,
+    customErrors: PropTypes.object,
   };
 
   static contextTypes = {
@@ -13,9 +14,9 @@ export default class SendRowErrorMessage extends Component {
   };
 
   render () {
-    const { errors, errorType } = this.props
+    const { errors, errorType, customErrors } = this.props
 
-    const errorMessage = errors[errorType]
+    const errorMessage = errors[errorType] || customErrors[errorType]
 
     return (
       errorMessage

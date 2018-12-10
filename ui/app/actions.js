@@ -87,6 +87,7 @@ var actions = {
   createNewVaultInProgress: createNewVaultInProgress,
   addNewKeyring,
   importNewAccount,
+  addExternalAccount,
   addNewAccount,
   connectHardware,
   checkHardwareStatus,
@@ -178,6 +179,7 @@ var actions = {
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   updateTransactionParams,
   UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
+  updateSignature: updateSignature,
   // send screen
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
@@ -330,6 +332,7 @@ var actions = {
   approveProviderRequest,
   rejectProviderRequest,
   clearApprovedOrigins,
+  updateExternalSign,
 }
 
 module.exports = actions
@@ -611,6 +614,32 @@ function addNewKeyring (type, opts) {
   }
 }
 
+function addExternalAccount (address) {
+  return async (dispatch) => {
+    let newState
+    dispatch(actions.showLoadingIndication('This may take a while, please be patient.'))
+    try {
+      log.debug(`background.addExtAccount`)
+      await pify(background.addExtAccount).call(background, address)
+      log.debug(`background.getState`)
+      newState = await pify(background.getState).call(background)
+    } catch (err) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(err.message))
+      throw err
+    }
+    dispatch(actions.hideLoadingIndication())
+    dispatch(actions.updateMetamaskState(newState))
+    if (newState.selectedAddress) {
+      dispatch({
+        type: actions.SHOW_ACCOUNT_DETAIL,
+        value: newState.selectedAddress,
+      })
+    }
+    return newState
+  }
+}
+
 function importNewAccount (strategy, args) {
   return async (dispatch) => {
     let newState
@@ -753,7 +782,7 @@ function showInfoPage () {
   }
 }
 
-function showQrScanner (ROUTE) {
+function showQrScanner (ROUTE, props = {}) {
   return (dispatch, getState) => {
     return WebcamUtils.checkStatus()
     .then(status => {
@@ -761,8 +790,10 @@ function showQrScanner (ROUTE) {
          // We need to switch to fullscreen mode to ask for permission
          global.platform.openExtensionInBrowser(`${ROUTE}`, `scan=true`)
       } else {
+        props.route = ROUTE
         dispatch(actions.showModal({
           name: 'QR_SCANNER',
+          ...props,
         }))
       }
     }).catch(e => {
@@ -770,6 +801,7 @@ function showQrScanner (ROUTE) {
         name: 'QR_SCANNER',
         error: true,
         errorType: e.type,
+        ...props,
       }))
     })
   }
@@ -1171,6 +1203,13 @@ function updateTransactionParams (id, txParams) {
     type: actions.UPDATE_TRANSACTION_PARAMS,
     id,
     value: txParams,
+  }
+}
+
+function updateSignature(newSignature) {
+  return {
+    type: actions.UPDATE_SIGNATURE,
+    value: newSignature,
   }
 }
 
@@ -2518,3 +2557,10 @@ function clearApprovedOrigins () {
     background.clearApprovedOrigins()
   }
 }
+
+function updateExternalSign (payload) {
+return (dispatch) => {
+    background.updateExternalSign(payload)
+  }
+}
+
