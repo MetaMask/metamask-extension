@@ -10,19 +10,26 @@ import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
 import copyToClipboard from 'copy-to-clipboard'
+import BigNumber from 'bignumber.js'
 
-class SendTransactionInput extends Component {
+class SendTransactionField extends Component {
 	constructor (props) {
 		super(props)
 		this.state = {
-			inputVal: props.defaultValue,
+			val: props.defaultValue,
 		}
 		this.timerID = null
 	}
 
 	static propTypes = {
 		placeholder: PropTypes.string,
-		defaultValue: PropTypes.string,
+		defaultValue: PropTypes.oneOfType([
+			PropTypes.string,
+			PropTypes.number,
+			PropTypes.bool,
+			PropTypes.instanceOf(BigNumber),
+		]),
+		disabled: PropTypes.bool,
 		value: PropTypes.string,
 		onChange: PropTypes.func,
 	}
@@ -31,19 +38,19 @@ class SendTransactionInput extends Component {
 		return (
 			<input
 				type="text"
-				className="input large-input"
+				className="input large-input output"
 				placeholder={this.props.placeholder}
-				value={this.state.inputVal}
+				value={this.state.val}
+				disabled={this.props.disabled}
 				onChange={e => {
-						this.setState({
-							inputVal: e.target.value,
-						})
-						this.props.onChange(e)
-					}
-				}
+					this.setState({
+						val: e.target.value,
+					})
+					this.props.onChange(e)
+				}}
 				style={{ marginTop: '5px' }}
 			/>
-			)
+		)
 	}
 }
 
@@ -56,13 +63,15 @@ class SendTransactionScreen extends PersistentForm {
 			methodSelected: props.methodSelected,
 			methodABI: props.methodABI,
 			methodInputs: [],
+			methodOutputs: [],
 			methodInputsView: [],
-			methodOutput: null,
+			methodOutputsView: [],
 			isConstantMethod: false,
 			inputValues: props.inputValues || {},
-			output: '',
+			outputValues: props.outputValues || {},
 			copyDisabled: true,
 		}
+
 		PersistentForm.call(this)
 	}
 
@@ -101,15 +110,16 @@ class SendTransactionScreen extends PersistentForm {
 								methodSelected: opt.value,
 								isConstantMethod: opt.metadata.constant,
 								methodABI: opt.metadata,
-								output: '',
+								outputValues: {},
 								inputValues: {},
+							}, () => {
+								this.generateMethodFieldsView(opt.metadata)
 							})
-							this.generateMethodInputsView(opt.metadata)
 						}}
 					/>
-					<div style={{ overflow: 'auto', maxHeight: this.state.isConstantMethod ? '120px' : '210px' }}>
-						{this.state.methodInputsView}
-					</div>
+				</div>
+				<div style={{ padding: '0 30px', overflow: 'auto' }}>
+					{this.state.methodInputsView}
 					{this.state.isConstantMethod && this.methodOutput()}
 					{this.buttonsSection()}
 				</div>
@@ -119,7 +129,7 @@ class SendTransactionScreen extends PersistentForm {
 
 	componentDidMount () {
 		if (this.props.methodSelected) {
-			this.generateMethodInputsView(this.props.methodABI)
+			this.generateMethodFieldsView(this.props.methodABI)
 		}
 	}
 
@@ -139,37 +149,45 @@ class SendTransactionScreen extends PersistentForm {
 		})
 	}
 
-	generateMethodInput (params, ind) {
+	generateMethodField (params, ind, isInput) {
+		const { inputValues, outputValues } = this.state
+		const paramName = isInput ? 'Input' : 'Output'
+		let defaultValue = isInput ? (inputValues && inputValues[ind]) || '' : (outputValues && outputValues[ind]) || ''
+		console.log(`defaultValue: ${defaultValue}`)
+		if (Array.isArray(defaultValue)) {
+			defaultValue = defaultValue.join(', ')
+		}
 		const label = (
 			<h3
 				key={`method_label_${ind}`}
 				style={{ marginTop: '10px' }}
 			>
-				{params.name || `Input ${ind + 1}`}
+				{params.name || `${paramName} ${ind + 1}`}
 			</h3>
 		)
-		const input = (
-			<SendTransactionInput
+		const field = (
+			<SendTransactionField
 				key={Math.random()}
 				ind={ind}
+				disabled={!isInput}
 				placeholder={params.type}
-				defaultValue={(this.props.inputValues && this.props.inputValues[ind]) || ''}
-				onChange={e => this.handleInputChange(e, ind)}
+				defaultValue={defaultValue}
+				onChange={e => isInput ? this.handleInputChange(e.target.value, ind) : null}
 			/>
 		)
-		const inputObj = (
+		const fieldObj = (
 			<div key={`method_label_container_${ind}`}>
 				{label}
-				{input}
+				{field}
 			</div>
 		)
-		return inputObj
+		return fieldObj
 	}
 
-	handleInputChange (e, ind) {
+	handleInputChange (val, ind) {
 		const { inputValues } = this.state
-		if (e.target.value) {
-			inputValues[ind] = e.target.value
+		if (val) {
+			inputValues[ind] = val
 		} else {
 			delete inputValues[ind]
 		}
@@ -178,53 +196,53 @@ class SendTransactionScreen extends PersistentForm {
 		})
 	}
 
-	generateMethodInputsView (metadata) {
+	generateMethodFieldsView (metadata) {
 		this.setState({
 			methodInputs: [],
 			methodInputsView: [],
+			methodOutputs: [],
+			methodOutputsView: [],
 		})
 		const methodInputsView = []
 		const methodInputs = metadata && metadata.inputs
+		const methodOutputsView = []
+		const methodOutputs = metadata && metadata.outputs
 		methodInputs.forEach((input, ind) => {
-			methodInputsView.push(this.generateMethodInput(input, ind))
+			methodInputsView.push(this.generateMethodField(input, ind, true))
+		})
+		methodOutputs.forEach((output, ind) => {
+			methodOutputsView.push(this.generateMethodField(output, ind, false))
 		})
 		this.setState({
 			methodInputs,
 			methodInputsView,
+			methodOutputs,
+			methodOutputsView,
+		})
+	}
+
+	updateOutputsView () {
+		const methodOutputsView = []
+		console.log(this.state.methodOutputs)
+		this.state.methodOutputs.forEach((output, ind) => {
+			console.log(output)
+			methodOutputsView.push(this.generateMethodField(output, ind, false))
+		})
+		this.setState({
+			methodOutputsView,
 		})
 	}
 
 	methodOutput () {
-		const label = (
-			<h2
-				key="method_output_label"
-				style={{
-					marginTop: '10px',
-				}}
-				>
-				Output
-			</h2>
-		)
-		const output = (
-			<textarea
-				key="method_output_value"
-				className="input large-input"
-				disabled={true}
-				value={this.state.output}
-				style={{
-					marginTop: '5px',
-					width: '100%',
-					height: '50px',
-				}}
-			/>
-		)
-		const outputObj = (
+		return (
 			<div>
-				{label}
-				{output}
+				<h3
+					className="flex-center"
+					style={{ marginTop: '10px' }}
+				>Output data</h3>
+				{this.state.methodOutputsView}
 			</div>
 		)
-		return outputObj
 	}
 
 	buttonsSection () {
@@ -278,9 +296,19 @@ class SendTransactionScreen extends PersistentForm {
 					return this.props.displayWarning(err)
 				}
 				if (output) {
+					const outputValues = {}
+					if (this.state.methodOutputsView.length > 1) {
+						output.forEach((val, ind) => {
+							outputValues[ind] = val
+						})
+					} else {
+						outputValues[0] = output
+					}
+					console.log(outputValues)
 					this.setState({
-						output,
+						outputValues,
 					})
+					this.updateOutputsView()
 				}
 			})
 		} catch (e) {
