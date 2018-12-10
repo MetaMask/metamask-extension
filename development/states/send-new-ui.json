@@ -139,7 +139,8 @@
   "send": {
     "fromDropdownOpen": false,
     "toDropdownOpen": false,
-    "errors": {}
+    "errors": {},
+    "gasButtonGroupShown": true
   },
   "confirmTransaction": {
     "txData": {},
@@ -179,6 +180,7 @@
     },
     "basicEstimateIsLoading": false,
     "gasEstimatesLoading": false,
+    "basicPriceAndTimeEstimates": [],
     "priceAndTimeEstimates": [
       {
         "expectedTime": "1374.1168296452973076627",
