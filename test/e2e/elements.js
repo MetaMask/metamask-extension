@@ -2,6 +2,8 @@ const webdriver = require('selenium-webdriver')
 const { By } = webdriver
 module.exports = {
   elements: {
+    errorClose: By.css('.send-screen > div:nth-child(3) > div:nth-child(1)'),
+    error: By.className('error'),
     loader: By.css('#app-content > div > div.full-flex-height > img'),
     poaABI: '[{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address","name":""}],"name":"abstractStorageAddr","inputs":[],"constant":true},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address[]","name":""}],"name":"getCrowdsalesForUser","inputs":[{"type":"address","name":"deployer"}],"constant":true},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"uint256","name":""}],"name":"countCrowdsalesForUser","inputs":[{"type":"address","name":"deployer"}],"constant":true},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"renounceOwnership","inputs":[],"constant":false},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"changeMintedCappedIdx","inputs":[{"type":"address","name":"newMintedCappedIdxAddr"}],"constant":false},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"changeDutchIdxAddr","inputs":[{"type":"address","name":"newDutchIdxAddr"}],"constant":false},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address","name":""}],"name":"owner","inputs":[],"constant":true},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address","name":""}],"name":"dutchIdxAddr","inputs":[],"constant":true},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address","name":""}],"name":"mintedCappedIdxAddr","inputs":[],"constant":true},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"changeAbstractStorage","inputs":[{"type":"address","name":"newAbstractStorageAddr"}],"constant":false},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"trackCrowdsale","inputs":[{"type":"address","name":"proxyAddress"}],"constant":false},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"transferOwnership","inputs":[{"type":"address","name":"_newOwner"}],"constant":false},{"type":"constructor","stateMutability":"nonpayable","payable":false,"inputs":[{"type":"address","name":"_abstractStorage"},{"type":"address","name":"_mintedCappedIdx"},{"type":"address","name":"_dutchIdx"}]},{"type":"event","name":"Added","inputs":[{"type":"address","name":"sender","indexed":true},{"type":"address","name":"proxyAddress","indexed":true},{"type":"bytes32","name":"appExecID","indexed":false}],"anonymous":false},{"type":"event","name":"OwnershipRenounced","inputs":[{"type":"address","name":"previousOwner","indexed":true}],"anonymous":false},{"type":"event","name":"OwnershipTransferred","inputs":[{"type":"address","name":"previousOwner","indexed":true},{"type":"address","name":"newOwner","indexed":true}],"anonymous":false}]',
   },
@@ -67,8 +69,9 @@ module.exports = {
       buttonCall: By.css('.section > button:nth-child(1)'),
       fieldOutput: By.css('.input'),
       fieldParametr1: By.css('.input'),
-      buttonNext: By.css('.section > button:nth-child(1)'),
+      buttonNext: By.css('.section > div:nth-child(1) > button:nth-child(2)'),
       buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
+      buttonCopyABI: By.className('btn-violet'),
     },
 
     eventsEmitter: {
@@ -371,3 +374,4 @@ module.exports = {
     CUSTOM: 'http://test.com',
   },
 }
+
