@@ -11,6 +11,16 @@
   "exposeDescription": {
     "message": "Expose accounts to the current website. Useful for legacy dapps."
   },
+  "external": {
+    "message": "External"
+  },
+  "externalAcc": {
+    "message": "External Account",
+    "description": "select this for entering external account without password"
+  },
+  "externalAccountMsg": {
+    "message": "External accounts will not be associated with your originally created MetaMask account seedphrase. When you want to confirm a transaction with external account, Metamask will provide transaction details and expects a valid signature from external signer app."
+  },
   "confirmExpose": {
     "message": "Are you sure you want to expose your accounts to the current website?"
   },
@@ -753,6 +763,15 @@
   "invalidSeedPhrase": {
     "message": "Invalid seed phrase"
   },
+  "invalidSignature": {
+    "message": "Invalid signature"
+  },
+  "invalidSignatureLength": {
+    "message": "Length should be 130 chars."
+  },
+  "invalidSignatureChar": {
+    "message": "Invalid character in signature."
+  },
   "jsonFail": {
     "message": "Something went wrong. Please make sure your JSON file is properly formatted."
   },
@@ -1039,6 +1058,10 @@
     "message": "Paste your private key string here:",
     "description": "For importing an account from a private key"
   },
+  "pasteExternalAccount": {
+    "message": "Paste your external account address here:",
+    "description": "For importing an external account from account number"
+  },
   "pasteSeed": {
     "message": "Paste your seed phrase here!"
   },
@@ -1096,6 +1119,9 @@
   },
   "recipientAddress": {
     "message": "Recipient Address"
+  },
+  "signature": {
+    "message": "Signature"
   },
   "refundAddress": {
     "message": "Your Refund Address"

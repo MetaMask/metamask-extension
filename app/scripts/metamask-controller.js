@@ -158,7 +158,10 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // key mgmt
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring]
+    const additionalKeyrings = [
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+    ]
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -407,6 +410,7 @@ module.exports = class MetamaskController extends EventEmitter {
       resetAccount: nodeify(this.resetAccount, this),
       removeAccount: nodeify(this.removeAccount, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
+      addExtAccount: nodeify(this.addExtAccount, this),
 
       // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),
@@ -451,6 +455,7 @@ module.exports = class MetamaskController extends EventEmitter {
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
+      updateExternalSign: nodeify(keyringController.updateExternalSign, keyringController),
 
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
@@ -936,6 +941,23 @@ module.exports = class MetamaskController extends EventEmitter {
   async importAccountWithStrategy (strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args)
     const keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    const accounts = await keyring.getAccounts()
+    // update accounts in preferences controller
+    const allAccounts = await this.keyringController.getAccounts()
+    this.preferencesController.setAddresses(allAccounts)
+    // set new account as selected
+    await this.preferencesController.setSelectedAddress(accounts[0])
+  }
+
+  /**
+   * Creates and external account and adds it to a newly created
+   * ExternalAccountKeyring.
+   *
+   * @param  {string} address - A valid Ethereum address string.
+   */
+  async addExtAccount (address) {
+    if (!ethUtil.isValidAddress(address)) throw new Error('Address is invalid.')
+    const keyring = await this.keyringController.addNewKeyring('External Account', [ address ])
     const accounts = await keyring.getAccounts()
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts()

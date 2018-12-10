@@ -9,10 +9,14 @@ import PageContainerFooter from '../../page-container/page-container-footer/page
 export default class QrScanner extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
+    showModal: PropTypes.func.isRequired,
     qrCodeDetected: PropTypes.func,
     scanQrCode: PropTypes.func,
     error: PropTypes.bool,
     errorType: PropTypes.string,
+    showNext: PropTypes.string,
+    nextProps: PropTypes.object,
+    route: PropTypes.string,
   }
 
   static contextTypes = {
@@ -25,6 +29,7 @@ export default class QrScanner extends Component {
     this.state = {
       ready: false,
       msg: context.t('accessingYourCamera'),
+      showNextModal: true,
     }
     this.codeReader = null
     this.permissionChecker = null
@@ -66,6 +71,7 @@ export default class QrScanner extends Component {
     if (this.codeReader) {
       this.codeReader.reset()
     }
+    this.showNextOrHide()
   }
 
   initCamera () {
@@ -112,6 +118,11 @@ export default class QrScanner extends Component {
       type = 'address'
       values = {'address': content.split('ethereum:')[1] }
 
+    } else if (content.split('eths:').length > 1) {
+    // signature from external signer
+      type = 'signature'
+      values = {'signature': content.split('signature:')[1]}
+
     // Regular ethereum addresses - fox ex. 0x.....1111
     } else if (content.substring(0, 2).toLowerCase() === '0x') {
 
@@ -122,22 +133,36 @@ export default class QrScanner extends Component {
     return {type, values}
   }
 
+  showNextOrHide = () => {
+    if (this.state.showNextModal && this.props.showNext) {
+      setTimeout(_ => {
+        this.props.showModal({
+          name: this.props.showNext,
+          ...this.props.nextProps,
+        })
+      }, 300)
+    } else {
+      this.props.hideModal()
+    }
+  }
 
   stopAndClose = () => {
     if (this.codeReader) {
       this.codeReader.reset()
     }
     this.setState({ ready: false })
-    this.props.hideModal()
+    this.showNextOrHide()
   }
 
   tryAgain = () => {
-    // close the modal
-    this.stopAndClose()
-    // wait for the animation and try again
-    setTimeout(_ => {
-      this.props.scanQrCode()
-    }, 1000)
+    this.setState({showNextModal: false}, () => {
+      // close the modal
+      this.stopAndClose()
+      // wait for the animation and try again
+      setTimeout(_ => {
+        this.props.scanQrCode(this.props.route, {showNext: this.props.showNext, nextProps: this.props.nextProps})
+      }, 1000)
+    })
   }
 
   renderVideo () {
