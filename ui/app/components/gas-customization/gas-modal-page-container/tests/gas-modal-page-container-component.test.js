@@ -78,6 +78,7 @@ describe('GasModalPageContainer Component', function () {
       customGasPriceInHex={'mockCustomGasPriceInHex'}
       customGasLimitInHex={'mockCustomGasLimitInHex'}
       insufficientBalance={false}
+      disableSave={false}
     />, { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } })
   })
 

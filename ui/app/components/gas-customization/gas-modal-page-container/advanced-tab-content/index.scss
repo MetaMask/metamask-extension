@@ -102,11 +102,15 @@
       }
     }
 
-    &__insufficient-balance {
+    &__error-text {
       font-size: 12px;
       color: red;
     }
 
+    &__warning-text {
+      font-size: 12px;
+      color: orange;
+    }
 
     &__input-wrapper {
       position: relative;
@@ -126,6 +130,10 @@
 
     &__input--error {
        border: 1px solid $red;
+    }
+
+    &__input--warning {
+       border: 1px solid $orange;
     }
 
     &__input-arrows {
@@ -167,6 +175,10 @@
 
     &__input-arrows--error {
       border: 1px solid $red;
+    }
+
+    &__input-arrows--warning {
+      border: 1px solid $orange;
     }
 
     input[type="number"]::-webkit-inner-spin-button {

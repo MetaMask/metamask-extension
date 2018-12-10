@@ -20,6 +20,7 @@ const {
   setCustomGasErrors,
   resetCustomGasState,
   fetchBasicGasAndTimeEstimates,
+  fetchBasicGasEstimates,
   gasEstimatesLoadingStarted,
   gasEstimatesLoadingFinished,
   setPricesAndTimeEstimates,
@@ -43,6 +44,7 @@ describe('Gas Duck', () => {
     safeLow: 10,
     safeLowWait: 'mockSafeLowWait',
     speed: 'mockSpeed',
+    standard: 20,
   }
   const mockPredictTableResponse = [
     { expectedTime: 400, expectedWait: 40, gasprice: 0.25, somethingElse: 'foobar' },
@@ -67,7 +69,7 @@ describe('Gas Duck', () => {
     { expectedTime: 1, expectedWait: 0.5, gasprice: 20, somethingElse: 'foobar' },
   ]
   const fetchStub = sinon.stub().callsFake((url) => new Promise(resolve => {
-    const dataToResolve = url.match(/ethgasAPI/)
+    const dataToResolve = url.match(/ethgasAPI|gasexpress/)
       ? mockEthGasApiResponse
       : mockPredictTableResponse
     resolve({
@@ -83,6 +85,7 @@ describe('Gas Duck', () => {
   })
 
   afterEach(() => {
+    fetchStub.resetHistory()
     global.fetch = tempFetch
     global.Date.now = tempDateNow
   })
@@ -117,8 +120,7 @@ describe('Gas Duck', () => {
     priceAndTimeEstimatesLastRetrieved: 0,
     basicPriceAndTimeEstimates: [],
     basicPriceAndTimeEstimatesLastRetrieved: 0,
-
-
+    basicPriceEstimatesLastRetrieved: 0,
   }
   const BASIC_GAS_ESTIMATE_LOADING_FINISHED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED'
   const BASIC_GAS_ESTIMATE_LOADING_STARTED = 'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_STARTED'
@@ -133,6 +135,7 @@ describe('Gas Duck', () => {
   const SET_PRICE_AND_TIME_ESTIMATES = 'metamask/gas/SET_PRICE_AND_TIME_ESTIMATES'
   const SET_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_API_ESTIMATES_LAST_RETRIEVED'
   const SET_BASIC_API_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_BASIC_API_ESTIMATES_LAST_RETRIEVED'
+  const SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED'
 
   describe('GasReducer()', () => {
     it('should initialize state', () => {
@@ -297,6 +300,59 @@ describe('Gas Duck', () => {
       assert.deepEqual(
         basicGasEstimatesLoadingFinished(),
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }
+      )
+    })
+  })
+
+  describe('fetchBasicGasEstimates', () => {
+    const mockDistpatch = sinon.spy()
+    it('should call fetch with the expected params', async () => {
+      await fetchBasicGasEstimates()(mockDistpatch, () => ({ gas: Object.assign(
+        {},
+        initState,
+        { basicPriceAEstimatesLastRetrieved: 1000000 }
+      ) }))
+      assert.deepEqual(
+        mockDistpatch.getCall(0).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_STARTED} ]
+      )
+      assert.deepEqual(
+        global.fetch.getCall(0).args,
+        [
+          'https://dev.blockscale.net/api/gasexpress.json',
+          {
+            'headers': {},
+            'referrer': 'https://dev.blockscale.net/api/',
+            'referrerPolicy': 'no-referrer-when-downgrade',
+            'body': null,
+            'method': 'GET',
+            'mode': 'cors',
+          },
+        ]
+      )
+
+      assert.deepEqual(
+        mockDistpatch.getCall(1).args,
+        [{ type: SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED, value: 2000000 } ]
+      )
+
+      assert.deepEqual(
+        mockDistpatch.getCall(2).args,
+        [{
+          type: SET_BASIC_GAS_ESTIMATE_DATA,
+          value: {
+            average: 20,
+            blockTime: 'mockBlock_time',
+            blockNum: 'mockBlockNum',
+            fast: 30,
+            fastest: 40,
+            safeLow: 10,
+          },
+        }]
+      )
+      assert.deepEqual(
+        mockDistpatch.getCall(3).args,
+        [{ type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }]
       )
     })
   })
