@@ -1,7 +1,5 @@
 const injectCss = require('inject-css')
-const OldMetaMaskUiCss = require('../../old-ui/css')
-const NewMetaMaskUiCss = require('../../ui/css')
-const {getShouldUseNewUi} = require('../../ui/app/selectors')
+const uiCss = require('../../ui/css')
 const startPopup = require('./popup-core')
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
@@ -46,26 +44,11 @@ async function start () {
   // start ui
   const container = document.getElementById('app-content')
   startPopup({ container, connectionStream }, (err, store) => {
-    if (err) return displayCriticalError(err)
+    if (err) {
+      return displayCriticalError(err)
+    }
 
-    const state = store.getState()
-    let betaUIState = Boolean(state.featureFlags && state.featureFlags.betaUI)
-    const useBetaCss = getShouldUseNewUi(state)
-
-    let css = useBetaCss ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
-    let deleteInjectedCss = injectCss(css)
-    let newBetaUIState
-
-    store.subscribe(() => {
-      const state = store.getState()
-      newBetaUIState = state.metamask.featureFlags.betaUI
-      if (newBetaUIState !== betaUIState) {
-        deleteInjectedCss()
-        betaUIState = newBetaUIState
-        css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
-        deleteInjectedCss = injectCss(css)
-      }
-    })
+    injectCss(uiCss())
   })
 
 

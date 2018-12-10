@@ -1,10 +1,13 @@
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const Root = require('./app/root')
+const { Provider } = require('react-redux')
+const { HashRouter } = require('react-router-dom')
 const actions = require('./app/actions')
+const App = require('./app/app')
 const configureStore = require('./app/store')
 const txHelper = require('./lib/tx-helper')
 const { fetchLocale } = require('./i18n-helper')
+const I18nProvider = require('./app/i18n-provider')
 const log = require('loglevel')
 
 module.exports = launchMetamaskUi
@@ -74,12 +77,19 @@ async function startApp (metamaskState, accountManager, opts) {
   }
 
   // start app
+  const {container} = opts
   render(
-    h(Root, {
-      // inject initial state
-      store: store,
-    }
-  ), opts.container)
+    h(Provider, { store }, [
+      h(HashRouter, {
+        hashType: 'noslash',
+      }, [
+        h(I18nProvider, [
+          h(App),
+        ]),
+      ]),
+    ]),
+    container,
+  )
 
   return store
 }
