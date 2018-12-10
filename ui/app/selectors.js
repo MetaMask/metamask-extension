@@ -45,7 +45,6 @@ function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
 
   return nickname || rpcTarget || type
-
 }
 
 function getSelectedAddress (state) {
