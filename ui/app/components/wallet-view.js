@@ -143,14 +143,22 @@ WalletView.prototype.render = function () {
   let type
   if (keyring) {
     type = keyring.type
-    if (type !== 'HD Key Tree') {
-      if (type.toLowerCase().search('hardware') !== -1) {
+    switch (type) {
+      case 'Trezor Hardware':
+      case 'Ledger Hardware':
         label = this.context.t('hardware')
-      } else {
+        break
+      case 'Simple Key Pair':
         label = this.context.t('imported')
-      }
+        break
+      case 'External Account':
+        label = this.context.t('external')
+        break
+      default:
+        label = ''
     }
   }
+
 
   return h('div.wallet-view.flex-column', {
     style: {},

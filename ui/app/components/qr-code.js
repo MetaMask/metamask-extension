@@ -6,7 +6,7 @@ const connect = require('react-redux').connect
 const { isHexPrefixed } = require('ethereumjs-util')
 const ReadOnlyInput = require('./readonly-input')
 const { checksumAddress } = require('../util')
-
+import QRCode from 'qrcode.react'
 module.exports = connect(mapStateToProps)(QrCodeView)
 
 function mapStateToProps (state) {
@@ -25,12 +25,15 @@ function QrCodeView () {
 
 QrCodeView.prototype.render = function () {
   const props = this.props
-  const { message, data, network } = props.Qr
-  const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data, network)}`
-  const qrImage = qrCode(4, 'M')
-  qrImage.addData(address)
-  qrImage.make()
-
+  const { message, data, network, isDataAddress, width} = props.Qr
+  const isAddress = isDataAddress !== false
+  var qrImage
+  if (isAddress) {
+    const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data, network)}`
+    qrImage = qrCode(4, 'M')
+    qrImage.addData(address)
+    qrImage.make()
+  }
   return h('.div.flex-column.flex-center', [
     Array.isArray(message)
       ? h('.message-container', this.renderMultiMessage())
@@ -42,16 +45,22 @@ QrCodeView.prototype.render = function () {
     },
     this.props.warning) : null,
 
-    h('.div.qr-wrapper', {
+    isAddress ? h('.div.qr-wrapper', {
       style: {},
       dangerouslySetInnerHTML: {
         __html: qrImage.createTableTag(4),
       },
-    }),
+    }) : h('.div.qr-wrapper', { style: {} }, [
+      h(QRCode, {
+        value: data,
+        size: width || 480,
+      }),
+    ]),
+
     h(ReadOnlyInput, {
       wrapperClass: 'ellip-address-wrapper',
       inputClass: 'qr-ellip-address',
-      value: checksumAddress(data, network),
+      value: isDataAddress ? checksumAddress(data) : data,
     }),
   ])
 }

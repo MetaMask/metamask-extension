@@ -8,6 +8,7 @@ const { resetCustomData: resetCustomGasData } = require('../../ducks/gas.duck')
 const isMobileView = require('../../../lib/is-mobile-view')
 const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
+const extend = require('xtend')
 
 // Modal Components
 const BuyOptions = require('./buy-options-modal')
@@ -28,6 +29,7 @@ import CancelTransaction from './cancel-transaction'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
+import ExternalSignModal from './external-sign-modal'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -170,6 +172,30 @@ const MODALS = {
       h(AccountDetailsModal, {}, []),
     ],
     ...accountModalStyle,
+  },
+
+  EXTERNAL_SIGN: {
+    contents: [
+      h(ExternalSignModal),
+    ],
+    mobileModalStyle: {
+      width: '100vw',
+      height: '100vh',
+      top: '0',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: '600px',
+      height: '640px',
+      top: '20px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
   },
 
   EXPORT_PRIVATE_KEY: {
@@ -412,7 +438,9 @@ const BACKDROPSTYLE = {
 function mapStateToProps (state) {
   return {
     active: state.appState.modal.open,
+    currentView: state.appState.currentView.name,
     modalState: state.appState.modal.modalState,
+    extToSign: state.metamask.extToSign,
   }
 }
 
@@ -427,7 +455,9 @@ function mapDispatchToProps (dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning())
     },
-
+    showModal: (payload) => {
+      dispatch(actions.showModal(payload))
+    },
   }
 }
 
@@ -469,6 +499,18 @@ Modal.prototype.render = function () {
 }
 
 Modal.prototype.componentWillReceiveProps = function (nextProps) {
+  if (
+    nextProps.extToSign.length > this.props.extToSign.length &&
+    this.props.currentView === 'confTx' &&
+    !(this.props.modalState.name === 'EXTERNAL_SIGN' &&
+      this.props.modalState.open)
+  ) {
+    this.props.showModal({
+      name: 'EXTERNAL_SIGN',
+      signable: extend({}, nextProps.extToSign[0]),
+      updateMetamask: true,
+    })
+  }
   if (nextProps.active) {
     this.show()
   } else if (this.props.active) {

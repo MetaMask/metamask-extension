@@ -44,6 +44,7 @@ const UPDATE_NONCE = createActionType('UPDATE_NONCE')
 const UPDATE_TO_SMART_CONTRACT = createActionType('UPDATE_TO_SMART_CONTRACT')
 const FETCH_DATA_START = createActionType('FETCH_DATA_START')
 const FETCH_DATA_END = createActionType('FETCH_DATA_END')
+const UPDATE_SIGNATURE = createActionType('UPDATE_SIGNATURE')
 
 // Initial state
 const initState = {
@@ -66,6 +67,7 @@ const initState = {
   nonce: '',
   toSmartContract: false,
   fetchingData: false,
+  signature: '',
 }
 
 // Reducer
@@ -163,6 +165,11 @@ export default function reducer ({ confirmTransaction: confirmState = initState 
       }
     case CLEAR_CONFIRM_TRANSACTION:
       return initState
+    case UPDATE_SIGNATURE:
+      return {
+        ...confirmState,
+        signature: action.payload,
+      }
     default:
       return confirmState
   }
@@ -417,3 +424,11 @@ export function clearConfirmTransaction () {
     type: CLEAR_CONFIRM_TRANSACTION,
   }
 }
+
+export function updateSignature (newSignature) {
+  return {
+    type: UPDATE_SIGNATURE,
+    payload: newSignature,
+  }
+}
+
