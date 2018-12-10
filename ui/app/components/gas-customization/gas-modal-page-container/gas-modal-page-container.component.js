@@ -35,6 +35,9 @@ export default class GasModalPageContainer extends Component {
       PropTypes.string,
       PropTypes.number,
     ]),
+    customPriceIsSafe: PropTypes.bool,
+    isSpeedUp: PropTypes.bool,
+    disableSave: PropTypes.bool,
   }
 
   state = {}
@@ -69,6 +72,8 @@ export default class GasModalPageContainer extends Component {
     currentTimeEstimate,
     insufficientBalance,
     gasEstimatesLoading,
+    customPriceIsSafe,
+    isSpeedUp,
   }) {
     const { transactionFee } = this.props
     return (
@@ -83,6 +88,8 @@ export default class GasModalPageContainer extends Component {
         gasChartProps={gasChartProps}
         insufficientBalance={insufficientBalance}
         gasEstimatesLoading={gasEstimatesLoading}
+        customPriceIsSafe={customPriceIsSafe}
+        isSpeedUp={isSpeedUp}
       />
     )
   }
@@ -153,6 +160,7 @@ export default class GasModalPageContainer extends Component {
       onSubmit,
       customModalGasPriceInHex,
       customModalGasLimitInHex,
+      disableSave,
       ...tabProps
     } = this.props
 
@@ -162,7 +170,7 @@ export default class GasModalPageContainer extends Component {
           title={this.context.t('customGas')}
           subtitle={this.context.t('customGasSubTitle')}
           tabsComponent={this.renderTabs(infoRowProps, tabProps)}
-          disabled={tabProps.insufficientBalance}
+          disabled={disableSave}
           onCancel={() => cancelAndClose()}
           onClose={() => cancelAndClose()}
           onSubmit={() => {

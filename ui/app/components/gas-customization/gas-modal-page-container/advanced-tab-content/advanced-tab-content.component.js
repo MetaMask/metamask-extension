@@ -21,6 +21,8 @@ export default class AdvancedTabContent extends Component {
     timeRemaining: PropTypes.string,
     gasChartProps: PropTypes.object,
     insufficientBalance: PropTypes.bool,
+    customPriceIsSafe: PropTypes.bool,
+    isSpeedUp: PropTypes.bool,
   }
 
   constructor (props) {
@@ -37,27 +39,62 @@ export default class AdvancedTabContent extends Component {
     }
   }
 
-  gasInput (value, onChange, min, insufficientBalance, showGWEI) {
+  gasInputError ({ labelKey, insufficientBalance, customPriceIsSafe, isSpeedUp, value }) {
+    let errorText
+    let errorType
+    let isInError = true
+
+
+    if (insufficientBalance) {
+      errorText = 'Insufficient Balance'
+      errorType = 'error'
+    } else if (labelKey === 'gasPrice' && isSpeedUp && value === 0) {
+      errorText = 'Zero gas price on speed up'
+      errorType = 'error'
+    } else if (labelKey === 'gasPrice' && !customPriceIsSafe) {
+      errorText = 'Gas Price Extremely Low'
+      errorType = 'warning'
+    } else {
+      isInError = false
+    }
+
+    return {
+      isInError,
+      errorText,
+      errorType,
+    }
+  }
+
+  gasInput ({ labelKey, value, onChange, insufficientBalance, showGWEI, customPriceIsSafe, isSpeedUp }) {
+    const {
+      isInError,
+      errorText,
+      errorType,
+    } = this.gasInputError({ labelKey, insufficientBalance, customPriceIsSafe, isSpeedUp, value })
+
     return (
       <div className="advanced-tab__gas-edit-row__input-wrapper">
         <input
           className={classnames('advanced-tab__gas-edit-row__input', {
-            'advanced-tab__gas-edit-row__input--error': insufficientBalance,
+            'advanced-tab__gas-edit-row__input--error': isInError && errorType === 'error',
+            'advanced-tab__gas-edit-row__input--warning': isInError && errorType === 'warning',
           })}
           type="number"
           value={value}
-          min={min}
           onChange={event => onChange(Number(event.target.value))}
         />
         <div className={classnames('advanced-tab__gas-edit-row__input-arrows', {
-          'advanced-tab__gas-edit-row__input-arrows--error': insufficientBalance,
+          'advanced-tab__gas-edit-row__input--error': isInError && errorType === 'error',
+          'advanced-tab__gas-edit-row__input--warning': isInError && errorType === 'warning',
         })}>
           <div className="advanced-tab__gas-edit-row__input-arrows__i-wrap" onClick={() => onChange(value + 1)}><i className="fa fa-sm fa-angle-up" /></div>
           <div className="advanced-tab__gas-edit-row__input-arrows__i-wrap" onClick={() => onChange(value - 1)}><i className="fa fa-sm fa-angle-down" /></div>
         </div>
-        {insufficientBalance && <div className="advanced-tab__gas-edit-row__insufficient-balance">
-          Insufficient Balance
-        </div>}
+        { isInError
+          ? <div className={`advanced-tab__gas-edit-row__${errorType}-text`}>
+              { errorText }
+            </div>
+          : null }
       </div>
     )
   }
@@ -83,23 +120,45 @@ export default class AdvancedTabContent extends Component {
     )
   }
 
-  renderGasEditRow (labelKey, ...gasInputArgs) {
+  renderGasEditRow (gasInputArgs) {
     return (
       <div className="advanced-tab__gas-edit-row">
         <div className="advanced-tab__gas-edit-row__label">
-          { this.context.t(labelKey) }
+          { this.context.t(gasInputArgs.labelKey) }
           { this.infoButton(() => {}) }
         </div>
-        { this.gasInput(...gasInputArgs) }
+        { this.gasInput(gasInputArgs) }
       </div>
     )
   }
 
-  renderGasEditRows (customGasPrice, updateCustomGasPrice, customGasLimit, updateCustomGasLimit, insufficientBalance) {
+  renderGasEditRows ({
+    customGasPrice,
+    updateCustomGasPrice,
+    customGasLimit,
+    updateCustomGasLimit,
+    insufficientBalance,
+    customPriceIsSafe,
+    isSpeedUp,
+  }) {
     return (
       <div className="advanced-tab__gas-edit-rows">
-        { this.renderGasEditRow('gasPrice', customGasPrice, updateCustomGasPrice, customGasPrice, insufficientBalance, true) }
-        { this.renderGasEditRow('gasLimit', customGasLimit, this.onChangeGasLimit, customGasLimit, insufficientBalance) }
+        { this.renderGasEditRow({
+          labelKey: 'gasPrice',
+          value: customGasPrice,
+          onChange: updateCustomGasPrice,
+          insufficientBalance,
+          customPriceIsSafe,
+          showGWEI: true,
+          isSpeedUp,
+        }) }
+        { this.renderGasEditRow({
+          labelKey: 'gasLimit',
+          value: customGasLimit,
+          onChange: this.onChangeGasLimit,
+          insufficientBalance,
+          customPriceIsSafe,
+        }) }
       </div>
     )
   }
@@ -115,19 +174,23 @@ export default class AdvancedTabContent extends Component {
       totalFee,
       gasChartProps,
       gasEstimatesLoading,
+      customPriceIsSafe,
+      isSpeedUp,
     } = this.props
 
     return (
       <div className="advanced-tab">
         { this.renderDataSummary(totalFee, timeRemaining) }
         <div className="advanced-tab__fee-chart">
-          { this.renderGasEditRows(
-              customGasPrice,
-              updateCustomGasPrice,
-              customGasLimit,
-              updateCustomGasLimit,
-              insufficientBalance
-          ) }
+          { this.renderGasEditRows({
+            customGasPrice,
+            updateCustomGasPrice,
+            customGasLimit,
+            updateCustomGasLimit,
+            insufficientBalance,
+            customPriceIsSafe,
+            isSpeedUp,
+          }) }
           <div className="advanced-tab__fee-chart__title">Live Gas Price Predictions</div>
           {!gasEstimatesLoading
             ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={updateCustomGasPrice} />

@@ -11,7 +11,7 @@ import { formatDate } from '../../util'
 import {
   fetchBasicGasAndTimeEstimates,
   fetchGasEstimates,
-  setCustomGasPrice,
+  setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../../ducks/gas.duck'
 
@@ -21,7 +21,7 @@ const mapDispatchToProps = dispatch => {
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     setSelectedToken: tokenAddress => dispatch(setSelectedToken(tokenAddress)),
     retryTransaction: (transaction, gasPrice) => {
-      dispatch(setCustomGasPrice(gasPrice || transaction.txParams.gasPrice))
+      dispatch(setCustomGasPriceForRetry(gasPrice || transaction.txParams.gasPrice))
       dispatch(setCustomGasLimit(transaction.txParams.gas))
       dispatch(showSidebar({
         transitionName: 'sidebar-left',

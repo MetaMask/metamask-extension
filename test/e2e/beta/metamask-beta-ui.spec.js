@@ -69,6 +69,7 @@ describe('MetaMask', function () {
 
   beforeEach(async function () {
     await driver.executeScript(
+      'window.origFetch = window.fetch.bind(window);' +
       'window.fetch = ' +
       '(...args) => { ' +
       'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
@@ -77,7 +78,7 @@ describe('MetaMask', function () {
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
       '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
-      'return window.fetch(...args); }'
+      'return window.origFetch(...args); }'
     )
   })
 

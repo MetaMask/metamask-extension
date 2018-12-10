@@ -4,6 +4,7 @@ const {
   queryAsync,
   findAsync,
 } = require('../../lib/util')
+const fetchMockResponses = require('../../e2e/beta/fetch-mocks.js')
 
 QUnit.module('new ui send flow')
 
@@ -22,6 +23,19 @@ global.ethQuery = {
 global.ethereumProvider = {}
 
 async function runSendFlowTest (assert, done) {
+  const tempFetch = global.fetch
+
+  global.fetch = (...args) => {
+    if (args[0] === 'https://ethgasstation.info/json/ethgasAPI.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasBasic)) })
+    } else if (args[0] === 'https://ethgasstation.info/json/predictTable.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.ethGasPredictTable)) })
+    } else if (args[0] === 'https://dev.blockscale.net/api/gasexpress.json') {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.gasExpress)) })
+    }
+    return window.fetch(...args)
+  }
+
   console.log('*** start runSendFlowTest')
   const selectState = await queryAsync($, 'select')
   selectState.val('send new ui')
@@ -129,6 +143,8 @@ async function runSendFlowTest (assert, done) {
 
   const cancelButtonInEdit = await queryAsync($, '.btn-default.btn--large.page-container__footer-button')
   cancelButtonInEdit[0].click()
+
+  global.fetch = tempFetch
   // sendButtonInEdit[0].click()
 
   // // TODO: Need a way to mock background so that we can test correct transition from editing to confirm
