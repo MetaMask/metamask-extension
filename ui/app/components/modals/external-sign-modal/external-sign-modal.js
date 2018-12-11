@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 import ExternalSignModalContainer from './external-sign-modal-container'
 import QrView from '../../qr-code'
 import SendRowWrapper from '../../send/send-content/send-row-wrapper'
