@@ -1313,7 +1313,7 @@ function updateTransactionParams (id, txParams) {
   }
 }
 
-function updateSignature(newSignature) {
+function updateSignature (newSignature) {
   return {
     type: actions.UPDATE_SIGNATURE,
     value: newSignature,
