@@ -179,7 +179,7 @@ jobs:
         key: dependency-cache-{{ .Revision }}
     - run:
         name: Test
-        command: npx nsp check
+        command: npm audit
 
   test-e2e-chrome:
     docker:
