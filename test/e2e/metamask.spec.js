@@ -348,7 +348,7 @@ describe('Metamask popup page', async function () {
       })
     })
     describe('Execute Method', () => {
-      const outputData = '0xd70befce3cf1cc88119c8f4eb583ccd4c39d06e2'
+      // const outputData = '0xd70befce3cf1cc88119c8f4eb583ccd4c39d06e2'
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
       it("Click button 'Send', 'Execute Method' screen opens", async function () {
         await driver.navigate().refresh()
@@ -377,7 +377,7 @@ describe('Metamask popup page', async function () {
         await button.click()
       })
 
-      //to do
+      // to do
       // it('method returns correct value', async function () {
       //   const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
       //   assert.notEqual(field, false, "field 'Output' isn't displayed")
@@ -2091,16 +2091,16 @@ describe('Metamask popup page', async function () {
     return false
   }
 
-  async function waitUntilHasText (element, Twait) {
-    if (Twait === undefined) Twait = 200
-    let text
-    do {
-      await delay(100)
-      text = await element.getText()
-      if (text !== '') return text
-    } while (Twait-- > 0)
-    return false
-  }
+  // async function waitUntilHasText (element, Twait) {
+  //   if (Twait === undefined) Twait = 200
+  //   let text
+  //   do {
+  //     await delay(100)
+  //     text = await element.getText()
+  //     if (text !== '') return text
+  //   } while (Twait-- > 0)
+  //   return false
+  // }
 
   async function isElementDisplayed (by) {
     try {
