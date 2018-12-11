@@ -294,7 +294,7 @@ function reduceApp (state, action) {
         transForward: true,
       })
 
-  case actions.CREATE_NEW_VAULT_IN_PROGRESS:
+    case actions.CREATE_NEW_VAULT_IN_PROGRESS:
       return extend(appState, {
         currentView: {
           name: 'createVault',
@@ -342,6 +342,21 @@ function reduceApp (state, action) {
         },
         transForward: true,
         warning: null,
+      })
+
+    case actions.SHOW_SEND_CONTRACT_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'sendContract',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+        warning: null,
+        contractAcc: {
+          methodSelected: action.methodSelected,
+          methodABI: action.methodABI,
+          inputValues: action.inputValues,
+        },
       })
 
     case actions.SHOW_NEW_KEYCHAIN:
@@ -621,6 +636,17 @@ function reduceApp (state, action) {
         },
       })
 
+    case actions.DISPLAY_TOAST:
+      return extend(appState, {
+        toastMsg: action.value,
+        isLoading: false,
+      })
+
+    case actions.HIDE_TOAST:
+      return extend(appState, {
+        toastMsg: undefined,
+      })
+
     case actions.DISPLAY_WARNING:
       return extend(appState, {
         warning: action.value,
@@ -804,6 +830,20 @@ function reduceApp (state, action) {
     case actions.SET_NETWORK_NONCE:
       return extend(appState, {
         networkNonce: action.value,
+      })
+
+    case actions.SHOW_CHOOSE_CONTRACT_EXECUTOR_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'show-choose-contract-executor-page',
+          context: appState.currentView.context,
+        },
+        txParams: action.txParams,
+        contractAcc: {
+          methodSelected: action.methodSelected,
+          methodABI: action.methodABI,
+          inputValues: action.inputValues,
+        },
       })
 
     default:

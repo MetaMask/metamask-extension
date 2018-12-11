@@ -9,6 +9,7 @@ const Identicon = require('./identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const ethNetProps = require('eth-net-props')
+const { getCurrentKeyring, ifLooseAcc, ifContractAcc } = require('../util')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -22,19 +23,40 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, selected, keyrings } = this.props
-    const accountOrder = keyrings.reduce((list, keyring) => list.concat(keyring.accounts), [])
+      const { identities, selected, keyrings, network } = this.props
+      const accountOrder = keyrings.reduce((list, keyring) => {
+        if (ifContractAcc(keyring) && keyring.network === network) {
+          list = list.concat(keyring.accounts)
+        } else if (!ifContractAcc(keyring)) {
+          list = list.concat(keyring.accounts)
+        }
+        return list
+      }, [])
 
-    return accountOrder.map((address, index) => {
-      const identity = identities[address]
-      if (!identity) {
-        return null
-      }
-      const isSelected = identity.address === selected
+      return accountOrder.map((address, index) => {
+        const identity = identities[address]
+        if (!identity) {
+          return null
+        }
+        const isSelected = identity.address === selected
 
-      const keyring = this.getCurrentKeyring(address)
+        const keyring = getCurrentKeyring(address, network, keyrings, identities)
 
-      return h(
+        // display contract acc only for network where it was created
+        if (ifContractAcc(keyring)) {
+          if (keyring.network !== network) {
+            return null
+          } else {
+            return this.accountsDropdownItemView(index, isSelected, keyring, identity)
+          }
+        } else {
+          return this.accountsDropdownItemView(index, isSelected, keyring, identity)
+        }
+      })
+  }
+
+  accountsDropdownItemView (index, isSelected, keyring, identity) {
+    return h(
         DropdownMenuItem,
         {
           closeMenu: () => {},
@@ -80,7 +102,7 @@ class AccountDropdowns extends Component {
             },
           }, identity.name || ''),
           this.indicateIfLoose(keyring),
-          this.ifLooseAcc(keyring) ? h('.remove', {
+          ifLooseAcc(keyring) ? h('.remove', {
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -93,39 +115,28 @@ class AccountDropdowns extends Component {
           }) : null,
         ]
       )
-    })
-  }
-
-  ifLooseAcc (keyring) {
-    try { // Sometimes keyrings aren't loaded yet:
-      const type = keyring.type
-      const isLoose = type !== 'HD Key Tree'
-      return isLoose
-    } catch (e) { return }
   }
 
   ifHardwareAcc (address) {
-    const keyring = this.getCurrentKeyring(address)
+    const keyring = getCurrentKeyring(address, this.props.network, this.props.keyrings, this.props.identities)
     if (keyring && keyring.type.search('Hardware') !== -1) {
       return true
     }
     return false
   }
 
-  getCurrentKeyring (address) {
-    const { identities, keyrings } = this.props
-    const identity = identities[address]
-    const simpleAddress = identity.address.substring(2).toLowerCase()
-    const keyring = keyrings && keyrings.find((kr) => {
-      return kr.accounts.includes(simpleAddress) ||
-        kr.accounts.includes(address)
-    })
-
-    return keyring
-  }
-
   indicateIfLoose (keyring) {
-    return this.ifLooseAcc(keyring) ? h('.keyring-label', 'IMPORTED') : null
+    if (ifLooseAcc(keyring)) {
+      let label
+      if (ifContractAcc(keyring)) {
+        label = 'CONTRACT'
+      } else {
+        label = 'IMPORTED'
+      }
+      return h('.keyring-label', label)
+    }
+
+    return null
   }
 
   renderAccountSelector () {
@@ -214,8 +225,10 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountOptions () {
-    const { actions, selected } = this.props
+    const { actions, selected, network, keyrings, identities } = this.props
     const { optionsMenuActive } = this.state
+
+    const keyring = getCurrentKeyring(selected, network, keyrings, identities)
 
     return h(
       Dropdown,
@@ -274,7 +287,7 @@ class AccountDropdowns extends Component {
           },
           'Copy address to clipboard',
         ),
-        !this.ifHardwareAcc(selected) ? h(
+        (!this.ifHardwareAcc(selected) && !(ifContractAcc(keyring))) ? h(
           DropdownMenuItem,
           {
             closeMenu: () => {},
@@ -332,6 +345,21 @@ class AccountDropdowns extends Component {
         ),
       ]
     )
+  }
+
+  // switch to the first account in the list on network switch, if unlocked account was contract before change
+  componentDidUpdate (prevProps) {
+    if (!isNaN(this.props.network)) {
+      const { selected, network, keyrings, identities } = this.props
+      if (network !== prevProps.network) {
+        const keyring = getCurrentKeyring(selected, this.props.network, keyrings, identities)
+        const firstKeyring = keyrings && keyrings[0]
+        const firstKeyRingAcc = firstKeyring && firstKeyring.accounts && firstKeyring.accounts[0]
+        if (!keyring || (ifContractAcc(keyring) && firstKeyRingAcc)) {
+          return this.props.actions.showAccountDetail(firstKeyRingAcc)
+        }
+      }
+    }
   }
 }
 

@@ -62,7 +62,7 @@ describe('Metamask popup page', async function () {
   })
 
   after(async function () {
-    await driver.quit()
+    // await driver.quit()
   })
 
   describe('Setup', async function () {
@@ -244,9 +244,336 @@ describe('Metamask popup page', async function () {
     })
   })
 
+  describe('Import Contract account', async () => {
+    const poaContract = '0xc6468767214c577013a904900ada0a0dd6653bc3'
+    const wrongAddress = '0xB87b6077D59B01Ab9fa8cd5A1A21D02a4d60D35'
+    const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
+    describe('Import Contract', async () => {
+      it('opens import account menu', async function () {
+        await setProvider(NETWORKS.ROPSTEN)
+        const menu = await waitUntilShowUp(menus.account.menu)
+        await menu.click()
+        const item = await waitUntilShowUp(menus.account.import)
+        await item.click()
+        const importAccountTitle = await waitUntilShowUp(screens.importAccounts.title)
+        assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
+      })
+
+      it("Warning's  text is correct", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.warning)
+        assert.equal(await field.getText(), 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.', "incorrect warning's text")
+      })
+
+      it("Select type 'Contract'", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.selectArrow)
+        await field.click()
+        const item = await waitUntilShowUp(screens.importAccounts.itemContract)
+        await item.click()
+      })
+
+      it("Field 'Address' is displayed", async function () {
+        await delay(2000)
+        const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
+        assert.notEqual(field, false, "field 'Address' isn't displayed")
+        await field.sendKeys(wrongAddress)
+      })
+
+      it("Button 'Import' is displayed", async function () {
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        assert.notEqual(button, false, "button 'Import' isn't displayed")
+        assert.equal(await button.getText(), 'Import', 'wrong name of button')
+      })
+
+      it("Button 'Import' is disabled  if incorrect address", async function () {
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        assert.equal(await button.isEnabled(), false, 'button enabled')
+      })
+
+      it("Field 'ABI' is displayed", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.contractABI)
+        assert.notEqual(field, false, "field 'ABI' isn't displayed")
+      })
+
+      it('icon copy is displayed for ABI ', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.iconCopy)
+        assert.notEqual(field, false, "icon copy isn't displayed")
+      })
+
+      it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.contractABI)
+        assert.equal(await field.getText(), '', "field 'ABI' isn't displayed")
+      })
+      it("Fill 'Address' with not contract address , POA core", async function () {
+        await setProvider(NETWORKS.POA)
+        const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
+        await clearField(field, 100)
+        await field.sendKeys(notContractAddress)
+      })
+
+      it("Button 'Import' is disabled  if not contract address", async function () {
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        assert.equal(await button.isEnabled(), false, 'button enabled')
+      })
+
+      it("Fill 'Address' with valid contract , POA core", async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
+        await clearField(field, 100)
+        await field.sendKeys(poaContract)
+      })
+
+      it("Button 'Import' is enabled if contract address is correct", async function () {
+        await delay(5000)
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        assert.equal(await button.isEnabled(), true, 'button enabled')
+      })
+
+      it('ABI is fetched ', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.contractABI)
+        const abi = await field.getText()
+        assert.equal(abi.length, 2800, "ABI isn't fetched")
+      })
+
+      it("Click button 'Import', main screen opens", async function () {
+        const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+        await click(button)
+        const identicon = await waitUntilShowUp(screens.main.identicon, 20)
+        assert.notEqual(identicon, false, "main screen isn't opened")
+      })
+
+      it("Click button 'Send', 'Execute Method' screen opens", async function () {
+        const button = await waitUntilShowUp(screens.main.buttons.send)
+        await click(button)
+        const identicon = await waitUntilShowUp(screens.main.identicon, 40)
+        assert.notEqual(identicon, false, "main screen isn't opened")
+      })
+    })
+    describe('Execute Method', () => {
+      const outputData = '0xd70befce3cf1cc88119c8f4eb583ccd4c39d06e2'
+      const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
+      it("Click button 'Send', 'Execute Method' screen opens", async function () {
+        await driver.navigate().refresh()
+        await delay(2000)
+        const button = await waitUntilShowUp(screens.main.buttons.send)
+        await click(button)
+      })
+
+      it('title is displayed and correct', async function () {
+        const title = await waitUntilShowUp(screens.executeMethod.title)
+        assert.notEqual(title, false, 'title isn\'t displayed')
+        assert.equal(await title.getText(), screens.executeMethod.titleText, 'incorrect text')
+      })
+
+      it("Select method 'abstractStorageAddr'", async function () {
+        const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+        await field.click()
+        const item = await waitUntilShowUp(screens.executeMethod.item0)
+        assert.notEqual(item, false, 'no drop down menu')
+        await click(item)
+      })
+
+      it("Button 'Call data' is displayed", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+        assert.notEqual(button, false, "button 'Call data' isn't displayed")
+        await button.click()
+      })
+
+      it('method returns correct value', async function () {
+        const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
+        assert.notEqual(field, false, "field 'Output'  isn't displayed")
+        const text = await waitUntilHasText(field)
+        assert.equal(text, outputData, 'incorrect value was returned')
+      })
+
+      it("2nd call doesn't throw the error", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+        assert.notEqual(button, false, "button 'Call data' isn't displayed")
+        await button.click()
+        const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
+        assert.notEqual(field, false, "field 'Output'  isn't displayed")
+        const text = await waitUntilHasText(field)
+        assert.equal(text, outputData, 'incorrect value was returned')
+      })
+      it('Click arrow  button leads to main screen', async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonArrow)
+        await click(button)
+        const identicon = await waitUntilShowUp(screens.main.identicon, 40)
+        assert.notEqual(identicon, false, "main screen isn't opened")
+      })
+      it("Click button 'Send', 'Execute Method' screen opens", async function () {
+        await driver.navigate().refresh()
+        await delay(2000)
+        const button = await waitUntilShowUp(screens.main.buttons.send)
+        await click(button)
+      })
+      it("Select method 'changeAbstractStorage'", async function () {
+        const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+        await field.click()
+        const items = await waitUntilShowUp(screens.executeMethod.item1)
+        assert.notEqual(items, false, 'no drop down menu')
+        const item = (await driver.findElements(screens.executeMethod.item1))[1]
+        // await click(item)
+        await item.click()
+      })
+
+      it("Button 'Copy ABI encoded' is displayed", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+        assert.notEqual(button, false, "button 'Copy ABI encoded' isn't displayed")
+
+      })
+
+      it("Button 'Copy ABI encoded' is disabled", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+        assert.equal(await button.isEnabled(), false, "button 'Copy ABI encoded' enabled")
+      })
+
+      it("Button 'Next' is disabled", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+        assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
+      })
+
+      it("Fill out parameter '_newAbstractStorageAddr with wrong data'", async function () {
+        const field = await waitUntilShowUp(screens.executeMethod.fieldParametr1)
+        assert.notEqual(field, false, "field address isn't displayed")
+        await field.sendKeys(wrongAddress)
+      })
+
+      it.skip("Button 'Copy ABI encoded' is disabled", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+        assert.equal(await button.isEnabled(), false, "button 'Copy ABI encoded' enabled")
+      })
+
+      it.skip("Button 'Next' is disabled", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+        assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
+      })
+
+      it('Error message if wrong parameter', async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+        await button.click()
+        const error = await waitUntilShowUp(elements.error)
+        assert.notEqual(error, false, 'no error message')
+      })
+
+      it('Close error message', async function () {
+        const button = await waitUntilShowUp(elements.errorClose)
+        await button.click()
+        const title = await waitUntilShowUp(screens.executeMethod.title)
+        assert.notEqual(title, false, "error message isn't closed")
+      })
+
+      it("Fill out parameter '_newAbstractStorageAddr'", async function () {
+        const field = await waitUntilShowUp(screens.executeMethod.fieldParametr1)
+        await clearField(field, 100)
+        await field.sendKeys(notContractAddress)
+        assert.notEqual(field, false, "field address isn't displayed")
+      })
+
+      it("Button 'Next' is enabled", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+        assert.equal(await button.isEnabled(), true, "button 'Next' disabled")
+      })
+      it("Button 'Copy ABI encoded' is enabled", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+        assert.equal(await button.isEnabled(), true, "button 'Copy ABI encoded' disabled")
+        await button.click()
+      })
+
+      it("Click button 'Next'", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+        assert.notEqual(button, false, "button 'Next' isn't displayed")
+        await button.click()
+      })
+
+    })
+    describe('Choose Contract Executor', () => {
+
+      it('title is displayed and correct', async function () {
+        await delay(5000)
+        const title = await waitUntilShowUp(screens.chooseContractExecutor.title)
+        assert.notEqual(title, false, 'title isn\'t displayed')
+        assert.equal(await title.getText(), screens.chooseContractExecutor.titleText, 'incorrect text')
+      })
+
+      it('two accounts displayed', async function () {
+        const accs = await waitUntilShowUp(screens.chooseContractExecutor.account)
+        assert.notEqual(accs, false, 'accounts aren\'t displayed')
+        const accounts = await driver.findElements(screens.chooseContractExecutor.account)
+        assert.equal(accounts.length, 3, "number of accounts isn't 2")
+      })
+
+      it("Click arrow  button leads to 'Execute Method' screen ", async function () {
+        const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonArrow)
+        assert.notEqual(button, false, 'button isn\'t displayed')
+        await button.click()
+        await delay(2000)
+
+        const title = await waitUntilShowUp(screens.executeMethod.title)
+        assert.notEqual(title, false, 'title isn\'t displayed')
+        assert.equal(await title.getText(), screens.executeMethod.titleText, "'Execute Method' screen isn't opened")
+      })
+
+      it("Return back to 'Choose Contract Executor' screen", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+        assert.notEqual(button, false, "button 'Next' isn't displayed")
+        await button.click()
+      })
+
+      it("Button 'Next' is disabled by default", async function () {
+        const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
+        assert.notEqual(button, false, 'button isn\'t displayed')
+        assert.equal(await button.isEnabled(), false, 'button enabled by default')
+      })
+
+      it('User is able to select account', async function () {
+        await waitUntilShowUp(screens.chooseContractExecutor.account)
+        const accounts = await driver.findElements(screens.chooseContractExecutor.account)
+        const account = accounts[1]
+        await account.click()
+        const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
+        assert.equal(selected.length, 1, "account isn't selected")
+      })
+
+      it('User is able to select only one account', async function () {
+        const account = (await driver.findElements(screens.chooseContractExecutor.account))[2]
+        await account.click()
+        const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
+        assert.equal(selected.length, 1, 'more than one accounts are selected')
+      })
+
+      it("Click button 'Next' open 'Confirm transaction' screen", async function () {
+        const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
+        await button.click()
+        await delay(5000)
+        const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
+        assert.notEqual(reject, false, "button reject isn't displayed")
+        await click(reject)
+        const identicon = await waitUntilShowUp(screens.main.identicon)
+        assert.notEqual(identicon, false, 'main screen didn\'t opened')
+      })
+      it("Label 'CONTRACT' present", async function () {
+        const menu = await waitUntilShowUp(menus.account.menu)
+        await menu.click()
+        await waitUntilShowUp(menus.account.labelImported)
+        const label = (await driver.findElements(menus.account.labelImported))[0]
+        assert.equal(await label.getText(), 'CONTRACT', 'label incorrect')
+      })
+      it('Delete imported account', async function () {
+        const item = await waitUntilShowUp(menus.account.delete)
+        await item.click()
+        const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+        await button.click()
+        const buttonArrow = await waitUntilShowUp(screens.settings.buttons.arrow)
+        await buttonArrow.click()
+        const identicon = await waitUntilShowUp(screens.main.identicon)
+        assert.notEqual(identicon, false, 'main screen didn\'t opened')
+      })
+    })
+  })
+
   describe('Sign Data', () => {
 
     it('simulate sign request ', async function () {
+      await setProvider(NETWORKS.LOCALHOST)
       await driver.get('https://danfinlay.github.io/js-eth-personal-sign-examples/')
       const button = await waitUntilShowUp(By.id('ethSignButton'))
       await button.click()
@@ -305,6 +632,7 @@ describe('Metamask popup page', async function () {
 
     it('opens import account menu', async function () {
       await setProvider(NETWORKS.POA)
+      await delay(2000)
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
       const item = await waitUntilShowUp(menus.account.import)
@@ -314,7 +642,6 @@ describe('Metamask popup page', async function () {
     })
 
     it('imports account', async function () {
-      await delay(2000)
       const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
       await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
       const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
@@ -322,9 +649,9 @@ describe('Metamask popup page', async function () {
       assert.equal(await button.getText(), 'Import', 'button has incorrect name')
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
-      const importedLabel = await waitUntilShowUp(menus.account.labelImported)
-      assert.equal(await importedLabel.getText(), 'IMPORTED')
-
+      await waitUntilShowUp(menus.account.labelImported)
+      const label = (await driver.findElements(menus.account.labelImported))[0]
+      assert.equal(await label.getText(), 'IMPORTED')
       await menu.click()
     })
 
@@ -461,6 +788,7 @@ describe('Metamask popup page', async function () {
       await driver.navigate().refresh()
     })
   })
+
   describe('Import Ganache seed phrase', function () {
 
     it('logs out', async function () {
@@ -544,7 +872,7 @@ describe('Metamask popup page', async function () {
       const balance = await balanceField.getText()
       console.log('Account = ' + account)
       console.log('Balance = ' + balance)
-      assert.equal(parseInt(balance) > 0.001, true, 'Balance of account ' + account + ' TOO LOW !!! Please refill with Sokol eth!!!!')
+      assert.equal(parseFloat(balance) > 0.001, true, 'Balance of account ' + account + ' TOO LOW !!! Please refill with Sokol eth!!!!')
       await driver.get(eventsEmitter)
       const button = await waitUntilShowUp(screens.eventsEmitter.button)
       await button.click()
@@ -565,7 +893,7 @@ describe('Metamask popup page', async function () {
       const windowHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(windowHandles[0])
       await delay(5000)
-      const event = await waitUntilShowUp(screens.eventsEmitter.event, 1200)
+      const event = await waitUntilShowUp(screens.eventsEmitter.event, 600)
       const events = await driver.findElements(screens.eventsEmitter.event)
       console.log('number of events = ' + events.length)
       if (!event) console.log("event wasn't created or transaction failed".toUpperCase())
@@ -590,7 +918,7 @@ describe('Metamask popup page', async function () {
 
   describe('Add Token: Custom', function () {
 
-   describe('Add token to LOCALHOST', function () {
+    describe('Add token to LOCALHOST', function () {
 
       it('Create custom token in LOCALHOST', async function () {
         await setProvider(NETWORKS.LOCALHOST)
@@ -656,8 +984,8 @@ describe('Metamask popup page', async function () {
         console.log('allHandles.length ' + allHandles.length)
         assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
         await switchToLastPage()
+        await delay(2000)
         const title = await waitUntilCurrentUrl()
-
         console.log(title)
         assert.equal(title.includes('https://etherscan.io/token/'), true, 'etherscan wasn\'t opened')
         await switchToFirstPage()
@@ -1762,6 +2090,17 @@ describe('Metamask popup page', async function () {
     return false
   }
 
+  async function waitUntilHasText (element, Twait) {
+    if (Twait === undefined) Twait = 200
+    let text
+    do {
+      await delay(100)
+      text = await element.getText()
+      if (text !== '') return text
+    } while (Twait-- > 0)
+    return false
+  }
+
   async function isElementDisplayed (by) {
     try {
       return await driver.findElement(by).isDisplayed()
@@ -2226,3 +2565,5 @@ describe('Metamask popup page', async function () {
   }
 
 })
+
+

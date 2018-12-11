@@ -68,7 +68,7 @@ DeleteImportedAccount.prototype.render = function () {
       h('button',
         {
           onClick: () => {
-            this.props.dispatch(actions.removeAccount(this.props.identity.address))
+            this.props.dispatch(actions.removeAccount(this.props.identity.address, this.props.metamask.network))
               .then(() => {
                 this.props.dispatch(actions.showConfigPage())
               })

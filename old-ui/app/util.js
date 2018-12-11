@@ -41,6 +41,9 @@ module.exports = {
   exportAsFile: exportAsFile,
   isInvalidChecksumAddress,
   countSignificantDecimals,
+  getCurrentKeyring,
+  ifLooseAcc,
+  ifContractAcc,
 }
 
 function valuesFor (obj) {
@@ -255,8 +258,10 @@ function exportAsFile (filename, data) {
 
 /**
  * returns the length of truncated significant decimals for fiat value
+ *
  * @param {float} val The float value to be truncated
  * @param {number} len The length of significant decimals
+ *
  * returns {number} The length of truncated significant decimals
 **/
 function countSignificantDecimals (val, len) {
@@ -277,4 +282,58 @@ function countSignificantDecimals (val, len) {
     const valWithSignificantDecimals = `${Math.floor(val)}.${decimalsArr.slice(0, decimalsLen).join('')}`
     decimalsLen = parseFloat(valWithSignificantDecimals).toString().split('.')[1].length
     return decimalsLen || 0
+}
+
+/**
+ * retrieves the current unlocked keyring
+ *
+ * @param {string} address The current unlocked address
+ * @param {array} keyrings The array of keyrings
+ * @param {array} identities The array of identities
+ *
+ * returns {object} keyring object corresponding to unlocked address
+**/
+function getCurrentKeyring (address, network, keyrings, identities) {
+  const identity = identities[address]
+  const simpleAddress = identity && identity.address.substring(2).toLowerCase()
+  const keyring = keyrings && keyrings.find((kr) => {
+    const isAddressIncluded = kr.accounts.includes(simpleAddress) || kr.accounts.includes(address)
+    if (ifContractAcc(kr)) {
+      return kr.network === network && isAddressIncluded
+    } else {
+      return isAddressIncluded
+    }
+  })
+
+  return keyring
+}
+
+/**
+ * checks, if keyring is imported account
+ *
+ * @param {object} keyring
+ *
+ * returns {boolean} true, if keyring is importec and false, if it is not
+**/
+function ifLooseAcc (keyring) {
+  try { // Sometimes keyrings aren't loaded yet:
+    const type = keyring.type
+    const isLoose = type !== 'HD Key Tree'
+    return isLoose
+  } catch (e) { return }
+}
+
+/**
+ * checks, if keyring is contract
+ *
+ * @param {object} keyring
+ *
+ * returns {boolean} true, if keyring is contract and false, if it is not
+**/
+function ifContractAcc (keyring) {
+  try { // Sometimes keyrings aren't loaded yet:
+    const type = keyring.type
+    const isContract = type === 'Simple Address'
+    return isContract
+  } catch (e) { return }
 }

@@ -1,6 +1,8 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('../../ui/app/actions')
 const log = require('loglevel')
@@ -15,8 +17,10 @@ const UnlockScreen = require('./unlock')
 // accounts
 const AccountDetailScreen = require('./account-detail')
 const AccountQrScreen = require('./account-qr')
-const SendTransactionScreen = require('./send')
-const SendTokenScreen = require('./send-token')
+const SendTransactionScreen = require('./components/send/send')
+const SendTokenScreen = require('./components/send/send-token')
+const SendContractScreen = require('./components/send/send-contract')
+const ChooseContractExecutorScreen = require('./components/send/choose-contract-executor')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
@@ -41,7 +45,10 @@ const DeleteImportedAccount = require('./components/delete-imported-account')
 const ConfirmChangePassword = require('./components/confirm-change-password')
 const ethNetProps = require('eth-net-props')
 
-module.exports = connect(mapStateToProps)(App)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps)
+)(App)
 
 inherits(App, Component)
 function App () { Component.call(this) }
@@ -231,8 +238,16 @@ App.prototype.renderPrimary = function () {
       return h(SendTransactionScreen, {key: 'send-transaction'})
 
     case 'sendToken':
-      log.debug('rendering send tx screen')
+      log.debug('rendering send token tx screen')
       return h(SendTokenScreen, {key: 'send-token'})
+
+    case 'sendContract':
+      log.debug('rendering send contract tx screen')
+      return h(SendContractScreen, {key: 'send-contract'})
+
+    case 'show-choose-contract-executor-page':
+      log.debug('rendering choose contract executor screen')
+      return h(ChooseContractExecutorScreen, {key: 'show-choose-contract-executor-page'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')
