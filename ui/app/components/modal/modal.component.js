@@ -12,6 +12,7 @@ export default class Modal extends PureComponent {
     onSubmit: PropTypes.func,
     submitType: PropTypes.string,
     submitText: PropTypes.string,
+    submitDisabled: PropTypes.bool,
     // Cancel button (left button)
     onCancel: PropTypes.func,
     cancelType: PropTypes.string,
@@ -31,6 +32,7 @@ export default class Modal extends PureComponent {
       onSubmit,
       submitType,
       submitText,
+      submitDisabled,
       onCancel,
       cancelType,
       cancelText,
@@ -69,6 +71,7 @@ export default class Modal extends PureComponent {
           <Button
             type={submitType}
             onClick={onSubmit}
+            disabled={submitDisabled}
             className="modal-container__footer-button"
           >
             { submitText }
