@@ -2,6 +2,13 @@
 
 ## Current Develop Branch
 
+## 5.2.0 Mon Dec 11 2018
+
+- [#5704] Implements new gas customization features for sending, confirming and speeding up transactions
+- [#5886] Groups transactions - speed up, cancel and original - by nonce in the transaction history list
+- [#5892] bugfix: eliminates infinite spinner issues caused by switching quickly from a loading network that ultimately fails to resolve
+- [$5902] bugfix: provider crashes caused caching issues in `json-rpc-engine`. Fixed in (https://github.com/MetaMask/json-rpc-engine/commit/6de511afbd03ccef4550ea43ff4010b7d7a84039)
+
 ## 5.1.0 Mon Dec 03 2018
 
 - [#5860](https://github.com/MetaMask/metamask-extension/pull/5860): Fixed an infinite spinner bug.
@@ -11,6 +18,7 @@
 
 ## 5.0.4 Thu Nov 29 2018
 
+- [#5878](https://github.com/MetaMask/metamask-extension/pull/5878): Formats 32-length byte strings passed to personal_sign as hex, rather than UTF8.
 - [#5840](https://github.com/MetaMask/metamask-extension/pull/5840): transactions/tx-gas-utils - add the acctual response for eth_getCode for NO_CONTRACT_ERROR's && add a debug object to simulationFailed
 - [#5848](https://github.com/MetaMask/metamask-extension/pull/5848): Soften accusatory language on phishing warning
 - [#5835](https://github.com/MetaMask/metamask-extension/pull/5835): Open full-screen UI on install

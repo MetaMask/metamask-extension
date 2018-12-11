@@ -30,10 +30,12 @@ const packageJSON = require('./package.json')
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
 const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
+const d3Dependencies = ['c3', 'd3']
 
 const uiDependenciesToBundle = [
   ...materialUIDependencies,
   ...reactDepenendencies,
+  ...d3Dependencies,
 ]
 
 function gulpParallel (...args) {

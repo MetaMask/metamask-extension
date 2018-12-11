@@ -445,6 +445,7 @@ module.exports = class MetamaskController extends EventEmitter {
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
+      createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
@@ -1143,8 +1144,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} txId - The ID of the transaction to speed up.
    * @param {Function} cb - The callback function called with a full state update.
    */
-  async retryTransaction (txId, cb) {
-    await this.txController.retryTransaction(txId)
+  async retryTransaction (txId, gasPrice, cb) {
+    await this.txController.retryTransaction(txId, gasPrice)
     const state = await this.getState()
     return state
   }
@@ -1157,7 +1158,17 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {object} MetaMask state
    */
   async createCancelTransaction (originalTxId, customGasPrice, cb) {
-    await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+    try {
+      await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+      const state = await this.getState()
+      return state
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async createSpeedUpTransaction (originalTxId, customGasPrice, cb) {
+    await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice)
     const state = await this.getState()
     return state
   }

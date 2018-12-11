@@ -21,8 +21,8 @@ async function runConfirmSigRequestsTest (assert, done) {
 
   const pendingRequestItem = $.find('.transaction-list-item .transaction-list-item__grid')
 
-  if (pendingRequestItem[0]) {
-    pendingRequestItem[0].click()
+  if (pendingRequestItem[2]) {
+    pendingRequestItem[2].click()
   }
 
   await timeout(1000)

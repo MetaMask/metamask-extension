@@ -164,7 +164,7 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
   try {
     const stripped = ethUtil.stripHexPrefix(hex)
     const buff = Buffer.from(stripped, 'hex')
-    return buff.toString('utf8')
+    return buff.length === 32 ? hex : buff.toString('utf8')
   } catch (e) {
     return hex
   }

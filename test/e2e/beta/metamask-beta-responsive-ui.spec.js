@@ -276,9 +276,11 @@ describe('MetaMask', function () {
 
       const inputValue = await inputAmount.getAttribute('value')
       assert.equal(inputValue, '1')
+    })
 
+    it('opens and closes the gas modal', async function () {
       // Set the gas limit
-      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
+      const configureGas = await findElement(driver, By.css('.advanced-gas-options-btn'))
       await configureGas.click()
       await delay(regularDelayMs)
 
@@ -286,9 +288,11 @@ describe('MetaMask', function () {
 
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
-      await driver.wait(until.stalenessOf(gasModal))
+      await driver.wait(until.stalenessOf(gasModal), 10000)
       await delay(regularDelayMs)
+    })
 
+    it('clicks through to the confirm screen', async function () {
       // Continue to next screen
       const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
       await nextScreen.click()

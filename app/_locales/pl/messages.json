@@ -119,6 +119,9 @@
   "clickCopy": {
     "message": "Kliknij żeby skopiować"
   },
+  "clickToAdd": {
+    "message": "Przycisnij $1, aby dodać go do swojego konta"
+  },
   "close": {
     "message": "Zamknij"
   },
@@ -336,6 +339,9 @@
   },
   "exchangeRate": {
     "message": "Kurs wymiany"
+  },
+  "expandView": {
+    "message": "Rozwiń widok"
   },
   "exportPrivateKey": {
     "message": "Eksportuj klucz prywatny"
@@ -595,6 +601,9 @@
   },
   "min": {
     "message": "Minimum"
+  },
+  "missingYourTokens": {
+    "message": "Nie widzisz swoich token?"
   },
   "myAccounts": {
     "message": "Moje konta"

@@ -3,7 +3,6 @@ const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const {
-  calcGasTotal,
   calcTokenBalance,
   estimateGas,
 } = require('./components/send/send.utils')
@@ -12,6 +11,7 @@ const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
+const gasDuck = require('./ducks/gas.duck')
 const WebcamUtils = require('../lib/webcam-utils')
 
 var actions = {
@@ -325,6 +325,8 @@ var actions = {
   clearPendingTokens,
 
   createCancelTransaction,
+  createSpeedUpTransaction,
+
   approveProviderRequest,
   rejectProviderRequest,
   clearApprovedOrigins,
@@ -921,6 +923,7 @@ function setGasTotal (gasTotal) {
 }
 
 function updateGasData ({
+  gasPrice,
   blockGasLimit,
   recentBlocks,
   selectedAddress,
@@ -931,34 +934,19 @@ function updateGasData ({
 }) {
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
-    return new Promise((resolve, reject) => {
-      background.getGasPrice((err, data) => {
-        if (err) return reject(err)
-        return resolve(data)
-      })
+    return estimateGas({
+      estimateGasMethod: background.estimateGas,
+      blockGasLimit,
+      selectedAddress,
+      selectedToken,
+      to,
+      value,
+      estimateGasPrice: gasPrice,
+      data,
     })
-    .then(estimateGasPrice => {
-      return Promise.all([
-        Promise.resolve(estimateGasPrice),
-        estimateGas({
-          estimateGasMethod: background.estimateGas,
-          blockGasLimit,
-          selectedAddress,
-          selectedToken,
-          to,
-          value,
-          estimateGasPrice,
-          data,
-        }),
-      ])
-    })
-    .then(([gasPrice, gas]) => {
-      dispatch(actions.setGasPrice(gasPrice))
+    .then(gas => {
       dispatch(actions.setGasLimit(gas))
-      return calcGasTotal(gas, gasPrice)
-    })
-    .then((gasEstimate) => {
-      dispatch(actions.setGasTotal(gasEstimate))
+      dispatch(gasDuck.setCustomGasLimit(gas))
       dispatch(updateSendErrors({ gasLoadingError: null }))
       dispatch(actions.gasLoadingFinished())
     })
@@ -1805,13 +1793,13 @@ function markAccountsFound () {
   return callBackgroundThenUpdate(background.markAccountsFound)
 }
 
-function retryTransaction (txId) {
+function retryTransaction (txId, gasPrice) {
   log.debug(`background.retryTransaction`)
   let newTxId
 
-  return (dispatch) => {
+  return dispatch => {
     return new Promise((resolve, reject) => {
-      background.retryTransaction(txId, (err, newState) => {
+      background.retryTransaction(txId, gasPrice, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           reject(err)
@@ -1848,6 +1836,28 @@ function createCancelTransaction (txId, customGasPrice) {
     })
     .then(newState => dispatch(actions.updateMetamaskState(newState)))
     .then(() => newTxId)
+  }
+}
+
+function createSpeedUpTransaction (txId, customGasPrice) {
+  log.debug('background.createSpeedUpTransaction')
+  let newTx
+
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        const { selectedAddressTxList } = newState
+        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
+        resolve(newState)
+      })
+    })
+    .then(newState => dispatch(actions.updateMetamaskState(newState)))
+    .then(() => newTx)
   }
 }
 
@@ -1951,12 +1961,13 @@ function hideModal (payload) {
   }
 }
 
-function showSidebar ({ transitionName, type }) {
+function showSidebar ({ transitionName, type, props }) {
   return {
     type: actions.SIDEBAR_OPEN,
     value: {
       transitionName,
       type,
+      props,
     },
   }
 }

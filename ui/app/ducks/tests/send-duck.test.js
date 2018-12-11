@@ -6,6 +6,8 @@ import SendReducer, {
   openToDropdown,
   closeToDropdown,
   updateSendErrors,
+  showGasButtonGroup,
+  hideGasButtonGroup,
 } from '../send.duck.js'
 
 describe('Send Duck', () => {
@@ -18,6 +20,7 @@ describe('Send Duck', () => {
     fromDropdownOpen: false,
     toDropdownOpen: false,
     errors: {},
+    gasButtonGroupShown: true,
   }
   const OPEN_FROM_DROPDOWN = 'metamask/send/OPEN_FROM_DROPDOWN'
   const CLOSE_FROM_DROPDOWN = 'metamask/send/CLOSE_FROM_DROPDOWN'
@@ -25,6 +28,8 @@ describe('Send Duck', () => {
   const CLOSE_TO_DROPDOWN = 'metamask/send/CLOSE_TO_DROPDOWN'
   const UPDATE_SEND_ERRORS = 'metamask/send/UPDATE_SEND_ERRORS'
   const RESET_SEND_STATE = 'metamask/send/RESET_SEND_STATE'
+  const SHOW_GAS_BUTTON_GROUP = 'metamask/send/SHOW_GAS_BUTTON_GROUP'
+  const HIDE_GAS_BUTTON_GROUP = 'metamask/send/HIDE_GAS_BUTTON_GROUP'
 
   describe('SendReducer()', () => {
     it('should initialize state', () => {
@@ -85,6 +90,24 @@ describe('Send Duck', () => {
       )
     })
 
+    it('should set gasButtonGroupShown to true when receiving a SHOW_GAS_BUTTON_GROUP action', () => {
+      assert.deepEqual(
+        SendReducer(Object.assign({}, mockState, { gasButtonGroupShown: false }), {
+          type: SHOW_GAS_BUTTON_GROUP,
+        }),
+        Object.assign({gasButtonGroupShown: true}, mockState.send)
+      )
+    })
+
+    it('should set gasButtonGroupShown to false when receiving a HIDE_GAS_BUTTON_GROUP action', () => {
+      assert.deepEqual(
+        SendReducer(mockState, {
+          type: HIDE_GAS_BUTTON_GROUP,
+        }),
+        Object.assign({gasButtonGroupShown: false}, mockState.send)
+      )
+    })
+
     it('should extend send.errors with the value of a UPDATE_SEND_ERRORS action', () => {
       const modifiedMockState = Object.assign({}, mockState, {
         send: {
@@ -142,6 +165,20 @@ describe('Send Duck', () => {
     assert.deepEqual(
       closeToDropdown(),
       { type: CLOSE_TO_DROPDOWN }
+    )
+  })
+
+  describe('showGasButtonGroup', () => {
+    assert.deepEqual(
+      showGasButtonGroup(),
+      { type: SHOW_GAS_BUTTON_GROUP }
+    )
+  })
+
+  describe('hideGasButtonGroup', () => {
+    assert.deepEqual(
+      hideGasButtonGroup(),
+      { type: HIDE_GAS_BUTTON_GROUP }
     )
   })
 

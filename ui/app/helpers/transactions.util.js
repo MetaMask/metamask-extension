@@ -2,6 +2,10 @@ import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
+import {
+  TRANSACTION_TYPE_CANCEL,
+  TRANSACTION_STATUS_CONFIRMED,
+} from '../../../app/scripts/controllers/transactions/enums'
 
 import {
   TOKEN_METHOD_TRANSFER,
@@ -13,7 +17,7 @@ import {
   SEND_TOKEN_ACTION_KEY,
   TRANSFER_FROM_ACTION_KEY,
   SIGNATURE_REQUEST_KEY,
-  UNKNOWN_FUNCTION_KEY,
+  CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
 } from '../constants/transactions'
 
@@ -87,7 +91,7 @@ export async function getTransactionActionKey (transaction, methodData) {
     const methodName = name && name.toLowerCase()
 
     if (!methodName) {
-      return UNKNOWN_FUNCTION_KEY
+      return CONTRACT_INTERACTION_KEY
     }
 
     switch (methodName) {
@@ -148,11 +152,15 @@ export function sumHexes (...args) {
  * @returns {string}
  */
 export function getStatusKey (transaction) {
-  const { txReceipt: { status } = {} } = transaction
+  const { txReceipt: { status: receiptStatus } = {}, type, status } = transaction
 
   // There was an on-chain failure
-  if (status === '0x0') {
+  if (receiptStatus === '0x0') {
     return 'failed'
+  }
+
+  if (status === TRANSACTION_STATUS_CONFIRMED && type === TRANSACTION_TYPE_CANCEL) {
+    return 'cancelled'
   }
 
   return transaction.status

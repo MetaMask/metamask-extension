@@ -15,9 +15,8 @@ describe('TransactionStatus Component', () => {
     )
 
     assert.ok(wrapper)
-    const tooltipProps = wrapper.find(Tooltip).props()
-    assert.equal(tooltipProps.children, 'APPROVED')
-    assert.equal(tooltipProps.title, 'test-title')
+    assert.equal(wrapper.text(), 'APPROVED')
+    assert.equal(wrapper.find(Tooltip).props().title, 'test-title')
   })
 
   it('should render SUBMITTED properly', () => {
@@ -29,7 +28,6 @@ describe('TransactionStatus Component', () => {
     )
 
     assert.ok(wrapper)
-    const tooltipProps = wrapper.find(Tooltip).props()
-    assert.equal(tooltipProps.children, 'PENDING')
+    assert.equal(wrapper.text(), 'PENDING')
   })
 })
