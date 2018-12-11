@@ -320,15 +320,17 @@ class SendTransactionScreen extends PersistentForm {
 		const { address } = this.props
 		const txData = this.encodeFunctionCall()
 
-		this.props.hideWarning()
+		if (txData) {
+			this.props.hideWarning()
 
-		const txParams = {
-			value: '0x',
-			data: txData,
-			to: address,
+			const txParams = {
+				value: '0x',
+				data: txData,
+				to: address,
+			}
+
+			this.props.showChooseContractExecutorPage({methodSelected, methodABI, inputValues, txParams})
 		}
-
-		this.props.showChooseContractExecutorPage({methodSelected, methodABI, inputValues, txParams})
 	}
 }
 
