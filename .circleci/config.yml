@@ -179,7 +179,7 @@ jobs:
         key: dependency-cache-{{ .Revision }}
     - run:
         name: Test
-        command: npx nsp check
+        command: sudo npm install -g npm@6 && npm audit
 
   test-e2e-chrome:
     docker:

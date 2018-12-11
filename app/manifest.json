@@ -1,7 +1,7 @@
 {
   "name": "__MSG_appName__",
   "short_name": "__MSG_appName__",
-  "version": "4.9.0",
+  "version": "4.10.0",
   "manifest_version": 2,
   "author": "POA Network",
   "description": "__MSG_appDescription__",

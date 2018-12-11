@@ -98,6 +98,7 @@ var actions = {
   navigateToNewAccountScreen,
   resetAccount,
   changePassword,
+  getContract,
   removeAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
@@ -118,7 +119,11 @@ var actions = {
   lockMetamask: lockMetamask,
   unlockInProgress: unlockInProgress,
   // error handling
+  displayToast: displayToast,
   displayWarning: displayWarning,
+  DISPLAY_TOAST: 'DISPLAY_TOAST',
+  HIDE_TOAST: 'HIDE_TOAST',
+  hideToast: hideToast,
   DISPLAY_WARNING: 'DISPLAY_WARNING',
   HIDE_WARNING: 'HIDE_WARNING',
   hideWarning: hideWarning,
@@ -139,6 +144,8 @@ var actions = {
   showSendPage: showSendPage,
   SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
   showSendTokenPage,
+  SHOW_SEND_CONTRACT_PAGE: 'SHOW_SEND_CONTRACT_PAGE',
+  showSendContractPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
@@ -217,6 +224,8 @@ var actions = {
   setSelectedAddress,
   gasLoadingStarted,
   gasLoadingFinished,
+  SHOW_CHOOSE_CONTRACT_EXECUTOR_PAGE: 'SHOW_CHOOSE_CONTRACT_EXECUTOR_PAGE',
+  showChooseContractExecutorPage,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -615,12 +624,27 @@ function changePassword (oldPassword, newPassword) {
   }
 }
 
-function removeAccount (address) {
+function getContract (address) {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      background.getContract(address, (err, props) => {
+        if (err) {
+          log.error(err)
+          return reject(err)
+        }
+        log.info('Contract retrieved: ' + JSON.stringify(props))
+        resolve(props)
+      })
+    })
+  }
+}
+
+function removeAccount (address, network) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
 
     return new Promise((resolve, reject) => {
-      background.removeAccount(address, (err, account) => {
+      background.removeAccount(address, network, (err, account) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
@@ -1014,6 +1038,16 @@ function gasLoadingStarted () {
 function gasLoadingFinished () {
   return {
     type: actions.GAS_LOADING_FINISHED,
+  }
+}
+
+function showChooseContractExecutorPage ({methodSelected, methodABI, inputValues, txParams}) {
+  return {
+    type: actions.SHOW_CHOOSE_CONTRACT_EXECUTOR_PAGE,
+    methodSelected,
+    methodABI,
+    inputValues,
+    txParams,
   }
 }
 
@@ -2112,6 +2146,19 @@ function hideWarning () {
   }
 }
 
+function displayToast (text) {
+  return {
+    type: actions.DISPLAY_TOAST,
+    value: text,
+  }
+}
+
+function hideToast () {
+  return {
+    type: actions.HIDE_TOAST,
+  }
+}
+
 function requestExportAccount () {
   return {
     type: actions.REQUEST_ACCOUNT_EXPORT,
@@ -2202,6 +2249,15 @@ function showSendTokenPage (address) {
   return {
     type: actions.SHOW_SEND_TOKEN_PAGE,
     value: address,
+  }
+}
+
+function showSendContractPage ({methodSelected, methodABI, inputValues}) {
+  return {
+    type: actions.SHOW_SEND_CONTRACT_PAGE,
+    methodSelected,
+    methodABI,
+    inputValues,
   }
 }
 

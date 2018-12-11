@@ -4,7 +4,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const valuesFor = require('./util').valuesFor
+const { getCurrentKeyring, ifContractAcc, valuesFor } = require('./util')
 const Identicon = require('./components/identicon')
 const EthBalance = require('./components/eth-balance')
 const TransactionList = require('./components/transaction-list')
@@ -55,6 +55,8 @@ AccountDetailScreen.prototype.render = function () {
   if (Object.keys(props.suggestedTokens).length > 0) {
     this.props.dispatch(actions.showAddSuggestedTokenPage())
   }
+
+  const currentKeyring = getCurrentKeyring(props.address, network, props.keyrings, props.identities)
 
   return (
 
@@ -219,7 +221,13 @@ AccountDetailScreen.prototype.render = function () {
           }, 'Buy'),
 
           h('button', {
-            onClick: () => props.dispatch(actions.showSendPage()),
+            onClick: () => {
+              if (ifContractAcc(currentKeyring)) {
+                return props.dispatch(actions.showSendContractPage({}))
+              } else {
+                return props.dispatch(actions.showSendPage())
+              }
+            },
           }, 'Send'),
 
         ]),

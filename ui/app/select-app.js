@@ -68,5 +68,9 @@ SelectedApp.prototype.render = function () {
     }, [
       h(I18nProvider, [ h(App) ]),
     ])
-  : h(I18nProvider, [ h(OldApp) ])
+  : h(HashRouter, {
+      hashType: 'noslash',
+    }, [
+      h(I18nProvider, [ h(OldApp) ]),
+    ])
 }

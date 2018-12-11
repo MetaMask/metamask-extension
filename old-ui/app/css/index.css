@@ -279,6 +279,31 @@ app sections
 }
 
 /* unlock */
+.toast {
+  border: 1px solid #60db97 !important;
+  color: #ffffff !important;
+  font-size: 12px;
+  background: #60db97;
+  text-align: center;
+  padding: 10px;
+  width: 357px;
+  line-height: 14px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 100;
+  animation: 500ms ease-out 0s move;
+}
+
+@keyframes move {
+  from { top: -50px; }
+  to {
+    top: 0px;
+    transform: translateY(1);
+  }
+}
+
 .error {
   margin-bottom: 9px;
   border: 1px solid #ff1345 !important;
@@ -1162,6 +1187,6 @@ div.message-container > div:first-child {
   visibility: hidden;
 }
 
-input[disabled] {
+input[disabled],textarea[disabled] {
   background: #FFFADE
 }

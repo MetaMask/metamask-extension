@@ -2,7 +2,10 @@ const webdriver = require('selenium-webdriver')
 const { By } = webdriver
 module.exports = {
   elements: {
+    errorClose: By.css('.send-screen > div:nth-child(3) > div:nth-child(1)'),
+    error: By.className('error'),
     loader: By.css('#app-content > div > div.full-flex-height > img'),
+    poaABI: '[{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address","name":""}],"name":"abstractStorageAddr","inputs":[],"constant":true},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address[]","name":""}],"name":"getCrowdsalesForUser","inputs":[{"type":"address","name":"deployer"}],"constant":true},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"uint256","name":""}],"name":"countCrowdsalesForUser","inputs":[{"type":"address","name":"deployer"}],"constant":true},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"renounceOwnership","inputs":[],"constant":false},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"changeMintedCappedIdx","inputs":[{"type":"address","name":"newMintedCappedIdxAddr"}],"constant":false},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"changeDutchIdxAddr","inputs":[{"type":"address","name":"newDutchIdxAddr"}],"constant":false},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address","name":""}],"name":"owner","inputs":[],"constant":true},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address","name":""}],"name":"dutchIdxAddr","inputs":[],"constant":true},{"type":"function","stateMutability":"view","payable":false,"outputs":[{"type":"address","name":""}],"name":"mintedCappedIdxAddr","inputs":[],"constant":true},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"changeAbstractStorage","inputs":[{"type":"address","name":"newAbstractStorageAddr"}],"constant":false},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"trackCrowdsale","inputs":[{"type":"address","name":"proxyAddress"}],"constant":false},{"type":"function","stateMutability":"nonpayable","payable":false,"outputs":[],"name":"transferOwnership","inputs":[{"type":"address","name":"_newOwner"}],"constant":false},{"type":"constructor","stateMutability":"nonpayable","payable":false,"inputs":[{"type":"address","name":"_abstractStorage"},{"type":"address","name":"_mintedCappedIdx"},{"type":"address","name":"_dutchIdx"}]},{"type":"event","name":"Added","inputs":[{"type":"address","name":"sender","indexed":true},{"type":"address","name":"proxyAddress","indexed":true},{"type":"bytes32","name":"appExecID","indexed":false}],"anonymous":false},{"type":"event","name":"OwnershipRenounced","inputs":[{"type":"address","name":"previousOwner","indexed":true}],"anonymous":false},{"type":"event","name":"OwnershipTransferred","inputs":[{"type":"address","name":"previousOwner","indexed":true},{"type":"address","name":"newOwner","indexed":true}],"anonymous":false}]',
   },
   menus: {
     token: {
@@ -31,7 +34,8 @@ module.exports = {
       menu: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div'),
       delete: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
       createAccount: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
-      import: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span'),
+      // import: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span'),
+      import: By.css('li.dropdown-menu-item:nth-child(5) > span:nth-child(1)'),
       labelImported: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label'),
     },
     dot: {
@@ -46,6 +50,30 @@ module.exports = {
     },
   },
   screens: {
+    chooseContractExecutor: {
+      title: By.className('flex-center send-header'),
+      titleText: 'Choose contract executor',
+      buttonNext: By.css('.choose-contract-next-button'),
+      account: By.className('account-data-subsection flex-row flex-grow'),
+      selectedAccount: By.className('executor-cell-container-selected'),
+      buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
+
+    },
+    executeMethod: {
+      title: By.className('flex-center send-header'),
+      titleText: 'Execute Method',
+      selectArrow: By.className('Select-arrow-zone'),
+      item0: By.css('.Select-input > input:nth-child(1)'),
+      item1: By.className('Select-option'),
+      item11: By.css('#react-select-2--option-11'),
+      buttonCall: By.css('.section > button:nth-child(1)'),
+      fieldOutput: By.css('.input'),
+      fieldParametr1: By.css('.input'),
+      buttonNext: By.css('.section > div:nth-child(1) > button:nth-child(2)'),
+      buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
+      buttonCopyABI: By.className('btn-violet'),
+    },
+
     eventsEmitter: {
       button: By.className('btn btn-default'),
       event: By.className('Toastify__toast-body'),
@@ -59,9 +87,9 @@ module.exports = {
       error: By.className('error'),
       accountName: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(3) > div.identity-panel.flex-row.flex-space-between > div.identity-data.flex-column.flex-justify-center.flex-grow.select-none > h2'),
       message: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(3) > div.tx-data.flex-column.flex-justify-center.flex-grow.select-none > div > span'),
-     },
+    },
     sendTokens: {
-      error: By.className('error flex-center'),
+      error: By.className('error'),
       errorText: {
         invalidAmount: 'Invalid token\'s amount',
         address: 'Recipient address is invalid',
@@ -159,11 +187,13 @@ module.exports = {
       titleText: 'Delete Custom RPC',
     },
     confirmTransaction: {
+      titleText: 'Confirm Transaction',
       title: By.className('flex-row flex-center'),
       amount: By.css('#pending-tx-form > div:nth-child(1) > div.table-box > div:nth-child(2) > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(1)'),
       symbol: By.css('#pending-tx-form > div:nth-child(1) > div.table-box > div:nth-child(2) > div.ether-balance.ether-balance-amount > div > div > div > div:nth-child(2)'),
       button: {
         submit: By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'),
+        reject: By.css('.cancel'),
       },
       fields: {
         gasLimit: By.css('#pending-tx-form > div:nth-child(1) > div.table-box > div:nth-child(3) > div.cell.value > div > div > input'),
@@ -192,10 +222,19 @@ module.exports = {
       titleText: 'Delete Imported Account',
       buttons: {
         no: By.css('#app-content > div > div.app-primary.from-left > div > div.flex-row.flex-right > button.btn-violet'),
-        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
+        yes: By.css('div.flex-row:nth-child(4) > button:nth-child(2)'),
+        arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       },
     },
     importAccounts: {
+      iconCopy: By.className('clipboard cursor-pointer'),
+      warning: By.className('error'),
+      error: By.css('span.error'),
+      selectArrow: By.className('Select-arrow-zone'),
+      selectType: By.name('import-type-select'),
+      itemContract: By.id('react-select-2--option-2'),
+      contractAddress: By.id('address-box'),
+      contractABI: By.id('abi-box'),
       title: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div.flex-row.flex-center > h2'),
       textTitle: 'Import Accounts',
       fieldPrivateKey: By.id('private-key-box'),
@@ -213,6 +252,7 @@ module.exports = {
       titleText: 'Settings',
       title: By.css('#app-content > div > div.app-primary.from-right > div > div.section-title.flex-row.flex-center > h2'),
       buttons: {
+        arrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
         changePassword: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(10) > button:nth-child(5)'),
         delete: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > div:nth-child(1) > button'),
       },
@@ -241,8 +281,8 @@ module.exports = {
         menu: By.className('wallet-view__tab-history'),
         tokens: By.className('activeForm right'),
       },
-     // balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),
-     balance: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[2]/div[1]/div/div/div[1]/div[1]'),
+      // balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),
+      balance: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[2]/div[1]/div/div/div[1]/div[1]'),
       address: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div'),
       tokens: {
         menu: By.id('wallet-view__tab-tokens'),
@@ -267,7 +307,7 @@ module.exports = {
       title: By.className('page-subtitle'),
       titleText: 'Remove Token',
       label: By.className('confirm-label'),
-      labelText: 'Are you sure you want to remove token "TST"?',
+      labelText: 'Are you sure you want to remove token "',
       buttons: {
         back: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
         no: By.className('btn-violet'),
@@ -334,3 +374,4 @@ module.exports = {
     CUSTOM: 'http://test.com',
   },
 }
+

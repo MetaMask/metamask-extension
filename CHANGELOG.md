@@ -2,6 +2,11 @@
 
 ## Current Master
 
+## 4.10.0 Tue Dec 04 2018
+
+- [#212](https://github.com/poanetwork/nifty-wallet/pull/212): (Feature) interact with smart-contracts
+- [#209](https://github.com/poanetwork/nifty-wallet/pull/209): (Fix) Enhance custom RPC validation
+
 ## 4.9.0 Mon Nov 26 2018
 
 - [#183](https://github.com/poanetwork/nifty-wallet/pull/183), [#205](https://github.com/poanetwork/nifty-wallet/pull/205): HD wallets support

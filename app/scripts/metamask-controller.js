@@ -369,6 +369,7 @@ module.exports = class MetamaskController extends EventEmitter {
       resetAccount: nodeify(this.resetAccount, this),
       changePassword: nodeify(this.changePassword, this),
       removeAccount: nodeify(this.removeAccount, this),
+      getContract: nodeify(this.getContract, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // hardware wallets
@@ -407,6 +408,7 @@ module.exports = class MetamaskController extends EventEmitter {
       createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
       createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
+      addNewMultisig: nodeify(keyringController.addNewMultisig, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
       // txController
@@ -558,7 +560,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const accounts = await this.keyringController.getAccounts()
 
     // verify keyrings
-    const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair')
+    const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair' && keyring.type !== 'Simple Address')
     if (nonSimpleKeyrings.length > 1 && this.diagnostics) {
       await this.diagnostics.reportMultipleKeyrings(nonSimpleKeyrings)
     }
@@ -804,6 +806,14 @@ module.exports = class MetamaskController extends EventEmitter {
     return selectedAddress
   }
 
+  async getContract (address) {
+    let props
+    if (this.keyringController.getProps) {
+      props = this.keyringController.getProps(address)
+    }
+    return props
+  }
+
   async changePassword (oldPassword, newPassword) {
     await this.keyringController.changePassword(oldPassword, newPassword)
   }
@@ -814,7 +824,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string[]} address A hex address
    *
    */
-  async removeAccount (address) {
+  async removeAccount (address, network) {
     // Remove account from the preferences controller
     this.preferencesController.removeAddress(address)
     // Remove account from the account tracker controller
@@ -822,7 +832,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // Remove account from the keyring
     try {
-      await this.keyringController.removeAccount(address)
+      await this.keyringController.removeAccount(address, network)
     } catch (e) {
       log.error(e)
     }
@@ -840,8 +850,13 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param  {Function} cb - A callback function called with a state update on success.
    */
   async importAccountWithStrategy (strategy, args) {
-    const privateKey = await accountImporter.importAccount(strategy, args)
-    const keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    let keyring
+    if (strategy === 'Contract') {
+      keyring = await this.keyringController.addNewKeyring('Simple Address', args)
+    } else {
+      const privateKey = await accountImporter.importAccount(strategy, args)
+      keyring = await this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    }
     const accounts = await keyring.getAccounts()
     // update accounts in preferences controller
     const allAccounts = await this.keyringController.getAccounts()
