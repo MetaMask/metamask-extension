@@ -1,6 +1,5 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
-//const React = require('react').React
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
