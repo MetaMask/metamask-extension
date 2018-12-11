@@ -392,8 +392,8 @@ describe('Metamask popup page', async function () {
         const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
         assert.notEqual(field, false, "field 'Output'  isn't displayed")
         const text = await waitUntilHasValue(field)
-        console.log('text '+text)
-        console.log('outputData '+ outputData)
+        console.log('text ' + text)
+        console.log('outputData ' + outputData)
         assert.equal(text, outputData, 'incorrect value was returned')
       })
       it('Click arrow  button leads to main screen', async function () {
@@ -2098,31 +2098,16 @@ describe('Metamask popup page', async function () {
     return false
   }
 
-  async function waitUntilHasText (element, Twait) {
+ async function waitUntilHasValue (element, Twait) {
     if (Twait === undefined) Twait = 200
     let text
     do {
       await delay(100)
-      text = await element.getText()
+      text = await element.getAttribute('value')
       if (text !== '') return text
     } while (Twait-- > 0)
     return false
   }
-
-  async function waitUntilHasValue (element, Twait) {
-    if (Twait === undefined) Twait = 200
-    let text
-    do {
-      await delay(100)
-      text = await element.getAttribute("value")
-      if (text !== '') return text
-    } while (Twait-- > 0)
-    return false
-  }
-
-
-
-
 
 
   async function isElementDisplayed (by) {
@@ -2589,6 +2574,5 @@ describe('Metamask popup page', async function () {
   }
 
 })
-
 
 
