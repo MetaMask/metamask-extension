@@ -2142,16 +2142,20 @@ describe('Metamask popup page', async function () {
   async function isDisabledAddInexistentToken (tokenAddress) {
     await delay(500)
     try {
+      const tab = await waitUntilShowUp(screens.main.tokens.menu)
+      await click(tab)
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
+      let count = 20
       do {
+        await delay(500)
         const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
         try {
           await tab.click()
         } catch (err) {
         }
       }
-      while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
+      while ((await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false) && (count-->0))
     } catch (err) {
     }
     const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
