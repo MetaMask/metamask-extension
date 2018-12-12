@@ -65,7 +65,10 @@
 .gas-price-button-group--small {
   display: flex;
   justify-content: stretch;
-  max-width: 260px;
+
+  @media screen and (max-width: $break-small) {
+    max-width: 260px;
+  }
 
   &__button-fiat-price {
     font-size: 13px;
