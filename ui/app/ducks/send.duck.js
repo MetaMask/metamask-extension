@@ -62,14 +62,6 @@ export default function reducer ({ send: sendState = initState }, action = {}) {
 }
 
 // Action Creators
-export function openFromDropdown () {
-  return { type: OPEN_FROM_DROPDOWN }
-}
-
-export function closeFromDropdown () {
-  return { type: CLOSE_FROM_DROPDOWN }
-}
-
 export function openToDropdown () {
   return { type: OPEN_TO_DROPDOWN }
 }

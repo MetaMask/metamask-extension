@@ -36,7 +36,7 @@ export default class AccountListItem extends Component {
 
     return (<div
       className={`account-list-item ${className}`}
-      onClick={() => handleClick({ name, address, balance })}
+      onClick={() => handleClick && handleClick({ name, address, balance })}
     >
 
       <div className="account-list-item__top-row">

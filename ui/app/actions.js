@@ -202,7 +202,6 @@ var actions = {
   setGasTotal,
   setSendTokenBalance,
   updateSendTokenBalance,
-  updateSendFrom,
   updateSendHexData,
   updateSendTo,
   updateSendAmount,
@@ -1005,13 +1004,6 @@ function setSendTokenBalance (tokenBalance) {
   return {
     type: actions.UPDATE_SEND_TOKEN_BALANCE,
     value: tokenBalance,
-  }
-}
-
-function updateSendFrom (from) {
-  return {
-    type: actions.UPDATE_SEND_FROM,
-    value: from,
   }
 }
 
