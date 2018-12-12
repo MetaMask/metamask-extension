@@ -8,8 +8,6 @@
     overflow-y: initial;
 
     @media screen and (max-width: $break-small) {
-      max-width: 344px;
-
       &__content {
         display: flex;
         overflow-y: initial;

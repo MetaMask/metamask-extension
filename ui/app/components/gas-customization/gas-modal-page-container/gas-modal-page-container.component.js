@@ -74,8 +74,8 @@ export default class GasModalPageContainer extends Component {
     gasEstimatesLoading,
     customPriceIsSafe,
     isSpeedUp,
+    transactionFee,
   }) {
-    const { transactionFee } = this.props
     return (
       <AdvancedTabContent
         updateCustomGasPrice={convertThenUpdateCustomGasPrice}
@@ -133,7 +133,7 @@ export default class GasModalPageContainer extends Component {
   }) {
     let tabsToRender = [
       { name: 'basic', content: this.renderBasicTabContent(gasPriceButtonGroupProps) },
-      { name: 'advanced', content: this.renderAdvancedTabContent(advancedTabProps) },
+      { name: 'advanced', content: this.renderAdvancedTabContent({ transactionFee, ...advancedTabProps }) },
     ]
 
     if (hideBasic) {

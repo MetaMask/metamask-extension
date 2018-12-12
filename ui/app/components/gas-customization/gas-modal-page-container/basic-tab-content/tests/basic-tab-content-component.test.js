@@ -1,6 +1,6 @@
 import React from 'react'
 import assert from 'assert'
-import { shallow } from 'enzyme'
+import shallow from '../../../../../../lib/shallow-with-context'
 import BasicTabContent from '../basic-tab-content.component'
 
 import GasPriceButtonGroup from '../../../gas-price-button-group/'
