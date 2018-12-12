@@ -102,9 +102,6 @@ describe('custom-gas selectors', () => {
           metamask: {
             conversionRate: 255.71,
             currentCurrency: 'usd',
-            send: {
-              gasLimit: '0x5208',
-            },
           },
           gas: {
             basicEstimates: {
@@ -168,7 +165,7 @@ describe('custom-gas selectors', () => {
     it('should return renderable data about basic estimates', () => {
       tests.forEach(test => {
         assert.deepEqual(
-          getRenderableBasicEstimateData(test.mockState),
+          getRenderableBasicEstimateData(test.mockState, '0x5208'),
           test.expectedResult
         )
       })

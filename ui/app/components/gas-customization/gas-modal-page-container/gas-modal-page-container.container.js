@@ -76,7 +76,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const customGasTotal = calcGasTotal(customModalGasLimitInHex, customModalGasPriceInHex)
 
-  const gasButtonInfo = getRenderableBasicEstimateData(state)
+  const gasButtonInfo = getRenderableBasicEstimateData(state, customModalGasLimitInHex)
 
   const currentCurrency = getCurrentCurrency(state)
   const conversionRate = getConversionRate(state)
@@ -235,7 +235,7 @@ function getTxParams (state, transactionId) {
   const { txParams: pendingTxParams } = pendingTransaction || {}
   return txData.txParams || pendingTxParams || {
     from: send.from,
-    gas: send.gasLimit,
+    gas: send.gasLimit || '0x5208',
     gasPrice: send.gasPrice || getFastPriceEstimateInHexWEI(state, true),
     to: send.to,
     value: getSelectedToken(state) ? '0x0' : send.amount,

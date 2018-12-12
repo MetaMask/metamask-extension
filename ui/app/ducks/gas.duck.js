@@ -29,7 +29,7 @@ const SET_BASIC_PRICE_ESTIMATES_LAST_RETRIEVED = 'metamask/gas/SET_BASIC_PRICE_E
 const initState = {
   customData: {
     price: null,
-    limit: '0x5208',
+    limit: null,
   },
   basicEstimates: {
     average: null,

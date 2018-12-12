@@ -221,11 +221,10 @@ function getGasPriceInHexWei (price) {
   )(price)
 }
 
-function getRenderableBasicEstimateData (state) {
+function getRenderableBasicEstimateData (state, gasLimit) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return []
   }
-  const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state)
   const conversionRate = state.metamask.conversionRate
   const currentCurrency = getCurrentCurrency(state)
   const {
@@ -270,7 +269,7 @@ function getRenderableEstimateDataForSmallButtonsFromGWEI (state) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return []
   }
-  const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state)
+  const gasLimit = state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208'
   const conversionRate = state.metamask.conversionRate
   const currentCurrency = getCurrentCurrency(state)
   const {
