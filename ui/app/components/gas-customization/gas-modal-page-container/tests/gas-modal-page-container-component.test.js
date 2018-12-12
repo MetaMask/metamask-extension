@@ -185,7 +185,7 @@ describe('GasModalPageContainer Component', function () {
       assert.equal(GP.renderAdvancedTabContent.callCount, 1)
 
       assert.deepEqual(GP.renderBasicTabContent.getCall(0).args[0], mockGasPriceButtonGroupProps)
-      assert.deepEqual(GP.renderAdvancedTabContent.getCall(0).args[0], { otherProps: 'mockAdvancedTabProps' })
+      assert.deepEqual(GP.renderAdvancedTabContent.getCall(0).args[0], { transactionFee: 'mockTransactionFee', otherProps: 'mockAdvancedTabProps' })
     })
 
     it('should call renderInfoRows with the expected props', () => {

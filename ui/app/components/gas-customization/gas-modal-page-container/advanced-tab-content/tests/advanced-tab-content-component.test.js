@@ -28,7 +28,7 @@ describe('AdvancedTabContent Component', function () {
       customGasPrice={11}
       customGasLimit={23456}
       timeRemaining={21500}
-      totalFee={'$0.25'}
+      transactionFee={'$0.25'}
       insufficientBalance={false}
       customPriceIsSafe={true}
       isSpeedUp={false}

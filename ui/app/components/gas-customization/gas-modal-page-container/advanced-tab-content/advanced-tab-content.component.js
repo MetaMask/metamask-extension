@@ -17,7 +17,7 @@ export default class AdvancedTabContent extends Component {
     customGasLimit: PropTypes.number,
     gasEstimatesLoading: PropTypes.bool,
     millisecondsRemaining: PropTypes.number,
-    totalFee: PropTypes.string,
+    transactionFee: PropTypes.string,
     timeRemaining: PropTypes.string,
     gasChartProps: PropTypes.object,
     insufficientBalance: PropTypes.bool,
@@ -104,7 +104,7 @@ export default class AdvancedTabContent extends Component {
     return <i className="fa fa-info-circle" onClick={onClick} />
   }
 
-  renderDataSummary (totalFee, timeRemaining) {
+  renderDataSummary (transactionFee, timeRemaining) {
     return (
       <div className="advanced-tab__transaction-data-summary">
         <div className="advanced-tab__transaction-data-summary__titles">
@@ -113,7 +113,7 @@ export default class AdvancedTabContent extends Component {
         </div>
         <div className="advanced-tab__transaction-data-summary__container">
           <div className="advanced-tab__transaction-data-summary__fee">
-            {totalFee}
+            {transactionFee}
           </div>
           <div className="time-remaining">{timeRemaining}</div>
         </div>
@@ -173,16 +173,16 @@ export default class AdvancedTabContent extends Component {
       customGasPrice,
       customGasLimit,
       insufficientBalance,
-      totalFee,
       gasChartProps,
       gasEstimatesLoading,
       customPriceIsSafe,
       isSpeedUp,
+      transactionFee,
     } = this.props
 
     return (
       <div className="advanced-tab">
-        { this.renderDataSummary(totalFee, timeRemaining) }
+        { this.renderDataSummary(transactionFee, timeRemaining) }
         <div className="advanced-tab__fee-chart">
           { this.renderGasEditRows({
             customGasPrice,
