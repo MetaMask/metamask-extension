@@ -348,7 +348,7 @@ describe('Metamask popup page', async function () {
       })
     })
     describe('Execute Method', () => {
-      // const outputData = '0xd70befce3cf1cc88119c8f4eb583ccd4c39d06e2'
+      const outputData = '0xd70befce3cf1cc88119c8f4eb583ccd4c39d06e2'
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
       it("Click button 'Send', 'Execute Method' screen opens", async function () {
         await driver.navigate().refresh()
@@ -377,23 +377,25 @@ describe('Metamask popup page', async function () {
         await button.click()
       })
 
-      // to do
-      // it('method returns correct value', async function () {
-      //   const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
-      //   assert.notEqual(field, false, "field 'Output' isn't displayed")
-      //   const text = await waitUntilHasText(field)
-      //   assert.equal(text, outputData, 'incorrect value was returned')
-      // })
+      it('method returns correct value', async function () {
+        await delay(5000)
+        const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
+        assert.notEqual(field, false, "field 'Output'  isn't displayed")
+        const text = await waitUntilHasValue(field)
+        assert.equal(text, outputData, 'incorrect value was returned')
+      })
 
-      // it("2nd call doesn't throw the error", async function () {
-      //   const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
-      //   assert.notEqual(button, false, "button 'Call data' isn't displayed")
-      //   await button.click()
-      //   const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
-      //   assert.notEqual(field, false, "field 'Output' isn't displayed")
-      //   const text = await waitUntilHasText(field)
-      //   assert.equal(text, outputData, 'incorrect value was returned')
-      // })
+      it("2nd call doesn't throw the error", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+        assert.notEqual(button, false, "button 'Call data' isn't displayed")
+        await button.click()
+        const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
+        assert.notEqual(field, false, "field 'Output'  isn't displayed")
+        const text = await waitUntilHasValue(field)
+        console.log('text ' + text)
+        console.log('outputData ' + outputData)
+        assert.equal(text, outputData, 'incorrect value was returned')
+      })
       it('Click arrow  button leads to main screen', async function () {
         const button = await waitUntilShowUp(screens.executeMethod.buttonArrow)
         await click(button)
@@ -438,17 +440,7 @@ describe('Metamask popup page', async function () {
         await field.sendKeys(wrongAddress)
       })
 
-      it.skip("Button 'Copy ABI encoded' is disabled", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
-        assert.equal(await button.isEnabled(), false, "button 'Copy ABI encoded' enabled")
-      })
-
-      it.skip("Button 'Next' is disabled", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
-        assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
-      })
-
-      it('Error message if wrong parameter', async function () {
+      it("Error message if click 'Copy ABI encoded' with wrong address", async function () {
         const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
         await button.click()
         const error = await waitUntilShowUp(elements.error)
@@ -456,6 +448,20 @@ describe('Metamask popup page', async function () {
       })
 
       it('Close error message', async function () {
+        const button = await waitUntilShowUp(elements.errorClose)
+        await button.click()
+        const title = await waitUntilShowUp(screens.executeMethod.title)
+        assert.notEqual(title, false, "error message isn't closed")
+      })
+
+      it.skip("Error message if click 'Next' with wrong address", async function () {
+        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+        await button.click()
+        const error = await waitUntilShowUp(elements.error)
+        assert.notEqual(error, false, 'no error message')
+      })
+
+      it.skip('Close error message', async function () {
         const button = await waitUntilShowUp(elements.errorClose)
         await button.click()
         const title = await waitUntilShowUp(screens.executeMethod.title)
@@ -473,6 +479,7 @@ describe('Metamask popup page', async function () {
         const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
         assert.equal(await button.isEnabled(), true, "button 'Next' disabled")
       })
+
       it("Button 'Copy ABI encoded' is enabled", async function () {
         const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
         assert.equal(await button.isEnabled(), true, "button 'Copy ABI encoded' disabled")
@@ -2091,16 +2098,17 @@ describe('Metamask popup page', async function () {
     return false
   }
 
-  // async function waitUntilHasText (element, Twait) {
-  //   if (Twait === undefined) Twait = 200
-  //   let text
-  //   do {
-  //     await delay(100)
-  //     text = await element.getText()
-  //     if (text !== '') return text
-  //   } while (Twait-- > 0)
-  //   return false
-  // }
+ async function waitUntilHasValue (element, Twait) {
+    if (Twait === undefined) Twait = 200
+    let text
+    do {
+      await delay(100)
+      text = await element.getAttribute('value')
+      if (text !== '') return text
+    } while (Twait-- > 0)
+    return false
+  }
+
 
   async function isElementDisplayed (by) {
     try {
@@ -2134,16 +2142,20 @@ describe('Metamask popup page', async function () {
   async function isDisabledAddInexistentToken (tokenAddress) {
     await delay(500)
     try {
+      const tab = await waitUntilShowUp(screens.main.tokens.menu)
+      await click(tab)
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
+      let count = 20
       do {
+        await delay(500)
         const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
         try {
           await tab.click()
         } catch (err) {
         }
       }
-      while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
+      while ((await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false) && (count-- > 0))
     } catch (err) {
     }
     const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
