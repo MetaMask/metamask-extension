@@ -32,7 +32,7 @@ export default class GasPriceChart extends Component {
     estimatedTimesMax,
     updateCustomGasPrice,
   }) {
-    const chart = generateChart(gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax)
+    const chart = generateChart(gasPrices, estimatedTimes, gasPricesMax, estimatedTimesMax, this.context.t)
     setTimeout(function () {
       setTickPosition('y', 0, -5, 8)
       setTickPosition('y', 1, -3, -5)

@@ -44,6 +44,9 @@
   "accept": {
     "message": "Accept"
   },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },
@@ -211,6 +214,9 @@
   },
   "confirm": {
     "message": "Confirm"
+  },
+  "confirmationTime": {
+    "message": "Confirmation time (sec)"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -436,6 +442,9 @@
   "etherscanView": {
     "message": "View account on Etherscan"
   },
+  "estimatedProcessingTimes": {
+    "message": "Estimated Processing Times"
+  },
   "exchangeRate": {
     "message": "Exchange Rate"
   },
@@ -453,6 +462,9 @@
   },
   "fast": {
     "message": "Fast"
+  },
+  "faster": {
+    "message": "Faster"
   },
   "fastest": {
     "message": "Fastest"
@@ -513,6 +525,9 @@
   },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gas Price Extremely Low"
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
@@ -615,6 +630,9 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
+  "insufficientBalance": {
+    "message": "Insufficient balance."
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
@@ -679,6 +697,9 @@
   },
   "limit": {
     "message": "Limit"
+  },
+  "liveGasPricePredictions": {
+    "message": "Live Gas Price Predictions"
   },
   "loading": {
     "message": "Loading..."
@@ -1044,6 +1065,9 @@
   "slow": {
     "message": "Slow"
   },
+  "slower": {
+    "message": "Slower"
+  },
   "saveAsCsvFile": {
     "message": "Save as CSV File"
   },
@@ -1122,6 +1146,9 @@
   },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
   },
   "selectHdPath": {
     "message": "Select HD Path"
@@ -1452,5 +1479,8 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private seed phrase"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message":"Zero gas price on speed up"
   }
 }

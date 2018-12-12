@@ -13,12 +13,13 @@ export default class BasicTabContent extends Component {
   }
 
   render () {
+    const { t } = this.context
     const { gasPriceButtonGroupProps } = this.props
 
     return (
       <div className="basic-tab-content">
-        <div className="basic-tab-content__title">Estimated Processing Times</div>
-        <div className="basic-tab-content__blurb">Select a higher gas fee to accelerate the processing of your transaction.*</div>
+        <div className="basic-tab-content__title">{ t('estimatedProcessingTimes') }</div>
+        <div className="basic-tab-content__blurb">{ t('selectAHigherGasFee') }</div>
         {!gasPriceButtonGroupProps.loading
             ? <GasPriceButtonGroup
               className="gas-price-button-group--alt"
@@ -27,7 +28,7 @@ export default class BasicTabContent extends Component {
             />
             : <Loading />
         }
-        <div className="basic-tab-content__footer-blurb">* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed.</div>
+        <div className="basic-tab-content__footer-blurb">{ t('acceleratingATransaction') }</div>
       </div>
     )
   }

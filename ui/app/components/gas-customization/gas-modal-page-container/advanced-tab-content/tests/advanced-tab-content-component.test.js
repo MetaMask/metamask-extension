@@ -315,7 +315,7 @@ describe('AdvancedTabContent Component', function () {
       })
       assert.deepEqual(gasInputError, {
         isInError: true,
-        errorText: 'Insufficient Balance',
+        errorText: 'insufficientBalance',
         errorType: 'error',
       })
     })
@@ -330,7 +330,7 @@ describe('AdvancedTabContent Component', function () {
       })
       assert.deepEqual(gasInputError, {
         isInError: true,
-        errorText: 'Zero gas price on speed up',
+        errorText: 'zeroGasPriceOnSpeedUpError',
         errorType: 'error',
       })
     })
@@ -345,7 +345,7 @@ describe('AdvancedTabContent Component', function () {
       })
       assert.deepEqual(gasInputError, {
         isInError: true,
-        errorText: 'Gas Price Extremely Low',
+        errorText: 'gasPriceExtremelyLow',
         errorType: 'warning',
       })
     })

@@ -40,19 +40,20 @@ export default class AdvancedTabContent extends Component {
   }
 
   gasInputError ({ labelKey, insufficientBalance, customPriceIsSafe, isSpeedUp, value }) {
+    const { t } = this.context
     let errorText
     let errorType
     let isInError = true
 
 
     if (insufficientBalance) {
-      errorText = 'Insufficient Balance'
+      errorText = t('insufficientBalance')
       errorType = 'error'
     } else if (labelKey === 'gasPrice' && isSpeedUp && value === 0) {
-      errorText = 'Zero gas price on speed up'
+      errorText = t('zeroGasPriceOnSpeedUpError')
       errorType = 'error'
     } else if (labelKey === 'gasPrice' && !customPriceIsSafe) {
-      errorText = 'Gas Price Extremely Low'
+      errorText = t('gasPriceExtremelyLow')
       errorType = 'warning'
     } else {
       isInError = false
@@ -164,6 +165,7 @@ export default class AdvancedTabContent extends Component {
   }
 
   render () {
+    const { t } = this.context
     const {
       updateCustomGasPrice,
       updateCustomGasLimit,
@@ -191,14 +193,14 @@ export default class AdvancedTabContent extends Component {
             customPriceIsSafe,
             isSpeedUp,
           }) }
-          <div className="advanced-tab__fee-chart__title">Live Gas Price Predictions</div>
+          <div className="advanced-tab__fee-chart__title">{ t('liveGasPricePredictions') }</div>
           {!gasEstimatesLoading
             ? <GasPriceChart {...gasChartProps} updateCustomGasPrice={updateCustomGasPrice} />
             : <Loading />
           }
           <div className="advanced-tab__fee-chart__speed-buttons">
-            <span>Slower</span>
-            <span>Faster</span>
+            <span>{ t('slower') }</span>
+            <span>{ t('faster') }</span>
           </div>
         </div>
       </div>
