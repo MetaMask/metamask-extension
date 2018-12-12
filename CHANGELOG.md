@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 5.2.1 Wed Dec 12 2018
+
+- [#5917] bugfix: Ensures that advanced tab gas limit reflects tx gas limit
+
 ## 5.2.0 Mon Dec 11 2018
 
 - [#5704] Implements new gas customization features for sending, confirming and speeding up transactions
