@@ -2155,7 +2155,7 @@ describe('Metamask popup page', async function () {
         } catch (err) {
         }
       }
-      while ((await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false) && (count-->0))
+      while ((await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false) && (count-- > 0))
     } catch (err) {
     }
     const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
