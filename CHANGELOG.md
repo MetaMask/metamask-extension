@@ -2,6 +2,12 @@
 
 ## Current Develop Branch
 
+## 5.2.2 Wed Dec 12 2018
+
+- [#5925](https://github.com/MetaMask/metamask-extension/pull/5925): Fix speed up button not showing for transactions with the lowest nonce
+- [#5923](https://github.com/MetaMask/metamask-extension/pull/5923): Update the Phishing Warning notice text to not use inline URLs
+- [#5919](https://github.com/MetaMask/metamask-extension/pull/5919): Fix some styling and translations in the gas customization modal
+
 ## 5.2.1 Wed Dec 12 2018
 
 - [#5917] bugfix: Ensures that advanced tab gas limit reflects tx gas limit
