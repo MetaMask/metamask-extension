@@ -55,7 +55,7 @@ async function runSendFlowTest (assert, done) {
   assert.ok(sendFromField[0], 'send screen has a from field')
 
   const sendFromFieldItemAddress = await queryAsync($, '.account-list-item__account-name')
-  assert.equal(sendFromFieldItemAddress[0].textContent, 'Send Account 4', 'send from field shows correct account name')
+  assert.equal(sendFromFieldItemAddress[0].textContent, 'Send Account 2', 'send from field shows correct account name')
 
   const sendToFieldInput = await queryAsync($, '.send-v2__to-autocomplete__input')
   sendToFieldInput[0].focus()
@@ -95,7 +95,7 @@ async function runSendFlowTest (assert, done) {
   reactTriggerChange(selectState[0])
 
   const confirmFromName = (await queryAsync($, '.sender-to-recipient__name')).first()
-  assert.equal(confirmFromName[0].textContent, 'Send Account 4', 'confirm screen should show correct from name')
+  assert.equal(confirmFromName[0].textContent, 'Send Account 2', 'confirm screen should show correct from name')
 
   const confirmToName = (await queryAsync($, '.sender-to-recipient__name')).last()
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
