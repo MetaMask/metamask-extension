@@ -242,6 +242,9 @@
   "connecting": {
     "message": "Connecting..."
   },
+  "connectingTo": {
+    "message": "Connecting to $1"
+  },
   "connectingToKovan": {
     "message": "Connecting to Kovan Test Network"
   },
@@ -1198,6 +1201,9 @@
   "sigRequested": {
     "message": "Signature Requested"
   },
+  "somethingWentWrong": {
+    "message": "Oops! Something went wrong."
+  },
   "spaceBetween": {
     "message": "there can only be a space between words"
   },
@@ -1215,6 +1221,9 @@
   },
   "speedUpTransaction": {
     "message": "Speed up this transaction"
+  },
+  "switchNetworks": {
+    "message": "Switch Networks"
   },
   "status": {
     "message": "Status"
