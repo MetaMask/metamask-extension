@@ -62,7 +62,7 @@ export default class TransactionList extends PureComponent {
               </div>
               {
                 pendingTransactions.map((transactionGroup, index) => (
-                  this.renderTransaction(transactionGroup, index, true, index === pendingLength - 1)
+                  this.renderTransaction(transactionGroup, index, true)
                 ))
               }
             </div>
@@ -84,7 +84,7 @@ export default class TransactionList extends PureComponent {
     )
   }
 
-  renderTransaction (transactionGroup, index, isPendingTx = false, isEarliestNonce = false) {
+  renderTransaction (transactionGroup, index, isPendingTx = false) {
     const { selectedToken, assetImages } = this.props
     const { transactions = [] } = transactionGroup
 
@@ -98,7 +98,7 @@ export default class TransactionList extends PureComponent {
         <TransactionListItem
           transactionGroup={transactionGroup}
           key={`${transactionGroup.nonce}:${index}`}
-          showRetry={isPendingTx && this.shouldShowRetry(transactionGroup, isEarliestNonce)}
+          showRetry={isPendingTx && this.shouldShowRetry(transactionGroup, index === 0)}
           showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
           token={selectedToken}
           assetImages={assetImages}
