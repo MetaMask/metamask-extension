@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const vreme = new (require('vreme'))()
+const { DateTime } = require('luxon')
 const explorerLink = require('etherscan-link').createExplorerLink
 const actions = require('../../../ui/app/actions')
 const addressSummary = require('../util').addressSummary
@@ -62,7 +62,7 @@ ShiftListItem.prototype.render = function () {
 }
 
 function formatDate (date) {
-  return vreme.format(new Date(date), 'March 16 2014 14:30')
+  return DateTime.fromMillis(date).toFormat('MMMM d y T')
 }
 
 ShiftListItem.prototype.renderUtilComponents = function () {
