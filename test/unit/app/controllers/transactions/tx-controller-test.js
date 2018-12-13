@@ -12,7 +12,7 @@ const { createTestProviderTools, getTestAccounts } = require('../../../../stub/p
 
 const noop = () => true
 const currentNetworkId = 42
-
+const netStore = new ObservableStore(currentNetworkId)
 
 describe('Transaction Controller', function () {
   let txController, provider, providerResultStub, fromAccount
@@ -32,7 +32,7 @@ describe('Transaction Controller', function () {
     txController = new TransactionController({
       provider,
       getGasPrice: function () { return '0xee6b2800' },
-      networkStore: new ObservableStore(currentNetworkId),
+      networkStore: netStore,
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
       signTransaction: (ethTx) => new Promise((resolve) => {
@@ -226,6 +226,15 @@ describe('Transaction Controller', function () {
       })
       txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
       .catch(done)
+    })
+
+    it('should fail if netId is loading', function (done) {
+      txController.networkStore = new ObservableStore('loading')
+      txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
+      .catch((err) => {
+        if (err.message === 'MetaMask is having trouble connecting to the network') done()
+        else done(err)
+      })
     })
   })
 

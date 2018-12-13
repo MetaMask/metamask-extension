@@ -46,7 +46,7 @@ class TransactionStateManager extends EventEmitter {
   */
   generateTxMeta (opts) {
     const netId = this.getNetwork()
-    if ( netId === 'loading' ) throw new Error('MetaMask is having trouble connecting to the network')
+    if (netId === 'loading') throw new Error('MetaMask is having trouble connecting to the network')
     return extend({
       id: createId(),
       time: (new Date()).getTime(),
