@@ -7,7 +7,7 @@ const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('etherscan-link').createExplorerLink
 const CopyButton = require('./copyButton')
-const vreme = new (require('vreme'))()
+const { DateTime } = require('luxon')
 const Tooltip = require('./tooltip')
 const numberToBN = require('number-to-bn')
 const actions = require('../../../ui/app/actions')
@@ -216,7 +216,7 @@ function recipientField (txParams, transaction, isTx, isMsg) {
 }
 
 function formatDate (date) {
-  return vreme.format(new Date(date), 'March 16 2014 14:30')
+  return DateTime.fromMillis(date).toFormat('MMMM d y T')
 }
 
 function renderErrorOrWarning (transaction) {

@@ -3,10 +3,9 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const vreme = new (require('vreme'))()
 const explorerLink = require('etherscan-link').createExplorerLink
 const actions = require('../actions')
-const addressSummary = require('../util').addressSummary
+const { formatDate, addressSummary } = require('../util')
 
 const CopyButton = require('./copyButton')
 const EthBalance = require('./eth-balance')
@@ -65,10 +64,6 @@ ShiftListItem.prototype.render = function () {
     this.renderInfo(),
     this.renderUtilComponents(),
   ])
-}
-
-function formatDate (date) {
-  return vreme.format(new Date(date), 'March 16 2014 14:30')
 }
 
 ShiftListItem.prototype.renderUtilComponents = function () {
