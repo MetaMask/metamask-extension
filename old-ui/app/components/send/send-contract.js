@@ -10,7 +10,7 @@ import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
 import copyToClipboard from 'copy-to-clipboard'
-import BigNumber from 'bignumber.js'
+import { toFixed } from '../../util'
 
 class SendTransactionField extends Component {
 	constructor (props) {
@@ -27,7 +27,6 @@ class SendTransactionField extends Component {
 			PropTypes.string,
 			PropTypes.number,
 			PropTypes.bool,
-			PropTypes.instanceOf(BigNumber),
 		]),
 		disabled: PropTypes.bool,
 		value: PropTypes.string,
@@ -152,10 +151,16 @@ class SendTransactionScreen extends PersistentForm {
 	generateMethodField (params, ind, isInput) {
 		const { inputValues, outputValues } = this.state
 		const paramName = isInput ? 'Input' : 'Output'
-		let defaultValue = isInput ? (inputValues && inputValues[ind]) || '' : (outputValues && outputValues[ind]) || ''
-		console.log(`defaultValue: ${defaultValue}`)
+		console.log('outputValues[ind]', outputValues[ind])
+		const defaultInputValue = (inputValues && inputValues[ind]) || ''
+		const defaultOutputValue = params.type === 'bool' ? outputValues && outputValues[ind] : (outputValues && outputValues[ind]) || ''
+		let defaultValue = isInput ? defaultInputValue : defaultOutputValue
 		if (Array.isArray(defaultValue)) {
 			defaultValue = defaultValue.join(', ')
+		} else if (params.type.startsWith('uint') && !isNaN(Number(defaultValue)) && Number(defaultValue) > 0) {
+			defaultValue = toFixed(Number(defaultValue))
+		} else if (defaultValue) {
+			defaultValue = defaultValue.toString()
 		}
 		const label = (
 			<h3
@@ -223,9 +228,7 @@ class SendTransactionScreen extends PersistentForm {
 
 	updateOutputsView () {
 		const methodOutputsView = []
-		console.log(this.state.methodOutputs)
 		this.state.methodOutputs.forEach((output, ind) => {
-			console.log(output)
 			methodOutputsView.push(this.generateMethodField(output, ind, false))
 		})
 		this.setState({
@@ -295,21 +298,18 @@ class SendTransactionScreen extends PersistentForm {
 					this.props.hideToast()
 					return this.props.displayWarning(err)
 				}
-				if (output) {
-					const outputValues = {}
-					if (this.state.methodOutputsView.length > 1) {
-						output.forEach((val, ind) => {
-							outputValues[ind] = val
-						})
-					} else {
-						outputValues[0] = output
-					}
-					console.log(outputValues)
-					this.setState({
-						outputValues,
+				const outputValues = {}
+				if (this.state.methodOutputsView.length > 1) {
+					output.forEach((val, ind) => {
+						outputValues[ind] = val
 					})
-					this.updateOutputsView()
+				} else {
+					outputValues[0] = output
 				}
+				this.setState({
+					outputValues,
+				})
+				this.updateOutputsView()
 			})
 		} catch (e) {
 			this.props.hideToast()

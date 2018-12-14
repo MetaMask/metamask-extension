@@ -1,5 +1,11 @@
 const assert = require('assert')
-const { countSignificantDecimals, getCurrentKeyring, ifLooseAcc, ifContractAcc } = require('../../../../old-ui/app/util')
+const {
+  countSignificantDecimals,
+  getCurrentKeyring,
+  ifLooseAcc,
+  ifContractAcc,
+  toFixed,
+} = require('../../../../old-ui/app/util')
 
 describe('countSignificantDecimals(val, len) function', () => {
   it('returns correct significant decimals', () => {
@@ -67,5 +73,15 @@ describe('ifContractAcc(keyring) function', () => {
     assert.equal(true, ifContractAcc(keyrings[1]))
     assert.equal(null, ifContractAcc())
     assert.equal(false, ifContractAcc({}))
+  })
+})
+
+describe('toFixed(num) function', () => {
+  it('Returns correct value without scientific notation', () => {
+    assert.equal('100', toFixed(100))
+    assert.equal('100', toFixed(1e2))
+    assert.equal('1000000000000000000000000', toFixed(1e24))
+    assert.equal('1000000000000000000000000', toFixed(1000000000000000000000000))
+    assert.equal('1042394732947300000000000', toFixed(1.0423947329473e24))
   })
 })
