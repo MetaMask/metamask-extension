@@ -117,7 +117,7 @@ class SendTransactionScreen extends PersistentForm {
 						}}
 					/>
 				</div>
-				<div style={{ padding: '0 30px', overflow: 'auto' }}>
+				<div style={{ padding: '0 30px', overflow: 'auto', 'maxHeight': '280px' }}>
 					{this.state.methodInputsView}
 					{this.state.isConstantMethod && this.methodOutput()}
 					{this.buttonsSection()}
