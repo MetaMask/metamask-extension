@@ -13,7 +13,7 @@ export default class SendContent extends Component {
     updateGas: PropTypes.func,
     scanQrCode: PropTypes.func,
     showHexData: PropTypes.bool,
-  };
+  }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
 

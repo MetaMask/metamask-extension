@@ -54,22 +54,13 @@ async function runSendFlowTest (assert, done) {
   const sendFromField = await queryAsync($, '.send-v2__form-field')
   assert.ok(sendFromField[0], 'send screen has a from field')
 
-  let sendFromFieldItemAddress = await queryAsync($, '.account-list-item__account-name')
-  assert.equal(sendFromFieldItemAddress[0].textContent, 'Send Account 4', 'send from field shows correct account name')
-
-  const sendFromFieldItem = await queryAsync($, '.account-list-item')
-  sendFromFieldItem[0].click()
-
-  // this seems to fail if the firefox window is not in focus...
-  const sendFromDropdownList = await queryAsync($, '.send-v2__from-dropdown__list')
-  assert.equal(sendFromDropdownList.children().length, 4, 'send from dropdown shows all accounts')
-  sendFromDropdownList.children()[1].click()
-
-  sendFromFieldItemAddress = await queryAsync($, '.account-list-item__account-name')
-  assert.equal(sendFromFieldItemAddress[0].textContent, 'Send Account 2', 'send from field dropdown changes account name')
+  const sendFromFieldItemAddress = await queryAsync($, '.account-list-item__account-name')
+  assert.equal(sendFromFieldItemAddress[0].textContent, 'Send Account 2', 'send from field shows correct account name')
 
   const sendToFieldInput = await queryAsync($, '.send-v2__to-autocomplete__input')
   sendToFieldInput[0].focus()
+
+  await timeout(1000)
 
   const sendToDropdownList = await queryAsync($, '.send-v2__from-dropdown__list')
   assert.equal(sendToDropdownList.children().length, 5, 'send to dropdown shows all accounts and address book accounts')
@@ -104,7 +95,7 @@ async function runSendFlowTest (assert, done) {
   reactTriggerChange(selectState[0])
 
   const confirmFromName = (await queryAsync($, '.sender-to-recipient__name')).first()
-  assert.equal(confirmFromName[0].textContent, 'Send Account 4', 'confirm screen should show correct from name')
+  assert.equal(confirmFromName[0].textContent, 'Send Account 2', 'confirm screen should show correct from name')
 
   const confirmToName = (await queryAsync($, '.sender-to-recipient__name')).last()
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
@@ -117,12 +108,6 @@ async function runSendFlowTest (assert, done) {
 
   const confirmScreenBackButton = await queryAsync($, '.confirm-page-container-header__back-button')
   confirmScreenBackButton[0].click()
-
-  const sendFromFieldItemInEdit = await queryAsync($, '.account-list-item')
-  sendFromFieldItemInEdit[0].click()
-
-  const sendFromDropdownListInEdit = await queryAsync($, '.send-v2__from-dropdown__list')
-  sendFromDropdownListInEdit.children()[2].click()
 
   const sendToFieldInputInEdit = await queryAsync($, '.send-v2__to-autocomplete__input')
   sendToFieldInputInEdit[0].focus()

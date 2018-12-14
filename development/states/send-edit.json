@@ -107,7 +107,7 @@
         ]
       }
     ],
-    "selectedAddress": "0xd85a4b6a394794842887b8284293d69163007bbb",
+    "selectedAddress": "0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb",
     "currentCurrency": "USD",
     "provider": {
       "type": "testnet"
@@ -130,7 +130,10 @@
       "maxModeOn": false,
       "editingTransactionId": null
     },
-    "currentLocale": "en"
+    "currentLocale": "en",
+    "preferences": {
+      "useNativeCurrencyAsPrimaryCurrency": true
+    }
   },
   "appState": {
     "menuOpen": false,

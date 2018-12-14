@@ -1,8 +1,6 @@
 import assert from 'assert'
 
 import SendReducer, {
-  openFromDropdown,
-  closeFromDropdown,
   openToDropdown,
   closeToDropdown,
   updateSendErrors,
@@ -138,20 +136,6 @@ describe('Send Duck', () => {
         Object.assign({}, initState)
       )
     })
-  })
-
-  describe('openFromDropdown', () => {
-    assert.deepEqual(
-      openFromDropdown(),
-      { type: OPEN_FROM_DROPDOWN }
-    )
-  })
-
-  describe('closeFromDropdown', () => {
-    assert.deepEqual(
-      closeFromDropdown(),
-      { type: CLOSE_FROM_DROPDOWN }
-    )
   })
 
   describe('openToDropdown', () => {
