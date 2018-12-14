@@ -148,6 +148,7 @@
     "gulp-debug": "^3.2.0",
     "gulp-eslint": "^4.0.0",
     "gulp-sass": "^4.0.0",
+    "gun": "^0.9.999992",
     "hat": "0.0.3",
     "human-standard-token-abi": "^2.0.0",
     "idb-global": "^2.1.0",
@@ -223,7 +224,6 @@
     "vreme": "^3.0.2",
     "web3": "^0.20.1",
     "web3-stream-provider": "^3.0.1",
-    "gun": "^0.9.99999",
     "webrtc-adapter": "^6.3.0",
     "xtend": "^4.0.1"
   },
