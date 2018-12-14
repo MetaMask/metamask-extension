@@ -560,13 +560,13 @@ export default class SettingsTab extends PureComponent {
         { this.renderNewRpcUrl() }
         { this.renderStateLogs() }
         { this.renderSeedWords() }
-        { this.renderMobileSync() }
         { !isMascara && this.renderOldUI() }
         { this.renderResetAccount() }
         { this.renderClearApproval() }
         { this.renderPrivacyOptIn() }
         { this.renderHexDataOptIn() }
         { this.renderBlockieOptIn() }
+        { this.renderMobileSync() }
       </div>
     )
   }
