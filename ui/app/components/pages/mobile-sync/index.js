@@ -18,6 +18,14 @@ const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN'
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN'
 
 class MobileSyncPage extends Component {
+  static propTypes = {
+    history: PropTypes.object,
+    selectedAddress: PropTypes.string,
+    displayWarning: PropTypes.func,
+    fetchInfoToSync: PropTypes.func,
+    requestRevealSeedWords: PropTypes.func,
+  }
+
   constructor (props) {
     super(props)
 
