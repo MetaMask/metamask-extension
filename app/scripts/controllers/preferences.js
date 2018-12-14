@@ -32,7 +32,10 @@ class PreferencesController {
       tokens: [],
       suggestedTokens: {},
       useBlockie: false,
-      featureFlags: {},
+      featureFlags: {
+        betaUI: true,
+        skipAnnounceBetaUI: true,
+      },
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},

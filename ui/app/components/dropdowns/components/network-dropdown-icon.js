@@ -16,16 +16,32 @@ NetworkDropdownIcon.prototype.render = function () {
     isSelected,
     innerBorder = 'none',
     diameter = '12',
+    loading,
   } = this.props
 
-  return h(`.menu-icon-circle${isSelected ? '--active' : ''}`, {},
-    h('div', {
+  return loading
+    ? h('span.pointer.network-indicator', {
       style: {
-        background: backgroundColor,
-        border: innerBorder,
-        height: `${diameter}px`,
-        width: `${diameter}px`,
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
       },
-    })
-  )
+    }, [
+      h('img', {
+        style: {
+          width: '27px',
+        },
+        src: 'images/loading.svg',
+      }),
+    ])
+    : h(`.menu-icon-circle${isSelected ? '--active' : ''}`, {},
+      h('div', {
+        style: {
+          background: backgroundColor,
+          border: innerBorder,
+          height: `${diameter}px`,
+          width: `${diameter}px`,
+        },
+      })
+    )
 }

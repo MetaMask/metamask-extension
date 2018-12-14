@@ -1,6 +1,6 @@
 .transaction-status {
   height: 26px;
-  width: 81px;
+  width: 84px;
   border-radius: 4px;
   background-color: #f0f0f0;
   color: #5e6064;
@@ -12,22 +12,34 @@
 
   @media screen and (max-width: $break-small) {
     height: 16px;
-    width: 70px;
+    width: 72px;
     font-size: .5rem;
   }
 
   &--confirmed {
     background-color: #eafad7;
     color: #609a1c;
+
+    .transaction-status__transaction-count {
+      border: 1px solid #609a1c;
+    }
   }
 
   &--approved, &--submitted {
     background-color: #FFF2DB;
     color: #CA810A;
+
+    .transaction-status__transaction-count {
+      border: 1px solid #CA810A;
+    }
   }
 
   &--failed {
     background: lighten($monzo, 56%);
     color: $monzo;
+
+    .transaction-status__transaction-count {
+      border: 1px solid $monzo;
+    }
   }
 }

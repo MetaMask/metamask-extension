@@ -23,9 +23,15 @@ describe('TransactionListItemDetails Component', () => {
       },
     }
 
+    const transactionGroup = {
+      transactions: [transaction],
+      primaryTransaction: transaction,
+      initialTransaction: transaction,
+    }
+
     const wrapper = shallow(
       <TransactionListItemDetails
-        transaction={transaction}
+        transactionGroup={transactionGroup}
       />,
       { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
     )
@@ -52,9 +58,18 @@ describe('TransactionListItemDetails Component', () => {
       },
     }
 
+    const transactionGroup = {
+      transactions: [transaction],
+      primaryTransaction: transaction,
+      initialTransaction: transaction,
+      nonce: '0xa4',
+      hasRetried: false,
+      hasCancelled: false,
+    }
+
     const wrapper = shallow(
       <TransactionListItemDetails
-        transaction={transaction}
+        transactionGroup={transactionGroup}
         showRetry={true}
       />,
       { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }

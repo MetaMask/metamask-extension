@@ -119,6 +119,9 @@
   "clickCopy": {
     "message": "Kliknij żeby skopiować"
   },
+  "clickToAdd": {
+    "message": "Przycisnij $1, aby dodać go do swojego konta"
+  },
   "close": {
     "message": "Zamknij"
   },
@@ -336,6 +339,9 @@
   },
   "exchangeRate": {
     "message": "Kurs wymiany"
+  },
+  "expandView": {
+    "message": "Rozwiń widok"
   },
   "exportPrivateKey": {
     "message": "Eksportuj klucz prywatny"
@@ -595,6 +601,9 @@
   },
   "min": {
     "message": "Minimum"
+  },
+  "missingYourTokens": {
+    "message": "Nie widzisz swoich token?"
   },
   "myAccounts": {
     "message": "Moje konta"
@@ -1042,8 +1051,8 @@
   "supportCenter": {
     "message": "Odwiedź nasze Centrum Pomocy"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Symbol musi mieć od 0 do 10 znaków."
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbol musi mieć od 0 do 12 znaków."
   },
   "takesTooLong": {
     "message": "Trwa zbyt długo?"
@@ -1192,8 +1201,8 @@
   "welcomeBack": {
     "message": "Witaj z powrotem!"
   },
-  "welcomeBeta": {
-    "message": "Witaj w MetaMask Beta"
+  "welcome": {
+    "message": "Witaj w MetaMask"
   },
   "whatsThis": {
     "message": "Co to jest?"

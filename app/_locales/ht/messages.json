@@ -1141,8 +1141,8 @@
   "supportCenter": {
     "message": "Vizite Sant Sipò Nou"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Senbòl yo dwe ant 0 ak 10 karaktè."
+  "symbolBetweenZeroTwelve": {
+    "message": "Senbòl yo dwe ant 0 ak 12 karaktè."
   },
   "takesTooLong": {
     "message": "Pran twò lontan?"
@@ -1327,8 +1327,8 @@
   "welcomeBack": {
     "message": "Bon Retou!"
   },
-  "welcomeBeta": {
-    "message": "Byenveni nan MetaMask Beta"
+  "welcome": {
+    "message": "Byenveni nan MetaMask"
   },
   "whatsThis": {
     "message": "Kisa sa ye?"

@@ -1,3 +1,4 @@
+import ethUtil from 'ethereumjs-util'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../confirm-page-container'
@@ -239,7 +240,7 @@ export default class ConfirmTransactionBase extends Component {
           )
         }
         <div className="confirm-page-container-content__data-box-label">
-          {`${t('hexData')}:`}
+          {`${t('hexData')}: ${ethUtil.toBuffer(data).length} bytes`}
         </div>
         <div className="confirm-page-container-content__data-box">
           { data }
@@ -294,22 +295,35 @@ export default class ConfirmTransactionBase extends Component {
       return
     }
 
-    this.setState({ submitting: true, submitError: null })
-
-    if (onSubmit) {
-      Promise.resolve(onSubmit(txData))
-        .then(this.setState({ submitting: false }))
-    } else {
-      sendTransaction(txData)
-        .then(() => {
-          clearConfirmTransaction()
-          this.setState({ submitting: false })
-          history.push(DEFAULT_ROUTE)
-        })
-        .catch(error => {
-          this.setState({ submitting: false, submitError: error.message })
-        })
-    }
+    this.setState({
+      submitting: true,
+      submitError: null,
+    }, () => {
+      if (onSubmit) {
+        Promise.resolve(onSubmit(txData))
+          .then(() => {
+            this.setState({
+              submitting: false,
+            })
+          })
+      } else {
+        sendTransaction(txData)
+          .then(() => {
+            clearConfirmTransaction()
+            this.setState({
+              submitting: false,
+            }, () => {
+              history.push(DEFAULT_ROUTE)
+            })
+          })
+          .catch(error => {
+            this.setState({
+              submitting: false,
+              submitError: error.message,
+            })
+          })
+      }
+    })
   }
 
   renderTitleComponent () {
@@ -412,7 +426,7 @@ export default class ConfirmTransactionBase extends Component {
         toName={toName}
         toAddress={toAddress}
         showEdit={onEdit && !isTxReprice}
-        action={action || name || this.context.t('unknownFunction')}
+        action={action || name || this.context.t('contractInteraction')}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}

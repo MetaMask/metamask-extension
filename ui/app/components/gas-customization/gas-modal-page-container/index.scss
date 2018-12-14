@@ -1,0 +1,146 @@
+@import './advanced-tab-content/index';
+@import './basic-tab-content/index';
+
+.gas-modal-page-container {
+  .page-container {
+    max-width: 391px;
+    min-height: 585px;
+    overflow-y: initial;
+
+    @media screen and (max-width: $break-small) {
+      &__content {
+        display: flex;
+        overflow-y: initial;
+      }
+    }
+
+    &__header {
+      padding: 0px;
+      padding-top: 16px;
+
+      &--no-padding-bottom {
+        padding-bottom: 0;
+      }
+    }
+
+    &__footer {
+      header {
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+    }
+
+    &__header-close-text {
+      font-size: 14px;
+      color: #4EADE7;
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    &__title {
+      color: $black;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      margin-right: 0;
+    }
+
+    &__subtitle {
+      display: none;
+    }
+
+    &__tabs {
+      margin-top: 0px;
+    }
+
+    &__tab {
+      width: 100%;
+      font-size: 14px;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+
+      &--selected {
+        color: $curious-blue;
+        border-bottom: 2px solid $curious-blue;
+      }
+    }
+  }
+}
+
+.gas-modal-content {
+  @media screen and (max-width: $break-small) {
+    width: 100%;
+  }
+
+  &__basic-tab {
+    height: 219px;
+  }
+
+
+  &__info-row, &__info-row--fade {
+    width: 100%;
+    background: $polar;
+    padding: 15px 21px;
+    display: flex;
+    flex-flow: column;
+    color: $scorpion;
+    font-size: 12px;
+
+    @media screen and (max-width: $break-small) {
+      padding: 4px 21px;
+    }
+
+    &__send-info, &__transaction-info, &__total-info, &__fiat-total-info {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
+    }
+
+    &__fiat-total-info {
+      justify-content: flex-end;
+    }
+
+    &__total-info {
+      &__label {
+        font-size: 16px;
+
+        @media screen and (max-width: $break-small) {
+          font-size: 14px;
+        }
+      }
+
+      &__value {
+        font-size: 16px;
+        font-weight: bold;
+
+        @media screen and (max-width: $break-small) {
+          font-size: 14px;
+        }
+      }
+    }
+
+    &__transaction-info, &__send-info {
+      &__label {
+        font-size: 12px;
+      }
+
+      &__value {
+        font-size: 14px;
+      }
+    }
+  }
+
+  &__info-row--fade {
+    background: white;
+    color: $dusty-gray;
+    border-top: 1px solid $mischka;
+  }
+}

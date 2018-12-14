@@ -52,6 +52,7 @@ function reduceApp (state, action) {
       isOpen: false,
       transitionName: '',
       type: '',
+      props: {},
     },
     alertOpen: false,
     alertMessage: null,
@@ -75,6 +76,7 @@ function reduceApp (state, action) {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
     },
+    lastSelectedProvider: null,
   }, state.appState)
 
   switch (action.type) {
@@ -745,6 +747,14 @@ function reduceApp (state, action) {
     case actions.SET_NETWORK_NONCE:
       return extend(appState, {
         networkNonce: action.value,
+      })
+
+    case actions.SET_PREVIOUS_PROVIDER:
+      if (action.value === 'loading') {
+        return appState
+      }
+      return extend(appState, {
+        lastSelectedProvider: action.value,
       })
 
     default:

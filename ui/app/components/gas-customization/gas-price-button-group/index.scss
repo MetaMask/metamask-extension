@@ -1,0 +1,238 @@
+.gas-price-button-group {
+  margin-top: 22px;
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  &__primary-currency {
+    font-size: 18px;
+    height: 20.5px;
+    margin-bottom: 7.5px;
+  }
+
+  &__time-estimate {
+    margin-top: 5.5px;
+    color: $silver-chalice;
+    height: 15.4px;
+  }
+
+  &__loading-container {
+    height: 130px;
+  }
+
+  .button-group__button, .button-group__button--active {
+    height: 130px;
+    max-width: 108px;
+    font-size: 12px;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    padding-top: 17px;
+    border-radius: 4px;
+    border: 2px solid $spindle;
+    background: $white;
+    color: $scorpion;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    i {
+      &:last-child {
+        display: none;
+      }
+    }
+  }
+
+  .button-group__button--active {
+    border: 2px solid $curious-blue;
+    color: $scorpion;
+
+    i {
+      &:last-child {
+        display: flex;
+        color: $curious-blue;
+        margin-top: 8px
+      }
+    }
+  }
+}
+
+.gas-price-button-group--small {
+  display: flex;
+  justify-content: stretch;
+
+  @media screen and (max-width: $break-small) {
+    max-width: 260px;
+  }
+
+  &__button-fiat-price {
+    font-size: 13px;
+  }
+
+  &__button-label {
+    font-size: 16px;
+  }
+
+  &__label {
+    font-weight: 500;
+  }
+
+  &__primary-currency {
+    font-size: 12px;
+
+    @media screen and (max-width: 575px) {
+      font-size: 10px;
+    }
+  }
+
+  &__secondary-currency {
+    font-size: 12px;
+
+    @media screen and (max-width: 575px) {
+      font-size: 10px;
+    }
+  }
+
+  &__loading-container {
+    height: 78px;
+  }
+
+  .button-group__button, .button-group__button--active {
+    height: 78px;
+    background: white;
+    color: $scorpion;
+    padding-top: 9px;
+    padding-left: 8.5px;
+
+    @media screen and (max-width: $break-small) {
+      padding-left: 4px;
+    }
+
+    div {
+      display: flex;
+      flex-flow: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+
+    i {
+      &:last-child {
+        display: none;
+      }
+    }
+  }
+
+  .button-group__button--active {
+    color: $white;
+    background: $dodger-blue;
+
+    i {
+      &:last-child {
+        display: flex;
+        color: $curious-blue;
+        margin-top: 10px
+      }
+    }
+  }
+}
+
+.gas-price-button-group--alt {
+  display: flex;
+  justify-content: stretch;
+  width: 95%;
+
+  &__button-fiat-price {
+    font-size: 13px;
+  }
+
+  &__button-label {
+    font-size: 16px;
+  }
+
+  &__label {
+    font-weight: 500;
+    font-size: 10px;
+    text-transform: capitalize;
+  }
+
+  &__primary-currency {
+    font-size: 11px;
+    margin-top: 3px;
+  }
+
+  &__secondary-currency {
+    font-size: 11px;
+  }
+
+  &__loading-container {
+    height: 78px;
+  }
+
+  &__time-estimate {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 4px;
+    color: $black;
+  }
+
+  .button-group__button, .button-group__button--active {
+    height: 78px;
+    background: white;
+    color: #2A4055;
+    width: 108px;
+    height: 97px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.151579);
+    border-radius: 6px;
+    border: none;
+
+    div {
+      display: flex;
+      flex-flow: column;;
+      align-items: flex-start;
+      justify-content: flex-start;
+      position: relative;
+    }
+
+    .button-check-wrapper {
+      display: none;
+    }
+
+    &:first-child {
+      margin-right: 6px;
+    }
+
+    &:last-child {
+      margin-left: 6px;
+    }
+  }
+
+  .button-group__button--active {
+    background: #F7FCFF;
+    border: 2px solid #2C8BDC;
+
+    .button-check-wrapper {
+      height: 16px;
+      width: 16px;
+      border-radius: 8px;
+      position: absolute;
+      top: -11px;
+      right: -10px;
+      background: #D5ECFA;
+      display: flex;
+      flex-flow: row;
+      justify-content: center;
+      align-items: center;
+    }
+
+    i {
+      display: flex;
+      color: $curious-blue;
+      font-size: 12px;
+    }
+  }
+}

@@ -215,7 +215,9 @@ $wallet-view-bg: $alabaster;
   }
 
   .main-container-wrapper {
-    height: 100%;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
   }
 }
 

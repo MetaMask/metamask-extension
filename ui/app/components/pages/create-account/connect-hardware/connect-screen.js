@@ -45,11 +45,13 @@ class ConnectScreen extends Component {
             this.renderConnectToLedgerButton(),
             this.renderConnectToTrezorButton(),
           ]),
-          h(
-            `button.hw-connect__connect-btn${!this.state.selectedDevice ? '.disabled' : ''}`,
-            { onClick: this.connect },
-            this.context.t('connect')
-          ),
+          h(Button, {
+            type: 'confirm',
+            large: true,
+            className: 'hw-connect__connect-btn',
+            onClick: this.connect,
+            disabled: !this.state.selectedDevice,
+          }, this.context.t('connect')),
         ])
       )
     }
@@ -67,9 +69,7 @@ class ConnectScreen extends Component {
                   onClick: () => global.platform.openWindow({
                     url: 'https://google.com/chrome',
                   }),
-                },
-                    this.context.t('downloadGoogleChrome')
-                ),
+                }, this.context.t('downloadGoogleChrome')),
             ])
         )
     }

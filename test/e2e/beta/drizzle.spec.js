@@ -81,22 +81,6 @@ describe('MetaMask', function () {
     })
 
     it('selects the new UI option', async () => {
-      try {
-        const overlay = await findElement(driver, By.css('.full-flex-height'))
-        await driver.wait(until.stalenessOf(overlay))
-      } catch (e) {}
-
-      let button
-      try {
-        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
-      } catch (e) {
-        await loadExtension(driver, extensionId)
-        await delay(largeDelayMs)
-        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
-      }
-      await button.click()
-      await delay(regularDelayMs)
-
       // Close all other tabs
       const [tab0, tab1, tab2] = await driver.getAllWindowHandles()
       await driver.switchTo().window(tab0)

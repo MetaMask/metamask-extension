@@ -17,6 +17,10 @@ export default class CancelTransaction extends PureComponent {
     newGasFee: PropTypes.string,
   }
 
+  state = {
+    busy: false,
+  }
+
   componentDidUpdate () {
     const { transactionStatus, showTransactionConfirmedModal } = this.props
 
@@ -29,8 +33,10 @@ export default class CancelTransaction extends PureComponent {
   handleSubmit = async () => {
     const { createCancelTransaction, hideModal } = this.props
 
+    this.setState({ busy: true })
+
     await createCancelTransaction()
-    hideModal()
+    this.setState({ busy: false }, () => hideModal())
   }
 
   handleCancel = () => {
@@ -40,6 +46,7 @@ export default class CancelTransaction extends PureComponent {
   render () {
     const { t } = this.context
     const { newGasFee } = this.props
+    const { busy } = this.state
 
     return (
       <Modal
@@ -50,6 +57,7 @@ export default class CancelTransaction extends PureComponent {
         submitText={t('yesLetsTry')}
         cancelText={t('nevermind')}
         submitType="secondary"
+        submitDisabled={busy}
       >
         <div>
           <div className="cancel-transaction__title">

@@ -17,6 +17,9 @@
   "confirmClear": {
     "message": "Are you sure you want to clear approved websites?"
   },
+  "contractInteraction": {
+    "message": "Contract Interaction"
+  },
   "clearApprovalDataSuccess": {
     "message": "Approved website data cleared successfully."
   },
@@ -40,6 +43,9 @@
   },
   "accept": {
     "message": "Accept"
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
   },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
@@ -65,6 +71,9 @@
   "address": {
     "message": "Address"
   },
+  "advancedOptions": {
+    "message": "Advanced Options"
+  },
   "addCustomToken": {
     "message": "Add custom token"
   },
@@ -80,11 +89,17 @@
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
+  "advanced": {
+    "message": "Advanced"
+  },
   "amount": {
     "message": "Amount"
   },
   "amountPlusGas": {
     "message": "Amount + Gas"
+  },
+  "amountPlusTxFee": {
+    "message": "Amount + TX Fee"
   },
   "appDescription": {
     "message": "Ethereum Browser Extension",
@@ -115,6 +130,9 @@
   "available": {
     "message": "Available"
   },
+  "average": {
+    "message": "Average"
+  },
   "back": {
     "message": "Back"
   },
@@ -126,6 +144,9 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
+  },
+  "basic": {
+    "message": "Basic"
   },
   "beta": {
     "message": "BETA"
@@ -170,6 +191,9 @@
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
+  "cancelled": {
+    "message": "Cancelled"
+  },
   "cancelN": {
     "message": "Cancel all $1 transactions"
   },
@@ -190,6 +214,9 @@
   },
   "confirm": {
     "message": "Confirm"
+  },
+  "confirmationTime": {
+    "message": "Confirmation time (sec)"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -214,6 +241,9 @@
   },
   "connecting": {
     "message": "Connecting..."
+  },
+  "connectingTo": {
+    "message": "Connecting to $1"
   },
   "connectingToKovan": {
     "message": "Connecting to Kovan Test Network"
@@ -302,6 +332,9 @@
   },
   "customGas": {
     "message": "Customize Gas"
+  },
+  "customGasSubTitle": {
+    "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
   "customToken": {
     "message": "Custom Token"
@@ -412,6 +445,9 @@
   "etherscanView": {
     "message": "View account on Etherscan"
   },
+  "estimatedProcessingTimes": {
+    "message": "Estimated Processing Times"
+  },
   "exchangeRate": {
     "message": "Exchange Rate"
   },
@@ -426,6 +462,18 @@
   },
   "failed": {
     "message": "Failed"
+  },
+  "fast": {
+    "message": "Fast"
+  },
+  "faster": {
+    "message": "Faster"
+  },
+  "fastest": {
+    "message": "Fastest"
+  },
+  "feeChartTitle": {
+    "message": "Live Transaction Fee Predictions"
   },
   "fiat": {
     "message": "Fiat",
@@ -480,6 +528,12 @@
   },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gas Price Extremely Low"
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas Price"
   },
   "gasPriceCalculation": {
     "message": "We calculate the suggested gas prices based on network success rates."
@@ -579,6 +633,9 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
+  "insufficientBalance": {
+    "message": "Insufficient balance."
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
@@ -644,6 +701,9 @@
   "limit": {
     "message": "Limit"
   },
+  "liveGasPricePredictions": {
+    "message": "Live Gas Price Predictions"
+  },
   "loading": {
     "message": "Loading..."
   },
@@ -688,6 +748,9 @@
   },
   "missingYourTokens": {
     "message": "Don't see your tokens?"
+  },
+  "minutesShorthand": {
+    "message": "Min"
   },
   "mobileSyncTitle": {
     "message": "Sync accounts with mobile"
@@ -761,6 +824,12 @@
   "optionalNickname": {
     "message": "Nickname (optional)"
   },
+  "newTotal": {
+    "message": "New Total"
+  },
+  "newTransactionFee": {
+    "message": "New Transaction Fee"
+  },
   "next": {
     "message": "Next"
   },
@@ -825,6 +894,9 @@
   },
   "parameters": {
     "message": "Parameters"
+  },
+  "originalTotal": {
+    "message": "Original Total"
   },
   "password": {
     "message": "Password"
@@ -999,6 +1071,12 @@
   "save": {
     "message": "Save"
   },
+  "slow": {
+    "message": "Slow"
+  },
+  "slower": {
+    "message": "Slower"
+  },
   "saveAsCsvFile": {
     "message": "Save as CSV File"
   },
@@ -1024,6 +1102,9 @@
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
   },
+  "secondsShorthand": {
+    "message": "Sec"
+  },
   "seedPhraseReq": {
     "message": "Seed phrases are 12 words long"
   },
@@ -1044,6 +1125,9 @@
   },
   "send": {
     "message": "Send"
+  },
+  "sendAmount": {
+    "message": "Send Amount"
   },
   "sendETH": {
     "message": "Send ETH"
@@ -1071,6 +1155,9 @@
   },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
   },
   "selectHdPath": {
     "message": "Select HD Path"
@@ -1120,6 +1207,9 @@
   "sigRequested": {
     "message": "Signature Requested"
   },
+  "somethingWentWrong": {
+    "message": "Oops! Something went wrong."
+  },
   "spaceBetween": {
     "message": "there can only be a space between words"
   },
@@ -1131,6 +1221,15 @@
   },
   "speedUpSubtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
+  },
+  "speedUpCancellation": {
+    "message": "Speed up this cancellation"
+  },
+  "speedUpTransaction": {
+    "message": "Speed up this transaction"
+  },
+  "switchNetworks": {
+    "message": "Switch Networks"
   },
   "status": {
     "message": "Status"
@@ -1171,8 +1270,8 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Symbol must be between 0 and 10 characters."
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbol must be between 0 and 12 characters."
   },
   "syncWithMobile": {
     "message": "Sync with mobile"
@@ -1239,28 +1338,37 @@
     "message": "transaction"
   },
   "transactionConfirmed": {
-    "message": "Transaction confirmed on $2."
+    "message": "Transaction confirmed at $2."
   },
   "transactionCreated": {
-    "message": "Transaction created with a value of $1 on $2."
+    "message": "Transaction created with a value of $1 at $2."
   },
   "transactionWithNonce": {
     "message": "Transaction $1"
   },
   "transactionDropped": {
-    "message": "Transaction dropped on $2."
+    "message": "Transaction dropped at $2."
   },
   "transactionSubmitted": {
-    "message": "Transaction submitted on $2."
+    "message": "Transaction submitted with gas fee of $1 at $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
   },
   "transactionUpdated": {
-    "message": "Transaction updated on $2."
+    "message": "Transaction updated at $2."
   },
   "transactionUpdatedGas": {
-    "message": "Transaction updated with a gas price of $1 on $2."
+    "message": "Transaction updated with a gas fee of $1 at $2."
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
+  },
+  "transactionCancelAttempted": {
+    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transaction successfully cancelled at $2"
   },
   "transactions": {
     "message": "transactions"
@@ -1271,11 +1379,17 @@
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
   },
+  "transactionFee": {
+    "message": "Transaction Fee"
+  },
   "transactionMemo": {
     "message": "Transaction memo (optional)"
   },
   "transactionNumber": {
     "message": "Transaction Number"
+  },
+  "transactionTime": {
+    "message": "Transaction Time"
   },
   "transfer": {
     "message": "Transfer"
@@ -1319,9 +1433,6 @@
   },
   "unknown": {
     "message": "Unknown"
-  },
-  "unknownFunction": {
-    "message": "Unknown Function"
   },
   "unknownNetwork": {
     "message": "Unknown Private Network"
@@ -1384,8 +1495,8 @@
   "welcomeBack": {
     "message": "Welcome Back!"
   },
-  "welcomeBeta": {
-    "message": "Welcome to MetaMask Beta"
+  "welcome": {
+    "message": "Welcome to MetaMask"
   },
   "whatsThis": {
     "message": "What's this?"
@@ -1404,5 +1515,8 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private seed phrase"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message":"Zero gas price on speed up"
   }
 }

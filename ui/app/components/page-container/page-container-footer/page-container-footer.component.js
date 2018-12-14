@@ -12,6 +12,7 @@ export default class PageContainerFooter extends Component {
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
     submitButtonType: PropTypes.string,
+    hideCancel: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -27,20 +28,21 @@ export default class PageContainerFooter extends Component {
       submitText,
       disabled,
       submitButtonType,
+      hideCancel,
     } = this.props
 
     return (
       <div className="page-container__footer">
 
         <header>
-          <Button
+          {!hideCancel && <Button
             type="default"
             large
             className="page-container__footer-button"
             onClick={e => onCancel(e)}
           >
             { cancelText || this.context.t('cancel') }
-          </Button>
+          </Button>}
 
           <Button
             type={submitButtonType || 'primary'}

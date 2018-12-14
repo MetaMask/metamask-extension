@@ -5,11 +5,14 @@ const EthTx = require('ethereumjs-tx')
 const ObservableStore = require('obs-store')
 const sinon = require('sinon')
 const TransactionController = require('../../../../../app/scripts/controllers/transactions')
+const {
+  TRANSACTION_TYPE_RETRY,
+} = require('../../../../../app/scripts/controllers/transactions/enums')
 const { createTestProviderTools, getTestAccounts } = require('../../../../stub/provider')
 
 const noop = () => true
 const currentNetworkId = 42
-
+const netStore = new ObservableStore(currentNetworkId)
 
 describe('Transaction Controller', function () {
   let txController, provider, providerResultStub, fromAccount
@@ -28,7 +31,8 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop
     txController = new TransactionController({
       provider,
-      networkStore: new ObservableStore(currentNetworkId),
+      getGasPrice: function () { return '0xee6b2800' },
+      networkStore: netStore,
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
       signTransaction: (ethTx) => new Promise((resolve) => {
@@ -223,6 +227,15 @@ describe('Transaction Controller', function () {
       txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
       .catch(done)
     })
+
+    it('should fail if netId is loading', function (done) {
+      txController.networkStore = new ObservableStore('loading')
+      txController.addUnapprovedTransaction({ from: selectedAddress, to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2' })
+      .catch((err) => {
+        if (err.message === 'MetaMask is having trouble connecting to the network') done()
+        else done(err)
+      })
+    })
   })
 
   describe('#addTxGasDefaults', function () {
@@ -391,6 +404,70 @@ describe('Transaction Controller', function () {
 
   })
 
+  describe('#createSpeedUpTransaction', () => {
+    let addTxSpy
+    let approveTransactionSpy
+    let txParams
+    let expectedTxParams
+
+    beforeEach(() => {
+      addTxSpy = sinon.spy(txController, 'addTx')
+      approveTransactionSpy = sinon.spy(txController, 'approveTransaction')
+
+      txParams = {
+        nonce: '0x00',
+        from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
+        to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
+        gas: '0x5209',
+        gasPrice: '0xa',
+      }
+      txController.txStateManager._saveTxList([
+        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams, history: [{}] },
+      ])
+
+      expectedTxParams = Object.assign({}, txParams, { gasPrice: '0xb'})
+    })
+
+    afterEach(() => {
+      addTxSpy.restore()
+      approveTransactionSpy.restore()
+    })
+
+    it('should call this.addTx and this.approveTransaction with the expected args', async () => {
+      await txController.createSpeedUpTransaction(1)
+      assert.equal(addTxSpy.callCount, 1)
+
+      const addTxArgs = addTxSpy.getCall(0).args[0]
+      assert.deepEqual(addTxArgs.txParams, expectedTxParams)
+
+      const { lastGasPrice, type } = addTxArgs
+      assert.deepEqual({ lastGasPrice, type }, {
+        lastGasPrice: '0xa',
+        type: TRANSACTION_TYPE_RETRY,
+      })
+    })
+
+    it('should call this.approveTransaction with the id of the returned tx', async () => {
+      const result = await txController.createSpeedUpTransaction(1)
+      assert.equal(approveTransactionSpy.callCount, 1)
+
+      const approveTransactionArg = approveTransactionSpy.getCall(0).args[0]
+      assert.equal(result.id, approveTransactionArg)
+    })
+
+    it('should return the expected txMeta', async () => {
+      const result = await txController.createSpeedUpTransaction(1)
+
+      assert.deepEqual(result.txParams, expectedTxParams)
+
+      const { lastGasPrice, type } = result
+      assert.deepEqual({ lastGasPrice, type }, {
+        lastGasPrice: '0xa',
+        type: TRANSACTION_TYPE_RETRY,
+      })
+    })
+  })
+
   describe('#publishTransaction', function () {
     let hash, txMeta
     beforeEach(function () {
@@ -415,8 +492,9 @@ describe('Transaction Controller', function () {
   })
 
   describe('#retryTransaction', function () {
-    it('should create a new txMeta with the same txParams as the original one', function (done) {
+    it('should create a new txMeta with the same txParams as the original one but with a higher gasPrice', function (done) {
       const txParams = {
+        gasPrice: '0xee6b2800',
         nonce: '0x00',
         from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
         to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
@@ -427,6 +505,7 @@ describe('Transaction Controller', function () {
       ])
       txController.retryTransaction(1)
       .then((txMeta) => {
+        assert.equal(txMeta.txParams.gasPrice, '0x10642ac00', 'gasPrice should have a %10 gasPrice bump')
         assert.equal(txMeta.txParams.nonce, txParams.nonce, 'nonce should be the same')
         assert.equal(txMeta.txParams.from, txParams.from, 'from should be the same')
         assert.equal(txMeta.txParams.to, txParams.to, 'to should be the same')

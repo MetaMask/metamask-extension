@@ -30,35 +30,25 @@ async function runTxListItemsTest (assert, done) {
   metamaskLogo[0].click()
 
   const txListItems = await queryAsync($, '.transaction-list-item')
-  assert.equal(txListItems.length, 8, 'all tx list items are rendered')
+  assert.equal(txListItems.length, 7, 'all tx list items are rendered')
 
-  const retryTxGrid = await findAsync($(txListItems[2]), '.transaction-list-item__grid')
-  retryTxGrid[0].click()
-  const retryTxDetails = await findAsync($, '.transaction-list-item-details')
-  const headerButtons = await findAsync($(retryTxDetails[0]), '.transaction-list-item-details__header-button')
-  assert.equal(headerButtons[0].textContent, 'speed up')
-
-  const approvedTx = txListItems[2]
+  const approvedTx = txListItems[0]
   const approvedTxRenderedStatus = await findAsync($(approvedTx), '.transaction-list-item__status')
   assert.equal(approvedTxRenderedStatus[0].textContent, 'pending', 'approvedTx has correct label')
 
-  const unapprovedMsg = txListItems[0]
+  const unapprovedMsg = txListItems[1]
   const unapprovedMsgDescription = await findAsync($(unapprovedMsg), '.transaction-list-item__action')
   assert.equal(unapprovedMsgDescription[0].textContent, 'Signature Request', 'unapprovedMsg has correct description')
 
-  const failedTx = txListItems[4]
-  const failedTxRenderedStatus = await findAsync($(failedTx), '.transaction-list-item__status')
-  assert.equal(failedTxRenderedStatus[0].textContent, 'Failed', 'failedTx has correct label')
-
-  const shapeShiftTx = txListItems[5]
+  const shapeShiftTx = txListItems[4]
   const shapeShiftTxStatus = await findAsync($(shapeShiftTx), '.flex-column div:eq(1)')
   assert.equal(shapeShiftTxStatus[0].textContent, 'No deposits received', 'shapeShiftTx has correct status')
+
+  const rejectedTx = txListItems[5]
+  const rejectedTxRenderedStatus = await findAsync($(rejectedTx), '.transaction-list-item__status')
+  assert.equal(rejectedTxRenderedStatus[0].textContent, 'Rejected', 'rejectedTx has correct label')
 
   const confirmedTokenTx = txListItems[6]
   const confirmedTokenTxAddress = await findAsync($(confirmedTokenTx), '.transaction-list-item__status')
   assert.equal(confirmedTokenTxAddress[0].textContent, 'Confirmed', 'confirmedTokenTx has correct address')
-
-  const rejectedTx = txListItems[7]
-  const rejectedTxRenderedStatus = await findAsync($(rejectedTx), '.transaction-list-item__status')
-  assert.equal(rejectedTxRenderedStatus[0].textContent, 'Rejected', 'rejectedTx has correct label')
 }

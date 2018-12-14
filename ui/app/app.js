@@ -7,6 +7,7 @@ const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
 const log = require('loglevel')
+const { getMetaMaskAccounts, getNetworkIdentifier } = require('./selectors')
 
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
@@ -32,6 +33,7 @@ const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 
 const Loading = require('./components/loading-screen')
+const LoadingNetwork = require('./components/loading-network-screen').default
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
 const AccountMenu = require('./components/account-menu')
 
@@ -42,6 +44,10 @@ const Alert = require('./components/alert')
 
 import AppHeader from './components/app-header'
 import UnlockPage from './components/pages/unlock-page'
+
+import {
+  submittedPendingTransactionsSelector,
+} from './selectors/transactions'
 
 // Routes
 const {
@@ -108,11 +114,20 @@ class App extends Component {
       currentView,
       setMouseUserState,
       sidebar,
+      submittedPendingTransactions,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
       this.getConnectingLabel(loadingMessage) : null
     log.debug('Main ui render function')
+
+    const {
+      isOpen: sidebarIsOpen,
+      transitionName: sidebarTransitionName,
+      type: sidebarType,
+      props,
+    } = sidebar
+    const { transaction: sidebarTransaction } = props || {}
 
     return (
       h('.flex-column.full-height', {
@@ -141,10 +156,12 @@ class App extends Component {
 
         // sidebar
         h(Sidebar, {
-          sidebarOpen: sidebar.isOpen,
+          sidebarOpen: sidebarIsOpen,
+          sidebarShouldClose: sidebarTransaction && !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id),
           hideSidebar: this.props.hideSidebar,
-          transitionName: sidebar.transitionName,
-          type: sidebar.type,
+          transitionName: sidebarTransitionName,
+          type: sidebarType,
+          sidebarProps: sidebar.props,
         }),
 
         // network dropdown
@@ -156,9 +173,10 @@ class App extends Component {
         h(AccountMenu),
 
         h('div.main-container-wrapper', [
-          (isLoading || isLoadingNetwork) && h(Loading, {
+          isLoading && h(Loading, {
             loadingMessage: loadMessage,
           }),
+          !isLoading && isLoadingNetwork && h(LoadingNetwork),
 
           // content
           this.renderRoutes(),
@@ -183,7 +201,7 @@ class App extends Component {
     if (loadingMessage) {
       return loadingMessage
     }
-    const { provider } = this.props
+    const { provider, providerId } = this.props
     const providerName = provider.type
 
     let name
@@ -197,7 +215,7 @@ class App extends Component {
     } else if (providerName === 'rinkeby') {
       name = this.context.t('connectingToRinkeby')
     } else {
-      name = this.context.t('connectingToUnknown')
+      name = this.context.t('connectingTo', [providerId])
     }
 
     return name
@@ -256,6 +274,7 @@ App.propTypes = {
   activeAddress: PropTypes.string,
   unapprovedTxs: PropTypes.object,
   seedWords: PropTypes.string,
+  submittedPendingTransactions: PropTypes.array,
   unapprovedMsgCount: PropTypes.number,
   unapprovedPersonalMsgCount: PropTypes.number,
   unapprovedTypedMessagesCount: PropTypes.number,
@@ -265,6 +284,7 @@ App.propTypes = {
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   t: PropTypes.func,
+  providerId: PropTypes.string,
 }
 
 function mapStateToProps (state) {
@@ -278,9 +298,10 @@ function mapStateToProps (state) {
     loadingMessage,
   } = appState
 
+  const accounts = getMetaMaskAccounts(state)
+
   const {
     identities,
-    accounts,
     address,
     keyrings,
     isInitialized,
@@ -314,6 +335,7 @@ function mapStateToProps (state) {
     isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
     isPopup: state.metamask.isPopup,
     seedWords: state.metamask.seedWords,
+    submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     unapprovedMsgCount,
@@ -332,6 +354,7 @@ function mapStateToProps (state) {
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,
     Qr: state.appState.Qr,
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,
+    providerId: getNetworkIdentifier(state),
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
