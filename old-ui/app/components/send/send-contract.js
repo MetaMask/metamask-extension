@@ -168,6 +168,11 @@ class SendTransactionScreen extends PersistentForm {
 				style={{ marginTop: '10px' }}
 			>
 				{params.name || `${paramName} ${ind + 1}`}
+				{!isInput ? <i
+					className="clipboard cursor-pointer"
+					style={{ marginLeft: '10px' }}
+					onClick={(e) => { copyToClipboard(defaultValue) }}
+				/> : null}
 			</h3>
 		)
 		const field = (
@@ -286,7 +291,7 @@ class SendTransactionScreen extends PersistentForm {
 
 	callData = () => {
 		this.props.showLoadingIndication()
-		const { abi, methodSelected, inputValues } = this.state
+		const { abi, methodSelected, inputValues, methodOutputsView } = this.state
 		const { address } = this.props
 		const web3 = new Web3(global.ethereumProvider)
 
@@ -299,7 +304,7 @@ class SendTransactionScreen extends PersistentForm {
 					return this.props.displayWarning(err)
 				}
 				const outputValues = {}
-				if (this.state.methodOutputsView.length > 1) {
+				if (methodOutputsView.length > 1) {
 					output.forEach((val, ind) => {
 						outputValues[ind] = val
 					})
