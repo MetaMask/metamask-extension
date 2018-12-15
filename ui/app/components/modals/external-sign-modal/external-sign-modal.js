@@ -318,9 +318,14 @@ function reduce (signable) {
       flatStr += ethUtil.stripHexPrefix(tx.data)
       flatStr = flatStr.toLowerCase()
 
+      const esc9 = flatStr.replace(/9/g, 'n')
+
+      // zero compressing
+      const zeroCompStr = esc9.replace(/0{48}/g, '975').replace(/0{24}/g, '974').replace(/0{12}/g, '973').replace(/0{6}/g, '972').replace(/0{5}/g, '971').replace(/0{4}/g, '970')
+
       // escape all '9' in flat string
-      const numStr = flatStr
-        .replace(/9/g, '99')
+      const numStr = zeroCompStr
+        .replace(/n/g, '99')
         .replace(/a/g, '90')
         .replace(/b/g, '91')
         .replace(/c/g, '92')
@@ -329,9 +334,7 @@ function reduce (signable) {
         .replace(/f/g, '95')
         .replace(/\|/g, '96')
 
-      // zero compressing
-      const zeroCompStr = numStr.replace(/0{48}/g, '975').replace(/0{24}/g, '974').replace(/0{12}/g, '973').replace(/0{6}/g, '972').replace(/0{5}/g, '971').replace(/0{4}/g, '970')
-      var errorChk = ethUtil.stripHexPrefix(ethUtil.bufferToHex(ethUtil.sha3(ethUtil.toBuffer(zeroCompStr))).slice(-2))
+      var errorChk = ethUtil.stripHexPrefix(ethUtil.bufferToHex(ethUtil.sha3(ethUtil.toBuffer(numStr))).slice(-2))
 
       // error check
       errorChk = errorChk
@@ -342,6 +345,6 @@ function reduce (signable) {
         .replace(/d/g, '93')
         .replace(/e/g, '94')
         .replace(/f/g, '95')
-      return 'eths:/?t=' + errorChk + zeroCompStr
+      return 'eths:/?t=' + errorChk + numStr
   }
 }
