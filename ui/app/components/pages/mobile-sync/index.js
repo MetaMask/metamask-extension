@@ -63,8 +63,6 @@ class MobileSyncPage extends Component {
   generateCipherKeyAndChannelName () {
     this.cipherKey = `${this.props.selectedAddress.substr(-4)}-${PubNub.generateUUID()}`
     this.channelName = `mm-${PubNub.generateUUID()}`
-    this.cipherKey = 'android'
-    this.channelName = 'android'
   }
 
   initWebsockets () {
