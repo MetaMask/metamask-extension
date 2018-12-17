@@ -9,7 +9,7 @@ const {
   installWebExt,
   getExtensionIdChrome,
   getExtensionIdFirefox,
-} = require('../func')
+} = require('./func')
 const {
   checkBrowserForConsoleErrors,
   closeAllWindowHandlesExcept,
