@@ -11,9 +11,6 @@ workflows:
       - prep-docs:
           requires:
             - prep-deps-npm
-      - prep-scss:
-          requires:
-            - prep-deps-npm
       - test-lint:
           requires:
             - prep-deps-npm
@@ -124,25 +121,6 @@ jobs:
           root: .
           paths:
             - docs/jsdocs
-
-  prep-scss:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Get Scss Cache key
-          # this allows us to checksum against a whole directory
-          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
-      - run:
-          name: Build for integration tests
-          command: npm run test:integration:build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ui/app/css/output
 
   test-lint:
     docker:
