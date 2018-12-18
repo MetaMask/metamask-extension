@@ -10,7 +10,6 @@ import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
 import copyToClipboard from 'copy-to-clipboard'
-import { toFixed } from '../../util'
 
 class SendTransactionField extends Component {
 	constructor (props) {
@@ -57,6 +56,7 @@ class SendTransactionScreen extends PersistentForm {
 	constructor (props) {
 		super(props)
 		this.state = {
+			web3: new Web3(global.ethereumProvider),
 			options: [],
 			abi: [],
 			methodSelected: props.methodSelected,
@@ -149,7 +149,7 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	generateMethodField (params, ind, isInput) {
-		const { inputValues, outputValues } = this.state
+		const { inputValues, outputValues, web3 } = this.state
 		const paramName = isInput ? 'Input' : 'Output'
 		const defaultInputValue = (inputValues && inputValues[ind]) || ''
 		const defaultOutputValue = params.type === 'bool' ? outputValues && outputValues[ind] : (outputValues && outputValues[ind]) || ''
@@ -157,7 +157,7 @@ class SendTransactionScreen extends PersistentForm {
 		if (Array.isArray(defaultValue)) {
 			defaultValue = defaultValue.join(', ')
 		} else if (params.type.startsWith('uint') && !isNaN(Number(defaultValue)) && Number(defaultValue) > 0) {
-			defaultValue = toFixed(Number(defaultValue))
+			defaultValue = web3.toBigNumber(defaultValue).toFixed()
 		} else if (defaultValue) {
 			defaultValue = defaultValue.toString()
 		}
@@ -294,9 +294,8 @@ class SendTransactionScreen extends PersistentForm {
 
 	callData = () => {
 		this.props.showLoadingIndication()
-		const { abi, methodSelected, inputValues, methodOutputsView } = this.state
+		const { abi, methodSelected, inputValues, methodOutputs, methodOutputsView, web3 } = this.state
 		const { address } = this.props
-		const web3 = new Web3(global.ethereumProvider)
 
 		const inputValuesArray = Object.keys(inputValues).map(key => inputValues[key])
 		try {
@@ -309,10 +308,12 @@ class SendTransactionScreen extends PersistentForm {
 				const outputValues = {}
 				if (methodOutputsView.length > 1) {
 					output.forEach((val, ind) => {
-						outputValues[ind] = val
+						const type = methodOutputs && methodOutputs[ind] && methodOutputs[ind].type
+						outputValues[ind] = this.setOutputValue(val, type)
 					})
 				} else {
-					outputValues[0] = output
+					const type = methodOutputs && methodOutputs[0] && methodOutputs[0].type
+					outputValues[0] = this.setOutputValue(output, type)
 				}
 				this.setState({
 					outputValues,
@@ -323,6 +324,23 @@ class SendTransactionScreen extends PersistentForm {
 			this.props.hideToast()
 			return this.props.displayWarning(e)
 		}
+	}
+
+	setOutputValue = (val, type) => {
+		console.log(val)
+		if (!type) {
+			return val ? val : ''
+		}
+		if (!val) {
+			if (type === 'bool') {
+				return val
+			}
+			return ''
+		}
+		if (type.startsWith('uint') && !type.endsWith('[]')) {
+			return val.toFixed().toString()
+		}
+		return val
 	}
 
 	encodeFunctionCall = () => {
