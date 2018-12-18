@@ -135,7 +135,7 @@ class SendTransactionScreen extends PersistentForm {
 	async getContractMethods () {
 		const contractProps = await this.props.getContract(this.props.address)
 		const abi = contractProps && contractProps.abi
-		const options = abi && abi.reduce((filtered, obj) => {
+		const options = abi && Array.isArray(abi) && abi.reduce((filtered, obj) => {
 			if (obj.type === 'function') {
 				filtered.push({ label: obj.name, value: obj.name, metadata: obj })
 			}
@@ -151,7 +151,6 @@ class SendTransactionScreen extends PersistentForm {
 	generateMethodField (params, ind, isInput) {
 		const { inputValues, outputValues } = this.state
 		const paramName = isInput ? 'Input' : 'Output'
-		console.log('outputValues[ind]', outputValues[ind])
 		const defaultInputValue = (inputValues && inputValues[ind]) || ''
 		const defaultOutputValue = params.type === 'bool' ? outputValues && outputValues[ind] : (outputValues && outputValues[ind]) || ''
 		let defaultValue = isInput ? defaultInputValue : defaultOutputValue
@@ -182,7 +181,7 @@ class SendTransactionScreen extends PersistentForm {
 				disabled={!isInput}
 				placeholder={params.type}
 				defaultValue={defaultValue}
-				onChange={e => isInput ? this.handleInputChange(e.target.value, ind) : null}
+				onChange={e => isInput ? this.handleInputChange(e.target.value, params.type, ind) : null}
 			/>
 		)
 		const fieldObj = (
@@ -194,10 +193,14 @@ class SendTransactionScreen extends PersistentForm {
 		return fieldObj
 	}
 
-	handleInputChange (val, ind) {
+	handleInputChange (val, type, ind) {
 		const { inputValues } = this.state
 		if (val) {
-			inputValues[ind] = val
+			if (type === 'bool') {
+				inputValues[ind] = (val === 'true')
+			} else {
+				inputValues[ind] = val
+			}
 		} else {
 			delete inputValues[ind]
 		}
