@@ -156,7 +156,7 @@ class SendTransactionScreen extends PersistentForm {
 		let defaultValue = isInput ? defaultInputValue : defaultOutputValue
 		if (Array.isArray(defaultValue)) {
 			defaultValue = defaultValue.join(', ')
-		} else if (params.type.startsWith('uint') && !isNaN(Number(defaultValue)) && Number(defaultValue) > 0) {
+		} else if ((params.type.startsWith('uint') || params.type.startsWith('int')) && !isNaN(Number(defaultValue)) && Number(defaultValue) > 0) {
 			defaultValue = web3.toBigNumber(defaultValue).toFixed()
 		} else if (defaultValue) {
 			defaultValue = defaultValue.toString()
@@ -329,7 +329,7 @@ class SendTransactionScreen extends PersistentForm {
 	setOutputValue = (val, type) => {
 		console.log(val)
 		if (!type) {
-			return val ? val : ''
+			return val || ''
 		}
 		if (!val) {
 			if (type === 'bool') {
@@ -337,7 +337,7 @@ class SendTransactionScreen extends PersistentForm {
 			}
 			return ''
 		}
-		if (type.startsWith('uint') && !type.endsWith('[]')) {
+		if ((type.startsWith('uint') || type.startsWith('int')) && !type.endsWith('[]')) {
 			return val.toFixed().toString()
 		}
 		return val
