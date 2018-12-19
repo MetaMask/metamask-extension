@@ -53,9 +53,7 @@ class PreferencesController {
     this._subscribeProviderType()
 
     global.setPreference = (key, value) => {
-      this.store.updateState({
-        [key]: value,
-      })
+      return this.setFeatureFlag(key, value)
     }
   }
 // PUBLIC METHODS
