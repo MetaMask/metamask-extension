@@ -60,15 +60,16 @@ module.exports = {
 
     },
     executeMethod: {
+
       title: By.className('flex-center send-header'),
       titleText: 'Execute Method',
       selectArrow: By.className('Select-arrow-zone'),
       item0: By.css('.Select-input > input:nth-child(1)'),
-      item1: By.className('Select-option'),
+      items: By.className('Select-option'),
       item11: By.css('#react-select-2--option-11'),
       buttonCall: By.css('.section > button:nth-child(1)'),
-      fieldOutput: By.css('.input'),
-      fieldParametr1: By.css('.input'),
+      fieldOutput: By.className('input large-input output'),
+      fieldParameter: By.className('input large-input output'),
       buttonNext: By.css('.section > div:nth-child(1) > button:nth-child(2)'),
       buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       buttonCopyABI: By.className('btn-violet'),
@@ -374,4 +375,5 @@ module.exports = {
     CUSTOM: 'http://test.com',
   },
 }
+
 
