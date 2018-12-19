@@ -51,6 +51,12 @@ class PreferencesController {
     this.store = new ObservableStore(initState)
     this.openPopup = opts.openPopup
     this._subscribeProviderType()
+
+    global.setPreference = (key, value) => {
+      this.store.updateState({
+        [key]: value,
+      })
+    }
   }
 // PUBLIC METHODS
 
