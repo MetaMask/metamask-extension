@@ -11,13 +11,12 @@ import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
 import copyToClipboard from 'copy-to-clipboard'
 
-class SendTransactionInput extends Component {
+class SendTransactionInputText extends Component {
 	constructor (props) {
 		super(props)
 		this.state = {
 			inputVal: props.defaultValue,
 		}
-		this.timerID = null
 	}
 
 	static propTypes = {
@@ -34,16 +33,55 @@ class SendTransactionInput extends Component {
 				className="input large-input"
 				placeholder={this.props.placeholder}
 				value={this.state.inputVal}
-				onChange={e => {
+				onChange={(val) => {
 						this.setState({
-							inputVal: e.target.value,
+							inputVal: val,
 						})
-						this.props.onChange(e)
+						this.props.onChange(val)
 					}
 				}
 				style={{ marginTop: '5px' }}
 			/>
-			)
+		)
+	}
+}
+
+class SendTransactionInputSelect extends Component {
+	constructor (props) {
+		super(props)
+		this.state = {
+			inputVal: props.defaultValue,
+		}
+	}
+
+	static propTypes = {
+		defaultValue: PropTypes.string,
+		value: PropTypes.string,
+		onChange: PropTypes.func,
+	}
+
+	render () {
+		return (
+			<Select
+				clearable={false}
+				value={this.state.inputVal}
+				options={[{
+					label: 'false',
+					value: false
+				}, {
+					label: 'true',
+					value: true
+				}]}
+				onChange={(opt) => {
+						this.setState({
+							inputVal: opt.value,
+						})
+						this.props.onChange(opt.value)
+					}
+				}
+				style={{ marginTop: '5px' }}
+			/>
+		)
 	}
 }
 
@@ -63,6 +101,7 @@ class SendTransactionScreen extends PersistentForm {
 			output: '',
 			copyDisabled: true,
 		}
+		this.timerID = null
 		PersistentForm.call(this)
 	}
 
@@ -148,15 +187,27 @@ class SendTransactionScreen extends PersistentForm {
 				{params.name || `Input ${ind + 1}`}
 			</h3>
 		)
-		const input = (
-			<SendTransactionInput
+		let input
+		if (params.type === 'bool') {
+			input = (
+			<SendTransactionInputSelect
 				key={Math.random()}
 				ind={ind}
-				placeholder={params.type}
 				defaultValue={(this.props.inputValues && this.props.inputValues[ind]) || ''}
-				onChange={e => this.handleInputChange(e, ind)}
+				onChange={val => this.handleInputChange(val, ind)}
 			/>
 		)
+		} else {
+			input = (
+				<SendTransactionInputText
+					key={Math.random()}
+					ind={ind}
+					placeholder={params.type}
+					defaultValue={(this.props.inputValues && this.props.inputValues[ind]) || ''}
+					onChange={e => this.handleInputChange(e.target.value, ind)}
+				/>
+			)
+		}
 		const inputObj = (
 			<div key={`method_label_container_${ind}`}>
 				{label}
@@ -166,10 +217,11 @@ class SendTransactionScreen extends PersistentForm {
 		return inputObj
 	}
 
-	handleInputChange (e, ind) {
+	handleInputChange (val, ind) {
+		console.log(val, ind)
 		const { inputValues } = this.state
-		if (e.target.value) {
-			inputValues[ind] = e.target.value
+		if (val) {
+			inputValues[ind] = val
 		} else {
 			delete inputValues[ind]
 		}
