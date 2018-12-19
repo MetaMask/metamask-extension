@@ -25,6 +25,7 @@ const Authenticated = require('./components/pages/authenticated')
 const Initialized = require('./components/pages/initialized')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
+const MobileSyncPage = require('./components/pages/mobile-sync')
 const AddTokenPage = require('./components/pages/add-token')
 const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('./components/pages/confirm-add-suggested-token')
@@ -54,6 +55,7 @@ const {
   UNLOCK_ROUTE,
   SETTINGS_ROUTE,
   REVEAL_SEED_ROUTE,
+  MOBILE_SYNC_ROUTE,
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
   CONFIRM_ADD_TOKEN_ROUTE,
@@ -83,6 +85,7 @@ class App extends Component {
         h(Initialized, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
         h(Initialized, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
         h(Authenticated, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedConfirmation }),
+        h(Authenticated, { path: MOBILE_SYNC_ROUTE, exact, component: MobileSyncPage }),
         h(Authenticated, { path: SETTINGS_ROUTE, component: Settings }),
         h(Authenticated, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
         h(Authenticated, {

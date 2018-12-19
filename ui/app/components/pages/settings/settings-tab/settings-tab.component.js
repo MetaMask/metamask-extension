@@ -5,7 +5,7 @@ import validUrl from 'valid-url'
 import { exportAsFile } from '../../../../util'
 import SimpleDropdown from '../../../dropdowns/simple-dropdown'
 import ToggleButton from 'react-toggle-button'
-import { REVEAL_SEED_ROUTE } from '../../../../routes'
+import { REVEAL_SEED_ROUTE, MOBILE_SYNC_ROUTE } from '../../../../routes'
 import locales from '../../../../../../app/_locales/index.json'
 import TextField from '../../../text-field'
 import Button from '../../../button'
@@ -336,6 +336,34 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+  renderMobileSync () {
+    const { t } = this.context
+    const { history } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('syncWithMobile') }</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Button
+              type="primary"
+              large
+              onClick={event => {
+                event.preventDefault()
+                history.push(MOBILE_SYNC_ROUTE)
+              }}
+            >
+              { t('syncWithMobile') }
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+
   renderOldUI () {
     const { t } = this.context
     const { setFeatureFlagToBeta } = this.props
@@ -538,6 +566,7 @@ export default class SettingsTab extends PureComponent {
         { this.renderPrivacyOptIn() }
         { this.renderHexDataOptIn() }
         { this.renderBlockieOptIn() }
+        { this.renderMobileSync() }
       </div>
     )
   }

@@ -752,6 +752,12 @@
   "minutesShorthand": {
     "message": "Min"
   },
+  "mobileSyncTitle": {
+    "message": "Sync accounts with mobile"
+  },
+  "mobileSyncText": {
+    "message": "Please enter your password to confirm it's you!"
+  },
   "myAccounts": {
     "message": "My Accounts"
   },
@@ -1266,6 +1272,27 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be between 0 and 12 characters."
+  },
+  "syncWithMobile": {
+    "message": "Sync with mobile"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sync with mobile"
+  },
+  "syncWithMobileDesc": {
+    "message": "You can sync your accounts and information with your mobile device. Open the MetaMask mobile app, go to \"Settings\" and tap on \"Sync from Browser Extension\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "If you just open the MetaMask Mobile app for the first time, just follow the steps in your phone."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan this code with your MetaMask mobile app"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Make sure nobody else is looking at your screen when you scan this code"
+  },
+  "syncWithMobileComplete": {
+    "message": "Your data has been synced succesfully. Enjoy the MetaMask mobile app!"
   },
   "takesTooLong": {
     "message": "Taking too long?"
