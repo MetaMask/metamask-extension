@@ -117,8 +117,7 @@ class AccountDropdowns extends Component {
       )
   }
 
-  ifHardwareAcc (address) {
-    const keyring = getCurrentKeyring(address, this.props.network, this.props.keyrings, this.props.identities)
+  ifHardwareAcc (keyring) {
     if (keyring && keyring.type.search('Hardware') !== -1) {
       return true
     }
@@ -130,6 +129,8 @@ class AccountDropdowns extends Component {
       let label
       if (ifContractAcc(keyring)) {
         label = 'CONTRACT'
+      } else if (this.ifHardwareAcc(keyring)) {
+        label = 'HARDWARE'
       } else {
         label = 'IMPORTED'
       }
@@ -287,7 +288,7 @@ class AccountDropdowns extends Component {
           },
           'Copy address to clipboard',
         ),
-        (!this.ifHardwareAcc(selected) && !(ifContractAcc(keyring))) ? h(
+        (!this.ifHardwareAcc(keyring) && !(ifContractAcc(keyring))) ? h(
           DropdownMenuItem,
           {
             closeMenu: () => {},
