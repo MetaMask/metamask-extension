@@ -78,8 +78,8 @@ function buildFirefoxWebdriver () {
 
 async function getExtensionIdChrome (driver) {
   await driver.get('chrome://extensions')
-  //const extensionId = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("extensions-item:nth-child(2)").getAttribute("id")')
-  const extensionId = 'fmdpnlapjechkkicpkahdmanomngknlf'
+  const extensionId = await driver.executeScript('return document.querySelector("extensions-manager").shadowRoot.querySelector("extensions-view-manager extensions-item-list").shadowRoot.querySelector("extensions-item:nth-child(2)").getAttribute("id")')
+  // const extensionId = 'fmdpnlapjechkkicpkahdmanomngknlf'
 
   return extensionId
 }

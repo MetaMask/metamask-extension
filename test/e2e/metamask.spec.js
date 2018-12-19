@@ -245,8 +245,9 @@ describe('Metamask popup page', async function () {
   })
 
   describe('Import Contract account', async () => {
-    //const poaContract = '0xc6468767214c577013a904900ada0a0dd6653bc3'
-    const contractSokol = '0xab6f1fad0fb4bf7efa253210698c02bfd29ab370'
+    // const poaContract = '0xc6468767214c577013a904900ada0a0dd6653bc3'
+    const contractSokol = '0x215b2ab35749e5a9f3efe890de602fb9844e842f'
+    console.log('Contract ' + contractSokol + ' , Sokol')
     const wrongAddress = '0xB87b6077D59B01Ab9fa8cd5A1A21D02a4d60D35'
     const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
     describe('Import Contract', async () => {
@@ -331,25 +332,22 @@ describe('Metamask popup page', async function () {
       it('ABI is fetched ', async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
         const abi = await field.getText()
-        assert.equal(abi.length, 3832, "ABI isn't fetched")
+        assert.equal(abi.length, 4457, "ABI isn't fetched")
       })
 
       it("Click button 'Import', main screen opens", async function () {
         const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
         await click(button)
-        const identicon = await waitUntilShowUp(screens.main.identicon, 20)
-        assert.notEqual(identicon, false, "main screen isn't opened")
+        const ident = await waitUntilShowUp(screens.main.identicon, 20)
+        assert.notEqual(ident, false, "main screen isn't opened")
       })
 
       it("Click button 'Send', 'Execute Method' screen opens", async function () {
         const button = await waitUntilShowUp(screens.main.buttons.send)
         await click(button)
-        const identicon = await waitUntilShowUp(screens.main.identicon, 40)
-        assert.notEqual(identicon, false, "main screen isn't opened")
       })
     })
     describe('Execute Method screen', () => {
-      const outputData = '0xd70befce3cf1cc88119c8f4eb583ccd4c39d06e2'
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
       describe("Check UI and button's functionality", () => {
         it("Click button 'Send', 'Execute Method' screen opens", async function () {
@@ -389,7 +387,7 @@ describe('Metamask popup page', async function () {
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
           await list[3].click()
-          assert.notEqual(list.length, 21, "drop down menu isn't displayed")
+          assert.equal(list.length, 22, "drop down menu isn't displayed")
         })
 
         it("Button 'Call data' is displayed and disabled", async function () {
@@ -413,7 +411,7 @@ describe('Metamask popup page', async function () {
         })
 
         it('method returns correct value', async function () {
-          await delay(5000)
+          await delay(3000)
           await waitUntilShowUp(screens.executeMethod.fieldOutput)
           const fields = await driver.findElements(screens.executeMethod.fieldOutput)
           assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
@@ -440,18 +438,18 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[13].click()
-          assert.notEqual(list.length, 21, "drop down menu isn't displayed")
+          await list[14].click()
+          assert.equal(list.length, 22, "drop down menu isn't displayed")
         })
 
-        it("Fill out input parameter field ", async function () {
+        it('Fill out input parameter field ', async function () {
           await waitUntilShowUp(screens.executeMethod.fieldParameter)
           const fields = await driver.findElements(screens.executeMethod.fieldParameter)
           assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
           await fields[0].sendKeys(stringValue)
         })
 
-        it("Button 'Call data' is displayed and enabled", async function () {
+        it("Click button 'Call data' ", async function () {
           const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
           assert.notEqual(button, false, "button 'Call data' isn't displayed")
           assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
@@ -459,7 +457,7 @@ describe('Metamask popup page', async function () {
         })
 
         it('method returns correct value', async function () {
-          await delay(5000)
+          await delay(3000)
           await waitUntilShowUp(screens.executeMethod.fieldOutput)
           const fields = await driver.findElements(screens.executeMethod.fieldOutput)
           assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
@@ -467,20 +465,175 @@ describe('Metamask popup page', async function () {
           assert.equal(text, stringValue, 'incorrect value was returned')
         })
       })
-      describe('Check output for data type : BOOLEAN', () => {})
-      describe('Check output for data type : BYTES', () => {})
-      describe('Check output for data type : UINT', () => {})
-
-      describe('Check executed method', () => {
-
-        it("Select method 'changeAbstractStorage'", async function () {
+      describe('Check output for data type : BOOLEAN', () => {
+          it("Select method 'returnBoolean'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
-          const items = await waitUntilShowUp(screens.executeMethod.item1)
-          assert.notEqual(items, false, 'no drop down menu')
-          const item = (await driver.findElements(screens.executeMethod.item1))[1]
-          // await click(item)
-          await item.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[5].click()
+          assert.equal(list.length, 22, "drop down menu isn't displayed")
+        })
+
+        it('Fill out input parameter field, value is TRUE', async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await fields[0].sendKeys('true')
+        })
+
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value: TRUE', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text, 'true', 'incorrect value was returned')
+        })
+        it('Fill out input parameter field, value is FALSE ', async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await clearField(fields[0])
+          await fields[0].sendKeys('false')
+        })
+
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value, FALSE', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text, 'false', 'incorrect value was returned')
+        })
+
+      })
+      describe('Check output for data type : BYTES', () => {
+        const bytesValue = '0x010203'
+        it("Select method 'returnBytes1'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[7].click()
+          assert.equal(list.length, 22, "drop down menu isn't displayed")
+        })
+
+        it('Fill out input parameter field ', async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await fields[0].sendKeys(bytesValue)
+        })
+
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text, bytesValue, 'incorrect value was returned')
+        })
+      })
+      describe('Check output for data type : UINT256', () => {
+        const uint256Value = '1122334455667788991122334455667788'
+        it("Select method 'returnUint256'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[17].click()
+          assert.equal(list.length, 22, "drop down menu isn't displayed")
+        })
+
+        it('Fill out input parameter field ', async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await fields[0].sendKeys(uint256Value)
+        })
+
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text, uint256Value, 'incorrect value was returned')
+        })
+
+      })
+      describe('Check output for data type : INT256', () => {
+        const int256Value = '-1122334455667788991122334455667788'
+        it("Select method 'returnInt256'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[10].click()
+          assert.equal(list.length, 22, "drop down menu isn't displayed")
+        })
+
+        it('Fill out input parameter field ', async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await fields[0].sendKeys(int256Value)
+        })
+
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text, int256Value, 'incorrect value was returned')
+        })
+      })
+      describe('Check executed method', () => {
+
+        it("Select method 'transfer'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[21].click()
+          assert.equal(list.length, 22, "drop down menu isn't displayed")
         })
 
         it("Button 'Copy ABI encoded' is displayed", async function () {
@@ -498,10 +651,27 @@ describe('Metamask popup page', async function () {
           assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
         })
 
-        it("Fill out parameter '_newAbstractStorageAddr with wrong data'", async function () {
-          const field = await waitUntilShowUp(screens.executeMethod.fieldParameter)
-          assert.notEqual(field, false, "field address isn't displayed")
-          await field.sendKeys(wrongAddress)
+        it("Fill out parameter '_value' with valid data", async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[1], false, "field address isn't displayed")
+          await fields[1].sendKeys('1')
+        })
+
+        it("Button 'Copy ABI encoded' is disabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+          assert.equal(await button.isEnabled(), false, "button 'Copy ABI encoded' enabled")
+        })
+
+        it("Button 'Next' is disabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+          assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
+        })
+        it("Fill out parameter '_to'  with wrong data", async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field address isn't displayed")
+          await fields[0].sendKeys(wrongAddress)
         })
 
         it("Error message if click 'Copy ABI encoded' with wrong address", async function () {
@@ -532,7 +702,7 @@ describe('Metamask popup page', async function () {
           assert.notEqual(title, false, "error message isn't closed")
         })
 
-        it("Fill out parameter '_newAbstractStorageAddr'", async function () {
+        it("Fill out parameter '_to' with valid data", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.fieldParameter)
           await clearField(field, 100)
           await field.sendKeys(notContractAddress)
@@ -2643,6 +2813,5 @@ describe('Metamask popup page', async function () {
   }
 
 })
-
 
 
