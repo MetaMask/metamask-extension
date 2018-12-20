@@ -466,7 +466,7 @@ describe('Metamask popup page', async function () {
         })
       })
       describe('Check output for data type : BOOLEAN', () => {
-          it("Select method 'returnBoolean'", async function () {
+        it("Select method 'returnBoolean'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
@@ -475,11 +475,14 @@ describe('Metamask popup page', async function () {
           assert.equal(list.length, 22, "drop down menu isn't displayed")
         })
 
-        it('Fill out input parameter field, value is TRUE', async function () {
-          await waitUntilShowUp(screens.executeMethod.fieldParameter)
-          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
-          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
-          await fields[0].sendKeys('true')
+        it('Select value TRUE from dropdown menu', async function () {
+          const arrows = await driver.findElements(screens.executeMethod.selectArrow)
+          await arrows[1].click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          assert.equal(await list[1].getText(), 'true', 'TRUE menu item: incorrect text')
+          assert.equal(list.length, 2, "drop down menu isn't displayed")
+          await list[1].click()
         })
 
         it("Click button 'Call data' ", async function () {
@@ -493,16 +496,19 @@ describe('Metamask popup page', async function () {
           await delay(3000)
           await waitUntilShowUp(screens.executeMethod.fieldOutput)
           const fields = await driver.findElements(screens.executeMethod.fieldOutput)
-          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
-          const text = await waitUntilHasValue(fields[1])
+          assert.notEqual(fields[0], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[0])
           assert.equal(text, 'true', 'incorrect value was returned')
         })
-        it('Fill out input parameter field, value is FALSE ', async function () {
-          await waitUntilShowUp(screens.executeMethod.fieldParameter)
-          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
-          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
-          await clearField(fields[0])
-          await fields[0].sendKeys('false')
+
+        it('Select value FALSE from dropdown menu', async function () {
+          const arrows = await driver.findElements(screens.executeMethod.selectArrow)
+          await arrows[1].click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          assert.equal(await list[0].getText(), 'false', 'FALSE menu item: incorrect text')
+          assert.equal(list.length, 2, "drop down menu isn't displayed")
+          await list[0].click()
         })
 
         it("Click button 'Call data' ", async function () {
@@ -516,8 +522,8 @@ describe('Metamask popup page', async function () {
           await delay(3000)
           await waitUntilShowUp(screens.executeMethod.fieldOutput)
           const fields = await driver.findElements(screens.executeMethod.fieldOutput)
-          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
-          const text = await waitUntilHasValue(fields[1])
+          assert.notEqual(fields[0], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[0])
           assert.equal(text, 'false', 'incorrect value was returned')
         })
 
