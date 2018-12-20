@@ -56,12 +56,12 @@ export default class SettingsTab extends PureComponent {
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
     sendHexData: PropTypes.bool,
-    featureFlags: PropTypes.object,
     currentCurrency: PropTypes.string,
     conversionDate: PropTypes.number,
     nativeCurrency: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
+    mobileSync: PropTypes.bool,
   }
 
   state = {
