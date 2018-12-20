@@ -2821,4 +2821,3 @@ describe('Metamask popup page', async function () {
 })
 
 
-
