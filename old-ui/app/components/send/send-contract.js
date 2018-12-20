@@ -39,11 +39,11 @@ class SendTransactionField extends Component {
 				placeholder={this.props.placeholder}
 				value={this.state.val}
 				disabled={this.props.disabled}
-				onChange={(val) => {
+				onChange={(e) => {
 					this.setState({
-						val,
+						val: e.target.value,
 					})
-					this.props.onChange(val)
+					this.props.onChange(e.target.value)
 				}}
 				style={{ marginTop: '5px' }}
 			/>
@@ -231,7 +231,7 @@ class SendTransactionScreen extends PersistentForm {
 					disabled={!isInput}
 					placeholder={params.type}
 					defaultValue={defaultValue}
-					onChange={e => isInput ? this.handleInputChange(e.target.value, params.type, ind) : null}
+					onChange={val => isInput ? this.handleInputChange(val, params.type, ind) : null}
 				/>
 			)
 		}
