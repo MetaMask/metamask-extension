@@ -56,6 +56,7 @@ export default class SettingsTab extends PureComponent {
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
     sendHexData: PropTypes.bool,
+    featureFlags: PropTypes.object,
     currentCurrency: PropTypes.string,
     conversionDate: PropTypes.number,
     nativeCurrency: PropTypes.string,
@@ -338,7 +339,11 @@ export default class SettingsTab extends PureComponent {
 
   renderMobileSync () {
     const { t } = this.context
-    const { history } = this.props
+    const { history, mobileSync } = this.props
+
+    if (!mobileSync) {
+      return
+    }
 
     return (
       <div className="settings-page__content-row">

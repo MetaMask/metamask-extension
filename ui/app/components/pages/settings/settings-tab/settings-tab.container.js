@@ -25,6 +25,7 @@ const mapStateToProps = state => {
     featureFlags: {
       sendHexData,
       privacyMode,
+      mobileSync,
     } = {},
     provider = {},
     isMascara,
@@ -44,6 +45,7 @@ const mapStateToProps = state => {
     privacyMode,
     provider,
     useNativeCurrencyAsPrimaryCurrency,
+    mobileSync,
   }
 }
 
