@@ -213,6 +213,16 @@ class SendTransactionScreen extends PersistentForm {
 				/> : null}
 			</h3>
 		)
+		// bytes field is not mandatory to fill: 0x is by default
+		if (params.type.startsWith('bytes') && !Array.isArray(params.type)) {
+			const inputValues = this.props.inputValues || {}
+			if (!inputValues[ind]) {
+				inputValues[ind] = '0x'
+				this.setState({
+					inputValues,
+				})
+			}
+		}
 		let field
 		if (params.type === 'bool' && isInput) {
 			field = (
