@@ -116,7 +116,7 @@
     "eth-json-rpc-filters": "github:poanetwork/eth-json-rpc-filters#3.0.2",
     "eth-json-rpc-infura": "^3.0.0",
     "eth-keychain-controller": "github:vbaranov/KeyringController#simple-address",
-    "eth-ledger-bridge-keyring": "github:vbaranov/eth-ledger-bridge-keyring#master",
+    "eth-ledger-bridge-keyring": "github:vbaranov/eth-ledger-bridge-keyring#multiple-accounts",
     "eth-method-registry": "^1.0.0",
     "eth-net-props": "^1.0.10",
     "eth-phishing-detect": "^1.1.4",
