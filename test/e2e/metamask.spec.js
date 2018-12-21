@@ -351,8 +351,8 @@ describe('Metamask popup page', async function () {
           await driver.navigate().refresh()
           await delay(2000)
           const button = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
-          assert.notEqual(button,false,"button doesn't displayed")
-          assert.equal(await button.getText(),"Execute methods","button has incorrect name")
+          assert.notEqual(button, false, "button doesn't displayed")
+          assert.equal(await button.getText(), 'Execute methods', 'button has incorrect name')
           await button.click()
         })
 
@@ -376,8 +376,8 @@ describe('Metamask popup page', async function () {
           await driver.navigate().refresh()
           await delay(2000)
           const button = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
-          assert.notEqual(button,false,"button doesn't displayed")
-          assert.equal(await button.getText(),"Execute methods","button has incorrect name")
+          assert.notEqual(button, false, "button doesn't displayed")
+          assert.equal(await button.getText(), 'Execute methods', 'button has incorrect name')
           await button.click()
         })
 
