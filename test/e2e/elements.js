@@ -42,7 +42,7 @@ module.exports = {
       menu: By.className('account-dropdown'),
       showQRcode: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(3)'),
       exportPR: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(5)'),
-
+      item: By.className('dropdown-menu-item'),
     },
     networks: {
       addedCustomRpc: By.className('span custom-rpc'),

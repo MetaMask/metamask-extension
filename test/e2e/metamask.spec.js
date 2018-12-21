@@ -245,7 +245,6 @@ describe('Metamask popup page', async function () {
   })
 
   describe('Import Contract account', async () => {
-    // const poaContract = '0xc6468767214c577013a904900ada0a0dd6653bc3'
     const contractSokol = '0x215b2ab35749e5a9f3efe890de602fb9844e842f'
     console.log('Contract ' + contractSokol + ' , Sokol')
     const wrongAddress = '0xB87b6077D59B01Ab9fa8cd5A1A21D02a4d60D35'
@@ -341,12 +340,32 @@ describe('Metamask popup page', async function () {
         const ident = await waitUntilShowUp(screens.main.identicon, 20)
         assert.notEqual(ident, false, "main screen isn't opened")
       })
+    })
 
-      it("Click button 'Send', 'Execute Method' screen opens", async function () {
-        const button = await waitUntilShowUp(screens.main.buttons.send)
-        await click(button)
+    describe("Check 3dot menu for 'Contract' account", () => {
+      it('open 3dot menu', async function () {
+        const menu = await waitUntilShowUp(menus.dot.menu)
+        await menu.click()
+        await waitUntilShowUp(menus.dot.item)
+        const items = await driver.findElements(menus.dot.item)
+        assert.equal(items.length, 4, '3dot menu has incorrect number of items')
+       })
+      it('Check text of items', async function () {
+        const items = await driver.findElements(menus.dot.item)
+        assert.equal(await items[0].getText(), 'View on block explorer', '1st item has incorrect text')
+        assert.equal(await items[1].getText(), 'Show QR Code', '2st item has incorrect text')
+        assert.equal(await items[2].getText(), 'Copy address to clipboard', '3st item has incorrect text')
+        assert.equal(await items[3].getText(), 'Copy ABI to clipboard', '4st item has incorrect text')
+     })
+      it("Click 'Copy ABI'", async function () {
+        const items = await driver.findElements(menus.dot.item)
+        await items[3].click()
+        const menu = await waitUntilShowUp(menus.dot.item, 20)
+        assert.equal(menu, false, "3dot menu wasn't closed")
       })
     })
+
+
     describe('Execute Method screen', () => {
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
       describe("Check UI and button's functionality", () => {
@@ -434,6 +453,7 @@ describe('Metamask popup page', async function () {
         const stringValue = 'POA network'
 
         it("Select method 'returnString'", async function () {
+          await delay(3000)
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
