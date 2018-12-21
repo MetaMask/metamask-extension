@@ -60,7 +60,7 @@ module.exports = {
 
     },
     executeMethod: {
-
+      copy: By.className('clipboard cursor-pointer'),
       title: By.className('flex-center send-header'),
       titleText: 'Execute Method',
       selectArrow: By.className('Select-arrow-zone'),
