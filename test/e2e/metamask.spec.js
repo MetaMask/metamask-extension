@@ -4,6 +4,7 @@ const mkdirp = require('mkdirp')
 const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
+const clipboardy = require('clipboardy')
 const webdriver = require('selenium-webdriver')
 const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
@@ -16,6 +17,7 @@ const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
   let password = '123456789'
+  let abiClipboard
   const newPassword = {
     correct: 'abcDEF123!@#',
     short: '123',
@@ -140,6 +142,11 @@ describe('Metamask popup page', async function () {
       assert.notEqual(field, false, 'copy icon doesn\'t present')
     })
 
+    it('Check clipboard buffer', async function () {
+      const text = clipboardy.readSync()
+      assert.equal(text.length, 42, "address account wasn't copied to clipboard")
+    })
+
     it('open  \'Account name\' change dialog', async () => {
       const menu = await waitUntilShowUp(menus.dot.menu)
       await menu.click()
@@ -222,6 +229,11 @@ describe('Metamask popup page', async function () {
       assert.notEqual(field, false, 'copy icon doesn\'t present')
     })
 
+    it('Check clipboard buffer', async function () {
+      const text = clipboardy.readSync()
+      assert.equal(text.length, 42, "address account wasn't copied to clipboard")
+    })
+
     it('close QR code screen by clicking button arrow', async () => {
       const button = await waitUntilShowUp(screens.QRcode.buttonArrow)
       await click(button)
@@ -266,6 +278,7 @@ describe('Metamask popup page', async function () {
       })
 
       it("Select type 'Contract'", async function () {
+        await delay(1000)
         const field = await waitUntilShowUp(screens.importAccounts.selectArrow)
         await field.click()
         const item = await waitUntilShowUp(screens.importAccounts.itemContract)
@@ -295,12 +308,7 @@ describe('Metamask popup page', async function () {
         assert.notEqual(field, false, "field 'ABI' isn't displayed")
       })
 
-      it('icon copy is displayed for ABI ', async function () {
-        const field = await waitUntilShowUp(screens.importAccounts.iconCopy)
-        assert.notEqual(field, false, "icon copy isn't displayed")
-      })
-
-      it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
+     it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
         assert.equal(await field.getText(), '', "field 'ABI' isn't displayed")
       })
@@ -330,8 +338,19 @@ describe('Metamask popup page', async function () {
 
       it('ABI is fetched ', async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
-        const abi = await field.getText()
-        assert.equal(abi.length, 4457, "ABI isn't fetched")
+        abiClipboard = await field.getText()
+        assert.equal(abiClipboard.length, 4457, "ABI isn't fetched")
+      })
+
+      it('icon copy is displayed for ABI ', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.iconCopy)
+        assert.notEqual(field, false, "icon copy isn't displayed")
+        await field.click()
+      })
+
+      it('Check clipboard buffer', async function () {
+        const text = clipboardy.readSync()
+        assert.equal(text, abiClipboard, "address account wasn't copied to clipboard")
       })
 
       it("Click button 'Import', main screen opens", async function () {
@@ -363,8 +382,12 @@ describe('Metamask popup page', async function () {
         const menu = await waitUntilShowUp(menus.dot.item, 20)
         assert.equal(menu, false, "3dot menu wasn't closed")
       })
-    })
 
+      it('Check clipboard buffer', async function () {
+        const text = clipboardy.readSync()
+        assert.equal(text, abiClipboard, "ABI wasn't copied to clipboard")
+      })
+    })
 
     describe('Execute Method screen', () => {
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
@@ -1033,8 +1056,15 @@ describe('Metamask popup page', async function () {
     })
 
     it('icon copy cliboard is displayed and clickable', async function () {
-      const field = await waitUntilShowUp(screens.yourPR.copy)
-      assert.notEqual(field, false, 'icon copy isn\'t displayed')
+      await waitUntilShowUp(screens.yourPR.copy)
+      const icons = await driver.findElements(screens.yourPR.copy)
+      assert.notEqual(icons[1], false, 'icon copy isn\'t displayed')
+      await icons[1].click()
+    })
+
+    it('Check clipboard buffer', async function () {
+      const text = clipboardy.readSync()
+      assert.equal(text.length, 64, "private key wasn't copied to clipboard")
     })
 
     it('file loaded if click button \'Save\' ', async function () {
