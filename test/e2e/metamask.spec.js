@@ -461,6 +461,16 @@ describe('Metamask popup page', async function () {
           assert.equal(text.toLowerCase(), address.toLowerCase(), 'incorrect value was returned')
         })
 
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), address.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
         it("2nd call doesn't throw the error", async function () {
           const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
           assert.notEqual(button, false, "button 'Call data' isn't displayed")
@@ -506,6 +516,15 @@ describe('Metamask popup page', async function () {
           assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
           const text = await waitUntilHasValue(fields[1])
           assert.equal(text, stringValue, 'incorrect value was returned')
+        })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), stringValue.toLowerCase(), "output wasn't copied to clipboard")
         })
       })
       describe('Check output for data type : BOOLEAN', () => {
@@ -563,6 +582,15 @@ describe('Metamask popup page', async function () {
           const text = await waitUntilHasValue(fields[1])
           assert.equal(text, 'false', 'incorrect value was returned')
         })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), 'false', "output wasn't copied to clipboard")
+        })
 
       })
       describe('Check output for data type : BYTES', () => {
@@ -598,6 +626,16 @@ describe('Metamask popup page', async function () {
           const text = await waitUntilHasValue(fields[1])
           assert.equal(text, bytesValue, 'incorrect value was returned')
         })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), bytesValue.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
       })
       describe('Check output for data type : UINT256', () => {
         const uint256Value = '1122334455667788991122334455667788'
@@ -631,6 +669,16 @@ describe('Metamask popup page', async function () {
           assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
           const text = await waitUntilHasValue(fields[1])
           assert.equal(text, uint256Value, 'incorrect value was returned')
+        })
+
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), uint256Value.toLowerCase(), "output wasn't copied to clipboard")
         })
 
       })
@@ -667,6 +715,16 @@ describe('Metamask popup page', async function () {
           const text = await waitUntilHasValue(fields[1])
           assert.equal(text, int256Value, 'incorrect value was returned')
         })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), int256Value.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
       })
       describe('Check executed method', () => {
 
