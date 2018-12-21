@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import copyToClipboard from 'copy-to-clipboard'
-import { addressSlicer, checksumAddress } from '../../util'
+import { addressSlicer, checksumAddress, isRskNetwork } from '../../util'
 
 const Tooltip = require('../tooltip-v2.js').default
 
@@ -14,16 +14,19 @@ class SelectedAccount extends Component {
     t: PropTypes.func,
   }
 
-  static propTypes = {
+  static propTypes = {    
     selectedAddress: PropTypes.string,
     selectedIdentity: PropTypes.object,
+    network: PropTypes.string,
   }
 
   render () {
     const { t } = this.context
-    const { selectedAddress, selectedIdentity } = this.props
-    const checksummedAddress = checksumAddress(selectedAddress)
-
+    const { selectedAddress, selectedIdentity, network } = this.props    
+    let checksummedAddress = checksumAddress(selectedAddress)
+    if (isRskNetwork(network)) {
+      checksummedAddress = checksummedAddress.toLowerCase()
+    }
     return (
       <div className="selected-account">
         <Tooltip

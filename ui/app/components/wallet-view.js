@@ -6,7 +6,7 @@ const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const inherits = require('util').inherits
 const classnames = require('classnames')
-const { checksumAddress } = require('../util')
+const { checksumAddress, isRskNetwork} = require('../util')
 import Identicon from './identicon'
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
 const Tooltip = require('./tooltip-v2.js').default
@@ -125,10 +125,14 @@ WalletView.prototype.render = function () {
     showAccountDetailModal,
     hideSidebar,
     identities,
+    network,
   } = this.props
   // temporary logs + fake extra wallets
 
-  const checksummedAddress = checksumAddress(selectedAddress)
+  let checksummedAddress = checksumAddress(selectedAddress)
+  if (isRskNetwork(network)){
+    checksummedAddress = checksumAddress(selectedAddress).toLowerCase()
+  }
 
   if (!selectedAddress) {
     throw new Error('selectedAddress should not be ' + String(selectedAddress))
@@ -194,7 +198,7 @@ WalletView.prototype.render = function () {
         className: classnames({
           'wallet-view__address__pressed': this.state.copyToClipboardPressed,
         }),
-        onClick: () => {
+        onClick: () => {          
           copyToClipboard(checksummedAddress)
           this.setState({ hasCopied: true })
           setTimeout(() => this.setState({ hasCopied: false }), 3000)
