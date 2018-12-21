@@ -7,6 +7,7 @@ import AccountList from './account-list'
 import { formatBalance } from '../../util'
 import { getPlatform } from '../../../../app/scripts/lib/util'
 import { PLATFORM_FIREFOX } from '../../../../app/scripts/lib/enums'
+import { isLedger } from './util'
 
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
@@ -14,6 +15,7 @@ class ConnectHardwareForm extends Component {
     this.state = {
       error: null,
       selectedAccount: null,
+      selectedAccounts: [],
       accounts: [],
       browserSupported: true,
       unlocked: false,
@@ -69,7 +71,24 @@ class ConnectHardwareForm extends Component {
   }
 
   onAccountChange = (account) => {
-    this.setState({selectedAccount: account.toString(), error: null})
+    let selectedAcc = account.toString()
+    if (isLedger(this.state.device)) {
+      const selectedAccounts = this.state.selectedAccounts
+      if (!selectedAccounts.includes(selectedAcc)) {
+        selectedAccounts.push(selectedAcc)
+      } else {
+        const indToRemove = selectedAccounts.indexOf(selectedAcc)
+        selectedAccounts.splice(indToRemove, 1)
+        selectedAcc = selectedAccounts[selectedAccounts.length - 1]
+      }
+      this.setState({
+        selectedAccounts,
+        selectedAccount: selectedAcc,
+        error: null,
+      })
+    } else {
+      this.setState({selectedAccount: account.toString(), error: null})
+    }
   }
 
   onAccountRestriction = () => {
@@ -136,6 +155,7 @@ class ConnectHardwareForm extends Component {
       this.setState({
         error: null,
         selectedAccount: null,
+        selectedAccounts: [],
         accounts: [],
         unlocked: false,
       })
@@ -146,16 +166,29 @@ class ConnectHardwareForm extends Component {
 
   onUnlockAccount = (device) => {
 
-    if (this.state.selectedAccount === null) {
+    if (!this.state.selectedAccount && this.state.selectedAccounts.length === 0) {
       this.setState({ error: 'You need to select an account!' })
     }
 
-    this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
-    .then(_ => {
-      this.props.goHome()
-    }).catch(e => {
-      this.setState({ error: (e.message || e.toString()) })
-    })
+    if (this.state.selectedAccounts.length > 0) {
+      const whenUnlocks = []
+      this.state.selectedAccounts.forEach((selectedAcc) => {
+        whenUnlocks.push(this.props.unlockHardwareWalletAccount(selectedAcc, device))
+      })
+      Promise.all(whenUnlocks)
+      .then(_ => {
+        this.props.goHome()
+      }).catch(e => {
+        this.setState({ error: (e.message || e.toString()) })
+      })
+    } else {
+      this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
+      .then(_ => {
+        this.props.goHome()
+      }).catch(e => {
+        this.setState({ error: (e.message || e.toString()) })
+      })
+    }
   }
 
   onCancel = () => {
@@ -185,6 +218,7 @@ class ConnectHardwareForm extends Component {
         device={this.state.device}
         accounts={this.state.accounts}
         selectedAccount={this.state.selectedAccount}
+        selectedAccounts={this.state.selectedAccounts}
         onAccountChange={this.onAccountChange}
         network={this.props.network}
         getPage={this.getPage}
