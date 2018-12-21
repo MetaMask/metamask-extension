@@ -60,7 +60,18 @@ module.exports = {
   getTokenAddressFromTokenObject,
   checksumAddress,
   addressSlicer,
+  isRskNetwork
 }
+
+function isRskNetwork(networkChainId){
+  if (!networkChainId) return false
+  if (networkChainId == '30' || networkChainId == '31'){
+    return true
+  }
+
+  return false;
+}
+
 
 function valuesFor (obj) {
   if (!obj) return []
