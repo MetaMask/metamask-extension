@@ -328,6 +328,7 @@
     "tape": "^4.5.1",
     "testem": "^2.8.0",
     "through2": "^2.0.3",
+    "uglifyify": "^5.0.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.11.0"
