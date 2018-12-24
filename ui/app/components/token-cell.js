@@ -63,16 +63,12 @@ TokenCell.prototype.render = function () {
   let formattedFiat = ''
 
   if (contractExchangeRates[address]) {
-    currentTokenToFiatRate = multiplyCurrencies(
-      contractExchangeRates[address],
-      conversionRate
-    )
     currentTokenInFiat = conversionUtil(string, {
       fromNumericBase: 'dec',
       fromCurrency: symbol,
       toCurrency: currentCurrency.toUpperCase(),
       numberOfDecimals: 2,
-      conversionRate: currentTokenToFiatRate,
+      conversionRate: contractExchangeRates[address],
     })
     formattedFiat = currentTokenInFiat.toString() === '0'
       ? ''
