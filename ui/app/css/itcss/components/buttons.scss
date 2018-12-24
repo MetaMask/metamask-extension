@@ -87,6 +87,18 @@
   min-width: initial;
 }
 
+.btn--first-time {
+  height: 54px;
+  width: 198px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .14);
+  color: $white;
+  font-size: 1.25rem;
+  font-weight: 500;
+  transition: 200ms ease-in-out;
+  background-color: rgba(247, 134, 28, .9);
+  border-radius: 0;
+}
+
 .btn--large {
   min-height: 54px;
 }

@@ -44,6 +44,7 @@ class PreferencesController {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      completedOnboarding: false,
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -500,6 +501,15 @@ class PreferencesController {
    */
   getPreferences () {
     return this.store.getState().preferences
+  }
+
+  /**
+   * Sets the completedOnboarding state to true, indicating that the user has completed the
+   * onboarding process.
+   */
+  completeOnboarding () {
+    this.store.updateState({ completedOnboarding: true })
+    return Promise.resolve(true)
   }
 
   //

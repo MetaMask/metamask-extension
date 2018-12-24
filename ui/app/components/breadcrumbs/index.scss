@@ -1,0 +1,15 @@
+.breadcrumbs {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.breadcrumb {
+  height: 10px;
+  width: 10px;
+  border: 1px solid #979797;
+  border-radius: 50%;
+}
+
+.breadcrumb + .breadcrumb {
+  margin-left: 10px;
+}
