@@ -954,7 +954,7 @@ function signTx (txData) {
         return dispatch(actions.displayWarning(err.message))
       }
     })
-    dispatch(actions.showConfTxPage({}))
+    dispatch(actions.showConfTxPage({isContractExecutionByUser: txData.isContractExecutionByUser}))
   }
 }
 
