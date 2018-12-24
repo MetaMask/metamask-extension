@@ -112,7 +112,7 @@ ConfirmTxScreen.prototype.render = function () {
         tokensToSend: props.tokensToSend,
         tokensTransferTo: props.tokensTransferTo,
         // Actions
-        buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
+        buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress, props.isContractExecutionByUser),
         sendTransaction: this.sendTransaction.bind(this),
         cancelTransaction: this.cancelTransaction.bind(this, txData),
         cancelAllTransactions: this.cancelAllTransactions.bind(this, unconfTxList),
@@ -151,9 +151,9 @@ function currentTxView (opts) {
   }
 }
 
-ConfirmTxScreen.prototype.buyEth = function (address, event) {
+ConfirmTxScreen.prototype.buyEth = function (address, isContractExecutionByUser, event) {
   event.preventDefault()
-  this.props.dispatch(actions.buyEthView(address))
+  this.props.dispatch(actions.buyEthView(address, isContractExecutionByUser))
 }
 
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
