@@ -695,7 +695,7 @@ function reduceApp (state, action) {
           name: 'buyEth',
           context: appState.currentView.name,
         },
-        identity: state.metamask.identities[action.value],
+        identity: state.metamask.identities[action.value.address],
         buyView: {
           subview: 'Coinbase',
           amount: '15.00',

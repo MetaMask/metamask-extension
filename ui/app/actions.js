@@ -2284,7 +2284,7 @@ function buyEthView (address, isContractExecutionByUser) {
     value: {
       address,
       isContractExecutionByUser,
-    }
+    },
   }
 }
 

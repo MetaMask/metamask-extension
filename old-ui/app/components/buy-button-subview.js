@@ -169,7 +169,9 @@ class BuyButtonSubview extends Component {
 
   backButtonContext () {
     if (this.props.context === 'confTx') {
-      this.props.dispatch(actions.showConfTxPage(false))
+      this.props.dispatch(actions.showConfTxPage({
+        isContractExecutionByUser: this.props.isContractExecutionByUser,
+      }))
     } else {
       this.props.dispatch(actions.goHome())
     }
@@ -203,6 +205,7 @@ function mapStateToProps (state) {
     provider: state.metamask.provider,
     context: state.appState.currentView.context,
     isSubLoading: state.appState.isSubLoading,
+    isContractExecutionByUser: state.appState.buyView.isContractExecutionByUser,
   }
 }
 
