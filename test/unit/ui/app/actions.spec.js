@@ -817,7 +817,7 @@ describe('Actions', () => {
           type: 'SHOW_CONF_TX_PAGE',
           transForward: true,
           id: undefined,
-          value: {isContractExecutionByUser: undefined}
+          value: {isContractExecutionByUser: undefined},
         },
       ]
       sendTransactionSpy.callsFake((txData, callback) => {
