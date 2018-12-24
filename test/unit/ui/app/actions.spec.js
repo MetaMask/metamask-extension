@@ -813,7 +813,12 @@ describe('Actions', () => {
       const store = mockStore()
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'SHOW_CONF_TX_PAGE', transForward: true, id: undefined, value: {} },
+        {
+          type: 'SHOW_CONF_TX_PAGE',
+          transForward: true,
+          id: undefined,
+          value: {isContractExecutionByUser: undefined}
+        },
       ]
       sendTransactionSpy.callsFake((txData, callback) => {
         callback(new Error('error'))
