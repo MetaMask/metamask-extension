@@ -227,7 +227,6 @@ class SendTransactionScreen extends PersistentForm {
 		if (params.type === 'bool' && isInput) {
 			field = (
 				<SendTransactionInputSelect
-					key={Math.random()}
 					ind={ind}
 					defaultValue={defaultValue}
 					onChange={val => this.handleInputChange(val, params.type, ind)}
