@@ -5,6 +5,9 @@
   "privacyModeDescription": {
     "message": "Websites must request access to view your account information."
   },
+  "privacyNotice": {
+    "message": "Privacy Notice"
+  },
   "exposeAccounts": {
     "message": "Expose Accounts"
   },
@@ -135,6 +138,39 @@
   },
   "back": {
     "message": "Back"
+  },
+  "backupPhraseConfirmation": {
+    "message": "Confirm your Secret Backup Phrase"
+  },
+  "backupPhraseSelect": {
+    "message": "Please select each phrase in order to make sure it is correct."
+  },
+  "backupPhraseReveal": {
+    "message": "Click here to reveal secret words"
+  },
+  "backupPhraseTitle": {
+    "message": "Secret Backup Phrase"
+  },
+  "backupPhraseInfo": {
+    "message": "Your secret backup phrase makes it easy to back up and restore your account."
+  },
+  "backupPhraseWarning": {
+    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
+  },
+  "backupPhraseTip1": {
+    "message": "Store this phrase in a password manager like 1Password."
+  },
+  "backupPhraseTip2": {
+    "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."
+  },
+  "backupPhraseTip3": {
+    "message": "Memorize this phrase."
+  },
+  "backupPhraseDownload": {
+    "message": "Download this Secret Backup Phrase"
+  },
+  "backupPhraseStore": {
+    "message": "and keep it stored safely on an external encrypted hard drive or storage medium."
   },
   "balance": {
     "message": "Balance"
@@ -313,6 +349,9 @@
   },
   "createDen": {
     "message": "Create"
+  },
+  "createPassword": {
+    "message": "Create Password"
   },
   "crypto": {
     "message": "Crypto",
@@ -925,6 +964,9 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "phishingWarning": {
+    "message": "Phishing warning"
+  },
   "pleaseReviewTransaction": {
     "message": "Please review your transaction."
   },
@@ -1102,6 +1144,9 @@
   "seedPhraseReq": {
     "message": "Seed phrases are 12 words long"
   },
+  "seedPhraseAlert": {
+    "message": "Seed Phrase Alert"
+  },  
   "select": {
     "message": "Select"
   },
@@ -1276,6 +1321,9 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+  "tips": {
+    "message": "Tips"
+  },
   "to": {
     "message": "To"
   },
@@ -1403,6 +1451,15 @@
   },
   "units": {
     "message": "units"
+  },
+  "uniqueImageTitle": {
+    "message": "Your unique account image"
+  },
+  "uniqueImageBodyText1": {
+    "message": "This image was programmatically generated for you by your new account number."
+  },
+  "uniqueImageBodyText2": {
+    "message": "You’ll see this image everytime you need to confirm a transaction."
   },
   "unknown": {
     "message": "Unknown"

@@ -8,6 +8,7 @@ module.exports = [
     read: false,
     date: 'Thu Feb 09 2017',
     title: 'Terms of Use',
+    titleCode: 'terms',
     body: fs.readFileSync(path.join(__dirname, '/archive', 'notice_0.md'), 'utf8'),
   },
   {
@@ -15,6 +16,7 @@ module.exports = [
     read: false,
     date: 'Mon May 08 2017',
     title: 'Privacy Notice',
+    titleCode: 'privacyNotice',
     body: fs.readFileSync(path.join(__dirname, '/archive', 'notice_2.md'), 'utf8'),
   },
   {
@@ -22,6 +24,7 @@ module.exports = [
     read: false,
     date: 'Tue Nov 28 2017',
     title: 'Seed Phrase Alert',
+    titleCode: 'seedPhraseAlert',
     firstVersion: '<=3.12.0',
     body: fs.readFileSync(path.join(__dirname, '/archive', 'notice_3.md'), 'utf8'),
   },
@@ -30,6 +33,7 @@ module.exports = [
     read: false,
     date: 'Wed Jun 13 2018',
     title: 'Phishing Warning',
+    titleCode: 'phishingWarning',
     body: fs.readFileSync(path.join(__dirname, '/archive', 'notice_4.md'), 'utf8'),
   },
 ]

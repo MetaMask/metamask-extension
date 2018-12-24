@@ -10,6 +10,10 @@ const actions = require('../../actions')
 const { DEFAULT_ROUTE } = require('../../routes')
 
 class Notice extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   constructor (props) {
     super(props)
 
@@ -145,7 +149,7 @@ class Notice extends Component {
           style: {
             marginTop: '18px',
           },
-        }, 'Accept'),
+        }, this.context.t('accept')),
       ])
     )
   }

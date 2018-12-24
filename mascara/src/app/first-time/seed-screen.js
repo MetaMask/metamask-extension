@@ -40,6 +40,10 @@ const LockIcon = props => (
 )
 
 class BackupPhraseScreen extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
     address: PropTypes.string.isRequired,
@@ -91,7 +95,7 @@ class BackupPhraseScreen extends Component {
             <div
               className="backup-phrase__reveal-button"
             >
-              Click here to reveal secret words
+              {this.context.t('backupPhraseReveal')}
             </div>
           </div>
         )}
@@ -106,32 +110,32 @@ class BackupPhraseScreen extends Component {
     return (
       <div className="backup-phrase__content-wrapper">
         <div className="backup-phrase__phrase">
-          <div className="backup-phrase__title">Secret Backup Phrase</div>
+          <div className="backup-phrase__title">{this.context.t('backupPhraseTitle')}</div>
           <div className="backup-phrase__body-text">
-            Your secret backup phrase makes it easy to back up and restore your account.
+            {this.context.t('backupPhraseInfo')}
           </div>
           <div className="backup-phrase__body-text">
-            WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever.
+            {this.context.t('backupPhraseWarning')}
           </div>
           {this.renderSecretWordsContainer()}
         </div>
         <div className="backup-phrase__tips">
-          <div className="backup-phrase__tips-text">Tips:</div>
+          <div className="backup-phrase__tips-text">{this.context.t('tips')}:</div>
           <div className="backup-phrase__tips-text">
-            Store this phrase in a password manager like 1Password.
+            {this.context.t('backupPhraseTip1')}
           </div>
           <div className="backup-phrase__tips-text">
-            Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations.
+            {this.context.t('backupPhraseTip2')}
           </div>
           <div className="backup-phrase__tips-text">
-            Memorize this phrase.
+          {this.context.t('backupPhraseTip3')}
           </div>
           <div className="backup-phrase__tips-text">
             <strong>
               <a className="backup-phrase__tips-text--link backup-phrase__tips-text--strong" onClick={this.exportSeedWords}>
-                Download this Secret Backup Phrase
+                {this.context.t('backupPhraseDownload')}
               </a>
-            </strong> and keep it stored safely on an external encrypted hard drive or storage medium.
+            </strong> {this.context.t('backupPhraseStore')}
           </div>
         </div>
         <div className="backup-phrase__next-button">
@@ -140,7 +144,7 @@ class BackupPhraseScreen extends Component {
             onClick={() => isShowingSecret && history.push(INITIALIZE_CONFIRM_SEED_ROUTE)}
             disabled={!isShowingSecret}
           >
-            Next
+            {this.context.t('next')}
           </button>
           <Breadcrumbs total={3} currentIndex={1} />
         </div>

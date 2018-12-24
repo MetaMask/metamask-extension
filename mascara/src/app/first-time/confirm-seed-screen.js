@@ -12,6 +12,10 @@ import LoadingScreen from './loading-screen'
 import { DEFAULT_ROUTE, INITIALIZE_BACKUP_PHRASE_ROUTE } from '../../../../ui/app/routes'
 
 class ConfirmSeedScreen extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   static propTypes = {
     isLoading: PropTypes.bool,
     address: PropTypes.string,
@@ -74,16 +78,16 @@ class ConfirmSeedScreen extends Component {
                     }}
                     href="#"
                   >
-                    {`< Back`}
+                    {`< ` + this.context.t('back')}
                   </a>
                   <Identicon address={this.props.address} diameter={70} />
                   <div className="backup-phrase__content-wrapper">
                     <div>
                       <div className="backup-phrase__title">
-                        Confirm your Secret Backup Phrase
+                        {this.context.t('backupPhraseConfirmation')}
                       </div>
                       <div className="backup-phrase__body-text">
-                        Please select each phrase in order to make sure it is correct.
+                        {this.context.t('backupPhraseSelect')}
                       </div>
                       <div className="backup-phrase__confirm-secret">
                         {selectedSeeds.map(([_, word], i) => (
@@ -131,7 +135,7 @@ class ConfirmSeedScreen extends Component {
                         onClick={() => isValid && this.handleClick()}
                         disabled={!isValid}
                       >
-                        Confirm
+                        {this.context.t('confirm')}
                       </button>
                     </div>
                   </div>

@@ -8,6 +8,10 @@ import Breadcrumbs from './breadcrumbs'
 import { INITIALIZE_NOTICE_ROUTE } from '../../../../ui/app/routes'
 
 class UniqueImageScreen extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   static propTypes = {
     address: PropTypes.string,
     history: PropTypes.object,
@@ -19,12 +23,12 @@ class UniqueImageScreen extends Component {
         <div className="first-view-main">
           <div className="unique-image">
             <Identicon address={this.props.address} diameter={70} />
-            <div className="unique-image__title">Your unique account image</div>
+            <div className="unique-image__title">{this.context.t('uniqueImageTitle')}</div>
             <div className="unique-image__body-text">
-              This image was programmatically generated for you by your new account number.
+              {this.context.t('uniqueImageBodyText1')}
             </div>
             <div className="unique-image__body-text">
-              You’ll see this image everytime you need to confirm a transaction.
+              {this.context.t('uniqueImageBodyText2')}
             </div>
             <button
               className="first-time-flow__button"

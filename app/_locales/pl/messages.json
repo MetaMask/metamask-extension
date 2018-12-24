@@ -67,6 +67,39 @@
   "back": {
     "message": "Wstecz"
   },
+  "backupPhraseConfirmation": {
+    "message": "Potwierdź Sekretny Backup Frazy"
+  },
+  "backupPhraseSelect": {
+    "message": "Proszę wybrać słowa w odpowiedniej kolejności aby potwierdzić poprawność frazy."
+  },
+  "backupPhraseReveal": {
+    "message": "Kliknij tutaj aby odkryć sekretne słowa"
+  },
+  "backupPhraseTitle": {
+    "message": "Sekretny Backup Frazy"
+  },
+  "backupPhraseInfo": {
+    "message": "Sekretny backup frazy pozwala na łatwe odzyskanie Twojego konta."
+  },
+  "backupPhraseWarning": {
+    "message": "OSTRZEŻENIE: Nigdy nie ujawniaj swojego backupu. Osoba posiadająca tę frazę może pobrać Twój Ether na zawsze."
+  },
+  "backupPhraseTip1": {
+    "message": "Zapisz tę frazę w menadżerze haseł takim jak 1Password."
+  },
+  "backupPhraseTip2": {
+    "message": "Zapisz frazę na kartce papieru i schowaj w sekretnym miejscu. Jeżeli chcesz się zabezpieczyć bardziej, zapisz ją na kilku kartkach papieru i schowaj je w 2-3 miejscach."
+  },
+  "backupPhraseTip3": {
+    "message": "Zapamiętaj frazę."
+  },
+  "backupPhraseDownload": {
+    "message": "Pobierz Sekretny Backup Frazy"
+  },
+  "backupPhraseStore": {
+    "message": "i zachowaj go na zewnętrznym zaszyfrowanym dysku danych lub innym nośniku."
+  },
   "balance": {
     "message": "Ilość środków"
   },
@@ -208,6 +241,9 @@
   },
   "createDen": {
     "message": "Utwórz"
+  },
+  "createPassword": {
+    "message": "Utwórz hasło"
   },
   "crypto": {
     "message": "Krypto",
@@ -723,6 +759,9 @@
   "personalAddressDetected": {
     "message": "Wykryto osobisty adres. Wprowadź adres kontraktu tokenów."
   },
+  "phishingWarning": {
+    "message": "Wyłudzanie - ostrzeżenie"
+  },
   "pleaseReviewTransaction": {
     "message": "Proszę, sprawdź transakcję."
   },
@@ -733,6 +772,9 @@
     "message": "Poprzednie"
   },
   "privacyMsg": {
+    "message": "Polityka prywatności"
+  },
+  "privacyNotice": {
     "message": "Polityka prywatności"
   },
   "privateKey": {
@@ -903,6 +945,9 @@
   "seedPhraseReq": {
     "message": "Frazy seed mają 12 słów"
   },
+  "seedPhraseAlert": {
+    "message": "Ostrzeżenie Fraza seed"
+  },  
   "select": {
     "message": "Wybierz"
   },
@@ -1063,6 +1108,9 @@
   "testFaucet": {
     "message": "Źródło testowego ETH"
   },
+  "tips": {
+    "message": "Wskazówki"
+  },
   "to": {
     "message": "Do"
   },
@@ -1139,6 +1187,15 @@
   },
   "unavailable": {
     "message": "Niedostępne"
+  },
+  "uniqueImageTitle": {
+    "message": "Unikalny obraz konta"
+  },
+  "uniqueImageBodyText1": {
+    "message": "Ten obraz został wygenerowany dla Ciebie na podstawie numeru nowego konta."
+  },
+  "uniqueImageBodyText2": {
+    "message": "Ujrzysz ten obraz za każdym razem kiedy będziesz musiał potwierdzić transakcję."
   },
   "unknown": {
     "message": "Nieznane"

@@ -123,15 +123,15 @@ class CreatePasswordScreen extends Component {
               height="225"
             />
             <div className="info">
-              MetaMask is a secure identity vault for Ethereum.
+              {this.context.t('metamaskDescription')}
             </div>
             <div className="info">
-              It allows you to hold ether & tokens, and interact with decentralized applications.
+              {this.context.t('holdEther')}
             </div>
           </div>}
           <form className="create-password">
             <div className="create-password__title">
-              Create Password
+              {this.context.t('createPassword')}
             </div>
             <TextField
               id="create-password"
@@ -165,7 +165,7 @@ class CreatePasswordScreen extends Component {
               disabled={!this.isValid()}
               onClick={this.createAccount}
             >
-              Create
+              {this.context.t('create')}
             </button>
             <a
               href=""
@@ -175,7 +175,7 @@ class CreatePasswordScreen extends Component {
                 history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE)
               }}
             >
-              Import with seed phrase
+              {this.context.t('importUsingSeed')}
             </a>
             { /* }
             <a

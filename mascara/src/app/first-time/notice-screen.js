@@ -12,10 +12,14 @@ import { INITIALIZE_BACKUP_PHRASE_ROUTE } from '../../../../ui/app/routes'
 import LoadingScreen from './loading-screen'
 
 class NoticeScreen extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   static propTypes = {
     address: PropTypes.string.isRequired,
-    nextUnreadNotice: PropTypes.shape({
-      title: PropTypes.string,
+    nextUnreadNotice: PropTypes.shape({      
+      titleCode: PropTypes.string,
       date: PropTypes.string,
       body: PropTypes.string,
     }),
@@ -72,7 +76,7 @@ class NoticeScreen extends Component {
   render () {
     const {
       address,
-      nextUnreadNotice: { title, body },
+      nextUnreadNotice: { titleCode, body },
       isLoading,
     } = this.props
     const { atBottom } = this.state
@@ -89,7 +93,7 @@ class NoticeScreen extends Component {
                   onScroll={this.onScroll}
                 >
                   <Identicon address={address} diameter={70} />
-                  <div className="tou__title">{title}</div>
+                  <div className="tou__title">{this.context.t(titleCode)}</div>
                   <Markdown
                     className="tou__body markdown"
                     source={body}
@@ -100,7 +104,7 @@ class NoticeScreen extends Component {
                     onClick={atBottom && this.acceptTerms}
                     disabled={!atBottom}
                   >
-                    Accept
+                    {this.context.t('accept')}
                   </button>
                   <Breadcrumbs total={3} currentIndex={2} />
                 </div>
