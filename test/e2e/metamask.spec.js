@@ -11,6 +11,7 @@ const { menus, screens, elements, NETWORKS } = require('./elements')
 const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
 const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
 const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
+const createdAccounts =[]
 const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 
 describe('Metamask popup page', async function () {
@@ -74,8 +75,7 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Account Creation', async () => {
-    const newAccountName = 'new name'
+  describe('Log In', async () => {
 
     it('title is \'Nifty Wallet\'', async () => {
       const title = await driver.getTitle()
@@ -128,6 +128,9 @@ describe('Metamask popup page', async function () {
       assert.equal(await continueAfterSeedPhrase.getText(), screens.seedPhrase.textButtonIveCopied)
       await click(continueAfterSeedPhrase)
     })
+  })
+  describe('Account Creation', async () => {
+    const newAccountName = 'new name'
 
     it('sets provider type to localhost', async function () {
       await setProvider(NETWORKS.LOCALHOST)
@@ -140,7 +143,14 @@ describe('Metamask popup page', async function () {
       assert.notEqual(field, false, 'copy icon doesn\'t present')
     })
 
-    it('open  \'Account name\' change dialog', async () => {
+    it("Account's address is displayed and has length 20 symbols", async () => {
+      const field = await waitUntilShowUp(screens.main.address)
+      createdAccounts.push((await field.getText()).toUpperCase())
+      console.log(createdAccounts[0])
+      assert.notEqual(createdAccounts[0].length, 20, "address isn't displayed")
+    })
+
+    it("open 'Account name' change dialog", async () => {
       const menu = await waitUntilShowUp(menus.dot.menu)
       await menu.click()
       const field = await waitUntilShowUp(screens.main.edit)
@@ -180,10 +190,11 @@ describe('Metamask popup page', async function () {
       await item.click()
     })
 
-    it('shows account address', async function () {
-      await delay(300)
-      const account = await waitUntilShowUp(screens.main.address)
-      accountAddress = await account.getText()
+    it("Account's address is displayed and has length 20 symbols", async () => {
+      const field = await waitUntilShowUp(screens.main.address)
+      createdAccounts.push((await field.getText()).toUpperCase())
+      console.log(createdAccounts[1])
+      assert.notEqual(createdAccounts[1].length, 20, "address isn't displayed")
     })
 
     it('logs out of the vault', async () => {
@@ -213,7 +224,7 @@ describe('Metamask popup page', async function () {
     it('checks QR code address is the same as account details address', async () => {
       const field = await waitUntilShowUp(screens.QRcode.address)
       const text = await field.getText()
-      assert.equal(text.toLowerCase(), accountAddress.toLowerCase(), 'QR addres doesn\'t match')
+      assert.equal(text.toUpperCase(), createdAccounts[1], 'QR address doesn\'t match')
     })
 
     it('copy icon is displayed and clickable', async () => {
@@ -243,13 +254,100 @@ describe('Metamask popup page', async function () {
       await button.click()
     })
   })
+  describe('Import Account', () => {
 
+    it('opens import account menu', async function () {
+      await setProvider(NETWORKS.POA)
+      await delay(2000)
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      const item = await waitUntilShowUp(menus.account.import)
+      await item.click()
+      const importAccountTitle = await waitUntilShowUp(screens.importAccounts.title)
+      assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
+    })
+
+    it('imports account', async function () {
+      const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
+      await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
+      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+      await click(button)
+      assert.equal(await button.getText(), 'Import', 'button has incorrect name')
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      await waitUntilShowUp(menus.account.labelImported)
+      const label = (await driver.findElements(menus.account.labelImported))[0]
+      assert.equal(await label.getText(), 'IMPORTED')
+      await menu.click()
+    })
+
+    it('Auto-detect tokens for POA core network ', async function () {
+      // await setProvider(NETWORKS.POA)
+      const tab = await waitUntilShowUp(screens.main.tokens.menu)
+      await tab.click()
+      const balance = await waitUntilShowUp(screens.main.tokens.balance)
+      console.log(await balance.getText())
+      assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')
+    })
+
+    it.skip('Auto-detect tokens for MAIN core network ', async function () {
+      await setProvider(NETWORKS.MAINNET)
+      await waitUntilShowUp(elements.loader, 25)
+      await waitUntilDisappear(elements.loader, 25)
+      const balance = await waitUntilShowUp(screens.main.tokens.balance)
+      console.log(await balance.getText())
+      assert.equal(await balance.getText(), '0.001 WETH', 'token isnt\' auto-detected')
+    })
+    it('opens delete imported account screen', async function () {
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      const item = await waitUntilShowUp(menus.account.delete)
+      await item.click()
+      const deleteImportedAccountTitle = await waitUntilShowUp(screens.deleteImportedAccount.title)
+      assert.equal(await deleteImportedAccountTitle.getText(), screens.deleteImportedAccount.titleText)
+    })
+
+    it('doesn\'t remove imported account with \'No\' button', async function () {
+      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.no)
+      assert.equal(await button.getText(), 'No', 'button has incorrect name')
+      await click(button)
+      const settingsTitle = await waitUntilShowUp(screens.settings.title)
+      assert.equal(await settingsTitle.getText(), 'Settings')
+      // check, that imported account still exists
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      const importedLabel = await waitUntilShowUp(menus.account.labelImported)
+      assert.equal(await importedLabel.getText(), 'IMPORTED')
+    })
+
+    it('opens delete imported account screen again', async function () {
+      const menu = await waitUntilShowUp(menus.account.delete)
+      await menu.click()
+    })
+
+    it('removes imported account with \'Yes\' button', async function () {
+      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+      assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
+      await click(button)
+      const settingsTitle = await waitUntilShowUp(screens.settings.title)
+      assert.equal(await settingsTitle.getText(), 'Settings')
+      // check, that imported account is removed
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      await waitUntilShowUp(menus.account.labelImported, 25)
+      const importedAccounts = await driver.findElements(menus.account.labelImported)
+      assert.ok(importedAccounts.length === 0)
+      await menu.click()
+    })
+
+  })
   describe('Import Contract account', async () => {
     // const poaContract = '0xc6468767214c577013a904900ada0a0dd6653bc3'
     const contractSokol = '0x215b2ab35749e5a9f3efe890de602fb9844e842f'
     console.log('Contract ' + contractSokol + ' , Sokol')
     const wrongAddress = '0xB87b6077D59B01Ab9fa8cd5A1A21D02a4d60D35'
     const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
+
     describe('Import Contract', async () => {
       it('opens import account menu', async function () {
         await setProvider(NETWORKS.ROPSTEN)
@@ -274,7 +372,6 @@ describe('Metamask popup page', async function () {
       })
 
       it("Field 'Address' is displayed", async function () {
-        await delay(2000)
         const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
         assert.notEqual(field, false, "field 'Address' isn't displayed")
         await field.sendKeys(wrongAddress)
@@ -737,6 +834,7 @@ describe('Metamask popup page', async function () {
     })
     describe('Choose Contract Executor', () => {
 
+      const executor2=  '0xf4702CbA917260b2D6731Aea6385215073e8551b'
       it('title is displayed and correct', async function () {
         await delay(5000)
         const title = await waitUntilShowUp(screens.chooseContractExecutor.title)
@@ -751,7 +849,7 @@ describe('Metamask popup page', async function () {
         assert.equal(accounts.length, 3, "number of accounts isn't 2")
       })
 
-      it("Click arrow  button leads to 'Execute Method' screen ", async function () {
+      it("Click arrow button leads to 'Execute Method' screen ", async function () {
         const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonArrow)
         assert.notEqual(button, false, 'button isn\'t displayed')
         await button.click()
@@ -790,16 +888,38 @@ describe('Metamask popup page', async function () {
         assert.equal(selected.length, 1, 'more than one accounts are selected')
       })
 
+
       it("Click button 'Next' open 'Confirm transaction' screen", async function () {
         const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
         await button.click()
-        await delay(5000)
+        await delay(3000)
         const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
         assert.notEqual(reject, false, "button reject isn't displayed")
-        await click(reject)
-        const identicon = await waitUntilShowUp(screens.main.identicon)
-        assert.notEqual(identicon, false, 'main screen didn\'t opened')
+
       })
+
+      it("Click button 'Reject' open contract's account screen", async function () {
+        const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
+        await reject.click()
+        //await delay(2000)
+        const buttonExecute = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+        assert.notEqual(buttonExecute, false, "contract's account hasn't opened")
+      })
+
+      it("Button arrow leads to executor's account screen", async function () {
+        assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
+        await delay(2000)
+        const arrow = await waitUntilShowUp(elements.buttonArrow)
+        await arrow.click()
+        await delay(2000)
+        const address = await waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(),createdAccounts[0], "executors account isn't opened")
+      })
+
+      it("Stop", async function () {
+        throw("Stop!")
+      })
+
       it("Label 'CONTRACT' present", async function () {
         const menu = await waitUntilShowUp(menus.account.menu)
         await menu.click()
@@ -878,94 +998,7 @@ describe('Metamask popup page', async function () {
       assert.notEqual(identicon, false, 'main screen didn\'t opened')
     })
   })
-  describe('Import Account', () => {
 
-    it('opens import account menu', async function () {
-      await setProvider(NETWORKS.POA)
-      await delay(2000)
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      const item = await waitUntilShowUp(menus.account.import)
-      await item.click()
-      const importAccountTitle = await waitUntilShowUp(screens.importAccounts.title)
-      assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
-    })
-
-    it('imports account', async function () {
-      const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
-      await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
-      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-      await click(button)
-      assert.equal(await button.getText(), 'Import', 'button has incorrect name')
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      await waitUntilShowUp(menus.account.labelImported)
-      const label = (await driver.findElements(menus.account.labelImported))[0]
-      assert.equal(await label.getText(), 'IMPORTED')
-      await menu.click()
-    })
-
-    it('Auto-detect tokens for POA core network ', async function () {
-      // await setProvider(NETWORKS.POA)
-      const tab = await waitUntilShowUp(screens.main.tokens.menu)
-      await tab.click()
-      const balance = await waitUntilShowUp(screens.main.tokens.balance)
-      console.log(await balance.getText())
-      assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')
-    })
-
-    it.skip('Auto-detect tokens for MAIN core network ', async function () {
-      await setProvider(NETWORKS.MAINNET)
-      await waitUntilShowUp(elements.loader, 25)
-      await waitUntilDisappear(elements.loader, 25)
-      const balance = await waitUntilShowUp(screens.main.tokens.balance)
-      console.log(await balance.getText())
-      assert.equal(await balance.getText(), '0.001 WETH', 'token isnt\' auto-detected')
-    })
-
-    it('opens delete imported account screen', async function () {
-      await setProvider(NETWORKS.LOCALHOST)
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      const item = await waitUntilShowUp(menus.account.delete)
-      await item.click()
-      const deleteImportedAccountTitle = await waitUntilShowUp(screens.deleteImportedAccount.title)
-      assert.equal(await deleteImportedAccountTitle.getText(), screens.deleteImportedAccount.titleText)
-    })
-
-    it('doesn\'t remove imported account with \'No\' button', async function () {
-      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.no)
-      assert.equal(await button.getText(), 'No', 'button has incorrect name')
-      await click(button)
-      const settingsTitle = await waitUntilShowUp(screens.settings.title)
-      assert.equal(await settingsTitle.getText(), 'Settings')
-      // check, that imported account still exists
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      const importedLabel = await waitUntilShowUp(menus.account.labelImported)
-      assert.equal(await importedLabel.getText(), 'IMPORTED')
-    })
-
-    it('opens delete imported account screen again', async function () {
-      const menu = await waitUntilShowUp(menus.account.delete)
-      await menu.click()
-    })
-
-    it('removes imported account with \'Yes\' button', async function () {
-      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
-      assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
-      await click(button)
-      const settingsTitle = await waitUntilShowUp(screens.settings.title)
-      assert.equal(await settingsTitle.getText(), 'Settings')
-      // check, that imported account is removed
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      await waitUntilShowUp(menus.account.labelImported, 25)
-      const importedAccounts = await driver.findElements(menus.account.labelImported)
-      assert.ok(importedAccounts.length === 0)
-      await menu.click()
-    })
-  })
   describe('Export private key', async () => {
 
     it('open dialog', async function () {
@@ -2817,6 +2850,44 @@ describe('Metamask popup page', async function () {
     })
     if (isDelayed) await delay(5000)
     return contractInstance.address
+  }
+
+  async function executeTransferMethod(executor){
+    try {
+      const buttonExecute = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+      assert.notEqual(buttonExecute, false, "button doesn't displayed")
+      await buttonExecute.click()
+      //Select method transfer
+      const menu = await waitUntilShowUp(screens.executeMethod.selectArrow)
+      await menu.click()
+      await waitUntilShowUp(screens.executeMethod.items)
+      const list = await driver.findElements(screens.executeMethod.items)
+      await list[21].click()
+      //Fill out value
+      await waitUntilShowUp(screens.executeMethod.fieldParameter)
+      const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+      assert.notEqual(fields[1], false, "field value isn't displayed")
+      await fields[1].sendKeys('1')
+      //Fill out address
+      await clearField(fields[0], 100)
+      await fields[0].sendKeys(account1)
+      assert.notEqual(fields[0], false, "field address isn't displayed")
+      //Click button next
+      const buttonNext = await waitUntilShowUp(screens.executeMethod.buttonNext)
+      assert.notEqual(buttonNext, false, "button 'Next' isn't displayed")
+      await buttonNext.click()
+      //Select executor
+      await waitUntilShowUp(screens.chooseContractExecutor.account)
+      const accounts = await driver.findElements(screens.chooseContractExecutor.account)
+      const account = accounts[executor+1]
+      await account.click()
+      //Open confirm transaction
+      const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
+      await button.click()
+      return true
+    } catch (err){
+      return false
+    }
   }
 
 })

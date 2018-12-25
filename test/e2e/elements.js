@@ -2,6 +2,7 @@ const webdriver = require('selenium-webdriver')
 const { By } = webdriver
 module.exports = {
   elements: {
+    buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
     errorClose: By.css('.send-screen > div:nth-child(3) > div:nth-child(1)'),
     error: By.className('error'),
     loader: By.css('#app-content > div > div.full-flex-height > img'),
@@ -73,7 +74,7 @@ module.exports = {
       buttonNext: By.css('.section > div:nth-child(1) > button:nth-child(2)'),
       buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       buttonCopyABI: By.className('btn-violet'),
-      buttonExecuteMethod: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button'),
+      buttonExecuteMethod: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[2]/button')
     },
     eventsEmitter: {
       button: By.className('btn btn-default'),
@@ -233,7 +234,7 @@ module.exports = {
       error: By.css('span.error'),
       selectArrow: By.className('Select-arrow-zone'),
       selectType: By.name('import-type-select'),
-      itemContract: By.id('react-select-2--option-2'),
+      itemContract: By.id('react-select-3--option-2'),
       contractAddress: By.id('address-box'),
       contractABI: By.id('abi-box'),
       title: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div.flex-row.flex-center > h2'),
@@ -265,6 +266,7 @@ module.exports = {
       },
     },
     main: {
+      accountAddress:By.xpath("//*[@id=\"app-content\"]/div/div[2]/div/div/div[1]/flex-column/div[2]/div/span"),
       identicon: By.className('identicon-wrapper select-none'),
       fieldAccountName: By.className('sizing-input'),
       accountName: By.className('font-medium color-forest'),
