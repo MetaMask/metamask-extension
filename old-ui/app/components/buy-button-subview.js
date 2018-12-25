@@ -193,6 +193,7 @@ BuyButtonSubview.propTypes = {
   buyView: PropTypes.object,
   context: PropTypes.string,
   provider: PropTypes.object,
+  isContractExecutionByUser: PropTypes.bool,
 }
 
 function mapStateToProps (state) {
