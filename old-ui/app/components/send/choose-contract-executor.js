@@ -10,33 +10,33 @@ import { ifContractAcc } from '../../util'
 import Web3 from 'web3'
 
 const ownerABI = [{
-	"constant": true,
-	"inputs": [],
-	"name": "owner",
-	"outputs": [
+	'constant': true,
+	'inputs': [],
+	'name': 'owner',
+	'outputs': [
 		{
-			"name": "",
-			"type": "address"
-		}
+			'name': '',
+			'type': 'address',
+		},
 	],
-	"payable": false,
-	"type": "function",
-	"stateMutability": "view"
+	'payable': false,
+	'type': 'function',
+	'stateMutability': 'view',
 }]
 
 const getOwnersABI = [{
-	"constant": true,
-	"inputs": [],
-	"name": "getOwners",
-	"outputs": [
+	'constant': true,
+	'inputs': [],
+	'name': 'getOwners',
+	'outputs': [
 		{
-			"name": "",
-			"type": "address[]"
-		}
+			'name': '',
+			'type': 'address[]',
+		},
 	],
-	"payable": false,
-	"type": "function",
-	"stateMutability": "view"
+	'payable': false,
+	'type': 'function',
+	'stateMutability': 'view',
 }]
 
 class ChooseContractExecutor extends Component {
@@ -63,6 +63,8 @@ class ChooseContractExecutor extends Component {
 		identities: PropTypes.object,
 		keyrings: PropTypes.array,
 		error: PropTypes.string,
+		showLoadingIndication: PropTypes.func,
+		hideLoadingIndication: PropTypes.func,
 	}
 
 	render () {

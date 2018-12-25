@@ -73,8 +73,14 @@ describe('ChooseContractExecutor component', () => {
 			assert.equal(wrapper.find('.choose-contract-next-button').text(), 'Next')
 		})
 
-		it('the number of accounts is equal to number of keyrings', () => {
-			assert.equal(wrapper.find('.executor-cell-container').length, state.metamask.keyrings.length)
+		it('the number of accounts is equal to number of keyrings', async () => {
+			return new Promise(resolve => {
+				setTimeout(() => {
+					wrapper.update()
+					assert.equal(wrapper.find('.executor-cell-container').length, state.metamask.keyrings.length)
+					resolve()
+				}, 500)
+			})
 		})
 	})
 })
