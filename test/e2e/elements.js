@@ -32,6 +32,7 @@ module.exports = {
     account: {
       account1: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(2) > span'),
       account2: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
+      account3: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > span'),
       menu: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div'),
       delete: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
       createAccount: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
@@ -196,6 +197,7 @@ module.exports = {
       button: {
         submit: By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'),
         reject: By.css('.cancel'),
+        rejectAll: By.css('#pending-tx-form > div:nth-child(4) > button')
       },
       fields: {
         gasLimit: By.css('#pending-tx-form > div:nth-child(1) > div.table-box > div:nth-child(3) > div.cell.value > div > div > input'),

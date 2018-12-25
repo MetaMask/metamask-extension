@@ -533,6 +533,7 @@ describe('Metamask popup page', async function () {
         it("Select method 'returnString'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
+          await delay(2000)
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
           await list[14].click()
@@ -916,8 +917,45 @@ describe('Metamask popup page', async function () {
         assert.equal((await address.getText()).toUpperCase(),createdAccounts[0], "executors account isn't opened")
       })
 
+     it('Switch to contract account ', async function () {
+        const accountMenu = await waitUntilShowUp(menus.account.menu)
+        await accountMenu.click()
+        const item = await waitUntilShowUp(menus.account.account3)
+        await item.click()
+        await delay(2000)
+        const address = await waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(),contractSokol.toUpperCase(), "contract's account isn't opened")
+      })
+
+      it("Confirm transaction: button 'Reject All' leads to executor's account screen", async function () {
+        assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
+        const rejectAll = await waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
+        await rejectAll.click()
+        await delay(2000)
+        const address = await waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(),contractSokol.toUpperCase(), "executors account isn't opened")
+      })
+
+      it("Confirm transaction: button 'Submit' leads to executor's account screen", async function () {
+        assert.equal(await executeTransferMethod(1), true, "can't execute the method 'transfer'")
+        await delay(2000)
+        const  button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
+        await button.click()
+        await delay(2000)
+        const address = await waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(),contractSokol.toUpperCase(), "executors account isn't opened")
+      })
+
+
       it("Stop", async function () {
         throw("Stop!")
+        const balanceField = await waitUntilShowUp(screens.main.balance)
+        await delay(2000)
+        const balance = await balanceField.getText()
+        console.log('Account = ' + account)
+        console.log('Balance = ' + balance)
+        assert.equal(parseFloat(balance) > 0.001, true, 'Balance of account ' + account + ' TOO LOW !!! Please refill with Sokol eth!!!!')
+
       })
 
       it("Label 'CONTRACT' present", async function () {
