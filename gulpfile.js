@@ -489,9 +489,12 @@ function zipTask (target) {
 
 function generateBundler (opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
-    plugin: 'browserify-derequire',
+    // plugin: 'sesify',
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
+    prelude: require('sesify').generatePrelude({
+      endowmentsConfig: fs.readFileSync('./sesConfig.js', 'utf8')
+    }),
   })
 
   if (!opts.buildLib) {
