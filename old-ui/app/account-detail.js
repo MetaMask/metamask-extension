@@ -215,10 +215,10 @@ AccountDetailScreen.prototype.render = function () {
 
           h('.flex-grow'),
 
-          h('button', {
+          !ifContractAcc(currentKeyring) ? h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: { marginRight: '10px' },
-          }, 'Buy'),
+          }, 'Buy') : null,
 
           h('button', {
             onClick: () => {
@@ -228,7 +228,7 @@ AccountDetailScreen.prototype.render = function () {
                 return props.dispatch(actions.showSendPage())
               }
             },
-          }, 'Send'),
+          }, ifContractAcc(currentKeyring) ? 'Execute methods' : 'Send'),
 
         ]),
       ]),
