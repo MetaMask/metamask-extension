@@ -108,3 +108,4 @@ async function verboseReportOnFailure ({ browser, driver, title }) {
   const htmlSource = await driver.getPageSource()
   await fs.writeFile(`${filepathBase}-dom.html`, htmlSource)
 }
+
