@@ -5,6 +5,9 @@
   "privacyModeDescription": {
     "message": "Spletne strani morajo zahtevati dovoljenje za ogled podatkov o vašem računu."
   },
+  "privacyNotice": {
+    "message": "Obvestilo o zasebnosti"
+  },
   "exposeAccounts": {
     "message": "Razkrij račune"
   },
@@ -16,6 +19,9 @@
   },
   "confirmClear": {
     "message": "Ste prepričani da želite počistiti odobrene spletne strani?"
+  },
+  "contractInteraction": {
+    "message": "Interakcija s pogodbo"
   },
   "clearApprovalDataSuccess": {
     "message": "Odobrene spletne strani uspešno počiščene."
@@ -41,6 +47,9 @@
   "accept": {
     "message": "Potrdi"
   },
+  "acceleratingATransaction": {
+    "message": "* Pospešitev transakcije z višjo gas ceno poveča njene možnosti za hitrejšo obdelavo v omrežju, vendar ni vedno zagotovljena."
+  },
   "accessingYourCamera": {
     "message": "Dostopanje do vaše kamere ..."
   },
@@ -65,6 +74,9 @@
   "address": {
     "message": "Naslov"
   },
+  "advancedOptions": {
+    "message": "Napredne možnosti"
+  },
   "addCustomToken": {
     "message": "Dodaj žeton po meri"
   },
@@ -80,11 +92,17 @@
   "addAcquiredTokens": {
     "message": "Dodaj žetone pridobljene z MetaMask"
   },
+  "advanced": {
+    "message": "Napredno"
+  },
   "amount": {
     "message": "Znesek"
   },
   "amountPlusGas": {
     "message": "Znesek + Gas"
+  },
+  "amountPlusTxFee": {
+    "message": "Znesek + TX Fee"
   },
   "appDescription": {
     "message": "Denarnica za Ethereum v brskalniku",
@@ -115,8 +133,44 @@
   "available": {
     "message": "Na voljo"
   },
+  "average": {
+    "message": "Povprečje"
+  },
   "back": {
     "message": "Nazaj"
+  },
+  "backupPhraseConfirmation": {
+    "message": "Potrdite vašo tajno varnostno kopijo"
+  },
+  "backupPhraseSelect": {
+    "message": "Izberite vsako besedo, da se prepričate, da je pravilna."
+  },
+  "backupPhraseReveal": {
+    "message": "Kliknite tukaj, da razkrijete skrivne besede"
+  },
+  "backupPhraseTitle": {
+    "message": "Skrivna rezervna fraza"
+  },
+  "backupPhraseInfo": {
+    "message": "Vaša skrivna rezervna fraza omogoča preprosto varnostno kopiranje in obnovitev računa."
+  },
+  "backupPhraseWarning": {
+    "message": "OPOZORILO: Nikoli ne razkrijte varnostne fraze. Vsakdo s to frazo lahko vzame vaš Ether za vedno."
+  },
+  "backupPhraseTip1": {
+    "message": "Shranite to frazo v upravitelja gesel, na primer 1Password."
+  },
+  "backupPhraseTip2": {
+    "message": "Ta stavek napišite na list papirja in ga shranite na varno mesto. Če želite še več varnosti, jo zapišite na več listov papirja in shranite na od 2 do 3 različnih mestih."
+  },
+  "backupPhraseTip3": {
+    "message": "Zapomnite si to frazo."
+  },
+  "backupPhraseDownload": {
+    "message": "Prenesite varnostno kopijo"
+  },
+  "backupPhraseStore": {
+    "message": "in jo shranite na zunanji šifrirani trdi disk ali medij za shranjevanje."
   },
   "balance": {
     "message": "Znesek"
@@ -126,6 +180,9 @@
   },
   "balanceIsInsufficientGas": {
     "message": "Nezadnosten znesek za trenutni gas"
+  },
+  "basic": {
+    "message": "Osnovno"
   },
   "beta": {
     "message": "BETA"
@@ -170,6 +227,9 @@
   "cancellationGasFee": {
     "message": "Preklicani znesek gas"
   },
+  "cancelled": {
+    "message": "Preklicano"
+  },
   "cancelN": {
     "message": "Prekliči vseh $1 transakcij"
   },
@@ -191,6 +251,9 @@
   "confirm": {
     "message": "Potrdi"
   },
+  "confirmationTime": {
+    "message": "Čas potrditve (sec)"
+  },
   "confirmed": {
     "message": "Potrjeno"
   },
@@ -211,6 +274,9 @@
   },
   "connecting": {
     "message": "Povezovanje ..."
+  },
+  "connectingTo": {
+    "message": "Povezovanje na $1"
   },
   "connectingToKovan": {
     "message": "Povezovanje na testno omrežje Kovan"
@@ -281,6 +347,9 @@
   "createDen": {
     "message": "Ustvari"
   },
+  "createPassword": {
+    "message": "Ustvari geslo"
+  },
   "crypto": {
     "message": "Kripto",
     "description": "Exchange type (cryptocurrencies)"
@@ -299,6 +368,9 @@
   },
   "customGas": {
     "message": "Prilagodi gas"
+  },
+  "customGasSubTitle": {
+    "message": "Povečanje lahko skrajša čas obdelave, vendar ni zagotovljeno."
   },
   "customToken": {
     "message": "Žeton po meri"
@@ -409,6 +481,9 @@
   "etherscanView": {
     "message": "Poglej račun na Etherscan"
   },
+  "estimatedProcessingTimes": {
+    "message": "Predviden čas obdelave"
+  },
   "exchangeRate": {
     "message": "Menjalni tečaj"
   },
@@ -423,6 +498,18 @@
   },
   "failed": {
     "message": "Ni uspelo"
+  },
+  "fast": {
+    "message": "Hiter"
+  },
+  "faster": {
+    "message": "Hitrejši"
+  },
+  "fastest": {
+    "message": "Najhitrejši"
+  },
+  "feeChartTitle": {
+    "message": "Live Transaction Fee Predictions"
   },
   "fiat": {
     "message": "Klasične",
@@ -476,7 +563,13 @@
     "message": "Ustvarjenje seed ..."
   },
   "gasPrice": {
-    "message": "Gas Price (GWEI)"
+    "message": "Gas price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gas Price zelo nizkek"
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas price"
   },
   "gasPriceCalculation": {
     "message": "Priporočen gas price je izračunan glede na omrežje."
@@ -576,6 +669,9 @@
   "initialTransactionConfirmed": {
     "message": "Vaša prvotna transakcija je bila potrjena. Pritisnite V redu in se vrnite nazaj."
   },
+  "insufficientBalance": {
+    "message": "Nezadostno ravnovesje."
+  },
   "insufficientFunds": {
     "message": "Nezadostna sredstva."
   },
@@ -641,6 +737,9 @@
   "limit": {
     "message": "Meja"
   },
+  "liveGasPricePredictions": {
+    "message": "Napovedi o gas price"
+  },
   "loading": {
     "message": "Nalaganje ..."
   },
@@ -685,6 +784,9 @@
   },
   "missingYourTokens": {
     "message": "Ne vidite vaših žetonov?"
+  },
+  "minutesShorthand": {
+    "message": "Min"
   },
   "myAccounts": {
     "message": "Moji računi"
@@ -750,7 +852,13 @@
     "message": "Simbol (nezahtevano)"
   },
   "optionalNickname": {
-    "message": "Uporabniško ime (nezahtevano)"
+    "message": "Ime (nezahtevano)"
+  },
+  "newTotal": {
+    "message": "Novo skupno"
+  },
+  "newTransactionFee": {
+    "message": "Nova provizija za transakcije"
   },
   "next": {
     "message": "Naprej"
@@ -814,6 +922,9 @@
   "parameters": {
     "message": "Parametri"
   },
+  "originalTotal": {
+    "message": "Izvirna vsota"
+  },
   "password": {
     "message": "Geslo"
   },
@@ -846,6 +957,9 @@
   },
   "personalAddressDetected": {
     "message": "Zaznan je osebni naslov. Vnesite naslov pogodbe žetona."
+  },
+  "phishingWarning": {
+    "message": "Opozorilo o lažnem predstavljanju"
   },
   "pleaseReviewTransaction": {
     "message": "Preglejte vašo transakcijo."
@@ -987,6 +1101,12 @@
   "save": {
     "message": "Shrani"
   },
+  "slow": {
+    "message": "Počasen"
+  },
+  "slower": {
+    "message": "Počasnejši"
+  },
   "saveAsCsvFile": {
     "message": "Shrani kot CSV datoteko"
   },
@@ -1012,9 +1132,15 @@
   "secretPhrase": {
     "message": "Vnesite vaših dvanajst besed za obnovitev vaših računov."
   },
+  "secondsShorthand": {
+    "message": "Sec"
+  },
   "seedPhraseReq": {
     "message": "Seed phrase mora biti dolg 12 besed"
   },
+  "seedPhraseAlert": {
+    "message": "Opozorilo o seed phrase"
+  },  
   "select": {
     "message": "Izberi"
   },
@@ -1032,6 +1158,9 @@
   },
   "send": {
     "message": "Pošlji"
+  },
+  "sendAmount": {
+    "message": "Pošlji znesek"
   },
   "sendETH": {
     "message": "Pošlji ETH"
@@ -1059,6 +1188,9 @@
   },
   "selectAnAccountHelp": {
     "message": "Izberi račun za prikaz v MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "Izberite višji gas fee, da pospešite obdelavo vaše transakcije.*"
   },
   "selectHdPath": {
     "message": "Izberi HD Path"
@@ -1108,6 +1240,9 @@
   "sigRequested": {
     "message": "Podpis zahtevan"
   },
+  "somethingWentWrong": {
+    "message": "Oops! Nekaj je šlo narobe."
+  },
   "spaceBetween": {
     "message": "med besedami je lahko samo presledek"
   },
@@ -1119,6 +1254,15 @@
   },
   "speedUpSubtitle": {
     "message": "Povečajte gas prise za pospešitev transakcije"
+  },
+  "speedUpCancellation": {
+    "message": "Pospešite preklic"
+  },
+  "speedUpTransaction": {
+    "message": "Pospešite transakcijo"
+  },
+  "switchNetworks": {
+    "message": "Preklop omrežja"
   },
   "status": {
     "message": "Status"
@@ -1171,6 +1315,9 @@
   "testFaucet": {
     "message": "Testni faucet"
   },
+  "tips": {
+    "message": "Nasveti"
+  },
   "to": {
     "message": "Za"
   },
@@ -1218,7 +1365,10 @@
     "message": "Transakcija na $2 preklicana."
   },
   "transactionSubmitted": {
-    "message": "Transakcija na $2 oddana."
+    "message": "Transakcija z gas fee $1 oddana na $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transakcija ponovno oddana s povečanim gas fee $1 na $2"
   },
   "transactionUpdated": {
     "message": "Transakcija na $2 spremenjena."
@@ -1229,17 +1379,32 @@
   "transactionErrored": {
     "message": "Napaka pri transakciji."
   },
+  "transactionCancelAttempted": {
+    "message": "Preklic transakcije je bil opravljen z gas fee v višini $1 na $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transakcija je bila uspešno preklicana na $2"
+  },
   "transactions": {
     "message": "transakcije"
   },
   "transactionError": {
     "message": "Napaka pri transakciji. Izjema sprožena v kodi pogodbe."
   },
+  "transactionErrorNoContract": {
+    "message": "Poskus klica funkcije na naslovu, ki ni pogodba."
+  },
+  "transactionFee": {
+    "message": "Transakcijska provizija"
+  },
   "transactionMemo": {
     "message": "Opomba transakcije (nezahtevano)"
   },
   "transactionNumber": {
     "message": "Številka transakcije"
+  },
+  "transactionTime": {
+    "message": "Transakcijski čas"
   },
   "transfer": {
     "message": "Prenesi"
@@ -1280,6 +1445,15 @@
   },
   "units": {
     "message": "enote"
+  },
+  "uniqueImageTitle": {
+    "message": "Vaša edinstvena slika računa"
+  },
+  "uniqueImageBodyText1": {
+    "message": "Ta slika je bila programsko ustvarjena z vašo novo številko računa."
+  },
+  "uniqueImageBodyText2": {
+    "message": "To sliko boste videli vsakič, ko boste morali potrditi transakcijo."
   },
   "unknown": {
     "message": "Neznano"
@@ -1368,5 +1542,8 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaš zasebni seed phrase"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message":"Ničelni gas price na pospešitvi"
   }
 }
