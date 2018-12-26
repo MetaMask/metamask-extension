@@ -288,6 +288,19 @@ class AccountDropdowns extends Component {
           },
           'Copy address to clipboard',
         ),
+        ifContractAcc(keyring) ? h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: async () => {
+              const { selected } = this.props
+              const contractProps = await this.props.actions.getContract(selected)
+              const abi = contractProps && contractProps.abi
+              copyToClipboard(JSON.stringify(abi))
+            },
+          },
+          'Copy ABI to clipboard',
+        ) : null,
         (!this.ifHardwareAcc(keyring) && !(ifContractAcc(keyring))) ? h(
           DropdownMenuItem,
           {
@@ -391,6 +404,7 @@ const mapDispatchToProps = (dispatch) => {
       showConnectHWWalletPage: () => dispatch(actions.showConnectHWWalletPage()),
       showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
       showDeleteImportedAccount: (identity) => dispatch(actions.showDeleteImportedAccount(identity)),
+      getContract: (addr) => dispatch(actions.getContract(addr)),
     },
   }
 }

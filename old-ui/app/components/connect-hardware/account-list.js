@@ -83,11 +83,7 @@ class AccountList extends Component {
             name={`selectedAccount-${i}`}
             id={`address-${i}`}
             value={a.index}
-            onChange={(e) => {
-              console.log('onChange event')
-              this.props.onAccountChange(e.target.value)
-}
-            }
+            onChange={(e) => this.props.onAccountChange(e.target.value)}
             checked={this.props.selectedAccounts.includes(a.index.toString())}
           />
         )

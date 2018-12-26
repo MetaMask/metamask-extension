@@ -8,6 +8,7 @@ import { formatBalance } from '../../util'
 import { getPlatform } from '../../../../app/scripts/lib/util'
 import { PLATFORM_FIREFOX } from '../../../../app/scripts/lib/enums'
 import { isLedger } from './util'
+import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
 
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
@@ -81,11 +82,12 @@ class ConnectHardwareForm extends Component {
         selectedAccounts.splice(indToRemove, 1)
         selectedAcc = selectedAccounts[selectedAccounts.length - 1]
       }
-      this.setState({
+      const newState = {
         selectedAccounts,
         selectedAccount: selectedAcc,
         error: null,
-      })
+      }
+      this.setState(newState)
     } else {
       this.setState({selectedAccount: account.toString(), error: null})
     }
@@ -171,15 +173,9 @@ class ConnectHardwareForm extends Component {
     }
 
     if (this.state.selectedAccounts.length > 0) {
-      const whenUnlocks = []
-      this.state.selectedAccounts.forEach((selectedAcc) => {
-        whenUnlocks.push(this.props.unlockHardwareWalletAccount(selectedAcc, device))
-      })
-      Promise.all(whenUnlocks)
+      this.unlockHardwareWalletAccounts(this.state.selectedAccounts, device)
       .then(_ => {
         this.props.goHome()
-      }).catch(e => {
-        this.setState({ error: (e.message || e.toString()) })
       })
     } else {
       this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
@@ -189,6 +185,18 @@ class ConnectHardwareForm extends Component {
         this.setState({ error: (e.message || e.toString()) })
       })
     }
+  }
+
+  unlockHardwareWalletAccounts = (accs, device) => {
+    return accs.reduce((promise, acc, ind) => {
+      return promise
+        .then((result) => {
+          return new Promise((resolve, reject) => {
+            resolve(this.props.unlockHardwareWalletAccount(acc, device))
+          })
+        })
+        .catch(console.error);
+    }, Promise.resolve())
   }
 
   onCancel = () => {
@@ -273,8 +281,9 @@ ConnectHardwareForm.propTypes = {
 
 const mapStateToProps = state => {
   const {
-    metamask: { network, selectedAddress, identities = {}, accounts = [] },
+    metamask: { network, selectedAddress, identities = {} },
   } = state
+  const accounts = getMetaMaskAccounts(state)
   const numberOfExistingAccounts = Object.keys(identities).length
   const {
     appState: { defaultHdPaths },

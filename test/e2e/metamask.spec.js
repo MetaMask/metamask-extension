@@ -4,6 +4,7 @@ const mkdirp = require('mkdirp')
 const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
+const clipboardy = require('clipboardy')
 const webdriver = require('selenium-webdriver')
 const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
@@ -16,6 +17,7 @@ const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 describe('Metamask popup page', async function () {
   let driver, accountAddress, tokenAddress, extensionId
   let password = '123456789'
+  let abiClipboard
   const newPassword = {
     correct: 'abcDEF123!@#',
     short: '123',
@@ -140,6 +142,11 @@ describe('Metamask popup page', async function () {
       assert.notEqual(field, false, 'copy icon doesn\'t present')
     })
 
+    it('Check clipboard buffer', async function () {
+      const text = clipboardy.readSync()
+      assert.equal(text.length, 42, "address account wasn't copied to clipboard")
+    })
+
     it('open  \'Account name\' change dialog', async () => {
       const menu = await waitUntilShowUp(menus.dot.menu)
       await menu.click()
@@ -222,6 +229,11 @@ describe('Metamask popup page', async function () {
       assert.notEqual(field, false, 'copy icon doesn\'t present')
     })
 
+    it('Check clipboard buffer', async function () {
+      const text = clipboardy.readSync()
+      assert.equal(text.length, 42, "address account wasn't copied to clipboard")
+    })
+
     it('close QR code screen by clicking button arrow', async () => {
       const button = await waitUntilShowUp(screens.QRcode.buttonArrow)
       await click(button)
@@ -245,7 +257,6 @@ describe('Metamask popup page', async function () {
   })
 
   describe('Import Contract account', async () => {
-    // const poaContract = '0xc6468767214c577013a904900ada0a0dd6653bc3'
     const contractSokol = '0x215b2ab35749e5a9f3efe890de602fb9844e842f'
     console.log('Contract ' + contractSokol + ' , Sokol')
     const wrongAddress = '0xB87b6077D59B01Ab9fa8cd5A1A21D02a4d60D35'
@@ -267,6 +278,7 @@ describe('Metamask popup page', async function () {
       })
 
       it("Select type 'Contract'", async function () {
+        await delay(1000)
         const field = await waitUntilShowUp(screens.importAccounts.selectArrow)
         await field.click()
         const item = await waitUntilShowUp(screens.importAccounts.itemContract)
@@ -296,12 +308,7 @@ describe('Metamask popup page', async function () {
         assert.notEqual(field, false, "field 'ABI' isn't displayed")
       })
 
-      it('icon copy is displayed for ABI ', async function () {
-        const field = await waitUntilShowUp(screens.importAccounts.iconCopy)
-        assert.notEqual(field, false, "icon copy isn't displayed")
-      })
-
-      it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
+     it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
         assert.equal(await field.getText(), '', "field 'ABI' isn't displayed")
       })
@@ -331,8 +338,19 @@ describe('Metamask popup page', async function () {
 
       it('ABI is fetched ', async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
-        const abi = await field.getText()
-        assert.equal(abi.length, 4457, "ABI isn't fetched")
+        abiClipboard = await field.getText()
+        assert.equal(abiClipboard.length, 4457, "ABI isn't fetched")
+      })
+
+      it('icon copy is displayed for ABI ', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.iconCopy)
+        assert.notEqual(field, false, "icon copy isn't displayed")
+        await field.click()
+      })
+
+      it('Check clipboard buffer', async function () {
+        const text = clipboardy.readSync()
+        assert.equal(text, abiClipboard, "address account wasn't copied to clipboard")
       })
 
       it("Click button 'Import', main screen opens", async function () {
@@ -341,20 +359,47 @@ describe('Metamask popup page', async function () {
         const ident = await waitUntilShowUp(screens.main.identicon, 20)
         assert.notEqual(ident, false, "main screen isn't opened")
       })
+    })
 
-      it("Click button 'Send', 'Execute Method' screen opens", async function () {
-        const button = await waitUntilShowUp(screens.main.buttons.send)
-        await click(button)
+    describe("Check 3dot menu for 'Contract' account", () => {
+      it('open 3dot menu', async function () {
+        const menu = await waitUntilShowUp(menus.dot.menu)
+        await menu.click()
+        await waitUntilShowUp(menus.dot.item)
+        const items = await driver.findElements(menus.dot.item)
+        assert.equal(items.length, 4, '3dot menu has incorrect number of items')
+       })
+      it('Check text of items', async function () {
+        const items = await driver.findElements(menus.dot.item)
+        assert.equal(await items[0].getText(), 'View on block explorer', '1st item has incorrect text')
+        assert.equal(await items[1].getText(), 'Show QR Code', '2st item has incorrect text')
+        assert.equal(await items[2].getText(), 'Copy address to clipboard', '3st item has incorrect text')
+        assert.equal(await items[3].getText(), 'Copy ABI to clipboard', '4st item has incorrect text')
+     })
+      it("Click 'Copy ABI'", async function () {
+        const items = await driver.findElements(menus.dot.item)
+        await items[3].click()
+        const menu = await waitUntilShowUp(menus.dot.item, 20)
+        assert.equal(menu, false, "3dot menu wasn't closed")
+      })
+
+      it('Check clipboard buffer', async function () {
+        const text = clipboardy.readSync()
+        assert.equal(text, abiClipboard, "ABI wasn't copied to clipboard")
       })
     })
+
     describe('Execute Method screen', () => {
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
       describe("Check UI and button's functionality", () => {
-        it("Click button 'Send', 'Execute Method' screen opens", async function () {
+
+        it("Click button 'Execute method'", async function () {
           await driver.navigate().refresh()
           await delay(2000)
-          const button = await waitUntilShowUp(screens.main.buttons.send)
-          await click(button)
+          const button = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+          assert.notEqual(button, false, "button doesn't displayed")
+          assert.equal(await button.getText(), 'Execute methods', 'button has incorrect name')
+          await button.click()
         })
 
         it('title is displayed and correct', async function () {
@@ -369,17 +414,18 @@ describe('Metamask popup page', async function () {
           const identicon = await waitUntilShowUp(screens.main.identicon, 40)
           assert.notEqual(identicon, false, "main screen isn't opened")
         })
-
-        it("Click button 'Send', 'Execute Method' screen opens", async function () {
-          await driver.navigate().refresh()
-          await delay(2000)
-          const button = await waitUntilShowUp(screens.main.buttons.send)
-          await click(button)
-        })
-
       })
       describe('Check output for data type : ADDRESS', () => {
         const address = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
+
+        it("Click button 'Execute method'", async function () {
+          await driver.navigate().refresh()
+          await delay(2000)
+          const button = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+          assert.notEqual(button, false, "button doesn't displayed")
+          assert.equal(await button.getText(), 'Execute methods', 'button has incorrect name')
+          await button.click()
+        })
 
         it("Select method 'returnAddress'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
@@ -419,6 +465,16 @@ describe('Metamask popup page', async function () {
           assert.equal(text.toLowerCase(), address.toLowerCase(), 'incorrect value was returned')
         })
 
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), address.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
         it("2nd call doesn't throw the error", async function () {
           const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
           assert.notEqual(button, false, "button 'Call data' isn't displayed")
@@ -434,6 +490,7 @@ describe('Metamask popup page', async function () {
         const stringValue = 'POA network'
 
         it("Select method 'returnString'", async function () {
+          await delay(3000)
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
@@ -464,9 +521,18 @@ describe('Metamask popup page', async function () {
           const text = await waitUntilHasValue(fields[1])
           assert.equal(text, stringValue, 'incorrect value was returned')
         })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), stringValue.toLowerCase(), "output wasn't copied to clipboard")
+        })
       })
       describe('Check output for data type : BOOLEAN', () => {
-          it("Select method 'returnBoolean'", async function () {
+        it("Select method 'returnBoolean'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
@@ -475,11 +541,14 @@ describe('Metamask popup page', async function () {
           assert.equal(list.length, 22, "drop down menu isn't displayed")
         })
 
-        it('Fill out input parameter field, value is TRUE', async function () {
-          await waitUntilShowUp(screens.executeMethod.fieldParameter)
-          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
-          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
-          await fields[0].sendKeys('true')
+        it('Select value TRUE from dropdown menu', async function () {
+          const arrows = await driver.findElements(screens.executeMethod.selectArrow)
+          await arrows[1].click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          assert.equal(await list[1].getText(), 'true', 'TRUE menu item: incorrect text')
+          assert.equal(list.length, 2, "drop down menu isn't displayed")
+          await list[1].click()
         })
 
         it("Click button 'Call data' ", async function () {
@@ -493,16 +562,19 @@ describe('Metamask popup page', async function () {
           await delay(3000)
           await waitUntilShowUp(screens.executeMethod.fieldOutput)
           const fields = await driver.findElements(screens.executeMethod.fieldOutput)
-          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
-          const text = await waitUntilHasValue(fields[1])
+          assert.notEqual(fields[0], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[0])
           assert.equal(text, 'true', 'incorrect value was returned')
         })
-        it('Fill out input parameter field, value is FALSE ', async function () {
-          await waitUntilShowUp(screens.executeMethod.fieldParameter)
-          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
-          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
-          await clearField(fields[0])
-          await fields[0].sendKeys('false')
+
+        it('Select value FALSE from dropdown menu', async function () {
+          const arrows = await driver.findElements(screens.executeMethod.selectArrow)
+          await arrows[1].click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          assert.equal(await list[0].getText(), 'false', 'FALSE menu item: incorrect text')
+          assert.equal(list.length, 2, "drop down menu isn't displayed")
+          await list[0].click()
         })
 
         it("Click button 'Call data' ", async function () {
@@ -516,15 +588,26 @@ describe('Metamask popup page', async function () {
           await delay(3000)
           await waitUntilShowUp(screens.executeMethod.fieldOutput)
           const fields = await driver.findElements(screens.executeMethod.fieldOutput)
-          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
-          const text = await waitUntilHasValue(fields[1])
+          assert.notEqual(fields[0], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[0])
           assert.equal(text, 'false', 'incorrect value was returned')
+        })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), 'false', "output wasn't copied to clipboard")
         })
 
       })
       describe('Check output for data type : BYTES', () => {
+
         const bytesValue = '0x010203'
-        it("Select method 'returnBytes1'", async function () {
+
+   it("Select method 'returnBytes1'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
@@ -555,10 +638,22 @@ describe('Metamask popup page', async function () {
           const text = await waitUntilHasValue(fields[1])
           assert.equal(text, bytesValue, 'incorrect value was returned')
         })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), bytesValue.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
       })
       describe('Check output for data type : UINT256', () => {
+
         const uint256Value = '1122334455667788991122334455667788'
-        it("Select method 'returnUint256'", async function () {
+
+   it("Select method 'returnUint256'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
@@ -590,10 +685,22 @@ describe('Metamask popup page', async function () {
           assert.equal(text, uint256Value, 'incorrect value was returned')
         })
 
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), uint256Value.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
       })
       describe('Check output for data type : INT256', () => {
+
         const int256Value = '-1122334455667788991122334455667788'
-        it("Select method 'returnInt256'", async function () {
+
+       it("Select method 'returnInt256'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
@@ -624,6 +731,16 @@ describe('Metamask popup page', async function () {
           const text = await waitUntilHasValue(fields[1])
           assert.equal(text, int256Value, 'incorrect value was returned')
         })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), int256Value.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
       })
       describe('Check executed method', () => {
 
@@ -1013,8 +1130,15 @@ describe('Metamask popup page', async function () {
     })
 
     it('icon copy cliboard is displayed and clickable', async function () {
-      const field = await waitUntilShowUp(screens.yourPR.copy)
-      assert.notEqual(field, false, 'icon copy isn\'t displayed')
+      await waitUntilShowUp(screens.yourPR.copy)
+      const icons = await driver.findElements(screens.yourPR.copy)
+      assert.notEqual(icons[1], false, 'icon copy isn\'t displayed')
+      await icons[1].click()
+    })
+
+    it('Check clipboard buffer', async function () {
+      const text = clipboardy.readSync()
+      assert.equal(text.length, 64, "private key wasn't copied to clipboard")
     })
 
     it('file loaded if click button \'Save\' ', async function () {
