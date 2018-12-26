@@ -75,7 +75,7 @@ class AccountList extends Component {
     }
 
     renderInput = (a, i) => {
-      const { device } = this.props
+      const { device, selectedAccount, selectedAccounts } = this.props
       if (isLedger(device)) {
         return (
           <input
@@ -84,7 +84,7 @@ class AccountList extends Component {
             id={`address-${i}`}
             value={a.index}
             onChange={(e) => this.props.onAccountChange(e.target.value)}
-            checked={this.props.selectedAccounts.includes(a.index.toString())}
+            checked={selectedAccounts.includes(a.index.toString())}
           />
         )
       } else {
@@ -95,7 +95,7 @@ class AccountList extends Component {
             id={`address-${i}`}
             value={a.index}
             onChange={(e) => this.props.onAccountChange(e.target.value)}
-            checked={this.props.selectedAccount === a.index.toString()}
+            checked={selectedAccount === a.index.toString()}
           />
         )
       }

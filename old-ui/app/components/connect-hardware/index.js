@@ -130,6 +130,16 @@ class ConnectHardwareForm extends Component {
             newState.selectedAccount = null
           }
 
+          if (isLedger(device)) {
+            if (!this.state.selectedAccounts.length) {
+              newState.selectedAccounts = []
+              accounts.forEach((a, i) => {
+                if (a.address.toLowerCase() === this.props.address) {
+                  newState.selectedAccounts.push(a.index.toString())
+                }
+              })
+            }
+          }
 
           // Map accounts with balances
           newState.accounts = accounts.map(account => {
