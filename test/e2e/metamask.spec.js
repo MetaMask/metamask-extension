@@ -977,7 +977,7 @@ describe('Metamask popup page', async function () {
 
     it('Open delete imported account screen again', async function () {
       await waitUntilShowUp(menus.account.delete)
-      const buttons = await driver.findElement(menus.account.delete)
+      const buttons = await driver.findElements(menus.account.delete)
       assert.notEqual(buttons[0], false, "icon 'remove' isn't displayed")
       await buttons[0].click()
     })
