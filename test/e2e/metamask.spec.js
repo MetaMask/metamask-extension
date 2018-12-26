@@ -342,19 +342,18 @@ describe('Metamask popup page', async function () {
         assert.notEqual(ident, false, "main screen isn't opened")
       })
 
-      it("Click button 'Send', 'Execute Method' screen opens", async function () {
-        const button = await waitUntilShowUp(screens.main.buttons.send)
-        await click(button)
-      })
     })
     describe('Execute Method screen', () => {
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
       describe("Check UI and button's functionality", () => {
-        it("Click button 'Send', 'Execute Method' screen opens", async function () {
+
+        it("Click button 'Execute method'", async function () {
           await driver.navigate().refresh()
           await delay(2000)
-          const button = await waitUntilShowUp(screens.main.buttons.send)
-          await click(button)
+          const button = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+          assert.notEqual(button, false, "button doesn't displayed")
+          assert.equal(await button.getText(), 'Execute methods', 'button has incorrect name')
+          await button.click()
         })
 
         it('title is displayed and correct', async function () {
@@ -369,17 +368,18 @@ describe('Metamask popup page', async function () {
           const identicon = await waitUntilShowUp(screens.main.identicon, 40)
           assert.notEqual(identicon, false, "main screen isn't opened")
         })
-
-        it("Click button 'Send', 'Execute Method' screen opens", async function () {
-          await driver.navigate().refresh()
-          await delay(2000)
-          const button = await waitUntilShowUp(screens.main.buttons.send)
-          await click(button)
-        })
-
       })
       describe('Check output for data type : ADDRESS', () => {
         const address = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
+
+        it("Click button 'Execute method'", async function () {
+          await driver.navigate().refresh()
+          await delay(2000)
+          const button = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+          assert.notEqual(button, false, "button doesn't displayed")
+          assert.equal(await button.getText(), 'Execute methods', 'button has incorrect name')
+          await button.click()
+        })
 
         it("Select method 'returnAddress'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
@@ -529,8 +529,10 @@ describe('Metamask popup page', async function () {
 
       })
       describe('Check output for data type : BYTES', () => {
+
         const bytesValue = '0x010203'
-        it("Select method 'returnBytes1'", async function () {
+
+   it("Select method 'returnBytes1'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
@@ -563,8 +565,10 @@ describe('Metamask popup page', async function () {
         })
       })
       describe('Check output for data type : UINT256', () => {
+
         const uint256Value = '1122334455667788991122334455667788'
-        it("Select method 'returnUint256'", async function () {
+
+   it("Select method 'returnUint256'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
@@ -598,8 +602,10 @@ describe('Metamask popup page', async function () {
 
       })
       describe('Check output for data type : INT256', () => {
+
         const int256Value = '-1122334455667788991122334455667788'
-        it("Select method 'returnInt256'", async function () {
+
+       it("Select method 'returnInt256'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
