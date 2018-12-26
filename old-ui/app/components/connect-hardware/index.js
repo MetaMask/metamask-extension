@@ -195,7 +195,7 @@ class ConnectHardwareForm extends Component {
             resolve(this.props.unlockHardwareWalletAccount(acc, device))
           })
         })
-        .catch(console.error);
+        .catch(console.error)
     }, Promise.resolve())
   }
 
