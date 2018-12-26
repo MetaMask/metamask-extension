@@ -73,8 +73,8 @@ module.exports = {
       buttonNext: By.css('.section > div:nth-child(1) > button:nth-child(2)'),
       buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       buttonCopyABI: By.className('btn-violet'),
+      buttonExecuteMethod: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button'),
     },
-
     eventsEmitter: {
       button: By.className('btn btn-default'),
       event: By.className('Toastify__toast-body'),
