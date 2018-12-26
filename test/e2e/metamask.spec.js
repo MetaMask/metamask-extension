@@ -866,7 +866,13 @@ describe('Metamask popup page', async function () {
         assert.notEqual(reject, false, "button reject isn't displayed")
       })
 
-      it("Button 'Buy Ether' is displayed and enabled", async function () {
+      it("Button 'Buy Ether' is displayed", async function () {
+        const button = await waitUntilShowUp(screens.confirmTransaction.button.buyEther)
+        assert.equal(await button.getText(), 'Buy Ether', 'button has incorrect name')
+        assert.equal(await button.isEnabled(), true, 'button is disabled')
+      })
+
+      it("Open screen 'Buy Ether'", async function () {
         const button = await waitUntilShowUp(screens.confirmTransaction.button.buyEther)
         await button.click()
         const title = await waitUntilShowUp(screens.buyEther.title)
@@ -877,8 +883,8 @@ describe('Metamask popup page', async function () {
 
       it("Click button 'Reject' open contract's account screen", async function () {
         const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
+        assert.equal(await reject.getText(), 'Reject', 'button has incorrect name')
         await reject.click()
-        // await delay(2000)
         const buttonExecute = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
         assert.notEqual(buttonExecute, false, "contract's account hasn't opened")
       })
@@ -906,6 +912,7 @@ describe('Metamask popup page', async function () {
       it("Confirm transaction: button 'Reject All' leads to contract's account screen", async function () {
         assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
         const rejectAll = await waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
+        assert.equal(await rejectAll.getText(), 'Reject All', 'button has incorrect name')
         await rejectAll.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
@@ -916,6 +923,7 @@ describe('Metamask popup page', async function () {
         assert.equal(await executeTransferMethod(2), true, "can't execute the method 'transfer'")
         await delay(2000)
         const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
+        // assert.equal(await button.getText(), 'Submit', "button has incorrect name")
         await button.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
@@ -962,6 +970,7 @@ describe('Metamask popup page', async function () {
       // check, that imported account still exists
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
+      await delay(2000)
       const label = await waitUntilShowUp(menus.account.label)
       assert.equal(await label.getText(), 'IMPORTED')
     })
@@ -972,6 +981,7 @@ describe('Metamask popup page', async function () {
     })
 
     it("Remove imported account with 'Yes' button", async function () {
+
       const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
       assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
       await click(button)
