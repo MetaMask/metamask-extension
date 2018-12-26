@@ -157,6 +157,9 @@ class ChooseContractExecutor extends Component {
 		return new Promise((resolve) => {
 			Promise.all([this.getOwner(), this.getOwners()])
 			.then(([owner, owners]) => {
+				if (!owners) {
+					owners = []
+				}
 				if (owner !== '0x' && !owners.includes(owner)) {
 					owners.push(owner)
 				}
