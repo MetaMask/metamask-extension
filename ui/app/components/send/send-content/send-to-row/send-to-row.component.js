@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
 import EnsInput from '../../../ens-input'
 import { getToErrorObject } from './send-to-row.utils.js'
+import { isRskNetwork } from '../../../../util'
 
 export default class SendToRow extends Component {
 
@@ -25,7 +26,12 @@ export default class SendToRow extends Component {
     t: PropTypes.func,
   }
 
-  handleToChange (to, nickname = '', toError) {
+  handleToChange (to, nickname = '', toError, network) {
+
+    if (isRskNetwork(network)){
+      to = to.toLowerCase();
+    }
+
     const { hasHexData, updateSendTo, updateSendToError, updateGas } = this.props
     const toErrorObject = getToErrorObject(to, toError, hasHexData)
     updateSendTo(to, nickname)
@@ -47,6 +53,7 @@ export default class SendToRow extends Component {
     } = this.props
 
     return (
+      
       <SendRowWrapper
         errorType={'to'}
         label={`${this.context.t('to')}: `}
@@ -60,7 +67,7 @@ export default class SendToRow extends Component {
           inError={inError}
           name={'address'}
           network={network}
-          onChange={({ toAddress, nickname, toError }) => this.handleToChange(toAddress, nickname, toError)}
+          onChange={({ toAddress, nickname, toError }) => this.handleToChange(toAddress, nickname, toError, this.props.network)}
           openDropdown={() => openToDropdown()}
           placeholder={this.context.t('recipientAddress')}
           to={to}
