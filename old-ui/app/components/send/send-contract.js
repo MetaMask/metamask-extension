@@ -17,7 +17,6 @@ class SendTransactionField extends Component {
 		this.state = {
 			val: props.defaultValue,
 		}
-		this.timerID = null
 	}
 
 	static propTypes = {
@@ -40,12 +39,51 @@ class SendTransactionField extends Component {
 				placeholder={this.props.placeholder}
 				value={this.state.val}
 				disabled={this.props.disabled}
-				onChange={e => {
+				onChange={(e) => {
 					this.setState({
 						val: e.target.value,
 					})
-					this.props.onChange(e)
+					this.props.onChange(e.target.value)
 				}}
+				style={{ marginTop: '5px' }}
+			/>
+		)
+	}
+}
+
+class SendTransactionInputSelect extends Component {
+	constructor (props) {
+		super(props)
+		this.state = {
+			val: props.defaultValue,
+		}
+	}
+
+	static propTypes = {
+		defaultValue: PropTypes.string,
+		value: PropTypes.string,
+		onChange: PropTypes.func,
+	}
+
+	render () {
+		return (
+			<Select
+				clearable={false}
+				value={this.state.val}
+				options={[{
+					label: 'false',
+					value: 'false',
+				}, {
+					label: 'true',
+					value: 'true',
+				}]}
+				onChange={(opt) => {
+						this.setState({
+							val: opt.value,
+						})
+						this.props.onChange(opt.value)
+					}
+				}
 				style={{ marginTop: '5px' }}
 			/>
 		)
@@ -71,6 +109,7 @@ class SendTransactionScreen extends PersistentForm {
 			copyDisabled: true,
 		}
 
+		this.timerID = null
 		PersistentForm.call(this)
 	}
 
@@ -184,16 +223,27 @@ class SendTransactionScreen extends PersistentForm {
 				})
 			}
 		}
-		const field = (
-			<SendTransactionField
-				key={Math.random()}
-				ind={ind}
-				disabled={!isInput}
-				placeholder={params.type}
-				defaultValue={defaultValue}
-				onChange={e => isInput ? this.handleInputChange(e.target.value, params.type, ind) : null}
-			/>
-		)
+		let field
+		if (params.type === 'bool' && isInput) {
+			field = (
+				<SendTransactionInputSelect
+					ind={ind}
+					defaultValue={defaultValue}
+					onChange={val => this.handleInputChange(val, params.type, ind)}
+				/>
+			)
+		} else {
+			field = (
+				<SendTransactionField
+					key={Math.random()}
+					ind={ind}
+					disabled={!isInput}
+					placeholder={params.type}
+					defaultValue={defaultValue}
+					onChange={val => isInput ? this.handleInputChange(val, params.type, ind) : null}
+				/>
+			)
+		}
 		const fieldObj = (
 			<div key={`method_label_container_${ind}`}>
 				{label}
