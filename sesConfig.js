@@ -99,60 +99,23 @@ const config = {
         }
       })`)
     },
-    // // saving on iframes
-    // "stream": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "readable-stream": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "through2": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "eth-json-rpc-filters": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "safe-buffer": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "babel-runtime": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "debounce-stream": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "url": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "end-of-stream": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "pump": {
-    //   shareRealmWithChildren: true,
-    // },
-    // "debounce-stream": {
-    //   shareRealmWithChildren: true,
-    // },
   },
   dependencies: {
 
   }
 }
-
-// setOnDepConfig({ shareRealmWithChildren: true }, ["eth-keyring-controller","eth-sig-util","ethereumjs-util","keccak","stream"])
-// setOnDepConfig({ shareRealmWithChildren: true }, ["eth-keyring-controller","eth-sig-util","ethereumjs-abi"])
-
-function setOnDepConfig (value, depPath) {
-  let configPart = config.dependencies
-  const lastKey = depPath.slice(-1)[0]
-  depPath.slice(0,-1).forEach((pathPart) => {
-    // grab next configPart and make sure it exists
-    const container = configPart[pathPart] || {}
-    configPart[pathPart] = container
-    // continue on this new container
-    configPart = container
-  })
-  configPart[lastKey] = value
-}
+//
+// function setOnDepConfig (value, depPath) {
+//   let configPart = config.dependencies
+//   const lastKey = depPath.slice(-1)[0]
+//   depPath.slice(0,-1).forEach((pathPart) => {
+//     // grab next configPart and make sure it exists
+//     const container = configPart[pathPart] || {}
+//     configPart[pathPart] = container
+//     // continue on this new container
+//     configPart = container
+//   })
+//   configPart[lastKey] = value
+// }
 
 return config
