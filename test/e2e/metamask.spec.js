@@ -11,11 +11,11 @@ const { menus, screens, elements, NETWORKS } = require('./elements')
 const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
 const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
 const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
-const createdAccounts =[]
+const createdAccounts = []
 const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 
 describe('Metamask popup page', async function () {
-  let driver, accountAddress, tokenAddress, extensionId
+  let driver, tokenAddress, extensionId
   let password = '123456789'
   const newPassword = {
     correct: 'abcDEF123!@#',
@@ -256,7 +256,7 @@ describe('Metamask popup page', async function () {
   })
   describe('Import Account', () => {
 
-    it('opens import account menu', async function () {
+    it('Open import account menu', async function () {
       await setProvider(NETWORKS.POA)
       await delay(2000)
       const menu = await waitUntilShowUp(menus.account.menu)
@@ -267,7 +267,7 @@ describe('Metamask popup page', async function () {
       assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
     })
 
-    it('imports account', async function () {
+    it('Imports account', async function () {
       const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
       await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
       const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
@@ -275,8 +275,8 @@ describe('Metamask popup page', async function () {
       assert.equal(await button.getText(), 'Import', 'button has incorrect name')
       const menu = await waitUntilShowUp(menus.account.menu)
       await menu.click()
-      await waitUntilShowUp(menus.account.labelImported)
-      const label = (await driver.findElements(menus.account.labelImported))[0]
+      await waitUntilShowUp(menus.account.label)
+      const label = (await driver.findElements(menus.account.label))[0]
       assert.equal(await label.getText(), 'IMPORTED')
       await menu.click()
     })
@@ -298,46 +298,15 @@ describe('Metamask popup page', async function () {
       console.log(await balance.getText())
       assert.equal(await balance.getText(), '0.001 WETH', 'token isnt\' auto-detected')
     })
-    it('opens delete imported account screen', async function () {
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      const item = await waitUntilShowUp(menus.account.delete)
-      await item.click()
-      const deleteImportedAccountTitle = await waitUntilShowUp(screens.deleteImportedAccount.title)
-      assert.equal(await deleteImportedAccountTitle.getText(), screens.deleteImportedAccount.titleText)
-    })
 
-    it('doesn\'t remove imported account with \'No\' button', async function () {
-      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.no)
-      assert.equal(await button.getText(), 'No', 'button has incorrect name')
-      await click(button)
-      const settingsTitle = await waitUntilShowUp(screens.settings.title)
-      assert.equal(await settingsTitle.getText(), 'Settings')
-      // check, that imported account still exists
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      const importedLabel = await waitUntilShowUp(menus.account.labelImported)
-      assert.equal(await importedLabel.getText(), 'IMPORTED')
-    })
-
-    it('opens delete imported account screen again', async function () {
-      const menu = await waitUntilShowUp(menus.account.delete)
-      await menu.click()
-    })
-
-    it('removes imported account with \'Yes\' button', async function () {
-      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
-      assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
-      await click(button)
-      const settingsTitle = await waitUntilShowUp(screens.settings.title)
-      assert.equal(await settingsTitle.getText(), 'Settings')
-      // check, that imported account is removed
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      await waitUntilShowUp(menus.account.labelImported, 25)
-      const importedAccounts = await driver.findElements(menus.account.labelImported)
-      assert.ok(importedAccounts.length === 0)
-      await menu.click()
+    it('Check Sokol balance', async function () {
+      await setProvider(NETWORKS.POA)
+      await delay(2000)
+      const balanceField = await waitUntilShowUp(screens.main.balance)
+      const balance = await balanceField.getText()
+      console.log('Account = 0xf4702CbA917260b2D6731Aea6385215073e8551b')
+      console.log('Balance = ' + balance)
+      assert.equal(parseFloat(balance) > 0.001, true, 'Balance of account 0xf4702CbA917260b2D6731Aea6385215073e8551b TOO LOW !!! Please refill with Sokol eth!!!!')
     })
 
   })
@@ -353,7 +322,7 @@ describe('Metamask popup page', async function () {
         await setProvider(NETWORKS.ROPSTEN)
         const menu = await waitUntilShowUp(menus.account.menu)
         await menu.click()
-        const item = await waitUntilShowUp(menus.account.import)
+        const item = await waitUntilShowUp(menus.account.import2)
         await item.click()
         const importAccountTitle = await waitUntilShowUp(screens.importAccounts.title)
         assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
@@ -531,9 +500,9 @@ describe('Metamask popup page', async function () {
         const stringValue = 'POA network'
 
         it("Select method 'returnString'", async function () {
+          await delay(2000)
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
-          await delay(2000)
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
           await list[14].click()
@@ -835,19 +804,18 @@ describe('Metamask popup page', async function () {
     })
     describe('Choose Contract Executor', () => {
 
-      const executor2=  '0xf4702CbA917260b2D6731Aea6385215073e8551b'
-      it('title is displayed and correct', async function () {
+      it('Title is displayed and correct', async function () {
         await delay(5000)
         const title = await waitUntilShowUp(screens.chooseContractExecutor.title)
         assert.notEqual(title, false, 'title isn\'t displayed')
         assert.equal(await title.getText(), screens.chooseContractExecutor.titleText, 'incorrect text')
       })
 
-      it('two accounts displayed', async function () {
+      it('Two accounts displayed', async function () {
         const accs = await waitUntilShowUp(screens.chooseContractExecutor.account)
         assert.notEqual(accs, false, 'accounts aren\'t displayed')
         const accounts = await driver.findElements(screens.chooseContractExecutor.account)
-        assert.equal(accounts.length, 3, "number of accounts isn't 2")
+        assert.equal(accounts.length, 4, "number of accounts isn't 2")
       })
 
       it("Click arrow button leads to 'Execute Method' screen ", async function () {
@@ -896,13 +864,21 @@ describe('Metamask popup page', async function () {
         await delay(3000)
         const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
         assert.notEqual(reject, false, "button reject isn't displayed")
+      })
 
+      it("Button 'Buy Ether' is displayed and enabled", async function () {
+        const button = await waitUntilShowUp(screens.confirmTransaction.button.buyEther)
+        await button.click()
+        const title = await waitUntilShowUp(screens.buyEther.title)
+        assert.equal(await title.getText(), 'Buy POA', "screen 'Buy Ether' has incorrect title text")
+        const arrow = await waitUntilShowUp(elements.buttonArrow)
+        await arrow.click()
       })
 
       it("Click button 'Reject' open contract's account screen", async function () {
         const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
         await reject.click()
-        //await delay(2000)
+        // await delay(2000)
         const buttonExecute = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
         assert.notEqual(buttonExecute, false, "contract's account hasn't opened")
       })
@@ -914,17 +890,17 @@ describe('Metamask popup page', async function () {
         await arrow.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
-        assert.equal((await address.getText()).toUpperCase(),createdAccounts[0], "executors account isn't opened")
+        assert.equal((await address.getText()).toUpperCase(), createdAccounts[0], "executors account isn't opened")
       })
 
      it('Switch to contract account ', async function () {
         const accountMenu = await waitUntilShowUp(menus.account.menu)
         await accountMenu.click()
-        const item = await waitUntilShowUp(menus.account.account3)
+        const item = await waitUntilShowUp(menus.account.account4)
         await item.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
-        assert.equal((await address.getText()).toUpperCase(),contractSokol.toUpperCase(), "contract's account isn't opened")
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract's account isn't opened")
       })
 
       it("Confirm transaction: button 'Reject All' leads to executor's account screen", async function () {
@@ -933,41 +909,30 @@ describe('Metamask popup page', async function () {
         await rejectAll.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
-        assert.equal((await address.getText()).toUpperCase(),contractSokol.toUpperCase(), "executors account isn't opened")
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "executors account isn't opened")
       })
 
       it("Confirm transaction: button 'Submit' leads to executor's account screen", async function () {
-        assert.equal(await executeTransferMethod(1), true, "can't execute the method 'transfer'")
+        assert.equal(await executeTransferMethod(2), true, "can't execute the method 'transfer'")
         await delay(2000)
-        const  button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
+        const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
         await button.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
-        assert.equal((await address.getText()).toUpperCase(),contractSokol.toUpperCase(), "executors account isn't opened")
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "executors account isn't opened")
       })
 
-
-      it("Stop", async function () {
-        throw("Stop!")
-        const balanceField = await waitUntilShowUp(screens.main.balance)
-        await delay(2000)
-        const balance = await balanceField.getText()
-        console.log('Account = ' + account)
-        console.log('Balance = ' + balance)
-        assert.equal(parseFloat(balance) > 0.001, true, 'Balance of account ' + account + ' TOO LOW !!! Please refill with Sokol eth!!!!')
-
-      })
-
-      it("Label 'CONTRACT' present", async function () {
+     it("Label 'CONTRACT' present", async function () {
         const menu = await waitUntilShowUp(menus.account.menu)
         await menu.click()
-        await waitUntilShowUp(menus.account.labelImported)
-        const label = (await driver.findElements(menus.account.labelImported))[0]
+        await waitUntilShowUp(menus.account.label)
+        const label = (await driver.findElements(menus.account.label))[1]
         assert.equal(await label.getText(), 'CONTRACT', 'label incorrect')
       })
       it('Delete imported account', async function () {
-        const item = await waitUntilShowUp(menus.account.delete)
-        await item.click()
+        await waitUntilShowUp(menus.account.delete)
+        const items = await driver.findElements(menus.account.delete)
+        await items[1].click()
         const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
         await button.click()
         const buttonArrow = await waitUntilShowUp(screens.settings.buttons.arrow)
@@ -977,10 +942,53 @@ describe('Metamask popup page', async function () {
       })
     })
   })
+  describe('Delete Imported Account', () => {
 
+    it('Open delete imported account screen', async function () {
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      const item = await waitUntilShowUp(menus.account.delete)
+      await item.click()
+      const deleteImportedAccountTitle = await waitUntilShowUp(screens.deleteImportedAccount.title)
+      assert.equal(await deleteImportedAccountTitle.getText(), screens.deleteImportedAccount.titleText)
+    })
+
+    it("Can't remove imported account with 'No' button", async function () {
+      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.no)
+      assert.equal(await button.getText(), 'No', 'button has incorrect name')
+      await click(button)
+      const settingsTitle = await waitUntilShowUp(screens.settings.title)
+      assert.equal(await settingsTitle.getText(), 'Settings')
+      // check, that imported account still exists
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      const label = await waitUntilShowUp(menus.account.label)
+      assert.equal(await label.getText(), 'IMPORTED')
+    })
+
+    it('Open delete imported account screen again', async function () {
+      const menu = await waitUntilShowUp(menus.account.delete)
+      await menu.click()
+    })
+
+    it("Remove imported account with 'Yes' button", async function () {
+      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+      assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
+      await click(button)
+      const settingsTitle = await waitUntilShowUp(screens.settings.title)
+      assert.equal(await settingsTitle.getText(), 'Settings')
+      // check, that imported account is removed
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      await waitUntilShowUp(menus.account.label, 25)
+      const labels = await driver.findElements(menus.account.label)
+      assert.ok(labels.length === 0)
+      await menu.click()
+    })
+  })
   describe('Sign Data', () => {
 
-    it('simulate sign request ', async function () {
+    it('Simulate sign request ', async function () {
       await setProvider(NETWORKS.LOCALHOST)
       await driver.get('https://danfinlay.github.io/js-eth-personal-sign-examples/')
       const button = await waitUntilShowUp(By.id('ethSignButton'))
@@ -1006,7 +1014,7 @@ describe('Metamask popup page', async function () {
     it('account name is displayed and correct', async function () {
       const name = await waitUntilShowUp(screens.signMessage.accountName)
       assert.notEqual(name, false, 'account name isn\'t displayed')
-      assert.equal(await name.getText(), 'Account 2', 'account name is incorrect')
+      assert.equal(await name.getText(), 'new name', 'account name is incorrect')
     })
 
     it('title is displayed and correct', async function () {
@@ -2890,40 +2898,40 @@ describe('Metamask popup page', async function () {
     return contractInstance.address
   }
 
-  async function executeTransferMethod(executor){
+  async function executeTransferMethod (executor) {
     try {
       const buttonExecute = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
       assert.notEqual(buttonExecute, false, "button doesn't displayed")
       await buttonExecute.click()
-      //Select method transfer
+      // Select method transfer
       const menu = await waitUntilShowUp(screens.executeMethod.selectArrow)
       await menu.click()
       await waitUntilShowUp(screens.executeMethod.items)
       const list = await driver.findElements(screens.executeMethod.items)
       await list[21].click()
-      //Fill out value
+      // Fill out value
       await waitUntilShowUp(screens.executeMethod.fieldParameter)
       const fields = await driver.findElements(screens.executeMethod.fieldParameter)
       assert.notEqual(fields[1], false, "field value isn't displayed")
       await fields[1].sendKeys('1')
-      //Fill out address
+      // Fill out address
       await clearField(fields[0], 100)
       await fields[0].sendKeys(account1)
       assert.notEqual(fields[0], false, "field address isn't displayed")
-      //Click button next
+      // Click button next
       const buttonNext = await waitUntilShowUp(screens.executeMethod.buttonNext)
       assert.notEqual(buttonNext, false, "button 'Next' isn't displayed")
       await buttonNext.click()
-      //Select executor
+      // Select executor
       await waitUntilShowUp(screens.chooseContractExecutor.account)
       const accounts = await driver.findElements(screens.chooseContractExecutor.account)
-      const account = accounts[executor+1]
+      const account = accounts[executor + 1]
       await account.click()
-      //Open confirm transaction
+      // Open confirm transaction
       const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
       await button.click()
       return true
-    } catch (err){
+    } catch (err) {
       return false
     }
   }
