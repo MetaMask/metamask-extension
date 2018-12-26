@@ -976,12 +976,13 @@ describe('Metamask popup page', async function () {
     })
 
     it('Open delete imported account screen again', async function () {
-      const menu = await waitUntilShowUp(menus.account.delete)
-      await menu.click()
+      await waitUntilShowUp(menus.account.delete)
+      const buttons = await driver.findElement(menus.account.delete)
+      assert.notEqual(buttons[0], false, "icon 'remove' isn't displayed")
+      await buttons[0].click()
     })
 
     it("Remove imported account with 'Yes' button", async function () {
-
       const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
       assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
       await click(button)
@@ -996,8 +997,8 @@ describe('Metamask popup page', async function () {
       await menu.click()
     })
   })
-  describe('Sign Data', () => {
 
+  describe('Sign Data', () => {
     it('Simulate sign request ', async function () {
       await setProvider(NETWORKS.LOCALHOST)
       await driver.get('https://danfinlay.github.io/js-eth-personal-sign-examples/')
