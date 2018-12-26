@@ -903,23 +903,23 @@ describe('Metamask popup page', async function () {
         assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract's account isn't opened")
       })
 
-      it("Confirm transaction: button 'Reject All' leads to executor's account screen", async function () {
+      it("Confirm transaction: button 'Reject All' leads to contract's account screen", async function () {
         assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
         const rejectAll = await waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
         await rejectAll.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
-        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "executors account isn't opened")
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
       })
 
-      it("Confirm transaction: button 'Submit' leads to executor's account screen", async function () {
+      it("Confirm transaction: button 'Submit' leads to contract's account screen", async function () {
         assert.equal(await executeTransferMethod(2), true, "can't execute the method 'transfer'")
         await delay(2000)
         const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
         await button.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
-        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "executors account isn't opened")
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
       })
 
      it("Label 'CONTRACT' present", async function () {
