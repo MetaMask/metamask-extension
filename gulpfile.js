@@ -495,7 +495,7 @@ function generateBundler (opts, performBundle) {
   })
 
   if (opts.filename === 'background.js') {
-    opts.prelude = require('sesify').generatePrelude({
+    browserifyOpts.prelude = require('sesify').generatePrelude({
       endowmentsConfig: fs.readFileSync('./sesConfig.js', 'utf8')
     })
   }
