@@ -14,7 +14,7 @@ class SelectedAccount extends Component {
     t: PropTypes.func,
   }
 
-  static propTypes = {    
+  static propTypes = {
     selectedAddress: PropTypes.string,
     selectedIdentity: PropTypes.object,
     network: PropTypes.string,
@@ -22,7 +22,7 @@ class SelectedAccount extends Component {
 
   render () {
     const { t } = this.context
-    const { selectedAddress, selectedIdentity, network } = this.props    
+    const { selectedAddress, selectedIdentity, network } = this.props
     let checksummedAddress = checksumAddress(selectedAddress)
     if (isRskNetwork(network)) {
       checksummedAddress = checksummedAddress.toLowerCase()

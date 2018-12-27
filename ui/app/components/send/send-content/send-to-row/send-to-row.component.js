@@ -27,11 +27,9 @@ export default class SendToRow extends Component {
   }
 
   handleToChange (to, nickname = '', toError, network) {
-
-    if (isRskNetwork(network)){
-      to = to.toLowerCase();
+    if (isRskNetwork(network)) {
+      to = to.toLowerCase()
     }
-
     const { hasHexData, updateSendTo, updateSendToError, updateGas } = this.props
     const toErrorObject = getToErrorObject(to, toError, hasHexData)
     updateSendTo(to, nickname)
@@ -53,7 +51,6 @@ export default class SendToRow extends Component {
     } = this.props
 
     return (
-      
       <SendRowWrapper
         errorType={'to'}
         label={`${this.context.t('to')}: `}

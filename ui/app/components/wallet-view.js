@@ -130,7 +130,7 @@ WalletView.prototype.render = function () {
   // temporary logs + fake extra wallets
 
   let checksummedAddress = checksumAddress(selectedAddress)
-  if (isRskNetwork(network)){
+  if (isRskNetwork(network)) {
     checksummedAddress = checksumAddress(selectedAddress).toLowerCase()
   }
 
@@ -198,7 +198,7 @@ WalletView.prototype.render = function () {
         className: classnames({
           'wallet-view__address__pressed': this.state.copyToClipboardPressed,
         }),
-        onClick: () => {          
+        onClick: () => {
           copyToClipboard(checksummedAddress)
           this.setState({ hasCopied: true })
           setTimeout(() => this.setState({ hasCopied: false }), 3000)
