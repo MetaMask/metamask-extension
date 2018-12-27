@@ -1024,6 +1024,7 @@ describe('Metamask popup page', async function () {
     it('simulate sign request ', async function () {
       await setProvider(NETWORKS.LOCALHOST)
       await driver.get('https://danfinlay.github.io/js-eth-personal-sign-examples/')
+      await delay(5000)
       const button = await waitUntilShowUp(By.id('ethSignButton'))
       await button.click()
     })
