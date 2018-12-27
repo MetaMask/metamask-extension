@@ -10,6 +10,7 @@
 - [#5932](https://github.com/MetaMask/metamask-extension/pull/5932): Fix displayed time and date in the activity log. Remove vreme library, add luxon library.
 - [#5924](https://github.com/MetaMask/metamask-extension/pull/5924): transactions - throw an error if a transaction is generated while the network is loading
 - [#5893](https://github.com/MetaMask/metamask-extension/pull/5893): Add loading network screen
+- [#5973] (https://github.com/MetaMask/metamask-extension/pull/5973): Fix incorrectly showing checksums on non-ETH blockchains (issue 5838)
 
 ## 5.2.2 Wed Dec 12 2018
 
