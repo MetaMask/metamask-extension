@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import PersistentForm from '../../../lib/persistent-form'
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
-import SendError from './send-error'
+import ErrorComponent from '../error'
 import Select from 'react-select'
 import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
@@ -132,10 +132,7 @@ class SendTransactionScreen extends PersistentForm {
 			<div className="send-screen flex-column flex-grow">
 				<SendProfile />
 				<SendHeader title="Execute Method" />
-				<SendError
-					error={error}
-					onClose={() => { this.props.hideWarning() }}
-				/>
+				<ErrorComponent error={error} />
 				{this.props.toastMsg ? <div className="toast">{this.props.toastMsg}</div> : null}
 				<div style={{ padding: '0 30px' }}>
 					<Select

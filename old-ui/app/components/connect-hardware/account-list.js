@@ -4,24 +4,11 @@ import ethNetProps from 'eth-net-props'
 import { default as Select } from 'react-select'
 import Button from '../../../../ui/app/components/button'
 import { capitalizeFirstLetter } from '../../../../app/scripts/lib/util'
-import { isLedger } from './util'
+import { isLedger, getHdPaths } from './util'
 
 class AccountList extends Component {
     constructor (props, context) {
         super(props)
-    }
-
-    getHdPaths = () => {
-      return [
-        {
-          label: `Ledger Live`,
-          value: `m/44'/60'/0'/0/0`,
-        },
-        {
-          label: `Legacy (MEW / MyCrypto)`,
-          value: `m/44'/60'/0'`,
-        },
-      ]
     }
 
     goToNextPage = () => {
@@ -40,7 +27,7 @@ class AccountList extends Component {
     renderHdPathSelector = () => {
       const { onPathChange, selectedPath } = this.props
 
-      const options = this.getHdPaths()
+      const options = getHdPaths()
       return (
         <div>
           <h3 className="hw-connect__hdPath__title">Select HD Path</h3>

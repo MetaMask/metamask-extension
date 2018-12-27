@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import SendProfile from './send-profile'
 import ExecutorCell from './executor-cell'
 import SendHeader from './send-header'
-import SendError from './send-error'
+import ErrorComponent from '../error'
 import actions from '../../../../ui/app/actions'
 import { ifContractAcc } from '../../util'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
@@ -39,12 +39,7 @@ class ChooseContractExecutor extends Component {
 			<div className="send-screen flex-column flex-grow">
 				<SendProfile />
 				<SendHeader title="Choose contract executor" back={() => this.back()} />
-				<SendError
-					error={error}
-					onClose={() => {
-						this.props.hideWarning()
-					}}
-				/>
+				<ErrorComponent error={error} />
 				<div style={{ padding: '0 30px' }}>
 					<span className="hw-connect__header__msg">Contract transaction will be executed from selected account</span>
 				</div>

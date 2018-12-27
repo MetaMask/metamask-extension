@@ -197,15 +197,15 @@ class ConnectHardwareForm extends Component {
     }
   }
 
-  unlockHardwareWalletAccounts = (accs, device) => {
-    return accs.reduce((promise, acc, ind) => {
+  unlockHardwareWalletAccounts = (accounts, device) => {
+    return accounts.reduce((promise, account) => {
       return promise
         .then((result) => {
           return new Promise((resolve, reject) => {
-            resolve(this.props.unlockHardwareWalletAccount(acc, device))
+            resolve(this.props.unlockHardwareWalletAccount(account, device))
           })
         })
-        .catch(console.error)
+        .catch(e => this.setState({ error: (e.message || e.toString()) }))
     }, Promise.resolve())
   }
 

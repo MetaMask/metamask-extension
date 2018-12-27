@@ -18,7 +18,7 @@ BigNumber.config({ ERRORS: false })
 const log = require('loglevel')
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
-import SendError from './send-error'
+import ErrorComponent from '../error'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
@@ -97,7 +97,7 @@ SendTransactionScreen.prototype.render = function () {
       }),
 
       // error message
-      h(SendError, {
+      h(ErrorComponent, {
         error,
       }),
 
