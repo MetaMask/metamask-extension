@@ -29,6 +29,7 @@ module.exports = {
       info: By.css('li.dropdown-menu-item:nth-child(4)'),
     },
     account: {
+      item: By.className('dropdown-menu-item'),
       account1: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(2) > span'),
       account2: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
       menu: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div'),
@@ -50,6 +51,17 @@ module.exports = {
     },
   },
   screens: {
+    hdWallet: {
+      buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
+      error: By.className('error'),
+      title: By.className('section-title flex-row flex-center'),
+      buttonConnect: {
+        enabled: By.className('hw-connect__connect-btn'),
+        disabled: By.className('hw-connect__connect-btn disabled'),
+      },
+      image: By.className('hw-connect__btn__img'),
+      imageSelected: By.className('hw-connect__btn selected'),
+    },
     chooseContractExecutor: {
       title: By.className('flex-center send-header'),
       titleText: 'Choose contract executor',
