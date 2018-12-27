@@ -142,7 +142,7 @@ describe('SendToRow Component', function () {
       assert.equal(SendToRow.prototype.handleToChange.callCount, 1)
       assert.deepEqual(
         SendToRow.prototype.handleToChange.getCall(0).args,
-        ['mockNewTo', 'mockNewNickname', 'mockToError']
+        ['mockNewTo', 'mockNewNickname', 'mockToError', 'mockNetwork' ]
       )
     })
   })
