@@ -492,10 +492,13 @@ function generateBundler (opts, performBundle) {
     // plugin: 'sesify',
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
-    prelude: require('sesify').generatePrelude({
-      endowmentsConfig: fs.readFileSync('./sesConfig.js', 'utf8')
-    }),
   })
+
+  if (opts.filename === 'background.js') {
+    opts.prelude = require('sesify').generatePrelude({
+      endowmentsConfig: fs.readFileSync('./sesConfig.js', 'utf8')
+    })
+  }
 
   if (!opts.buildLib) {
     browserifyOpts['entries'] = [opts.filepath]
