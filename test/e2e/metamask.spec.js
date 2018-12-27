@@ -12,7 +12,7 @@ const { menus, screens, elements, NETWORKS } = require('./elements')
 const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
 const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
 const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
-const createdAccounts = []
+const accountsWallet = []
 const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 
 describe('Metamask popup page', async function () {
@@ -147,9 +147,9 @@ describe('Metamask popup page', async function () {
 
     it("Account's address is displayed and has length 20 symbols", async () => {
       const field = await waitUntilShowUp(screens.main.address)
-      createdAccounts.push((await field.getText()).toUpperCase())
-      console.log(createdAccounts[0])
-      assert.notEqual(createdAccounts[0].length, 20, "address isn't displayed")
+      accountsWallet.push((await field.getText()).toUpperCase())
+      console.log(accountsWallet[0])
+      assert.notEqual(accountsWallet[0].length, 20, "address isn't displayed")
     })
     it('Check clipboard buffer', async function () {
       const text = clipboardy.readSync()
@@ -198,9 +198,9 @@ describe('Metamask popup page', async function () {
 
     it("Account's address is displayed and has length 20 symbols", async () => {
       const field = await waitUntilShowUp(screens.main.address)
-      createdAccounts.push((await field.getText()).toUpperCase())
-      console.log(createdAccounts[1])
-      assert.notEqual(createdAccounts[1].length, 20, "address isn't displayed")
+      accountsWallet.push((await field.getText()).toUpperCase())
+      console.log(accountsWallet[1])
+      assert.notEqual(accountsWallet[1].length, 20, "address isn't displayed")
     })
 
     it('logs out of the vault', async () => {
@@ -230,7 +230,7 @@ describe('Metamask popup page', async function () {
     it('checks QR code address is the same as account details address', async () => {
       const field = await waitUntilShowUp(screens.QRcode.address)
       const text = await field.getText()
-      assert.equal(text.toUpperCase(), createdAccounts[1], 'QR address doesn\'t match')
+      assert.equal(text.toUpperCase(), accountsWallet[1], 'QR address doesn\'t match')
     })
 
     it('copy icon is displayed and clickable', async () => {
@@ -281,6 +281,7 @@ describe('Metamask popup page', async function () {
     it('Imports account', async function () {
       const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
       await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
+      accountsWallet.push('0xf4702CbA917260b2D6731Aea6385215073e8551b'.toUpperCase())
       const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
       await click(button)
       assert.equal(await button.getText(), 'Import', 'button has incorrect name')
@@ -322,7 +323,7 @@ describe('Metamask popup page', async function () {
 
   })
   describe('Import Contract account', async () => {
-    const contractSokol = '0x215b2ab35749e5a9f3efe890de602fb9844e842f'
+    const contractSokol = '0x61449bb37db034b2394cd62da545611f71cf54d5'
     console.log('Contract ' + contractSokol + ' , Sokol')
     const wrongAddress = '0xB87b6077D59B01Ab9fa8cd5A1A21D02a4d60D35'
     const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
@@ -404,7 +405,7 @@ describe('Metamask popup page', async function () {
       it('ABI is fetched ', async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
         abiClipboard = await field.getText()
-        assert.equal(abiClipboard.length, 4457, "ABI isn't fetched")
+        assert.equal(abiClipboard.length, 4927, "ABI isn't fetched")
       })
 
       it('icon copy is displayed for ABI ', async function () {
@@ -455,6 +456,7 @@ describe('Metamask popup page', async function () {
     })
 
     describe('Execute Method screen', () => {
+      const amountMethods = 25
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
       describe("Check UI and button's functionality", () => {
 
@@ -497,8 +499,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[3].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[6].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it("Button 'Call data' is displayed and disabled", async function () {
@@ -560,8 +562,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[14].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[17].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Fill out input parameter field ', async function () {
@@ -602,8 +604,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[5].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[8].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Select value TRUE from dropdown menu', async function () {
@@ -677,8 +679,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[7].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[10].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Fill out input parameter field ', async function () {
@@ -723,8 +725,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[17].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[20].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Fill out input parameter field ', async function () {
@@ -770,8 +772,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[10].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[13].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Fill out input parameter field ', async function () {
@@ -814,8 +816,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[21].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[24].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it("Button 'Copy ABI encoded' is displayed", async function () {
@@ -919,11 +921,20 @@ describe('Metamask popup page', async function () {
         assert.equal(await title.getText(), screens.chooseContractExecutor.titleText, 'incorrect text')
       })
 
-      it('Two accounts displayed', async function () {
+      it('Three accounts are displayed', async function () {
         const accs = await waitUntilShowUp(screens.chooseContractExecutor.account)
-        assert.notEqual(accs, false, 'accounts aren\'t displayed')
+        assert.notEqual(accs, false, "accounts aren't displayed")
         const accounts = await driver.findElements(screens.chooseContractExecutor.account)
-        assert.equal(accounts.length, 4, "number of accounts isn't 2")
+        assert.equal(accounts.length, 4, "number of accounts isn't 3")
+      })
+
+      it("Owner's account first in the list of executors", async function () {
+        const accs = await waitUntilShowUp(screens.chooseContractExecutor.addressExecutor)
+        assert.notEqual(accs, false, "addresses aren't displayed")
+        const addresses = await driver.findElements(screens.chooseContractExecutor.addressExecutor)
+        const address = await addresses[2].getText()
+        const souldBe = accountsWallet[2].slice(0, 10) + '...' + accountsWallet[2].slice(accountsWallet[2].length - 4, accountsWallet[2].length)
+        assert.equal(address.toUpperCase(), souldBe, "owner isn't first in the list")
       })
 
       it("Click arrow button leads to 'Execute Method' screen ", async function () {
@@ -950,8 +961,10 @@ describe('Metamask popup page', async function () {
       })
 
       it('User is able to select account', async function () {
+        await delay(2000)
         await waitUntilShowUp(screens.chooseContractExecutor.account)
         const accounts = await driver.findElements(screens.chooseContractExecutor.account)
+        console.log(accounts.length)
         const account = accounts[1]
         await account.click()
         const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
@@ -961,6 +974,7 @@ describe('Metamask popup page', async function () {
       it('User is able to select only one account', async function () {
         const account = (await driver.findElements(screens.chooseContractExecutor.account))[2]
         await account.click()
+        await delay(20000)
         const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
         assert.equal(selected.length, 1, 'more than one accounts are selected')
       })
@@ -998,13 +1012,13 @@ describe('Metamask popup page', async function () {
       })
 
       it("Button arrow leads to executor's account screen", async function () {
-        assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
+        assert.equal(await executeTransferMethod(1), true, "can't execute the method 'transfer'")
         await delay(2000)
         const arrow = await waitUntilShowUp(elements.buttonArrow)
         await arrow.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
-        assert.equal((await address.getText()).toUpperCase(), createdAccounts[0], "executors account isn't opened")
+        assert.equal((await address.getText()).toUpperCase(), accountsWallet[0], "executors account isn't opened")
       })
 
      it('Switch to contract account ', async function () {
@@ -1018,7 +1032,7 @@ describe('Metamask popup page', async function () {
       })
 
       it("Confirm transaction: button 'Reject All' leads to contract's account screen", async function () {
-        assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
+        assert.equal(await executeTransferMethod(1), true, "can't execute the method 'transfer'")
         const rejectAll = await waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
         assert.equal(await rejectAll.getText(), 'Reject All', 'button has incorrect name')
         await rejectAll.click()
@@ -1028,7 +1042,7 @@ describe('Metamask popup page', async function () {
       })
 
       it("Confirm transaction: button 'Submit' leads to contract's account screen", async function () {
-        assert.equal(await executeTransferMethod(2), true, "can't execute the method 'transfer'")
+        assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
         await delay(2000)
         const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
         // assert.equal(await button.getText(), 'Submit', "button has incorrect name")
@@ -3038,7 +3052,7 @@ describe('Metamask popup page', async function () {
       await menu.click()
       await waitUntilShowUp(screens.executeMethod.items)
       const list = await driver.findElements(screens.executeMethod.items)
-      await list[21].click()
+      await list[24].click()
       // Fill out value
       await waitUntilShowUp(screens.executeMethod.fieldParameter)
       const fields = await driver.findElements(screens.executeMethod.fieldParameter)
@@ -3053,6 +3067,7 @@ describe('Metamask popup page', async function () {
       assert.notEqual(buttonNext, false, "button 'Next' isn't displayed")
       await buttonNext.click()
       // Select executor
+      await delay(2000)
       await waitUntilShowUp(screens.chooseContractExecutor.account)
       const accounts = await driver.findElements(screens.chooseContractExecutor.account)
       const account = accounts[executor + 1]
