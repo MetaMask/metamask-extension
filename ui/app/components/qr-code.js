@@ -31,8 +31,7 @@ QrCodeView.prototype.render = function () {
   let address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data)}`
   if (isRskNetwork(network)){
     address = `${isHexPrefixed(data) ? 'rsk:' : ''}${checksumAddress(data).toLowerCase()}`
-  }
-  debugger;
+  }  
   
   const qrImage = qrCode(4, 'M')
 
