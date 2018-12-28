@@ -167,6 +167,10 @@ class ChooseContractExecutor extends Component {
 				this.props.hideLoadingIndication()
 				resolve()
 			})
+			.catch(_ => {
+				this.props.hideLoadingIndication()
+				resolve()
+			})
 		})
 	}
 
