@@ -792,15 +792,12 @@ function connectHardware (deviceName, page, hdPath) {
 function connectHardwareAndUnlockAddress (deviceName, hdPath, addressToUnlock) {
   log.debug(`background.connectHardwareAndUnlockAddress`, deviceName, hdPath, addressToUnlock)
   return (dispatch, getState) => {
-    dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
       background.connectHardwareAndUnlockAddress(deviceName, hdPath, addressToUnlock, (err, accounts) => {
         if (err) {
           log.error(err)
           return reject(err)
         }
-
-        dispatch(actions.hideLoadingIndication())
 
         forceUpdateMetamaskState(dispatch)
         return resolve(accounts)

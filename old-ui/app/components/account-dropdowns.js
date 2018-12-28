@@ -78,6 +78,7 @@ class AccountDropdowns extends Component {
                 })
                 .catch(e => {
                   this.props.actions.displayWarning((e && e.message) || e)
+                  this.props.actions.displayToast(e)
                 })
               }
             }
@@ -431,6 +432,8 @@ const mapDispatchToProps = (dispatch) => {
       connectHardwareAndUnlockAddress: (deviceName, hdPath, address) => {
         return dispatch(actions.connectHardwareAndUnlockAddress(deviceName, hdPath, address))
       },
+      displayToast: (msg) => dispatch(actions.displayToast(msg)),
+      hideToast: () => dispatch(actions.hideToast()),
     },
   }
 }
