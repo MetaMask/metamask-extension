@@ -18,9 +18,9 @@ const config = {
     // required to do its job
     "extensionizer": {
       $: {
-        chrome: typeof chrome !== 'undefined' && chrome,
-        browser: typeof browser !== 'undefined' && browser,
-        window: typeof window !== 'undefined' && window,
+        chrome: typeof chrome !== 'undefined' ? chrome : undefined,
+        browser: typeof browser !== 'undefined' ? browser : undefined,
+        window: typeof window !== 'undefined' ? window : undefined,
       }
     },
     "obs-store": {
@@ -29,6 +29,68 @@ const config = {
           localStorage,
         },
       },
+    },
+    // "eth-json-rpc-middleware": {
+    //   $: {
+    //     setTimeout: window.setTimeout.bind(window),
+    //     clearTimeout: window.clearTimeout.bind(window),
+    //   },
+    // },
+    // "debounce": {
+    //   $: {
+    //     setTimeout: window.setTimeout.bind(window),
+    //     clearTimeout: window.clearTimeout.bind(window),
+    //   },
+    // },
+    // "eth-block-tracker": {
+    //   $: {
+    //     setTimeout: window.setTimeout.bind(window),
+    //     clearTimeout: window.clearTimeout.bind(window),
+    //   },
+    // },
+    // "safe-event-emitter": {
+    //   $: {
+    //     setTimeout: window.setTimeout.bind(window),
+    //     clearTimeout: window.clearTimeout.bind(window),
+    //   },
+    // },
+    // "process": {
+    //   $: {
+    //     setTimeout: window.setTimeout.bind(window),
+    //     clearTimeout: window.clearTimeout.bind(window),
+    //   },
+    // },
+    // "_process": {
+    //   $: {
+    //     setTimeout: window.setTimeout.bind(window),
+    //     clearTimeout: window.clearTimeout.bind(window),
+    //   },
+    // },
+    "eth-json-rpc-infura": {
+      $: {
+        fetch: fetch.bind(window),
+      }
+    },
+    // global object detection
+    "async": {
+      $: generateEndowmentsForFakeGlobal(),
+    },
+    "lodash.flatmap": {
+      $: generateEndowmentsForFakeGlobal(),
+    },
+    "lodash": {
+      $: generateEndowmentsForFakeGlobal(),
+    },
+    "lodash.uniqby": {
+      $: generateEndowmentsForFakeGlobal(),
+    },
+    // feature detection via userAgent
+    "trezor-connect": {
+      $: sesEval(`({
+        navigator: {
+          userAgent: ''
+        }
+      })`)
     },
     // tries to overwrite toString on the prototype, SES dislikes
     "buffer": {
@@ -77,27 +139,6 @@ const config = {
     // "@sentry/core" (name parsed incorrectly)
     "@sentry": {
       skipSes: true,
-    },
-    // global object detection
-    "async": {
-      $: generateEndowmentsForFakeGlobal(),
-    },
-    "lodash.flatmap": {
-      $: generateEndowmentsForFakeGlobal(),
-    },
-    "lodash": {
-      $: generateEndowmentsForFakeGlobal(),
-    },
-    "lodash.uniqby": {
-      $: generateEndowmentsForFakeGlobal(),
-    },
-    // feature detection via userAgent
-    "trezor-connect": {
-      $: sesEval(`({
-        navigator: {
-          userAgent: ''
-        }
-      })`)
     },
   },
   dependencies: {
