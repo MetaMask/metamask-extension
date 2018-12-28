@@ -62,10 +62,7 @@ class AccountDropdowns extends Component {
         {
           closeMenu: () => {},
           onClick: () => {
-            const isSelected = identity.address === this.props.selected
-            if (isSelected) {
-              return
-            }
+            this.props.actions.showAccountDetail(identity.address)
             if (this.ifHardwareAcc(keyring)) {
               const ledger = 'ledger'
               if (keyring.type.toLowerCase().includes(ledger)) {
@@ -79,17 +76,10 @@ class AccountDropdowns extends Component {
                     .catch(e => reject(e))
                   })
                 })
-                .then(_ => {
-                  this.props.actions.showAccountDetail(identity.address)
-                })
                 .catch(e => {
                   this.props.actions.displayWarning((e && e.message) || e)
                 })
-              } else {
-                this.props.actions.showAccountDetail(identity.address)
               }
-            } else {
-              this.props.actions.showAccountDetail(identity.address)
             }
           },
           style: {
