@@ -972,7 +972,7 @@ function signTx (txData) {
         return dispatch(actions.displayWarning(err.message))
       }
     })
-    dispatch(actions.showConfTxPage({}))
+    dispatch(actions.showConfTxPage({isContractExecutionByUser: txData && txData.isContractExecutionByUser}))
   }
 }
 
@@ -2296,10 +2296,13 @@ function onboardingBuyEthView (address) {
   }
 }
 
-function buyEthView (address) {
+function buyEthView (address, isContractExecutionByUser) {
   return {
     type: actions.BUY_ETH_VIEW,
-    value: address,
+    value: {
+      address,
+      isContractExecutionByUser,
+    },
   }
 }
 

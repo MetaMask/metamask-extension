@@ -120,6 +120,7 @@ class ChooseContractExecutor extends Component {
 		const { selectedExecutor } = this.state
 		this.props.setSelectedAddress(selectedExecutor)
 		txParams.from = selectedExecutor
+		txParams.isContractExecutionByUser = true
 		this.props.signTx(txParams)
 	}
 
