@@ -118,26 +118,17 @@ class ConnectHardwareForm extends Component {
           }
 
           const newState = { unlocked: true, device, error: null }
-          // Default to the first account
-          if (this.state.selectedAccount === null) {
-            accounts.forEach((a, i) => {
-              if (a.address.toLowerCase() === this.props.address) {
-                newState.selectedAccount = a.index.toString()
-              }
-            })
-          // If the page doesn't contain the selected account, let's deselect it
-          } else if (!accounts.filter(a => a.index.toString() === this.state.selectedAccount).length) {
-            newState.selectedAccount = null
-          }
-
-          if (isLedger(device)) {
-            if (!this.state.selectedAccounts.length) {
-              newState.selectedAccounts = []
+          if (!isLedger(device)) {
+            // Default to the first account
+            if (this.state.selectedAccount === null) {
               accounts.forEach((a, i) => {
                 if (a.address.toLowerCase() === this.props.address) {
-                  newState.selectedAccounts.push(a.index.toString())
+                  newState.selectedAccount = a.index.toString()
                 }
               })
+            // If the page doesn't contain the selected account, let's deselect it
+            } else if (!accounts.filter(a => a.index.toString() === this.state.selectedAccount).length) {
+              newState.selectedAccount = null
             }
           }
 
