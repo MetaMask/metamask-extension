@@ -265,6 +265,7 @@ describe('Metamask popup page', async function () {
       await button.click()
     })
   })
+
   describe('Connect Hardware Wallet', async function () {
 
     it("Account menu contais item 'Connect HD wallet'", async function () {
@@ -354,6 +355,8 @@ describe('Metamask popup page', async function () {
         const ident = await waitUntilShowUp(screens.main.identicon, 20)
         assert.notEqual(ident, false, "main screen isn't opened")
       })
+  })
+
   describe('Import Account', () => {
 
     it('Open import account menu', async function () {
