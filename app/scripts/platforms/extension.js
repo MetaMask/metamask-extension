@@ -111,7 +111,7 @@ class ExtensionPlatform {
 
   _viewOnEtherScan (txId) {
     if (txId.startsWith('http://')) {
-      global.metamaskController.platform.openWindow({ url: txId })
+      this.openWindow({ url: txId })
     }
   }
 }
