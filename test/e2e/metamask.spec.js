@@ -12,7 +12,7 @@ const { menus, screens, elements, NETWORKS } = require('./elements')
 const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
 const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
 const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
-const createdAccounts = []
+const accountsWallet = []
 const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 
 describe('Metamask popup page', async function () {
@@ -147,9 +147,10 @@ describe('Metamask popup page', async function () {
 
     it("Account's address is displayed and has length 20 symbols", async () => {
       const field = await waitUntilShowUp(screens.main.address)
-      createdAccounts.push((await field.getText()).toUpperCase())
-      console.log(createdAccounts[0])
-      assert.notEqual(createdAccounts[0].length, 20, "address isn't displayed")
+      accountsWallet.push((await field.getText()).toUpperCase())
+      console.log(accountsWallet[0])
+      assert.notEqual(accountsWallet[0].length, 20, "address isn't displayed")
+
     })
     it('Check clipboard buffer', async function () {
       const text = clipboardy.readSync()
@@ -198,9 +199,10 @@ describe('Metamask popup page', async function () {
 
     it("Account's address is displayed and has length 20 symbols", async () => {
       const field = await waitUntilShowUp(screens.main.address)
-      createdAccounts.push((await field.getText()).toUpperCase())
-      console.log(createdAccounts[1])
-      assert.notEqual(createdAccounts[1].length, 20, "address isn't displayed")
+      accountsWallet.push((await field.getText()).toUpperCase())
+      console.log(accountsWallet[1])
+      assert.notEqual(accountsWallet[1].length, 20, "address isn't displayed")
+
     })
 
     it('logs out of the vault', async () => {
@@ -230,7 +232,7 @@ describe('Metamask popup page', async function () {
     it('checks QR code address is the same as account details address', async () => {
       const field = await waitUntilShowUp(screens.QRcode.address)
       const text = await field.getText()
-      assert.equal(text.toUpperCase(), createdAccounts[1], 'QR address doesn\'t match')
+      assert.equal(text.toUpperCase(), accountsWallet[1], 'QR address doesn\'t match')
     })
 
     it('copy icon is displayed and clickable', async () => {
@@ -281,6 +283,7 @@ describe('Metamask popup page', async function () {
     it('Imports account', async function () {
       const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
       await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
+      accountsWallet.push('0xf4702CbA917260b2D6731Aea6385215073e8551b'.toUpperCase())
       const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
       await click(button)
       assert.equal(await button.getText(), 'Import', 'button has incorrect name')
@@ -319,10 +322,9 @@ describe('Metamask popup page', async function () {
       console.log('Balance = ' + balance)
       assert.equal(parseFloat(balance) > 0.001, true, 'Balance of account 0xf4702CbA917260b2D6731Aea6385215073e8551b TOO LOW !!! Please refill with Sokol eth!!!!')
     })
-
   })
   describe('Import Contract account', async () => {
-    const contractSokol = '0x215b2ab35749e5a9f3efe890de602fb9844e842f'
+    const contractSokol = '0x61449bb37db034b2394cd62da545611f71cf54d5'
     console.log('Contract ' + contractSokol + ' , Sokol')
     const wrongAddress = '0xB87b6077D59B01Ab9fa8cd5A1A21D02a4d60D35'
     const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
@@ -404,7 +406,7 @@ describe('Metamask popup page', async function () {
       it('ABI is fetched ', async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
         abiClipboard = await field.getText()
-        assert.equal(abiClipboard.length, 4457, "ABI isn't fetched")
+        assert.equal(abiClipboard.length, 4927, "ABI isn't fetched")
       })
 
       it('icon copy is displayed for ABI ', async function () {
@@ -455,6 +457,7 @@ describe('Metamask popup page', async function () {
     })
 
     describe('Execute Method screen', () => {
+      const amountMethods = 25
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
       describe("Check UI and button's functionality", () => {
 
@@ -497,8 +500,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[3].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[6].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it("Button 'Call data' is displayed and disabled", async function () {
@@ -560,8 +563,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[14].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[17].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Fill out input parameter field ', async function () {
@@ -602,8 +605,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[5].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[8].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Select value TRUE from dropdown menu', async function () {
@@ -677,8 +680,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[7].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[10].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Fill out input parameter field ', async function () {
@@ -723,8 +726,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[17].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[20].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Fill out input parameter field ', async function () {
@@ -765,13 +768,13 @@ describe('Metamask popup page', async function () {
 
         const int256Value = '-1122334455667788991122334455667788'
 
-       it("Select method 'returnInt256'", async function () {
+    it("Select method 'returnInt256'", async function () {
           const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[10].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[13].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it('Fill out input parameter field ', async function () {
@@ -814,8 +817,8 @@ describe('Metamask popup page', async function () {
           await field.click()
           await waitUntilShowUp(screens.executeMethod.items)
           const list = await driver.findElements(screens.executeMethod.items)
-          await list[21].click()
-          assert.equal(list.length, 22, "drop down menu isn't displayed")
+          await list[24].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
         })
 
         it("Button 'Copy ABI encoded' is displayed", async function () {
@@ -919,11 +922,21 @@ describe('Metamask popup page', async function () {
         assert.equal(await title.getText(), screens.chooseContractExecutor.titleText, 'incorrect text')
       })
 
-      it('Two accounts displayed', async function () {
+
+      it('Three accounts are displayed', async function () {
         const accs = await waitUntilShowUp(screens.chooseContractExecutor.account)
-        assert.notEqual(accs, false, 'accounts aren\'t displayed')
+        assert.notEqual(accs, false, "accounts aren't displayed")
         const accounts = await driver.findElements(screens.chooseContractExecutor.account)
-        assert.equal(accounts.length, 4, "number of accounts isn't 2")
+        assert.equal(accounts.length, 4, "number of accounts isn't 3")
+      })
+
+      it("Owner's account first in the list of executors", async function () {
+        const accs = await waitUntilShowUp(screens.chooseContractExecutor.addressExecutor)
+        assert.notEqual(accs, false, "addresses aren't displayed")
+        const addresses = await driver.findElements(screens.chooseContractExecutor.addressExecutor)
+        const address = await addresses[2].getText()
+        const souldBe = accountsWallet[2].slice(0, 10) + '...' + accountsWallet[2].slice(accountsWallet[2].length - 4, accountsWallet[2].length)
+    assert.equal(address.toUpperCase(), souldBe, "owner isn't first in the list")
       })
 
       it("Click arrow button leads to 'Execute Method' screen ", async function () {
@@ -950,8 +963,10 @@ describe('Metamask popup page', async function () {
       })
 
       it('User is able to select account', async function () {
+        await delay(2000)
         await waitUntilShowUp(screens.chooseContractExecutor.account)
         const accounts = await driver.findElements(screens.chooseContractExecutor.account)
+        console.log(accounts.length)
         const account = accounts[1]
         await account.click()
         const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
@@ -961,6 +976,7 @@ describe('Metamask popup page', async function () {
       it('User is able to select only one account', async function () {
         const account = (await driver.findElements(screens.chooseContractExecutor.account))[2]
         await account.click()
+        await delay(20000)
         const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
         assert.equal(selected.length, 1, 'more than one accounts are selected')
       })
@@ -998,13 +1014,15 @@ describe('Metamask popup page', async function () {
       })
 
       it("Button arrow leads to executor's account screen", async function () {
-        assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
+
+        assert.equal(await executeTransferMethod(1), true, "can't execute the method 'transfer'")
         await delay(2000)
         const arrow = await waitUntilShowUp(elements.buttonArrow)
         await arrow.click()
         await delay(2000)
         const address = await waitUntilShowUp(screens.main.address)
-        assert.equal((await address.getText()).toUpperCase(), createdAccounts[0], "executors account isn't opened")
+        assert.equal((await address.getText()).toUpperCase(), accountsWallet[0], "executors account isn't opened")
+
       })
 
      it('Switch to contract account ', async function () {
@@ -1018,7 +1036,7 @@ describe('Metamask popup page', async function () {
       })
 
       it("Confirm transaction: button 'Reject All' leads to contract's account screen", async function () {
-        assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
+        assert.equal(await executeTransferMethod(1), true, "can't execute the method 'transfer'")
         const rejectAll = await waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
         assert.equal(await rejectAll.getText(), 'Reject All', 'button has incorrect name')
         await rejectAll.click()
@@ -1028,7 +1046,8 @@ describe('Metamask popup page', async function () {
       })
 
       it("Confirm transaction: button 'Submit' leads to contract's account screen", async function () {
-        assert.equal(await executeTransferMethod(2), true, "can't execute the method 'transfer'")
+
+        assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
         await delay(2000)
         const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
         // assert.equal(await button.getText(), 'Submit', "button has incorrect name")
@@ -1114,7 +1133,7 @@ describe('Metamask popup page', async function () {
     it('Simulate sign request ', async function () {
       await setProvider(NETWORKS.LOCALHOST)
       await driver.get('https://danfinlay.github.io/js-eth-personal-sign-examples/')
-      const button = await waitUntilShowUp(By.id('ethSignButton'))
+    const button = await waitUntilShowUp(By.id('ethSignButton'))
       await button.click()
     })
 
@@ -1294,8 +1313,8 @@ describe('Metamask popup page', async function () {
       const inputAmmount = await waitUntilShowUp(screens.sendTransaction.field.amount)
       await inputAddress.sendKeys(account2)
       await inputAmmount.sendKeys('10')
-      const button = await waitUntilShowUp(screens.sendTransaction.buttonNext)
-      assert.equal(await button.getText(), 'Next', 'button has incorrect name')
+    const button = await waitUntilShowUp(screens.sendTransaction.buttonNext)
+    assert.equal(await button.getText(), 'Next', 'button has incorrect name')
       await click(button)
     })
 
@@ -1309,9 +1328,9 @@ describe('Metamask popup page', async function () {
       const transactionAmount = await waitUntilShowUp(screens.main.transactionList)
       assert.equal(await transactionAmount.getText(), '10.0')
     })
-  })
+    })
 
-  describe(' Check the filter of emitted events', function () {
+    describe(' Check the filter of emitted events', function () {
 
     it('emit event', async function () {
       await setProvider(NETWORKS.SOKOL)
@@ -1332,10 +1351,10 @@ describe('Metamask popup page', async function () {
       console.log('Account = ' + account)
       console.log('Balance = ' + balance)
       assert.equal(parseFloat(balance) > 0.001, true, 'Balance of account ' + account + ' TOO LOW !!! Please refill with Sokol eth!!!!')
-      await driver.get(eventsEmitter)
-      const button = await waitUntilShowUp(screens.eventsEmitter.button)
-      await button.click()
-      await delay(1000)
+    await driver.get(eventsEmitter)
+    const button = await waitUntilShowUp(screens.eventsEmitter.button)
+    await button.click()
+    await delay(1000)
     })
 
     it('confirms transaction in MetaMask popup', async function () {
@@ -1344,8 +1363,8 @@ describe('Metamask popup page', async function () {
       await delay(5000)
       const gasPrice = await waitUntilShowUp(screens.confirmTransaction.fields.gasPrice)
       await gasPrice.sendKeys('10')
-      const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
-      await click(button)
+    const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
+    await click(button)
     })
 
     it('check  number of events', async function () {
@@ -2503,74 +2522,74 @@ describe('Metamask popup page', async function () {
         counter = 7
     }
     await driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
-  }
+    }
 
-  async function scrollTo (element) {
-    try {
+    async function scrollTo (element) {
+      try {
       await driver.executeScript('arguments[0].scrollIntoView();', element)
       return true
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function click (element) {
-    try {
+    async function click (element) {
+      try {
       await element.sendKeys(Key.RETURN)
       return true
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function clearField (field, number) {
-    await click(field)
-    if (number === undefined) number = 40
-    for (let i = 0; i < number; i++) {
+    async function clearField (field, number) {
+      await click(field)
+      if (number === undefined) number = 40
+      for (let i = 0; i < number; i++) {
       await field.sendKeys(Key.BACK_SPACE)
     }
-  }
+    }
 
-  async function waitUntilDisappear (by, Twait) {
-    if (Twait === undefined) Twait = 10
-    do {
+    async function waitUntilDisappear (by, Twait) {
+      if (Twait === undefined) Twait = 10
+      do {
       if (!await isElementDisplayed(by)) return true
 
     } while (Twait-- > 0)
-    return false
-  }
+      return false
+    }
 
-  async function waitUntilShowUp (by, Twait) {
-    if (Twait === undefined) Twait = 200
-    do {
+    async function waitUntilShowUp (by, Twait) {
+      if (Twait === undefined) Twait = 200
+      do {
       await delay(100)
       if (await isElementDisplayed(by)) return await driver.findElement(by)
     } while (Twait-- > 0)
-    return false
-  }
+      return false
+    }
 
-  async function waitUntilHasValue (element, Twait) {
-    if (Twait === undefined) Twait = 200
-    let text
-    do {
+    async function waitUntilHasValue (element, Twait) {
+      if (Twait === undefined) Twait = 200
+      let text
+      do {
       await delay(100)
       text = await element.getAttribute('value')
       if (text !== '') return text
     } while (Twait-- > 0)
-    return false
-  }
+      return false
+    }
 
 
-  async function isElementDisplayed (by) {
-    try {
+    async function isElementDisplayed (by) {
+      try {
       return await driver.findElement(by).isDisplayed()
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function assertTokensNotDisplayed () {
-    try {
+    async function assertTokensNotDisplayed () {
+      try {
       await delay(800)
       await waitUntilDisappear(elements.loader)
       assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
@@ -2588,64 +2607,64 @@ describe('Metamask popup page', async function () {
       console.log(err)
       return false
     }
-  }
+    }
 
-  async function isDisabledAddInexistentToken (tokenAddress) {
-    await delay(500)
-    try {
+    async function isDisabledAddInexistentToken (tokenAddress) {
+      await delay(500)
+      try {
       const tab = await waitUntilShowUp(screens.main.tokens.menu)
       await click(tab)
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
       let count = 20
       do {
-        await delay(500)
-        const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
-        try {
-          await tab.click()
-        } catch (err) {
-        }
-      }
+      await delay(500)
+      const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
+      try {
+      await tab.click()
+    } catch (err) {
+    }
+    }
       while ((await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false) && (count-- > 0))
     } catch (err) {
     }
-    const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
-    await clearField(fieldAddress)
-    await fieldAddress.sendKeys(tokenAddress)
+      const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
+      await clearField(fieldAddress)
+      await fieldAddress.sendKeys(tokenAddress)
 
-    const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if (await fieldSymbols.isEnabled()) {
+      const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+      if (await fieldSymbols.isEnabled()) {
       console.log('field symbols enabled')
       return false
     }
 
-    const fieldDecimals = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if (await fieldDecimals.isEnabled()) {
+      const fieldDecimals = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+      if (await fieldDecimals.isEnabled()) {
       console.log('field decimals enabled')
       return false
     }
-    const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
-    if (await buttonAdd.isEnabled()) {
+      const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
+      if (await buttonAdd.isEnabled()) {
       console.log('button add enabled')
       return false
     }
-    const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
-    let counter = 20
-    do {
+      const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
+      let counter = 20
+      do {
       await delay(500)
       await click(buttonCancel)
     }
-    while (((await waitUntilShowUp(screens.main.identicon)) === false) && (counter-- > 0))
-    if (counter < 1) {
+      while (((await waitUntilShowUp(screens.main.identicon)) === false) && (counter-- > 0))
+      if (counter < 1) {
       console.log('button cancel doesn\'t work')
       return false
     }
-    return true
-  }
+      return true
+    }
 
-  async function checkBrowserForConsoleErrors () {
-    const ignoredLogTypes = ['WARNING']
-    const ignoredErrorMessages = [
+    async function checkBrowserForConsoleErrors () {
+      const ignoredLogTypes = ['WARNING']
+      const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly
       'Warning: Unknown prop `dataset` on ',
       // Third-party Favicon 404s show up as errors
@@ -2654,382 +2673,382 @@ describe('Metamask popup page', async function () {
       'Warning: It looks like you\'re using a minified copy of the development build of React.',
       // Redux Development build - known issue blocked by test build sys
       'This means that you are running a slower development build of Redux.',
-    ]
-    const browserLogs = await driver.manage().logs().get('browser')
-    const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
-    const errorObjects = errorEntries.map(entry => entry.toJSON())
-    // ignore all errors that contain a message in `ignoredErrorMessages`
-    const matchedErrorObjects = errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
-    return matchedErrorObjects
-  }
+      ]
+      const browserLogs = await driver.manage().logs().get('browser')
+      const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
+      const errorObjects = errorEntries.map(entry => entry.toJSON())
+      // ignore all errors that contain a message in `ignoredErrorMessages`
+      const matchedErrorObjects = errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
+      return matchedErrorObjects
+    }
 
-  async function verboseReportOnFailure (test) {
-    let artifactDir
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    async function verboseReportOnFailure (test) {
+      let artifactDir
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
       artifactDir = `./test-artifacts/chrome/${test.title}`
     } else if (process.env.SELENIUM_BROWSER === 'firefox') {
       artifactDir = `./test-artifacts/firefox/${test.title}`
     }
-    const filepathBase = `${artifactDir}/test-failure`
-    await pify(mkdirp)(artifactDir)
-    // capture screenshot
-    const screenshot = await driver.takeScreenshot()
-    await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
-    // capture dom source
-    const htmlSource = await driver.getPageSource()
-    await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
-  }
+      const filepathBase = `${artifactDir}/test-failure`
+      await pify(mkdirp)(artifactDir)
+      // capture screenshot
+      const screenshot = await driver.takeScreenshot()
+      await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+      // capture dom source
+      const htmlSource = await driver.getPageSource()
+      await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+    }
 
-  async function switchToLastPage () {
-    try {
+    async function switchToLastPage () {
+      try {
       const allHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(allHandles[allHandles.length - 1])
       let counter = 100
       do {
-        await delay(500)
-        if (await driver.getCurrentUrl() !== '') return true
-      }
+      await delay(500)
+      if (await driver.getCurrentUrl() !== '') return true
+    }
       while (counter-- > 0)
       return true
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function switchToFirstPage () {
-    try {
+    async function switchToFirstPage () {
+      try {
       const allHandles = await driver.getAllWindowHandles()
       console.log('allHandles.length ' + allHandles.length)
       await driver.switchTo().window(allHandles[0])
       let counter = 100
       do {
-        await delay(500)
-        if (await driver.getCurrentUrl() !== '') return true
-      }
+      await delay(500)
+      if (await driver.getCurrentUrl() !== '') return true
+    }
       while (counter-- > 0)
       return true
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function waitUntilCurrentUrl () {
-    try {
+    async function waitUntilCurrentUrl () {
+      try {
       let title
       let counter = 20
       do {
-        await delay(500)
-        title = await driver.getCurrentUrl()
-      } while ((title === '') && (counter-- > 0))
+      await delay(500)
+      title = await driver.getCurrentUrl()
+    } while ((title === '') && (counter-- > 0))
       if (counter < 1) return false
       return title
     } catch (err) {
       console.log(err)
       return false
     }
-  }
+    }
 
-  async function createToken (owner, { supply, name, decimals, ticker }, isDelayed) {
+    async function createToken (owner, { supply, name, decimals, ticker }, isDelayed) {
 
-    const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545/'))
-    const abi = [
-      {
-        'constant': true,
-        'inputs': [],
-        'name': 'name',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'string',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': false,
-        'inputs': [
-          {
-            'name': '_spender',
-            'type': 'address',
-          },
-          {
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'approve',
-        'outputs': [
-          {
-            'name': 'success',
-            'type': 'bool',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'nonpayable',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [],
-        'name': 'totalSupply',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': false,
-        'inputs': [
-          {
-            'name': '_from',
-            'type': 'address',
-          },
-          {
-            'name': '_to',
-            'type': 'address',
-          },
-          {
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'transferFrom',
-        'outputs': [
-          {
-            'name': 'success',
-            'type': 'bool',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'nonpayable',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [
-          {
-            'name': '',
-            'type': 'address',
-          },
-        ],
-        'name': 'balances',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [],
-        'name': 'decimals',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'uint8',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [
-          {
-            'name': '',
-            'type': 'address',
-          },
-          {
-            'name': '',
-            'type': 'address',
-          },
-        ],
-        'name': 'allowed',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [
-          {
-            'name': '_owner',
-            'type': 'address',
-          },
-        ],
-        'name': 'balanceOf',
-        'outputs': [
-          {
-            'name': 'balance',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [],
-        'name': 'symbol',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'string',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': false,
-        'inputs': [
-          {
-            'name': '_to',
-            'type': 'address',
-          },
-          {
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'transfer',
-        'outputs': [
-          {
-            'name': 'success',
-            'type': 'bool',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'nonpayable',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [
-          {
-            'name': '_owner',
-            'type': 'address',
-          },
-          {
-            'name': '_spender',
-            'type': 'address',
-          },
-        ],
-        'name': 'allowance',
-        'outputs': [
-          {
-            'name': 'remaining',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'inputs': [
-          {
-            'name': '_initialAmount',
-            'type': 'uint256',
-          },
-          {
-            'name': '_tokenName',
-            'type': 'string',
-          },
-          {
-            'name': '_decimalUnits',
-            'type': 'uint8',
-          },
-          {
-            'name': '_tokenSymbol',
-            'type': 'string',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'nonpayable',
-        'type': 'constructor',
-      },
-      {
-        'anonymous': false,
-        'inputs': [
-          {
-            'indexed': true,
-            'name': '_from',
-            'type': 'address',
-          },
-          {
-            'indexed': true,
-            'name': '_to',
-            'type': 'address',
-          },
-          {
-            'indexed': false,
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'Transfer',
-        'type': 'event',
-      },
-      {
-        'anonymous': false,
-        'inputs': [
-          {
-            'indexed': true,
-            'name': '_owner',
-            'type': 'address',
-          },
-          {
-            'indexed': true,
-            'name': '_spender',
-            'type': 'address',
-          },
-          {
-            'indexed': false,
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'Approval',
-        'type': 'event',
-      },
-    ]
-    const bin = '608060405234801561001057600080fd5b50604051610e30380380610e308339810180604052810190808051906020019092919080518201929190602001805190602001909291908051820192919050505083600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508360008190555082600390805190602001906100b29291906100ee565b5081600460006101000a81548160ff021916908360ff16021790555080600590805190602001906100e49291906100ee565b5050505050610193565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061012f57805160ff191683800117855561015d565b8280016001018555821561015d579182015b8281111561015c578251825591602001919060010190610141565b5b50905061016a919061016e565b5090565b61019091905b8082111561018c576000816000905550600101610174565b5090565b90565b610c8e806101a26000396000f3006080604052600436106100af576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306fdde03146100b4578063095ea7b31461014457806318160ddd146101a957806323b872dd146101d457806327e235e314610259578063313ce567146102b05780635c658165146102e157806370a082311461035857806395d89b41146103af578063a9059cbb1461043f578063dd62ed3e146104a4575b600080fd5b3480156100c057600080fd5b506100c961051b565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156101095780820151818401526020810190506100ee565b50505050905090810190601f1680156101365780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561015057600080fd5b5061018f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506105b9565b604051808215151515815260200191505060405180910390f35b3480156101b557600080fd5b506101be6106ab565b6040518082815260200191505060405180910390f35b3480156101e057600080fd5b5061023f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506106b1565b604051808215151515815260200191505060405180910390f35b34801561026557600080fd5b5061029a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061094b565b6040518082815260200191505060405180910390f35b3480156102bc57600080fd5b506102c5610963565b604051808260ff1660ff16815260200191505060405180910390f35b3480156102ed57600080fd5b50610342600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610976565b6040518082815260200191505060405180910390f35b34801561036457600080fd5b50610399600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061099b565b6040518082815260200191505060405180910390f35b3480156103bb57600080fd5b506103c46109e4565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156104045780820151818401526020810190506103e9565b50505050905090810190601f1680156104315780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561044b57600080fd5b5061048a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610a82565b604051808215151515815260200191505060405180910390f35b3480156104b057600080fd5b50610505600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610bdb565b6040518082815260200191505060405180910390f35b60038054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156105b15780601f10610586576101008083540402835291602001916105b1565b820191906000526020600020905b81548152906001019060200180831161059457829003601f168201915b505050505081565b600081600260003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925846040518082815260200191505060405180910390a36001905092915050565b60005481565b600080600260008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054905082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054101580156107825750828110155b151561078d57600080fd5b82600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254019250508190555082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8110156108da5782600260008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055505b8373ffffffffffffffffffffffffffffffffffffffff168573ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef856040518082815260200191505060405180910390a360019150509392505050565b60016020528060005260406000206000915090505481565b600460009054906101000a900460ff1681565b6002602052816000526040600020602052806000526040600020600091509150505481565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60058054600181600116156101000203166002900480601f016020809104026020016040519081016040528092919081815260200182805460018160011615610100020316600290048015610a7a5780601f10610a4f57610100808354040283529160200191610a7a565b820191906000526020600020905b815481529060010190602001808311610a5d57829003601f168201915b505050505081565b600081600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000205410151515610ad257600080fd5b81600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254039250508190555081600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b6000600260008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050929150505600a165627a7a72305820979c62ae45244f66d713b9272cd9a32a6b8c2ba4778ec9fb58a39dc893cb9cde0029'
+      const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545/'))
+      const abi = [
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'name',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'string',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': false,
+      'inputs': [
+    {
+      'name': '_spender',
+      'type': 'address',
+    },
+    {
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'approve',
+      'outputs': [
+    {
+      'name': 'success',
+      'type': 'bool',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'totalSupply',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': false,
+      'inputs': [
+    {
+      'name': '_from',
+      'type': 'address',
+    },
+    {
+      'name': '_to',
+      'type': 'address',
+    },
+    {
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'transferFrom',
+      'outputs': [
+    {
+      'name': 'success',
+      'type': 'bool',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [
+    {
+      'name': '',
+      'type': 'address',
+    },
+      ],
+      'name': 'balances',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'decimals',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'uint8',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [
+    {
+      'name': '',
+      'type': 'address',
+    },
+    {
+      'name': '',
+      'type': 'address',
+    },
+      ],
+      'name': 'allowed',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [
+    {
+      'name': '_owner',
+      'type': 'address',
+    },
+      ],
+      'name': 'balanceOf',
+      'outputs': [
+    {
+      'name': 'balance',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'symbol',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'string',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': false,
+      'inputs': [
+    {
+      'name': '_to',
+      'type': 'address',
+    },
+    {
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'transfer',
+      'outputs': [
+    {
+      'name': 'success',
+      'type': 'bool',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [
+    {
+      'name': '_owner',
+      'type': 'address',
+    },
+    {
+      'name': '_spender',
+      'type': 'address',
+    },
+      ],
+      'name': 'allowance',
+      'outputs': [
+    {
+      'name': 'remaining',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'inputs': [
+    {
+      'name': '_initialAmount',
+      'type': 'uint256',
+    },
+    {
+      'name': '_tokenName',
+      'type': 'string',
+    },
+    {
+      'name': '_decimalUnits',
+      'type': 'uint8',
+    },
+    {
+      'name': '_tokenSymbol',
+      'type': 'string',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'constructor',
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+    {
+      'indexed': true,
+      'name': '_from',
+      'type': 'address',
+    },
+    {
+      'indexed': true,
+      'name': '_to',
+      'type': 'address',
+    },
+    {
+      'indexed': false,
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'Transfer',
+      'type': 'event',
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+    {
+      'indexed': true,
+      'name': '_owner',
+      'type': 'address',
+    },
+    {
+      'indexed': true,
+      'name': '_spender',
+      'type': 'address',
+    },
+    {
+      'indexed': false,
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'Approval',
+      'type': 'event',
+    },
+      ]
+      const bin = '608060405234801561001057600080fd5b50604051610e30380380610e308339810180604052810190808051906020019092919080518201929190602001805190602001909291908051820192919050505083600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508360008190555082600390805190602001906100b29291906100ee565b5081600460006101000a81548160ff021916908360ff16021790555080600590805190602001906100e49291906100ee565b5050505050610193565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061012f57805160ff191683800117855561015d565b8280016001018555821561015d579182015b8281111561015c578251825591602001919060010190610141565b5b50905061016a919061016e565b5090565b61019091905b8082111561018c576000816000905550600101610174565b5090565b90565b610c8e806101a26000396000f3006080604052600436106100af576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306fdde03146100b4578063095ea7b31461014457806318160ddd146101a957806323b872dd146101d457806327e235e314610259578063313ce567146102b05780635c658165146102e157806370a082311461035857806395d89b41146103af578063a9059cbb1461043f578063dd62ed3e146104a4575b600080fd5b3480156100c057600080fd5b506100c961051b565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156101095780820151818401526020810190506100ee565b50505050905090810190601f1680156101365780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561015057600080fd5b5061018f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506105b9565b604051808215151515815260200191505060405180910390f35b3480156101b557600080fd5b506101be6106ab565b6040518082815260200191505060405180910390f35b3480156101e057600080fd5b5061023f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506106b1565b604051808215151515815260200191505060405180910390f35b34801561026557600080fd5b5061029a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061094b565b6040518082815260200191505060405180910390f35b3480156102bc57600080fd5b506102c5610963565b604051808260ff1660ff16815260200191505060405180910390f35b3480156102ed57600080fd5b50610342600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610976565b6040518082815260200191505060405180910390f35b34801561036457600080fd5b50610399600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061099b565b6040518082815260200191505060405180910390f35b3480156103bb57600080fd5b506103c46109e4565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156104045780820151818401526020810190506103e9565b50505050905090810190601f1680156104315780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561044b57600080fd5b5061048a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610a82565b604051808215151515815260200191505060405180910390f35b3480156104b057600080fd5b50610505600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610bdb565b6040518082815260200191505060405180910390f35b60038054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156105b15780601f10610586576101008083540402835291602001916105b1565b820191906000526020600020905b81548152906001019060200180831161059457829003601f168201915b505050505081565b600081600260003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925846040518082815260200191505060405180910390a36001905092915050565b60005481565b600080600260008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054905082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054101580156107825750828110155b151561078d57600080fd5b82600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254019250508190555082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8110156108da5782600260008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055505b8373ffffffffffffffffffffffffffffffffffffffff168573ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef856040518082815260200191505060405180910390a360019150509392505050565b60016020528060005260406000206000915090505481565b600460009054906101000a900460ff1681565b6002602052816000526040600020602052806000526040600020600091509150505481565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60058054600181600116156101000203166002900480601f016020809104026020016040519081016040528092919081815260200182805460018160011615610100020316600290048015610a7a5780601f10610a4f57610100808354040283529160200191610a7a565b820191906000526020600020905b815481529060010190602001808311610a5d57829003601f168201915b505050505081565b600081600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000205410151515610ad257600080fd5b81600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254039250508190555081600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b6000600260008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050929150505600a165627a7a72305820979c62ae45244f66d713b9272cd9a32a6b8c2ba4778ec9fb58a39dc893cb9cde0029'
 
-    const tokenContract = web3.eth.contract(abi)
-    const contractInstance = await tokenContract.new(supply, name, decimals, ticker, {
+      const tokenContract = web3.eth.contract(abi)
+      const contractInstance = await tokenContract.new(supply, name, decimals, ticker, {
       data: bin, from: owner, gas: 4500000, function (err, tokenContract) {
-        if (err) {
-          console.log('Error of token creation: ' + err)
-        }
-      },
+      if (err) {
+      console.log('Error of token creation: ' + err)
+    }
+    },
     })
-    if (isDelayed) await delay(5000)
-    return contractInstance.address
-  }
+      if (isDelayed) await delay(5000)
+      return contractInstance.address
+    }
 
-  async function executeTransferMethod (executor) {
-    try {
+    async function executeTransferMethod (executor) {
+      try {
       const buttonExecute = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
       assert.notEqual(buttonExecute, false, "button doesn't displayed")
       await buttonExecute.click()
@@ -3038,7 +3057,7 @@ describe('Metamask popup page', async function () {
       await menu.click()
       await waitUntilShowUp(screens.executeMethod.items)
       const list = await driver.findElements(screens.executeMethod.items)
-      await list[21].click()
+      await list[24].click()
       // Fill out value
       await waitUntilShowUp(screens.executeMethod.fieldParameter)
       const fields = await driver.findElements(screens.executeMethod.fieldParameter)
@@ -3053,6 +3072,7 @@ describe('Metamask popup page', async function () {
       assert.notEqual(buttonNext, false, "button 'Next' isn't displayed")
       await buttonNext.click()
       // Select executor
+      await delay(2000)
       await waitUntilShowUp(screens.chooseContractExecutor.account)
       const accounts = await driver.findElements(screens.chooseContractExecutor.account)
       const account = accounts[executor + 1]
@@ -3064,8 +3084,7 @@ describe('Metamask popup page', async function () {
     } catch (err) {
       return false
     }
-  }
+    }
 
-})
-
+    })
 
