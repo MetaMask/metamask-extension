@@ -8,13 +8,46 @@ import ErrorComponent from '../error'
 import actions from '../../../../ui/app/actions'
 import { ifContractAcc } from '../../util'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
+import Web3 from 'web3'
+
+const ownerABI = [{
+	'constant': true,
+	'inputs': [],
+	'name': 'owner',
+	'outputs': [
+		{
+			'name': '',
+			'type': 'address',
+		},
+	],
+	'payable': false,
+	'type': 'function',
+	'stateMutability': 'view',
+}]
+
+const getOwnersABI = [{
+	'constant': true,
+	'inputs': [],
+	'name': 'getOwners',
+	'outputs': [
+		{
+			'name': '',
+			'type': 'address[]',
+		},
+	],
+	'payable': false,
+	'type': 'function',
+	'stateMutability': 'view',
+}]
 
 class ChooseContractExecutor extends Component {
 	constructor (props) {
 		super(props)
 		this.state = {
+			web3: new Web3(global.ethereumProvider),
 			selectedExecutor: '',
 			accountsCells: [],
+			owners: [],
 			nextDisabled: true,
 		}
 	}
@@ -31,6 +64,8 @@ class ChooseContractExecutor extends Component {
 		identities: PropTypes.object,
 		keyrings: PropTypes.array,
 		error: PropTypes.string,
+		showLoadingIndication: PropTypes.func,
+		hideLoadingIndication: PropTypes.func,
 	}
 
 	render () {
@@ -57,7 +92,8 @@ class ChooseContractExecutor extends Component {
 		)
 	}
 
-	componentDidMount () {
+	componentDidMount = async () => {
+		await this.getAllOwners()
 		this.generateListOfAccounts()
 	}
 
@@ -84,28 +120,76 @@ class ChooseContractExecutor extends Component {
 		return buttonContainer
 	}
 
-	generateListOfAccounts () {
+	generateListOfAccounts = () => {
 		const { keyrings, identities } = this.props
 		const accountsCells = []
 		keyrings.forEach((keyring) => {
 			if (!ifContractAcc(keyring)) {
 				keyring.accounts.forEach((address) => {
 					const identity = identities[address]
-					accountsCells.push(
-						<ExecutorCell
-							key={Math.random()}
-							address={address}
-							identity={identity}
-							isAccountSelected={this.isAccountSelected(address)}
-							onClick={(e, isSelected) => this.selectExecutor(e, isSelected, address)}
-						/>
-					)
+					const executorCell = <ExecutorCell
+						key={Math.random()}
+						address={address}
+						identity={identity}
+						isAccountSelected={this.isAccountSelected(address)}
+						onClick={(e, isSelected) => this.selectExecutor(e, isSelected, address)}
+					/>
+					if (this.state.owners.includes(address)) {
+						accountsCells.unshift(executorCell)
+					} else {
+						accountsCells.push(executorCell)
+					}
 				})
 			}
 		})
 
 		this.setState({
 			accountsCells,
+		})
+	}
+
+	getAllOwners = () => {
+		this.props.showLoadingIndication()
+		return new Promise((resolve) => {
+			Promise.all([this.getOwner(), this.getOwners()])
+			.then(([owner, owners]) => {
+				if (!owners) {
+					owners = []
+				}
+				if (owner !== '0x' && !owners.includes(owner)) {
+					owners.push(owner)
+				}
+				this.setState({ owners })
+				this.props.hideLoadingIndication()
+				resolve()
+			})
+			.catch(_ => {
+				this.props.hideLoadingIndication()
+				resolve()
+			})
+		})
+	}
+
+	getOwner = () => {
+		return this.getOwnersCommon('owner', ownerABI)
+	}
+
+	getOwners = () => {
+		return this.getOwnersCommon('getOwners', getOwnersABI)
+	}
+
+	getOwnersCommon = (method, abi) => {
+		const { web3 } = this.state
+		const { txParams } = this.props
+
+		return new Promise((resolve) => {
+			try {
+				web3.eth.contract(abi).at(txParams.to)[method].call((err, output) => {
+					resolve(output)
+				})
+			} catch (e) {
+				resolve('')
+			}
 		})
 	}
 
@@ -168,6 +252,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
 	return {
+		showLoadingIndication: () => dispatch(actions.showLoadingIndication()),
+		hideLoadingIndication: () => dispatch(actions.hideLoadingIndication()),
 		hideWarning: () => dispatch(actions.hideWarning()),
 		signTx: (txParams) => dispatch(actions.signTx(txParams)),
 		setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),

@@ -71,6 +71,7 @@ module.exports = {
       titleText: 'Choose contract executor',
       buttonNext: By.css('.choose-contract-next-button'),
       account: By.className('account-data-subsection flex-row flex-grow'),
+      addressExecutor: By.className('flex-row flex-center'),
       selectedAccount: By.className('executor-cell-container-selected'),
       buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
 
