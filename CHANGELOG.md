@@ -2,9 +2,21 @@
 
 ## Current Master
 
+## 4.10.1 Sat Dec 29 2018
+
+- [#219](https://github.com/poanetwork/nifty-wallet/pull/219): (Feature) Multiple output fields support for contract call
+- [#229](https://github.com/poanetwork/nifty-wallet/pull/229): (Feature) Select for Boolean type input in contract call/execution
+- [#239](https://github.com/poanetwork/nifty-wallet/pull/239): (Feature) Reorder contract executors: owners are first
+- [#233](https://github.com/poanetwork/nifty-wallet/pull/233): (Feature) Copy contract ABI from account menu
+- [#226](https://github.com/poanetwork/nifty-wallet/pull/226): (Feature) Different label for HD account
+- [#238](https://github.com/poanetwork/nifty-wallet/pull/238): (Fix) Unlock back contract account on rejecting/accepting of contract execution transaction
+- [#224](https://github.com/poanetwork/nifty-wallet/pull/224): (Fix) Bytes is not a mandatory input in contract call/execution
+- [#232](https://github.com/poanetwork/nifty-wallet/pull/232): (Fix) *Execute methods* button instead of *Buy*/*Send* for contract type account
+
+
 ## 4.10.0 Tue Dec 04 2018
 
-- [#212](https://github.com/poanetwork/nifty-wallet/pull/212): (Feature) interact with smart-contracts
+- [#212](https://github.com/poanetwork/nifty-wallet/pull/212): (Feature) Interact with smart-contracts
 - [#209](https://github.com/poanetwork/nifty-wallet/pull/209): (Fix) Enhance custom RPC validation
 
 ## 4.9.0 Mon Nov 26 2018
