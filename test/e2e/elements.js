@@ -2,6 +2,7 @@ const webdriver = require('selenium-webdriver')
 const { By } = webdriver
 module.exports = {
   elements: {
+    buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
     errorClose: By.css('.send-screen > div:nth-child(3) > div:nth-child(1)'),
     error: By.className('error'),
     loader: By.css('#app-content > div > div.full-flex-height > img'),
@@ -31,18 +32,21 @@ module.exports = {
     account: {
       account1: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(2) > span'),
       account2: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
+      account3: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > span'),
+      account4: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span'),
       menu: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div'),
-      delete: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.remove'),
+      delete: By.className('remove'),
       createAccount: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
       // import: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(5) > span'),
       import: By.css('li.dropdown-menu-item:nth-child(5) > span:nth-child(1)'),
-      labelImported: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > div.keyring-label'),
+      import2: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(6)'),
+      label: By.className('keyring-label'),
     },
     dot: {
       menu: By.className('account-dropdown'),
       showQRcode: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(3)'),
       exportPR: By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > div > div > div > li:nth-child(5)'),
-
+      item: By.className('dropdown-menu-item'),
     },
     networks: {
       addedCustomRpc: By.className('span custom-rpc'),
@@ -55,25 +59,27 @@ module.exports = {
       titleText: 'Choose contract executor',
       buttonNext: By.css('.choose-contract-next-button'),
       account: By.className('account-data-subsection flex-row flex-grow'),
+      addressExecutor: By.className('flex-row flex-center'),
       selectedAccount: By.className('executor-cell-container-selected'),
       buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
 
     },
     executeMethod: {
+      copy: By.className('clipboard cursor-pointer'),
       title: By.className('flex-center send-header'),
       titleText: 'Execute Method',
       selectArrow: By.className('Select-arrow-zone'),
       item0: By.css('.Select-input > input:nth-child(1)'),
-      item1: By.className('Select-option'),
+      items: By.className('Select-option'),
       item11: By.css('#react-select-2--option-11'),
       buttonCall: By.css('.section > button:nth-child(1)'),
-      fieldOutput: By.css('.input'),
-      fieldParametr1: By.css('.input'),
+      fieldOutput: By.className('input large-input output'),
+      fieldParameter: By.className('input large-input output'),
       buttonNext: By.css('.section > div:nth-child(1) > button:nth-child(2)'),
       buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
       buttonCopyABI: By.className('btn-violet'),
+      buttonExecuteMethod: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[2]/button'),
     },
-
     eventsEmitter: {
       button: By.className('btn btn-default'),
       event: By.className('Toastify__toast-body'),
@@ -194,6 +200,8 @@ module.exports = {
       button: {
         submit: By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > input'),
         reject: By.css('.cancel'),
+        rejectAll: By.css('#pending-tx-form > div:nth-child(4) > button'),
+        buyEther: By.css('#pending-tx-form > div.flex-row.flex-space-around.conf-buttons > button.btn-green'),
       },
       fields: {
         gasLimit: By.css('#pending-tx-form > div:nth-child(1) > div.table-box > div:nth-child(3) > div.cell.value > div > div > input'),
@@ -232,7 +240,7 @@ module.exports = {
       error: By.css('span.error'),
       selectArrow: By.className('Select-arrow-zone'),
       selectType: By.name('import-type-select'),
-      itemContract: By.id('react-select-2--option-2'),
+      itemContract: By.id('react-select-3--option-2'),
       contractAddress: By.id('address-box'),
       contractABI: By.id('abi-box'),
       title: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div.flex-row.flex-center > h2'),
@@ -264,6 +272,7 @@ module.exports = {
       },
     },
     main: {
+      accountAddress: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[1]/flex-column/div[2]/div/span'),
       identicon: By.className('identicon-wrapper select-none'),
       fieldAccountName: By.className('sizing-input'),
       accountName: By.className('font-medium color-forest'),
@@ -296,6 +305,9 @@ module.exports = {
         counter: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
         counterFF: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > span:nth-child(1)'),
       },
+    },
+    buyEther: {
+      title: By.className('flex-center buy-title'),
     },
     info: {
       title: By.className('section-title flex-row flex-center'),
@@ -374,4 +386,5 @@ module.exports = {
     CUSTOM: 'http://test.com',
   },
 }
+
 

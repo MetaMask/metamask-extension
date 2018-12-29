@@ -1,5 +1,10 @@
 const assert = require('assert')
-const { countSignificantDecimals, getCurrentKeyring, ifLooseAcc, ifContractAcc } = require('../../../../old-ui/app/util')
+const {
+  countSignificantDecimals,
+  getCurrentKeyring,
+  ifLooseAcc,
+  ifContractAcc,
+} = require('../../../../old-ui/app/util')
 
 describe('countSignificantDecimals(val, len) function', () => {
   it('returns correct significant decimals', () => {

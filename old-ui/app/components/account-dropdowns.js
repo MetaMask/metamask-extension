@@ -117,8 +117,7 @@ class AccountDropdowns extends Component {
       )
   }
 
-  ifHardwareAcc (address) {
-    const keyring = getCurrentKeyring(address, this.props.network, this.props.keyrings, this.props.identities)
+  ifHardwareAcc (keyring) {
     if (keyring && keyring.type.search('Hardware') !== -1) {
       return true
     }
@@ -130,6 +129,8 @@ class AccountDropdowns extends Component {
       let label
       if (ifContractAcc(keyring)) {
         label = 'CONTRACT'
+      } else if (this.ifHardwareAcc(keyring)) {
+        label = 'HARDWARE'
       } else {
         label = 'IMPORTED'
       }
@@ -287,7 +288,20 @@ class AccountDropdowns extends Component {
           },
           'Copy address to clipboard',
         ),
-        (!this.ifHardwareAcc(selected) && !(ifContractAcc(keyring))) ? h(
+        ifContractAcc(keyring) ? h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: async () => {
+              const { selected } = this.props
+              const contractProps = await this.props.actions.getContract(selected)
+              const abi = contractProps && contractProps.abi
+              copyToClipboard(JSON.stringify(abi))
+            },
+          },
+          'Copy ABI to clipboard',
+        ) : null,
+        (!this.ifHardwareAcc(keyring) && !(ifContractAcc(keyring))) ? h(
           DropdownMenuItem,
           {
             closeMenu: () => {},
@@ -390,6 +404,7 @@ const mapDispatchToProps = (dispatch) => {
       showConnectHWWalletPage: () => dispatch(actions.showConnectHWWalletPage()),
       showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
       showDeleteImportedAccount: (identity) => dispatch(actions.showDeleteImportedAccount(identity)),
+      getContract: (addr) => dispatch(actions.getContract(addr)),
     },
   }
 }

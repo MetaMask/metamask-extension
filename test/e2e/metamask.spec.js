@@ -4,6 +4,7 @@ const mkdirp = require('mkdirp')
 const path = require('path')
 const assert = require('assert')
 const pify = require('pify')
+const clipboardy = require('clipboardy')
 const webdriver = require('selenium-webdriver')
 const { By, Key } = webdriver
 const { delay, buildChromeWebDriver, buildFirefoxWebdriver, installWebExt, getExtensionIdChrome, getExtensionIdFirefox } = require('./func')
@@ -11,11 +12,13 @@ const { menus, screens, elements, NETWORKS } = require('./elements')
 const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
 const account1 = '0x2E428ABd9313D256d64D1f69fe3929C3BE18fD1f'
 const account2 = '0xd7b7AFeCa35e32594e29504771aC847E2a803742'
+const accountsWallet = []
 const eventsEmitter = 'https://vbaranov.github.io/event-listener-dapp/'
 
 describe('Metamask popup page', async function () {
-  let driver, accountAddress, tokenAddress, extensionId
+  let driver, tokenAddress, extensionId
   let password = '123456789'
+  let abiClipboard
   const newPassword = {
     correct: 'abcDEF123!@#',
     short: '123',
@@ -74,8 +77,7 @@ describe('Metamask popup page', async function () {
     })
   })
 
-  describe('Account Creation', async () => {
-    const newAccountName = 'new name'
+  describe('Log In', async () => {
 
     it('title is \'Nifty Wallet\'', async () => {
       const title = await driver.getTitle()
@@ -128,6 +130,9 @@ describe('Metamask popup page', async function () {
       assert.equal(await continueAfterSeedPhrase.getText(), screens.seedPhrase.textButtonIveCopied)
       await click(continueAfterSeedPhrase)
     })
+  })
+  describe('Account Creation', async () => {
+    const newAccountName = 'new name'
 
     it('sets provider type to localhost', async function () {
       await setProvider(NETWORKS.LOCALHOST)
@@ -138,6 +143,18 @@ describe('Metamask popup page', async function () {
       const field = await waitUntilShowUp(screens.main.iconCopy)
       await field.click()
       assert.notEqual(field, false, 'copy icon doesn\'t present')
+    })
+
+    it("Account's address is displayed and has length 20 symbols", async () => {
+      const field = await waitUntilShowUp(screens.main.address)
+      accountsWallet.push((await field.getText()).toUpperCase())
+      console.log(accountsWallet[0])
+      assert.notEqual(accountsWallet[0].length, 20, "address isn't displayed")
+
+    })
+    it('Check clipboard buffer', async function () {
+      const text = clipboardy.readSync()
+      assert.equal(text.length, 42, "address account wasn't copied to clipboard")
     })
 
     it('open  \'Account name\' change dialog', async () => {
@@ -180,10 +197,12 @@ describe('Metamask popup page', async function () {
       await item.click()
     })
 
-    it('shows account address', async function () {
-      await delay(300)
-      const account = await waitUntilShowUp(screens.main.address)
-      accountAddress = await account.getText()
+    it("Account's address is displayed and has length 20 symbols", async () => {
+      const field = await waitUntilShowUp(screens.main.address)
+      accountsWallet.push((await field.getText()).toUpperCase())
+      console.log(accountsWallet[1])
+      assert.notEqual(accountsWallet[1].length, 20, "address isn't displayed")
+
     })
 
     it('logs out of the vault', async () => {
@@ -213,13 +232,18 @@ describe('Metamask popup page', async function () {
     it('checks QR code address is the same as account details address', async () => {
       const field = await waitUntilShowUp(screens.QRcode.address)
       const text = await field.getText()
-      assert.equal(text.toLowerCase(), accountAddress.toLowerCase(), 'QR addres doesn\'t match')
+      assert.equal(text.toUpperCase(), accountsWallet[1], 'QR address doesn\'t match')
     })
 
     it('copy icon is displayed and clickable', async () => {
       const field = await waitUntilShowUp(screens.QRcode.iconCopy)
       await field.click()
       assert.notEqual(field, false, 'copy icon doesn\'t present')
+    })
+
+    it('Check clipboard buffer', async function () {
+      const text = clipboardy.readSync()
+      assert.equal(text.length, 42, "address account wasn't copied to clipboard")
     })
 
     it('close QR code screen by clicking button arrow', async () => {
@@ -243,17 +267,74 @@ describe('Metamask popup page', async function () {
       await button.click()
     })
   })
+  describe('Import Account', () => {
 
+    it('Open import account menu', async function () {
+      await setProvider(NETWORKS.POA)
+      await delay(2000)
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      const item = await waitUntilShowUp(menus.account.import)
+      await item.click()
+      const importAccountTitle = await waitUntilShowUp(screens.importAccounts.title)
+      assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
+    })
+
+    it('Imports account', async function () {
+      const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
+      await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
+      accountsWallet.push('0xf4702CbA917260b2D6731Aea6385215073e8551b'.toUpperCase())
+      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
+      await click(button)
+      assert.equal(await button.getText(), 'Import', 'button has incorrect name')
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      await waitUntilShowUp(menus.account.label)
+      const label = (await driver.findElements(menus.account.label))[0]
+      assert.equal(await label.getText(), 'IMPORTED')
+      await menu.click()
+    })
+
+    it('Auto-detect tokens for POA core network ', async function () {
+      // await setProvider(NETWORKS.POA)
+      const tab = await waitUntilShowUp(screens.main.tokens.menu)
+      await tab.click()
+      const balance = await waitUntilShowUp(screens.main.tokens.balance)
+      console.log(await balance.getText())
+      assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')
+    })
+
+    it.skip('Auto-detect tokens for MAIN core network ', async function () {
+      await setProvider(NETWORKS.MAINNET)
+      await waitUntilShowUp(elements.loader, 25)
+      await waitUntilDisappear(elements.loader, 25)
+      const balance = await waitUntilShowUp(screens.main.tokens.balance)
+      console.log(await balance.getText())
+      assert.equal(await balance.getText(), '0.001 WETH', 'token isnt\' auto-detected')
+    })
+
+    it('Check Sokol balance', async function () {
+      await setProvider(NETWORKS.POA)
+      await delay(2000)
+      const balanceField = await waitUntilShowUp(screens.main.balance)
+      const balance = await balanceField.getText()
+      console.log('Account = 0xf4702CbA917260b2D6731Aea6385215073e8551b')
+      console.log('Balance = ' + balance)
+      assert.equal(parseFloat(balance) > 0.001, true, 'Balance of account 0xf4702CbA917260b2D6731Aea6385215073e8551b TOO LOW !!! Please refill with Sokol eth!!!!')
+    })
+  })
   describe('Import Contract account', async () => {
-    const poaContract = '0xc6468767214c577013a904900ada0a0dd6653bc3'
+    const contractSokol = '0x61449bb37db034b2394cd62da545611f71cf54d5'
+    console.log('Contract ' + contractSokol + ' , Sokol')
     const wrongAddress = '0xB87b6077D59B01Ab9fa8cd5A1A21D02a4d60D35'
     const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
+
     describe('Import Contract', async () => {
       it('opens import account menu', async function () {
         await setProvider(NETWORKS.ROPSTEN)
         const menu = await waitUntilShowUp(menus.account.menu)
         await menu.click()
-        const item = await waitUntilShowUp(menus.account.import)
+        const item = await waitUntilShowUp(menus.account.import2)
         await item.click()
         const importAccountTitle = await waitUntilShowUp(screens.importAccounts.title)
         assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
@@ -265,6 +346,7 @@ describe('Metamask popup page', async function () {
       })
 
       it("Select type 'Contract'", async function () {
+        await delay(1000)
         const field = await waitUntilShowUp(screens.importAccounts.selectArrow)
         await field.click()
         const item = await waitUntilShowUp(screens.importAccounts.itemContract)
@@ -272,7 +354,6 @@ describe('Metamask popup page', async function () {
       })
 
       it("Field 'Address' is displayed", async function () {
-        await delay(2000)
         const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
         assert.notEqual(field, false, "field 'Address' isn't displayed")
         await field.sendKeys(wrongAddress)
@@ -294,17 +375,12 @@ describe('Metamask popup page', async function () {
         assert.notEqual(field, false, "field 'ABI' isn't displayed")
       })
 
-      it('icon copy is displayed for ABI ', async function () {
-        const field = await waitUntilShowUp(screens.importAccounts.iconCopy)
-        assert.notEqual(field, false, "icon copy isn't displayed")
-      })
-
-      it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
+     it("Field 'ABI' is empty if contract isn't verified in current network", async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
         assert.equal(await field.getText(), '', "field 'ABI' isn't displayed")
       })
-      it("Fill 'Address' with not contract address , POA core", async function () {
-        await setProvider(NETWORKS.POA)
+      it("Fill 'Address' with not contract address , SOKOL", async function () {
+        await setProvider(NETWORKS.SOKOL)
         const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
         await clearField(field, 100)
         await field.sendKeys(notContractAddress)
@@ -315,10 +391,10 @@ describe('Metamask popup page', async function () {
         assert.equal(await button.isEnabled(), false, 'button enabled')
       })
 
-      it("Fill 'Address' with valid contract , POA core", async function () {
+      it("Fill 'Address' with valid contract , SOKOL", async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractAddress)
         await clearField(field, 100)
-        await field.sendKeys(poaContract)
+        await field.sendKeys(contractSokol)
       })
 
       it("Button 'Import' is enabled if contract address is correct", async function () {
@@ -329,179 +405,541 @@ describe('Metamask popup page', async function () {
 
       it('ABI is fetched ', async function () {
         const field = await waitUntilShowUp(screens.importAccounts.contractABI)
-        const abi = await field.getText()
-        assert.equal(abi.length, 2800, "ABI isn't fetched")
+        abiClipboard = await field.getText()
+        assert.equal(abiClipboard.length, 4927, "ABI isn't fetched")
+      })
+
+      it('icon copy is displayed for ABI ', async function () {
+        const field = await waitUntilShowUp(screens.importAccounts.iconCopy)
+        assert.notEqual(field, false, "icon copy isn't displayed")
+        await field.click()
+      })
+
+      it('Check clipboard buffer', async function () {
+        const text = clipboardy.readSync()
+        assert.equal(text, abiClipboard, "address account wasn't copied to clipboard")
       })
 
       it("Click button 'Import', main screen opens", async function () {
         const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
         await click(button)
-        const identicon = await waitUntilShowUp(screens.main.identicon, 20)
-        assert.notEqual(identicon, false, "main screen isn't opened")
-      })
-
-      it("Click button 'Send', 'Execute Method' screen opens", async function () {
-        const button = await waitUntilShowUp(screens.main.buttons.send)
-        await click(button)
-        const identicon = await waitUntilShowUp(screens.main.identicon, 40)
-        assert.notEqual(identicon, false, "main screen isn't opened")
+        const ident = await waitUntilShowUp(screens.main.identicon, 20)
+        assert.notEqual(ident, false, "main screen isn't opened")
       })
     })
-    describe('Execute Method', () => {
-      const outputData = '0xd70befce3cf1cc88119c8f4eb583ccd4c39d06e2'
+
+    describe("Check 3dot menu for 'Contract' account", () => {
+      it('open 3dot menu', async function () {
+        const menu = await waitUntilShowUp(menus.dot.menu)
+        await menu.click()
+        await waitUntilShowUp(menus.dot.item)
+        const items = await driver.findElements(menus.dot.item)
+        assert.equal(items.length, 4, '3dot menu has incorrect number of items')
+       })
+      it('Check text of items', async function () {
+        const items = await driver.findElements(menus.dot.item)
+        assert.equal(await items[0].getText(), 'View on block explorer', '1st item has incorrect text')
+        assert.equal(await items[1].getText(), 'Show QR Code', '2st item has incorrect text')
+        assert.equal(await items[2].getText(), 'Copy address to clipboard', '3st item has incorrect text')
+        assert.equal(await items[3].getText(), 'Copy ABI to clipboard', '4st item has incorrect text')
+     })
+      it("Click 'Copy ABI'", async function () {
+        const items = await driver.findElements(menus.dot.item)
+        await items[3].click()
+        const menu = await waitUntilShowUp(menus.dot.item, 20)
+        assert.equal(menu, false, "3dot menu wasn't closed")
+      })
+
+      it('Check clipboard buffer', async function () {
+        const text = clipboardy.readSync()
+        assert.equal(text, abiClipboard, "ABI wasn't copied to clipboard")
+      })
+    })
+
+    describe('Execute Method screen', () => {
+      const amountMethods = 25
       const notContractAddress = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
-      it("Click button 'Send', 'Execute Method' screen opens", async function () {
-        await driver.navigate().refresh()
-        await delay(2000)
-        const button = await waitUntilShowUp(screens.main.buttons.send)
-        await click(button)
+      describe("Check UI and button's functionality", () => {
+
+        it("Click button 'Execute method'", async function () {
+          await driver.navigate().refresh()
+          await delay(2000)
+          const button = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+          assert.notEqual(button, false, "button doesn't displayed")
+          assert.equal(await button.getText(), 'Execute methods', 'button has incorrect name')
+          await button.click()
+        })
+
+        it('title is displayed and correct', async function () {
+          const title = await waitUntilShowUp(screens.executeMethod.title)
+          assert.notEqual(title, false, 'title isn\'t displayed')
+          assert.equal(await title.getText(), screens.executeMethod.titleText, 'incorrect text')
+        })
+
+        it('Click arrow  button leads to main screen', async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonArrow)
+          await click(button)
+          const identicon = await waitUntilShowUp(screens.main.identicon, 40)
+          assert.notEqual(identicon, false, "main screen isn't opened")
+        })
+      })
+      describe('Check output for data type : ADDRESS', () => {
+        const address = '0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b'
+
+        it("Click button 'Execute method'", async function () {
+          await driver.navigate().refresh()
+          await delay(2000)
+          const button = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+          assert.notEqual(button, false, "button doesn't displayed")
+          assert.equal(await button.getText(), 'Execute methods', 'button has incorrect name')
+          await button.click()
+        })
+
+        it("Select method 'returnAddress'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[6].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
+        })
+
+        it("Button 'Call data' is displayed and disabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), false, "Button 'Call data' is enabled")
+        })
+
+        it("Fill out input field 'Address'", async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await fields[0].sendKeys(address)
+        })
+
+        it("Button 'Call data' is displayed and enabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text.toLowerCase(), address.toLowerCase(), 'incorrect value was returned')
+        })
+
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), address.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
+        it("2nd call doesn't throw the error", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          await button.click()
+          const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          assert.notEqual(field, false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(field)
+          assert.equal(text.toLowerCase(), address.toLowerCase(), 'incorrect value was returned')
+        })
       })
 
-      it('title is displayed and correct', async function () {
-        const title = await waitUntilShowUp(screens.executeMethod.title)
-        assert.notEqual(title, false, 'title isn\'t displayed')
-        assert.equal(await title.getText(), screens.executeMethod.titleText, 'incorrect text')
-      })
+      describe('Check output for data type : STRING', () => {
+        const stringValue = 'POA network'
 
-      it("Select method 'abstractStorageAddr'", async function () {
-        const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
-        await field.click()
-        const item = await waitUntilShowUp(screens.executeMethod.item0)
-        assert.notEqual(item, false, 'no drop down menu')
-        await click(item)
-      })
+        it("Select method 'returnString'", async function () {
+          await delay(3000)
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[17].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
+        })
 
-      it("Button 'Call data' is displayed", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
-        assert.notEqual(button, false, "button 'Call data' isn't displayed")
-        await button.click()
-      })
+        it('Fill out input parameter field ', async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await fields[0].sendKeys(stringValue)
+        })
 
-      it('method returns correct value', async function () {
-        const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
-        assert.notEqual(field, false, "field 'Output'  isn't displayed")
-        const text = await waitUntilHasText(field)
-        assert.equal(text, outputData, 'incorrect value was returned')
-      })
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
 
-      it("2nd call doesn't throw the error", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
-        assert.notEqual(button, false, "button 'Call data' isn't displayed")
-        await button.click()
-        const field = await waitUntilShowUp(screens.executeMethod.fieldOutput)
-        assert.notEqual(field, false, "field 'Output'  isn't displayed")
-        const text = await waitUntilHasText(field)
-        assert.equal(text, outputData, 'incorrect value was returned')
+        it('method returns correct value', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text, stringValue, 'incorrect value was returned')
+        })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), stringValue.toLowerCase(), "output wasn't copied to clipboard")
+        })
       })
-      it('Click arrow  button leads to main screen', async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonArrow)
-        await click(button)
-        const identicon = await waitUntilShowUp(screens.main.identicon, 40)
-        assert.notEqual(identicon, false, "main screen isn't opened")
-      })
-      it("Click button 'Send', 'Execute Method' screen opens", async function () {
-        await driver.navigate().refresh()
-        await delay(2000)
-        const button = await waitUntilShowUp(screens.main.buttons.send)
-        await click(button)
-      })
-      it("Select method 'changeAbstractStorage'", async function () {
-        const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
-        await field.click()
-        const items = await waitUntilShowUp(screens.executeMethod.item1)
-        assert.notEqual(items, false, 'no drop down menu')
-        const item = (await driver.findElements(screens.executeMethod.item1))[1]
-        // await click(item)
-        await item.click()
-      })
+      describe('Check output for data type : BOOLEAN', () => {
+        it("Select method 'returnBoolean'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[8].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
+        })
 
-      it("Button 'Copy ABI encoded' is displayed", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
-        assert.notEqual(button, false, "button 'Copy ABI encoded' isn't displayed")
+        it('Select value TRUE from dropdown menu', async function () {
+          const arrows = await driver.findElements(screens.executeMethod.selectArrow)
+          await arrows[1].click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          assert.equal(await list[1].getText(), 'true', 'TRUE menu item: incorrect text')
+          assert.equal(list.length, 2, "drop down menu isn't displayed")
+          await list[1].click()
+        })
+
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value: TRUE', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[0], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[0])
+          assert.equal(text, 'true', 'incorrect value was returned')
+        })
+
+        it('Select value FALSE from dropdown menu', async function () {
+          const arrows = await driver.findElements(screens.executeMethod.selectArrow)
+          await arrows[1].click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          assert.equal(await list[0].getText(), 'false', 'FALSE menu item: incorrect text')
+          assert.equal(list.length, 2, "drop down menu isn't displayed")
+          await list[0].click()
+        })
+
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value, FALSE', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[0], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[0])
+          assert.equal(text, 'false', 'incorrect value was returned')
+        })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), 'false', "output wasn't copied to clipboard")
+        })
 
       })
+      describe('Check output for data type : BYTES', () => {
 
-      it("Button 'Copy ABI encoded' is disabled", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
-        assert.equal(await button.isEnabled(), false, "button 'Copy ABI encoded' enabled")
-      })
+        const bytesValue = '0x010203'
 
-      it("Button 'Next' is disabled", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
-        assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
-      })
+   it("Select method 'returnBytes1'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[10].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
+        })
 
-      it("Fill out parameter '_newAbstractStorageAddr with wrong data'", async function () {
-        const field = await waitUntilShowUp(screens.executeMethod.fieldParametr1)
-        assert.notEqual(field, false, "field address isn't displayed")
-        await field.sendKeys(wrongAddress)
-      })
+        it('Fill out input parameter field ', async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await fields[0].sendKeys(bytesValue)
+        })
 
-      it.skip("Button 'Copy ABI encoded' is disabled", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
-        assert.equal(await button.isEnabled(), false, "button 'Copy ABI encoded' enabled")
-      })
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
 
-      it.skip("Button 'Next' is disabled", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
-        assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
-      })
+        it('method returns correct value', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text, bytesValue, 'incorrect value was returned')
+        })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), bytesValue.toLowerCase(), "output wasn't copied to clipboard")
+        })
 
-      it('Error message if wrong parameter', async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
-        await button.click()
-        const error = await waitUntilShowUp(elements.error)
-        assert.notEqual(error, false, 'no error message')
       })
+      describe('Check output for data type : UINT256', () => {
 
-      it('Close error message', async function () {
-        const button = await waitUntilShowUp(elements.errorClose)
-        await button.click()
-        const title = await waitUntilShowUp(screens.executeMethod.title)
-        assert.notEqual(title, false, "error message isn't closed")
-      })
+        const uint256Value = '1122334455667788991122334455667788'
 
-      it("Fill out parameter '_newAbstractStorageAddr'", async function () {
-        const field = await waitUntilShowUp(screens.executeMethod.fieldParametr1)
-        await clearField(field, 100)
-        await field.sendKeys(notContractAddress)
-        assert.notEqual(field, false, "field address isn't displayed")
-      })
+   it("Select method 'returnUint256'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[20].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
+        })
 
-      it("Button 'Next' is enabled", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
-        assert.equal(await button.isEnabled(), true, "button 'Next' disabled")
-      })
-      it("Button 'Copy ABI encoded' is enabled", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
-        assert.equal(await button.isEnabled(), true, "button 'Copy ABI encoded' disabled")
-        await button.click()
-      })
+        it('Fill out input parameter field ', async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await fields[0].sendKeys(uint256Value)
+        })
 
-      it("Click button 'Next'", async function () {
-        const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
-        assert.notEqual(button, false, "button 'Next' isn't displayed")
-        await button.click()
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text, uint256Value, 'incorrect value was returned')
+        })
+
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), uint256Value.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
+      })
+      describe('Check output for data type : INT256', () => {
+
+        const int256Value = '-1122334455667788991122334455667788'
+
+    it("Select method 'returnInt256'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[13].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
+        })
+
+        it('Fill out input parameter field ', async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field parameter#1 isn't displayed")
+          await fields[0].sendKeys(int256Value)
+        })
+
+        it("Click button 'Call data' ", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCall)
+          assert.notEqual(button, false, "button 'Call data' isn't displayed")
+          assert.equal(await button.isEnabled(), true, "Button 'Call data' is disabled")
+          await button.click()
+        })
+
+        it('method returns correct value', async function () {
+          await delay(3000)
+          await waitUntilShowUp(screens.executeMethod.fieldOutput)
+          const fields = await driver.findElements(screens.executeMethod.fieldOutput)
+          assert.notEqual(fields[1], false, "field 'Output'  isn't displayed")
+          const text = await waitUntilHasValue(fields[1])
+          assert.equal(text, int256Value, 'incorrect value was returned')
+        })
+        it('icon copy cliboard is displayed and clickable', async function () {
+          const icon = await waitUntilShowUp(screens.executeMethod.copy)
+          assert.notEqual(icon, false, 'icon copy isn\'t displayed')
+          await icon.click()
+        })
+        it('Check clipboard buffer', async function () {
+          const text = clipboardy.readSync()
+          assert.equal(text.toLowerCase(), int256Value.toLowerCase(), "output wasn't copied to clipboard")
+        })
+
+      })
+      describe('Check executed method', () => {
+
+        it("Select method 'transfer'", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.selectArrow)
+          await field.click()
+          await waitUntilShowUp(screens.executeMethod.items)
+          const list = await driver.findElements(screens.executeMethod.items)
+          await list[24].click()
+          assert.equal(list.length, amountMethods, "drop down menu isn't displayed")
+        })
+
+        it("Button 'Copy ABI encoded' is displayed", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+          assert.notEqual(button, false, "button 'Copy ABI encoded' isn't displayed")
+        })
+
+        it("Button 'Copy ABI encoded' is disabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+          assert.equal(await button.isEnabled(), false, "button 'Copy ABI encoded' enabled")
+        })
+
+        it("Button 'Next' is disabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+          assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
+        })
+
+        it("Fill out parameter '_value' with valid data", async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[1], false, "field address isn't displayed")
+          await fields[1].sendKeys('1')
+        })
+
+        it("Button 'Copy ABI encoded' is disabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+          assert.equal(await button.isEnabled(), false, "button 'Copy ABI encoded' enabled")
+        })
+
+        it("Button 'Next' is disabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+          assert.equal(await button.isEnabled(), false, "button 'Next' enabled")
+        })
+        it("Fill out parameter '_to'  with wrong data", async function () {
+          await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+          assert.notEqual(fields[0], false, "field address isn't displayed")
+          await fields[0].sendKeys(wrongAddress)
+        })
+
+        it("Error message if click 'Copy ABI encoded' with wrong address", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+          await button.click()
+          const error = await waitUntilShowUp(elements.error)
+          assert.notEqual(error, false, 'no error message')
+        })
+
+        it('Close error message', async function () {
+          const button = await waitUntilShowUp(elements.errorClose)
+          await button.click()
+          const title = await waitUntilShowUp(screens.executeMethod.title)
+          assert.notEqual(title, false, "error message isn't closed")
+        })
+
+        it.skip("Error message if click 'Next' with wrong address", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+          await button.click()
+          const error = await waitUntilShowUp(elements.error)
+          assert.notEqual(error, false, 'no error message')
+        })
+
+        it.skip('Close error message', async function () {
+          const button = await waitUntilShowUp(elements.errorClose)
+          await button.click()
+          const title = await waitUntilShowUp(screens.executeMethod.title)
+          assert.notEqual(title, false, "error message isn't closed")
+        })
+
+        it("Fill out parameter '_to' with valid data", async function () {
+          const field = await waitUntilShowUp(screens.executeMethod.fieldParameter)
+          await clearField(field, 100)
+          await field.sendKeys(notContractAddress)
+          assert.notEqual(field, false, "field address isn't displayed")
+        })
+
+        it("Button 'Next' is enabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+          assert.equal(await button.isEnabled(), true, "button 'Next' disabled")
+        })
+
+        it("Button 'Copy ABI encoded' is enabled", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonCopyABI)
+          assert.equal(await button.isEnabled(), true, "button 'Copy ABI encoded' disabled")
+          await button.click()
+        })
+
+        it("Click button 'Next'", async function () {
+          const button = await waitUntilShowUp(screens.executeMethod.buttonNext)
+          assert.notEqual(button, false, "button 'Next' isn't displayed")
+          await button.click()
+        })
       })
 
     })
     describe('Choose Contract Executor', () => {
 
-      it('title is displayed and correct', async function () {
+      it('Title is displayed and correct', async function () {
         await delay(5000)
         const title = await waitUntilShowUp(screens.chooseContractExecutor.title)
         assert.notEqual(title, false, 'title isn\'t displayed')
         assert.equal(await title.getText(), screens.chooseContractExecutor.titleText, 'incorrect text')
       })
 
-      it('two accounts displayed', async function () {
+
+      it('Three accounts are displayed', async function () {
         const accs = await waitUntilShowUp(screens.chooseContractExecutor.account)
-        assert.notEqual(accs, false, 'accounts aren\'t displayed')
+        assert.notEqual(accs, false, "accounts aren't displayed")
         const accounts = await driver.findElements(screens.chooseContractExecutor.account)
-        assert.equal(accounts.length, 3, "number of accounts isn't 2")
+        assert.equal(accounts.length, 4, "number of accounts isn't 3")
       })
 
-      it("Click arrow  button leads to 'Execute Method' screen ", async function () {
+      it("Owner's account first in the list of executors", async function () {
+        const accs = await waitUntilShowUp(screens.chooseContractExecutor.addressExecutor)
+        assert.notEqual(accs, false, "addresses aren't displayed")
+        const addresses = await driver.findElements(screens.chooseContractExecutor.addressExecutor)
+        const address = await addresses[2].getText()
+        const souldBe = accountsWallet[2].slice(0, 10) + '...' + accountsWallet[2].slice(accountsWallet[2].length - 4, accountsWallet[2].length)
+    assert.equal(address.toUpperCase(), souldBe, "owner isn't first in the list")
+      })
+
+      it("Click arrow button leads to 'Execute Method' screen ", async function () {
         const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonArrow)
         assert.notEqual(button, false, 'button isn\'t displayed')
         await button.click()
@@ -525,8 +963,10 @@ describe('Metamask popup page', async function () {
       })
 
       it('User is able to select account', async function () {
+        await delay(2000)
         await waitUntilShowUp(screens.chooseContractExecutor.account)
         const accounts = await driver.findElements(screens.chooseContractExecutor.account)
+        console.log(accounts.length)
         const account = accounts[1]
         await account.click()
         const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
@@ -536,30 +976,98 @@ describe('Metamask popup page', async function () {
       it('User is able to select only one account', async function () {
         const account = (await driver.findElements(screens.chooseContractExecutor.account))[2]
         await account.click()
+        await delay(20000)
         const selected = await driver.findElements(screens.chooseContractExecutor.selectedAccount)
         assert.equal(selected.length, 1, 'more than one accounts are selected')
       })
 
+
       it("Click button 'Next' open 'Confirm transaction' screen", async function () {
         const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
         await button.click()
-        await delay(5000)
+        await delay(3000)
         const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
         assert.notEqual(reject, false, "button reject isn't displayed")
-        await click(reject)
-        const identicon = await waitUntilShowUp(screens.main.identicon)
-        assert.notEqual(identicon, false, 'main screen didn\'t opened')
       })
-      it("Label 'CONTRACT' present", async function () {
+
+      it("Button 'Buy Ether' is displayed", async function () {
+        const button = await waitUntilShowUp(screens.confirmTransaction.button.buyEther)
+        assert.equal(await button.getText(), 'Buy Ether', 'button has incorrect name')
+        assert.equal(await button.isEnabled(), true, 'button is disabled')
+      })
+
+      it("Open screen 'Buy Ether'", async function () {
+        const button = await waitUntilShowUp(screens.confirmTransaction.button.buyEther)
+        await button.click()
+        const title = await waitUntilShowUp(screens.buyEther.title)
+        assert.equal(await title.getText(), 'Buy POA', "screen 'Buy Ether' has incorrect title text")
+        const arrow = await waitUntilShowUp(elements.buttonArrow)
+        await arrow.click()
+      })
+
+      it("Click button 'Reject' open contract's account screen", async function () {
+        const reject = await waitUntilShowUp(screens.confirmTransaction.button.reject)
+        assert.equal(await reject.getText(), 'Reject', 'button has incorrect name')
+        await reject.click()
+        const buttonExecute = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+        assert.notEqual(buttonExecute, false, "contract's account hasn't opened")
+      })
+
+      it("Button arrow leads to executor's account screen", async function () {
+
+        assert.equal(await executeTransferMethod(1), true, "can't execute the method 'transfer'")
+        await delay(2000)
+        const arrow = await waitUntilShowUp(elements.buttonArrow)
+        await arrow.click()
+        await delay(2000)
+        const address = await waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), accountsWallet[0], "executors account isn't opened")
+
+      })
+
+     it('Switch to contract account ', async function () {
+        const accountMenu = await waitUntilShowUp(menus.account.menu)
+        await accountMenu.click()
+        const item = await waitUntilShowUp(menus.account.account4)
+        await item.click()
+        await delay(2000)
+        const address = await waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract's account isn't opened")
+      })
+
+      it("Confirm transaction: button 'Reject All' leads to contract's account screen", async function () {
+        assert.equal(await executeTransferMethod(1), true, "can't execute the method 'transfer'")
+        const rejectAll = await waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
+        assert.equal(await rejectAll.getText(), 'Reject All', 'button has incorrect name')
+        await rejectAll.click()
+        await delay(2000)
+        const address = await waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
+      })
+
+      it("Confirm transaction: button 'Submit' leads to contract's account screen", async function () {
+
+        assert.equal(await executeTransferMethod(0), true, "can't execute the method 'transfer'")
+        await delay(2000)
+        const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
+        // assert.equal(await button.getText(), 'Submit', "button has incorrect name")
+        await button.click()
+        await delay(2000)
+        const address = await waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
+      })
+
+     it("Label 'CONTRACT' present", async function () {
         const menu = await waitUntilShowUp(menus.account.menu)
         await menu.click()
-        await waitUntilShowUp(menus.account.labelImported)
-        const label = (await driver.findElements(menus.account.labelImported))[0]
+        await waitUntilShowUp(menus.account.label)
+        const label = (await driver.findElements(menus.account.label))[1]
         assert.equal(await label.getText(), 'CONTRACT', 'label incorrect')
       })
       it('Delete imported account', async function () {
-        const item = await waitUntilShowUp(menus.account.delete)
-        await item.click()
+        await waitUntilShowUp(menus.account.delete)
+        const items = await driver.findElements(menus.account.delete)
+        await items[1].click()
         const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
         await button.click()
         const buttonArrow = await waitUntilShowUp(screens.settings.buttons.arrow)
@@ -569,13 +1077,63 @@ describe('Metamask popup page', async function () {
       })
     })
   })
+  describe('Delete Imported Account', () => {
+
+    it('Open delete imported account screen', async function () {
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      const item = await waitUntilShowUp(menus.account.delete)
+      await item.click()
+      const deleteImportedAccountTitle = await waitUntilShowUp(screens.deleteImportedAccount.title)
+      assert.equal(await deleteImportedAccountTitle.getText(), screens.deleteImportedAccount.titleText)
+    })
+
+    it("Can't remove imported account with 'No' button", async function () {
+      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.no)
+      assert.equal(await button.getText(), 'No', 'button has incorrect name')
+      await click(button)
+      const settingsTitle = await waitUntilShowUp(screens.settings.title)
+      assert.equal(await settingsTitle.getText(), 'Settings')
+      // check, that imported account still exists
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      await delay(2000)
+      const label = await waitUntilShowUp(menus.account.label)
+      assert.equal(await label.getText(), 'IMPORTED')
+    })
+
+    it('Open delete imported account screen again', async function () {
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      await delay(2000)
+      await menu.click()
+      await waitUntilShowUp(menus.account.delete)
+      const buttons = await driver.findElements(menus.account.delete)
+      assert.notEqual(buttons[0], false, "icon 'remove' isn't displayed")
+      await buttons[0].click()
+    })
+
+    it("Remove imported account with 'Yes' button", async function () {
+      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+      assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
+      await click(button)
+      const settingsTitle = await waitUntilShowUp(screens.settings.title)
+      assert.equal(await settingsTitle.getText(), 'Settings')
+      // check, that imported account is removed
+      const menu = await waitUntilShowUp(menus.account.menu)
+      await menu.click()
+      await waitUntilShowUp(menus.account.label, 25)
+      const labels = await driver.findElements(menus.account.label)
+      assert.ok(labels.length === 0)
+      await menu.click()
+    })
+  })
 
   describe('Sign Data', () => {
-
-    it('simulate sign request ', async function () {
+    it('Simulate sign request ', async function () {
       await setProvider(NETWORKS.LOCALHOST)
       await driver.get('https://danfinlay.github.io/js-eth-personal-sign-examples/')
-      const button = await waitUntilShowUp(By.id('ethSignButton'))
+    const button = await waitUntilShowUp(By.id('ethSignButton'))
       await button.click()
     })
 
@@ -598,7 +1156,7 @@ describe('Metamask popup page', async function () {
     it('account name is displayed and correct', async function () {
       const name = await waitUntilShowUp(screens.signMessage.accountName)
       assert.notEqual(name, false, 'account name isn\'t displayed')
-      assert.equal(await name.getText(), 'Account 2', 'account name is incorrect')
+      assert.equal(await name.getText(), 'new name', 'account name is incorrect')
     })
 
     it('title is displayed and correct', async function () {
@@ -628,94 +1186,7 @@ describe('Metamask popup page', async function () {
       assert.notEqual(identicon, false, 'main screen didn\'t opened')
     })
   })
-  describe('Import Account', () => {
 
-    it('opens import account menu', async function () {
-      await setProvider(NETWORKS.POA)
-      await delay(2000)
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      const item = await waitUntilShowUp(menus.account.import)
-      await item.click()
-      const importAccountTitle = await waitUntilShowUp(screens.importAccounts.title)
-      assert.equal(await importAccountTitle.getText(), screens.importAccounts.textTitle)
-    })
-
-    it('imports account', async function () {
-      const privateKeyBox = await waitUntilShowUp(screens.importAccounts.fieldPrivateKey)
-      await privateKeyBox.sendKeys('76bd0ced0a47055bb5d060e1ae4a8cb3ece658d668823e250dae6e79d3ab4435')// 0xf4702CbA917260b2D6731Aea6385215073e8551b
-      const button = await waitUntilShowUp(screens.importAccounts.buttonImport)
-      await click(button)
-      assert.equal(await button.getText(), 'Import', 'button has incorrect name')
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      await waitUntilShowUp(menus.account.labelImported)
-      const label = (await driver.findElements(menus.account.labelImported))[0]
-      assert.equal(await label.getText(), 'IMPORTED')
-      await menu.click()
-    })
-
-    it('Auto-detect tokens for POA core network ', async function () {
-      // await setProvider(NETWORKS.POA)
-      const tab = await waitUntilShowUp(screens.main.tokens.menu)
-      await tab.click()
-      const balance = await waitUntilShowUp(screens.main.tokens.balance)
-      console.log(await balance.getText())
-      assert.equal(await balance.getText(), '1 DOPR', 'token isnt\' auto-detected')
-    })
-
-    it.skip('Auto-detect tokens for MAIN core network ', async function () {
-      await setProvider(NETWORKS.MAINNET)
-      await waitUntilShowUp(elements.loader, 25)
-      await waitUntilDisappear(elements.loader, 25)
-      const balance = await waitUntilShowUp(screens.main.tokens.balance)
-      console.log(await balance.getText())
-      assert.equal(await balance.getText(), '0.001 WETH', 'token isnt\' auto-detected')
-    })
-
-    it('opens delete imported account screen', async function () {
-      await setProvider(NETWORKS.LOCALHOST)
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      const item = await waitUntilShowUp(menus.account.delete)
-      await item.click()
-      const deleteImportedAccountTitle = await waitUntilShowUp(screens.deleteImportedAccount.title)
-      assert.equal(await deleteImportedAccountTitle.getText(), screens.deleteImportedAccount.titleText)
-    })
-
-    it('doesn\'t remove imported account with \'No\' button', async function () {
-      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.no)
-      assert.equal(await button.getText(), 'No', 'button has incorrect name')
-      await click(button)
-      const settingsTitle = await waitUntilShowUp(screens.settings.title)
-      assert.equal(await settingsTitle.getText(), 'Settings')
-      // check, that imported account still exists
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      const importedLabel = await waitUntilShowUp(menus.account.labelImported)
-      assert.equal(await importedLabel.getText(), 'IMPORTED')
-    })
-
-    it('opens delete imported account screen again', async function () {
-      const menu = await waitUntilShowUp(menus.account.delete)
-      await menu.click()
-    })
-
-    it('removes imported account with \'Yes\' button', async function () {
-      const button = await waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
-      assert.equal(await button.getText(), 'Yes', 'button has incorrect name')
-      await click(button)
-      const settingsTitle = await waitUntilShowUp(screens.settings.title)
-      assert.equal(await settingsTitle.getText(), 'Settings')
-      // check, that imported account is removed
-      const menu = await waitUntilShowUp(menus.account.menu)
-      await menu.click()
-      await waitUntilShowUp(menus.account.labelImported, 25)
-      const importedAccounts = await driver.findElements(menus.account.labelImported)
-      assert.ok(importedAccounts.length === 0)
-      await menu.click()
-    })
-  })
   describe('Export private key', async () => {
 
     it('open dialog', async function () {
@@ -770,8 +1241,15 @@ describe('Metamask popup page', async function () {
     })
 
     it('icon copy cliboard is displayed and clickable', async function () {
-      const field = await waitUntilShowUp(screens.yourPR.copy)
-      assert.notEqual(field, false, 'icon copy isn\'t displayed')
+      await waitUntilShowUp(screens.yourPR.copy)
+      const icons = await driver.findElements(screens.yourPR.copy)
+      assert.notEqual(icons[1], false, 'icon copy isn\'t displayed')
+      await icons[1].click()
+    })
+
+    it('Check clipboard buffer', async function () {
+      const text = clipboardy.readSync()
+      assert.equal(text.length, 64, "private key wasn't copied to clipboard")
     })
 
     it('file loaded if click button \'Save\' ', async function () {
@@ -835,8 +1313,8 @@ describe('Metamask popup page', async function () {
       const inputAmmount = await waitUntilShowUp(screens.sendTransaction.field.amount)
       await inputAddress.sendKeys(account2)
       await inputAmmount.sendKeys('10')
-      const button = await waitUntilShowUp(screens.sendTransaction.buttonNext)
-      assert.equal(await button.getText(), 'Next', 'button has incorrect name')
+    const button = await waitUntilShowUp(screens.sendTransaction.buttonNext)
+    assert.equal(await button.getText(), 'Next', 'button has incorrect name')
       await click(button)
     })
 
@@ -850,9 +1328,9 @@ describe('Metamask popup page', async function () {
       const transactionAmount = await waitUntilShowUp(screens.main.transactionList)
       assert.equal(await transactionAmount.getText(), '10.0')
     })
-  })
+    })
 
-  describe(' Check the filter of emitted events', function () {
+    describe(' Check the filter of emitted events', function () {
 
     it('emit event', async function () {
       await setProvider(NETWORKS.SOKOL)
@@ -873,10 +1351,10 @@ describe('Metamask popup page', async function () {
       console.log('Account = ' + account)
       console.log('Balance = ' + balance)
       assert.equal(parseFloat(balance) > 0.001, true, 'Balance of account ' + account + ' TOO LOW !!! Please refill with Sokol eth!!!!')
-      await driver.get(eventsEmitter)
-      const button = await waitUntilShowUp(screens.eventsEmitter.button)
-      await button.click()
-      await delay(1000)
+    await driver.get(eventsEmitter)
+    const button = await waitUntilShowUp(screens.eventsEmitter.button)
+    await button.click()
+    await delay(1000)
     })
 
     it('confirms transaction in MetaMask popup', async function () {
@@ -885,8 +1363,8 @@ describe('Metamask popup page', async function () {
       await delay(5000)
       const gasPrice = await waitUntilShowUp(screens.confirmTransaction.fields.gasPrice)
       await gasPrice.sendKeys('10')
-      const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
-      await click(button)
+    const button = await waitUntilShowUp(screens.confirmTransaction.button.submit)
+    await click(button)
     })
 
     it('check  number of events', async function () {
@@ -2044,73 +2522,74 @@ describe('Metamask popup page', async function () {
         counter = 7
     }
     await driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
-  }
+    }
 
-  async function scrollTo (element) {
-    try {
+    async function scrollTo (element) {
+      try {
       await driver.executeScript('arguments[0].scrollIntoView();', element)
       return true
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function click (element) {
-    try {
+    async function click (element) {
+      try {
       await element.sendKeys(Key.RETURN)
       return true
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function clearField (field, number) {
-    await click(field)
-    if (number === undefined) number = 40
-    for (let i = 0; i < number; i++) {
+    async function clearField (field, number) {
+      await click(field)
+      if (number === undefined) number = 40
+      for (let i = 0; i < number; i++) {
       await field.sendKeys(Key.BACK_SPACE)
     }
-  }
+    }
 
-  async function waitUntilDisappear (by, Twait) {
-    if (Twait === undefined) Twait = 10
-    do {
+    async function waitUntilDisappear (by, Twait) {
+      if (Twait === undefined) Twait = 10
+      do {
       if (!await isElementDisplayed(by)) return true
 
     } while (Twait-- > 0)
-    return false
-  }
+      return false
+    }
 
-  async function waitUntilShowUp (by, Twait) {
-    if (Twait === undefined) Twait = 200
-    do {
+    async function waitUntilShowUp (by, Twait) {
+      if (Twait === undefined) Twait = 200
+      do {
       await delay(100)
       if (await isElementDisplayed(by)) return await driver.findElement(by)
     } while (Twait-- > 0)
-    return false
-  }
+      return false
+    }
 
-  async function waitUntilHasText (element, Twait) {
-    if (Twait === undefined) Twait = 200
-    let text
-    do {
+    async function waitUntilHasValue (element, Twait) {
+      if (Twait === undefined) Twait = 200
+      let text
+      do {
       await delay(100)
-      text = await element.getText()
+      text = await element.getAttribute('value')
       if (text !== '') return text
     } while (Twait-- > 0)
-    return false
-  }
+      return false
+    }
 
-  async function isElementDisplayed (by) {
-    try {
+
+    async function isElementDisplayed (by) {
+      try {
       return await driver.findElement(by).isDisplayed()
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function assertTokensNotDisplayed () {
-    try {
+    async function assertTokensNotDisplayed () {
+      try {
       await delay(800)
       await waitUntilDisappear(elements.loader)
       assert.notEqual(await waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
@@ -2128,60 +2607,64 @@ describe('Metamask popup page', async function () {
       console.log(err)
       return false
     }
-  }
+    }
 
-  async function isDisabledAddInexistentToken (tokenAddress) {
-    await delay(500)
-    try {
+    async function isDisabledAddInexistentToken (tokenAddress) {
+      await delay(500)
+      try {
+      const tab = await waitUntilShowUp(screens.main.tokens.menu)
+      await click(tab)
       const button = await waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await click(button)
+      let count = 20
       do {
-        const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
-        try {
-          await tab.click()
-        } catch (err) {
-        }
-      }
-      while (await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false)
+      await delay(500)
+      const tab = await waitUntilShowUp(screens.addToken.tab.custom, 10)
+      try {
+      await tab.click()
     } catch (err) {
     }
-    const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
-    await clearField(fieldAddress)
-    await fieldAddress.sendKeys(tokenAddress)
+    }
+      while ((await waitUntilShowUp(screens.addToken.custom.fields.contractAddress) === false) && (count-- > 0))
+    } catch (err) {
+    }
+      const fieldAddress = await waitUntilShowUp(screens.addToken.custom.fields.contractAddress)
+      await clearField(fieldAddress)
+      await fieldAddress.sendKeys(tokenAddress)
 
-    const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if (await fieldSymbols.isEnabled()) {
+      const fieldSymbols = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+      if (await fieldSymbols.isEnabled()) {
       console.log('field symbols enabled')
       return false
     }
 
-    const fieldDecimals = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
-    if (await fieldDecimals.isEnabled()) {
+      const fieldDecimals = await waitUntilShowUp(screens.addToken.custom.fields.tokenSymbol)
+      if (await fieldDecimals.isEnabled()) {
       console.log('field decimals enabled')
       return false
     }
-    const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
-    if (await buttonAdd.isEnabled()) {
+      const buttonAdd = await waitUntilShowUp(screens.addToken.custom.buttons.add)
+      if (await buttonAdd.isEnabled()) {
       console.log('button add enabled')
       return false
     }
-    const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
-    let counter = 20
-    do {
+      const buttonCancel = await waitUntilShowUp(screens.addToken.custom.buttons.cancel)
+      let counter = 20
+      do {
       await delay(500)
       await click(buttonCancel)
     }
-    while (((await waitUntilShowUp(screens.main.identicon)) === false) && (counter-- > 0))
-    if (counter < 1) {
+      while (((await waitUntilShowUp(screens.main.identicon)) === false) && (counter-- > 0))
+      if (counter < 1) {
       console.log('button cancel doesn\'t work')
       return false
     }
-    return true
-  }
+      return true
+    }
 
-  async function checkBrowserForConsoleErrors () {
-    const ignoredLogTypes = ['WARNING']
-    const ignoredErrorMessages = [
+    async function checkBrowserForConsoleErrors () {
+      const ignoredLogTypes = ['WARNING']
+      const ignoredErrorMessages = [
       // React throws error warnings on "dataset", but still sets the data-* properties correctly
       'Warning: Unknown prop `dataset` on ',
       // Third-party Favicon 404s show up as errors
@@ -2190,380 +2673,418 @@ describe('Metamask popup page', async function () {
       'Warning: It looks like you\'re using a minified copy of the development build of React.',
       // Redux Development build - known issue blocked by test build sys
       'This means that you are running a slower development build of Redux.',
-    ]
-    const browserLogs = await driver.manage().logs().get('browser')
-    const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
-    const errorObjects = errorEntries.map(entry => entry.toJSON())
-    // ignore all errors that contain a message in `ignoredErrorMessages`
-    const matchedErrorObjects = errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
-    return matchedErrorObjects
-  }
+      ]
+      const browserLogs = await driver.manage().logs().get('browser')
+      const errorEntries = browserLogs.filter(entry => !ignoredLogTypes.includes(entry.level.toString()))
+      const errorObjects = errorEntries.map(entry => entry.toJSON())
+      // ignore all errors that contain a message in `ignoredErrorMessages`
+      const matchedErrorObjects = errorObjects.filter(entry => !ignoredErrorMessages.some(message => entry.message.includes(message)))
+      return matchedErrorObjects
+    }
 
-  async function verboseReportOnFailure (test) {
-    let artifactDir
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    async function verboseReportOnFailure (test) {
+      let artifactDir
+      if (process.env.SELENIUM_BROWSER === 'chrome') {
       artifactDir = `./test-artifacts/chrome/${test.title}`
     } else if (process.env.SELENIUM_BROWSER === 'firefox') {
       artifactDir = `./test-artifacts/firefox/${test.title}`
     }
-    const filepathBase = `${artifactDir}/test-failure`
-    await pify(mkdirp)(artifactDir)
-    // capture screenshot
-    const screenshot = await driver.takeScreenshot()
-    await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
-    // capture dom source
-    const htmlSource = await driver.getPageSource()
-    await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
-  }
+      const filepathBase = `${artifactDir}/test-failure`
+      await pify(mkdirp)(artifactDir)
+      // capture screenshot
+      const screenshot = await driver.takeScreenshot()
+      await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+      // capture dom source
+      const htmlSource = await driver.getPageSource()
+      await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+    }
 
-  async function switchToLastPage () {
-    try {
+    async function switchToLastPage () {
+      try {
       const allHandles = await driver.getAllWindowHandles()
       await driver.switchTo().window(allHandles[allHandles.length - 1])
       let counter = 100
       do {
-        await delay(500)
-        if (await driver.getCurrentUrl() !== '') return true
-      }
+      await delay(500)
+      if (await driver.getCurrentUrl() !== '') return true
+    }
       while (counter-- > 0)
       return true
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function switchToFirstPage () {
-    try {
+    async function switchToFirstPage () {
+      try {
       const allHandles = await driver.getAllWindowHandles()
       console.log('allHandles.length ' + allHandles.length)
       await driver.switchTo().window(allHandles[0])
       let counter = 100
       do {
-        await delay(500)
-        if (await driver.getCurrentUrl() !== '') return true
-      }
+      await delay(500)
+      if (await driver.getCurrentUrl() !== '') return true
+    }
       while (counter-- > 0)
       return true
     } catch (err) {
       return false
     }
-  }
+    }
 
-  async function waitUntilCurrentUrl () {
-    try {
+    async function waitUntilCurrentUrl () {
+      try {
       let title
       let counter = 20
       do {
-        await delay(500)
-        title = await driver.getCurrentUrl()
-      } while ((title === '') && (counter-- > 0))
+      await delay(500)
+      title = await driver.getCurrentUrl()
+    } while ((title === '') && (counter-- > 0))
       if (counter < 1) return false
       return title
     } catch (err) {
       console.log(err)
       return false
     }
-  }
+    }
 
-  async function createToken (owner, { supply, name, decimals, ticker }, isDelayed) {
+    async function createToken (owner, { supply, name, decimals, ticker }, isDelayed) {
 
-    const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545/'))
-    const abi = [
-      {
-        'constant': true,
-        'inputs': [],
-        'name': 'name',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'string',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': false,
-        'inputs': [
-          {
-            'name': '_spender',
-            'type': 'address',
-          },
-          {
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'approve',
-        'outputs': [
-          {
-            'name': 'success',
-            'type': 'bool',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'nonpayable',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [],
-        'name': 'totalSupply',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': false,
-        'inputs': [
-          {
-            'name': '_from',
-            'type': 'address',
-          },
-          {
-            'name': '_to',
-            'type': 'address',
-          },
-          {
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'transferFrom',
-        'outputs': [
-          {
-            'name': 'success',
-            'type': 'bool',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'nonpayable',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [
-          {
-            'name': '',
-            'type': 'address',
-          },
-        ],
-        'name': 'balances',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [],
-        'name': 'decimals',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'uint8',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [
-          {
-            'name': '',
-            'type': 'address',
-          },
-          {
-            'name': '',
-            'type': 'address',
-          },
-        ],
-        'name': 'allowed',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [
-          {
-            'name': '_owner',
-            'type': 'address',
-          },
-        ],
-        'name': 'balanceOf',
-        'outputs': [
-          {
-            'name': 'balance',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [],
-        'name': 'symbol',
-        'outputs': [
-          {
-            'name': '',
-            'type': 'string',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'constant': false,
-        'inputs': [
-          {
-            'name': '_to',
-            'type': 'address',
-          },
-          {
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'transfer',
-        'outputs': [
-          {
-            'name': 'success',
-            'type': 'bool',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'nonpayable',
-        'type': 'function',
-      },
-      {
-        'constant': true,
-        'inputs': [
-          {
-            'name': '_owner',
-            'type': 'address',
-          },
-          {
-            'name': '_spender',
-            'type': 'address',
-          },
-        ],
-        'name': 'allowance',
-        'outputs': [
-          {
-            'name': 'remaining',
-            'type': 'uint256',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'view',
-        'type': 'function',
-      },
-      {
-        'inputs': [
-          {
-            'name': '_initialAmount',
-            'type': 'uint256',
-          },
-          {
-            'name': '_tokenName',
-            'type': 'string',
-          },
-          {
-            'name': '_decimalUnits',
-            'type': 'uint8',
-          },
-          {
-            'name': '_tokenSymbol',
-            'type': 'string',
-          },
-        ],
-        'payable': false,
-        'stateMutability': 'nonpayable',
-        'type': 'constructor',
-      },
-      {
-        'anonymous': false,
-        'inputs': [
-          {
-            'indexed': true,
-            'name': '_from',
-            'type': 'address',
-          },
-          {
-            'indexed': true,
-            'name': '_to',
-            'type': 'address',
-          },
-          {
-            'indexed': false,
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'Transfer',
-        'type': 'event',
-      },
-      {
-        'anonymous': false,
-        'inputs': [
-          {
-            'indexed': true,
-            'name': '_owner',
-            'type': 'address',
-          },
-          {
-            'indexed': true,
-            'name': '_spender',
-            'type': 'address',
-          },
-          {
-            'indexed': false,
-            'name': '_value',
-            'type': 'uint256',
-          },
-        ],
-        'name': 'Approval',
-        'type': 'event',
-      },
-    ]
-    const bin = '608060405234801561001057600080fd5b50604051610e30380380610e308339810180604052810190808051906020019092919080518201929190602001805190602001909291908051820192919050505083600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508360008190555082600390805190602001906100b29291906100ee565b5081600460006101000a81548160ff021916908360ff16021790555080600590805190602001906100e49291906100ee565b5050505050610193565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061012f57805160ff191683800117855561015d565b8280016001018555821561015d579182015b8281111561015c578251825591602001919060010190610141565b5b50905061016a919061016e565b5090565b61019091905b8082111561018c576000816000905550600101610174565b5090565b90565b610c8e806101a26000396000f3006080604052600436106100af576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306fdde03146100b4578063095ea7b31461014457806318160ddd146101a957806323b872dd146101d457806327e235e314610259578063313ce567146102b05780635c658165146102e157806370a082311461035857806395d89b41146103af578063a9059cbb1461043f578063dd62ed3e146104a4575b600080fd5b3480156100c057600080fd5b506100c961051b565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156101095780820151818401526020810190506100ee565b50505050905090810190601f1680156101365780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561015057600080fd5b5061018f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506105b9565b604051808215151515815260200191505060405180910390f35b3480156101b557600080fd5b506101be6106ab565b6040518082815260200191505060405180910390f35b3480156101e057600080fd5b5061023f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506106b1565b604051808215151515815260200191505060405180910390f35b34801561026557600080fd5b5061029a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061094b565b6040518082815260200191505060405180910390f35b3480156102bc57600080fd5b506102c5610963565b604051808260ff1660ff16815260200191505060405180910390f35b3480156102ed57600080fd5b50610342600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610976565b6040518082815260200191505060405180910390f35b34801561036457600080fd5b50610399600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061099b565b6040518082815260200191505060405180910390f35b3480156103bb57600080fd5b506103c46109e4565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156104045780820151818401526020810190506103e9565b50505050905090810190601f1680156104315780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561044b57600080fd5b5061048a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610a82565b604051808215151515815260200191505060405180910390f35b3480156104b057600080fd5b50610505600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610bdb565b6040518082815260200191505060405180910390f35b60038054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156105b15780601f10610586576101008083540402835291602001916105b1565b820191906000526020600020905b81548152906001019060200180831161059457829003601f168201915b505050505081565b600081600260003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925846040518082815260200191505060405180910390a36001905092915050565b60005481565b600080600260008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054905082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054101580156107825750828110155b151561078d57600080fd5b82600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254019250508190555082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8110156108da5782600260008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055505b8373ffffffffffffffffffffffffffffffffffffffff168573ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef856040518082815260200191505060405180910390a360019150509392505050565b60016020528060005260406000206000915090505481565b600460009054906101000a900460ff1681565b6002602052816000526040600020602052806000526040600020600091509150505481565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60058054600181600116156101000203166002900480601f016020809104026020016040519081016040528092919081815260200182805460018160011615610100020316600290048015610a7a5780601f10610a4f57610100808354040283529160200191610a7a565b820191906000526020600020905b815481529060010190602001808311610a5d57829003601f168201915b505050505081565b600081600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000205410151515610ad257600080fd5b81600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254039250508190555081600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b6000600260008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050929150505600a165627a7a72305820979c62ae45244f66d713b9272cd9a32a6b8c2ba4778ec9fb58a39dc893cb9cde0029'
+      const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545/'))
+      const abi = [
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'name',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'string',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': false,
+      'inputs': [
+    {
+      'name': '_spender',
+      'type': 'address',
+    },
+    {
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'approve',
+      'outputs': [
+    {
+      'name': 'success',
+      'type': 'bool',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'totalSupply',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': false,
+      'inputs': [
+    {
+      'name': '_from',
+      'type': 'address',
+    },
+    {
+      'name': '_to',
+      'type': 'address',
+    },
+    {
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'transferFrom',
+      'outputs': [
+    {
+      'name': 'success',
+      'type': 'bool',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [
+    {
+      'name': '',
+      'type': 'address',
+    },
+      ],
+      'name': 'balances',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'decimals',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'uint8',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [
+    {
+      'name': '',
+      'type': 'address',
+    },
+    {
+      'name': '',
+      'type': 'address',
+    },
+      ],
+      'name': 'allowed',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [
+    {
+      'name': '_owner',
+      'type': 'address',
+    },
+      ],
+      'name': 'balanceOf',
+      'outputs': [
+    {
+      'name': 'balance',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'symbol',
+      'outputs': [
+    {
+      'name': '',
+      'type': 'string',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'constant': false,
+      'inputs': [
+    {
+      'name': '_to',
+      'type': 'address',
+    },
+    {
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'transfer',
+      'outputs': [
+    {
+      'name': 'success',
+      'type': 'bool',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function',
+    },
+    {
+      'constant': true,
+      'inputs': [
+    {
+      'name': '_owner',
+      'type': 'address',
+    },
+    {
+      'name': '_spender',
+      'type': 'address',
+    },
+      ],
+      'name': 'allowance',
+      'outputs': [
+    {
+      'name': 'remaining',
+      'type': 'uint256',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function',
+    },
+    {
+      'inputs': [
+    {
+      'name': '_initialAmount',
+      'type': 'uint256',
+    },
+    {
+      'name': '_tokenName',
+      'type': 'string',
+    },
+    {
+      'name': '_decimalUnits',
+      'type': 'uint8',
+    },
+    {
+      'name': '_tokenSymbol',
+      'type': 'string',
+    },
+      ],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'constructor',
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+    {
+      'indexed': true,
+      'name': '_from',
+      'type': 'address',
+    },
+    {
+      'indexed': true,
+      'name': '_to',
+      'type': 'address',
+    },
+    {
+      'indexed': false,
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'Transfer',
+      'type': 'event',
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+    {
+      'indexed': true,
+      'name': '_owner',
+      'type': 'address',
+    },
+    {
+      'indexed': true,
+      'name': '_spender',
+      'type': 'address',
+    },
+    {
+      'indexed': false,
+      'name': '_value',
+      'type': 'uint256',
+    },
+      ],
+      'name': 'Approval',
+      'type': 'event',
+    },
+      ]
+      const bin = '608060405234801561001057600080fd5b50604051610e30380380610e308339810180604052810190808051906020019092919080518201929190602001805190602001909291908051820192919050505083600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508360008190555082600390805190602001906100b29291906100ee565b5081600460006101000a81548160ff021916908360ff16021790555080600590805190602001906100e49291906100ee565b5050505050610193565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061012f57805160ff191683800117855561015d565b8280016001018555821561015d579182015b8281111561015c578251825591602001919060010190610141565b5b50905061016a919061016e565b5090565b61019091905b8082111561018c576000816000905550600101610174565b5090565b90565b610c8e806101a26000396000f3006080604052600436106100af576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806306fdde03146100b4578063095ea7b31461014457806318160ddd146101a957806323b872dd146101d457806327e235e314610259578063313ce567146102b05780635c658165146102e157806370a082311461035857806395d89b41146103af578063a9059cbb1461043f578063dd62ed3e146104a4575b600080fd5b3480156100c057600080fd5b506100c961051b565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156101095780820151818401526020810190506100ee565b50505050905090810190601f1680156101365780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561015057600080fd5b5061018f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506105b9565b604051808215151515815260200191505060405180910390f35b3480156101b557600080fd5b506101be6106ab565b6040518082815260200191505060405180910390f35b3480156101e057600080fd5b5061023f600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803590602001909291905050506106b1565b604051808215151515815260200191505060405180910390f35b34801561026557600080fd5b5061029a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061094b565b6040518082815260200191505060405180910390f35b3480156102bc57600080fd5b506102c5610963565b604051808260ff1660ff16815260200191505060405180910390f35b3480156102ed57600080fd5b50610342600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610976565b6040518082815260200191505060405180910390f35b34801561036457600080fd5b50610399600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061099b565b6040518082815260200191505060405180910390f35b3480156103bb57600080fd5b506103c46109e4565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156104045780820151818401526020810190506103e9565b50505050905090810190601f1680156104315780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561044b57600080fd5b5061048a600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610a82565b604051808215151515815260200191505060405180910390f35b3480156104b057600080fd5b50610505600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610bdb565b6040518082815260200191505060405180910390f35b60038054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156105b15780601f10610586576101008083540402835291602001916105b1565b820191906000526020600020905b81548152906001019060200180831161059457829003601f168201915b505050505081565b600081600260003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925846040518082815260200191505060405180910390a36001905092915050565b60005481565b600080600260008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054905082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054101580156107825750828110155b151561078d57600080fd5b82600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254019250508190555082600160008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8110156108da5782600260008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825403925050819055505b8373ffffffffffffffffffffffffffffffffffffffff168573ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef856040518082815260200191505060405180910390a360019150509392505050565b60016020528060005260406000206000915090505481565b600460009054906101000a900460ff1681565b6002602052816000526040600020602052806000526040600020600091509150505481565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60058054600181600116156101000203166002900480601f016020809104026020016040519081016040528092919081815260200182805460018160011615610100020316600290048015610a7a5780601f10610a4f57610100808354040283529160200191610a7a565b820191906000526020600020905b815481529060010190602001808311610a5d57829003601f168201915b505050505081565b600081600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000205410151515610ad257600080fd5b81600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254039250508190555081600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b6000600260008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050929150505600a165627a7a72305820979c62ae45244f66d713b9272cd9a32a6b8c2ba4778ec9fb58a39dc893cb9cde0029'
 
-    const tokenContract = web3.eth.contract(abi)
-    const contractInstance = await tokenContract.new(supply, name, decimals, ticker, {
+      const tokenContract = web3.eth.contract(abi)
+      const contractInstance = await tokenContract.new(supply, name, decimals, ticker, {
       data: bin, from: owner, gas: 4500000, function (err, tokenContract) {
-        if (err) {
-          console.log('Error of token creation: ' + err)
-        }
-      },
+      if (err) {
+      console.log('Error of token creation: ' + err)
+    }
+    },
     })
-    if (isDelayed) await delay(5000)
-    return contractInstance.address
-  }
+      if (isDelayed) await delay(5000)
+      return contractInstance.address
+    }
 
-})
+    async function executeTransferMethod (executor) {
+      try {
+      const buttonExecute = await waitUntilShowUp(screens.executeMethod.buttonExecuteMethod)
+      assert.notEqual(buttonExecute, false, "button doesn't displayed")
+      await buttonExecute.click()
+      // Select method transfer
+      const menu = await waitUntilShowUp(screens.executeMethod.selectArrow)
+      await menu.click()
+      await waitUntilShowUp(screens.executeMethod.items)
+      const list = await driver.findElements(screens.executeMethod.items)
+      await list[24].click()
+      // Fill out value
+      await waitUntilShowUp(screens.executeMethod.fieldParameter)
+      const fields = await driver.findElements(screens.executeMethod.fieldParameter)
+      assert.notEqual(fields[1], false, "field value isn't displayed")
+      await fields[1].sendKeys('1')
+      // Fill out address
+      await clearField(fields[0], 100)
+      await fields[0].sendKeys(account1)
+      assert.notEqual(fields[0], false, "field address isn't displayed")
+      // Click button next
+      const buttonNext = await waitUntilShowUp(screens.executeMethod.buttonNext)
+      assert.notEqual(buttonNext, false, "button 'Next' isn't displayed")
+      await buttonNext.click()
+      // Select executor
+      await delay(2000)
+      await waitUntilShowUp(screens.chooseContractExecutor.account)
+      const accounts = await driver.findElements(screens.chooseContractExecutor.account)
+      const account = accounts[executor + 1]
+      await account.click()
+      // Open confirm transaction
+      const button = await waitUntilShowUp(screens.chooseContractExecutor.buttonNext)
+      await button.click()
+      return true
+    } catch (err) {
+      return false
+    }
+    }
 
+    })
 
