@@ -12,8 +12,8 @@ function generateEndowmentsForFakeGlobal() {
 }
 
 const config = {
-  // iframe sharing
-  useGlobalRealm: true,
+  // TODO: permission granting endowments should NOT use global config
+  // global should only be used for hacking in support under SES
   global: {
     // required to do its job
     "extensionizer": {
@@ -23,6 +23,7 @@ const config = {
         window: typeof window !== 'undefined' ? window : undefined,
       }
     },
+    // wants localStorage (old code)
     "obs-store": {
       $: {
         global: {
@@ -30,45 +31,41 @@ const config = {
         },
       },
     },
-    // "eth-json-rpc-middleware": {
-    //   $: {
-    //     setTimeout: window.setTimeout.bind(window),
-    //     clearTimeout: window.clearTimeout.bind(window),
-    //   },
-    // },
-    // "debounce": {
-    //   $: {
-    //     setTimeout: window.setTimeout.bind(window),
-    //     clearTimeout: window.clearTimeout.bind(window),
-    //   },
-    // },
-    // "eth-block-tracker": {
-    //   $: {
-    //     setTimeout: window.setTimeout.bind(window),
-    //     clearTimeout: window.clearTimeout.bind(window),
-    //   },
-    // },
-    // "safe-event-emitter": {
-    //   $: {
-    //     setTimeout: window.setTimeout.bind(window),
-    //     clearTimeout: window.clearTimeout.bind(window),
-    //   },
-    // },
-    // "process": {
-    //   $: {
-    //     setTimeout: window.setTimeout.bind(window),
-    //     clearTimeout: window.clearTimeout.bind(window),
-    //   },
-    // },
-    // "_process": {
-    //   $: {
-    //     setTimeout: window.setTimeout.bind(window),
-    //     clearTimeout: window.clearTimeout.bind(window),
-    //   },
-    // },
+    // wants to generate a key from user password
+    "browser-passworder": {
+      $: {
+        crypto: window.crypto,
+      }
+    },
+    // wants to talk to infura
     "eth-json-rpc-infura": {
       $: {
         fetch: fetch.bind(window),
+      }
+    },
+    // feature detection via userAgent
+    "trezor-connect": {
+      $: sesEval(`({
+        navigator: {
+          userAgent: ''
+        }
+      })`)
+    },
+    // needs a random starting id
+    "json-rpc-random-id": {
+      $: {
+        Math: {
+          floor: Math.floor.bind(Math),
+          random: Math.random.bind(Math),
+        }
+      }
+    },
+    "ethjs-rpc": {
+      $: {
+        Math: {
+          floor: Math.floor.bind(Math),
+          random: Math.random.bind(Math),
+        }
       }
     },
     // global object detection
@@ -83,14 +80,6 @@ const config = {
     },
     "lodash.uniqby": {
       $: generateEndowmentsForFakeGlobal(),
-    },
-    // feature detection via userAgent
-    "trezor-connect": {
-      $: sesEval(`({
-        navigator: {
-          userAgent: ''
-        }
-      })`)
     },
     // tries to overwrite toString on the prototype, SES dislikes
     "buffer": {
@@ -136,27 +125,29 @@ const config = {
     "fast-json-patch": {
       skipSes: true,
     },
-    // "@sentry/core" (name parsed incorrectly)
-    "@sentry": {
+    // tries to modify Error
+    "@sentry/core": {
       skipSes: true,
     },
+    "@sentry/browser": {
+      skipSes: true,
+    },
+    // tries to overwrite error.message in error subclass
+    "json-rpc-error": {
+      skipSes: true,
+    }
   },
   dependencies: {
 
   }
 }
-//
-// function setOnDepConfig (value, depPath) {
-//   let configPart = config.dependencies
-//   const lastKey = depPath.slice(-1)[0]
-//   depPath.slice(0,-1).forEach((pathPart) => {
-//     // grab next configPart and make sure it exists
-//     const container = configPart[pathPart] || {}
-//     configPart[pathPart] = container
-//     // continue on this new container
-//     configPart = container
-//   })
-//   configPart[lastKey] = value
-// }
+
+// these needed setTimeout
+  // "eth-json-rpc-middleware"
+  // "debounce"
+  // "eth-block-tracker"
+  // "safe-event-emitter"
+  // "process"
+  // "_process"
 
 return config
