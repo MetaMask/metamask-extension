@@ -7,7 +7,7 @@ sleep 5
 cd test/e2e/beta/
 rm -rf drizzle-test
 mkdir drizzle-test && cd drizzle-test
-sudo npm install -g truffle
+npm install -g truffle
 truffle unbox drizzle
 echo "Deploying contracts for Drizzle test..."
 truffle compile && truffle migrate
