@@ -11,19 +11,33 @@ function generateEndowmentsForFakeGlobal() {
   return endowments
 }
 
+const extensionizerEndowments = {
+  chrome: typeof chrome !== 'undefined' ? chrome : undefined,
+  browser: typeof browser !== 'undefined' ? browser : undefined,
+  window: typeof window !== 'undefined' ? window : undefined,
+}
+
+const mathRandomEndowments = {
+  Math: {
+    floor: Math.floor.bind(Math),
+    random: Math.random.bind(Math),
+  }
+}
+
+const fakeGlobal = generateEndowmentsForFakeGlobal()
+
 const config = {
-  // TODO: permission granting endowments should NOT use global config
-  // global should only be used for hacking in support under SES
-  global: {
-    // required to do its job
+  dependencies: {
+    // extensionizer provides wrapper for extension globals
     "extensionizer": {
-      $: {
-        chrome: typeof chrome !== 'undefined' ? chrome : undefined,
-        browser: typeof browser !== 'undefined' ? browser : undefined,
-        window: typeof window !== 'undefined' ? window : undefined,
-      }
+      $: extensionizerEndowments,
     },
-    // wants localStorage (old code)
+    "extension-link-enabler": {
+      "extensionizer": {
+        $: extensionizerEndowments,
+      },
+    },
+    // has a wrapper around localStorage (old persistence)
     "obs-store": {
       $: {
         global: {
@@ -32,55 +46,52 @@ const config = {
       },
     },
     // wants to generate a key from user password
-    "browser-passworder": {
-      $: {
-        crypto: window.crypto,
-      }
+    "eth-keyring-controller": {
+      "browser-passworder": {
+        $: {
+          crypto: window.crypto,
+        },
+      },
     },
     // wants to talk to infura
     "eth-json-rpc-infura": {
       $: {
         fetch: fetch.bind(window),
-      }
+      },
     },
+  },
+  // TODO: permission granting endowments should NOT use global config
+  // global should only be used for hacking in support under SES
+  global: {
     // feature detection via userAgent
     "trezor-connect": {
-      $: sesEval(`({
+      $: {
         navigator: {
-          userAgent: ''
-        }
-      })`)
+          userAgent: '',
+        },
+      },
     },
     // needs a random starting id
     "json-rpc-random-id": {
-      $: {
-        Math: {
-          floor: Math.floor.bind(Math),
-          random: Math.random.bind(Math),
-        }
-      }
+      $: mathRandomEndowments,
     },
     "ethjs-rpc": {
-      $: {
-        Math: {
-          floor: Math.floor.bind(Math),
-          random: Math.random.bind(Math),
-        }
-      }
+      $: mathRandomEndowments,
     },
     // global object detection
     "async": {
-      $: generateEndowmentsForFakeGlobal(),
+      $: fakeGlobal,
     },
     "lodash.flatmap": {
-      $: generateEndowmentsForFakeGlobal(),
+      $: fakeGlobal,
     },
     "lodash": {
-      $: generateEndowmentsForFakeGlobal(),
+      $: fakeGlobal,
     },
     "lodash.uniqby": {
-      $: generateEndowmentsForFakeGlobal(),
+      $: fakeGlobal,
     },
+
     // tries to overwrite toString on the prototype, SES dislikes
     "buffer": {
       skipSes: true,
@@ -135,11 +146,8 @@ const config = {
     // tries to overwrite error.message in error subclass
     "json-rpc-error": {
       skipSes: true,
-    }
+    },
   },
-  dependencies: {
-
-  }
 }
 
 // these needed setTimeout
