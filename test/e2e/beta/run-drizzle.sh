@@ -8,9 +8,9 @@ cd test/e2e/beta/
 rm -rf drizzle-test
 mkdir drizzle-test && cd drizzle-test
 sudo npm install --unsafe-perm -g truffle
-truffle unbox drizzle
+sudo truffle unbox drizzle
 echo "Deploying contracts for Drizzle test..."
-truffle compile && truffle migrate
+sudo truffle compile && sudo truffle migrate
 BROWSER=none npm start >> /dev/null 2>&1 &
 cd ../../../../
 mocha test/e2e/beta/drizzle.spec
