@@ -7,6 +7,7 @@ set -o pipefail
 npm run ganache:start -- -b 2 >> /dev/null 2>&1 &
 npm_run_ganache_start_pid=$!
 sleep 5
+<<<<<<< HEAD
 
 pushd "$(mktemp -d)"
 npm install --no-package-lock truffle
@@ -16,6 +17,15 @@ echo "Deploying contracts for Drizzle test..."
 $truffle compile
 $truffle migrate
 
+=======
+cd test/e2e/beta/
+rm -rf drizzle-test
+mkdir drizzle-test && cd drizzle-test
+npm install --unsafe-perm truffle
+../../../../node_modules/.bin/truffle unbox drizzle
+echo "Deploying contracts for Drizzle test..."
+../../../../node_modules/.bin/truffle compile && ../../../../node_modules/.bin/truffle migrate
+>>>>>>> no globals
 BROWSER=none npm start >> /dev/null 2>&1 &
 npm_start_pid=$!
 
