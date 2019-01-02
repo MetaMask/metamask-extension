@@ -488,14 +488,27 @@ function zipTask (target) {
 }
 
 function generateBundler (opts, performBundle) {
+  let bundler
+
   const browserifyOpts = assign({}, watchify.args, {
     debug: opts.buildSourceMaps,
     fullPaths: opts.buildWithFullPaths,
   })
 
-  if (opts.filename === 'background.js') {
+  const activateSesify = ['background.js', 'ui.js'].includes(opts.filename)
+  const sesifyConfigFile = activateSesify && `./sesify/${opts.filename}`
+
+  if (activateSesify) {
     browserifyOpts.plugin = [['sesify', {
-      endowmentsConfig: fs.readFileSync('./sesConfig.js', 'utf8'),
+      // provide as a fn so we can always get latest
+      endowmentsConfig: () => {
+        // hack to get watchify to watch the config file for changes
+        setTimeout(() => {
+          bundler.emit('file', sesifyConfigFile)
+        })
+        // load latest config
+        return fs.readFileSync(sesifyConfigFile, 'utf8')
+      },
     }]]
   }
 
@@ -503,14 +516,14 @@ function generateBundler (opts, performBundle) {
     browserifyOpts['entries'] = [opts.filepath]
   }
 
-  let bundler = browserify(browserifyOpts)
+  bundler = browserify(browserifyOpts)
 
   if (opts.buildLib) {
-    bundler = bundler.require(opts.dependenciesToBundle)
+    bundler.require(opts.dependenciesToBundle)
   }
 
   if (opts.externalDependencies) {
-    bundler = bundler.external(opts.externalDependencies)
+    bundler.external(opts.externalDependencies)
   }
 
   // inject variables into bundle
@@ -522,7 +535,7 @@ function generateBundler (opts, performBundle) {
   })
 
   if (opts.watch) {
-    bundler = watchify(bundler)
+    watchify(bundler)
     // on any file update, re-runs the bundler
     bundler.on('update', async (ids) => {
       const stream = performBundle()
