@@ -7,7 +7,7 @@ sleep 5
 cd test/e2e/beta/
 rm -rf drizzle-test
 mkdir drizzle-test && cd drizzle-test
-npm install --unsafe-perm truffle
+npm install truffle
 ../../../../node_modules/.bin/truffle unbox drizzle
 echo "Deploying contracts for Drizzle test..."
 ../../../../node_modules/.bin/truffle compile && ../../../../node_modules/.bin/truffle migrate
