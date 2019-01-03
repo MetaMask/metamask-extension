@@ -272,30 +272,30 @@ describe('Metamask popup page', async function () {
   describe('Connect Hardware Wallet', async function () {
 
     it("Account menu contais item 'Connect HD wallet'", async function () {
-      const menu = await waitUntilShowUp(menus.account.menu)
+      const menu = await f.waitUntilShowUp(menus.account.menu)
       await menu.click()
-      await waitUntilShowUp(menus.account.item)
+      await f.waitUntilShowUp(menus.account.item)
       const items = await driver.findElements(menus.account.item)
-      await delay(500)
+      await f.delay(500)
       assert.equal(await items[4].getText(), 'Connect hardware wallet', "item's text incorrect")
       await items[4].click()
     })
 
 
     it("Opens screen 'Connect HD wallet',title is correct", async function () {
-      const title = await waitUntilShowUp(screens.hdWallet.title)
+      const title = await f.waitUntilShowUp(screens.hdWallet.title)
       assert.equal(await title.getText(), 'Connect to hardware wallet', "item's text incorrect")
     })
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       it("Button 'Connect' disabled by default", async function () {
-        const button = await waitUntilShowUp(screens.hdWallet.buttonConnect.disabled)
+        const button = await f.waitUntilShowUp(screens.hdWallet.buttonConnect.disabled)
         assert.notEqual(button, false, "button isn't displayed")
         assert.equal(await button.getText(), 'CONNECT', 'button has incorrect text')
       })
 
       it('Ledger image is displayed', async function () {
-        const image = await waitUntilShowUp(screens.hdWallet.image)
+        const image = await f.waitUntilShowUp(screens.hdWallet.image)
         assert.notEqual(image, false, "ledger's image isn't displayed")
         const src = await image.getAttribute('src')
         assert.equal(src.includes('images/ledger-logo.svg'), true, 'Ledger has incorrect image')
@@ -311,14 +311,14 @@ describe('Metamask popup page', async function () {
       it("Button 'Connect' enabled if Trezor selected", async function () {
         const images = await driver.findElements(screens.hdWallet.image)
         await images[1].click()
-        const button = await waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
+        const button = await f.waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
         assert.equal(await button.isEnabled(), true, 'button is disabled')
       })
 
       it("Button 'Connect' enabled if Ledger selected", async function () {
         const images = await driver.findElements(screens.hdWallet.image)
         await images[0].click()
-        const button = await waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
+        const button = await f.waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
         assert.equal(await button.isEnabled(), true, 'button is disabled')
       })
 
@@ -328,9 +328,9 @@ describe('Metamask popup page', async function () {
       })
 
       it('Error message if connect Ledger', async function () {
-        const button = await waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
+        const button = await f.waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
         await button.click()
-        const error = await waitUntilShowUp(screens.hdWallet.error)
+        const error = await f.waitUntilShowUp(screens.hdWallet.error)
         const shouldBe = "TransportError: U2F browser support is needed for Ledger. Please use Chrome, Opera or Firefox with a U2F extension. Also make sure you're on an HTTPS connection"
         assert.equal(await error.getText(), shouldBe, 'error has incorrect text')
       })
@@ -338,24 +338,24 @@ describe('Metamask popup page', async function () {
       it('Popup opens if connect Trezor', async function () {
         const images = await driver.findElements(screens.hdWallet.image)
         await images[1].click()
-        const button = await waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
+        const button = await f.waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
         await button.click()
         const allHandles = await driver.getAllWindowHandles()
         assert.equal(allHandles.length, 2, "popup isn't opened")
-        await switchToFirstPage()
+        await f.switchToFirstPage()
         await driver.navigate().refresh()
       })
     }
       it('Button arrow leads to main screen', async function () {
-        const menu = await waitUntilShowUp(menus.account.menu)
+        const menu = await f.waitUntilShowUp(menus.account.menu)
         await menu.click()
-        await waitUntilShowUp(menus.account.item)
+        await f.waitUntilShowUp(menus.account.item)
         const items = await driver.findElements(menus.account.item)
-        await delay(500)
+        await f.delay(500)
         await items[4].click()
-        const arrow = await waitUntilShowUp(screens.hdWallet.buttonArrow)
+        const arrow = await f.waitUntilShowUp(screens.hdWallet.buttonArrow)
         await arrow.click()
-        const ident = await waitUntilShowUp(screens.main.identicon, 20)
+        const ident = await f.waitUntilShowUp(screens.main.identicon, 20)
         assert.notEqual(ident, false, "main screen isn't opened")
       })
   })
