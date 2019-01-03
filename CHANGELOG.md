@@ -2,6 +2,15 @@
 
 ## Current Develop Branch
 
+## 5.3.0 Wed Jan 02 2019
+
+- [#5978](https://github.com/MetaMask/metamask-extension/pull/5978): Fix etherscan links on notifications
+- [#5980](https://github.com/MetaMask/metamask-extension/pull/5980): Fix drizzle tests
+- [#5922](https://github.com/MetaMask/metamask-extension/pull/5922): Prevent users from changing the From field in the send screen
+- [#5932](https://github.com/MetaMask/metamask-extension/pull/5932): Fix displayed time and date in the activity log. Remove vreme library, add luxon library.
+- [#5924](https://github.com/MetaMask/metamask-extension/pull/5924): transactions - throw an error if a transaction is generated while the network is loading
+- [#5893](https://github.com/MetaMask/metamask-extension/pull/5893): Add loading network screen
+
 ## 5.2.2 Wed Dec 12 2018
 
 - [#5925](https://github.com/MetaMask/metamask-extension/pull/5925): Fix speed up button not showing for transactions with the lowest nonce
