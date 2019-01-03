@@ -111,7 +111,7 @@ class ExtensionPlatform {
 
   _viewOnEtherScan (txId) {
     if (txId.startsWith('http://')) {
-      this.openWindow({ url: txId })
+      extension.tabs.create({ url: txId })
     }
   }
 }
