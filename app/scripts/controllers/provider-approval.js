@@ -26,23 +26,49 @@ class ProviderApprovalController {
       providerRequests: [],
     })
 
+    const internalListener = ({ action = '', force, origin, siteTitle, siteImage, target, name }) => {
+      switch (action) {
+        case 'init-provider-request':
+          this._handleProviderRequest(origin, siteTitle, siteImage, force)
+          break
+        case 'init-is-approved':
+          this._handleIsApproved(origin)
+          break
+        case 'init-is-unlocked':
+          this._handleIsUnlocked()
+          break
+        case 'init-privacy-request':
+          this._handlePrivacyRequest()
+          break
+      }
+    }
+
+    const externalListener = (opts, sender) => {
+      const { action, force, origin, siteTitle, siteImage, target, name } = opts
+      const title = origin || siteTitle || 'Extension'
+      switch (action) {
+        case 'init-provider-request':
+          this._handleProviderRequest(sender.id, title, siteImage, force)
+          break
+        case 'init-is-approved':
+          this._handleIsApproved(origin)
+          break
+        case 'init-is-unlocked':
+          this._handleIsUnlocked()
+          break
+        case 'init-privacy-request':
+          this._handlePrivacyRequest()
+          break
+      }
+    }
+
     if (platform && platform.addMessageListener) {
-      platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }) => {
-        switch (action) {
-          case 'init-provider-request':
-            this._handleProviderRequest(origin, siteTitle, siteImage, force)
-            break
-          case 'init-is-approved':
-            this._handleIsApproved(origin)
-            break
-          case 'init-is-unlocked':
-            this._handleIsUnlocked()
-            break
-          case 'init-privacy-request':
-            this._handlePrivacyRequest()
-            break
-        }
-      })
+      platform.addMessageListener(internalListener)
+    }
+
+    // Allow cross-extension provider requests:
+    if (platform && platform.addExternalMessageListener) {
+      platform.addExternalMessageListener(externalListener)
     }
   }
 

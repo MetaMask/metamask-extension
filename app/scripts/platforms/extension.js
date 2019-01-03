@@ -64,6 +64,10 @@ class ExtensionPlatform {
     extension.runtime.onMessage.addListener(cb)
   }
 
+  addExternalMessageListener (cb) {
+    extension.runtime.onMessageExternal.addListener(cb)
+  }
+
   sendMessage (message, query = {}) {
     extension.tabs.query(query, tabs => {
       tabs.forEach(tab => {
