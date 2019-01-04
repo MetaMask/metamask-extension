@@ -21,6 +21,7 @@ const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('eth-keyring-controller')
+const LoginController = require('eth-login-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
@@ -55,6 +56,9 @@ const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
+
+// Methods that do not require any permissions to use:
+const SAFE_METHODS = require('./lib/safe-methods.json')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -162,6 +166,15 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
+
+    // domain login management
+    this.logins = {}
+    if (!('logins' in initState)) {
+      initState.logins = {}
+    }
+    for (let origin in initState.logins) {
+      this.logins[origin] = new Login(initState.logins[origin])
+    }
 
     this.keyringController.memStore.subscribe((s) => this._onKeyringControllerUpdate(s))
 
@@ -1300,6 +1313,42 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
+  /*
+   * A convenience method for retrieving a login object
+   * or creating a new one if needed.
+   *
+   * @param {string} origin = The origin string representing the domain.
+   */
+  loginFor (origin) {
+    if (origin in this.logins) {
+      return this.logins[origin]
+    }
+
+    this.logins[origin] = new LoginController({
+      origin,
+
+      // safe methods never require approval,
+      // are considered trivial / no risk.
+      // maybe reading should be a permission, though!
+      safeMethods: SAFE_METHODS,
+      initState: {
+        permissions: {
+          'stub_test': {},
+        },
+      },
+      methods: {
+        'stub_test': async (req) => {
+          return 'It works!'
+        },
+        'restricted_test': async (req) => {
+          return 'It works!'
+        }
+      }
+    })
+
+    return this.logins[origin]
+  }
+
   /**
    * A method for serving our ethereum provider over a given stream.
    * @param {*} outStream - The stream to provide over.
@@ -1311,11 +1360,14 @@ module.exports = class MetamaskController extends EventEmitter {
     const provider = this.provider
     const blockTracker = this.blockTracker
 
+    const login = this.loginFor(origin)
+
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
     subscriptionManager.events.on('notification', (message) => engine.emit('notification', message))
+    engine.push(login.providerMiddlewareFunction.bind(login))
 
     // metadata
     engine.push(createOriginMiddleware({ origin }))
