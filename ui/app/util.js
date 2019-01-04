@@ -63,24 +63,6 @@ module.exports = {
   isEthNetwork,
 }
 
-/*
- case 'mainnet':
-      netId = '1'
-      chainId = '0x01'
-      break
-    case 'ropsten':
-      netId = '3'
-      chainId = '0x03'
-      break
-    case 'rinkeby':
-      netId = '4'
-      chainId = '0x04'
-      break
-    case 'kovan':
-      netId = '42'
-      chainId = '0x2a'
-      break*/
-
 function isEthNetwork (netId) {
   if (!netId) return false
 
