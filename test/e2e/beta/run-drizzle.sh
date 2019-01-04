@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+set -e
+set -u
+set -o pipefail
+
 export PATH="$PATH:./node_modules/.bin"
 
 npm run ganache:start -- -b 2 >> /dev/null 2>&1 &
