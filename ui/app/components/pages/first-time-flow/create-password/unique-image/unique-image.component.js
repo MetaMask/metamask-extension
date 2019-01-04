@@ -17,12 +17,13 @@ export default class UniqueImageScreen extends PureComponent {
 
   render () {
     const { t } = this.context
+    const { address, history } = this.props
 
     return (
       <div>
         <Identicon
           className="first-time-flow__unique-image"
-          address={this.props.address}
+          address={address}
           diameter={70}
         />
         <div className="first-time-flow__header">
@@ -37,7 +38,7 @@ export default class UniqueImageScreen extends PureComponent {
         <Button
           type="first-time"
           className="first-time-flow__button"
-          onClick={() => this.props.history.push(INITIALIZE_NOTICE_ROUTE)}
+          onClick={() => history.push(INITIALIZE_NOTICE_ROUTE)}
         >
           { t('next') }
         </Button>

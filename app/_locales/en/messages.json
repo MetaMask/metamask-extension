@@ -412,6 +412,9 @@
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
+  "downloadSecretBackup": {
+    "message": "Download this Secret Backup Phrase and keep it stored safely on an external encrypted hard drive or storage medium."
+  },
   "downloadStateLogs": {
     "message": "Download State Logs"
   },
@@ -1125,6 +1128,9 @@
   },
   "secondsShorthand": {
     "message": "Sec"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Separate each word with a single space"
   },
   "seedPhraseReq": {
     "message": "Seed phrases are 12 words long"

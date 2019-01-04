@@ -112,13 +112,11 @@ export default class RevealSeedPhrase extends PureComponent {
               { t('memorizePhrase') }
             </div>
             <div className="first-time-flow__text-block">
-              <strong>
-                <a
-                  className="reveal-seed-phrase__export-text"
-                  onClick={this.handleExport}>
-                  Download this Secret Backup Phrase
-                </a>
-              </strong> and keep it stored safely on an external encrypted hard drive or storage medium.
+              <a
+                className="reveal-seed-phrase__export-text"
+                onClick={this.handleExport}>
+                { t('downloadSecretBackup') }
+              </a>
             </div>
           </div>
         </div>

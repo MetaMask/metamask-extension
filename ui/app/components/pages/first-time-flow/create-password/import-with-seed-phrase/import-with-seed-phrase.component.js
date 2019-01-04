@@ -161,7 +161,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             className="first-time-flow__textarea"
             onChange={e => this.handleSeedPhraseChange(e.target.value)}
             value={this.state.seedPhrase}
-            placeholder="Separate each word with a single space"
+            placeholder={t('seedPhrasePlaceholder')}
           />
         </div>
         {

@@ -28,8 +28,6 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       seedPhrase,
     } = this.props
 
-    console.log('SWITCH', seedPhrase, isUnlocked)
-
     if (completedOnboarding) {
       return <Redirect to={{ pathname: DEFAULT_ROUTE }} />
     }
