@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import shuffle from 'lodash.shuffle'
 import Identicon from '../../../../identicon'
-import LockIcon from '../../../../lock-icon'
 import Button from '../../../../button'
 import Breadcrumbs from '../../../../breadcrumbs'
 import { DEFAULT_ROUTE, INITIALIZE_SEED_PHRASE_ROUTE } from '../../../../../routes'
@@ -73,40 +72,6 @@ export default class ConfirmSeedPhrase extends PureComponent {
     const { seedPhrase } = this.props
     const { selectedSeedWords } = this.state
     return seedPhrase === selectedSeedWords.join(' ')
-  }
-
-  renderSecretWordsContainer () {
-    const { t } = this.context
-    const { seedPhrase } = this.props
-    const { isShowingSeedPhrase } = this.state
-
-    return (
-      <div className="reveal-seed-phrase__secret">
-        <div className={classnames(
-          'reveal-seed-phrase__secret-words',
-          { 'reveal-seed-phrase__secret-words--hidden': !isShowingSeedPhrase }
-        )}>
-          { seedPhrase }
-        </div>
-        {
-          !isShowingSeedPhrase && (
-            <div
-              className="reveal-seed-phrase__secret-blocker"
-              onClick={() => this.setState({ isShowingSeedPhrase: true })}
-            >
-              <LockIcon
-                width="28px"
-                height="35px"
-                fill="#FFFFFF"
-              />
-              <div className="reveal-seed-phrase__reveal-button">
-                { t('clickToRevealSeed') }
-              </div>
-            </div>
-          )
-        }
-      </div>
-    )
   }
 
   render () {
@@ -183,7 +148,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           onClick={this.handleSubmit}
           disabled={!this.isValid()}
         >
-          { t('next') }
+          { t('confirm') }
         </Button>
         <Breadcrumbs
           className="first-time-flow__breadcrumbs"
