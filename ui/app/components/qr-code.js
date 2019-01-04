@@ -5,7 +5,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const { isHexPrefixed } = require('ethereumjs-util')
 const ReadOnlyInput = require('./readonly-input')
-const { checksumAddress, isRskNetwork } = require('../util')
+const { checksumAddress } = require('../util')
 
 module.exports = connect(mapStateToProps)(QrCodeView)
 
@@ -27,10 +27,7 @@ function QrCodeView () {
 QrCodeView.prototype.render = function () {
   const props = this.props
   const { message, data, network } = props.Qr
-  let address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data)}`
-  if (isRskNetwork(network)) {
-    address = `${isHexPrefixed(data) ? 'rsk:' : ''}${checksumAddress(data).toLowerCase()}`
-  }
+  const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data, network)}`
   const qrImage = qrCode(4, 'M')
 
   qrImage.addData(address)
@@ -56,7 +53,7 @@ QrCodeView.prototype.render = function () {
     h(ReadOnlyInput, {
       wrapperClass: 'ellip-address-wrapper',
       inputClass: 'qr-ellip-address',
-      value: isRskNetwork(network) ? data.toLowerCase() : checksumAddress(data),
+      value: checksumAddress(data, network),
     }),
   ])
 }

@@ -60,12 +60,31 @@ module.exports = {
   getTokenAddressFromTokenObject,
   checksumAddress,
   addressSlicer,
-  isRskNetwork,
+  isEthNetwork,
 }
 
-function isRskNetwork (networkChainId) {
-  if (!networkChainId) return false
-  if (networkChainId === '30' || networkChainId === '31') {
+/*
+ case 'mainnet':
+      netId = '1'
+      chainId = '0x01'
+      break
+    case 'ropsten':
+      netId = '3'
+      chainId = '0x03'
+      break
+    case 'rinkeby':
+      netId = '4'
+      chainId = '0x04'
+      break
+    case 'kovan':
+      netId = '42'
+      chainId = '0x2a'
+      break*/
+
+function isEthNetwork (netId) {
+  if (!netId) return false
+
+  if (netId === '1' || netId === '3' || netId === '4' || netId === '42') {
     return true
   }
 
@@ -309,10 +328,12 @@ function getTokenAddressFromTokenObject (token) {
  * Safely checksumms a potentially-null address
  *
  * @param {String} [address] - address to checksum
+ * @param {String} [network] - network id
  * @returns {String} - checksummed address
  */
-function checksumAddress (address) {
-  return address ? ethUtil.toChecksumAddress(address) : ''
+function checksumAddress (address, network) {
+  const checksummed = address ? ethUtil.toChecksumAddress(address) : ''
+  return checksummed && network && !isEthNetwork(network) ? checksummed.toLowerCase() : checksummed
 }
 
 function addressSlicer (address = '') {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
 import EnsInput from '../../../ens-input'
 import { getToErrorObject } from './send-to-row.utils.js'
-import { isRskNetwork } from '../../../../util'
+import { checksumAddress } from '../../../../util'
 
 export default class SendToRow extends Component {
 
@@ -27,9 +27,7 @@ export default class SendToRow extends Component {
   }
 
   handleToChange (to, nickname = '', toError, network) {
-    if (isRskNetwork(network)) {
-      to = to.toLowerCase()
-    }
+    to = checksumAddress(to, network)
     const { hasHexData, updateSendTo, updateSendToError, updateGas } = this.props
     const toErrorObject = getToErrorObject(to, toError, hasHexData)
     updateSendTo(to, nickname)
