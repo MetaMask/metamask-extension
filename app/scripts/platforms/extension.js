@@ -76,6 +76,11 @@ class ExtensionPlatform {
     })
   }
 
+  sendExternalMessage(extensionId, message) {
+    console.dir({ extensionId, message })
+    extension.runtime.sendMessage(extensionId, message, {})
+  }
+
   _showConfirmedTransaction (txMeta) {
 
     this._subscribeToNotificationClicked()
