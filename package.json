@@ -120,7 +120,7 @@
     "eth-json-rpc-infura": "^3.0.0",
     "eth-keyring-controller": "^3.3.1",
     "eth-ledger-bridge-keyring": "^0.1.1",
-    "eth-login-controller": "^2.0.0",
+    "eth-login-controller": "^2.1.0",
     "eth-method-registry": "^1.0.0",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
