@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+-[#5973] (https://github.com/MetaMask/metamask-extension/pull/5973): Fix incorrectly showing checksums on non-ETH blockchains (issue 5838)
+
 ## 5.3.5 Mon Feb 4 2019
 
 - [#6084](https://github.com/MetaMask/metamask-extension/pull/6087): Privacy mode fixes

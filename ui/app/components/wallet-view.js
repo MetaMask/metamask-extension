@@ -125,10 +125,11 @@ WalletView.prototype.render = function () {
     showAccountDetailModal,
     hideSidebar,
     identities,
+    network,
   } = this.props
   // temporary logs + fake extra wallets
 
-  const checksummedAddress = checksumAddress(selectedAddress)
+  const checksummedAddress = checksumAddress(selectedAddress, network)
 
   if (!selectedAddress) {
     throw new Error('selectedAddress should not be ' + String(selectedAddress))
