@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
-import { markNoticeRead, showModal, setCompletedOnboarding } from '../../../../actions'
+import { markNoticeRead, setCompletedOnboarding } from '../../../../actions'
 import Notices from './notices.component'
 
 const mapStateToProps = ({ metamask }) => {
@@ -17,7 +17,6 @@ const mapStateToProps = ({ metamask }) => {
 const mapDispatchToProps = dispatch => {
   return {
     markNoticeRead: notice => dispatch(markNoticeRead(notice)),
-    openBuyEtherModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER'})),
     completeOnboarding: () => dispatch(setCompletedOnboarding()),
   }
 }

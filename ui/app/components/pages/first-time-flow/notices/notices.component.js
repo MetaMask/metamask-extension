@@ -24,12 +24,11 @@ export default class Notices extends PureComponent {
       body: PropTypes.string,
     }),
     noActiveNotices: PropTypes.bool,
-    openBuyEtherModal: PropTypes.func,
-  };
+  }
 
   static defaultProps = {
     nextUnreadNotice: {},
-  };
+  }
 
   state = {
     atBottom: false,
@@ -52,7 +51,6 @@ export default class Notices extends PureComponent {
       isImportedKeyring,
       markNoticeRead,
       nextUnreadNotice,
-      openBuyEtherModal,
     } = this.props
 
     const hasActiveNotices = await markNoticeRead(nextUnreadNotice)
@@ -61,7 +59,6 @@ export default class Notices extends PureComponent {
       if (isImportedKeyring) {
         await completeOnboarding()
         history.push(DEFAULT_ROUTE)
-        openBuyEtherModal()
       } else {
         history.push(INITIALIZE_SEED_PHRASE_ROUTE)
       }
