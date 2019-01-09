@@ -127,6 +127,7 @@
     "eth-sig-util": "^2.0.2",
     "eth-token-tracker": "^1.1.5",
     "eth-layer2App-tracker": "github:Bunjin/eth-layer2App-tracker#develop",
+    "eth-plugin-registrar": "github:Bunjin/eth-plugin-registrar#develop",    
     "eth-trezor-keyring": "^0.1.0",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-tx": "^1.3.0",

@@ -10,6 +10,8 @@ import Layer2AppSearch from './layer2App-search'
 import PageContainer from '../../page-container'
 import { Tabs, Tab } from '../../tabs'
 
+const Layer2AppTracker = require('eth-plugin-registrar')
+
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 const SEARCH_TAB = 'SEARCH'
 const CUSTOM_LAYER2APP_TAB = 'CUSTOM_LAYER2APP'
