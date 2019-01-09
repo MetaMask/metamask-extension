@@ -1,5 +1,6 @@
 {
   "metamask": {
+    "completedOnboarding": true,
     "isInitialized": true,
     "isUnlocked": true,
     "featureFlags": {"betaUI": true},
