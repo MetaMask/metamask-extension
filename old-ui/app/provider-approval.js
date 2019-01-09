@@ -4,7 +4,7 @@ import { approveProviderRequest, rejectProviderRequest } from '../../ui/app/acti
 import { connect } from 'react-redux'
 class ProviderApproval extends Component {
   render () {
-    const { approveProviderRequest, origin, rejectProviderRequest } = this.props
+    const { approveProviderRequest, origin, tabID, rejectProviderRequest } = this.props
     return (
       <div className="flex-column flex-grow">
         <style dangerouslySetInnerHTML={{__html: `
@@ -28,7 +28,7 @@ class ProviderApproval extends Component {
         <div className="section-title flex-row flex-center">
           <i
             className="fa fa-arrow-left fa-lg cursor-pointer"
-            onClick={() => { rejectProviderRequest(origin) }} />
+            onClick={() => { rejectProviderRequest(tabID) }} />
           <h2 className="page-subtitle">Web3 API Request</h2>
         </div>
         <div className="provider_approval_content">
@@ -38,10 +38,10 @@ class ProviderApproval extends Component {
         <div className="provider_approval_actions">
           <button
             className="btn-green"
-            onClick={() => { approveProviderRequest(origin) }}>APPROVE</button>
+            onClick={() => { approveProviderRequest(tabID) }}>APPROVE</button>
           <button
             className="cancel btn-red"
-            onClick={() => { rejectProviderRequest(origin) }}>REJECT</button>
+            onClick={() => { rejectProviderRequest(tabID) }}>REJECT</button>
         </div>
       </div>
     )
@@ -51,13 +51,14 @@ class ProviderApproval extends Component {
 ProviderApproval.propTypes = {
   approveProviderRequest: PropTypes.func,
   origin: PropTypes.string,
+  tabID: PropTypes.string,
   rejectProviderRequest: PropTypes.func,
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    approveProviderRequest: origin => dispatch(approveProviderRequest(origin)),
-    rejectProviderRequest: origin => dispatch(rejectProviderRequest(origin)),
+    approveProviderRequest: tabID => dispatch(approveProviderRequest(tabID)),
+    rejectProviderRequest: tabID => dispatch(rejectProviderRequest(tabID)),
   }
 }
 

@@ -4,8 +4,8 @@ import { approveProviderRequest, rejectProviderRequest } from '../../../actions'
 
 function mapDispatchToProps (dispatch) {
   return {
-    approveProviderRequest: origin => dispatch(approveProviderRequest(origin)),
-    rejectProviderRequest: origin => dispatch(rejectProviderRequest(origin)),
+    approveProviderRequest: tabID => dispatch(approveProviderRequest(tabID)),
+    rejectProviderRequest: tabID => dispatch(rejectProviderRequest(tabID)),
   }
 }
 
