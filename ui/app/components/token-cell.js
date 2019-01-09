@@ -17,7 +17,6 @@ function mapStateToProps (state) {
     selectedTokenAddress: state.metamask.selectedTokenAddress,
     userAddress: selectors.getSelectedAddress(state),
     contractExchangeRates: state.metamask.contractExchangeRates,
-    conversionRate: state.metamask.conversionRate,
     sidebarOpen: state.appState.sidebar.isOpen,
   }
 }
@@ -51,14 +50,12 @@ TokenCell.prototype.render = function () {
     setSelectedToken,
     selectedTokenAddress,
     contractExchangeRates,
-    conversionRate,
     hideSidebar,
     sidebarOpen,
     currentCurrency,
     // userAddress,
     image,
   } = props
-  let currentTokenToFiatRate
   let currentTokenInFiat
   let formattedFiat = ''
 
