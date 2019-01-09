@@ -19,13 +19,13 @@ export default class Layer2AppView extends PureComponent {
     let elements = []
     const script = this.props.selectedLayer2AppScript
 
-    for (var k = 0; k< script.layer2Abi.actions.length; k++){
+    for (var k = 0; k< script.layer2Interface.actions.length; k++){
       const index = k
 
       let paramValues = []      
-      for (var i = 0; i< script.layer2Abi.actions[index].params.length; i++){
+      for (var i = 0; i< script.layer2Interface.actions[index].params.length; i++){
 	const subIndex = i
-	const param = script.layer2Abi.actions[index].params[subIndex]
+	const param = script.layer2Interface.actions[index].params[subIndex]
 	elements.push(h('input', {
 	  key: "input"+index+subIndex,
 	  className: 'customize-gas-input',
@@ -45,11 +45,11 @@ export default class Layer2AppView extends PureComponent {
 		   type="primary"
 		   className="layer2App-view__button"
 		   onClick={() => {
-		     console.log(script.layer2Abi)
-		     script.layer2Abi.actions[index].call(paramValues)}
+		     console.log(script.layer2Interface)
+		     script.layer2Interface.actions[index].call(paramValues)}
 			   }
 		   >
-		   {script.layer2Abi.actions[index].name}
+		   {script.layer2Interface.actions[index].name}
 		    </Button>)
 
     }
