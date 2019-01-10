@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import { formatBalance, countSignificantDecimals } from '../util'
 import PropTypes from 'prop-types'
-import { DAI_CODE, POA_SOKOL_CODE } from '../../../app/scripts/controllers/network/enums'
+import { DAI_CODE, POA_SOKOL_CODE, RSK_TESTNET_CODE } from '../../../app/scripts/controllers/network/enums'
 
 class FiatValue extends Component {
   render = () => {
     const props = this.props
     let { conversionRate } = props
     const { currentCurrency, network } = props
-    const isSokol = parseInt(network) === POA_SOKOL_CODE
+    const isTestnet = parseInt(network) === POA_SOKOL_CODE || parseInt(network) === RSK_TESTNET_CODE
     const isDai = parseInt(network) === DAI_CODE
-    if (isSokol) {
+    if (isTestnet) {
       conversionRate = 0
     } else if (isDai) {
       conversionRate = 1

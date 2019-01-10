@@ -130,7 +130,7 @@ class CurrencyController {
       currentCurrency = this.getCurrentCurrency()
       currentCoin = this.getCurrentCoin()
       let conversionRate, conversionDate
-      if (currentCoin === 'poa') {
+      if (currentCoin === 'poa' || currentCoin === 'rbtc') {
         const coinId = await this.getCoinMarketCapId(currentCoin)
         const response = await fetch(`https://api.coinmarketcap.com/v2/ticker/${coinId}/?convert=${currentCurrency.toLowerCase()}`)
         const parsedResponse = await response.json()
