@@ -35,7 +35,7 @@ export default class TokenCurrencyDisplay extends PureComponent {
 
     let displayValue
 
-    if (tokenData.params && tokenData.params.length) {
+    if (tokenData && tokenData.params && tokenData.params.length) {
       const tokenValue = getTokenValue(tokenData.params)
       displayValue = calcTokenAmount(tokenValue, decimals).toString()
     }

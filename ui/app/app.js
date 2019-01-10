@@ -34,7 +34,7 @@ const NoticeScreen = require('./components/pages/notice')
 const Loading = require('./components/loading-screen')
 const LoadingNetwork = require('./components/loading-network-screen').default
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
-const AccountMenu = require('./components/account-menu')
+import AccountMenu from './components/account-menu'
 
 // Global Modals
 const Modal = require('./components/modals/index').Modal

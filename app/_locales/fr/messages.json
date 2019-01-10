@@ -204,22 +204,22 @@
     "message": "Connecter"
   },
   "connecting": {
-    "message": "Connection..."
+    "message": "Connexion..."
   },
   "connectingToKovan": {
-    "message": "Connection au réseau de test Kovan"
+    "message": "Connexion au réseau de test Kovan"
   },
   "connectingToMainnet": {
-    "message": "Connection au réseau principal Ethereum"
+    "message": "Connexion au réseau principal Ethereum"
   },
   "connectingToRopsten": {
-    "message": "Connection au réseau de test Ropsten"
+    "message": "Connexion au réseau de test Ropsten"
   },
   "connectingToRinkeby": {
-    "message": "Connection au réseau de test Rinkeby"
+    "message": "Connexion au réseau de test Rinkeby"
   },
   "connectingToUnknown": {
-    "message": "Connection à un réseau inconnu"
+    "message": "Connexion à un réseau inconnu"
   },
   "connectToLedger": {
     "message": "Connecter un Ledger"
