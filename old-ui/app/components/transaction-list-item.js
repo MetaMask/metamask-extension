@@ -82,8 +82,7 @@ TransactionListItem.prototype.render = function () {
     numericNet === POA_SOKOL_CODE ||
     numericNet === POA_CODE ||
     numericNet === DAI_CODE ||
-    numericNet === RSK_CODE ||
-    numericNet === RSK_TESTNET_CODE
+    numericNet === RSK_CODE
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
