@@ -132,8 +132,11 @@ var rand = function(){ return Math.ceil(Math.random()*10000) }
 // based on a UI a user can use to add directories or URLs.
 // We DO NOT want to have to add dependencies to MetaMask for plugins,
 // but for now, I did, just to get the gulp build system working properly.
-plugins.GUN = require('gun/gun.min.js');
-plugins.SEA = require('gun/sea.js');
+
+/* only SEA proxy shim needed */
+/* keeps things lightweight */
+/* no dependency is loaded! */
+plugins.SEA = {};
 
 // NOTE: SEA should actually be core, not considered a plugin!
 // It is what other plugins would use as their metamask crypto API.
@@ -142,15 +145,15 @@ plugins.SEA = require('gun/sea.js');
 var n1 = ['PROOF OF WORK', 'ENCRYPTION', 'DECRYPTION', 'SIGNING', 'SIGNATURE VERIFICATION', 'SECRET SHARING'];
 ['work', 'encrypt', 'decrypt', 'sign', 'verify', 'secret'].forEach(function(method, i){
   plugins.SEA[method] = function(data, pair, cb, opt){
-    console.log("METAMASK HAS HIJACKED SEA's "+n1[i]+" FOR SECURITY REASONS!");
+    log.debug("METAMASK HAS HIJACKED SEA's "+n1[i]+" FOR SECURITY REASONS!");
     // NOTE: SEA's official API is callback, not Promise. 
     return new Promise(function(res, rej){ // Should be callback style, temporary for now.
       cb = cb || function(){};
       pair = (pair instanceof Function)? undefined : pair;
       var put = {data: data, pair: pair, opt: opt};
-      inpageProvider.sendAsync({jsonrpc:'2.0', method: 'SEA.'+method, put: put}, function(a,b,c){
+      inpageProvider.sendAsync({jsonrpc:'2.0', method: 'SEA_'+method, put: put}, function(a,b,c){
         if(b.err || b.error){
-          console.log(b.err || b.error);
+          log.debug(b.err || b.error);
           plugins.SEA.err = b.err || b.error;
           cb(); res(); // rej() is handled by SEA, not the plugin.
           return;
@@ -162,14 +165,14 @@ var n1 = ['PROOF OF WORK', 'ENCRYPTION', 'DECRYPTION', 'SIGNING', 'SIGNATURE VER
 var n2 = ['NAMING', 'KEY GENERATION'];
 ['name', 'pair'].forEach(function(method, i){
   plugins.SEA[method] = function(cb, opt){
-    console.log("METAMASK HAS HIJACKED SEA's "+n2[i]+" FOR SECURITY REASONS!");
+    log.debug("METAMASK HAS HIJACKED SEA's "+n2[i]+" FOR SECURITY REASONS!");
     // NOTE: SEA's official API is callback, not Promise. 
     return new Promise(function(res, rej){ // Should be callback style, temporary for now.
       cb = cb || function(){};
       var get = {opt: opt};
-      inpageProvider.sendAsync({jsonrpc:'2.0', method: 'SEA.'+method, get: get}, function(a,b,c){
+      inpageProvider.sendAsync({jsonrpc:'2.0', method: 'SEA_'+method, get: get}, function(a,b,c){
         if(b.err || b.error){
-          console.log(b.err || b.error);
+          log.debug(b.err || b.error);
           plugins.SEA.err = b.err || b.error;
           cb(); res(); // rej() is handled by SEA, not the plugin.
           return;
@@ -179,11 +182,11 @@ var n2 = ['NAMING', 'KEY GENERATION'];
   }
 });
 
-console.log('MetaMask plugins:', plugins);
+log.debug('MetaMask plugins:', plugins);
 // end delete
-} catch(e) { console.log('GUN / SEA not hardcode installed.') }
+} catch(e) { log.debug(e) }
 
 Object.keys(plugins).forEach(function(plugin){
   window[plugin] = plugins[plugin];
-  console.log('MetaMask has provided the plugin:', plugin);
+  log.debug('MetaMask has provided the plugin:', plugin);
 })

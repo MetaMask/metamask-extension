@@ -1,9 +1,9 @@
 module.exports = seajack;
-var GUN = require('gun/gun.min.js');
+var GUN = require('gun/gun.min.js'); // gun will be removed when MM+GUN+IA make SEA foundation
 var SEA = require('gun/sea.js');
 
 function seajack(req, res, next, end) {
-  var method = (req.method||'').split('.');
+  var method = (req.method||'').split('_');
   if('SEA' !== method[0] || !SEA[method[1]]){
     next();
     return;
