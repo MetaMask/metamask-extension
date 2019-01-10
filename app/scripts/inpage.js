@@ -5,6 +5,7 @@ const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
+require('./inpage-beta')
 
 let isEnabled = false
 let warned = false
@@ -16,11 +17,12 @@ restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
-console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
-'stopped exposing user accounts to dapps if "privacy mode" is enabled on ' +
-'November 2nd, 2018. Dapps should now call provider.enable() in order to view and use ' +
-'accounts. Please see https://bit.ly/2QQHXvF for complete information and up-to-date ' +
-'example code.')
+console.warn(`
+ATTENTION: MetaMask and other dapp browsers are beginning to move to a standard provider API.
+This new API is available today at window.ethereumBeta for testing. It can be used directly,
+or with web3 version <web3_version> available at <web3_link>. Please see for <blog_link> 
+or more information.
+`)
 
 /**
  * Adds a postMessage listener for a specific message type
@@ -69,7 +71,10 @@ inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
     providerHandle = ({ data: { error, selectedAddress } }) => {
       if (typeof error !== 'undefined') {
-        reject(error)
+        reject({
+          message: error,
+          code: 4001,
+        })
       } else {
         window.removeEventListener('message', providerHandle)
         setTimeout(() => {
