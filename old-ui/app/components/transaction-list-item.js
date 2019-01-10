@@ -22,8 +22,7 @@ const { POA_CODE,
   ROPSTEN_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
-  RSK_CODE,
-  RSK_TESTNET_CODE } = require('../../../app/scripts/controllers/network/enums')
+  RSK_CODE } = require('../../../app/scripts/controllers/network/enums')
 
 const mapDispatchToProps = dispatch => {
   return {
