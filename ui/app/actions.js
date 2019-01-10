@@ -236,11 +236,9 @@ var actions = {
   SHOW_ADD_SUGGESTED_LAYER2APP_PAGE: 'SHOW_ADD_SUGGESTED_LAYER2APP_PAGE',
   showAddLayer2AppPage,
   showAddSuggestedLayer2AppPage,
-  addLayer2App,
-  addLayer2Apps,
-  removeLayer2App,
+  addPlugin,
+  removePlugin,
   updateLayer2Apps,
-  removeSuggestedLayer2Apps,
   UPDATE_LAYER2APPS: 'UPDATE_LAYER2APPS',
   // Tokens
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
@@ -1694,22 +1692,17 @@ function showAddSuggestedLayer2AppPage (transitionForward = true) {
   }
 }
 
-function addLayer2App (address, name, nodeUrl) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.addLayer2App(address, name, nodeUrl, (err, layer2Apps) => {
-        dispatch(actions.hideLoadingIndication())
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          reject(err)
-        }
-        dispatch(actions.updateLayer2Apps(layer2Apps))
-        resolve(layer2Apps)
-	console.log("ADD SINGLE APP FUNC. RETURN END")
-      })
+function addPlugin (address) {
+  console.log("ADD PLUGIN START")
+  return new Promise((resolve, reject) => {
+    background.addPlugin(address.address, (err, plugins) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(plugins)
+      console.log("ADD PLUGIN. RETURN END")
     })
-  }
+  })
 }
 
 function registerLayer2AppContract(layer2AppsScripts){
@@ -1720,7 +1713,7 @@ function registerLayer2AppContract(layer2AppsScripts){
   }
 }
 
-function removeLayer2App (address) {
+function removePlugin (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
@@ -1734,49 +1727,6 @@ function removeLayer2App (address) {
         resolve(layer2Apps)
       })
     })
-  }
-}
-
-function addLayer2Apps (layer2Apps) {
-  return dispatch => {
-    if (Array.isArray(layer2Apps)) {
-      dispatch(actions.setSelectedToken(getLayer2AppAddressFromLayer2AppObject(layer2Apps[0])))
-      dispatch(actions.setSelectedLayer2AppAddress(getLayer2AppAddressFromLayer2AppObject(layer2Apps[0])))
-      return Promise.all(layer2Apps.map(({ address, name, nodeUrl }) => (
-        dispatch(addLayer2App(address, name, nodeUrl))
-      )))
-    } else {
-      dispatch(actions.setSelectedToken(getLayer2AppAddressFromLayer2AppObject(layer2Apps)))
-      dispatch(actions.setSelectedLayer2AppAddress(getLayer2AppAddressFromLayer2AppObject(layer2Apps)))      
-      return Promise.all(
-        Object
-        .entries(layer2Apps)
-          .map(([_, { address, name, nodeUrl }]) => (
-            dispatch(addLayer2App(address, name, nodeUrl))
-        )),
-      )
-    }
-  }
-}
-
-function removeSuggestedLayer2Apps () {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.removeSuggestedLayer2Apps((err, suggestedLayer2Apps) => {
-        dispatch(actions.hideLoadingIndication())
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-        }
-        dispatch(actions.clearPendingLayer2Apps())
-        if (global.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
-          return global.platform.closeCurrentWindow()
-        }
-        resolve(suggestedLayer2Apps)
-      })
-    })
-    .then(() => updateMetamaskStateFromBackground())
-    .then(suggestedLayer2Apps => dispatch(actions.updateMetamaskState({...suggestedLayer2Apps})))
   }
 }
 

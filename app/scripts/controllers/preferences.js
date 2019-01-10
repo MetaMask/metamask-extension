@@ -364,32 +364,27 @@ class PreferencesController {
 
 
   /**
-   * Adds a new layer2App
-   * Modifies the existing from the store.
-   * @param {string} rawAddress Hex address of the token contract. May or may not be a checksum address.
-   * @param {string} name
-   * @returns {Promise<array>} Promises the new array of layer2Apps objects.
-   *
+   * Adds a new Plugin
    */
 
-  async addLayer2App (rawAddress, name, nodeUrl, contract, image) {
+  async addPlugin (rawAddress, contract, image) {
+    console.log("BACKGROUND DEBUG", rawAddress)
     const address = normalizeAddress(rawAddress)
-    const newEntry = { address, name, nodeUrl, contract }
-    const layer2Apps = this.store.getState().layer2Apps
-    const assetImages = this.getAssetImages()
-    const previousEntry = layer2Apps.find((layer2App, index) => {
-      return layer2App.address === address
+    const newEntry = {address}
+    let plugins = this.getPlugins()
+    const previousEntry = plugins.find((plugin, index) => {
+      return plugin.address === address
     })
-    const previousIndex = layer2Apps.indexOf(previousEntry)
-    assetImages[address] = image
-    if (previousEntry) {
-      layer2Apps[previousIndex] = newEntry
-    } else {
-      layer2Apps.push(newEntry)
-    }
+    const previousIndex = plugins.indexOf(previousEntry)
 
-    this._updateAccountLayer2Apps(layer2Apps, assetImages)
-    return Promise.resolve(layer2Apps)
+    if (previousEntry) {
+      plugins[previousIndex] = newEntry
+    } else {
+      plugins.push(newEntry)
+    }
+    
+    this.store.updateState({ layer2Apps : plugins })
+    return Promise.resolve(plugins)
   }
 
   // /**
@@ -399,13 +394,8 @@ class PreferencesController {
   //  * @returns {Promise<array>} The new array of AddedToken objects
   //  *
   //  */
-  removeLayer2App (rawAddress) {
-    const layer2Apps = this.store.getState().layer2Apps
-    const assetImages = this.getAssetImages()
-    const updatedLayer2Apps = layer2Apps.filter(layer2App => layer2App.address !== rawAddress)
-    delete assetImages[rawAddress]
-    this._updateAccountLayer2Apps(updatedLayer2Apps, assetImages)
-    return Promise.resolve(updatedLayer2Apps)
+  removePlugin (rawAddress) {
+    return Promise.resolve()
   }
 
   /**
@@ -414,7 +404,7 @@ class PreferencesController {
    * @returns {array} The current array of layer2Apps objects
    *
    */
-  getLayer2Apps () {
+  getPlugins () {
     return this.store.getState().layer2Apps
   }
 
@@ -586,12 +576,6 @@ class PreferencesController {
     this.store.updateState({ accountTokens, tokens, assetImages })
   }
 
-  _updateAccountLayer2Apps (layer2Apps, assetImages) {
-    const { accountLayer2Apps, providerType, selectedAddress } = this._getLayer2AppRelatedStates()
-    accountLayer2Apps[selectedAddress][providerType] = layer2Apps
-    this.store.updateState({ accountLayer2Apps, layer2Apps, assetImages })
-  }
-
   
   /**
    * Updates `tokens` of current account and network.
@@ -634,15 +618,6 @@ class PreferencesController {
     return { tokens, accountTokens, providerType, selectedAddress }
   }
 
-  _getLayer2AppRelatedStates (selectedAddress) {
-    const accountLayer2Apps = this.store.getState().accountLayer2Apps
-    if (!selectedAddress) selectedAddress = this.store.getState().selectedAddress
-    const providerType = this.network.providerStore.getState().type
-    if (!(selectedAddress in accountLayer2Apps)) accountLayer2Apps[selectedAddress] = {}
-    if (!(providerType in accountLayer2Apps[selectedAddress])) accountLayer2Apps[selectedAddress][providerType] = []
-    const layer2Apps = accountLayer2Apps[selectedAddress][providerType]
-    return { layer2Apps, accountLayer2Apps, providerType, selectedAddress }
-  }
 
   
   /**
