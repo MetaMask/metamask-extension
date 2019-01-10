@@ -8,6 +8,7 @@ import AccountPanel from './account-panel'
 import RadioList from './custom-radio-list'
 import { getNetworkDisplayName } from '../../../app/scripts/controllers/network/util'
 import { getFaucets, getExchanges } from '../../../app/scripts/lib/buy-eth-url'
+import { MAINNET_CODE } from '../../../app/scripts/controllers/network/enums'
 import ethNetProps from 'eth-net-props'
 import PropTypes from 'prop-types'
 
@@ -157,8 +158,8 @@ class BuyButtonSubview extends Component {
   }
 
   formVersionSubview () {
-    const network = this.props.network
-    if (network === '1') {
+    const { network } = this.props
+    if (Number(network) === MAINNET_CODE) {
       if (this.props.buyView.formView.coinbase) {
         return <CoinbaseForm { ...this.props } />
       } else if (this.props.buyView.formView.shapeshift) {

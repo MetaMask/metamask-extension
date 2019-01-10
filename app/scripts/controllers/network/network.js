@@ -11,6 +11,7 @@ const createInfuraClient = require('./createInfuraClient')
 const createJsonRpcClient = require('./createJsonRpcClient')
 const createLocalhostClient = require('./createLocalhostClient')
 const { createSwappableProxy, createEventEmitterProxy } = require('swappable-obj-proxy')
+const ethNetProps = require('eth-net-props')
 
 const {
   ROPSTEN,
@@ -21,10 +22,14 @@ const {
   POA_SOKOL,
   POA,
   DAI,
+  RSK,
+  RSK_TESTNET,
+  POA_CODE,
+  DAI_CODE,
+  POA_SOKOL_CODE,
+  RSK_CODE,
+  RSK_TESTNET_CODE,
 } = require('./enums')
-const POA_RPC_URL = 'https://core.poa.network'
-const DAI_RPC_URL = 'https://dai.poa.network'
-const SOKOL_RPC_URL = 'https://sokol.poa.network'
 const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET]
 
 const env = process.env.METAMASK_ENV
@@ -109,7 +114,14 @@ module.exports = class NetworkController extends EventEmitter {
 
   async setProviderType (type) {
     assert.notEqual(type, 'rpc', `NetworkController - cannot call "setProviderType" with type 'rpc'. use "setRpcTarget"`)
-    assert(INFURA_PROVIDER_TYPES.includes(type) || type === LOCALHOST || type === POA_SOKOL || type === POA || type === DAI, `NetworkController - Unknown rpc type "${type}"`)
+    assert(INFURA_PROVIDER_TYPES.includes(type) ||
+      type === LOCALHOST ||
+      type === POA_SOKOL ||
+      type === POA ||
+      type === DAI ||
+      type === RSK ||
+      type === RSK_TESTNET
+      , `NetworkController - Unknown rpc type "${type}"`)
     const providerConfig = { type }
     this.providerConfig = providerConfig
   }
@@ -145,11 +157,15 @@ module.exports = class NetworkController extends EventEmitter {
       this._configureInfuraProvider(opts)
     // other type-based rpc endpoints
     } else if (type === POA) {
-      this._configureStandardProvider({ rpcUrl: POA_RPC_URL })
+      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_CODE)[0] })
     } else if (type === DAI) {
-      this._configureStandardProvider({ rpcUrl: DAI_RPC_URL })
+      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(DAI_CODE)[0] })
     } else if (type === POA_SOKOL) {
-      this._configureStandardProvider({ rpcUrl: SOKOL_RPC_URL })
+      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(POA_SOKOL_CODE)[0] })
+    } else if (type === RSK) {
+      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(RSK_CODE)[0] })
+    } else if (type === RSK_TESTNET) {
+      this._configureStandardProvider({ rpcUrl: ethNetProps.RPCEndpoints(RSK_TESTNET_CODE)[0] })
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
     // url-based rpc endpoints

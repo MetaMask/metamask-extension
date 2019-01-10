@@ -18,6 +18,8 @@ const emptyAddr = '0x0000000000000000000000000000000000000000'
 const SEARCH_TAB = 'SEARCH'
 const CUSTOM_TOKEN_TAB = 'CUSTOM_TOKEN'
 
+const { POA_CODE, MAINNET_CODE } = require('../../../../app/scripts/controllers/network/enums')
+
 class AddTokenScreen extends Component {
 
   static contextTypes = {
@@ -93,8 +95,9 @@ class AddTokenScreen extends Component {
     const { network } = this.props
     const networkID = parseInt(network)
     let views = []
-    const isProdNetwork = networkID === 1 || networkID === 99
-    isProdNetwork ? views = [h(TabBar, {
+    const isProdNetworkWithKnownTokens = networkID === MAINNET_CODE ||
+                                         networkID === POA_CODE
+    isProdNetworkWithKnownTokens ? views = [h(TabBar, {
       style: {
         paddingTop: '0px',
       },

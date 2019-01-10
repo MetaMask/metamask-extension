@@ -132,14 +132,20 @@ class Functions {
       case NETWORKS.RINKEBY:
         counter = 6
         break
-      case NETWORKS.LOCALHOST:
+      case NETWORKS.RSK:
         counter = 7
         break
-      case NETWORKS.CUSTOM:
+      case NETWORKS.RSK_TESTNET:
         counter = 8
         break
+      case NETWORKS.LOCALHOST:
+        counter = 9
+        break
+      case NETWORKS.CUSTOM:
+        counter = 10
+        break
       default:
-        counter = 7
+        counter = 9
     }
     await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" + counter + '].click();')
   }

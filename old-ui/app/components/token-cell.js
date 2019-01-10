@@ -9,6 +9,7 @@ const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../../../ui/app/actions')
 const connect = require('react-redux').connect
+const { MAINNET_CODE } = require('../../../app/scripts/controllers/network/enums')
 import { countSignificantDecimals } from '../util'
 
 const tokenCellDropDownPrefix = 'token-cell_dropdown_'
@@ -33,7 +34,7 @@ TokenCell.prototype.render = function () {
   return (
     h(`li#token-cell_${ind}.token-cell`, {
       style: {
-        cursor: network === '1' ? 'pointer' : 'default',
+        cursor: Number(network) === MAINNET_CODE ? 'pointer' : 'default',
         borderBottom: isLastTokenCell ? 'none' : '1px solid #e2e2e2',
         padding: '20px 0',
         margin: '0 30px',

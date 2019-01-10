@@ -52,6 +52,10 @@ const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 
+const { POA_CODE,
+  DAI_CODE,
+  POA_SOKOL_CODE } = require('./controllers/network/enums')
+
 module.exports = class MetamaskController extends EventEmitter {
 
   /**
@@ -1390,7 +1394,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     const networkIdStr = networkController.store.getState().network
     const networkId = parseInt(networkIdStr)
-    const isPOA = networkId === 77 || networkId === 99
+    const isPOA = networkId === POA_SOKOL_CODE || networkId === POA_CODE || networkId === DAI_CODE
 
     // Return 1 gwei if using a POA network of if there are no blocks have been observed:
     if (isPOA || recentBlocks.length === 0) {

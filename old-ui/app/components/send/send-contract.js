@@ -387,7 +387,6 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	setOutputValue = (val, type) => {
-		console.log(val)
 		if (!type) {
 			return val || ''
 		}

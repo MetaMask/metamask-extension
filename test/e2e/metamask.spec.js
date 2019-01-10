@@ -2420,7 +2420,7 @@ describe('Metamask popup page', async function () {
       await f.clearField(fieldRpc)
       await fieldRpc.sendKeys(correctRpcUrl + 0)
       await driver.findElement(screens.settings.buttonSave).click()
-      await f.delay(10000)
+      await f.delay(20000)
       const customUrlElement = await f.waitUntilShowUp(screens.settings.currentNetwork)
       assert.equal(await customUrlElement.getText(), correctRpcUrl + 0, 'Added Url doesn\'t match')
     })

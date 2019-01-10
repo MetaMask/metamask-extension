@@ -382,6 +382,8 @@ module.exports = {
     ROPSTEN: 'ropsten',
     KOVAN: 'kovan',
     RINKEBY: 'rinkeby',
+    RSK: 'rsk',
+    RSK_TESTNET: 'rsk_testnet',
     LOCALHOST: 'localhost',
     CUSTOM: 'http://test.com',
   },

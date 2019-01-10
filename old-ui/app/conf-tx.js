@@ -13,6 +13,7 @@ import PendingMsg from './components/pending-msg'
 import PendingPersonalMsg from './components/pending-personal-msg'
 import PendingTypedMsg from './components/pending-typed-msg'
 const Loading = require('./components/loading')
+const { DAI_CODE, POA_SOKOL_CODE } = require('../../app/scripts/controllers/network/enums')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
@@ -55,8 +56,8 @@ ConfirmTxScreen.prototype.render = function () {
     unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, blockGasLimit } = props
   let { conversionRate } = props
 
-  const isSokol = parseInt(network) === 77
-  const isDai = parseInt(network) === 100
+  const isSokol = parseInt(network) === POA_SOKOL_CODE
+  const isDai = parseInt(network) === DAI_CODE
   if (isSokol) {
     conversionRate = 0
   } else if (isDai) {

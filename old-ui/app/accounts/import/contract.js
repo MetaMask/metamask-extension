@@ -6,6 +6,14 @@ import Web3 from 'web3'
 import log from 'loglevel'
 import copyToClipboard from 'copy-to-clipboard'
 
+import { POA_CODE,
+  DAI_CODE,
+  POA_SOKOL_CODE,
+  MAINNET_CODE,
+  ROPSTEN_CODE,
+  RINKEBY_CODE,
+  KOVAN_CODE } from '../../../../app/scripts/controllers/network/enums'
+
 class ContractImportView extends Component {
   constructor (props) {
     super(props)
@@ -186,19 +194,19 @@ class ContractImportView extends Component {
   getBlockscoutApiNetworkSuffix () {
     const { network } = this.props
     switch (Number(network)) {
-      case 1:
+      case MAINNET_CODE:
         return 'mainnet'
-      case 99:
+      case POA_CODE:
         return 'core'
-      case 77:
+      case POA_SOKOL_CODE:
         return 'sokol'
-      case 100:
+      case DAI_CODE:
         return 'dai'
-      case 42:
+      case KOVAN_CODE:
         return 'kovan'
-      case 3:
+      case ROPSTEN_CODE:
         return 'ropsten'
-      case 4:
+      case RINKEBY_CODE:
         return 'rinkeby'
       default:
         return ''
