@@ -158,7 +158,7 @@ function listenForProviderRequest () {
         window.postMessage({ type: 'ethereumproviderlegacy', selectedAddress }, '*')
         break
       case 'reject-provider-request':
-        window.postMessage({ type: 'ethereumprovider', error: 'User rejected provider access' }, '*')
+        window.postMessage({ type: 'ethereumprovider', error: 'User denied account authorization' }, '*')
         break
       case 'answer-is-approved':
         window.postMessage({ type: 'ethereumisapproved', isApproved, caching }, '*')
@@ -170,6 +170,11 @@ function listenForProviderRequest () {
         isEnabled = false
         window.postMessage({ type: 'metamasksetlocked' }, '*')
         break
+      case 'ethereum-ping-success':
+        window.postMessage({ type: 'ethereumpingsuccess' }, '*')
+        break
+      case 'ethereum-ping-error':
+        window.postMessage({ type: 'ethereumpingerror' }, '*')
     }
   })
 }
