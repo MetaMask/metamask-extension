@@ -32,6 +32,7 @@ export default class ConfirmTransactionSwitch extends Component {
       txData,
       methodData: { name },
       fetchingData,
+      isEtherTransaction,
     } = this.props
     const { id, txParams: { data } = {} } = txData
 
@@ -41,6 +42,11 @@ export default class ConfirmTransactionSwitch extends Component {
 
     if (isConfirmDeployContract(txData)) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_DEPLOY_CONTRACT_PATH}`
+      return <Redirect to={{ pathname }} />
+    }
+
+    if (isEtherTransaction) {
+      const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`
       return <Redirect to={{ pathname }} />
     }
 
