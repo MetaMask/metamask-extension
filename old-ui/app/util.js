@@ -209,6 +209,9 @@ function normalizeEthStringToWei (str) {
     while (decimal.length < 18) {
       decimal += '0'
     }
+    if (decimal.length > 18) {
+      decimal = decimal.slice(0, 18)
+    }
     const decimalBN = new ethUtil.BN(decimal, 10)
     eth = eth.add(decimalBN)
   }
