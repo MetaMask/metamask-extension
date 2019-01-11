@@ -26,50 +26,23 @@ class ProviderApprovalController {
       providerRequests: [],
     })
 
-    const internalListener = ({ action = '', force, origin, siteTitle, siteImage, target, name }) => {
-      switch (action) {
-        case 'init-provider-request':
-          this._handleProviderRequest(origin, siteTitle, siteImage, force)
-          break
-        case 'init-is-approved':
-          this._handleIsApproved(origin)
-          break
-        case 'init-is-unlocked':
-          this._handleIsUnlocked()
-          break
-        case 'init-privacy-request':
-          this._handlePrivacyRequest()
-          break
-      }
-    }
-
-    const externalListener = (opts, sender, cb) => {
-      console.log('external listener called', {opts, sender})
-      const { action, force, origin, siteTitle, siteImage, target, name } = opts
-      const title = origin || siteTitle || 'Extension'
-      switch (action) {
-        case 'init-provider-request':
-          this._handleProviderRequest(sender.id, title, siteImage, force)
-          break
-        case 'init-is-approved':
-          this._handleIsApproved(sender.id)
-          break
-        case 'init-is-unlocked':
-          this._handleIsUnlocked(sender.id)
-          break
-        case 'init-privacy-request':
-          this._handlePrivacyRequest(sender.id)
-          break
-      }
-    }
-
     if (platform && platform.addMessageListener) {
-      platform.addMessageListener(internalListener)
-    }
-
-    // Allow cross-extension provider requests:
-    if (platform && platform.addExternalMessageListener) {
-      platform.addExternalMessageListener(externalListener)
+      platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }) => {
+        switch (action) {
+          case 'init-provider-request':
+            this._handleProviderRequest(origin, siteTitle, siteImage, force)
+            break
+          case 'init-is-approved':
+            this._handleIsApproved(origin)
+            break
+          case 'init-is-unlocked':
+            this._handleIsUnlocked()
+            break
+          case 'init-privacy-request':
+            this._handlePrivacyRequest()
+            break
+        }
+      })
     }
   }
 
@@ -84,7 +57,6 @@ class ProviderApprovalController {
     this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage }] })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     if (!force && this.approvedOrigins[origin] && this.caching && isUnlocked) {
-      console.log('approve provider request')
       this.approveProviderRequest(origin)
       return
     }
@@ -97,32 +69,31 @@ class ProviderApprovalController {
    * @param {string} origin - Origin of the window
    */
   _handleIsApproved (origin) {
-    this._sendMessage(origin, {
+    this.platform && this.platform.sendMessage({
       action: 'answer-is-approved',
       isApproved: this.approvedOrigins[origin] && this.caching,
       caching: this.caching,
     }, { active: true })
- }
+  }
 
   /**
    * Called by a tab to determine if MetaMask is currently locked or unlocked
    */
-  _handleIsUnlocked (origin) {
+  _handleIsUnlocked () {
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-    this._sendMessage(origin, { action: 'answer-is-unlocked', isUnlocked }, { active: true })
+    this.platform && this.platform.sendMessage({ action: 'answer-is-unlocked', isUnlocked }, { active: true })
   }
 
   /**
    * Called to check privacy mode; if privacy mode is off, this will automatically enable the provider (legacy behavior)
    */
-  _handlePrivacyRequest (origin) {
+  _handlePrivacyRequest () {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
     if (!privacyMode) {
-      this._sendMessage(origin, {
+      this.platform && this.platform.sendMessage({
         action: 'approve-legacy-provider-request',
         selectedAddress: this.publicConfigStore.getState().selectedAddress,
       }, { active: true })
-
       this.publicConfigStore.emit('update', this.publicConfigStore.getState())
     }
   }
@@ -135,13 +106,10 @@ class ProviderApprovalController {
   approveProviderRequest (origin) {
     this.closePopup && this.closePopup()
     const requests = this.store.getState().providerRequests
-    console.log('sending approve-provider-request')
-
-    this._sendMessage(origin, {
+    this.platform && this.platform.sendMessage({
       action: 'approve-provider-request',
       selectedAddress: this.publicConfigStore.getState().selectedAddress,
     }, { active: true })
-
     this.publicConfigStore.emit('update', this.publicConfigStore.getState())
     const providerRequests = requests.filter(request => request.origin !== origin)
     this.store.updateState({ providerRequests })
@@ -156,7 +124,7 @@ class ProviderApprovalController {
   rejectProviderRequest (origin) {
     this.closePopup && this.closePopup()
     const requests = this.store.getState().providerRequests
-    this._sendMessage(origin, { action: 'reject-provider-request' }, { active: true })
+    this.platform && this.platform.sendMessage({ action: 'reject-provider-request' }, { active: true })
     const providerRequests = requests.filter(request => request.origin !== origin)
     this.store.updateState({ providerRequests })
     delete this.approvedOrigins[origin]
@@ -185,25 +153,7 @@ class ProviderApprovalController {
    * internal flags in the contentscript and inpage script.
    */
   setLocked () {
-    this._broadcastMessage({ action: 'metamask-set-locked' })
-  }
-
-  /*
-   * Sends the desired message to all tabs and connected extensions.
-   */
-  _broadcastMessage(message, opts) {
-    this.platform && this.platform.sendMessage(message, opts)
-    for (const origin in this.approvedOrigins) {
-      this.platform && this.platform.sendExternalMessage(origin, message, opts)
-    }
-  }
-
-  /*
-   * Sends the desired message to the specified extension or tab.
-   */
-  _sendMessage(origin, message, opts) {
-    this.platform && this.platform.sendMessage(message, opts)
-    this.platform && this.platform.sendExternalMessage(origin, message, opts)
+    this.platform.sendMessage({ action: 'metamask-set-locked' })
   }
 }
 

@@ -64,21 +64,12 @@ class ExtensionPlatform {
     extension.runtime.onMessage.addListener(cb)
   }
 
-  addExternalMessageListener (cb) {
-    extension.runtime.onMessageExternal.addListener(cb)
-  }
-
   sendMessage (message, query = {}) {
     extension.tabs.query(query, tabs => {
       tabs.forEach(tab => {
         extension.tabs.sendMessage(tab.id, message)
       })
     })
-  }
-
-  sendExternalMessage(extensionId, message) {
-    console.dir({ extensionId, message })
-    extension.runtime.sendMessage(extensionId, message, {})
   }
 
   _showConfirmedTransaction (txMeta) {
