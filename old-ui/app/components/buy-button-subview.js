@@ -79,7 +79,7 @@ class BuyButtonSubview extends Component {
 
       default:
         return (
-          <div className="flex-column" style={{ margin: '0px 0px 20px 30px' }}>
+          <div className="flex-column" style={{ margin: '0px 30px 20px 30px' }}>
             { this._getBuyOptionsView(network) }
           </div>
         )

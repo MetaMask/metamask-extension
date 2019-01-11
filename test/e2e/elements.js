@@ -282,6 +282,8 @@ module.exports = {
       buttons: {
         send: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'),
         buy: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)'),
+        sendRSK: By.css('#app-content > div > div.app-primary.from-left > div > div > div.flex-row > button:nth-child(4)'),
+        buyRSK: By.css('#app-content > div > div.app-primary.from-left > div > div > div.flex-row > button:nth-child(3)'),
         sendText: 'Send',
         save: By.className('editable-button'),
       },
@@ -292,6 +294,7 @@ module.exports = {
       },
       // balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),
       balance: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[2]/div[1]/div/div/div[1]/div[1]'),
+      balanceUSD: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[2]/div[1]/div/div/div[2]/div[1]'),
       address: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div'),
       tokens: {
         menu: By.id('wallet-view__tab-tokens'),
@@ -308,6 +311,8 @@ module.exports = {
     },
     buyEther: {
       title: By.className('flex-center buy-title'),
+      faucetLinkRSK: By.className('buy-option cursor-pointer'),
+      buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
     },
     info: {
       title: By.className('section-title flex-row flex-center'),

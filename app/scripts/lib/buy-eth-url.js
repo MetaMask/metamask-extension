@@ -97,6 +97,21 @@ function getExchanges ({network, amount, address}) {
           link: 'https://dai-bridge.poa.network/',
         },
       ]
+    case 30:
+      return [
+        {
+          name: 'Huobi',
+          link: 'https://www.huobi.com/',
+        },
+        {
+          name: 'Bitfinex',
+          link: 'https://www.bitfinex.com/',
+        },
+        {
+          name: 'Bitso',
+          link: 'https://bitso.com/',
+        },
+      ]
     default:
       return []
   }
