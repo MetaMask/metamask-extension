@@ -21,7 +21,7 @@ const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('eth-keyring-controller')
-const LoginController = require('eth-login-controller')
+const Permissions = require('json-rpc-capabilities-middleware')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
@@ -166,6 +166,9 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
+
+    // permissions
+    this.initializePermissions()
 
     // domain login management
     this.logins = {}
@@ -1319,34 +1322,53 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @param {string} origin = The origin string representing the domain.
    */
-  loginFor (origin) {
-    if (origin in this.logins) {
-      return this.logins[origin]
+  initializePermissions() {
+    this.testProfile = {
+      name: 'Dan Finlay',
     }
 
-    this.logins[origin] = new LoginController({
-      origin,
+    this.permissions = new Permissions({
 
-      // safe methods never require approval,
-      // are considered trivial / no risk.
-      // maybe reading should be a permission, though!
+      // Supports passthrough methods:
       safeMethods: SAFE_METHODS,
-      initState: {
-        permissions: {
-          'stub_test': {},
-        },
-      },
-      methods: {
-        'stub_test': async (req) => {
-          return 'It works!'
-        },
-        'restricted_test': async (req) => {
-          return 'It works!'
-        }
-      }
-    })
 
-    return this.logins[origin]
+      // optional prefix for internal methods
+      methodPrefix: 'wallet_',
+
+      restrictedMethods: {
+
+        // Restricted methods themselves are defined as
+        // json-rpc-engine middleware functions.
+        'readYourProfile': (req, res, next, end) => {
+          console.log('read profile called')
+          console.log(this.permissions.store.getState())
+          res.result = this.testProfile
+          end()
+        },
+        'writeToYourProfile': (req, res, next, end) => {
+          console.log('write to profile called', req.params)
+          const [ key, value ] = req.params
+          this.testProfile[key] = value
+          res.result = this.testProfile
+          return end()
+        }
+      },
+
+      /*
+      * A promise-returning callback used to determine whether to approve
+      * permissions requests or not.
+      *
+      * Currently only returns a boolean, but eventually should return any specific parameters or amendments to the permissions.
+      *
+      * @param {string} domain - The requesting domain string
+      * @param {string} req - The request object sent in to the `requestPermissions` method.
+      * @returns {Promise<bool>} approved - Whether the user approves the request or not.
+      */
+      requestUserApproval: async (domain, req) => {
+        const ok = confirm(`The site ${domain} would like permission to:\n - ${Object.keys(req).join('\n- ')}`)
+        return ok
+      },
+    })
   }
 
   /**
@@ -1360,14 +1382,14 @@ module.exports = class MetamaskController extends EventEmitter {
     const provider = this.provider
     const blockTracker = this.blockTracker
 
-    const login = this.loginFor(origin)
+    const permissions = this.permissions
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker })
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({ provider, blockTracker })
     subscriptionManager.events.on('notification', (message) => engine.emit('notification', message))
-    engine.push(login.providerMiddlewareFunction.bind(login))
+    engine.push(permissions.providerMiddlewareFunction.bind(permissions, origin))
 
     // metadata
     engine.push(createOriginMiddleware({ origin }))
