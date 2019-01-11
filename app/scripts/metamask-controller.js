@@ -1339,19 +1339,22 @@ module.exports = class MetamaskController extends EventEmitter {
 
         // Restricted methods themselves are defined as
         // json-rpc-engine middleware functions.
-        'readYourProfile': (req, res, next, end) => {
-          console.log('read profile called')
-          console.log(this.permissions.store.getState())
-          res.result = this.testProfile
-          end()
+        'readYourProfile': {
+          description: 'Allows reading from your profile',
+          method: (req, res, next, end) => {
+            res.result = this.testProfile
+            end()
+          },
         },
-        'writeToYourProfile': (req, res, next, end) => {
-          console.log('write to profile called', req.params)
-          const [ key, value ] = req.params
-          this.testProfile[key] = value
-          res.result = this.testProfile
-          return end()
-        }
+        'writeToYourProfile': {
+          description: 'Allows writing to your profile.',
+          method: (req, res, next, end) => {
+            const [ key, value ] = req.params
+            this.testProfile[key] = value
+            res.result = this.testProfile
+            return end()
+          },
+        },
       },
 
       /*
