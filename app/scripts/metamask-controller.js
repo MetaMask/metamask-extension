@@ -245,14 +245,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
     this.publicConfigStore = this.initPublicConfigStore()
 
-    this.providerApprovalController = new ProviderApprovalController({
+    this.providerApprovalOpts = {
       closePopup: opts.closePopup,
       keyringController: this.keyringController,
       openPopup: opts.openPopup,
       platform: opts.platform,
       preferencesController: this.preferencesController,
       publicConfigStore: this.publicConfigStore,
-    })
+    }
+    this.providerApprovalController = new ProviderApprovalController(providerOpts)
 
     this.store.updateStructure({
       TransactionController: this.txController.store,
@@ -1336,6 +1337,13 @@ module.exports = class MetamaskController extends EventEmitter {
       methodPrefix: 'wallet_',
 
       restrictedMethods: {
+
+        'eth_accounts': {
+          description: 'Allows viewing the public address of an Ethereum account.',
+          method: (req, res, next, end) => {
+
+          },
+        },
 
         // Restricted methods themselves are defined as
         // json-rpc-engine middleware functions.
