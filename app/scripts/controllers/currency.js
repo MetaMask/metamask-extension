@@ -130,12 +130,13 @@ class CurrencyController {
       currentCurrency = this.getCurrentCurrency()
       currentCoin = this.getCurrentCoin()
       let conversionRate, conversionDate
+      console.log('currentCoin = ', currentCoin)
       if (currentCoin === 'poa') {
-        const coinId = await this.getCoinMarketCapId(currentCoin)
-        const response = await fetch(`https://api.coinmarketcap.com/v2/ticker/${coinId}/?convert=${currentCurrency.toLowerCase()}`)
+        const apiLink = `https://min-api.cryptocompare.com/data/price?fsym=${currentCoin.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
+        const response = await fetch(apiLink)
         const parsedResponse = await response.json()
-        conversionRate = Number(parsedResponse.data.quotes[currentCurrency.toUpperCase()].price)
-        conversionDate = Number(parsedResponse.metadata.timestamp)
+        conversionRate = Number(parsedResponse[currentCurrency.toUpperCase()])
+        conversionDate = parseInt((new Date()).getTime() / 1000)
       } else {
         const response = await fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`)
         const parsedResponse = await response.json()
@@ -164,16 +165,6 @@ class CurrencyController {
     this.conversionInterval = setInterval(() => {
       this.updateConversionRate()
     }, POLLING_INTERVAL)
-  }
-
-  async getCoinMarketCapId (symbol) {
-    const response = await fetch(`https://api.coinmarketcap.com/v2/listings/`)
-    const parsedResponse = await response.json()
-    const results = parsedResponse.data.filter(coin => coin.symbol === symbol.toUpperCase())
-    if (!results.length) {
-      throw new Error(`Nifty Wallet - Failed to fetch ${symbol} from coinmarketcap listings`)
-    }
-    return results[0].id
   }
 
 }
