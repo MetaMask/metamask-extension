@@ -247,35 +247,27 @@ class SendTransactionScreen extends PersistentForm {
 			}
 		}
 		let field
+		const allTypesProps = {
+			ind,
+			defaultValue,
+			disabled: !isInput,
+			onChange: val => isInput ? this.handleInputChange(val, params.type, ind) : null,
+		}
+		const textTypeProps = {
+			key: Math.random(),
+			placeholder: params.type,
+		}
 		if (params.type === 'bool' && isInput) {
 			field = (
-				<SendTransactionInputSelect
-					ind={ind}
-					defaultValue={defaultValue}
-					onChange={val => this.handleInputChange(val, params.type, ind)}
-				/>
+				<SendTransactionInputSelect {...allTypesProps} />
 			)
 		} else if (params.type.includes('[]') && !isInput) {
 			field = (
-				<SendTransactionTextArea
-					key={Math.random()}
-					ind={ind}
-					disabled={!isInput}
-					placeholder={params.type}
-					defaultValue={defaultValue}
-					onChange={val => isInput ? this.handleInputChange(val, params.type, ind) : null}
-				/>
+				<SendTransactionTextArea {...allTypesProps} {...textTypeProps} />
 			)
 		} else {
 			field = (
-				<SendTransactionTextField
-					key={Math.random()}
-					ind={ind}
-					disabled={!isInput}
-					placeholder={params.type}
-					defaultValue={defaultValue}
-					onChange={val => isInput ? this.handleInputChange(val, params.type, ind) : null}
-				/>
+				<SendTransactionTextField {...allTypesProps} {...textTypeProps} />
 			)
 		}
 		const fieldObj = (
