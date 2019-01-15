@@ -232,6 +232,10 @@ export default class SettingsTab extends PureComponent {
     const { setRpcTarget, displayWarning } = this.props
 
     if (validUrl.isWebUri(newRpc)) {
+      if (!!chainId && Number.isNaN(parseInt(chainId))) {
+        return displayWarning(`${this.context.t('invalidInput')} chainId`)
+      }
+      debugger
       setRpcTarget(newRpc, chainId, ticker, nickname)
     } else {
       const appendedRpc = `http://${newRpc}`
