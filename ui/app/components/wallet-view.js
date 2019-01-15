@@ -14,7 +14,7 @@ const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
-const Layer2AppList = require('./layer2App-list')
+const PluginList = require('./plugin-list')
 const selectors = require('../selectors')
 const { ADD_TOKEN_ROUTE } = require('../routes')
 const { ADD_LAYER2APP_ROUTE } = require('../routes')
@@ -223,7 +223,7 @@ WalletView.prototype.render = function () {
     h(TokenList),
     this.renderAddToken(),
 
-    h(Layer2AppList),
+    h(PluginList),
     h(Button, {
       type: 'primary',
       className: 'wallet-view__add-layer2App-button',

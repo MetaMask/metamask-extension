@@ -29,8 +29,6 @@ const AddTokenPage = require('./components/pages/add-token')
 const AddLayer2AppPage = require('./components/pages/add-layer2App')
 const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('./components/pages/confirm-add-suggested-token')
-const ConfirmAddLayer2AppPage = require('./components/pages/confirm-add-layer2App')
-const ConfirmAddSuggestedLayer2AppPage = require('./components/pages/confirm-add-suggested-layer2App')
 const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 
@@ -97,8 +95,6 @@ class App extends Component {
         h(Authenticated, { path: ADD_LAYER2APP_ROUTE, exact, component: AddLayer2AppPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE, exact, component: ConfirmAddSuggestedTokenPage }),
-        h(Authenticated, { path: CONFIRM_ADD_LAYER2APP_ROUTE, exact, component: ConfirmAddLayer2AppPage }),
-        h(Authenticated, { path: CONFIRM_ADD_SUGGESTED_LAYER2APP_ROUTE, exact, component: ConfirmAddSuggestedLayer2AppPage }),
         h(Authenticated, { path: NEW_ACCOUNT_ROUTE, component: CreateAccountPage }),
         h(Authenticated, { path: DEFAULT_ROUTE, exact, component: Home }),
       ])

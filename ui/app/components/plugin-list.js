@@ -2,8 +2,8 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Layer2AppTracker = require('eth-layer2App-tracker')
-const Layer2AppCell = require('./layer2App-cell.js')
+const PluginTracker = require('eth-layer2App-tracker')
+const PluginCell = require('./plugin-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
 const log = require('loglevel')
@@ -20,7 +20,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
-    layer2Apps: state.metamask.layer2Apps,
+    plugins: state.metamask.layer2Apps,
     userAddress: selectors.getSelectedAddress(state),
     assetImages: state.metamask.assetImages,
   }
@@ -37,7 +37,7 @@ class Layer2AppList extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      layer2Apps: [],
+      plugins: [],
       isLoading: true,
       network: null,
     }
@@ -47,42 +47,15 @@ class Layer2AppList extends Component {
   render() {
     const { userAddress, assetImages } = this.props
     const state = this.state
-
-
-    const { layer2Apps, isLoading, error } = state
     console.log("render list")
-    console.log(layer2Apps)
-    if (isLoading) {
-      return this.message(this.context.t('loadingLayer2Apps'))
-    }
-    
-    if (error) {
-      log.error(error)
-      return h('.hotFix', {
-	style: {
-          padding: '80px',
-	},
-      }, [
-	this.context.t('troubleLayer2AppBalances'),
-	h('span.hotFix', {
-          style: {
-            color: 'rgba(247, 134, 28, 1)',
-            cursor: 'pointer',
-          },
-          onClick: () => {
-            global.platform.openWindow({
-              url: `https://ethplorer.io/address/${userAddress}`,
-            })
-          },
-	}, this.context.t('here')),
-      ])
-    }
+    const plugins = this.props.plugins
+    console.log(plugins)
 
-    return h('div', layer2Apps.map((layer2AppData) => {
-      console.log("layer2 app list")
-      console.log(layer2AppData)
-      layer2AppData.image = assetImages[layer2AppData.address]
-      return h(Layer2AppCell, layer2AppData)
+    if (!plugins) return this.message(this.context.t('No plugins'))
+    
+    return h('div', plugins.map((pluginData) => {
+      console.log("plugin list element", pluginData)
+      return h(PluginCell, pluginData)
     }))
 
   }
@@ -100,22 +73,24 @@ class Layer2AppList extends Component {
   }
 
   componentDidMount() {
-    this.createFreshLayer2AppTracker()
+    //this.props.plugins.map((plugin)=>this.createFreshPluginTracker(plugin.authorAddress))
   }
 
-  createFreshLayer2AppTracker() {
-    if (this.tracker) {
-      // Clean up old trackers when refreshing:
-      this.tracker.stop()
-      this.tracker.removeListener('update', this.balanceUpdater)
-      this.tracker.removeListener('error', this.showError)
-    }
+  createFreshPluginTracker() {
+    // if (this.tracker) {
+    //   // Clean up old trackers when refreshing:
+    //   this.tracker.stop()
+    //   this.tracker.removeListener('update', this.balanceUpdater)
+    //   this.tracker.removeListener('error', this.showError)
+    // }
 
     if (!global.ethereumProvider) return
     const { userAddress, registerLayer2AppContract } = this.props
 
 
-    this.tracker = new Layer2AppTracker({
+    console.log("PLUGIN TRACKERS", this.props.layer2Apps)
+    
+    this.tracker = new PluginTracker({
       userAddress,
       provider: global.ethereumProvider,
       layer2Apps: this.props.layer2Apps,
@@ -150,33 +125,29 @@ class Layer2AppList extends Component {
 	}
 
   componentDidUpdate(nextProps) {
-    const {
-      network: oldNet,
-      userAddress: oldAddress,
-      name,
-      nodeUrl,
-      layer2Apps,
-    } = this.props
-    const {
-      network: newNet,
-      userAddress: newAddress,
-      name: newName,
-      nodeUrl: newNodeUrl,
-      layer2Apps: newLayer2Apps,
-    } = nextProps
 
-    const isLoading = newNet === 'loading'
-    const missingInfo = !oldNet || !newNet || !oldAddress || !newAddress
-    const sameUserAndNetwork = oldAddress === newAddress && oldNet === newNet
-    const shouldUpdateLayer2Apps = isLoading || missingInfo || sameUserAndNetwork
+    //   plugins,
+    // } = this.props
+    // const {
+    //   network: newNet,
+    //   userAddress: newAddress,
+    //   name: newName,
+    //   nodeUrl: newNodeUrl,
+    //   plugins: newPlugins,
+    // } = nextProps
 
-    const oldLayer2AppsLength = layer2Apps ? layer2Apps.length : 0
-    const layer2AppsLengthUnchanged = oldLayer2AppsLength === newLayer2Apps.length
+    // const isLoading = newNet === 'loading'
+    // const missingInfo = !oldNet || !newNet || !oldAddress || !newAddress
+    // const sameUserAndNetwork = oldAddress === newAddress && oldNet === newNet
+    // const shouldUpdateLayer2Apps = isLoading || missingInfo || sameUserAndNetwork
 
-    if (layer2AppsLengthUnchanged && shouldUpdateLayer2Apps) return
+    // const oldLayer2AppsLength = layer2Apps ? layer2Apps.length : 0
+    // const layer2AppsLengthUnchanged = oldLayer2AppsLength === newLayer2Apps.length
 
-    this.setState({ isLoading: true })
-    this.createFreshLayer2AppTracker()
+    // if (layer2AppsLengthUnchanged && shouldUpdateLayer2Apps) return
+
+    // this.setState({ isLoading: true })
+    // this.createFreshLayer2AppTracker()
   }
 
   updateBalances(layer2Apps) {

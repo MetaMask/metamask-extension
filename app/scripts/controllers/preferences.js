@@ -367,13 +367,13 @@ class PreferencesController {
    * Adds a new Plugin
    */
 
-  async addPlugin (rawAddress, contract, image) {
-    console.log("BACKGROUND DEBUG", rawAddress)
-    const address = normalizeAddress(rawAddress)
-    const newEntry = {address}
+  async addPlugin (rawAuthorAddress, contract, image) {
+    console.log("Background Preferences add Plugin DEBUG", rawAuthorAddress)
+    const authorAddress = normalizeAddress(rawAuthorAddress)
+    const newEntry = {authorAddress: authorAddress}
     let plugins = this.getPlugins()
     const previousEntry = plugins.find((plugin, index) => {
-      return plugin.address === address
+      return plugin.authorAddress === authorAddress
     })
     const previousIndex = plugins.indexOf(previousEntry)
 
@@ -394,7 +394,7 @@ class PreferencesController {
   //  * @returns {Promise<array>} The new array of AddedToken objects
   //  *
   //  */
-  removePlugin (rawAddress) {
+  removePlugin (rawAuthorAddress) {
     return Promise.resolve()
   }
 

@@ -18,7 +18,7 @@ class AddLayer2App extends Component {
     super(props)
 
     this.state = {
-      customAddress: '',
+      customAuthorAddress: '',
       layer2AppSelectorError: null,
       displayedTab: CUSTOM_LAYER2APP_TAB,
     }
@@ -27,24 +27,24 @@ class AddLayer2App extends Component {
   handleNext () {
     const { history } = this.props
     const {
-      customAddress: address,
+      customAuthorAddress,
     } = this.state
 
     const customPlugin = {
-      address
+      authorAddress : customAuthorAddress
     }
     
-    console.log("DEBUG DEBUG DEBUG", customPlugin)
+    console.log("DEBUG NEXT ADD PLUGIN COMPONENT", customPlugin)
 
-    addPlugin(customPlugin)
+    addPlugin(customPlugin.authorAddress)
     
     history.push(DEFAULT_ROUTE)
   }
 
-  handleCustomAddressChange (value) {
-    const customAddress = value.trim()
+  handleCustomAuthorAddressChange (value) {
+    const customAuthorAddress = value.trim()
     this.setState({
-      customAddress,
+      customAuthorAddress,
       customAddressError: null,
       layer2AppSelectorError: null,
       autoFilled: false,
@@ -54,7 +54,7 @@ class AddLayer2App extends Component {
 
   renderCustomLayer2AppForm () {
     const {
-      customAddress,
+      customAuthorAddress,
       customAddressError,
       autoFilled,
     } = this.state
@@ -65,8 +65,8 @@ class AddLayer2App extends Component {
           id="custom-address"
           label={'pluginAuthorAddress'}
           type="text"
-          value={customAddress}
-          onChange={e => this.handleCustomAddressChange(e.target.value)}
+          value={customAuthorAddress}
+          onChange={e => this.handleCustomAuthorAddressChange(e.target.value)}
           error={customAddressError}
           fullWidth
           margin="normal"

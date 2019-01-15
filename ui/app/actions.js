@@ -1692,10 +1692,10 @@ function showAddSuggestedLayer2AppPage (transitionForward = true) {
   }
 }
 
-function addPlugin (address) {
+function addPlugin (customAuthorAddress) {
   console.log("ADD PLUGIN START")
   return new Promise((resolve, reject) => {
-    background.addPlugin(address.address, (err, plugins) => {
+    background.addPlugin(customAuthorAddress, (err, plugins) => {
       if (err) {
         reject(err)
       }
