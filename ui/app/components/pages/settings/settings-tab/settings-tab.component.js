@@ -235,7 +235,6 @@ export default class SettingsTab extends PureComponent {
       if (!!chainId && Number.isNaN(parseInt(chainId))) {
         return displayWarning(`${this.context.t('invalidInput')} chainId`)
       }
-      debugger
       setRpcTarget(newRpc, chainId, ticker, nickname)
     } else {
       const appendedRpc = `http://${newRpc}`
