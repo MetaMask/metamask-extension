@@ -8,9 +8,6 @@ const MetamaskInpageProvider = require('metamask-inpage-provider')
 
 let isEnabled = false
 let warned = false
-let providerHandle
-let isApprovedHandle
-let isUnlockedHandle
 
 restoreContextAfterImports()
 
@@ -53,9 +50,6 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
 
-// set up a listener for when MetaMask is locked
-onMessage('metamasksetlocked', () => { isEnabled = false })
-
 // set up a listener for privacy mode responses
 onMessage('ethereumproviderlegacy', ({ data: { selectedAddress } }) => {
   isEnabled = true
@@ -64,79 +58,9 @@ onMessage('ethereumproviderlegacy', ({ data: { selectedAddress } }) => {
   }, 0)
 }, true)
 
-// augment the provider with its enable method
-inpageProvider.enable = function ({ force } = {}) {
-  return new Promise((resolve, reject) => {
-    providerHandle = ({ data: { error, selectedAddress } }) => {
-      if (typeof error !== 'undefined') {
-        reject(error)
-      } else {
-        window.removeEventListener('message', providerHandle)
-        setTimeout(() => {
-          inpageProvider.publicConfigStore.updateState({ selectedAddress })
-        }, 0)
-
-        // wait for the background to update with an account
-        inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
-          if (error) {
-            reject(error)
-          } else {
-            isEnabled = true
-            resolve(response.result)
-          }
-        })
-      }
-    }
-    onMessage('ethereumprovider', providerHandle, true)
-    window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER', force }, '*')
-  })
-}
-
 // add metamask-specific convenience methods
-inpageProvider._metamask = new Proxy({
-  /**
-   * Determines if this domain is currently enabled
-   *
-   * @returns {boolean} - true if this domain is currently enabled
-   */
-  isEnabled: function () {
-    return isEnabled
-  },
-
-  /**
-   * Determines if this domain has been previously approved
-   *
-   * @returns {Promise<boolean>} - Promise resolving to true if this domain has been previously approved
-   */
-  isApproved: function () {
-    return new Promise((resolve) => {
-      isApprovedHandle = ({ data: { caching, isApproved } }) => {
-        if (caching) {
-          resolve(!!isApproved)
-        } else {
-          resolve(false)
-        }
-      }
-      onMessage('ethereumisapproved', isApprovedHandle, true)
-      window.postMessage({ type: 'ETHEREUM_IS_APPROVED' }, '*')
-    })
-  },
-
-  /**
-   * Determines if MetaMask is unlocked by the user
-   *
-   * @returns {Promise<boolean>} - Promise resolving to true if MetaMask is currently unlocked
-   */
-  isUnlocked: function () {
-    return new Promise((resolve) => {
-      isUnlockedHandle = ({ data: { isUnlocked } }) => {
-        resolve(!!isUnlocked)
-      }
-      onMessage('metamaskisunlocked', isUnlockedHandle, true)
-      window.postMessage({ type: 'METAMASK_IS_UNLOCKED' }, '*')
-    })
-  },
-}, {
+// TODO: Verify necessity of this line, as the first obj argument has been stripped of the methods it used to add to the object.
+inpageProvider._metamask = new Proxy({}, {
   get: function (obj, prop) {
     !warned && console.warn('Heads up! ethereum._metamask exposes methods that have ' +
     'not been standardized yet. This means that these methods may not be implemented ' +
@@ -155,19 +79,6 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
 })
 
 window.ethereum = proxiedInpageProvider
-
-// detect eth_requestAccounts and pipe to enable for now
-function detectAccountRequest (method) {
-  const originalMethod = inpageProvider[method]
-  inpageProvider[method] = function ({ method }) {
-    if (method === 'eth_requestAccounts') {
-      return window.ethereum.enable()
-    }
-    return originalMethod.apply(this, arguments)
-  }
-}
-detectAccountRequest('send')
-detectAccountRequest('sendAsync')
 
 //
 // setup web3
@@ -244,3 +155,4 @@ function restoreContextAfterImports () {
     console.warn('MetaMask - global.define could not be overwritten.')
   }
 }
+

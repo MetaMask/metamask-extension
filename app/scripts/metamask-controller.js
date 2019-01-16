@@ -245,7 +245,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
     this.publicConfigStore = this.initPublicConfigStore()
 
-    this.providerApprovalOpts = {
+    const providerApprovalOpts = {
       closePopup: opts.closePopup,
       keyringController: this.keyringController,
       openPopup: opts.openPopup,
@@ -253,7 +253,8 @@ module.exports = class MetamaskController extends EventEmitter {
       preferencesController: this.preferencesController,
       publicConfigStore: this.publicConfigStore,
     }
-    this.providerApprovalController = new ProviderApprovalController(providerOpts)
+    this.providerApprovalController = new ProviderApprovalController(providerApprovalOpts)
+    console.log('provider approval created')
 
     this.store.updateStructure({
       TransactionController: this.txController.store,
@@ -1341,7 +1342,15 @@ module.exports = class MetamaskController extends EventEmitter {
         'eth_accounts': {
           description: 'Allows viewing the public address of an Ethereum account.',
           method: (req, res, next, end) => {
-
+            this.keyringController.getAccounts()
+            .then((accounts) => {
+              res.result = accounts
+              end()
+            })
+            .catch((reason) => {
+              res.error = reason
+              end(reason)
+            })
           },
         },
 

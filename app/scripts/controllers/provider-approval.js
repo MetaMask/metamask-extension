@@ -15,6 +15,7 @@ class ProviderApprovalController {
    * @param {Object} [config] - Options to configure controller
    */
   constructor ({ closePopup, keyringController, openPopup, platform, preferencesController, publicConfigStore } = {}) {
+    console.log('constructing provider approval')
     this.approvedOrigins = {}
     this.closePopup = closePopup
     this.keyringController = keyringController
@@ -28,6 +29,7 @@ class ProviderApprovalController {
 
     if (platform && platform.addMessageListener) {
       platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }) => {
+        console.log('PLATFORM addMessageListener CALLED!', { action, force, origin, siteTitle, siteImage })
         switch (action) {
           case 'init-provider-request':
             this._handleProviderRequest(origin, siteTitle, siteImage, force)
@@ -69,11 +71,13 @@ class ProviderApprovalController {
    * @param {string} origin - Origin of the window
    */
   _handleIsApproved (origin) {
+    /*
     this.platform && this.platform.sendMessage({
       action: 'answer-is-approved',
       isApproved: this.approvedOrigins[origin] && this.caching,
       caching: this.caching,
     }, { active: true })
+    */
   }
 
   /**
@@ -81,7 +85,7 @@ class ProviderApprovalController {
    */
   _handleIsUnlocked () {
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-    this.platform && this.platform.sendMessage({ action: 'answer-is-unlocked', isUnlocked }, { active: true })
+    // this.platform && this.platform.sendMessage({ action: 'answer-is-unlocked', isUnlocked }, { active: true })
   }
 
   /**
@@ -90,10 +94,12 @@ class ProviderApprovalController {
   _handlePrivacyRequest () {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
     if (!privacyMode) {
+      /*
       this.platform && this.platform.sendMessage({
         action: 'approve-legacy-provider-request',
         selectedAddress: this.publicConfigStore.getState().selectedAddress,
       }, { active: true })
+      */
       this.publicConfigStore.emit('update', this.publicConfigStore.getState())
     }
   }
@@ -106,10 +112,12 @@ class ProviderApprovalController {
   approveProviderRequest (origin) {
     this.closePopup && this.closePopup()
     const requests = this.store.getState().providerRequests
+    /*
     this.platform && this.platform.sendMessage({
       action: 'approve-provider-request',
       selectedAddress: this.publicConfigStore.getState().selectedAddress,
     }, { active: true })
+    */
     this.publicConfigStore.emit('update', this.publicConfigStore.getState())
     const providerRequests = requests.filter(request => request.origin !== origin)
     this.store.updateState({ providerRequests })
@@ -124,7 +132,7 @@ class ProviderApprovalController {
   rejectProviderRequest (origin) {
     this.closePopup && this.closePopup()
     const requests = this.store.getState().providerRequests
-    this.platform && this.platform.sendMessage({ action: 'reject-provider-request' }, { active: true })
+    // this.platform && this.platform.sendMessage({ action: 'reject-provider-request' }, { active: true })
     const providerRequests = requests.filter(request => request.origin !== origin)
     this.store.updateState({ providerRequests })
     delete this.approvedOrigins[origin]
@@ -153,7 +161,7 @@ class ProviderApprovalController {
    * internal flags in the contentscript and inpage script.
    */
   setLocked () {
-    this.platform.sendMessage({ action: 'metamask-set-locked' })
+    // this.platform.sendMessage({ action: 'metamask-set-locked' })
   }
 }
 

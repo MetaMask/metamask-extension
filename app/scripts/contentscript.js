@@ -24,8 +24,8 @@ let isEnabled = false
 if (shouldInjectWeb3()) {
   injectScript(inpageBundle)
   setupStreams()
-  listenForProviderRequest()
-  checkPrivacyMode()
+  // listenForProviderRequest()
+  // checkPrivacyMode()
 }
 
 /**
@@ -120,6 +120,8 @@ function setupStreams () {
  * should not post messages directly and should instead call provider.enable(), which
  * handles posting these messages internally.
  */
+
+/* TODO: Maybe just delete:
 function listenForProviderRequest () {
   window.addEventListener('message', ({ source, data }) => {
     if (source !== window || !data || !data.type) { return }
@@ -147,6 +149,7 @@ function listenForProviderRequest () {
     }
   })
 
+
   extension.runtime.onMessage.addListener(({ action = '', isApproved, caching, isUnlocked, selectedAddress }) => {
     switch (action) {
       case 'approve-provider-request':
@@ -173,13 +176,13 @@ function listenForProviderRequest () {
     }
   })
 }
+*/
 
 /**
  * Checks if MetaMask is currently operating in "privacy mode", meaning
  * dapps must call ethereum.enable in order to access user accounts
  */
 function checkPrivacyMode () {
-  extension.runtime.sendMessage({ action: 'init-privacy-request' })
 }
 
 /**
@@ -327,3 +330,4 @@ function getSiteIcon (window) {
 
   return null
 }
+
