@@ -2,6 +2,19 @@
 
 ## Current Develop Branch
 
+## 5.3.1 Wed Jan 16 2019
+
+- [#5966](https://github.com/MetaMask/metamask-extension/pull/5966): Update Slovenian translation
+- [#6005](https://github.com/MetaMask/metamask-extension/pull/6005): Set auto conversion off for token/eth conversion
+- [#6008](https://github.com/MetaMask/metamask-extension/pull/6008): Fix confirm screen for sending ether tx with hex data
+- [#5999](https://github.com/MetaMask/metamask-extension/pull/5999): Refine app description
+- [#5997](https://github.com/MetaMask/metamask-extension/pull/5997): Harden Drizzle test runner script
+- [#5995](https://github.com/MetaMask/metamask-extension/pull/5995): Fix bug where MetaMask user calls non-standard ERC20 methods such as `mint`, `tokenData` will be `undefined` and an uncaught error will break the UI
+- [#5970](https://github.com/MetaMask/metamask-extension/pull/5970): Fixed a word in french translation (several occurrences of connection instead of connexion)
+- [#5977](https://github.com/MetaMask/metamask-extension/pull/5977): Fix Component#componentDidUpdate usage
+- [#5992](https://github.com/MetaMask/metamask-extension/pull/5992): Add scrolling button to account list
+- [#5989](https://github.com/MetaMask/metamask-extension/pull/5989): fix typo in phishing.html title
+
 ## 5.3.0 Wed Jan 02 2019
 
 - [#5978](https://github.com/MetaMask/metamask-extension/pull/5978): Fix etherscan links on notifications
