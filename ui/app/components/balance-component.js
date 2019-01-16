@@ -6,14 +6,14 @@ const TokenBalance = require('./token-balance')
 const Identicon = require('./identicon')
 import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../constants/common'
-const { getAssetImages, conversionRateSelector, getCurrentCurrency} = require('../selectors')
+const { getAssetImages, conversionRateSelector, getCurrentCurrency, getMetaMaskAccounts } = require('../selectors')
 
 const { formatBalance } = require('../util')
 
 module.exports = connect(mapStateToProps)(BalanceComponent)
 
 function mapStateToProps (state) {
-  const accounts = state.metamask.accounts
+  const accounts = getMetaMaskAccounts(state)
   const network = state.metamask.network
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
   const account = accounts[selectedAddress]

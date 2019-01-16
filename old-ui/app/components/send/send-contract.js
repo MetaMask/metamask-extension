@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import PersistentForm from '../../../lib/persistent-form'
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
-import SendError from './send-error'
+import ErrorComponent from '../error'
+import ToastComponent from '../toast'
 import Select from 'react-select'
 import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
@@ -109,13 +110,7 @@ class SendTransactionScreen extends PersistentForm {
 			copyDisabled: true,
 		}
 
-		this.timerID = null
 		PersistentForm.call(this)
-	}
-
-	componentWillUnmount () {
-		this.props.hideToast()
-		clearTimeout(this.timerID)
 	}
 
 	componentWillMount () {
@@ -132,11 +127,8 @@ class SendTransactionScreen extends PersistentForm {
 			<div className="send-screen flex-column flex-grow">
 				<SendProfile />
 				<SendHeader title="Execute Method" />
-				<SendError
-					error={error}
-					onClose={() => { this.props.hideWarning() }}
-				/>
-				{this.props.toastMsg ? <div className="toast">{this.props.toastMsg}</div> : null}
+				<ErrorComponent error={error} />
+				<ToastComponent msg={this.props.toastMsg} isSuccess={true} />
 				<div style={{ padding: '0 30px' }}>
 					<Select
 						clearable={false}
@@ -387,7 +379,6 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	setOutputValue = (val, type) => {
-		console.log(val)
 		if (!type) {
 			return val || ''
 		}
@@ -423,9 +414,6 @@ class SendTransactionScreen extends PersistentForm {
 		if (txData) {
 			copyToClipboard(txData)
 			this.props.displayToast('Contract ABI encoded method call has been successfully copied to clipboard')
-			this.timerID = setTimeout(() => {
-				this.props.hideToast()
-			}, 4000)
 		}
 	}
 

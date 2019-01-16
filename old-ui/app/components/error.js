@@ -1,10 +1,12 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import actions from '../../../ui/app/actions'
 
-class SendError extends Component {
+class ErrorComponent extends Component {
 	static propTypes = {
 		error: PropTypes.string,
-		onClose: PropTypes.func,
+		hideWarning: PropTypes.func,
 	}
 
 	render () {
@@ -29,7 +31,7 @@ class SendError extends Component {
 						height: '16px',
 						cursor: 'pointer',
 					}}
-					onClick={(e) => this.props.onClose(e)}
+					onClick={(e) => this.props.hideWarning()}
 				/>
 				<div style={{
 					marginLeft: '30px',
@@ -47,4 +49,10 @@ class SendError extends Component {
 	}
 }
 
-module.exports = SendError
+function mapDispatchToProps (dispatch) {
+	return {
+		hideWarning: () => dispatch(actions.hideWarning()),
+	}
+}
+
+module.exports = connect(null, mapDispatchToProps)(ErrorComponent)

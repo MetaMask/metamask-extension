@@ -13,6 +13,7 @@ import PendingMsg from './components/pending-msg'
 import PendingPersonalMsg from './components/pending-personal-msg'
 import PendingTypedMsg from './components/pending-typed-msg'
 const Loading = require('./components/loading')
+const { getMetaMaskAccounts } = require('../../ui/app/selectors')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
@@ -21,8 +22,8 @@ function mapStateToProps (state) {
   const { screenParams, pendingTxIndex } = appState.currentView
   return {
     identities: metamask.identities,
+    accounts: getMetaMaskAccounts(state),
     keyrings: metamask.keyrings,
-    accounts: metamask.accounts,
     selectedAddress: metamask.selectedAddress,
     unapprovedTxs: metamask.unapprovedTxs,
     unapprovedMsgs: metamask.unapprovedMsgs,

@@ -280,10 +280,13 @@ app sections
 
 /* unlock */
 .toast {
-  border: 1px solid #60db97 !important;
+  background-image: url('../images/remove.svg');
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position: 5px 5px;
+  border: 1px solid !important;
   color: #ffffff !important;
   font-size: 12px;
-  background: #60db97;
   text-align: center;
   padding: 10px;
   width: 357px;
@@ -294,6 +297,17 @@ app sections
   right: 0px;
   z-index: 100;
   animation: 500ms ease-out 0s move;
+  cursor: pointer;
+}
+
+.toast.green {
+  background-color: #60db97;
+  border-color: #60db97 !important;
+}
+
+.toast.red {
+  background-color: #ff1345;
+  border-color: #ff1345 !important;
 }
 
 @keyframes move {

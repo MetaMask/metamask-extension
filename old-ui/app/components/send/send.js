@@ -14,13 +14,15 @@ const EnsInput = require('../ens-input')
 const ethUtil = require('ethereumjs-util')
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
-import SendError from './send-error'
+import ErrorComponent from '../error'
+import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
+  const accounts = getMetaMaskAccounts(state)
   var result = {
     address: state.metamask.selectedAddress,
-    accounts: state.metamask.accounts,
+    accounts,
     identities: state.metamask.identities,
     warning: state.appState.warning,
     network: state.metamask.network,
@@ -69,11 +71,8 @@ SendTransactionScreen.prototype.render = function () {
       }),
 
       // error message
-      h(SendError, {
+      h(ErrorComponent, {
         error,
-        onClose: () => {
-          this.props.dispatch(actions.hideWarning())
-        },
       }),
 
       // 'to' field
