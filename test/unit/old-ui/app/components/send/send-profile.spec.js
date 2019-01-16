@@ -11,6 +11,7 @@ const state = {
 	metamask: {
 		selectedAddress: '0x99a22ce737b6a48f44cad6331432ce98693cad07',
 		accounts: ['0x99a22ce737b6a48f44cad6331432ce98693cad07'],
+		cachedBalances: {'0x99a22ce737b6a48f44cad6331432ce98693cad07': 1},
 		identities: {
 			'0x99a22ce737b6a48f44cad6331432ce98693cad07': {
 					name: 'Account 1',

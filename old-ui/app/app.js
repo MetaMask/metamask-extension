@@ -44,6 +44,7 @@ const DeleteRpc = require('./components/delete-rpc')
 const DeleteImportedAccount = require('./components/delete-imported-account')
 const ConfirmChangePassword = require('./components/confirm-change-password')
 const ethNetProps = require('eth-net-props')
+const { getMetaMaskAccounts } = require('../../ui/app/selectors')
 
 module.exports = compose(
   withRouter,
@@ -54,9 +55,11 @@ inherits(App, Component)
 function App () { Component.call(this) }
 
 function mapStateToProps (state) {
+
+  const accounts = getMetaMaskAccounts(state)
+
   const {
     identities,
-    accounts,
     address,
     keyrings,
     isInitialized,

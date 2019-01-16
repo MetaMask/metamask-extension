@@ -4,6 +4,7 @@ import Identicon from '../identicon'
 import { addressSummary } from '../../util'
 import EthBalance from '../eth-balance'
 import TokenBalance from '../token-balance'
+import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
 
 class SendProfile extends Component {
 	render () {
@@ -77,9 +78,10 @@ class SendProfile extends Component {
 }
 
 function mapStateToProps (state) {
+	const accounts = getMetaMaskAccounts(state)
 	var result = {
 		address: state.metamask.selectedAddress,
-		accounts: state.metamask.accounts,
+		accounts,
 		identities: state.metamask.identities,
 		network: state.metamask.network,
 		conversionRate: state.metamask.conversionRate,

@@ -1,6 +1,6 @@
 import React from 'react'
 import assert from 'assert'
-import SendContractError from '../../../../../../old-ui/app/components/send/send-error'
+import ErrorComponent from '../../../../../old-ui/app/components/error'
 import { mount } from 'enzyme'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
@@ -16,12 +16,12 @@ const mockStore = configureMockStore(middlewares)
 const store = mockStore(state)
 let wrapper
 
-describe('SendContractError component', () => {
-	describe('renders SendContractError component', () => {
+describe('ErrorComponent', () => {
+	describe('renders ErrorComponent', () => {
 		beforeEach(function () {
 			wrapper = mount(
 				<Provider store={store}>
-					<SendContractError error="Error!"/>
+					<ErrorComponent error="Error!"/>
 				</Provider>
 			)
 		})
@@ -30,11 +30,11 @@ describe('SendContractError component', () => {
 		})
 	})
 
-	describe('doesn\'t render SendContractError component', () => {
+	describe('doesn\'t render ErrorComponent component', () => {
 		beforeEach(function () {
 			wrapper = mount(
 				<Provider store={store}>
-					<SendContractError/>
+					<ErrorComponent/>
 				</Provider>
 			)
 		})

@@ -4,6 +4,9 @@ const {
   multiplyCurrencies,
 } = require('../../conversion-util')
 const {
+  getMetaMaskAccounts,
+} = require('../../selectors')
+const {
   estimateGasPriceFromRecentBlocks,
 } = require('./send.utils')
 
@@ -53,10 +56,8 @@ const selectors = {
 module.exports = selectors
 
 function accountsWithSendEtherInfoSelector (state) {
-  const {
-    accounts,
-    identities,
-  } = state.metamask
+  const accounts = getMetaMaskAccounts(state)
+  const { identities } = state.metamask
 
   const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
     return Object.assign({}, account, identities[key])
@@ -71,7 +72,7 @@ function accountsWithSendEtherInfoSelector (state) {
 //   const autoAddTokensThreshold = 1
 
 //   const numberOfTransactions = state.metamask.selectedAddressTxList.length
-//   const numberOfAccounts = Object.keys(state.metamask.accounts).length
+//   const numberOfAccounts = Object.keys(getMetaMaskAccounts(state)).length
 //   const numberOfTokensAdded = state.metamask.tokens.length
 
 //   const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
@@ -150,14 +151,14 @@ function getRecentBlocks (state) {
 }
 
 function getSelectedAccount (state) {
-  const accounts = state.metamask.accounts
+  const accounts = getMetaMaskAccounts(state)
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
 }
 
 function getSelectedAddress (state) {
-  const selectedAddress = state.metamask.selectedAddress || Object.keys(state.metamask.accounts)[0]
+  const selectedAddress = state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
 
   return selectedAddress
 }

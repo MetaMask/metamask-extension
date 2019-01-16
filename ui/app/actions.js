@@ -96,6 +96,7 @@ var actions = {
   importNewAccount,
   addNewAccount,
   connectHardware,
+  connectHardwareAndUnlockAddress,
   checkHardwareStatus,
   forgetDevice,
   unlockHardwareWalletAccount,
@@ -785,6 +786,23 @@ function connectHardware (deviceName, page, hdPath) {
         }
 
         dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(accounts)
+      })
+    })
+  }
+}
+
+function connectHardwareAndUnlockAddress (deviceName, hdPath, addressToUnlock) {
+  log.debug(`background.connectHardwareAndUnlockAddress`, deviceName, hdPath, addressToUnlock)
+  return (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      background.connectHardwareAndUnlockAddress(deviceName, hdPath, addressToUnlock, (err, accounts) => {
+        if (err) {
+          log.error(err)
+          return reject(err)
+        }
 
         forceUpdateMetamaskState(dispatch)
         return resolve(accounts)

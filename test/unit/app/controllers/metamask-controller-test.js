@@ -358,7 +358,8 @@ describe('MetaMaskController', function () {
     let addNewAccountStub
     let getAccountsStub
     beforeEach(async function () {
-      accountToUnlock = 10
+      this.timeout(10000)
+      accountToUnlock = 4
       windowOpenStub = sinon.stub(window, 'open')
       windowOpenStub.returns(noop)
 

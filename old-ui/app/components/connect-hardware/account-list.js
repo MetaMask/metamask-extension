@@ -4,23 +4,11 @@ import ethNetProps from 'eth-net-props'
 import { default as Select } from 'react-select'
 import Button from '../../../../ui/app/components/button'
 import { capitalizeFirstLetter } from '../../../../app/scripts/lib/util'
+import { isLedger, getHdPaths } from './util'
 
 class AccountList extends Component {
     constructor (props, context) {
         super(props)
-    }
-
-    getHdPaths = () => {
-      return [
-        {
-          label: `Ledger Live`,
-          value: `m/44'/60'/0'/0/0`,
-        },
-        {
-          label: `Legacy (MEW / MyCrypto)`,
-          value: `m/44'/60'/0'`,
-        },
-      ]
     }
 
     goToNextPage = () => {
@@ -39,7 +27,7 @@ class AccountList extends Component {
     renderHdPathSelector = () => {
       const { onPathChange, selectedPath } = this.props
 
-      const options = this.getHdPaths()
+      const options = getHdPaths()
       return (
         <div>
           <h3 className="hw-connect__hdPath__title">Select HD Path</h3>
@@ -67,10 +55,37 @@ class AccountList extends Component {
           <h3 className="hw-connect">
             <h3 className="hw-connect__unlock-title">{`Unlock ${capitalizeFirstLetter(device)}`}</h3>
             {device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null}
-            <p className="hw-connect__msg">Select the account to view in Nifty Wallet</p>
+            <p className="hw-connect__msg">Select the accounts to view in Nifty Wallet</p>
           </h3>
         </div>
       )
+    }
+
+    renderInput = (a, i) => {
+      const { device, selectedAccount, selectedAccounts } = this.props
+      if (isLedger(device)) {
+        return (
+          <input
+            type="checkbox"
+            name={`selectedAccount-${i}`}
+            id={`address-${i}`}
+            value={a.index}
+            onChange={(e) => this.props.onAccountChange(e.target.value)}
+            checked={selectedAccounts.includes(a.index.toString())}
+          />
+        )
+      } else {
+        return (
+          <input
+            type="radio"
+            name="selectedAccount"
+            id={`address-${i}`}
+            value={a.index}
+            onChange={(e) => this.props.onAccountChange(e.target.value)}
+            checked={selectedAccount === a.index.toString()}
+          />
+        )
+      }
     }
 
     renderAccounts = () => {
@@ -79,14 +94,7 @@ class AccountList extends Component {
         rows.push(
           <div className="hw-account-list__item" key={a.address}>
             <div className="hw-account-list__item__radio">
-              <input
-                type="radio"
-                name="selectedAccount"
-                id={`address-${i}`}
-                value={a.index}
-                onChange={(e) => this.props.onAccountChange(e.target.value)}
-                checked={this.props.selectedAccount === a.index.toString()}
-              />
+              {this.renderInput(a, i)}
               <label className="hw-account-list__item__label" htmlFor={`address-${i}`}>
                 {`${a.address.slice(0, 4)}...${a.address.slice(-4)}`}
                 <span
@@ -125,7 +133,7 @@ class AccountList extends Component {
   }
 
   renderButtons = () => {
-    const disabled = this.props.selectedAccount === null
+    const disabled = !this.props.selectedAccount && this.props.selectedAccounts.length === 0
     const buttonProps = {}
     if (disabled) {
       buttonProps.disabled = true
@@ -182,6 +190,7 @@ AccountList.propTypes = {
     getPage: PropTypes.func.isRequired,
     network: PropTypes.string,
     selectedAccount: PropTypes.string,
+    selectedAccounts: PropTypes.array,
     history: PropTypes.object,
     onUnlockAccount: PropTypes.func,
     onCancel: PropTypes.func,

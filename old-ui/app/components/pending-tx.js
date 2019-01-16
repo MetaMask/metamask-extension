@@ -25,6 +25,7 @@ const abiDecoder = require('abi-decoder')
 const { tokenInfoGetter, calcTokenAmount } = require('../../../ui/app/token-util')
 const BigNumber = require('bignumber.js')
 const ethNetProps = require('eth-net-props')
+import { getMetaMaskAccounts } from '../../../ui/app/selectors'
 
 const MIN_GAS_PRICE_BN = new BN('0')
 const MIN_GAS_LIMIT_BN = new BN('21000')
@@ -46,9 +47,10 @@ function PendingTx (props) {
 }
 
 function mapStateToProps (state) {
+  const accounts = getMetaMaskAccounts(state)
   return {
     identities: state.metamask.identities,
-    accounts: state.metamask.accounts,
+    accounts,
     selectedAddress: state.metamask.selectedAddress,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,

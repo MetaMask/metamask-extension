@@ -10,6 +10,7 @@ const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const ethNetProps = require('eth-net-props')
 const { getCurrentKeyring, ifLooseAcc, ifContractAcc } = require('../util')
+const { getHdPaths } = require('./connect-hardware/util')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -62,6 +63,25 @@ class AccountDropdowns extends Component {
           closeMenu: () => {},
           onClick: () => {
             this.props.actions.showAccountDetail(identity.address)
+            if (this.ifHardwareAcc(keyring)) {
+              const ledger = 'ledger'
+              if (keyring.type.toLowerCase().includes(ledger)) {
+                const hdPaths = getHdPaths()
+                return new Promise((resolve, reject) => {
+                  this.props.actions.connectHardwareAndUnlockAddress(ledger, hdPaths[1].value, identity.address)
+                  .then(_ => resolve())
+                  .catch(e => {
+                    this.props.actions.connectHardwareAndUnlockAddress(ledger, hdPaths[0].value, identity.address)
+                    .then(_ => resolve())
+                    .catch(e => reject(e))
+                  })
+                })
+                .catch(e => {
+                  this.props.actions.displayWarning((e && e.message) || e)
+                  this.props.actions.displayToast(e)
+                })
+              }
+            }
           },
           style: {
             marginTop: index === 0 ? '5px' : '',
@@ -404,7 +424,16 @@ const mapDispatchToProps = (dispatch) => {
       showConnectHWWalletPage: () => dispatch(actions.showConnectHWWalletPage()),
       showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
       showDeleteImportedAccount: (identity) => dispatch(actions.showDeleteImportedAccount(identity)),
+      displayWarning: (msg) => dispatch(actions.displayWarning(msg)),
       getContract: (addr) => dispatch(actions.getContract(addr)),
+      setHardwareWalletDefaultHdPath: ({device, path}) => {
+        return dispatch(actions.setHardwareWalletDefaultHdPath({device, path}))
+      },
+      connectHardwareAndUnlockAddress: (deviceName, hdPath, address) => {
+        return dispatch(actions.connectHardwareAndUnlockAddress(deviceName, hdPath, address))
+      },
+      displayToast: (msg) => dispatch(actions.displayToast(msg)),
+      hideToast: () => dispatch(actions.hideToast()),
     },
   }
 }
