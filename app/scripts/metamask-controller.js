@@ -663,7 +663,14 @@ module.exports = class MetamaskController extends EventEmitter {
         const keyring = await this.getKeyringForDevice(deviceName, hdPath)
 
         const accountsFromFirstPage = await keyring.getFirstPage()
-        let accounts = await this.findAccountInLedger(accountsFromFirstPage, keyring, 0, addressToUnlock)
+        const initialPage = 0
+        let accounts = await this.findAccountInLedger({
+          accounts: accountsFromFirstPage,
+          keyring,
+          page: initialPage,
+          addressToUnlock,
+          hdPath,
+        })
         accounts = accounts || accountsFromFirstPage
 
         // Merge with existing accounts
@@ -679,13 +686,13 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  async findAccountInLedger (accounts, keyring, page, addressToUnlock) {
+  async findAccountInLedger ({accounts, keyring, page, addressToUnlock, hdPath}) {
     return new Promise(async (resolve, reject) => {
       // to do: store pages depth in dropdown
       const pagesDepth = 10
       if (page >= pagesDepth) {
         reject({
-          message: `Requested account ${addressToUnlock} is not found in ${pagesDepth} pages of Ledger. Try to unlock this account from Ledger.`,
+          message: `Requested account ${addressToUnlock} is not found in ${pagesDepth} pages of ${hdPath} path of Ledger. Try to unlock this account from Ledger.`,
         })
         return
       }
@@ -702,7 +709,7 @@ module.exports = class MetamaskController extends EventEmitter {
         if (!accountIsFound) {
           accounts = await keyring.getNextPage()
           page++
-          this.findAccountInLedger(accounts, keyring, page, addressToUnlock)
+          this.findAccountInLedger({accounts, keyring, page, addressToUnlock, hdPath})
           .then(accounts => {
             resolve(accounts)
           })
