@@ -318,8 +318,8 @@
     "message": "Crypto",
     "description": "Exchange type (cryptocurrencies)"
   },
-  "currentConversion": {
-    "message": "Current Conversion"
+  "currencyConversion": {
+    "message": "Currency Conversion"
   },
   "currentLanguage": {
     "message": "Current Language"
