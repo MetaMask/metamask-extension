@@ -102,7 +102,7 @@
     "message": "Amount + TX Fee"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
   },
   "appName": {
@@ -318,8 +318,8 @@
     "message": "Crypto",
     "description": "Exchange type (cryptocurrencies)"
   },
-  "currentConversion": {
-    "message": "Current Conversion"
+  "currencyConversion": {
+    "message": "Currency Conversion"
   },
   "currentLanguage": {
     "message": "Current Language"
