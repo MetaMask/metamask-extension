@@ -62,11 +62,11 @@ class ProviderApprovalController {
       this.approveProviderRequest(origin)
       return
     }
-    if(showPopup) {
+    if (showPopup) {
       this.openPopup && this.openPopup()
     } else {
       this.rejectProviderRequest(origin)
-      return      
+      return
     }
   }
 
