@@ -35,11 +35,11 @@ function transformState (state) {
     newState.PreferencesController.frequentRpcListDetail = frequentRpcListDetail
   }
 
-  if ( newState.NetworkController.network && Number.isNaN(parseInt(newState.NetworkController.network))) {
+  if (newState.NetworkController.network && Number.isNaN(parseInt(newState.NetworkController.network))) {
     delete newState.NetworkController.network
   }
 
-  if ( newState.NetworkController.provider && newState.NetworkController.provider.chainId && Number.isNaN(parseInt(newState.NetworkController.provider.chainId))) {
+  if (newState.NetworkController.provider && newState.NetworkController.provider.chainId && Number.isNaN(parseInt(newState.NetworkController.provider.chainId))) {
     delete newState.NetworkController.provider.chainId
   }
 
