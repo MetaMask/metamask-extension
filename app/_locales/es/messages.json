@@ -24,7 +24,7 @@
     "message": "Datos de aprobación"
   },
   "approvalDataDescription": {
-    "message": "Borre los datos del sitio web aprobado para que todos los sitios deban volver a solicitar la aprobación."
+    "message": "Borrar los datos para que todos los sitios deban volver a solicitar la aprobación."
   },
   "clearApprovalData": {
     "message": "Borrar datos de aprobación"
@@ -86,7 +86,7 @@
     "message": "Aprobado"
   },
   "attemptingConnect": {
-    "message": "Intentando conectar a la Blockchain"
+    "message": "Intentando conectar a la Cadena de Bloques"
   },
   "attributions": {
     "message": "Atribuciones"
@@ -111,7 +111,7 @@
   },
   "betweenMinAndMax": {
     "message": "Debe ser mayor o igual a $1 y menor o igual a $2",
-    "description": "helper para ingresar hex como un ingreso decimal"
+    "description": "ayudante para ingresar hex como un ingreso decimal"
   },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon (Iconos)"
@@ -929,5 +929,159 @@
   },
   "yourSigRequested": {
     "message": "Tu firma ya fue solicitada"
-  }
+  },
+  "contractInteraction": {
+    "message": "Interacción del Contrato"
+  },
+  "providerRequest": {
+    "message": "$1 quisiera conectar con tu cuenta"
+  },
+  "acceleratingATransaction": {
+    "message": "* Agilizar a una transacción al usar un precio de gas más alto aumenta las probabilidades que que la red lo procese más rápidamente, pero eso no siempre está garantizado."
+  },
+  "accessingYourCamera": {
+    "message": "Accediendo a tu cámara..."
+  },
+  "accountOptions": {
+    "message": "Opciones de la Cuenta"
+  },
+  "accountSelectionRequired": {
+    "message": "Hay que elegir una cuenta!"
+  },
+  "activityLog": {
+    "message": "registro de movimientos"
+  },
+  "advancedOptions": {
+    "message": "Opciones Avanzadas"
+  },
+  "addSuggestedTokens": {
+    "message": "Agregar tokens propuestos"
+  },
+  "addAcquiredTokens": {
+    "message": "Agregar los tokens que has adquirido usando MetaMask"
+  },
+  "advanced": {
+    "message": "Avanzado"
+  },
+  "amountPlusTxFee": {
+    "message": "Cantidad + Comisión por transacción"
+  },
+  "attemptToCancel": {
+    "message": "¿Intentar cancelar?"
+  },
+  "attemptToCancelDescription": {
+    "message": "El mandar este intento no garantiza que su transacción original se cancelará. Si el intento de cancelación sí tiene éxito, se le cobrará la comisión de transacción indicado arriba."
+  },
+  "average": {
+    "message": "promedio"
+  },
+  "basic": {
+    "message": "Básico"
+  },
+  "browserNotSupported": {
+    "message": "Tu navegador no está admitido..."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "cancelAttempt": {
+    "message": "Intento de Cancelar"
+  },
+  "cancellationGasFee": {
+    "message": "Comisión de Gas por Cancelación"
+  },
+  "cancelled": {
+    "message": "Cancelado"
+  },
+  "cancelN": {
+    "message": "Cancelar a todas transacciones de $1"
+  },
+  "clickToAdd": {
+    "message": "Hazle clic en $1 para agregarles a su cuenta"
+  },
+  "close": {
+    "message": "Cerrar"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Hay que usar MetaMask en Google Chrome para poder conectarse con tu Monedero Físico."
+  },
+  "confirmationTime": {
+    "message": "Tiempo de confirmación (seg)"
+  },
+  "connectHardwareWallet": {
+    "message": "Conectar Monedero Físico"
+  },
+  "connect": {
+    "message": "Conectar"
+  },
+  "connectRequest": {
+    "message": "Petición para Conectar"
+  },
+  "connecting": {
+    "message": "Conectándose..."
+  },
+  "connectingTo": {
+    "message": "Conectánodse a $1"
+  },
+  "connectToLedger": {
+    "message": "Conectarse al Ledger"
+  },
+  "connectToTrezor": {
+    "message": "Conectarse al Trezor"
+  },
+  "copyAddress": {
+    "message": "Copiar la dirección al portapapeles"
+  },
+  "currentLanguage": {
+    "message": "Idioma Actual"
+  },
+  "customGasSubTitle": {
+    "message": "Aumentar la comisión puede hacer que el tiempo de procesamiento se disminuya, pero no está garantizado."
+  },
+  "customToken": {
+    "message": "Token Personalizado"
+  },
+  "downloadGoogleChrome": {
+    "message": "Descargar Google Chrome"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "¿No tienes un monedero físico?"
+  },
+  "ensNameNotFound": {
+    "message": "No se localizó el nombre ENS"
+  },
+  "enterPasswordContinue": {
+    "message": "Intoducir contraseña para seguir"
+  },
+  "eth": {
+    "message": "ETH"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Tiempo Previsto de Procesamiento"
+  },
+  "expandView": {
+    "message": "Ampliar Vista"
+  },
+  "fast": {
+    "message": "Rápido"
+  },
+  "faster": {
+    "message": "Más Rápido"
+  },
+  "fastest": {
+    "message": "Lo Mas Rápido"
+  },
+  "feeChartTitle": {
+    "message": "Previsiones en Vivo de las Comisiones por Transacciones"
+  },
+  "forgetDevice": {
+    "message": "Olvidar a este dispositivo"
+  },
+  "functionType": {
+    "message": "Tipo de Función"
+  },
+
+
+
+
 }
