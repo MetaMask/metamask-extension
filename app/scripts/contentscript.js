@@ -128,6 +128,7 @@ function listenForProviderRequest () {
         extension.runtime.sendMessage({
           action: 'init-provider-request',
           force: data.force,
+          showPopup: data.showPopup,
           origin: source.location.hostname,
           siteImage: getSiteIcon(source),
           siteTitle: getSiteName(source),
