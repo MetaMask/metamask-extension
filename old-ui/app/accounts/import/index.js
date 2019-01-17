@@ -7,13 +7,20 @@ import { importTypes } from './enums'
 import { nestedJsonObjToArray } from './helpers'
 
 // Subviews
-const JsonImportView = require('./json.js')
-const PrivateKeyImportView = require('./private-key.js')
-const ContractImportView = require('./contract.js')
+import JsonImportView from './json.js'
+import PrivateKeyImportView from './private-key.js'
+import ContractImportView from './contract.js'
 
 const menuItems = nestedJsonObjToArray(importTypes)
 
 class AccountImportSubview extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      description: '',
+      type: importTypes.PRIVATE_KEY,
+    }
+  }
   static propTypes = {
     menuItems: PropTypes.object.Array,
     warning: PropTypes.node,
@@ -75,9 +82,27 @@ class AccountImportSubview extends Component {
               }),
               onChange: (opt) => {
                 props.showImportPage()
-                this.setState({ type: opt.value })
+                const type = opt.value
+                let description
+                switch (type) {
+                  case importTypes.PRIVATE_KEY:
+                  case importTypes.JSON_FILE:
+                    description = ''
+                    break
+                  case importTypes.CONTRACT.DEFAULT:
+                    description = `Contract type will automatically retrieve its ABI, if it was verified in <a href='https://blockscout.com' target='_blank'>Blockscout</a>`
+                    break
+                  case importTypes.CONTRACT.PROXY:
+                    description = `Proxy contract type will automatically contain ABI of implementation, if proxy and implementation were both verified in <a href='https://blockscout.com' target='_blank'>Blockscout</a>`
+                    break
+                  default:
+                    description = ''
+                    break
+                }
+                this.setState({ type, description })
               },
             }}/>
+            <p className="hw-connect__header__msg" dangerouslySetInnerHTML={{__html: this.state.description}} />
           </div>
           {this.renderImportView()}
         </div>
@@ -100,9 +125,9 @@ class AccountImportSubview extends Component {
       case importTypes.JSON_FILE:
         return <JsonImportView/>
       case importTypes.CONTRACT.DEFAULT:
-        return <ContractImportView/>
+        return <ContractImportView type={importTypes.CONTRACT.DEFAULT}/>
       case importTypes.CONTRACT.PROXY:
-        return <ContractImportView/>
+        return <ContractImportView type={importTypes.CONTRACT.PROXY}/>
       default:
         return <JsonImportView/>
     }

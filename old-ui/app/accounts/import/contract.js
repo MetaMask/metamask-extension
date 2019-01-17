@@ -5,6 +5,7 @@ import actions from '../../../../ui/app/actions'
 import Web3 from 'web3'
 import log from 'loglevel'
 import copyToClipboard from 'copy-to-clipboard'
+import { importTypes } from './enums'
 
 class ContractImportView extends Component {
   constructor (props) {
@@ -23,6 +24,7 @@ class ContractImportView extends Component {
   static propTypes = {
     error: PropTypes.string,
     network: PropTypes.string,
+    type: PropTypes.string,
     displayWarning: PropTypes.func,
     importNewAccount: PropTypes.func,
     hideWarning: PropTypes.func,
@@ -41,9 +43,9 @@ class ContractImportView extends Component {
   abiOnChange (abi) {
     this.props.hideWarning()
     try {
-      if (abi && JSON.parse(abi)) {
+      if (abi) {
         this.setState({
-          abi,
+          abi: JSON.stringify(abi),
           abiInputDisabled: true,
           importDisabled: false,
         })
@@ -106,27 +108,58 @@ class ContractImportView extends Component {
 
   autodetectContractAbi = () => {
     const { contractAddr, web3 } = this.state
+    const { type } = this.props
     if (!contractAddr || !web3.isAddress(contractAddr)) {
       this.clearAbi()
       return
     }
-
-    const networkName = this.getBlockscoutApiNetworkSuffix()
-    const bloscoutApiLink = `https://blockscout.com/poa/${networkName}/api`
-    const bloscoutApiContractPath = '?module=contract'
-    const blockscoutApiGetAbiPath = `&action=getabi&address=${this.state.contractAddr}`
-    const apiLink = `${bloscoutApiLink}${bloscoutApiContractPath}${blockscoutApiGetAbiPath}`
-    fetch(apiLink)
-      .then(response => {
-        return response.json()
+    this.getABI(contractAddr)
+      .then((targetABI) => {
+        targetABI = targetABI && JSON.parse(targetABI)
+        let finalABI = targetABI
+        if (type === importTypes.CONTRACT.PROXY) {
+          try {
+            web3.eth.contract(targetABI).at(contractAddr).implementation.call((err, implAddr) => {
+              this.getABI(implAddr)
+                .then((implABI) => {
+                  implABI = implABI && JSON.parse(implABI)
+                  finalABI = implABI ? targetABI.concat(implABI) : targetABI
+                  this.abiOnChange(finalABI)
+                })
+                .catch(e => log.debug(e))
+            })
+          } catch (e) {
+            log.debug(e)
+          }
+        } else {
+          this.abiOnChange(finalABI)
+        }
       })
-      .then(responseJson => {
-        this.abiOnChange(responseJson && responseJson.result)
-      })
-      .catch((e) => {
+      .catch(e => {
         this.clearAbi()
         log.debug(e)
       })
+  }
+
+  getABI = (addr) => {
+    return new Promise((resolve, reject) => {
+      const networkName = this.getBlockscoutApiNetworkSuffix()
+      const bloscoutApiLink = `https://blockscout.com/poa/${networkName}/api`
+      const bloscoutApiContractPath = '?module=contract'
+      const blockscoutApiGetAbiPath = `&action=getabi&address=${addr}`
+      const apiLink = `${bloscoutApiLink}${bloscoutApiContractPath}${blockscoutApiGetAbiPath}`
+      fetch(apiLink)
+        .then(response => {
+          return response.json()
+        })
+        .then(responseJson => {
+          resolve(responseJson && responseJson.result)
+        })
+        .catch((e) => {
+          log.debug(e)
+          resolve()
+        })
+    })
   }
 
   createKeyringOnEnter (event) {
