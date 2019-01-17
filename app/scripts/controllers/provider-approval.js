@@ -27,10 +27,10 @@ class ProviderApprovalController {
     })
 
     if (platform && platform.addMessageListener) {
-      platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }) => {
+      platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage, showPopup }) => {
         switch (action) {
           case 'init-provider-request':
-            this._handleProviderRequest(origin, siteTitle, siteImage, force)
+            this._handleProviderRequest(origin, siteTitle, siteImage, force, showPopup)
             break
           case 'init-is-approved':
             this._handleIsApproved(origin)
@@ -52,15 +52,22 @@ class ProviderApprovalController {
    * @param {string} origin - Origin of the window requesting full provider access
    * @param {string} siteTitle - The title of the document requesting full provider access
    * @param {string} siteImage - The icon of the window requesting full provider access
+   * @param {boolean} force - If true, ignores cached approval and will show popup if(showPopup)
+   * @param {boolean} showPopup - Require a popup if no cached approval, otherwise immediately reject.
    */
-  _handleProviderRequest (origin, siteTitle, siteImage, force) {
+  _handleProviderRequest (origin, siteTitle, siteImage, force, showPopup = true) {
     this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage }] })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     if (!force && this.approvedOrigins[origin] && this.caching && isUnlocked) {
       this.approveProviderRequest(origin)
       return
     }
-    this.openPopup && this.openPopup()
+    if(showPopup) {
+      this.openPopup && this.openPopup()
+    } else {
+      this.rejectProviderRequest(origin)
+      return      
+    }
   }
 
   /**
