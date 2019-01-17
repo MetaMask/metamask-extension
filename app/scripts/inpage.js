@@ -65,7 +65,7 @@ onMessage('ethereumproviderlegacy', ({ data: { selectedAddress } }) => {
 }, true)
 
 // augment the provider with its enable method
-inpageProvider.enable = function ({ force } = {}) {
+inpageProvider.enable = function ({ force, showPopup } = {}) {
   return new Promise((resolve, reject) => {
     providerHandle = ({ data: { error, selectedAddress } }) => {
       if (typeof error !== 'undefined') {
@@ -88,7 +88,7 @@ inpageProvider.enable = function ({ force } = {}) {
       }
     }
     onMessage('ethereumprovider', providerHandle, true)
-    window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER', force }, '*')
+    window.postMessage({ type: 'ETHEREUM_ENABLE_PROVIDER', force, showPopup }, '*')
   })
 }
 
