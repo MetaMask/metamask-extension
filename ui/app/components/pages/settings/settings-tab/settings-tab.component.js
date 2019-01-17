@@ -78,7 +78,7 @@ export default class SettingsTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('currentConversion') }</span>
+          <span>{ t('currencyConversion') }</span>
           <span className="settings-page__content-description">
             { t('updatedWithDate', [Date(conversionDate)]) }
           </span>
