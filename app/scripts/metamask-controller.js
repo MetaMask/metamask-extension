@@ -267,6 +267,7 @@ module.exports = class MetamaskController extends EventEmitter {
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      Permissions: this.permissions.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -288,6 +289,8 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeshiftController: this.shapeshiftController.store,
       InfuraController: this.infuraController.store,
       ProviderApprovalController: this.providerApprovalController.store,
+      Permissions: this.permissions.store,
+      PermissionsRequests: this.permissions.memStore,
     })
     this.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -609,6 +612,7 @@ module.exports = class MetamaskController extends EventEmitter {
   async submitPassword (password) {
     await this.keyringController.submitPassword(password)
     const accounts = await this.keyringController.getAccounts()
+    this.emit('unlocked')
 
     // verify keyrings
     const nonSimpleKeyrings = this.keyringController.keyrings.filter(keyring => keyring.type !== 'Simple Key Pair')
@@ -1385,8 +1389,22 @@ module.exports = class MetamaskController extends EventEmitter {
       * @returns {Promise<bool>} approved - Whether the user approves the request or not.
       */
       requestUserApproval: async (domain, req) => {
-        const ok = confirm(`The site ${domain} would like permission to:\n - ${Object.keys(req).join('\n- ')}`)
-        return ok
+        const isUnlocked = this.getState().isUnlocked
+
+        const message = `The site ${domain} would like permission to:\n - ${Object.keys(req).join('\n- ')}`
+        if (isUnlocked) {
+          const ok = confirm(message)
+          return ok
+        }
+
+        this.opts.openPopup && this.opts.openPopup()
+        return new Promise((res, rej) => {
+          this.on('unlocked', () => {
+            this.opts.closePopup && this.opts.closePopup()
+            const ok = confirm(message)
+            res(ok)
+          })
+        })
       },
     })
   }
