@@ -340,6 +340,7 @@ describe('Metamask popup page', async function () {
         await images[1].click()
         const button = await f.waitUntilShowUp(screens.hdWallet.buttonConnect.enabled)
         await button.click()
+        await f.delay(2000)
         const allHandles = await driver.getAllWindowHandles()
         assert.equal(allHandles.length, 2, "popup isn't opened")
         await f.switchToFirstPage()
