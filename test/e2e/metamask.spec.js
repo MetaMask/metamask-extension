@@ -1561,7 +1561,7 @@ describe('Metamask popup page', async function () {
       it('click to token opens the etherscan', async function () {
         const link = await f.waitUntilShowUp(screens.main.tokens.token)
         await link.click()
-        await f.delay(2000)
+        await f.delay(3000)
         const allHandles = await driver.getAllWindowHandles()
         console.log('allHandles.length ' + allHandles.length)
         assert.equal(allHandles.length, 2, 'etherscan wasn\'t opened')
