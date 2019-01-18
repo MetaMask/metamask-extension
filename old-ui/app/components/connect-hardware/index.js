@@ -7,7 +7,6 @@ import AccountList from './account-list'
 import { formatBalance } from '../../util'
 import { getPlatform } from '../../../../app/scripts/lib/util'
 import { PLATFORM_FIREFOX } from '../../../../app/scripts/lib/enums'
-// import { isLedger } from './util'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
 
 class ConnectHardwareForm extends Component {
@@ -73,7 +72,6 @@ class ConnectHardwareForm extends Component {
 
   onAccountChange = (account) => {
     let selectedAcc = account.toString()
-    // if (isLedger(this.state.device)) {
     const selectedAccounts = this.state.selectedAccounts
     if (!selectedAccounts.includes(selectedAcc)) {
       selectedAccounts.push(selectedAcc)
@@ -88,9 +86,6 @@ class ConnectHardwareForm extends Component {
       error: null,
     }
     this.setState(newState)
-    // } else {
-    //   this.setState({selectedAccount: account.toString(), error: null})
-    // }
   }
 
   onAccountRestriction = () => {
@@ -118,7 +113,6 @@ class ConnectHardwareForm extends Component {
           }
 
           const newState = { unlocked: true, device, error: null }
-          // if (!isLedger(device)) {
           // Default to the first account
           if (this.state.selectedAccount === null) {
             accounts.forEach((a, i) => {
@@ -130,7 +124,6 @@ class ConnectHardwareForm extends Component {
           } else if (!accounts.filter(a => a.index.toString() === this.state.selectedAccount).length) {
             newState.selectedAccount = null
           }
-          // }
 
           // Map accounts with balances
           newState.accounts = accounts.map(account => {
