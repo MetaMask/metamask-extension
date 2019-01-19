@@ -24,7 +24,7 @@
     "message": "Datos de aprobación"
   },
   "approvalDataDescription": {
-    "message": "Borrar los datos para que todos los sitios deban volver a solicitar la aprobación."
+    "message": "Borrar la información privada de modo que todos los sitios deban volver a requerir acceso para acceder a los datos de la cuenta."
   },
   "clearApprovalData": {
     "message": "Borrar datos de aprobación"
@@ -42,7 +42,7 @@
     "message": "Por favor, revise esta solicitud API Ethereum."
   },
   "providerRequestInfo": {
-    "message": "El dominio que se muestra a continuación intenta solicitar acceso a la API Ethereum para que pueda interactuar con la cadena de bloques de Ethereum. Siempre verifique que esté en el sitio correcto antes de aprobar el acceso Ethereum."
+    "message": "El dominio que se muestra a continuación intenta solicitar acceso a la API Ethereum para que pueda interactuar con la blockchain de Ethereum. Siempre verifique que esté en el sitio correcto antes de aprobar el acceso Ethereum."
   },
   "accept": {
     "message": "Aceptar"
@@ -86,7 +86,7 @@
     "message": "Aprobado"
   },
   "attemptingConnect": {
-    "message": "Intentando conectar a la Cadena de Bloques"
+    "message": "Intentando conectar a la Blockchain"
   },
   "attributions": {
     "message": "Atribuciones"
@@ -111,7 +111,7 @@
   },
   "betweenMinAndMax": {
     "message": "Debe ser mayor o igual a $1 y menor o igual a $2",
-    "description": "ayudante para ingresar hex como un ingreso decimal"
+    "description": "Helper para ingresar hex como un ingreso decimal"
   },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon (Iconos)"
@@ -946,10 +946,10 @@
     "message": "Opciones de la Cuenta"
   },
   "accountSelectionRequired": {
-    "message": "Hay que elegir una cuenta!"
+    "message": "¡Necesitas elegir una cuenta!"
   },
   "activityLog": {
-    "message": "registro de movimientos"
+    "message": "registro de actividades"
   },
   "advancedOptions": {
     "message": "Opciones Avanzadas"
@@ -970,7 +970,7 @@
     "message": "¿Intentar cancelar?"
   },
   "attemptToCancelDescription": {
-    "message": "El mandar este intento no garantiza que su transacción original se cancelará. Si el intento de cancelación sí tiene éxito, se le cobrará la comisión de transacción indicado arriba."
+    "message": "El intentar cancelar la transacción no garantiza la cancelación de la misma. Si el intento de cancelación tiene éxito, se le cobrará la comisión de transacción indicada arriba."
   },
   "average": {
     "message": "promedio"
@@ -1036,7 +1036,7 @@
     "message": "Idioma Actual"
   },
   "customGasSubTitle": {
-    "message": "Aumentar la comisión puede hacer que el tiempo de procesamiento se disminuya, pero no está garantizado."
+    "message": "Aumentar la comisión puede hacer que el tiempo de procesamiento se disminuya, pero no lo garantiza."
   },
   "customToken": {
     "message": "Token Personalizado"
@@ -1283,10 +1283,10 @@
     "message": "Borrar cuenta"
   },
   "removeAccountDescription": {
-    "message": "Se borrará esta cuenta de tu monedero. Favor de aseurar que tengas la frase semilla o clave personal original para esta cuenta importada antes de seguir adelante. Podrás importar o crear cuentas de nuevo del menu desplegable de cuentas."
+    "message": "Se borrará esta cuenta de tu monedero. Por favor, asegúrate de tener la frase semilla o clave personal original para esta cuenta importada antes de seguir adelante. Podrás importar o crear cuentas de nuevo del menu desplegable de cuentas."
   },
   "readyToConnect": {
-    "message": "¿List@ para conectar?"
+    "message": "¿Listo/a para conectar?"
   },
   "rpc": {
     "message": "RPC Personalizado"
@@ -1463,7 +1463,7 @@
     "message": "unidades"
   },
   "unknownQrCode": {
-    "message": "Error: No pudimos identificar aquel código QR"
+    "message": "Error: No pudimos identificar ese código QR"
   },
   "unknownCameraErrorTitle": {
     "message": "Uuups! Algo se estropeó..."
