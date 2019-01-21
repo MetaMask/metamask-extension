@@ -43,16 +43,17 @@ describe('send-to-row selectors', () => {
 
       assert.equal(sendToIsInError(state), false)
     })
+  })
 
-    it('should return false if send.errors.to is falsy', () => {
+  describe('getTokens()', () => {
+    it('should return empty array if no tokens in state', () => {
       const state = {
         metamask: {
           tokens: [],
         },
       }
 
-      assert.equal(getTokens(state), [])
+      assert.deepStrictEqual(getTokens(state), [])
     })
   })
-
 })

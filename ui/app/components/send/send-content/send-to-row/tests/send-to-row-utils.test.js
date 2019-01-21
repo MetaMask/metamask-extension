@@ -55,7 +55,7 @@ describe('send-to-row utils', () => {
     })
 
     it('should return a known address recipient if to is truthy but part of state tokens', () => {
-      assert.deepEqual(getToErrorObject('0xabc123', null, false, ['0xabc123']), {
+      assert.deepEqual(getToErrorObject('0xabc123', undefined, false, [{'address': '0xabc123'}]), {
         to: KNOWN_RECIPIENT_ADDRESS_ERROR,
       })
     })

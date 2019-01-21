@@ -49,7 +49,7 @@ describe('send-to-row container', () => {
         to: 'mockTo:mockState',
         toAccounts: 'mockToAccounts:mockState',
         toDropdownOpen: 'mockToDropdownOpen:mockState',
-        tokens: 'mockTo:mockState',
+        tokens: 'mockTokens:mockState',
       })
     })
 
