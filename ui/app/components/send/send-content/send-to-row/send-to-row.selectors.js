@@ -1,5 +1,6 @@
 const selectors = {
   getToDropdownOpen,
+  getTokens,
   sendToIsInError,
 }
 
@@ -11,4 +12,8 @@ function getToDropdownOpen (state) {
 
 function sendToIsInError (state) {
     return Boolean(state.send.errors.to)
+}
+
+function getTokens (state) {
+  return state.metamask.tokens
 }

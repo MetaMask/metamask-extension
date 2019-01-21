@@ -7,6 +7,7 @@ import {
 } from '../../send.selectors.js'
 import {
     getToDropdownOpen,
+    getTokens,
     sendToIsInError,
 } from './send-to-row.selectors.js'
 import {
@@ -29,6 +30,7 @@ function mapStateToProps (state) {
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
     toDropdownOpen: getToDropdownOpen(state),
+    tokens: getTokens(state),
   }
 }
 
