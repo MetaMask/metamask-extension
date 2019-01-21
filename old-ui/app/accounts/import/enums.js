@@ -7,6 +7,14 @@ const importTypes = {
 	},
 }
 
+const labels = {
+	CONTRACT: 'CONTRACT',
+	PROXY: 'PROXY',
+	HARDWARE: 'HARDWARE',
+	IMPORTED: 'IMPORTED',
+}
+
 module.exports = {
 	importTypes,
+	labels,
 }

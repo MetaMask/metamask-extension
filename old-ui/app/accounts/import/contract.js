@@ -5,7 +5,7 @@ import actions from '../../../../ui/app/actions'
 import Web3 from 'web3'
 import log from 'loglevel'
 import copyToClipboard from 'copy-to-clipboard'
-import { importTypes } from './enums'
+import { getFullABI } from './helpers'
 
 class ContractImportView extends Component {
   constructor (props) {
@@ -108,58 +108,17 @@ class ContractImportView extends Component {
 
   autodetectContractAbi = () => {
     const { contractAddr, web3 } = this.state
-    const { type } = this.props
+    const { type, network } = this.props
     if (!contractAddr || !web3.isAddress(contractAddr)) {
       this.clearAbi()
       return
     }
-    this.getABI(contractAddr)
-      .then((targetABI) => {
-        targetABI = targetABI && JSON.parse(targetABI)
-        let finalABI = targetABI
-        if (type === importTypes.CONTRACT.PROXY) {
-          try {
-            web3.eth.contract(targetABI).at(contractAddr).implementation.call((err, implAddr) => {
-              this.getABI(implAddr)
-                .then((implABI) => {
-                  implABI = implABI && JSON.parse(implABI)
-                  finalABI = implABI ? targetABI.concat(implABI) : targetABI
-                  this.abiOnChange(finalABI)
-                })
-                .catch(e => log.debug(e))
-            })
-          } catch (e) {
-            log.debug(e)
-          }
-        } else {
-          this.abiOnChange(finalABI)
-        }
-      })
+    getFullABI(web3.eth, contractAddr, network, type)
+      .then(finalABI => this.abiOnChange(finalABI))
       .catch(e => {
         this.clearAbi()
         log.debug(e)
       })
-  }
-
-  getABI = (addr) => {
-    return new Promise((resolve, reject) => {
-      const networkName = this.getBlockscoutApiNetworkSuffix()
-      const bloscoutApiLink = `https://blockscout.com/poa/${networkName}/api`
-      const bloscoutApiContractPath = '?module=contract'
-      const blockscoutApiGetAbiPath = `&action=getabi&address=${addr}`
-      const apiLink = `${bloscoutApiLink}${bloscoutApiContractPath}${blockscoutApiGetAbiPath}`
-      fetch(apiLink)
-        .then(response => {
-          return response.json()
-        })
-        .then(responseJson => {
-          resolve(responseJson && responseJson.result)
-        })
-        .catch((e) => {
-          log.debug(e)
-          resolve()
-        })
-    })
   }
 
   createKeyringOnEnter (event) {
@@ -211,31 +170,9 @@ class ContractImportView extends Component {
       return this.props.displayWarning('Invalid contract ABI')
     }
 
-    this.props.importNewAccount('Contract', { addr: contractAddr, network: this.props.network, abi })
+    this.props.importNewAccount(this.props.type, { addr: contractAddr, network: this.props.network, abi })
     // JS runtime requires caught rejections but failures are handled by Redux
     .catch()
-  }
-
-  getBlockscoutApiNetworkSuffix () {
-    const { network } = this.props
-    switch (Number(network)) {
-      case 1:
-        return 'mainnet'
-      case 99:
-        return 'core'
-      case 77:
-        return 'sokol'
-      case 100:
-        return 'dai'
-      case 42:
-        return 'kovan'
-      case 3:
-        return 'ropsten'
-      case 4:
-        return 'rinkeby'
-      default:
-        return ''
-    }
   }
 
   clearAbi () {

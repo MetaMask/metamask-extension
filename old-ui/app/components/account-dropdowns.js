@@ -11,13 +11,20 @@ const copyToClipboard = require('copy-to-clipboard')
 const ethNetProps = require('eth-net-props')
 const { getCurrentKeyring, ifLooseAcc, ifContractAcc } = require('../util')
 const { getHdPaths } = require('./connect-hardware/util')
+const { importTypes, labels } = require('../accounts/import/enums')
+const { getFullABI } = require('../accounts/import/helpers')
+const log = require('loglevel')
+const Web3 = require('web3')
 
 class AccountDropdowns extends Component {
   constructor (props) {
     super(props)
+    const web3 = new Web3(global.ethereumProvider)
     this.state = {
       accountSelectorActive: false,
       optionsMenuActive: false,
+      contractProps: {},
+      web3,
     }
     this.accountSelectorToggleClassName = 'accounts-selector'
     this.optionsMenuToggleClassName = 'account-dropdown'
@@ -144,15 +151,24 @@ class AccountDropdowns extends Component {
     return false
   }
 
+  ifProxyAcc () {
+    const { contractProps } = this.state
+    return contractProps && contractProps.contractType === importTypes.CONTRACT.PROXY
+  }
+
   indicateIfLoose (keyring) {
     if (ifLooseAcc(keyring)) {
       let label
       if (ifContractAcc(keyring)) {
-        label = 'CONTRACT'
+        if (this.ifProxyAcc()) {
+          label = labels.PROXY
+        } else {
+          label = labels.CONTRACT
+        }
       } else if (this.ifHardwareAcc(keyring)) {
-        label = 'HARDWARE'
+        label = labels.HARDWARE
       } else {
-        label = 'IMPORTED'
+        label = labels.IMPORTED
       }
       return h('.keyring-label', label)
     }
@@ -247,7 +263,7 @@ class AccountDropdowns extends Component {
 
   renderAccountOptions () {
     const { actions, selected, network, keyrings, identities } = this.props
-    const { optionsMenuActive } = this.state
+    const { optionsMenuActive, contractProps, web3 } = this.state
 
     const keyring = getCurrentKeyring(selected, network, keyrings, identities)
 
@@ -258,7 +274,6 @@ class AccountDropdowns extends Component {
           position: 'relative',
           marginLeft: '-234px',
           minWidth: '180px',
-          // marginTop: '30px',
           top: '30px',
           width: '280px',
         },
@@ -313,13 +328,34 @@ class AccountDropdowns extends Component {
           {
             closeMenu: () => {},
             onClick: async () => {
-              const { selected } = this.props
-              const contractProps = await this.props.actions.getContract(selected)
               const abi = contractProps && contractProps.abi
               copyToClipboard(JSON.stringify(abi))
             },
           },
           'Copy ABI to clipboard',
+        ) : null,
+        this.ifProxyAcc() ? h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: async () => {
+              actions.showLoadingIndication()
+              getFullABI(web3.eth, selected, network, importTypes.CONTRACT.PROXY)
+                .then(finalABI => {
+                  actions.updateABI(selected, network, finalABI)
+                    .then()
+                    .catch(e => {
+                      log.debug(e)
+                    })
+                    .finally(() => actions.hideLoadingIndication())
+                })
+                .catch(e => {
+                  log.debug(e)
+                  actions.hideLoadingIndication()
+                })
+            },
+          },
+          'Update implementation ABI',
         ) : null,
         (!this.ifHardwareAcc(keyring) && !(ifContractAcc(keyring))) ? h(
           DropdownMenuItem,
@@ -333,6 +369,14 @@ class AccountDropdowns extends Component {
         ) : null,
       ]
     )
+  }
+
+  componentDidMount () {
+    const { selected } = this.props
+    this.props.actions.getContract(selected)
+    .then(contractProps => {
+      this.setState({ contractProps })
+    })
   }
 
   render () {
@@ -416,6 +460,8 @@ AccountDropdowns.propTypes = {
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
+      showLoadingIndication: () => dispatch(actions.showLoadingIndication()),
+      hideLoadingIndication: () => dispatch(actions.hideLoadingIndication()),
       showConfigPage: () => dispatch(actions.showConfigPage()),
       requestAccountExport: () => dispatch(actions.requestExportAccount()),
       showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
@@ -434,6 +480,7 @@ const mapDispatchToProps = (dispatch) => {
       },
       displayToast: (msg) => dispatch(actions.displayToast(msg)),
       hideToast: () => dispatch(actions.hideToast()),
+      updateABI: (address, network, abi) => dispatch(actions.updateABI(address, network, abi)),
     },
   }
 }

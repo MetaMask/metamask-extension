@@ -253,6 +253,7 @@ module.exports = {
       selectArrow: By.className('Select-arrow-zone'),
       selectType: By.name('import-type-select'),
       itemContract: By.id('react-select-3--option-2'),
+      itemProxyContract: By.id('react-select-3--option-3'),
       contractAddress: By.id('address-box'),
       contractABI: By.id('abi-box'),
       title: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div.flex-row.flex-center > h2'),
