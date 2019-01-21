@@ -2,7 +2,7 @@ const Component = require('react').Component
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const PluginTracker = require('eth-layer2App-tracker')
+const PluginWrapper = require('metamask-plugin-wrapper')
 const PluginCell = require('./plugin-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
@@ -76,7 +76,7 @@ class Layer2AppList extends Component {
     //this.props.plugins.map((plugin)=>this.createFreshPluginTracker(plugin.authorAddress))
   }
 
-  createFreshPluginTracker() {
+  createFreshPluginWrapper() {
     // if (this.tracker) {
     //   // Clean up old trackers when refreshing:
     //   this.tracker.stop()
@@ -90,7 +90,7 @@ class Layer2AppList extends Component {
 
     console.log("PLUGIN TRACKERS", this.props.layer2Apps)
     
-    this.tracker = new PluginTracker({
+    this.tracker = new PluginWrapper({
       userAddress,
       provider: global.ethereumProvider,
       layer2Apps: this.props.layer2Apps,
