@@ -31,6 +31,7 @@ proxyquire('../send-to-row.container.js', {
   './send-to-row.selectors.js': {
     getToDropdownOpen: (s) => `mockToDropdownOpen:${s}`,
     sendToIsInError: (s) => `mockInError:${s}`,
+    getTokens: (s) => `mockTokens:${s}`,
   },
   '../../../../actions': actionSpies,
   '../../../../ducks/send.duck': duckActionSpies,
@@ -48,6 +49,7 @@ describe('send-to-row container', () => {
         to: 'mockTo:mockState',
         toAccounts: 'mockToAccounts:mockState',
         toDropdownOpen: 'mockToDropdownOpen:mockState',
+        tokens: 'mockTo:mockState',
       })
     })
 

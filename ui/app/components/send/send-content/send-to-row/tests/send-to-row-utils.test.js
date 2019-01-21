@@ -5,6 +5,7 @@ import sinon from 'sinon'
 import {
   REQUIRED_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
+  KNOWN_RECIPIENT_ADDRESS_ERROR,
 } from '../../../send.constants'
 
 const stubs = {
@@ -50,6 +51,18 @@ describe('send-to-row utils', () => {
     it('should return the passed error if to is truthy but invalid if to is truthy and valid', () => {
       assert.deepEqual(getToErrorObject('invalid #$ 345878', 'someExplicitError'), {
         to: 'someExplicitError',
+      })
+    })
+
+    it('should return a known address recipient if to is truthy but part of state tokens', () => {
+      assert.deepEqual(getToErrorObject('0xabc123', null, false, ['0xabc123']), {
+        to: KNOWN_RECIPIENT_ADDRESS_ERROR,
+      })
+    })
+
+    it('should return a known address recipient if to is truthy but part of contract metadata', () => {
+      assert.deepEqual(getToErrorObject('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'), {
+        to: KNOWN_RECIPIENT_ADDRESS_ERROR,
       })
     })
   })

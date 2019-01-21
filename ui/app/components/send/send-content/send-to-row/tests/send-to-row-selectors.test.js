@@ -1,6 +1,7 @@
 import assert from 'assert'
 import {
   getToDropdownOpen,
+  getTokens,
   sendToIsInError,
 } from '../send-to-row.selectors.js'
 
@@ -41,6 +42,16 @@ describe('send-to-row selectors', () => {
       }
 
       assert.equal(sendToIsInError(state), false)
+    })
+
+    it('should return false if send.errors.to is falsy', () => {
+      const state = {
+        metamask: {
+          tokens: [],
+        },
+      }
+
+      assert.equal(getTokens(state), [])
     })
   })
 
