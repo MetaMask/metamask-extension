@@ -105,12 +105,18 @@ module.exports = class NetworkController extends EventEmitter {
     if (!this._provider) {
       return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
     }
-    var { type } = this.providerStore.getState()
+    const { type } = this.providerStore.getState()
     const ethQuery = new EthQuery(this._provider)
+    const initialNetwork = this.getNetworkState()
     ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      if (err) return this.setNetworkState('loading')
-      log.info('web3.getNetwork returned ' + network)
-      this.setNetworkState(network, type)
+      const currentNetwork = this.getNetworkState()
+      if (initialNetwork === currentNetwork) {
+        if (err) {
+          return this.setNetworkState('loading')
+        }
+        log.info('web3.getNetwork returned ' + network)
+        this.setNetworkState(network, type)
+      }
     })
   }
 

@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const promisify = require('pify')
 const enLocaleMessages = require('../app/_locales/en/messages.json')
-
+const writeFile = promisify(fs.writeFile)
 
 start().catch(console.error)
 
@@ -12,8 +12,7 @@ async function start () {
   const states = {}
   await Promise.all(stateFilesNames.map(async (stateFileName) => {
     const stateFilePath = path.join(__dirname, 'states', stateFileName)
-    const stateFileContent = await promisify(fs.readFile)(stateFilePath, 'utf8')
-    const state = JSON.parse(stateFileContent)
+    const state = require(stateFilePath)
 
     state.localeMessages = { en: enLocaleMessages, current: {} }
 
@@ -22,5 +21,5 @@ async function start () {
   }))
   const generatedFileContent = `module.exports = ${JSON.stringify(states)}`
   const generatedFilePath = path.join(__dirname, 'states.js')
-  await promisify(fs.writeFile)(generatedFilePath, generatedFileContent)
+  await writeFile(generatedFilePath, generatedFileContent)
 }

@@ -36,7 +36,7 @@ function reduceMetamask (state, action) {
       gasLimit: null,
       gasPrice: null,
       gasTotal: null,
-      tokenBalance: null,
+      tokenBalance: '0x0',
       from: '',
       to: '',
       amount: '0x0',

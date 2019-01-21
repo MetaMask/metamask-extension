@@ -11,6 +11,7 @@ import {
   CONFIRMED_STATUS,
   FAILED_STATUS,
   DROPPED_STATUS,
+  CANCELLED_STATUS,
 } from '../../constants/transactions'
 
 const statusToClassNameHash = {
@@ -22,10 +23,10 @@ const statusToClassNameHash = {
   [CONFIRMED_STATUS]: 'transaction-status--confirmed',
   [FAILED_STATUS]: 'transaction-status--failed',
   [DROPPED_STATUS]: 'transaction-status--dropped',
+  [CANCELLED_STATUS]: 'transaction-status--failed',
 }
 
 const statusToTextHash = {
-  [APPROVED_STATUS]: 'pending',
   [SUBMITTED_STATUS]: 'pending',
 }
 
@@ -50,7 +51,10 @@ export default class TransactionStatus extends PureComponent {
 
     return (
       <div className={classnames('transaction-status', className, statusToClassNameHash[statusKey])}>
-        <Tooltip position="top" title={title}>
+        <Tooltip
+          position="top"
+          title={title}
+        >
           { statusText }
         </Tooltip>
       </div>

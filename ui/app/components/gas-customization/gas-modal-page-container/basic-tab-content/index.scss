@@ -1,0 +1,28 @@
+.basic-tab-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 21px;
+  height: 324px;
+  background: #F5F7F8;
+  border-bottom: 1px solid #d2d8dd;
+
+  &__title {
+    margin-top: 19px;
+    font-size: 16px;
+    color: $black;
+  }
+
+  &__blurb {
+    font-size: 12px;
+    color: $black;
+    margin-top: 5px;
+    margin-bottom: 15px;
+  }
+
+  &__footer-blurb {
+    font-size: 12px;
+    color: #979797;
+    margin-top: 15px;
+  }
+}

@@ -1,4 +1,4 @@
-const EventEmitter = require('events')
+const EventEmitter = require('safe-event-emitter')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
@@ -82,7 +82,12 @@ class TransactionController extends EventEmitter {
       provider: this.provider,
       nonceTracker: this.nonceTracker,
       publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
-      getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
+      getPendingTransactions: () => {
+        const pending = this.txStateManager.getPendingTransactions()
+        const approved = this.txStateManager.getApprovedTransactions()
+        return [...pending, ...approved]
+      },
+      approveTransaction: this.approveTransaction.bind(this),
       getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     })
 
@@ -91,7 +96,10 @@ class TransactionController extends EventEmitter {
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.txStateManager.store.subscribe(() => this._updateMemstore())
-    this.networkStore.subscribe(() => this._updateMemstore())
+    this.networkStore.subscribe(() => {
+      this._onBootCleanUp()
+      this._updateMemstore()
+    })
     this.preferencesStore.subscribe(() => this._updateMemstore())
 
     // request state update to finalize initialization
@@ -186,10 +194,13 @@ class TransactionController extends EventEmitter {
       txMeta = await this.addTxGasDefaults(txMeta)
     } catch (error) {
       log.warn(error)
-      this.txStateManager.setTxStatusFailed(txMeta.id, error)
+      txMeta.loadingDefaults = false
+      this.txStateManager.updateTx(txMeta, 'Failed to calculate gas defaults.')
       throw error
     }
+
     txMeta.loadingDefaults = false
+
     // save txMeta
     this.txStateManager.updateTx(txMeta)
 
@@ -219,12 +230,23 @@ class TransactionController extends EventEmitter {
     to allow the user to resign the transaction with a higher gas values
     @param  originalTxId {number} - the id of the txMeta that
     you want to attempt to retry
+    @param  gasPrice {string=} - Optional gas price to be increased to use as the retry
+    transaction's gas price
     @return {txMeta}
   */
 
-  async retryTransaction (originalTxId) {
+  async retryTransaction (originalTxId, gasPrice) {
     const originalTxMeta = this.txStateManager.getTx(originalTxId)
-    const lastGasPrice = originalTxMeta.txParams.gasPrice
+    const { txParams } = originalTxMeta
+    const lastGasPrice = gasPrice || originalTxMeta.txParams.gasPrice
+    const suggestedGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(this.getGasPrice()), 16)
+    const lastGasPriceBN = new ethUtil.BN(ethUtil.stripHexPrefix(lastGasPrice), 16)
+    // essentially lastGasPrice * 1.1 but
+    // dont trust decimals so a round about way of doing that
+    const lastGasPriceBNBumped = lastGasPriceBN.mul(new ethUtil.BN(110, 10)).div(new ethUtil.BN(100, 10))
+    // transactions that are being retried require a >=%10 bump or the clients will throw an error
+    txParams.gasPrice = suggestedGasPriceBN.gt(lastGasPriceBNBumped) ? `0x${suggestedGasPriceBN.toString(16)}` : `0x${lastGasPriceBNBumped.toString(16)}`
+
     const txMeta = this.txStateManager.generateTxMeta({
       txParams: originalTxMeta.txParams,
       lastGasPrice,
@@ -263,6 +285,29 @@ class TransactionController extends EventEmitter {
       loadingDefaults: false,
       status: TRANSACTION_STATUS_APPROVED,
       type: TRANSACTION_TYPE_CANCEL,
+    })
+
+    this.addTx(newTxMeta)
+    await this.approveTransaction(newTxMeta.id)
+    return newTxMeta
+  }
+
+  async createSpeedUpTransaction (originalTxId, customGasPrice) {
+    const originalTxMeta = this.txStateManager.getTx(originalTxId)
+    const { txParams } = originalTxMeta
+    const { gasPrice: lastGasPrice } = txParams
+
+    const newGasPrice = customGasPrice || bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
+
+    const newTxMeta = this.txStateManager.generateTxMeta({
+      txParams: {
+        ...txParams,
+        gasPrice: newGasPrice,
+      },
+      lastGasPrice,
+      loadingDefaults: false,
+      status: TRANSACTION_STATUS_APPROVED,
+      type: TRANSACTION_TYPE_RETRY,
     })
 
     this.addTx(newTxMeta)
@@ -471,6 +516,8 @@ class TransactionController extends EventEmitter {
         txMeta.loadingDefaults = false
         this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
       }).catch((error) => {
+        tx.loadingDefaults = false
+        this.txStateManager.updateTx(tx, 'failed to estimate gas during boot cleanup.')
         this.txStateManager.setTxStatusFailed(tx.id, error)
       })
     })

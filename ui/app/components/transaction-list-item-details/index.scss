@@ -1,9 +1,14 @@
 .transaction-list-item-details {
   &__header {
-    margin-bottom: 8px;
+    margin: 8px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  &__body {
+    background: #fafbfc;
+    padding: 8px 16px;
   }
 
   &__header-buttons {
@@ -45,5 +50,9 @@
   &__transaction-activity-log {
     flex: 2;
     min-width: 0;
+
+    @media screen and (min-width: $break-large) {
+      padding-left: 12px;
+    }
   }
 }

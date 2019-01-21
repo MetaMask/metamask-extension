@@ -18,6 +18,10 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+
+  @media screen and (max-width: $break-small) {
+    overflow-y: overlay;
+  }
 }
 
 html {

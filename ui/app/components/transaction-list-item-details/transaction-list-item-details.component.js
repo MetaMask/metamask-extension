@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import SenderToRecipient from '../sender-to-recipient'
-import { CARDS_VARIANT } from '../sender-to-recipient/sender-to-recipient.constants'
+import { FLAT_VARIANT } from '../sender-to-recipient/sender-to-recipient.constants'
 import TransactionActivityLog from '../transaction-activity-log'
 import TransactionBreakdown from '../transaction-breakdown'
 import Button from '../button'
@@ -18,41 +18,43 @@ export default class TransactionListItemDetails extends PureComponent {
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
-    transaction: PropTypes.object,
+    transactionGroup: PropTypes.object,
   }
 
   handleEtherscanClick = () => {
-    const { hash, metamaskNetworkId } = this.props.transaction
+    const { transactionGroup: { primaryTransaction } } = this.props
+    const { hash, metamaskNetworkId } = primaryTransaction
 
     const prefix = prefixForNetwork(metamaskNetworkId)
     const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
+
     global.platform.openWindow({ url: etherscanUrl })
-    this.setState({ showTransactionDetails: true })
   }
 
   handleCancel = event => {
-    const { onCancel } = this.props
+    const { transactionGroup: { initialTransaction: { id } = {} } = {}, onCancel } = this.props
 
     event.stopPropagation()
-    onCancel()
+    onCancel(id)
   }
 
   handleRetry = event => {
-    const { onRetry } = this.props
+    const { transactionGroup: { initialTransaction: { id } = {} } = {}, onRetry } = this.props
 
     event.stopPropagation()
-    onRetry()
+    onRetry(id)
   }
 
   render () {
     const { t } = this.context
-    const { transaction, showCancel, showRetry } = this.props
+    const { transactionGroup, showCancel, showRetry, onCancel, onRetry } = this.props
+    const { primaryTransaction: transaction } = transactionGroup
     const { txParams: { to, from } = {} } = transaction
 
     return (
       <div className="transaction-list-item-details">
         <div className="transaction-list-item-details__header">
-          <div>Details</div>
+          <div>{ t('details') }</div>
           <div className="transaction-list-item-details__header-buttons">
             {
               showRetry && (
@@ -87,23 +89,27 @@ export default class TransactionListItemDetails extends PureComponent {
             </Tooltip>
           </div>
         </div>
-        <div className="transaction-list-item-details__sender-to-recipient-container">
-          <SenderToRecipient
-            variant={CARDS_VARIANT}
-            addressOnly
-            recipientAddress={to}
-            senderAddress={from}
-          />
-        </div>
-        <div className="transaction-list-item-details__cards-container">
-          <TransactionBreakdown
-            transaction={transaction}
-            className="transaction-list-item-details__transaction-breakdown"
-          />
-          <TransactionActivityLog
-            transaction={transaction}
-            className="transaction-list-item-details__transaction-activity-log"
-          />
+        <div className="transaction-list-item-details__body">
+          <div className="transaction-list-item-details__sender-to-recipient-container">
+            <SenderToRecipient
+              variant={FLAT_VARIANT}
+              addressOnly
+              recipientAddress={to}
+              senderAddress={from}
+            />
+          </div>
+          <div className="transaction-list-item-details__cards-container">
+            <TransactionBreakdown
+              transaction={transaction}
+              className="transaction-list-item-details__transaction-breakdown"
+            />
+            <TransactionActivityLog
+              transactionGroup={transactionGroup}
+              className="transaction-list-item-details__transaction-activity-log"
+              onCancel={onCancel}
+              onRetry={onRetry}
+            />
+          </div>
         </div>
       </div>
     )

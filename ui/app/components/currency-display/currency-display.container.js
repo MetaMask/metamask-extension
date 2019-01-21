@@ -20,15 +20,24 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     currency,
     denomination,
     hideLabel,
+    displayValue: propsDisplayValue,
+    suffix: propsSuffix,
     ...restOwnProps
   } = ownProps
 
   const toCurrency = currency || currentCurrency
-  const convertedValue = getValueFromWeiHex({
-    value, fromCurrency: nativeCurrency, toCurrency, conversionRate, numberOfDecimals, toDenomination: denomination,
-  })
-  const displayValue = formatCurrency(convertedValue, toCurrency)
-  const suffix = hideLabel ? undefined : toCurrency.toUpperCase()
+
+  const displayValue = propsDisplayValue || formatCurrency(
+    getValueFromWeiHex({
+      value,
+      fromCurrency: nativeCurrency,
+      toCurrency, conversionRate,
+      numberOfDecimals,
+      toDenomination: denomination,
+    }),
+    toCurrency
+  )
+  const suffix = propsSuffix || (hideLabel ? undefined : toCurrency.toUpperCase())
 
   return {
     ...restStateProps,

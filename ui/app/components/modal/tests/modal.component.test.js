@@ -1,6 +1,6 @@
 import React from 'react'
 import assert from 'assert'
-import { shallow } from 'enzyme'
+import { mount, shallow } from 'enzyme'
 import sinon from 'sinon'
 import Modal from '../modal.component'
 import Button from '../../button'
@@ -98,6 +98,36 @@ describe('Modal Component', () => {
     assert.equal(handleSubmit.callCount, 0)
     wrapper.find('.modal-container__header-close').simulate('click')
     assert.equal(handleCancel.callCount, 1)
+    assert.equal(handleSubmit.callCount, 0)
+  })
+
+  it('should disable the submit button if submitDisabled is true', () => {
+    const handleCancel = sinon.spy()
+    const handleSubmit = sinon.spy()
+    const wrapper = mount(
+      <Modal
+        onCancel={handleCancel}
+        cancelText="Cancel"
+        onSubmit={handleSubmit}
+        submitText="Submit"
+        submitDisabled={true}
+        headerText="My Header"
+        onClose={handleCancel}
+      />
+    )
+
+    const buttons = wrapper.find(Button)
+    assert.equal(buttons.length, 2)
+    const cancelButton = buttons.at(0)
+    const submitButton = buttons.at(1)
+
+    assert.equal(handleCancel.callCount, 0)
+    cancelButton.simulate('click')
+    assert.equal(handleCancel.callCount, 1)
+
+    assert.equal(submitButton.props().disabled, true)
+    assert.equal(handleSubmit.callCount, 0)
+    submitButton.simulate('click')
     assert.equal(handleSubmit.callCount, 0)
   })
 })

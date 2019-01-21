@@ -828,8 +828,8 @@
   "supportCenter": {
     "message": "Navštivte naše centrum podpory"
   },
-  "symbolBetweenZeroTen": {
-    "message": "Symbol musí být mezi 0 a 10 znaky."
+  "symbolBetweenZeroTwelve": {
+    "message": "Symbol musí být mezi 0 a 12 znaky."
   },
   "takesTooLong": {
     "message": "Trvá to dlouho?"
@@ -942,8 +942,8 @@
   "warning": {
     "message": "Varování"
   },
-  "welcomeBeta": {
-    "message": "Vítejte v MetaMask Beta"
+  "welcome": {
+    "message": "Vítejte v MetaMask"
   },
   "whatsThis": {
     "message": "Co to je?"

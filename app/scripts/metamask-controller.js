@@ -29,6 +29,7 @@ const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
+const CachedBalancesController = require('./controllers/cached-balances')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
@@ -50,6 +51,7 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
+const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
@@ -117,6 +119,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
+      currency: this.currencyController.store,
       preferences: this.preferencesController.store,
     })
 
@@ -138,6 +141,12 @@ module.exports = class MetamaskController extends EventEmitter {
       } else {
         this.accountTracker.stop()
       }
+    })
+
+    this.cachedBalancesController = new CachedBalancesController({
+      accountTracker: this.accountTracker,
+      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
+      initState: initState.CachedBalancesController,
     })
 
     // ensure accountTracker updates balances after network change
@@ -199,7 +208,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
       var currentCurrency = this.currencyController.getCurrentCurrency()
-      this.setCurrentCurrency(currentCurrency, function() {})
+      this.setCurrentCurrency(currentCurrency, function () {})
     })
     this.balancesController.updateAllBalances()
 
@@ -239,6 +248,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeShiftController: this.shapeshiftController.store,
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
+      CachedBalancesController: this.cachedBalancesController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -246,6 +256,7 @@ module.exports = class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       BalancesController: this.balancesController.store,
+      CachedBalancesController: this.cachedBalancesController.store,
       TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
@@ -436,6 +447,7 @@ module.exports = class MetamaskController extends EventEmitter {
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
+      createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
@@ -1026,16 +1038,22 @@ module.exports = class MetamaskController extends EventEmitter {
       const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
       const address = sigUtil.normalize(cleanMsgParams.from)
       const keyring = await this.keyringController.getKeyringForAccount(address)
-      const wallet = keyring._getWalletForAccount(address)
-      const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
       let signature
-      switch (version) {
-        case 'V1':
-          signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
-          break
-        case 'V3':
-          signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
-          break
+      // HW Wallet keyrings don't expose private keys
+      // so we need to handle it separately
+      if (!HW_WALLETS_KEYRINGS.includes(keyring.type)) {
+        const wallet = keyring._getWalletForAccount(address)
+        const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
+        switch (version) {
+          case 'V1':
+            signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
+            break
+          case 'V3':
+            signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
+            break
+        }
+      } else {
+        signature = await keyring.signTypedData(address, cleanMsgParams.data)
       }
       this.typedMessageManager.setMsgStatusSigned(msgId, signature)
       return this.getState()
@@ -1128,8 +1146,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} txId - The ID of the transaction to speed up.
    * @param {Function} cb - The callback function called with a full state update.
    */
-  async retryTransaction (txId, cb) {
-    await this.txController.retryTransaction(txId)
+  async retryTransaction (txId, gasPrice, cb) {
+    await this.txController.retryTransaction(txId, gasPrice)
     const state = await this.getState()
     return state
   }
@@ -1142,7 +1160,17 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {object} MetaMask state
    */
   async createCancelTransaction (originalTxId, customGasPrice, cb) {
-    await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+    try {
+      await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+      const state = await this.getState()
+      return state
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async createSpeedUpTransaction (originalTxId, customGasPrice, cb) {
+    await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice)
     const state = await this.getState()
     return state
   }
@@ -1582,7 +1610,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Locks MetaMask
    */
-  setLocked() {
+  setLocked () {
     this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
   }

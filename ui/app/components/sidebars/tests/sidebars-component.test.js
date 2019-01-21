@@ -6,6 +6,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import Sidebar from '../sidebar.component.js'
 
 import WalletView from '../../wallet-view'
+import CustomizeGas from '../../gas-customization/gas-modal-page-container/'
 
 const propsMethodSpies = {
   hideSidebar: sinon.spy(),
@@ -57,6 +58,14 @@ describe('Sidebar Component', function () {
       wrapper.setProps({ type: 'wallet-view' })
       renderSidebarContent = wrapper.instance().renderSidebarContent()
       assert.equal(renderSidebarContent.props.responsiveDisplayClassname, 'sidebar-right')
+    })
+
+    it('should render sidebar content with the correct props', () => {
+      wrapper.setProps({ type: 'customize-gas' })
+      renderSidebarContent = wrapper.instance().renderSidebarContent()
+      const renderedSidebarContent = shallow(renderSidebarContent)
+      assert(renderedSidebarContent.hasClass('sidebar-left'))
+      assert(renderedSidebarContent.childAt(0).is(CustomizeGas))
     })
 
     it('should not render with an unrecognized type', () => {

@@ -21,7 +21,7 @@ module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, typedMes
   allValues = allValues.concat(typedValues)
 
   allValues = allValues.sort((a, b) => {
-    return a.time > b.time
+    return a.time - b.time
   })
 
   return allValues

@@ -30,10 +30,12 @@ const packageJSON = require('./package.json')
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
 const materialUIDependencies = ['@material-ui/core']
 const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
+const d3Dependencies = ['c3', 'd3']
 
 const uiDependenciesToBundle = [
   ...materialUIDependencies,
   ...reactDepenendencies,
+  ...d3Dependencies,
 ]
 
 function gulpParallel (...args) {
@@ -83,6 +85,10 @@ createCopyTasks('contractImages', {
 createCopyTasks('fonts', {
   source: './app/fonts/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/fonts`),
+})
+createCopyTasks('vendor', {
+  source: './app/vendor/',
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/vendor`),
 })
 createCopyTasks('reload', {
   devOnly: true,

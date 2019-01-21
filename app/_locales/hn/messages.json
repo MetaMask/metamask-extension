@@ -218,7 +218,7 @@
   },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
-  }, 
+  },
   "defaultNetwork": {
     "message": "ईथर लेनदेन के लिए डिफ़ॉल्ट नेटवर्क मुख्य नेट है।"
   },
@@ -741,8 +741,8 @@
   "supportCenter": {
     "message": "हमारे सहायता केंद्र पर जाएं"
   },
-  "symbolBetweenZeroTen": {
-    "message": "प्रतीक 0 और 10 अक्षरों के बीच होना चाहिए"
+  "symbolBetweenZeroTwelve": {
+    "message": "प्रतीक 0 और 12 अक्षरों के बीच होना चाहिए"
   },
   "takesTooLong": {
     "message": "बहुत समय ले रहा है?"
@@ -845,11 +845,11 @@
   },
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"
-  }, 
+  },
   "warning": {
     "message": "चेतावनी"
   },
-  "welcomeBeta": {
+  "welcome": {
     "message": "मेटामास्क बीटा में आपका स्वागत है"
   },
   "whatsThis": {

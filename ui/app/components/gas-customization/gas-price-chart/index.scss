@@ -1,0 +1,132 @@
+.gas-price-chart {
+  display: flex;
+  position: relative;
+  justify-content: center;
+
+  &__root {
+    max-height: 154px;
+    max-width: 391px;
+    position: relative;
+    overflow: hidden;
+
+    @media screen and (max-width: $break-small) {
+      max-width: 326px;
+    }
+  }
+
+  .tick text, .c3-axis-x-label, .c3-axis-y-label {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
+    font-size: 8px;
+    text-align: center;
+    fill: #9A9CA6 !important;
+  }
+
+  .c3-tooltip-container {
+    display: flex;
+    justify-content: center !important;
+    align-items: flex-end !important;
+  }
+
+  .custom-tooltip {
+    background: rgba(0, 0, 0, 1);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 3px;
+    opacity: 1 !important;
+    height: 21px;
+    z-index: 1;
+  }
+
+  .tooltip-arrow {
+    background: black;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    opacity: 1 !important;
+    width: 9px;
+    height: 9px;
+    margin-top: 4px;
+  }
+
+  .custom-tooltip th {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    font-size: 10px;
+    text-align: center;
+    padding: 3px;
+    color: #FFFFFF;
+  }
+
+  .c3-circle {
+    visibility: hidden;
+  }
+
+  .c3-selected-circle, .c3-circle._expanded_ {
+    fill: #FFFFFF !important;
+    stroke-width: 2.4px !important;
+    stroke: #2d9fd9 !important;
+    /* visibility: visible; */
+  }
+
+  #set-circle {
+    fill: #313A5E !important;
+    stroke: #313A5E !important;
+  }
+
+  .c3-axis-x-label, .c3-axis-y-label {
+    font-weight: normal;
+  }
+
+  .tick text tspan {
+    visibility: hidden;
+  }
+
+  .c3-circle {
+    fill: #2d9fd9 !important;
+  }
+
+  .c3-line-data1 {
+    stroke: #2d9fd9 !important;
+    background: rgba(0,0,0,0) !important;
+    color: rgba(0,0,0,0) !important;
+  }
+
+  .c3 path {
+    fill: none;
+  }
+
+  .c3 path.c3-area-data1 {
+    opacity: 1;
+    fill: #e9edf1 !important;
+  }
+
+  .c3-xgrid-line line {
+    stroke: #B8B8B8 !important;
+  }
+
+  .c3-xgrid-focus {
+    stroke: #aaa;
+  }
+
+  .c3-axis-x .domain {
+    fill: none;
+    stroke: none;
+  }
+
+  .c3-axis-y .domain {
+    fill: none;
+    stroke: #C8CCD6;
+  }
+
+  .c3-event-rect {
+    cursor: pointer;
+  }
+}
+
+#chart {
+  background: #F8F9FB
+}

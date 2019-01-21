@@ -10,7 +10,7 @@ async function versionBump (bumpType, changelog, oldManifest) {
   const logHeader = `\n## ${newVersion} ${date}`
   const logLines = changelog.split('\n')
   for (let i = 0; i < logLines.length; i++) {
-    if (logLines[i].includes('Current Master')) {
+    if (logLines[i].includes('Current Develop Branch')) {
       logLines.splice(i + 1, 0, logHeader)
       break
     }

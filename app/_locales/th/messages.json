@@ -741,8 +741,8 @@
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
   },
-  "symbolBetweenZeroTen": {
-    "message": "สัญลักษณ์ต้องมีความยาวตั้งแต่ 0 ถึง 10 อักขระ"
+  "symbolBetweenZeroTwelve": {
+    "message": "สัญลักษณ์ต้องมีความยาวตั้งแต่ 0 ถึง 12 อักขระ"
   },
   "takesTooLong": {
     "message": "ใช้เวลานานเกินไปใช่หรือไม่?"
@@ -849,7 +849,7 @@
   "warning": {
     "message": "คำเตือน"
   },
-  "welcomeBeta": {
+  "welcome": {
     "message": "ยินดีต้อนรับสู่ MetaMask เบต้า"
   },
   "whatsThis": {

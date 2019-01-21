@@ -1117,8 +1117,8 @@
   "supportCenter": {
     "message": "지원 센터에 방문하기"
   },
-  "symbolBetweenZeroTen": {
-    "message": "심볼은 0에서 10개 사이의 문자여야 합니다."
+  "symbolBetweenZeroTwelve": {
+    "message": "심볼은 0에서 12개 사이의 문자여야 합니다."
   },
   "takesTooLong": {
     "message": "너무 오래 걸리나요?"
@@ -1276,7 +1276,7 @@
   "welcomeBack": {
     "message": "환영합니다!"
   },
-  "welcomeBeta": {
+  "welcome": {
     "message": "메타마스크 Beta에 오신 것을 환영합니다"
   },
   "whatsThis": {

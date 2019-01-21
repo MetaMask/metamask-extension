@@ -822,8 +822,8 @@
   "supportCenter": {
     "message": "造訪我們的協助中心"
   },
-  "symbolBetweenZeroTen": {
-    "message": "代號必須介於 0 到 10 字元間."
+  "symbolBetweenZeroTwelve": {
+    "message": "代號必須介於 0 到 12 字元間."
   },
   "takesTooLong": {
     "message": "花費太長時間？"
@@ -933,8 +933,8 @@
   "warning": {
     "message": "警告"
   },
-  "welcomeBeta": {
-    "message": "歡迎到 MetaMask Beta"
+  "welcome": {
+    "message": "歡迎到 MetaMask"
   },
   "whatsThis": {
     "message": "這是什麼？"

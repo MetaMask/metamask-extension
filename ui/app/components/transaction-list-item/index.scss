@@ -80,6 +80,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
+    max-width: 100%;
 
     &--primary {
       text-align: end;
@@ -113,12 +115,6 @@
     @media screen and (max-width: $break-small) {
       font-size: .5rem;
     }
-  }
-
-  &__details-container {
-    padding: 8px 16px 16px;
-    background: #f3f4f7;
-    width: 100%;
   }
 
   &__expander {

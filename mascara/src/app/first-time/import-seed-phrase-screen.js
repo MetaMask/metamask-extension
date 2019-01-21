@@ -33,6 +33,7 @@ class ImportSeedPhraseScreen extends Component {
 
   parseSeedPhrase = (seedPhrase) => {
     return seedPhrase
+      .trim()
       .match(/\w+/g)
       .join(' ')
   }
@@ -41,9 +42,10 @@ class ImportSeedPhraseScreen extends Component {
     let seedPhraseError = null
 
     if (seedPhrase) {
-      if (this.parseSeedPhrase(seedPhrase).split(' ').length !== 12) {
+      const parsedSeedPhrase = this.parseSeedPhrase(seedPhrase)
+      if (parsedSeedPhrase.split(' ').length !== 12) {
         seedPhraseError = this.context.t('seedPhraseReq')
-      } else if (!validateMnemonic(seedPhrase)) {
+      } else if (!validateMnemonic(parsedSeedPhrase)) {
         seedPhraseError = this.context.t('invalidSeedPhrase')
       }
     }

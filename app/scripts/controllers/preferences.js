@@ -34,7 +34,10 @@ class PreferencesController {
       layer2Apps:[],
       suggestedTokens: {},
       useBlockie: false,
-      featureFlags: {},
+      featureFlags: {
+        betaUI: true,
+        skipAnnounceBetaUI: true,
+      },
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -458,7 +461,11 @@ class PreferencesController {
       rpcList.splice(index, 1)
     }
     if (url !== 'http://localhost:8545') {
-      rpcList.push({ rpcUrl: url, chainId, ticker, nickname })
+      let checkedChainId
+      if (!!chainId && !Number.isNaN(parseInt(chainId))) {
+        checkedChainId = chainId
+      }
+      rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname })
     }
     this.store.updateState({ frequentRpcListDetail: rpcList })
     return Promise.resolve(rpcList)

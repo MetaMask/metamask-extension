@@ -28,7 +28,7 @@ function createInfuraClient ({ network }) {
   return { networkMiddleware, blockTracker }
 }
 
-function createNetworkAndChainIdMiddleware({ network }) {
+function createNetworkAndChainIdMiddleware ({ network }) {
   let chainId
   let netId
 

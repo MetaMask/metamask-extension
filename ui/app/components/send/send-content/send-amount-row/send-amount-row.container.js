@@ -45,10 +45,10 @@ function mapDispatchToProps (dispatch) {
     setMaxModeTo: bool => dispatch(setMaxModeTo(bool)),
     updateSendAmount: newAmount => dispatch(updateSendAmount(newAmount)),
     updateGasFeeError: (amountDataObject) => {
-        dispatch(updateSendErrors(getGasFeeErrorObject(amountDataObject)))
+      dispatch(updateSendErrors(getGasFeeErrorObject(amountDataObject)))
     },
     updateSendAmountError: (amountDataObject) => {
-        dispatch(updateSendErrors(getAmountErrorObject(amountDataObject)))
+      dispatch(updateSendErrors(getAmountErrorObject(amountDataObject)))
     },
   }
 }
