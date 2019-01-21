@@ -16,10 +16,10 @@ const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
 const PluginList = require('./plugin-list')
 const selectors = require('../selectors')
-const { ADD_TOKEN_ROUTE } = require('../routes')
-const { ADD_LAYER2APP_ROUTE } = require('../routes')
+const { ADD_TOKEN_ROUTE, ADD_PLUGIN_ROUTE } = require('../routes')
 
 import AddTokenButton from './add-token-button'
+import AddPluginButton from './add-plugin-button'
 
 import Button from './button'
 
@@ -123,6 +123,24 @@ WalletView.prototype.renderAddToken = function () {
   })
 }
 
+WalletView.prototype.renderAddPlugin = function () {
+  const {
+    sidebarOpen,
+    hideSidebar,
+    history,
+  } = this.props
+
+  return h(AddPluginButton, {
+    onClick () {
+      history.push(ADD_PLUGIN_ROUTE)
+      if (sidebarOpen) {
+        hideSidebar()
+      }
+    },
+  })
+}
+
+
 WalletView.prototype.render = function () {
   const {
     responsiveDisplayClassname,
@@ -224,14 +242,7 @@ WalletView.prototype.render = function () {
     this.renderAddToken(),
 
     h(PluginList),
-    h(Button, {
-      type: 'primary',
-      className: 'wallet-view__add-layer2App-button',
-      onClick: () => {
-        history.push(ADD_LAYER2APP_ROUTE)
-        sidebarOpen && hideSidebar()
-      },
-    }, this.context.t('addLayer2App')),
+    this.renderAddPlugin(),
 
 
   ])

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ethUtil from 'ethereumjs-util'
-import { DEFAULT_ROUTE, CONFIRM_ADD_LAYER2APP_ROUTE } from '../../../routes'
+import { DEFAULT_ROUTE } from '../../../routes'
 import TextField from '../../text-field'
 import Layer2AppList from './layer2App-list'
 import Layer2AppSearch from './layer2App-search'

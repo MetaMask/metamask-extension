@@ -43,7 +43,7 @@ import {
 } from './send.utils.js'
 
 import {
-  DEPOSIT_LAYER2APP_ROUTE,
+  DEPOSIT_PLUGIN_ROUTE,
 } from '../../routes'
 
 module.exports = compose(
@@ -106,7 +106,7 @@ function mapDispatchToProps (dispatch) {
     },
     updateSendErrors: newError => dispatch(updateSendErrors(newError)),
     resetSendState: () => dispatch(resetSendState()),
-    scanQrCode: () => dispatch(showQrScanner(DEPOSIT_LAYER2APP_ROUTE)),
+    scanQrCode: () => dispatch(showQrScanner(DEPOSIT_PLUGIN_ROUTE)),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     updateSendTo: (to, nickname) => dispatch(updateSendTo(to, nickname)),
   }

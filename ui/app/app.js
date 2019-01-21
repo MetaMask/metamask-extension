@@ -13,7 +13,7 @@ const { getMetaMaskAccounts, getNetworkIdentifier } = require('./selectors')
 const InitializeScreen = require('../../mascara/src/app/first-time').default
 // accounts
 const SendTransactionScreen = require('./components/send/send.container')
-const DepositLayer2AppScreen = require('./components/depositLayer2App/depositLayer2App.container')
+const DepositPluginScreen = require('./components/deposit-plugin/deposit-plugin.container')
 const ConfirmTransaction = require('./components/pages/confirm-transaction')
 
 // slideout menu
@@ -27,7 +27,7 @@ const Initialized = require('./components/pages/initialized')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
-const AddLayer2AppPage = require('./components/pages/add-layer2App')
+const AddPluginPage = require('./components/pages/add-plugin')
 const ConfirmAddTokenPage = require('./components/pages/confirm-add-token')
 const ConfirmAddSuggestedTokenPage = require('./components/pages/confirm-add-suggested-token')
 const CreateAccountPage = require('./components/pages/create-account')
@@ -57,15 +57,13 @@ const {
   SETTINGS_ROUTE,
   REVEAL_SEED_ROUTE,
   RESTORE_VAULT_ROUTE,
-  ADD_LAYER2APP_ROUTE,
+  ADD_PLUGIN_ROUTE,
   ADD_TOKEN_ROUTE,
   CONFIRM_ADD_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONFIRM_ADD_LAYER2APP_ROUTE,
-  CONFIRM_ADD_SUGGESTED_LAYER2APP_ROUTE,
   NEW_ACCOUNT_ROUTE,
   SEND_ROUTE,
-  DEPOSIT_LAYER2APP_ROUTE,  
+  DEPOSIT_PLUGIN_ROUTE,  
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   NOTICE_ROUTE,
@@ -96,9 +94,9 @@ class App extends Component {
           component: ConfirmTransaction,
         }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
-        h(Authenticated, { path: DEPOSIT_LAYER2APP_ROUTE, exact, component: DepositLayer2AppScreen }),	
+        h(Authenticated, { path: DEPOSIT_PLUGIN_ROUTE, exact, component: DepositPluginScreen }),	
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
-        h(Authenticated, { path: ADD_LAYER2APP_ROUTE, exact, component: AddLayer2AppPage }),
+        h(Authenticated, { path: ADD_PLUGIN_ROUTE, exact, component: AddPluginPage }),
         h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
         h(Authenticated, { path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE, exact, component: ConfirmAddSuggestedTokenPage }),
         h(Authenticated, { path: NEW_ACCOUNT_ROUTE, component: CreateAccountPage }),

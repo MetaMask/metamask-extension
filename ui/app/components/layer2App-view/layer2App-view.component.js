@@ -4,7 +4,7 @@ import Media from 'react-media'
 import MenuBar from '../menu-bar'
 import Button from '../button'
 const h = require('react-hyperscript')
-import { DEPOSIT_LAYER2APP_ROUTE } from '../../routes'
+import { DEPOSIT_PLUGIN_ROUTE } from '../../routes'
 
 const BN = require('ethereumjs-util').BN
 
@@ -98,7 +98,7 @@ export default class Layer2AppView extends PureComponent {
 	<Button
       type="primary"
       className="layer2App-view__button"
-      onClick={() => history.push(DEPOSIT_LAYER2APP_ROUTE)}
+      onClick={() => history.push(DEPOSIT_PLUGIN_ROUTE)}
         >
         {t("depositLayer2App") }
       </Button>

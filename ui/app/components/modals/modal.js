@@ -200,21 +200,6 @@ const MODALS = {
     },
   },
 
-  HIDE_LAYER2APP_CONFIRMATION: {
-    contents: [
-      h(HideLayer2AppConfirmationModal, {}, []),
-    ],
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
-    },
-  },
-
-
   BETA_UI_NOTIFICATION_MODAL: {
     contents: h(WelcomeBeta),
     mobileModalStyle: {
