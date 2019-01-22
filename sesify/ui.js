@@ -52,21 +52,19 @@ const config = {
         Element,
       }
     },
-    "boron": {
-      "domkit": {
-        $: {
-          window: {
-            // for getting vendorPrefix
-            getComputedStyle: window.getComputedStyle.bind(window),
-          },
-          document: {
-            // for feature detection
-            createElement: document.createElement.bind(document),
-            // for getting vendorPrefix
-            documentElement: document.documentElement,
-            // for inserting css into head
-            getElementsByTagName: document.getElementsByTagName.bind(document),
-          },
+    "boron domkit": {
+      $: {
+        window: {
+          // for getting vendorPrefix
+          getComputedStyle: window.getComputedStyle.bind(window),
+        },
+        document: {
+          // for feature detection
+          createElement: document.createElement.bind(document),
+          // for getting vendorPrefix
+          documentElement: document.documentElement,
+          // for inserting css into head
+          getElementsByTagName: document.getElementsByTagName.bind(document),
         },
       },
     },
@@ -74,15 +72,11 @@ const config = {
     "extensionizer": {
       $: extensionizerEndowments,
     },
-    "react-router-dom": {
-      "history": {
-        $: reactRouterHistoryEndowments,
-      },
-      "react-router": {
-        "history": {
-          $: reactRouterHistoryEndowments,
-        },
-      },
+    "react-router-dom history": {
+      $: reactRouterHistoryEndowments,
+    },
+    "react-router-dom react-router history": {
+      $: reactRouterHistoryEndowments,      
     },
     // "extension-link-enabler": {
     //   "extensionizer": {

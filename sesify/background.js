@@ -32,10 +32,8 @@ const config = {
     "extensionizer": {
       $: extensionizerEndowments,
     },
-    "extension-link-enabler": {
-      "extensionizer": {
-        $: extensionizerEndowments,
-      },
+    "extension-link-enabler extensionizer": {
+      $: extensionizerEndowments,
     },
     // has a wrapper around localStorage (old persistence)
     "obs-store": {
@@ -46,11 +44,9 @@ const config = {
       },
     },
     // wants to generate a key from user password
-    "eth-keyring-controller": {
-      "browser-passworder": {
-        $: {
-          crypto: window.crypto,
-        },
+    "eth-keyring-controller browser-passworder": {
+      $: {
+        crypto: window.crypto,
       },
     },
     // wants to talk to infura
