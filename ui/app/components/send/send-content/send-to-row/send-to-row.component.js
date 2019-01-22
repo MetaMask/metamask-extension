@@ -24,7 +24,7 @@ export default class SendToRow extends Component {
     updateSendToWarning: PropTypes.func,
     scanQrCode: PropTypes.func,
   }
-  
+
   static contextTypes = {
     t: PropTypes.func,
   }
