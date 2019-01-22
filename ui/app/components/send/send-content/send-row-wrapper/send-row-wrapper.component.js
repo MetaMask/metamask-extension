@@ -27,7 +27,6 @@ export default class SendRowWrapper extends Component {
       showWarning = false,
       warningType = '',
     } = this.props
-    console.log('from row wrapper', showWarning, warningType)
     const formField = Array.isArray(children) ? children[1] || children[0] : children
     const customLabelContent = children.length > 1 ? children[0] : null
 
