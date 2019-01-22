@@ -134,32 +134,32 @@ const addCustomToken = async (f, account1, account2) => {
       const inexistentToken = '0xB8c77482e45F1F44dE1745F52C74426C631bDD51'
       describe('Token should be displayed only for network, where it was added ', async () => {
 
-        it('token should not  be displayed in POA network', async () => {
+        it('token should not be displayed in POA network', async () => {
           await f.setProvider(NETWORKS.POA)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not  be displayed in SOKOL network', async () => {
+        it('token should not be displayed in SOKOL network', async () => {
           await f.setProvider(NETWORKS.SOKOL)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not  be displayed in MAINNET', async () => {
+        it('token should not be displayed in MAINNET', async () => {
           await f.setProvider(NETWORKS.MAINNET)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not  be displayed in ROPSTEN network', async () => {
+        it('token should not be displayed in ROPSTEN network', async () => {
           await f.setProvider(NETWORKS.ROPSTEN)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not  be displayed in KOVAN network', async () => {
+        it('token should not be displayed in KOVAN network', async () => {
           await f.setProvider(NETWORKS.KOVAN)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not  be displayed in RINKEBY network', async () => {
+        it('token should not be displayed in RINKEBY network', async () => {
           await f.setProvider(NETWORKS.RINKEBY)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })

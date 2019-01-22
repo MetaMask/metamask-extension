@@ -216,37 +216,37 @@ const addTokeFromSearch = async (f) => {
 
     describe('Token should be displayed only for network, where it was added ', async () => {
 
-      it('token should not  be displayed in POA network', async () => {
+      it('token should not be displayed in POA network', async () => {
         await f.setProvider(NETWORKS.POA)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not  be displayed in DAI network', async () => {
+      it('token should not be displayed in DAI network', async () => {
         await f.setProvider(NETWORKS.DAI)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not  be displayed in SOKOL network', async () => {
+      it('token should not be displayed in SOKOL network', async () => {
         await f.setProvider(NETWORKS.SOKOL)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not  be displayed in LOCALHOST network', async () => {
+      it('token should not be displayed in LOCALHOST network', async () => {
         await f.setProvider(NETWORKS.LOCALHOST)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not  be displayed in ROPSTEN network', async () => {
+      it('token should not be displayed in ROPSTEN network', async () => {
         await f.setProvider(NETWORKS.ROPSTEN)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not  be displayed in KOVAN network', async () => {
+      it('token should not be displayed in KOVAN network', async () => {
         await f.setProvider(NETWORKS.KOVAN)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not  be displayed in RINKEBY network', async () => {
+      it('token should not be displayed in RINKEBY network', async () => {
         await f.setProvider(NETWORKS.RINKEBY)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
