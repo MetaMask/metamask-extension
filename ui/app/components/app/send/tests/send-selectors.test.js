@@ -20,7 +20,6 @@ const {
   getPrimaryCurrency,
   getRecentBlocks,
   getSelectedAccount,
-  getSelectedAddress,
   getSelectedIdentity,
   getSelectedToken,
   getSelectedTokenContract,
@@ -270,15 +269,6 @@ describe('send selectors', () => {
           nonce: '0x0',
           address: '0xd85a4b6a394794842887b8284293d69163007bbb',
         }
-      )
-    })
-  })
-
-  describe('getSelectedAddress()', () => {
-    it('should', () => {
-      assert.equal(
-        getSelectedAddress(mockState),
-        '0xd85a4b6a394794842887b8284293d69163007bbb'
       )
     })
   })

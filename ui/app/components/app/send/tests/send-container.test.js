@@ -35,7 +35,6 @@ proxyquire('../send.container.js', {
     getGasTotal: (s) => `mockGasTotal:${s}`,
     getPrimaryCurrency: (s) => `mockPrimaryCurrency:${s}`,
     getRecentBlocks: (s) => `mockRecentBlocks:${s}`,
-    getSelectedAddress: (s) => `mockSelectedAddress:${s}`,
     getSelectedToken: (s) => `mockSelectedToken:${s}`,
     getSelectedTokenContract: (s) => `mockTokenContract:${s}`,
     getSelectedTokenToFiatRate: (s) => `mockTokenToFiatRate:${s}`,
@@ -47,11 +46,15 @@ proxyquire('../send.container.js', {
     getTokenBalance: (s) => `mockTokenBalance:${s}`,
     getQrCodeData: (s) => `mockQrCodeData:${s}`,
   },
+  '../../../selectors/selectors': {
+    getSelectedAddress: (s) => `mockSelectedAddress:${s}`,
+  },
   '../../../store/actions': actionSpies,
   '../../../ducks/send/send.duck': duckActionSpies,
   './send.utils.js': {
     calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },
+  
 })
 
 describe('send container', () => {
