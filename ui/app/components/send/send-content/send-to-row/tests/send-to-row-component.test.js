@@ -83,7 +83,7 @@ describe('SendToRow Component', function () {
 
     it('should call updateSendToWarning', () => {
       assert.equal(propsMethodSpies.updateSendToWarning.callCount, 0)
-      instance.handleToChange('mockTo2', '', 'mockToWarning')
+      instance.handleToChange('mockTo2', '', '', 'mockToWarning')
       assert.equal(propsMethodSpies.updateSendToWarning.callCount, 1)
       assert.deepEqual(
         propsMethodSpies.updateSendToWarning.getCall(0).args,
@@ -133,6 +133,7 @@ describe('SendToRow Component', function () {
         closeDropdown,
         dropdownOpen,
         inError,
+        inWarning,
         name,
         network,
         onChange,
@@ -143,6 +144,7 @@ describe('SendToRow Component', function () {
       assert.deepEqual(accounts, ['mockAccount'])
       assert.equal(dropdownOpen, false)
       assert.equal(inError, false)
+      assert.equal(inWarning, false)
       assert.equal(name, 'address')
       assert.equal(network, 'mockNetwork')
       assert.equal(placeholder, 'recipientAddress_t')
@@ -154,11 +156,11 @@ describe('SendToRow Component', function () {
       openDropdown()
       assert.equal(propsMethodSpies.openToDropdown.callCount, 1)
       assert.equal(SendToRow.prototype.handleToChange.callCount, 0)
-      onChange({ toAddress: 'mockNewTo', nickname: 'mockNewNickname', toError: 'mockToError' })
+      onChange({ toAddress: 'mockNewTo', nickname: 'mockNewNickname', toError: 'mockToError', toWarning: 'mockToWarning' })
       assert.equal(SendToRow.prototype.handleToChange.callCount, 1)
       assert.deepEqual(
         SendToRow.prototype.handleToChange.getCall(0).args,
-        ['mockNewTo', 'mockNewNickname', 'mockToError']
+        ['mockNewTo', 'mockNewNickname', 'mockToError', 'mockToWarning']
       )
     })
   })
