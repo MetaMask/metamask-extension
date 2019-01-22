@@ -509,7 +509,13 @@ function generateBundler (opts, performBundle) {
         // load latest config
         return fs.readFileSync(sesifyConfigFile, 'utf8')
       },
+      // hook for getting tofu analysis
+      autoConfig: writeAutoConfig,
     }]]
+  }
+
+  function writeAutoConfig (config) {
+    fs.writeFileSync(`./sesify/tofu-${opts.filename}`, config)
   }
 
   if (!opts.buildLib) {
