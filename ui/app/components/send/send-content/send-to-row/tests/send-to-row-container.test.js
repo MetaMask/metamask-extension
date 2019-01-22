@@ -24,6 +24,7 @@ proxyquire('../send-to-row.container.js', {
   },
   '../../send.selectors.js': {
     getCurrentNetwork: (s) => `mockNetwork:${s}`,
+    getSelectedToken: (s) => `mockSelectedToken:${s}`,
     getSendHexData: (s) => s,
     getSendTo: (s) => `mockTo:${s}`,
     getSendToAccounts: (s) => `mockToAccounts:${s}`,
@@ -46,6 +47,7 @@ describe('send-to-row container', () => {
         hasHexData: true,
         inError: 'mockInError:mockState',
         network: 'mockNetwork:mockState',
+        selectedToken: 'mockSelectedToken:mockState',
         to: 'mockTo:mockState',
         toAccounts: 'mockToAccounts:mockState',
         toDropdownOpen: 'mockToDropdownOpen:mockState',
