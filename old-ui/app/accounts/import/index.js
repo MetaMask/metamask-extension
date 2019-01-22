@@ -22,7 +22,7 @@ class AccountImportSubview extends Component {
     }
   }
   static propTypes = {
-    menuItems: PropTypes.object.Array,
+    menuItems: PropTypes.array,
     warning: PropTypes.node,
     goHome: PropTypes.func,
     displayWarning: PropTypes.func,

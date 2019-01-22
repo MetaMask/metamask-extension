@@ -8,6 +8,7 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
     const proxyContract = '0x0518ac3db78eb326f42dbcfb4b2978e8059989a5'
     const proxyABI = [{'constant': true, 'inputs': [], 'name': 'proxyOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'version', 'outputs': [{'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}], 'name': 'upgradeTo', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'implementation', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'upgradeabilityOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}, {'name': 'data', 'type': 'bytes'}], 'name': 'upgradeToAndCall', 'outputs': [], 'payable': true, 'stateMutability': 'payable', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'newOwner', 'type': 'address'}], 'name': 'transferProxyOwnership', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'payable': true, 'stateMutability': 'payable', 'type': 'fallback'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'previousOwner', 'type': 'address'}, {'indexed': false, 'name': 'newOwner', 'type': 'address'}], 'name': 'ProxyOwnershipTransferred', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'version', 'type': 'string'}, {'indexed': true, 'name': 'implementation', 'type': 'address'}], 'name': 'Upgraded', 'type': 'event'}] // eslint-disable-line no-unused-vars
     const joinedABI = [{'constant': true, 'inputs': [], 'name': 'proxyOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'version', 'outputs': [{'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}], 'name': 'upgradeTo', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'implementation', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'upgradeabilityOwner', 'outputs': [{'name': '', 'type': 'address'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'version', 'type': 'string'}, {'name': 'implementation', 'type': 'address'}, {'name': 'data', 'type': 'bytes'}], 'name': 'upgradeToAndCall', 'outputs': [], 'payable': true, 'stateMutability': 'payable', 'type': 'function'}, {'constant': false, 'inputs': [{'name': 'newOwner', 'type': 'address'}], 'name': 'transferProxyOwnership', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'payable': true, 'stateMutability': 'payable', 'type': 'fallback'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'previousOwner', 'type': 'address'}, {'indexed': false, 'name': 'newOwner', 'type': 'address'}], 'name': 'ProxyOwnershipTransferred', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': false, 'name': 'version', 'type': 'string'}, {'indexed': true, 'name': 'implementation', 'type': 'address'}], 'name': 'Upgraded', 'type': 'event'}, {'constant': true, 'inputs': [], 'name': 'desc', 'outputs': [{'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}, {'constant': true, 'inputs': [], 'name': 'methodFromImplementation', 'outputs': [{'name': 'yep', 'type': 'bool'}], 'payable': false, 'stateMutability': 'pure', 'type': 'function'}]
+
     describe('imports ABI of proxy and implementation together', async () => {
       it('opens import account menu', async () => {
         await f.setProvider(NETWORKS.SOKOL)
@@ -40,6 +41,63 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         console.log(abiClipboard)
         assert.deepEqual(JSON.parse(abiClipboard), joinedABI, "ABI isn't fetched")
       })
+
+      it("Click button 'Import', main screen opens", async () => {
+        const button = await f.waitUntilShowUp(screens.importAccounts.buttonImport)
+        await f.click(button)
+        const ident = await f.waitUntilShowUp(screens.main.identicon, 20)
+        assert.notEqual(ident, false, "main screen isn't opened")
+      })
+    })
+
+    describe("Check 3dots menu for 'Proxy' account", () => {
+
+      it('open 3dots menu', async () => {
+        const menu = await f.waitUntilShowUp(menus.dot.menu)
+        await menu.click()
+        await f.waitUntilShowUp(menus.dot.item)
+        const items = await f.driver.findElements(menus.dot.item)
+        assert.equal(items.length, 5, '3dot menu has incorrect number of items')
+      })
+
+      it('Check text of items', async () => {
+        const items = await f.driver.findElements(menus.dot.item)
+        assert.equal(await items[0].getText(), 'View on block explorer', '1st item has incorrect text')
+        assert.equal(await items[1].getText(), 'Show QR Code', '2nd item has incorrect text')
+        assert.equal(await items[2].getText(), 'Copy address to clipboard', '3d item has incorrect text')
+        assert.equal(await items[3].getText(), 'Copy ABI to clipboard', '4th item has incorrect text')
+        assert.equal(await items[4].getText(), 'Update implementation ABI', '5th item has incorrect text')
+      })
+
+      it("Click 'Update implementation ABI'", async () => {
+        const items = await f.driver.findElements(menus.dot.item)
+        await items[4].click()
+        const menu = await f.waitUntilShowUp(menus.dot.item, 20)
+        assert.equal(menu, false, "3dot menu wasn't closed")
+      })
+    })
+
+    describe("Remove imported 'Proxy' account", async () => {
+      it("Label 'PROXY' present", async () => {
+        const menu = await f.waitUntilShowUp(menus.account.menu)
+        await menu.click()
+        await f.delay(2000)
+        await f.waitUntilShowUp(menus.account.label)
+        const labels = await f.driver.findElements(menus.account.label)
+        const label = labels[1]
+        assert.equal(await label.getText(), 'PROXY', 'label incorrect')
+      })
+      it('Delete imported account', async () => {
+        await f.waitUntilShowUp(menus.account.delete)
+        const items = await f.driver.findElements(menus.account.delete)
+        await items[1].click()
+        const button = await f.waitUntilShowUp(screens.deleteImportedAccount.buttons.yes)
+        await button.click()
+        const buttonArrow = await f.waitUntilShowUp(screens.settings.buttons.arrow)
+        await buttonArrow.click()
+        const identicon = await f.waitUntilShowUp(screens.main.identicon)
+        assert.notEqual(identicon, false, 'main screen didn\'t opened')
+      })
     })
   })
 
@@ -69,6 +127,7 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         await f.delay(1000)
         const field = await f.waitUntilShowUp(screens.importAccounts.selectArrow)
         await field.click()
+        await f.delay(2000)
         const item = await f.waitUntilShowUp(screens.importAccounts.itemContract)
         await item.click()
       })
@@ -149,9 +208,9 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
       })
     })
 
-    describe("Check 3dot menu for 'Contract' account", () => {
+    describe("Check 3dots menu for 'Contract' account", () => {
 
-      it('open 3dot menu', async () => {
+      it('open 3dots menu', async () => {
         const menu = await f.waitUntilShowUp(menus.dot.menu)
         await menu.click()
         await f.waitUntilShowUp(menus.dot.item)
@@ -162,9 +221,9 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
       it('Check text of items', async () => {
         const items = await f.driver.findElements(menus.dot.item)
         assert.equal(await items[0].getText(), 'View on block explorer', '1st item has incorrect text')
-        assert.equal(await items[1].getText(), 'Show QR Code', '2st item has incorrect text')
-        assert.equal(await items[2].getText(), 'Copy address to clipboard', '3st item has incorrect text')
-        assert.equal(await items[3].getText(), 'Copy ABI to clipboard', '4st item has incorrect text')
+        assert.equal(await items[1].getText(), 'Show QR Code', '2nd item has incorrect text')
+        assert.equal(await items[2].getText(), 'Copy address to clipboard', '3d item has incorrect text')
+        assert.equal(await items[3].getText(), 'Copy ABI to clipboard', '4th item has incorrect text')
       })
 
       it("Click 'Copy ABI'", async () => {
@@ -737,15 +796,15 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         assert.notEqual(buttonExecute, false, "contract's account hasn't opened")
       })
 
-      // it("Button arrow leads to executor's account screen", async () => {
-      //   assert.equal(await f.executeTransferMethod(0, account1), true, "can't execute the method 'transfer'")
-      //   await f.delay(2000)
-      //   const arrow = await f.waitUntilShowUp(elements.buttonArrow)
-      //   await arrow.click()
-      //   await f.delay(2000)
-      //   const address = await f.waitUntilShowUp(screens.main.address)
-      //   assert.equal((await address.getText()).toUpperCase(), getCreatedAccounts()[0], "executors account isn't opened")
-      // })
+      it("Button arrow leads to executor's account screen", async () => {
+        assert.equal(await f.executeTransferMethod(0, account1), true, "can't execute the method 'transfer'")
+        await f.delay(2000)
+        const arrow = await f.waitUntilShowUp(elements.buttonArrow)
+        await arrow.click()
+        await f.delay(2000)
+        const address = await f.waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), getCreatedAccounts()[0], "executors account isn't opened")
+      })
 
       it('Switch to contract account ', async () => {
         const accountMenu = await f.waitUntilShowUp(menus.account.menu)
@@ -757,26 +816,26 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract's account isn't opened")
       })
 
-      // it("Confirm transaction: button 'Reject All' leads to contract's account screen", async () => {
-      //   assert.equal(await f.executeTransferMethod(0, account1), true, "can't execute the method 'transfer'")
-      //   const rejectAll = await f.waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
-      //   assert.equal(await rejectAll.getText(), 'Reject All', 'button has incorrect name')
-      //   await rejectAll.click()
-      //   await f.delay(2000)
-      //   const address = await f.waitUntilShowUp(screens.main.address)
-      //   assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
-      // })
+      it("Confirm transaction: button 'Reject All' leads to contract's account screen", async () => {
+        assert.equal(await f.executeTransferMethod(0, account1), true, "can't execute the method 'transfer'")
+        const rejectAll = await f.waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
+        assert.equal(await rejectAll.getText(), 'Reject All', 'button has incorrect name')
+        await rejectAll.click()
+        await f.delay(2000)
+        const address = await f.waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
+      })
 
-      // it("Confirm transaction: button 'Submit' leads to contract's account screen", async () => {
-      //   assert.equal(await f.executeTransferMethod(2, account1), true, "can't execute the method 'transfer'")
-      //   await f.delay(2000)
-      //   const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
-      //   assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
-      //   await button.click()
-      //   await f.delay(2000)
-      //   const address = await f.waitUntilShowUp(screens.main.address)
-      //   assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
-      // })
+      it("Confirm transaction: button 'Submit' leads to contract's account screen", async () => {
+        assert.equal(await f.executeTransferMethod(2, account1), true, "can't execute the method 'transfer'")
+        await f.delay(2000)
+        const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
+        assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
+        await button.click()
+        await f.delay(2000)
+        const address = await f.waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
+      })
 
       it("Label 'CONTRACT' present", async () => {
         const menu = await f.waitUntilShowUp(menus.account.menu)

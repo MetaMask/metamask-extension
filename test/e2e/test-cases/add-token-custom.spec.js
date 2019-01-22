@@ -17,7 +17,6 @@ const addCustomToken = async (f, account1, account2) => {
         await f.waitUntilShowUp(screens.main.identicon)
         const tab = await f.waitUntilShowUp(screens.main.tokens.menu)
         await tab.click()
-
         const addTokenButton = await f.waitUntilShowUp(screens.main.tokens.buttonAdd)
         assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
         await f.click(addTokenButton)

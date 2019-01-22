@@ -26,12 +26,13 @@ const importAccount = async (f) => {
     const privateKeyBox = await f.waitUntilShowUp(importAccounts.fieldPrivateKey)
     await privateKeyBox.sendKeys(addrPrivKey)
     const button = await f.waitUntilShowUp(importAccounts.buttonImport)
-    await f.click(button)
     assert.equal(await button.getText(), 'Import', 'button has incorrect name')
+    await f.click(button)
     const menu = await f.waitUntilShowUp(account.menu)
     await menu.click()
     await f.waitUntilShowUp(account.label)
-    const label = (await f.driver.findElements(account.label))[0]
+    const labels = await f.driver.findElements(account.label)
+    const label = labels[0]
     assert.equal(await label.getText(), 'IMPORTED')
     await menu.click()
   })
