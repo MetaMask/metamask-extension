@@ -37,7 +37,7 @@ export default function withMethodData (WrappedComponent) {
             methodData = knownMethodData[fourBytePrefix]
           } else {
             methodData = await getMethodData(data)
-            if (!methodData.isEmpty()) {
+            if (!Object.entries(methodData).length === 0) {
               addKnownMethodData(fourBytePrefix, methodData)
             }
           }

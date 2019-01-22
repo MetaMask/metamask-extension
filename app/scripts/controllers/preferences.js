@@ -101,14 +101,14 @@ class PreferencesController {
   }
 
   /**
-   * Add new dataMethod to state, to avoid requesting this information again through Infura
+   * Add new methodData to state, to avoid requesting this information again through Infura
    *
    * @param {string} fourBytePrefix Four-byte method signature
-   * @param {string} dataMethod Corresponding data method
+   * @param {string} methodData Corresponding data method
    */
-  addKnownMethodData (fourBytePrefix, dataMethod) {
+  addKnownMethodData (fourBytePrefix, methodData) {
     const knownMethodData = this.store.getState().knownMethodData
-    knownMethodData[fourBytePrefix] = dataMethod
+    knownMethodData[fourBytePrefix] = methodData
     this.store.updateState({ knownMethodData })
   }
 

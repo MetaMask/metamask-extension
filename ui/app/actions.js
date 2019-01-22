@@ -1721,9 +1721,9 @@ function removeSuggestedTokens () {
   }
 }
 
-function addKnownMethodData (fourBytePrefix, dataMethod) {
+function addKnownMethodData (fourBytePrefix, methodData) {
   return (dispatch) => {
-    background.addKnownMethodData(fourBytePrefix, dataMethod)
+    background.addKnownMethodData(fourBytePrefix, methodData)
   }
 }
 
