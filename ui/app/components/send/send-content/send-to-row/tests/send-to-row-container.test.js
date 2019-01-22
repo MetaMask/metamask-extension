@@ -24,6 +24,7 @@ proxyquire('../send-to-row.container.js', {
   },
   '../../send.selectors.js': {
     getCurrentNetwork: (s) => `mockNetwork:${s}`,
+    getSelectedToken: (s) => `mockSelectedToken:${s}`,
     getSendHexData: (s) => s,
     getSendTo: (s) => `mockTo:${s}`,
     getSendToAccounts: (s) => `mockToAccounts:${s}`,
@@ -31,6 +32,7 @@ proxyquire('../send-to-row.container.js', {
   './send-to-row.selectors.js': {
     getToDropdownOpen: (s) => `mockToDropdownOpen:${s}`,
     sendToIsInError: (s) => `mockInError:${s}`,
+    getTokens: (s) => `mockTokens:${s}`,
   },
   '../../../../actions': actionSpies,
   '../../../../ducks/send.duck': duckActionSpies,
@@ -45,9 +47,11 @@ describe('send-to-row container', () => {
         hasHexData: true,
         inError: 'mockInError:mockState',
         network: 'mockNetwork:mockState',
+        selectedToken: 'mockSelectedToken:mockState',
         to: 'mockTo:mockState',
         toAccounts: 'mockToAccounts:mockState',
         toDropdownOpen: 'mockToDropdownOpen:mockState',
+        tokens: 'mockTokens:mockState',
       })
     })
 

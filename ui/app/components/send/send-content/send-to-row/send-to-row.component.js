@@ -12,9 +12,11 @@ export default class SendToRow extends Component {
     inError: PropTypes.bool,
     network: PropTypes.string,
     openToDropdown: PropTypes.func,
+    selectedToken: PropTypes.object,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
     toDropdownOpen: PropTypes.bool,
+    tokens: PropTypes.array,
     updateGas: PropTypes.func,
     updateSendTo: PropTypes.func,
     updateSendToError: PropTypes.func,
@@ -26,8 +28,8 @@ export default class SendToRow extends Component {
   }
 
   handleToChange (to, nickname = '', toError) {
-    const { hasHexData, updateSendTo, updateSendToError, updateGas } = this.props
-    const toErrorObject = getToErrorObject(to, toError, hasHexData)
+    const { hasHexData, updateSendTo, updateSendToError, updateGas, tokens, selectedToken } = this.props
+    const toErrorObject = getToErrorObject(to, toError, hasHexData, tokens, selectedToken)
     updateSendTo(to, nickname)
     updateSendToError(toErrorObject)
     if (toErrorObject.to === null) {

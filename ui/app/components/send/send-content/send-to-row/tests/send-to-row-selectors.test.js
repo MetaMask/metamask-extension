@@ -1,6 +1,7 @@
 import assert from 'assert'
 import {
   getToDropdownOpen,
+  getTokens,
   sendToIsInError,
 } from '../send-to-row.selectors.js'
 
@@ -44,4 +45,15 @@ describe('send-to-row selectors', () => {
     })
   })
 
+  describe('getTokens()', () => {
+    it('should return empty array if no tokens in state', () => {
+      const state = {
+        metamask: {
+          tokens: [],
+        },
+      }
+
+      assert.deepStrictEqual(getTokens(state), [])
+    })
+  })
 })

@@ -648,6 +648,9 @@
   "invalidAddressRecipient": {
     "message": "Recipient address is invalid"
   },
+  "knownAddressRecipient": {
+    "message": "Known contract address."
+  },
   "invalidGasParams": {
     "message": "Invalid Gas Parameters"
   },
