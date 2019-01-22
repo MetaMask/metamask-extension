@@ -1,15 +1,18 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { getMethodData } from '../../helpers/transactions.util'
+import { getMethodData, getFourBytePrefix } from '../../helpers/transactions.util'
 
 export default function withMethodData (WrappedComponent) {
   return class MethodDataWrappedComponent extends PureComponent {
     static propTypes = {
       transaction: PropTypes.object,
+      knownMethodData: PropTypes.object,
+      addKnownMethodData: PropTypes.func,
     }
 
     static defaultProps = {
       transaction: {},
+      knownMethodData: {},
     }
 
     state = {
@@ -23,12 +26,22 @@ export default function withMethodData (WrappedComponent) {
     }
 
     async fetchMethodData () {
-      const { transaction } = this.props
+      const { transaction, knownMethodData, addKnownMethodData } = this.props
       const { txParams: { data = '' } = {} } = transaction
 
       if (data) {
         try {
-          const methodData = await getMethodData(data)
+          let methodData
+          const fourBytePrefix = getFourBytePrefix(data)
+          if (fourBytePrefix in knownMethodData) {
+            methodData = knownMethodData[fourBytePrefix]
+          } else {
+            methodData = await getMethodData(data)
+            if (!methodData.isEmpty()) {
+              addKnownMethodData(fourBytePrefix, methodData)
+            }
+          }
+
           this.setState({ methodData, done: true })
         } catch (error) {
           this.setState({ done: true, error })

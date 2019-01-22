@@ -19,6 +19,7 @@ class PreferencesController {
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
+   * @property {object} store.knownMethodData Contains all data methods known by the user
    * @property {string} store.currentLocale The preferred language locale key
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    *
@@ -36,6 +37,7 @@ class PreferencesController {
         betaUI: true,
         skipAnnounceBetaUI: true,
       },
+      knownMethodData: {},
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -96,6 +98,18 @@ class PreferencesController {
     const newEntry = { address, symbol, decimals, image }
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
+  }
+
+  /**
+   * Add new dataMethod to state, to avoid requesting this information again through Infura
+   *
+   * @param {string} fourBytePrefix Four-byte method signature
+   * @param {string} dataMethod Corresponding data method
+   */
+  addKnownMethodData (fourBytePrefix, dataMethod) {
+    const knownMethodData = this.store.getState().knownMethodData
+    knownMethodData[fourBytePrefix] = dataMethod
+    this.store.updateState({ knownMethodData })
   }
 
   /**

@@ -236,6 +236,7 @@ var actions = {
   removeToken,
   updateTokens,
   removeSuggestedTokens,
+  addKnownMethodData,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   delRpcTarget: delRpcTarget,
@@ -1490,7 +1491,6 @@ const backgroundSetLocked = () => {
       if (error) {
         return reject(error)
       }
-
       resolve()
     })
   })
@@ -1718,6 +1718,12 @@ function removeSuggestedTokens () {
     })
     .then(() => updateMetamaskStateFromBackground())
     .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+  }
+}
+
+function addKnownMethodData (fourBytePrefix, dataMethod) {
+  return (dispatch) => {
+    background.addKnownMethodData(fourBytePrefix, dataMethod)
   }
 }
 
