@@ -58,7 +58,6 @@ module.exports = {
   isInvalidChecksumAddress,
   allNull,
   getTokenAddressFromTokenObject,
-  getLayer2AppAddressFromLayer2AppObject,
   checksumAddress,
   addressSlicer,
 }
@@ -294,10 +293,6 @@ function allNull (obj) {
 
 function getTokenAddressFromTokenObject (token) {
   return Object.values(token)[0].address.toLowerCase()
-}
-
-function getLayer2AppAddressFromLayer2AppObject (layer2App) {
-  return Object.values(layer2App)[0].address.toLowerCase()
 }
 
 

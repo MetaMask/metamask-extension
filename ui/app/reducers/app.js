@@ -221,10 +221,10 @@ function reduceApp (state, action) {
         transForward: action.value,
       })
 
-    case actions.SHOW_ADD_LAYER2APP_PAGE:
+    case actions.SHOW_ADD_PLUGIN_PAGE:
       return extend(appState, {
         currentView: {
-          name: 'add-layer2App',
+          name: 'add-plugin',
           context: appState.currentView.context,
         },
         transForward: action.value,

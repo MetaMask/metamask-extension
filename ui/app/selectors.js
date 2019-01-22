@@ -11,8 +11,8 @@ const selectors = {
   getSelectedIdentity,
   getSelectedAccount,
   getSelectedToken,
-  getSelectedLayer2AppAddress,
-  getSelectedLayer2AppScript,    
+  getSelectedPluginAddress,
+  getSelectedPluginScript,    
   getSelectedTokenExchangeRate,
   getSelectedTokenAssetImage,
   getAssetImages,
@@ -88,15 +88,15 @@ function getSelectedAccount (state) {
   return accounts[selectedAddress]
 }
 
-function getSelectedLayer2AppAddress (state) {
-  return state.metamask.selectedLayer2AppAddress
+function getSelectedPluginAddress (state) {
+  return state.metamask.selectedPluginAddress
 }
 
-function getSelectedLayer2AppScript (state) {
-  const layer2AppsScripts = state.metamask.layer2AppsScripts || []
-  const selectedLayer2AppAddress = state.metamask.selectedLayer2AppAddress
-  const selectedLayer2AppScript = layer2AppsScripts.filter(({ address }) => address === selectedLayer2AppAddress)[0]
-  return selectedLayer2AppScript
+function getSelectedPluginScript (state) {
+  const pluginsScripts = state.metamask.pluginsScripts || []
+  const selectedPluginAddress = state.metamask.selectedPluginAddress
+  const selectedPluginScript = pluginsScripts.filter(({ address }) => address === selectedPluginAddress)[0]
+  return selectedPluginScript
 }
 
 
@@ -215,10 +215,6 @@ function autoAddToBetaUI (state) {
   const autoAddTransactionThreshold = 12
   const autoAddAccountsThreshold = 2
   const autoAddTokensThreshold = 1
-
-  // TODO: add threshold to layer 2 Apps?
-  // const autoAddLayer2AppsThreshold = 1  
-
   const numberOfTransactions = state.metamask.selectedAddressTxList.length
   const numberOfAccounts = Object.keys(getMetaMaskAccounts(state)).length
   const numberOfTokensAdded = state.metamask.tokens.length

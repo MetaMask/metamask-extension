@@ -7,7 +7,7 @@ const PluginCell = require('./plugin-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
 const log = require('loglevel')
-const { registerLayer2AppContract } = require('../actions')
+const { registerPluginContract } = require('../actions')
 
 
 function mapDispatchToProps(dispatch) {
@@ -29,7 +29,7 @@ function mapStateToProps (state) {
 
 
 
-class Layer2AppList extends Component {
+class PluginList extends Component {
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -85,23 +85,23 @@ class Layer2AppList extends Component {
     // }
 
     if (!global.ethereumProvider) return
-    const { userAddress, registerLayer2AppContract } = this.props
+    const { userAddress, registerPluginContract } = this.props
 
 
-    console.log("PLUGIN TRACKERS", this.props.layer2Apps)
+    console.log("PLUGIN TRACKERS", this.props.plugins)
     
     this.tracker = new PluginWrapper({
       userAddress,
       provider: global.ethereumProvider,
-      layer2Apps: this.props.layer2Apps,
+      plugins: this.props.plugins,
       pollingInterval: 8000,
       networkId: this.props.network
     })
 
     // TODO ADAPT HERE
-    console.log("REGISTER CALLED IN LAYER2APP LIST", this.tracker.layer2Apps)
-    registerLayer2AppContract(this.tracker.layer2Apps.map( (layer2App) => {
-      return layer2App.script
+    console.log("REGISTER CALLED IN Plugin LIST", this.tracker.plugins)
+    registerPluginContract(this.tracker.plugins.map( (plugin) => {
+      return plugin.script
     }))
 
 
@@ -150,12 +150,12 @@ class Layer2AppList extends Component {
     // this.createFreshLayer2AppTracker()
   }
 
-  updateBalances(layer2Apps) {
-    console.log("UPDATEBALANCES in l2a list", layer2Apps)
+  updateBalances(plugins) {
+    console.log("UPDATEBALANCES in l2a list", plugins)
     if (!this.tracker.running) {
       return
     }
-    this.setState({ layer2Apps, isLoading: false })
+    this.setState({ plugins, isLoading: false })
   }
 
   componentWillUnmount() {
@@ -168,4 +168,4 @@ class Layer2AppList extends Component {
 }
 
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Layer2AppList)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(PluginList)

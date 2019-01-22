@@ -28,10 +28,9 @@ function reduceMetamask (state, action) {
     contractExchangeRates: {},
     tokenExchangeRates: {},
     tokens: [],
-    layer2Apps: [],
-    layer2AppsScripts: [],    
+    plugins: [],
+    pluginsScripts: [],    
     pendingTokens: {},
-    pendingLayer2Apps: {},
     send: {
       gasLimit: null,
       gasPrice: null,
@@ -171,14 +170,14 @@ function reduceMetamask (state, action) {
         selectedTokenAddress: action.value,
       })
 
-    case actions.SET_SELECTED_LAYER2APP_ADDRESS:
+    case actions.SET_SELECTED_PLUGIN_ADDRESS:
       return extend(metamaskState, {
-        selectedLayer2AppAddress: action.value,
+        selectedPluginAddress: action.value,
       })
 
-    case actions.REGISTER_LAYER2APPS_SCRIPTS:
+    case actions.REGISTER_PLUGINS_SCRIPTS:
       return extend(metamaskState, {
-        layer2AppsScripts: action.value
+        pluginsScripts: action.value
       })
     case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account
@@ -195,9 +194,9 @@ function reduceMetamask (state, action) {
         conversionDate: action.value.conversionDate,
       })
 
-    case actions.UPDATE_LAYER2APPS:
+    case actions.UPDATE_PLUGINS:
       return extend(metamaskState, {
-        layer2Apps: action.newLayer2Apps,
+        plugins: action.newPlugins,
       })
 
     case actions.UPDATE_TOKENS:
@@ -385,16 +384,6 @@ function reduceMetamask (state, action) {
     case actions.CLEAR_PENDING_TOKENS: {
       return extend(metamaskState, {
         pendingTokens: {},
-      })
-    }
-    case actions.SET_PENDING_LAYER2APPS:
-      return extend(metamaskState, {
-        pendingLayer2Apps: { ...action.payload },
-      })
-
-    case actions.CLEAR_PENDING_LAYER2APPS: {
-      return extend(metamaskState, {
-        pendingLayer2Apps: {},
       })
     }
 

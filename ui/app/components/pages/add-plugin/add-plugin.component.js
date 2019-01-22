@@ -2,25 +2,21 @@ import React, { Component } from 'react'
 import ethUtil from 'ethereumjs-util'
 import { DEFAULT_ROUTE } from '../../../routes'
 import TextField from '../../text-field'
-import Layer2AppList from './layer2App-list'
-import Layer2AppSearch from './layer2App-search'
 import PageContainer from '../../page-container'
 import { Tabs, Tab } from '../../tabs'
 
 const { addPlugin } = require('../../../actions')
 
-const SEARCH_TAB = 'SEARCH'
-const CUSTOM_LAYER2APP_TAB = 'CUSTOM_LAYER2APP'
+const CUSTOM_PLUGIN_TAB = 'CUSTOM_PLUGIN'
 
-class AddLayer2App extends Component {
+class AddPlugin extends Component {
 
   constructor (props) {
     super(props)
 
     this.state = {
       customAuthorAddress: '',
-      layer2AppSelectorError: null,
-      displayedTab: CUSTOM_LAYER2APP_TAB,
+      displayedTab: CUSTOM_PLUGIN_TAB,
     }
   }
 
@@ -46,13 +42,12 @@ class AddLayer2App extends Component {
     this.setState({
       customAuthorAddress,
       customAddressError: null,
-      layer2AppSelectorError: null,
       autoFilled: false,
     })
 
   }
 
-  renderCustomLayer2AppForm () {
+  renderCustomPluginForm () {
     const {
       customAuthorAddress,
       customAddressError,
@@ -75,27 +70,12 @@ class AddLayer2App extends Component {
     )
   }
 
-  renderSearchLayer2App () {
-    return (
-      <div className="add-layer2App__search-layer2App">
-        <Layer2AppSearch
-        />
-        <div className="add-layer2App__layer2App-list">
-          <Layer2AppList
-          />
-        </div>
-      </div>
-    )
-  }
 
   renderTabs () {
     return (
       <Tabs>
         <Tab name={'customPlugin'}>
-          { this.renderCustomLayer2AppForm() }
-        </Tab>
-        <Tab name={'searchPlugins'}>
-          { this.renderSearchLayer2App() }
+          { this.renderCustomPluginForm() }
         </Tab>
       </Tabs>
     )
@@ -118,4 +98,4 @@ class AddLayer2App extends Component {
   }
 }
 
-export default AddLayer2App
+export default AddPlugin

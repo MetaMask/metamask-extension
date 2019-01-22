@@ -1,7 +1,7 @@
 const abi = require('human-standard-token-abi')
 const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
-const { getTokenAddressFromTokenObject, getLayer2AppAddressFromLayer2AppObject } = require('./util')
+const { getTokenAddressFromTokenObject } = require('./util')
 const {
   calcTokenBalance,
   estimateGas,
@@ -230,16 +230,16 @@ var actions = {
   SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
   showConfigPage,
   // Layer 2 Apps
-  REGISTER_LAYER2APPS_SCRIPTS: 'REGISTER_LAYER2APPS_SCRIPTS',
+  REGISTER_PLUGINS_SCRIPTS: 'REGISTER_PLUGINS_SCRIPTS',
   registerLayer2AppContract,
-  SHOW_ADD_LAYER2APP_PAGE: 'SHOW_ADD_LAYER2APP_PAGE',
-  SHOW_ADD_SUGGESTED_LAYER2APP_PAGE: 'SHOW_ADD_SUGGESTED_LAYER2APP_PAGE',
-  showAddLayer2AppPage,
-  showAddSuggestedLayer2AppPage,
+  SHOW_ADD_PLUGIN_PAGE: 'SHOW_ADD_PLUGIN_PAGE',
+  SHOW_ADD_SUGGESTED_PLUGIN_PAGE: 'SHOW_ADD_SUGGESTED_PLUGIN_PAGE',
+  showAddPluginPage,
+  showAddSuggestedPluginPage,
   addPlugin,
   removePlugin,
-  updateLayer2Apps,
-  UPDATE_LAYER2APPS: 'UPDATE_LAYER2APPS',
+  updatePlugins,
+  UPDATE_PLUGINS: 'UPDATE_PLUGINS',
   // Tokens
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
@@ -338,10 +338,10 @@ var actions = {
   setPendingTokens,
   clearPendingTokens,
 
-  SET_PENDING_LAYER2APPS: 'SET_PENDING_LAYER2APPS',
-  CLEAR_PENDING_LAYER2APPS: 'CLEAR_PENDING_LAYER2APPS',
-  setPendingLayer2Apps,
-  clearPendingLayer2Apps,
+  SET_PENDING_PLUGINS: 'SET_PENDING_PLUGINS',
+  CLEAR_PENDING_PLUGINS: 'CLEAR_PENDING_PLUGINS',
+  setPendingPlugins,
+  clearPendingPlugins,
 
   createCancelTransaction,
   createSpeedUpTransaction,
@@ -1565,10 +1565,10 @@ function setSelectedToken (tokenAddress) {
   }
 }
 
-function setSelectedLayer2AppAddress (layer2AppAddress) {
+function setSelectedPluginAddress (pluginAddress) {
   return {
-    type: actions.SET_SELECTED_LAYER2APP_ADDRESS,
-    value: layer2AppAddress || null,
+    type: actions.SET_SELECTED_PLUGIN_ADDRESS,
+    value: pluginAddress || null,
   }
 }
 
@@ -1595,7 +1595,7 @@ function showAccountDetail (address) {
         return dispatch(actions.displayWarning(err.message))
       }
       dispatch(updateTokens(tokens))
-      dispatch(updateLayer2Apps(layer2Apps))      
+      dispatch(updatePlugins(plugins))      
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
@@ -1659,16 +1659,16 @@ function showConfigPage (transitionForward = true) {
   }
 }
 
-function showAddLayer2AppPage (transitionForward = true) {
+function showAddPluginPage (transitionForward = true) {
   return {
-    type: actions.SHOW_ADD_LAYER2APP_PAGE,
+    type: actions.SHOW_ADD_PLUGIN_PAGE,
     value: transitionForward,
   }
 }
 
-function showAddSuggestedLayer2AppPage (transitionForward = true) {
+function showAddSuggestedPluginPage (transitionForward = true) {
   return {
-    type: actions.SHOW_ADD_SUGGESTED_LAYER2APP_PAGE,
+    type: actions.SHOW_ADD_SUGGESTED_PLUGIN_PAGE,
     value: transitionForward,
   }
 }
@@ -1686,11 +1686,11 @@ function addPlugin (customAuthorAddress) {
   })
 }
 
-function registerLayer2AppContract(layer2AppsScripts){
-  console.log("REGISTERING LAYER 2 SCRIPTS", layer2AppsScripts)
+function registerPluginContract(pluginsScripts){
+  console.log("REGISTERING PLUGIN 2 SCRIPTS", pluginsScripts)
   return {
-    type: actions.REGISTER_LAYER2APPS_SCRIPTS,
-    value: layer2AppsScripts,
+    type: actions.REGISTER_PLUGINS_SCRIPTS,
+    value: pluginsScripts,
   }
 }
 
@@ -1698,29 +1698,29 @@ function removePlugin (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.removeLayer2App(address, (err, layer2Apps) => {
+      background.removePlugin(address, (err, plugins) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
           reject(err)
         }
-        dispatch(actions.updateLayer2Apps(layer2Apps))
-        resolve(layer2Apps)
+        dispatch(actions.updatePlugins(plugins))
+        resolve(plugins)
       })
     })
   }
 }
 
-function updateLayer2Apps (newLayer2Apps) {
+function updatePlugins (newPlugins) {
   return {
-    type: actions.UPDATE_LAYER2APPS,
-    newLayer2Apps,
+    type: actions.UPDATE_PLUGINS,
+    newPlugins,
   }
 }
 
-function clearPendingLayer2Apps () {
+function clearPendingPlugins () {
   return {
-    type: actions.CLEAR_PENDING_LAYER2APPS,
+    type: actions.CLEAR_PENDING_PLUGINS,
   }
 }
 
@@ -2595,18 +2595,6 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-function setPendingLayer2Apps (pendingLayer2Apps) {
-  const { customLayer2App = {}, selectedLayer2Apps = {} } = pendingLayer2Apps
-  const { address, name } = customLayer2App
-  const layer2Apps = address && name
-    ? { ...selectedLayer2Apps, [address]: { ...customLayer2App, isCustom: true } }
-    : selectedLayer2Apps
-
-  return {
-    type: actions.SET_PENDING_LAYER2APPS,
-    payload: layer2Apps,
-  }
-}
 
 function approveProviderRequest (origin) {
   return (dispatch) => {
