@@ -20,7 +20,7 @@ describe('SendRowWarningMessage Component', function () {
     })
 
     it('should render a warning message if the passed warnings contain a warning of warningType', () => {
-      wrapper.setProps({ errors: { warning1: 'abc', warning2: 'def', warning3: 'xyz' } })
+      wrapper.setProps({ warnings: { warning1: 'abc', warning2: 'def', warning3: 'xyz' } })
       assert.equal(wrapper.find('.send-v2__error').length, 1)
       assert.equal(wrapper.find('.send-v2__error').text(), 'xyz_t')
     })

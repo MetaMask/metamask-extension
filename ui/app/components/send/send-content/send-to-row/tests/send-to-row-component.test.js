@@ -9,6 +9,9 @@ const SendToRow = proxyquire('../send-to-row.component.js', {
     getToErrorObject: (to, toError) => ({
       to: to === false ? null : `mockToErrorObject:${to}${toError}`,
     }),
+    getToWarningObject: (to, toWarning) => ({
+      to: to === false ? null : `mockToWarningObject:${to}${toWarning}`,
+    }),
   },
 }).default
 
@@ -21,6 +24,7 @@ const propsMethodSpies = {
   updateGas: sinon.spy(),
   updateSendTo: sinon.spy(),
   updateSendToError: sinon.spy(),
+  updateSendToWarning: sinon.spy(),
 }
 
 sinon.spy(SendToRow.prototype, 'handleToChange')
@@ -41,6 +45,7 @@ describe('SendToRow Component', function () {
       updateGas={propsMethodSpies.updateGas}
       updateSendTo={propsMethodSpies.updateSendTo}
       updateSendToError={propsMethodSpies.updateSendToError}
+      updateSendToWarning={propsMethodSpies.updateSendToWarning}
     />, { context: { t: str => str + '_t' } })
     instance = wrapper.instance()
   })
@@ -50,6 +55,7 @@ describe('SendToRow Component', function () {
     propsMethodSpies.openToDropdown.resetHistory()
     propsMethodSpies.updateSendTo.resetHistory()
     propsMethodSpies.updateSendToError.resetHistory()
+    propsMethodSpies.updateSendToWarning.resetHistory()
     SendToRow.prototype.handleToChange.resetHistory()
   })
 
@@ -72,6 +78,16 @@ describe('SendToRow Component', function () {
       assert.deepEqual(
         propsMethodSpies.updateSendToError.getCall(0).args,
         [{ to: 'mockToErrorObject:mockTo2mockToError' }]
+      )
+    })
+
+    it('should call updateSendToWarning', () => {
+      assert.equal(propsMethodSpies.updateSendToWarning.callCount, 0)
+      instance.handleToChange('mockTo2', '', 'mockToWarning')
+      assert.equal(propsMethodSpies.updateSendToWarning.callCount, 1)
+      assert.deepEqual(
+        propsMethodSpies.updateSendToWarning.getCall(0).args,
+        [{ to: 'mockToWarningObject:mockTo2mockToWarning' }]
       )
     })
 
