@@ -973,7 +973,7 @@
     "message": "El intentar cancelar la transacción no garantiza la cancelación de la misma. Si el intento de cancelación tiene éxito, se le cobrará la comisión de transacción indicada arriba."
   },
   "average": {
-    "message": "promedio"
+    "message": "Promedio"
   },
   "basic": {
     "message": "Básico"
@@ -1048,10 +1048,10 @@
     "message": "¿No tienes un monedero físico?"
   },
   "ensNameNotFound": {
-    "message": "No se localizó el nombre ENS"
+    "message": "No se encontró el nombre ENS"
   },
   "enterPasswordContinue": {
-    "message": "Intoducir contraseña para seguir"
+    "message": "Introducir contraseña para seguir"
   },
   "eth": {
     "message": "ETH"
@@ -1189,13 +1189,13 @@
     "message": "No Hay Tasa de Conversión"
   },
   "notFound": {
-    "message": "No se localizó"
+    "message": "No se encontró"
   },
   "noWebcamFoundTitle": {
-    "message": "No se localizó al webcam"
+    "message": "No se encontró a la webcam"
   },
   "noWebcamFound": {
-    "message": "No se localizó al webcam de tu ordenador. Favor de volver a intentar."
+    "message": "No se encontró a la webcam de tu ordenador. Favor de volver a intentar."
   },
   "ofTextNofM": {
     "message": "de"
@@ -1343,7 +1343,7 @@
     "message": "Seleccione una comisión de gas más elevada para agilizar el procesamiento de tu transacción.*"
   },
   "selectHdPath": {
-    "message": "Seleccionar Ruta al disco duro"
+    "message": "Seleccionar la ruta HD (jerárquica determinista)"
   },
   "selectPathHelp": {
     "message": "Si no ves tus cuentas actuales de Ledger abajo, prueba cambiando la ruta a \"Legacy (MEW / MyCrypto)\""
@@ -1412,7 +1412,7 @@
     "message": "Transacción $1"
   },
   "transactionDropped": {
-    "message": "Transaction se cayó en $2."
+    "message": "Transacción se cayó en $2."
   },
   "transactionSubmitted": {
     "message": "Se propuso la transacción con una comisión de gas de $1, en $2."
@@ -1487,7 +1487,7 @@
     "message": "¡Bienvenido de nuevo!"
   },
   "yesLetsTry": {
-    "message": "Sí pues, vamos a probar"
+    "message": "Sí, probemos"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Tienes que permitir acceso a la cámara para usar esta función."
