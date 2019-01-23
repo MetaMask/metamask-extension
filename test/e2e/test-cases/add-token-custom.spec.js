@@ -20,6 +20,7 @@ const addCustomToken = async (f, account1, account2) => {
         const addTokenButton = await f.waitUntilShowUp(screens.main.tokens.buttonAdd)
         assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
         await f.click(addTokenButton)
+        await f.delay(2000)
       })
 
       it('checks add token screen has correct title', async () => {
@@ -59,6 +60,7 @@ const addCustomToken = async (f, account1, account2) => {
       it('checks the token balance', async () => {
         const button = await f.waitUntilShowUp(screens.addToken.custom.buttons.add)
         await f.click(button)
+        await f.delay(2000)
         const tokenBalance = await f.waitUntilShowUp(screens.main.tokens.balance)
         assert.equal(await tokenBalance.getText(), token.supply + ' ' + token.ticker, 'balance is incorrect or not displayed')
       })

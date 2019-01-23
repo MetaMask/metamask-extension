@@ -233,9 +233,8 @@ class Functions {
     try {
       const tab = await this.waitUntilShowUp(screens.main.tokens.menu)
       await this.click(tab)
-      await this.delay(500)
-      const addButtonSelector = '#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > div:nth-child(1) > button'
-      const button = await this.waitUntilShowUp(addButtonSelector, 300)
+      await this.delay(1000)
+      const button = await this.waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
       await this.click(button)
       let count = 20
       do {

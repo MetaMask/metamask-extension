@@ -1,9 +1,10 @@
 const assert = require('assert')
-const { screens, menus } = require('../elements')
+const { screens, menus, NETWORKS } = require('../elements')
 const testSeedPhrase = 'horn among position unable audit puzzle cannon apology gun autumn plug parrot'
 
 const importGanacheSeedPhrase = async (f, account2, password) => {
   it('logs out', async () => {
+    await f.setProvider(NETWORKS.LOCALHOST)
     const menu = await f.waitUntilShowUp(menus.sandwich.menu)
     await menu.click()
     const logOut = await f.waitUntilShowUp(menus.sandwich.logOut)
