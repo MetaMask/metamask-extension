@@ -19,7 +19,7 @@ export default class SendRowWarningMessage extends Component {
 
     return (
         warningMessage
-        ? <div className="send-v2__error">{this.context.t(warningMessage)}</div>
+        ? <div className="send-v2__warning">{this.context.t(warningMessage)}</div>
         : null
     )
   }

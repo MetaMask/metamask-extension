@@ -520,6 +520,13 @@
     color: $red;
   }
 
+  &__warning {
+    font-size: 12px;
+    line-height: 12px;
+    left: 8px;
+    color: $orange;
+  }
+
   &__error-border {
     color: $red;
   }
