@@ -234,7 +234,7 @@ class Functions {
       const tab = await this.waitUntilShowUp(screens.main.tokens.menu)
       await this.click(tab)
       await this.delay(1000)
-      const button = await this.waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
+      const button = await this.waitUntilShowUp(screens.main.tokens.buttonAdd2, 300)
       await this.click(button)
       let count = 20
       do {

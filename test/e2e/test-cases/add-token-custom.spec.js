@@ -17,7 +17,7 @@ const addCustomToken = async (f, account1, account2) => {
         await f.waitUntilShowUp(screens.main.identicon)
         const tab = await f.waitUntilShowUp(screens.main.tokens.menu)
         await tab.click()
-        const addTokenButton = await f.waitUntilShowUp(screens.main.tokens.buttonAdd)
+        const addTokenButton = await f.waitUntilShowUp(screens.main.tokens.buttonAdd2)
         assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
         await f.click(addTokenButton)
         await f.delay(2000)
@@ -167,45 +167,45 @@ const addCustomToken = async (f, account1, account2) => {
         })
       })
 
-      describe('Custom tokens validation ', async () => {
+      describe.skip('Custom tokens validation ', async () => {
 
-        it.skip('can not add inexistent token to POA network', async () => {
+        it('can not add inexistent token to POA network', async () => {
           await f.setProvider(NETWORKS.POA)
           console.log(tokenAddress)
           assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
-        it.skip('can not add inexistent token to SOKOL network', async () => {
+        it('can not add inexistent token to SOKOL network', async () => {
           await f.setProvider(NETWORKS.SOKOL)
           assert(await f.isDisabledAddInexistentToken(inexistentToken), true, 'can add inexistent token in POA network')
         })
 
-        it.skip('can not add inexistent token to ROPSTEN network', async () => {
+        it('can not add inexistent token to ROPSTEN network', async () => {
           await f.setProvider(NETWORKS.ROPSTEN)
           assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
-        it.skip('can not add inexistent token to KOVAN network', async () => {
+        it('can not add inexistent token to KOVAN network', async () => {
           await f.setProvider(NETWORKS.KOVAN)
           assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
-        it.skip('can not add inexistent token to RINKEBY network', async () => {
+        it('can not add inexistent token to RINKEBY network', async () => {
           await f.setProvider(NETWORKS.RINKEBY)
           assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
-        it.skip('can not add inexistent token to MAINNET', async () => {
+        it('can not add inexistent token to MAINNET', async () => {
           await f.setProvider(NETWORKS.MAINNET)
           assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
-        it.skip('can not add inexistent token to LOCALHOST network', async () => {
+        it('can not add inexistent token to LOCALHOST network', async () => {
           await f.setProvider(NETWORKS.LOCALHOST)
           assert(await f.isDisabledAddInexistentToken(tokenAddress.slice(0, tokenAddress.length - 2) + '0'), true, 'can add inexistent token in POA network')
         })
 
-        it.skip('token still should be displayed in LOCALHOST network', async () => {
+        it('token still should be displayed in LOCALHOST network', async () => {
           await f.setProvider(NETWORKS.LOCALHOST)
           await f.waitUntilDisappear(screens.main.tokens.amount)
           assert.notEqual(await f.waitUntilShowUp(screens.main.tokens.amount), false, 'App is frozen')
@@ -394,9 +394,8 @@ const addCustomToken = async (f, account1, account2) => {
         await f.delay(2000)
       })
 
-      it.skip('add token to another account in the same network', async () => {
-        const addButtonSelector = '#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > div:nth-child(1) > button'
-        const addTokenButton = await f.waitUntilShowUp(addButtonSelector)
+      it('add token to another account in the same network', async () => {
+        const addTokenButton = await f.waitUntilShowUp(screens.main.tokens.buttonAdd2)
         assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
         await f.click(addTokenButton)
 
@@ -407,7 +406,7 @@ const addCustomToken = async (f, account1, account2) => {
         await f.click(buttonAdd)
       })
 
-      it.skip('tokens were transfered, balance is updated', async () => {
+      it('tokens were transfered, balance is updated', async () => {
         const balance = await f.waitUntilShowUp(screens.main.tokens.balance)
         assert.equal(await balance.getText(), '5 ' + token.ticker, 'balance is incorrect')
       })

@@ -314,6 +314,7 @@ module.exports = {
         textNoTokens: 'No tokens found',
         textYouOwn1token: 'You own 1 token',
         buttonAdd: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > div:nth-child(1) > button'),               
+        buttonAdd2: By.css('#app-content > div > div.app-primary.from-right > div > section > div.full-flex-height > div > div:nth-child(1) > button'),
         buttonAddText: 'Add Token',
         counter: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > div:nth-child(1) > span'),
         counterFF: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > div:nth-child(1) > span:nth-child(1)'),

@@ -19,7 +19,7 @@ const addTokeFromSearch = async (f) => {
         await f.delay(2000)
         const tab = await f.waitUntilShowUp(screens.main.tokens.menu)
         await tab.click()
-        const button = await f.waitUntilShowUp(screens.main.tokens.buttonAdd, 300)
+        const button = await f.waitUntilShowUp(screens.main.tokens.buttonAdd2, 300)
         await f.click(button)
         const field = await f.waitUntilShowUp(screens.addToken.search.fieldSearch)
         assert.notEqual(field, false, 'field \'Search\'  isn\'t displayed')
