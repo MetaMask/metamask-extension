@@ -102,15 +102,15 @@ describe('MetaMask', function () {
 
   describe('Going through the first time flow', () => {
     it('clicks the continue button on the welcome screen', async () => {
-      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-screen__button'))
+      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-page .first-time-flow__button'))
       welcomeScreenBtn.click()
       await delay(largeDelayMs)
     })
 
     it('accepts a secure password', async () => {
-      const passwordBox = await findElement(driver, By.css('.create-password #create-password'))
-      const passwordBoxConfirm = await findElement(driver, By.css('.create-password #confirm-password'))
-      const button = await findElement(driver, By.css('.create-password button'))
+      const passwordBox = await findElement(driver, By.css('.first-time-flow__form #create-password'))
+      const passwordBoxConfirm = await findElement(driver, By.css('.first-time-flow__form #confirm-password'))
+      const button = await findElement(driver, By.css('.first-time-flow__form button'))
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
@@ -119,19 +119,21 @@ describe('MetaMask', function () {
     })
 
     it('clicks through the unique image screen', async () => {
-      const nextScreen = await findElement(driver, By.css('.unique-image button'))
+      await findElement(driver, By.css('.first-time-flow__unique-image'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the ToS', async () => {
       // terms of use
-      const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
+      await findElement(driver, By.css('.first-time-flow__markdown'))
+      const canClickThrough = await driver.findElement(By.css('button.first-time-flow__button')).isEnabled()
       assert.equal(canClickThrough, false, 'disabled continue button')
       const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
       await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
       await delay(regularDelayMs)
-      const acceptTos = await findElement(driver, By.css('.tou button'))
+      const acceptTos = await findElement(driver, By.css('button.first-time-flow__button'))
       driver.wait(until.elementIsEnabled(acceptTos))
       await acceptTos.click()
       await delay(regularDelayMs)
@@ -139,17 +141,17 @@ describe('MetaMask', function () {
 
     it('clicks through the privacy notice', async () => {
       // privacy notice
-      const nextScreen = await findElement(driver, By.css('.tou button'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the phishing notice', async () => {
       // phishing notice
-      const noticeElement = await driver.findElement(By.css('.markdown'))
+      const noticeElement = await driver.findElement(By.css('.first-time-flow__markdown'))
       await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
       await delay(regularDelayMs)
-      const nextScreen = await findElement(driver, By.css('.tou button'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
@@ -157,24 +159,23 @@ describe('MetaMask', function () {
     let seedPhrase
 
     it('reveals the seed phrase', async () => {
-      const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
+      const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
       await driver.wait(until.elementLocated(byRevealButton, 10000))
       const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
       await revealSeedPhraseButton.click()
       await delay(regularDelayMs)
 
-      seedPhrase = await driver.findElement(By.css('.backup-phrase__secret-words')).getText()
+      seedPhrase = await driver.findElement(By.css('.reveal-seed-phrase__secret-words')).getText()
       assert.equal(seedPhrase.split(' ').length, 12)
       await delay(regularDelayMs)
 
-      const nextScreen = await findElement(driver, By.css('.backup-phrase button'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     async function clickWordAndWait (word) {
-      const xpathClass = 'backup-phrase__confirm-seed-option backup-phrase__confirm-seed-option--unselected'
-      const xpath = `//button[@class='${xpathClass}' and contains(text(), '${word}')]`
+      const xpath = `//div[contains(@class, 'confirm-seed-phrase__seed-word--shuffled') and not(contains(@class, 'confirm-seed-phrase__seed-word--selected')) and contains(text(), '${word}')]`
       const word0 = await findElement(driver, By.xpath(xpath), 10000)
 
       await word0.click()
@@ -184,13 +185,13 @@ describe('MetaMask', function () {
     async function retypeSeedPhrase (words, wasReloaded, count = 0) {
       try {
         if (wasReloaded) {
-          const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
+          const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
           await driver.wait(until.elementLocated(byRevealButton, 10000))
           const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
           await revealSeedPhraseButton.click()
           await delay(regularDelayMs)
 
-          const nextScreen = await findElement(driver, By.css('.backup-phrase button'))
+          const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
           await nextScreen.click()
           await delay(regularDelayMs)
         }

@@ -1,5 +1,6 @@
 const DEFAULT_ROUTE = '/'
 const UNLOCK_ROUTE = '/unlock'
+const LOCK_ROUTE = '/lock'
 const SETTINGS_ROUTE = '/settings'
 const INFO_ROUTE = '/settings/info'
 const REVEAL_SEED_ROUTE = '/seed'
@@ -14,14 +15,17 @@ const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
 const SEND_ROUTE = '/send'
 const NOTICE_ROUTE = '/notice'
 const WELCOME_ROUTE = '/welcome'
+
 const INITIALIZE_ROUTE = '/initialize'
+const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
+const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock'
 const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password'
-const INITIALIZE_IMPORT_ACCOUNT_ROUTE = '/initialize/import-account'
-const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE = '/initialize/import-with-seed-phrase'
-const INITIALIZE_UNIQUE_IMAGE_ROUTE = '/initialize/unique-image'
+const INITIALIZE_IMPORT_ACCOUNT_ROUTE = '/initialize/create-password/import-account'
+const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE = '/initialize/create-password/import-with-seed-phrase'
+const INITIALIZE_UNIQUE_IMAGE_ROUTE = '/initialize/create-password/unique-image'
 const INITIALIZE_NOTICE_ROUTE = '/initialize/notice'
-const INITIALIZE_BACKUP_PHRASE_ROUTE = '/initialize/backup-phrase'
-const INITIALIZE_CONFIRM_SEED_ROUTE = '/initialize/confirm-phrase'
+const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase'
+const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm'
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction'
 const CONFIRM_SEND_ETHER_PATH = '/send-ether'
@@ -35,6 +39,7 @@ const SIGNATURE_REQUEST_PATH = '/signature-request'
 module.exports = {
   DEFAULT_ROUTE,
   UNLOCK_ROUTE,
+  LOCK_ROUTE,
   SETTINGS_ROUTE,
   INFO_ROUTE,
   REVEAL_SEED_ROUTE,
@@ -50,13 +55,15 @@ module.exports = {
   NOTICE_ROUTE,
   WELCOME_ROUTE,
   INITIALIZE_ROUTE,
+  INITIALIZE_WELCOME_ROUTE,
+  INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_ACCOUNT_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_UNIQUE_IMAGE_ROUTE,
   INITIALIZE_NOTICE_ROUTE,
-  INITIALIZE_BACKUP_PHRASE_ROUTE,
-  INITIALIZE_CONFIRM_SEED_ROUTE,
+  INITIALIZE_SEED_PHRASE_ROUTE,
+  INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_SEND_TOKEN_PATH,

@@ -54,6 +54,7 @@ function reduceMetamask (state, action) {
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
     },
+    completedOnboarding: false,
     knownMethodData: {},
   }, state.metamask)
 
@@ -375,6 +376,12 @@ function reduceMetamask (state, action) {
     case actions.UPDATE_PREFERENCES: {
       return extend(metamaskState, {
         preferences: { ...action.payload },
+      })
+    }
+
+    case actions.COMPLETE_ONBOARDING: {
+      return extend(metamaskState, {
+        completedOnboarding: true,
       })
     }
 

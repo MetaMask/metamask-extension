@@ -5,7 +5,7 @@ const {getShouldUseNewUi} = require('../../ui/app/selectors')
 const startPopup = require('./popup-core')
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
-const { ENVIRONMENT_TYPE_NOTIFICATION } = require('./lib/enums')
+const { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_FULLSCREEN } = require('./lib/enums')
 const extension = require('extensionizer')
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
@@ -49,7 +49,14 @@ async function start () {
     if (err) return displayCriticalError(err)
 
     const state = store.getState()
-    let betaUIState = Boolean(state.featureFlags && state.featureFlags.betaUI)
+    const { metamask: { completedOnboarding, featureFlags } = {} } = state
+
+    if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
+      global.platform.openExtensionInBrowser()
+      return
+    }
+
+    let betaUIState = Boolean(featureFlags && featureFlags.betaUI)
     const useBetaCss = getShouldUseNewUi(state)
 
     let css = useBetaCss ? NewMetaMaskUiCss() : OldMetaMaskUiCss()

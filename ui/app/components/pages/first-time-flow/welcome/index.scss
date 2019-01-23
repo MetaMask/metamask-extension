@@ -1,0 +1,43 @@
+.welcome-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  padding: 0 18px;
+
+  &__wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  &__header {
+    font-size: 1.5rem;
+    margin-bottom: 14px;
+  }
+
+  &__description {
+    text-align: center;
+
+    @media screen and (max-width: 575px) {
+      font-size: .9rem;
+    }
+  }
+
+  &__button {
+    height: 54px;
+    width: 198px;
+    font-family: Roboto;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .14);
+    color: $white;
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: 35px 0 14px;
+    transition: 200ms ease-in-out;
+    background-color: rgba(247, 134, 28, .9);
+  }
+}
