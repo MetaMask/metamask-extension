@@ -14,9 +14,8 @@ export default class SendRowWarningMessage extends Component {
 
   render () {
     const { warnings, warningType } = this.props
-    console.log('from SendRowWarningMessage', warningMessage, warnings, warningType)
 
-    const warningMessage = warnings[warningType]
+    const warningMessage = warningType in warnings && warnings[warningType]
 
     return (
         warningMessage
