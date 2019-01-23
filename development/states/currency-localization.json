@@ -106,6 +106,7 @@
       "amount": "0x0",
       "memo": "",
       "errors": {},
+      "warnings": {},
       "maxModeOn": false,
       "editingTransactionId": null
     },

@@ -19,10 +19,17 @@ function getToErrorObject (to, toError = null, hasHexData = false, tokens = [], 
   } else if (selectedToken && (ethUtil.toChecksumAddress(to) in contractMap || checkExistingAddresses(to, tokens))) {
     toError = KNOWN_RECIPIENT_ADDRESS_ERROR
   }
-
   return { to: toError }
+}
+
+function getToWarningObject (to, toWarning = null, tokens = [], selectedToken = null) {
+  if (selectedToken && (ethUtil.toChecksumAddress(to) in contractMap || checkExistingAddresses(to, tokens))) {
+    toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR
+  }
+  return { to: toWarning }
 }
 
 module.exports = {
   getToErrorObject,
+  getToWarningObject,
 }

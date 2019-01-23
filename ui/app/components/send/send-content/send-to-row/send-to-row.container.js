@@ -10,12 +10,14 @@ import {
     getToDropdownOpen,
     getTokens,
     sendToIsInError,
+    sendToIsInWarning,
 } from './send-to-row.selectors.js'
 import {
     updateSendTo,
 } from '../../../../actions'
 import {
   updateSendErrors,
+  updateSendWarnings,
   openToDropdown,
   closeToDropdown,
 } from '../../../../ducks/send.duck'
@@ -27,6 +29,7 @@ function mapStateToProps (state) {
   return {
     hasHexData: Boolean(getSendHexData(state)),
     inError: sendToIsInError(state),
+    inWarning: sendToIsInWarning(state),
     network: getCurrentNetwork(state),
     selectedToken: getSelectedToken(state),
     to: getSendTo(state),
@@ -44,5 +47,8 @@ function mapDispatchToProps (dispatch) {
     updateSendToError: (toErrorObject) => {
         dispatch(updateSendErrors(toErrorObject))
     },
+    updateSendToWarning: (toWarningObject) => {
+      dispatch(updateSendWarnings(toWarningObject))
+  },
   }
 }

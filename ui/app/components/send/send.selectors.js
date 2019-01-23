@@ -51,6 +51,7 @@ const selectors = {
   getSendMaxModeState,
   getSendTo,
   getSendToAccounts,
+  getSendWarnings,
   getTokenBalance,
   getTokenExchangeRate,
   getUnapprovedTxs,
@@ -266,6 +267,10 @@ function getSendToAccounts (state) {
   const allAccounts = [...fromAccounts, ...addressBookAccounts]
   // TODO: figure out exactly what the below returns and put a descriptive variable name on it
   return Object.entries(allAccounts).map(([key, account]) => account)
+}
+
+function getSendWarnings (state) {
+  return state.send.warnings
 }
 
 function getTokenBalance (state) {

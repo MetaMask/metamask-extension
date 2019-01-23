@@ -19,6 +19,7 @@ const toRowUtils = proxyquire('../send-to-row.utils.js', {
 })
 const {
   getToErrorObject,
+  getToWarningObject,
 } = toRowUtils
 
 describe('send-to-row utils', () => {
@@ -73,6 +74,31 @@ describe('send-to-row utils', () => {
     })
     it('should null if to is truthy part of contract metadata but selectedToken falsy', () => {
       assert.deepEqual(getToErrorObject('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', undefined, false, [{'address': '0xabc123'}], {'address': '0xabc123'}), {
+        to: KNOWN_RECIPIENT_ADDRESS_ERROR,
+      })
+    })
+  })
+
+  describe('getToWarningObject()', () => {
+    it('should return a known address recipient if to is truthy but part of state tokens', () => {
+      assert.deepEqual(getToWarningObject('0xabc123', undefined, [{'address': '0xabc123'}], {'address': '0xabc123'}), {
+        to: KNOWN_RECIPIENT_ADDRESS_ERROR,
+      })
+    })
+
+    it('should null if to is truthy part of tokens but selectedToken falsy', () => {
+      assert.deepEqual(getToWarningObject('0xabc123', undefined, [{'address': '0xabc123'}]), {
+        to: null,
+      })
+    })
+
+    it('should return a known address recipient if to is truthy but part of contract metadata', () => {
+      assert.deepEqual(getToWarningObject('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', undefined, [{'address': '0xabc123'}], {'address': '0xabc123'}), {
+        to: KNOWN_RECIPIENT_ADDRESS_ERROR,
+      })
+    })
+    it('should null if to is truthy part of contract metadata but selectedToken falsy', () => {
+      assert.deepEqual(getToWarningObject('0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', undefined, [{'address': '0xabc123'}], {'address': '0xabc123'}), {
         to: KNOWN_RECIPIENT_ADDRESS_ERROR,
       })
     })
