@@ -37,6 +37,7 @@ describe('SendToRow Component', function () {
     wrapper = shallow(<SendToRow
       closeToDropdown={propsMethodSpies.closeToDropdown}
       inError={false}
+      inWarning={false}
       network={'mockNetwork'}
       openToDropdown={propsMethodSpies.openToDropdown}
       to={'mockTo'}
