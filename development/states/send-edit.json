@@ -127,6 +127,7 @@
       "amount": "0x1bc16d674ec80000",
       "memo": "",
       "errors": {},
+      "warnings": {},
       "maxModeOn": false,
       "editingTransactionId": null
     },
@@ -160,7 +161,8 @@
   "send": {
     "fromDropdownOpen": false,
     "toDropdownOpen": false,
-    "errors": {}
+    "errors": {},
+    "warnings": {}
   },
   "confirmTransaction": {
     "txData": {},
