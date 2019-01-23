@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import actions from '../../../../ui/app/actions'
 import Web3 from 'web3'
 import log from 'loglevel'
-import copyToClipboard from 'copy-to-clipboard'
+import CopyButton from '../../components/copyButton'
+import ErrorComponent from '../../components/error'
 import { getFullABI } from './helpers'
 
 class ContractImportView extends Component {
@@ -56,6 +57,12 @@ class ContractImportView extends Component {
     }
   }
 
+  componentDidUpdate (prevProps) {
+    if (this.props.type !== prevProps.type) {
+      this.clearInputs()
+    }
+  }
+
   render () {
     const { error } = this.props
 
@@ -66,6 +73,7 @@ class ContractImportView extends Component {
         alignItems: 'center',
         padding: '5px 0px 0px 0px',
       }}>
+        <ErrorComponent error={error} />
         <span>Paste address of contract here</span>
         <input
           className="large-input"
@@ -78,10 +86,12 @@ class ContractImportView extends Component {
           }}
         />
         <span style={{ marginTop: '20px' }}>Paste ABI of contract here
-          <i
-            className="clipboard cursor-pointer"
-            style={{ marginLeft: '10px' }}
-            onClick={(e) => { copyToClipboard(this.state.abi) }}
+          <CopyButton
+            value={this.state.abi}
+            style={{
+              display: 'inline-block',
+            }}
+            tooltipPosition="right"
           />
         </span>
         <textarea
@@ -118,6 +128,7 @@ class ContractImportView extends Component {
       .catch(e => {
         this.clearAbi()
         log.debug(e)
+        this.props.displayWarning(e.message)
       })
   }
 
@@ -173,6 +184,15 @@ class ContractImportView extends Component {
     this.props.importNewAccount(this.props.type, { addr: contractAddr, network: this.props.network, abi })
     // JS runtime requires caught rejections but failures are handled by Redux
     .catch()
+  }
+
+  clearInputs () {
+    this.setState({
+      contractAddr: '',
+      abi: '',
+      abiInputDisabled: false,
+      importDisabled: true,
+    })
   }
 
   clearAbi () {

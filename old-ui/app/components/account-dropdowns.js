@@ -419,6 +419,7 @@ class AccountDropdowns extends Component {
         if (!keyring || (ifContractAcc(keyring) && firstKeyRingAcc)) {
           return this.props.actions.showAccountDetail(firstKeyRingAcc)
         }
+        this.setAllLabels()
       }
     }
   }

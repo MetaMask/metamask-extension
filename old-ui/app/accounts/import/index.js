@@ -80,27 +80,7 @@ class AccountImportSubview extends Component {
                   label: type,
                 }
               }),
-              onChange: (opt) => {
-                props.showImportPage()
-                const type = opt.value
-                let description
-                switch (type) {
-                  case importTypes.PRIVATE_KEY:
-                  case importTypes.JSON_FILE:
-                    description = ''
-                    break
-                  case importTypes.CONTRACT.DEFAULT:
-                    description = `Contract type will automatically retrieve its ABI, if it was verified in <a href='https://blockscout.com' target='_blank'>Blockscout</a>`
-                    break
-                  case importTypes.CONTRACT.PROXY:
-                    description = `Proxy contract type will automatically contain ABI of implementation, if proxy and implementation were both verified in <a href='https://blockscout.com' target='_blank'>Blockscout</a>`
-                    break
-                  default:
-                    description = ''
-                    break
-                }
-                this.setState({ type, description })
-              },
+              onChange: (opt) => { this.onChange(opt) },
             }}/>
             <p className="hw-connect__header__msg" dangerouslySetInnerHTML={{__html: this.state.description}} />
           </div>
@@ -108,6 +88,29 @@ class AccountImportSubview extends Component {
         </div>
       </div>
     )
+  }
+
+  onChange (opt) {
+    const props = this.props
+    props.showImportPage()
+    const type = opt.value
+    let description
+    switch (type) {
+      case importTypes.PRIVATE_KEY:
+      case importTypes.JSON_FILE:
+        description = ''
+        break
+      case importTypes.CONTRACT.DEFAULT:
+        description = `Contract type will automatically retrieve its ABI, if it was verified in <a href='https://blockscout.com' target='_blank'>Blockscout</a>`
+        break
+      case importTypes.CONTRACT.PROXY:
+        description = `Proxy contract type will automatically contain ABI of implementation, if proxy and implementation were both verified in <a href='https://blockscout.com' target='_blank'>Blockscout</a>`
+        break
+      default:
+        description = ''
+        break
+    }
+    this.setState({ type, description })
   }
 
   componentWillUnmount () {

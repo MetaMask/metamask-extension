@@ -11,6 +11,7 @@ import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
 import copyToClipboard from 'copy-to-clipboard'
+import CopyButton from '../copyButton'
 
 class SendTransactionField extends Component {
 	constructor (props) {
@@ -198,10 +199,12 @@ class SendTransactionScreen extends PersistentForm {
 				style={{ marginTop: '10px' }}
 			>
 				{params.name || `${paramName} ${ind + 1}`}
-				{!isInput ? <i
-					className="clipboard cursor-pointer"
-					style={{ marginLeft: '10px' }}
-					onClick={(e) => { copyToClipboard(defaultValue) }}
+				{!isInput ? <CopyButton
+					value={defaultValue}
+					style={{
+						display: 'inline-block',
+						marginLeft: '5px',
+					}}
 				/> : null}
 			</h3>
 		)

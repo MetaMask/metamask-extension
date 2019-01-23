@@ -65,6 +65,12 @@ const getFullABI = (eth, contractAddr, network, type) => {
 			targetABI = targetABI && JSON.parse(targetABI)
 			let finalABI = targetABI
 			if (type === importTypes.CONTRACT.PROXY) {
+				if (!eth.contract(targetABI).at(contractAddr).implementation) {
+					const e = {
+						message: 'This is not a valid Delegate Proxy contract',
+					}
+					reject(e)
+				}
 				try {
 					eth.contract(targetABI).at(contractAddr).implementation.call((err, implAddr) => {
 						fetchABI(implAddr, network)
@@ -82,9 +88,7 @@ const getFullABI = (eth, contractAddr, network, type) => {
 				resolve(finalABI)
 			}
 		})
-		.catch(e => {
-			reject(e)
-		})
+		.catch(e => { reject(e) })
 	})
 }
 

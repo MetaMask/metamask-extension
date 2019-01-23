@@ -26,15 +26,18 @@ CopyButton.prototype.render = function () {
 
   const message = copied ? 'Copied' : props.title || ' Copy '
   const defaultCopyStyles = ['clipboard', 'cursor-pointer']
+  const originalStyle = {
+    display: display || 'flex',
+    alignItems: 'center',
+  }
+  const style = Object.assign(originalStyle, this.props.style)
 
   return h('.copy-button', {
-    style: {
-      display: display || 'flex',
-      alignItems: 'center',
-    },
+    style,
   }, [
     h(Tooltip, {
       title: message,
+      position: this.props.tooltipPosition,
     }, [
       h('i', {
         style: {
