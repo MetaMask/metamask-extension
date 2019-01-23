@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import withMethodData from '../../higher-order-components/with-method-data'
 import TransactionListItem from './transaction-list-item.component'
-import { setSelectedToken, showModal, showSidebar } from '../../actions'
+import { setSelectedToken, showModal, showSidebar, addKnownMethodData } from '../../actions'
 import { hexToDecimal } from '../../helpers/conversions.util'
 import { getTokenData } from '../../helpers/transactions.util'
 import { increaseLastGasPrice } from '../../helpers/confirm-transaction/util'
@@ -15,11 +15,19 @@ import {
   setCustomGasLimit,
 } from '../../ducks/gas.duck'
 
+const mapStateToProps = state => {
+  const { metamask: { knownMethodData } } = state
+  return {
+    knownMethodData,
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     fetchBasicGasAndTimeEstimates: () => dispatch(fetchBasicGasAndTimeEstimates()),
     fetchGasEstimates: (blockTime) => dispatch(fetchGasEstimates(blockTime)),
     setSelectedToken: tokenAddress => dispatch(setSelectedToken(tokenAddress)),
+    addKnownMethodData: (fourBytePrefix, methodData) => dispatch(addKnownMethodData(fourBytePrefix, methodData)),
     retryTransaction: (transaction, gasPrice) => {
       dispatch(setCustomGasPriceForRetry(gasPrice || transaction.txParams.gasPrice))
       dispatch(setCustomGasLimit(transaction.txParams.gas))
@@ -64,6 +72,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
 export default compose(
   withRouter,
-  connect(null, mapDispatchToProps, mergeProps),
+  connect(mapStateToProps, mapDispatchToProps, mergeProps),
   withMethodData,
 )(TransactionListItem)

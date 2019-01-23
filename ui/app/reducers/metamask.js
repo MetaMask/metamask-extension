@@ -54,6 +54,7 @@ function reduceMetamask (state, action) {
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
     },
+    knownMethodData: {},
   }, state.metamask)
 
   switch (action.type) {
