@@ -796,15 +796,15 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         assert.notEqual(buttonExecute, false, "contract's account hasn't opened")
       })
 
-      // it("Button arrow leads to executor's account screen", async () => {
-      //   assert.equal(await f.executeTransferMethod(0, account1), true, "can't execute the method 'transfer'")
-      //   await f.delay(2000)
-      //   const arrow = await f.waitUntilShowUp(elements.buttonArrow)
-      //   await arrow.click()
-      //   await f.delay(2000)
-      //   const address = await f.waitUntilShowUp(screens.main.address)
-      //   assert.equal((await address.getText()).toUpperCase(), getCreatedAccounts()[0], "executors account isn't opened")
-      // })
+      it("Button arrow leads to executor's account screen", async () => {
+        assert.equal(await f.executeTransferMethod(0, account1), true, "can't execute the method 'transfer'")
+        await f.delay(2000)
+        const arrow = await f.waitUntilShowUp(elements.buttonArrow)
+        await arrow.click()
+        await f.delay(2000)
+        const address = await f.waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), getCreatedAccounts()[0], "executors account isn't opened")
+      })
 
       it('Switch to contract account ', async () => {
         const accountMenu = await f.waitUntilShowUp(menus.account.menu)
@@ -816,26 +816,26 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract's account isn't opened")
       })
 
-      // it("Confirm transaction: button 'Reject All' leads to contract's account screen", async () => {
-      //   assert.equal(await f.executeTransferMethod(0, account1), true, "can't execute the method 'transfer'")
-      //   const rejectAll = await f.waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
-      //   assert.equal(await rejectAll.getText(), 'Reject All', 'button has incorrect name')
-      //   await rejectAll.click()
-      //   await f.delay(2000)
-      //   const address = await f.waitUntilShowUp(screens.main.address)
-      //   assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
-      // })
+      it("Confirm transaction: button 'Reject All' leads to contract's account screen", async () => {
+        assert.equal(await f.executeTransferMethod(0, account1), true, "can't execute the method 'transfer'")
+        const rejectAll = await f.waitUntilShowUp(screens.confirmTransaction.button.rejectAll)
+        assert.equal(await rejectAll.getText(), 'Reject All', 'button has incorrect name')
+        await rejectAll.click()
+        await f.delay(2000)
+        const address = await f.waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
+      })
 
-      // it("Confirm transaction: button 'Submit' leads to contract's account screen", async () => {
-      //   assert.equal(await f.executeTransferMethod(2, account1), true, "can't execute the method 'transfer'")
-      //   await f.delay(2000)
-      //   const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
-      //   assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
-      //   await button.click()
-      //   await f.delay(2000)
-      //   const address = await f.waitUntilShowUp(screens.main.address)
-      //   assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
-      // })
+      it("Confirm transaction: button 'Submit' leads to contract's account screen", async () => {
+        assert.equal(await f.executeTransferMethod(2, account1), true, "can't execute the method 'transfer'")
+        await f.delay(2000)
+        const button = await f.waitUntilShowUp(screens.confirmTransaction.button.submit)
+        assert.equal(await button.getAttribute('value'), 'Submit', 'button has incorrect name')
+        await button.click()
+        await f.delay(2000)
+        const address = await f.waitUntilShowUp(screens.main.address)
+        assert.equal((await address.getText()).toUpperCase(), contractSokol.toUpperCase(), "contract account isn't opened")
+      })
 
       it("Label 'CONTRACT' present", async () => {
         const menu = await f.waitUntilShowUp(menus.account.menu)
