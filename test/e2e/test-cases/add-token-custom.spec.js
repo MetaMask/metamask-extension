@@ -395,7 +395,7 @@ const addCustomToken = async (f, account1, account2) => {
       })
 
       it('add token to another account in the same network', async () => {
-        const addTokenButton = await f.waitUntilShowUp(screens.main.tokens.buttonAdd2)
+        const addTokenButton = await f.waitUntilShowUp(screens.main.tokens.buttonAdd)
         assert.equal(await addTokenButton.getText(), screens.main.tokens.buttonAddText)
         await f.click(addTokenButton)
 
