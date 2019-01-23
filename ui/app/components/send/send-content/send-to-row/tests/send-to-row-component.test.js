@@ -134,7 +134,6 @@ describe('SendToRow Component', function () {
         closeDropdown,
         dropdownOpen,
         inError,
-        inWarning,
         name,
         network,
         onChange,
@@ -145,7 +144,6 @@ describe('SendToRow Component', function () {
       assert.deepEqual(accounts, ['mockAccount'])
       assert.equal(dropdownOpen, false)
       assert.equal(inError, false)
-      assert.equal(inWarning, false)
       assert.equal(name, 'address')
       assert.equal(network, 'mockNetwork')
       assert.equal(placeholder, 'recipientAddress_t')
