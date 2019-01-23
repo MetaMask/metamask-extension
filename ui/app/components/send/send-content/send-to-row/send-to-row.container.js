@@ -1,12 +1,14 @@
 import { connect } from 'react-redux'
 import {
     getCurrentNetwork,
+    getSelectedToken,
     getSendTo,
     getSendToAccounts,
     getSendHexData,
 } from '../../send.selectors.js'
 import {
     getToDropdownOpen,
+    getTokens,
     sendToIsInError,
 } from './send-to-row.selectors.js'
 import {
@@ -26,9 +28,11 @@ function mapStateToProps (state) {
     hasHexData: Boolean(getSendHexData(state)),
     inError: sendToIsInError(state),
     network: getCurrentNetwork(state),
+    selectedToken: getSelectedToken(state),
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
     toDropdownOpen: getToDropdownOpen(state),
+    tokens: getTokens(state),
   }
 }
 

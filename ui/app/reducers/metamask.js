@@ -55,6 +55,7 @@ function reduceMetamask (state, action) {
       useNativeCurrencyAsPrimaryCurrency: true,
     },
     completedOnboarding: false,
+    knownMethodData: {},
   }, state.metamask)
 
   switch (action.type) {

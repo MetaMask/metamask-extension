@@ -210,6 +210,7 @@
     "semaphore": "^1.0.5",
     "semver": "^5.4.1",
     "shallow-copy": "0.0.1",
+    "single-call-balance-checker-abi": "^1.0.0",
     "sw-controller": "^1.0.3",
     "sw-stream": "^2.0.2",
     "swappable-obj-proxy": "^1.1.0",
