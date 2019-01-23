@@ -6,6 +6,7 @@ import SendReducer, {
   updateSendErrors,
   showGasButtonGroup,
   hideGasButtonGroup,
+  updateSendWarnings,
 } from '../send.duck.js'
 
 describe('Send Duck', () => {
@@ -177,7 +178,7 @@ describe('Send Duck', () => {
 
   describe('updateSendWarnings', () => {
     assert.deepEqual(
-      updateSendErrors('mockWarningObject'),
+      updateSendWarnings('mockWarningObject'),
       { type: UPDATE_SEND_WARNINGS, value: 'mockWarningObject' }
     )
   })
