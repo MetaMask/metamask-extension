@@ -497,6 +497,214 @@
         "rawTx": "0xf8a8028405f5e10082d3e19466f30b996a7d345cd00badcfe75e81e25dc5e1eb80b844a9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b2aa05cb38a3a68e49008da2e93839f6dedeb96b1630c2a73c4cf5eb3fcc74299a100a039f17c0807469bd101165fa0749dc7065832b4a7c3a382b6cf7e29228c2a683d",
         "status": "confirmed",
         "submittedTime": 1522346282571,
+        "time": 1522348270251,
+        "txParams": {
+          "chainId": "0x3",
+          "data": "0xa9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b",
+          "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+          "gas": "0xd3e1",
+          "gasPrice": "0x5f5e100",
+          "nonce": "0x6",
+          "to": "0x66f30b996a7d345cd00badcfe75e81e25dc5e1ec",
+          "value": "0x0"
+        }
+      },
+      {
+        "estimatedGas": "8d41",
+        "firstRetryBlockNumber": "0x2cbc70",
+        "gasLimitSpecified": false,
+        "gasPriceSpecified": false,
+        "hash": "0xfbd997bf9bb85ca1598952ca23e7910502d527e06cb6ee1bbe7e7dd59d6909cd",
+        "history": [
+          {
+            "id": 2079438776801906,
+            "loadingDefaults": true,
+            "metamaskNetworkId": "1",
+            "status": "unapproved",
+            "time": 1522346270251,
+            "txParams": {
+              "data": "0xa9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b",
+              "from": "0x5b1cbd5636d484bf1cb6927a9425db9e7dc73ce4",
+              "to": "0x66f30b996a7d345cd00badcfe75e81e25dc5e1eb"
+            }
+          },
+          [
+            {
+              "op": "add",
+              "path": "/txParams/gasPrice",
+              "value": "0x37e11d600"
+            },
+            {
+              "op": "add",
+              "path": "/txParams/value",
+              "value": "0x0"
+            },
+            {
+              "op": "add",
+              "path": "/txParams/gas",
+              "value": "0xd3e1"
+            },
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false
+            },
+            {
+              "op": "add",
+              "path": "/gasPriceSpecified",
+              "value": false
+            },
+            {
+              "op": "add",
+              "path": "/gasLimitSpecified",
+              "value": false
+            },
+            {
+              "op": "add",
+              "path": "/estimatedGas",
+              "value": "8d41"
+            }
+          ],
+          [
+            {
+              "note": "confTx: user approved transaction",
+              "op": "replace",
+              "path": "/txParams/gasPrice",
+              "value": "0x5f5e100"
+            }
+          ],
+          [
+            {
+              "note": "txStateManager: setting status to approved",
+              "op": "replace",
+              "path": "/status",
+              "value": "approved"
+            }
+          ],
+          [
+            {
+              "note": "transactions#approveTransaction",
+              "op": "add",
+              "path": "/txParams/nonce",
+              "value": "0x2"
+            },
+            {
+              "op": "add",
+              "path": "/nonceDetails",
+              "value": {
+                "local": {
+                  "details": {
+                    "highest": 2,
+                    "startPoint": 2
+                  },
+                  "name": "local",
+                  "nonce": 2
+                },
+                "network": {
+                  "details": {
+                    "baseCount": 2
+                  },
+                  "name": "network",
+                  "nonce": 2
+                },
+                "params": {
+                  "highestLocalNonce": 2,
+                  "highestSuggested": 2,
+                  "nextNetworkNonce": 2
+                }
+              }
+            }
+          ],
+          [
+            {
+              "note": "txStateManager: setting status to signed",
+              "op": "add",
+              "path": "/txParams/chainId",
+              "value": "0x3"
+            },
+            {
+              "op": "replace",
+              "path": "/status",
+              "value": "signed"
+            }
+          ],
+          [
+            {
+              "note": "transactions#publishTransaction",
+              "op": "add",
+              "path": "/rawTx",
+              "value": "0xf8a8028405f5e10082d3e19466f30b996a7d345cd00badcfe75e81e25dc5e1eb80b844a9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b2aa05cb38a3a68e49008da2e93839f6dedeb96b1630c2a73c4cf5eb3fcc74299a100a039f17c0807469bd101165fa0749dc7065832b4a7c3a382b6cf7e29228c2a683d"
+            }
+          ],
+          [
+            {
+              "note": "transactions#setTxHash",
+              "op": "add",
+              "path": "/hash",
+              "value": "0xfbd997bf9bb85ca1598952ca23e7910502d527e06cb6ee1bbe7e7dd59d6909cd"
+            }
+          ],
+          [
+            {
+              "note": "txStateManager - add submitted time stamp",
+              "op": "add",
+              "path": "/submittedTime",
+              "value": 1522346282571
+            }
+          ],
+          [
+            {
+              "note": "txStateManager: setting status to submitted",
+              "op": "replace",
+              "path": "/status",
+              "value": "submitted"
+            }
+          ],
+          [
+            {
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "value": "0x2cbc70"
+            }
+          ],
+          [
+            {
+              "note": "txStateManager: setting status to confirmed",
+              "op": "replace",
+              "path": "/status",
+              "value": "confirmed"
+            }
+          ]
+        ],
+        "id": 2079438776801906,
+        "loadingDefaults": false,
+        "metamaskNetworkId": "1",
+        "nonceDetails": {
+          "local": {
+            "details": {
+              "highest": 2,
+              "startPoint": 2
+            },
+            "name": "local",
+            "nonce": 2
+          },
+          "network": {
+            "details": {
+              "baseCount": 2
+            },
+            "name": "network",
+            "nonce": 2
+          },
+          "params": {
+            "highestLocalNonce": 2,
+            "highestSuggested": 2,
+            "nextNetworkNonce": 2
+          }
+        },
+        "rawTx": "0xf8a8028405f5e10082d3e19466f30b996a7d345cd00badcfe75e81e25dc5e1eb80b844a9059cbb000000000000000000000000e7884118ee52ec3f4eef715cb022279d7d4181a9000000000000000000000000000000000000000000000000000000000000000b2aa05cb38a3a68e49008da2e93839f6dedeb96b1630c2a73c4cf5eb3fcc74299a100a039f17c0807469bd101165fa0749dc7065832b4a7c3a382b6cf7e29228c2a683d",
+        "status": "confirmed",
+        "submittedTime": 1522346282571,
         "time": 1522346270251,
         "txParams": {
           "chainId": "0x3",
@@ -840,7 +1048,10 @@
     "provider": {
       "type": "testnet"
     },
-    "shapeShiftTxList": [{"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke"},"time":1522377459106}],
+    "shapeShiftTxList": [
+      {"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkke"},"time":1522347459106},
+      {"depositAddress":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq","depositType":"BTC","key":"shapeshift","response":{"status":"no_deposits","address":"34vJ3AfmNcLiziA4VFgEVcQTwxVLD1qkkq"},"time":1522345459106}
+    ],
     "lostAccounts": [],
     "send": {},
     "currentLocale": "en",

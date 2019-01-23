@@ -30,7 +30,7 @@ async function runTxListItemsTest (assert, done) {
   metamaskLogo[0].click()
 
   const txListItems = await queryAsync($, '.transaction-list-item')
-  assert.equal(txListItems.length, 6, 'all tx list items are rendered')
+  assert.equal(txListItems.length, 8, 'all tx list items are rendered')
 
   const unapprovedMsg = txListItems[0]
   const unapprovedMsgDescription = await findAsync($(unapprovedMsg), '.transaction-list-item__action')
@@ -40,11 +40,19 @@ async function runTxListItemsTest (assert, done) {
   const approvedTxRenderedStatus = await findAsync($(approvedTx), '.transaction-list-item__status')
   assert.equal(approvedTxRenderedStatus[0].textContent, 'pending', 'approvedTx has correct label')
 
-  const shapeShiftTx = txListItems[4]
-  const shapeShiftTxStatus = await findAsync($(shapeShiftTx), '.flex-column div:eq(1)')
-  assert.equal(shapeShiftTxStatus[0].textContent, 'No deposits received', 'shapeShiftTx has correct status')
+  const confirmedTokenTx1 = txListItems[4]
+  const confirmedTokenTx1Address = await findAsync($(confirmedTokenTx1), '.transaction-list-item__status')
+  assert.equal(confirmedTokenTx1Address[0].textContent, 'Confirmed', 'confirmedTokenTx has correct status')
 
-  const confirmedTokenTx = txListItems[5]
-  const confirmedTokenTxAddress = await findAsync($(confirmedTokenTx), '.transaction-list-item__status')
-  assert.equal(confirmedTokenTxAddress[0].textContent, 'Confirmed', 'confirmedTokenTx has correct address')
+  const shapeShiftTx1 = txListItems[5]
+  const shapeShiftTx1Status = await findAsync($(shapeShiftTx1), '.flex-column div:eq(1)')
+  assert.equal(shapeShiftTx1Status[0].textContent, 'No deposits received', 'shapeShiftTx has correct status')
+
+  const confirmedTokenTx2 = txListItems[6]
+  const confirmedTokenTx2Address = await findAsync($(confirmedTokenTx2), '.transaction-list-item__status')
+  assert.equal(confirmedTokenTx2Address[0].textContent, 'Confirmed', 'confirmedTokenTx has correct status')
+
+  const shapeShiftTx2 = txListItems[7]
+  const shapeShiftTx2Address = await findAsync($(shapeShiftTx2), '.flex-column div:eq(1)')
+  assert.equal(shapeShiftTx2Address[0].textContent, 'No deposits received', 'shapeShiftTx has correct status')
 }
