@@ -753,12 +753,10 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async unlockHardwareWalletAccount (index, deviceName, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath)
-    let hdAccounts
-    let indexInPage
-    hdAccounts = await keyring.getFirstPage()
+    let hdAccounts = await keyring.getFirstPage()
     const accountPosition = Number(index) + 1
     const pages = Math.ceil(accountPosition / accountsPerPage)
-    indexInPage = index % accountsPerPage
+    const indexInPage = index % accountsPerPage
     if (pages > 1) {
       for (let iterator = 0; iterator < pages; iterator++) {
         hdAccounts = await keyring.getNextPage()
