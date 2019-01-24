@@ -32,7 +32,8 @@ const ConfirmAddTokenScreen = require('./components/confirm-add-token')
 const RemoveTokenScreen = require('./remove-token')
 const AddSuggestedTokenScreen = require('./add-suggested-token')
 const Import = require('./accounts/import')
-import ConnectHardwareForm from './components/connect-hardware/index.js'
+const ForgetDevice = require('./components/connect-hardware/forget-screen')
+import ConnectHardwareForm from './components/connect-hardware/index'
 const InfoScreen = require('./info')
 const AppBar = require('./components/app-bar')
 const Loading = require('./components/loading')
@@ -283,6 +284,10 @@ App.prototype.renderPrimary = function () {
     case 'import-menu':
       log.debug('rendering import screen')
       return h(Import, {key: 'import-menu'})
+
+    case 'forget-device':
+      log.debug('rendering forget device screen')
+      return h(ForgetDevice, {key: 'forget-device'})
 
     case 'hardware-wallets-menu':
       log.debug('rendering hardware wallet menu screen')

@@ -71,6 +71,7 @@ var actions = {
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
+  SHOW_FORGET_DEVICE_PAGE: 'SHOW_FORGET_DEVICE_PAGE',
   SHOW_HARDWARE_WALLET_PAGE: 'SHOW_HARDWARE_WALLET_PAGE',
   SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
@@ -81,6 +82,7 @@ var actions = {
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
   showImportPage,
+  showForgetDevicePage,
   showConnectHWWalletPage: showConnectHWWalletPage,
   showNewAccountPage,
   setNewAccountForm,
@@ -1505,6 +1507,13 @@ function showInitializeMenu () {
 function showImportPage () {
   return {
     type: actions.SHOW_IMPORT_PAGE,
+  }
+}
+
+function showForgetDevicePage (device) {
+  return {
+    type: actions.SHOW_FORGET_DEVICE_PAGE,
+    value: device,
   }
 }
 

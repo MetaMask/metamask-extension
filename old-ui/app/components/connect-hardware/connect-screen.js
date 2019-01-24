@@ -15,6 +15,11 @@ class ConnectScreen extends Component {
         }
     }
 
+    static propTypes = {
+        connectToHardwareWallet: PropTypes.func.isRequired,
+        browserSupported: PropTypes.bool.isRequired,
+    }
+
     connect = () => {
       if (this.state.selectedDevice) {
         this.props.connectToHardwareWallet(this.state.selectedDevice)
@@ -131,10 +136,4 @@ class ConnectScreen extends Component {
     }
 }
 
-ConnectScreen.propTypes = {
-    connectToHardwareWallet: PropTypes.func.isRequired,
-    browserSupported: PropTypes.bool.isRequired,
-}
-
 module.exports = ConnectScreen
-

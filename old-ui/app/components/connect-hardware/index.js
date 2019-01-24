@@ -147,18 +147,7 @@ class ConnectHardwareForm extends Component {
   }
 
   onForgetDevice = (device) => {
-    this.props.forgetDevice(device)
-    .then(_ => {
-      this.setState({
-        error: null,
-        selectedAccount: null,
-        selectedAccounts: [],
-        accounts: [],
-        unlocked: false,
-      })
-    }).catch(e => {
-      this.setState({ error: (e.message || e.toString()) })
-    })
+    this.props.showForgetDevicePage(device)
   }
 
   onUnlockAccount = (device) => {
@@ -248,6 +237,7 @@ class ConnectHardwareForm extends Component {
 }
 
 ConnectHardwareForm.propTypes = {
+  showForgetDevicePage: PropTypes.func,
   showImportPage: PropTypes.func,
   showConnectPage: PropTypes.func,
   connectHardware: PropTypes.func,
@@ -298,14 +288,15 @@ const mapDispatchToProps = dispatch => {
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath))
     },
-    forgetDevice: (deviceName) => {
-      return dispatch(actions.forgetDevice(deviceName))
+    forgetDevice: (deviceName, clearAccounts) => {
+      return dispatch(actions.forgetDevice(deviceName, clearAccounts))
     },
     unlockHardwareWalletAccount: (index, deviceName, hdPath) => {
       return dispatch(actions.unlockHardwareWalletAccount(index, deviceName, hdPath))
     },
     showImportPage: () => dispatch(actions.showImportPage()),
     showConnectPage: () => dispatch(actions.showConnectPage()),
+    showForgetDevicePage: (device) => dispatch(actions.showForgetDevicePage(device)),
     showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
   }
