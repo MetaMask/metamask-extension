@@ -635,7 +635,7 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(largeDelayMs)
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 4
       }, 10000)
@@ -695,7 +695,7 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 5
       }, 10000)
@@ -727,7 +727,7 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 6
       }, 10000)
@@ -911,7 +911,7 @@ describe('MetaMask', function () {
         await driver.wait(until.elementTextMatches(txValues[0], /-50\s*TST/), 10000)
       }
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
       }, 10000)
@@ -962,26 +962,29 @@ describe('MetaMask', function () {
       const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
       await gasPriceInput.clear()
       await delay(tinyDelayMs)
+
+      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.sendKeys(Key.BACK_SPACE)
       await gasPriceInput.sendKeys('10')
       await delay(tinyDelayMs)
       await gasLimitInput.clear()
       await delay(tinyDelayMs)
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
       await gasLimitInput.sendKeys('60000')
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
-
-      // Needed for different behaviour of input in different versions of firefox
-      const gasLimitInputValue = await gasLimitInput.getAttribute('value')
-      if (gasLimitInputValue === '600001') {
-        await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      }
 
       const save = await findElement(driver, By.css('.page-container__footer-button'))
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
 
       const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
-      assert.equal(await gasFeeInputs[0].getText(), '0.0006')
+      const renderedGasFee = await gasFeeInputs[0].getText()
+      assert.equal(renderedGasFee, '0.0006')
     })
 
     it('submits the transaction', async function () {
@@ -991,7 +994,7 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 2
       }, 10000)
@@ -1036,7 +1039,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const pendingTxes = await findElements(driver, By.css('.transaction-list__pending-transactions .transaction-list-item'))
         return pendingTxes.length === 1
       }, 10000)
@@ -1116,7 +1119,7 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 3
       }, 10000)
