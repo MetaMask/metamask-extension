@@ -85,6 +85,8 @@ var actions = {
   createNewVaultAndKeychain: createNewVaultAndKeychain,
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
+  createNewVaultAndGetSeedPhrase,
+  unlockAndGetSeedPhrase,
   addNewKeyring,
   importNewAccount,
   addNewAccount,
@@ -189,6 +191,7 @@ var actions = {
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
   UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
+  UPDATE_SEND_WARNINGS: 'UPDATE_SEND_WARNINGS',
   UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
@@ -209,6 +212,7 @@ var actions = {
   setMaxModeTo,
   updateSend,
   updateSendErrors,
+  updateSendWarnings,
   clearSend,
   setSelectedAddress,
   gasLoadingStarted,
@@ -236,6 +240,7 @@ var actions = {
   removeToken,
   updateTokens,
   removeSuggestedTokens,
+  addKnownMethodData,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   delRpcTarget: delRpcTarget,
@@ -310,6 +315,11 @@ var actions = {
   updatePreferences,
   UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
+
+  // Onboarding
+  setCompletedOnboarding,
+  completeOnboarding,
+  COMPLETE_ONBOARDING: 'COMPLETE_ONBOARDING',
 
   setMouseUserState,
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
@@ -450,6 +460,7 @@ function createNewVaultAndRestore (password, seed) {
       .catch(err => {
         dispatch(actions.displayWarning(err.message))
         dispatch(actions.hideLoadingIndication())
+        return Promise.reject(err)
       })
   }
 }
@@ -484,10 +495,69 @@ function createNewVaultAndKeychain (password) {
   }
 }
 
+function createNewVaultAndGetSeedPhrase (password) {
+  return async dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    try {
+      await createNewVault(password)
+      const seedWords = await verifySeedPhrase()
+      dispatch(actions.hideLoadingIndication())
+      return seedWords
+    } catch (error) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(error.message))
+      throw new Error(error.message)
+    }
+  }
+}
+
+function unlockAndGetSeedPhrase (password) {
+  return async dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    try {
+      await submitPassword(password)
+      const seedWords = await verifySeedPhrase()
+      await forceUpdateMetamaskState(dispatch)
+      dispatch(actions.hideLoadingIndication())
+      return seedWords
+    } catch (error) {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.displayWarning(error.message))
+      throw new Error(error.message)
+    }
+  }
+}
+
 function revealSeedConfirmation () {
   return {
     type: this.REVEAL_SEED_CONFIRMATION,
   }
+}
+
+function submitPassword (password) {
+  return new Promise((resolve, reject) => {
+    background.submitPassword(password, error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve()
+    })
+  })
+}
+
+function createNewVault (password) {
+  return new Promise((resolve, reject) => {
+    background.createNewVaultAndKeychain(password, error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(true)
+    })
+  })
 }
 
 function verifyPassword (password) {
@@ -1000,6 +1070,13 @@ function updateSendErrors (errorObject) {
   }
 }
 
+function updateSendWarnings (warningObject) {
+  return {
+    type: actions.UPDATE_SEND_WARNINGS,
+    value: warningObject,
+  }
+}
+
 function setSendTokenBalance (tokenBalance) {
   return {
     type: actions.UPDATE_SEND_TOKEN_BALANCE,
@@ -1490,7 +1567,6 @@ const backgroundSetLocked = () => {
       if (error) {
         return reject(error)
       }
-
       resolve()
     })
   })
@@ -1718,6 +1794,12 @@ function removeSuggestedTokens () {
     })
     .then(() => updateMetamaskStateFromBackground())
     .then(suggestedTokens => dispatch(actions.updateMetamaskState({...suggestedTokens})))
+  }
+}
+
+function addKnownMethodData (fourBytePrefix, methodData) {
+  return (dispatch) => {
+    background.addKnownMethodData(fourBytePrefix, methodData)
   }
 }
 
@@ -2348,6 +2430,31 @@ function updatePreferences (value) {
 
 function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
   return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
+}
+
+function setCompletedOnboarding () {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.completeOnboarding(err => {
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.completeOnboarding())
+        resolve()
+      })
+    })
+  }
+}
+
+function completeOnboarding () {
+  return {
+    type: actions.COMPLETE_ONBOARDING,
+  }
 }
 
 function setNetworkNonce (networkNonce) {

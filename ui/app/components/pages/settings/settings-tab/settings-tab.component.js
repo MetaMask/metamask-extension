@@ -78,7 +78,7 @@ export default class SettingsTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('currentConversion') }</span>
+          <span>{ t('currencyConversion') }</span>
           <span className="settings-page__content-description">
             { t('updatedWithDate', [Date(conversionDate)]) }
           </span>
@@ -232,6 +232,9 @@ export default class SettingsTab extends PureComponent {
     const { setRpcTarget, displayWarning } = this.props
 
     if (validUrl.isWebUri(newRpc)) {
+      if (!!chainId && Number.isNaN(parseInt(chainId))) {
+        return displayWarning(`${this.context.t('invalidInput')} chainId`)
+      }
       setRpcTarget(newRpc, chainId, ticker, nickname)
     } else {
       const appendedRpc = `http://${newRpc}`

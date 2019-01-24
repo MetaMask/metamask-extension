@@ -1,5 +1,6 @@
 {
   "metamask": {
+    "completedOnboarding": true,
     "isInitialized": true,
     "isUnlocked": true,
     "featureFlags": {"betaUI": true},
@@ -105,6 +106,7 @@
       "amount": "0x0",
       "memo": "",
       "errors": {},
+      "warnings": {},
       "maxModeOn": false,
       "editingTransactionId": null
     },

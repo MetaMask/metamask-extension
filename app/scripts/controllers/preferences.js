@@ -19,6 +19,7 @@ class PreferencesController {
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature
+   * @property {object} store.knownMethodData Contains all data methods known by the user
    * @property {string} store.currentLocale The preferred language locale key
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    *
@@ -36,6 +37,7 @@ class PreferencesController {
         betaUI: true,
         skipAnnounceBetaUI: true,
       },
+      knownMethodData: {},
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -44,6 +46,7 @@ class PreferencesController {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      completedOnboarding: false,
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -96,6 +99,18 @@ class PreferencesController {
     const newEntry = { address, symbol, decimals, image }
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
+  }
+
+  /**
+   * Add new methodData to state, to avoid requesting this information again through Infura
+   *
+   * @param {string} fourBytePrefix Four-byte method signature
+   * @param {string} methodData Corresponding data method
+   */
+  addKnownMethodData (fourBytePrefix, methodData) {
+    const knownMethodData = this.store.getState().knownMethodData
+    knownMethodData[fourBytePrefix] = methodData
+    this.store.updateState({ knownMethodData })
   }
 
   /**
@@ -408,7 +423,11 @@ class PreferencesController {
       rpcList.splice(index, 1)
     }
     if (url !== 'http://localhost:8545') {
-      rpcList.push({ rpcUrl: url, chainId, ticker, nickname })
+      let checkedChainId
+      if (!!chainId && !Number.isNaN(parseInt(chainId))) {
+        checkedChainId = chainId
+      }
+      rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname })
     }
     this.store.updateState({ frequentRpcListDetail: rpcList })
     return Promise.resolve(rpcList)
@@ -496,6 +515,15 @@ class PreferencesController {
    */
   getPreferences () {
     return this.store.getState().preferences
+  }
+
+  /**
+   * Sets the completedOnboarding state to true, indicating that the user has completed the
+   * onboarding process.
+   */
+  completeOnboarding () {
+    this.store.updateState({ completedOnboarding: true })
+    return Promise.resolve(true)
   }
 
   //

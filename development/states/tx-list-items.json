@@ -1,5 +1,6 @@
 {
   "metamask": {
+    "completedOnboarding": true,
     "isInitialized": true,
     "isUnlocked": true,
     "featureFlags": {"betaUI": true},
@@ -132,7 +133,8 @@
   "send": {
     "fromDropdownOpen": false,
     "toDropdownOpen": false,
-    "errors": {}
+    "errors": {},
+    "warnings": {}
   },
   "gas": {
     "customData": {

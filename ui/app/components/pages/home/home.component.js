@@ -7,7 +7,7 @@ import TransactionView from '../../transaction-view'
 import ProviderApproval from '../provider-approval'
 
 import {
-  INITIALIZE_BACKUP_PHRASE_ROUTE,
+  INITIALIZE_SEED_PHRASE_ROUTE,
   RESTORE_VAULT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   NOTICE_ROUTE,
@@ -59,7 +59,7 @@ export default class Home extends PureComponent {
 
     // seed words
     if (seedWords) {
-      return <Redirect to={{ pathname: INITIALIZE_BACKUP_PHRASE_ROUTE }}/>
+      return <Redirect to={{ pathname: INITIALIZE_SEED_PHRASE_ROUTE }}/>
     }
 
     if (forgottenPassword) {

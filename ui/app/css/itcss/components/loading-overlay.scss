@@ -1,7 +1,7 @@
 .loading-overlay {
   left: 0;
   z-index: 51;
-  position: absolute;
+  position: fixed;
   flex-direction: column;
   display: flex;
   justify-content: center;
