@@ -8,6 +8,7 @@ import { formatBalance } from '../../util'
 import { getPlatform } from '../../../../app/scripts/lib/util'
 import { PLATFORM_FIREFOX } from '../../../../app/scripts/lib/enums'
 import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
+import { LEDGER, TREZOR } from './enum'
 
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
@@ -40,7 +41,7 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked () {
-    ['trezor', 'ledger'].forEach(async device => {
+    [TREZOR, LEDGER].forEach(async device => {
       const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
         this.setState({unlocked: true})
@@ -162,23 +163,14 @@ class ConnectHardwareForm extends Component {
 
   onUnlockAccount = (device) => {
 
-    if (!this.state.selectedAccount && this.state.selectedAccounts.length === 0) {
-      this.setState({ error: 'You need to select an account!' })
+    if (this.state.selectedAccounts.length === 0) {
+      return this.setState({ error: 'You need to select an account!' })
     }
 
-    if (this.state.selectedAccounts.length > 0) {
-      this.unlockHardwareWalletAccounts(this.state.selectedAccounts, device)
-      .then(_ => {
-        this.props.goHome()
-      })
-    } else {
-      this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
-      .then(_ => {
-        this.props.goHome()
-      }).catch(e => {
-        this.setState({ error: (e.message || e.toString()) })
-      })
-    }
+    this.unlockHardwareWalletAccounts(this.state.selectedAccounts, device)
+    .then(_ => {
+      this.props.goHome()
+    })
   }
 
   unlockHardwareWalletAccounts = (accounts, device) => {

@@ -5,6 +5,7 @@ import { default as Select } from 'react-select'
 import Button from '../../../../ui/app/components/button'
 import { capitalizeFirstLetter } from '../../../../app/scripts/lib/util'
 import { getHdPaths } from './util'
+import { LEDGER } from './enum'
 
 class AccountList extends Component {
     constructor (props, context) {
@@ -54,7 +55,7 @@ class AccountList extends Component {
         <div className="hw-connect">
           <h3 className="hw-connect">
             <h3 className="hw-connect__unlock-title">{`Unlock ${capitalizeFirstLetter(device)}`}</h3>
-            {device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null}
+            {device.toLowerCase() === LEDGER ? this.renderHdPathSelector() : null}
             <p className="hw-connect__msg">Select the accounts to view in Nifty Wallet</p>
           </h3>
         </div>
