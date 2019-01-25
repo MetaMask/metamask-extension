@@ -237,6 +237,7 @@ var actions = {
   updateTokens,
   removeSuggestedTokens,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
+  updateAndSetCustomRpc: updateAndSetCustomRpc,
   setRpcTarget: setRpcTarget,
   delRpcTarget: delRpcTarget,
   setProviderType: setProviderType,
@@ -1886,6 +1887,22 @@ function setPreviousProvider (type) {
   return {
     type: actions.SET_PREVIOUS_PROVIDER,
     value: type,
+  }
+}
+
+function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname) {
+  return (dispatch) => {
+    log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`)
+    background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(actions.displayWarning('Had a problem changing networks!'))
+      }
+      dispatch({
+        type: actions.SET_RPC_TARGET,
+        value: newRpc,
+      })
+    })
   }
 }
 

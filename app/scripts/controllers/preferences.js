@@ -406,7 +406,6 @@ class PreferencesController {
   updateRpc (newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail()
     const index = rpcList.findIndex((element) => { return element.rpcUrl === newRpcDetails.rpcUrl })
-
     if (index > -1) {
       const rpcDetail = rpcList[index]
       const updatedRpc = extend(rpcDetail, newRpcDetails)
