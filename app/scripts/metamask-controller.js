@@ -740,10 +740,14 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async forgetDevice (deviceName, clearAccounts) {
-
     const keyring = await this.getKeyringForDevice(deviceName)
-    keyring.forgetDevice(clearAccounts)
-    return true
+    const accountsToForget = await keyring.forgetDevice(clearAccounts)
+    for (const acc of accountsToForget) {
+      const accToLower = acc.toLowerCase()
+      await this.preferencesController.removeAddress(accToLower)
+      await this.accountTracker.removeAccount([accToLower])
+    }
+    return accountsToForget
   }
 
   /**

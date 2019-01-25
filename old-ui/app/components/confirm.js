@@ -5,13 +5,13 @@ import { connect } from 'react-redux'
 class ConfirmScreen extends Component {
 	static propTypes = {
 		subtitle: PropTypes.string.isRequired,
-		additionalData: PropTypes.func,
+		renderAdditionalData: PropTypes.func,
 		question: PropTypes.string.isRequired,
 		withDescription: PropTypes.bool,
 		description: PropTypes.string,
 		onCancelClick: PropTypes.func.isRequired,
-		onNoClick: PropTypes.bool.isRequired,
-		onYesClick: PropTypes.bool.isRequired,
+		onNoClick: PropTypes.func.isRequired,
+		onYesClick: PropTypes.func.isRequired,
 	}
 
 	render () {
@@ -40,7 +40,7 @@ class ConfirmScreen extends Component {
 					<div className="error">{this.props.description}</div>
 				</div>
 			) : null}
-			{this.props.additionalData}
+			{this.props.renderAdditionalData()}
 			<p className="confirm-label"
 				style={{
 					textAlign: 'center',

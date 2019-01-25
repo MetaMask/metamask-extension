@@ -749,12 +749,12 @@ function checkHardwareStatus (deviceName, hdPath) {
   }
 }
 
-function forgetDevice (deviceName) {
+function forgetDevice (deviceName, clearAccounts) {
   log.debug(`background.forgetDevice`, deviceName)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.forgetDevice(deviceName, (err, response) => {
+      background.forgetDevice(deviceName, clearAccounts, (err, accountsToForget) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -764,7 +764,7 @@ function forgetDevice (deviceName) {
         dispatch(actions.hideLoadingIndication())
 
         forceUpdateMetamaskState(dispatch)
-        return resolve()
+        return resolve(accountsToForget)
       })
     })
   }
