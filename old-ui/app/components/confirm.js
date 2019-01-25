@@ -40,7 +40,7 @@ class ConfirmScreen extends Component {
 					<div className="error">{this.props.description}</div>
 				</div>
 			) : null}
-			{this.props.renderAdditionalData()}
+			{this.props.renderAdditionalData ? this.props.renderAdditionalData() : null}
 			<p className="confirm-label"
 				style={{
 					textAlign: 'center',
