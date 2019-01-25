@@ -11,7 +11,11 @@ class LoadingScreen extends Component {
 
   render () {
     return (
-      h('.loading-overlay', [
+      h('.loading-overlay', {
+        style: {
+          height: this.props.height,
+        },
+      }, [
         h('.loading-overlay__container', [
           h(Spinner, {
             color: '#F7C06C',
@@ -26,6 +30,7 @@ class LoadingScreen extends Component {
 
 LoadingScreen.propTypes = {
   loadingMessage: PropTypes.string,
+  height: PropTypes.string,
 }
 
 module.exports = LoadingScreen
