@@ -1893,7 +1893,7 @@ function setPreviousProvider (type) {
 function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname) {
   return (dispatch) => {
     log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, (err, result) => {
+    background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))
@@ -1906,10 +1906,10 @@ function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname) {
   }
 }
 
-function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname = '') {
+function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
   return (dispatch) => {
     log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.setCustomRpc(newRpc, chainId, ticker, nickname, (err, result) => {
+    background.setCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))
