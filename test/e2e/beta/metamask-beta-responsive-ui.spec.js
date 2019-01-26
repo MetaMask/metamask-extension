@@ -289,7 +289,7 @@ describe('MetaMask', function () {
 
       const gasModal = await driver.findElement(By.css('span .modal'))
 
-      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Close')]`))
+      const save = await findElement(driver, By.css('.page-container__header-close-text'))
       await save.click()
       await driver.wait(until.stalenessOf(gasModal), 10000)
       await delay(regularDelayMs)
