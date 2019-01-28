@@ -11,6 +11,7 @@ development/publish-release.js
 
 app/scripts/lib/extension-instance.js
 app/scripts/chromereload.js
+app/vendor/**
 
 ui/lib/blockies.js
 

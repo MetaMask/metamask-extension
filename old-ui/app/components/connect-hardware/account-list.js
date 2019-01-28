@@ -4,7 +4,8 @@ import ethNetProps from 'eth-net-props'
 import { default as Select } from 'react-select'
 import Button from '../../../../ui/app/components/button'
 import { capitalizeFirstLetter } from '../../../../app/scripts/lib/util'
-import { isLedger, getHdPaths } from './util'
+import { getHdPaths } from './util'
+import { LEDGER } from './enum'
 
 class AccountList extends Component {
     constructor (props, context) {
@@ -54,7 +55,7 @@ class AccountList extends Component {
         <div className="hw-connect">
           <h3 className="hw-connect">
             <h3 className="hw-connect__unlock-title">{`Unlock ${capitalizeFirstLetter(device)}`}</h3>
-            {device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null}
+            {device.toLowerCase() === LEDGER ? this.renderHdPathSelector() : null}
             <p className="hw-connect__msg">Select the accounts to view in Nifty Wallet</p>
           </h3>
         </div>
@@ -62,30 +63,17 @@ class AccountList extends Component {
     }
 
     renderInput = (a, i) => {
-      const { device, selectedAccount, selectedAccounts } = this.props
-      if (isLedger(device)) {
-        return (
-          <input
-            type="checkbox"
-            name={`selectedAccount-${i}`}
-            id={`address-${i}`}
-            value={a.index}
-            onChange={(e) => this.props.onAccountChange(e.target.value)}
-            checked={selectedAccounts.includes(a.index.toString())}
-          />
-        )
-      } else {
-        return (
-          <input
-            type="radio"
-            name="selectedAccount"
-            id={`address-${i}`}
-            value={a.index}
-            onChange={(e) => this.props.onAccountChange(e.target.value)}
-            checked={selectedAccount === a.index.toString()}
-          />
-        )
-      }
+      const { selectedAccounts } = this.props
+      return (
+        <input
+          type="checkbox"
+          name={`selectedAccount-${i}`}
+          id={`address-${i}`}
+          value={a.index}
+          onChange={(e) => this.props.onAccountChange(e.target.value)}
+          checked={selectedAccounts.includes(a.index.toString())}
+        />
+      )
     }
 
     renderAccounts = () => {
