@@ -134,38 +134,47 @@ TokenList.prototype.renderTokenStatusBar = function () {
   const tokensFromCurrentNetwork = tokens.filter(token => (parseInt(token.network) === parseInt(network) || !token.network))
 
   let msg
+  let noTokens = false
   if (tokensFromCurrentNetwork.length === 1) {
     msg = `You own 1 token`
   } else if (tokensFromCurrentNetwork.length > 1) {
     msg = `You own ${tokensFromCurrentNetwork.length} tokens`
   } else {
     msg = `No tokens found`
+    noTokens = true
   }
 
-  return h('div', {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      minHeight: '70px',
-      padding: '30px 30px 10px',
-    },
-  }, [
-    h('span', msg),
-    h('button.btn-primary.wallet-view__add-token-button', {
-      key: 'reveal-account-bar',
-      onClick: (event) => {
-        event.preventDefault()
-        this.props.addToken()
-      },
+  return h('div', [
+      h('div', {
       style: {
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        minHeight: '70px',
+        padding: '30px 30px 10px',
       },
     }, [
-      'Add Token',
+      h('span', msg),
+      h('button.btn-primary.wallet-view__add-token-button', {
+        key: 'reveal-account-bar',
+        onClick: (event) => {
+          event.preventDefault()
+          this.props.addToken()
+        },
+        style: {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+      }, [
+        'Add Token',
+      ]),
     ]),
+    noTokens ? h('div', {
+      style: {
+        height: '70px',
+      },
+    }) : null,
   ])
 }
 

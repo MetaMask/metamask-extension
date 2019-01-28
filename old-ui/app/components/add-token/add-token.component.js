@@ -453,7 +453,11 @@ class AddTokenScreen extends Component {
     const { symbol = '', decimals = '' } = await this.tokenInfoGetter(address)
 
     const autoFilled = Boolean(symbol && decimals)
-    this.setState({ autoFilled })
+    this.setState({
+      autoFilled,
+      warning: '',
+      customAddressError: null,
+    })
     this.handleCustomSymbolChange(symbol || '')
     this.handleCustomDecimalsChange(decimals || '')
   }

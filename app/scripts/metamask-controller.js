@@ -52,6 +52,7 @@ const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
+const { importTypes } = require('../../old-ui/app/accounts/import/enums')
 const { LEDGER, TREZOR } = require('../../old-ui/app/components/connect-hardware/enum')
 
 const { POA_CODE,
@@ -384,6 +385,7 @@ module.exports = class MetamaskController extends EventEmitter {
       resetAccount: nodeify(this.resetAccount, this),
       changePassword: nodeify(this.changePassword, this),
       removeAccount: nodeify(this.removeAccount, this),
+      updateABI: nodeify(this.updateABI, this),
       getContract: nodeify(this.getContract, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
@@ -922,6 +924,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Removes an account from state / storage.
    *
    * @param {string[]} address A hex address
+   * @param {int} network ID
    *
    */
   async removeAccount (address, network) {
@@ -939,6 +942,23 @@ module.exports = class MetamaskController extends EventEmitter {
     return address
   }
 
+  /**
+   * Updates implementation ABI for proxy account type.
+   *
+   * @param {string[]} address A hex address
+   * @param {int} network ID
+   *
+   */
+  async updateABI (address, network, newABI) {
+    // Sets new ABI for implementation contract
+    try {
+      await this.keyringController.updateABI(address, network, newABI)
+    } catch (e) {
+      log.error(e)
+    }
+    return
+  }
+
 
   /**
    * Imports an account with the specified import strategy.
@@ -951,7 +971,8 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async importAccountWithStrategy (strategy, args) {
     let keyring
-    if (strategy === 'Contract') {
+    if (strategy === importTypes.CONTRACT.DEFAULT || strategy === importTypes.CONTRACT.PROXY) {
+      args.contractType = strategy
       keyring = await this.keyringController.addNewKeyring('Simple Address', args)
     } else {
       const privateKey = await accountImporter.importAccount(strategy, args)

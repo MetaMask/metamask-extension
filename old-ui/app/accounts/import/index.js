@@ -1,137 +1,154 @@
-const inherits = require('util').inherits
-const Component = require('react').Component
-const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const actions = require('../../../../ui/app/actions')
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import actions from '../../../../ui/app/actions'
 import Select from 'react-select'
+import { importTypes } from './enums'
+import { nestedJsonObjToArray } from './helpers'
 
 // Subviews
-const JsonImportView = require('./json.js')
-const PrivateKeyImportView = require('./private-key.js')
-const ContractImportView = require('./contract.js')
+import JsonImportView from './json.js'
+import PrivateKeyImportView from './private-key.js'
+import ContractImportView from './contract.js'
 
-const menuItems = [
-  'Private Key',
-  'JSON File',
-  'Contract',
-]
+const menuItems = nestedJsonObjToArray(importTypes)
 
-module.exports = connect(mapStateToProps)(AccountImportSubview)
+class AccountImportSubview extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      description: '',
+      type: importTypes.PRIVATE_KEY,
+    }
+  }
+  static propTypes = {
+    menuItems: PropTypes.array,
+    warning: PropTypes.node,
+    goHome: PropTypes.func,
+    displayWarning: PropTypes.func,
+    showImportPage: PropTypes.func,
+  }
+  render () {
+    const props = this.props
+    const state = this.state || {}
+    const { menuItems } = props
+    const { type } = state
 
-function mapStateToProps (state) {
+    return (
+      <div style={{
+        width: '100%',
+      }}>
+        <div className="section-title" style={{
+          height: '1px',
+          width: '100%',
+        }} />
+        <div style={{
+          width: '100%',
+          padding: '0 30px',
+        }}>
+          <div className="flex-row flex-center">
+            <div
+              className="i fa fa-arrow-left fa-lg cursor-pointer"
+              onClick={(event) => { props.goHome() }}
+              style={{
+                position: 'absolute',
+                left: '30px',
+              }}
+            />
+            <h2 className="page-subtitle" style={{
+              fontFamily: 'Nunito SemiBold',
+            }}
+            >Import Accounts</h2>
+          </div>
+          <div
+            className="error"
+            style={{
+              display: 'inline-block',
+              alignItems: 'center',
+          }}>
+            <span>Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.</span>
+          </div>
+          <div style={{ padding: '10px 0' }}>
+            <h3 style={{ padding: '3px' }}>Select Type</h3>
+            <Select {...{
+              name: 'import-type-select',
+              clearable: false,
+              value: type || menuItems[0],
+              options: menuItems.map((type) => {
+                return {
+                  value: type,
+                  label: type,
+                }
+              }),
+              onChange: (opt) => { this.onChange(opt) },
+            }}/>
+            <p className="hw-connect__header__msg" dangerouslySetInnerHTML={{__html: this.state.description}} />
+          </div>
+          {this.renderImportView()}
+        </div>
+      </div>
+    )
+  }
+
+  onChange (opt) {
+    const props = this.props
+    props.showImportPage()
+    const type = opt.value
+    let description
+    switch (type) {
+      case importTypes.PRIVATE_KEY:
+      case importTypes.JSON_FILE:
+        description = ''
+        break
+      case importTypes.CONTRACT.DEFAULT:
+        description = `Contract type will automatically retrieve its ABI, if it was verified in <a href='https://blockscout.com' target='_blank'>Blockscout</a>`
+        break
+      case importTypes.CONTRACT.PROXY:
+        description = `Proxy contract type will automatically contain ABI of implementation, if proxy and implementation were both verified in <a href='https://blockscout.com' target='_blank'>Blockscout</a>`
+        break
+      default:
+        description = ''
+        break
+    }
+    this.setState({ type, description })
+  }
+
+  componentWillUnmount () {
+    this.props.displayWarning('')
+  }
+  renderImportView () {
+    const { menuItems } = this.props
+    const state = this.state || {}
+    const { type } = state
+    const current = type || menuItems[0]
+
+    switch (current) {
+      case importTypes.PRIVATE_KEY:
+        return <PrivateKeyImportView/>
+      case importTypes.JSON_FILE:
+        return <JsonImportView/>
+      case importTypes.CONTRACT.DEFAULT:
+        return <ContractImportView type={importTypes.CONTRACT.DEFAULT}/>
+      case importTypes.CONTRACT.PROXY:
+        return <ContractImportView type={importTypes.CONTRACT.PROXY}/>
+      default:
+        return <JsonImportView/>
+    }
+  }
+}
+
+const mapStateToProps = (state) => {
   return {
     menuItems,
   }
 }
 
-inherits(AccountImportSubview, Component)
-function AccountImportSubview () {
-  Component.call(this)
-}
-
-AccountImportSubview.prototype.render = function () {
-  const props = this.props
-  const state = this.state || {}
-  const { menuItems } = props
-  const { type } = state
-
-  return (
-    h('div', {
-      style: {
-        width: '100%',
-      },
-    }, [
-      h('.section-title', { style: {
-        height: '1px',
-        width: '100%',
-      }}),
-      h('div', {
-        style: {
-          width: '100%',
-          paddingLeft: '30px',
-          paddingRight: '30px',
-        },
-      }, [
-        h('.flex-row.flex-center', [
-          h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-            onClick: (event) => {
-              props.dispatch(actions.goHome())
-            },
-            style: {
-              position: 'absolute',
-              left: '30px',
-            },
-          }),
-          h('h2.page-subtitle', {
-            style: {
-              fontFamily: 'Nunito SemiBold',
-            },
-          }, 'Import Accounts'),
-        ]),
-        h('.error', {
-          style: {
-            display: 'inline-block',
-            alignItems: 'center',
-          },
-        }, [
-          h('span', 'Imported accounts will not be associated with your originally created Nifty Wallet account seedphrase.'),
-        ]),
-        h('div', {
-          style: {
-            padding: '10px 0',
-          },
-        }, [
-
-          h('h3', { style: { padding: '3px' } }, 'Select Type'),
-
-          h('style', `
-            .has-value.Select--single > .Select-control .Select-value .Select-value-label, .Select-value-label {
-              color: rgb(174,174,174);
-            }
-          `),
-
-          h(Select, {
-            name: 'import-type-select',
-            clearable: false,
-            value: type || menuItems[0],
-            options: menuItems.map((type) => {
-              return {
-                value: type,
-                label: type,
-              }
-            }),
-            onChange: (opt) => {
-              props.dispatch(actions.showImportPage())
-              this.setState({ type: opt.value })
-            },
-          }),
-        ]),
-
-        this.renderImportView(),
-      ]),
-    ])
-  )
-}
-
-AccountImportSubview.prototype.componentWillUnmount = function () {
-  this.props.dispatch(actions.displayWarning(''))
-}
-
-AccountImportSubview.prototype.renderImportView = function () {
-  const props = this.props
-  const state = this.state || {}
-  const { type } = state
-  const { menuItems } = props
-  const current = type || menuItems[0]
-
-  switch (current) {
-    case 'Private Key':
-      return h(PrivateKeyImportView)
-    case 'JSON File':
-      return h(JsonImportView)
-    case 'Contract':
-      return h(ContractImportView)
-    default:
-      return h(JsonImportView)
+const mapDispatchToProps = dispatch => {
+  return {
+    goHome: () => dispatch(actions.goHome()),
+    displayWarning: warning => dispatch(actions.displayWarning(warning)),
+    showImportPage: options => dispatch(actions.showImportPage()),
   }
 }
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountImportSubview)

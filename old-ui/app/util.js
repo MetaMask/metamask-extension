@@ -44,6 +44,7 @@ module.exports = {
   getCurrentKeyring,
   ifLooseAcc,
   ifContractAcc,
+  ifHardwareAcc,
 }
 
 function valuesFor (obj) {
@@ -326,6 +327,7 @@ function ifLooseAcc (keyring) {
   } catch (e) { return }
 }
 
+
 /**
  * checks, if keyring is contract
  *
@@ -339,4 +341,18 @@ function ifContractAcc (keyring) {
     const isContract = type === 'Simple Address'
     return isContract
   } catch (e) { return }
+}
+
+/**
+ * checks, if keyring is of hardware type
+ *
+ * @param {object} keyring
+ *
+ * returns {boolean} true, if keyring is of hardware type and false, if it is not
+**/
+function ifHardwareAcc (keyring) {
+  if (keyring && keyring.type.search('Hardware') !== -1) {
+    return true
+  }
+  return false
 }
