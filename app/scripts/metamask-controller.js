@@ -52,6 +52,7 @@ const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
+const { LEDGER, TREZOR } = require('../../old-ui/app/components/connect-hardware/enum')
 
 const { POA_CODE,
   DAI_CODE,
@@ -610,10 +611,10 @@ module.exports = class MetamaskController extends EventEmitter {
   async getKeyringForDevice (deviceName, hdPath = null) {
     let keyringName = null
     switch (deviceName) {
-      case 'trezor':
+      case TREZOR:
         keyringName = TrezorKeyring.type
         break
-      case 'ledger':
+      case LEDGER:
         keyringName = LedgerBridgeKeyring.type
         break
       default:
@@ -755,18 +756,14 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async unlockHardwareWalletAccount (index, deviceName, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath)
-    let hdAccounts
-    let indexInPage
-    if (deviceName.includes('ledger')) {
-      hdAccounts = await keyring.getFirstPage()
-      const accountPosition = Number(index) + 1
-      const pages = Math.ceil(accountPosition / accountsPerPage)
-      indexInPage = index % accountsPerPage
-      if (pages > 1) {
-        for (let iterator = 0; iterator < pages; iterator++) {
-          hdAccounts = await keyring.getNextPage()
-          iterator++
-        }
+    let hdAccounts = await keyring.getFirstPage()
+    const accountPosition = Number(index) + 1
+    const pages = Math.ceil(accountPosition / accountsPerPage)
+    const indexInPage = index % accountsPerPage
+    if (pages > 1) {
+      for (let iterator = 0; iterator < pages; iterator++) {
+        hdAccounts = await keyring.getNextPage()
+        iterator++
       }
     }
 
@@ -787,11 +784,9 @@ module.exports = class MetamaskController extends EventEmitter {
       }
     })
 
-    if (deviceName.includes('ledger')) {
-      if (!selectedAddressChanged) {
-        // Select the account
-        this.preferencesController.setSelectedAddress(hdAccounts[indexInPage].address)
-      }
+    if (!selectedAddressChanged) {
+      // Select the account
+      this.preferencesController.setSelectedAddress(hdAccounts[indexInPage].address)
     }
 
     const { identities } = this.preferencesController.store.getState()
