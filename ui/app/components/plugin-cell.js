@@ -8,15 +8,14 @@ const selectors = require('../selectors')
 const actions = require('../actions')
 const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 
-const Layer2AppMenuDropdown = require('./dropdowns/layer2App-menu-dropdown.js')
+const pluginMenuDropdown = require('./dropdowns/plugin-menu-dropdown.js')
 
 function mapStateToProps (state) {
   return {
-    layer2AppsScripts: state.metamask.layer2AppsScripts,
+    pluginsScripts: state.metamask.pluginsScripts,
     network: state.metamask.network,
     currentCurrency: state.metamask.currentCurrency,
-    selectedTokenAddress: state.metamask.selectedTokenAddress,
-    selectedLayer2AppAddress: state.metamask.selectedLayer2AppAddress,    
+    selectedPlugin: state.metamask.selectedPlugin,    
     userAddress: selectors.getSelectedAddress(state),
     contractExchangeRates: state.metamask.contractExchangeRates,
     conversionRate: state.metamask.conversionRate,
@@ -26,37 +25,34 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setSelectedToken: address => dispatch(actions.setSelectedToken(address)),
-    setSelectedLayer2AppAddress: address => dispatch(actions.setSelectedLayer2AppAddress(address)),    
+    setSelectedPlugin: authorAddress => dispatch(actions.setSelectedPlugin(authorAddress)),    
     hideSidebar: () => dispatch(actions.hideSidebar()),
   }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Layer2AppCell)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(PluginCell)
 
-inherits(Layer2AppCell, Component)
-function Layer2AppCell () {
+inherits(PluginCell, Component)
+function PluginCell () {
   Component.call(this)
 
   this.state = {
-    layer2AppMenuOpen: false,
+    pluginMenuOpen: false,
   }
 }
 
-Layer2AppCell.prototype.render = function () {
-  const { layer2AppMenuOpen } = this.state
+PluginCell.prototype.render = function () {
+  const { pluginMenuOpen } = this.state
   const props = this.props
   const {
     address,
     name,
-    nodeUrl,
+    scriptUrl,
     symbol,
     string,
     network,
-    setSelectedToken,
-    selectedTokenAddress,
-    setSelectedLayer2AppAddress,
-    selectedLayer2App,
+    setSelectedPlugin,
+    selectedPlugin,
     contractExchangeRates,
     conversionRate,
     hideSidebar,
@@ -69,35 +65,33 @@ Layer2AppCell.prototype.render = function () {
 
 
   return (
-    h('div.layer2App-list-item', {
-      className: `layer2App-list-item ${selectedTokenAddress === address ? 'layer2App-list-item--active' : ''}`,
+    h('div.plugin-list-item', {
+      className: "plugin-list-item",
       onClick: () => {
-        setSelectedToken(address)
-        setSelectedLayer2AppAddress(address)	
-        selectedTokenAddress !== address && sidebarOpen && hideSidebar()
+        setSelectedPlugin(address)	
       },
     }, [
       h('div', name),
       h('div', address),
-      h('div', "node: " + nodeUrl),
+      h('div', "script: " + scriptUrl),
       
       h('div', string + " ETH locked"),
       
-      h('i.fa.fa-ellipsis-h.fa-lg.layer2App-list-item__ellipsis.cursor-pointer', {
+      h('i.fa.fa-ellipsis-h.fa-lg.plugin-list-item__ellipsis.cursor-pointer', {
           onClick: (e) => {
             e.stopPropagation()
-            this.setState({ layer2AppMenuOpen: true })
+            this.setState({ pluginMenuOpen: true })
           },
         }),
-      layer2AppMenuOpen && h(Layer2AppMenuDropdown, {
-        onClose: () => this.setState({ layer2AppMenuOpen: false }),
-        layer2App: { name, address, nodeUrl },
+      pluginMenuOpen && h(pluginMenuDropdown, {
+        onClose: () => this.setState({ pluginMenuOpen: false }),
+        plugin: { name, address, scriptUrl },
       }),
     ])
   )
 }
 
-Layer2AppCell.prototype.send = function (address, event) {
+PluginCell.prototype.send = function (address, event) {
   event.preventDefault()
   event.stopPropagation()
   // const url = tokenFactoryFor(address)
@@ -106,7 +100,7 @@ Layer2AppCell.prototype.send = function (address, event) {
   // }
 }
 
-Layer2AppCell.prototype.view = function (address, userAddress, network, event) {
+PluginCell.prototype.view = function (address, userAddress, network, event) {
   const url = etherscanLinkFor(address, userAddress, network)
   if (url) {
     navigateTo(url)
@@ -117,8 +111,8 @@ function navigateTo (url) {
   global.platform.openWindow({ url })
 }
 
-function etherscanLinkFor (layer2AppAddress, address, network) {
+function etherscanLinkFor (pluginGatewayAddress, address, network) {
   const prefix = prefixForNetwork(network)
-  return `https://${prefix}etherscan.io/token/${layer2AppAddress}?a=${address}`
+  return `https://${prefix}etherscan.io/token/${pluginGatewayAddress}?a=${address}`
 }
 

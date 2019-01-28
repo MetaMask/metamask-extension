@@ -1668,15 +1668,13 @@ function showAddSuggestedPluginPage (transitionForward = true) {
   }
 }
 
-function addPlugin (authorAddress, name, scriptUrl) {
-  console.log("ADD PLUGIN START")
+function addPlugin (pluginAuthorAddress, pluginName, pluginScriptUrl) {
   return new Promise((resolve, reject) => {
-    background.addPlugin(customAuthorAddress, (err, plugins) => {
+    background.addPlugin(pluginAuthorAddress, pluginName, pluginScriptUrl, (err, plugins) => {
       if (err) {
         reject(err)
       }
       resolve(plugins)
-      console.log("ADD PLUGIN. RETURN END")
     })
   })
 }

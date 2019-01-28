@@ -113,7 +113,7 @@ setupMetamaskMeshMetrics()
  * @property {address} selectedTokenAddress - Used to indicate if a token is globally selected. Should be deprecated in favor of UI-centric token selection.
  * @property {Object} tokenExchangeRates - Info about current token prices.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
- * @property {Array} layer2Apps - TODO: Document
+ * @property {Array} plugins - TODO: Document
  * @property {Object} send - TODO: Document
  * @property {Object} coinOptions - TODO: Document
  * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.

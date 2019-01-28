@@ -77,10 +77,10 @@
   "addCustomToken": {
     "message": "Add custom token"
   }, 
-  "addLayer2App": {
+  "addPluginApp": {
     "message": "Add Layer 2 App"
   },
-  "addLayer2Apps": {
+  "addPluginApps": {
     "message": "Add Layer 2 Apps"
   },
   "addToken": {
@@ -592,7 +592,7 @@
   "hide": {
     "message": "Hide"
   },
-  "hideLayer2App": {
+  "hidePluginApp": {
     "message": "Hide Layer 2 App"
   },
   "hideToken": {
@@ -691,13 +691,13 @@
   "max": {
     "message": "Max"
   },
-  "layer2App": {
+  "pluginApp": {
     "message": "Layer 2 App"
   },
-  "layer2AppAddress": {
+  "pluginAppAddress": {
     "message": "Layer 2 App Address"
   },
-  "layer2AppSymbol": {
+  "pluginAppSymbol": {
     "message": "Layer 2 App Symbol"
   },
   "learnMore": {
@@ -710,7 +710,7 @@
     "message": "must be less than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
   },
-  "likeToAddLayer2Apps": {
+  "likeToAddPluginApps": {
     "message": "Would you like to add these layer 2 apps?"
   },
   "likeToAddTokens": {
@@ -728,7 +728,7 @@
   "loading": {
     "message": "Loading..."
   },
-  "loadingLayer2Apps": {
+  "loadingPluginApps": {
     "message": "Loading Layer 2 Apps..."
   },
   "loadingTokens": {

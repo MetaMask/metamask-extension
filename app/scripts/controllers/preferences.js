@@ -28,10 +28,10 @@ class PreferencesController {
       frequentRpcListDetail: [],
       currentAccountTab: 'history',
       accountTokens: {},
-      accountLayer2Apps: {},      
+      accountPlugins: {},      
       assetImages: {},
       tokens: [],
-      layer2Apps:[],
+      plugins:[],
       suggestedTokens: {},
       useBlockie: false,
       featureFlags: {
@@ -370,10 +370,12 @@ class PreferencesController {
    * Adds a new Plugin
    */
 
-  async addPlugin (rawAuthorAddress, contract, image) {
+  async addPlugin (rawAuthorAddress, name, scriptUrl) {
     console.log("Background Preferences add Plugin DEBUG", rawAuthorAddress)
     const authorAddress = normalizeAddress(rawAuthorAddress)
-    const newEntry = {authorAddress: authorAddress}
+    const newEntry = {authorAddress,
+		      name,
+		      scriptUrl}
     let plugins = this.getPlugins()
     const previousEntry = plugins.find((plugin, index) => {
       return plugin.authorAddress === authorAddress
@@ -386,7 +388,7 @@ class PreferencesController {
       plugins.push(newEntry)
     }
     
-    this.store.updateState({ layer2Apps : plugins })
+    this.store.updateState({ plugins })
     return Promise.resolve(plugins)
   }
 
@@ -402,13 +404,13 @@ class PreferencesController {
   }
 
   /**
-   * A getter for the `layer2Apps` property
+   * A getter for the `plugins` property
    *
-   * @returns {array} The current array of layer2Apps objects
+   * @returns {array} The current array of plugins objects
    *
    */
   getPlugins () {
-    return this.store.getState().layer2Apps
+    return this.store.getState().plugins
   }
 
 
@@ -596,18 +598,6 @@ class PreferencesController {
   }
 
 
-  _updateLayer2Apps (selectedAddress) {
-    console.log("-----------------DEBUG----------------",
-		"-----------------DEBUG----------------",
-		"-----------------DEBUG----------------",
-		"-----------------DEBUG----------------",
-		"-----------------DEBUG----------------",
-		"-----------------DEBUG----------------",)
-    const { layer2Apps } = this._getLayer2AppRelatedStates(selectedAddress)
-    this.store.updateState({ layer2Apps })
-  }
-
-  
   /**
    * A getter for `tokens` and `accountTokens` related states.
    *

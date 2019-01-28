@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { DEFAULT_ROUTE } from '../../../routes'
 import TextField from '../../text-field'
 import PageContainerContent from '../../page-container/page-container-content.component'
+import Button from '../../button'
 
 const { addPlugin } = require('../../../actions')
 
@@ -131,6 +132,15 @@ class AddPlugin extends Component {
 	Custom Form - Add plugin:
 	</div>
 	{ this.renderCustomPluginForm() }
+	<div>
+	<Button
+      type="primary"
+      className="pluginApp-view__button"
+      onClick={() => this.handleNext()}
+        >
+	Add Plugin
+	</Button>
+	</div>      
       </PageContainerContent>	
     )
   }

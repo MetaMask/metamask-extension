@@ -65,8 +65,8 @@
   "addCustomToken": {
     "message": "Ajouter un jeton personnalisé"
   },
-  "addLayer2App": {
-    "message": "Ajouter une App Layer 2"
+  "addPluginApp": {
+    "message": "Ajouter un plugin"
   },
   "addToken": {
     "message": "Ajouter un jeton"

@@ -7,11 +7,11 @@ const actions = require('../../actions')
 const genAccountLink = require('etherscan-link').createAccountLink
 const { Menu, Item, CloseArea } = require('./components/menu')
 
-Layer2AppMenuDropdown.contextTypes = {
+PluginMenuDropdown.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Layer2AppMenuDropdown)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(PluginMenuDropdown)
 
 function mapStateToProps (state) {
   return {
@@ -21,44 +21,44 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showHideLayer2AppConfirmationModal: (layer2App) => {
-      dispatch(actions.showModal({ name: 'HIDE_LAYER2APP_CONFIRMATION', layer2App }))
+    showHidePluginConfirmationModal: (plugin) => {
+      dispatch(actions.showModal({ name: 'HIDE_PLUGIN_CONFIRMATION', plugin }))
     },
   }
 }
 
 
-inherits(Layer2AppMenuDropdown, Component)
-function Layer2AppMenuDropdown () {
+inherits(PluginMenuDropdown, Component)
+function PluginMenuDropdown () {
   Component.call(this)
 
   this.onClose = this.onClose.bind(this)
 }
 
-Layer2AppMenuDropdown.prototype.onClose = function (e) {
+PluginMenuDropdown.prototype.onClose = function (e) {
   e.stopPropagation()
   this.props.onClose()
 }
 
-Layer2AppMenuDropdown.prototype.render = function () {
-  const { showHideLayer2AppConfirmationModal } = this.props
+PluginMenuDropdown.prototype.render = function () {
+  const { showHidePluginConfirmationModal } = this.props
 
-  return h(Menu, { className: 'layer2App-menu-dropdown', isShowing: true }, [
+  return h(Menu, { className: 'plugin-menu-dropdown', isShowing: true }, [
     h(CloseArea, {
       onClick: this.onClose,
     }),
     h(Item, {
       onClick: (e) => {
         e.stopPropagation()
-        showHideLayer2AppConfirmationModal(this.props.layer2App)
+        showHidePluginConfirmationModal(this.props.plugin)
         this.props.onClose()
       },
-      text: this.context.t('hideLayer2App'),
+      text: this.context.t('hidePlugin'),
     }),
     h(Item, {
       onClick: (e) => {
         e.stopPropagation()
-        const url = genAccountLink(this.props.layer2App.address, this.props.network)
+        const url = genAccountLink(this.props.plugin.address, this.props.network)
         global.platform.openWindow({ url })
         this.props.onClose()
       },
