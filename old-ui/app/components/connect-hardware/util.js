@@ -4,6 +4,10 @@ function isLedger (device) {
 	return device && device.toLowerCase().includes(LEDGER)
 }
 
+function isTrezor (device) {
+  return device && device.toLowerCase().includes('trezor')
+}
+
 function getHdPaths () {
   return [
     {
@@ -19,5 +23,6 @@ function getHdPaths () {
 
 module.exports = {
 	isLedger,
+  isTrezor,
 	getHdPaths,
 }
