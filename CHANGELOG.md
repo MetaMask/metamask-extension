@@ -2,6 +2,15 @@
 
 ## Current Develop Branch
 
+## 5.3.2 Mon Jan 28 2019
+
+- [#6021](https://github.com/MetaMask/metamask-extension/pull/6021): Order shapeshift transactions by time within the transactions list
+- [#6052](https://github.com/MetaMask/metamask-extension/pull/6052): Add and use cached method signatures to reduce provider requests
+- [#6048](https://github.com/MetaMask/metamask-extension/pull/6048): Refactor BalanceComponent to jsx
+- [#6026](https://github.com/MetaMask/metamask-extension/pull/6026): Prevent invalid chainIds when adding custom rpcs
+- [#6029](https://github.com/MetaMask/metamask-extension/pull/6029): Fix grammar error in Current Conversion
+- [#6024](https://github.com/MetaMask/metamask-extension/pull/6024): Disable account dropdown on signing screens
+
 ## 5.3.1 Wed Jan 16 2019
 
 - [#5966](https://github.com/MetaMask/metamask-extension/pull/5966): Update Slovenian translation
