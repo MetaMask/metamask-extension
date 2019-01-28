@@ -21,8 +21,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showHidePluginConfirmationModal: (plugin) => {
-      dispatch(actions.showModal({ name: 'HIDE_PLUGIN_CONFIRMATION', plugin }))
+    removePlugin: (plugin) => {
+      dispatch(actions.removePlugin(plugin))
     },
   }
 }
@@ -41,7 +41,8 @@ PluginMenuDropdown.prototype.onClose = function (e) {
 }
 
 PluginMenuDropdown.prototype.render = function () {
-  const { showHidePluginConfirmationModal } = this.props
+  const { removePlugin } = this.props
+//  console.log(this.props)
 
   return h(Menu, { className: 'plugin-menu-dropdown', isShowing: true }, [
     h(CloseArea, {
@@ -50,7 +51,7 @@ PluginMenuDropdown.prototype.render = function () {
     h(Item, {
       onClick: (e) => {
         e.stopPropagation()
-        showHidePluginConfirmationModal(this.props.plugin)
+        removePlugin(this.props.plugin.authorAddress)
         this.props.onClose()
       },
       text: this.context.t('hidePlugin'),

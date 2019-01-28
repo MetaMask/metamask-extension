@@ -45,9 +45,10 @@ PluginCell.prototype.render = function () {
   const { pluginMenuOpen } = this.state
   const props = this.props
   const {
-    address,
+    authorAddress,
     name,
     scriptUrl,
+    gatewayAddress,
     symbol,
     string,
     network,
@@ -61,18 +62,18 @@ PluginCell.prototype.render = function () {
     // userAddress,
     image,
   } = props
-  console.log(this.props)
+//  console.log(this.props)
 
 
   return (
     h('div.plugin-list-item', {
       className: "plugin-list-item",
       onClick: () => {
-        setSelectedPlugin(address)	
+        setSelectedPlugin(authorAddress)	
       },
     }, [
       h('div', name),
-      h('div', address),
+      h('div', authorAddress),
       h('div', "script: " + scriptUrl),
       
       h('div', string + " ETH locked"),
@@ -85,19 +86,10 @@ PluginCell.prototype.render = function () {
         }),
       pluginMenuOpen && h(pluginMenuDropdown, {
         onClose: () => this.setState({ pluginMenuOpen: false }),
-        plugin: { name, address, scriptUrl },
+        plugin: { name, authorAddress, scriptUrl, gatewayAddress },
       }),
     ])
   )
-}
-
-PluginCell.prototype.send = function (address, event) {
-  event.preventDefault()
-  event.stopPropagation()
-  // const url = tokenFactoryFor(address)
-  // if (url) {
-  //   navigateTo(url)
-  // }
 }
 
 PluginCell.prototype.view = function (address, userAddress, network, event) {
@@ -113,6 +105,6 @@ function navigateTo (url) {
 
 function etherscanLinkFor (pluginGatewayAddress, address, network) {
   const prefix = prefixForNetwork(network)
-  return `https://${prefix}etherscan.io/token/${pluginGatewayAddress}?a=${address}`
+  return `https://${prefix}etherscan.io/token/${pluginGatewayAddress}?a=${pluginGatewayAddress}`
 }
 

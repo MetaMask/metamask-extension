@@ -393,14 +393,21 @@ class PreferencesController {
   }
 
   // /**
-  //  * Removes a specified token from the tokens array.
+  //  * Removes a specified plugin from the tokens array.
   //  *
   //  * @param {string} rawAddress Hex address of the token contract to remove.
   //  * @returns {Promise<array>} The new array of AddedToken objects
   //  *
   //  */
-  removePlugin (rawAuthorAddress) {
-    return Promise.resolve()
+  removePlugin (authorAddress) {
+    console.log("DEBUG BACKGROUND")
+    console.log(authorAddress)
+    const plugins = this.store.getState().plugins
+    console.log(plugins)
+    const updatedPlugins = plugins.filter(plugin => plugin.authorAddress !== authorAddress)
+    console.log(updatedPlugins)
+    this.store.updateState({ plugins: updatedPlugins })
+    return Promise.resolve(updatedPlugins)
   }
 
   /**

@@ -122,9 +122,9 @@ var actions = {
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
   SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
-  SET_SELECTED_PLUGIN_ADDRESS: 'SET_SELECTED_PLUGIN_ADDRESS',
+  SET_SELECTED_PLUGIN: 'SET_SELECTED_PLUGIN',
   setSelectedToken,
-  setSelectedPluginAddress,
+  setSelectedPlugin,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -1560,10 +1560,11 @@ function setSelectedToken (tokenAddress) {
   }
 }
 
-function setSelectedPluginAddress (pluginAddress) {
+//identified uniquely by author address
+function setSelectedPlugin (pluginAuthorAddress) {
   return {
-    type: actions.SET_SELECTED_PLUGIN_ADDRESS,
-    value: pluginAddress || null,
+    type: actions.SET_SELECTED_PLUGIN,
+    value: pluginAuthorAddress || null,
   }
 }
 
@@ -1687,11 +1688,11 @@ function registerPluginContract(pluginsScripts){
   }
 }
 
-function removePlugin (address) {
+function removePlugin (authorAddress) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.removePlugin(address, (err, plugins) => {
+      background.removePlugin(authorAddress, (err, plugins) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
