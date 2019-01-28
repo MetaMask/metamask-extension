@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import ethUtil from 'ethereumjs-util'
 import { DEFAULT_ROUTE } from '../../../routes'
 import TextField from '../../text-field'
-import PageContainer from '../../page-container'
-import { Tabs, Tab } from '../../tabs'
+import PageContainerContent from '../../page-container/page-container-content.component'
 
 const { addPlugin } = require('../../../actions')
 
@@ -13,9 +11,10 @@ class AddPlugin extends Component {
 
   constructor (props) {
     super(props)
-
     this.state = {
-      customAuthorAddress: '',
+      pluginAuthorAddress: '',
+      pluginName: '',
+      pluginScriptUrl: '',
       displayedTab: CUSTOM_PLUGIN_TAB,
     }
   }
@@ -23,46 +22,97 @@ class AddPlugin extends Component {
   handleNext () {
     const { history } = this.props
     const {
-      customAuthorAddress,
+      pluginAuthorAddress,
+      pluginName,
+      pluginScriptUrl,
     } = this.state
 
     const customPlugin = {
-      authorAddress : customAuthorAddress
+      authorAddress : pluginAuthorAddress,
+      name : pluginName,
+      scriptUrl : pluginScriptUrl
     }
     
     console.log("DEBUG NEXT ADD PLUGIN COMPONENT", customPlugin)
 
-    addPlugin(customPlugin.authorAddress)
+    addPlugin(customPlugin.authorAddress, customPlugin.name, customPlugin.scriptUrl)
     
     history.push(DEFAULT_ROUTE)
   }
 
-  handleCustomAuthorAddressChange (value) {
-    const customAuthorAddress = value.trim()
+  handlePluginAuthorAddressChange (value) {
+    const pluginAuthorAddress = value.trim()
     this.setState({
-      customAuthorAddress,
-      customAddressError: null,
+      pluginAuthorAddress,
+      pluginAuthorAddressError: null,
       autoFilled: false,
     })
 
   }
 
+  handlePluginNameChange (value) {
+    const pluginName = value.trim()
+    this.setState({
+      pluginName,
+      pluginNameError: null,
+      autoFilled: false,
+    })
+
+  }
+
+  handlePluginScriptUrlChange (value) {
+    const pluginScriptUrl = value.trim()
+    this.setState({
+      pluginScriptUrl,
+      pluginScriptUrlError: null,
+      autoFilled: false,
+    })
+  }
+  
   renderCustomPluginForm () {
     const {
-      customAuthorAddress,
-      customAddressError,
+      pluginAuthorAddress,
+      pluginAuthorAddressError,
+      pluginName,
+      pluginNameError,
+      pluginScriptUrl,
+      pluginScriptUrlError,
       autoFilled,
     } = this.state
 
+
+    // For now all value have a field
+    // We will implement the plugin registrar afterwards
+    // Will resolve all from the first field (author address)
     return (
-      <div className="add-layer2App__custom-layer2App-form">
+      <div className="add-plugin__custom-plugin-form">
         <TextField
-          id="custom-address"
+          id="plugin-author-address"
           label={'pluginAuthorAddress'}
           type="text"
-          value={customAuthorAddress}
-          onChange={e => this.handleCustomAuthorAddressChange(e.target.value)}
-          error={customAddressError}
+          value={pluginAuthorAddress}
+          onChange={e => this.handlePluginAuthorAddressChange(e.target.value)}
+          error={pluginAuthorAddressError}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          id="plugin-name"
+          label={'pluginName'}
+          type="text"
+          value={pluginName}
+          onChange={e => this.handlePluginNameChange(e.target.value)}
+          error={pluginNameError}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          id="plugin-script-url"
+          label={'pluginScriptUrl'}
+          type="text"
+          value={pluginScriptUrl}
+          onChange={e => this.handlePluginScriptUrlChange(e.target.value)}
+          error={pluginScriptUrlError}
           fullWidth
           margin="normal"
         />
@@ -71,29 +121,17 @@ class AddPlugin extends Component {
   }
 
 
-  renderTabs () {
-    return (
-      <Tabs>
-        <Tab name={'customPlugin'}>
-          { this.renderCustomPluginForm() }
-        </Tab>
-      </Tabs>
-    )
-  }
-
   render () {
     const { history } = this.props
     return (
-      <PageContainer
-        title={'addPlugin'}
-        tabsComponent={this.renderTabs()}
-      onSubmit={() => {
-	this.handleNext()
-      }}
-      onCancel={() => {
-          history.push(DEFAULT_ROUTE)
-        }}
-      />
+	<PageContainerContent>
+	<div>
+	<br/>
+	<br/>	
+	Custom Form - Add plugin:
+	</div>
+	{ this.renderCustomPluginForm() }
+      </PageContainerContent>	
     )
   }
 }

@@ -1,13 +1,9 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
-import Layer2AppView from './layer2App-view.component'
-import { getSelectedToken, getSelectedAddress, getSelectedTokenAssetImage, getSelectedLayer2AppAddress, getSelectedLayer2AppScript } from '../../selectors'
+import PluginView from './plugin-view.component'
+import { getSelectedToken, getSelectedAddress, getSelectedTokenAssetImage, getSelectedPluginAddress, getSelectedPluginScript } from '../../selectors'
 import { showModal } from '../../actions'
-
-
-
-
 
 
 const mapStateToProps = state => {
@@ -21,8 +17,8 @@ const mapStateToProps = state => {
     network,
     balance,
     assetImage: getSelectedTokenAssetImage(state),
-    selectedLayer2AppAddress: getSelectedLayer2AppAddress(state),
-    selectedLayer2AppScript: getSelectedLayer2AppScript(state),
+    selectedPluginAddress: getSelectedPluginAddress(state),
+    selectedPluginScript: getSelectedPluginScript(state),
   }
 }
 
@@ -37,4 +33,4 @@ const mapStateToProps = state => {
 export default compose(
   withRouter,
   connect(mapStateToProps)
-)(Layer2AppView)
+)(PluginView)

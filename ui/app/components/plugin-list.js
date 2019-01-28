@@ -12,7 +12,7 @@ const { registerPluginContract } = require('../actions')
 
 function mapDispatchToProps(dispatch) {
   return {
-    registerLayer2AppContract: contract => dispatch(registerLayer2AppContract(contract)),
+    registerPluginContract: contract => dispatch(registerPluginContract(contract)),
   }
 }
 
@@ -20,7 +20,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
-    plugins: state.metamask.layer2Apps,
+    plugins: state.metamask.plugins,
     userAddress: selectors.getSelectedAddress(state),
     assetImages: state.metamask.assetImages,
   }
@@ -142,16 +142,16 @@ class PluginList extends Component {
     // const shouldUpdateLayer2Apps = isLoading || missingInfo || sameUserAndNetwork
 
     // const oldLayer2AppsLength = layer2Apps ? layer2Apps.length : 0
-    // const layer2AppsLengthUnchanged = oldLayer2AppsLength === newLayer2Apps.length
+    // const pluginAppsLengthUnchanged = oldPluginAppsLength === newPluginApps.length
 
-    // if (layer2AppsLengthUnchanged && shouldUpdateLayer2Apps) return
+    // if (pluginAppsLengthUnchanged && shouldUpdatePluginApps) return
 
     // this.setState({ isLoading: true })
-    // this.createFreshLayer2AppTracker()
+    // this.createFreshPluginAppTracker()
   }
 
   updateBalances(plugins) {
-    console.log("UPDATEBALANCES in l2a list", plugins)
+    console.log("UPDATEBALANCES in plugin list", plugins)
     if (!this.tracker.running) {
       return
     }

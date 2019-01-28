@@ -122,9 +122,9 @@ var actions = {
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
   SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
-  SET_SELECTED_LAYER2APP_ADDRESS: 'SET_SELECTED_LAYER2APP_ADDRESS',
+  SET_SELECTED_PLUGIN_ADDRESS: 'SET_SELECTED_PLUGIN_ADDRESS',
   setSelectedToken,
-  setSelectedLayer2AppAddress,
+  setSelectedPluginAddress,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -229,9 +229,9 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
   showConfigPage,
-  // Layer 2 Apps
+  // Plugins
   REGISTER_PLUGINS_SCRIPTS: 'REGISTER_PLUGINS_SCRIPTS',
-  registerLayer2AppContract,
+  registerPluginContract,
   SHOW_ADD_PLUGIN_PAGE: 'SHOW_ADD_PLUGIN_PAGE',
   SHOW_ADD_SUGGESTED_PLUGIN_PAGE: 'SHOW_ADD_SUGGESTED_PLUGIN_PAGE',
   showAddPluginPage,
@@ -337,11 +337,6 @@ var actions = {
   CLEAR_PENDING_TOKENS: 'CLEAR_PENDING_TOKENS',
   setPendingTokens,
   clearPendingTokens,
-
-  SET_PENDING_PLUGINS: 'SET_PENDING_PLUGINS',
-  CLEAR_PENDING_PLUGINS: 'CLEAR_PENDING_PLUGINS',
-  setPendingPlugins,
-  clearPendingPlugins,
 
   createCancelTransaction,
   createSpeedUpTransaction,
@@ -1673,7 +1668,7 @@ function showAddSuggestedPluginPage (transitionForward = true) {
   }
 }
 
-function addPlugin (customAuthorAddress) {
+function addPlugin (authorAddress, name, scriptUrl) {
   console.log("ADD PLUGIN START")
   return new Promise((resolve, reject) => {
     background.addPlugin(customAuthorAddress, (err, plugins) => {

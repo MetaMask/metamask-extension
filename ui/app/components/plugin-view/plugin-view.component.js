@@ -8,24 +8,24 @@ import { DEPOSIT_PLUGIN_ROUTE } from '../../routes'
 
 const BN = require('ethereumjs-util').BN
 
-export default class Layer2AppView extends PureComponent {
+export default class PluginView extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     showDepositModal: PropTypes.func,
     history: PropTypes.object,
   }
 
-  renderLayer2Buttons () {
+  renderPluginButtons () {
     let elements = []
-    const script = this.props.selectedLayer2AppScript
+    const script = this.props.selectedPluginScript
 
-    for (var k = 0; k< script.layer2Interface.actions.length; k++){
+    for (var k = 0; k< script.pluginInterface.actions.length; k++){
       const index = k
 
       let paramValues = []      
-      for (var i = 0; i< script.layer2Interface.actions[index].params.length; i++){
+      for (var i = 0; i< script.pluginInterface.actions[index].params.length; i++){
 	const subIndex = i
-	const param = script.layer2Interface.actions[index].params[subIndex]
+	const param = script.pluginInterface.actions[index].params[subIndex]
 	elements.push(h('input', {
 	  key: "input"+index+subIndex,
 	  className: 'customize-gas-input',
@@ -43,13 +43,13 @@ export default class Layer2AppView extends PureComponent {
       elements.push(<Button
 		   key={"button"+k}
 		   type="primary"
-		   className="layer2App-view__button"
+		   className="plugin-view__button"
 		   onClick={() => {
-		     console.log(script.layer2Interface)
-		     script.layer2Interface.actions[index].call(paramValues)}
+		     console.log(script.pluginInterface)
+		     script.pluginInterface.actions[index].call(paramValues)}
 			   }
 		   >
-		   {script.layer2Interface.actions[index].name}
+		   {script.pluginInterface.actions[index].name}
 		    </Button>)
 
     }
@@ -60,49 +60,49 @@ export default class Layer2AppView extends PureComponent {
     const { t } = this.context
     const { history } = this.props
 
-    //the deposit layer2app button should probably also be delegated to the script logic
-    //for now it is in the depositLayer2 components
-    const script = this.props.selectedLayer2AppScript
+    //the deposit plugin button should probably also be delegated to the script logic
+    //for now it is in the depositPlugin components
+    const script = this.props.selectedPluginScript
     if (!script) return (	<div>       </div>)
     let deposit
     let totalReceived
     let received    
     let paid
-    console.log(script.layer2State.deposited)
-    if (script.layer2State.deposited){
-      deposit = new BN(script.layer2State.deposited, 16).toString(10)/1e18
+    console.log(script.pluginState.deposited)
+    if (script.pluginState.deposited){
+      deposit = new BN(script.pluginState.deposited, 16).toString(10)/1e18
     }
     else {
       deposit = 0
     }
-    if (script.layer2State.totalReceived){
-      totalReceived = new BN(script.layer2State.totalReceived, 16).toString(10)/1e18
+    if (script.pluginState.totalReceived){
+      totalReceived = new BN(script.pluginState.totalReceived, 16).toString(10)/1e18
     }
     else {
       totalReceived = 0
     }
-    if (script.layer2State.received){
-      received = script.layer2State.received
+    if (script.pluginState.received){
+      received = script.pluginState.received
     }
     else {
       received = "No payments received yet"
     }
-    if (script.layer2State.paid){
-      paid = script.layer2State.paid
+    if (script.pluginState.paid){
+      paid = script.pluginState.paid
     }
     else {
       paid = "No payments made yet"
     }
     return (
-	<div className="layer2App-view">
+	<div className="pluginApp-view">
 	<Button
       type="primary"
-      className="layer2App-view__button"
+      className="pluginApp-view__button"
       onClick={() => history.push(DEPOSIT_PLUGIN_ROUTE)}
         >
-        {t("depositLayer2App") }
+        {t("depositPluginApp") }
       </Button>
-	{this.renderLayer2Buttons.bind(this)()}
+	{this.renderPluginButtons.bind(this)()}
 
       	<div>
 	{"Deposit available: " + deposit + " eth"}

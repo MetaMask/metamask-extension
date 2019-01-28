@@ -45,7 +45,7 @@ function mapStateToProps (state) {
     identities: state.metamask.identities,
     accounts: selectors.getMetaMaskAccounts(state),
     tokens: state.metamask.tokens,
-    layer2Apps: state.metamask.layer2Apps,
+    plugins: state.metamask.plugins,
     keyrings: state.metamask.keyrings,
     selectedAddress: selectors.getSelectedAddress(state),
     selectedAccount: selectors.getSelectedAccount(state),

@@ -4,7 +4,7 @@ import Media from 'react-media'
 import { Redirect } from 'react-router-dom'
 import WalletView from '../../wallet-view'
 import TransactionView from '../../transaction-view'
-import Layer2AppView from '../../layer2App-view'
+import PluginView from '../../plugin-view'
 import ProviderApproval from '../provider-approval'
 
 import {
@@ -82,7 +82,7 @@ export default class Home extends PureComponent {
           />
 	  <TransactionView />
 	</div>
-        <Layer2AppView />	
+        <PluginView />	
       </div>	
     )
   }
