@@ -412,10 +412,10 @@ class PreferencesController {
       rpcList[index] = updatedRpc
       this.store.updateState({ frequentRpcListDetail: rpcList })
     } else {
-      const { url, chainId, ticker, nickname } = newRpcDetails
-      this.addToFrequentRpcList(url, chainId, ticker, nickname)
+      const { rpcUrl, chainId, ticker, nickname } = newRpcDetails
+      return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname)
     }
-
+    return Promise.resolve(rpcList)
   }
   /**
    * Adds custom RPC url to state.
