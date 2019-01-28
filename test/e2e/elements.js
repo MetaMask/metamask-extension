@@ -335,7 +335,7 @@ module.exports = {
       buttons: {
         back: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
         no: By.className('btn-violet'),
-        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button:nth-child(2)'),
+        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
       },
     },
 
