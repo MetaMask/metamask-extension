@@ -32,21 +32,44 @@ class SendTransactionField extends Component {
 		onChange: PropTypes.func,
 	}
 
+	generateAttributes () {
+		return {
+			placeholder: this.props.placeholder,
+			value: this.state.val,
+			disabled: this.props.disabled,
+			onChange: (e) => {
+				this.setState({
+					val: e.target.value,
+				})
+				this.props.onChange(e.target.value)
+			},
+		}
+	}
+}
+
+class SendTransactionTextField extends SendTransactionField {
 	render () {
 		return (
-			<input
-				type="text"
+			<input type="text"
+				{...this.generateAttributes()}
 				className="input large-input output"
-				placeholder={this.props.placeholder}
-				value={this.state.val}
-				disabled={this.props.disabled}
-				onChange={(e) => {
-					this.setState({
-						val: e.target.value,
-					})
-					this.props.onChange(e.target.value)
-				}}
 				style={{ marginTop: '5px' }}
+			/>
+		)
+	}
+}
+
+class SendTransactionTextArea extends SendTransactionField {
+	render () {
+		return (
+			<textarea
+				{...this.generateAttributes()}
+				style={{
+					marginTop: '5px',
+					width: '100%',
+					height: '50px',
+					padding: '10px',
+				}}
 			/>
 		)
 	}
@@ -216,24 +239,27 @@ class SendTransactionScreen extends PersistentForm {
 			}
 		}
 		let field
+		const allTypesProps = {
+			ind,
+			defaultValue,
+			disabled: !isInput,
+			onChange: val => isInput ? this.handleInputChange(val, params.type, ind) : null,
+		}
+		const textTypeProps = {
+			key: Math.random(),
+			placeholder: params.type,
+		}
 		if (params.type === 'bool' && isInput) {
 			field = (
-				<SendTransactionInputSelect
-					ind={ind}
-					defaultValue={defaultValue}
-					onChange={val => this.handleInputChange(val, params.type, ind)}
-				/>
+				<SendTransactionInputSelect {...allTypesProps} />
+			)
+		} else if (params.type.includes('[]') && !isInput) {
+			field = (
+				<SendTransactionTextArea {...allTypesProps} {...textTypeProps} />
 			)
 		} else {
 			field = (
-				<SendTransactionField
-					key={Math.random()}
-					ind={ind}
-					disabled={!isInput}
-					placeholder={params.type}
-					defaultValue={defaultValue}
-					onChange={val => isInput ? this.handleInputChange(val, params.type, ind) : null}
-				/>
+				<SendTransactionTextField {...allTypesProps} {...textTypeProps} />
 			)
 		}
 		const fieldObj = (
