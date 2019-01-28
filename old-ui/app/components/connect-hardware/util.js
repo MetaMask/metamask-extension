@@ -1,4 +1,5 @@
 import { LEDGER, TREZOR } from './enum'
+
 function isLedger (device) {
 	return device && device.toLowerCase().includes(LEDGER)
 }

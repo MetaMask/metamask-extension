@@ -103,6 +103,7 @@ var actions = {
   changePassword,
   getContract,
   removeAccount,
+  updateABI,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
@@ -655,6 +656,26 @@ function removeAccount (address, network) {
         }
 
         log.info('Account removed: ' + account)
+        dispatch(actions.showAccountsPage())
+        resolve()
+      })
+    })
+  }
+}
+
+function updateABI (address, network, newABI) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      background.updateABI(address, network, newABI, (err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.info('Implementation ABI for proxy updated: ' + account)
         dispatch(actions.showAccountsPage())
         resolve()
       })
