@@ -6,6 +6,7 @@ import { INITIALIZE_SEED_PHRASE_ROUTE, INITIALIZE_END_OF_FLOW_ROUTE } from '../.
 export default class UniqueImageScreen extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -37,6 +38,13 @@ export default class UniqueImageScreen extends PureComponent {
           type="confirm"
           className="first-time-flow__button"
           onClick={() => {
+            this.context.metricsEvent({
+              eventOpts: {
+                category: 'Acquisition',
+                action: 'userClickContinue',
+                name: 'confirmedAvatar',
+              },
+            })
             if (isImportedKeyring) {
               history.push(INITIALIZE_END_OF_FLOW_ROUTE)
             } else {

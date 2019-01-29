@@ -10,6 +10,7 @@ import TextField from '../../../../text-field'
 
 export default class NewAccount extends PureComponent {
   static contextTypes = {
+    metricsEvent: PropTypes.func,
     t: PropTypes.func,
   }
 
@@ -99,6 +100,15 @@ export default class NewAccount extends PureComponent {
 
     try {
       await onSubmit(password)
+
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Acquisition',
+          action: 'userClickContinue',
+          name: 'onboardingStarted',
+        },
+      })
+
       history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
     } catch (error) {
       this.setState({ passwordError: error.message })
