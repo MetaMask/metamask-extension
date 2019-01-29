@@ -15,6 +15,15 @@ const ethNetProps = require('eth-net-props')
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
 
+const { POA_CODE,
+  DAI_CODE,
+  POA_SOKOL_CODE,
+  MAINNET_CODE,
+  ROPSTEN_CODE,
+  RINKEBY_CODE,
+  KOVAN_CODE,
+} = require('../../../app/scripts/controllers/network/enums')
+
 const mapDispatchToProps = dispatch => {
   return {
     retryTransaction: transactionId => dispatch(actions.retryTransaction(transactionId)),
@@ -59,13 +68,19 @@ TransactionListItem.prototype.render = function () {
   const { transaction, network, conversionRate, currentCurrency } = this.props
   const { status } = transaction
   if (transaction.key === 'shapeshift') {
-    if (network === '1') return h(ShiftListItem, transaction)
+    if (Number(network) === MAINNET_CODE) return h(ShiftListItem, transaction)
   }
   var date = formatDate(transaction.time)
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42 || numericNet === 77 || numericNet === 99 || numericNet === 100
+  isLinkable = numericNet === MAINNET_CODE ||
+    numericNet === ROPSTEN_CODE ||
+    numericNet === RINKEBY_CODE ||
+    numericNet === KOVAN_CODE ||
+    numericNet === POA_SOKOL_CODE ||
+    numericNet === POA_CODE ||
+    numericNet === DAI_CODE
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)

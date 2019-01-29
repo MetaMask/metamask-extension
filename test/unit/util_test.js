@@ -128,12 +128,14 @@ describe('util', function () {
 
     it('should return eth as string followed by ETH', function () {
       var input = new ethUtil.BN(ethInWei, 10).toJSON()
+      console.log('input = ', input)
       var result = util.formatBalance(input, 4)
       assert.equal(result, '1.0000 ETH')
     })
 
     it('should return eth as string followed by ETH', function () {
       var input = new ethUtil.BN(ethInWei, 10).div(new ethUtil.BN('2', 10)).toJSON()
+      console.log('input = ', input)
       var result = util.formatBalance(input, 3)
       assert.equal(result, '0.500 ETH')
     })

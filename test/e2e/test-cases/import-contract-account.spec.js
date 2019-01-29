@@ -773,17 +773,17 @@ const importContractAccount = async (f, account1, getCreatedAccounts) => {
         assert.notEqual(reject, false, "button reject isn't displayed")
       })
 
-      it("Button 'Buy Ether' is displayed", async () => {
+      it("Button 'Buy POA' is displayed", async function () {
         const button = await f.waitUntilShowUp(screens.confirmTransaction.button.buyEther)
-        assert.equal(await button.getText(), 'Buy Ether', 'button has incorrect name')
+        assert.equal(await button.getText(), 'Buy POA', 'button has incorrect name')
         assert.equal(await button.isEnabled(), true, 'button is disabled')
       })
 
-      it("Open screen 'Buy Ether'", async () => {
+      it("Open screen 'Buy'", async function () {
         const button = await f.waitUntilShowUp(screens.confirmTransaction.button.buyEther)
         await button.click()
         const title = await f.waitUntilShowUp(screens.buyEther.title)
-        assert.equal(await title.getText(), 'Buy POA', "screen 'Buy Ether' has incorrect title text")
+        assert.equal(await title.getText(), 'Buy POA', "screen 'Buy POA' has incorrect title text")
         const arrow = await f.waitUntilShowUp(elements.buttonArrow)
         await arrow.click()
       })

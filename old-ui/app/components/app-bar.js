@@ -9,6 +9,9 @@ const NetworkIndicator = require('./network')
 const {AccountDropdowns} = require('./account-dropdowns')
 const ethNetProps = require('eth-net-props')
 
+const { LOCALHOST } = require('../../../app/scripts/controllers/network/enums')
+const { networks } = require('../../../app/scripts/controllers/network/util')
+
 const LOCALHOST_RPC_URL = 'http://localhost:8545'
 
 module.exports = class AppBar extends Component {
@@ -243,6 +246,35 @@ module.exports = class AppBar extends Component {
     const state = this.state || {}
     const isOpen = state.isNetworkMenuOpen
 
+    const networkDropdownItems = Object.keys(networks)
+    .filter((networkID) => {
+      return !isNaN(networkID)
+    })
+    .sort((networkID1, networkID2) => {
+      const networkObj1 = networks[networkID1]
+      const networkObj2 = networks[networkID2]
+      return networkObj1.order - networkObj2.order
+    })
+    .map((networkID) => {
+      const networkObj = networks[networkID]
+      return h(
+        DropdownMenuItem,
+        {
+          key: networkObj.providerName,
+          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+          onClick: () => props.dispatch(actions.setProviderType(networkObj.providerName)),
+          style: {
+            paddingLeft: '20px',
+            fontSize: '16px',
+            color: providerType === networkObj.providerName ? 'white' : '',
+          },
+        },
+        [h(providerType === networkObj.providerName ? 'div.selected-network' : ''),
+          ethNetProps.props.getNetworkDisplayName(networkID),
+        ]
+      )
+    })
+
     return h(Dropdown, {
       useCssTransition: true,
       isOpen,
@@ -272,124 +304,7 @@ module.exports = class AppBar extends Component {
       },
     }, [
 
-      h(
-        DropdownMenuItem,
-        {
-          key: 'poa',
-          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-          onClick: () => props.dispatch(actions.setProviderType('poa')),
-          style: {
-            paddingLeft: '20px',
-            fontSize: '16px',
-            color: providerType === 'poa' ? 'white' : '',
-          },
-        },
-        [h(providerType === 'poa' ? 'div.selected-network' : ''),
-          ethNetProps.props.getNetworkDisplayName(99),
-        ]
-      ),
-
-      h(
-        DropdownMenuItem,
-        {
-          key: 'dai',
-          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-          onClick: () => props.dispatch(actions.setProviderType('dai')),
-          style: {
-            paddingLeft: '20px',
-            fontSize: '16px',
-            color: providerType === 'dai' ? 'white' : '',
-          },
-        },
-        [h(providerType === 'dai' ? 'div.selected-network' : ''),
-          ethNetProps.props.getNetworkDisplayName(100),
-        ]
-      ),
-
-      h(
-        DropdownMenuItem,
-        {
-          key: 'sokol',
-          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-          onClick: () => props.dispatch(actions.setProviderType('sokol')),
-          style: {
-            paddingLeft: '20px',
-            fontSize: '16px',
-            color: providerType === 'sokol' ? 'white' : '',
-          },
-        },
-        [h(providerType === 'sokol' ? 'div.selected-network' : ''),
-          ethNetProps.props.getNetworkDisplayName(77),
-        ]
-      ),
-
-      h(
-        DropdownMenuItem,
-        {
-          key: 'main',
-          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-          onClick: () => props.dispatch(actions.setProviderType('mainnet')),
-          style: {
-            paddingLeft: '20px',
-            fontSize: '16px',
-            color: providerType === 'mainnet' ? 'white' : '',
-          },
-        },
-        [h(providerType === 'mainnet' ? 'div.selected-network' : ''),
-          ethNetProps.props.getNetworkDisplayName(1),
-        ]
-      ),
-
-      h(
-        DropdownMenuItem,
-        {
-          key: 'ropsten',
-          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-          onClick: () => props.dispatch(actions.setProviderType('ropsten')),
-          style: {
-            paddingLeft: '20px',
-            fontSize: '16px',
-            color: providerType === 'ropsten' ? 'white' : '',
-          },
-        },
-        [h(providerType === 'ropsten' ? 'div.selected-network' : ''),
-          ethNetProps.props.getNetworkDisplayName(3),
-        ]
-      ),
-
-      h(
-        DropdownMenuItem,
-        {
-          key: 'kovan',
-          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-          onClick: () => props.dispatch(actions.setProviderType('kovan')),
-          style: {
-            paddingLeft: '20px',
-            fontSize: '16px',
-            color: providerType === 'kovan' ? 'white' : '',
-          },
-        },
-        [h(providerType === 'kovan' ? 'div.selected-network' : ''),
-          ethNetProps.props.getNetworkDisplayName(42),
-        ]
-      ),
-
-      h(
-        DropdownMenuItem,
-        {
-          key: 'rinkeby',
-          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-          onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
-          style: {
-            paddingLeft: '20px',
-            fontSize: '16px',
-            color: providerType === 'rinkeby' ? 'white' : '',
-          },
-        },
-        [h(providerType === 'rinkeby' ? 'div.selected-network' : ''),
-          ethNetProps.props.getNetworkDisplayName(4),
-        ]
-      ),
+      ...networkDropdownItems,
 
       h(
         DropdownMenuItem,
@@ -398,15 +313,15 @@ module.exports = class AppBar extends Component {
           closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
           onClick: () => {
             props.dispatch(actions.setRpcTarget('http://localhost:8545'))
-            props.dispatch(actions.setProviderType('localhost'))
+            props.dispatch(actions.setProviderType(LOCALHOST))
           },
           style: {
             paddingLeft: '20px',
             fontSize: '16px',
-            color: providerType === 'localhost' ? 'white' : '',
+            color: providerType === LOCALHOST ? 'white' : '',
           },
         },
-        [h(providerType === 'localhost' ? 'div.selected-network' : ''),
+        [h(providerType === LOCALHOST ? 'div.selected-network' : ''),
           'Localhost 8545',
         ]
       ),
