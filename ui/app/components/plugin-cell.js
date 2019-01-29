@@ -69,7 +69,7 @@ PluginCell.prototype.render = function () {
     h('div.plugin-list-item', {
       className: "plugin-list-item",
       onClick: () => {
-        setSelectedPlugin(authorAddress)	
+        setSelectedPlugin(authorAddress)
       },
     }, [
       h('div', name),

@@ -175,10 +175,25 @@ function reduceMetamask (state, action) {
         selectedPluginAddress: action.value,
       })
 
-    case actions.REGISTER_PLUGINS_SCRIPTS:
+    case actions.REGISTER_PLUGIN_SCRIPT:
+      console.log("METAMASK JS state", metamaskState.pluginsScripts)
+      let pluginsScripts = []
+      console.log("METAMASK JS before if else", pluginsScripts)
+      if (metamaskState.pluginsScripts.length == 0) {
+	console.log("length 0")
+        pluginsScripts = []
+      }
+      else {
+        console.log("length not 0")
+        pluginsScripts = metamaskState.pluginsScripts
+      }
+      console.log("METAMASK JS after if else", pluginsScripts)
+      pluginsScripts.push(action.value)
+      console.log("METAMASK JS after push", pluginsScripts)
       return extend(metamaskState, {
-        pluginsScripts: action.value
+        pluginsScripts: pluginsScripts
       })
+    
     case actions.SET_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label

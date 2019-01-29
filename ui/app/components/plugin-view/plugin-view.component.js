@@ -57,67 +57,68 @@ export default class PluginView extends PureComponent {
   }
 
   render () {
-    const { t } = this.context
-    const { history } = this.props
+    return (	<div>       </div>)    
+  //   const { t } = this.context
+  //   const { history } = this.props
 
-    //the deposit plugin button should probably also be delegated to the script logic
-    //for now it is in the depositPlugin components
-    const script = this.props.selectedPluginScript
-    if (!script) return (	<div>       </div>)
-    let deposit
-    let totalReceived
-    let received    
-    let paid
-    console.log(script.pluginState.deposited)
-    if (script.pluginState.deposited){
-      deposit = new BN(script.pluginState.deposited, 16).toString(10)/1e18
-    }
-    else {
-      deposit = 0
-    }
-    if (script.pluginState.totalReceived){
-      totalReceived = new BN(script.pluginState.totalReceived, 16).toString(10)/1e18
-    }
-    else {
-      totalReceived = 0
-    }
-    if (script.pluginState.received){
-      received = script.pluginState.received
-    }
-    else {
-      received = "No payments received yet"
-    }
-    if (script.pluginState.paid){
-      paid = script.pluginState.paid
-    }
-    else {
-      paid = "No payments made yet"
-    }
-    return (
-	<div className="pluginApp-view">
-	<Button
-      type="primary"
-      className="pluginApp-view__button"
-      onClick={() => history.push(DEPOSIT_PLUGIN_ROUTE)}
-        >
-        {t("depositPluginApp") }
-      </Button>
-	{this.renderPluginButtons.bind(this)()}
+  //   //the deposit plugin button should probably also be delegated to the script logic
+  //   //for now it is in the depositPlugin components
+  //   const script = this.props.selectedPluginScript
+  //   if (!script) return (	<div>       </div>)
+  //   let deposit
+  //   let totalReceived
+  //   let received    
+  //   let paid
+  //   console.log(script.pluginState.deposited)
+  //   if (script.pluginState.deposited){
+  //     deposit = new BN(script.pluginState.deposited, 16).toString(10)/1e18
+  //   }
+  //   else {
+  //     deposit = 0
+  //   }
+  //   if (script.pluginState.totalReceived){
+  //     totalReceived = new BN(script.pluginState.totalReceived, 16).toString(10)/1e18
+  //   }
+  //   else {
+  //     totalReceived = 0
+  //   }
+  //   if (script.pluginState.received){
+  //     received = script.pluginState.received
+  //   }
+  //   else {
+  //     received = "No payments received yet"
+  //   }
+  //   if (script.pluginState.paid){
+  //     paid = script.pluginState.paid
+  //   }
+  //   else {
+  //     paid = "No payments made yet"
+  //   }
+  //   return (
+  // 	<div className="pluginApp-view">
+  // 	<Button
+  //     type="primary"
+  //     className="pluginApp-view__button"
+  //     onClick={() => history.push(DEPOSIT_PLUGIN_ROUTE)}
+  //       >
+  //       {t("depositPluginApp") }
+  //     </Button>
+  // 	{this.renderPluginButtons.bind(this)()}
 
-      	<div>
-	{"Deposit available: " + deposit + " eth"}
-      </div>
-      	<div>	
-	{"Total value received: " + totalReceived + " eth"}
-      </div>
-      	<div>	
-	{"Payments made: " + JSON.stringify(paid)}
-      </div>
-      	<div>	
-	{"Payments received: " + JSON.stringify(received)}
-      </div>
-      </div>
-    )
+  //     	<div>
+  // 	{"Deposit available: " + deposit + " eth"}
+  //     </div>
+  //     	<div>	
+  // 	{"Total value received: " + totalReceived + " eth"}
+  //     </div>
+  //     	<div>	
+  // 	{"Payments made: " + JSON.stringify(paid)}
+  //     </div>
+  //     	<div>	
+  // 	{"Payments received: " + JSON.stringify(received)}
+  //     </div>
+  //     </div>
+  //   )
   }
 }
 

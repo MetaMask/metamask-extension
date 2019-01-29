@@ -13,7 +13,6 @@ const mapStateToProps = state => {
   const { balance } = account
 
   return {
-    selectedToken: getSelectedToken(state),
     network,
     balance,
     assetImage: getSelectedTokenAssetImage(state),

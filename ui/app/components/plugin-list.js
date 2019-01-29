@@ -7,12 +7,12 @@ const PluginCell = require('./plugin-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
 const log = require('loglevel')
-const { registerPluginContract } = require('../actions')
+const { registerPluginScript } = require('../actions')
 
 
 function mapDispatchToProps(dispatch) {
   return {
-    registerPluginContract: contract => dispatch(registerPluginContract(contract)),
+    registerPluginScript: script => dispatch(registerPluginScript(script)),
   }
 }
 
@@ -54,7 +54,6 @@ class PluginList extends Component {
     if (!plugins) return this.message(this.context.t('No plugins'))
     
     return h('div', plugins.map((pluginData) => {
-      console.log("plugin list element", pluginData)
       return h(PluginCell, pluginData)
     }))
 
@@ -73,10 +72,10 @@ class PluginList extends Component {
   }
 
   componentDidMount() {
-    //this.props.plugins.map((plugin)=>this.createFreshPluginTracker(plugin.authorAddress))
+//    this.props.plugins.map((plugin)=>this.createFreshPluginWrapper(plugin))
   }
 
-  createFreshPluginWrapper() {
+  createFreshPluginWrapper(plugin) {
     // if (this.tracker) {
     //   // Clean up old trackers when refreshing:
     //   this.tracker.stop()
@@ -85,49 +84,46 @@ class PluginList extends Component {
     // }
 
     if (!global.ethereumProvider) return
-    const { userAddress, registerPluginContract } = this.props
+    const { userAddress, registerPluginScript } = this.props
 
-
-    console.log("PLUGIN TRACKERS", this.props.plugins)
+    console.log("PLUGIN WRAPPER", plugin)
     
-    this.tracker = new PluginWrapper({
+    this.wrapper = new PluginWrapper({
       userAddress,
       provider: global.ethereumProvider,
-      plugins: this.props.plugins,
+      plugin: plugin,
       pollingInterval: 8000,
       networkId: this.props.network
     })
 
     // TODO ADAPT HERE
-    console.log("REGISTER CALLED IN Plugin LIST", this.tracker.plugins)
-    registerPluginContract(this.tracker.plugins.map( (plugin) => {
-      return plugin.script
-    }))
-
-
+    console.log("REGISTER CALLED IN Plugin LIST", this.wrapper.plugin)
+    registerPluginScript(this.wrapper.pluginScript)
 
     // Set up listener instances for cleaning up
-    this.balanceUpdater = this.updateBalances.bind(this)
-    this.showError = (error) => {
-      this.setState({ error, isLoading: false })
-    }
-    this.tracker.on('update', this.balanceUpdater)
-    this.tracker.on('error', this.showError)
+    // this.balanceUpdater = this.updateBalances.bind(this)
+    // this.showError = (error) => {
+    //   this.setState({ error, isLoading: false })
+    // }
+    // this.tracker.on('update', this.balanceUpdater)
+    // this.tracker.on('error', this.showError)
 
-    this.tracker.updateBalances()
-      .then(() => {
-	this.updateBalances(this.tracker.serialize())
-      })
-      .catch((reason) => {
-	log.error(`Problem updating balances`, reason)
-	this.setState({ isLoading: false })
-      })
-	}
+    // this.tracker.updateBalances()
+    //   .then(() => {
+    // 	this.updateBalances(this.tracker.serialize())
+    //   })
+    //   .catch((reason) => {
+    // 	log.error(`Problem updating balances`, reason)
+    // 	this.setState({ isLoading: false })
+    //   })
+  }
 
   componentDidUpdate(nextProps) {
 
-    //   plugins,
-    // } = this.props
+    const plugins = this.props
+    console.log("DID UPDATE", this.props, nextProps)
+    if (plugins == nextProps && !isLoading) return
+    this.props.plugins.map((plugin)=>this.createFreshPluginWrapper(plugin))    
     // const {
     //   network: newNet,
     //   userAddress: newAddress,

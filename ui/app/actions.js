@@ -230,8 +230,8 @@ var actions = {
   SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
   showConfigPage,
   // Plugins
-  REGISTER_PLUGINS_SCRIPTS: 'REGISTER_PLUGINS_SCRIPTS',
-  registerPluginContract,
+  REGISTER_PLUGIN_SCRIPT: 'REGISTER_PLUGIN_SCRIPT',
+  registerPluginScript,
   SHOW_ADD_PLUGIN_PAGE: 'SHOW_ADD_PLUGIN_PAGE',
   SHOW_ADD_SUGGESTED_PLUGIN_PAGE: 'SHOW_ADD_SUGGESTED_PLUGIN_PAGE',
   showAddPluginPage,
@@ -1680,11 +1680,11 @@ function addPlugin (pluginAuthorAddress, pluginName, pluginScriptUrl) {
   })
 }
 
-function registerPluginContract(pluginsScripts){
-  console.log("REGISTERING PLUGIN 2 SCRIPTS", pluginsScripts)
+function registerPluginScript(pluginScript){
+  console.log("REGISTERING PLUGIN SCRIPT", pluginScript)
   return {
-    type: actions.REGISTER_PLUGINS_SCRIPTS,
-    value: pluginsScripts,
+    type: actions.REGISTER_PLUGIN_SCRIPT,
+    value: pluginScript,
   }
 }
 
