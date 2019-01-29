@@ -21,7 +21,7 @@ const { POA_CODE,
   MAINNET_CODE,
   ROPSTEN_CODE,
   RINKEBY_CODE,
-  KOVAN_CODE
+  KOVAN_CODE,
 } = require('../../../app/scripts/controllers/network/enums')
 
 const mapDispatchToProps = dispatch => {
