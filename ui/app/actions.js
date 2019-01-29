@@ -11,6 +11,9 @@ const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
+const { POA,
+  DAI,
+  POA_SOKOL } = require('../../app/scripts/controllers/network/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
 const WebcamUtils = require('../lib/webcam-utils')
 
@@ -2007,7 +2010,9 @@ function setProviderType (type) {
       dispatch(actions.setSelectedToken())
     })
 
-    const newCoin = type === 'poa' || type === 'sokol' ? 'poa' : type === 'dai' ? 'dai' : 'eth'
+    const newCoin = type === POA || type === POA_SOKOL ?
+                    'poa' : type === DAI ?
+                    'dai' : 'eth'
     background.setCurrentCoin(newCoin, (err, data) => {
       if (err) {
         log.error(err.stack)

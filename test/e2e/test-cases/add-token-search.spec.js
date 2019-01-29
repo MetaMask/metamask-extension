@@ -226,7 +226,7 @@ const addTokeFromSearch = async (f) => {
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not be displayed in SOKOL network', async () => {
+      it('token should not be displayed in SOKOL testnet', async () => {
         await f.setProvider(NETWORKS.SOKOL)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
@@ -236,17 +236,17 @@ const addTokeFromSearch = async (f) => {
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not be displayed in ROPSTEN network', async () => {
+      it('token should not be displayed in ROPSTEN testnet', async () => {
         await f.setProvider(NETWORKS.ROPSTEN)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not be displayed in KOVAN network', async () => {
+      it('token should not be displayed in KOVAN testnet', async () => {
         await f.setProvider(NETWORKS.KOVAN)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })
 
-      it('token should not be displayed in RINKEBY network', async () => {
+      it('token should not be displayed in RINKEBY testnet', async () => {
         await f.setProvider(NETWORKS.RINKEBY)
         assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
       })

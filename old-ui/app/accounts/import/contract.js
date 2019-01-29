@@ -8,6 +8,14 @@ import CopyButton from '../../components/copyButton'
 import ErrorComponent from '../../components/error'
 import { getFullABI } from './helpers'
 
+import { POA_CODE,
+  DAI_CODE,
+  POA_SOKOL_CODE,
+  MAINNET_CODE,
+  ROPSTEN_CODE,
+  RINKEBY_CODE,
+  KOVAN_CODE } from '../../../../app/scripts/controllers/network/enums'
+
 class ContractImportView extends Component {
   constructor (props) {
     super(props)
@@ -184,6 +192,28 @@ class ContractImportView extends Component {
     this.props.importNewAccount(this.props.type, { addr: contractAddr, network: this.props.network, abi })
     // JS runtime requires caught rejections but failures are handled by Redux
     .catch()
+  }
+
+  getBlockscoutApiNetworkSuffix () {
+    const { network } = this.props
+    switch (Number(network)) {
+      case MAINNET_CODE:
+        return 'mainnet'
+      case POA_CODE:
+        return 'core'
+      case POA_SOKOL_CODE:
+        return 'sokol'
+      case DAI_CODE:
+        return 'dai'
+      case KOVAN_CODE:
+        return 'kovan'
+      case ROPSTEN_CODE:
+        return 'ropsten'
+      case RINKEBY_CODE:
+        return 'rinkeby'
+      default:
+        return ''
+    }
   }
 
   clearInputs () {

@@ -141,7 +141,7 @@ const addCustomToken = async (f, account1, account2) => {
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not be displayed in SOKOL network', async () => {
+        it('token should not be displayed in SOKOL testnet', async () => {
           await f.setProvider(NETWORKS.SOKOL)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
@@ -151,17 +151,17 @@ const addCustomToken = async (f, account1, account2) => {
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not be displayed in ROPSTEN network', async () => {
+        it('token should not be displayed in ROPSTEN testnet', async () => {
           await f.setProvider(NETWORKS.ROPSTEN)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not be displayed in KOVAN network', async () => {
+        it('token should not be displayed in KOVAN testnet', async () => {
           await f.setProvider(NETWORKS.KOVAN)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
 
-        it('token should not be displayed in RINKEBY network', async () => {
+        it('token should not be displayed in RINKEBY testnet', async () => {
           await f.setProvider(NETWORKS.RINKEBY)
           assert.equal(await f.assertTokensNotDisplayed(), true, 'tokens are displayed')
         })
@@ -175,34 +175,34 @@ const addCustomToken = async (f, account1, account2) => {
           assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
         })
 
-        it('can not add inexistent token to SOKOL network', async () => {
+        it('can not add inexistent token to SOKOL testnet', async () => {
           await f.setProvider(NETWORKS.SOKOL)
-          assert(await f.isDisabledAddInexistentToken(inexistentToken), true, 'can add inexistent token in POA network')
+          assert(await f.isDisabledAddInexistentToken(inexistentToken), true, 'can add inexistent token in SOKOL testnet')
         })
 
-        it('can not add inexistent token to ROPSTEN network', async () => {
+        it('can not add inexistent token to ROPSTEN testnet', async () => {
           await f.setProvider(NETWORKS.ROPSTEN)
-          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in ROPSTEN testnet')
         })
 
-        it('can not add inexistent token to KOVAN network', async () => {
+        it('can not add inexistent token to KOVAN testnet', async () => {
           await f.setProvider(NETWORKS.KOVAN)
-          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in KOVAN testnet')
         })
 
-        it('can not add inexistent token to RINKEBY network', async () => {
+        it('can not add inexistent token to RINKEBY testnet', async () => {
           await f.setProvider(NETWORKS.RINKEBY)
-          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in RINKEBY testnet')
         })
 
         it('can not add inexistent token to MAINNET', async () => {
           await f.setProvider(NETWORKS.MAINNET)
-          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in POA network')
+          assert(await f.isDisabledAddInexistentToken(tokenAddress), true, 'can add inexistent token in MAINNET')
         })
 
         it('can not add inexistent token to LOCALHOST network', async () => {
           await f.setProvider(NETWORKS.LOCALHOST)
-          assert(await f.isDisabledAddInexistentToken(tokenAddress.slice(0, tokenAddress.length - 2) + '0'), true, 'can add inexistent token in POA network')
+          assert(await f.isDisabledAddInexistentToken(tokenAddress.slice(0, tokenAddress.length - 2) + '0'), true, 'can add inexistent token in LOCALHOST network')
         })
 
         it('token still should be displayed in LOCALHOST network', async () => {
@@ -412,7 +412,7 @@ const addCustomToken = async (f, account1, account2) => {
       })
     })
 
-    describe('Remove token , provider is localhost', function () {
+    describe('Remove token, provider is localhost', function () {
 
       it('switch to account 1 ', async () => {
         const accountMenu = await f.waitUntilShowUp(menus.account.menu)
