@@ -9,6 +9,7 @@ import { DEFAULT_ROUTE } from '../../../routes'
 
 export default class UnlockPage extends Component {
   static contextTypes = {
+    metricsEvent: PropTypes.func,
     t: PropTypes.func,
   }
 
@@ -45,7 +46,7 @@ export default class UnlockPage extends Component {
     event.stopPropagation()
 
     const { password } = this.state
-    const { onSubmit } = this.props
+    const { onSubmit, forceUpdateMetamaskState } = this.props
 
     if (password === '' || this.submitting) {
       return
@@ -56,7 +57,35 @@ export default class UnlockPage extends Component {
 
     try {
       await onSubmit(password)
+      const newState = await forceUpdateMetamaskState()
+      this.context.metricsEvent({
+        eventOpts: {
+          category: 'Retention',
+          action: 'userEnteredPassword',
+          name: 'unlockSuccess',
+        },
+        customVariables: {
+          numberOfTokens: newState.tokens.length,
+          numberOfAccounts: Object.keys(newState.accounts).length,
+        },
+      })
+
     } catch ({ message }) {
+      if (message === 'Incorrect password') {
+        const newState = await forceUpdateMetamaskState()
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Retention',
+            action: 'userEnteredPassword',
+            name: 'incorrectPassword',
+          },
+          customVariables: {
+            numberOfTokens: newState.tokens.length,
+            numberOfAccounts: Object.keys(newState.accounts).length,
+          },
+        })
+      }
+
       this.setState({ error: message })
       this.submitting = false
     }

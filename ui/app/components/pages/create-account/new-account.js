@@ -52,7 +52,25 @@ class NewAccountCreateForm extends Component {
           className: 'new-account-create-form__button',
           onClick: () => {
             createAccount(newAccountName || defaultAccountName)
-              .then(() => history.push(DEFAULT_ROUTE))
+              .then(() => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Accounts',
+                    action: 'backendCall',
+                    name: 'successAdding',
+                  },
+                })
+                history.push(DEFAULT_ROUTE)
+              })
+              .catch(() => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Accounts',
+                    action: 'backendCall',
+                    name: 'errorAdding',
+                  },
+                })
+              })
           },
         }, [this.context.t('create')]),
 
@@ -102,6 +120,7 @@ const mapDispatchToProps = dispatch => {
 
 NewAccountCreateForm.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(NewAccountCreateForm)

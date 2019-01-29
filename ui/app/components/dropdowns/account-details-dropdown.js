@@ -10,6 +10,7 @@ const { Menu, Item, CloseArea } = require('./components/menu')
 
 AccountDetailsDropdown.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsDropdown)
@@ -72,6 +73,13 @@ AccountDetailsDropdown.prototype.render = function () {
     h(Item, {
       onClick: (e) => {
         e.stopPropagation()
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Activation',
+            action: 'userClicks',
+            name: 'navExpandView',
+          },
+        })
         global.platform.openExtensionInBrowser()
         this.props.onClose()
       },
@@ -90,6 +98,13 @@ AccountDetailsDropdown.prototype.render = function () {
     h(Item, {
       onClick: (e) => {
         e.stopPropagation()
+        this.context.metricsEvent({
+          eventOpts: {
+            category: 'Activation',
+            action: 'userClicks',
+            name: 'navViewOnEtherScan',
+          },
+        })
         viewOnEtherscan(address, network)
         this.props.onClose()
       },

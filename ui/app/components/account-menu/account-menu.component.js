@@ -20,6 +20,7 @@ import {
 export default class AccountMenu extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -73,7 +74,16 @@ export default class AccountMenu extends PureComponent {
       return (
         <div
           className="account-menu__account menu__item--clickable"
-          onClick={() => showAccountDetail(identity.address)}
+          onClick={() => {
+            this.context.metricsEvent({
+              eventOpts: {
+                category: 'Activation/Retention',
+                action: 'userSwitchedAccounts',
+                name: 'navSwitchAccounts',
+              },
+            })
+            showAccountDetail(identity.address)
+          }}
           key={identity.address}
         >
           <div className="account-menu__check-mark">
@@ -197,6 +207,7 @@ export default class AccountMenu extends PureComponent {
       lockMetamask,
       history,
     } = this.props
+    const { metricsEvent } = this.context
 
     return (
       <Menu
@@ -230,6 +241,13 @@ export default class AccountMenu extends PureComponent {
         <Item
           onClick={() => {
             toggleAccountMenu()
+            metricsEvent({
+              eventOpts: {
+                category: 'Accounts',
+                action: 'userClick',
+                name: 'accountsNewAccount',
+              },
+            })
             history.push(NEW_ACCOUNT_ROUTE)
           }}
           icon={
@@ -286,6 +304,13 @@ export default class AccountMenu extends PureComponent {
           onClick={() => {
             toggleAccountMenu()
             history.push(SETTINGS_ROUTE)
+            this.context.metricsEvent({
+              eventOpts: {
+                category: 'Activation/Retention',
+                action: 'userClickSettings',
+                name: 'settingsOpen',
+              },
+            })
           }}
           icon={
             <img

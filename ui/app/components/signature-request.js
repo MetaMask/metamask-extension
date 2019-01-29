@@ -49,6 +49,7 @@ function mapDispatchToProps (dispatch) {
 
 SignatureRequest.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 module.exports = compose(
@@ -264,6 +265,16 @@ SignatureRequest.prototype.renderFooter = function () {
       className: 'request-signature__footer__cancel-button',
       onClick: event => {
         cancel(event).then(() => {
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Activation',
+              action: 'userClicksCancel',
+              name: 'signCancelled',
+            },
+            customVariables: {
+              functionType: type,
+            },
+          })
           this.props.clearConfirmTransaction()
           this.props.history.push(DEFAULT_ROUTE)
         })
@@ -275,6 +286,16 @@ SignatureRequest.prototype.renderFooter = function () {
       className: 'request-signature__footer__sign-button',
       onClick: event => {
         sign(event).then(() => {
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Activation',
+              action: 'userClicksSign',
+              name: 'signConfirmed',
+            },
+            customVariables: {
+              functionType: type,
+            },
+          })
           this.props.clearConfirmTransaction()
           this.props.history.push(DEFAULT_ROUTE)
         })

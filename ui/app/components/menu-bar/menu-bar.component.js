@@ -7,6 +7,7 @@ import AccountDetailsDropdown from '../dropdowns/account-details-dropdown.js'
 export default class MenuBar extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -31,7 +32,16 @@ export default class MenuBar extends PureComponent {
         >
           <div
             className="fa fa-bars menu-bar__sidebar-button"
-            onClick={() => sidebarOpen ? hideSidebar() : showSidebar()}
+            onClick={() => {
+              this.context.metricsEvent({
+                eventOpts: {
+                  category: 'Activation',
+                  action: 'userClicksHamburger',
+                  name: 'navOpenedHamburger',
+                },
+              })
+              sidebarOpen ? hideSidebar() : showSidebar()
+            }}
           />
         </Tooltip>
         <SelectedAccount />

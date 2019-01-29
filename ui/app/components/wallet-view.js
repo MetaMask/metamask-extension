@@ -26,6 +26,7 @@ module.exports = compose(
 
 WalletView.contextTypes = {
   t: PropTypes.func,
+  metricsEvent: PropTypes.func,
 }
 
 WalletView.defaultProps = {
@@ -197,6 +198,13 @@ WalletView.prototype.render = function () {
         }),
         onClick: () => {
           copyToClipboard(checksummedAddress)
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Activation',
+              action: 'userClicks',
+              name: 'navCopyToClipboard',
+            },
+          })
           this.setState({ hasCopied: true })
           setTimeout(() => this.setState({ hasCopied: false }), 3000)
         },

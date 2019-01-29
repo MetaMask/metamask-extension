@@ -12,6 +12,7 @@ import Tooltip from '../tooltip-v2'
 export default class TransactionViewBalance extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -78,7 +79,7 @@ export default class TransactionViewBalance extends PureComponent {
   }
 
   renderButtons () {
-    const { t } = this.context
+    const { t, metricsEvent } = this.context
     const { selectedToken, showDepositModal, history } = this.props
 
     return (
@@ -97,7 +98,20 @@ export default class TransactionViewBalance extends PureComponent {
         <Button
           type="primary"
           className="transaction-view-balance__button"
-          onClick={() => history.push(SEND_ROUTE)}
+          onClick={() => {
+            metricsEvent({
+              eventOpts: {
+                category: 'Activation',
+                action: 'userClick',
+                name: 'sendStarted',
+              },
+              pageOpts: {
+                section: 'Header',
+                component: 'homeScreenSendButton',
+              },
+            })
+            history.push(SEND_ROUTE)
+          }}
         >
           { t('send') }
         </Button>

@@ -8,6 +8,7 @@ import {
   tryUnlockMetamask,
   forgotPassword,
   markPasswordForgotten,
+  forceUpdateMetamaskState,
 } from '../../../actions'
 import UnlockPage from './unlock-page.component'
 
@@ -23,6 +24,7 @@ const mapDispatchToProps = dispatch => {
     forgotPassword: () => dispatch(forgotPassword()),
     tryUnlockMetamask: password => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
+    forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
   }
 }
 

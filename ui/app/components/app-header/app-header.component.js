@@ -22,6 +22,7 @@ export default class AppHeader extends PureComponent {
 
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   handleNetworkIndicatorClick (event) {
@@ -43,7 +44,22 @@ export default class AppHeader extends PureComponent {
         className={classnames('account-menu__icon', {
           'account-menu__icon--disabled': disabled,
         })}
-        onClick={() => disabled || toggleAccountMenu()}
+        onClick={() => {
+          this.context.metricsEvent({
+            eventOpts: {
+              category: 'Accounts',
+              action: 'userClick',
+              name: 'accountsOpenedMenu',
+            },
+            pageOpts: {
+              section: 'header',
+              component: 'accountDropdownIcon',
+            },
+          })
+          if (!disabled) {
+            toggleAccountMenu()
+          }
+        }}
       >
         <Identicon
           address={selectedAddress}

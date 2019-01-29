@@ -15,15 +15,40 @@ export default class ProviderPageContainer extends PureComponent {
 
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   };
+
+  componentDidMount () {
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Activation/Retention',
+        action: 'dappRequestsAccess',
+        name: 'connectPopupOpened',
+      },
+    })
+  }
 
   onCancel = () => {
     const { tabID, rejectProviderRequest } = this.props
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Activation/Retention',
+        action: 'userClicksCancel',
+        name: 'connectCanceled',
+      },
+    })
     rejectProviderRequest(tabID)
   }
 
   onSubmit = () => {
     const { approveProviderRequest, tabID } = this.props
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Activation/Retention',
+        action: 'userClicksConfirm',
+        name: 'connectConfirmed',
+      },
+    })
     approveProviderRequest(tabID)
   }
 
