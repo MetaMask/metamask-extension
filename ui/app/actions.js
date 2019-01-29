@@ -242,6 +242,7 @@ var actions = {
   removeSuggestedTokens,
   addKnownMethodData,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
+  updateAndSetCustomRpc: updateAndSetCustomRpc,
   setRpcTarget: setRpcTarget,
   delRpcTarget: delRpcTarget,
   setProviderType: setProviderType,
@@ -1971,10 +1972,26 @@ function setPreviousProvider (type) {
   }
 }
 
-function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname = '') {
+function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname) {
+  return (dispatch) => {
+    log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`)
+    background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(actions.displayWarning('Had a problem changing networks!'))
+      }
+      dispatch({
+        type: actions.SET_RPC_TARGET,
+        value: newRpc,
+      })
+    })
+  }
+}
+
+function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
   return (dispatch) => {
     log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.setCustomRpc(newRpc, chainId, ticker, nickname, (err, result) => {
+    background.setCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))

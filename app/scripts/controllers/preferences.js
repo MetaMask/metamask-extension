@@ -407,6 +407,32 @@ class PreferencesController {
   }
 
   /**
+   * updates custom RPC details
+   *
+   * @param {string} url The RPC url to add to frequentRpcList.
+   * @param {number} chainId Optional chainId of the selected network.
+   * @param {string} ticker   Optional ticker symbol of the selected network.
+   * @param {string} nickname Optional nickname of the selected network.
+   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
+   *
+   */
+
+
+  updateRpc (newRpcDetails) {
+    const rpcList = this.getFrequentRpcListDetail()
+    const index = rpcList.findIndex((element) => { return element.rpcUrl === newRpcDetails.rpcUrl })
+    if (index > -1) {
+      const rpcDetail = rpcList[index]
+      const updatedRpc = extend(rpcDetail, newRpcDetails)
+      rpcList[index] = updatedRpc
+      this.store.updateState({ frequentRpcListDetail: rpcList })
+    } else {
+      const { rpcUrl, chainId, ticker, nickname } = newRpcDetails
+      return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname)
+    }
+    return Promise.resolve(rpcList)
+  }
+  /**
    * Adds custom RPC url to state.
    *
    * @param {string} url The RPC url to add to frequentRpcList.

@@ -414,6 +414,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
+      updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
       delCustomRpc: nodeify(this.delCustomRpc, this),
 
       // PreferencesController
@@ -1503,6 +1504,21 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   // network
+  /**
+   * A method for selecting a custom URL for an ethereum RPC provider and updating it
+   * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
+   * @param {number} chainId - The chainId of the selected network.
+   * @param {string} ticker - The ticker symbol of the selected network.
+   * @param {string} nickname - Optional nickname of the selected network.
+   * @returns {Promise<String>} - The RPC Target URL confirmed.
+   */
+
+  async updateAndSetCustomRpc (rpcUrl, chainId, ticker = 'ETH', nickname) {
+    await this.preferencesController.updateRpc({ rpcUrl, chainId, ticker, nickname })
+    this.networkController.setRpcTarget(rpcUrl, chainId, ticker, nickname)
+    return rpcUrl
+  }
+
 
   /**
    * A method for selecting a custom URL for an ethereum RPC provider.
@@ -1513,8 +1529,15 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
   async setCustomRpc (rpcTarget, chainId, ticker = 'ETH', nickname = '') {
-    this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname)
-    await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname)
+    const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail()
+    const rpcSettings = frequentRpcListDetail.find((rpc) => rpcTarget === rpc.rpcUrl)
+
+    if (rpcSettings) {
+      this.networkController.setRpcTarget(rpcSettings.rpcUrl, rpcSettings.chainId, rpcSettings.ticker, rpcSettings.nickname)
+    } else {
+      this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname)
+      await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname)
+    }
     return rpcTarget
   }
 
