@@ -42,6 +42,7 @@ class PreferencesController {
       // perform sensitive operations.
       featureFlags: {},
       knownMethodData: {},
+      participateInMetaMetrics: null,
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -52,6 +53,7 @@ class PreferencesController {
       },
       completedOnboarding: false,
       completedUiMigration: true,
+      metaMetricsId: null,
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -90,6 +92,21 @@ class PreferencesController {
    */
   setUseBlockie (val) {
     this.store.updateState({ useBlockie: val })
+  }
+
+  /**
+   * Setter for the `participateInMetaMetrics` property
+   *
+   * @param {boolean} val Whether or not the user wants to participate in MetaMetrics
+   *
+   */
+  setParticipateInMetaMetrics (bool) {
+    this.store.updateState({ participateInMetaMetrics: bool })
+    if (bool === true && !this.store.getState().metaMetricsId) {
+      this.store.updateState({ metaMetricsId: bufferToHex(sha3(String(Date.now()) + String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)))) })
+    } else if (bool === false) {
+      this.store.updateState({ metaMetricsId: null })
+    }
   }
 
   getSuggestedTokens () {
