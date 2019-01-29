@@ -82,7 +82,10 @@ export default class Home extends PureComponent {
           />
 	  <TransactionView />
 	</div>
-        <PluginView />	
+        <div>
+           <PluginView />
+	</div>
+
       </div>	
     )
   }

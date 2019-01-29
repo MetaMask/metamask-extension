@@ -25,7 +25,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setSelectedPlugin: authorAddress => dispatch(actions.setSelectedPlugin(authorAddress)),    
+    setSelectedPluginAddress: authorAddress => dispatch(actions.setSelectedPluginAddress(authorAddress)),    
     hideSidebar: () => dispatch(actions.hideSidebar()),
   }
 }
@@ -52,7 +52,7 @@ PluginCell.prototype.render = function () {
     symbol,
     string,
     network,
-    setSelectedPlugin,
+    setSelectedPluginAddress,
     selectedPlugin,
     contractExchangeRates,
     conversionRate,
@@ -69,7 +69,7 @@ PluginCell.prototype.render = function () {
     h('div.plugin-list-item', {
       className: "plugin-list-item",
       onClick: () => {
-        setSelectedPlugin(authorAddress)
+        setSelectedPluginAddress(authorAddress)
       },
     }, [
       h('div', name),

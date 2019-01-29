@@ -122,9 +122,9 @@ var actions = {
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
   SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
-  SET_SELECTED_PLUGIN: 'SET_SELECTED_PLUGIN',
+  SET_SELECTED_PLUGIN_ADDRESS: 'SET_SELECTED_PLUGIN_ADDRESS',
   setSelectedToken,
-  setSelectedPlugin,
+  setSelectedPluginAddress,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -1561,9 +1561,9 @@ function setSelectedToken (tokenAddress) {
 }
 
 //identified uniquely by author address
-function setSelectedPlugin (pluginAuthorAddress) {
+function setSelectedPluginAddress (pluginAuthorAddress) {
   return {
-    type: actions.SET_SELECTED_PLUGIN,
+    type: actions.SET_SELECTED_PLUGIN_ADDRESS,
     value: pluginAuthorAddress || null,
   }
 }

@@ -57,7 +57,14 @@ export default class PluginView extends PureComponent {
   }
 
   render () {
-    return (	<div>       </div>)    
+    console.log("PROPS in plugin view", this.props)
+    return (
+	<div>
+	<div>   Plugin view    </div>
+	<div>   {this.props.selectedPluginAddress}    </div>
+	<div>   {this.props.selectedPluginScript}    </div>
+	</div>	
+    )    
   //   const { t } = this.context
   //   const { history } = this.props
 

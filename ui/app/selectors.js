@@ -95,7 +95,7 @@ function getSelectedPluginAddress (state) {
 function getSelectedPluginScript (state) {
   const pluginsScripts = state.metamask.pluginsScripts || []
   const selectedPluginAddress = state.metamask.selectedPluginAddress
-  const selectedPluginScript = pluginsScripts.filter(({ address }) => address === selectedPluginAddress)[0]
+  const selectedPluginScript = pluginsScripts[selectedPluginAddress]
   return selectedPluginScript
 }
 
