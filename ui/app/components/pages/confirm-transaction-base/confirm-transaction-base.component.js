@@ -16,6 +16,7 @@ import AdvancedGasInputs from '../../gas-customization/advanced-gas-inputs'
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    metricsEvent: PropTypes.func,
   }
 
   static propTypes = {
@@ -77,6 +78,8 @@ export default class ConfirmTransactionBase extends Component {
     onEdit: PropTypes.func,
     onEditGas: PropTypes.func,
     onSubmit: PropTypes.func,
+    setMetaMetricsSendCount: PropTypes.func,
+    metaMetricsSendCount: PropTypes.number,
     subtitle: PropTypes.string,
     subtitleComponent: PropTypes.node,
     summaryComponent: PropTypes.node,
@@ -298,9 +301,25 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleCancel () {
-    const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction } = this.props
+    const { metricsEvent } = this.context
+    const { onCancel, txData, cancelTransaction, history, clearConfirmTransaction, methodData = {} } = this.props
 
     if (onCancel) {
+      metricsEvent({
+        eventOpts: {
+          category: 'Activation',
+          action: 'userSees',
+          name: 'confirmCancelled',
+        },
+        pageOpts: {
+          section: 'footer',
+          component: 'confirmScreenCancelButton',
+        },
+        customVariables: {
+          recipientKnown: null,
+          functionType: methodData.name || 'notFound',
+        },
+      })
       onCancel(txData)
     } else {
       cancelTransaction(txData)
@@ -312,7 +331,8 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleSubmit () {
-    const { sendTransaction, clearConfirmTransaction, txData, history, onSubmit } = this.props
+    const { metricsEvent } = this.context
+    const { sendTransaction, clearConfirmTransaction, txData, history, onSubmit, methodData = {}, metaMetricsSendCount = 0, setMetaMetricsSendCount } = this.props
     const { submitting } = this.state
 
     if (submitting) {
@@ -323,6 +343,21 @@ export default class ConfirmTransactionBase extends Component {
       submitting: true,
       submitError: null,
     }, () => {
+      metricsEvent({
+        eventOpts: {
+          category: 'Activation',
+          action: 'userSees',
+          name: 'confirmCompleted',
+        },
+        pageOpts: {
+          section: 'footer',
+          component: 'confirmScreenSubmitButton',
+        },
+        customVariables: {
+          recipientKnown: null,
+          functionType: methodData.name || 'notFound',
+        },
+      })
       if (onSubmit) {
         Promise.resolve(onSubmit(txData))
           .then(() => {
@@ -348,6 +383,29 @@ export default class ConfirmTransactionBase extends Component {
           })
       }
     })
+
+    setMetaMetricsSendCount(metaMetricsSendCount + 1)
+
+    if (onSubmit) {
+      Promise.resolve(onSubmit(txData))
+        .then(() => {
+          this.setState({ submitting: false })
+        })
+        .catch(() => {
+          setMetaMetricsSendCount(metaMetricsSendCount - 1)
+        })
+    } else {
+      sendTransaction(txData)
+        .then(() => {
+          clearConfirmTransaction()
+          this.setState({ submitting: false })
+          history.push(DEFAULT_ROUTE)
+        })
+        .catch(error => {
+          setMetaMetricsSendCount(metaMetricsSendCount - 1)
+          this.setState({ submitting: false, submitError: error.message })
+        })
+    }
   }
 
   renderTitleComponent () {
@@ -411,6 +469,21 @@ export default class ConfirmTransactionBase extends Component {
       ofText: this.context.t('ofTextNofM'),
       requestsWaitingText: this.context.t('requestsAwaitingAcknowledgement'),
     }
+  }
+
+  componentDidMount () {
+    const { metricsEvent } = this.context
+    metricsEvent({
+      eventOpts: {
+        category: 'Activation',
+        action: 'userSees',
+        name: 'confirmStarted',
+      },
+      pageOpts: {
+        section: 'all',
+        component: 'all',
+      },
+    })
   }
 
   render () {

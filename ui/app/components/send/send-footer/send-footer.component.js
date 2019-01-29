@@ -28,9 +28,14 @@ export default class SendFooter extends Component {
     update: PropTypes.func,
   }
 
+  state = {
+    hadError: false,
+  }
+
   static contextTypes = {
     t: PropTypes.func,
-  }
+    metricsEvent: PropTypes.func,
+  };
 
   onCancel () {
     this.props.clearSend()
@@ -56,6 +61,7 @@ export default class SendFooter extends Component {
       toAccounts,
       history,
     } = this.props
+    const { metricsEvent } = this.context
 
     // Should not be needed because submit should be disabled if there are errors.
     // const noErrors = !amountError && toError === null
@@ -66,7 +72,6 @@ export default class SendFooter extends Component {
 
     // TODO: add nickname functionality
     addToAddressBookIfNew(to, toAccounts)
-
     const promise = editingTransactionId
       ? update({
         amount,
@@ -81,6 +86,22 @@ export default class SendFooter extends Component {
       })
       : sign({ data, selectedToken, to, amount, from, gas, gasPrice })
 
+    metricsEvent({
+      eventOpts: {
+        category: 'Activation',
+        action: 'userClick',
+        name: 'sendCompletedEditScreen',
+      },
+      pageOpts: {
+        section: 'Footer',
+        component: 'sendScreenNextButton',
+      },
+      customVariables: {
+        hadError: this.state.hadError,
+        hexData: Boolean(data),
+      },
+    })
+
     Promise.resolve(promise)
       .then(() => history.push(CONFIRM_TRANSACTION_ROUTE))
   }
@@ -88,7 +109,14 @@ export default class SendFooter extends Component {
   formShouldBeDisabled () {
     const { data, inError, selectedToken, tokenBalance, gasTotal, to } = this.props
     const missingTokenBalance = selectedToken && !tokenBalance
-    return inError || !gasTotal || missingTokenBalance || !(data || to)
+    const shouldBeDisabled = inError || !gasTotal || missingTokenBalance || !(data || to)
+    return shouldBeDisabled
+  }
+
+  componentDidUpdate (prevProps) {
+    if (!prevProps.inError && this.props.inError) {
+      this.setState({ hadError: true })
+    }
   }
 
   render () {

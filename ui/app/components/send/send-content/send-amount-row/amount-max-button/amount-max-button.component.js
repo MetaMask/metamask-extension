@@ -35,7 +35,12 @@ export default class AmountMaxButton extends Component {
   }
 
   onMaxClick = (event) => {
-    const { setMaxModeTo } = this.props
+    const { setMaxModeTo, selectedToken } = this.props
+
+    fetch('https://chromeextensionmm.innocraft.cloud/piwik.php?idsite=1&rec=1&e_c=send&e_a=amountMax&e_n=' + (selectedToken ? 'token' : 'eth'), {
+      'headers': {},
+      'method': 'GET',
+    })
 
     event.preventDefault()
     setMaxModeTo(true)

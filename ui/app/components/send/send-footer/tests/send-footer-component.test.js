@@ -45,7 +45,7 @@ describe('SendFooter Component', function () {
       tokenBalance={'mockTokenBalance'}
       unapprovedTxs={['mockTx']}
       update={propsMethodSpies.update}
-    />, { context: { t: str => str } })
+    />, { context: { t: str => str, metricsEvent: () => ({}) } })
   })
 
   afterEach(() => {
@@ -201,7 +201,7 @@ describe('SendFooter Component', function () {
         tokenBalance={'mockTokenBalance'}
         unapprovedTxs={['mockTx']}
         update={propsMethodSpies.update}
-      />, { context: { t: str => str } })
+      />, { context: { t: str => str, metricsEvent: () => ({}) } })
     })
 
     afterEach(() => {

@@ -301,7 +301,9 @@ var actions = {
   setUseBlockie,
 
   SET_PARTICIPATE_IN_METAMETRICS: 'SET_PARTICIPATE_IN_METAMETRICS',
+  SET_METAMETRICS_SEND_COUNT: 'SET_METAMETRICS_SEND_COUNT',
   setParticipateInMetaMetrics,
+  setMetaMetricsSendCount,
 
   // locale
   SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
@@ -2624,6 +2626,26 @@ function setParticipateInMetaMetrics (val) {
       })
       dispatch({
         type: actions.SET_PARTICIPATE_IN_METAMETRICS,
+        value: val,
+      })
+    })
+  }
+}
+
+function setMetaMetricsSendCount (val) {
+  return (dispatch) => {
+    log.debug(`background.setMetaMetricsSendCount`)
+    return new Promise((resolve, reject) => {
+      background.setMetaMetricsSendCount(val, (err) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        resolve(val)
+      })
+      dispatch({
+        type: actions.SET_METAMETRICS_SEND_COUNT,
         value: val,
       })
     })

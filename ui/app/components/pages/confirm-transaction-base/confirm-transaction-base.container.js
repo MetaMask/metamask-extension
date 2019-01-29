@@ -8,7 +8,7 @@ import {
   clearConfirmTransaction,
   updateGasAndCalculate,
 } from '../../../ducks/confirm-transaction.duck'
-import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal } from '../../../actions'
+import { clearSend, cancelTx, cancelTxs, updateAndApproveTx, showModal, setMetaMetricsSendCount } from '../../../actions'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -66,6 +66,7 @@ const mapStateToProps = (state, props) => {
     assetImages,
     network,
     unapprovedTxs,
+    metaMetricsSendCount,
   } = metamask
   const assetImage = assetImages[txParamsToAddress]
 
@@ -139,6 +140,7 @@ const mapStateToProps = (state, props) => {
     insufficientBalance,
     hideSubtitle: (!isMainnet && !showFiatInTestnets),
     hideFiatConversion: (!isMainnet && !showFiatInTestnets),
+    metaMetricsSendCount,
   }
 }
 
@@ -161,6 +163,7 @@ const mapDispatchToProps = dispatch => {
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: txData => dispatch(updateAndApproveTx(txData)),
+    setMetaMetricsSendCount: val => dispatch(setMetaMetricsSendCount(val)),
   }
 }
 

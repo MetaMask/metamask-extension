@@ -372,6 +372,33 @@ export function setTransactionToConfirm (transactionId) {
         try {
           dispatch(setFetchingData(true))
           const methodData = await getMethodData(data)
+
+          if (methodData.name) {
+            // sendMetaMetricsEvent({
+            //   props: {
+            //     network: getCurrentNetworkId(state),
+            //     environmentType: getEnvironmentType(),
+            //     activeCurrency: getSelectedAsset(state),
+            //     accountType: getAccountType(state),
+            //     userPermissionPreferences: getUserMetricsPermissions(state),
+            //     confirmTransactionOrigin: txDataSelector(state).origin,
+            //   },
+            //   config: {
+            //     eventOpts: {
+            //       category: 'Activation',
+            //       action: 'extensionGetSuccess',
+            //       name: 'confirmFoundFundctionName',
+            //     },
+            //     pageOpts: {
+            //       section: 'null',
+            //       component: 'null',
+            //     },
+            //   },
+            //   currentPath: window.location.href,
+            //   pathname: window.location.href,
+            // })
+          }
+
           dispatch(updateMethodData(methodData))
         } catch (error) {
           dispatch(updateMethodData({}))
