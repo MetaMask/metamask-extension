@@ -101,12 +101,12 @@ function composeUrl (config, permissionPreferences = {}) {
 
   const urlref = previousPath && composeUrlRefParamAddition(previousPath, confirmTransactionOrigin)
 
-  const dimensions = !pageOpts.hideDimensions && composeCustomDimensionParamAddition({
+  const dimensions = !pageOpts.hideDimensions ? composeCustomDimensionParamAddition({
     network,
     environmentType,
     activeCurrency,
     accountType,
-  })
+  }) : ''
   const url = configUrl || `&url=${encodeURIComponent(currentPath.replace(/chrome-extension:\/\/\w+/, 'http://www.metamask.io/metametrics'))}`
   const _id = metaMetricsId && !excludeMetaMetricsId ? `&_id=${metaMetricsId.slice(2, 18)}` : ''
   const rand = `&rand=${String(Math.random()).slice(2)}`
