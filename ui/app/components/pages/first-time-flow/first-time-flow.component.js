@@ -8,6 +8,7 @@ import EndOfFlow from './end-of-flow'
 import Unlock from '../unlock-page'
 import CreatePassword from './create-password'
 import SeedPhrase from './seed-phrase'
+import MetaMetricsOptInScreen from './metametrics-opt-in'
 import {
   DEFAULT_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
@@ -16,6 +17,7 @@ import {
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
+  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 } from '../../../routes'
 
 export default class FirstTimeFlow extends PureComponent {
@@ -131,6 +133,11 @@ export default class FirstTimeFlow extends PureComponent {
             exact
             path={INITIALIZE_WELCOME_ROUTE}
             component={Welcome}
+          />
+          <Route
+            exact
+            path={INITIALIZE_METAMETRICS_OPT_IN_ROUTE}
+            component={MetaMetricsOptInScreen}
           />
           <Route
             exact
