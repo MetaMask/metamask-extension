@@ -85,6 +85,10 @@ function getExchanges ({network, amount, address}) {
           name: 'CEX Plus',
           link: 'http://cex.plus/market/poa_eth',
         },
+        {
+          name: 'HitBTC',
+          link: 'https://hitbtc.com/POA-to-ETH',
+        },
       ]
     case 100:
       return [
