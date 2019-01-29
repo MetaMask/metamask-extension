@@ -295,8 +295,6 @@ module.exports = {
       buttons: {
         send: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(4)'),
         buy: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > button:nth-child(3)'),
-        sendRSK: By.css('#app-content > div > div.app-primary.from-left > div > div > div.flex-row > button:nth-child(4)'),
-        buyRSK: By.css('#app-content > div > div.app-primary.from-left > div > div > div.flex-row > button:nth-child(3)'),
         sendText: 'Send',
         save: By.className('editable-button'),
       },
@@ -325,7 +323,6 @@ module.exports = {
     },
     buyEther: {
       title: By.className('flex-center buy-title'),
-      faucetLinkRSK: By.className('buy-option cursor-pointer'),
       buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
     },
     info: {
@@ -401,8 +398,6 @@ module.exports = {
     ROPSTEN: 'ropsten',
     KOVAN: 'kovan',
     RINKEBY: 'rinkeby',
-    RSK: 'rsk',
-    RSK_TESTNET: 'rsk_testnet',
     LOCALHOST: 'localhost',
     CUSTOM: 'http://test.com',
   },

@@ -13,9 +13,7 @@ const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
 const { POA,
   DAI,
-  POA_SOKOL,
-  RSK,
-  RSK_TESTNET } = require('../../app/scripts/controllers/network/enums')
+  POA_SOKOL } = require('../../app/scripts/controllers/network/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
 const WebcamUtils = require('../lib/webcam-utils')
 
@@ -2005,8 +2003,7 @@ function setProviderType (type) {
 
     const newCoin = type === POA || type === POA_SOKOL ?
                     'poa' : type === DAI ?
-                    'dai' : type === RSK || type === RSK_TESTNET ?
-                    'rbtc' : 'eth'
+                    'dai' : 'eth'
     background.setCurrentCoin(newCoin, (err, data) => {
       if (err) {
         log.error(err.stack)

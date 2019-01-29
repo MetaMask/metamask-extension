@@ -130,10 +130,7 @@ class CurrencyController {
       currentCurrency = this.getCurrentCurrency()
       currentCoin = this.getCurrentCoin()
       let conversionRate, conversionDate
-      if (currentCoin === 'poa' || currentCoin === 'rbtc') {
-        if (currentCoin === 'rbtc') {
-          currentCoin = 'btc'
-        }
+      if (currentCoin === 'poa') {
         const apiLink = `https://min-api.cryptocompare.com/data/price?fsym=${currentCoin.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
         const response = await fetch(apiLink)
         const parsedResponse = await response.json()
