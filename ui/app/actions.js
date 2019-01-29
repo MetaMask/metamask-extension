@@ -1680,11 +1680,11 @@ function addPlugin (pluginAuthorAddress, pluginName, pluginScriptUrl) {
   })
 }
 
-function registerPluginScript(pluginScript){
-  console.log("REGISTERING PLUGIN SCRIPT", pluginScript)
+function registerPluginScript(plugin, pluginScript){
+  console.log("REGISTERING PLUGIN SCRIPT", plugin, pluginScript)
   return {
     type: actions.REGISTER_PLUGIN_SCRIPT,
-    value: pluginScript,
+    value: {plugin, pluginScript},
   }
 }
 

@@ -176,20 +176,9 @@ function reduceMetamask (state, action) {
       })
 
     case actions.REGISTER_PLUGIN_SCRIPT:
-      console.log("METAMASK JS state", metamaskState.pluginsScripts)
-      let pluginsScripts = []
-      console.log("METAMASK JS before if else", pluginsScripts)
-      if (metamaskState.pluginsScripts.length == 0) {
-	console.log("length 0")
-        pluginsScripts = []
-      }
-      else {
-        console.log("length not 0")
-        pluginsScripts = metamaskState.pluginsScripts
-      }
-      console.log("METAMASK JS after if else", pluginsScripts)
-      pluginsScripts.push(action.value)
-      console.log("METAMASK JS after push", pluginsScripts)
+      let pluginsScripts = {}
+      if (metamaskState.pluginsScripts) pluginsScripts = metamaskState.pluginsScripts
+      pluginsScripts[action.value.plugin.authorAddress] = action.value.pluginScript
       return extend(metamaskState, {
         pluginsScripts: pluginsScripts
       })

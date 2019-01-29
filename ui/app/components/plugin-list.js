@@ -12,7 +12,7 @@ const { registerPluginScript } = require('../actions')
 
 function mapDispatchToProps(dispatch) {
   return {
-    registerPluginScript: script => dispatch(registerPluginScript(script)),
+    registerPluginScript: (plugin,script) => dispatch(registerPluginScript(plugin, script)),
   }
 }
 
@@ -76,12 +76,6 @@ class PluginList extends Component {
   }
 
   createFreshPluginWrapper(plugin) {
-    // if (this.tracker) {
-    //   // Clean up old trackers when refreshing:
-    //   this.tracker.stop()
-    //   this.tracker.removeListener('update', this.balanceUpdater)
-    //   this.tracker.removeListener('error', this.showError)
-    // }
 
     if (!global.ethereumProvider) return
     const { userAddress, registerPluginScript } = this.props
@@ -98,7 +92,7 @@ class PluginList extends Component {
 
     // TODO ADAPT HERE
     console.log("REGISTER CALLED IN Plugin LIST", this.wrapper.plugin)
-    registerPluginScript(this.wrapper.pluginScript)
+    registerPluginScript(this.wrapper.plugin, this.wrapper.pluginScript)
 
     // Set up listener instances for cleaning up
     // this.balanceUpdater = this.updateBalances.bind(this)
@@ -120,18 +114,11 @@ class PluginList extends Component {
 
   componentDidUpdate(nextProps) {
 
-    const plugins = this.props
     console.log("DID UPDATE", this.props, nextProps)
-    if (plugins == nextProps && !isLoading) return
+    if (this.props.plugins.length == nextProps.plugins.length && !this.state.isLoading) return
+    
     this.props.plugins.map((plugin)=>this.createFreshPluginWrapper(plugin))    
-    // const {
-    //   network: newNet,
-    //   userAddress: newAddress,
-    //   name: newName,
-    //   nodeUrl: newNodeUrl,
-    //   plugins: newPlugins,
-    // } = nextProps
-
+    this.setState({ isLoading: false })
     // const isLoading = newNet === 'loading'
     // const missingInfo = !oldNet || !newNet || !oldAddress || !newAddress
     // const sameUserAndNetwork = oldAddress === newAddress && oldNet === newNet
@@ -142,7 +129,7 @@ class PluginList extends Component {
 
     // if (pluginAppsLengthUnchanged && shouldUpdatePluginApps) return
 
-    // this.setState({ isLoading: true })
+    // 
     // this.createFreshPluginAppTracker()
   }
 
