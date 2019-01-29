@@ -68,8 +68,8 @@ export default class UnlockPage extends Component {
           numberOfTokens: newState.tokens.length,
           numberOfAccounts: Object.keys(newState.accounts).length,
         },
+        isNewVisit: true,
       })
-
     } catch ({ message }) {
       if (message === 'Incorrect password') {
         const newState = await forceUpdateMetamaskState()

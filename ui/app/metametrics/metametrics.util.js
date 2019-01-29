@@ -86,12 +86,14 @@ function composeUrl (config, permissionPreferences = {}) {
     confirmTransactionOrigin,
     url: configUrl,
     excludeMetaMetricsId,
+    isNewVisit,
   } = config
   const base = METAMETRICS_BASE_FULL
 
   const e_c = composeParamAddition(eventOpts.category, 'e_c')
   const e_a = composeParamAddition(eventOpts.action, 'e_a')
   const e_n = composeParamAddition(eventOpts.name, 'e_n')
+  const new_visit = isNewVisit ? `&new_visit=1` : ''
 
   const cvar = customVariables && composeCustomVarParamAddition(customVariables) || ''
 
@@ -115,7 +117,7 @@ function composeUrl (config, permissionPreferences = {}) {
       ? '&uid=0000000000000000'
       : ''
 
-  return [ base, e_c, e_a, e_n, cvar, action_name, urlref, dimensions, url, _id, rand, pv_id, uid ].join('')
+  return [ base, e_c, e_a, e_n, cvar, action_name, urlref, dimensions, url, _id, rand, pv_id, uid, new_visit ].join('')
 }
 
 export function sendMetaMetricsEvent (config, permissionPreferences) {
