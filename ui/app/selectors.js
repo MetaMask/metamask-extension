@@ -40,6 +40,10 @@ const selectors = {
   isBalanceCached,
   getAdvancedInlineGasShown,
   getIsMainnet,
+  getCurrentNetworkId,
+  getSelectedAsset,
+  getCurrentKeyring,
+  getAccountType,
 }
 
 module.exports = selectors
@@ -48,6 +52,46 @@ function getNetworkIdentifier (state) {
   const { metamask: { provider: { type, nickname, rpcTarget } } } = state
 
   return nickname || rpcTarget || type
+}
+
+function getCurrentKeyring (state) {
+  const identity = getSelectedIdentity(state)
+
+  if (!identity) {
+    return null
+  }
+
+  const simpleAddress = identity.address.substring(2).toLowerCase()
+
+  const keyring = state.metamask.keyrings.find((kr) => {
+    return kr.accounts.includes(simpleAddress) ||
+      kr.accounts.includes(identity.address)
+  })
+
+  return keyring
+}
+
+function getAccountType (state) {
+  const currentKeyring = getCurrentKeyring(state)
+  const type = currentKeyring && currentKeyring.type
+
+  switch (type) {
+    case 'Trezor Hardware':
+    case 'Ledger Hardware':
+      return 'hardware'
+    case 'Simple Key Pair':
+      return 'imported'
+    default:
+      return 'default'
+  }
+}
+
+function getSelectedAsset (state) {
+  return getSelectedToken(state) || 'ETH'
+}
+
+function getCurrentNetworkId (state) {
+  return state.metamask.network
 }
 
 function getSelectedAddress (state) {
