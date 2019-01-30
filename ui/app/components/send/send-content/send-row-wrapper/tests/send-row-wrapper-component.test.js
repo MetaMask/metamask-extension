@@ -11,6 +11,7 @@ describe('SendContent Component', function () {
   beforeEach(() => {
     wrapper = shallow(<SendRowWrapper
       errorType={'mockErrorType'}
+      customErrors={{mockErrorType: 'mockError'}}
       label={'mockLabel'}
       showError={false}
     >
@@ -48,7 +49,9 @@ describe('SendContent Component', function () {
       assert(expectedSendRowErrorMessage.is(SendRowErrorMessage))
       assert.deepEqual(
         expectedSendRowErrorMessage.props(),
-        { errorType: 'mockErrorType' }
+        { errorType: 'mockErrorType',
+          customErrors: {mockErrorType: 'mockError'},
+        }
       )
     })
 
