@@ -44,7 +44,7 @@ class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       completedOnboarding: false,
-      completedUiMigration: false,
+      completedUiMigration: true,
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics

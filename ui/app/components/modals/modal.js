@@ -25,7 +25,6 @@ import ConfirmRemoveAccount from './confirm-remove-account'
 import ConfirmResetAccount from './confirm-reset-account'
 import TransactionConfirmed from './transaction-confirmed'
 import CancelTransaction from './cancel-transaction'
-import WelcomeBeta from './welcome-beta'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
@@ -198,19 +197,6 @@ const MODALS = {
     laptopModalStyle: {
       width: '449px',
       top: 'calc(33% + 45px)',
-    },
-  },
-
-  BETA_UI_NOTIFICATION_MODAL: {
-    contents: h(WelcomeBeta),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 

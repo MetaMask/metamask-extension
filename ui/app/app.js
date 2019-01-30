@@ -22,6 +22,7 @@ import Settings from './components/pages/settings'
 import Authenticated from './higher-order-components/authenticated'
 import Initialized from './higher-order-components/initialized'
 import Lock from './components/pages/lock'
+import UiMigrationAnnouncement from './components/ui-migration-annoucement'
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
@@ -173,6 +174,7 @@ class App extends Component {
           }
         }}
       >
+        <UiMigrationAnnouncement />
         <Modal />
         <Alert
           visible={this.props.alertOpen}
