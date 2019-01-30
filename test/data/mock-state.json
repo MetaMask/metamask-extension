@@ -11,6 +11,7 @@
         "name": "Test Account 2"
       }
     },
+    "cachedBalances": {},
     "unapprovedTxs": {
       "8393540981007587": {
         "id": 8393540981007587,

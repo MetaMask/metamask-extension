@@ -23,6 +23,7 @@
         "name": "Send Account 4"
       }
     },
+    "cachedBalances": {},
     "currentCurrency": "USD",
     "conversionRate": 1200.88200327,
     "conversionDate": 1489013762,

@@ -23,6 +23,7 @@
         "name": "Send Account 4"
       }
     },
+    "cachedBalances": {},
     "unapprovedTxs": {},
     "currentCurrency": "USD",
     "conversionRate": 19855,
