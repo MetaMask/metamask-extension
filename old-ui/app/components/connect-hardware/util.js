@@ -1,11 +1,11 @@
-import { LEDGER } from './enum'
+import { LEDGER, TREZOR } from './enum'
 
 function isLedger (device) {
 	return device && device.toLowerCase().includes(LEDGER)
 }
 
 function isTrezor (device) {
-  return device && device.toLowerCase().includes('trezor')
+  return device && device.toLowerCase().includes(TREZOR)
 }
 
 function getHdPaths () {

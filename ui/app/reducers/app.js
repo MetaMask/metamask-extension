@@ -258,6 +258,16 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.SHOW_FORGET_DEVICE_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'forget-device',
+          device: action.value,
+        },
+        transForward: true,
+        warning: null,
+      })
+
     case actions.SHOW_HARDWARE_WALLET_PAGE:
       return extend(appState, {
         currentView: {
