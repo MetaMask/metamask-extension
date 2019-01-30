@@ -931,7 +931,7 @@
     "message": "Tu firma ya fue solicitada"
   },
   "contractInteraction": {
-    "message": "Interacción del Contrato"
+    "message": "Interacción con contrato"
   },
   "providerRequest": {
     "message": "$1 quisiera conectar con tu cuenta"
