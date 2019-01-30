@@ -46,7 +46,7 @@ export default class UnlockPage extends Component {
     event.stopPropagation()
 
     const { password } = this.state
-    const { onSubmit, forceUpdateMetamaskState } = this.props
+    const { onSubmit, forceUpdateMetamaskState, showOptInModal } = this.props
 
     if (password === '' || this.submitting) {
       return
@@ -70,6 +70,10 @@ export default class UnlockPage extends Component {
         },
         isNewVisit: true,
       })
+
+      if (newState.participateInMetaMetrics === null || newState.participateInMetaMetrics === undefined) {
+        showOptInModal()
+      }
     } catch ({ message }) {
       if (message === 'Incorrect password') {
         const newState = await forceUpdateMetamaskState()
