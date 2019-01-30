@@ -33,10 +33,7 @@ class PreferencesController {
       tokens: [],
       suggestedTokens: {},
       useBlockie: false,
-      featureFlags: {
-        betaUI: true,
-        skipAnnounceBetaUI: true,
-      },
+      featureFlags: {},
       knownMethodData: {},
       currentLocale: opts.initLangCode,
       identities: {},
@@ -47,6 +44,7 @@ class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       completedOnboarding: false,
+      completedUiMigration: false,
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -549,6 +547,14 @@ class PreferencesController {
    */
   completeOnboarding () {
     this.store.updateState({ completedOnboarding: true })
+    return Promise.resolve(true)
+  }
+
+  /**
+   * Sets the {@code completedUiMigration} state to {@code true}, indicating that the user has completed the UI switch.
+   */
+  completeUiMigration () {
+    this.store.updateState({ completedUiMigration: true })
     return Promise.resolve(true)
   }
 
