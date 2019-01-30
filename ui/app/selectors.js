@@ -28,8 +28,6 @@ const selectors = {
   getSendAmount,
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
-  autoAddToBetaUI,
-  getShouldUseNewUi,
   getSendMaxModeState,
   getCurrentViewContext,
   getTotalUnapprovedCount,
@@ -210,30 +208,6 @@ function getSelectedTokenContract (state) {
   return selectedToken
     ? global.eth.contract(abi).at(selectedToken.address)
     : null
-}
-
-function autoAddToBetaUI (state) {
-  const autoAddTransactionThreshold = 12
-  const autoAddAccountsThreshold = 2
-  const autoAddTokensThreshold = 1
-
-  const numberOfTransactions = state.metamask.selectedAddressTxList.length
-  const numberOfAccounts = Object.keys(getMetaMaskAccounts(state)).length
-  const numberOfTokensAdded = state.metamask.tokens.length
-
-  const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
-    (numberOfAccounts > autoAddAccountsThreshold) &&
-    (numberOfTokensAdded > autoAddTokensThreshold)
-  const userIsNotInBeta = !state.metamask.featureFlags.betaUI
-
-  return userIsNotInBeta && userPassesThreshold
-}
-
-function getShouldUseNewUi (state) {
-  const isAlreadyUsingBetaUi = state.metamask.featureFlags.betaUI
-  const isMascara = state.metamask.isMascara
-  const isFreshInstall = Object.keys(state.metamask.identities).length === 0
-  return isAlreadyUsingBetaUi || isMascara || isFreshInstall
 }
 
 function getCurrentViewContext (state) {
