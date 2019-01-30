@@ -91,6 +91,7 @@ class App extends Component {
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <Initialized path={RESTORE_VAULT_ROUTE} component={RestoreVaultPage} exact />
         <Authenticated path={REVEAL_SEED_ROUTE} component={RevealSeedConfirmation} exact />
+        <Authenticated path={MOBILE_SYNC_ROUTE} component={MobileSyncPage} exact />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
         <Authenticated path={NOTICE_ROUTE} component={NoticeScreen} exact />
         <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
