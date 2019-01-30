@@ -16,7 +16,6 @@ import {
 
 const selectors = {
   accountsWithSendEtherInfoSelector,
-  // autoAddToBetaUI,
   getAddressBook,
   getAmountConversionRate,
   getBlockGasLimit,
@@ -71,23 +70,6 @@ function accountsWithSendEtherInfoSelector (state) {
 
   return accountsWithSendEtherInfo
 }
-
-// function autoAddToBetaUI (state) {
-//   const autoAddTransactionThreshold = 12
-//   const autoAddAccountsThreshold = 2
-//   const autoAddTokensThreshold = 1
-
-//   const numberOfTransactions = state.metamask.selectedAddressTxList.length
-//   const numberOfAccounts = Object.keys(getMetaMaskAccounts(state)).length
-//   const numberOfTokensAdded = state.metamask.tokens.length
-
-//   const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
-//     (numberOfAccounts > autoAddAccountsThreshold) &&
-//     (numberOfTokensAdded > autoAddTokensThreshold)
-//   const userIsNotInBeta = !state.metamask.featureFlags.betaUI
-
-//   return userIsNotInBeta && userPassesThreshold
-// }
 
 function getAddressBook (state) {
   return state.metamask.addressBook
