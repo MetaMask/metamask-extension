@@ -95,7 +95,7 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('First time flow starting from an existing seed phrase', () => {
     it('clicks the continue button on the welcome screen', async () => {
-      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-screen__button'))
+      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-page .first-time-flow__button'))
       welcomeScreenBtn.click()
       await delay(largeDelayMs)
     })
@@ -105,7 +105,7 @@ describe('Using MetaMask with an existing account', function () {
       await seedPhrase.click()
       await delay(regularDelayMs)
 
-      const [seedTextArea] = await findElements(driver, By.css('textarea.import-account__secret-phrase'))
+      const [seedTextArea] = await findElements(driver, By.css('textarea.first-time-flow__textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await delay(regularDelayMs)
 
@@ -121,30 +121,31 @@ describe('Using MetaMask with an existing account', function () {
 
     it('clicks through the ToS', async () => {
       // terms of use
-      await delay(largeDelayMs)
-      const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
+      await findElement(driver, By.css('.first-time-flow__markdown'))
+      const canClickThrough = await driver.findElement(By.css('button.first-time-flow__button')).isEnabled()
       assert.equal(canClickThrough, false, 'disabled continue button')
       const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
       await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
       await delay(regularDelayMs)
-      const acceptTos = await findElement(driver, By.css('.tou button'))
+      const acceptTos = await findElement(driver, By.css('button.first-time-flow__button'))
+      driver.wait(until.elementIsEnabled(acceptTos))
       await acceptTos.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the privacy notice', async () => {
       // privacy notice
-      const nextScreen = await findElement(driver, By.css('.tou button'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the phishing notice', async () => {
       // phishing notice
-      const noticeElement = await driver.findElement(By.css('.markdown'))
+      const noticeElement = await driver.findElement(By.css('.first-time-flow__markdown'))
       await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
       await delay(regularDelayMs)
-      const nextScreen = await findElement(driver, By.css('.tou button'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })

@@ -1,20 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { matchPath } from 'react-router-dom'
 import Identicon from '../identicon'
-
-const {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-} = require('../../../../app/scripts/lib/enums')
-const { DEFAULT_ROUTE, INITIALIZE_ROUTE, CONFIRM_TRANSACTION_ROUTE } = require('../../routes')
+import { DEFAULT_ROUTE } from '../../routes'
 const NetworkIndicator = require('../network')
 
 export default class AppHeader extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
-    location: PropTypes.object,
     network: PropTypes.string,
     provider: PropTypes.object,
     networkDropdownOpen: PropTypes.bool,
@@ -23,7 +16,8 @@ export default class AppHeader extends PureComponent {
     toggleAccountMenu: PropTypes.func,
     selectedAddress: PropTypes.string,
     isUnlocked: PropTypes.bool,
-    providerRequests: PropTypes.array,
+    hideNetworkIndicator: PropTypes.bool,
+    disabled: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -41,34 +35,15 @@ export default class AppHeader extends PureComponent {
       : hideNetworkDropdown()
   }
 
-  /**
-   * Returns whether or not the user is in the middle of a confirmation prompt
-   *
-   * This accounts for both tx confirmations as well as provider approvals
-   *
-   * @returns {boolean}
-   */
-  isConfirming () {
-    const { location, providerRequests } = this.props
-    const confirmTxRouteMatch = matchPath(location.pathname, {
-      exact: false,
-      path: CONFIRM_TRANSACTION_ROUTE,
-    })
-    const isConfirmingTx = Boolean(confirmTxRouteMatch)
-    const hasPendingProviderApprovals = Array.isArray(providerRequests) && providerRequests.length > 0
-
-    return isConfirmingTx || hasPendingProviderApprovals
-  }
-
   renderAccountMenu () {
-    const { isUnlocked, toggleAccountMenu, selectedAddress } = this.props
+    const { isUnlocked, toggleAccountMenu, selectedAddress, disabled } = this.props
 
     return isUnlocked && (
       <div
         className={classnames('account-menu__icon', {
-          'account-menu__icon--disabled': this.isConfirming(),
+          'account-menu__icon--disabled': disabled,
         })}
-        onClick={() => this.isConfirming() || toggleAccountMenu()}
+        onClick={() => disabled || toggleAccountMenu()}
       >
         <Identicon
           address={selectedAddress}
@@ -78,37 +53,15 @@ export default class AppHeader extends PureComponent {
     )
   }
 
-  hideAppHeader () {
-    const { location } = this.props
-
-    const isInitializing = Boolean(matchPath(location.pathname, {
-      path: INITIALIZE_ROUTE, exact: false,
-    }))
-
-    if (isInitializing) {
-      return true
-    }
-
-    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
-      return true
-    }
-
-    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP && this.isConfirming()) {
-      return true
-    }
-  }
-
   render () {
     const {
+      history,
       network,
       provider,
-      history,
       isUnlocked,
+      hideNetworkIndicator,
+      disabled,
     } = this.props
-
-    if (this.hideAppHeader()) {
-      return null
-    }
 
     return (
       <div
@@ -131,14 +84,18 @@ export default class AppHeader extends PureComponent {
             />
           </div>
           <div className="app-header__account-menu-container">
-            <div className="app-header__network-component-wrapper">
-              <NetworkIndicator
-                network={network}
-                provider={provider}
-                onClick={event => this.handleNetworkIndicatorClick(event)}
-                disabled={this.isConfirming()}
-              />
-            </div>
+            {
+              !hideNetworkIndicator && (
+                <div className="app-header__network-component-wrapper">
+                  <NetworkIndicator
+                    network={network}
+                    provider={provider}
+                    onClick={event => this.handleNetworkIndicatorClick(event)}
+                    disabled={disabled}
+                  />
+                </div>
+              )
+            }
             { this.renderAccountMenu() }
           </div>
         </div>

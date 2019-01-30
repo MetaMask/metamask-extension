@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import {
   setCurrentCurrency,
-  setRpcTarget,
+  updateAndSetCustomRpc,
   displayWarning,
   revealSeedConfirmation,
   setUseBlockie,
@@ -50,7 +50,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setCurrentCurrency: currency => dispatch(setCurrentCurrency(currency)),
-    setRpcTarget: (newRpc, chainId, ticker, nickname) => dispatch(setRpcTarget(newRpc, chainId, ticker, nickname)),
+    setRpcTarget: (newRpc, chainId, ticker, nickname) => dispatch(updateAndSetCustomRpc(newRpc, chainId, ticker, nickname)),
     displayWarning: warning => dispatch(displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(revealSeedConfirmation()),
     setUseBlockie: value => dispatch(setUseBlockie(value)),

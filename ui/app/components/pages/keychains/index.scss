@@ -1,0 +1,197 @@
+.first-view-main-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.first-view-main {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+@media screen and (min-width: 1281px) {
+  .first-view-main {
+    width: 62vw;
+  }
+}
+
+.import-account {
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 60px 0 30px 0;
+  position: relative;
+  max-width: initial;
+}
+
+@media only screen and (max-width: 575px) {
+  .import-account{
+    margin: 24px;
+    display: flex;
+    flex-flow: column nowrap;
+    width: calc(100vw - 80px);
+  }
+
+  .import-account__title {
+    width: initial !important;
+  }
+
+  .first-view-main {
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 12px;
+  }
+
+  .first-view-phone-invisible {
+    display: none;
+  }
+
+  .first-time-flow__input {
+    width: 100%;
+  }
+
+  .import-account__secret-phrase {
+    width: initial !important;
+    height: initial !important;
+    min-height: 190px;
+  }
+}
+
+.import-account__title {
+  color: #1B344D;
+  font-size: 40px;
+  line-height: 51px;
+  margin-bottom: 10px;
+}
+
+.import-account__back-button {
+  margin-bottom: 18px;
+  color: #22232c;
+  font-size: 16px;
+  line-height: 21px;
+  position: absolute;
+  top: -25px;
+}
+
+.import-account__secret-phrase {
+  height: 190px;
+  width: 495px;
+  border: 1px solid #CDCDCD;
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  padding: 17px;
+  font-size: 16px;
+}
+
+.import-account__secret-phrase::placeholder {
+  color: #9B9B9B;
+  font-weight: 200;
+}
+
+.import-account__faq-link {
+  font-size: 18px;
+  line-height: 23px;
+  font-family: Roboto;
+}
+
+.import-account__selector-label {
+  color: #1B344D;
+  font-size: 16px;
+}
+
+.import-account__dropdown {
+  width: 325px;
+  border: 1px solid #CDCDCD;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  margin-top: 14px;
+  color: #5B5D67;
+  font-family: Roboto;
+  font-size: 18px;
+  line-height: 23px;
+  padding: 14px 21px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.import-account__description-text {
+  color: #757575;
+  font-size: 18px;
+  line-height: 23px;
+  margin-top: 21px;
+  font-family: Roboto;
+}
+
+.import-account__input-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  margin-top: 30px;
+}
+
+.import-account__input-error-message {
+  margin-top: 10px;
+  width: 422px;
+  color: #FF001F;
+  font-size: 16px;
+  line-height: 21px;
+}
+
+.import-account__input-label {
+  margin-bottom: 9px;
+  color: #1B344D;
+  font-size: 18px;
+  line-height: 23px;
+}
+
+.import-account__input-label__disabled {
+  opacity: 0.5;
+}
+
+.import-account__input {
+  width: 350px;
+}
+
+@media only screen and (max-width: 575px) {
+  .import-account__input {
+    width: 100%;
+  }
+}
+
+.import-account__file-input {
+  display: none;
+}
+
+.import-account__file-input-label {
+  height: 53px;
+  width: 148px;
+  border: 1px solid #1B344D;
+  border-radius: 4px;
+  color: #1B344D;
+  font-family: Roboto;
+  font-size: 18px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.import-account__file-picker-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.import-account__file-name {
+  color: #000000;
+  font-family: Roboto;
+  font-size: 18px;
+  line-height: 23px;
+  margin-left: 22px;
+}

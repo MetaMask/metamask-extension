@@ -1,5 +1,6 @@
 {
   "metamask": {
+    "completedOnboarding": true,
     "isInitialized": true,
     "isUnlocked": true,
     "featureFlags": {"betaUI": true},
@@ -22,6 +23,7 @@
         "name": "Send Account 4"
       }
     },
+    "cachedBalances": {},
     "unapprovedTxs": {},
     "currentCurrency": "USD",
     "conversionRate": 1200.88200327,
@@ -106,6 +108,7 @@
       "amount": "0x0",
       "memo": "",
       "errors": {},
+      "warnings": {},
       "maxModeOn": false,
       "editingTransactionId": null
     },
@@ -140,6 +143,7 @@
     "fromDropdownOpen": false,
     "toDropdownOpen": false,
     "errors": {},
+    "warnings": {},
     "gasButtonGroupShown": true
   },
   "confirmTransaction": {

@@ -5,7 +5,8 @@ const { MAINNET } = require('./network/enums')
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = 180 * 1000
 const ERC20_ABI = [{'constant': true, 'inputs': [{'name': '_owner', 'type': 'address'}], 'name': 'balanceOf', 'outputs': [{'name': 'balance', 'type': 'uint256'}], 'payable': false, 'type': 'function'}]
-
+const SINGLE_CALL_BALANCES_ABI = require('single-call-balance-checker-abi')
+const SINGLE_CALL_BALANCES_ADDRESS = '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39'
 /**
  * A controller that polls for token exchange
  * rates based on a user's current token list
@@ -30,12 +31,27 @@ class DetectTokensController {
   async detectNewTokens () {
     if (!this.isActive) { return }
     if (this._network.store.getState().provider.type !== MAINNET) { return }
+    const tokensToDetect = []
     this.web3.setProvider(this._network._provider)
     for (const contractAddress in contracts) {
       if (contracts[contractAddress].erc20 && !(this.tokenAddresses.includes(contractAddress.toLowerCase()))) {
-        this.detectTokenBalance(contractAddress)
+        tokensToDetect.push(contractAddress)
       }
     }
+
+    const ethContract = this.web3.eth.contract(SINGLE_CALL_BALANCES_ABI).at(SINGLE_CALL_BALANCES_ADDRESS)
+    ethContract.balances([this.selectedAddress], tokensToDetect, (error, result) => {
+      if (error) {
+        warn(`MetaMask - DetectTokensController single call balance fetch failed`, error)
+        return
+      }
+      tokensToDetect.forEach((tokenAddress, index) => {
+        const balance = result[index]
+        if (!balance.isZero()) {
+          this._preferences.addToken(tokenAddress, contracts[tokenAddress].symbol, contracts[tokenAddress].decimals)
+        }
+      })
+    })
   }
 
    /**

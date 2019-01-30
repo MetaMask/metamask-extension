@@ -2,12 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import TextField from '../../text-field'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../../app/scripts/lib/enums'
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import getCaretCoordinates from 'textarea-caret'
 import { EventEmitter } from 'events'
 import Mascot from '../../mascot'
-import { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } from '../../../routes'
+import { DEFAULT_ROUTE } from '../../../routes'
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -15,12 +13,11 @@ export default class UnlockPage extends Component {
   }
 
   static propTypes = {
-    forgotPassword: PropTypes.func,
-    tryUnlockMetamask: PropTypes.func,
-    markPasswordForgotten: PropTypes.func,
     history: PropTypes.object,
     isUnlocked: PropTypes.bool,
-    useOldInterface: PropTypes.func,
+    onImport: PropTypes.func,
+    onRestore: PropTypes.func,
+    onSubmit: PropTypes.func,
   }
 
   constructor (props) {
@@ -43,12 +40,12 @@ export default class UnlockPage extends Component {
     }
   }
 
-  async handleSubmit (event) {
+  handleSubmit = async event => {
     event.preventDefault()
     event.stopPropagation()
 
     const { password } = this.state
-    const { tryUnlockMetamask, history } = this.props
+    const { onSubmit } = this.props
 
     if (password === '' || this.submitting) {
       return
@@ -58,9 +55,7 @@ export default class UnlockPage extends Component {
     this.submitting = true
 
     try {
-      await tryUnlockMetamask(password)
-      this.submitting = false
-      history.push(DEFAULT_ROUTE)
+      await onSubmit(password)
     } catch ({ message }) {
       this.setState({ error: message })
       this.submitting = false
@@ -99,7 +94,7 @@ export default class UnlockPage extends Component {
         fullWidth
         variant="raised"
         size="large"
-        onClick={event => this.handleSubmit(event)}
+        onClick={this.handleSubmit}
         disableRipple
       >
         { this.context.t('login') }
@@ -110,7 +105,7 @@ export default class UnlockPage extends Component {
   render () {
     const { password, error } = this.state
     const { t } = this.context
-    const { markPasswordForgotten, history } = this.props
+    const { onImport, onRestore } = this.props
 
     return (
       <div className="unlock-page__container">
@@ -128,7 +123,7 @@ export default class UnlockPage extends Component {
           <div>{ t('unlockMessage') }</div>
           <form
             className="unlock-page__form"
-            onSubmit={event => this.handleSubmit(event)}
+            onSubmit={this.handleSubmit}
           >
             <TextField
               id="password"
@@ -147,27 +142,13 @@ export default class UnlockPage extends Component {
           <div className="unlock-page__links">
             <div
               className="unlock-page__link"
-              onClick={() => {
-                markPasswordForgotten()
-                history.push(RESTORE_VAULT_ROUTE)
-
-                if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
-                  global.platform.openExtensionInBrowser()
-                }
-              }}
+              onClick={() => onRestore()}
             >
               { t('restoreFromSeed') }
             </div>
             <div
               className="unlock-page__link unlock-page__link--import"
-              onClick={() => {
-                markPasswordForgotten()
-                history.push(RESTORE_VAULT_ROUTE)
-
-                if (getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP) {
-                  global.platform.openExtensionInBrowser()
-                }
-              }}
+              onClick={() => onImport()}
             >
               { t('importUsingSeed') }
             </div>

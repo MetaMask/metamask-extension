@@ -37,6 +37,7 @@ const selectors = {
   getMetaMaskAccounts,
   getCurrentEthBalance,
   getNetworkIdentifier,
+  isBalanceCached,
 }
 
 module.exports = selectors
@@ -62,7 +63,7 @@ function getSelectedIdentity (state) {
 
 function getMetaMaskAccounts (state) {
   const currentAccounts = state.metamask.accounts
-  const cachedBalances = state.metamask.cachedBalances
+  const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
   const selectedAccounts = {}
 
   Object.keys(currentAccounts).forEach(accountID => {
@@ -70,13 +71,27 @@ function getMetaMaskAccounts (state) {
     if (account && account.balance === null || account.balance === undefined) {
       selectedAccounts[accountID] = {
         ...account,
-        balance: cachedBalances[accountID],
+        balance: cachedBalances && cachedBalances[accountID],
       }
     } else {
       selectedAccounts[accountID] = account
     }
   })
   return selectedAccounts
+}
+
+function isBalanceCached (state) {
+  const selectedAccountBalance = state.metamask.accounts[getSelectedAddress(state)].balance
+  const cachedBalance = getSelectedAccountCachedBalance(state)
+
+  return Boolean(!selectedAccountBalance && cachedBalance)
+}
+
+function getSelectedAccountCachedBalance (state) {
+  const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
+  const selectedAddress = getSelectedAddress(state)
+
+  return cachedBalances && cachedBalances[selectedAddress]
 }
 
 function getSelectedAccount (state) {

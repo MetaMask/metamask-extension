@@ -7,6 +7,7 @@ import {
 } from '../../../actions'
 import { DEFAULT_ROUTE } from '../../../routes'
 import TextField from '../../text-field'
+import Button from '../../button'
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -160,13 +161,14 @@ class RestoreVaultPage extends Component {
               margin="normal"
               largeLabel
             />
-            <button
+            <Button
+              type="first-time"
               className="first-time-flow__button"
               onClick={() => !disabled && this.onClick()}
               disabled={disabled}
             >
               {this.context.t('restore')}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

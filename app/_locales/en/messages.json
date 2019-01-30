@@ -102,7 +102,7 @@
     "message": "Amount + TX Fee"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
   },
   "appName": {
@@ -138,6 +138,9 @@
   },
   "balance": {
     "message": "Balance"
+  },
+  "balanceOutdated": {
+    "message": "Balance may be outdated"
   },
   "balances": {
     "message": "Token balance(s)"
@@ -206,6 +209,9 @@
   "clickToAdd": {
     "message": "Click on $1 to add them to your account"
   },
+  "clickToRevealSeed": {
+    "message": "Click here to reveal secret words"
+  },
   "close": {
     "message": "Close"
   },
@@ -226,6 +232,9 @@
   },
   "confirmPassword": {
     "message": "Confirm Password"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Confirm your Secret Backup Phrase"
   },
   "confirmTransaction": {
     "message": "Confirm Transaction"
@@ -314,12 +323,15 @@
   "createDen": {
     "message": "Create"
   },
+  "createPassword": {
+    "message": "Create Password"
+  },
   "crypto": {
     "message": "Crypto",
     "description": "Exchange type (cryptocurrencies)"
   },
-  "currentConversion": {
-    "message": "Current Conversion"
+  "currencyConversion": {
+    "message": "Currency Conversion"
   },
   "currentLanguage": {
     "message": "Current Language"
@@ -402,6 +414,9 @@
   },
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Download this Secret Backup Phrase and keep it stored safely on an external encrypted hard drive or storage medium."
   },
   "downloadStateLogs": {
     "message": "Download State Logs"
@@ -611,6 +626,9 @@
   "importAccountMsg": {
     "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
+  "importAccountSeedPhrase": {
+    "message": "Import an Account with Seed Phrase"
+  },
   "importAnAccount": {
     "message": "Import an account"
   },
@@ -623,6 +641,9 @@
   },
   "importUsingSeed": {
     "message": "Import using account seed phrase"
+  },
+  "importWithSeedPhrase": {
+    "message": "Import with seed phrase"
   },
   "info": {
     "message": "Info"
@@ -647,6 +668,9 @@
   },
   "invalidAddressRecipient": {
     "message": "Recipient address is invalid"
+  },
+  "knownAddressRecipient": {
+    "message": "Known contract address."
   },
   "invalidGasParams": {
     "message": "Invalid Gas Parameters"
@@ -727,6 +751,9 @@
   },
   "mainnet": {
     "message": "Main Ethereum Network"
+  },
+  "memorizePhrase": {
+    "message": "Memorize this phrase."
   },
   "menu": {
     "message": "Menu"
@@ -1093,11 +1120,23 @@
   "searchResults": {
     "message": "Search Results"
   },
+  "secretBackupPhrase": {
+    "message": "Secret Backup Phrase"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Your secret backup phrase makes it easy to back up and restore your account."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
+  },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
   },
   "secondsShorthand": {
     "message": "Sec"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Separate each word with a single space"
   },
   "seedPhraseReq": {
     "message": "Seed phrases are 12 words long"
@@ -1107,6 +1146,9 @@
   },
   "selectCurrency": {
     "message": "Select Currency"
+  },
+  "selectEachPhrase": {
+    "message": "Please select each phrase in order to make sure it is correct."
   },
   "selectLocale": {
     "message": "Select Locale"
@@ -1255,6 +1297,9 @@
   "step3HardwareWalletMsg": {
     "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
   },
+  "storePhrase": {
+    "message": "Store this phrase in a password manager like 1Password."
+  },
   "submit": {
     "message": "Submit"
   },
@@ -1275,6 +1320,9 @@
   },
   "testFaucet": {
     "message": "Test Faucet"
+  },
+  "tips": {
+    "message": "Tips"
   },
   "to": {
     "message": "To"
@@ -1474,6 +1522,9 @@
   "whatsThis": {
     "message": "What's this?"
   },
+  "writePhrase": {
+    "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."
+  },
   "yesLetsTry": {
     "message": "Yes, let's try"
   },
@@ -1488,6 +1539,15 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private seed phrase"
+  },
+  "yourUniqueAccountImage": {
+    "message": "Your unique account image"
+  },
+  "yourUniqueAccountImageDescription1": {
+    "message": "This image was programmatically generated for you by your new account number."
+  },
+  "yourUniqueAccountImageDescription2": {
+    "message": "You’ll see this image everytime you need to confirm a transaction."
   },
   "zeroGasPriceOnSpeedUpError": {
     "message":"Zero gas price on speed up"
