@@ -46,12 +46,10 @@ export default class SettingsTab extends PureComponent {
     delRpcTarget: PropTypes.func,
     displayWarning: PropTypes.func,
     revealSeedConfirmation: PropTypes.func,
-    setFeatureFlagToBeta: PropTypes.func,
     showClearApprovalModal: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
     warning: PropTypes.string,
     history: PropTypes.object,
-    isMascara: PropTypes.bool,
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
@@ -338,34 +336,6 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  renderOldUI () {
-    const { t } = this.context
-    const { setFeatureFlagToBeta } = this.props
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{ t('useOldUI') }</span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="secondary"
-              large
-              className="settings-tab__button--orange"
-              onClick={event => {
-                event.preventDefault()
-                setFeatureFlagToBeta()
-              }}
-            >
-              { t('useOldUI') }
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   renderResetAccount () {
     const { t } = this.context
     const { showResetAccountConfirmationModal } = this.props
@@ -523,7 +493,7 @@ export default class SettingsTab extends PureComponent {
   }
 
   render () {
-    const { warning, isMascara } = this.props
+    const { warning } = this.props
 
     return (
       <div className="settings-page__content">
@@ -534,7 +504,6 @@ export default class SettingsTab extends PureComponent {
         { this.renderNewRpcUrl() }
         { this.renderStateLogs() }
         { this.renderSeedWords() }
-        { !isMascara && this.renderOldUI() }
         { this.renderResetAccount() }
         { this.renderClearApproval() }
         { this.renderPrivacyOptIn() }
