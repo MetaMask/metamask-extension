@@ -19,6 +19,7 @@ export default class ProviderApproval extends Component {
       <ProviderPageContainer
         approveProviderRequest={approveProviderRequest}
         origin={providerRequest.origin}
+        tabID={providerRequest.tabID}
         rejectProviderRequest={rejectProviderRequest}
         siteImage={providerRequest.siteImage}
         siteTitle={providerRequest.siteTitle}

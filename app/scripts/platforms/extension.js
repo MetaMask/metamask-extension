@@ -65,9 +65,11 @@ class ExtensionPlatform {
   }
 
   sendMessage (message, query = {}) {
-    extension.tabs.query(query, tabs => {
+    const id = query.id
+    delete query.id
+    extension.tabs.query({ ...query }, tabs => {
       tabs.forEach(tab => {
-        extension.tabs.sendMessage(tab.id, message)
+        extension.tabs.sendMessage(id || tab.id, message)
       })
     })
   }
