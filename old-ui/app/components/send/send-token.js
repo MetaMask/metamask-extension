@@ -169,8 +169,6 @@ class SendTransactionScreen extends PersistentForm {
   }
 
   recipientDidChange (recipient, nickname) {
-    console.log('recipient, nickname')
-    console.log(recipient, nickname)
     this.setState({
       recipient,
       nickname,

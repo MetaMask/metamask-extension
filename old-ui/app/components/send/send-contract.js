@@ -152,7 +152,7 @@ class SendTransactionScreen extends PersistentForm {
 				<SendProfile />
 				<SendHeader title="Execute Method" />
 				<ErrorComponent error={error} />
-				<ToastComponent msg={this.props.toastMsg} isSuccess={true} />
+				<ToastComponent isSuccess={true} />
 				<div style={{ padding: '0 30px' }}>
 					<Select
 						clearable={false}
@@ -470,7 +470,6 @@ function mapStateToProps (state) {
 	const result = {
 		address: state.metamask.selectedAddress,
 		warning: state.appState.warning,
-		toastMsg: state.appState.toastMsg,
 		methodSelected: contractAcc && contractAcc.methodSelected,
 		methodABI: contractAcc && contractAcc.methodABI,
 		inputValues: contractAcc && contractAcc.inputValues,

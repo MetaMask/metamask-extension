@@ -26,6 +26,7 @@ const { tokenInfoGetter, calcTokenAmount } = require('../../../ui/app/token-util
 const BigNumber = require('bignumber.js')
 const ethNetProps = require('eth-net-props')
 import { getMetaMaskAccounts } from '../../../ui/app/selectors'
+import ToastComponent from './toast'
 
 const MIN_GAS_PRICE_BN = new BN('0')
 const MIN_GAS_LIMIT_BN = new BN('21000')
@@ -168,6 +169,9 @@ PendingTx.prototype.render = function () {
     h('div', {
       key: txMeta.id,
     }, [
+      h(ToastComponent, {
+        isSuccess: false,
+      }),
 
       h('form#pending-tx-form', {
         onSubmit: this.onSubmit.bind(this),

@@ -42,6 +42,7 @@ class AccountDropdowns extends Component {
       labels: {},
       isProxy: false,
       contractProps: null,
+      preventToast: false,
     }
     this.accountSelectorToggleClassName = 'accounts-selector'
     this.optionsMenuToggleClassName = 'account-dropdown'
@@ -131,6 +132,7 @@ class AccountDropdowns extends Component {
     this.props.actions.showAccountDetail(address)
     if (ifHardwareAcc(keyring)) {
       if (isLedger(keyring.type)) {
+
         const hdPaths = getHdPaths()
         return new Promise((resolve, reject) => {
           this.props.actions.connectHardwareAndUnlockAddress(LEDGER, hdPaths[1].value, address)
@@ -142,10 +144,17 @@ class AccountDropdowns extends Component {
           })
         })
         .catch(e => {
-          this.props.actions.displayWarning((e && e.message) || e)
-          this.props.actions.displayToast(e)
+          if (!this.state.preventToast) {
+            this.props.actions.displayToast(e)
+          } else {
+            this.setState({preventToast: false})
+          }
         })
+      } else {
+        this.setState({preventToast: true})
       }
+    } else {
+        this.setState({preventToast: true})
     }
   }
 
