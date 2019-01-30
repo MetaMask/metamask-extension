@@ -12,7 +12,7 @@ const BlockTracker = require('eth-block-tracker')
 module.exports = createInfuraClient
 
 function createInfuraClient ({ network }) {
-  const infuraMiddleware = createInfuraMiddleware({ network })
+  const infuraMiddleware = createInfuraMiddleware({ network, maxAttempts: 5, source: 'metamask' })
   const infuraProvider = providerFromMiddleware(infuraMiddleware)
   const blockTracker = new BlockTracker({ provider: infuraProvider })
 

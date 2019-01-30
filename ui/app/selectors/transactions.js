@@ -83,7 +83,7 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
   for (let i = 0; i < nonces.length; i++) {
     const nonce = nonces[i]
 
-    if (Number(hexToDecimal(nonce)) < Number(hexToDecimal(nonceToInsert))) {
+    if (Number(hexToDecimal(nonce)) > Number(hexToDecimal(nonceToInsert))) {
       insertIndex = i
       break
     }
@@ -138,23 +138,39 @@ const insertTransactionByTime = (transactions, transaction) => {
  * @param {transactionGroup[]} transactionGroups - Array of transactionGroup objects.
  * @param {transactionGroup} transactionGroup - transactionGroup object to be inserted into the
  * array of transactionGroups.
- * @returns {transactionGroup[]}
  */
 const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
-  const { primaryTransaction: { time } = {} } = transactionGroup
+  const { primaryTransaction: { time: groupToInsertTime } = {} } = transactionGroup
 
   let insertIndex = transactionGroups.length
 
   for (let i = 0; i < transactionGroups.length; i++) {
     const txGroup = transactionGroups[i]
+    const { primaryTransaction: { time } = {} } = txGroup
 
-    if (txGroup.time > time) {
+    if (time > groupToInsertTime) {
       insertIndex = i
       break
     }
   }
 
   transactionGroups.splice(insertIndex, 0, transactionGroup)
+}
+
+/**
+ * @name mergeShapeshiftTransactionGroups
+ * @private
+ * @description Inserts (mutates) shapeshift transactionGroups into an array of nonce-ordered
+ * transactionGroups by time. Shapeshift transactionGroups need to be sorted by time within the list
+ * of transactions as they do not have nonces.
+ * @param {transactionGroup[]} orderedTransactionGroups - Array of transactionGroups ordered by
+ * nonce.
+ * @param {transactionGroup[]} shapeshiftTransactionGroups - Array of shapeshift transactionGroups
+ */
+const mergeShapeshiftTransactionGroups = (orderedTransactionGroups, shapeshiftTransactionGroups) => {
+  shapeshiftTransactionGroups.forEach(shapeshiftGroup => {
+    insertTransactionGroupByTime(orderedTransactionGroups, shapeshiftGroup)
+  })
 }
 
 /**
@@ -166,11 +182,12 @@ export const nonceSortedTransactionsSelector = createSelector(
   transactionsSelector,
   (transactions = []) => {
     const unapprovedTransactionGroups = []
+    const shapeshiftTransactionGroups = []
     const orderedNonces = []
     const nonceToTransactionsMap = {}
 
     transactions.forEach(transaction => {
-      const { txParams: { nonce } = {}, status, type, time: txTime } = transaction
+      const { txParams: { nonce } = {}, status, type, time: txTime, key } = transaction
 
       if (typeof nonce === 'undefined') {
         const transactionGroup = {
@@ -181,7 +198,11 @@ export const nonceSortedTransactionsSelector = createSelector(
           hasCancelled: false,
         }
 
-        insertTransactionGroupByTime(unapprovedTransactionGroups, transactionGroup)
+        if (key === 'shapeshift') {
+          shapeshiftTransactionGroups.push(transactionGroup)
+        } else {
+          insertTransactionGroupByTime(unapprovedTransactionGroups, transactionGroup)
+        }
       } else if (nonce in nonceToTransactionsMap) {
         const nonceProps = nonceToTransactionsMap[nonce]
         insertTransactionByTime(nonceProps.transactions, transaction)
@@ -224,6 +245,7 @@ export const nonceSortedTransactionsSelector = createSelector(
     })
 
     const orderedTransactionGroups = orderedNonces.map(nonce => nonceToTransactionsMap[nonce])
+    mergeShapeshiftTransactionGroups(orderedTransactionGroups, shapeshiftTransactionGroups)
     return unapprovedTransactionGroups.concat(orderedTransactionGroups)
   }
 )
@@ -237,9 +259,7 @@ export const nonceSortedTransactionsSelector = createSelector(
 export const nonceSortedPendingTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
   (transactions = []) => (
-    transactions
-      .filter(({ primaryTransaction }) => primaryTransaction.status in pendingStatusHash)
-      .reverse()
+    transactions.filter(({ primaryTransaction }) => primaryTransaction.status in pendingStatusHash)
   )
 )
 
@@ -252,9 +272,9 @@ export const nonceSortedPendingTransactionsSelector = createSelector(
 export const nonceSortedCompletedTransactionsSelector = createSelector(
   nonceSortedTransactionsSelector,
   (transactions = []) => (
-    transactions.filter(({ primaryTransaction }) => {
-      return !(primaryTransaction.status in pendingStatusHash)
-    })
+    transactions
+      .filter(({ primaryTransaction }) => !(primaryTransaction.status in pendingStatusHash))
+      .reverse()
   )
 )
 

@@ -2,6 +2,37 @@
 
 ## Current Develop Branch
 
+## 5.3.2 Mon Jan 28 2019
+
+- [#6021](https://github.com/MetaMask/metamask-extension/pull/6021): Order shapeshift transactions by time within the transactions list
+- [#6052](https://github.com/MetaMask/metamask-extension/pull/6052): Add and use cached method signatures to reduce provider requests
+- [#6048](https://github.com/MetaMask/metamask-extension/pull/6048): Refactor BalanceComponent to jsx
+- [#6026](https://github.com/MetaMask/metamask-extension/pull/6026): Prevent invalid chainIds when adding custom rpcs
+- [#6029](https://github.com/MetaMask/metamask-extension/pull/6029): Fix grammar error in Current Conversion
+- [#6024](https://github.com/MetaMask/metamask-extension/pull/6024): Disable account dropdown on signing screens
+
+## 5.3.1 Wed Jan 16 2019
+
+- [#5966](https://github.com/MetaMask/metamask-extension/pull/5966): Update Slovenian translation
+- [#6005](https://github.com/MetaMask/metamask-extension/pull/6005): Set auto conversion off for token/eth conversion
+- [#6008](https://github.com/MetaMask/metamask-extension/pull/6008): Fix confirm screen for sending ether tx with hex data
+- [#5999](https://github.com/MetaMask/metamask-extension/pull/5999): Refine app description
+- [#5997](https://github.com/MetaMask/metamask-extension/pull/5997): Harden Drizzle test runner script
+- [#5995](https://github.com/MetaMask/metamask-extension/pull/5995): Fix bug where MetaMask user calls non-standard ERC20 methods such as `mint`, `tokenData` will be `undefined` and an uncaught error will break the UI
+- [#5970](https://github.com/MetaMask/metamask-extension/pull/5970): Fixed a word in french translation (several occurrences of connection instead of connexion)
+- [#5977](https://github.com/MetaMask/metamask-extension/pull/5977): Fix Component#componentDidUpdate usage
+- [#5992](https://github.com/MetaMask/metamask-extension/pull/5992): Add scrolling button to account list
+- [#5989](https://github.com/MetaMask/metamask-extension/pull/5989): fix typo in phishing.html title
+
+## 5.3.0 Wed Jan 02 2019
+
+- [#5978](https://github.com/MetaMask/metamask-extension/pull/5978): Fix etherscan links on notifications
+- [#5980](https://github.com/MetaMask/metamask-extension/pull/5980): Fix drizzle tests
+- [#5922](https://github.com/MetaMask/metamask-extension/pull/5922): Prevent users from changing the From field in the send screen
+- [#5932](https://github.com/MetaMask/metamask-extension/pull/5932): Fix displayed time and date in the activity log. Remove vreme library, add luxon library.
+- [#5924](https://github.com/MetaMask/metamask-extension/pull/5924): transactions - throw an error if a transaction is generated while the network is loading
+- [#5893](https://github.com/MetaMask/metamask-extension/pull/5893): Add loading network screen
+
 ## 5.2.2 Wed Dec 12 2018
 
 - [#5925](https://github.com/MetaMask/metamask-extension/pull/5925): Fix speed up button not showing for transactions with the lowest nonce

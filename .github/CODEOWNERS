@@ -1,6 +1,6 @@
 # Lines starting with '#' are comments.
 # Each line is a file pattern followed by one or more owners.
 
-ui/                                  @danjm @alextsg @whymarrh
+ui/                                  @danjm @whymarrh
 app/scripts/controllers/transactions @frankiebee
 

@@ -128,7 +128,7 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   }
   if (prevState && ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
-    this.props.onChange({ toAddress: ensResolution, nickname, toError: state.toError })
+    this.props.onChange({ toAddress: ensResolution, nickname, toError: state.toError, toWarning: state.toWarning })
   }
 }
 

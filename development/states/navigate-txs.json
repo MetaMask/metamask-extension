@@ -280,7 +280,8 @@
   "send": {
     "fromDropdownOpen": false,
     "toDropdownOpen": false,
-    "errors": {}
+    "errors": {},
+    "warnings": {}
   },
   "confirmTransaction": {
     "txData": {

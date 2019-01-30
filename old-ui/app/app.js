@@ -5,8 +5,7 @@ const h = require('react-hyperscript')
 const actions = require('../../ui/app/actions')
 const log = require('loglevel')
 // mascara
-const MascaraFirstTime = require('../../mascara/src/app/first-time').default
-const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
+const FirstTime = require('../../ui/app/components/pages/first-time-flow').default
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
@@ -153,7 +152,7 @@ App.prototype.renderPrimary = function () {
   const {isMascara, isOnboarding, providerRequests} = props
 
   if (isMascara && isOnboarding) {
-    return h(MascaraFirstTime)
+    return h(FirstTime)
   }
 
   // notices
@@ -269,10 +268,6 @@ App.prototype.renderPrimary = function () {
     case 'buyEth':
       log.debug('rendering buy ether screen')
       return h(BuyView, {key: 'buyEthView'})
-
-    case 'onboardingBuyEth':
-      log.debug('rendering onboarding buy ether screen')
-      return h(MascaraBuyEtherScreen, {key: 'buyEthView'})
 
     case 'qr':
       log.debug('rendering show qr screen')

@@ -8,6 +8,7 @@ import {
   getNativeCurrency,
   getSelectedTokenAssetImage,
   getMetaMaskAccounts,
+  isBalanceCached,
 } from '../../selectors'
 import { showModal } from '../../actions'
 
@@ -24,6 +25,7 @@ const mapStateToProps = state => {
     balance,
     nativeCurrency: getNativeCurrency(state),
     assetImage: getSelectedTokenAssetImage(state),
+    balanceIsCached: isBalanceCached(state),
   }
 }
 

@@ -16,7 +16,7 @@ QUnit.test('renders list items successfully', (assert) => {
 
 global.ethQuery = global.ethQuery || {}
 global.ethQuery.getTransactionCount = (_, cb) => {
-  cb(null, '0x3')
+  cb(null, '0x4')
 }
 
 async function runTxListItemsTest (assert, done) {
@@ -30,25 +30,29 @@ async function runTxListItemsTest (assert, done) {
   metamaskLogo[0].click()
 
   const txListItems = await queryAsync($, '.transaction-list-item')
-  assert.equal(txListItems.length, 7, 'all tx list items are rendered')
+  assert.equal(txListItems.length, 8, 'all tx list items are rendered')
 
-  const approvedTx = txListItems[0]
-  const approvedTxRenderedStatus = await findAsync($(approvedTx), '.transaction-list-item__status')
-  assert.equal(approvedTxRenderedStatus[0].textContent, 'pending', 'approvedTx has correct label')
-
-  const unapprovedMsg = txListItems[1]
+  const unapprovedMsg = txListItems[0]
   const unapprovedMsgDescription = await findAsync($(unapprovedMsg), '.transaction-list-item__action')
   assert.equal(unapprovedMsgDescription[0].textContent, 'Signature Request', 'unapprovedMsg has correct description')
 
-  const shapeShiftTx = txListItems[4]
-  const shapeShiftTxStatus = await findAsync($(shapeShiftTx), '.flex-column div:eq(1)')
-  assert.equal(shapeShiftTxStatus[0].textContent, 'No deposits received', 'shapeShiftTx has correct status')
+  const approvedTx = txListItems[2]
+  const approvedTxRenderedStatus = await findAsync($(approvedTx), '.transaction-list-item__status')
+  assert.equal(approvedTxRenderedStatus[0].textContent, 'pending', 'approvedTx has correct label')
 
-  const rejectedTx = txListItems[5]
-  const rejectedTxRenderedStatus = await findAsync($(rejectedTx), '.transaction-list-item__status')
-  assert.equal(rejectedTxRenderedStatus[0].textContent, 'Rejected', 'rejectedTx has correct label')
+  const confirmedTokenTx1 = txListItems[4]
+  const confirmedTokenTx1Address = await findAsync($(confirmedTokenTx1), '.transaction-list-item__status')
+  assert.equal(confirmedTokenTx1Address[0].textContent, 'Confirmed', 'confirmedTokenTx has correct status')
 
-  const confirmedTokenTx = txListItems[6]
-  const confirmedTokenTxAddress = await findAsync($(confirmedTokenTx), '.transaction-list-item__status')
-  assert.equal(confirmedTokenTxAddress[0].textContent, 'Confirmed', 'confirmedTokenTx has correct address')
+  const shapeShiftTx1 = txListItems[5]
+  const shapeShiftTx1Status = await findAsync($(shapeShiftTx1), '.flex-column div:eq(1)')
+  assert.equal(shapeShiftTx1Status[0].textContent, 'No deposits received', 'shapeShiftTx has correct status')
+
+  const confirmedTokenTx2 = txListItems[6]
+  const confirmedTokenTx2Address = await findAsync($(confirmedTokenTx2), '.transaction-list-item__status')
+  assert.equal(confirmedTokenTx2Address[0].textContent, 'Confirmed', 'confirmedTokenTx has correct status')
+
+  const shapeShiftTx2 = txListItems[7]
+  const shapeShiftTx2Address = await findAsync($(shapeShiftTx2), '.flex-column div:eq(1)')
+  assert.equal(shapeShiftTx2Address[0].textContent, 'No deposits received', 'shapeShiftTx has correct status')
 }
