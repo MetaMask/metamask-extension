@@ -931,7 +931,7 @@
     "message": "Tu firma ya fue solicitada"
   },
   "contractInteraction": {
-    "message": "Interacción del Contrato"
+    "message": "Interacción con contrato"
   },
   "providerRequest": {
     "message": "$1 quisiera conectar con tu cuenta"
@@ -943,7 +943,7 @@
     "message": "Accediendo a tu cámara..."
   },
   "accountOptions": {
-    "message": "Opciones de la Cuenta"
+    "message": "Opciones de la cuenta"
   },
   "accountSelectionRequired": {
     "message": "¡Necesitas elegir una cuenta!"
@@ -985,10 +985,10 @@
     "message": "Bytes"
   },
   "cancelAttempt": {
-    "message": "Intento de Cancelar"
+    "message": "Intentar cancelar"
   },
   "cancellationGasFee": {
-    "message": "Comisión de Gas por Cancelación"
+    "message": "Comisión de Gas por cancelación"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -1015,7 +1015,7 @@
     "message": "Conectar"
   },
   "connectRequest": {
-    "message": "Petición para Conectar"
+    "message": "Petición para conectar"
   },
   "connecting": {
     "message": "Conectándose..."
@@ -1057,7 +1057,7 @@
     "message": "ETH"
   },
   "estimatedProcessingTimes": {
-    "message": "Tiempo Previsto de Procesamiento"
+    "message": "Tiempo Previsto de procesamiento"
   },
   "expandView": {
     "message": "Ampliar Vista"
@@ -1072,28 +1072,28 @@
     "message": "Lo Mas Rápido"
   },
   "feeChartTitle": {
-    "message": "Previsiones en Vivo de las Comisiones por Transacciones"
+    "message": "Previsiones en vivo de las comisiones por transacciones"
   },
   "forgetDevice": {
     "message": "Olvidar a este dispositivo"
   },
   "functionType": {
-    "message": "Tipo de Función"
+    "message": "Tipo de función"
   },
   "gasUsed": {
-    "message": "Gas Usado"
+    "message": "Gas usado"
   },
   "gasPriceExtremelyLow": {
-    "message": "Precio de Gas Excesivamente Bajo"
+    "message": "Precio de Gas excesivamente bajo"
   },
   "gasPriceNoDenom": {
     "message": "Precio de Gas"
   },
   "generatingTransaction": {
-    "message": "Generando la Transacción"
+    "message": "Generando la transacción"
   },
   "getHelp": {
-    "message": "Pedir Ayuda."
+    "message": "Pedir ayuda."
   },
   "hardware": {
     "message": "hardware"
@@ -1138,7 +1138,7 @@
     "message": "Hay que hacer uso de tu última cuenta antes de agregarle una nueva."
   },
   "liveGasPricePredictions": {
-    "message": "Previsiones en Vivo del Precio de Gas"
+    "message": "Previsiones en vivo del precio de Gas"
   },
   "menu": {
     "message": "Menú"
