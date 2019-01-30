@@ -405,8 +405,8 @@ class AccountDropdowns extends Component {
     const { selected, keyrings } = this.props
     if (prevProps.selected !== selected) {
       this.checkIfProxy()
-    }
-    if (prevProps.keyrings.length !== keyrings.length) {
+      this.setAllLabels()
+    } else if (prevProps.keyrings.length !== keyrings.length) {
       this.setAllLabels()
     }
     if (!isNaN(this.props.network)) {
