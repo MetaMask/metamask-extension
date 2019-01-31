@@ -33,7 +33,7 @@ describe('SendRowErrorMessage Component', function () {
     })
 
     it('if both errors and custom errors have the same error type then the error in errors should be displayed', () => {
-      wrapper.setProps({ 
+      wrapper.setProps({
         errors: { error1: 'abc', error2: 'def', error3: 'xyz' },
         customErrors: {error1: 'abc', error2: 'def', error3: 'ghi' },
       })
