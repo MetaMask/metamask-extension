@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 5.3.4 Thu Jan 31 2019
+
+- [#6079](https://github.com/MetaMask/metamask-extension/pull/6079): fix - migration 30
+
 ## 5.3.3 Wed Jan 30 2019
 
 - [#6006](https://github.com/MetaMask/metamask-extension/pull/6006): Update privacy notice
