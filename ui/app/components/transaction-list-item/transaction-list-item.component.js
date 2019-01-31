@@ -130,7 +130,7 @@ export default class TransactionListItem extends PureComponent {
       )
   }
 
-  renderReceive () {
+  render () {
     const {
       assetImages,
       transaction,
@@ -139,12 +139,23 @@ export default class TransactionListItem extends PureComponent {
       primaryTransaction,
       showCancel,
       showRetry,
+      tokenData,
       transactionGroup,
       selectedAddress,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
-    const fromAddress = txParams.from
+    const isDeposit = txParams.to === selectedAddress
+
+    let address
+
+    if (isDeposit) {
+      address = txParams.from
+    } else {
+      address = tokenData
+        ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
+        : txParams.to
+    }
 
     return (
       <div className="transaction-list-item">
@@ -154,9 +165,9 @@ export default class TransactionListItem extends PureComponent {
         >
           <Identicon
             className="transaction-list-item__identicon"
-            address={fromAddress}
+            address={address}
             diameter={34}
-            image={assetImages[fromAddress]}
+            image={assetImages[address]}
           />
           <TransactionAction
             transaction={transaction}
@@ -179,87 +190,8 @@ export default class TransactionListItem extends PureComponent {
                 : primaryTransaction.err && primaryTransaction.err.message
             )}
           />
-          { this.renderPrimaryCurrency(true) }
-          { this.renderSecondaryCurrency(true) }
-        </div>
-        <div className={classnames('transaction-list-item__expander', {
-          'transaction-list-item__expander--show': showTransactionDetails,
-        })}>
-          {
-            showTransactionDetails && (
-              <div className="transaction-list-item__details-container">
-                <TransactionListItemDetails
-                  transactionGroup={transactionGroup}
-                  onRetry={this.handleRetry}
-                  showRetry={showRetry && methodData.done}
-                  onCancel={this.handleCancel}
-                  showCancel={showCancel}
-                />
-              </div>
-            )
-          }
-        </div>
-      </div>
-    )
-  }
-
-  render () {
-    const {
-      assetImages,
-      transaction,
-      methodData,
-      nonceAndDate,
-      primaryTransaction,
-      showCancel,
-      showRetry,
-      tokenData,
-      transactionGroup,
-      selectedAddress,
-    } = this.props
-    const { txParams = {} } = transaction
-    const { showTransactionDetails } = this.state
-    const toAddress = tokenData
-      ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
-      : txParams.to
-
-    if (txParams.to === selectedAddress) {
-      return this.renderReceive()
-    }
-
-    return (
-      <div className="transaction-list-item">
-        <div
-          className="transaction-list-item__grid"
-          onClick={this.handleClick}
-        >
-          <Identicon
-            className="transaction-list-item__identicon"
-            address={toAddress}
-            diameter={34}
-            image={assetImages[toAddress]}
-          />
-          <TransactionAction
-            transaction={transaction}
-            methodData={methodData}
-            className="transaction-list-item__action"
-          />
-          <div
-            className="transaction-list-item__nonce"
-            title={nonceAndDate}
-          >
-            { nonceAndDate }
-          </div>
-          <TransactionStatus
-            className="transaction-list-item__status"
-            statusKey={getStatusKey(primaryTransaction)}
-            title={(
-              (primaryTransaction.err && primaryTransaction.err.rpc)
-                ? primaryTransaction.err.rpc.message
-                : primaryTransaction.err && primaryTransaction.err.message
-            )}
-          />
-          { this.renderPrimaryCurrency() }
-          { this.renderSecondaryCurrency() }
+          { this.renderPrimaryCurrency(isDeposit) }
+          { this.renderSecondaryCurrency(isDeposit) }
         </div>
         <div className={classnames('transaction-list-item__expander', {
           'transaction-list-item__expander--show': showTransactionDetails,
