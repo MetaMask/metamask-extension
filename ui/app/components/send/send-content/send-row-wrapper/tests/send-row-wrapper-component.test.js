@@ -70,6 +70,7 @@ describe('SendContent Component', function () {
     it('should render its first child as the last child of the send-v2__form-label, if it has two children', () => {
       wrapper = shallow(<SendRowWrapper
       errorType={'mockErrorType'}
+      errors={{mockErrorType: 'mockError'}}
       label={'mockLabel'}
       showError={false}
     >
