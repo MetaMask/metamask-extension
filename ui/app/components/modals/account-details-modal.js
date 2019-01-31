@@ -78,6 +78,7 @@ AccountDetailsModal.prototype.render = function () {
         Qr: {
           data: address,
           network: network,
+          isDataAddress: true,
         },
       }),
 
