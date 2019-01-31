@@ -45,11 +45,11 @@ const mapDispatchToProps = dispatch => {
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { selectedAddress, ...restStateProps } = stateProps
+  const { selectedAddress } = stateProps
   const { updateNetworkNonce, ...restDispatchProps } = dispatchProps
 
   return {
-    ...restStateProps,
+    ...stateProps,
     ...restDispatchProps,
     ...ownProps,
     updateNetworkNonce: () => updateNetworkNonce(selectedAddress),

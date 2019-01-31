@@ -20,6 +20,7 @@ export default class TransactionList extends PureComponent {
     selectedToken: PropTypes.object,
     updateNetworkNonce: PropTypes.func,
     assetImages: PropTypes.object,
+    selectedAddress: PropTypes.string,
   }
 
   componentDidMount () {
@@ -85,7 +86,7 @@ export default class TransactionList extends PureComponent {
   }
 
   renderTransaction (transactionGroup, index, isPendingTx = false) {
-    const { selectedToken, assetImages } = this.props
+    const { selectedToken, assetImages, selectedAddress } = this.props
     const { transactions = [] } = transactionGroup
 
     return transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT
@@ -97,7 +98,7 @@ export default class TransactionList extends PureComponent {
       ) : (
         <TransactionListItem
           transactionGroup={transactionGroup}
-          key={`${transactionGroup.nonce}:${index}`}
+          key={`${transactionGroup.nonce}:${index}:${selectedAddress}`}
           showRetry={isPendingTx && this.shouldShowRetry(transactionGroup, index === 0)}
           showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
           token={selectedToken}
