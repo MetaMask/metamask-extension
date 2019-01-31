@@ -132,7 +132,6 @@ class AccountDropdowns extends Component {
     this.props.actions.showAccountDetail(address)
     if (ifHardwareAcc(keyring)) {
       if (isLedger(keyring.type)) {
-
         const hdPaths = getHdPaths()
         return new Promise((resolve, reject) => {
           this.props.actions.connectHardwareAndUnlockAddress(LEDGER, hdPaths[1].value, address)
@@ -147,15 +146,23 @@ class AccountDropdowns extends Component {
           if (!this.state.preventToast) {
             this.props.actions.displayToast(e)
           } else {
-            this.setState({preventToast: false})
+            this.allowToast()
           }
         })
       } else {
-        this.setState({preventToast: true})
+        this.preventToast()
       }
     } else {
-        this.setState({preventToast: true})
+        this.preventToast()
     }
+  }
+
+  allowToast () {
+    this.setState({preventToast: false})
+  }
+
+  preventToast () {
+    this.setState({preventToast: true})
   }
 
   ifProxyAcc (address, setProxy) {
