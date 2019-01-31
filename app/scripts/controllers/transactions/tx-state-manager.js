@@ -241,6 +241,13 @@ class TransactionStateManager extends EventEmitter {
     status: 'signed',<br>
     err: undefined,<br>
   }<br></code>
+  <br>To filter by multiple keys<br>
+  let <code>thingsToLookFor = {<br>
+    keys: ['from', 'to'],<br>
+    values: ['0x0..', '0x0..'],<br>
+    status: 'signed',<br>
+    err: undefined,<br>
+  }<br></code>
   @param [initialList=this.getTxList()]
   @returns a {array} of txMeta with all
   options matching
@@ -261,7 +268,19 @@ class TransactionStateManager extends EventEmitter {
   */
   getFilteredTxList (opts, initialList) {
     let filteredTxList = initialList
-    Object.keys(opts).forEach((key) => {
+
+    const { keys, values, ...rest } = opts
+
+    if (keys && values) {
+      let ret = []
+      keys.forEach((key, i) => {
+        const value = values[i]
+        ret = ret.concat(this.getTxsByMetaData(key, value, filteredTxList))
+      })
+      filteredTxList = ret
+    }
+
+    Object.keys(rest).forEach((key) => {
       filteredTxList = this.getTxsByMetaData(key, opts[key], filteredTxList)
     })
     return filteredTxList

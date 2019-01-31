@@ -16,6 +16,7 @@ const {
   TRANSACTION_TYPE_RETRY,
   TRANSACTION_TYPE_STANDARD,
   TRANSACTION_STATUS_APPROVED,
+  TRANSACTION_STATUS_CONFIRMED,
 } = require('./enums')
 
 const { hexToBn, bnToHex, BnMultiplyByFraction } = require('../../lib/util')
@@ -104,6 +105,25 @@ class TransactionController extends EventEmitter {
 
     // request state update to finalize initialization
     this._updatePendingTxsAfterFirstBlock()
+    const opt = {
+      from: "0xcf1de0b4d1e492080336909f70413a5f4e7eec62",
+      gas: "0x5208",
+      gasPrice: "0x5d21dba00",
+      nonce: "0x44",
+      to: "0xcf1de0b4d1e492080336909f70413a5f4e7eec62",
+      value: "0x2386f26fc10000",
+    }
+
+    setTimeout(() => {
+      // let txMeta = this.txStateManager.generateTxMeta({
+      //   txParams: opt,
+      //   type: TRANSACTION_TYPE_STANDARD,
+      //   status: TRANSACTION_STATUS_APPROVED,
+      // })
+      // this.addTx(txMeta)
+    }, 1000)
+    console.log(this.txStateManager.getFullTxList())
+    // this.addUnapprovedTransaction({})
   }
 
   /** @returns {number} the chainId*/
@@ -175,7 +195,7 @@ class TransactionController extends EventEmitter {
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams)
     // Assert the from address is the selected address
-    if (normalizedTxParams.from !== this.getSelectedAddress()) {
+    if (![normalizedTxParams.from, normalizedTxParams.to].includes(this.getSelectedAddress())) {
       throw new Error(`Transaction from address isn't valid for this account`)
     }
     txUtils.validateTxParams(normalizedTxParams)
@@ -617,9 +637,11 @@ class TransactionController extends EventEmitter {
     this.pendingTxTracker.updatePendingTxs()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
     const selectedAddressTxList = this.txStateManager.getFilteredTxList({
-      from: this.getSelectedAddress(),
+      keys: ['from', 'to'],
+      values: [this.getSelectedAddress(), this.getSelectedAddress()],
       metamaskNetworkId: this.getNetwork(),
     })
+
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
   }
 }
