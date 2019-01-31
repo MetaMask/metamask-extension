@@ -998,6 +998,9 @@
   "receive": {
     "message": "Receive"
   },
+  "receivedEther": {
+    "message": "Received Ether"
+  },
   "recipientAddress": {
     "message": "Recipient Address"
   },

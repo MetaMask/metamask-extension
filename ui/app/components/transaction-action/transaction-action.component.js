@@ -13,6 +13,7 @@ export default class TransactionAction extends PureComponent {
     className: PropTypes.string,
     transaction: PropTypes.object,
     methodData: PropTypes.object,
+    selectedAddress: PropTypes.string,
   }
 
   state = {
@@ -29,7 +30,7 @@ export default class TransactionAction extends PureComponent {
 
   async getTransactionAction () {
     const { transactionAction } = this.state
-    const { transaction, methodData } = this.props
+    const { transaction, methodData, selectedAddress } = this.props
     const { data, done } = methodData
     const { name = '' } = data
 
@@ -37,7 +38,7 @@ export default class TransactionAction extends PureComponent {
       return
     }
 
-    const actionKey = await getTransactionActionKey(transaction, data)
+    const actionKey = await getTransactionActionKey(transaction, data, selectedAddress)
     const action = actionKey
       ? this.context.t(actionKey)
       : camelCaseToCapitalize(name)

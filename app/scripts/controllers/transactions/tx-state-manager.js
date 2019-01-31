@@ -277,7 +277,7 @@ class TransactionStateManager extends EventEmitter {
         const value = values[i]
         ret = ret.concat(this.getTxsByMetaData(key, value, filteredTxList))
       })
-      filteredTxList = ret
+      filteredTxList = [...(new Set(ret))]
     }
 
     Object.keys(rest).forEach((key) => {

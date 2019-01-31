@@ -29,6 +29,7 @@ export default class TransactionListItem extends PureComponent {
     transaction: PropTypes.object,
     transactionGroup: PropTypes.object,
     value: PropTypes.string,
+    selectedAddress: PropTypes.string,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
   }
@@ -93,7 +94,7 @@ export default class TransactionListItem extends PureComponent {
       .then(retryTransaction(retryId, gasPrice))
   }
 
-  renderPrimaryCurrency () {
+  renderPrimaryCurrency (isReceived) {
     const { token, primaryTransaction: { txParams: { data } = {} } = {}, value } = this.props
 
     return token
@@ -102,19 +103,19 @@ export default class TransactionListItem extends PureComponent {
           className="transaction-list-item__amount transaction-list-item__amount--primary"
           token={token}
           transactionData={data}
-          prefix="-"
+          prefix={isReceived ? '' : '-'}
         />
       ) : (
         <UserPreferencedCurrencyDisplay
           className="transaction-list-item__amount transaction-list-item__amount--primary"
           value={value}
           type={PRIMARY}
-          prefix="-"
+          prefix={isReceived ? '' : '-'}
         />
       )
   }
 
-  renderSecondaryCurrency () {
+  renderSecondaryCurrency (isReceived) {
     const { token, value } = this.props
 
     return token
@@ -123,10 +124,83 @@ export default class TransactionListItem extends PureComponent {
         <UserPreferencedCurrencyDisplay
           className="transaction-list-item__amount transaction-list-item__amount--secondary"
           value={value}
-          prefix="-"
+          prefix={isReceived ? '' : '-'}
           type={SECONDARY}
         />
       )
+  }
+
+  renderReceive () {
+    const {
+      assetImages,
+      transaction,
+      methodData,
+      nonceAndDate,
+      primaryTransaction,
+      showCancel,
+      showRetry,
+      transactionGroup,
+      selectedAddress,
+    } = this.props
+    const { txParams = {} } = transaction
+    const { showTransactionDetails } = this.state
+    const fromAddress = txParams.from
+
+    return (
+      <div className="transaction-list-item">
+        <div
+          className="transaction-list-item__grid"
+          onClick={this.handleClick}
+        >
+          <Identicon
+            className="transaction-list-item__identicon"
+            address={fromAddress}
+            diameter={34}
+            image={assetImages[fromAddress]}
+          />
+          <TransactionAction
+            transaction={transaction}
+            methodData={methodData}
+            selectedAddress={selectedAddress}
+            className="transaction-list-item__action"
+          />
+          <div
+            className="transaction-list-item__nonce"
+            title={nonceAndDate}
+          >
+            { nonceAndDate }
+          </div>
+          <TransactionStatus
+            className="transaction-list-item__status"
+            statusKey={getStatusKey(primaryTransaction)}
+            title={(
+              (primaryTransaction.err && primaryTransaction.err.rpc)
+                ? primaryTransaction.err.rpc.message
+                : primaryTransaction.err && primaryTransaction.err.message
+            )}
+          />
+          { this.renderPrimaryCurrency(true) }
+          { this.renderSecondaryCurrency(true) }
+        </div>
+        <div className={classnames('transaction-list-item__expander', {
+          'transaction-list-item__expander--show': showTransactionDetails,
+        })}>
+          {
+            showTransactionDetails && (
+              <div className="transaction-list-item__details-container">
+                <TransactionListItemDetails
+                  transactionGroup={transactionGroup}
+                  onRetry={this.handleRetry}
+                  showRetry={showRetry && methodData.done}
+                  onCancel={this.handleCancel}
+                  showCancel={showCancel}
+                />
+              </div>
+            )
+          }
+        </div>
+      </div>
+    )
   }
 
   render () {
@@ -140,12 +214,17 @@ export default class TransactionListItem extends PureComponent {
       showRetry,
       tokenData,
       transactionGroup,
+      selectedAddress,
     } = this.props
     const { txParams = {} } = transaction
     const { showTransactionDetails } = this.state
     const toAddress = tokenData
       ? tokenData.params && tokenData.params[0] && tokenData.params[0].value || txParams.to
       : txParams.to
+
+    if (txParams.to === selectedAddress) {
+      return this.renderReceive()
+    }
 
     return (
       <div className="transaction-list-item">

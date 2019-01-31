@@ -13,6 +13,7 @@ export const TOKEN_METHOD_APPROVE = 'approve'
 export const TOKEN_METHOD_TRANSFER_FROM = 'transferfrom'
 
 export const SEND_ETHER_ACTION_KEY = 'sentEther'
+export const RECEIVE_ETHER_ACTION_KEY = 'receivedEther'
 export const DEPLOY_CONTRACT_ACTION_KEY = 'contractDeployment'
 export const APPROVE_ACTION_KEY = 'approve'
 export const SEND_TOKEN_ACTION_KEY = 'sentTokens'

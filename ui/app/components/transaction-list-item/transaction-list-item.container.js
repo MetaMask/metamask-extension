@@ -16,9 +16,10 @@ import {
 } from '../../ducks/gas.duck'
 
 const mapStateToProps = state => {
-  const { metamask: { knownMethodData } } = state
+  const { metamask: { knownMethodData, selectedAddress } } = state
   return {
     knownMethodData,
+    selectedAddress,
   }
 }
 

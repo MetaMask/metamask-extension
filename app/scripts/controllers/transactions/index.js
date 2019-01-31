@@ -615,10 +615,11 @@ class TransactionController extends EventEmitter {
   */
   _updateMemstore () {
     this.pendingTxTracker.updatePendingTxs()
+    const selectedAddress = this.getSelectedAddress()
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
-    const selectedAddressTxList = this.txStateManager.getFilteredTxList({
+    let selectedAddressTxList = this.txStateManager.getFilteredTxList({
       keys: ['from', 'to'],
-      values: [this.getSelectedAddress(), this.getSelectedAddress()],
+      values: [selectedAddress, selectedAddress],
       metamaskNetworkId: this.getNetwork(),
     })
 

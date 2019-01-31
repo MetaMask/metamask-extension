@@ -19,6 +19,7 @@ import {
   SIGNATURE_REQUEST_KEY,
   CONTRACT_INTERACTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
+  RECEIVE_ETHER_ACTION_KEY,
 } from '../constants/transactions'
 
 import { addCurrencies } from '../conversion-util'
@@ -75,9 +76,10 @@ export function getFourBytePrefix (data = '') {
  * Returns the action of a transaction as a key to be passed into the translator.
  * @param {Object} transaction - txData object
  * @param {Object} methodData - Data returned from eth-method-registry
+ * @param {Object} selectedAddress - address currently selected
  * @returns {string|undefined}
  */
-export async function getTransactionActionKey (transaction, methodData) {
+export async function getTransactionActionKey (transaction, methodData, selectedAddress) {
   const { txParams: { data, to } = {}, msgParams, type } = transaction
 
   if (type === 'cancel') {
@@ -90,6 +92,10 @@ export async function getTransactionActionKey (transaction, methodData) {
 
   if (isConfirmDeployContract(transaction)) {
     return DEPLOY_CONTRACT_ACTION_KEY
+  }
+
+  if (to === selectedAddress) {
+    return RECEIVE_ETHER_ACTION_KEY
   }
 
   if (data) {
