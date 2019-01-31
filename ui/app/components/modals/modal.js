@@ -480,6 +480,8 @@ Modal.prototype.render = function () {
 
 Modal.prototype.componentWillReceiveProps = function (nextProps) {
   if (
+    nextProps.extToSign &&
+    this.props.extToSign &&
     nextProps.extToSign.length > this.props.extToSign.length &&
     // this.props.currentView === 'confTx' &&
     !(this.props.modalState.name === 'EXTERNAL_SIGN' &&
