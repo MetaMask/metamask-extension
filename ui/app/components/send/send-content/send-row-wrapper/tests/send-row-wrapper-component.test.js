@@ -50,7 +50,7 @@ describe('SendContent Component', function () {
       assert.deepEqual(
         expectedSendRowErrorMessage.props(),
         { errorType: 'mockErrorType',
-          errors: {mockErrorType: 'mockError'},
+          customErrors: {mockErrorType: 'mockError'},
         }
       )
     })
@@ -58,6 +58,7 @@ describe('SendContent Component', function () {
     it('should render its second child as a child of the send-v2__form-field, if it has two children', () => {
       wrapper = shallow(<SendRowWrapper
       errorType={'mockErrorType'}
+      errors={{mockErrorType: 'mockError'}}
       label={'mockLabel'}
       showError={false}
     >
