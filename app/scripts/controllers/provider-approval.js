@@ -28,19 +28,21 @@ class ProviderApprovalController {
 
     if (platform && platform.addMessageListener) {
       platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }, { tab }) => {
-        switch (action) {
-          case 'init-provider-request':
-            this._handleProviderRequest(origin, siteTitle, siteImage, force, tab.id)
-            break
-          case 'init-is-approved':
-            this._handleIsApproved(origin, tab.id)
-            break
-          case 'init-is-unlocked':
-            this._handleIsUnlocked(tab.id)
-            break
-          case 'init-privacy-request':
-            this._handlePrivacyRequest(tab.id)
-            break
+        if(tab && tab.id){
+          switch (action) {
+            case 'init-provider-request':
+              this._handleProviderRequest(origin, siteTitle, siteImage, force, tab.id)
+              break
+            case 'init-is-approved':
+              this._handleIsApproved(origin, tab.id)
+              break
+            case 'init-is-unlocked':
+              this._handleIsUnlocked(tab.id)
+              break
+            case 'init-privacy-request':
+              this._handlePrivacyRequest(tab.id)
+              break
+          }
         }
       })
     }
