@@ -23,6 +23,7 @@ export default class TransactionListItem extends PureComponent {
     setSelectedToken: PropTypes.func,
     showCancelModal: PropTypes.func,
     showCancel: PropTypes.bool,
+    hasEnoughCancelGas: PropTypes.bool,
     showRetry: PropTypes.bool,
     token: PropTypes.object,
     tokenData: PropTypes.object,
@@ -137,6 +138,7 @@ export default class TransactionListItem extends PureComponent {
       nonceAndDate,
       primaryTransaction,
       showCancel,
+      hasEnoughCancelGas,
       showRetry,
       tokenData,
       transactionGroup,
@@ -193,7 +195,7 @@ export default class TransactionListItem extends PureComponent {
                   onRetry={this.handleRetry}
                   showRetry={showRetry && methodData.done}
                   onCancel={this.handleCancel}
-                  showCancel={showCancel}
+                  showCancel={showCancel && hasEnoughCancelGas}
                 />
               </div>
             )

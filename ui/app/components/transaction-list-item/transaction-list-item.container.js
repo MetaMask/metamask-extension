@@ -1,12 +1,13 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
+const BigNumber = require('bignumber.js')
 import withMethodData from '../../higher-order-components/with-method-data'
 import TransactionListItem from './transaction-list-item.component'
 import { setSelectedToken, showModal, showSidebar, addKnownMethodData } from '../../actions'
 import { hexToDecimal } from '../../helpers/conversions.util'
 import { getTokenData } from '../../helpers/transactions.util'
-import { increaseLastGasPrice } from '../../helpers/confirm-transaction/util'
+import {getHexGasTotal, increaseLastGasPrice} from '../../helpers/confirm-transaction/util'
 import { formatDate } from '../../util'
 import {
   fetchBasicGasAndTimeEstimates,
@@ -14,11 +15,17 @@ import {
   setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../../ducks/gas.duck'
+import ethUtil from "ethereumjs-util"
+import {multiplyCurrencies} from "../../conversion-util"
+import {getSelectedAddress} from "../../selectors"
 
 const mapStateToProps = state => {
-  const { metamask: { knownMethodData } } = state
+  const { metamask: { knownMethodData, accounts } } = state
+  const selectedAccountBalance = accounts[getSelectedAddress(state)].balance
+
   return {
     knownMethodData,
+    selectedAccountBalance,
   }
 }
 
@@ -47,11 +54,22 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { transactionGroup: { primaryTransaction, initialTransaction } = {} } = ownProps
   const { retryTransaction, ...restDispatchProps } = dispatchProps
   const { txParams: { nonce, data } = {}, time } = initialTransaction
-  const { txParams: { value } = {} } = primaryTransaction
+  const { txParams: { value, gasPrice } = {} } = primaryTransaction
 
   const tokenData = data && getTokenData(data)
   const nonceAndDate = nonce ? `#${hexToDecimal(nonce)} - ${formatDate(time)}` : formatDate(time)
 
+  const defaultNewGasPrice = ethUtil.addHexPrefix(
+    multiplyCurrencies(gasPrice, 1.1, {
+      toNumericBase: 'hex',
+      multiplicandBase: 16,
+      multiplierBase: 10,
+    })
+  )
+
+  const newGasFee = getHexGasTotal({ gasPrice: defaultNewGasPrice, gasLimit: '0x5208' })
+  const newGasFeeBN = new BigNumber(ethUtil.stripHexPrefix(newGasFee), 16)
+  const selectedAccountBalanceBN = new BigNumber(ethUtil.stripHexPrefix(stateProps.selectedAccountBalance || '0x0'), 16)
   return {
     ...stateProps,
     ...restDispatchProps,
@@ -61,6 +79,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     tokenData,
     transaction: initialTransaction,
     primaryTransaction,
+    hasEnoughCancelGas: selectedAccountBalanceBN.greaterThanOrEqualTo(newGasFeeBN),
     retryTransaction: (transactionId, gasPrice) => {
       const { transactionGroup: { transactions = [] } } = ownProps
       const transaction = transactions.find(tx => tx.id === transactionId) || {}
