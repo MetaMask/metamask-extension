@@ -44,6 +44,11 @@ export default class Home extends PureComponent {
     }
   }
 
+  showPluginOrTxView(){
+    if (this.props.selectedPluginAddress) return <PluginView />
+    else return <TransactionView />
+  }
+
   render () {
     const {
       noActiveNotices,
@@ -79,13 +84,9 @@ export default class Home extends PureComponent {
           <Media
             query="(min-width: 576px)"
             render={() => <WalletView />}
-          />
-	  <TransactionView />
+        />
+	{this.showPluginOrTxView()}
 	</div>
-        <div>
-           <PluginView />
-	</div>
-
       </div>	
     )
   }

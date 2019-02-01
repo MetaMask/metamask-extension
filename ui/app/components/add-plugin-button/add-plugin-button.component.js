@@ -20,8 +20,6 @@ export default class AddPluginButton extends PureComponent {
 
     return (
       <div className="add-token-button">
-        <h1 className="add-token-button__help-header">{t('missingYourPlugins')}</h1>
-        <p className="add-token-button__help-desc">{t('clickToAdd', [t('addPlugin')])}</p>
         <div
           className="add-token-button__button"
           onClick={onClick}

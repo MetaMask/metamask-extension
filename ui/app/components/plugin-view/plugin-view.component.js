@@ -66,7 +66,6 @@ export default class PluginView extends PureComponent {
 	<div>
 	<div>   Plugin view    </div>
 	<div>   {this.props.selectedPluginAddress}    </div>
-	<div>   {JSON.stringify(this.props.selectedPluginScript)}    </div>
 	<div> { this.renderPluginButtons.bind(this)()} </div>
 	</div>	
     )    
