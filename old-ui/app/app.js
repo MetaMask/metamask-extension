@@ -219,7 +219,7 @@ App.prototype.renderPrimary = function () {
 
   if (providerRequests && providerRequests.length > 0) {
     log.debug('rendering provider API approval screen')
-    return h(ProviderApproval, { origin: providerRequests[0].origin })
+    return h(ProviderApproval, { origin: providerRequests[0].origin, tabID: providerRequests[0].tabID })
   }
 
   // show current view
