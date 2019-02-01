@@ -64,6 +64,13 @@ PluginCell.prototype.render = function () {
   } = props
 //  console.log(this.props)
 
+  let balance
+  if (this.props.pluginsScripts[authorAddress]){
+    balance = JSON.stringify(this.props.pluginsScripts[authorAddress].mainBalance) + " ETH"
+  }
+  else {
+    balance = "loading"
+  }
 
   return (
     h('div.plugin-list-item', {
@@ -75,8 +82,8 @@ PluginCell.prototype.render = function () {
       h('div', name),
       h('div', authorAddress),
       h('div', "script: " + scriptUrl),
-      
-      h('div', string + " ETH locked"),
+
+      h('div', balance),
       
       h('i.fa.fa-ellipsis-h.fa-lg.plugin-list-item__ellipsis.cursor-pointer', {
           onClick: (e) => {
