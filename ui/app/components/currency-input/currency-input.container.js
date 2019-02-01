@@ -21,6 +21,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
+    nativeSuffix: nativeCurrency || ETH,
+    fiatSuffix: currentCurrency.toUpperCase(),
     suffix,
   }
 }
