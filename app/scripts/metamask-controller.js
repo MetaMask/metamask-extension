@@ -1347,7 +1347,7 @@ module.exports = class MetamaskController extends EventEmitter {
       restrictedMethods: {
 
         'eth_accounts': {
-          description: 'Allows viewing the public address of an Ethereum account.',
+          description: 'View Ethereum accounts',
           method: (req, res, next, end) => {
             this.keyringController.getAccounts()
             .then((accounts) => {
@@ -1364,14 +1364,14 @@ module.exports = class MetamaskController extends EventEmitter {
         // Restricted methods themselves are defined as
         // json-rpc-engine middleware functions.
         'readYourProfile': {
-          description: 'Allows reading from your profile',
+          description: 'Read from your profile',
           method: (req, res, next, end) => {
             res.result = this.testProfile
             end()
           },
         },
         'writeToYourProfile': {
-          description: 'Allows writing to your profile.',
+          description: 'Write to your profile.',
           method: (req, res, next, end) => {
             const [ key, value ] = req.params
             this.testProfile[key] = value
@@ -1391,25 +1391,64 @@ module.exports = class MetamaskController extends EventEmitter {
       * @param {string} req - The request object sent in to the `requestPermissions` method.
       * @returns {Promise<bool>} approved - Whether the user approves the request or not.
       */
-      requestUserApproval: async (domain, req) => {
+      requestUserApproval: async (domain, opts) => {
+        console.log('requesting user approval')
         const isUnlocked = this.getState().isUnlocked
+        let result = {}
+        console.dir(opts)
 
-        const message = `The site ${domain} would like permission to:\n - ${Object.keys(req).join('\n- ')}`
-        if (isUnlocked) {
-          const ok = confirm(message)
-          return ok
+        const restricted = this.permissions.restrictedMethods
+        const descriptions = Object.keys(opts).map(method => restricted[method].description)
+
+        const message = `The site ${domain} would like permission to:\n - ${descriptions.join('\n- ')}`
+        if (!isUnlocked) {
+          await this.requestUnlock()
         }
 
-        this.opts.openPopup && this.opts.openPopup()
-        return new Promise((res, rej) => {
-          this.on('unlocked', () => {
-            this.opts.closePopup && this.opts.closePopup()
-            const ok = confirm(message)
-            res(ok)
-          })
-        })
+        const ok = confirm(message)
+        if (ok) {
+          result = opts
+
+          console.log({ result, opts })
+          if ('eth_accounts' in opts) {
+            console.log('there are accounts!')
+            result['eth_accounts'] = await this.selectAccountsFor(domain, opts)
+            console.dir(result)
+          }
+          console.log('not a thing')
+          console.log({ result, opts })
+          console.dir(result)
+
+          return result
+        } else {
+          // A hard rejection
+          return ok
+        }
       },
     })
+  }
+
+  requestUnlock () {
+    this.opts.openPopup && this.opts.openPopup()
+    return new Promise((res) => {
+      this.on('unlocked', () => {
+        res()
+      })
+    })
+  }
+
+  async selectAccountsFor (domain, opts) {
+    console.log('calling reveal account')
+    const accounts = await this.keyringController.getAccounts()
+    console.log('the accounts are', accounts)
+    const approved = accounts.filter(acct => confirm(`Would you like to reveal account ${acct}?`))
+    console.log('approved', approved)
+    return {
+      caveats: [{
+        type: 'static',
+        value: approved,
+      }],
+    }
   }
 
   /**
