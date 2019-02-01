@@ -16,6 +16,7 @@ export default class PluginView extends PureComponent {
   }
 
   renderPluginButtons () {
+    if (!this.props.selectedPluginScript){ return }
     let elements = []
     const script = this.props.selectedPluginScript
 
@@ -58,11 +59,15 @@ export default class PluginView extends PureComponent {
 
   render () {
     console.log("PROPS in plugin view", this.props)
+    if (this.props.selectedPluginScript){
+      console.log(this.props.selectedPluginScript.pluginInterface)
+    }
     return (
 	<div>
 	<div>   Plugin view    </div>
 	<div>   {this.props.selectedPluginAddress}    </div>
-	<div>   {this.props.selectedPluginScript}    </div>
+	<div>   {JSON.stringify(this.props.selectedPluginScript)}    </div>
+	<div> { this.renderPluginButtons.bind(this)()} </div>
 	</div>	
     )    
   //   const { t } = this.context
@@ -110,7 +115,7 @@ export default class PluginView extends PureComponent {
   //       >
   //       {t("depositPluginApp") }
   //     </Button>
-  // 	{this.renderPluginButtons.bind(this)()}
+  // 	
 
   //     	<div>
   // 	{"Deposit available: " + deposit + " eth"}
