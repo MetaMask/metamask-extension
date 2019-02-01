@@ -6,24 +6,29 @@ import TransactionListItem from './transaction-list-item.component'
 import { setSelectedToken, showModal, showSidebar, addKnownMethodData } from '../../../store/actions'
 import { hexToDecimal } from '../../../helpers/utils/conversions.util'
 import { getTokenData } from '../../../helpers/utils/transactions.util'
-import { increaseLastGasPrice } from '../../../helpers/utils/confirm-tx.util'
+import { getHexGasTotal, increaseLastGasPrice } from '../../../helpers/utils/confirm-tx.util'
 import { formatDate } from '../../../helpers/utils/util'
+const BigNumber = require('bignumber.js')
 import {
   fetchBasicGasAndTimeEstimates,
   fetchGasEstimates,
   setCustomGasPriceForRetry,
   setCustomGasLimit,
 } from '../../../ducks/gas/gas.duck'
-import {getIsMainnet, preferencesSelector} from '../../../selectors/selectors'
+import { getIsMainnet, preferencesSelector, getSelectedAddress } from '../../../selectors/selectors'
+import ethUtil from "ethereumjs-util"
+import { multiplyCurrencies } from "../../../helpers/utils/conversion-util"
 
 const mapStateToProps = state => {
-  const { metamask: { knownMethodData } } = state
+  const { metamask: { knownMethodData, accounts } } = state
   const { showFiatInTestnets } = preferencesSelector(state)
   const isMainnet = getIsMainnet(state)
+  const selectedAccountBalance = accounts[getSelectedAddress(state)].balance
 
   return {
     knownMethodData,
     showFiat: (isMainnet || !!showFiatInTestnets),
+    selectedAccountBalance,
   }
 }
 
@@ -52,11 +57,22 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { transactionGroup: { primaryTransaction, initialTransaction } = {} } = ownProps
   const { retryTransaction, ...restDispatchProps } = dispatchProps
   const { txParams: { nonce, data } = {}, time } = initialTransaction
-  const { txParams: { value } = {} } = primaryTransaction
+  const { txParams: { value, gasPrice } = {} } = primaryTransaction
 
   const tokenData = data && getTokenData(data)
   const nonceAndDate = nonce ? `#${hexToDecimal(nonce)} - ${formatDate(time)}` : formatDate(time)
 
+  const defaultNewGasPrice = ethUtil.addHexPrefix(
+    multiplyCurrencies(gasPrice, 1.1, {
+      toNumericBase: 'hex',
+      multiplicandBase: 16,
+      multiplierBase: 10,
+    })
+  )
+
+  const newGasFee = getHexGasTotal({ gasPrice: defaultNewGasPrice, gasLimit: '0x5208' })
+  const newGasFeeBN = new BigNumber(ethUtil.stripHexPrefix(newGasFee), 16)
+  const selectedAccountBalanceBN = new BigNumber(ethUtil.stripHexPrefix(stateProps.selectedAccountBalance || '0x0'), 16)
   return {
     ...stateProps,
     ...restDispatchProps,
@@ -66,6 +82,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     tokenData,
     transaction: initialTransaction,
     primaryTransaction,
+    hasEnoughCancelGas: selectedAccountBalanceBN.greaterThanOrEqualTo(newGasFeeBN),
     retryTransaction: (transactionId, gasPrice) => {
       const { transactionGroup: { transactions = [] } } = ownProps
       const transaction = transactions.find(tx => tx.id === transactionId) || {}
