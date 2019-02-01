@@ -28,7 +28,7 @@ class ProviderApprovalController {
 
     if (platform && platform.addMessageListener) {
       platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }, { tab }) => {
-        if(tab && tab.id){
+        if (tab && tab.id) {
           switch (action) {
             case 'init-provider-request':
               this._handleProviderRequest(origin, siteTitle, siteImage, force, tab.id)
