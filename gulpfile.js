@@ -25,6 +25,7 @@ const uglify = require('gulp-uglify-es').default
 const pify = require('pify')
 const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
+const convertSourceMap = require('convert-source-map')
 
 const packageJSON = require('./package.json')
 const dependencies = Object.keys(packageJSON && packageJSON.dependencies || {})
@@ -499,6 +500,8 @@ function generateBundler (opts, performBundle) {
   const sesifyConfigFile = activateSesify && `./sesify/${opts.filename}`
 
   if (activateSesify) {
+    // trackings sourcemaps via an index for now
+    let sourcemapIndex = 0
     browserifyOpts.plugin = [['sesify', {
       // provide as a fn so we can always get latest
       endowmentsConfig: () => {
@@ -511,6 +514,25 @@ function generateBundler (opts, performBundle) {
       },
       // hook for getting tofu analysis
       autoConfig: writeAutoConfig,
+      // hook for writing sourcemaps
+      onSourcemap: (dep, bundle) => {
+        if (!bundle.maps) return
+        // prepare directory for sourcemaps
+        // const dirPath = `dist/sourceMaps/`
+        const dirPath = `dist/chrome/`
+        mkdirp.sync(dirPath)
+        // create soucemap file name
+        const prefix = opts.filename.split('.')[0]
+        const filename = `${prefix}-${sourcemapIndex}.map`
+        const filePath = `${dirPath}${filename}`
+        sourcemapIndex++
+        // write sourcemap
+        const content = JSON.stringify(bundle.maps)
+        // const content = convertSourceMap.fromObject(bundle.maps).toJSON()
+        fs.writeFileSync(filePath, content)
+        // tell the bundler what to reference
+        return `./${filename}`
+      },
     }]]
   }
 
