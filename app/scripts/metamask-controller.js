@@ -287,7 +287,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: async ({ origin }) => {
         // Expose no accounts if this origin has not been approved, preventing
-        // account-requring RPC methods from completing successfully
+        // account-requiring RPC methods from completing successfully
         const exposeAccounts = this.providerApprovalController.shouldExposeAccounts(origin)
         if (origin !== 'MetaMask' && !exposeAccounts) { return [] }
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
@@ -307,6 +307,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
+      getPubKey: this.getPubKey.bind(this),
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -1030,9 +1031,10 @@ module.exports = class MetamaskController extends EventEmitter {
 
 
   // PLUGIN Methods
-  async getPubKey () {
+  async getPubKey (params, next, end) {
+    console.log(params)
     const keyringController = this.keyringController
-    accounts = await keyringController.getAccounts()
+    let accounts = await keyringController.getAccounts()
     return accounts
   }
   

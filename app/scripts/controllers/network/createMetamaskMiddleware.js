@@ -14,6 +14,7 @@ function createMetamaskMiddleware ({
   processTypedMessageV3,
   processPersonalMessage,
   getPendingNonce,
+  getPubKey
 }) {
   const metamaskMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
@@ -30,9 +31,20 @@ function createMetamaskMiddleware ({
       processPersonalMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
+    createGetPubKeyMiddleware(getPubKey),
   ])
   return metamaskMiddleware
 }
+
+function createGetPubKeyMiddleware (getPubKey) {
+  return createAsyncMiddleware(async (req, res, next) => {
+    if (req.method !== 'getPubKey') return next()
+    console.log(req)
+    const index = req.params[0]
+    res.result = await getPubKey(index)
+  })
+}
+
 
 function createPendingNonceMiddleware ({ getPendingNonce }) {
   return createAsyncMiddleware(async (req, res, next) => {
