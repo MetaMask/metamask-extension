@@ -20,13 +20,12 @@ function deepGetAndBind(obj, pathName) {
   const pathParts = pathName.split('.')
   const parentPath = pathParts.slice(0,-1).join('.')
   const childKey = pathParts[pathParts.length-1]
-  let parent = parentPath ? deepGet(window, parentPath) : window
+  const globalRef = typeof self !== 'undefined' ? self : global
+  const parent = parentPath ? deepGet(globalRef, parentPath) : globalRef
   if (!parent) return parent
   const value = parent[childKey]
   if (typeof value === 'function') {
-    const boundValue = value.bind(parent)
-    boundValue.boundTo = parent
-    return boundValue
+    return value.bind(parent)
   }
   return value
 }
@@ -94,6 +93,7 @@ exposeToModule('eth-json-rpc-infura', ['fetch'])
 exposeToModule('eth-json-rpc-middleware', ['fetch', 'console.error'])
 exposeToModule('eth-ledger-bridge-keyring', ['addEventListener', 'document.createElement', 'document.head.appendChild', 'fetch'])
 exposeToModule('eth-trezor-keyring', ['console.log'])
+exposeToModule('readable-stream', ['window'])
 exposeToModule('extensionizer', ['browser', 'browser.browserAction', 'browser.extension', 'browser.runtime', 'chrome', 'window'])
 exposeToModule('fast-json-patch', ['addEventListener', 'document.documentElement.attachEvent', 'document.documentElement.detachEvent', 'removeEventListener'])
 exposeToModule('fast-levenshtein', ['Intl', 'Intl.Collator', 'console.log', 'postMessage', 'window'])
@@ -104,7 +104,6 @@ exposeToModule('obs-store', ['localStorage', 'localStorage.getItem', 'localStora
 exposeToModule('pbkdf2', ['crypto', 'crypto.subtle'])
 exposeToModule('randombytes', ['crypto', 'msCrypto'])
 exposeToModule('randomfill', ['crypto', 'msCrypto'])
-exposeToModule('readable-stream', ['window'])
 exposeToModule('semver', ['console.log.apply'])
 exposeToModule('set-immediate-shim', ['setTimeout.apply'])
 exposeToModule('timers-browserify', ['window'])
@@ -4317,113 +4316,6 @@ exposeToDep('eth-json-rpc-middleware', 'eth-json-rpc-middleware')
 exposeToDep('eth-json-rpc-middleware', 'eth-json-rpc-filters eth-json-rpc-middleware')
 exposeToDep('eth-ledger-bridge-keyring', 'eth-ledger-bridge-keyring')
 exposeToDep('eth-trezor-keyring', 'eth-trezor-keyring')
-exposeToDep('extensionizer', 'extensionizer')
-exposeToDep('fast-json-patch', 'fast-json-patch')
-exposeToDep('fast-levenshtein', 'eth-phishing-detect fast-levenshtein')
-exposeToDep('fetch-ponyfill', 'eth-json-rpc-middleware fetch-ponyfill')
-exposeToDep('fetch-ponyfill', 'eth-json-rpc-filters eth-json-rpc-middleware fetch-ponyfill')
-exposeToDep('loglevel', 'loglevel')
-exposeToDep('loglevel', 'eth-keyring-controller loglevel')
-exposeToDep('obj-multiplex', 'obj-multiplex')
-exposeToDep('obs-store', 'obs-store')
-exposeToDep('obs-store', 'eth-keyring-controller obs-store')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring bip39 pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller bip39 pbkdf2')
-exposeToDep('pbkdf2', 'eth-ledger-bridge-keyring hdkey crypto-browserify pbkdf2')
-exposeToDep('pbkdf2', 'eth-trezor-keyring hdkey crypto-browserify pbkdf2')
-exposeToDep('pbkdf2', 'ethereumjs-wallet hdkey crypto-browserify pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify pbkdf2')
-exposeToDep('pbkdf2', 'ethereumjs-wallet crypto-browserify pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify pbkdf2')
-exposeToDep('pbkdf2', 'web3 bignumber.js crypto-browserify pbkdf2')
-exposeToDep('pbkdf2', 'eth-ledger-bridge-keyring hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-trezor-keyring hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'ethereumjs-wallet hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'ethereumjs-wallet crypto-browserify browserify-sign parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify browserify-sign parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify browserify-sign parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'web3 bignumber.js crypto-browserify browserify-sign parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-ledger-bridge-keyring hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-trezor-keyring hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'ethereumjs-wallet hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'ethereumjs-wallet crypto-browserify public-encrypt parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify public-encrypt parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify public-encrypt parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'web3 bignumber.js crypto-browserify public-encrypt parse-asn1 pbkdf2')
-exposeToDep('pbkdf2', 'ethereumjs-wallet scrypt.js scryptsy pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet scrypt.js scryptsy pbkdf2')
-exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet scrypt.js scryptsy pbkdf2')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring bip39 randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller bip39 randombytes')
-exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify browserify-sign browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify browserify-sign browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify browserify-sign browserify-rsa randombytes')
-exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify browserify-sign browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify public-encrypt browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify public-encrypt browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify public-encrypt browserify-rsa randombytes')
-exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify public-encrypt browserify-rsa randombytes')
-exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify randombytes')
-exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify randombytes')
-exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify randombytes')
-exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify diffie-hellman randombytes')
-exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify diffie-hellman randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify diffie-hellman randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify diffie-hellman randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify diffie-hellman randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify diffie-hellman randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify diffie-hellman randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify diffie-hellman randombytes')
-exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify diffie-hellman randombytes')
-exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify public-encrypt randombytes')
-exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify public-encrypt randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify public-encrypt randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify public-encrypt randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify public-encrypt randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify public-encrypt randombytes')
-exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify public-encrypt randombytes')
-exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify randomfill randombytes')
-exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify randomfill randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify randomfill randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify randomfill randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify randomfill randombytes')
-exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify randomfill randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify randomfill randombytes')
-exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify randomfill randombytes')
-exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify randomfill randombytes')
-exposeToDep('randomfill', 'eth-ledger-bridge-keyring hdkey crypto-browserify randomfill')
-exposeToDep('randomfill', 'eth-trezor-keyring hdkey crypto-browserify randomfill')
-exposeToDep('randomfill', 'ethereumjs-wallet hdkey crypto-browserify randomfill')
-exposeToDep('randomfill', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify randomfill')
-exposeToDep('randomfill', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify randomfill')
-exposeToDep('randomfill', 'ethereumjs-wallet crypto-browserify randomfill')
-exposeToDep('randomfill', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify randomfill')
-exposeToDep('randomfill', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify randomfill')
-exposeToDep('randomfill', 'web3 bignumber.js crypto-browserify randomfill')
 exposeToDep('readable-stream', 'readable-stream')
 exposeToDep('readable-stream', 'extension-port-stream readable-stream')
 exposeToDep('readable-stream', 'json-rpc-middleware-stream readable-stream')
@@ -4912,6 +4804,113 @@ exposeToDep('readable-stream', 'debounce-stream through stream-browserify readab
 exposeToDep('readable-stream', 'through2 readable-stream')
 exposeToDep('readable-stream', 'obs-store through2 readable-stream')
 exposeToDep('readable-stream', 'eth-keyring-controller obs-store through2 readable-stream')
+exposeToDep('extensionizer', 'extensionizer')
+exposeToDep('fast-json-patch', 'fast-json-patch')
+exposeToDep('fast-levenshtein', 'eth-phishing-detect fast-levenshtein')
+exposeToDep('fetch-ponyfill', 'eth-json-rpc-middleware fetch-ponyfill')
+exposeToDep('fetch-ponyfill', 'eth-json-rpc-filters eth-json-rpc-middleware fetch-ponyfill')
+exposeToDep('loglevel', 'loglevel')
+exposeToDep('loglevel', 'eth-keyring-controller loglevel')
+exposeToDep('obj-multiplex', 'obj-multiplex')
+exposeToDep('obs-store', 'obs-store')
+exposeToDep('obs-store', 'eth-keyring-controller obs-store')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring bip39 pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller bip39 pbkdf2')
+exposeToDep('pbkdf2', 'eth-ledger-bridge-keyring hdkey crypto-browserify pbkdf2')
+exposeToDep('pbkdf2', 'eth-trezor-keyring hdkey crypto-browserify pbkdf2')
+exposeToDep('pbkdf2', 'ethereumjs-wallet hdkey crypto-browserify pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify pbkdf2')
+exposeToDep('pbkdf2', 'ethereumjs-wallet crypto-browserify pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify pbkdf2')
+exposeToDep('pbkdf2', 'web3 bignumber.js crypto-browserify pbkdf2')
+exposeToDep('pbkdf2', 'eth-ledger-bridge-keyring hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-trezor-keyring hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'ethereumjs-wallet hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify browserify-sign parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'ethereumjs-wallet crypto-browserify browserify-sign parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify browserify-sign parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify browserify-sign parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'web3 bignumber.js crypto-browserify browserify-sign parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-ledger-bridge-keyring hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-trezor-keyring hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'ethereumjs-wallet hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'ethereumjs-wallet crypto-browserify public-encrypt parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify public-encrypt parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify public-encrypt parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'web3 bignumber.js crypto-browserify public-encrypt parse-asn1 pbkdf2')
+exposeToDep('pbkdf2', 'ethereumjs-wallet scrypt.js scryptsy pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet scrypt.js scryptsy pbkdf2')
+exposeToDep('pbkdf2', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet scrypt.js scryptsy pbkdf2')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring bip39 randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller bip39 randombytes')
+exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify browserify-sign browserify-rsa randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify browserify-sign browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify browserify-sign browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify browserify-sign browserify-rsa randombytes')
+exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify browserify-sign browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt browserify-rsa randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify public-encrypt browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify public-encrypt browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify public-encrypt browserify-rsa randombytes')
+exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify public-encrypt browserify-rsa randombytes')
+exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify randombytes')
+exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify randombytes')
+exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify randombytes')
+exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify diffie-hellman randombytes')
+exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify diffie-hellman randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify diffie-hellman randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify diffie-hellman randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify diffie-hellman randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify diffie-hellman randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify diffie-hellman randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify diffie-hellman randombytes')
+exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify diffie-hellman randombytes')
+exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify public-encrypt randombytes')
+exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify public-encrypt randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify public-encrypt randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify public-encrypt randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify public-encrypt randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify public-encrypt randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify public-encrypt randombytes')
+exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify public-encrypt randombytes')
+exposeToDep('randombytes', 'eth-ledger-bridge-keyring hdkey crypto-browserify randomfill randombytes')
+exposeToDep('randombytes', 'eth-trezor-keyring hdkey crypto-browserify randomfill randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet hdkey crypto-browserify randomfill randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify randomfill randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify randomfill randombytes')
+exposeToDep('randombytes', 'ethereumjs-wallet crypto-browserify randomfill randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify randomfill randombytes')
+exposeToDep('randombytes', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify randomfill randombytes')
+exposeToDep('randombytes', 'web3 bignumber.js crypto-browserify randomfill randombytes')
+exposeToDep('randomfill', 'eth-ledger-bridge-keyring hdkey crypto-browserify randomfill')
+exposeToDep('randomfill', 'eth-trezor-keyring hdkey crypto-browserify randomfill')
+exposeToDep('randomfill', 'ethereumjs-wallet hdkey crypto-browserify randomfill')
+exposeToDep('randomfill', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet hdkey crypto-browserify randomfill')
+exposeToDep('randomfill', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet hdkey crypto-browserify randomfill')
+exposeToDep('randomfill', 'ethereumjs-wallet crypto-browserify randomfill')
+exposeToDep('randomfill', 'eth-keyring-controller eth-hd-keyring ethereumjs-wallet crypto-browserify randomfill')
+exposeToDep('randomfill', 'eth-keyring-controller eth-simple-keyring ethereumjs-wallet crypto-browserify randomfill')
+exposeToDep('randomfill', 'web3 bignumber.js crypto-browserify randomfill')
 exposeToDep('semver', 'semver')
 exposeToDep('set-immediate-shim', 'promise-to-callback set-immediate-shim')
 exposeToDep('set-immediate-shim', 'ethjs-query promise-to-callback set-immediate-shim')
@@ -6003,235 +6002,3 @@ const config = {
   defaultGlobals,
 }
   
-//
-// start of override
-//
-
-config.global = {
-  // tries to overwrite toString on the prototype, SES dislikes
-  "buffer": {
-    skipSes: true,
-  },
-  "bn.js": {
-    skipSes: true,
-  },
-  "unorm": {
-    skipSes: true,
-  },
-  "semver": {
-    skipSes: true,
-  },
-  "jsonschema": {
-    skipSes: true,
-  },
-  "bignumber.js": {
-    skipSes: true,
-  },
-  "crypto-js": {
-    skipSes: true,
-  },
-  "web3": {
-    skipSes: true,
-  },
-  "js-sha3": {
-    skipSes: true,
-  },
-  // tries to define the toString symbol
-  "core-js": {
-    skipSes: true,
-  },
-  // tries to mutate object.keys
-  "deep-equal": {
-    skipSes: true,
-  },
-  // tries to determine the global, cant beat
-  "regenerator-runtime": {
-    skipSes: true,
-  },
-  // tries to set the constructor (?)
-  "fast-json-patch": {
-    skipSes: true,
-  },
-  // tries to modify Error
-  "@sentry/core": {
-    skipSes: true,
-  },
-  "@sentry/browser": {
-    skipSes: true,
-  },
-  // tries to overwrite error.message in error subclass
-  "json-rpc-error": {
-    skipSes: true,
-  },
-}
-
-// autogen failed to parse
-;(moduleGlobals['obs-store'] || (moduleGlobals['obs-store'] = {})).localStorage = localStorage
-// failed to parse and then overrode self
-moduleGlobals['@sentry/utils'].console = console
-
-return config
-
-
-// // // hack to get module to detect dummy global
-// // function generateEndowmentsForFakeGlobal() {
-// //   const safeItems = sesEval('({ Object, Symbol })')
-// //   const endowments = {
-// //     Object: safeItems.Object,
-// //     global: {
-// //       Object: safeItems.Object,
-// //     }
-// //   }
-// //   return endowments
-// // }
-
-// const extensionizerEndowments = {
-//   chrome: typeof chrome !== 'undefined' ? chrome : undefined,
-//   browser: typeof browser !== 'undefined' ? browser : undefined,
-//   window: typeof window !== 'undefined' ? window : undefined,
-// }
-
-// const mathRandomEndowments = {
-//   Math: {
-//     floor: Math.floor.bind(Math),
-//     random: Math.random.bind(Math),
-//   }
-// }
-
-// // const fakeGlobal = generateEndowmentsForFakeGlobal()
-
-// const config = {
-//   dependencies: {
-//     // extensionizer provides wrapper for extension globals
-//     "extensionizer": {
-//       $: extensionizerEndowments,
-//     },
-//     "extension-link-enabler extensionizer": {
-//       $: extensionizerEndowments,
-//     },
-//     // has a wrapper around localStorage (old persistence)
-//     "obs-store": {
-//       $: {
-//         localStorage,
-//       },
-//     },
-//     // wants to generate a key from user password
-//     "eth-keyring-controller browser-passworder": {
-//       $: {
-//         crypto: window.crypto,
-//       },
-//     },
-//     // wants to talk to infura
-//     "eth-json-rpc-infura": {
-//       $: {
-//         fetch: fetch.bind(window),
-//       },
-//     },
-//   },
-//   // TODO: permission granting endowments should NOT use global config
-//   // global should only be used for hacking in support under SES
-//   global: {
-//     // feature detection via userAgent
-//     "trezor-connect": {
-//       $: {
-//         navigator: {
-//           userAgent: '',
-//         },
-//       },
-//     },
-//     // needs a random starting id
-//     "json-rpc-random-id": {
-//       $: mathRandomEndowments,
-//     },
-//     "ethjs-rpc": {
-//       $: mathRandomEndowments,
-//     },
-//     // // global object detection
-//     // "async": {
-//     //   $: fakeGlobal,
-//     // },
-//     // "lodash.flatmap": {
-//     //   $: fakeGlobal,
-//     // },
-//     // "lodash": {
-//     //   $: fakeGlobal,
-//     // },
-//     // "lodash.uniqby": {
-//     //   $: fakeGlobal,
-//     // },
-
-//     // tries to overwrite toString on the prototype, SES dislikes
-//     "buffer": {
-//       skipSes: true,
-//     },
-//     "bn.js": {
-//       skipSes: true,
-//     },
-//     "unorm": {
-//       skipSes: true,
-//     },
-//     "semver": {
-//       skipSes: true,
-//     },
-//     "jsonschema": {
-//       skipSes: true,
-//     },
-//     "bignumber.js": {
-//       skipSes: true,
-//     },
-//     "crypto-js": {
-//       skipSes: true,
-//     },
-//     "web3": {
-//       skipSes: true,
-//     },
-//     "js-sha3": {
-//       skipSes: true,
-//     },
-//     // tries to define the toString symbol
-//     "core-js": {
-//       skipSes: true,
-//     },
-//     // tries to mutate object.keys
-//     "deep-equal": {
-//       skipSes: true,
-//     },
-//     // tries to determine the global, cant beat
-//     "regenerator-runtime": {
-//       skipSes: true,
-//     },
-//     // tries to set the constructor (?)
-//     "fast-json-patch": {
-//       skipSes: true,
-//     },
-//     // tries to modify Error
-//     "@sentry/core": {
-//       skipSes: true,
-//     },
-//     "@sentry/browser": {
-//       skipSes: true,
-//     },
-//     // tries to overwrite error.message in error subclass
-//     "json-rpc-error": {
-//       skipSes: true,
-//     },
-//   },
-// }
-
-
-// // these are used for global detection by some modules
-// const safeObjects = sesEval('({ Object, Symbol })')
-// const defaultGlobals = Object.assign({ console, atob, btoa }, safeObjects)
-
-// config.defaultGlobals = defaultGlobals
-
-// // these needed setTimeout
-//   // "eth-json-rpc-middleware"
-//   // "debounce"
-//   // "eth-block-tracker"
-//   // "safe-event-emitter"
-//   // "process"
-//   // "_process"
-
-// return config
-
