@@ -130,7 +130,7 @@
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-tx": "^1.3.0",
     "ethereumjs-util": "github:ethereumjs/ethereumjs-util#ac5d0908536b447083ea422b435da27f26615de9",
-    "ethereumjs-wallet": "github:r001/ethereumjs-wallet#4e35d91bd8b563f06c926b045f60371077e15d82",
+    "ethereumjs-wallet": "^0.6.0",
     "etherscan-link": "^1.0.2",
     "ethjs": "^0.4.0",
     "ethjs-contract": "^0.2.3",
