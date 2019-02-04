@@ -8,6 +8,8 @@ import Select from 'react-select'
 // Subviews
 const JsonImportView = require('./json.js')
 const PrivateKeyImportView = require('./private-key.js')
+const SoloImportView = require('./solo.js')
+const SoloProImportView = require('./solo-pro.js')
 
 
 AccountImportSubview.contextTypes = {
@@ -25,6 +27,8 @@ function AccountImportSubview () {
 AccountImportSubview.prototype.getMenuItemTexts = function () {
   return [
     this.context.t('privateKey'),
+    this.context.t('soloKey'),
+    this.context.t('soloProKey'),
     this.context.t('jsonFile'),
   ]
 }
@@ -79,6 +83,7 @@ AccountImportSubview.prototype.render = function () {
   )
 }
 
+
 AccountImportSubview.prototype.renderImportView = function () {
   const state = this.state || {}
   const { type } = state
@@ -88,6 +93,10 @@ AccountImportSubview.prototype.renderImportView = function () {
   switch (current) {
     case this.context.t('privateKey'):
       return h(PrivateKeyImportView)
+    case this.context.t('soloKey'):
+      return h(SoloImportView)
+    case this.context.t('soloProKey'):
+      return h(SoloProImportView)
     case this.context.t('jsonFile'):
       return h(JsonImportView)
     default:

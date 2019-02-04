@@ -1240,6 +1240,24 @@
   "sigRequested": {
     "message": "Signature Requested"
   },
+  "soloError":{
+    "message": "Error, the address computed from the secrets is not valid, check the values you entered"
+  },
+  "soloKey": {
+    "message": "COINPLUS Solo"
+  },
+  "soloSecret1": {
+    "message": "Secret 1"
+  },
+  "soloSecret2": {
+    "message": "Secret 2"
+  },
+  "soloProKey": {
+    "message": "COINPLUS Solo Pro"
+  },
+  "soloNumber": {
+    "message": "Solo Number (#)"
+  },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },

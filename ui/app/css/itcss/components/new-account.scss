@@ -110,6 +110,25 @@
     width: 100%;
   }
 
+  &__solo-input-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+  }
+  &__solo-input {
+    height: 44px;
+    width: 315px;
+    border: 1px solid $geyser;
+    border-radius: 4px;
+    background-color: $white;
+    margin-top: 16px;
+    color: $scorpion;
+    font-family: Roboto;
+    font-size: 16px;
+    padding: 10px 10px;
+  }
+
   &__instruction {
     color: $scorpion;
     font-family: Roboto;
