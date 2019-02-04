@@ -464,6 +464,10 @@ module.exports = class MetamaskController extends EventEmitter {
       signTypedMessage: nodeify(this.signTypedMessage, this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
+      //pluginSystem
+      getPubKey: nodeify(this.getPubKey, this),
+      
+
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
       markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
@@ -1023,6 +1027,16 @@ module.exports = class MetamaskController extends EventEmitter {
     return promise
   }
 
+
+
+  // PLUGIN Methods
+  async getPubKey () {
+    const keyringController = this.keyringController
+    accounts = await keyringController.getAccounts()
+    return accounts
+  }
+  
+  
   /**
    * The method for a user approving a call to eth_signTypedData, per EIP 712.
    * Triggers the callback in newUnsignedTypedMessage.

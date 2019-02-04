@@ -395,8 +395,8 @@ class PreferencesController {
   // /**
   //  * Removes a specified plugin from the tokens array.
   //  *
-  //  * @param {string} rawAddress Hex address of the token contract to remove.
-  //  * @returns {Promise<array>} The new array of AddedToken objects
+  //  * @param {string} 
+  //  * @returns {Promise<array>} 
   //  *
   //  */
   removePlugin (authorAddress) {
