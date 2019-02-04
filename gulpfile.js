@@ -534,6 +534,7 @@ function generateBundler (opts, performBundle) {
         return `./${filename}`
       },
     }]]
+    browserifyOpts.insertGlobalVars = { global: undefined }
   }
 
   function writeAutoConfig (config) {
