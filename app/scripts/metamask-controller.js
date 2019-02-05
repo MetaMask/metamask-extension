@@ -21,7 +21,7 @@ const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('eth-keyring-controller')
-const Permissions = require('json-rpc-capabilities-middleware')
+const createPermissions = require('json-rpc-capabilities-middleware')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
@@ -254,7 +254,6 @@ module.exports = class MetamaskController extends EventEmitter {
       publicConfigStore: this.publicConfigStore,
     }
     this.providerApprovalController = new ProviderApprovalController(providerApprovalOpts)
-    console.log('provider approval created')
 
     this.store.updateStructure({
       TransactionController: this.txController.store,
@@ -1336,7 +1335,8 @@ module.exports = class MetamaskController extends EventEmitter {
       name: 'Dan Finlay',
     }
 
-    this.permissions = new Permissions({
+    this.domainMetadata = {}
+    this.permissions = createPermissions({
 
       // Supports passthrough methods:
       safeMethods: SAFE_METHODS,
@@ -1391,11 +1391,11 @@ module.exports = class MetamaskController extends EventEmitter {
       * @param {string} req - The request object sent in to the `requestPermissions` method.
       * @returns {Promise<bool>} approved - Whether the user approves the request or not.
       */
-      requestUserApproval: async (domain, opts) => {
-        console.log('requesting user approval')
+      requestUserApproval: async (metadata, opts) => {
+        const { origin, siteTitle,  } = metadata
+
         const isUnlocked = this.getState().isUnlocked
         let result = {}
-        console.dir(opts)
 
         const restricted = this.permissions.restrictedMethods
         const descriptions = Object.keys(opts).map(method => restricted[method].description)
@@ -1409,15 +1409,9 @@ module.exports = class MetamaskController extends EventEmitter {
         if (ok) {
           result = opts
 
-          console.log({ result, opts })
           if ('eth_accounts' in opts) {
-            console.log('there are accounts!')
             result['eth_accounts'] = await this.selectAccountsFor(domain, opts)
-            console.dir(result)
           }
-          console.log('not a thing')
-          console.log({ result, opts })
-          console.dir(result)
 
           return result
         } else {
@@ -1438,11 +1432,8 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   async selectAccountsFor (domain, opts) {
-    console.log('calling reveal account')
     const accounts = await this.keyringController.getAccounts()
-    console.log('the accounts are', accounts)
     const approved = accounts.filter(acct => confirm(`Would you like to reveal account ${acct}?`))
-    console.log('approved', approved)
     return {
       caveats: [{
         type: 'static',

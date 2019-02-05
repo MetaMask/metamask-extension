@@ -66,13 +66,30 @@ function setupStreams () {
       if (typeof data === 'object' && data.name && data.name === 'publicConfig' && !isEnabled) {
         data.data.selectedAddress = undefined
       }
+
       done(null, { ...data })
+    },
+  })
+
+  // Include metadata when requesting permissions.
+  const requestMetadataTransform = new TransformStream({
+    objectMode: true,
+    transform: (data, _, done) => {
+      const origin = window.location.hostname
+      const siteImage = getSiteIcon(window)
+      const siteTitle = getSiteName(window)
+      const metadata = { origin, siteImage, siteTitle }
+      data.data.metadata = metadata
+
+      const result = { ...data }
+      done(null, data)
     },
   })
 
   // forward communication plugin->inpage
   pump(
     pageStream,
+    requestMetadataTransform,
     pluginStream,
     approvalTransform,
     pageStream,
@@ -120,36 +137,24 @@ function setupStreams () {
  * should not post messages directly and should instead call provider.enable(), which
  * handles posting these messages internally.
  */
-
-/* TODO: Maybe just delete:
 function listenForProviderRequest () {
-  window.addEventListener('message', ({ source, data }) => {
+  window.addEventListener('message', (message) => {
+    const { source, data } = message
     if (source !== window || !data || !data.type) { return }
     switch (data.type) {
-      case 'ETHEREUM_ENABLE_PROVIDER':
+      case 'METAMASK_SITE_LOADED':
         extension.runtime.sendMessage({
           action: 'init-provider-request',
-          force: data.force,
           origin: source.location.hostname,
           siteImage: getSiteIcon(source),
           siteTitle: getSiteName(source),
         })
         break
-      case 'ETHEREUM_IS_APPROVED':
-        extension.runtime.sendMessage({
-          action: 'init-is-approved',
-          origin: source.location.hostname,
-        })
-        break
-      case 'METAMASK_IS_UNLOCKED':
-        extension.runtime.sendMessage({
-          action: 'init-is-unlocked',
-        })
-        break
     }
   })
+}
 
-
+/* TODO: MAYBE JUST DELETE
   extension.runtime.onMessage.addListener(({ action = '', isApproved, caching, isUnlocked, selectedAddress }) => {
     switch (action) {
       case 'approve-provider-request':
@@ -299,6 +304,8 @@ function redirectToPhishingWarning () {
 }
 
 function getSiteName (window) {
+  // TODO: This looks like it MAY be vulnerable code
+  // If site title were malicious script.
   const document = window.document
   const siteName = document.querySelector('head > meta[property="og:site_name"]')
   if (siteName) {
@@ -314,6 +321,8 @@ function getSiteName (window) {
 }
 
 function getSiteIcon (window) {
+  // TODO: This looks like it may be vulnerable code
+  // If site icon were malicious script.
   const document = window.document
 
   // Use the site's favicon if it exists
