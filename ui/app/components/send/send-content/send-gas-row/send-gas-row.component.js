@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import SendRowWrapper from '../send-row-wrapper/'
 import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
 import GasPriceButtonGroup from '../../../gas-customization/gas-price-button-group'
+import AdvancedGasInputs from '../../../gas-customization/advanced-gas-inputs'
 
 export default class SendGasRow extends Component {
 
@@ -13,8 +14,11 @@ export default class SendGasRow extends Component {
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
     showCustomizeGasModal: PropTypes.func,
+    setGasPrice: PropTypes.func,
+    setGasLimit: PropTypes.func,
     gasPriceButtonGroupProps: PropTypes.object,
     gasButtonGroupShown: PropTypes.bool,
+    advancedInlineGasShown: PropTypes.bool,
     resetGasButtons: PropTypes.func,
   }
 
@@ -22,18 +26,71 @@ export default class SendGasRow extends Component {
     t: PropTypes.func,
   }
 
-  render () {
+  renderAdvancedOptionsButton () {
+    const { showCustomizeGasModal } = this.props
+    return <div className="advanced-gas-options-btn" onClick={() => showCustomizeGasModal()}>
+      { this.context.t('advancedOptions') }
+    </div>
+  }
+
+  renderContent () {
     const {
       conversionRate,
       convertedCurrency,
       gasLoadingError,
       gasTotal,
-      gasFeeError,
       showCustomizeGasModal,
       gasPriceButtonGroupProps,
       gasButtonGroupShown,
+      advancedInlineGasShown,
       resetGasButtons,
+      setGasPrice,
+      setGasLimit,
+      gasPrice,
+      gasLimit,
+      insufficientBalance,
     } = this.props
+
+    const gasPriceButtonGroup = <div>
+        <GasPriceButtonGroup
+          className="gas-price-button-group--small"
+          showCheck={false}
+          {...gasPriceButtonGroupProps}
+        />
+        { this.renderAdvancedOptionsButton() }
+      </div>
+    const gasFeeDisplay = <GasFeeDisplay
+      conversionRate={conversionRate}
+      convertedCurrency={convertedCurrency}
+      gasLoadingError={gasLoadingError}
+      gasTotal={gasTotal}
+      onReset={resetGasButtons}
+      onClick={() => showCustomizeGasModal()}
+    />
+    const advancedGasInputs = <div>
+      <AdvancedGasInputs
+        updateCustomGasPrice={newGasPrice => setGasPrice(newGasPrice, gasLimit)}
+        updateCustomGasLimit={newGasLimit => setGasLimit(newGasLimit, gasPrice)}
+        customGasPrice={gasPrice}
+        customGasLimit={gasLimit}
+        insufficientBalance={insufficientBalance}
+        customPriceIsSafe={true}
+        isSpeedUp={false}
+      />
+      { this.renderAdvancedOptionsButton() }
+     </div>
+
+    if (advancedInlineGasShown) {
+      return advancedGasInputs
+    } else if (gasButtonGroupShown) {
+      return gasPriceButtonGroup
+    } else {
+      return gasFeeDisplay
+    }
+  }
+
+  render () {
+    const { gasFeeError } = this.props
 
     return (
       <SendRowWrapper
@@ -41,26 +98,7 @@ export default class SendGasRow extends Component {
         showError={gasFeeError}
         errorType={'gasFee'}
       >
-        {gasButtonGroupShown
-         ? <div>
-            <GasPriceButtonGroup
-              className="gas-price-button-group--small"
-              showCheck={false}
-              {...gasPriceButtonGroupProps}
-            />
-            <div className="advanced-gas-options-btn" onClick={() => showCustomizeGasModal()}>
-              { this.context.t('advancedOptions') }
-            </div>
-          </div>
-        : <GasFeeDisplay
-            conversionRate={conversionRate}
-            convertedCurrency={convertedCurrency}
-            gasLoadingError={gasLoadingError}
-            gasTotal={gasTotal}
-            onReset={resetGasButtons}
-            onClick={() => showCustomizeGasModal()}
-          />}
-
+        { this.renderContent() }
       </SendRowWrapper>
     )
   }

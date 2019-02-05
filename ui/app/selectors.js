@@ -36,6 +36,7 @@ const selectors = {
   getCurrentEthBalance,
   getNetworkIdentifier,
   isBalanceCached,
+  getAdvancedInlineGasShown,
 }
 
 module.exports = selectors
@@ -229,4 +230,8 @@ function getTotalUnapprovedCount ({ metamask }) {
 
 function preferencesSelector ({ metamask }) {
   return metamask.preferences
+}
+
+function getAdvancedInlineGasShown (state) {
+  return Boolean(state.metamask.featureFlags.advancedInlineGas)
 }
