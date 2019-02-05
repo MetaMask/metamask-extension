@@ -1,1 +1,1 @@
-export { default } from './advanced-gas-inputs.component'
+export { default } from './advanced-gas-inputs.container'

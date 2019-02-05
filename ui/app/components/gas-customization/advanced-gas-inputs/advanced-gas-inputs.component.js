@@ -102,7 +102,7 @@ export default class AdvancedTabContent extends Component {
       <div className="advanced-gas-inputs__gas-edit-row">
         <div className="advanced-gas-inputs__gas-edit-row__label">
           { this.context.t(gasInputArgs.labelKey) }
-          { this.infoButton(() => {}) }
+          { this.infoButton(() => gasInputArgs.infoOnClick()) }
         </div>
         { this.gasInput(gasInputArgs) }
       </div>
@@ -117,6 +117,8 @@ export default class AdvancedTabContent extends Component {
       insufficientBalance,
       customPriceIsSafe,
       isSpeedUp,
+      showGasPriceInfoModal,
+      showGasLimitInfoModal,
     } = this.props
 
     return (
@@ -129,6 +131,7 @@ export default class AdvancedTabContent extends Component {
           customPriceIsSafe,
           showGWEI: true,
           isSpeedUp,
+          infoOnClick: showGasPriceInfoModal,
         }) }
         { this.renderGasEditRow({
           labelKey: 'gasLimit',
@@ -136,6 +139,7 @@ export default class AdvancedTabContent extends Component {
           onChange: this.onChangeGasLimit,
           insufficientBalance,
           customPriceIsSafe,
+          infoOnClick: showGasLimitInfoModal,
         }) }
       </div>
     )
