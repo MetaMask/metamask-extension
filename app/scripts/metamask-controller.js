@@ -462,6 +462,9 @@ module.exports = class MetamaskController extends EventEmitter {
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
+      // Capabilities Controller
+      approvePermissions: nodeify(this.approvePermissions, this),
+
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateTransaction: nodeify(txController.updateTransaction, txController),
@@ -1400,17 +1403,23 @@ module.exports = class MetamaskController extends EventEmitter {
         const restricted = this.permissions.restrictedMethods
         const descriptions = Object.keys(opts).map(method => restricted[method].description)
 
-        const message = `The site ${domain} would like permission to:\n - ${descriptions.join('\n- ')}`
+        const message = `The site ${siteTitle} at ${origin} would like permission to:\n - ${descriptions.join('\n- ')}`
         if (!isUnlocked) {
           await this.requestUnlock()
         }
 
+        // Wait for the approval
+        this.once('approvedPermissions:domain', (permissions) => {
+          this.opts.closePopup && this.opts.closePopup()
+        })
+
+        /*
         const ok = confirm(message)
         if (ok) {
           result = opts
 
           if ('eth_accounts' in opts) {
-            result['eth_accounts'] = await this.selectAccountsFor(domain, opts)
+            result['eth_accounts'] = await this.selectAccountsFor(origin, opts)
           }
 
           return result
@@ -1418,8 +1427,14 @@ module.exports = class MetamaskController extends EventEmitter {
           // A hard rejection
           return ok
         }
+        */
       },
     })
+  }
+
+  async approvePermissions (domain, opts) {
+    this.permissions.setPermissionsFor(domain, opts)
+    this.emit('approvedPermissions:domain', opts)
   }
 
   requestUnlock () {
