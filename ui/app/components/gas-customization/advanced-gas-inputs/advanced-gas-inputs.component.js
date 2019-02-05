@@ -20,18 +20,15 @@ export default class AdvancedTabContent extends Component {
     showGasLimitInfoModal: PropTypes.func,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.debouncedGasLimitReset = debounce((dVal) => {
-      if (dVal < 21000) {
-        props.updateCustomGasLimit(21000)
-      }
-    }, 1000, { trailing: true })
-    this.onChangeGasLimit = (val) => {
-      props.updateCustomGasLimit(val)
-      this.debouncedGasLimitReset(val)
+  debouncedGasLimitReset = debounce((dVal) => {
+    if (dVal < 21000) {
+      this.props.updateCustomGasLimit(21000)
     }
+  }, 1000, { trailing: true })
+
+  onChangeGasLimit = (val) => {
+    this.props.updateCustomGasLimit(val)
+    this.debouncedGasLimitReset(val)
   }
 
   gasInputError ({ labelKey, insufficientBalance, customPriceIsSafe, isSpeedUp, value }) {
