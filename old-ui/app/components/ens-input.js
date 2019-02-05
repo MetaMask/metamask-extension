@@ -8,6 +8,7 @@ const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const log = require('loglevel')
+const { isValidENSAddress } = require('../util')
 
 
 module.exports = EnsInput
@@ -31,6 +32,7 @@ EnsInput.prototype.render = function () {
         loadingEns: false,
         ensResolution: null,
         ensFailure: null,
+        toError: null,
       })
     }
 
@@ -103,17 +105,27 @@ EnsInput.prototype.lookupEnsName = function () {
         nickname: recipient.trim(),
         hoverText: address + '\nClick to Copy',
         ensFailure: false,
+        toError: null,
       })
     }
   })
   .catch((reason) => {
-    log.error(reason)
-    return this.setState({
+    const setStateObj = {
       loadingEns: false,
-      ensResolution: ZERO_ADDRESS,
+      ensResolution: recipient,
       ensFailure: true,
-      hoverText: reason.message,
-    })
+      toError: null,
+    }
+    if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
+      setStateObj.hoverText = this.context.t('ensNameNotFound')
+      setStateObj.toError = 'ensNameNotFound'
+      setStateObj.ensFailure = false
+    } else {
+      log.error(reason)
+      setStateObj.hoverText = reason.message
+    }
+
+    return this.setState(setStateObj)
   })
 }
 
@@ -125,7 +137,7 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   const nickname = state.nickname || ' '
   if (prevState && ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
-    this.props.onChange(ensResolution, nickname)
+    this.props.onChange({ toAddress: ensResolution, nickname, toError: state.toError, toWarning: state.toWarning })
   }
 }
 
@@ -142,7 +154,9 @@ EnsInput.prototype.ensIcon = function (recipient) {
 }
 
 EnsInput.prototype.ensIconContents = function (recipient) {
-  const { loadingEns, ensFailure, ensResolution } = this.state || { ensResolution: ZERO_ADDRESS}
+  const { loadingEns, ensFailure, ensResolution, toError } = this.state || { ensResolution: ZERO_ADDRESS}
+
+  if (toError) return
 
   if (loadingEns) {
     return h('img', {

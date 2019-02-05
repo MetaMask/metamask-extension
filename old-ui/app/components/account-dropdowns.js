@@ -42,6 +42,7 @@ class AccountDropdowns extends Component {
       labels: {},
       isProxy: false,
       contractProps: null,
+      preventToast: false,
     }
     this.accountSelectorToggleClassName = 'accounts-selector'
     this.optionsMenuToggleClassName = 'account-dropdown'
@@ -142,11 +143,26 @@ class AccountDropdowns extends Component {
           })
         })
         .catch(e => {
-          this.props.actions.displayWarning((e && e.message) || e)
-          this.props.actions.displayToast(e)
+          if (!this.state.preventToast) {
+            this.props.actions.displayToast(e)
+          } else {
+            this.allowToast()
+          }
         })
+      } else {
+        this.preventToast()
       }
+    } else {
+        this.preventToast()
     }
+  }
+
+  allowToast () {
+    this.setState({preventToast: false})
+  }
+
+  preventToast () {
+    this.setState({preventToast: true})
   }
 
   ifProxyAcc (address, setProxy) {
@@ -405,8 +421,8 @@ class AccountDropdowns extends Component {
     const { selected, keyrings } = this.props
     if (prevProps.selected !== selected) {
       this.checkIfProxy()
-    }
-    if (prevProps.keyrings.length !== keyrings.length) {
+      this.setAllLabels()
+    } else if (prevProps.keyrings.length !== keyrings.length) {
       this.setAllLabels()
     }
     if (!isNaN(this.props.network)) {

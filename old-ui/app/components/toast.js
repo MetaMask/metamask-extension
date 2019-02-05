@@ -7,6 +7,7 @@ import actions from '../../../ui/app/actions'
 class ToastComponent extends Component {
 	static propTypes = {
 		msg: PropTypes.string,
+		toastMsg: PropTypes.string,
 		isSuccess: PropTypes.bool,
 		hideToast: PropTypes.func,
 	}
@@ -17,7 +18,7 @@ class ToastComponent extends Component {
 	}
 
 	componentDidUpdate (prevProps) {
-		if (!prevProps.msg && this.props.msg) {
+		if ((!prevProps.msg && this.props.msg) || (!prevProps.toastMsg && this.props.toastMsg)) {
 			this.timerID = setTimeout(() => {
 				this.props.hideToast()
 				clearTimeout(this.timerID)
@@ -31,15 +32,16 @@ class ToastComponent extends Component {
 	}
 
 	render () {
-		const { msg } = this.props
-		return msg ? (
+		let toastMsg = this.props.msg || this.props.toastMsg
+		toastMsg = (toastMsg && toastMsg.message) || toastMsg
+		return toastMsg ? (
 			<div
 				className={classnames('toast', {
 					'green': this.props.isSuccess,
 					'red': !this.props.isSuccess,
 				})}
 				onClick={(e) => this.props.hideToast()}
-			>{(msg && msg.message) || msg}</div>
+			>{toastMsg}</div>
 		) : null
 	}
 }
