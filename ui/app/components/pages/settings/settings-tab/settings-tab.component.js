@@ -421,6 +421,9 @@ export default class SettingsTab extends PureComponent {
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{ t('showAdvancedGasInline') }</span>
+          <div className="settings-page__content-description">
+            { t('showAdvancedGasInlineDescription') }
+          </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">

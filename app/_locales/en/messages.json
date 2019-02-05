@@ -1216,6 +1216,12 @@
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
   },
+  "showAdvancedGasInline": {
+    "message": "Advanced gas controls"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
+  },
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },
