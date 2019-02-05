@@ -1437,6 +1437,9 @@
   "typePassword": {
     "message": "Type your MetaMask password"
   },
+  "uiMigrationAnnouncement": {
+    "message": "Welcome to the new MetaMask UI. If you have feedback about the UI or feature requests, please reach out to our support team or on GitHub."
+  },
   "uiWelcome": {
     "message": "Welcome to the New UI (Beta)"
   },

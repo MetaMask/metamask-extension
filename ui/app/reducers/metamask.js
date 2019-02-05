@@ -385,6 +385,12 @@ function reduceMetamask (state, action) {
       })
     }
 
+    case actions.COMPLETE_UI_MIGRATION: {
+      return extend(metamaskState, {
+        completedUiMigration: true,
+      })
+    }
+
     default:
       return metamaskState
 
