@@ -59,6 +59,7 @@ export default class SettingsTab extends PureComponent {
     nativeCurrency: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
+    setAdvancedInlineGasFeatureFlag: PropTypes.func,
   }
 
   state = {
@@ -412,6 +413,29 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+  renderAdvancedGasInputInline () {
+    const { t } = this.context
+    const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('showAdvancedGasInline') }</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={advancedInlineGas}
+              onToggle={value => setAdvancedInlineGasFeatureFlag(!value)}
+              activeLabel=""
+              inactiveLabel=""
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderUsePrimaryCurrencyOptions () {
     const { t } = this.context
     const {
@@ -508,6 +532,7 @@ export default class SettingsTab extends PureComponent {
         { this.renderClearApproval() }
         { this.renderPrivacyOptIn() }
         { this.renderHexDataOptIn() }
+        { this.renderAdvancedGasInputInline() }
         { this.renderBlockieOptIn() }
       </div>
     )

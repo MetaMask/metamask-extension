@@ -25,6 +25,7 @@ const mapStateToProps = state => {
     featureFlags: {
       sendHexData,
       privacyMode,
+      advancedInlineGas,
     } = {},
     provider = {},
     currentLocale,
@@ -39,6 +40,7 @@ const mapStateToProps = state => {
     nativeCurrency,
     useBlockie,
     sendHexData,
+    advancedInlineGas,
     privacyMode,
     provider,
     useNativeCurrencyAsPrimaryCurrency,
@@ -54,6 +56,7 @@ const mapDispatchToProps = dispatch => {
     setUseBlockie: value => dispatch(setUseBlockie(value)),
     updateCurrentLocale: key => dispatch(updateCurrentLocale(key)),
     setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
+    setAdvancedInlineGasFeatureFlag: shouldShow => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
     setPrivacyMode: enabled => dispatch(setFeatureFlag('privacyMode', enabled)),
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
     setUseNativeCurrencyAsPrimaryCurrencyPreference: value => {
