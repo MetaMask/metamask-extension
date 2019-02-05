@@ -1033,9 +1033,45 @@ module.exports = class MetamaskController extends EventEmitter {
   // PLUGIN Methods
   async getPubKey (params, next, end) {
     console.log(params)
-    const keyringController = this.keyringController
-    let accounts = await keyringController.getAccounts()
-    return accounts
+
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    if (!primaryKeyring) {
+      throw new Error('MetamaskController - No HD Key Tree found')
+    }
+    console.log(primaryKeyring)
+    console.log(primaryKeyring.mnemonic)
+    this.keyringController.addNewKeyring('App HD Key Tree', {
+        mnemonic: primaryKeyring.mnemonic,
+        numberOfAccounts: 1,
+    })
+    console.log(this.keyringController.getKeyringsByType('App HD Key Tree'))    
+    // const serialized = await primaryKeyring.serialize()
+    // const seedWords = serialized.mnemonic
+
+    // const accounts = await primaryKeyring.getAccounts()
+    // if (accounts.length < 1) {
+    //   throw new Error('MetamaskController - No accounts found')
+    // }
+
+    // try {
+    //   await seedPhraseVerifier.verifyAccounts(accounts, seedWords)
+    //   return seedWords
+    // } catch (err) {
+    //   log.error(err.message)
+    //   throw err
+    // }
+
+
+    this.verifySeedPhrase()
+      .then((seedWords) => {
+	console.log(seedWords)
+        return seedWords
+      })
+    
+    // const keyringController = this.keyringController
+    // let test = keyringController.addNewKeyring("")
+    // let accounts = await keyringController.getAccounts()
+    // return test
   }
   
   

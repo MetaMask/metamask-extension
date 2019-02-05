@@ -36,6 +36,8 @@ function createMetamaskMiddleware ({
   return metamaskMiddleware
 }
 
+//I would ask @aaron.davis if that’s right. I usually use the explicit `done()` call (4th param).
+//I think the nonce may be unique since it’s recording the pending nonce but also allowing other middleware methods to run?
 function createGetPubKeyMiddleware (getPubKey) {
   return createAsyncMiddleware(async (req, res, next) => {
     if (req.method !== 'getPubKey') return next()

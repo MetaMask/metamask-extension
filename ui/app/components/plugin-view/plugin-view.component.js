@@ -59,7 +59,7 @@ export default class PluginView extends PureComponent {
 
   renderDelegatedUI(){
     if (this.props.selectedPluginScript){    
-      return this.props.selectedPluginScript.renderUI.bind(this)()
+      return this.props.selectedPluginScript.renderUI()
     }
   }
 
@@ -71,10 +71,10 @@ export default class PluginView extends PureComponent {
     return (
 	<div>
 	<div> ------------------------------------------------------------------------------   Plugin view  ---------------------------------------------------------------------------------  </div>
-	<div>   {this.props.selectedPluginAddress}    </div>
-	<div>   {this.props.selectedPluginScript.balance}    </div>	
-	<div> { this.renderPluginButtons.bind(this)()} </div>
-	<div> { this.renderDelegatedUI.bind(this)()} </div>	
+	<div> {this.props.selectedPluginAddress}    </div>
+	<div> {this.props.selectedPluginScript.balance}    </div>	
+	<div> {this.renderPluginButtons.bind(this)()} </div>
+	<div> {this.renderDelegatedUI.bind(this)()} </div>	
 	</div>	
     )    
   //   const { t } = this.context
