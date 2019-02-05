@@ -5,7 +5,7 @@ const customRPC = async (f) => {
 	const invalidStringUrl = 'http://lwkdfowi**&#v er'
     const urlWithoutHttp = 'infura.com'
     const invalidEndpoint = 'http://abrakadabrawdjkwjeciwkasuhlvflwe.com'
-    const correctRpcUrl = 'https://poa.infura.io/test'
+    const correctRpcUrl = 'https://core.poa.network/test'
 
     it('switches to settings screen through menu \'Network -> Custom RPC\'', async function () {
       await f.setProvider(NETWORKS.CUSTOM)
