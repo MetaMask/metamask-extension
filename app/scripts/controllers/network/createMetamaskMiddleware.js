@@ -14,6 +14,7 @@ function createMetamaskMiddleware ({
   processTypedMessageV3,
   processPersonalMessage,
   getPendingNonce,
+  registerHdPath,
   getPubKey
 }) {
   const metamaskMiddleware = mergeMiddleware([
@@ -31,6 +32,7 @@ function createMetamaskMiddleware ({
       processPersonalMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
+    createRegisterHdPathMiddleware(registerHdPath),    
     createGetPubKeyMiddleware(getPubKey),
   ])
   return metamaskMiddleware
@@ -38,6 +40,15 @@ function createMetamaskMiddleware ({
 
 //I would ask @aaron.davis if that’s right. I usually use the explicit `done()` call (4th param).
 //I think the nonce may be unique since it’s recording the pending nonce but also allowing other middleware methods to run?
+function createRegisterHdPathMiddleware (registerHdPath) {
+  return createAsyncMiddleware(async (req, res, next) => {
+    if (req.method !== 'registerHdPath') return next()
+    console.log(req)
+    const hdPath = req.params[0]
+    res.result = await registerHdPath(hdPath)
+  })
+}
+
 function createGetPubKeyMiddleware (getPubKey) {
   return createAsyncMiddleware(async (req, res, next) => {
     if (req.method !== 'getPubKey') return next()

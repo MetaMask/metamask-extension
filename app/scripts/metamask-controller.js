@@ -307,7 +307,9 @@ module.exports = class MetamaskController extends EventEmitter {
       processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
+      registerHdPath: this.registerHdPath.bind(this),
       getPubKey: this.getPubKey.bind(this),
+
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -466,8 +468,8 @@ module.exports = class MetamaskController extends EventEmitter {
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
       //pluginSystem
+      registerHdPath: nodeify(this.registerHdPath, this),      
       getPubKey: nodeify(this.getPubKey, this),
-      
 
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
@@ -1028,50 +1030,30 @@ module.exports = class MetamaskController extends EventEmitter {
     return promise
   }
 
-
-
   // PLUGIN Methods
-  async getPubKey (params, next, end) {
+  async registerHdPath (params, next, end) {
     console.log(params)
-
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found')
     }
-    console.log(primaryKeyring)
-    console.log(primaryKeyring.mnemonic)
-    this.keyringController.addNewKeyring('App HD Key Tree', {
-        mnemonic: primaryKeyring.mnemonic,
-        numberOfAccounts: 1,
+    await this.keyringController.addNewKeyring('App HD Key Tree', {
+      hdPath: params[0],
+      mnemonic: primaryKeyring.mnemonic,
+      numberOfAccounts: 1,
     })
     console.log(this.keyringController.getKeyringsByType('App HD Key Tree'))    
-    // const serialized = await primaryKeyring.serialize()
-    // const seedWords = serialized.mnemonic
 
-    // const accounts = await primaryKeyring.getAccounts()
-    // if (accounts.length < 1) {
-    //   throw new Error('MetamaskController - No accounts found')
-    // }
+  }
 
-    // try {
-    //   await seedPhraseVerifier.verifyAccounts(accounts, seedWords)
-    //   return seedWords
-    // } catch (err) {
-    //   log.error(err.message)
-    //   throw err
-    // }
-
-
-    this.verifySeedPhrase()
-      .then((seedWords) => {
-	console.log(seedWords)
-        return seedWords
-      })
-    
-    // const keyringController = this.keyringController
-    // let test = keyringController.addNewKeyring("")
-    // let accounts = await keyringController.getAccounts()
-    // return test
+  async getPubKey (params, next, end) {
+    console.log(params)
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    console.log(selectedKeyring)
+    const hdPath = params[0]
+    const appKeys = await this.keyringController.addNewAppKey(selectedKeyring, hdPath)
+    console.log(appKeys)
+    return appKeys
   }
   
   
