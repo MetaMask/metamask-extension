@@ -16,6 +16,8 @@ export default class AdvancedTabContent extends Component {
     insufficientBalance: PropTypes.bool,
     customPriceIsSafe: PropTypes.bool,
     isSpeedUp: PropTypes.bool,
+    showGasPriceInfoModal: PropTypes.func,
+    showGasLimitInfoModal: PropTypes.func,
   }
 
   constructor (props) {

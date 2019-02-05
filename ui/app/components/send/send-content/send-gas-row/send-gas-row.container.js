@@ -17,9 +17,10 @@ import {
   getDefaultActiveButtonIndex,
 } from '../../../../selectors/custom-gas'
 import {
-  hexWEIToDecGWEI,
   decGWEIToHexWEI,
   decimalToHex,
+  convertGasPriceForInputs,
+  convertGasLimitForInputs,
 } from '../../../../helpers/conversions.util'
 import {
   showGasButtonGroup,
@@ -38,8 +39,8 @@ function mapStateToProps (state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
-  const renderableGasPrice = convertGasPrice(gasPrice)
-  const renderableGasLimit = convertGasLimit(getGasLimit(state))
+  const renderableGasPrice = convertGasPriceForInputs(gasPrice)
+  const renderableGasLimit = convertGasLimitForInputs(getGasLimit(state))
 
   const gasTotal = getGasTotal(state)
   const conversionRate = getConversionRate(state)
@@ -115,12 +116,4 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
     },
     setGasPrice: dispatchSetGasPrice,
   }
-}
-
-function convertGasPrice (customGasPriceInHex) {
-  return Number(hexWEIToDecGWEI(customGasPriceInHex))
-}
-
-function convertGasLimit (customGasLimitInHex) {
-  return parseInt(customGasLimitInHex, 16)
 }

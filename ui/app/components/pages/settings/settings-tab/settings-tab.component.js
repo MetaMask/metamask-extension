@@ -60,6 +60,7 @@ export default class SettingsTab extends PureComponent {
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
     setAdvancedInlineGasFeatureFlag: PropTypes.func,
+    advancedInlineGas: PropTypes.bool,
   }
 
   state = {

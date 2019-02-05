@@ -9,6 +9,8 @@ let mergeProps
 const actionSpies = {
   showModal: sinon.spy(),
   setGasPrice: sinon.spy(),
+  setGasTotal: sinon.spy(),
+  setGasLimit: sinon.spy(),
 }
 
 const sendDuckSpies = {
@@ -28,11 +30,26 @@ proxyquire('../send-gas-row.container.js', {
       return () => ({})
     },
   },
+  '../../../../selectors': {
+    getCurrentEthBalance: (s) => `mockCurrentEthBalance:${s}`,
+    getAdvancedInlineGasShown: (s) => `mockAdvancedInlineGasShown:${s}`,
+  },
   '../../send.selectors.js': {
     getConversionRate: (s) => `mockConversionRate:${s}`,
     getCurrentCurrency: (s) => `mockConvertedCurrency:${s}`,
     getGasTotal: (s) => `mockGasTotal:${s}`,
     getGasPrice: (s) => `mockGasPrice:${s}`,
+    getGasLimit: (s) => `mockGasLimit:${s}`,
+    getSendAmount: (s) => `mockSendAmount:${s}`,
+  },
+  '../../send.utils.js': {
+    isBalanceSufficient: ({
+      amount,
+      gasTotal,
+      balance,
+      conversionRate,
+    }) => `${amount}:${gasTotal}:${balance}:${conversionRate}`,
+    calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
   },
   './send-gas-row.selectors.js': {
     getGasLoadingError: (s) => `mockGasLoadingError:${s}`,
@@ -47,6 +64,12 @@ proxyquire('../send-gas-row.container.js', {
   },
   '../../../../ducks/send.duck': sendDuckSpies,
   '../../../../ducks/gas.duck': gasDuckSpies,
+  '../../../../helpers/conversions.util': {
+    convertGasPriceForInputs: str => str + '*',
+    convertGasLimitForInputs: str => str + '**',
+    decGWEIToHexWEI: str => '0x' + str + '000',
+    decimalToHex: str => '0x' + str,
+  },
 })
 
 describe('send-gas-row container', () => {
@@ -67,6 +90,10 @@ describe('send-gas-row container', () => {
           gasButtonInfo: `mockGasButtonInfo:mockState`,
         },
         gasButtonGroupShown: `mockGetGasButtonGroupShown:mockState`,
+        advancedInlineGasShown: 'mockAdvancedInlineGasShown:mockState',
+        gasLimit: 'mockGasLimit:mockState**',
+        gasPrice: 'mockGasPrice:mockState*',
+        insufficientBalance: false,
       })
     })
 
@@ -79,6 +106,7 @@ describe('send-gas-row container', () => {
     beforeEach(() => {
       dispatchSpy = sinon.spy()
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy)
+      actionSpies.setGasTotal.resetHistory()
     })
 
     describe('showCustomizeGasModal()', () => {
@@ -94,10 +122,23 @@ describe('send-gas-row container', () => {
 
     describe('setGasPrice()', () => {
       it('should dispatch an action', () => {
-        mapDispatchToPropsObject.setGasPrice('mockNewPrice')
-        assert(dispatchSpy.calledOnce)
+        mapDispatchToPropsObject.setGasPrice('mockNewPrice', 'mockLimit')
+        assert(dispatchSpy.calledTwice)
         assert(actionSpies.setGasPrice.calledOnce)
-        assert.equal(actionSpies.setGasPrice.getCall(0).args[0], 'mockNewPrice')
+        assert.equal(actionSpies.setGasPrice.getCall(0).args[0], '0xmockNewPrice000')
+        assert(actionSpies.setGasTotal.calledOnce)
+        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], 'mockLimit0xmockNewPrice000')
+      })
+    })
+
+    describe('setGasLimit()', () => {
+      it('should dispatch an action', () => {
+        mapDispatchToPropsObject.setGasLimit('mockNewLimit', 'mockPrice')
+        assert(dispatchSpy.calledTwice)
+        assert(actionSpies.setGasLimit.calledOnce)
+        assert.equal(actionSpies.setGasLimit.getCall(0).args[0], '0xmockNewLimit')
+        assert(actionSpies.setGasTotal.calledOnce)
+        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], '0xmockNewLimitmockPrice')
       })
     })
 

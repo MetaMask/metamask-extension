@@ -82,6 +82,11 @@ export default class ConfirmTransactionBase extends Component {
     titleComponent: PropTypes.node,
     valid: PropTypes.bool,
     warning: PropTypes.string,
+    advancedInlineGasShown: PropTypes.bool,
+    gasPrice: PropTypes.number,
+    gasLimit: PropTypes.number,
+    insufficientBalance: PropTypes.bool,
+    convertThenUpdateGasAndCalculate: PropTypes.func,
   }
 
   state = {
