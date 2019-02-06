@@ -77,25 +77,25 @@ describe('custom-gas selectors', () => {
       {
         expectedResult: [
           {
-            labelKey: 'fastest',
-            feeInPrimaryCurrency: '$0.05',
-            feeInSecondaryCurrency: '0.00021 ETH',
-            timeEstimate: '~30 sec',
-            priceInHexWei: '0x2540be400',
+            labelKey: 'slow',
+            feeInPrimaryCurrency: '$0.01',
+            feeInSecondaryCurrency: '0.0000525 ETH',
+            timeEstimate: '~6 min 36 sec',
+            priceInHexWei: '0x9502f900',
           },
           {
-            labelKey: 'fast',
+            labelKey: 'average',
             feeInPrimaryCurrency: '$0.03',
             feeInSecondaryCurrency: '0.000105 ETH',
             timeEstimate: '~3 min 18 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
-            labelKey: 'slow',
-            feeInPrimaryCurrency: '$0.01',
-            feeInSecondaryCurrency: '0.0000525 ETH',
-            timeEstimate: '~6 min 36 sec',
-            priceInHexWei: '0x9502f900',
+            labelKey: 'fast',
+            feeInPrimaryCurrency: '$0.05',
+            feeInSecondaryCurrency: '0.00021 ETH',
+            timeEstimate: '~30 sec',
+            priceInHexWei: '0x2540be400',
           },
         ],
         mockState: {
@@ -119,25 +119,25 @@ describe('custom-gas selectors', () => {
       {
         expectedResult: [
           {
-            labelKey: 'fastest',
-            feeInPrimaryCurrency: '$1.07',
-            feeInSecondaryCurrency: '0.00042 ETH',
-            timeEstimate: '~1 min',
-            priceInHexWei: '0x4a817c800',
+            labelKey: 'slow',
+            feeInPrimaryCurrency: '$0.27',
+            feeInSecondaryCurrency: '0.000105 ETH',
+            timeEstimate: '~13 min 12 sec',
+            priceInHexWei: '0x12a05f200',
           },
           {
-            labelKey: 'fast',
+            labelKey: 'average',
             feeInPrimaryCurrency: '$0.54',
             feeInSecondaryCurrency: '0.00021 ETH',
             timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
           {
-            labelKey: 'slow',
-            feeInPrimaryCurrency: '$0.27',
-            feeInSecondaryCurrency: '0.000105 ETH',
-            timeEstimate: '~13 min 12 sec',
-            priceInHexWei: '0x12a05f200',
+            labelKey: 'fast',
+            feeInPrimaryCurrency: '$1.07',
+            feeInSecondaryCurrency: '0.00042 ETH',
+            timeEstimate: '~1 min',
+            priceInHexWei: '0x4a817c800',
           },
         ],
         mockState: {
@@ -178,22 +178,22 @@ describe('custom-gas selectors', () => {
       {
         expectedResult: [
           {
-            feeInSecondaryCurrency: '$0.54',
-            feeInPrimaryCurrency: '0.0021 ETH',
-            labelKey: 'fastest',
-            priceInHexWei: '0x174876e800',
-          },
-          {
-            feeInSecondaryCurrency: '$0.27',
-            feeInPrimaryCurrency: '0.00105 ETH',
-            labelKey: 'fast',
-            priceInHexWei: '0xba43b7400',
-          },
-          {
             feeInSecondaryCurrency: '$0.13',
             feeInPrimaryCurrency: '0.00052 ETH',
             labelKey: 'slow',
             priceInHexWei: '0x5d21dba00',
+          },
+          {
+            feeInSecondaryCurrency: '$0.27',
+            feeInPrimaryCurrency: '0.00105 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0xba43b7400',
+          },
+          {
+            feeInSecondaryCurrency: '$0.54',
+            feeInPrimaryCurrency: '0.0021 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x174876e800',
           },
         ],
         mockState: {
@@ -220,22 +220,22 @@ describe('custom-gas selectors', () => {
       {
         expectedResult: [
           {
-            feeInSecondaryCurrency: '$10.74',
-            feeInPrimaryCurrency: '0.0042 ETH',
-            labelKey: 'fastest',
-            priceInHexWei: '0x2e90edd000',
-          },
-          {
-            feeInSecondaryCurrency: '$5.37',
-            feeInPrimaryCurrency: '0.0021 ETH',
-            labelKey: 'fast',
-            priceInHexWei: '0x174876e800',
-          },
-          {
             feeInSecondaryCurrency: '$2.68',
             feeInPrimaryCurrency: '0.00105 ETH',
             labelKey: 'slow',
             priceInHexWei: '0xba43b7400',
+          },
+          {
+            feeInSecondaryCurrency: '$5.37',
+            feeInPrimaryCurrency: '0.0021 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0x174876e800',
+          },
+          {
+            feeInSecondaryCurrency: '$10.74',
+            feeInPrimaryCurrency: '0.0042 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x2e90edd000',
           },
         ],
         mockState: {
