@@ -177,7 +177,7 @@ EnsInput.prototype.ensIconContents = function (recipient) {
       style: {
         color: '#df2265',
         background: 'white',
-      }
+      },
     })
   }
 
