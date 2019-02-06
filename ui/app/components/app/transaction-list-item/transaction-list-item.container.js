@@ -1,7 +1,9 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
-import withMethodData from '../../../helpers/higher-order-components/with-method-data'
+import ethUtil from 'ethereumjs-util'
+const BigNumber = require('bignumber.js')
+import withMethodData from '../../higher-order-components/with-method-data'
 import TransactionListItem from './transaction-list-item.component'
 import { setSelectedToken, showModal, showSidebar, addKnownMethodData } from '../../../store/actions'
 import { hexToDecimal } from '../../../helpers/utils/conversions.util'
@@ -18,6 +20,7 @@ import {
 import { getIsMainnet, preferencesSelector, getSelectedAddress } from '../../../selectors/selectors'
 import ethUtil from "ethereumjs-util"
 import { multiplyCurrencies } from "../../../helpers/utils/conversion-util"
+
 
 const mapStateToProps = state => {
   const { metamask: { knownMethodData, accounts } } = state
