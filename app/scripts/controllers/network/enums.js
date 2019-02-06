@@ -24,7 +24,7 @@ const MAINNET_DISPLAY_NAME = 'Main Ethereum Network'
 const ROPSTEN_DISPLAY_NAME = 'Ropsten'
 const RINKEBY_DISPLAY_NAME = 'Rinkeby'
 const KOVAN_DISPLAY_NAME = 'Kovan'
-const GOERLI_TESTNET_DISPLAY_NAME = 'Goerli Testnet'
+const GOERLI_TESTNET_DISPLAY_NAME = 'Görli Testnet'
 
 const DROPDOWN_POA_DISPLAY_NAME = POA_DISPLAY_NAME
 const DROPDOWN_DAI_DISPLAY_NAME = DAI_DISPLAY_NAME
@@ -33,7 +33,7 @@ const DROPDOWN_MAINNET_DISPLAY_NAME = 'Main Network'
 const DROPDOWN_ROPSTEN_DISPLAY_NAME = 'Ropsten Test Net'
 const DROPDOWN_RINKEBY_DISPLAY_NAME = 'Rinkeby Test Net'
 const DROPDOWN_KOVAN_DISPLAY_NAME = 'Kovan Test Net'
-const DROPDOWN_GOERLI_TESTNET_DISPLAY_NAME = 'Goerli Test Net'
+const DROPDOWN_GOERLI_TESTNET_DISPLAY_NAME = 'Görli Test Net'
 
 module.exports = {
   POA,
