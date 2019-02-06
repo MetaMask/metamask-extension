@@ -150,7 +150,6 @@ EnsInput.prototype.ensIcon = function (recipient) {
       padding: '6px 0px',
       right: '0px',
       transform: 'translatex(-40px)',
-      zIndex: 1000,
     },
   }, this.ensIconContents(recipient))
 }
