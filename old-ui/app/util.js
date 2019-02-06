@@ -78,7 +78,10 @@ function miniAddressSummary (address) {
 }
 
 function isValidAddress (address) {
+  console.log('### isValidAddress ###')
+  console.log(address)
   var prefixed = ethUtil.addHexPrefix(address)
+  console.log(prefixed)
   if (address === '0x0000000000000000000000000000000000000000') return false
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
 }
@@ -88,7 +91,10 @@ function isValidENSAddress (address) {
 }
 
 function isInvalidChecksumAddress (address) {
+  console.log('### isInvalidChecksumAddress ###')
+  console.log(address)
   var prefixed = ethUtil.addHexPrefix(address)
+  console.log(prefixed)
   if (address === '0x0000000000000000000000000000000000000000') return false
   return !isAllOneCase(prefixed) && !ethUtil.isValidChecksumAddress(prefixed) && ethUtil.isValidAddress(prefixed)
 }

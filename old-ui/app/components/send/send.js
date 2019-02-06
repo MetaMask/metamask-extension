@@ -163,8 +163,16 @@ SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickna
 
 SendTransactionScreen.prototype.onSubmit = function () {
   const state = this.state || {}
-  const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
-  const nickname = state.nickname || ' '
+  let recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
+  let nickname = state.nickname || ' '
+  if (typeof recipient === 'object') {
+    if (recipient.toAddress) {
+      recipient = recipient.toAddress
+    }
+    if (recipient.nickname) {
+      nickname = recipient.nickname
+    }
+  }
   const input = document.querySelector('input[name="amount"]').value
   const parts = input.split('.')
 

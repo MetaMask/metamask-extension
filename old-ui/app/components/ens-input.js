@@ -147,8 +147,10 @@ EnsInput.prototype.ensIcon = function (recipient) {
     title: hoverText,
     style: {
       position: 'absolute',
-      padding: '9px',
+      padding: '6px 0px',
+      right: '0px',
       transform: 'translatex(-40px)',
+      zIndex: 1000,
     },
   }, this.ensIconContents(recipient))
 }
@@ -165,6 +167,7 @@ EnsInput.prototype.ensIconContents = function (recipient) {
         width: '30px',
         height: '30px',
         transform: 'translateY(-6px)',
+        marginRight: '-5px',
       },
     })
   }
@@ -175,7 +178,10 @@ EnsInput.prototype.ensIconContents = function (recipient) {
 
   if (ensResolution && (ensResolution !== ZERO_ADDRESS)) {
     return h('i.fa.fa-check-circle.fa-lg.cursor-pointer', {
-      style: { color: 'green' },
+      style: {
+        color: 'green',
+        background: 'white',
+      },
       onClick: (event) => {
         event.preventDefault()
         event.stopPropagation()
