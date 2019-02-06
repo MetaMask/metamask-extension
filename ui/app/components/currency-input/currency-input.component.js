@@ -17,7 +17,6 @@ export default class CurrencyInput extends PureComponent {
     nativeCurrency: PropTypes.string,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
-    suffix: PropTypes.string,
     useFiat: PropTypes.bool,
     value: PropTypes.string,
     fiatSuffix: PropTypes.string,

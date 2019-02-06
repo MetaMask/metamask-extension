@@ -46,14 +46,16 @@ describe('CurrencyInput container', () => {
         currentCurrency: 'usd',
         nativeCurrency: 'ETH',
         useFiat: true,
-        suffix: 'USD',
+        nativeSuffix: 'ETH',
+        fiatSuffix: 'USD',
       })
 
       assert.deepEqual(mergeProps(mockStateProps, mockDispatchProps, {}), {
         conversionRate: 280.45,
         currentCurrency: 'usd',
         nativeCurrency: 'ETH',
-        suffix: 'ETH',
+        nativeSuffix: 'ETH',
+        fiatSuffix: 'USD',
       })
     })
   })
