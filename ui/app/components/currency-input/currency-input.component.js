@@ -20,6 +20,8 @@ export default class CurrencyInput extends PureComponent {
     suffix: PropTypes.string,
     useFiat: PropTypes.bool,
     value: PropTypes.string,
+    fiatSuffix: PropTypes.string,
+    nativeSuffix: PropTypes.string,
   }
 
   constructor (props) {
@@ -47,7 +49,7 @@ export default class CurrencyInput extends PureComponent {
   }
 
   getDecimalValue (props) {
-    const { value: hexValue, useFiat, currentCurrency, conversionRate } = props
+    const { value: hexValue, currentCurrency, conversionRate } = props
     const decimalValueString = this.shouldUseFiat()
       ? getValueFromWeiHex({
         value: hexValue, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
@@ -60,9 +62,9 @@ export default class CurrencyInput extends PureComponent {
   }
 
   shouldUseFiat = () => {
-    const { useFiat } = this.props;
-    const { isSwapped } = this.state || {};
-    return isSwapped ? !useFiat : useFiat;
+    const { useFiat } = this.props
+    const { isSwapped } = this.state || {}
+    return isSwapped ? !useFiat : useFiat
   }
 
   swap = () => {
@@ -73,7 +75,7 @@ export default class CurrencyInput extends PureComponent {
   }
 
   handleChange = decimalValue => {
-    const { useFiat, currentCurrency: fromCurrency, conversionRate, onChange } = this.props
+    const { currentCurrency: fromCurrency, conversionRate, onChange } = this.props
 
     const hexValue = this.shouldUseFiat()
       ? getWeiHexFromDecimalValue({
@@ -92,7 +94,7 @@ export default class CurrencyInput extends PureComponent {
   }
 
   renderConversionComponent () {
-    const { useFiat, currentCurrency, nativeCurrency } = this.props
+    const { currentCurrency, nativeCurrency } = this.props
     const { hexValue } = this.state
     let currency, numberOfDecimals
 
@@ -117,7 +119,7 @@ export default class CurrencyInput extends PureComponent {
   }
 
   render () {
-    const { suffix, fiatSuffix, nativeSuffix, ...restProps } = this.props
+    const { fiatSuffix, nativeSuffix, ...restProps } = this.props
     const { decimalValue } = this.state
 
     return (
