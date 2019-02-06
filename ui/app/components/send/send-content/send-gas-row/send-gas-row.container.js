@@ -27,10 +27,13 @@ import {
 } from '../../../../ducks/send.duck'
 import {
   resetCustomData,
+  setCustomGasPrice,
+  setCustomGasLimit,
 } from '../../../../ducks/gas.duck'
 import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal } from '../../../../actions'
 import { getAdvancedInlineGasShown, getCurrentEthBalance } from '../../../../selectors'
+import { addHexPrefix } from 'ethereumjs-util'
 import SendGasRow from './send-gas-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)
@@ -79,11 +82,13 @@ function mapDispatchToProps (dispatch) {
     setGasPrice: (newPrice, gasLimit) => {
       newPrice = decGWEIToHexWEI(newPrice)
       dispatch(setGasPrice(newPrice))
+      dispatch(setCustomGasPrice(addHexPrefix(newPrice)))
       dispatch(setGasTotal(calcGasTotal(gasLimit, newPrice)))
     },
     setGasLimit: (newLimit, gasPrice) => {
       newLimit = decimalToHex(newLimit)
       dispatch(setGasLimit(newLimit))
+      dispatch(setCustomGasLimit(addHexPrefix(newLimit.toString(16))))
       dispatch(setGasTotal(calcGasTotal(newLimit, gasPrice)))
     },
     showGasButtonGroup: () => dispatch(showGasButtonGroup()),

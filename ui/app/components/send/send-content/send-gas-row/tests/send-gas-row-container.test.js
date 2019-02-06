@@ -19,6 +19,8 @@ const sendDuckSpies = {
 
 const gasDuckSpies = {
   resetCustomData: sinon.spy(),
+  setCustomGasPrice: sinon.spy(),
+  setCustomGasLimit: sinon.spy(),
 }
 
 proxyquire('../send-gas-row.container.js', {
@@ -123,9 +125,10 @@ describe('send-gas-row container', () => {
     describe('setGasPrice()', () => {
       it('should dispatch an action', () => {
         mapDispatchToPropsObject.setGasPrice('mockNewPrice', 'mockLimit')
-        assert(dispatchSpy.calledTwice)
+        assert(dispatchSpy.calledThrice)
         assert(actionSpies.setGasPrice.calledOnce)
         assert.equal(actionSpies.setGasPrice.getCall(0).args[0], '0xmockNewPrice000')
+        assert.equal(gasDuckSpies.setCustomGasPrice.getCall(0).args[0], '0xmockNewPrice000')
         assert(actionSpies.setGasTotal.calledOnce)
         assert.equal(actionSpies.setGasTotal.getCall(0).args[0], 'mockLimit0xmockNewPrice000')
       })
@@ -134,9 +137,10 @@ describe('send-gas-row container', () => {
     describe('setGasLimit()', () => {
       it('should dispatch an action', () => {
         mapDispatchToPropsObject.setGasLimit('mockNewLimit', 'mockPrice')
-        assert(dispatchSpy.calledTwice)
+        assert(dispatchSpy.calledThrice)
         assert(actionSpies.setGasLimit.calledOnce)
         assert.equal(actionSpies.setGasLimit.getCall(0).args[0], '0xmockNewLimit')
+        assert.equal(gasDuckSpies.setCustomGasLimit.getCall(0).args[0], '0xmockNewLimit')
         assert(actionSpies.setGasTotal.calledOnce)
         assert.equal(actionSpies.setGasTotal.getCall(0).args[0], '0xmockNewLimitmockPrice')
       })
