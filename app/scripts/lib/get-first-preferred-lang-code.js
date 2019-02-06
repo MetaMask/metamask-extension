@@ -7,7 +7,13 @@ const getPreferredLocales = extension.i18n ? promisify(
   { errorFirst: false }
 ) : async () => []
 
-const existingLocaleCodes = allLocales.map(locale => locale.code.toLowerCase().replace('_', '-'))
+// mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
+const existingLocaleCodes = {}
+allLocales.forEach(locale => {
+  if (locale && locale.code) {
+    existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] = locale.code
+  }
+})
 
 /**
  * Returns a preferred language code, based on settings within the user's browser. If we have no translations for the
@@ -33,9 +39,10 @@ async function getFirstPreferredLangCode () {
   }
 
   const firstPreferredLangCode = userPreferredLocaleCodes
-    .map(code => code.toLowerCase())
-    .find(code => existingLocaleCodes.includes(code))
-  return firstPreferredLangCode || 'en'
+    .map(code => code.toLowerCase().replace('_', '-'))
+    .find(code => existingLocaleCodes.hasOwnProperty(code))
+  
+  return existingLocaleCodes[firstPreferredLangCode] || 'en'
 }
 
 module.exports = getFirstPreferredLangCode
