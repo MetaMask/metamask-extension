@@ -1000,6 +1000,12 @@
   "originalTotal": {
     "message": "Original Total"
   },
+  "participateInMetaMetrics": {
+    "message": "Participate in MetaMetrics"
+  },
+  "participateInMetaMetricsDesciption": {
+    "message": "Participate in MetaMetrics to help us make MetaMask better"
+  },
   "password": {
     "message": "Password"
   },

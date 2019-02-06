@@ -13,6 +13,7 @@ import {
   showModal,
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setShowFiatConversionOnTestnetsPreference,
+  setParticipateInMetaMetrics,
 } from '../../../../actions'
 import { preferencesSelector } from '../../../../selectors'
 

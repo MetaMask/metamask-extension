@@ -30,7 +30,7 @@ describe('SendGasRow Component', function () {
         someGasPriceButtonGroupProp: 'foo',
         anotherGasPriceButtonGroupProp: 'bar',
       }}
-    />, { context: { t: str => str + '_t' } })
+    />, { context: { t: str => str + '_t', metricsEvent: () => ({}) } })
   })
 
   afterEach(() => {

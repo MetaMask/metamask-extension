@@ -31,6 +31,7 @@ export default class SendGasRow extends Component {
   };
 
   renderAdvancedOptionsButton () {
+    const { metricsEvent } = this.context
     const { showCustomizeGasModal } = this.props
     return <div className="advanced-gas-options-btn" onClick={() => {
       metricsEvent({
@@ -67,7 +68,6 @@ export default class SendGasRow extends Component {
       gasLimit,
       insufficientBalance,
     } = this.props
-    const { metricsEvent } = this.context
 
     const gasPriceButtonGroup = <div>
         <GasPriceButtonGroup

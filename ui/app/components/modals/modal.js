@@ -26,7 +26,6 @@ import ConfirmResetAccount from './confirm-reset-account'
 import TransactionConfirmed from './transaction-confirmed'
 import CancelTransaction from './cancel-transaction'
 
-import WelcomeBeta from './welcome-beta'
 import MetaMetricsOptIn from './metametrics-opt-in'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
