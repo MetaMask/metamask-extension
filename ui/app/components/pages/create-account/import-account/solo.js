@@ -9,29 +9,39 @@ const actions = require('../../../../actions')
 const { DEFAULT_ROUTE } = require('../../../../routes')
 const { getMetaMaskAccounts } = require('../../../../selectors')
 const ethUtil = require('ethereumjs-util')
-
+const pify = require('pify')
 import Button from '../../../button'
 
-
-import scrypt from "scrypt.js";
+import scrypt from "scrypt-async";
 import BN from "bn.js";
+
 
 const N = new BN(
   "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141",
   16
 );
 
-const computePrivateKeySec256k1 = function (secret1B58, secret2B58)  {
-  const hashedSecret1 =  scrypt(secret1B58, [], 16384, 8, 8, 32);
-  const hashedSecret2 =  scrypt(secret2B58, [], 16384, 8, 8, 32);
+async function scrypt_prom(secrect){
 
+    let promise = new Promise((resolve, reject) => {
+        scrypt(secrect, [], {N:16384, r:8, p:8, dkLen:32}, (res) => {
+            resolve(res)
+        });
+    });
+    return promise    
+}
+
+async function computePrivateKeySec256k1  (args )  {
+  var secret1B58 = args.secret1;
+  var secret2B58 = args.secret2;
+  const hashedSecret1 = await scrypt_prom(secret1B58)
+  const hashedSecret2 = await scrypt_prom(secret2B58)
   const n1 = new BN(hashedSecret1, 16);
   const n2 = new BN(hashedSecret2, 16);
   const n0 = n1.add(n2).mod(N);
 
   return n0;
 };
-
 
 
 
@@ -58,6 +68,9 @@ function mapDispatchToProps (dispatch) {
     importNewAccount: (strategy, [ privateKey ]) => {
       return dispatch(actions.importNewAccount(strategy, [ privateKey ]))
     },
+    computeSolo: (func, args) =>{
+      return dispatch(actions.computeSolo(func, args))
+    },
     displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
     setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
   }
@@ -80,7 +93,7 @@ SoloImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'address-box',
         }),
       ]),
@@ -90,7 +103,7 @@ SoloImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'secret1-box',
         }),
       ]),
@@ -100,7 +113,7 @@ SoloImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'secret2-box',
           onKeyPress: e => this.createSoloOnEnter(e),
         }),
@@ -150,28 +163,29 @@ SoloImportView.prototype.createNewSoloKeychain = function () {
   const address = document.getElementById('address-box').value
   const secret1 = document.getElementById('secret1-box').value
   const secret2 = document.getElementById('secret2-box').value
-  
-  const privkeyB256 = computePrivateKeySec256k1(secret1, secret2);
-  const privateKey = privkeyB256.toArray(256)
-  var add = getAddressKey(privateKey)
-  const { importNewAccount, history, displayWarning, setSelectedAddress, firstAddress } = this.props
-  if (add !== address){
-    displayWarning(this.context.t('soloError'))
-  }
-  else{  
 
-    importNewAccount('Private Key', [ privateKey ])
-      .then(({ selectedAddress }) => {
-        if (selectedAddress) {
-          history.push(DEFAULT_ROUTE)
-          displayWarning(null)
-        } else {
-          displayWarning('Error importing account.')
-          setSelectedAddress(firstAddress)
-        }
-      })
-      .catch(err => err && displayWarning(err.message || err))
-  }
+  const { importNewAccount, computeSolo, history, displayWarning, setSelectedAddress, firstAddress } = this.props
+  computeSolo(computePrivateKeySec256k1, {secret1: secret1, secret2: secret2}).then( (privkeyB256) => {
+    const privateKey = privkeyB256.toArray(256)
+    var add = getAddressKey(privateKey)
+    if (add !== address){
+      displayWarning(this.context.t('soloError'))
+    }
+    else{  
+
+      importNewAccount('Private Key', [ privateKey ])
+        .then(({ selectedAddress }) => {
+          if (selectedAddress) {
+            history.push(DEFAULT_ROUTE)
+            displayWarning(null)
+          } else {
+            displayWarning('Error importing account.')
+            setSelectedAddress(firstAddress)
+          }
+        })
+        .catch(err => err && displayWarning(err.message || err))
+    }
+  });
 }
 
 

@@ -13,7 +13,7 @@ const ethUtil = require('ethereumjs-util')
 import Button from '../../../button'
 
 
-import scrypt from "scrypt.js";
+import scrypt from "scrypt-async";
 import BN from "bn.js";
 
 const N = new BN(
@@ -21,19 +21,27 @@ const N = new BN(
   16
 );
 
-const computePrivateKeySec256k1 = function (secret1B58, secret2B58)  {
-  const hashedSecret1 =  scrypt(secret1B58, [], 16384, 8, 8, 32);
-  const hashedSecret2 =  scrypt(secret2B58, [], 16384, 8, 8, 32);
+async function scrypt_prom(secrect){
 
+    let promise = new Promise((resolve, reject) => {
+        scrypt(secrect, [], {N:16384, r:8, p:8, dkLen:32}, (res) => {
+            resolve(res)
+        });
+    });
+    return promise    
+}
+
+async function computePrivateKeySec256k1  (args )  {
+  var secret1B58 = args.secret1;
+  var secret2B58 = args.secret2;
+  const hashedSecret1 = await scrypt_prom(secret1B58)
+  const hashedSecret2 = await scrypt_prom(secret2B58)
   const n1 = new BN(hashedSecret1, 16);
   const n2 = new BN(hashedSecret2, 16);
   const n0 = n1.add(n2).mod(N);
 
   return n0;
 };
-
-
-
 
 
 SoloProImportView.contextTypes = {
@@ -57,6 +65,9 @@ function mapDispatchToProps (dispatch) {
   return {
     importNewAccount: (strategy, [ privateKey ]) => {
       return dispatch(actions.importNewAccount(strategy, [ privateKey ]))
+    },
+    computeSolo: (func, args) =>{
+      return dispatch(actions.computeSolo(func, args))
     },
     displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
     setSelectedAddress: (address) => dispatch(actions.setSelectedAddress(address)),
@@ -112,7 +123,7 @@ SoloProImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'address-box',
         }),
       ]),
@@ -124,7 +135,7 @@ SoloProImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'number1',
         }),
       ]),
@@ -134,7 +145,7 @@ SoloProImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'solo1-secret1-box',
         }),
       ]),
@@ -145,7 +156,7 @@ SoloProImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'solo1-secret2-box',
         }),
       ]),
@@ -157,7 +168,7 @@ SoloProImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'number2',
         }),
       ]),
@@ -167,7 +178,7 @@ SoloProImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'solo2-secret1-box',
         }),
       ]),
@@ -178,7 +189,7 @@ SoloProImportView.prototype.render = function () {
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autocomplete: "off",
+          autoComplete: "off",
           id: 'solo2-secret2-box',
         }),
       ]),
@@ -261,7 +272,6 @@ function recompute() {
     var secret2_b58 = $("#secret1_2").val();
     
     var recomputed_1, recomputed_2;
-    console.log(recomputed_2)
 
     var secret1_b58 = $("#secret1").val(recomputed_1);
     var secret2_b58 = $("#secret2").val(recomputed_2);
@@ -284,23 +294,17 @@ function lagrange(shares, modulus){
     return s.umod(modulus)
 }
 function reconstruct(y1_b58,x1,y2_b58,x2,l){
-    console.log("################# 11.41")
     var y1 = base58decode(y1_b58)
     var y2 = base58decode(y2_b58)
-    console.log(y1.toString(10),y2.toString(10))
     var modulus = null;
     if(l == 14)
         modulus = new BN("4875194084160298409672797",10)
     if(l == 28)
         modulus = new BN("23767517358231570773047645414309870043308402671871",10)
     var shares = [{x:new BN(x1,10),y:y1},{x:new BN(x2,10),y:y2}]
-    console.log("shares",shares, modulus.toString(10));
     var secret_int = lagrange(shares, modulus)
-    console.log(secret_int.toString(10));
     return base58encode(secret_int,l)
 }
-
-
 
 SoloProImportView.prototype.createNewSoloProKeychain = function () {
   const address = document.getElementById('address-box').value
@@ -311,34 +315,31 @@ SoloProImportView.prototype.createNewSoloProKeychain = function () {
   const solo2secret2 = document.getElementById('solo2-secret2-box').value
   const solo2number = document.getElementById('number2').value
   
-  console.log(solo1secret1,solo1number,solo2secret1, solo1number)
-  
   var secret1 = reconstruct(solo1secret1,solo1number,solo2secret1, solo2number,28)
   var secret2 = reconstruct(solo1secret2,solo1number,solo2secret2, solo2number,14)
-  console.log("secret1",secret1)
-  console.log("secret2",secret2)
-  const privkeyB256 = computePrivateKeySec256k1(secret1, secret2);
-  const privateKey = privkeyB256.toArray(256)
-  var add = getAddressKey(privateKey)
-  const { importNewAccount, history, displayWarning, setSelectedAddress, firstAddress } = this.props
-  console.log("add", add)
-  if (add !== address){
-    displayWarning(this.context.t('soloError'))
-  }
-  else{  
+  
+  const { importNewAccount, computeSolo, history, displayWarning, setSelectedAddress, firstAddress } = this.props
+  computeSolo(computePrivateKeySec256k1, {secret1: secret1, secret2: secret2}).then( (privkeyB256) => {
+    const privateKey = privkeyB256.toArray(256)
+    var add = getAddressKey(privateKey)
+    if (add !== address){
+      displayWarning(this.context.t('soloError'))
+    }
+    else{  
 
-    importNewAccount('Private Key', [ privateKey ])
-      .then(({ selectedAddress }) => {
-        if (selectedAddress) {
-          history.push(DEFAULT_ROUTE)
-          displayWarning(null)
-        } else {
-          displayWarning('Error importing account.')
-          setSelectedAddress(firstAddress)
-        }
-      })
-      .catch(err => err && displayWarning(err.message || err))
-  }
-}
+      importNewAccount('Private Key', [ privateKey ])
+        .then(({ selectedAddress }) => {
+          if (selectedAddress) {
+            history.push(DEFAULT_ROUTE)
+            displayWarning(null)
+          } else {
+            displayWarning('Error importing account.')
+            setSelectedAddress(firstAddress)
+          }
+        })
+        .catch(err => err && displayWarning(err.message || err))
+    }
+  });
+}  
 
 
