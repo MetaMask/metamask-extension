@@ -9,42 +9,32 @@ const actions = require('../../../../actions')
 const { DEFAULT_ROUTE } = require('../../../../routes')
 const { getMetaMaskAccounts } = require('../../../../selectors')
 const ethUtil = require('ethereumjs-util')
-const pify = require('pify')
 import Button from '../../../button'
+import scrypt from 'scrypt-async'
+import BN from 'bn.js'
 
-import scrypt from "scrypt-async";
-import BN from "bn.js";
 
+const N = new BN('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141', 16)
 
-const N = new BN(
-  "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141",
-  16
-);
-
-async function scrypt_prom(secrect){
-
-    let promise = new Promise((resolve, reject) => {
-        scrypt(secrect, [], {N:16384, r:8, p:8, dkLen:32}, (res) => {
+async function scryptProm (secrect) {
+    const promise = new Promise((resolve, reject) => {
+        scrypt(secrect, [], {N: 16384, r: 8, p: 8, dkLen: 32}, (res) => {
             resolve(res)
-        });
-    });
-    return promise    
+        })
+    })
+    return promise
 }
 
-async function computePrivateKeySec256k1  (args )  {
-  var secret1B58 = args.secret1;
-  var secret2B58 = args.secret2;
-  const hashedSecret1 = await scrypt_prom(secret1B58)
-  const hashedSecret2 = await scrypt_prom(secret2B58)
-  const n1 = new BN(hashedSecret1, 16);
-  const n2 = new BN(hashedSecret2, 16);
-  const n0 = n1.add(n2).mod(N);
-
-  return n0;
-};
-
-
-
+async function computePrivateKeySec256k1 (args) {
+  const secret1B58 = args.secret1
+  const secret2B58 = args.secret2
+  const hashedSecret1 = await scryptProm(secret1B58)
+  const hashedSecret2 = await scryptProm(secret2B58)
+  const n1 = new BN(hashedSecret1, 16)
+  const n2 = new BN(hashedSecret2, 16)
+  const n0 = n1.add(n2).mod(N)
+  return n0
+}
 
 SoloImportView.contextTypes = {
   t: PropTypes.func,
@@ -54,7 +44,6 @@ module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(SoloImportView)
-
 
 function mapStateToProps (state) {
   return {
@@ -68,7 +57,7 @@ function mapDispatchToProps (dispatch) {
     importNewAccount: (strategy, [ privateKey ]) => {
       return dispatch(actions.importNewAccount(strategy, [ privateKey ]))
     },
-    computeSolo: (func, args) =>{
+    computeSolo: (func, args) => {
       return dispatch(actions.computeSolo(func, args))
     },
     displayWarning: (message) => dispatch(actions.displayWarning(message || null)),
@@ -86,34 +75,33 @@ SoloImportView.prototype.render = function () {
   const { error, displayWarning } = this.props
 
   return (
-  
     h('div.new-account-import-form__private-key', [
-    
+
       h('span.new-account-create-form__instruction', this.context.t('address')),
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autoComplete: "off",
+          autoComplete: 'off',
           id: 'address-box',
         }),
       ]),
-      
+
       h('span.new-account-create-form__instruction', this.context.t('soloSecret1')),
-      
+
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autoComplete: "off",
+          autoComplete: 'off',
           id: 'secret1-box',
         }),
       ]),
-      
+
       h('span.new-account-create-form__instruction', this.context.t('soloSecret2')),
-      
+
       h('div.new-account-import-form__solo-input-container', [
         h('input.new-account-import-form__solo-input', {
           type: 'text',
-          autoComplete: "off",
+          autoComplete: 'off',
           id: 'secret2-box',
           onKeyPress: e => this.createSoloOnEnter(e),
         }),
@@ -151,28 +139,24 @@ SoloImportView.prototype.createSoloOnEnter = function (event) {
   }
 }
 
-const getAddressKey = function(privateKey) {
-  const privateKeyBuffer = Buffer.from(privateKey, "hex");
-  const addressKey = ethUtil.bufferToHex(ethUtil.privateToAddress(privateKeyBuffer));
-    
-  return ethUtil.toChecksumAddress(addressKey);
-};
-
+const getAddressKey = function (privateKey) {
+  const privateKeyBuffer = Buffer.from(privateKey, 'hex')
+  const addressKey = ethUtil.bufferToHex(ethUtil.privateToAddress(privateKeyBuffer))
+  return ethUtil.toChecksumAddress(addressKey)
+}
 
 SoloImportView.prototype.createNewSoloKeychain = function () {
   const address = document.getElementById('address-box').value
   const secret1 = document.getElementById('secret1-box').value
   const secret2 = document.getElementById('secret2-box').value
+  const {importNewAccount, computeSolo, history, displayWarning, setSelectedAddress, firstAddress} = this.props
 
-  const { importNewAccount, computeSolo, history, displayWarning, setSelectedAddress, firstAddress } = this.props
-  computeSolo(computePrivateKeySec256k1, {secret1: secret1, secret2: secret2}).then( (privkeyB256) => {
+  computeSolo(computePrivateKeySec256k1, {secret1: secret1, secret2: secret2}).then((privkeyB256) => {
     const privateKey = privkeyB256.toArray(256)
     var add = getAddressKey(privateKey)
-    if (add !== address){
+    if (add !== address) {
       displayWarning(this.context.t('soloError'))
-    }
-    else{  
-
+    } else {
       importNewAccount('Private Key', [ privateKey ])
         .then(({ selectedAddress }) => {
           if (selectedAddress) {
@@ -185,10 +169,6 @@ SoloImportView.prototype.createNewSoloKeychain = function () {
         })
         .catch(err => err && displayWarning(err.message || err))
     }
-  });
+  })
 }
-
-
-
-
 
