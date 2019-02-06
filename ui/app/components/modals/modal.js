@@ -230,6 +230,40 @@ const MODALS = {
     },
   },
 
+  GAS_PRICE_INFO_MODAL: {
+    contents: [
+      h(NotifcationModal, {
+        header: 'gasPriceNoDenom',
+        message: 'gasPriceInfoModalContent',
+      }),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+
+  GAS_LIMIT_INFO_MODAL: {
+    contents: [
+      h(NotifcationModal, {
+        header: 'gasLimit',
+        message: 'gasLimitInfoModalContent',
+      }),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+
   CONFIRM_RESET_ACCOUNT: {
     contents: h(ConfirmResetAccount),
     mobileModalStyle: {

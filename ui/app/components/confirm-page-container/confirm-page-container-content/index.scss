@@ -52,6 +52,10 @@
 
   &__gas-fee {
     border-bottom: 1px solid $geyser;
+
+    .advanced-gas-inputs__gas-edit-rows {
+      margin-bottom: 16px;
+    }
   }
 
   &__function-type {

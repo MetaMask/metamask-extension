@@ -120,3 +120,11 @@ export function hexWEIToDecGWEI (decGWEI) {
     toDenomination: 'GWEI',
   })
 }
+
+export function convertGasPriceForInputs (gasPriceInHexWEI) {
+  return Number(hexWEIToDecGWEI(gasPriceInHexWEI))
+}
+
+export function convertGasLimitForInputs (gasLimitInHexWEI) {
+  return parseInt(gasLimitInHexWEI, 16)
+}

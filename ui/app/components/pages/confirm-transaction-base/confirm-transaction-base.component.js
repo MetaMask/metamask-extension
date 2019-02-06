@@ -11,6 +11,7 @@ import {
 import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../../constants/transactions'
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../constants/common'
+import AdvancedGasInputs from '../../gas-customization/advanced-gas-inputs'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -81,6 +82,11 @@ export default class ConfirmTransactionBase extends Component {
     titleComponent: PropTypes.node,
     valid: PropTypes.bool,
     warning: PropTypes.string,
+    advancedInlineGasShown: PropTypes.bool,
+    gasPrice: PropTypes.number,
+    gasLimit: PropTypes.number,
+    insufficientBalance: PropTypes.bool,
+    convertThenUpdateGasAndCalculate: PropTypes.func,
   }
 
   state = {
@@ -165,6 +171,11 @@ export default class ConfirmTransactionBase extends Component {
       hexTransactionFee,
       hexTransactionTotal,
       hideDetails,
+      advancedInlineGasShown,
+      gasPrice,
+      gasLimit,
+      insufficientBalance,
+      convertThenUpdateGasAndCalculate,
     } = this.props
 
     if (hideDetails) {
@@ -182,6 +193,18 @@ export default class ConfirmTransactionBase extends Component {
               headerTextClassName="confirm-detail-row__header-text--edit"
               onHeaderClick={() => this.handleEditGas()}
             />
+            {advancedInlineGasShown
+              ? <AdvancedGasInputs
+                updateCustomGasPrice={newGasPrice => convertThenUpdateGasAndCalculate({ gasPrice: newGasPrice, gasLimit })}
+                updateCustomGasLimit={newGasLimit => convertThenUpdateGasAndCalculate({ gasLimit: newGasLimit, gasPrice })}
+                customGasPrice={gasPrice}
+                customGasLimit={gasLimit}
+                insufficientBalance={insufficientBalance}
+                customPriceIsSafe={true}
+                isSpeedUp={false}
+              />
+              : null
+            }
           </div>
           <div>
             <ConfirmDetailRow
