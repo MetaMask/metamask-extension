@@ -5,7 +5,7 @@ const exportAsFile = require('../util').exportAsFile
 const actions = require('../../../ui/app/actions')
 const ethUtil = require('ethereumjs-util')
 const connect = require('react-redux').connect
-const CopyButton = require('./copyButton')
+const CopyButton = require('./copy/copy-button')
 
 module.exports = connect(mapStateToProps)(ExportAccountView)
 
