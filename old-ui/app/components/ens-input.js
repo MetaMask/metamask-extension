@@ -117,7 +117,7 @@ EnsInput.prototype.lookupEnsName = function () {
       toError: null,
     }
     if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
-      setStateObj.hoverText = this.context.t('ensNameNotFound')
+      setStateObj.hoverText = 'ENS name not found'
       setStateObj.toError = 'ensNameNotFound'
       setStateObj.ensFailure = false
     } else {
@@ -173,13 +173,18 @@ EnsInput.prototype.ensIconContents = function (recipient) {
   }
 
   if (ensFailure) {
-    return h('i.fa.fa-warning.fa-lg.warning')
+    return h('i.fa.fa-warning.fa-lg.warning', {
+      style: {
+        color: '#df2265',
+        background: 'white',
+      }
+    })
   }
 
   if (ensResolution && (ensResolution !== ZERO_ADDRESS)) {
     return h('i.fa.fa-check-circle.fa-lg.cursor-pointer', {
       style: {
-        color: 'green',
+        color: '#60db97',
         background: 'white',
       },
       onClick: (event) => {
