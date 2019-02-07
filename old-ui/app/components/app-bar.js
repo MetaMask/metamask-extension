@@ -1,16 +1,15 @@
-const PropTypes = require('prop-types')
-const {Component} = require('react')
-const h = require('react-hyperscript')
-const actions = require('../../../ui/app/actions')
-const SandwichExpando = require('sandwich-expando')
-const {Dropdown} = require('./dropdown')
-const {DropdownMenuItem} = require('./dropdown')
-const NetworkIndicator = require('./network')
-const {AccountDropdowns} = require('./account-dropdowns')
-const ethNetProps = require('eth-net-props')
+import PropTypes from 'prop-types'
+import {Component} from 'react'
+import h from 'react-hyperscript'
+import actions from '../../../ui/app/actions'
+import SandwichExpando from 'sandwich-expando'
+import { Dropdown, DropdownMenuItem } from './dropdown'
+import NetworkIndicator from './network'
+import {AccountDropdowns} from './account-dropdowns/index'
+import ethNetProps from 'eth-net-props'
 
-const { LOCALHOST } = require('../../../app/scripts/controllers/network/enums')
-const { networks } = require('../../../app/scripts/controllers/network/util')
+import { LOCALHOST } from '../../../app/scripts/controllers/network/enums'
+import { networks } from '../../../app/scripts/controllers/network/util'
 
 const LOCALHOST_RPC_URL = 'http://localhost:8545'
 
@@ -30,6 +29,7 @@ module.exports = class AppBar extends Component {
     network: PropTypes.any.isRequired,
     keyrings: PropTypes.any.isRequired,
     provider: PropTypes.any.isRequired,
+    currentView: PropTypes.object,
   }
 
   static renderSpace () {
@@ -58,10 +58,19 @@ module.exports = class AppBar extends Component {
       return null
     }
 
-    const props = this.props
     const state = this.state || {}
     const isNetworkMenuOpen = state.isNetworkMenuOpen || false
-    const {isMascara, isOnboarding} = props
+    const {
+      isMascara,
+      isOnboarding,
+      isUnlocked,
+      currentView,
+      network,
+      provider,
+      identities,
+      selectedAddress,
+      keyrings,
+    } = this.props
 
     // Do not render header if user is in mascara onboarding
     if (isMascara && isOnboarding) {
@@ -69,7 +78,7 @@ module.exports = class AppBar extends Component {
     }
 
     // Do not render header if user is in mascara buy ether
-    if (isMascara && props.currentView.name === 'buyEth') {
+    if (isMascara && currentView.name === 'buyEth') {
       return null
     }
 
@@ -81,22 +90,13 @@ module.exports = class AppBar extends Component {
 
         h('.app-header.flex-row.flex-space-between', {
           style: {
-            alignItems: 'center',
-            visibility: props.isUnlocked ? 'visible' : 'none',
+            visibility: isUnlocked ? 'visible' : 'none',
             background: 'white',
             height: '38px',
-            position: 'relative',
-            zIndex: 12,
           },
         }, [
 
-          h('div.left-menu-section', {
-            style: {
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-            },
-          }, [
+          h('div.app-bar-left-menu-section', [
 
             // mini logo
             h('img', {
@@ -106,9 +106,9 @@ module.exports = class AppBar extends Component {
             }),
 
             h(NetworkIndicator, {
-              network: this.props.network,
-              provider: this.props.provider,
-              isUnlocked: this.props.isUnlocked,
+              network,
+              provider,
+              isUnlocked,
               onClick: (event) => {
                 event.preventDefault()
                 event.stopPropagation()
@@ -118,30 +118,18 @@ module.exports = class AppBar extends Component {
 
           ]),
 
-          props.isUnlocked && h('div', {
-            style: {
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-            },
-          }, [
+          isUnlocked && h('div.app-bar-right-menus-section', [
             h(AccountDropdowns, {
-              style: {},
               enableAccountsSelector: true,
-              identities: this.props.identities,
-              selected: this.props.selectedAddress,
-              network: this.props.network,
-              keyrings: this.props.keyrings,
+              identities,
+              selected: selectedAddress,
+              network,
+              keyrings,
             }, []),
 
             // hamburger
-            h('div', {
+            h('div.app-bar-burger', {
               className: state.sandwichClass || 'sandwich-expando',
-              style: {
-                width: 16,
-                height: 16,
-                padding: 0,
-              },
               onClick: () => this.changeState(!state.isMainMenuOpen),
             }),
           ]),
@@ -165,30 +153,15 @@ module.exports = class AppBar extends Component {
     } = this.state
 
     return (
-      h('.full-width', {
-        style: {
-          display: 'flex',
-          flexDirection: 'column',
-          height: '38px',
-        },
-      }, [
+      h('.full-width.app-bar-header-container', [
         h('.app-header.flex-row.flex-space-between', {
           style: {
-            alignItems: 'center',
             visibility: isUnlocked ? 'visible' : 'none',
             background: isUnlocked ? 'white' : 'none',
             height: '38px',
-            position: 'relative',
-            zIndex: 12,
           },
         }, [
-          h('div.left-menu-section', {
-            style: {
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-            },
-          }, [
+          h('div.app-bar-left-menu-section', [
             // mini logo
             h('img', {
               height: 24,
@@ -205,15 +178,8 @@ module.exports = class AppBar extends Component {
               },
             }),
           ]),
-          isUnlocked && h('div', {
-            style: {
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-            },
-          }, [
+          isUnlocked && h('div.app-bar-right-menus-section', [
             h(AccountDropdowns, {
-              style: {},
               enableAccountsSelector: true,
               identities: identities,
               selected: selectedAddress,
@@ -246,34 +212,14 @@ module.exports = class AppBar extends Component {
     const state = this.state || {}
     const isOpen = state.isNetworkMenuOpen
 
-    const networkDropdownItems = Object.keys(networks)
+    const knownNetworks = Object.keys(networks)
     .filter((networkID) => {
       return !isNaN(networkID)
     })
-    .sort((networkID1, networkID2) => {
-      const networkObj1 = networks[networkID1]
-      const networkObj2 = networks[networkID2]
-      return networkObj1.order - networkObj2.order
-    })
-    .map((networkID) => {
-      const networkObj = networks[networkID]
-      return h(
-        DropdownMenuItem,
-        {
-          key: networkObj.providerName,
-          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-          onClick: () => props.dispatch(actions.setProviderType(networkObj.providerName)),
-          style: {
-            paddingLeft: '20px',
-            fontSize: '16px',
-            color: providerType === networkObj.providerName ? 'white' : '',
-          },
-        },
-        [h(providerType === networkObj.providerName ? 'div.selected-network' : ''),
-          ethNetProps.props.getNetworkDisplayName(networkID),
-        ]
-      )
-    })
+
+    const sortedNetworks = knownNetworks
+    .sort(this._sortNetworks)
+    const networksView = this._renderNetworksView(sortedNetworks)
 
     return h(Dropdown, {
       useCssTransition: true,
@@ -304,7 +250,7 @@ module.exports = class AppBar extends Component {
       },
     }, [
 
-      ...networkDropdownItems,
+      ...networksView,
 
       h(
         DropdownMenuItem,
@@ -331,11 +277,7 @@ module.exports = class AppBar extends Component {
         {
           closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
           onClick: () => this.props.dispatch(actions.showConfigPage()),
-          style: {
-            paddingLeft: '20px',
-            fontSize: '16px',
-            color: '#60db97',
-          },
+          className: 'app-bar-networks-dropdown-custom-rpc',
         },
         [
           'Custom RPC',
@@ -346,6 +288,41 @@ module.exports = class AppBar extends Component {
       this.renderCommonRpc(rpcList, props.provider),
 
     ])
+  }
+
+  _renderNetworksView (_networks) {
+    const props = this.props
+    const { provider: { type: providerType } } = props
+    const state = this.state || {}
+    const isOpen = state.isNetworkMenuOpen
+
+    const networkDropdownItems = _networks
+    .map((networkID) => {
+      const networkObj = networks[networkID]
+      return h(
+        DropdownMenuItem,
+        {
+          key: networkObj.providerName,
+          closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+          onClick: () => props.dispatch(actions.setProviderType(networkObj.providerName)),
+          style: {
+            paddingLeft: '20px',
+            color: providerType === networkObj.providerName ? 'white' : '',
+          },
+        },
+        [h(providerType === networkObj.providerName ? 'div.selected-network' : ''),
+          ethNetProps.props.getNetworkDisplayName(networkID),
+        ]
+      )
+    })
+
+    return networkDropdownItems
+  }
+
+  _sortNetworks (networkID1, networkID2) {
+    const networkObj1 = networks[networkID1]
+    const networkObj2 = networks[networkID2]
+    return networkObj1.order - networkObj2.order
   }
 
   renderCustomOption ({ rpcTarget, type }) {
@@ -393,7 +370,6 @@ module.exports = class AppBar extends Component {
             onClick: () => props.dispatch(actions.setRpcTarget(rpc)),
             style: {
               paddingLeft: '20px',
-              fontSize: '16px',
             },
           },
           [
@@ -434,7 +410,6 @@ module.exports = class AppBar extends Component {
             closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
             style: {
               paddingLeft: '20px',
-              fontSize: '16px',
               color: 'white',
             },
           },

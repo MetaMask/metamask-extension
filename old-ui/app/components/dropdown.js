@@ -1,14 +1,39 @@
-const Component = require('react').Component
-const PropTypes = require('prop-types')
-const h = require('react-hyperscript')
-const MenuDroppo = require('./menu-droppo')
-const extend = require('xtend')
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import MenuDroppo from './menu-droppo'
+import extend from 'xtend'
+import classnames from 'classnames'
 
 const noop = () => {}
 
 class Dropdown extends Component {
+  static defaultProps = {
+    isOpen: false,
+    onClick: noop,
+    useCssTransition: false,
+  }
+
+  static propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClick: PropTypes.func.isRequired,
+    children: PropTypes.node,
+    style: PropTypes.object.isRequired,
+    onClickOutside: PropTypes.func,
+    innerStyle: PropTypes.object,
+    useCssTransition: PropTypes.bool,
+    constOverflow: PropTypes.bool,
+  }
+
   render () {
-    const { isOpen, onClickOutside, style, innerStyle, children, useCssTransition, constOverflow } = this.props
+    const {
+      isOpen,
+      onClickOutside,
+      style,
+      innerStyle,
+      children,
+      useCssTransition,
+      constOverflow,
+    } = this.props
 
     const innerStyleDefaults = extend({
       padding: '15px 30px',
@@ -23,81 +48,65 @@ class Dropdown extends Component {
       transition: 'max-height 300ms ease-in-out',
     }, style)
 
-    return h(
-      MenuDroppo,
-      {
-        useCssTransition,
-        isOpen,
-        zIndex: 11,
-        constOverflow,
-        onClickOutside,
-        style: styleDefaults,
-        innerStyle: innerStyleDefaults,
-      },
-      [
-        h(
-          'style',
-          `
+    return (
+      <MenuDroppo
+        useCssTransition={useCssTransition}
+        isOpen={isOpen}
+        zIndex={11}
+        constOverflow={constOverflow}
+        onClickOutside={onClickOutside}
+        style={styleDefaults}
+        innerStyle={innerStyleDefaults}
+      >
+        <style>
+        {`
           li.dropdown-menu-item:hover { color:#ffffff; }
           li.dropdown-menu-item { color: rgba(255, 255, 255, 0.5); position: relative }
-          `
-        ),
-        ...children,
-      ]
+        `}
+        </style>
+        {children}
+      </MenuDroppo>
     )
   }
-}
-
-Dropdown.defaultProps = {
-  isOpen: false,
-  onClick: noop,
-  useCssTransition: false,
-}
-
-Dropdown.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired,
-  children: PropTypes.node,
-  style: PropTypes.object.isRequired,
-  onClickOutside: PropTypes.func,
-  innerStyle: PropTypes.object,
-  useCssTransition: PropTypes.bool,
-  constOverflow: PropTypes.bool,
 }
 
 class DropdownMenuItem extends Component {
-  render () {
-    const { onClick, closeMenu, children, style } = this.props
+  static propTypes = {
+    closeMenu: PropTypes.func,
+    onClick: PropTypes.func.isRequired,
+    children: PropTypes.node,
+    style: PropTypes.object,
+    className: PropTypes.string,
+  }
 
-    return h(
-      'li.dropdown-menu-item',
-      {
-        onClick: () => {
+  render () {
+    const { onClick, closeMenu, children } = this.props
+    const style = Object.assign({
+      listStyle: 'none',
+      padding: (this.props.style && this.props.style.padding) ? this.props.style.padding : '15px 0px',
+      fontSize: '16px',
+      fontStyle: 'normal',
+      fontFamily: 'Nunito Regular',
+      cursor: 'pointer',
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    }, this.props.style)
+
+    return (
+      <li
+        className={classnames('dropdown-menu-item', this.props.className)}
+        onClick={() => {
           onClick()
           closeMenu()
-        },
-        style: Object.assign({
-          listStyle: 'none',
-          padding: (style && style.padding) ? style.padding : '15px 0px',
-          fontSize: '16px',
-          fontStyle: 'normal',
-          fontFamily: 'Nunito Regular',
-          cursor: 'pointer',
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-        }, style),
-      },
-      children
+        }}
+        style={style}
+      >
+        {children}
+      </li>
     )
   }
-}
 
-DropdownMenuItem.propTypes = {
-  closeMenu: PropTypes.func,
-  onClick: PropTypes.func.isRequired,
-  children: PropTypes.node,
-  style: PropTypes.object,
 }
 
 module.exports = {

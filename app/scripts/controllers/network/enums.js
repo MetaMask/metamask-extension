@@ -31,6 +31,11 @@ const DROPDOWN_ROPSTEN_DISPLAY_NAME = 'Ropsten Test Net'
 const DROPDOWN_RINKEBY_DISPLAY_NAME = 'Rinkeby Test Net'
 const DROPDOWN_KOVAN_DISPLAY_NAME = 'Kovan Test Net'
 
+const chainTypes = {
+  TEST: 1,
+  PROD: 2,
+}
+
 module.exports = {
   POA,
   DAI,
@@ -61,4 +66,5 @@ module.exports = {
   DROPDOWN_ROPSTEN_DISPLAY_NAME,
   DROPDOWN_RINKEBY_DISPLAY_NAME,
   DROPDOWN_KOVAN_DISPLAY_NAME,
+  chainTypes,
 }
