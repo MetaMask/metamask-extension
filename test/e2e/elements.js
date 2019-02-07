@@ -50,7 +50,7 @@ module.exports = {
       item: By.className('dropdown-menu-item'),
     },
     networks: {
-      addedCustomRpc: By.className('span custom-rpc'),
+      addedCustomRpc: By.className('custom-rpc'),
       customRpc: By.css('#app-content > div > div:nth-child(2) > span > div > li:nth-child(9)'),
     },
   },
