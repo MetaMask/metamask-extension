@@ -14,8 +14,8 @@ function createMetamaskMiddleware ({
   processTypedMessageV3,
   processPersonalMessage,
   getPendingNonce,
-  registerHdPath,
-  getPubKey
+  getPubKey,
+  getXPubKey
 }) {
   const metamaskMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
@@ -32,20 +32,23 @@ function createMetamaskMiddleware ({
       processPersonalMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
-    createRegisterHdPathMiddleware(registerHdPath),    
     createGetPubKeyMiddleware(getPubKey),
+    createGetXPubKeyMiddleware(getXPubKey),    
   ])
   return metamaskMiddleware
 }
 
+
+// No end in createAsyncMiddleware ?
 //I would ask @aaron.davis if that’s right. I usually use the explicit `done()` call (4th param).
 //I think the nonce may be unique since it’s recording the pending nonce but also allowing other middleware methods to run?
-function createRegisterHdPathMiddleware (registerHdPath) {
+function createGetXPubKeyMiddleware (getXPubKey) {
   return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'registerHdPath') return next()
+    if (req.method !== 'getXPubKey') return next()
     console.log(req)
     const hdPath = req.params[0]
-    res.result = await registerHdPath(hdPath)
+
+    res.result = await getXPubKey(hdPath)
   })
 }
 
@@ -53,8 +56,7 @@ function createGetPubKeyMiddleware (getPubKey) {
   return createAsyncMiddleware(async (req, res, next) => {
     if (req.method !== 'getPubKey') return next()
     console.log(req)
-    const index = req.params[0]
-    res.result = await getPubKey(index)
+    res.result = await getPubKey(req.params)
   })
 }
 

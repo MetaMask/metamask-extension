@@ -15,27 +15,33 @@ export default class PluginView extends PureComponent {
     history: PropTypes.object,
   }
 
+  constructor (props) {
+    super(props)
+    this.paramValues = []
+  }
+
   renderPluginButtons () {
     if (!this.props.selectedPluginScript){ return }
     let elements = []
     const script = this.props.selectedPluginScript
 
-    for (var k = 0; k< script.pluginInterface.actions.length; k++){
+    for (var k = 0; k < script.pluginInterface.actions.length; k++){
       const index = k
-
-      let paramValues = []      
-      for (var i = 0; i< script.pluginInterface.actions[index].params.length; i++){
+      if (!this.paramValues[index]){
+	this.paramValues.push([])
+	console.log("def paramValues")
+      }
+      for (var i = 0; i < script.pluginInterface.actions[index].params.length; i++){
 	const subIndex = i
 	const param = script.pluginInterface.actions[index].params[subIndex]
 	elements.push(h('input', {
-	  key: "input"+index+subIndex,
+	  key: "input" + index + subIndex,
 	  className: 'customize-gas-input',
-	  value: paramValues[subIndex],
 	  placeholder: param.name,
 	  type: param.type,
 	  onChange: e => {
 	    console.log("changed")
-	    paramValues[subIndex] = e.target.value
+	    this.paramValues[index][subIndex] = e.target.value
 	  },
 	}))
 	
@@ -47,7 +53,7 @@ export default class PluginView extends PureComponent {
 		   className="plugin-view__button"
 		   onClick={() => {
 		     console.log(script.pluginInterface)
-		     script.pluginInterface.actions[index].call(paramValues)}
+		     script.pluginInterface.actions[index].call(this.paramValues[index])}
 			   }
 		   >
 		   {script.pluginInterface.actions[index].name}

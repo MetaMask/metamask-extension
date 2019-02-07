@@ -307,9 +307,9 @@ module.exports = class MetamaskController extends EventEmitter {
       processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
-      registerHdPath: this.registerHdPath.bind(this),
-      getPubKey: this.getPubKey.bind(this),
 
+      getPubKey: this.getPubKey.bind(this),
+      getXPubKey: this.getXPubKey.bind(this),
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -470,6 +470,7 @@ module.exports = class MetamaskController extends EventEmitter {
       //pluginSystem
       registerHdPath: nodeify(this.registerHdPath, this),      
       getPubKey: nodeify(this.getPubKey, this),
+      getXPubKey: nodeify(this.getXPubKey, this),      
 
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
@@ -1047,11 +1048,23 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   async getPubKey (params, next, end) {
-    console.log(params)
+    console.log("getPubKey params", params)
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    console.log(this.keyringController)
     console.log(selectedKeyring)
     const hdPath = params[0]
-    const appKeys = await this.keyringController.addNewAppKey(selectedKeyring, hdPath)
+    const index = params[1]
+    const appKeys = await this.keyringController.getPubKey(selectedKeyring, hdPath, index)
+    console.log(appKeys)
+    return appKeys
+  }
+  async getXPubKey (params, next, end) {
+    console.log("getPubXKey params", params)
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    console.log(this.keyringController)
+    console.log(selectedKeyring)
+    const hdPath = params[0]
+    const appKeys = await this.keyringController.getXPubKey(selectedKeyring, hdPath)
     console.log(appKeys)
     return appKeys
   }
