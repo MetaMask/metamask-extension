@@ -8,6 +8,15 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
 // Component Colors
 $wallet-view-bg: $alabaster;
 
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-x: hidden;
+  position: relative;
+  align-items: center;
+}
+
 // Main container
 .main-container {
   // position: absolute;
@@ -24,8 +33,10 @@ $wallet-view-bg: $alabaster;
 
 .main-container-wrapper {
   display: flex;
-  width: 100vw;
   justify-content: center;
+  flex: 1 0 auto;
+  min-height: 0;
+  width: 100%;
 }
 
 //Account and transaction details
@@ -207,8 +218,6 @@ $wallet-view-bg: $alabaster;
   }
 
   .main-container {
-    // margin-top: 41px;
-    height: 100%;
     width: 100%;
     overflow-y: auto;
     background-color: $white;
@@ -216,8 +225,6 @@ $wallet-view-bg: $alabaster;
 
   .main-container-wrapper {
     flex: 1;
-    min-height: 0;
-    width: 100%;
   }
 }
 

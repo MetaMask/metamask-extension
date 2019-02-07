@@ -198,7 +198,7 @@ describe('Actions', () => {
       createNewVaultAndRestoreSpy = sinon.spy(background, 'createNewVaultAndRestore')
       clearSeedWordCacheSpy = sinon.spy(background, 'clearSeedWordCache')
       return store.dispatch(actions.createNewVaultAndRestore())
-        .then(() => {
+        .catch(() => {
           assert(clearSeedWordCacheSpy.calledOnce)
           assert(createNewVaultAndRestoreSpy.calledOnce)
         })
@@ -218,7 +218,7 @@ describe('Actions', () => {
       })
 
       return store.dispatch(actions.createNewVaultAndRestore())
-        .then(() => {
+        .catch(() => {
           assert.deepEqual(store.getActions(), expectedActions)
         })
     })
@@ -240,7 +240,7 @@ describe('Actions', () => {
       })
 
       return store.dispatch(actions.createNewVaultAndRestore())
-        .then(() => {
+        .catch(() => {
           assert.deepEqual(store.getActions(), expectedActions)
         })
     })

@@ -1,16 +1,14 @@
-const { Component } = require('react')
-const PropTypes = require('prop-types')
-const connect = require('react-redux').connect
-const { Route, Switch, withRouter } = require('react-router-dom')
-const { compose } = require('recompose')
-const h = require('react-hyperscript')
-const actions = require('./actions')
-const classnames = require('classnames')
-const log = require('loglevel')
-const { getMetaMaskAccounts, getNetworkIdentifier } = require('./selectors')
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { Route, Switch, withRouter, matchPath } from 'react-router-dom'
+import { compose } from 'recompose'
+import actions from './actions'
+import log from 'loglevel'
+import { getMetaMaskAccounts, getNetworkIdentifier } from './selectors'
 
 // init
-const InitializeScreen = require('../../mascara/src/app/first-time').default
+import FirstTimeFlow from './components/pages/first-time-flow'
 // accounts
 const SendTransactionScreen = require('./components/send/send.container')
 const DepositPluginScreen = require('./components/deposit-plugin/deposit-plugin.container')
@@ -22,8 +20,10 @@ const Sidebar = require('./components/sidebars').default
 // other views
 import Home from './components/pages/home'
 import Settings from './components/pages/settings'
-const Authenticated = require('./components/pages/authenticated')
-const Initialized = require('./components/pages/initialized')
+import Authenticated from './higher-order-components/authenticated'
+import Initialized from './higher-order-components/initialized'
+import Lock from './components/pages/lock'
+import UiMigrationAnnouncement from './components/ui-migration-annoucement'
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
@@ -51,8 +51,9 @@ import {
 } from './selectors/transactions'
 
 // Routes
-const {
+import {
   DEFAULT_ROUTE,
+  LOCK_ROUTE,
   UNLOCK_ROUTE,
   SETTINGS_ROUTE,
   REVEAL_SEED_ROUTE,
@@ -66,8 +67,15 @@ const {
   DEPOSIT_PLUGIN_ROUTE,  
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
+  INITIALIZE_UNLOCK_ROUTE,
   NOTICE_ROUTE,
-} = require('./routes')
+} from './routes'
+
+// enums
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../app/scripts/lib/enums'
 
 class App extends Component {
   componentWillMount () {
@@ -79,30 +87,59 @@ class App extends Component {
   }
 
   renderRoutes () {
-    const exact = true
-
     return (
-      h(Switch, [
-        h(Route, { path: INITIALIZE_ROUTE, component: InitializeScreen }),
-        h(Initialized, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
-        h(Initialized, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
-        h(Authenticated, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedConfirmation }),
-        h(Authenticated, { path: SETTINGS_ROUTE, component: Settings }),
-        h(Authenticated, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
-        h(Authenticated, {
-          path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`,
-          component: ConfirmTransaction,
-        }),
-        h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen }),
-        h(Authenticated, { path: DEPOSIT_PLUGIN_ROUTE, exact, component: DepositPluginScreen }),	
-        h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
-        h(Authenticated, { path: ADD_PLUGIN_ROUTE, exact, component: AddPluginPage }),
-        h(Authenticated, { path: CONFIRM_ADD_TOKEN_ROUTE, exact, component: ConfirmAddTokenPage }),
-        h(Authenticated, { path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE, exact, component: ConfirmAddSuggestedTokenPage }),
-        h(Authenticated, { path: NEW_ACCOUNT_ROUTE, component: CreateAccountPage }),
-        h(Authenticated, { path: DEFAULT_ROUTE, exact, component: Home }),
-      ])
+      <Switch>
+        <Route path={LOCK_ROUTE} component={Lock} exact />
+        <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
+        <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
+        <Initialized path={RESTORE_VAULT_ROUTE} component={RestoreVaultPage} exact />
+        <Authenticated path={REVEAL_SEED_ROUTE} component={RevealSeedConfirmation} exact />
+        <Authenticated path={SETTINGS_ROUTE} component={Settings} />
+        <Authenticated path={NOTICE_ROUTE} component={NoticeScreen} exact />
+        <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
+        <Authenticated path={SEND_ROUTE} component={SendTransactionScreen} exact />
+        <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
+        <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
+        <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
+        <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        <Authenticated path={DEFAULT_ROUTE} component={Home} exact />
+      </Switch>
     )
+  }
+
+  onInitializationUnlockPage () {
+    const { location } = this.props
+    return Boolean(matchPath(location.pathname, { path: INITIALIZE_UNLOCK_ROUTE, exact: true }))
+  }
+
+  onConfirmPage () {
+    const { location } = this.props
+    return Boolean(matchPath(location.pathname, { path: CONFIRM_TRANSACTION_ROUTE, exact: false }))
+  }
+
+  hasProviderRequests () {
+    const { providerRequests } = this.props
+    return Array.isArray(providerRequests) && providerRequests.length > 0
+  }
+
+  hideAppHeader () {
+    const { location } = this.props
+
+    const isInitializing = Boolean(matchPath(location.pathname, {
+      path: INITIALIZE_ROUTE, exact: false,
+    }))
+
+    if (isInitializing && !this.onInitializationUnlockPage()) {
+      return true
+    }
+
+    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+      return true
+    }
+
+    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP) {
+      return this.onConfirmPage() || this.hasProviderRequests()
+    }
   }
 
   render () {
@@ -111,7 +148,6 @@ class App extends Component {
       alertMessage,
       loadingMessage,
       network,
-      isMouseUser,
       provider,
       frequentRpcListDetail,
       currentView,
@@ -133,58 +169,48 @@ class App extends Component {
     const { transaction: sidebarTransaction } = props || {}
 
     return (
-      h('.flex-column.full-height', {
-        className: classnames({ 'mouse-user-styles': isMouseUser }),
-        style: {
-          overflowX: 'hidden',
-          position: 'relative',
-          alignItems: 'center',
-        },
-        tabIndex: '0',
-        onClick: () => setMouseUserState(true),
-        onKeyDown: (e) => {
+      <div
+        className="app"
+        onClick={() => setMouseUserState(true)}
+        onKeyDown={e => {
           if (e.keyCode === 9) {
             setMouseUserState(false)
           }
-        },
-      }, [
-
-        // global modal
-        h(Modal, {}, []),
-
-        // global alert
-        h(Alert, {visible: this.props.alertOpen, msg: alertMessage}),
-
-        h(AppHeader),
-
-        // sidebar
-        h(Sidebar, {
-          sidebarOpen: sidebarIsOpen,
-          sidebarShouldClose: sidebarTransaction && !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id),
-          hideSidebar: this.props.hideSidebar,
-          transitionName: sidebarTransitionName,
-          type: sidebarType,
-          sidebarProps: sidebar.props,
-        }),
-
-        // network dropdown
-        h(NetworkDropdown, {
-          provider,
-          frequentRpcListDetail,
-        }, []),
-
-        h(AccountMenu),
-
-        h('div.main-container-wrapper', [
-          isLoading && h(Loading, {
-            loadingMessage: loadMessage,
-          }),
-          !isLoading && isLoadingNetwork && h(LoadingNetwork),
-
-          // content
-          this.renderRoutes(),
-        ]),
-      ])
+        }}
+      >
+        <UiMigrationAnnouncement />
+        <Modal />
+        <Alert
+          visible={this.props.alertOpen}
+          msg={alertMessage}
+        />
+        {
+          !this.hideAppHeader() && (
+            <AppHeader
+              hideNetworkIndicator={this.onInitializationUnlockPage()}
+              disabled={this.onConfirmPage()}
+            />
+          )
+        }
+        <Sidebar
+          sidebarOpen={sidebarIsOpen}
+          sidebarShouldClose={sidebarTransaction && !submittedPendingTransactions.find(({ id }) => id === sidebarTransaction.id)}
+          hideSidebar={this.props.hideSidebar}
+          transitionName={sidebarTransitionName}
+          type={sidebarType}
+          sidebarProps={sidebar.props}
+        />
+        <NetworkDropdown
+          provider={provider}
+          frequentRpcListDetail={frequentRpcListDetail}
+        />
+        <AccountMenu />
+        <div className="main-container-wrapper">
+          { isLoading && <Loading loadingMessage={loadMessage} /> }
+          { !isLoading && isLoadingNetwork && <LoadingNetwork /> }
+          { this.renderRoutes() }
+        </div>
+      </div>
     )
   }
 
@@ -283,11 +309,11 @@ App.propTypes = {
   unapprovedTypedMessagesCount: PropTypes.number,
   welcomeScreenSeen: PropTypes.bool,
   isPopup: PropTypes.bool,
-  betaUI: PropTypes.bool,
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   t: PropTypes.func,
   providerId: PropTypes.string,
+  providerRequests: PropTypes.array,
 }
 
 function mapStateToProps (state) {
@@ -316,6 +342,7 @@ function mapStateToProps (state) {
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
+    providerRequests,
   } = metamask
   const selected = address || Object.keys(accounts)[0]
 
@@ -353,7 +380,6 @@ function mapStateToProps (state) {
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
-    betaUI: state.metamask.featureFlags.betaUI,
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,
     Qr: state.appState.Qr,
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,
@@ -363,6 +389,7 @@ function mapStateToProps (state) {
     identities,
     selected,
     keyrings,
+    providerRequests,
   }
 }
 

@@ -12,7 +12,7 @@ import Identicon from './identicon'
 const Tooltip = require('./tooltip-v2.js').default
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
-const BalanceComponent = require('./balance-component')
+import BalanceComponent from './balance'
 const TokenList = require('./token-list')
 const PluginList = require('./plugin-list')
 const selectors = require('../selectors')

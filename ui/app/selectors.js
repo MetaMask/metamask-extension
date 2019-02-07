@@ -30,8 +30,6 @@ const selectors = {
   getSendAmount,
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
-  autoAddToBetaUI,
-  getShouldUseNewUi,
   getSendMaxModeState,
   getCurrentViewContext,
   getTotalUnapprovedCount,
@@ -39,6 +37,8 @@ const selectors = {
   getMetaMaskAccounts,
   getCurrentEthBalance,
   getNetworkIdentifier,
+  isBalanceCached,
+  getAdvancedInlineGasShown,
 }
 
 module.exports = selectors
@@ -64,7 +64,7 @@ function getSelectedIdentity (state) {
 
 function getMetaMaskAccounts (state) {
   const currentAccounts = state.metamask.accounts
-  const cachedBalances = state.metamask.cachedBalances
+  const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
   const selectedAccounts = {}
 
   Object.keys(currentAccounts).forEach(accountID => {
@@ -72,13 +72,27 @@ function getMetaMaskAccounts (state) {
     if (account && account.balance === null || account.balance === undefined) {
       selectedAccounts[accountID] = {
         ...account,
-        balance: cachedBalances[accountID],
+        balance: cachedBalances && cachedBalances[accountID],
       }
     } else {
       selectedAccounts[accountID] = account
     }
   })
   return selectedAccounts
+}
+
+function isBalanceCached (state) {
+  const selectedAccountBalance = state.metamask.accounts[getSelectedAddress(state)].balance
+  const cachedBalance = getSelectedAccountCachedBalance(state)
+
+  return Boolean(!selectedAccountBalance && cachedBalance)
+}
+
+function getSelectedAccountCachedBalance (state) {
+  const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
+  const selectedAddress = getSelectedAddress(state)
+
+  return cachedBalances && cachedBalances[selectedAddress]
 }
 
 function getSelectedAccount (state) {
@@ -211,28 +225,6 @@ function getSelectedTokenContract (state) {
     : null
 }
 
-function autoAddToBetaUI (state) {
-  const autoAddTransactionThreshold = 12
-  const autoAddAccountsThreshold = 2
-  const autoAddTokensThreshold = 1
-  const numberOfTransactions = state.metamask.selectedAddressTxList.length
-  const numberOfAccounts = Object.keys(getMetaMaskAccounts(state)).length
-  const numberOfTokensAdded = state.metamask.tokens.length
-  const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
-    (numberOfAccounts > autoAddAccountsThreshold) &&
-    (numberOfTokensAdded > autoAddTokensThreshold)
-  const userIsNotInBeta = !state.metamask.featureFlags.betaUI
-
-  return userIsNotInBeta && userPassesThreshold
-}
-
-function getShouldUseNewUi (state) {
-  const isAlreadyUsingBetaUi = state.metamask.featureFlags.betaUI
-  const isMascara = state.metamask.isMascara
-  const isFreshInstall = Object.keys(state.metamask.identities).length === 0
-  return isAlreadyUsingBetaUi || isMascara || isFreshInstall
-}
-
 function getCurrentViewContext (state) {
   const { currentView = {} } = state.appState
   return currentView.context
@@ -252,4 +244,8 @@ function getTotalUnapprovedCount ({ metamask }) {
 
 function preferencesSelector ({ metamask }) {
   return metamask.preferences
+}
+
+function getAdvancedInlineGasShown (state) {
+  return Boolean(state.metamask.featureFlags.advancedInlineGas)
 }
