@@ -1032,20 +1032,20 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   // PLUGIN Methods
-  async registerHdPath (params, next, end) {
-    console.log(params)
-    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    if (!primaryKeyring) {
-      throw new Error('MetamaskController - No HD Key Tree found')
-    }
-    await this.keyringController.addNewKeyring('App HD Key Tree', {
-      hdPath: params[0],
-      mnemonic: primaryKeyring.mnemonic,
-      numberOfAccounts: 1,
-    })
-    console.log(this.keyringController.getKeyringsByType('App HD Key Tree'))    
+  // async registerHdPath (params, next, end) {
+  //   console.log(params)
+  //   const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+  //   if (!primaryKeyring) {
+  //     throw new Error('MetamaskController - No HD Key Tree found')
+  //   }
+  //   await this.keyringController.addNewKeyring('App HD Key Tree', {
+  //     hdPath: params[0],
+  //     mnemonic: primaryKeyring.mnemonic,
+  //     numberOfAccounts: 1,
+  //   })
+  //   console.log(this.keyringController.getKeyringsByType('App HD Key Tree'))    
 
-  }
+  // }
 
   async getPubKey (params, next, end) {
     console.log("getPubKey params", params)
