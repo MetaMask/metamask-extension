@@ -99,6 +99,7 @@ class App extends Component {
         <Authenticated path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`} component={ConfirmTransaction} />
         <Authenticated path={SEND_ROUTE} component={SendTransactionScreen} exact />
         <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
+        <Authenticated path={ADD_PLUGIN_ROUTE} component={AddPluginPage} exact />	
         <Authenticated path={CONFIRM_ADD_TOKEN_ROUTE} component={ConfirmAddTokenPage} exact />
         <Authenticated path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} component={ConfirmAddSuggestedTokenPage} exact />
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
