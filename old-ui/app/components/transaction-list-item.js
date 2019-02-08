@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 
 const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
-const CopyButton = require('./copyButton')
+const CopyButton = require('./copy/copy-button')
 const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
 const numberToBN = require('number-to-bn')
@@ -22,6 +22,7 @@ const { POA_CODE,
   ROPSTEN_CODE,
   RINKEBY_CODE,
   KOVAN_CODE,
+  GOERLI_TESTNET_CODE,
 } = require('../../../app/scripts/controllers/network/enums')
 
 const mapDispatchToProps = dispatch => {
@@ -80,7 +81,8 @@ TransactionListItem.prototype.render = function () {
     numericNet === KOVAN_CODE ||
     numericNet === POA_SOKOL_CODE ||
     numericNet === POA_CODE ||
-    numericNet === DAI_CODE
+    numericNet === DAI_CODE ||
+    numericNet === GOERLI_TESTNET_CODE
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)

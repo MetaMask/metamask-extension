@@ -11,7 +11,7 @@ import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
 import copyToClipboard from 'copy-to-clipboard'
-import CopyButton from '../copyButton'
+import CopyButton from '../copy/copy-button'
 
 class SendTransactionField extends Component {
 	constructor (props) {

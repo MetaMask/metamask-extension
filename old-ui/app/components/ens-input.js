@@ -117,7 +117,7 @@ EnsInput.prototype.lookupEnsName = function () {
       toError: null,
     }
     if (isValidENSAddress(recipient) && reason.message === 'ENS name not defined.') {
-      setStateObj.hoverText = this.context.t('ensNameNotFound')
+      setStateObj.hoverText = 'ENS name not found'
       setStateObj.toError = 'ensNameNotFound'
       setStateObj.ensFailure = false
     } else {
@@ -147,7 +147,8 @@ EnsInput.prototype.ensIcon = function (recipient) {
     title: hoverText,
     style: {
       position: 'absolute',
-      padding: '9px',
+      padding: '6px 0px',
+      right: '0px',
       transform: 'translatex(-40px)',
     },
   }, this.ensIconContents(recipient))
@@ -165,17 +166,26 @@ EnsInput.prototype.ensIconContents = function (recipient) {
         width: '30px',
         height: '30px',
         transform: 'translateY(-6px)',
+        marginRight: '-5px',
       },
     })
   }
 
   if (ensFailure) {
-    return h('i.fa.fa-warning.fa-lg.warning')
+    return h('i.fa.fa-warning.fa-lg.warning', {
+      style: {
+        color: '#df2265',
+        background: 'white',
+      },
+    })
   }
 
   if (ensResolution && (ensResolution !== ZERO_ADDRESS)) {
     return h('i.fa.fa-check-circle.fa-lg.cursor-pointer', {
-      style: { color: 'green' },
+      style: {
+        color: '#60db97',
+        background: 'white',
+      },
       onClick: (event) => {
         event.preventDefault()
         event.stopPropagation()

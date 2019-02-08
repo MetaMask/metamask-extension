@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const {qrcode: qrCode} = require('qrcode-npm')
 const {connect} = require('react-redux')
 const {isHexPrefixed} = require('ethereumjs-util')
-const CopyButton = require('./components/copyButton')
+const CopyButton = require('./components/copy/copy-button')
 
 class AccountQrScreen extends PureComponent {
   static defaultProps = {

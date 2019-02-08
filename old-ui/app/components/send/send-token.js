@@ -184,8 +184,16 @@ class SendTransactionScreen extends PersistentForm {
   async onSubmit () {
     const state = this.state || {}
     const { token, amount } = state
-    const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
-    const nickname = state.nickname || ' '
+    let recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
+    let nickname = state.nickname || ' '
+    if (typeof recipient === 'object') {
+      if (recipient.toAddress) {
+        recipient = recipient.toAddress
+      }
+      if (recipient.nickname) {
+        nickname = recipient.nickname
+      }
+    }
     const parts = amount.split('.')
 
     let message
