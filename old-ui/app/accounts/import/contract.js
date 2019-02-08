@@ -14,7 +14,8 @@ import { POA_CODE,
   MAINNET_CODE,
   ROPSTEN_CODE,
   RINKEBY_CODE,
-  KOVAN_CODE } from '../../../../app/scripts/controllers/network/enums'
+  KOVAN_CODE,
+  GOERLI_TESTNET_CODE } from '../../../../app/scripts/controllers/network/enums'
 
 class ContractImportView extends Component {
   constructor (props) {
@@ -211,6 +212,8 @@ class ContractImportView extends Component {
         return 'ropsten'
       case RINKEBY_CODE:
         return 'rinkeby'
+      case GOERLI_TESTNET_CODE:
+        return 'goerli'
       default:
         return ''
     }

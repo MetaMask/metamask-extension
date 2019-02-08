@@ -55,7 +55,8 @@ const sigUtil = require('eth-sig-util')
 const { importTypes } = require('../../old-ui/app/accounts/import/enums')
 const { LEDGER, TREZOR } = require('../../old-ui/app/components/connect-hardware/enum')
 
-const { POA_CODE,
+const {
+  POA_CODE,
   DAI_CODE,
   POA_SOKOL_CODE } = require('./controllers/network/enums')
 const accountsPerPage = 5
