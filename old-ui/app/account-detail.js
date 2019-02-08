@@ -14,7 +14,7 @@ const EditableLabel = require('./components/editable-label')
 const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
 const AccountDropdowns = require('./components/account-dropdowns/account-dropdowns.component').AccountDropdowns
-const CopyButton = require('./components/copyButton')
+const CopyButton = require('./components/copy/copy-button')
 const ToastComponent = require('./components/toast')
 import { getMetaMaskAccounts } from '../../ui/app/selectors'
 

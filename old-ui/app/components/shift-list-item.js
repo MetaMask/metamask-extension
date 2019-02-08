@@ -7,7 +7,7 @@ const ethNetProps = require('eth-net-props')
 const actions = require('../../../ui/app/actions')
 const addressSummary = require('../util').addressSummary
 
-const CopyButton = require('./copyButton')
+const CopyButton = require('./copy/copy-button')
 const EthBalance = require('./eth-balance')
 const Tooltip = require('./tooltip')
 

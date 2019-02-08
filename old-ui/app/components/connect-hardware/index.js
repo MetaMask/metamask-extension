@@ -13,6 +13,7 @@ import { LEDGER, TREZOR } from './enum'
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
     super(props)
+    this.timerID = null
     this.state = {
       error: null,
       selectedAccount: null,
@@ -35,6 +36,9 @@ class ConnectHardwareForm extends Component {
     this.setState({accounts: newAccounts})
   }
 
+  componentWillUnmount () {
+    clearTimeout(this.timerID)
+  }
 
   componentDidMount () {
     this.checkIfUnlocked()
@@ -96,7 +100,7 @@ class ConnectHardwareForm extends Component {
   showTemporaryAlert () {
     this.props.showAlert('Hardware wallet connected')
     // Autohide the alert after 5 seconds
-    setTimeout(_ => {
+    this.timerID = setTimeout(_ => {
       this.props.hideAlert()
     }, 5000)
   }
