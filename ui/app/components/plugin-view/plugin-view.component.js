@@ -77,7 +77,7 @@ export default class PluginView extends PureComponent {
     return (
 	<div>
 	<div> ------------------------------------------------------------------------------   Plugin view  ---------------------------------------------------------------------------------  </div>
-	<div> ui: {this.props.selectedPluginUid}    </div>
+	<div> plugin uid: {this.props.selectedPluginUid}    </div>
 	<div> {this.renderPluginButtons.bind(this)()} </div>
 	<div> {this.renderDelegatedUI.bind(this)()} </div>	
 	</div>	

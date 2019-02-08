@@ -51,7 +51,7 @@ PluginMenuDropdown.prototype.render = function () {
     h(Item, {
       onClick: (e) => {
         e.stopPropagation()
-        removePlugin(this.props.plugin.authorAddress)
+        removePlugin(this.props.plugin.uid)
         this.props.onClose()
       },
       text: this.context.t('hidePlugin'),

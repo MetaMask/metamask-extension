@@ -13,7 +13,6 @@ const pluginMenuDropdown = require('./dropdowns/plugin-menu-dropdown.js')
 function mapStateToProps (state) {
   return {
     pluginsScripts: state.metamask.pluginsScripts,
-    network: state.metamask.network,
     currentCurrency: state.metamask.currentCurrency,
     selectedPluginUid: state.metamask.selectedPluginUid,    
     userAddress: selectors.getSelectedAddress(state),
@@ -44,6 +43,7 @@ function PluginCell () {
 PluginCell.prototype.render = function () {
   const { pluginMenuOpen } = this.state
   const props = this.props
+  console.log(props)
   const {
     uid,
     authorAddress,
@@ -82,6 +82,7 @@ PluginCell.prototype.render = function () {
     }, [
       h('div', name),
       h('div', uid),
+      h('div', "network: " + network),      
       h('div', "script: " + scriptUrl),
 
       h('div', balance),

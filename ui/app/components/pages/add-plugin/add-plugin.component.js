@@ -23,17 +23,23 @@ class AddPlugin extends Component {
     const { history } = this.props
     const {
       pluginName,
+      pluginNetwork
     } = this.state
 
     // compute plugin's uid based on ens hash of name
-    const pluginUid = "0x1111111111111111111111111111111111111111"
+    console.log(ethUtil)
+    const uid = ethUtil.sha3(pluginName).toString('hex')
+    console.log(uid.toString())
+    //"0x1111111111111111111111111111111111111111"
     // fetch metadata of plugin from ens
     const pluginAuthorAddress = "0x2"
-    
+    const scriptUrl = pluginName
     const customPlugin = {
-      name : pluginName,
-      uid: pluginUid,
+      name: pluginName,
+      uid,
+      network: pluginNetwork,
       authorAddress: pluginAuthorAddress,
+      scriptUrl,
     }
     addPlugin(customPlugin)
     history.push(DEFAULT_ROUTE)
@@ -44,7 +50,14 @@ class AddPlugin extends Component {
     this.setState({
       pluginName,
       pluginNameError: null,
-      autoFilled: false,
+    })
+
+  }
+  handlePluginNetworkChange (value) {
+    const pluginNetwork = value.trim()
+    this.setState({
+      pluginNetwork,
+      pluginNetworkError: null,
     })
 
   }
@@ -53,7 +66,8 @@ class AddPlugin extends Component {
     const {
       pluginName,
       pluginNameError,
-      autoFilled,
+      pluginNetwork,
+      pluginNetworkError,
     } = this.state
 
 
@@ -74,6 +88,9 @@ class AddPlugin extends Component {
           id="plugin-network"
           label={'pluginNetwork for ENS registrar (not used for now)'}
           type="text"
+          value={pluginNetwork}
+          onChange={e => this.handlePluginNetworkChange(e.target.value)}
+          error={pluginNetworkError}
           fullWidth
           margin="normal"
         />
