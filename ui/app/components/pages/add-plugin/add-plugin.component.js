@@ -25,7 +25,9 @@ class AddPlugin extends Component {
       pluginName,
     } = this.state
 
-    const pluginUid = "0x1"
+    // compute plugin's uid based on ens hash of name
+    const pluginUid = "0x1111111111111111111111111111111111111111"
+    // fetch metadata of plugin from ens
     const pluginAuthorAddress = "0x2"
     
     const customPlugin = {
@@ -65,6 +67,13 @@ class AddPlugin extends Component {
           value={pluginName}
           onChange={e => this.handlePluginNameChange(e.target.value)}
           error={pluginNameError}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          id="plugin-network"
+          label={'pluginNetwork for ENS registrar (not used for now)'}
+          type="text"
           fullWidth
           margin="normal"
         />
