@@ -74,12 +74,16 @@ function mapDispatchToProps (dispatch) {
     setGasPrice: (newPrice, gasLimit) => {
       dispatch(setGasPrice(newPrice))
       dispatch(setCustomGasPrice(newPrice))
-      dispatch(setGasTotal(calcGasTotal(gasLimit, newPrice)))
+      if (gasLimit) {
+        dispatch(setGasTotal(calcGasTotal(gasLimit, newPrice)))
+      }
     },
     setGasLimit: (newLimit, gasPrice) => {
       dispatch(setGasLimit(newLimit))
       dispatch(setCustomGasLimit(newLimit))
-      dispatch(setGasTotal(calcGasTotal(newLimit, gasPrice)))
+      if (gasPrice) {
+        dispatch(setGasTotal(calcGasTotal(newLimit, gasPrice)))
+      }
     },
     showGasButtonGroup: () => dispatch(showGasButtonGroup()),
     resetCustomData: () => dispatch(resetCustomData()),
