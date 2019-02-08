@@ -11,7 +11,7 @@ const selectors = {
   getSelectedIdentity,
   getSelectedAccount,
   getSelectedToken,
-  getSelectedPluginAddress,
+  getSelectedPluginUid,
   getSelectedPluginScript,    
   getSelectedTokenExchangeRate,
   getSelectedTokenAssetImage,
@@ -102,14 +102,14 @@ function getSelectedAccount (state) {
   return accounts[selectedAddress]
 }
 
-function getSelectedPluginAddress (state) {
-  return state.metamask.selectedPluginAddress
+function getSelectedPluginUid (state) {
+  return state.metamask.selectedPluginUid
 }
 
 function getSelectedPluginScript (state) {
   const pluginsScripts = state.metamask.pluginsScripts || []
-  const selectedPluginAddress = state.metamask.selectedPluginAddress
-  const selectedPluginScript = pluginsScripts[selectedPluginAddress]
+  const selectedPluginUid = state.metamask.selectedPluginUid
+  const selectedPluginScript = pluginsScripts[selectedPluginUid]
   return selectedPluginScript
 }
 

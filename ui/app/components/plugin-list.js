@@ -119,18 +119,6 @@ class PluginList extends Component {
     
     this.props.plugins.map((plugin)=>this.createFreshPluginWrapper(plugin))    
     this.setState({ isLoading: false })
-    // const isLoading = newNet === 'loading'
-    // const missingInfo = !oldNet || !newNet || !oldAddress || !newAddress
-    // const sameUserAndNetwork = oldAddress === newAddress && oldNet === newNet
-    // const shouldUpdateLayer2Apps = isLoading || missingInfo || sameUserAndNetwork
-
-    // const oldLayer2AppsLength = layer2Apps ? layer2Apps.length : 0
-    // const pluginAppsLengthUnchanged = oldPluginAppsLength === newPluginApps.length
-
-    // if (pluginAppsLengthUnchanged && shouldUpdatePluginApps) return
-
-    // 
-    // this.createFreshPluginAppTracker()
   }
 
   updateBalances(plugins) {

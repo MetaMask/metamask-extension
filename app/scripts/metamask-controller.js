@@ -472,7 +472,6 @@ module.exports = class MetamaskController extends EventEmitter {
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
       //pluginSystem
-      registerHdPath: nodeify(this.registerHdPath, this),      
       getPubKey: nodeify(this.getPubKey, this),
       getXPubKey: nodeify(this.getXPubKey, this),      
 
@@ -1035,22 +1034,6 @@ module.exports = class MetamaskController extends EventEmitter {
     return promise
   }
 
-  // PLUGIN Methods
-  // async registerHdPath (params, next, end) {
-  //   console.log(params)
-  //   const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-  //   if (!primaryKeyring) {
-  //     throw new Error('MetamaskController - No HD Key Tree found')
-  //   }
-  //   await this.keyringController.addNewKeyring('App HD Key Tree', {
-  //     hdPath: params[0],
-  //     mnemonic: primaryKeyring.mnemonic,
-  //     numberOfAccounts: 1,
-  //   })
-  //   console.log(this.keyringController.getKeyringsByType('App HD Key Tree'))    
-
-  // }
-
   async getPubKey (params, next, end) {
     console.log("getPubKey params", params)
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
@@ -1067,8 +1050,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     console.log(this.keyringController)
     console.log(selectedKeyring)
-    const hdPath = params[0]
-    const appKeys = await this.keyringController.getXPubKey(selectedKeyring, hdPath)
+    const appKeys = await this.keyringController.getXPubKey(selectedKeyring)
     console.log(appKeys)
     return appKeys
   }

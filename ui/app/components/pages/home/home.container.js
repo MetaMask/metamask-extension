@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { unconfirmedTransactionsCountSelector } from '../../../selectors/confirm-transaction'
-import { getSelectedToken, getSelectedPluginAddress } from '../../../selectors'
+import { getSelectedToken, getSelectedPluginUid } from '../../../selectors'
 
 const mapStateToProps = state => {
   const { metamask, appState } = state
@@ -24,7 +24,7 @@ const mapStateToProps = state => {
     suggestedTokens,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     providerRequests,
-    selectedPluginAddress: getSelectedPluginAddress(state),    
+    selectedPluginUid: getSelectedPluginUid(state),    
   }
 }
 

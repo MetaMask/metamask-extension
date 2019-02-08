@@ -172,15 +172,15 @@ function reduceMetamask (state, action) {
         selectedTokenAddress: action.value,
       })
 
-    case actions.SET_SELECTED_PLUGIN_ADDRESS:
+    case actions.SET_SELECTED_PLUGIN_UID:
       return extend(metamaskState, {
-        selectedPluginAddress: action.value,
+        selectedPluginUid: action.value,
       })
 
     case actions.REGISTER_PLUGIN_SCRIPT:
       let pluginsScripts = {}
       if (metamaskState.pluginsScripts) pluginsScripts = metamaskState.pluginsScripts
-      pluginsScripts[action.value.plugin.authorAddress] = action.value.pluginScript
+      pluginsScripts[action.value.plugin.uid] = action.value.pluginScript
       return extend(metamaskState, {
         pluginsScripts: pluginsScripts
       })

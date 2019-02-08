@@ -124,9 +124,9 @@ var actions = {
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
   SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
-  SET_SELECTED_PLUGIN_ADDRESS: 'SET_SELECTED_PLUGIN_ADDRESS',
+  SET_SELECTED_PLUGIN_UID: 'SET_SELECTED_PLUGIN_UID',
   setSelectedToken,
-  setSelectedPluginAddress,
+  setSelectedPluginUid,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -1643,10 +1643,10 @@ function setSelectedToken (tokenAddress) {
 }
 
 //identified uniquely by author address
-function setSelectedPluginAddress (pluginAuthorAddress) {
+function setSelectedPluginUid (pluginUid) {
   return {
-    type: actions.SET_SELECTED_PLUGIN_ADDRESS,
-    value: pluginAuthorAddress || null,
+    type: actions.SET_SELECTED_PLUGIN_UID,
+    value: pluginUid || null,
   }
 }
 
@@ -1751,9 +1751,9 @@ function showAddSuggestedPluginPage (transitionForward = true) {
   }
 }
 
-function addPlugin (pluginAuthorAddress, pluginName, pluginScriptUrl) {
+function addPlugin (plugin) {
   return new Promise((resolve, reject) => {
-    background.addPlugin(pluginAuthorAddress, pluginName, pluginScriptUrl, (err, plugins) => {
+    background.addPlugin(plugin, (err, plugins) => {
       if (err) {
         reject(err)
       }

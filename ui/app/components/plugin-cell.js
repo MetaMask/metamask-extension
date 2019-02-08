@@ -15,7 +15,7 @@ function mapStateToProps (state) {
     pluginsScripts: state.metamask.pluginsScripts,
     network: state.metamask.network,
     currentCurrency: state.metamask.currentCurrency,
-    selectedPlugin: state.metamask.selectedPlugin,    
+    selectedPluginUid: state.metamask.selectedPluginUid,    
     userAddress: selectors.getSelectedAddress(state),
     contractExchangeRates: state.metamask.contractExchangeRates,
     conversionRate: state.metamask.conversionRate,
@@ -25,7 +25,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setSelectedPluginAddress: authorAddress => dispatch(actions.setSelectedPluginAddress(authorAddress)),    
+    setSelectedPluginUid: pluginUid => dispatch(actions.setSelectedPluginUid(pluginUid)),    
     hideSidebar: () => dispatch(actions.hideSidebar()),
   }
 }
@@ -45,6 +45,7 @@ PluginCell.prototype.render = function () {
   const { pluginMenuOpen } = this.state
   const props = this.props
   const {
+    uid,
     authorAddress,
     name,
     scriptUrl,
@@ -52,8 +53,8 @@ PluginCell.prototype.render = function () {
     symbol,
     string,
     network,
-    setSelectedPluginAddress,
-    selectedPlugin,
+    setSelectedPluginUid,
+    selectedPluginUid,
     contractExchangeRates,
     conversionRate,
     hideSidebar,
@@ -65,8 +66,8 @@ PluginCell.prototype.render = function () {
 //  console.log(this.props)
 
   let balance
-  if (this.props.pluginsScripts[authorAddress]){
-    balance = JSON.stringify(this.props.pluginsScripts[authorAddress].mainBalance) + " ETH"
+  if (this.props.pluginsScripts[uid]){
+    balance = JSON.stringify(this.props.pluginsScripts[uid].mainBalance) + " ETH"
   }
   else {
     balance = "loading"
@@ -76,11 +77,11 @@ PluginCell.prototype.render = function () {
     h('div.plugin-list-item', {
       className: "plugin-list-item",
       onClick: () => {
-        setSelectedPluginAddress(authorAddress)
+        setSelectedPluginUid(uid)
       },
     }, [
       h('div', name),
-      h('div', authorAddress),
+      h('div', uid),
       h('div', "script: " + scriptUrl),
 
       h('div', balance),
@@ -93,7 +94,7 @@ PluginCell.prototype.render = function () {
         }),
       pluginMenuOpen && h(pluginMenuDropdown, {
         onClose: () => this.setState({ pluginMenuOpen: false }),
-        plugin: { name, authorAddress, scriptUrl, gatewayAddress },
+        plugin: { name, uid, scriptUrl, gatewayAddress },
       }),
     ])
   )

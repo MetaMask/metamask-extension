@@ -29,7 +29,6 @@ class PreferencesController {
       frequentRpcListDetail: [],
       currentAccountTab: 'history',
       accountTokens: {},
-      accountPlugins: {},      
       assetImages: {},
       tokens: [],
       plugins:[],
@@ -383,15 +382,23 @@ class PreferencesController {
    * Adds a new Plugin
    */
 
-  async addPlugin (rawAuthorAddress, name, scriptUrl) {
-    console.log("Background Preferences add Plugin DEBUG", rawAuthorAddress)
-    const authorAddress = normalizeAddress(rawAuthorAddress)
-    const newEntry = {authorAddress,
-		      name,
-		      scriptUrl}
+  async addPlugin (plugin) {
+    console.log("Background Preferences add Plugin DEBUG", plugin)
+
+    // Compute ENS hash from plugin name
+    const pluginUid = plugin.uid
+    // Fetch plugin's metadata from ENS
+    
+    const pluginAuthorAddress = normalizeAddress(plugin.authorAddress)
+    const pluginName = plugin.name
+    const pluginScriptUrl = plugin.scriptUrl
+    const newEntry = {uid: pluginUid,
+		      authorAddress: pluginAuthorAddress,
+		      name: pluginName,
+		      scriptUrl: pluginScriptUrl}
     let plugins = this.getPlugins()
     const previousEntry = plugins.find((plugin, index) => {
-      return plugin.authorAddress === authorAddress
+      return plugin.pluginUid === pluginUid
     })
     const previousIndex = plugins.indexOf(previousEntry)
 
@@ -412,12 +419,9 @@ class PreferencesController {
   //  * @returns {Promise<array>} 
   //  *
   //  */
-  removePlugin (authorAddress) {
-    console.log("DEBUG BACKGROUND")
-    console.log(authorAddress)
+  removePlugin (pluginUid) {
     const plugins = this.store.getState().plugins
-    console.log(plugins)
-    const updatedPlugins = plugins.filter(plugin => plugin.authorAddress !== authorAddress)
+    const updatedPlugins = plugins.filter(plugin => plugin.uid !== pluginUid)
     console.log(updatedPlugins)
     this.store.updateState({ plugins: updatedPlugins })
     return Promise.resolve(updatedPlugins)

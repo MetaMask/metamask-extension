@@ -45,7 +45,7 @@ export default class Home extends PureComponent {
   }
 
   showPluginOrTxView(){
-    if (this.props.selectedPluginAddress) return <PluginView />
+    if (this.props.selectedPluginUid) return <PluginView />
     else return <TransactionView />
   }
 
