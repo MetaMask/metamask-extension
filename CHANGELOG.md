@@ -2,6 +2,33 @@
 
 ## Current Master
 
+## 4.11.0 Fri Feb 08 2019
+
+### Features
+
+- [#262](https://github.com/poanetwork/nifty-wallet/pull/262): (Feature) Add native support of Görli testnet
+- [#254](https://github.com/poanetwork/nifty-wallet/pull/254): (Feature) HitBTC exchange for core POA network
+- [#251](https://github.com/poanetwork/nifty-wallet/pull/251): (Feature) Delegate Proxy contract type (EIP-897)
+- [#252](https://github.com/poanetwork/nifty-wallet/pull/252): (Feature) Simultaneous support of Trezor and Ledger HD wallets
+- [#250](https://github.com/poanetwork/nifty-wallet/pull/250): (Feature) Support of multiple accounts from Trezor HD wallet for single session
+- [#237](https://github.com/poanetwork/nifty-wallet/pull/237): (Feature) Multiple Ledger accounts for one session
+- [#249](https://github.com/poanetwork/nifty-wallet/pull/249): (Feature) Textarea instead of input for array type outputs in contract calls
+- [#247](https://github.com/poanetwork/nifty-wallet/pull/247): (Update) Change exchange rate API endpoint
+
+### Fixes
+
+- [#261](https://github.com/poanetwork/nifty-wallet/pull/261): (Fix) Clear timeout on componentWillUnmount in connect hardware screen
+- [#260](https://github.com/poanetwork/nifty-wallet/pull/260): (Fix) Remove unit && integration tests for unused components
+- [#258](https://github.com/poanetwork/nifty-wallet/pull/258): (Fix) ENS validation fix for Send transaction screen
+- [#257](https://github.com/poanetwork/nifty-wallet/pull/257): (Fix) Replace poa.infura.io with core.poa.network in e2e
+- [#248](https://github.com/poanetwork/nifty-wallet/pull/248): (Fix) validation for calling data from contract: Default `0x` value for _bytes_ field type should be set only for input fields
+
+### Refactoring
+
+- [#259](https://github.com/poanetwork/nifty-wallet/pull/259): (Refactoring) Refactor copy component
+- [#256](https://github.com/poanetwork/nifty-wallet/pull/256): (Refactoring) Send-token component
+- [#253](https://github.com/poanetwork/nifty-wallet/pull/253): (Refactoring) Refactor network props enums
+
 ## 4.10.1 Sat Dec 29 2018
 
 - [#219](https://github.com/poanetwork/nifty-wallet/pull/219): (Feature) Multiple output fields support for contract call
