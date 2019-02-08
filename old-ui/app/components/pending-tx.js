@@ -10,7 +10,7 @@ const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 const util = require('../util')
 const MiniAccountPanel = require('./mini-account-panel')
-const Copyable = require('./copyable')
+const Copyable = require('./copy/copyable')
 const EthBalance = require('./eth-balance')
 const TokenBalance = require('./token-balance')
 const addressSummary = util.addressSummary
@@ -24,13 +24,16 @@ const connect = require('react-redux').connect
 const abiDecoder = require('abi-decoder')
 const { tokenInfoGetter, calcTokenAmount } = require('../../../ui/app/token-util')
 const BigNumber = require('bignumber.js')
+const ethNetProps = require('eth-net-props')
+import { getMetaMaskAccounts } from '../../../ui/app/selectors'
+import ToastComponent from './toast'
 
 const MIN_GAS_PRICE_BN = new BN('0')
 const MIN_GAS_LIMIT_BN = new BN('21000')
 
 module.exports = connect(mapStateToProps)(PendingTx)
 inherits(PendingTx, Component)
-function PendingTx () {
+function PendingTx (props) {
   Component.call(this)
   this.state = {
     valid: true,
@@ -39,14 +42,16 @@ function PendingTx () {
     tokenSymbol: '',
     tokenDecimals: 0,
     tokenDataRetrieved: false,
+    coinName: ethNetProps.props.getNetworkCoinName(props.network),
   }
   this.tokenInfoGetter = tokenInfoGetter()
 }
 
 function mapStateToProps (state) {
+  const accounts = getMetaMaskAccounts(state)
   return {
     identities: state.metamask.identities,
-    accounts: state.metamask.accounts,
+    accounts,
     selectedAddress: state.metamask.selectedAddress,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
@@ -164,6 +169,9 @@ PendingTx.prototype.render = function () {
     h('div', {
       key: txMeta.id,
     }, [
+      h(ToastComponent, {
+        isSuccess: false,
+      }),
 
       h('form#pending-tx-form', {
         onSubmit: this.onSubmit.bind(this),
@@ -504,7 +512,7 @@ PendingTx.prototype.render = function () {
           }, 'Reset'),
 
           // Accept Button or Buy Button
-          insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy Ether') :
+          insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, `Buy ${this.state.coinName}`) :
             h('input.confirm', {
               type: 'submit',
               value: 'Submit',

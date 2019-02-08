@@ -11,6 +11,9 @@ const ethUtil = require('ethereumjs-util')
 const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
+const { POA,
+  DAI,
+  POA_SOKOL } = require('../../app/scripts/controllers/network/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
 const WebcamUtils = require('../lib/webcam-utils')
 
@@ -71,6 +74,7 @@ var actions = {
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
+  SHOW_FORGET_DEVICE_PAGE: 'SHOW_FORGET_DEVICE_PAGE',
   SHOW_HARDWARE_WALLET_PAGE: 'SHOW_HARDWARE_WALLET_PAGE',
   SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
@@ -81,6 +85,7 @@ var actions = {
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
   showImportPage,
+  showForgetDevicePage,
   showConnectHWWalletPage: showConnectHWWalletPage,
   showNewAccountPage,
   setNewAccountForm,
@@ -91,6 +96,7 @@ var actions = {
   importNewAccount,
   addNewAccount,
   connectHardware,
+  connectHardwareAndUnlockAddress,
   checkHardwareStatus,
   forgetDevice,
   unlockHardwareWalletAccount,
@@ -100,6 +106,7 @@ var actions = {
   changePassword,
   getContract,
   removeAccount,
+  updateABI,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
@@ -659,6 +666,26 @@ function removeAccount (address, network) {
   }
 }
 
+function updateABI (address, network, newABI) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return new Promise((resolve, reject) => {
+      background.updateABI(address, network, newABI, (err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.info('Implementation ABI for proxy updated: ' + account)
+        dispatch(actions.showAccountsPage())
+        resolve()
+      })
+    })
+  }
+}
+
 function addNewKeyring (type, opts) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -746,12 +773,12 @@ function checkHardwareStatus (deviceName, hdPath) {
   }
 }
 
-function forgetDevice (deviceName) {
+function forgetDevice (deviceName, clearAccounts) {
   log.debug(`background.forgetDevice`, deviceName)
   return (dispatch, getState) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.forgetDevice(deviceName, (err, response) => {
+      background.forgetDevice(deviceName, clearAccounts, (err, accountsToForget) => {
         if (err) {
           log.error(err)
           dispatch(actions.displayWarning(err.message))
@@ -761,7 +788,7 @@ function forgetDevice (deviceName) {
         dispatch(actions.hideLoadingIndication())
 
         forceUpdateMetamaskState(dispatch)
-        return resolve()
+        return resolve(accountsToForget)
       })
     })
   }
@@ -780,6 +807,23 @@ function connectHardware (deviceName, page, hdPath) {
         }
 
         dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(accounts)
+      })
+    })
+  }
+}
+
+function connectHardwareAndUnlockAddress (deviceName, hdPath, addressToUnlock) {
+  log.debug(`background.connectHardwareAndUnlockAddress`, deviceName, hdPath, addressToUnlock)
+  return (dispatch, getState) => {
+    return new Promise((resolve, reject) => {
+      background.connectHardwareAndUnlockAddress(deviceName, hdPath, addressToUnlock, (err, accounts) => {
+        if (err) {
+          log.error(err)
+          return reject(err)
+        }
 
         forceUpdateMetamaskState(dispatch)
         return resolve(accounts)
@@ -1490,6 +1534,13 @@ function showImportPage () {
   }
 }
 
+function showForgetDevicePage (device) {
+  return {
+    type: actions.SHOW_FORGET_DEVICE_PAGE,
+    value: device,
+  }
+}
+
 function showConnectHWWalletPage () {
   return {
     type: actions.SHOW_HARDWARE_WALLET_PAGE,
@@ -1959,7 +2010,9 @@ function setProviderType (type) {
       dispatch(actions.setSelectedToken())
     })
 
-    const newCoin = type === 'poa' || type === 'sokol' ? 'poa' : type === 'dai' ? 'dai' : 'eth'
+    const newCoin = type === POA || type === POA_SOKOL ?
+                    'poa' : type === DAI ?
+                    'dai' : 'eth'
     background.setCurrentCoin(newCoin, (err, data) => {
       if (err) {
         log.error(err.stack)

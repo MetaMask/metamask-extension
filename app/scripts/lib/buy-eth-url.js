@@ -5,6 +5,15 @@ module.exports = {
 }
 const ethNetProps = require('eth-net-props')
 
+const { POA_CODE,
+  DAI_CODE,
+  POA_SOKOL_CODE,
+  MAINNET_CODE,
+  ROPSTEN_CODE,
+  RINKEBY_CODE,
+  KOVAN_CODE,
+  GOERLI_TESTNET_CODE } = require('../controllers/network/enums')
+
 /**
  * Gives the caller a url at which the user can acquire coin, depending on the network they are in
  *
@@ -19,16 +28,17 @@ const ethNetProps = require('eth-net-props')
  */
 function getBuyEthUrl ({ network, amount, address, ind }) {
   let url
-  switch (network) {
-    case '1':
-    case '99':
-    case '100':
+  switch (Number(network)) {
+    case MAINNET_CODE:
+    case POA_CODE:
+    case DAI_CODE:
       url = getExchanges({network, amount, address})[ind].link
       break
-    case '3':
-    case '4':
-    case '42':
-    case '77':
+    case ROPSTEN_CODE:
+    case RINKEBY_CODE:
+    case KOVAN_CODE:
+    case POA_SOKOL_CODE:
+    case GOERLI_TESTNET_CODE:
       url = getFaucets(network)[ind]
       break
   }
@@ -77,6 +87,10 @@ function getExchanges ({network, amount, address}) {
           name: 'CEX Plus',
           link: 'http://cex.plus/market/poa_eth',
         },
+        {
+          name: 'HitBTC',
+          link: 'https://hitbtc.com/POA-to-ETH',
+        },
       ]
     case 100:
       return [
@@ -85,5 +99,7 @@ function getExchanges ({network, amount, address}) {
           link: 'https://dai-bridge.poa.network/',
         },
       ]
+    default:
+      return []
   }
 }

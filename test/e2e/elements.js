@@ -30,6 +30,7 @@ module.exports = {
       info: By.css('li.dropdown-menu-item:nth-child(4)'),
     },
     account: {
+      item: By.className('dropdown-menu-item'),
       account1: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(2) > span'),
       account2: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(3) > span'),
       account3: By.css('#app-content > div > div.full-width > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > span'),
@@ -54,6 +55,17 @@ module.exports = {
     },
   },
   screens: {
+    hdWallet: {
+      buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
+      error: By.className('error'),
+      title: By.className('section-title flex-row flex-center'),
+      buttonConnect: {
+        enabled: By.className('hw-connect__connect-btn'),
+        disabled: By.className('hw-connect__connect-btn disabled'),
+      },
+      image: By.className('hw-connect__btn__img'),
+      imageSelected: By.className('hw-connect__btn selected'),
+    },
     chooseContractExecutor: {
       title: By.className('flex-center send-header'),
       titleText: 'Choose contract executor',
@@ -240,7 +252,8 @@ module.exports = {
       error: By.css('span.error'),
       selectArrow: By.className('Select-arrow-zone'),
       selectType: By.name('import-type-select'),
-      itemContract: By.id('react-select-3--option-2'),
+      itemContract: By.id('react-select-4--option-2'),
+      itemProxyContract: By.id('react-select-3--option-3'),
       contractAddress: By.id('address-box'),
       contractABI: By.id('abi-box'),
       title: By.css('#app-content > div > div.app-primary.from-right > div > div:nth-child(2) > div.flex-row.flex-center > h2'),
@@ -292,22 +305,25 @@ module.exports = {
       },
       // balance: By.css('#app-content > div > div.app-primary.from-right > div > div > div.flex-row > div.ether-balance.ether-balance-amount > div > div > div:nth-child(1) > div:nth-child(1)'),
       balance: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[2]/div[1]/div/div/div[1]/div[1]'),
+      balanceUSD: By.xpath('//*[@id="app-content"]/div/div[2]/div/div/div[2]/div[1]/div/div/div[2]/div[1]'),
       address: By.css('#app-content > div > div.app-primary.from-left > div > div > div:nth-child(1) > flex-column > div.flex-row > div'),
       tokens: {
         menu: By.id('wallet-view__tab-tokens'),
         token: By.className('token-cell'),
         balance: By.css('#token-cell_0 > h3'),
-        amount: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
+        amount: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > div:nth-child(1) > span'),
         textNoTokens: 'No tokens found',
         textYouOwn1token: 'You own 1 token',
-        buttonAdd: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > button:nth-child(2)'),
+        buttonAdd: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > div:nth-child(1) > button'),
+        buttonAdd2: By.css('#app-content > div > div.app-primary.from-right > div > section > div.full-flex-height > div > div:nth-child(1) > button'),
         buttonAddText: 'Add Token',
-        counter: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > span'),
-        counterFF: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > span:nth-child(1)'),
+        counter: By.css('#app-content > div > div.app-primary.from-left > div > section > div.full-flex-height > div > div:nth-child(1) > span'),
+        counterFF: By.css('div.full-flex-height:nth-child(2) > div:nth-child(1) > div:nth-child(1) > span:nth-child(1)'),
       },
     },
     buyEther: {
       title: By.className('flex-center buy-title'),
+      buttonArrow: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
     },
     info: {
       title: By.className('section-title flex-row flex-center'),
@@ -323,7 +339,7 @@ module.exports = {
       buttons: {
         back: By.className('fa fa-arrow-left fa-lg cursor-pointer'),
         no: By.className('btn-violet'),
-        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-column.flex-justify-center.flex-grow.select-none > div > button:nth-child(2)'),
+        yes: By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-right > button:nth-child(2)'),
       },
     },
 
@@ -382,6 +398,7 @@ module.exports = {
     ROPSTEN: 'ropsten',
     KOVAN: 'kovan',
     RINKEBY: 'rinkeby',
+    GOERLI: 'goerli',
     LOCALHOST: 'localhost',
     CUSTOM: 'http://test.com',
   },

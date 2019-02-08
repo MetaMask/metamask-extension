@@ -4,7 +4,18 @@ import { connect } from 'react-redux'
 import actions from '../../../../ui/app/actions'
 import Web3 from 'web3'
 import log from 'loglevel'
-import copyToClipboard from 'copy-to-clipboard'
+import CopyButton from '../../components/copy/copy-button'
+import ErrorComponent from '../../components/error'
+import { getFullABI } from './helpers'
+
+import { POA_CODE,
+  DAI_CODE,
+  POA_SOKOL_CODE,
+  MAINNET_CODE,
+  ROPSTEN_CODE,
+  RINKEBY_CODE,
+  KOVAN_CODE,
+  GOERLI_TESTNET_CODE } from '../../../../app/scripts/controllers/network/enums'
 
 class ContractImportView extends Component {
   constructor (props) {
@@ -23,6 +34,7 @@ class ContractImportView extends Component {
   static propTypes = {
     error: PropTypes.string,
     network: PropTypes.string,
+    type: PropTypes.string,
     displayWarning: PropTypes.func,
     importNewAccount: PropTypes.func,
     hideWarning: PropTypes.func,
@@ -41,9 +53,9 @@ class ContractImportView extends Component {
   abiOnChange (abi) {
     this.props.hideWarning()
     try {
-      if (abi && JSON.parse(abi)) {
+      if (abi) {
         this.setState({
-          abi,
+          abi: JSON.stringify(abi),
           abiInputDisabled: true,
           importDisabled: false,
         })
@@ -51,6 +63,12 @@ class ContractImportView extends Component {
     } catch (e) {
       this.clearAbi()
       log.debug('ABI can not be parsed')
+    }
+  }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.type !== prevProps.type) {
+      this.clearInputs()
     }
   }
 
@@ -64,6 +82,7 @@ class ContractImportView extends Component {
         alignItems: 'center',
         padding: '5px 0px 0px 0px',
       }}>
+        <ErrorComponent error={error} />
         <span>Paste address of contract here</span>
         <input
           className="large-input"
@@ -76,10 +95,12 @@ class ContractImportView extends Component {
           }}
         />
         <span style={{ marginTop: '20px' }}>Paste ABI of contract here
-          <i
-            className="clipboard cursor-pointer"
-            style={{ marginLeft: '10px' }}
-            onClick={(e) => { copyToClipboard(this.state.abi) }}
+          <CopyButton
+            value={this.state.abi}
+            style={{
+              display: 'inline-block',
+            }}
+            tooltipPosition="right"
           />
         </span>
         <textarea
@@ -106,26 +127,17 @@ class ContractImportView extends Component {
 
   autodetectContractAbi = () => {
     const { contractAddr, web3 } = this.state
+    const { type, network } = this.props
     if (!contractAddr || !web3.isAddress(contractAddr)) {
       this.clearAbi()
       return
     }
-
-    const networkName = this.getBlockscoutApiNetworkSuffix()
-    const bloscoutApiLink = `https://blockscout.com/poa/${networkName}/api`
-    const bloscoutApiContractPath = '?module=contract'
-    const blockscoutApiGetAbiPath = `&action=getabi&address=${this.state.contractAddr}`
-    const apiLink = `${bloscoutApiLink}${bloscoutApiContractPath}${blockscoutApiGetAbiPath}`
-    fetch(apiLink)
-      .then(response => {
-        return response.json()
-      })
-      .then(responseJson => {
-        this.abiOnChange(responseJson && responseJson.result)
-      })
-      .catch((e) => {
+    getFullABI(web3.eth, contractAddr, network, type)
+      .then(finalABI => this.abiOnChange(finalABI))
+      .catch(e => {
         this.clearAbi()
         log.debug(e)
+        this.props.displayWarning(e.message)
       })
   }
 
@@ -178,7 +190,7 @@ class ContractImportView extends Component {
       return this.props.displayWarning('Invalid contract ABI')
     }
 
-    this.props.importNewAccount('Contract', { addr: contractAddr, network: this.props.network, abi })
+    this.props.importNewAccount(this.props.type, { addr: contractAddr, network: this.props.network, abi })
     // JS runtime requires caught rejections but failures are handled by Redux
     .catch()
   }
@@ -186,23 +198,34 @@ class ContractImportView extends Component {
   getBlockscoutApiNetworkSuffix () {
     const { network } = this.props
     switch (Number(network)) {
-      case 1:
+      case MAINNET_CODE:
         return 'mainnet'
-      case 99:
+      case POA_CODE:
         return 'core'
-      case 77:
+      case POA_SOKOL_CODE:
         return 'sokol'
-      case 100:
+      case DAI_CODE:
         return 'dai'
-      case 42:
+      case KOVAN_CODE:
         return 'kovan'
-      case 3:
+      case ROPSTEN_CODE:
         return 'ropsten'
-      case 4:
+      case RINKEBY_CODE:
         return 'rinkeby'
+      case GOERLI_TESTNET_CODE:
+        return 'goerli'
       default:
         return ''
     }
+  }
+
+  clearInputs () {
+    this.setState({
+      contractAddr: '',
+      abi: '',
+      abiInputDisabled: false,
+      importDisabled: true,
+    })
   }
 
   clearAbi () {

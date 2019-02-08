@@ -2,15 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const ethNetProps = require('eth-net-props')
-const {
-  DROPDOWN_ROPSTEN_DISPLAY_NAME,
-  DROPDOWN_RINKEBY_DISPLAY_NAME,
-  DROPDOWN_KOVAN_DISPLAY_NAME,
-  DROPDOWN_POA_SOKOL_DISPLAY_NAME,
-  DROPDOWN_POA_DISPLAY_NAME,
-  DROPDOWN_DAI_DISPLAY_NAME,
-  DROPDOWN_MAINNET_DISPLAY_NAME,
-} = require('../../../app/scripts/controllers/network/enums')
+const { networks } = require('../../../app/scripts/controllers/network/util')
 
 module.exports = Network
 
@@ -23,12 +15,6 @@ function Network () {
 Network.prototype.render = function () {
   const props = this.props
   const { provider, network: networkNumber } = props
-  let providerName
-  try {
-    providerName = provider.type
-  } catch (e) {
-    providerName = null
-  }
   let displayName, hoverText
 
   if (networkNumber === 'loading') {
@@ -51,26 +37,8 @@ Network.prototype.render = function () {
       h('i.fa.fa-caret-down'),
     ])
   } else {
-    if (providerName === 'mainnet' || parseInt(networkNumber) === 1) {
-      displayName = DROPDOWN_MAINNET_DISPLAY_NAME
-      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'ropsten' || parseInt(networkNumber) === 3) {
-      displayName = DROPDOWN_ROPSTEN_DISPLAY_NAME
-      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'sokol' || parseInt(networkNumber) === 77) {
-      displayName = DROPDOWN_POA_SOKOL_DISPLAY_NAME
-      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'kovan' || parseInt(networkNumber) === 42) {
-      displayName = DROPDOWN_KOVAN_DISPLAY_NAME
-      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'rinkeby' || parseInt(networkNumber) === 4) {
-      displayName = DROPDOWN_RINKEBY_DISPLAY_NAME
-      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'poa' || parseInt(networkNumber) === 99) {
-      displayName = DROPDOWN_POA_DISPLAY_NAME
-      hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
-    } else if (providerName === 'dai' || parseInt(networkNumber) === 100) {
-      displayName = DROPDOWN_DAI_DISPLAY_NAME
+    if (networkNumber && networks[networkNumber]) {
+      displayName = networks[networkNumber].displayNameDropdown
       hoverText = ethNetProps.props.getNetworkDisplayName(networkNumber)
     } else {
       displayName = 'Private Network'

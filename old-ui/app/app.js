@@ -32,7 +32,8 @@ const ConfirmAddTokenScreen = require('./components/confirm-add-token')
 const RemoveTokenScreen = require('./remove-token')
 const AddSuggestedTokenScreen = require('./add-suggested-token')
 const Import = require('./accounts/import')
-import ConnectHardwareForm from './components/connect-hardware/index.js'
+const ForgetDeviceScreen = require('./components/connect-hardware/forget-screen')
+import ConnectHardwareForm from './components/connect-hardware/index'
 const InfoScreen = require('./info')
 const AppBar = require('./components/app-bar')
 const Loading = require('./components/loading')
@@ -44,6 +45,7 @@ const DeleteRpc = require('./components/delete-rpc')
 const DeleteImportedAccount = require('./components/delete-imported-account')
 const ConfirmChangePassword = require('./components/confirm-change-password')
 const ethNetProps = require('eth-net-props')
+const { getMetaMaskAccounts } = require('../../ui/app/selectors')
 
 module.exports = compose(
   withRouter,
@@ -54,9 +56,11 @@ inherits(App, Component)
 function App () { Component.call(this) }
 
 function mapStateToProps (state) {
+
+  const accounts = getMetaMaskAccounts(state)
+
   const {
     identities,
-    accounts,
     address,
     keyrings,
     isInitialized,
@@ -280,6 +284,10 @@ App.prototype.renderPrimary = function () {
     case 'import-menu':
       log.debug('rendering import screen')
       return h(Import, {key: 'import-menu'})
+
+    case 'forget-device':
+      log.debug('rendering forget device screen')
+      return h(ForgetDeviceScreen, {key: 'forget-device'})
 
     case 'hardware-wallets-menu':
       log.debug('rendering hardware wallet menu screen')

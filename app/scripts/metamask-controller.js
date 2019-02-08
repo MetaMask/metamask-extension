@@ -29,6 +29,7 @@ const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
+const CachedBalancesController = require('./controllers/cached-balances')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
@@ -51,6 +52,14 @@ const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
+const { importTypes } = require('../../old-ui/app/accounts/import/enums')
+const { LEDGER, TREZOR } = require('../../old-ui/app/components/connect-hardware/enum')
+
+const {
+  POA_CODE,
+  DAI_CODE,
+  POA_SOKOL_CODE } = require('./controllers/network/enums')
+const accountsPerPage = 5
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -136,6 +145,12 @@ module.exports = class MetamaskController extends EventEmitter {
       } else {
         this.accountTracker.stop()
       }
+    })
+
+    this.cachedBalancesController = new CachedBalancesController({
+      accountTracker: this.accountTracker,
+      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
+      initState: initState.CachedBalancesController,
     })
 
     // ensure accountTracker updates balances after network change
@@ -227,6 +242,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeShiftController: this.shapeshiftController.store,
       NetworkController: this.networkController.store,
       InfuraController: this.infuraController.store,
+      CachedBalancesController: this.cachedBalancesController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -234,6 +250,7 @@ module.exports = class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       BalancesController: this.balancesController.store,
+      CachedBalancesController: this.cachedBalancesController.store,
       TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
@@ -369,11 +386,13 @@ module.exports = class MetamaskController extends EventEmitter {
       resetAccount: nodeify(this.resetAccount, this),
       changePassword: nodeify(this.changePassword, this),
       removeAccount: nodeify(this.removeAccount, this),
+      updateABI: nodeify(this.updateABI, this),
       getContract: nodeify(this.getContract, this),
       importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
 
       // hardware wallets
       connectHardware: nodeify(this.connectHardware, this),
+      connectHardwareAndUnlockAddress: nodeify(this.connectHardwareAndUnlockAddress, this),
       forgetDevice: nodeify(this.forgetDevice, this),
       checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
       unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
@@ -595,10 +614,10 @@ module.exports = class MetamaskController extends EventEmitter {
   async getKeyringForDevice (deviceName, hdPath = null) {
     let keyringName = null
     switch (deviceName) {
-      case 'trezor':
+      case TREZOR:
         keyringName = TrezorKeyring.type
         break
-      case 'ledger':
+      case LEDGER:
         keyringName = LedgerBridgeKeyring.type
         break
       default:
@@ -645,6 +664,72 @@ module.exports = class MetamaskController extends EventEmitter {
     return accounts
   }
 
+  connectHardwareAndUnlockAddress (deviceName, hdPath, addressToUnlock) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const keyring = await this.getKeyringForDevice(deviceName, hdPath)
+
+        const accountsFromFirstPage = await keyring.getFirstPage()
+        const initialPage = 0
+        let accounts = await this.findAccountInLedger({
+          accounts: accountsFromFirstPage,
+          keyring,
+          page: initialPage,
+          addressToUnlock,
+          hdPath,
+        })
+        accounts = accounts || accountsFromFirstPage
+
+        // Merge with existing accounts
+        // and make sure addresses are not repeated
+        const oldAccounts = await this.keyringController.getAccounts()
+        const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map(a => a.address.toLowerCase())))]
+        this.accountTracker.syncWithAddresses(accountsToTrack)
+
+        resolve(accountsFromFirstPage)
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
+  async findAccountInLedger ({accounts, keyring, page, addressToUnlock, hdPath}) {
+    return new Promise(async (resolve, reject) => {
+      // to do: store pages depth in dropdown
+      const pagesDepth = 10
+      if (page >= pagesDepth) {
+        reject({
+          message: `Requested account ${addressToUnlock} is not found in ${pagesDepth} pages of ${hdPath} path of Ledger. Try to unlock this account from Ledger.`,
+        })
+        return
+      }
+      if (accounts.length) {
+        const accountIsFound = accounts.some((account, ind) => {
+          const normalizedAddress = account.address.toLowerCase()
+          if (normalizedAddress === addressToUnlock) {
+            const indToUnlock = page * accountsPerPage + ind
+            keyring.setAccountToUnlock(indToUnlock)
+          }
+          return normalizedAddress === addressToUnlock
+        })
+
+        if (!accountIsFound) {
+          accounts = await keyring.getNextPage()
+          page++
+          this.findAccountInLedger({accounts, keyring, page, addressToUnlock, hdPath})
+          .then(accounts => {
+            resolve(accounts)
+          })
+          .catch(e => {
+            reject(e)
+          })
+        } else {
+          resolve(accounts)
+        }
+      }
+    })
+  }
+
   /**
    * Check if the device is unlocked
    *
@@ -660,11 +745,15 @@ module.exports = class MetamaskController extends EventEmitter {
    *
    * @returns {Promise<boolean>}
    */
-  async forgetDevice (deviceName) {
-
+  async forgetDevice (deviceName, clearAccounts) {
     const keyring = await this.getKeyringForDevice(deviceName)
-    keyring.forgetDevice()
-    return true
+    const accountsToForget = await keyring.forgetDevice(clearAccounts)
+    for (const acc of accountsToForget) {
+      const accToLower = acc.toLowerCase()
+      await this.preferencesController.removeAddress(accToLower)
+      await this.accountTracker.removeAccount([accToLower])
+    }
+    return accountsToForget
   }
 
   /**
@@ -674,20 +763,38 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async unlockHardwareWalletAccount (index, deviceName, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath)
+    let hdAccounts = await keyring.getFirstPage()
+    const accountPosition = Number(index) + 1
+    const pages = Math.ceil(accountPosition / accountsPerPage)
+    const indexInPage = index % accountsPerPage
+    if (pages > 1) {
+      for (let iterator = 0; iterator < pages; iterator++) {
+        hdAccounts = await keyring.getNextPage()
+        iterator++
+      }
+    }
 
     keyring.setAccountToUnlock(index)
     const oldAccounts = await this.keyringController.getAccounts()
     const keyState = await this.keyringController.addNewAccount(keyring)
     const newAccounts = await this.keyringController.getAccounts()
     this.preferencesController.setAddresses(newAccounts)
+
+    let selectedAddressChanged = false
     newAccounts.forEach(address => {
       if (!oldAccounts.includes(address)) {
         // Set the account label to Trezor 1 /  Ledger 1, etc
         this.preferencesController.setAccountLabel(address, `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${parseInt(index, 10) + 1}`)
         // Select the account
         this.preferencesController.setSelectedAddress(address)
+        selectedAddressChanged = true
       }
     })
+
+    if (!selectedAddressChanged) {
+      // Select the account
+      this.preferencesController.setSelectedAddress(hdAccounts[indexInPage].address)
+    }
 
     const { identities } = this.preferencesController.store.getState()
     return { ...keyState, identities }
@@ -822,6 +929,7 @@ module.exports = class MetamaskController extends EventEmitter {
    * Removes an account from state / storage.
    *
    * @param {string[]} address A hex address
+   * @param {int} network ID
    *
    */
   async removeAccount (address, network) {
@@ -839,6 +947,23 @@ module.exports = class MetamaskController extends EventEmitter {
     return address
   }
 
+  /**
+   * Updates implementation ABI for proxy account type.
+   *
+   * @param {string[]} address A hex address
+   * @param {int} network ID
+   *
+   */
+  async updateABI (address, network, newABI) {
+    // Sets new ABI for implementation contract
+    try {
+      await this.keyringController.updateABI(address, network, newABI)
+    } catch (e) {
+      log.error(e)
+    }
+    return
+  }
+
 
   /**
    * Imports an account with the specified import strategy.
@@ -851,7 +976,8 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   async importAccountWithStrategy (strategy, args) {
     let keyring
-    if (strategy === 'Contract') {
+    if (strategy === importTypes.CONTRACT.DEFAULT || strategy === importTypes.CONTRACT.PROXY) {
+      args.contractType = strategy
       keyring = await this.keyringController.addNewKeyring('Simple Address', args)
     } else {
       const privateKey = await accountImporter.importAccount(strategy, args)
@@ -1390,7 +1516,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     const networkIdStr = networkController.store.getState().network
     const networkId = parseInt(networkIdStr)
-    const isPOA = networkId === 77 || networkId === 99
+    const isPOA = networkId === POA_SOKOL_CODE || networkId === POA_CODE || networkId === DAI_CODE
 
     // Return 1 gwei if using a POA network of if there are no blocks have been observed:
     if (isPOA || recentBlocks.length === 0) {

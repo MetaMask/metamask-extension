@@ -26,6 +26,7 @@ module.exports = {
   miniAddressSummary: miniAddressSummary,
   isAllOneCase: isAllOneCase,
   isValidAddress: isValidAddress,
+  isValidENSAddress,
   numericBalance: numericBalance,
   parseBalance: parseBalance,
   formatBalance: formatBalance,
@@ -44,6 +45,7 @@ module.exports = {
   getCurrentKeyring,
   ifLooseAcc,
   ifContractAcc,
+  ifHardwareAcc,
 }
 
 function valuesFor (obj) {
@@ -79,6 +81,10 @@ function isValidAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') return false
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
+}
+
+function isValidENSAddress (address) {
+  return address.match(/^.{7,}\.(eth|test)$/)
 }
 
 function isInvalidChecksumAddress (address) {
@@ -209,6 +215,9 @@ function normalizeEthStringToWei (str) {
     while (decimal.length < 18) {
       decimal += '0'
     }
+    if (decimal.length > 18) {
+      decimal = decimal.slice(0, 18)
+    }
     const decimalBN = new ethUtil.BN(decimal, 10)
     eth = eth.add(decimalBN)
   }
@@ -323,6 +332,7 @@ function ifLooseAcc (keyring) {
   } catch (e) { return }
 }
 
+
 /**
  * checks, if keyring is contract
  *
@@ -336,4 +346,18 @@ function ifContractAcc (keyring) {
     const isContract = type === 'Simple Address'
     return isContract
   } catch (e) { return }
+}
+
+/**
+ * checks, if keyring is of hardware type
+ *
+ * @param {object} keyring
+ *
+ * returns {boolean} true, if keyring is of hardware type and false, if it is not
+**/
+function ifHardwareAcc (keyring) {
+  if (keyring && keyring.type.search('Hardware') !== -1) {
+    return true
+  }
+  return false
 }

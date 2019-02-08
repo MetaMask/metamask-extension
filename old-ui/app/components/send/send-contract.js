@@ -4,12 +4,14 @@ import { connect } from 'react-redux'
 import PersistentForm from '../../../lib/persistent-form'
 import SendProfile from './send-profile'
 import SendHeader from './send-header'
-import SendError from './send-error'
+import ErrorComponent from '../error'
+import ToastComponent from '../toast'
 import Select from 'react-select'
 import actions from '../../../../ui/app/actions'
 import abiEncoder from 'web3-eth-abi'
 import Web3 from 'web3'
 import copyToClipboard from 'copy-to-clipboard'
+import CopyButton from '../copy/copy-button'
 
 class SendTransactionField extends Component {
 	constructor (props) {
@@ -31,21 +33,44 @@ class SendTransactionField extends Component {
 		onChange: PropTypes.func,
 	}
 
+	generateAttributes () {
+		return {
+			placeholder: this.props.placeholder,
+			value: this.state.val,
+			disabled: this.props.disabled,
+			onChange: (e) => {
+				this.setState({
+					val: e.target.value,
+				})
+				this.props.onChange(e.target.value)
+			},
+		}
+	}
+}
+
+class SendTransactionTextField extends SendTransactionField {
 	render () {
 		return (
-			<input
-				type="text"
+			<input type="text"
+				{...this.generateAttributes()}
 				className="input large-input output"
-				placeholder={this.props.placeholder}
-				value={this.state.val}
-				disabled={this.props.disabled}
-				onChange={(e) => {
-					this.setState({
-						val: e.target.value,
-					})
-					this.props.onChange(e.target.value)
-				}}
 				style={{ marginTop: '5px' }}
+			/>
+		)
+	}
+}
+
+class SendTransactionTextArea extends SendTransactionField {
+	render () {
+		return (
+			<textarea
+				{...this.generateAttributes()}
+				style={{
+					marginTop: '5px',
+					width: '100%',
+					height: '50px',
+					padding: '10px',
+				}}
 			/>
 		)
 	}
@@ -109,13 +134,7 @@ class SendTransactionScreen extends PersistentForm {
 			copyDisabled: true,
 		}
 
-		this.timerID = null
 		PersistentForm.call(this)
-	}
-
-	componentWillUnmount () {
-		this.props.hideToast()
-		clearTimeout(this.timerID)
 	}
 
 	componentWillMount () {
@@ -132,11 +151,8 @@ class SendTransactionScreen extends PersistentForm {
 			<div className="send-screen flex-column flex-grow">
 				<SendProfile />
 				<SendHeader title="Execute Method" />
-				<SendError
-					error={error}
-					onClose={() => { this.props.hideWarning() }}
-				/>
-				{this.props.toastMsg ? <div className="toast">{this.props.toastMsg}</div> : null}
+				<ErrorComponent error={error} />
+				<ToastComponent isSuccess={true} />
 				<div style={{ padding: '0 30px' }}>
 					<Select
 						clearable={false}
@@ -206,15 +222,17 @@ class SendTransactionScreen extends PersistentForm {
 				style={{ marginTop: '10px' }}
 			>
 				{params.name || `${paramName} ${ind + 1}`}
-				{!isInput ? <i
-					className="clipboard cursor-pointer"
-					style={{ marginLeft: '10px' }}
-					onClick={(e) => { copyToClipboard(defaultValue) }}
+				{!isInput ? <CopyButton
+					value={defaultValue}
+					style={{
+						display: 'inline-block',
+						marginLeft: '5px',
+					}}
 				/> : null}
 			</h3>
 		)
 		// bytes field is not mandatory to fill: 0x is by default
-		if (params.type.startsWith('bytes') && !Array.isArray(params.type)) {
+		if (params.type.startsWith('bytes') && !Array.isArray(params.type) && isInput) {
 			const inputValues = this.props.inputValues || {}
 			if (!inputValues[ind]) {
 				inputValues[ind] = '0x'
@@ -224,24 +242,27 @@ class SendTransactionScreen extends PersistentForm {
 			}
 		}
 		let field
+		const allTypesProps = {
+			ind,
+			defaultValue,
+			disabled: !isInput,
+			onChange: val => isInput ? this.handleInputChange(val, params.type, ind) : null,
+		}
+		const textTypeProps = {
+			key: Math.random(),
+			placeholder: params.type,
+		}
 		if (params.type === 'bool' && isInput) {
 			field = (
-				<SendTransactionInputSelect
-					ind={ind}
-					defaultValue={defaultValue}
-					onChange={val => this.handleInputChange(val, params.type, ind)}
-				/>
+				<SendTransactionInputSelect {...allTypesProps} />
+			)
+		} else if (params.type.includes('[]') && !isInput) {
+			field = (
+				<SendTransactionTextArea {...allTypesProps} {...textTypeProps} />
 			)
 		} else {
 			field = (
-				<SendTransactionField
-					key={Math.random()}
-					ind={ind}
-					disabled={!isInput}
-					placeholder={params.type}
-					defaultValue={defaultValue}
-					onChange={val => isInput ? this.handleInputChange(val, params.type, ind) : null}
-				/>
+				<SendTransactionTextField {...allTypesProps} {...textTypeProps} />
 			)
 		}
 		const fieldObj = (
@@ -387,7 +408,6 @@ class SendTransactionScreen extends PersistentForm {
 	}
 
 	setOutputValue = (val, type) => {
-		console.log(val)
 		if (!type) {
 			return val || ''
 		}
@@ -423,9 +443,6 @@ class SendTransactionScreen extends PersistentForm {
 		if (txData) {
 			copyToClipboard(txData)
 			this.props.displayToast('Contract ABI encoded method call has been successfully copied to clipboard')
-			this.timerID = setTimeout(() => {
-				this.props.hideToast()
-			}, 4000)
 		}
 	}
 
@@ -453,7 +470,6 @@ function mapStateToProps (state) {
 	const result = {
 		address: state.metamask.selectedAddress,
 		warning: state.appState.warning,
-		toastMsg: state.appState.toastMsg,
 		methodSelected: contractAcc && contractAcc.methodSelected,
 		methodABI: contractAcc && contractAcc.methodABI,
 		inputValues: contractAcc && contractAcc.inputValues,

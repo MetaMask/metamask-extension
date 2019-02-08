@@ -14,16 +14,20 @@ const EditableLabel = require('./components/editable-label')
 const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
-const CopyButton = require('./components/copyButton')
+const CopyButton = require('./components/copy/copy-button')
+const ToastComponent = require('./components/toast')
+import { getMetaMaskAccounts } from '../../ui/app/selectors'
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
+  const accounts = getMetaMaskAccounts(state)
   return {
     metamask: state.metamask,
     identities: state.metamask.identities,
     keyrings: state.metamask.keyrings,
-    accounts: state.metamask.accounts,
+    warning: state.appState.warning,
+    accounts,
     address: state.metamask.selectedAddress,
     accountDetail: state.appState.accountDetail,
     network: state.metamask.network,
@@ -61,6 +65,10 @@ AccountDetailScreen.prototype.render = function () {
   return (
 
     h('.account-detail-section.full-flex-height', [
+
+      h(ToastComponent, {
+        isSuccess: false,
+      }),
 
     // identicon, label, balance, etc
       h('.account-data-subsection', {

@@ -13,6 +13,8 @@ import PendingMsg from './components/pending-msg'
 import PendingPersonalMsg from './components/pending-personal-msg'
 import PendingTypedMsg from './components/pending-typed-msg'
 const Loading = require('./components/loading')
+const { DAI_CODE, POA_SOKOL_CODE, GOERLI_TESTNET_CODE } = require('../../app/scripts/controllers/network/enums')
+const { getMetaMaskAccounts } = require('../../ui/app/selectors')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
@@ -21,8 +23,8 @@ function mapStateToProps (state) {
   const { screenParams, pendingTxIndex } = appState.currentView
   return {
     identities: metamask.identities,
+    accounts: getMetaMaskAccounts(state),
     keyrings: metamask.keyrings,
-    accounts: metamask.accounts,
     selectedAddress: metamask.selectedAddress,
     unapprovedTxs: metamask.unapprovedTxs,
     unapprovedMsgs: metamask.unapprovedMsgs,
@@ -55,9 +57,9 @@ ConfirmTxScreen.prototype.render = function () {
     unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, blockGasLimit } = props
   let { conversionRate } = props
 
-  const isSokol = parseInt(network) === 77
-  const isDai = parseInt(network) === 100
-  if (isSokol) {
+  const isTestnet = parseInt(network) === POA_SOKOL_CODE || parseInt(network) === GOERLI_TESTNET_CODE
+  const isDai = parseInt(network) === DAI_CODE
+  if (isTestnet) {
     conversionRate = 0
   } else if (isDai) {
     conversionRate = 1

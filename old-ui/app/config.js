@@ -12,6 +12,7 @@ const validUrl = require('valid-url')
 const exportAsFile = require('./util').exportAsFile
 const Modal = require('../../ui/app/components/modals/index').Modal
 const ethNetProps = require('eth-net-props')
+const { networks } = require('../../app/scripts/controllers/network/util')
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
@@ -290,46 +291,12 @@ function currentProviderDisplay (metamaskState, state) {
   const provider = metamaskState.provider
   let title, value
 
-  switch (provider.type) {
-
-    case 'mainnet':
-      title = 'Current Network'
-      value = ethNetProps.props.getNetworkDisplayName(1)
-      break
-
-    case 'sokol':
-      title = 'Current Network'
-      value = ethNetProps.props.getNetworkDisplayName(77)
-      break
-
-    case 'ropsten':
-      title = 'Current Network'
-      value = ethNetProps.props.getNetworkDisplayName(3)
-      break
-
-    case 'kovan':
-      title = 'Current Network'
-      value = ethNetProps.props.getNetworkDisplayName(42)
-      break
-
-    case 'rinkeby':
-      title = 'Current Network'
-      value = ethNetProps.props.getNetworkDisplayName(4)
-      break
-
-    case 'poa':
-      title = 'Current Network'
-      value = ethNetProps.props.getNetworkDisplayName(99)
-      break
-
-    case 'dai':
-      title = 'Current Network'
-      value = ethNetProps.props.getNetworkDisplayName(100)
-      break
-
-    default:
-      title = 'Current RPC'
-      value = metamaskState.provider.rpcTarget
+  if (networks[provider.type]) {
+    title = 'Current Network'
+    value = ethNetProps.props.getNetworkDisplayName(networks[provider.type].networkID)
+  } else {
+    title = 'Current RPC'
+    value = metamaskState.provider.rpcTarget
   }
 
   return h('div', [

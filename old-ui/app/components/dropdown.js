@@ -94,7 +94,7 @@ class DropdownMenuItem extends Component {
 }
 
 DropdownMenuItem.propTypes = {
-  closeMenu: PropTypes.func.isRequired,
+  closeMenu: PropTypes.func,
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node,
   style: PropTypes.object,

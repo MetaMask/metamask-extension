@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../../../ui/app/components/button'
+import { LEDGER, TREZOR } from './enum'
+import { capitalizeFirstLetter } from '../../../../app/scripts/lib/util'
+
+const trezorCap = capitalizeFirstLetter(TREZOR)
+const ledgerCap = capitalizeFirstLetter(LEDGER)
 
 class ConnectScreen extends Component {
     constructor (props, context) {
@@ -8,6 +13,11 @@ class ConnectScreen extends Component {
         this.state = {
           selectedDevice: null,
         }
+    }
+
+    static propTypes = {
+        connectToHardwareWallet: PropTypes.func.isRequired,
+        browserSupported: PropTypes.bool.isRequired,
     }
 
     connect = () => {
@@ -20,8 +30,8 @@ class ConnectScreen extends Component {
     renderConnectToTrezorButton () {
         return (
             <button
-                className={`hw-connect__btn${this.state.selectedDevice === 'trezor' ? ' selected' : ''}`}
-                onClick={_ => this.setState({selectedDevice: 'trezor'})}
+                className={`hw-connect__btn${this.state.selectedDevice === TREZOR ? ' selected' : ''}`}
+                onClick={_ => this.setState({selectedDevice: TREZOR})}
             >
                 <img className="hw-connect__btn__img" src="images/trezor-logo.svg"/>
             </button>
@@ -31,8 +41,8 @@ class ConnectScreen extends Component {
     renderConnectToLedgerButton () {
         return (
             <button
-                className={`hw-connect__btn${this.state.selectedDevice === 'ledger' ? ' selected' : ''}`}
-                onClick={_ => this.setState({selectedDevice: 'ledger'})}
+                className={`hw-connect__btn${this.state.selectedDevice === LEDGER ? ' selected' : ''}`}
+                onClick={_ => this.setState({selectedDevice: LEDGER})}
             >
                 <img className="hw-connect__btn__img" src="images/ledger-logo.svg"/>
             </button>
@@ -82,12 +92,12 @@ class ConnectScreen extends Component {
 
     getAffiliateLinks () {
         const links = {
-            trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=niftywallet' target='_blank'>Trezor</a>`,
-            ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s' target='_blank'>Ledger</a>`,
+            trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=niftywallet' target='_blank'>${trezorCap}</a>`,
+            ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s' target='_blank'>${ledgerCap}</a>`,
         }
 
-        const text = 'Order a Trezor or Ledger and keep your funds in cold storage'
-        const response = text.replace('Trezor', links.trezor).replace('Ledger', links.ledger)
+        const text = `Order a ${trezorCap} or ${ledgerCap} and keep your funds in cold storage`
+        const response = text.replace(trezorCap, links.trezor).replace(ledgerCap, links.ledger)
 
         return (
             <div className="hw-connect__get-hw__msg" dangerouslySetInnerHTML={{ __html: response }} />
@@ -126,10 +136,4 @@ class ConnectScreen extends Component {
     }
 }
 
-ConnectScreen.propTypes = {
-    connectToHardwareWallet: PropTypes.func.isRequired,
-    browserSupported: PropTypes.bool.isRequired,
-}
-
 module.exports = ConnectScreen
-

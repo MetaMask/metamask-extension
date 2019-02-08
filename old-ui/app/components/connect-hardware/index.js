@@ -7,13 +7,17 @@ import AccountList from './account-list'
 import { formatBalance } from '../../util'
 import { getPlatform } from '../../../../app/scripts/lib/util'
 import { PLATFORM_FIREFOX } from '../../../../app/scripts/lib/enums'
+import { getMetaMaskAccounts } from '../../../../ui/app/selectors'
+import { LEDGER, TREZOR } from './enum'
 
 class ConnectHardwareForm extends Component {
   constructor (props, context) {
     super(props)
+    this.timerID = null
     this.state = {
       error: null,
       selectedAccount: null,
+      selectedAccounts: [],
       accounts: [],
       browserSupported: true,
       unlocked: false,
@@ -32,13 +36,16 @@ class ConnectHardwareForm extends Component {
     this.setState({accounts: newAccounts})
   }
 
+  componentWillUnmount () {
+    clearTimeout(this.timerID)
+  }
 
   componentDidMount () {
     this.checkIfUnlocked()
   }
 
   async checkIfUnlocked () {
-    ['trezor', 'ledger'].forEach(async device => {
+    [TREZOR, LEDGER].forEach(async device => {
       const unlocked = await this.props.checkHardwareStatus(device, this.props.defaultHdPaths[device])
       if (unlocked) {
         this.setState({unlocked: true})
@@ -69,7 +76,21 @@ class ConnectHardwareForm extends Component {
   }
 
   onAccountChange = (account) => {
-    this.setState({selectedAccount: account.toString(), error: null})
+    let selectedAcc = account.toString()
+    const selectedAccounts = this.state.selectedAccounts
+    if (!selectedAccounts.includes(selectedAcc)) {
+      selectedAccounts.push(selectedAcc)
+    } else {
+      const indToRemove = selectedAccounts.indexOf(selectedAcc)
+      selectedAccounts.splice(indToRemove, 1)
+      selectedAcc = selectedAccounts[selectedAccounts.length - 1]
+    }
+    const newState = {
+      selectedAccounts,
+      selectedAccount: selectedAcc,
+      error: null,
+    }
+    this.setState(newState)
   }
 
   onAccountRestriction = () => {
@@ -79,7 +100,7 @@ class ConnectHardwareForm extends Component {
   showTemporaryAlert () {
     this.props.showAlert('Hardware wallet connected')
     // Autohide the alert after 5 seconds
-    setTimeout(_ => {
+    this.timerID = setTimeout(_ => {
       this.props.hideAlert()
     }, 5000)
   }
@@ -109,7 +130,6 @@ class ConnectHardwareForm extends Component {
             newState.selectedAccount = null
           }
 
-
           // Map accounts with balances
           newState.accounts = accounts.map(account => {
             const normalizedAddress = account.address.toLowerCase()
@@ -131,31 +151,31 @@ class ConnectHardwareForm extends Component {
   }
 
   onForgetDevice = (device) => {
-    this.props.forgetDevice(device)
-    .then(_ => {
-      this.setState({
-        error: null,
-        selectedAccount: null,
-        accounts: [],
-        unlocked: false,
-      })
-    }).catch(e => {
-      this.setState({ error: (e.message || e.toString()) })
-    })
+    this.props.showForgetDevicePage(device)
   }
 
   onUnlockAccount = (device) => {
 
-    if (this.state.selectedAccount === null) {
-      this.setState({ error: 'You need to select an account!' })
+    if (this.state.selectedAccounts.length === 0) {
+      return this.setState({ error: 'You need to select an account!' })
     }
 
-    this.props.unlockHardwareWalletAccount(this.state.selectedAccount, device)
+    this.unlockHardwareWalletAccounts(this.state.selectedAccounts, device)
     .then(_ => {
       this.props.goHome()
-    }).catch(e => {
-      this.setState({ error: (e.message || e.toString()) })
     })
+  }
+
+  unlockHardwareWalletAccounts = (accounts, device) => {
+    return accounts.reduce((promise, account) => {
+      return promise
+        .then((result) => {
+          return new Promise((resolve, reject) => {
+            resolve(this.props.unlockHardwareWalletAccount(account, device))
+          })
+        })
+        .catch(e => this.setState({ error: (e.message || e.toString()) }))
+    }, Promise.resolve())
   }
 
   onCancel = () => {
@@ -185,6 +205,7 @@ class ConnectHardwareForm extends Component {
         device={this.state.device}
         accounts={this.state.accounts}
         selectedAccount={this.state.selectedAccount}
+        selectedAccounts={this.state.selectedAccounts}
         onAccountChange={this.onAccountChange}
         network={this.props.network}
         getPage={this.getPage}
@@ -220,6 +241,7 @@ class ConnectHardwareForm extends Component {
 }
 
 ConnectHardwareForm.propTypes = {
+  showForgetDevicePage: PropTypes.func,
   showImportPage: PropTypes.func,
   showConnectPage: PropTypes.func,
   connectHardware: PropTypes.func,
@@ -239,8 +261,9 @@ ConnectHardwareForm.propTypes = {
 
 const mapStateToProps = state => {
   const {
-    metamask: { network, selectedAddress, identities = {}, accounts = [] },
+    metamask: { network, selectedAddress, identities = {} },
   } = state
+  const accounts = getMetaMaskAccounts(state)
   const numberOfExistingAccounts = Object.keys(identities).length
   const {
     appState: { defaultHdPaths },
@@ -269,14 +292,15 @@ const mapDispatchToProps = dispatch => {
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath))
     },
-    forgetDevice: (deviceName) => {
-      return dispatch(actions.forgetDevice(deviceName))
+    forgetDevice: (deviceName, clearAccounts) => {
+      return dispatch(actions.forgetDevice(deviceName, clearAccounts))
     },
     unlockHardwareWalletAccount: (index, deviceName, hdPath) => {
       return dispatch(actions.unlockHardwareWalletAccount(index, deviceName, hdPath))
     },
     showImportPage: () => dispatch(actions.showImportPage()),
     showConnectPage: () => dispatch(actions.showConnectPage()),
+    showForgetDevicePage: (device) => dispatch(actions.showForgetDevicePage(device)),
     showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
   }

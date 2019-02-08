@@ -8,8 +8,10 @@ import AccountPanel from './account-panel'
 import RadioList from './custom-radio-list'
 import { getNetworkDisplayName } from '../../../app/scripts/controllers/network/util'
 import { getFaucets, getExchanges } from '../../../app/scripts/lib/buy-eth-url'
+import { MAINNET_CODE } from '../../../app/scripts/controllers/network/enums'
 import ethNetProps from 'eth-net-props'
 import PropTypes from 'prop-types'
+import { getMetaMaskAccounts } from '../../../ui/app/selectors'
 
 class BuyButtonSubview extends Component {
   render () {
@@ -78,7 +80,7 @@ class BuyButtonSubview extends Component {
 
       default:
         return (
-          <div className="flex-column" style={{ margin: '0px 0px 20px 30px' }}>
+          <div className="flex-column" style={{ margin: '0px 30px 20px 30px' }}>
             { this._getBuyOptionsView(network) }
           </div>
         )
@@ -157,8 +159,8 @@ class BuyButtonSubview extends Component {
   }
 
   formVersionSubview () {
-    const network = this.props.network
-    if (network === '1') {
+    const { network } = this.props
+    if (Number(network) === MAINNET_CODE) {
       if (this.props.buyView.formView.coinbase) {
         return <CoinbaseForm { ...this.props } />
       } else if (this.props.buyView.formView.shapeshift) {
@@ -197,9 +199,10 @@ BuyButtonSubview.propTypes = {
 }
 
 function mapStateToProps (state) {
+  const accounts = getMetaMaskAccounts(state)
   return {
     identity: state.appState.identity,
-    account: state.metamask.accounts[state.appState.buyView.buyAddress],
+    account: accounts[state.appState.buyView.buyAddress],
     warning: state.appState.warning,
     buyView: state.appState.buyView,
     network: state.metamask.network,
