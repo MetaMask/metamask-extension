@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import actions from '../../../../ui/app/actions'
 import Web3 from 'web3'
 import log from 'loglevel'
-import CopyButton from '../../components/copyButton'
+import CopyButton from '../../components/copy/copy-button'
 import ErrorComponent from '../../components/error'
 import { getFullABI } from './helpers'
 

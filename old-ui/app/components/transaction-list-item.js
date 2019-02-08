@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 
 const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
-const CopyButton = require('./copyButton')
+const CopyButton = require('./copy/copy-button')
 const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
 const numberToBN = require('number-to-bn')

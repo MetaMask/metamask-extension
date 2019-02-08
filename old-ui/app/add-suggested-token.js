@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
 const Tooltip = require('./components/tooltip.js')
 const ethUtil = require('ethereumjs-util')
-const Copyable = require('./components/copyable')
+const Copyable = require('./components/copy/copyable')
 const addressSummary = require('./util').addressSummary
 
 
