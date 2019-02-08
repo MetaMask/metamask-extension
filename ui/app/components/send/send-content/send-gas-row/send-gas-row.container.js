@@ -17,12 +17,6 @@ import {
   getDefaultActiveButtonIndex,
 } from '../../../../selectors/custom-gas'
 import {
-  decGWEIToHexWEI,
-  decimalToHex,
-  convertGasPriceForInputs,
-  convertGasLimitForInputs,
-} from '../../../../helpers/conversions.util'
-import {
   showGasButtonGroup,
 } from '../../../../ducks/send.duck'
 import {
@@ -33,7 +27,6 @@ import {
 import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal } from '../../../../actions'
 import { getAdvancedInlineGasShown, getCurrentEthBalance } from '../../../../selectors'
-import { addHexPrefix } from 'ethereumjs-util'
 import SendGasRow from './send-gas-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)
@@ -41,9 +34,8 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasR
 function mapStateToProps (state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state)
   const gasPrice = getGasPrice(state)
+  const gasLimit = getGasLimit(state)
   const activeButtonIndex = getDefaultActiveButtonIndex(gasButtonInfo, gasPrice)
-  const renderableGasPrice = convertGasPriceForInputs(gasPrice)
-  const renderableGasLimit = convertGasLimitForInputs(getGasLimit(state))
 
   const gasTotal = getGasTotal(state)
   const conversionRate = getConversionRate(state)
@@ -70,8 +62,8 @@ function mapStateToProps (state) {
     },
     gasButtonGroupShown: getGasButtonGroupShown(state),
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
-    gasPrice: renderableGasPrice,
-    gasLimit: renderableGasLimit,
+    gasPrice,
+    gasLimit,
     insufficientBalance,
   }
 }
@@ -80,15 +72,13 @@ function mapDispatchToProps (dispatch) {
   return {
     showCustomizeGasModal: () => dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
     setGasPrice: (newPrice, gasLimit) => {
-      newPrice = decGWEIToHexWEI(newPrice)
       dispatch(setGasPrice(newPrice))
-      dispatch(setCustomGasPrice(addHexPrefix(newPrice)))
+      dispatch(setCustomGasPrice(newPrice))
       dispatch(setGasTotal(calcGasTotal(gasLimit, newPrice)))
     },
     setGasLimit: (newLimit, gasPrice) => {
-      newLimit = decimalToHex(newLimit)
       dispatch(setGasLimit(newLimit))
-      dispatch(setCustomGasLimit(addHexPrefix(newLimit.toString(16))))
+      dispatch(setCustomGasLimit(newLimit))
       dispatch(setGasTotal(calcGasTotal(newLimit, gasPrice)))
     },
     showGasButtonGroup: () => dispatch(showGasButtonGroup()),
