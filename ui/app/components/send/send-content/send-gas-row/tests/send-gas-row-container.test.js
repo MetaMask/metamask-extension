@@ -66,12 +66,6 @@ proxyquire('../send-gas-row.container.js', {
   },
   '../../../../ducks/send.duck': sendDuckSpies,
   '../../../../ducks/gas.duck': gasDuckSpies,
-  '../../../../helpers/conversions.util': {
-    convertGasPriceForInputs: str => str + '*',
-    convertGasLimitForInputs: str => str + '**',
-    decGWEIToHexWEI: str => '0x' + str + '000',
-    decimalToHex: str => '0x' + str,
-  },
 })
 
 describe('send-gas-row container', () => {
@@ -93,8 +87,8 @@ describe('send-gas-row container', () => {
         },
         gasButtonGroupShown: `mockGetGasButtonGroupShown:mockState`,
         advancedInlineGasShown: 'mockAdvancedInlineGasShown:mockState',
-        gasLimit: 'mockGasLimit:mockState**',
-        gasPrice: 'mockGasPrice:mockState*',
+        gasLimit: 'mockGasLimit:mockState',
+        gasPrice: 'mockGasPrice:mockState',
         insufficientBalance: false,
       })
     })
@@ -127,10 +121,10 @@ describe('send-gas-row container', () => {
         mapDispatchToPropsObject.setGasPrice('mockNewPrice', 'mockLimit')
         assert(dispatchSpy.calledThrice)
         assert(actionSpies.setGasPrice.calledOnce)
-        assert.equal(actionSpies.setGasPrice.getCall(0).args[0], '0xmockNewPrice000')
-        assert.equal(gasDuckSpies.setCustomGasPrice.getCall(0).args[0], '0xmockNewPrice000')
+        assert.equal(actionSpies.setGasPrice.getCall(0).args[0], 'mockNewPrice')
+        assert.equal(gasDuckSpies.setCustomGasPrice.getCall(0).args[0], 'mockNewPrice')
         assert(actionSpies.setGasTotal.calledOnce)
-        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], 'mockLimit0xmockNewPrice000')
+        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], 'mockLimitmockNewPrice')
       })
     })
 
@@ -139,10 +133,10 @@ describe('send-gas-row container', () => {
         mapDispatchToPropsObject.setGasLimit('mockNewLimit', 'mockPrice')
         assert(dispatchSpy.calledThrice)
         assert(actionSpies.setGasLimit.calledOnce)
-        assert.equal(actionSpies.setGasLimit.getCall(0).args[0], '0xmockNewLimit')
-        assert.equal(gasDuckSpies.setCustomGasLimit.getCall(0).args[0], '0xmockNewLimit')
+        assert.equal(actionSpies.setGasLimit.getCall(0).args[0], 'mockNewLimit')
+        assert.equal(gasDuckSpies.setCustomGasLimit.getCall(0).args[0], 'mockNewLimit')
         assert(actionSpies.setGasTotal.calledOnce)
-        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], '0xmockNewLimitmockPrice')
+        assert.equal(actionSpies.setGasTotal.getCall(0).args[0], 'mockNewLimitmockPrice')
       })
     })
 

@@ -14,12 +14,6 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../../constants/error-keys'
 import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
-import {
-  convertGasPriceForInputs,
-  convertGasLimitForInputs,
-  decimalToHex,
-  decGWEIToHexWEI,
-} from '../../../helpers/conversions.util'
 import { isBalanceSufficient, calcGasTotal } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
@@ -132,12 +126,10 @@ const mapStateToProps = (state, props) => {
     unapprovedTxCount,
     currentNetworkUnapprovedTxs,
     customGas: {
-      gasLimit: customGasLimit || gasPrice,
-      gasPrice: customGasPrice || gasLimit,
+      gasLimit: customGasLimit || gasLimit,
+      gasPrice: customGasPrice || gasPrice,
     },
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
-    gasPrice: convertGasPriceForInputs(gasPrice),
-    gasLimit: convertGasLimitForInputs(gasLimit),
     insufficientBalance,
   }
 }
@@ -154,12 +146,6 @@ const mapDispatchToProps = dispatch => {
     },
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
       return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
-    },
-    convertThenUpdateGasAndCalculate: ({ gasLimit, gasPrice }) => {
-      return dispatch(updateGasAndCalculate({
-        gasLimit: decimalToHex(gasLimit),
-        gasPrice: decGWEIToHexWEI(gasPrice),
-      }))
     },
     showRejectTransactionsConfirmationModal: ({ onSubmit, unapprovedTxCount }) => {
       return dispatch(showModal({ name: 'REJECT_TRANSACTIONS', onSubmit, unapprovedTxCount }))
@@ -235,6 +221,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       validate: validateEditGas,
     }),
     cancelAllTransactions: () => dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
+    updateGasAndCalculate,
   }
 }
 

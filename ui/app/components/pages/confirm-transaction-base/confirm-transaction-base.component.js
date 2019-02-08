@@ -58,6 +58,8 @@ export default class ConfirmTransactionBase extends Component {
     txData: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
     currentNetworkUnapprovedTxs: PropTypes.object,
+    updateGasAndCalculate: PropTypes.func,
+    customGas: PropTypes.object,
     // Component props
     action: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -83,10 +85,7 @@ export default class ConfirmTransactionBase extends Component {
     valid: PropTypes.bool,
     warning: PropTypes.string,
     advancedInlineGasShown: PropTypes.bool,
-    gasPrice: PropTypes.number,
-    gasLimit: PropTypes.number,
     insufficientBalance: PropTypes.bool,
-    convertThenUpdateGasAndCalculate: PropTypes.func,
   }
 
   state = {
@@ -172,10 +171,9 @@ export default class ConfirmTransactionBase extends Component {
       hexTransactionTotal,
       hideDetails,
       advancedInlineGasShown,
-      gasPrice,
-      gasLimit,
+      customGas,
       insufficientBalance,
-      convertThenUpdateGasAndCalculate,
+      updateGasAndCalculate,
     } = this.props
 
     if (hideDetails) {
@@ -195,10 +193,10 @@ export default class ConfirmTransactionBase extends Component {
             />
             {advancedInlineGasShown
               ? <AdvancedGasInputs
-                updateCustomGasPrice={newGasPrice => convertThenUpdateGasAndCalculate({ gasPrice: newGasPrice, gasLimit })}
-                updateCustomGasLimit={newGasLimit => convertThenUpdateGasAndCalculate({ gasLimit: newGasLimit, gasPrice })}
-                customGasPrice={gasPrice}
-                customGasLimit={gasLimit}
+                updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
+                updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
+                customGasPrice={customGas.gasPrice}
+                customGasLimit={customGas.gasLimit}
                 insufficientBalance={insufficientBalance}
                 customPriceIsSafe={true}
                 isSpeedUp={false}
