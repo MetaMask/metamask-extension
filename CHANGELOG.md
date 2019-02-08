@@ -10,6 +10,8 @@
 - [#6090](https://github.com/MetaMask/metamask-extension/pull/6090): Change gas labels to Slow/Average/Fast
 - [#6112](https://github.com/MetaMask/metamask-extension/pull/6112): Extract advanced gas input controls to their own component
 - [#5929](https://github.com/MetaMask/metamask-extension/pull/5929): Update design of phishing warning screen
+- [#6120](https://github.com/MetaMask/metamask-extension/pull/6120): Add class to sign footer button
+- [#6116](https://github.com/MetaMask/metamask-extension/pull/6116): Fix locale codes contains underscore never being preferred
 
 ## 5.3.5 Mon Feb 4 2019
 
