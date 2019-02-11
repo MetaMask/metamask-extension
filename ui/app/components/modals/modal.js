@@ -25,7 +25,6 @@ import ConfirmRemoveAccount from './confirm-remove-account'
 import ConfirmResetAccount from './confirm-reset-account'
 import TransactionConfirmed from './transaction-confirmed'
 import CancelTransaction from './cancel-transaction'
-import WelcomeBeta from './welcome-beta'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
@@ -201,19 +200,6 @@ const MODALS = {
     },
   },
 
-  BETA_UI_NOTIFICATION_MODAL: {
-    contents: h(WelcomeBeta),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
   CLEAR_APPROVED_ORIGINS: {
     contents: h(ClearApprovedOrigins),
     mobileModalStyle: {
@@ -232,6 +218,40 @@ const MODALS = {
       h(NotifcationModal, {
         header: 'oldUI',
         message: 'oldUIMessage',
+      }),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+
+  GAS_PRICE_INFO_MODAL: {
+    contents: [
+      h(NotifcationModal, {
+        header: 'gasPriceNoDenom',
+        message: 'gasPriceInfoModalContent',
+      }),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+
+  GAS_LIMIT_INFO_MODAL: {
+    contents: [
+      h(NotifcationModal, {
+        header: 'gasLimit',
+        message: 'gasLimitInfoModalContent',
       }),
     ],
     mobileModalStyle: {
