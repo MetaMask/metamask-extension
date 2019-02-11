@@ -310,6 +310,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       getPubKey: this.getPubKey.bind(this),
       getXPubKey: this.getXPubKey.bind(this),
+      signTransactionAppKey: this.signTransactionAppKey.bind(this)
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -473,7 +474,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
       //pluginSystem
       getPubKey: nodeify(this.getPubKey, this),
-      getXPubKey: nodeify(this.getXPubKey, this),      
+      getXPubKey: nodeify(this.getXPubKey, this),
+      signTransactionAppKey: nodeify(this.signTransactionAppKey, this),            
 
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
@@ -1051,6 +1053,15 @@ module.exports = class MetamaskController extends EventEmitter {
     console.log(this.keyringController)
     console.log(selectedKeyring)
     const appKeys = await this.keyringController.getXPubKey(selectedKeyring)
+    console.log(appKeys)
+    return appKeys
+  }
+  async signTransactionAppKey (fromAddress, txParams, next, end) {
+    console.log("signTxAppKey params", txParams)
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    console.log(this.keyringController)
+    console.log(selectedKeyring)
+    const appKeys = await this.keyringController.signTransactionAppKey(selectedKeyring, fromAddress, txParams)
     console.log(appKeys)
     return appKeys
   }

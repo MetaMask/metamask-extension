@@ -9,7 +9,6 @@ const selectors = require('../selectors')
 const log = require('loglevel')
 const { registerPluginScript } = require('../actions')
 
-
 function mapDispatchToProps(dispatch) {
   return {
     registerPluginScript: (plugin,script) => dispatch(registerPluginScript(plugin, script)),
@@ -87,7 +86,7 @@ class PluginList extends Component {
       provider: global.ethereumProvider,
       plugin: plugin,
       pollingInterval: 8000,
-      networkId: this.props.network
+      networkId: this.props.network,
     })
 
     // TODO ADAPT HERE
