@@ -2,6 +2,17 @@
 
 ## Current Develop Branch
 
+## 6.0.0 Thu Feb 07 2019
+
+- [#6082](https://github.com/MetaMask/metamask-extension/pull/6082): Migrate all users to the new UI
+- [#6114](https://github.com/MetaMask/metamask-extension/pull/6114): Add setting for inputting gas price with a text field for advanced users.
+- [#6091](https://github.com/MetaMask/metamask-extension/pull/6091): Add Swap feature to CurrencyInput
+- [#6090](https://github.com/MetaMask/metamask-extension/pull/6090): Change gas labels to Slow/Average/Fast
+- [#6112](https://github.com/MetaMask/metamask-extension/pull/6112): Extract advanced gas input controls to their own component
+- [#5929](https://github.com/MetaMask/metamask-extension/pull/5929): Update design of phishing warning screen
+- [#6120](https://github.com/MetaMask/metamask-extension/pull/6120): Add class to sign footer button
+- [#6116](https://github.com/MetaMask/metamask-extension/pull/6116): Fix locale codes contains underscore never being preferred
+
 ## 5.3.5 Mon Feb 4 2019
 
 - [#6084](https://github.com/MetaMask/metamask-extension/pull/6087): Privacy mode fixes
