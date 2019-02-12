@@ -221,7 +221,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       validate: validateEditGas,
     }),
     cancelAllTransactions: () => dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
-    updateGasAndCalculate,
+    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
   }
 }
 
