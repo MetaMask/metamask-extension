@@ -4,6 +4,7 @@ import QrView from '../../qr-code'
 import SendRowWrapper from '../../send/send-content/send-row-wrapper'
 import TxInput from './tx-input.js'
 import PageContainerFooter from '../../page-container/page-container-footer'
+import Select from 'react-select'
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
@@ -33,11 +34,11 @@ const mapStateToProps = (state, ownProps) => {
   const qrCodeData = state.appState.qrCodeData
   const props = state.appState.modal.modalState.props
   const signable = props.signable
-  const qrTxData = reduce(signable)
   const extToSign = state.metamask.extToSign
   const extCancel = state.metamask.extCancel
   const extSigned = state.metamask.extSigned
   const showError = !!signature && signatureInError(signable, signature)
+  const signers = ['airsign', 'paritysigner', 'erc67']
   var errorType
   var errors = {
     invalidSignatureLength: 'invalidSignatureLength',
@@ -60,11 +61,11 @@ const mapStateToProps = (state, ownProps) => {
     extToSign,
     qrCodeData,
     qrScanner,
-    qrTxData,
     showError,
     signable,
     signature,
     txData,
+    signers,
   }
 }
 
@@ -114,6 +115,7 @@ class ExternalSignModal extends PureComponent {
     signable: PropTypes.object,
     signature: PropTypes.string,
     updateExternalSign: PropTypes.func,
+    signers: PropTypes.array,
   }
 
   static contextTypes = {
@@ -121,7 +123,11 @@ class ExternalSignModal extends PureComponent {
   }
   constructor (props) {
     super(props)
-    this.state = { cancelOrSubmitPressed: false }
+    this.state =
+      {
+        cancelOrSubmitPressed: false,
+        signer: 'airsign',
+      }
     this.onCancel = this.onCancel.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.container = null
@@ -135,36 +141,59 @@ class ExternalSignModal extends PureComponent {
       errors,
       errorType,
       onChange,
-      qrTxData,
       qrScanner,
       scanSignatureQrCode,
       showError,
       signable,
       signature,
+      signers,
     } = this.props
+    const signer = this.state.signer
+    const qrTxData = reduce(signable, signer)
 
     return h(ExternalSignModalContainer, {hideModal: this.onCancel }, [
-      h(QrView, {
-        Qr: {
-          data: qrTxData,
-          width: Math.min(480, window.innerWidth - 70),
-          isDataAddress: false,
-        },
-      }),
-      h(SendRowWrapper, {
-        label: this.context.t('signature'),
-        errors: errors,
-        errorType: errorType,
-        showError: showError,
-      }, [
-        h(TxInput, {
-          signature: signature,
-          onChange: onChange,
-          inError: showError,
-          qrScanner: qrScanner,
-          scanSignatureQrCode: scanSignatureQrCode,
-          scannerProps: {showNext: 'EXTERNAL_SIGN', nextProps: {signable: signable} },
+      h('div', {}, [
+        h(SendRowWrapper, {
+          label: this.context.t('signWith'),
+        }, [
+          h(Select, {
+            className: 'new-account-import-form__select',
+            name: 'import-type-select',
+            clearable: false,
+            value: signer || signers[0],
+            options: signers.map((signer) => {
+              return {
+                value: signer,
+                label: this.context.t(signer),
+              }
+            }),
+            onChange: (opt) => {
+              this.setState({ signer: opt.value })
+            },
+          }),
+        ]),
+        h(QrView, {
+          Qr: {
+            data: qrTxData,
+            width: Math.min(480, window.innerWidth - 70),
+            isDataAddress: false,
+          },
         }),
+        h(SendRowWrapper, {
+          label: this.context.t('signature'),
+          errors: errors,
+          errorType: errorType,
+          showError: showError,
+        }, [
+          h(TxInput, {
+            signature: signature,
+            onChange: onChange,
+            inError: showError,
+            qrScanner: qrScanner,
+            scanSignatureQrCode: scanSignatureQrCode,
+            scannerProps: {showNext: 'EXTERNAL_SIGN', nextProps: {signable: signable} },
+          }),
+        ]),
       ]),
       h(PageContainerFooter, {
         onCancel: this.onCancel,
@@ -221,6 +250,7 @@ class ExternalSignModal extends PureComponent {
      this.onCancel()
    }
   }
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExternalSignModal)
@@ -259,92 +289,142 @@ function signatureInError (signable, signature) {
   }
 }
 
-function reduce (signable) {
-  const fromAddress = ethUtil.stripHexPrefix(signable.from)
-  const partFrom = fromAddress.substr(0, 4) +
-        fromAddress.substr(18, 2) + fromAddress.slice(-4)
-  switch (signable.type) {
-    case 'sign_message':
-      return 'eths:/?m=' + partFrom + signable.payloadd
-    case 'sign_personal_message':
-      return 'eths:/?p=' + partFrom + signable.payload
-    case 'sign_typed_data':
-      return 'eths:/?y=' + partFrom + signable.payload
-    case 'sign_transaction':
-      const tx = signable.payload
-      var chainId = tx.chainId
-      var chainCode
-      switch (chainId) {
-        case 1:
-          chainCode = 0
-          break
-        case 61:
-          chainCode = 1
-          break
-        case 2:
-          chainCode = 3 // Morden testnet
-          break
-        case 3:
-          chainCode = 4
-          break
-        case 4:
-          chainCode = 5
-          break
-        case 42:
-          chainCode = 6
-          break
-        case 77:
-          chainCode = 7
-          break
-        case 99:
-          chainCode = 9
-          break
-        case 7762959:
-          chainCode = 10
-          break
-        default:
-          chainCode = 8
-          break
-      }
-      var signingType = 0
-      var signChainVersion = ethUtil.stripHexPrefix(ethUtil.intToHex(signingType * 4 + chainCode * 16))
-      var flatStr = signChainVersion + partFrom
-      flatStr += ethUtil.stripHexPrefix(tx.to)
-      flatStr += chainCode === 8 ? chainId.toString() + '|' : ''
-      flatStr += ethUtil.stripHexPrefix(tx.nonce) + '|'
-      flatStr += ethUtil.stripHexPrefix(tx.gasPrice) + '|'
-      flatStr += ethUtil.stripHexPrefix(tx.gasLimit) + '|'
-      flatStr += ethUtil.stripHexPrefix(tx.value) + '|'
-      flatStr += ethUtil.stripHexPrefix(tx.data)
-      flatStr = flatStr.toLowerCase()
+function reduce (signable, signer) {
+  if (signer === 'airsign') {
+    const fromAddress = ethUtil.stripHexPrefix(signable.from)
+    const partFrom = fromAddress.substr(0, 4) +
+      fromAddress.substr(18, 2) + fromAddress.slice(-4)
+    switch (signable.type) {
+      case 'sign_message':
+        return 'eths:/?m=' + partFrom + signable.payload
+      case 'sign_personal_message':
+        return 'eths:/?p=' + partFrom + signable.payload
+      case 'sign_typed_data':
+        return 'eths:/?y=' + partFrom + signable.payload
+      case 'sign_transaction':
+        const tx = signable.payload
+        var chainId = tx.chainId
+        var chainCode
+        switch (chainId) {
+          case 1:
+            chainCode = 0
+            break
+          case 61:
+            chainCode = 1
+            break
+          case 2:
+            chainCode = 3 // Morden testnet
+            break
+          case 3:
+            chainCode = 4
+            break
+          case 4:
+            chainCode = 5
+            break
+          case 42:
+            chainCode = 6
+            break
+          case 77:
+            chainCode = 7
+            break
+          case 99:
+            chainCode = 9
+            break
+          case 7762959:
+            chainCode = 10
+            break
+          default:
+            chainCode = 8
+            break
+        }
+        var signingType = 0
+        var signChainVersion = ethUtil.stripHexPrefix(ethUtil.intToHex(signingType * 4 + chainCode * 16))
+        var flatStr = signChainVersion + partFrom
+        flatStr += ethUtil.stripHexPrefix(tx.to)
+        flatStr += chainCode === 8 ? chainId.toString() + '|' : ''
+        flatStr += ethUtil.stripHexPrefix(tx.nonce) + '|'
+        flatStr += ethUtil.stripHexPrefix(tx.gasPrice) + '|'
+        flatStr += ethUtil.stripHexPrefix(tx.gasLimit) + '|'
+        flatStr += ethUtil.stripHexPrefix(tx.value) + '|'
+        flatStr += ethUtil.stripHexPrefix(tx.data)
+        flatStr = flatStr.toLowerCase()
 
-      const esc9 = flatStr.replace(/9/g, 'n')
+        const esc9 = flatStr.replace(/9/g, 'n')
 
-      // zero compressing
-      const zeroCompStr = esc9.replace(/0{48}/g, '975').replace(/0{24}/g, '974').replace(/0{12}/g, '973').replace(/0{6}/g, '972').replace(/0{5}/g, '971').replace(/0{4}/g, '970')
+        // zero compressing
+        const zeroCompStr = esc9.replace(/0{48}/g, '975').replace(/0{24}/g, '974').replace(/0{12}/g, '973').replace(/0{6}/g, '972').replace(/0{5}/g, '971').replace(/0{4}/g, '970')
 
-      // escape all '9' in flat string
-      const numStr = zeroCompStr
-        .replace(/n/g, '99')
-        .replace(/a/g, '90')
-        .replace(/b/g, '91')
-        .replace(/c/g, '92')
-        .replace(/d/g, '93')
-        .replace(/e/g, '94')
-        .replace(/f/g, '95')
-        .replace(/\|/g, '96')
+        // escape all '9' in flat string
+        const numStr = zeroCompStr
+          .replace(/n/g, '99')
+          .replace(/a/g, '90')
+          .replace(/b/g, '91')
+          .replace(/c/g, '92')
+          .replace(/d/g, '93')
+          .replace(/e/g, '94')
+          .replace(/f/g, '95')
+          .replace(/\|/g, '96')
 
-      var errorChk = ethUtil.stripHexPrefix(ethUtil.bufferToHex(ethUtil.sha3(ethUtil.toBuffer(numStr))).slice(-2))
+        var errorChk = ethUtil.stripHexPrefix(ethUtil.bufferToHex(ethUtil.sha3(ethUtil.toBuffer(numStr))).slice(-2))
 
-      // error check
-      errorChk = errorChk
-        .replace(/9/g, '99')
-        .replace(/a/g, '90')
-        .replace(/b/g, '91')
-        .replace(/c/g, '92')
-        .replace(/d/g, '93')
-        .replace(/e/g, '94')
-        .replace(/f/g, '95')
-      return 'eths:/?t=' + errorChk + numStr
+        // error check
+        errorChk = errorChk
+          .replace(/9/g, '99')
+          .replace(/a/g, '90')
+          .replace(/b/g, '91')
+          .replace(/c/g, '92')
+          .replace(/d/g, '93')
+          .replace(/e/g, '94')
+          .replace(/f/g, '95')
+        return 'eths:/?t=' + errorChk + numStr
+    }
+  } else if (signer === 'paritysigner') {
+    switch (signable.type) {
+      case 'sign_message':
+        return '{"action":"signData","data":{"account":"' +
+          ethUtil.stripHexPrefix(signable.from) +
+          '","data":"' +
+          ethUtil.stripHexPrefix(signable.payload) +
+          '"}}'
+      case 'sign_transaction':
+        return '{"action":"signData","data":{"account":"' +
+          ethUtil.stripHexPrefix(signable.from) +
+          '","rlp":"' +
+          ethUtil.stripHexPrefix(
+            ethUtil.bufferToHex(
+              ethUtil.rlp.encode([
+                signable.payload.nonce,
+                signable.payload.gasPrice,
+                signable.payload.gasLimit,
+                signable.payload.to,
+                signable.payload.value,
+                signable.payload.data,
+                signable.payload.chainId,
+                '', // r
+                '', // s
+          ]))) +
+          '"}}'
+      case 'sign_personal_message':
+        return 'Personal messages are not supported by parity signer.'
+      case 'sign_typed_data':
+        return 'Typed data is not supported by parity signer.'
+    }
+  } else if (signer === 'erc67') {
+    switch (signable.type) {
+      case 'sign_message':
+        return 'ethereum:?message=' + signable.payload + '&from=' + signable.from
+      case 'sign_personal_message':
+        return 'ethereum:?personalmessage=' + signable.payload + '&from=' + signable.from
+      case 'sign_typed_data':
+        return 'ethereum:?typeddata=' + encodeURIComponent(signable.payload) + '&from=' + signable.from
+      case 'sign_transaction':
+        return 'ethereum:' + signable.payload.to +
+          '?from=' + signable.from +
+          '&nonce=' + signable.payload.nonce +
+          '&gasPrice=' + signable.payload.gasPrice +
+          '&gasLimit=' + signable.payload.gasLimit +
+          '&value=' + signable.payload.value +
+          '&data=' + signable.payload.data
+    }
   }
 }
