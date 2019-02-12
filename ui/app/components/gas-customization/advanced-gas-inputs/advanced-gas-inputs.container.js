@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { addHexPrefix } from 'ethereumjs-util'
 import { showModal } from '../../../actions'
 import {
   decGWEIToHexWEI,
@@ -30,8 +31,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     customGasPrice: convertGasPriceForInputs(customGasPrice),
     customGasLimit: convertGasLimitForInputs(customGasLimit),
-    updateCustomGasPrice: (price) => updateCustomGasPrice(decGWEIToHexWEI(price)),
-    updateCustomGasLimit: (limit) => updateCustomGasLimit(decimalToHex(limit)),
+    updateCustomGasPrice: (price) => updateCustomGasPrice(addHexPrefix(decGWEIToHexWEI(price))),
+    updateCustomGasLimit: (limit) => updateCustomGasLimit(addHexPrefix(decimalToHex(limit))),
   }
 }
 
