@@ -126,6 +126,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
       provider: this.provider,
+      networkController: this.networkController,
     })
 
     // account tracker watches balances, nonces, and any code at their address.
