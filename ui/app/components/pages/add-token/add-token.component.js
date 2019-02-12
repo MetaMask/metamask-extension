@@ -43,6 +43,7 @@ class AddToken extends Component {
       customDecimalsError: null,
       autoFilled: false,
       displayedTab: SEARCH_TAB,
+      forceEditSymbol: false,
     }
   }
 
@@ -225,6 +226,7 @@ class AddToken extends Component {
       customSymbolError,
       customDecimalsError,
       autoFilled,
+      forceEditSymbol,
     } = this.state
 
     return (
@@ -241,14 +243,28 @@ class AddToken extends Component {
         />
         <TextField
           id="custom-symbol"
-          label={this.context.t('tokenSymbol')}
+          label={(
+            <div className="add-token__custom-symbol__label-wrapper">
+              <span className="add-token__custom-symbol__label">
+                {this.context.t('tokenSymbol')}
+              </span>
+              {(autoFilled && !forceEditSymbol) && (
+                <div
+                  className="add-token__custom-symbol__edit"
+                  onClick={() => this.setState({ forceEditSymbol: true })}
+                >
+                  {this.context.t('edit')}
+                </div>
+              )}
+            </div>
+          )}
           type="text"
           value={customSymbol}
           onChange={e => this.handleCustomSymbolChange(e.target.value)}
           error={customSymbolError}
           fullWidth
           margin="normal"
-          disabled={autoFilled}
+          disabled={autoFilled && !forceEditSymbol}
         />
         <TextField
           id="custom-decimals"
