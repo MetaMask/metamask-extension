@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import copyToClipboard from 'copy-to-clipboard'
 import SenderToRecipient from '../sender-to-recipient'
 import { FLAT_VARIANT } from '../sender-to-recipient/sender-to-recipient.constants'
 import TransactionActivityLog from '../transaction-activity-log'
@@ -19,6 +20,10 @@ export default class TransactionListItemDetails extends PureComponent {
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
     transactionGroup: PropTypes.object,
+  }
+
+  state = {
+    justCopied: false,
   }
 
   handleEtherscanClick = () => {
@@ -45,8 +50,19 @@ export default class TransactionListItemDetails extends PureComponent {
     onRetry(id)
   }
 
+  handleCopyTxId = () => {
+    const { transactionGroup} = this.props
+    const { primaryTransaction: transaction } = transactionGroup
+    const { hash } = transaction
+
+    this.setState({ justCopied: true }, () => copyToClipboard(hash))
+
+    setTimeout(() => this.setState({ justCopied: false }), 1000)
+  }
+
   render () {
     const { t } = this.context
+    const { justCopied } = this.state
     const { transactionGroup, showCancel, showRetry, onCancel, onRetry } = this.props
     const { primaryTransaction: transaction } = transactionGroup
     const { txParams: { to, from } = {} } = transaction
@@ -78,6 +94,18 @@ export default class TransactionListItemDetails extends PureComponent {
                 </Button>
               )
             }
+            <Tooltip title={justCopied ? t('copiedTransactionId') : t('copyTransactionId')}>
+              <Button
+                type="raised"
+                onClick={this.handleCopyTxId}
+                className="transaction-list-item-details__header-button"
+              >
+                <img
+                  className="transaction-list-item-details__header-button__copy-icon"
+                  src="/images/copy-to-clipboard.svg"
+                />
+              </Button>
+            </Tooltip>
             <Tooltip title={t('viewOnEtherscan')}>
               <Button
                 type="raised"

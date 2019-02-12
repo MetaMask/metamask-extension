@@ -305,6 +305,12 @@
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
+  "copyTransactionId": {
+    "message": "Copy Transaction ID"
+  },
+  "copiedTransactionId": {
+    "message": "Copied Transaction ID"
+  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
