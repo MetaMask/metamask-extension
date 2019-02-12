@@ -529,6 +529,9 @@
   "gasLimitCalculation": {
     "message": "We calculate the suggested gas limit based on network success rates."
   },
+  "gasLimitInfoModalContent": {
+    "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
+  },
   "gasLimitRequired": {
     "message": "Gas Limit Required"
   },
@@ -546,6 +549,9 @@
   },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
   "gasPriceNoDenom": {
     "message": "Gas Price"
@@ -1212,6 +1218,12 @@
   },
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
+  },
+  "showAdvancedGasInline": {
+    "message": "Advanced gas controls"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"

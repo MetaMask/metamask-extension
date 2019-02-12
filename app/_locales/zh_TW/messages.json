@@ -3,28 +3,31 @@
     "message": "隱私模式"
   },
   "privacyModeDescription": {
-    "message": "網站必須請求訪問權限才能查看您的帳戶信息。"
+    "message": "網站必須請求訪問權限才能查看您的帳戶資訊"
   },
   "exposeAccounts": {
     "message": "公開賬戶"
   },
   "exposeDescription": {
-    "message": "將帳戶公開給當前網站。對傳統dapps很有用。"
+    "message": "將帳戶公開給當前網站。對傳統去中心化應用服務很有用。"
   },
   "confirmExpose": {
     "message": "您確定要將帳戶公開到當前網站嗎？"
   },
   "confirmClear": {
-    "message": "您確定要清除已批准的網站嗎？"
+    "message": "您確定要清除已批准的網站紀錄？"
+  },
+  "contractInteraction": {
+    "message": "合約互動"
   },
   "clearApprovalDataSuccess": {
-    "message": "已批准的網站數據已成功清除。"
+    "message": "已批准的網站紀錄已成功清除。"
   },
   "approvalData": {
-    "message": "審批數據"
+    "message": "審核紀錄"
   },
   "approvalDataDescription": {
-    "message": "清除已批准的網站數據，以便所有網站都必須再次申請"
+    "message": "清除之前已批准過的網站審核紀錄，所有網站都必須再次申請"
   },
   "clearApprovalData": {
     "message": "清除批准數據"
@@ -35,17 +38,26 @@
   "reject": {
     "message": "拒絕"
   },
+  "providerRequest": {
+    "message": "$1 請求訪問帳戶權限"
+  },
+  "providerRequestInfo": {
+    "message": "此網站希望能讀取您的帳戶資訊。請務必確認您信任這個網站、並了解後續可能的交易行為。"
+  },
   "providerAPIRequest": {
-    "message": "Web3 API請求"
+    "message": "Web3 API 請求"
   },
   "reviewProviderRequest": {
     "message": "請查看此Ethereum API請求。"
   },
-  "providerRequestInfo": {
-    "message": "下面列出的域正在嘗試請求訪問Ethereum API，以便它可以與以太坊區塊鏈進行交互。在批准Ethereum訪問之前，請務必仔細檢查您是否在正確的站點上。"
-  },
   "accept": {
     "message": "接受"
+  },
+  "acceleratingATransaction": {
+    "message": "* 提高交易費 Gas 價格將可加速處理時間，但不保證會有顯著效果"
+  },
+  "accessingYourCamera": {
+    "message": "正在存取您的攝影鏡頭..."
   },
   "account": {
     "message": "帳戶"
@@ -56,8 +68,20 @@
   "accountName": {
     "message": "帳戶名稱"
   },
+  "accountOptions": {
+    "message": "帳戶"
+  },
+  "accountSelectionRequired": {
+    "message": "必須先選擇一個帳戶!"
+  },
+  "activityLog": {
+    "message": "活動紀錄"
+  },
   "address": {
-    "message": "帳戶地址"
+    "message": "帳戶位址"
+  },
+  "advancedOptions": {
+    "message": "進階選項"
   },
   "addCustomToken": {
     "message": "加入自訂代幣"
@@ -66,13 +90,25 @@
     "message": "加入代幣"
   },
   "addTokens": {
-    "message": "加入多筆代幣"
+    "message": "加入代幣"
+  },
+  "addSuggestedTokens": {
+    "message": "加入建議的代幣"
+  },
+  "addAcquiredTokens": {
+    "message": "將您已經擁有的代幣顯示於 MetaMask"
+  },
+  "advanced": {
+    "message": "進階"
   },
   "amount": {
-    "message": "數額"
+    "message": "數量"
   },
   "amountPlusGas": {
-    "message": "數額 + Gas"
+    "message": "數量 + Gas"
+  },
+  "amountPlusTxFee": {
+    "message": "數量 + 交易費"
   },
   "appDescription": {
     "message": "乙太坊瀏覽器擴充插件",
@@ -83,10 +119,16 @@
     "description": "The name of the application"
   },
   "approved": {
-    "message": "已同意"
+    "message": "已批准"
   },
   "attemptingConnect": {
     "message": "正在嘗試連接區塊鏈。"
+  },
+  "attemptToCancel": {
+    "message": "嘗試取消?"
+  },
+  "attemptToCancelDescription": {
+    "message": "送出取消並不保證您的交易一定會被取消。若取消成功，將會收取上方顯示交易費用"
   },
   "attributions": {
     "message": "來源"
@@ -94,17 +136,26 @@
   "available": {
     "message": "可使用"
   },
+  "average": {
+    "message": "平均"
+  },
   "back": {
     "message": "上一頁"
   },
   "balance": {
     "message": "餘額："
   },
+  "balanceOutdated": {
+    "message": "顯示餘額不一定是最新資訊"
+  },
   "balances": {
-    "message": "你的餘額："
+    "message": "您的餘額："
   },
   "balanceIsInsufficientGas": {
     "message": "當前餘額不足以支付 Gas"
+  },
+  "basic": {
+    "message": "基本"
   },
   "beta": {
     "message": "BETA"
@@ -114,13 +165,16 @@
     "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
-    "message": "使用 Blockies Identicon"
+    "message": "使用像素風格代表圖案"
   },
   "borrowDharma": {
     "message": "透過 Dharma (Beta) 借用"
   },
+  "browserNotSupported": {
+    "message": "您的瀏覽器尚未支援..."
+  },
   "builtInCalifornia": {
-    "message": "MetaMask 是在加州設計製造."
+    "message": "MetaMask 是在加州設計製造"
   },
   "buy": {
     "message": "購買"
@@ -129,7 +183,10 @@
     "message": "在 Coinbase 上購買"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase 是世界上最流行的買賣比特幣，以太幣和萊特幣的交易所。"
+    "message": "Coinbase 是世界上最受歡迎的比特幣、以太幣和萊特幣的買賣交易所。"
+  },
+  "bytes": {
+    "message": "位元組"
   },
   "ok": {
     "message": "Ok"
@@ -137,14 +194,41 @@
   "cancel": {
     "message": "取消"
   },
+  "cancelAttempt": {
+    "message": "嘗試取消"
+  },
+  "cancellationGasFee": {
+    "message": "需要的手續費"
+  },
+  "cancelled": {
+    "message": "已取消"
+  },
+  "cancelN": {
+    "message": "取消全部 $1 筆交易"
+  },
   "classicInterface": {
     "message": "使用舊版界面"
   },
   "clickCopy": {
     "message": "點擊複製"
   },
+  "clickToAdd": {
+    "message": "點選下方 $1 新增資訊"
+  },
+  "clickToRevealSeed": {
+    "message": "點選顯示助憶詞"
+  },
+  "close": {
+    "message": "關閉"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "您需要在 Google Chrome 瀏覽器使用 MetaMask 連結您的硬體錢包"
+  },
   "confirm": {
     "message": "確認"
+  },
+  "confirmationTime": {
+    "message": "確認時間 (秒)"
   },
   "confirmed": {
     "message": "已確認"
@@ -155,8 +239,32 @@
   "confirmPassword": {
     "message": "確認密碼"
   },
+  "confirmSecretBackupPhrase": {
+    "message": "確認您已經備份的助憶詞"
+  },
   "confirmTransaction": {
     "message": "確認交易"
+  },
+  "connectHardwareWallet": {
+    "message": "連線硬體錢包"
+  },
+  "connect": {
+    "message": "連線"
+  },
+  "connectRequest": {
+    "message": "連線請求"
+  },
+  "connecting": {
+    "message": "連線中..."
+  },
+  "connectingTo": {
+    "message": "連線到$1"
+  },
+  "connectToLedger": {
+    "message": "連線到 Ledger"
+  },
+  "connectToTrezor": {
+    "message": "連線到 Trezor"
   },
   "continue": {
     "message": "繼續"
@@ -165,7 +273,7 @@
     "message": "繼續前往 Coinbase"
   },
   "contractDeployment": {
-    "message": "合約部署"
+    "message": "部署合約"
   },
   "conversionProgress": {
     "message": "正在取得匯率"
@@ -185,6 +293,9 @@
   "copy": {
     "message": "複製"
   },
+  "copyAddress": {
+    "message": "複製到剪貼簿"
+  },
   "copyToClipboard": {
     "message": "複製到剪貼簿"
   },
@@ -192,7 +303,7 @@
     "message": " 複製 "
   },
   "copyPrivateKey": {
-    "message": "這是你的私鑰（點擊複製）"
+    "message": "這是您的私鑰（點擊複製）"
   },
   "create": {
     "message": "建立"
@@ -203,18 +314,30 @@
   "createDen": {
     "message": "建立"
   },
+  "createPassword": {
+    "message": "建立密碼"
+  },
   "crypto": {
     "message": "加密",
     "description": "Exchange type (cryptocurrencies)"
   },
+  "currencyConversion": {
+    "message": "轉換匯率"
+  },
   "currentConversion": {
     "message": "當前匯率"
+  },
+  "currentLanguage": {
+    "message": "當前語言"
   },
   "currentNetwork": {
     "message": "當前網路"
   },
   "customGas": {
     "message": "自訂 Gas"
+  },
+  "customGasSubTitle": {
+    "message": "提升費用可能會加快處理時間，但不保證"
   },
   "customToken": {
     "message": "自訂代幣"
@@ -232,26 +355,26 @@
     "message": "小數點精度"
   },
   "defaultNetwork": {
-    "message": "預設 Ether 交易網路為主網路（Main Net）。"
+    "message": "預設乙太幣交易網路為主網路"
   },
   "denExplainer": {
-    "message": "你的 DEN 是在你的 MetaMask 中的加密密碼儲存庫。"
+    "message": "您的 DEN 是 MetaMask 中您的的密碼加密儲存庫。"
   },
   "deposit": {
     "message": "存入"
   },
   "depositBTC": {
-    "message": "將你的 BTC 存入到下面的地址："
+    "message": "將您的 BTC 存入到下面的位址："
   },
   "depositCoin": {
-    "message": "將你的 $1 存入到下面的地址",
+    "message": "將您的 $1 存入到下面的位址",
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "存入 Eth"
+    "message": "存入乙太幣"
   },
   "depositEther": {
-    "message": "存入 Ether"
+    "message": "存入乙太幣"
   },
   "depositFiat": {
     "message": "從法定貨幣存入"
@@ -263,7 +386,7 @@
     "message": "從 ShapeShift 存入"
   },
   "depositShapeShiftExplainer": {
-    "message": "如果你擁有其他加密貨幣，你可以直接交易並存入 Ether 到你的 MetaMask 錢包。不需要開帳戶。"
+    "message": "如果您擁有其他加密貨幣，可直接轉換為乙太幣存入 MetaMask 錢包。不需開新帳戶。"
   },
   "details": {
     "message": "詳情"
@@ -272,16 +395,25 @@
     "message": "直接存入"
   },
   "directDepositEther": {
-    "message": "直接存入 Ether"
+    "message": "直接存入乙太幣"
   },
   "directDepositEtherExplainer": {
-    "message": "如果你已經擁有了一些 Ether，使用直接存入功能是讓你的新錢包最快取得 Ether 的方式。"
+    "message": "如果您已經擁有乙太幣，直接存入功能是讓新錢包最快取得乙太幣的方式。"
   },
   "done": {
     "message": "完成"
   },
+  "downloadGoogleChrome": {
+    "message": "下載 Google Chrome 瀏覽器"
+  },
+  "downloadSecretBackup": {
+    "message": "下載助憶詞文字檔案，並安全的保存在有加密功能的外接硬碟或其他儲存裝置。"
+  },
   "downloadStateLogs": {
     "message": "下載狀態紀錄"
+  },
+  "dontHaveAHardwareWallet": {
+    "message": "還沒有硬體錢包？"
   },
   "dropped": {
     "message": "丟棄"
@@ -292,11 +424,17 @@
   "editAccountName": {
     "message": "編輯帳戶名稱"
   },
+  "editingTransaction": {
+    "message": "修改交易"
+  },
   "emailUs": {
     "message": "寄 Email 給我們!"
   },
   "encryptNewDen": {
-    "message": "加密你的新 DEN"
+    "message": "加密您的新 DEN"
+  },
+  "ensNameNotFound": {
+    "message": "ENS 名稱不存在"
   },
   "enterPassword": {
     "message": "請輸入密碼"
@@ -304,17 +442,29 @@
   "enterPasswordConfirm": {
     "message": "請再次輸入密碼確認"
   },
+  "enterPasswordContinue": {
+    "message": "請輸入密碼"
+  },
   "passwordNotLongEnough": {
     "message": "您所輸入的密碼長度不足"
   },
   "passwordsDontMatch": {
     "message": "您所輸入的密碼不一致"
   },
+  "eth": {
+    "message": "ETH"
+  },
   "etherscanView": {
     "message": "在 Etherscan 上查看帳戶"
   },
+  "estimatedProcessingTimes": {
+    "message": "預估處理時間"
+  },
   "exchangeRate": {
     "message": "匯率"
+  },
+  "expandView": {
+    "message": "展開畫面"
   },
   "exportPrivateKey": {
     "message": "導出私鑰"
@@ -323,27 +473,45 @@
     "message": "您需要自行負擔導出私鑰產生的風險"
   },
   "failed": {
-    "message": "失败"
+    "message": "交易失败"
+  },
+  "fast": {
+    "message": "快"
+  },
+  "faster": {
+    "message": "更快"
+  },
+  "fastest": {
+    "message": "最快"
+  },
+  "feeChartTitle": {
+    "message": "即時交易費預估"
   },
   "fiat": {
-    "message": "FIAT",
+    "message": "法定貨幣",
     "description": "Exchange type"
   },
   "fileImportFail": {
-    "message": "檔案導入失敗？點擊這裡！",
+    "message": "檔案匯入失敗？點擊這裡！",
     "description": "Helps user import their account from a JSON file"
   },
   "followTwitter": {
     "message": "追蹤 Twitter"
   },
+  "forgetDevice": {
+    "message": "移除此裝置"
+  },
   "from": {
-    "message": "來源地址"
+    "message": "來源帳戶"
   },
   "fromToSame": {
-    "message": "來源和目的地址不能一樣"
+    "message": "來源和目的位址不能一樣"
   },
   "fromShapeShift": {
     "message": "來自 ShapeShift"
+  },
+  "functionType": {
+    "message": "功能類型"
   },
   "gas": {
     "message": "Gas",
@@ -358,11 +526,17 @@
   "gasLimitCalculation": {
     "message": "我們根據網路成功率算出建議的 Gas 上限。"
   },
+  "gasLimitInfoModalContent": {
+    "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
+  },
   "gasLimitRequired": {
     "message": "必需填寫 Gas 上限"
   },
   "gasLimitTooLow": {
     "message": "Gas 上限至少為 21000"
+  },
+  "gasUsed": {
+    "message": "Gas 用量"
   },
   "generatingSeed": {
     "message": "產生助憶詞中..."
@@ -370,22 +544,52 @@
   "gasPrice": {
     "message": "Gas 價格 (GWEI)"
   },
+  "gasPriceExtremelyLow": {
+    "message": "Gas 價格極低"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Gas 價格代表願意為交易手續費付出的單位價格，價格越高交易處理速度越快"
+  },
+  "gasPriceNoDenom": {
+    "message": "Gas 價格"
+  },
   "gasPriceCalculation": {
     "message": "我們根據網路成功率算出建議的 Gas 價格"
   },
   "gasPriceRequired": {
     "message": "必需填寫 Gas 價格"
   },
+  "generatingTransaction": {
+    "message": "產生交易"
+  },
   "getEther": {
-    "message": "取得 Ether"
+    "message": "取得乙太幣"
   },
   "getEtherFromFaucet": {
-    "message": "從水管取得$1 Ether",
+    "message": "從水管取得 $1 乙太幣。",
     "description": "Displays network name for Ether faucet"
+  },
+  "getHelp": {
+    "message": "取得協助"
   },
   "greaterThanMin": {
     "message": "必須要大於等於 $1。",
     "description": "helper for inputting hex as decimal input"
+  },
+  "hardware": {
+    "message": "硬體"
+  },
+  "hardwareWalletConnected": {
+    "message": "硬體錢包已連線"
+  },
+  "hardwareWallets": {
+    "message": "連線硬體錢包"
+  },
+  "hardwareWalletsMsg": {
+    "message": "選擇要連線到 MetaMask 的硬體錢包"
+  },
+  "havingTroubleConnecting": {
+    "message": "無法正確連線?"
   },
   "here": {
     "message": "這裡",
@@ -393,6 +597,9 @@
   },
   "hereList": {
     "message": "Here's a list!!!!"
+  },
+  "hexData": {
+    "message": "16進位資料"
   },
   "hide": {
     "message": "隱藏"
@@ -403,46 +610,68 @@
   "hideTokenPrompt": {
     "message": "隱藏代幣？"
   },
+  "history": {
+    "message": "紀錄"
+  },
   "howToDeposit": {
-    "message": "你想怎麼存入 Ether？"
+    "message": "您想怎麼存入乙太幣？"
   },
   "holdEther": {
-    "message": "MetaMask 讓您能保存 ether 和代幣, 並成為您接觸分散式應用程式的途徑."
+    "message": "能讓您保存乙太幣和代幣，並成為您與去中心化應用程式的橋梁"
   },
   "import": {
-    "message": "導入",
+    "message": "匯入",
     "description": "Button to import an account from a selected file"
   },
   "importAccount": {
-    "message": "導入帳戶"
+    "message": "匯入帳戶"
   },
   "importAccountMsg": {
-    "message": " 匯入的帳戶與您原有 MetaMask 帳戶的助憶詞並無關聯. 請查看與導入帳戶相關的資料 "
+    "message": " 匯入的帳戶與您原有 MetaMask 帳戶的助憶詞並無關聯。請查看與匯入帳戶相關的資料 "
+  },
+  "importAccountSeedPhrase": {
+    "message": "利用助憶詞還原"
   },
   "importAnAccount": {
-    "message": "導入一個帳戶"
+    "message": "匯入一個帳戶"
   },
   "importDen": {
-    "message": "導入現成的 DEN"
+    "message": "匯入現有的 DEN"
   },
   "imported": {
-    "message": "已導入私鑰",
+    "message": "已匯入私鑰",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "importUsingSeed": {
+    "message": "利用助憶詞匯入帳戶" ,
+    "description": "登入頁面下方"
+  },
+  "importWithSeedPhrase": {
+    "message": "利用助憶詞還原"
   },
   "infoHelp": {
     "message": "說明 & 資訊"
   },
+  "initialTransactionConfirmed": {
+    "message": "交易已確認"
+  },
+  "insufficientBalance": {
+    "message": "餘額不足"
+  },
   "insufficientFunds": {
-    "message": "資金不足."
+    "message": "資金不足"
   },
   "insufficientTokens": {
-    "message": "代幣不足."
+    "message": "代幣不足"
   },
   "invalidAddress": {
-    "message": "錯誤的地址"
+    "message": "錯誤的位址"
   },
   "invalidAddressRecipient": {
-    "message": "接收地址錯誤"
+    "message": "接收位址錯誤"
+  },
+  "knownAddressRecipient": {
+    "message": "已知合約位址"
   },
   "invalidGasParams": {
     "message": "Gas 參數錯誤"
@@ -456,11 +685,14 @@
   "invalidRPC": {
     "message": "無效的 RPC URI"
   },
+  "invalidSeedPhrase": {
+    "message": "無效的助憶詞"
+  },
   "jsonFail": {
-    "message": "有東西出錯了. 請確認你的 JSON 檔案格式正確。"
+    "message": "有東西出錯了. 請確認您的 JSON 檔案格式正確。"
   },
   "jsonFile": {
-    "message": "JSON 檔案",
+    "message": "JSON 格式檔案",
     "description": "format for importing an account"
   },
   "keepTrackTokens": {
@@ -476,20 +708,26 @@
     "message": "最大值"
   },
   "learnMore": {
-    "message": "了解更多。"
+    "message": "了解更多"
+  },
+  "ledgerAccountRestriction": {
+    "message": "您必須使用最後的帳戶才能產生新帳戶"
   },
   "lessThanMax": {
     "message": "必須小於等於 $1.",
     "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
-    "message": "您確定要加入這些代幣嗎？"
+    "message": "確定要加入代幣？"
   },
   "links": {
     "message": "連結"
   },
   "limit": {
     "message": "上限"
+  },
+  "liveGasPricePredictions": {
+    "message": "即時 Gas 價格預估"
   },
   "loading": {
     "message": "載入..."
@@ -515,37 +753,58 @@
   "mainnet": {
     "message": "乙太坊 主網路"
   },
+  "memorizePhrase": {
+    "message": "絕對不要忘記您的助憶詞。"
+  },
+  "menu": {
+    "message": "選單"
+  },
   "message": {
     "message": "訊息"
   },
   "metamaskDescription": {
-    "message": "MetaMask 是Ethereum的安全身份識別金庫."
+    "message": "MetaMask 是乙太坊安全身份識別金庫"
+  },
+  "metamaskSeedWords": {
+    "message": "MetaMask Seed Words"
+  },
+  "metamaskVersion": {
+    "message": "MetaMask 版本"
   },
   "min": {
     "message": "最小"
+  },
+  "missingYourTokens": {
+    "message": "看不到您的代幣？"
+  },
+  "minutesShorthand": {
+    "message": "Min"
   },
   "myAccounts": {
     "message": "我的帳戶"
   },
   "mustSelectOne": {
-    "message": "必須選擇至少 1 代幣."
+    "message": "必須選擇至少 1 代幣"
   },
   "needEtherInWallet": {
-    "message": "要使用 MetaMask 存取 DAPP 時，您的錢包中需要有 Ether。"
+    "message": "要使用 MetaMask 存取去中心化應用服務時，您的錢包中需要有乙太幣。"
   },
   "needImportFile": {
-    "message": "您必須選擇一個檔案來導入。",
+    "message": "您必須選擇一個檔案來匯入",
     "description": "User is important an account and needs to add a file to continue"
   },
   "needImportPassword": {
-    "message": "您必須為選擇好的檔案輸入密碼。",
+    "message": "您必須為選擇好的檔案輸入密碼",
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "不能送出負值的 ETH。"
+    "message": "不能送出負值的乙太幣"
   },
   "networks": {
     "message": "網路"
+  },
+  "nevermind": {
+    "message": "算了"
   },
   "newAccount": {
     "message": "新帳戶"
@@ -555,44 +814,114 @@
     "description": "Default name of next account to be created on create account screen"
   },
   "newContract": {
-    "message": "新合約"
+    "message": "建立新合約"
   },
   "newPassword": {
-    "message": "新密碼（至少8個字）"
+    "message": "新密碼（至少8個字元）"
+  },
+  "newPassword8Chars": {
+    "message": "新密碼 (至少8個字元)"
   },
   "newRecipient": {
     "message": "新收款人"
   },
-  "newRPC": {
-    "message": "New RPC URL"
+  "newNetwork": {
+    "message": "新增網路"
+  },
+  "rpcURL": {
+    "message": "RPC URL 位址"
+  },
+  "showAdvancedOptions": {
+    "message": "顯示進階選項"
+  },
+  "hideAdvancedOptions": {
+    "message": "隱藏進階選項"
+  },
+  "optionalChainId": {
+    "message": "ChainID (可選)"
+  },
+  "optionalSymbol": {
+    "message": "Symbol (可選)"
+  },
+  "optionalNickname": {
+    "message": "顯示名稱 (可選)"
+  },
+  "newTotal": {
+    "message": "總費用"
+  },
+  "newTransactionFee": {
+    "message": "自訂交易費"
   },
   "next": {
     "message": "下一頁"
   },
   "noAddressForName": {
-    "message": "此 ENS 尚未指定地址。"
+    "message": "此 ENS 尚未指定位址。"
   },
   "noDeposits": {
     "message": "尚未有存款"
   },
+  "noConversionRateAvailable": {
+    "message": "尚未有匯率比較值"
+  },
   "noTransactionHistory": {
-    "message": "尚未有交易紀錄。"
+    "message": "尚未有交易紀錄"
   },
   "noTransactions": {
     "message": "尚未有交易"
   },
+  "notFound": {
+    "message": "找不到"
+  },
   "notStarted": {
     "message": "尚未開始"
+  },
+  "noWebcamFoundTitle": {
+    "message": "找不到攝影鏡頭"
+  },
+  "noWebcamFound": {
+    "message": "無法搜尋到攝影鏡頭裝置。請再試一次"
+  },
+  "ofTextNofM": {
+    "message": "of"
   },
   "oldUI": {
     "message": "舊版界面"
   },
   "oldUIMessage": {
-    "message": "你已經切換到舊版界面。可以通過右上方下拉選單中的選項切換回新的使用者界面。"
+    "message": "您已經切換到舊版界面。可以通過右上方下拉選單中的選項切換回新的使用者界面。"
+  },
+  "onlySendToEtherAddress": {
+    "message": "只能發送到乙太坊位址"
+  },
+  "onlySendTokensToAccountAddress": {
+    "message": "只能發送 $1 到乙太坊位址",
+    "description": "displays token symbol"
+  },
+  "openInTab": {
+    "message": "頁籤中開啟"
   },
   "or": {
     "message": "或",
     "description": "choice between creating or importing a new account"
+  },
+  "orderOneHere": {
+    "message": "訂購 Trezor 或 Ledger 讓資產保存於硬體裝置。"
+  },
+  "origin": {
+    "message": "來源"
+  },
+  "outgoing": {
+    "message": "外出"
+  },
+  "parameters": {
+    "message": "參數"
+  },
+  "originalTotal": {
+    "message": "原始總量"
+  },
+  "password": {
+    "message": "密碼"
   },
   "passwordCorrect": {
     "message": "請確認您的密碼是正確的。"
@@ -606,20 +935,32 @@
     "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
-    "message": "請貼上你的私鑰串:",
+    "message": "請貼上您的私鑰字串:",
     "description": "For importing an account from a private key"
   },
   "pasteSeed": {
-    "message": "請貼上你的助憶詞！"
+    "message": "請貼上您的助憶詞！"
+  },
+  "pending": {
+    "message": "等待處理"
   },
   "personalAddressDetected": {
-    "message": "已偵測到個人地址. 請輸入代幣合約地址."
+    "message": "偵測為個人位址，請輸入代幣合約位址"
   },
   "pleaseReviewTransaction": {
-    "message": "請檢查你的交易。"
+    "message": "請檢查您的交易。"
   },
   "popularTokens": {
     "message": "常見的代幣"
+  },
+  "prev": {
+    "message": "Prev"
+  },
+  "primaryCurrencySetting": {
+    "message": "主要顯示"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "選擇使用乙太幣(ETH)或是法定貨幣(例如：美金)為主要錢幣顯示單位"
   },
   "privacyMsg": {
     "message": "隱私政策"
@@ -629,7 +970,7 @@
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "注意：永遠不要公開這個私鑰。任何取得這把私鑰的人都可以竊取這個帳號中的任何資產。"
+    "message": "注意：永遠不要公開這個私鑰。任何取得這把私鑰的人都可以竊取這個帳戶中的所有資產。"
   },
   "privateNetwork": {
     "message": "私有網路"
@@ -637,35 +978,60 @@
   "qrCode": {
     "message": "顯示 QR Code"
   },
+  "queue": {
+    "message": "佇列"
+  },
   "readdToken": {
-    "message": "之後還可以透過帳戶選單中的“加入代幣”來加入此代幣。"
+    "message": "未來可以隨時重新加入此代幣"
   },
   "readMore": {
-    "message": "了解更多。"
+    "message": "了解更多"
   },
   "readMore2": {
-    "message": "了解更多。"
+    "message": "了解更多"
   },
   "receive": {
     "message": "接收"
   },
   "recipientAddress": {
-    "message": "接收地址"
+    "message": "接收位址"
   },
   "refundAddress": {
-    "message": "你的退款地址"
+    "message": "您的退款位址"
+  },
+  "rejectAll": {
+    "message": "全部拒絕"
+  },
+  "rejectTxsN": {
+    "message": "拒絕 $1 筆交易"
+  },
+  "rejectTxsDescription": {
+    "message": "您將批次拒絕 $1 筆交易."
   },
   "rejected": {
     "message": "拒絕"
   },
+  "reset": {
+    "message": "重置"
+  },
   "resetAccount": {
     "message": "重置帳戶"
   },
+  "resetAccountDescription": {
+    "message": "重置帳戶將清除您的交易紀錄"
+  },
   "restoreFromSeed": {
-    "message": "透過助憶詞重置"
+    "message": "還原帳戶？",
+    "description": "登入頁面下方"
   },
   "restoreVault": {
-    "message": "重置金庫"
+    "message": "還原金庫"
+  },
+  "restoreAccountWithSeed": {
+    "message": "透過助憶詞還原您的帳戶"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "請求正在等待確認"
   },
   "required": {
     "message": "必填"
@@ -673,23 +1039,50 @@
   "retryWithMoreGas": {
     "message": "改用更高的 Gas 價格重試"
   },
+  "restore": {
+    "message": "Restore"
+  },
   "walletSeed": {
-    "message": "錢包助憶詞"
+    "message": "助憶詞"
   },
   "revealSeedWords": {
     "message": "顯示助憶詞"
   },
+  "revealSeedWordsTitle": {
+    "message": "助憶詞"
+  },
+  "revealSeedWordsDescription": {
+    "message": "若想在不同瀏覽器或電腦登入，將需要使用助憶詞還原帳戶資訊。請妥善並安全的保管您的助憶詞。"
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "請勿將助憶詞洩漏予他人"
+  },
   "revealSeedWordsWarning": {
-    "message": "別在公共場合回復你的助憶詞！這些詞可被用來竊取你的帳戶."
+    "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
   },
   "revert": {
     "message": "還原"
+  },
+  "remove": {
+    "message": "移除"
+  },
+  "removeAccount": {
+    "message": "移除帳戶"
+  },
+  "removeAccountDescription": {
+    "message": "此帳戶將由錢包中移除。在繼續進行之前請確認您已經匯出並妥善備份助憶詞或私鑰。"
+  },
+  "readyToConnect": {
+    "message": "準備連線？"
   },
   "rinkeby": {
     "message": "Rinkeby 測試網路"
   },
   "ropsten": {
     "message": "Ropsten 測試網路"
+  },
+  "rpc": {
+    "message": "自訂 RPC"
   },
   "currentRpc": {
     "message": "當前的 RPC"
@@ -716,6 +1109,15 @@
   "save": {
     "message": "儲存"
   },
+  "slow": {
+    "message": "慢"
+  },
+  "slower": {
+    "message": "更慢"
+  },
+  "saveAsCsvFile": {
+    "message": "儲存為CSV格式檔案"
+  },
   "saveAsFile": {
     "message": "儲存檔案",
     "description": "Account export process"
@@ -723,14 +1125,35 @@
   "saveSeedAsFile": {
     "message": "將助憶詞儲存成檔案"
   },
+  "scanInstructions": {
+    "message": "請將 QR code 放在攝影鏡頭前面"
+  },
+  "scanQrCode": {
+    "message": "掃描 QR Code"
+  },
   "search": {
     "message": "搜尋"
   },
-  "secretPhrase": {
-    "message": "在此輸入你的12個祕密助憶詞以回復金庫."
+  "searchResults": {
+    "message": "搜尋結果"
   },
-  "newPassword8Chars": {
-    "message": "新密碼 (至少 8 個字元)"
+  "secretBackupPhrase": {
+    "message": "助憶詞"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "助憶詞將可協助您用更簡單的方式備份帳戶資訊。"
+  },
+  "secretBackupPhraseWarning": {
+    "message": "警告: 絕對不要洩漏您的助憶詞。任何人只要得知助憶詞代表他可以竊取您所有的乙太幣和代幣。"
+  },
+  "secretPhrase": {
+    "message": "輸入您的12個助憶詞以回復金庫"
+  },
+  "secondsShorthand": {
+    "message": "秒"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "單詞之間請用空白分隔"
   },
   "seedPhraseReq": {
     "message": "助憶詞為 12 個詞語"
@@ -741,6 +1164,12 @@
   "selectCurrency": {
     "message": "選擇幣別"
   },
+  "selectEachPhrase": {
+    "message": "請依照正確順序點選助憶詞"
+  },
+  "selectLocale": {
+    "message": "選擇地區"
+  },
   "selectService": {
     "message": "選擇服務"
   },
@@ -750,17 +1179,44 @@
   "send": {
     "message": "發送"
   },
+  "sendAmount": {
+    "message": "發送數量"
+  },
   "sendETH": {
-    "message": "發送 ETH"
+    "message": "發送乙太幣"
   },
   "sendTokens": {
     "message": "發送代幣"
   },
-  "onlySendToEtherAddress": {
-    "message": "只發送 ETH 到乙太坊地址."
+  "sentEther": {
+    "message": "發送乙太幣"
+  },
+  "sentTokens": {
+    "message": "發送代幣"
+  },
+  "separateEachWord": {
+    "message": "單詞之間請以空白間隔"
   },
   "searchTokens": {
     "message": "搜尋代幣"
+  },
+  "selectAnAddress": {
+    "message": "選擇位址"
+  },
+  "selectAnAccount": {
+    "message": "選擇帳戶"
+  },
+  "selectAnAccountHelp": {
+    "message": "Select the account to view in MetaMask"
+  },
+  "selectAHigherGasFee": {
+    "message": "選擇更高的交易費可加速您的交易處理時間 *"
+  },
+  "selectHdPath": {
+    "message": "Select HD Path"
+  },
+  "selectPathHelp": {
+    "message": "若看不到您已經擁有的 Ledger 帳戶，請嘗試切換路徑為 \"Legacy (MEW / MyCrypto)\""
   },
   "sendTokensAnywhere": {
     "message": "發送代幣給擁有乙太坊帳戶的任何人"
@@ -774,14 +1230,29 @@
   "shapeshiftBuy": {
     "message": "從 Shapeshift 購買"
   },
+  "showAdvancedGasInline": {
+    "message": "顯示進階 Gas 控制選項"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "在交易時顯示可微調 Gas 價格以及 Gas 上限的功能"
+  },
   "showPrivateKeys": {
     "message": "顯示私鑰"
   },
   "showQRCode": {
     "message": "顯示 QR Code"
   },
+  "showHexData": {
+    "message": "顯示16進位資料"
+  },
+  "showHexDataDescription": {
+    "message": "在交易時顯示16進位資料"
+  },
   "sign": {
     "message": "簽署"
+  },
+  "signatureRequest": {
+    "message": "請求簽署"
   },
   "signed": {
     "message": "已簽署"
@@ -790,7 +1261,7 @@
     "message": "簽署訊息"
   },
   "signNotice": {
-    "message": "簽署此訊息可能會產生危險地副作用。 \n只從你完全信任的網站上簽署。這種危險的方法;將在未來的版本中被移除。"
+    "message": "簽署此訊息可能會產生危險地副作用。 \n只從您完全信任的網站上簽署。這種危險的方法，將在未來的版本中被移除。"
   },
   "sigRequest": {
     "message": "請求簽署"
@@ -798,8 +1269,29 @@
   "sigRequested": {
     "message": "已請求簽署"
   },
+  "somethingWentWrong": {
+    "message": "糟糕！出了點問題。"
+  },
   "spaceBetween": {
-    "message": "there can only be a space between words"
+    "message": "單詞之間只能有空白"
+  },
+  "speedUp": {
+    "message": "加速"
+  },
+  "speedUpTitle": {
+    "message": "加速交易"
+  },
+  "speedUpSubtitle": {
+    "message": "提高手續費可以加速交易處理時間"
+  },
+  "speedUpCancellation": {
+    "message": "加速取消"
+  },
+  "speedUpTransaction": {
+    "message": "加速這筆交易"
+  },
+  "switchNetworks": {
+    "message": "切換網路"
   },
   "status": {
     "message": "狀態"
@@ -808,10 +1300,31 @@
     "message": "狀態紀錄"
   },
   "stateLogsDescription": {
-    "message": "狀態紀錄包含你的公開帳戶地址和已傳送的交易資訊."
+    "message": "狀態紀錄包含您的公開帳戶位址和已傳送的交易資訊"
   },
   "stateLogError": {
     "message": "在取得狀態紀錄時發生錯誤."
+  },
+  "step1HardwareWallet": {
+    "message": "1. 連線硬體錢包"
+  },
+  "step1HardwareWalletMsg": {
+    "message": "將您的硬體錢包連接到電腦。"
+  },
+  "step2HardwareWallet": {
+    "message": "2. 選擇帳戶"
+  },
+  "step2HardwareWalletMsg": {
+    "message": "選擇想要檢視的帳戶。一次只能選擇一個帳戶。"
+  },
+  "step3HardwareWallet": {
+    "message": "3. 開始使用！"
+  },
+  "step3HardwareWalletMsg": {
+    "message": "使用您硬體錢包中的帳戶，與去中心化應用服務交易乙太幣、ERC20代幣、或迷戀貓等數位資產。"
+  },
+  "storePhrase": {
+    "message": "您可以用密碼管理系統例如 1Password 等軟體儲存助憶詞。"
   },
   "submit": {
     "message": "送出"
@@ -834,15 +1347,21 @@
   "testFaucet": {
     "message": "測試水管"
   },
+  "tips": {
+    "message": "提示"
+  },
   "to": {
-    "message": "目的帳號"
+    "message": "目的帳戶"
   },
   "toETHviaShapeShift": {
     "message": "$1 ETH 透過 ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
+  "token": {
+    "message": "代碼"
+  },
   "tokenAddress": {
-    "message": "代幣地址"
+    "message": "代幣位址"
   },
   "tokenAlreadyAdded": {
     "message": "已加入過此代幣。"
@@ -857,13 +1376,58 @@
     "message": "代幣代號"
   },
   "tokenWarning1": {
-    "message": "使用 MetaMask 帳戶追蹤你已購得的代幣。如果你使用不同的帳戶保存購得的代幣，那些代幣就不會出現在這裡。"
+    "message": "使用 MetaMask 帳戶追蹤您已購得的代幣。如果使用不同的帳戶保存購得的代幣，那些代幣就不會出現在這裡。"
   },
   "total": {
     "message": "總量"
   },
+  "transaction": {
+    "message": "交易"
+  },
+  "transactionConfirmed": {
+    "message": "交易確認 時間 $2."
+  },
+  "transactionCreated": {
+    "message": "交易產生 數量 $1 時間 $2"
+  },
+  "transactionWithNonce": {
+    "message": "交易 $1"
+  },
+  "transactionDropped": {
+    "message": "交易廢除 時間 $2"
+  },
+  "transactionSubmitted": {
+    "message": "交易送出 手續費 $1 時間 $2"
+  },
+  "transactionResubmitted": {
+    "message": "交易重新送出 手續費提高至 $1 時間 $2"
+  },
+  "transactionUpdated": {
+    "message": "交易狀態更新 時間 $2"
+  },
+  "transactionUpdatedGas": {
+    "message": "交易狀態更新 手續費 $1 時間 $2."
+  },
+  "transactionErrored": {
+    "message": "交易錯誤"
+  },
+  "transactionCancelAttempted": {
+    "message": "交易取消請求 手續費 $1 時間 $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "交易取消成功 $2"
+  },
   "transactions": {
     "message": "交易紀錄"
+  },
+  "transactionError": {
+    "message": "交易失敗。合約代碼拋出錯誤資訊"
+  },
+  "transactionErrorNoContract": {
+    "message": "合約位址錯誤"
+  },
+  "transactionFee": {
+    "message": "交易費"
   },
   "transactionMemo": {
     "message": "交易備註（選填）"
@@ -871,30 +1435,51 @@
   "transactionNumber": {
     "message": "交易號碼"
   },
+  "transactionTime": {
+    "message": "交易時間"
+  },
+  "transfer": {
+    "message": "交易"
+  },
+  "transferFrom": {
+    "message": "交易來源"
+  },
   "transfers": {
     "message": "交易"
+  },
+  "trezorHardwareWallet": {
+    "message": "TREZOR 硬體錢包"
   },
   "troubleTokenBalances": {
     "message": "無法取得代幣餘額。您k可以到這裡查看 ",
     "description": "Followed by a link (here) to view token balances"
   },
+  "tryAgain": {
+    "message": "再試一次"
+  },
   "twelveWords": {
-    "message": "這 12 個單詞是唯一回復你的 MetaMask 帳號的方法。\n將它們儲存到那些安全且隱密的地方吧。"
+    "message": "這 12 個單詞是唯一回復您的 MetaMask 帳戶的方法。\n將它們儲存到那些安全且隱密的地方吧。"
   },
   "typePassword": {
     "message": "請輸入密碼"
   },
+  "uiMigrationAnnouncement": {
+    "message": "歡迎使用 MetaMask 新版使用介面。若您有任何關於使用介面的改善建議，請到GitHub聯絡我們的服務小組。"
+  },
   "uiWelcome": {
-    "message": "歡迎使用新版界面 （Beta）"
+    "message": "歡迎使用新版界面 (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "你現在正在使用新版 MetaMask 界面。試試諸如發送代幣等新功能吧，有任何問題請告知我們。"
+    "message": "您現在正在使用 MetaMask 新版界面。試試發送代幣等新功能吧，有任何問題請告知我們。"
   },
   "unapproved": {
-    "message": "未同意"
+    "message": "未批准"
   },
   "unavailable": {
     "message": "不可用"
+  },
+  "units": {
+    "message": "單位"
   },
   "unknown": {
     "message": "未知"
@@ -903,10 +1488,28 @@
     "message": "未知私有網路"
   },
   "unknownNetworkId": {
-    "message": "未知網路 ID"
+    "message": "未知的網路ID"
+  },
+  "unknownQrCode": {
+    "message": "錯誤：無法辨識 QR code"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "糟糕！出了些問題...."
+  },
+  "unknownCameraError": {
+    "message": "無法存取攝影鏡頭。請再試一次..."
+  },
+  "unlock": {
+    "message": "Unlock"
+  },
+  "unlockMessage": {
+    "message": "去中心化網路世界等待著您"
+  },
+  "updatedWithDate": {
+    "message": "更新時間 $1"
   },
   "uriErrorMsg": {
-    "message": "URIs 需要加入適當的 HTTP/HTTPS 前綴."
+    "message": "URIs 需要加入適當的 HTTP/HTTPS 前綴字"
   },
   "usaOnly": {
     "message": "僅限美國",
@@ -919,7 +1522,7 @@
     "message": "使用舊版界面"
   },
   "validFileImport": {
-    "message": "您必須選擇一個合法的檔案來導入."
+    "message": "您必須選擇一個合法的檔案來匯入."
   },
   "vaultCreated": {
     "message": "已建立金庫"
@@ -927,22 +1530,52 @@
   "viewAccount": {
     "message": "查看帳戶"
   },
+  "viewOnEtherscan": {
+    "message": "在 Etherscan 上瀏覽"
+  },
   "visitWebSite": {
     "message": "造訪我們的網站"
   },
   "warning": {
     "message": "警告"
   },
+  "welcomeBack": {
+    "message": "歡迎回來!"
+  },
   "welcome": {
-    "message": "歡迎到 MetaMask"
+    "message": "歡迎來到 MetaMask"
   },
   "whatsThis": {
     "message": "這是什麼？"
   },
+  "writePhrase": {
+    "message": "將助憶詞寫在紙上，並保存在安全的場所。若想要更安全，將助憶詞分別寫在不同紙張上並存放在不同的地方。"
+  },
+  "yesLetsTry": {
+    "message": "了解，試試看"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "需要准許存取攝影鏡頭才能啟用此功能"
+  },
   "yourSigRequested": {
-    "message": "正在請求你的簽署"
+    "message": "正在請求您的簽署"
   },
   "youSign": {
     "message": "正在簽署"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "您的助憶詞"
+  },
+  "yourUniqueAccountImage": {
+    "message": "您的帳戶圖案"
+  },
+  "yourUniqueAccountImageDescription1": {
+    "message": "這個圖案是基於您的帳戶資訊由電腦自動產生。"
+  },
+  "yourUniqueAccountImageDescription2": {
+    "message": "您每一次在交易時，都會看到這個圖案。"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message":"加速的 Gas 價格為 0"
   }
 }

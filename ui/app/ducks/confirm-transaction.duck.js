@@ -24,6 +24,7 @@ import {
 
 import { getSymbolAndDecimals } from '../token-util'
 import { conversionUtil } from '../conversion-util'
+import { addHexPrefix } from 'ethereumjs-util'
 
 // Actions
 const createActionType = action => `metamask/confirm-transaction/${action}`
@@ -256,6 +257,8 @@ export function setFetchingData (isFetching) {
 }
 
 export function updateGasAndCalculate ({ gasLimit, gasPrice }) {
+  gasLimit = addHexPrefix(gasLimit)
+  gasPrice = addHexPrefix(gasPrice)
   return (dispatch, getState) => {
     const { confirmTransaction: { txData } } = getState()
     const newTxData = {

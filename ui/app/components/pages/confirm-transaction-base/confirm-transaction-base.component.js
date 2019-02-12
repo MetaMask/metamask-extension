@@ -11,6 +11,7 @@ import {
 import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../../constants/transactions'
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../constants/common'
+import AdvancedGasInputs from '../../gas-customization/advanced-gas-inputs'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -57,6 +58,8 @@ export default class ConfirmTransactionBase extends Component {
     txData: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
     currentNetworkUnapprovedTxs: PropTypes.object,
+    updateGasAndCalculate: PropTypes.func,
+    customGas: PropTypes.object,
     // Component props
     action: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -81,6 +84,8 @@ export default class ConfirmTransactionBase extends Component {
     titleComponent: PropTypes.node,
     valid: PropTypes.bool,
     warning: PropTypes.string,
+    advancedInlineGasShown: PropTypes.bool,
+    insufficientBalance: PropTypes.bool,
   }
 
   state = {
@@ -165,6 +170,10 @@ export default class ConfirmTransactionBase extends Component {
       hexTransactionFee,
       hexTransactionTotal,
       hideDetails,
+      advancedInlineGasShown,
+      customGas,
+      insufficientBalance,
+      updateGasAndCalculate,
     } = this.props
 
     if (hideDetails) {
@@ -182,6 +191,18 @@ export default class ConfirmTransactionBase extends Component {
               headerTextClassName="confirm-detail-row__header-text--edit"
               onHeaderClick={() => this.handleEditGas()}
             />
+            {advancedInlineGasShown
+              ? <AdvancedGasInputs
+                updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
+                updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
+                customGasPrice={customGas.gasPrice}
+                customGasLimit={customGas.gasLimit}
+                insufficientBalance={insufficientBalance}
+                customPriceIsSafe={true}
+                isSpeedUp={false}
+              />
+              : null
+            }
           </div>
           <div>
             <ConfirmDetailRow

@@ -14,11 +14,11 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../../constants/error-keys'
 import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
-import { isBalanceSufficient } from '../../send/send.utils'
+import { isBalanceSufficient, calcGasTotal } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
 import { addressSlicer, valuesFor } from '../../../util'
-import { getMetaMaskAccounts } from '../../../selectors'
+import { getMetaMaskAccounts, getAdvancedInlineGasShown } from '../../../selectors'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -47,7 +47,13 @@ const mapStateToProps = (state, props) => {
     nonce,
   } = confirmTransaction
   const { txParams = {}, lastGasPrice, id: transactionId } = txData
-  const { from: fromAddress, to: txParamsToAddress } = txParams
+  const {
+    from: fromAddress,
+    to: txParamsToAddress,
+    gasPrice,
+    gas: gasLimit,
+    value: amount,
+  } = txParams
   const accounts = getMetaMaskAccounts(state)
   const {
     conversionRate,
@@ -84,6 +90,13 @@ const mapStateToProps = (state, props) => {
   )
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length
 
+  const insufficientBalance = !isBalanceSufficient({
+    amount,
+    gasTotal: calcGasTotal(gasLimit, gasPrice),
+    balance,
+    conversionRate,
+  })
+
   return {
     balance,
     fromAddress,
@@ -113,9 +126,11 @@ const mapStateToProps = (state, props) => {
     unapprovedTxCount,
     currentNetworkUnapprovedTxs,
     customGas: {
-      gasLimit: customGasLimit || txData.gasPrice,
-      gasPrice: customGasPrice || txData.gasLimit,
+      gasLimit: customGasLimit || gasLimit,
+      gasPrice: customGasPrice || gasPrice,
     },
+    advancedInlineGasShown: getAdvancedInlineGasShown(state),
+    insufficientBalance,
   }
 }
 
@@ -206,6 +221,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       validate: validateEditGas,
     }),
     cancelAllTransactions: () => dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
+    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
   }
 }
 
