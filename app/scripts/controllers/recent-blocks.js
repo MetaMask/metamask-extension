@@ -48,19 +48,19 @@ class RecentBlocksController {
         log.error(err)
       }
     }
-    let isListeng = false
+    let isListening = false
     const { type } = networkController.getProviderConfig()
     if (!INFURA_PROVIDER_TYPES.includes(type) && type !== 'loading') {
       this.blockTracker.on('latest', blockListner)
-      isListeng = true
+      isListening = true
     }
     networkController.on('networkDidChange', (newType) => {
-      if (INFURA_PROVIDER_TYPES.includes(newType) && isListeng) {
+      if (INFURA_PROVIDER_TYPES.includes(newType) && isListening) {
         this.blockTracker.removeListener('latest', blockListner)
       } else if (
         !INFURA_PROVIDER_TYPES.includes(type) &&
         type !== 'loading' &&
-        !isListeng
+        !isListening
       ) {
         this.blockTracker.on('latest', blockListner)
 
