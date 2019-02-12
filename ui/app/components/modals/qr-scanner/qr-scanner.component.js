@@ -113,22 +113,25 @@ export default class QrScanner extends Component {
 
 
     // Ethereum address links - fox ex. ethereum:0x.....1111
-    if (content.split('ethereum:').length > 1) {
-
-      type = 'address'
-      values = {'address': content.split('ethereum:')[1] }
-
-    } else if (content.split('eths:/?s=').length > 1) {
+    if (content.split('eths:/?s=').length > 1) {
     // signature from external signer
       type = 'signature'
       values = {'signature': content.split('eths:/?s=')[1]}
 
     // Regular ethereum addresses - fox ex. 0x.....1111
+    } else if (content.match(/^\s*[a-fA-F0-9]{130}\s*^/)) {
+      type = 'signature'
+      values = {'signature': content}
     } else if (content.substring(0, 2).toLowerCase() === '0x') {
-
       type = 'address'
       values = {'address': content }
-
+    } else if (content.match(/^\s*ethereum:\?signature=[a-fA-F0-9]{130}\s*^/)) {
+      type = 'signature'
+      const match = content.match(/^\s*ethereum:\?signature=(?:0x)?([a-fA-F0-9]{130})\s*^/)
+      values = {'signature': match[1]}
+    } else if (content.split('ethereum:').length > 1) {
+      type = 'address'
+      values = {'address': content.split('ethereum:')[1] }
     }
     return {type, values}
   }

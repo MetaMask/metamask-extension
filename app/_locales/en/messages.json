@@ -33,6 +33,9 @@
   "clearApprovalDataSuccess": {
     "message": "Approved website data cleared successfully."
   },
+  "airsign": {
+    "message": "AirSign"
+  },
   "approvalData": {
     "message": "Privacy Data"
   },
@@ -445,6 +448,9 @@
   },
   "editingTransaction": {
     "message": "Make changes to your transaction"
+  },
+  "erc67": {
+    "message": "ERC67 signer"
   },
   "emailUs": {
     "message": "Email us!"
@@ -944,6 +950,9 @@
   "parameters": {
     "message": "Parameters"
   },
+  "paritysigner": {
+    "message": "Parity Signer"
+  },
   "originalTotal": {
     "message": "Original Total"
   },
@@ -1034,7 +1043,10 @@
     "message": "Recipient Address"
   },
   "signature": {
-    "message": "Signature"
+    "message": "Signature:"
+  },
+  "signWith": {
+    "message": "Sign with:"
   },
   "refundAddress": {
     "message": "Your Refund Address"
