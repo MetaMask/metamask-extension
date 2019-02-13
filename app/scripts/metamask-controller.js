@@ -1052,18 +1052,18 @@ module.exports = class MetamaskController extends EventEmitter {
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     console.log(this.keyringController)
     console.log(selectedKeyring)
-    const appKeys = await this.keyringController.getXPubKey(selectedKeyring)
-    console.log(appKeys)
-    return appKeys
+    const xPubKey = await this.keyringController.getXPubKey(selectedKeyring)
+    console.log("metamask controller", xPubKey)
+    return xPubKey
   }
   async signTransactionAppKey (fromAddress, txParams, next, end) {
     console.log("signTxAppKey params", txParams)
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     console.log(this.keyringController)
     console.log(selectedKeyring)
-    const appKeys = await this.keyringController.signTransactionAppKey(selectedKeyring, fromAddress, txParams)
-    console.log(appKeys)
-    return appKeys
+    const appKey = await this.keyringController.signTransactionAppKey(selectedKeyring, fromAddress, txParams)
+    console.log(appKey)
+    return appKey
   }
   
   
