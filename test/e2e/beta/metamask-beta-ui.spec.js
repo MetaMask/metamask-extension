@@ -480,11 +480,35 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Send ETH from dapp', () => {
+  describe('Send ETH from dapp using advanced gas controls', () => {
     let windowHandles
     let extension
     let popup
     let dapp
+
+    it('goes to the settings screen', async () => {
+      await driver.findElement(By.css('.account-menu__icon')).click()
+      await delay(regularDelayMs)
+
+      const settingsButton = await findElement(driver, By.xpath(`//div[contains(text(), 'Settings')]`))
+      settingsButton.click()
+
+      await findElement(driver, By.css('.tab-bar'))
+
+      const advancedGasTitle = await findElement(driver, By.xpath(`//span[contains(text(), 'Advanced gas controls')]`))
+      await driver.executeScript('arguments[0].scrollIntoView(true)', advancedGasTitle)
+
+      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(11) .settings-page__content-item-col > div'))
+      await advancedGasToggle.click()
+      windowHandles = await driver.getAllWindowHandles()
+      extension = windowHandles[0]
+      await closeAllWindowHandlesExcept(driver, [extension])
+
+      const metamaskHomeButton = await findElement(driver, By.css('.app-header__logo-container'))
+      await metamaskHomeButton.click()
+
+      await delay(largeDelayMs)
+    })
 
     it('starts a send transaction inside the dapp', async () => {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
@@ -516,6 +540,17 @@ describe('MetaMask', function () {
 
       await assertElementNotPresent(webdriver, driver, By.xpath(`//li[contains(text(), 'Data')]`))
 
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-gas-inputs__gas-edit-row__input'))
+      await gasPriceInput.clear()
+      await delay(tinyDelayMs)
+
+      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.sendKeys('10')
+      await delay(tinyDelayMs)
+      await gasLimitInput.sendKeys('5')
+      await delay(tinyDelayMs)
+
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
       await confirmButton.click()
       await delay(regularDelayMs)
@@ -531,6 +566,17 @@ describe('MetaMask', function () {
 
       const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues, /-3\s*ETH/), 10000)
+    })
+
+    it('the transaction has the expected gas price', async function () {
+      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
+      await txValues.click()
+      await delay(tinyDelayMs)
+      await findElement(driver, By.xpath(`//div[contains(text(), 'Gas Price (GWEI)')]`))
+
+      await findElement(driver, By.xpath(`//span[contains(text(), '7')]`))
+
+      txValues.click()
     })
   })
 
