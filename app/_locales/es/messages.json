@@ -453,6 +453,9 @@
   "invalidAddressRecipient": {
     "message": "Dirección del destinatario invalida"
   },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "No es una red ETH, convertirlo a minúscula"
+  },
   "invalidGasParams": {
     "message": "Parametros de gas inválidos"
   },

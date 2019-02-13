@@ -17,12 +17,13 @@ class SelectedAccount extends Component {
   static propTypes = {
     selectedAddress: PropTypes.string,
     selectedIdentity: PropTypes.object,
+    network: PropTypes.string,
   }
 
   render () {
     const { t } = this.context
-    const { selectedAddress, selectedIdentity } = this.props
-    const checksummedAddress = checksumAddress(selectedAddress)
+    const { selectedAddress, selectedIdentity, network } = this.props
+    const checksummedAddress = checksumAddress(selectedAddress, network)
 
     return (
       <div className="selected-account">
