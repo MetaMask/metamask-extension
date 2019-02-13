@@ -50,7 +50,8 @@ class RecentBlocksController {
     }
     let isListening = false
     const { type } = networkController.getProviderConfig()
-    if (!INFURA_PROVIDER_TYPES.includes(type) && type !== 'loading') {
+    const isInfura = INFURA_PROVIDER_TYPES.includes(type)
+    if (!isInfura && type !== 'loading') {
       this.blockTracker.on('latest', blockListner)
       isListening = true
     }
@@ -62,11 +63,12 @@ class RecentBlocksController {
         type !== 'loading' &&
         !isListening
       ) {
+        this.backfill()
         this.blockTracker.on('latest', blockListner)
 
       }
     })
-    this.backfill()
+    if (!isInfura) this.backfill()
   }
 
   /**
