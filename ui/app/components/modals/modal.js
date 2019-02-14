@@ -460,7 +460,7 @@ function mapStateToProps (state) {
     currentView: state.appState.currentView.name,
     modalState: state.appState.modal.modalState,
     extToSign: state.metamask.extToSign,
-    txId: state.confirmTransaction.txData.id,
+    txId: state.confirmTransaction ? state.confirmTransaction.txData.id : null,
   }
 }
 
