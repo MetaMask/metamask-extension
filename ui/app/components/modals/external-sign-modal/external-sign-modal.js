@@ -126,10 +126,12 @@ class ExternalSignModal extends PureComponent {
     this.state =
       {
         cancelOrSubmitPressed: false,
+        scannerPressed: false,
         signer: 'airsign',
       }
     this.onCancel = this.onCancel.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.scanSignatureQrCode = this.scanSignatureQrCode.bind(this)
     this.container = null
 
     this.setContainerRef = element => {
@@ -190,7 +192,7 @@ class ExternalSignModal extends PureComponent {
             onChange: onChange,
             inError: showError,
             qrScanner: qrScanner,
-            scanSignatureQrCode: scanSignatureQrCode,
+            scanSignatureQrCode: this.scanSignatureQrCode,
             scannerProps: {showNext: 'EXTERNAL_SIGN', nextProps: {signable: signable} },
           }),
         ]),
@@ -204,14 +206,24 @@ class ExternalSignModal extends PureComponent {
     ])
   }
 
+  scanSignatureQrCode (props) {
+    this.setState({scannerPressed: true}, () => {
+      this.props.scanSignatureQrCode(props)
+    })
+  }
+
   onCancel () {
     this.setState({cancelOrSubmitPressed: true}, () => {
-      const {extCancel, signable} = this.props
-      this.extToSignUpdate()
-      var extCancelCopy = extCancel.slice()
-      extCancelCopy.push(signable)
-      this.props.onCancel(extCancelCopy)
+      this.cancelConfirm()
     })
+  }
+
+  cancelConfirm () {
+    const {extCancel, signable} = this.props
+    this.extToSignUpdate()
+    var extCancelCopy = extCancel.slice()
+    extCancelCopy.push(signable)
+    this.props.onCancel(extCancelCopy)
   }
 
   onSubmit () {
@@ -246,8 +258,8 @@ class ExternalSignModal extends PureComponent {
   }
 
   componentWillUnmount () {
-   if (!this.state.cancelOrSubmitPressed) {
-     this.onCancel()
+   if (!this.state.cancelOrSubmitPressed && !this.state.scannerPressed) {
+     this.cancelConfirm()
    }
   }
 

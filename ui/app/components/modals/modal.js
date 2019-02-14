@@ -460,6 +460,7 @@ function mapStateToProps (state) {
     currentView: state.appState.currentView.name,
     modalState: state.appState.modal.modalState,
     extToSign: state.metamask.extToSign,
+    txId: state.confirmTransaction.txData.id,
   }
 }
 
@@ -518,19 +519,29 @@ Modal.prototype.render = function () {
 }
 
 Modal.prototype.componentWillReceiveProps = function (nextProps) {
-  if (
-    nextProps.extToSign &&
-    this.props.extToSign &&
-    nextProps.extToSign.length > this.props.extToSign.length &&
-    // this.props.currentView === 'confTx' &&
-    !(this.props.modalState.name === 'EXTERNAL_SIGN' &&
-      this.props.modalState.open)
-  ) {
-    this.props.showModal({
-      name: 'EXTERNAL_SIGN',
-      signable: extend({}, nextProps.extToSign[0]),
-      updateMetamask: true,
-    })
+  if (nextProps.extToSign) {
+    const extToSign = nextProps.extToSign[0]
+    if (
+      (
+        !this.props.extToSign ||
+        nextProps.extToSign.length > this.props.extToSign.length
+      ) &&
+      (
+        (
+          extToSign.type === 'sign_transaction' &&
+          nextProps.txId === extToSign.id
+        ) ||
+        extToSign.type !== 'sign_transaction'
+      ) &&
+      !(this.props.modalState.name === 'EXTERNAL_SIGN' &&
+        this.props.modalState.open)
+    ) {
+      this.props.showModal({
+        name: 'EXTERNAL_SIGN',
+        signable: extend({}, nextProps.extToSign[0]),
+        updateMetamask: true,
+      })
+    }
   }
   if (nextProps.active) {
     this.show()
