@@ -144,7 +144,6 @@ class ExternalSignModal extends PureComponent {
       errorType,
       onChange,
       qrScanner,
-      scanSignatureQrCode,
       showError,
       signable,
       signature,
