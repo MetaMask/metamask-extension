@@ -11,6 +11,10 @@ import { ETH } from '../../constants/common'
  * gets converted into a decimal value depending on the currency (ETH or Fiat).
  */
 export default class CurrencyInput extends PureComponent {
+  static contextTypes = {
+    t: PropTypes.func,
+  }
+
   static propTypes = {
     conversionRate: PropTypes.number,
     currentCurrency: PropTypes.string,
@@ -18,6 +22,7 @@ export default class CurrencyInput extends PureComponent {
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     useFiat: PropTypes.bool,
+    hideFiat: PropTypes.bool,
     value: PropTypes.string,
     fiatSuffix: PropTypes.string,
     nativeSuffix: PropTypes.string,
@@ -61,8 +66,13 @@ export default class CurrencyInput extends PureComponent {
   }
 
   shouldUseFiat = () => {
-    const { useFiat } = this.props
+    const { useFiat, hideFiat } = this.props
     const { isSwapped } = this.state || {}
+
+    if (hideFiat) {
+      return false
+    }
+
     return isSwapped ? !useFiat : useFiat
   }
 
@@ -93,9 +103,17 @@ export default class CurrencyInput extends PureComponent {
   }
 
   renderConversionComponent () {
-    const { currentCurrency, nativeCurrency } = this.props
+    const { currentCurrency, nativeCurrency, hideFiat } = this.props
     const { hexValue } = this.state
     let currency, numberOfDecimals
+
+    if (hideFiat) {
+      return (
+        <div className="currency-input__conversion-component">
+          { this.context.t('noConversionRateAvailable') }
+        </div>
+      )
+    }
 
     if (this.shouldUseFiat()) {
       // Display ETH

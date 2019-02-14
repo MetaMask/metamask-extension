@@ -19,7 +19,12 @@ export default class AccountListItem extends Component {
     handleClick: PropTypes.func,
     icon: PropTypes.node,
     balanceIsCached: PropTypes.bool,
+    showFiat: PropTypes.bool,
   };
+
+  static defaultProps = {
+    showFiat: true,
+  }
 
   static contextTypes = {
     t: PropTypes.func,
@@ -34,6 +39,7 @@ export default class AccountListItem extends Component {
       handleClick,
       icon = null,
       balanceIsCached,
+      showFiat,
     } = this.props
 
     const { name, address, balance } = account || {}
@@ -83,11 +89,15 @@ export default class AccountListItem extends Component {
                   balanceIsCached ? <span className="account-list-item__cached-star">*</span> : null
                 }
               </div>
-              <UserPreferencedCurrencyDisplay
-                type={SECONDARY}
-                value={balance}
-                hideTitle={true}
-              />
+              {
+                showFiat && (
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={balance}
+                    hideTitle={true}
+                  />
+                )
+              }
             </div>
           </Tooltip>
         )
