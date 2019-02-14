@@ -360,7 +360,9 @@ class TransactionController extends EventEmitter {
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
       // sign transaction
       const rawTx = await this.signTransaction(txId)
-      await this.publishTransaction(txId, rawTx)
+      if (rawTx !== 'cancel') {
+        await this.publishTransaction(txId, rawTx)
+      }
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock()
     } catch (err) {
@@ -389,11 +391,17 @@ class TransactionController extends EventEmitter {
     // sign tx
     const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
+    ethTx.r = ethUtil.toBuffer(txId)
     await this.signEthTx(ethTx, fromAddress)
     // set state to signed
-    this.txStateManager.setTxStatusSigned(txMeta.id)
-    const rawTx = ethUtil.bufferToHex(ethTx.serialize())
-    return rawTx
+    if (ethTx.r.toString() === 'cancel') {
+      this.txStateManager.setTxStatusUnapproved(txId)
+      return 'cancel'
+    } else {
+      this.txStateManager.setTxStatusSigned(txMeta.id)
+      const rawTx = ethUtil.bufferToHex(ethTx.serialize())
+      return rawTx
+    }
   }
 
   /**
