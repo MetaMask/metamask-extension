@@ -16,7 +16,8 @@ function createMetamaskMiddleware ({
   getPendingNonce,
   getPubKey,
   getXPubKey,
-  signTransactionAppKey
+  signTransactionAppKey,
+  signTypedMessageAppKey,
 }) {
   const metamaskMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
@@ -35,7 +36,8 @@ function createMetamaskMiddleware ({
     createPendingNonceMiddleware({ getPendingNonce }),
     createGetPubKeyMiddleware(getPubKey),
     createGetXPubKeyMiddleware(getXPubKey),
-    createSignTransactionAppKeyMiddleware(signTransactionAppKey)
+    createSignTransactionAppKeyMiddleware(signTransactionAppKey),
+    createSignTypedMessageAppKeyMiddleware(signTypedMessageAppKey)    
   ])
   return metamaskMiddleware
 }
@@ -69,6 +71,17 @@ function createSignTransactionAppKeyMiddleware (signTransactionAppKey) {
     const fromAddress = req.params[0]
     const txParams = req.params[1]
     res.result = await signTransactionAppKey(fromAddress, txParams)
+  })
+}
+
+function createSignTypedMessageAppKeyMiddleware (signTypedMessageAppKey) {
+  return createAsyncMiddleware(async (req, res, next) => {
+    if (req.method !== 'signTypedMessageAppKey') return next()
+    console.log("middleware")
+    console.log(req)
+    const fromAddress = req.params[0]
+    const txParams = req.params[1]
+    res.result = await signTypedMessageAppKey(fromAddress, txParams)
   })
 }
 

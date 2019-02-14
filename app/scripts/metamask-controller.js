@@ -310,7 +310,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
       getPubKey: this.getPubKey.bind(this),
       getXPubKey: this.getXPubKey.bind(this),
-      signTransactionAppKey: this.signTransactionAppKey.bind(this)
+      signTransactionAppKey: this.signTransactionAppKey.bind(this),
+      signTypedMessageAppKey: this.signTypedMessageAppKey.bind(this),
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -475,7 +476,8 @@ module.exports = class MetamaskController extends EventEmitter {
       //pluginSystem
       getPubKey: nodeify(this.getPubKey, this),
       getXPubKey: nodeify(this.getXPubKey, this),
-      signTransactionAppKey: nodeify(this.signTransactionAppKey, this),            
+      signTransactionAppKey: nodeify(this.signTransactionAppKey, this),
+      signTypedMessageAppKey: nodeify(this.signTypedMessageAppKey, this),
 
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
@@ -1061,9 +1063,18 @@ module.exports = class MetamaskController extends EventEmitter {
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     console.log(this.keyringController)
     console.log(selectedKeyring)
-    const appKey = await this.keyringController.signTransactionAppKey(selectedKeyring, fromAddress, txParams)
-    console.log(appKey)
-    return appKey
+    const sig = await this.keyringController.signTransactionAppKey(selectedKeyring, fromAddress, txParams)
+    console.log(sig)
+    return sig
+  }
+  async signTypedMessageAppKey (fromAddress, txParams, next, end) {
+    console.log("signTypedMessageAppKey params", txParams)
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    console.log(this.keyringController)
+    console.log(selectedKeyring)
+    const sig = await this.keyringController.signTypedMessageAppKey(selectedKeyring, fromAddress, txParams)
+    console.log(sig)
+    return sig
   }
   
   
