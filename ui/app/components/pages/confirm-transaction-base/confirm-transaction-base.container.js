@@ -17,7 +17,7 @@ import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
 import { isBalanceSufficient, calcGasTotal } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
-import { addressSlicer, valuesFor } from '../../../util'
+import { checksumAddress, addressSlicer, valuesFor } from '../../../util'
 import { getMetaMaskAccounts, getAdvancedInlineGasShown } from '../../../selectors'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -77,7 +77,11 @@ const mapStateToProps = (state, props) => {
   const toAddress = propsToAddress || txParamsToAddress
   const toName = identities[toAddress]
     ? identities[toAddress].name
-    : casedContractMap[toAddress] ? casedContractMap[toAddress].name : addressSlicer(toAddress)
+    : (
+      casedContractMap[toAddress]
+        ? casedContractMap[toAddress].name
+        : addressSlicer(checksumAddress(toAddress))
+    )
 
   const isTxReprice = Boolean(lastGasPrice)
 
@@ -221,7 +225,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       validate: validateEditGas,
     }),
     cancelAllTransactions: () => dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
-    updateGasAndCalculate,
+    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
   }
 }
 

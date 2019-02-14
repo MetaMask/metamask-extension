@@ -678,6 +678,9 @@
   "knownAddressRecipient": {
     "message": "Known contract address."
   },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Not ETH network, set to lowercase"
+  },
   "invalidGasParams": {
     "message": "Invalid Gas Parameters"
   },

@@ -19,7 +19,7 @@ const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionMana
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
-const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const {setupMultiplex} = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const createPermissions = require('json-rpc-capabilities-middleware')
 const NetworkController = require('./controllers/network')
@@ -43,9 +43,9 @@ const ProviderApprovalController = require('./controllers/provider-approval')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
-const Mutex = require('await-semaphore').Mutex
-const version = require('../manifest.json').version
-const BN = require('ethereumjs-util').BN
+const {Mutex} = require('await-semaphore')
+const {version} = require('../manifest.json')
+const {BN} = require('ethereumjs-util')
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
@@ -130,6 +130,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
       provider: this.provider,
+      networkController: this.networkController,
     })
 
     // account tracker watches balances, nonces, and any code at their address.
@@ -223,7 +224,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
-      var currentCurrency = this.currencyController.getCurrentCurrency()
+      const currentCurrency = this.currencyController.getCurrentCurrency()
       this.setCurrentCurrency(currentCurrency, function () {})
     })
     this.balancesController.updateAllBalances()

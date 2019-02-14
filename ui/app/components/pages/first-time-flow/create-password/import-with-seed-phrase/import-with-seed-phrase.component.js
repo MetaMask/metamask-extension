@@ -30,6 +30,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
   parseSeedPhrase = (seedPhrase) => {
     return seedPhrase
+      .trim()
       .match(/\w+/g)
       .join(' ')
   }
@@ -38,9 +39,10 @@ export default class ImportWithSeedPhrase extends PureComponent {
     let seedPhraseError = ''
 
     if (seedPhrase) {
-      if (this.parseSeedPhrase(seedPhrase).split(' ').length !== 12) {
+      const parsedSeedPhrase = this.parseSeedPhrase(seedPhrase)
+      if (parsedSeedPhrase.split(' ').length !== 12) {
         seedPhraseError = this.context.t('seedPhraseReq')
-      } else if (!validateMnemonic(seedPhrase)) {
+      } else if (!validateMnemonic(parsedSeedPhrase)) {
         seedPhraseError = this.context.t('invalidSeedPhrase')
       }
     }

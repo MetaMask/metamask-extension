@@ -2,6 +2,16 @@
 
 ## Current Develop Branch
 
+-[#5973] (https://github.com/MetaMask/metamask-extension/pull/5973): Fix incorrectly showing checksums on non-ETH blockchains (issue 5838)
+
+## 6.0.1 Tue Feb 12 2019
+
+- [#6139](https://github.com/MetaMask/metamask-extension/pull/6139) Fix advanced gas controls on the confirm screen
+- [#6134](https://github.com/MetaMask/metamask-extension/pull/6134) Trim whitespace from seed phrase during import
+- [#6119](https://github.com/MetaMask/metamask-extension/pull/6119) Update Italian translation
+- [#6125](https://github.com/MetaMask/metamask-extension/pull/6125) Improved Traditional Chinese translation
+
+
 ## 6.0.0 Thu Feb 07 2019
 
 - [#6082](https://github.com/MetaMask/metamask-extension/pull/6082): Migrate all users to the new UI
