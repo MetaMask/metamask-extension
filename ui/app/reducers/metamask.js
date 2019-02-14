@@ -53,6 +53,7 @@ function reduceMetamask (state, action) {
     currentLocale: '',
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
+      showFiatInTestnets: false,
     },
     completedOnboarding: false,
     knownMethodData: {},
@@ -375,7 +376,10 @@ function reduceMetamask (state, action) {
 
     case actions.UPDATE_PREFERENCES: {
       return extend(metamaskState, {
-        preferences: { ...action.payload },
+        preferences: {
+          ...metamaskState.preferences,
+          ...action.payload,
+        },
       })
     }
 

@@ -1,3 +1,5 @@
+import {NETWORK_TYPES} from "./constants/common";
+
 const abi = require('human-standard-token-abi')
 import {
   transactionsSelector,
@@ -37,6 +39,7 @@ const selectors = {
   getNetworkIdentifier,
   isBalanceCached,
   getAdvancedInlineGasShown,
+  getIsMainnet,
 }
 
 module.exports = selectors
@@ -226,6 +229,11 @@ function getTotalUnapprovedCount ({ metamask }) {
 
   return Object.keys(unapprovedTxs).length + unapprovedMsgCount + unapprovedPersonalMsgCount +
     unapprovedTypedMessagesCount
+}
+
+function getIsMainnet (state) {
+  const networkType = getNetworkIdentifier(state)
+  return networkType === NETWORK_TYPES.MAINNET
 }
 
 function preferencesSelector ({ metamask }) {

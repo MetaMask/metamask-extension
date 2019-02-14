@@ -18,15 +18,17 @@ export default class TransactionBreakdown extends PureComponent {
     transaction: PropTypes.object,
     className: PropTypes.string,
     nativeCurrency: PropTypes.string.isRequired,
+    showFiat: PropTypes.bool,
   }
 
   static defaultProps = {
     transaction: {},
+    showFiat: true,
   }
 
   render () {
     const { t } = this.context
-    const { transaction, className, nativeCurrency } = this.props
+    const { transaction, className, nativeCurrency, showFiat } = this.props
     const { txParams: { gas, gasPrice, value } = {}, txReceipt: { gasUsed } = {} } = transaction
 
     const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas
@@ -84,11 +86,15 @@ export default class TransactionBreakdown extends PureComponent {
               type={PRIMARY}
               value={totalInHex}
             />
-            <UserPreferencedCurrencyDisplay
-              className="transaction-breakdown__value"
-              type={SECONDARY}
-              value={totalInHex}
-            />
+            {
+              showFiat && (
+                <UserPreferencedCurrencyDisplay
+                  className="transaction-breakdown__value"
+                  type={SECONDARY}
+                  value={totalInHex}
+                />
+              )
+            }
           </div>
         </TransactionBreakdownRow>
       </div>
