@@ -115,7 +115,7 @@
     "eth-json-rpc-infura": "^3.0.0",
     "eth-ledger-bridge-keyring": "^0.1.1",
     "eth-keyring-controller": "github:r001/KeyringController#9a2bdcd030b0fed5fa28b9eac3949c35698cf00f",
-    "eth-external-account-keyring": "github:r001/eth-external-account-keyring#v1.0.0",
+    "eth-external-account-keyring": "github:r001/eth-external-account-keyring#v1.1.0",
     "eth-method-registry": "^1.0.0",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
