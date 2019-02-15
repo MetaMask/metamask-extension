@@ -1,4 +1,4 @@
-import {NETWORK_TYPES} from "./constants/common";
+import {NETWORK_TYPES} from './constants/common'
 
 const abi = require('human-standard-token-abi')
 import {

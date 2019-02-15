@@ -63,6 +63,8 @@ export default class SettingsTab extends PureComponent {
     setAdvancedInlineGasFeatureFlag: PropTypes.func,
     advancedInlineGas: PropTypes.bool,
     mobileSync: PropTypes.bool,
+    showFiatInTestnets: PropTypes.bool,
+    setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
   }
 
   state = {
@@ -529,9 +531,12 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-  renderShowConversionInTestnets() {
+  renderShowConversionInTestnets () {
     const { t } = this.context
-    const { showFiatInTestnets, setShowFiatConversionOnTestnetsPreference } = this.props
+    const {
+      showFiatInTestnets,
+      setShowFiatConversionOnTestnetsPreference,
+    } = this.props
 
     return (
       <div className="settings-page__content-row">

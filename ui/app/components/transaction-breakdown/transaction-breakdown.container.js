@@ -8,7 +8,7 @@ const mapStateToProps = (state) => {
 
   return {
     nativeCurrency: getNativeCurrency(state),
-    showFiat: (isMainnet || !!showFiatInTestnets)
+    showFiat: (isMainnet || !!showFiatInTestnets),
   }
 }
 
