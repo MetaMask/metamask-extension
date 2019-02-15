@@ -1,6 +1,5 @@
 import assert from 'assert'
 import proxyquire from 'proxyquire'
-import {getIsMainnet} from "../../../../selectors";
 
 let mapStateToProps
 

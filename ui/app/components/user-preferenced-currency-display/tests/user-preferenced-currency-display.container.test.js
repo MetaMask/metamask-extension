@@ -21,6 +21,10 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           nativeCurrency: 'ETH',
           preferences: {
             useNativeCurrencyAsPrimaryCurrency: true,
+            showFiatInTestnets: false,
+          },
+          provider: {
+            type: 'mainnet',
           },
         },
       }
@@ -28,6 +32,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
       assert.deepEqual(mapStateToProps(mockState), {
         nativeCurrency: 'ETH',
         useNativeCurrencyAsPrimaryCurrency: true,
+        isMainnet: true,
+        showFiatInTestnets: false,
       })
     })
   })
@@ -41,6 +47,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: true,
             nativeCurrency: 'ETH',
+            isMainnet: true,
+            showFiatInTestnets: false,
           },
           ownProps: {
             type: 'PRIMARY',
@@ -56,6 +64,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: false,
             nativeCurrency: 'ETH',
+            isMainnet: true,
+            showFiatInTestnets: false,
           },
           ownProps: {
             type: 'PRIMARY',
@@ -71,6 +81,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: true,
             nativeCurrency: 'ETH',
+            isMainnet: true,
+            showFiatInTestnets: false,
           },
           ownProps: {
             type: 'SECONDARY',
@@ -88,6 +100,8 @@ describe('UserPreferencedCurrencyDisplay container', () => {
           stateProps: {
             useNativeCurrencyAsPrimaryCurrency: false,
             nativeCurrency: 'ETH',
+            isMainnet: true,
+            showFiatInTestnets: false,
           },
           ownProps: {
             type: 'SECONDARY',

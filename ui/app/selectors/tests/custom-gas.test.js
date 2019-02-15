@@ -203,6 +203,12 @@ describe('custom-gas selectors', () => {
             send: {
               gasLimit: '0x5208',
             },
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'mainnet',
+            },
           },
           gas: {
             basicEstimates: {
@@ -244,6 +250,12 @@ describe('custom-gas selectors', () => {
             currentCurrency: 'usd',
             send: {
               gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'mainnet',
             },
           },
           gas: {
