@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import assert from 'assert'
 import { shallow, mount } from 'enzyme'
 import sinon from 'sinon'
@@ -110,6 +111,45 @@ describe('CurrencyInput Component', () => {
       assert.equal(wrapper.find('.unit-input__suffix').text(), 'USD')
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
       assert.equal(wrapper.find('.currency-display-component').text(), '0.004328ETH')
+    })
+
+    it('should render properly with a native value when hideFiat is true', () => {
+      const mockStore = {
+        metamask: {
+          nativeCurrency: 'ETH',
+          currentCurrency: 'usd',
+          conversionRate: 231.06,
+        },
+      }
+      const store = configureMockStore()(mockStore)
+
+      const wrapper = mount(
+        <Provider store={store}>
+          <CurrencyInput
+            value="f602f2234d0ea"
+            fiatSuffix="USD"
+            nativeSuffix="ETH"
+            useFiat
+            hideFiat={true}
+            nativeCurrency="ETH"
+            currentCurrency="usd"
+            conversionRate={231.06}
+          />
+        </Provider>,
+        {
+          context: { t: str => str + '_t' },
+          childContextTypes: { t: PropTypes.func },
+        }
+      )
+
+      assert.ok(wrapper)
+      const currencyInputInstance = wrapper.find(CurrencyInput).at(0).instance()
+      assert.equal(currencyInputInstance.state.decimalValue, 0.004328)
+      assert.equal(currencyInputInstance.state.hexValue, 'f602f2234d0ea')
+      assert.equal(wrapper.find('.unit-input__suffix').length, 1)
+      assert.equal(wrapper.find('.unit-input__suffix').text(), 'ETH')
+      assert.equal(wrapper.find('.unit-input__input').props().value, '0.004328')
+      assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'noConversionRateAvailable_t')
     })
   })
 
