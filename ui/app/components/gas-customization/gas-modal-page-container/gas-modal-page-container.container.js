@@ -63,6 +63,7 @@ import {
 } from '../../send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
 import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
+import {getIsMainnet, preferencesSelector} from "../../../selectors";
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction = {} } = ownProps
@@ -90,6 +91,10 @@ const mapStateToProps = (state, ownProps) => {
   const gasPrices = getEstimatedGasPrices(state)
   const estimatedTimes = getEstimatedGasTimes(state)
   const balance = getCurrentEthBalance(state)
+
+  const { showFiatInTestnets } = preferencesSelector(state)
+  const isMainnet = getIsMainnet(state)
+  const showFiat = Boolean(isMainnet || showFiatInTestnets)
 
   const insufficientBalance = !isBalanceSufficient({
     amount: value,
@@ -124,7 +129,7 @@ const mapStateToProps = (state, ownProps) => {
     infoRowProps: {
       originalTotalFiat: addHexWEIsToRenderableFiat(value, gasTotal, currentCurrency, conversionRate),
       originalTotalEth: addHexWEIsToRenderableEth(value, gasTotal),
-      newTotalFiat,
+      newTotalFiat: showFiat ? newTotalFiat : '',
       newTotalEth: addHexWEIsToRenderableEth(value, customGasTotal),
       transactionFee: addHexWEIsToRenderableEth('0x0', customGasTotal),
       sendAmount: addHexWEIsToRenderableEth(value, '0x0'),
