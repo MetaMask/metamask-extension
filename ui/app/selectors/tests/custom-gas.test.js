@@ -271,6 +271,150 @@ describe('custom-gas selectors', () => {
           },
         },
       },
+      {
+        expectedResult: [
+          {
+            feeInSecondaryCurrency: '',
+            feeInPrimaryCurrency: '0.00105 ETH',
+            labelKey: 'slow',
+            priceInHexWei: '0xba43b7400',
+          },
+          {
+            feeInSecondaryCurrency: '',
+            feeInPrimaryCurrency: '0.0021 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0x174876e800',
+          },
+          {
+            feeInSecondaryCurrency: '',
+            feeInPrimaryCurrency: '0.0042 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x2e90edd000',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'rinkeby',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 50,
+              safeLowWait: 13.2,
+              fast: 100,
+              fastWait: 6.6,
+              fastest: 200,
+              fastestWait: 1.0,
+            },
+          },
+        },
+      },
+      {
+        expectedResult: [
+          {
+            feeInSecondaryCurrency: '$2.68',
+            feeInPrimaryCurrency: '0.00105 ETH',
+            labelKey: 'slow',
+            priceInHexWei: '0xba43b7400',
+          },
+          {
+            feeInSecondaryCurrency: '$5.37',
+            feeInPrimaryCurrency: '0.0021 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0x174876e800',
+          },
+          {
+            feeInSecondaryCurrency: '$10.74',
+            feeInPrimaryCurrency: '0.0042 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x2e90edd000',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: true,
+            },
+            provider: {
+              type: 'rinkeby',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 50,
+              safeLowWait: 13.2,
+              fast: 100,
+              fastWait: 6.6,
+              fastest: 200,
+              fastestWait: 1.0,
+            },
+          },
+        },
+      },
+      {
+        expectedResult: [
+          {
+            feeInSecondaryCurrency: '$2.68',
+            feeInPrimaryCurrency: '0.00105 ETH',
+            labelKey: 'slow',
+            priceInHexWei: '0xba43b7400',
+          },
+          {
+            feeInSecondaryCurrency: '$5.37',
+            feeInPrimaryCurrency: '0.0021 ETH',
+            labelKey: 'average',
+            priceInHexWei: '0x174876e800',
+          },
+          {
+            feeInSecondaryCurrency: '$10.74',
+            feeInPrimaryCurrency: '0.0042 ETH',
+            labelKey: 'fast',
+            priceInHexWei: '0x2e90edd000',
+          },
+        ],
+        mockState: {
+          metamask: {
+            conversionRate: 2557.1,
+            currentCurrency: 'usd',
+            send: {
+              gasLimit: '0x5208',
+            },
+            preferences: {
+              showFiatInTestnets: true,
+            },
+            provider: {
+              type: 'mainnet',
+            },
+          },
+          gas: {
+            basicEstimates: {
+              blockTime: 14.16326530612245,
+              safeLow: 50,
+              safeLowWait: 13.2,
+              fast: 100,
+              fastWait: 6.6,
+              fastest: 200,
+              fastestWait: 1.0,
+            },
+          },
+        },
+      },
     ]
     it('should return renderable data about basic estimates appropriate for buttons with less info', () => {
       tests.forEach(test => {
