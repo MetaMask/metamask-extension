@@ -529,6 +529,32 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+  renderShowConversionInTestnets() {
+    const { t } = this.context
+    const { showFiatInTestnets, setShowFiatConversionOnTestnetsPreference } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('showFiatConversionInTestnets') }</span>
+          <div className="settings-page__content-description">
+            { t('showFiatConversionInTestnetsDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={showFiatInTestnets}
+              onToggle={value => setShowFiatConversionOnTestnetsPreference(!value)}
+              activeLabel=""
+              inactiveLabel=""
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   renderPrivacyOptIn () {
     const { t } = this.context
     const { privacyMode, setPrivacyMode } = this.props
@@ -563,6 +589,7 @@ export default class SettingsTab extends PureComponent {
         { warning && <div className="settings-tab__error">{ warning }</div> }
         { this.renderCurrentConversion() }
         { this.renderUsePrimaryCurrencyOptions() }
+        { this.renderShowConversionInTestnets() }
         { this.renderCurrentLocale() }
         { this.renderNewRpcUrl() }
         { this.renderStateLogs() }

@@ -12,6 +12,7 @@ import {
   setFeatureFlag,
   showModal,
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
+  setShowFiatConversionOnTestnetsPreference,
 } from '../../../../actions'
 import { preferencesSelector } from '../../../../selectors'
 
@@ -31,7 +32,7 @@ const mapStateToProps = state => {
     provider = {},
     currentLocale,
   } = metamask
-  const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
+  const { useNativeCurrencyAsPrimaryCurrency, showFiatInTestnets } = preferencesSelector(state)
 
   return {
     warning,
@@ -46,6 +47,7 @@ const mapStateToProps = state => {
     provider,
     useNativeCurrencyAsPrimaryCurrency,
     mobileSync,
+    showFiatInTestnets,
   }
 }
 
@@ -63,6 +65,9 @@ const mapDispatchToProps = dispatch => {
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
     setUseNativeCurrencyAsPrimaryCurrencyPreference: value => {
       return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value))
+    },
+    setShowFiatConversionOnTestnetsPreference: value => {
+      return dispatch(setShowFiatConversionOnTestnetsPreference(value))
     },
     showClearApprovalModal: () => dispatch(showModal({ name: 'CLEAR_APPROVED_ORIGINS' })),
   }
