@@ -162,7 +162,7 @@
     "loglevel": "^1.4.1",
     "luxon": "^1.8.2",
     "metamascara": "^2.0.0",
-    "metamask-inpage-provider": "^1.3.0",
+    "metamask-inpage-provider": "MetaMask/metamask-inpage-provider#capabilities-change",
     "metamask-logo": "^2.1.4",
     "mkdirp": "^0.5.1",
     "multihashes": "^0.4.12",

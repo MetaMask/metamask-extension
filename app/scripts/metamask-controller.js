@@ -80,6 +80,9 @@ module.exports = class MetamaskController extends EventEmitter {
     // the only thing that uses controller connections are open metamask UI instances
     this.activeControllerConnections = 0
 
+    // This is a map of message streams to various domains.
+    this.connections = {}
+
     // platform-specific api
     this.platform = opts.platform
 
@@ -90,7 +93,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.createVaultMutex = new Mutex()
 
     // network store
-    this.networkController = new NetworkController(initState.NetworkController)
+    this.networkController = new NetworkController(initState.NetworkController, this.platform)
 
     // preferences controller
     this.preferencesController = new PreferencesController({
@@ -1415,7 +1418,6 @@ module.exports = class MetamaskController extends EventEmitter {
           this.opts.closePopup && this.opts.closePopup()
         })
 
-        /*
         const ok = confirm(message)
         if (ok) {
           result = opts
@@ -1429,7 +1431,6 @@ module.exports = class MetamaskController extends EventEmitter {
           // A hard rejection
           return ok
         }
-        */
       },
     })
   }
@@ -1457,6 +1458,27 @@ module.exports = class MetamaskController extends EventEmitter {
         value: approved,
       }],
     }
+  }
+
+
+  /**
+   * A method for exchanging arbitrary messages with an origin over its provider stream.
+   * @param {*} outStream - The stream to provide over.
+   * @param {string} origin - The URI of the requesting resource.
+   */
+  setupMessageHandler (engine, origin) {
+    this.connections[origin] = engine
+  }
+
+  sendMessage(origin, message) {
+    const engine = this.connections[origin]
+    engine.emit('notification', JSON.stringify({ arbitrary: 'data-stuffs' }))
+  }
+
+  sendPublicMessage (message) {
+    Object.keys(this.connections).forEach((domain) => {
+      this.sendMessage(domain, message)
+    })
   }
 
   /**
@@ -1503,6 +1525,8 @@ module.exports = class MetamaskController extends EventEmitter {
         if (err) log.error(err)
       }
     )
+
+    this.setupMessageHandler(engine, origin)
   }
 
   /**

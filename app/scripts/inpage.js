@@ -13,27 +13,6 @@ restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
-console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
-'stopped exposing user accounts to dapps if "privacy mode" is enabled on ' +
-'November 2nd, 2018. Dapps should now call provider.enable() in order to view and use ' +
-'accounts. Please see https://bit.ly/2QQHXvF for complete information and up-to-date ' +
-'example code.')
-
-/**
- * Adds a postMessage listener for a specific message type
- *
- * @param {string} messageType - postMessage type to listen for
- * @param {Function} handler - event handler
- * @param {boolean} remove - removes this handler after being triggered
- */
-function onMessage (messageType, handler, remove) {
-  window.addEventListener('message', function ({ data }) {
-    if (!data || data.type !== messageType) { return }
-    remove && window.removeEventListener('message', handler)
-    handler.apply(window, arguments)
-  })
-}
-
 //
 // setup plugin communication
 //
@@ -49,14 +28,6 @@ const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
-
-// set up a listener for privacy mode responses
-onMessage('ethereumproviderlegacy', ({ data: { selectedAddress } }) => {
-  isEnabled = true
-  setTimeout(() => {
-    inpageProvider.publicConfigStore.updateState({ selectedAddress })
-  }, 0)
-}, true)
 
 // add metamask-specific convenience methods
 // TODO: Verify necessity of this line, as the first obj argument has been stripped of the methods it used to add to the object.
