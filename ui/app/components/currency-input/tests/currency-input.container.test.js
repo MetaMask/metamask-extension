@@ -21,6 +21,12 @@ describe('CurrencyInput container', () => {
           conversionRate: 280.45,
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
+          preferences: {
+            showFiatInTestnets: false,
+          },
+          provider: {
+            type: 'mainnet',
+          },
         },
       }
 
@@ -28,6 +34,7 @@ describe('CurrencyInput container', () => {
         conversionRate: 280.45,
         currentCurrency: 'usd',
         nativeCurrency: 'ETH',
+        hideFiat: false,
       })
     })
   })

@@ -1,5 +1,6 @@
 import assert from 'assert'
 import proxyquire from 'proxyquire'
+import {getIsMainnet} from "../../../../selectors";
 
 let mapStateToProps
 
@@ -17,6 +18,10 @@ proxyquire('../account-list-item.container.js', {
   },
   '../../../selectors.js': {
     isBalanceCached: (s) => `mockBalanceIsCached:${s}`,
+    preferencesSelector: (s) => ({
+      showFiatInTestnets: `showFiatInTestnets:${s}`,
+    }),
+    getIsMainnet: () => true,
   },
 })
 
@@ -30,6 +35,7 @@ describe('account-list-item container', () => {
         currentCurrency: 'mockCurrentCurrency:mockState',
         nativeCurrency: 'mockNativeCurrency:mockState',
         balanceIsCached: 'mockBalanceIsCached:mockState',
+        showFiat: true,
       })
     })
 
