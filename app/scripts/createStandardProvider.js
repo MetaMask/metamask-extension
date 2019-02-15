@@ -34,7 +34,7 @@ class StandardProvider {
 
   async _ping () {
     try {
-      await this.send('eth_blockNumber', undefined, true)
+      await this.send('net_version')
       window.postMessage({ type: 'ethereumpingsuccess' }, '*')
     } catch (error) {
       window.postMessage({ type: 'ethereumpingerror' }, '*')
