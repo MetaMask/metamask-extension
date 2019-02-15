@@ -55,9 +55,10 @@ export default class TransactionListItemDetails extends PureComponent {
     const { primaryTransaction: transaction } = transactionGroup
     const { hash } = transaction
 
-    this.setState({ justCopied: true }, () => copyToClipboard(hash))
-
-    setTimeout(() => this.setState({ justCopied: false }), 1000)
+    this.setState({ justCopied: true }, () => {
+      copyToClipboard(hash)
+      setTimeout(() => this.setState({ justCopied: false }), 1000)
+    })
   }
 
   render () {
