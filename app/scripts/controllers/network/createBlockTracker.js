@@ -6,10 +6,10 @@ const BlockTracker = require('eth-block-tracker')
 module.exports = function createBlockTracker (args, platform) {
   const blockTracker = new BlockTracker(args)
   blockTracker.on('latest', () => {
-    platform && platform.sendMessage({ action: 'ethereum-ping-success' })
+    platform && platform.sendMessage && platform.sendMessage({ action: 'ethereum-ping-success' })
   })
   blockTracker.on('error', () => {
-    platform && platform.sendMessage({ action: 'ethereum-ping-error' })
+    platform && platform.sendMessage && platform.sendMessage({ action: 'ethereum-ping-error' })
   })
   return blockTracker
 }
