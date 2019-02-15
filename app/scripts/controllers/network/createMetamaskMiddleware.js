@@ -14,10 +14,10 @@ function createMetamaskMiddleware ({
   processTypedMessageV3,
   processPersonalMessage,
   getPendingNonce,
-  getPubKey,
   getXPubKey,
-  signTransactionAppKey,
-  signTypedMessageAppKey,
+  eth_getAppPubKey,
+  eth_signTransactionAppKey,
+  eth_signTypedMessageAppKey,
 }) {
   const metamaskMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
@@ -34,10 +34,10 @@ function createMetamaskMiddleware ({
       processPersonalMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
-    createGetPubKeyMiddleware(getPubKey),
     createGetXPubKeyMiddleware(getXPubKey),
-    createSignTransactionAppKeyMiddleware(signTransactionAppKey),
-    createSignTypedMessageAppKeyMiddleware(signTypedMessageAppKey)    
+    createEthGetAppPubKeyMiddleware(eth_getAppPubKey),
+    createEthSignTransactionAppKeyMiddleware(eth_signTransactionAppKey),
+    createEthSignTypedMessageAppKeyMiddleware(eth_signTypedMessageAppKey)    
   ])
   return metamaskMiddleware
 }
@@ -56,32 +56,32 @@ function createGetXPubKeyMiddleware (getXPubKey) {
   })
 }
 
-function createGetPubKeyMiddleware (getPubKey) {
+function createEthGetAppPubKeyMiddleware (eth_getAppPubKey) {
   return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'getPubKey') return next()
+    if (req.method !== 'eth_getAppPubKey') return next()
     console.log(req)
-    res.result = await getPubKey(req.params)
+    res.result = await eth_getAppPubKey(req.params)
   })
 }
-function createSignTransactionAppKeyMiddleware (signTransactionAppKey) {
+function createEthSignTransactionAppKeyMiddleware (eth_signTransactionAppKey) {
   return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'signTransactionAppKey') return next()
+    if (req.method !== 'eth_signTransactionAppKey') return next()
     console.log("middleware")
     console.log(req)
     const fromAddress = req.params[0]
     const txParams = req.params[1]
-    res.result = await signTransactionAppKey(fromAddress, txParams)
+    res.result = await eth_signTransactionAppKey(fromAddress, txParams)
   })
 }
 
-function createSignTypedMessageAppKeyMiddleware (signTypedMessageAppKey) {
+function createEthSignTypedMessageAppKeyMiddleware (eth_signTypedMessageAppKey) {
   return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'signTypedMessageAppKey') return next()
+    if (req.method !== 'eth_signTypedMessageAppKey') return next()
     console.log("middleware")
     console.log(req)
     const fromAddress = req.params[0]
     const txParams = req.params[1]
-    res.result = await signTypedMessageAppKey(fromAddress, txParams)
+    res.result = await eth_signTypedMessageAppKey(fromAddress, txParams)
   })
 }
 

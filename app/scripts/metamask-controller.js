@@ -308,10 +308,10 @@ module.exports = class MetamaskController extends EventEmitter {
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
 
-      getPubKey: this.getPubKey.bind(this),
       getXPubKey: this.getXPubKey.bind(this),
-      signTransactionAppKey: this.signTransactionAppKey.bind(this),
-      signTypedMessageAppKey: this.signTypedMessageAppKey.bind(this),
+      eth_getAppPubKey: this.eth_getAppPubKey.bind(this),
+      eth_signTransactionAppKey: this.eth_signTransactionAppKey.bind(this),
+      eth_signTypedMessageAppKey: this.eth_signTypedMessageAppKey.bind(this),
     }
     const providerProxy = this.networkController.initializeProvider(providerOpts)
     return providerProxy
@@ -1038,45 +1038,6 @@ module.exports = class MetamaskController extends EventEmitter {
     return promise
   }
 
-  async getPubKey (params, next, end) {
-    console.log("getPubKey params", params)
-    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    console.log(this.keyringController)
-    console.log(selectedKeyring)
-    const hdPath = params[0]
-    const index = params[1]
-    const appKeys = await this.keyringController.getPubKey(selectedKeyring, hdPath, index)
-    console.log(appKeys)
-    return appKeys
-  }
-  async getXPubKey (params, next, end) {
-    console.log("getPubXKey params", params)
-    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    console.log(this.keyringController)
-    console.log(selectedKeyring)
-    const xPubKey = await this.keyringController.getXPubKey(selectedKeyring)
-    console.log("metamask controller", xPubKey)
-    return xPubKey
-  }
-  async signTransactionAppKey (fromAddress, txParams, next, end) {
-    console.log("signTxAppKey params", txParams)
-    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    console.log(this.keyringController)
-    console.log(selectedKeyring)
-    const sig = await this.keyringController.signTransactionAppKey(selectedKeyring, fromAddress, txParams)
-    console.log(sig)
-    return sig
-  }
-  async signTypedMessageAppKey (fromAddress, txParams, next, end) {
-    console.log("signTypedMessageAppKey params", txParams)
-    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    console.log(this.keyringController)
-    console.log(selectedKeyring)
-    const sig = await this.keyringController.signTypedMessageAppKey(selectedKeyring, fromAddress, txParams)
-    console.log(sig)
-    return sig
-  }
-  
   
   /**
    * The method for a user approving a call to eth_signTypedData, per EIP 712.
@@ -1691,4 +1652,52 @@ module.exports = class MetamaskController extends EventEmitter {
     this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
   }
+
+
+  /**
+   * App Keys
+   */
+
+  async getXPubKey (params, next, end) {
+    console.log("getPubXKey params", params)
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    console.log(this.keyringController)
+    console.log(selectedKeyring)
+    const xPubKey = await this.keyringController.getXPubKey(selectedKeyring)
+    console.log("metamask controller", xPubKey)
+    return xPubKey
+  }
+
+  async eth_getAppPubKey (params, next, end) {
+    console.log("getPubKey params", params)
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    console.log(this.keyringController)
+    console.log(selectedKeyring)
+    const hdPath = params[0]
+    const index = params[1]
+    const appKeys = await this.keyringController.eth_getAppPubKey(selectedKeyring, hdPath, index)
+    console.log(appKeys)
+    return appKeys
+  }
+
+  async eth_signTransactionAppKey (fromAddress, txParams, next, end) {
+    console.log("signTxAppKey params", txParams)
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    console.log(this.keyringController)
+    console.log(selectedKeyring)
+    const sig = await this.keyringController.eth_signTransactionAppKey(selectedKeyring, fromAddress, txParams)
+    console.log(sig)
+    return sig
+  }
+  async eth_signTypedMessageAppKey (fromAddress, txParams, next, end) {
+    console.log("signTypedMessageAppKey params", txParams)
+    const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    console.log(this.keyringController)
+    console.log(selectedKeyring)
+    const sig = await this.keyringController.eth_signTypedMessageAppKey(selectedKeyring, fromAddress, txParams)
+    console.log(sig)
+    return sig
+  }
+  
+  
 }
