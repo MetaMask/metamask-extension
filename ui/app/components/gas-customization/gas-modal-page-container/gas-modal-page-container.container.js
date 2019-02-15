@@ -63,7 +63,7 @@ import {
 } from '../../send/send.utils'
 import { addHexPrefix } from 'ethereumjs-util'
 import { getAdjacentGasPrices, extrapolateY } from '../gas-price-chart/gas-price-chart.utils'
-import {getIsMainnet, preferencesSelector} from "../../../selectors";
+import {getIsMainnet, preferencesSelector} from '../../../selectors'
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction = {} } = ownProps
