@@ -82,7 +82,7 @@ export default function createStandardProvider (provider) {
   const standardProvider = new StandardProvider(provider)
   const sendLegacy = provider.send
   provider.send = (a, b) => {
-    if (typeof payload === 'string' && Array.isArray(b)) {
+    if (typeof payload === 'string' && !b || Array.isArray(b)) {
       return standardProvider.send(a, b)
     }
     return sendLegacy.call(provider, a, b)
