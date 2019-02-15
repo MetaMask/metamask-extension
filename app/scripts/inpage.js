@@ -5,7 +5,7 @@ const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
-require('./inpage-beta')
+const createStandardProvider = require('./createStandardProvider').default
 
 let isEnabled = false
 let warned = false
@@ -16,13 +16,6 @@ let isUnlockedHandle
 restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
-
-console.warn(`
-ATTENTION: MetaMask and other dapp browsers are beginning to move to a standard provider API.
-This new API is available today at window.ethereumBeta for testing. It can be used directly,
-or with web3 version <web3_version> available at <web3_link>. Please see for <blog_link> 
-or more information.
-`)
 
 /**
  * Adds a postMessage listener for a specific message type
@@ -159,7 +152,7 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   deleteProperty: () => true,
 })
 
-window.ethereum = proxiedInpageProvider
+window.ethereum = createStandardProvider(proxiedInpageProvider)
 
 // detect eth_requestAccounts and pipe to enable for now
 function detectAccountRequest (method) {

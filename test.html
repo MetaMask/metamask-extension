@@ -1,0 +1,10 @@
+<html>
+  <body>
+    <script>
+      ethereum.on('connect', () => { console.log('connect'); });
+      ethereum.on('close', () => { console.log('close'); });
+      ethereum.on('networkChanged', () => { console.log('networkChanged'); });
+      ethereum.on('accountsChanged', () => { console.log('accountsChanged'); });
+    </script>
+  </body>
+</html>
