@@ -249,16 +249,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.typedMessageManager = new TypedMessageManager({ networkController: this.networkController })
     this.publicConfigStore = this.initPublicConfigStore()
 
-    const providerApprovalOpts = {
-      closePopup: opts.closePopup,
-      keyringController: this.keyringController,
-      openPopup: opts.openPopup,
-      platform: opts.platform,
-      preferencesController: this.preferencesController,
-      publicConfigStore: this.publicConfigStore,
-    }
-    this.providerApprovalController = new ProviderApprovalController(providerApprovalOpts)
-
     this.store.updateStructure({
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
@@ -291,7 +281,6 @@ module.exports = class MetamaskController extends EventEmitter {
       NoticeController: this.noticeController.memStore,
       ShapeshiftController: this.shapeshiftController.store,
       InfuraController: this.infuraController.store,
-      ProviderApprovalController: this.providerApprovalController.store,
       Permissions: this.permissions.store,
       PermissionsRequests: this.permissions.memStore,
     })
@@ -310,10 +299,6 @@ module.exports = class MetamaskController extends EventEmitter {
       version,
       // account mgmt
       getAccounts: async ({ origin }) => {
-        // Expose no accounts if this origin has not been approved, preventing
-        // account-requring RPC methods from completing successfully
-        const exposeAccounts = this.providerApprovalController.shouldExposeAccounts(origin)
-        if (origin !== 'MetaMask' && !exposeAccounts) { return [] }
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const selectedAddress = this.preferencesController.getSelectedAddress()
         // only show address if account is unlocked
@@ -399,7 +384,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const noticeController = this.noticeController
     const addressBookController = this.addressBookController
     const networkController = this.networkController
-    const providerApprovalController = this.providerApprovalController
 
     return {
       // etc
@@ -1827,7 +1811,6 @@ module.exports = class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked () {
-    this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
   }
 }
