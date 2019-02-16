@@ -4,10 +4,8 @@ import Identicon from '../../identicon'
 
 export default class ProviderPageContainerContent extends PureComponent {
   static propTypes = {
-    origin: PropTypes.string.isRequired,
-    selectedIdentity: PropTypes.string.isRequired,
-    siteImage: PropTypes.string,
-    siteTitle: PropTypes.string.isRequired,
+    request: PropTypes.object.isRequired,
+    selectedIdentity: PropTypes.object.isRequired,
   }
 
   static contextTypes = {
@@ -15,7 +13,8 @@ export default class ProviderPageContainerContent extends PureComponent {
   };
 
   renderConnectVisual = () => {
-    const { origin, selectedIdentity, siteImage, siteTitle } = this.props
+    const { request, selectedIdentity } = this.props
+    const { origin, siteImage, siteTitle } = request.metadata
 
     return (
       <div className="provider-approval-visual">
@@ -47,7 +46,10 @@ export default class ProviderPageContainerContent extends PureComponent {
   }
 
   render () {
-    const { siteTitle } = this.props
+    const { request } = this.props
+    const { options } = request
+    const optsArr = Object.keys(options)
+    const { siteTitle } = request.metadata
     const { t } = this.context
 
     return (
@@ -59,6 +61,11 @@ export default class ProviderPageContainerContent extends PureComponent {
           <p>
             {t('providerRequestInfo')}
             <br/>
+
+            <p>
+              Also requesting: {optsArr.join('\n')}
+            </p>
+
             <a
               href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa"
               target="_blank"
@@ -75,3 +82,4 @@ export default class ProviderPageContainerContent extends PureComponent {
     )
   }
 }
+

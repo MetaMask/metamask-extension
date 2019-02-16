@@ -3,9 +3,10 @@ import ProviderApproval from './provider-approval.component'
 import { approveProviderRequest, rejectProviderRequest } from '../../../actions'
 
 function mapDispatchToProps (dispatch) {
+  console.log('mapping dispatch to props for', { approveProviderRequest })
   return {
-    approveProviderRequest: tabID => dispatch(approveProviderRequest(tabID)),
-    rejectProviderRequest: tabID => dispatch(rejectProviderRequest(tabID)),
+    approveProviderRequest: requestId => dispatch(approveProviderRequest(requestId)),
+    rejectProviderRequest: requestId => dispatch(rejectProviderRequest(requestId)),
   }
 }
 

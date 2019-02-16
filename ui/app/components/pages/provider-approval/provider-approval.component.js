@@ -15,15 +15,13 @@ export default class ProviderApproval extends Component {
 
   render () {
     const { approveProviderRequest, providerRequest, rejectProviderRequest } = this.props
+    console.log('rendering page container with ', approveProviderRequest)
     return (
       <ProviderPageContainer
         approveProviderRequest={approveProviderRequest}
-        origin={providerRequest.origin}
-        tabID={providerRequest.tabID}
         rejectProviderRequest={rejectProviderRequest}
-        siteImage={providerRequest.siteImage}
-        siteTitle={providerRequest.siteTitle}
-      />
+        request={providerRequest}
+     />
     )
   }
 }

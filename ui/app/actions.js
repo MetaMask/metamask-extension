@@ -2655,15 +2655,15 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-function approveProviderRequest (tabID) {
+function approveProviderRequest (requestId) {
   return (dispatch) => {
-    background.approveProviderRequest(tabID)
+    background.approveProviderRequest(requestId)
   }
 }
 
-function rejectProviderRequest (tabID) {
+function rejectProviderRequest (requestId) {
   return (dispatch) => {
-    background.rejectProviderRequest(tabID)
+    background.rejectProviderRequest(requestId)
   }
 }
 

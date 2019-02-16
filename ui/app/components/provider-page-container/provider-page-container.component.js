@@ -6,11 +6,8 @@ import { PageContainerFooter } from '../page-container'
 export default class ProviderPageContainer extends PureComponent {
   static propTypes = {
     approveProviderRequest: PropTypes.func.isRequired,
-    origin: PropTypes.string.isRequired,
     rejectProviderRequest: PropTypes.func.isRequired,
-    siteImage: PropTypes.string,
-    siteTitle: PropTypes.string.isRequired,
-    tabID: PropTypes.string.isRequired,
+    request: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -18,22 +15,27 @@ export default class ProviderPageContainer extends PureComponent {
   };
 
   onCancel = () => {
-    const { tabID, rejectProviderRequest } = this.props
-    rejectProviderRequest(tabID)
+    const { request, rejectProviderRequest } = this.props
+    const { id } = request.metadata
+    rejectProviderRequest(id)
   }
 
   onSubmit = () => {
-    const { approveProviderRequest, tabID } = this.props
-    approveProviderRequest(tabID)
+    const { request, approveProviderRequest } = this.props
+    console.log('about to call submit with ', approveProviderRequest)
+    const { id } = request.metadata
+    approveProviderRequest(id)
   }
 
   render () {
-    const {origin, siteImage, siteTitle} = this.props
+    const { request } = this.props
+    const {origin, siteImage, siteTitle} = request.metadata
 
     return (
       <div className="page-container provider-approval-container">
         <ProviderPageContainerHeader />
         <ProviderPageContainerContent
+          request={request}
           origin={origin}
           siteImage={siteImage}
           siteTitle={siteTitle}

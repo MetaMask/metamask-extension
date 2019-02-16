@@ -497,9 +497,9 @@ module.exports = class MetamaskController extends EventEmitter {
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
       markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
 
-      approveProviderRequest: providerApprovalController.approveProviderRequest.bind(providerApprovalController),
-      clearApprovedOrigins: providerApprovalController.clearApprovedOrigins.bind(providerApprovalController),
-      rejectProviderRequest: providerApprovalController.rejectProviderRequest.bind(providerApprovalController),
+      approveProviderRequest: this.approveProviderRequest.bind(this),
+      clearApprovedOrigins: this.clearApprovedOrigins.bind(this),
+      rejectProviderRequest: this.rejectProviderRequest.bind(this),
     }
   }
 
@@ -1400,7 +1400,7 @@ module.exports = class MetamaskController extends EventEmitter {
       * @returns {Promise<bool>} approved - Whether the user approves the request or not.
       */
       requestUserApproval: async (metadata, opts) => {
-        const { origin, siteTitle,  } = metadata
+        const { origin, siteTitle, id } = metadata
 
         const isUnlocked = this.getState().isUnlocked
         let result = {}
@@ -1413,26 +1413,36 @@ module.exports = class MetamaskController extends EventEmitter {
           await this.requestUnlock()
         }
 
-        // Wait for the approval
-        this.once('approvedPermissions:domain', (permissions) => {
-          this.opts.closePopup && this.opts.closePopup()
+        return new Promise ((res, rej) => {
+          this.pendingApprovals[id] = { res, rej }
         })
 
-        const ok = confirm(message)
-        if (ok) {
-          result = opts
-
-          if ('eth_accounts' in opts) {
-            result['eth_accounts'] = await this.selectAccountsFor(origin, opts)
-          }
-
-          return result
-        } else {
-          // A hard rejection
-          return ok
-        }
+        // TODO: Attenuate requested permissions in approval screen.
+        // Like selecting the account to display.
       },
     })
+
+    this.pendingApprovals = {}
+  }
+
+  async approveProviderRequest (id) {
+    const approval = this.pendingApprovals[id]
+    const res = approval.res
+    res(true)
+    this.opts.closePopup && this.opts.closePopup()
+    delete pendingApprovals[id]
+  }
+
+  async rejectProviderRequest (id) {
+    const approval = this.pendingApprovals[id]
+    const rej = approval.rej
+    rej(false)
+    this.opts.closePopup && this.opts.closePopup()
+    delete pendingApprovals[id]
+  }
+
+  async clearApprovedOrigins () {
+    // NOOP.  Need anything here?
   }
 
   async approvePermissions (domain, opts) {

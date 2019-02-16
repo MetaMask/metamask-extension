@@ -23,7 +23,7 @@ export default class Home extends PureComponent {
     seedWords: PropTypes.string,
     suggestedTokens: PropTypes.object,
     unconfirmedTransactionsCount: PropTypes.number,
-    providerRequests: PropTypes.array,
+    permissionsRequests: PropTypes.array,
   }
 
   componentDidMount () {
@@ -49,7 +49,7 @@ export default class Home extends PureComponent {
       lostAccounts,
       forgottenPassword,
       seedWords,
-      providerRequests,
+      permissionsRequests,
     } = this.props
 
     // notices
@@ -66,9 +66,9 @@ export default class Home extends PureComponent {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />
     }
 
-    if (providerRequests && providerRequests.length > 0) {
+    if (permissionsRequests && permissionsRequests.length > 0) {
       return (
-        <ProviderApproval providerRequest={providerRequests[0]} />
+        <ProviderApproval providerRequest={permissionsRequests[0]} />
       )
     }
 
