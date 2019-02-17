@@ -498,7 +498,7 @@ describe('MetaMask', function () {
       const advancedGasTitle = await findElement(driver, By.xpath(`//span[contains(text(), 'Advanced gas controls')]`))
       await driver.executeScript('arguments[0].scrollIntoView(true)', advancedGasTitle)
 
-      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(11) .settings-page__content-item-col > div'))
+      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(12) .settings-page__content-item-col > div'))
       await advancedGasToggle.click()
       windowHandles = await driver.getAllWindowHandles()
       extension = windowHandles[0]
@@ -569,6 +569,7 @@ describe('MetaMask', function () {
     })
 
     it('the transaction has the expected gas price', async function () {
+      await delay(largeDelayMs)
       const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
       await txValues.click()
       await delay(tinyDelayMs)
@@ -1125,6 +1126,7 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 2
       }, 10000)
 
+      await delay(regularDelayMs)
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues[0], /-7\s*TST/))
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
