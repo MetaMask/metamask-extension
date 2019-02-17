@@ -22,6 +22,11 @@
     &:not(:last-child) {
       margin-right: 8px;
     }
+
+    &__copy-icon {
+      width: 10px;
+      height: 10px;
+    }
   }
 
   &__sender-to-recipient-container {
