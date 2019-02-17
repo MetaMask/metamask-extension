@@ -29,12 +29,13 @@ console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
  * @param {Function} handler - event handler
  * @param {boolean} remove - removes this handler after being triggered
  */
-function onMessage (messageType, handler, remove) {
-  window.addEventListener('message', function ({ data }) {
+function onMessage (messageType, callback, remove) {
+  const handler = function ({ data }) {
     if (!data || data.type !== messageType) { return }
     remove && window.removeEventListener('message', handler)
-    handler.apply(window, arguments)
-  })
+    callback.apply(window, arguments)
+  }
+  window.addEventListener('message', handler)
 }
 
 //
