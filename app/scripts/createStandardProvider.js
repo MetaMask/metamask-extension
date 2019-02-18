@@ -20,10 +20,12 @@ class StandardProvider {
   }
 
   _onClose () {
-    (this._isConnected === undefined || this._isConnected) && this._provider.emit('close', {
-      code: 1011,
-      reason: 'Network connection error',
-    })
+    if (this._isConnected === undefined || this._isConnected) {
+      this._provider.emit('close', {
+        code: 1011,
+        reason: 'Network connection error',
+      })
+    }
     this._isConnected = false
   }
 
@@ -66,8 +68,7 @@ class StandardProvider {
           error ? reject(error) : resolve(response)
         })
       } catch (error) {
-        // Per EIP-1193, send should never throw, only reject its Promise. Here
-        // we swallow thrown errors, which is safe since we handle them above.
+        reject(error)
       }
     })
   }
@@ -81,11 +82,11 @@ class StandardProvider {
 export default function createStandardProvider (provider) {
   const standardProvider = new StandardProvider(provider)
   const sendLegacy = provider.send
-  provider.send = (a, b) => {
-    if (typeof payload === 'string' && !b || Array.isArray(b)) {
-      return standardProvider.send(a, b)
+  provider.send = (methodOrPayload, callbackOrArgs) => {
+    if (typeof methodOrPayload === 'string' && !callbackOrArgs || Array.isArray(callbackOrArgs)) {
+      return standardProvider.send(methodOrPayload, callbackOrArgs)
     }
-    return sendLegacy.call(provider, a, b)
+    return sendLegacy.call(provider, methodOrPayload, callbackOrArgs)
   }
   return provider
 }
