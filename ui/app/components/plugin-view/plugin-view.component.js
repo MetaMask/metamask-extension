@@ -8,6 +8,69 @@ import { DEPOSIT_PLUGIN_ROUTE } from '../../routes'
 
 const BN = require('ethereumjs-util').BN
 
+
+
+
+/**
+ * React component which renders the given content into an iframe.
+ * Additionally an array of stylesheet urls can be passed. They will 
+ * also be loaded into the iframe.
+ */
+class IFrameContainer extends React.Component {
+    
+    static propTypes = {
+        content: React.PropTypes.string.isRequired,
+        stylesheets: React.PropTypes.arrayOf(React.PropTypes.string),
+    };
+
+    /**
+     * Called after mounting the component. Triggers initial update of
+     * the iframe
+     */
+    componentDidMount() {
+        this._updateIframe();
+    }
+
+    /**
+     * Called each time the props changes. Triggers an update of the iframe to
+     * pass the new content
+     */
+    componentDidUpdate() {
+        this._updateIframe();
+    }
+
+    /**
+     * Updates the iframes content and inserts stylesheets.
+     * TODO: Currently stylesheets are just added for proof of concept. Implement
+     * and algorithm which updates the stylesheets properly.
+     */
+    _updateIframe() {
+        const iframe = this.refs.iframe;
+        const document = iframe.contentDocument;
+        const head = document.getElementsByTagName('head')[0];
+        document.body.innerHTML = this.props.content;
+        
+        this.props.stylesheets.forEach(url => {
+            const ref = document.createElement('link');
+            ref.rel = 'stylesheet';
+            ref.type = 'text/css';
+            ref.href = url;
+            head.appendChild(ref);
+        });
+    }
+
+    /**
+     * This component renders just and iframe
+     */
+    render() {
+        return <iframe ref="iframe"/>
+    }
+}
+
+
+
+
+
 export default class PluginView extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -74,15 +137,18 @@ export default class PluginView extends PureComponent {
     if (this.props.selectedPluginScript){
       console.log(this.props.selectedPluginScript.pluginInterface)
     }
+    const content = this.renderDelegatedUI.bind(this)()
+    //`<h1>Title</h1><button class="btn btn-primary">Test</button>`
     return (
 	<div>
 	<div> ------------------------------------------------------------------------------   Plugin view  ---------------------------------------------------------------------------------  </div>
 	<div> plugin uid: {this.props.selectedPluginUid}    </div>
 	<div> {this.renderPluginButtons.bind(this)()} </div>
-	<div> {this.renderDelegatedUI.bind(this)()} </div>	
+        <div>
+        <IFrameContainer content={content} stylesheets={['https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css']} />
+        </div>
 	</div>	
     )    
-
   }
 }
 
