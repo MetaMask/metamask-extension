@@ -14,10 +14,10 @@ function createMetamaskMiddleware ({
   processTypedMessageV3,
   processPersonalMessage,
   getPendingNonce,
-  getXPubKey,
-  eth_getAppPubKey,
-  eth_signTransactionAppKey,
-  eth_signTypedMessageAppKey,
+  appKey_getXPubKey,
+  appKey_eth_getAddress,
+  appKey_eth_signTransaction,
+  appKey_eth_signTypedMessage,
 }) {
   const metamaskMiddleware = mergeMiddleware([
     createScaffoldMiddleware({
@@ -34,10 +34,10 @@ function createMetamaskMiddleware ({
       processPersonalMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
-    createGetXPubKeyMiddleware(getXPubKey),
-    createEthGetAppPubKeyMiddleware(eth_getAppPubKey),
-    createEthSignTransactionAppKeyMiddleware(eth_signTransactionAppKey),
-    createEthSignTypedMessageAppKeyMiddleware(eth_signTypedMessageAppKey)    
+    createAppKeyGetXPubKeyMiddleware(appKey_getXPubKey),
+    createAppKeyEthGetAddressMiddleware(appKey_eth_getAddress),
+    createAppKeyEthSignTransactionMiddleware(appKey_eth_signTransaction),
+    createAppKeyEthSignTypedMessageMiddleware(appKey_eth_signTypedMessage)    
   ])
   return metamaskMiddleware
 }
@@ -46,42 +46,42 @@ function createMetamaskMiddleware ({
 // No end in createAsyncMiddleware ?
 //I would ask @aaron.davis if that’s right. I usually use the explicit `done()` call (4th param).
 //I think the nonce may be unique since it’s recording the pending nonce but also allowing other middleware methods to run?
-function createGetXPubKeyMiddleware (getXPubKey) {
+function createAppKeyGetXPubKeyMiddleware (appKey_getXPubKey) {
   return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'getXPubKey') return next()
+    if (req.method !== 'appKey_getXPubKey') return next()
     console.log(req)
     const hdPath = req.params[0]
 
-    res.result = await getXPubKey(hdPath)
+    res.result = await appKey_getXPubKey(hdPath)
   })
 }
 
-function createEthGetAppPubKeyMiddleware (eth_getAppPubKey) {
+function createAppKeyEthGetAddressMiddleware (appKey_eth_getAddress) {
   return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'eth_getAppPubKey') return next()
+    if (req.method !== 'appKey_eth_getAddress') return next()
     console.log(req)
-    res.result = await eth_getAppPubKey(req.params)
+    res.result = await appKey_eth_getAddress(req.params)
   })
 }
-function createEthSignTransactionAppKeyMiddleware (eth_signTransactionAppKey) {
+function createAppKeyEthSignTransactionMiddleware (appKey_eth_signTransaction) {
   return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'eth_signTransactionAppKey') return next()
+    if (req.method !== 'appKey_eth_signTransaction') return next()
     console.log("middleware")
     console.log(req)
     const fromAddress = req.params[0]
     const txParams = req.params[1]
-    res.result = await eth_signTransactionAppKey(fromAddress, txParams)
+    res.result = await appKey_eth_signTransaction(fromAddress, txParams)
   })
 }
 
-function createEthSignTypedMessageAppKeyMiddleware (eth_signTypedMessageAppKey) {
+function createAppKeyEthSignTypedMessageMiddleware (appKey_eth_signTypedMessage) {
   return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'eth_signTypedMessageAppKey') return next()
+    if (req.method !== 'appKey_eth_signTypedMessage') return next()
     console.log("middleware")
     console.log(req)
     const fromAddress = req.params[0]
     const txParams = req.params[1]
-    res.result = await eth_signTypedMessageAppKey(fromAddress, txParams)
+    res.result = await appKey_eth_signTypedMessage(fromAddress, txParams)
   })
 }
 
