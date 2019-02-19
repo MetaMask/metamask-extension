@@ -2,6 +2,20 @@
 
 ## Current Develop Branch
 
+## 6.1.1 Tue Feb 19 2019
+
+- Roll back to version 6.0.1 in case of emergency issue, patch prepared because of major changes to provider logic.
+
+## 6.1.0 Tue Feb 19 2019
+
+- [#6182](https://github.com/MetaMask/metamask-extension/pull/6182): Change "Token Address" to "Token Contract Address"
+- [#6177](https://github.com/MetaMask/metamask-extension/pull/6177): Fixes #6176
+- [#6146](https://github.com/MetaMask/metamask-extension/pull/6146): * Add Copy Tx ID button to transaction-list-item-details
+- [#6133](https://github.com/MetaMask/metamask-extension/pull/6133): Checksum address before slicing it for the confirm screen
+- [#6147](https://github.com/MetaMask/metamask-extension/pull/6147): Add button to force edit token symbol when adding custom token
+- [#6124](https://github.com/MetaMask/metamask-extension/pull/6124): recent-blocks - dont listen for block when on infura providers
+-[#5973] (https://github.com/MetaMask/metamask-extension/pull/5973): Fix incorrectly showing checksums on non-ETH blockchains (issue 5838)
+
 ## 6.0.1 Tue Feb 12 2019
 
 - [#6139](https://github.com/MetaMask/metamask-extension/pull/6139) Fix advanced gas controls on the confirm screen
