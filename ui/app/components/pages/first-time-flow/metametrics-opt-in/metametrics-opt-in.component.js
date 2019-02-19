@@ -10,7 +10,7 @@ export default class MetaMetricsOptIn extends Component {
   }
 
   static contextTypes = {
-    metricsEvent: PropTypes.func,
+    metricsEvent: PropTypes.func,//
   }
 
   render () {
@@ -31,7 +31,7 @@ export default class MetaMetricsOptIn extends Component {
             />
           </div>
           <div className="metametrics-opt-in__body-graphic">
-            <i className="fa fa-bar-chart fa-5x" />
+            <img src="images/metrics-chart.svg" />
           </div>
           <div className="metametrics-opt-in__title">Help Us Improve MetaMask</div>
           <div className="metametrics-opt-in__body">
