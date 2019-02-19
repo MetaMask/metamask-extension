@@ -28,10 +28,11 @@ class IFrameContainer extends React.Component {
      * the iframe
      */
     componentDidMount() {
-      this._updateIframe();
+      this._updateIframe()
     }
 
-    componentDidUpdate() {
+  componentDidUpdate() {
+      this._updateIframe()    
     }
 
     /**
@@ -42,16 +43,7 @@ class IFrameContainer extends React.Component {
     _updateIframe() {
       const iframe = this.refs.iframe;
       const document = iframe.contentDocument;
-      //const head = document.getElementsByTagName('head')[0];
       document.body.innerHTML = this.props.content;
-      
-      // this.props.stylesheets.forEach(url => {
-      //   const ref = document.createElement('link');
-      //   ref.rel = 'stylesheet';
-      //   ref.type = 'text/css';
-      //   ref.href = url;
-      //   head.appendChild(ref);
-      // });
     }
 
     /**
