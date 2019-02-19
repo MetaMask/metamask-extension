@@ -31,12 +31,7 @@ class IFrameContainer extends React.Component {
       this._updateIframe();
     }
 
-    /**
-     * Called each time the props changes. Triggers an update of the iframe to
-     * pass the new content
-     */
     componentDidUpdate() {
-        this._updateIframe();
     }
 
     /**
@@ -45,18 +40,18 @@ class IFrameContainer extends React.Component {
      * and algorithm which updates the stylesheets properly.
      */
     _updateIframe() {
-        const iframe = this.refs.iframe;
-        const document = iframe.contentDocument;
-        const head = document.getElementsByTagName('head')[0];
-        document.body.innerHTML = this.props.content;
-        
-        this.props.stylesheets.forEach(url => {
-            const ref = document.createElement('link');
-            ref.rel = 'stylesheet';
-            ref.type = 'text/css';
-            ref.href = url;
-            head.appendChild(ref);
-        });
+      const iframe = this.refs.iframe;
+      const document = iframe.contentDocument;
+      //const head = document.getElementsByTagName('head')[0];
+      document.body.innerHTML = this.props.content;
+      
+      // this.props.stylesheets.forEach(url => {
+      //   const ref = document.createElement('link');
+      //   ref.rel = 'stylesheet';
+      //   ref.type = 'text/css';
+      //   ref.href = url;
+      //   head.appendChild(ref);
+      // });
     }
 
     /**
@@ -163,7 +158,7 @@ export default class PluginView extends PureComponent {
 	<div> plugin uid: {this.props.selectedPluginUid}    </div>
 	<div> {this.renderPluginButtons.bind(this)()} </div>
         <div>
-        <IFrameContainer content={content} stylesheets={['https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css']} />
+        <IFrameContainer content={content}/>
         </div>
 	</div>	
     )    
