@@ -15,7 +15,6 @@ export default class ProviderApproval extends Component {
 
   render () {
     const { approveProviderRequest, providerRequest, rejectProviderRequest } = this.props
-    console.log('rendering page container with ', approveProviderRequest)
     return (
       <ProviderPageContainer
         approveProviderRequest={approveProviderRequest}

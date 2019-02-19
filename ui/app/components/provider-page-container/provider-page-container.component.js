@@ -22,7 +22,6 @@ export default class ProviderPageContainer extends PureComponent {
 
   onSubmit = () => {
     const { request, approveProviderRequest } = this.props
-    console.log('about to call submit with ', approveProviderRequest)
     const { id } = request.metadata
     approveProviderRequest(id)
   }
