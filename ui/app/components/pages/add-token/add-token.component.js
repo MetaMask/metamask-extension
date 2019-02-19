@@ -233,7 +233,7 @@ class AddToken extends Component {
       <div className="add-token__custom-token-form">
         <TextField
           id="custom-address"
-          label={this.context.t('tokenAddress')}
+          label={this.context.t('tokenContractAddress')}
           type="text"
           value={customAddress}
           onChange={e => this.handleCustomAddressChange(e.target.value)}

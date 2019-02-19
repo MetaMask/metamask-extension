@@ -1364,6 +1364,9 @@
   "tokenBalance": {
     "message": "Your Token Balance is:"
   },
+  "tokenContractAddress": {
+    "message": "Token Contract Address"
+  },
   "tokenSelection": {
     "message": "Search for tokens or select from our list of popular tokens."
   },
