@@ -174,7 +174,7 @@ jobs:
           at: .
       - run:
           name: Test
-          command: sudo npm install -g npm@6 && npm audit
+          command: sudo npm install -g npm@6
 
   # test-e2e-beta-drizzle:
   #   docker:
