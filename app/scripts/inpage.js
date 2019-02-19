@@ -29,12 +29,13 @@ console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
  * @param {Function} handler - event handler
  * @param {boolean} remove - removes this handler after being triggered
  */
-function onMessage (messageType, handler, remove) {
-  window.addEventListener('message', function ({ data }) {
+function onMessage (messageType, callback, remove) {
+  const handler = function ({ data }) {
     if (!data || data.type !== messageType) { return }
     remove && window.removeEventListener('message', handler)
-    handler.apply(window, arguments)
-  })
+    callback.apply(window, arguments)
+  }
+  window.addEventListener('message', handler)
 }
 
 //
@@ -42,13 +43,13 @@ function onMessage (messageType, handler, remove) {
 //
 
 // setup background connection
-var metamaskStream = new LocalMessageDuplexStream({
+const metamaskStream = new LocalMessageDuplexStream({
   name: 'inpage',
   target: 'contentscript',
 })
 
 // compose the inpage provider
-var inpageProvider = new MetamaskInpageProvider(metamaskStream)
+const inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
@@ -181,7 +182,7 @@ if (typeof window.web3 !== 'undefined') {
      and try again.`)
 }
 
-var web3 = new Web3(proxiedInpageProvider)
+const web3 = new Web3(proxiedInpageProvider)
 web3.setProvider = function () {
   log.debug('MetaMask - overrode web3.setProvider')
 }
@@ -218,7 +219,7 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
-var __define
+let __define
 
 /**
  * Caches reference to global define object and deletes it to

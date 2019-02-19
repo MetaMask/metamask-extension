@@ -25,23 +25,23 @@ const mapStateToProps = state => {
     featureFlags: {
       sendHexData,
       privacyMode,
+      advancedInlineGas,
       mobileSync,
     } = {},
     provider = {},
-    isMascara,
     currentLocale,
   } = metamask
   const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
 
   return {
     warning,
-    isMascara,
     currentLocale,
     currentCurrency,
     conversionDate,
     nativeCurrency,
     useBlockie,
     sendHexData,
+    advancedInlineGas,
     privacyMode,
     provider,
     useNativeCurrencyAsPrimaryCurrency,
@@ -57,10 +57,8 @@ const mapDispatchToProps = dispatch => {
     revealSeedConfirmation: () => dispatch(revealSeedConfirmation()),
     setUseBlockie: value => dispatch(setUseBlockie(value)),
     updateCurrentLocale: key => dispatch(updateCurrentLocale(key)),
-    setFeatureFlagToBeta: () => {
-      return dispatch(setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
-    },
     setHexDataFeatureFlag: shouldShow => dispatch(setFeatureFlag('sendHexData', shouldShow)),
+    setAdvancedInlineGasFeatureFlag: shouldShow => dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
     setPrivacyMode: enabled => dispatch(setFeatureFlag('privacyMode', enabled)),
     showResetAccountConfirmationModal: () => dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
     setUseNativeCurrencyAsPrimaryCurrencyPreference: value => {

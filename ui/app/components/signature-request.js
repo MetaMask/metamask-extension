@@ -272,6 +272,7 @@ SignatureRequest.prototype.renderFooter = function () {
     h(Button, {
       type: 'primary',
       large: true,
+      className: 'request-signature__footer__sign-button',
       onClick: event => {
         sign(event).then(() => {
           this.props.clearConfirmTransaction()

@@ -14,14 +14,13 @@ const mapStateToProps = state => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { nativeCurrency, currentCurrency } = stateProps
-  const { useFiat } = ownProps
-  const suffix = useFiat ? currentCurrency.toUpperCase() : nativeCurrency || ETH
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    suffix,
+    nativeSuffix: nativeCurrency || ETH,
+    fiatSuffix: currentCurrency.toUpperCase(),
   }
 }
 

@@ -22,4 +22,24 @@
   &__token-list {
     margin-top: 16px;
   }
+
+  &__custom-symbol {
+
+    &__label-wrapper {
+      display: flex;
+      flex-flow: row nowrap;
+    }
+
+    &__label {
+      flex: 0 0 auto;
+    }
+
+    &__edit {
+      flex: 1 1 auto;
+      text-align: right;
+      color: $curious-blue;
+      padding-right: 4px;
+      cursor: pointer;
+    }
+  }
 }

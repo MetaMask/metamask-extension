@@ -16,6 +16,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
     - If you install Node.js manually, ensure you're using npm@6
         - Install npm@6 using `npm install -g npm@6`
 - Install dependencies: `npm install`
+    - If you have issues with node-sass compilation, try `npm rebuild node-sass`
 - Install gulp globally with `npm install -g gulp-cli`.
 - Build the project to the `./dist/` folder with `gulp build`.
 - Optionally, to rebuild on file changes, run `gulp dev`.

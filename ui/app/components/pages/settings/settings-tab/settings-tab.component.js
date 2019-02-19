@@ -51,7 +51,6 @@ export default class SettingsTab extends PureComponent {
     showResetAccountConfirmationModal: PropTypes.func,
     warning: PropTypes.string,
     history: PropTypes.object,
-    isMascara: PropTypes.bool,
     updateCurrentLocale: PropTypes.func,
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
@@ -61,6 +60,8 @@ export default class SettingsTab extends PureComponent {
     nativeCurrency: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
+    setAdvancedInlineGasFeatureFlag: PropTypes.func,
+    advancedInlineGas: PropTypes.bool,
     mobileSync: PropTypes.bool,
   }
 
@@ -339,6 +340,7 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+
   renderMobileSync () {
     const { t } = this.context
     const { history, mobileSync } = this.props
@@ -370,34 +372,6 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
-
-  renderOldUI () {
-    const { t } = this.context
-    const { setFeatureFlagToBeta } = this.props
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{ t('useOldUI') }</span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="secondary"
-              large
-              className="settings-tab__button--orange"
-              onClick={event => {
-                event.preventDefault()
-                setFeatureFlagToBeta()
-              }}
-            >
-              { t('useOldUI') }
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   renderResetAccount () {
     const { t } = this.context
@@ -466,6 +440,32 @@ export default class SettingsTab extends PureComponent {
             <ToggleButton
               value={sendHexData}
               onToggle={value => setHexDataFeatureFlag(!value)}
+              activeLabel=""
+              inactiveLabel=""
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderAdvancedGasInputInline () {
+    const { t } = this.context
+    const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('showAdvancedGasInline') }</span>
+          <div className="settings-page__content-description">
+            { t('showAdvancedGasInlineDescription') }
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={advancedInlineGas}
+              onToggle={value => setAdvancedInlineGasFeatureFlag(!value)}
               activeLabel=""
               inactiveLabel=""
             />
@@ -556,7 +556,7 @@ export default class SettingsTab extends PureComponent {
   }
 
   render () {
-    const { warning, isMascara } = this.props
+    const { warning } = this.props
 
     return (
       <div className="settings-page__content">
@@ -567,11 +567,11 @@ export default class SettingsTab extends PureComponent {
         { this.renderNewRpcUrl() }
         { this.renderStateLogs() }
         { this.renderSeedWords() }
-        { !isMascara && this.renderOldUI() }
         { this.renderResetAccount() }
         { this.renderClearApproval() }
         { this.renderPrivacyOptIn() }
         { this.renderHexDataOptIn() }
+        { this.renderAdvancedGasInputInline() }
         { this.renderBlockieOptIn() }
         { this.renderMobileSync() }
       </div>

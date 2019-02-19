@@ -22,6 +22,7 @@ import Settings from './components/pages/settings'
 import Authenticated from './higher-order-components/authenticated'
 import Initialized from './higher-order-components/initialized'
 import Lock from './components/pages/lock'
+import UiMigrationAnnouncement from './components/ui-migration-annoucement'
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault').default
 const RevealSeedConfirmation = require('./components/pages/keychains/reveal-seed')
 const MobileSyncPage = require('./components/pages/mobile-sync')
@@ -176,6 +177,7 @@ class App extends Component {
           }
         }}
       >
+        <UiMigrationAnnouncement />
         <Modal />
         <Alert
           visible={this.props.alertOpen}
@@ -306,7 +308,6 @@ App.propTypes = {
   unapprovedTypedMessagesCount: PropTypes.number,
   welcomeScreenSeen: PropTypes.bool,
   isPopup: PropTypes.bool,
-  betaUI: PropTypes.bool,
   isMouseUser: PropTypes.bool,
   setMouseUserState: PropTypes.func,
   t: PropTypes.func,
@@ -378,7 +379,6 @@ function mapStateToProps (state) {
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
-    betaUI: state.metamask.featureFlags.betaUI,
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,
     Qr: state.appState.Qr,
     welcomeScreenSeen: state.metamask.welcomeScreenSeen,

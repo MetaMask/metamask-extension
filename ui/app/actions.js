@@ -318,6 +318,11 @@ var actions = {
   UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
 
+  // Migration of users to new UI
+  setCompletedUiMigration,
+  completeUiMigration,
+  COMPLETE_UI_MIGRATION: 'COMPLETE_UI_MIGRATION',
+
   // Onboarding
   setCompletedOnboarding,
   completeOnboarding,
@@ -2490,6 +2495,31 @@ function completeOnboarding () {
   }
 }
 
+function setCompletedUiMigration () {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.completeUiMigration(err => {
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.completeUiMigration())
+        resolve()
+      })
+    })
+  }
+}
+
+function completeUiMigration () {
+  return {
+    type: actions.COMPLETE_UI_MIGRATION,
+  }
+}
+
 function setNetworkNonce (networkNonce) {
   return {
     type: actions.SET_NETWORK_NONCE,
@@ -2641,15 +2671,15 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-function approveProviderRequest (origin) {
+function approveProviderRequest (tabID) {
   return (dispatch) => {
-    background.approveProviderRequest(origin)
+    background.approveProviderRequest(tabID)
   }
 }
 
-function rejectProviderRequest (origin) {
+function rejectProviderRequest (tabID) {
   return (dispatch) => {
-    background.rejectProviderRequest(origin)
+    background.rejectProviderRequest(tabID)
   }
 }
 

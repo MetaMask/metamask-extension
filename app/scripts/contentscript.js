@@ -7,7 +7,7 @@ const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('extension-port-stream')
-const TransformStream = require('stream').Transform
+const {Transform: TransformStream} = require('stream')
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
@@ -247,7 +247,7 @@ function suffixCheck () {
  * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
  */
 function documentElementCheck () {
-  var documentElement = document.documentElement.nodeName
+  const documentElement = document.documentElement.nodeName
   if (documentElement) {
     return documentElement.toLowerCase() === 'html'
   }
@@ -260,7 +260,7 @@ function documentElementCheck () {
  * @returns {boolean} {@code true} if the current domain is blacklisted
  */
 function blacklistedDomainCheck () {
-  var blacklistedDomains = [
+  const blacklistedDomains = [
     'uscourts.gov',
     'dropbox.com',
     'webbyawards.com',
@@ -271,8 +271,8 @@ function blacklistedDomainCheck () {
     'ani.gamer.com.tw',
     'blueskybooking.com',
   ]
-  var currentUrl = window.location.href
-  var currentRegex
+  const currentUrl = window.location.href
+  let currentRegex
   for (let i = 0; i < blacklistedDomains.length; i++) {
     const blacklistedDomain = blacklistedDomains[i].replace('.', '\\.')
     currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blacklistedDomain}).)*$`)
