@@ -28,7 +28,7 @@ class IFrameContainer extends React.Component {
      * the iframe
      */
     componentDidMount() {
-        this._updateIframe();
+      this._updateIframe();
     }
 
     /**
@@ -124,6 +124,24 @@ export default class PluginView extends PureComponent {
 
     }
     return elements
+  }
+
+
+
+  componentDidMount() {
+      window.addEventListener('message', this.handleIframeFunction);
+  }
+
+  handleIframeFunction(e) {
+    console.log(e)
+    if (e.origin !== 'https://localhost:3000/') {
+      return;
+    }
+    if (e.data === 'iFrameFunction') {
+      // this.setState({
+      // 	activeStep: 3,
+      // });
+    }
   }
 
   renderDelegatedUI(){

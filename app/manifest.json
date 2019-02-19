@@ -40,6 +40,7 @@
     "default_title": "MetaMask",
     "default_popup": "popup.html"
   },
+  "content_security_policy": "script-src 'self' 'unsafe-inline'; object-src 'self'", 
   "content_scripts": [
     {
       "matches": [
