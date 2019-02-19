@@ -5,7 +5,6 @@ import { INITIALIZE_CREATE_PASSWORD_ROUTE } from '../../../../routes'
 
 export default class MetaMetricsOptIn extends Component {
   static propTypes = {
-    address: PropTypes.string,
     history: PropTypes.object,
     setParticipateInMetaMetrics: PropTypes.func,
   }

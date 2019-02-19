@@ -12,7 +12,8 @@
     @media screen and (max-width: 575px) {
       justify-content: center;
       margin-left: 2%;
-      margin-right: 2%;
+      margin-right: 0%;
+      max-height: 600px;
     }
 
     .app-header__logo-container {
@@ -53,6 +54,11 @@
     flex-direction: column;
   }
 
+  &__content {
+    overflow-y: scroll;
+    flex: 1;
+  }
+
   &__row {
     display: flex;
     margin-top: 8px;
@@ -89,8 +95,23 @@
     margin-right: 16px;
   }
 
+  &__bottom-text {
+    margin-top: 10px;
+  }
+
+  &__content {
+    overflow-y: auto;
+  }
+
   &__footer {
     margin-top: 26px;
+
+    @media screen and (max-width: 575px) {
+      margin-top: 10px;
+      justify-content: center;
+      margin-left: 2%;
+      max-height: 520px;
+    }
 
     .page-container__footer {
       border-top: none;

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import MetaMetricsOptIn from './metametrics-opt-in.component'
+import MetaMetricsOptInModal from './metametrics-opt-in-modal.component'
 import withModalProps from '../../../higher-order-components/with-modal-props'
 import { setParticipateInMetaMetrics } from '../../../actions'
 
@@ -21,4 +21,4 @@ const mapDispatchToProps = dispatch => {
 export default compose(
   withModalProps,
   connect(mapStateToProps, mapDispatchToProps),
-)(MetaMetricsOptIn)
+)(MetaMetricsOptInModal)
