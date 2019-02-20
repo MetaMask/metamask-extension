@@ -24,6 +24,7 @@ export default class NewAccount extends PureComponent {
     confirmPassword: '',
     passwordError: '',
     confirmPasswordError: '',
+    termsChecked: false,
   }
 
   isValid () {
@@ -112,13 +113,19 @@ export default class NewAccount extends PureComponent {
     history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE)
   }
 
+  toggleTermsCheck = () => {
+    this.setState({
+      termsChecked: !this.state.termsChecked,
+    })
+  }
+
   render () {
     const { t } = this.context
-    const { password, confirmPassword, passwordError, confirmPasswordError } = this.state
+    const { password, confirmPassword, passwordError, confirmPasswordError, termsChecked } = this.state
 
     return (
       <div>
-        <div>
+        <div className="first-time-flow__create-back">
           <a
             onClick={e => {
               e.preventDefault()
@@ -163,10 +170,18 @@ export default class NewAccount extends PureComponent {
             fullWidth
             largeLabel
           />
+          <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
+            <div className="first-time-flow__checkbox">
+              {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
+            </div>
+            <span className="first-time-flow__checkbox-label">
+              I agree to the Terms Of Service
+            </span>
+          </div>
           <Button
             type="first-time"
             className="first-time-flow__button"
-            disabled={!this.isValid()}
+            disabled={!this.isValid() || !termsChecked}
             onClick={this.handleCreate}
           >
             { t('create') }

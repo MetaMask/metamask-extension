@@ -26,6 +26,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     seedPhraseError: '',
     passwordError: '',
     confirmPasswordError: '',
+    termsChecked: false,
   }
 
   parseSeedPhrase = (seedPhrase) => {
@@ -131,9 +132,15 @@ export default class ImportWithSeedPhrase extends PureComponent {
     return !passwordError && !confirmPasswordError && !seedPhraseError
   }
 
+  toggleTermsCheck = () => {
+    this.setState({
+      termsChecked: !this.state.termsChecked,
+    })
+  }
+
   render () {
     const { t } = this.context
-    const { seedPhraseError, passwordError, confirmPasswordError } = this.state
+    const { seedPhraseError, passwordError, confirmPasswordError, termsChecked } = this.state
 
     return (
       <form
@@ -197,10 +204,18 @@ export default class ImportWithSeedPhrase extends PureComponent {
           margin="normal"
           largeLabel
         />
+        <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
+          <div className="first-time-flow__checkbox">
+            {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
+          </div>
+          <span className="first-time-flow__checkbox-label">
+            I agree to the Terms Of Service
+          </span>
+        </div>
         <Button
           type="first-time"
           className="first-time-flow__button"
-          disabled={!this.isValid()}
+          disabled={!this.isValid() || !termsChecked}
           onClick={this.handleImport}
         >
           { t('import') }
