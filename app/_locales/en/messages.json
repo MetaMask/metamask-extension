@@ -92,6 +92,9 @@
   "advanced": {
     "message": "Advanced"
   },
+  "alreadyHaveSeedPhrase": {
+    "message": "No, I already have a seed phrase"
+  },
   "amount": {
     "message": "Amount"
   },
@@ -325,6 +328,9 @@
   },
   "createAccount": {
     "message": "Create Account"
+  },
+  "createAWallet": {
+    "Create a Wallet"
   },
   "createDen": {
     "message": "Create"
@@ -647,6 +653,9 @@
   "importDen": {
     "message": "Import Existing DEN"
   },
+  "importWallet": {
+    "message": "Import Wallet"
+  },
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -730,6 +739,9 @@
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
+  },
+  "letsGoSetUp": {
+    "message": "Yes, let’s get set up!"
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
@@ -847,6 +859,9 @@
   },
   "newNetwork": {
     "message": "New Network"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
   },
   "rpcURL": {
     "message": "New RPC URL"

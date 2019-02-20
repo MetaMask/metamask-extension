@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Mascot from '../../../mascot'
 import Button from '../../../button'
-import { INITIALIZE_CREATE_PASSWORD_ROUTE, INITIALIZE_NOTICE_ROUTE } from '../../../../routes'
+import { INITIALIZE_SELECT_ACTION_ROUTE, INITIALIZE_NOTICE_ROUTE } from '../../../../routes'
 
 export default class Welcome extends PureComponent {
   static propTypes = {
@@ -30,7 +30,7 @@ export default class Welcome extends PureComponent {
   }
 
   handleContinue = () => {
-    this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+    this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
   }
 
   render () {

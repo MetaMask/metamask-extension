@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
 import FirstTimeFlowSwitch from './first-time-flow-switch'
 import Welcome from './welcome'
+import SelectAction from './select-action'
 import Unlock from '../unlock-page'
 import CreatePassword from './create-password'
 import Notices from './notices'
@@ -14,6 +15,7 @@ import {
   INITIALIZE_NOTICE_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../routes'
 
 export default class FirstTimeFlow extends PureComponent {
@@ -118,6 +120,10 @@ export default class FirstTimeFlow extends PureComponent {
                 onCreateNewAccountFromSeed={this.handleImportWithSeedPhrase}
               />
             )}
+          />
+          <Route
+            path={INITIALIZE_SELECT_ACTION_ROUTE}
+            component={SelectAction}
           />
           <Route
             path={INITIALIZE_UNLOCK_ROUTE}
