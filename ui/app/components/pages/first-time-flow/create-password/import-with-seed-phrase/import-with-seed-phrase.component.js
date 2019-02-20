@@ -3,10 +3,9 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '../../../../text-field'
 import Button from '../../../../button'
-import Breadcrumbs from '../../../../breadcrumbs'
 import {
   INITIALIZE_SELECT_ACTION_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
+  INITIALIZE_UNIQUE_IMAGE_ROUTE,
 } from '../../../../../routes'
 
 export default class ImportWithSeedPhrase extends PureComponent {
@@ -105,7 +104,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
     try {
       await onSubmit(password, seedPhrase)
-      history.push(INITIALIZE_NOTICE_ROUTE)
+      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
     } catch (error) {
       this.setState({ seedPhraseError: error.message })
     }
@@ -213,18 +212,13 @@ export default class ImportWithSeedPhrase extends PureComponent {
           </span>
         </div>
         <Button
-          type="first-time"
+          type="confirm"
           className="first-time-flow__button"
           disabled={!this.isValid() || !termsChecked}
           onClick={this.handleImport}
         >
           { t('import') }
         </Button>
-        <Breadcrumbs
-          className="first-time-flow__breadcrumbs"
-          total={2}
-          currentIndex={0}
-        />
       </form>
     )
   }

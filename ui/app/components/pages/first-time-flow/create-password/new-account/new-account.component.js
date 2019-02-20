@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Breadcrumbs from '../../../../breadcrumbs'
 import Button from '../../../../button'
 import {
   INITIALIZE_UNIQUE_IMAGE_ROUTE,
@@ -179,7 +178,7 @@ export default class NewAccount extends PureComponent {
             </span>
           </div>
           <Button
-            type="first-time"
+            type="confirm"
             className="first-time-flow__button"
             disabled={!this.isValid() || !termsChecked}
             onClick={this.handleCreate}
@@ -187,11 +186,6 @@ export default class NewAccount extends PureComponent {
             { t('create') }
           </Button>
         </form>
-        <Breadcrumbs
-          className="first-time-flow__breadcrumbs"
-          total={3}
-          currentIndex={0}
-        />
       </div>
     )
   }

@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../../identicon'
-import Breadcrumbs from '../../../../breadcrumbs'
 import Button from '../../../../button'
-import { INITIALIZE_NOTICE_ROUTE } from '../../../../../routes'
+import { INITIALIZE_SEED_PHRASE_ROUTE } from '../../../../../routes'
 
 export default class UniqueImageScreen extends PureComponent {
   static contextTypes = {
@@ -39,17 +38,12 @@ export default class UniqueImageScreen extends PureComponent {
           { t('yourUniqueAccountImageDescription3') }
         </div>
         <Button
-          type="first-time"
+          type="confirm"
           className="first-time-flow__button"
-          onClick={() => history.push(INITIALIZE_NOTICE_ROUTE)}
+          onClick={() => history.push(INITIALIZE_SEED_PHRASE_ROUTE)}
         >
           { t('next') }
         </Button>
-        <Breadcrumbs
-          className="first-time-flow__breadcrumbs"
-          total={3}
-          currentIndex={0}
-        />
       </div>
     )
   }

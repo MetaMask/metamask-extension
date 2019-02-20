@@ -7,14 +7,16 @@
 .first-time-flow {
   width: 100%;
   background-color: $white;
+  display: flex;
+  justify-content: center;
 
   &__wrapper {
     @media screen and (min-width: $break-large) {
-      padding: 35px 275px 0 275px;
-    }
-
-    @media screen and (max-width: 1100px) {
-      padding: 36px;
+      max-width: 742px;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-top: 2%;
     }
 
     .app-header__metafox-logo {
@@ -34,6 +36,7 @@
   &__header {
     font-size: 2.5rem;
     margin-bottom: 24px;
+    color: black;
   }
 
   &__subheader {
@@ -96,6 +99,7 @@
 
   &__text-block {
     margin-bottom: 24px;
+    color: black;
 
     @media screen and (max-width: $break-small) {
       margin-bottom: 16px;
@@ -105,6 +109,8 @@
 
   &__button {
     margin: 35px 0 14px;
+    width: 140px;
+    height: 44px;
   }
 
   &__checkbox-container {
