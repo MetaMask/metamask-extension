@@ -33,8 +33,7 @@ export default class SelectAction extends PureComponent {
     const { t } = this.context
 
     return (
-      <div className="select-action">
-
+       <div className="select-action">
         <div className="app-header__logo-container">
           <img
             className="app-header__metafox-logo app-header__metafox-logo--horizontal"
@@ -49,45 +48,57 @@ export default class SelectAction extends PureComponent {
           />
         </div>
 
-        <div className="select-action__body">
-          <div className="select-action__body-header">
-            { t('newToMetaMask') }
-          </div>
-          <div className="select-action__select-buttons">
-            <div className="select-action__select-button">
-              <div className="select-action__button-symbol">
-                <i className="fa fa-arrow-down fa-3x" />
-              </div>
-              <div className="select-action__button-text">
-                { t('alreadyHaveSeedPhrase') }
-              </div>
-              <Button
-                type="confirm"
-                className="first-time-flow__button"
-                onClick={this.handleImport}
-              >
-                { t('importWallet') }
-              </Button>
-            </div>
-            <div className="select-action__select-button">
-              <div className="select-action__button-symbol">
-                <i className="fa fa-plus fa-3x" />
-              </div>
-              <div className="select-action__button-text">
-                { t('letsGoSetUp') }
-              </div>
-              <Button
-                type="confirm"
-                className="first-time-flow__button"
-                onClick={this.handleCreate}
-              >
-                { t('createAWallet') }
-              </Button>
-            </div>
-          </div>
-        </div>
+        <div className="select-action__wrapper">
 
-      </div>
+
+          <div className="select-action__body">
+            <div className="select-action__body-header">
+              { t('newToMetaMask') }
+            </div>
+            <div className="select-action__select-buttons">
+              <div className="select-action__select-button">
+                <div className="select-action__button-symbol">
+                  <img src="/images/thin-plus.svg" />
+                </div>
+                <div className="select-action__button-texts">
+                  <div className="select-action__button-text-big">
+                    { 'Create new wallet' }
+                  </div>
+                  <div className="select-action__button-text-small">
+                    { 'This will create a new wallet & seed phrase' }
+                  </div>
+                </div>
+                <Button
+                  type="confirm"
+                  className="first-time-flow__button"
+                  onClick={this.handleCreate}
+                >
+                  { t('createAWallet') }
+                </Button>
+              </div>
+              <div className="select-action__select-button">
+                <div className="select-action__button-symbol">
+                  <img src="/images/download-alt.svg" />
+                </div>
+                <div className="select-action__button-text-big">
+                  { 'Import Wallet' }
+                </div>
+                <div className="select-action__button-text-small">
+                  { 'Import your existing wallet using a 12 word seed phrase' }
+                </div>
+                <Button
+                  type="confirm"
+                  className="first-time-flow__button"
+                  onClick={this.handleImport}
+                >
+                  { t('importWallet') }
+                </Button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+       </div>
     )
   }
 }

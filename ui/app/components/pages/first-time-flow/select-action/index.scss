@@ -1,7 +1,7 @@
 .select-action {
   .app-header__logo-container {
-    margin-top: 2%;
-    margin-left: 26%;
+    width: 742px;
+    margin-top: 3%;
   }
 
   &__body {
@@ -30,10 +30,11 @@
   &__select-button {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: space-between;
     width: 269px;
-    height: 266px;
+    height: 278px;
+    padding-left: 24px;
 
     border: 1px solid #D8D8D8;
     box-sizing: border-box;
@@ -41,22 +42,43 @@
     margin-left: 22px;
 
     .first-time-flow__button {
-      max-width: 185px;
+      max-width: 221px;
+      height: 44px;
     }
   }
 
   &__button-symbol {
     color: #C4C4C4;
+    margin-top: 41px;
   }
 
-  &__button-text {
+  &__button-texts {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__button-text-big {
     font-family: Roboto;
     font-style: normal;
     font-weight: normal;
-    line-height: 23px;
-    font-size: 16px;
-    text-align: center;
-    margin-top: 4px;
-    color: black;
+    line-height: 28px;
+    font-size: 20px;
+    color: #000000;
+    margin-top: 24px;
+  }
+
+  &__button-text-small {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 20px;
+    font-size: 14px;
+    color: #7A7A7B;
+    margin-top: 10px;
+  }
+
+  button {
+    font-weight: 500;
+    width: 221px;
   }
 }
