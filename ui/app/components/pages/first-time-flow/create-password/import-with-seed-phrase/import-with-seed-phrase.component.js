@@ -5,7 +5,7 @@ import TextField from '../../../../text-field'
 import Button from '../../../../button'
 import Breadcrumbs from '../../../../breadcrumbs'
 import {
-  INITIALIZE_CREATE_PASSWORD_ROUTE,
+  INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_NOTICE_ROUTE,
 } from '../../../../../routes'
 
@@ -140,11 +140,11 @@ export default class ImportWithSeedPhrase extends PureComponent {
         className="first-time-flow__form"
         onSubmit={this.handleImport}
       >
-        <div>
+        <div className="first-time-flow__create-back">
           <a
             onClick={e => {
               e.preventDefault()
-              this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+              this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
             }}
             href="#"
           >

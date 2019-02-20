@@ -5,6 +5,7 @@ import Button from '../../../../button'
 import {
   INITIALIZE_UNIQUE_IMAGE_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
+  INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../../routes'
 import TextField from '../../../../text-field'
 
@@ -117,6 +118,17 @@ export default class NewAccount extends PureComponent {
 
     return (
       <div>
+        <div>
+          <a
+            onClick={e => {
+              e.preventDefault()
+              this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
+            }}
+            href="#"
+          >
+            {`< Back`}
+          </a>
+        </div>
         <div className="first-time-flow__header">
           { t('createPassword') }
         </div>
@@ -160,13 +172,6 @@ export default class NewAccount extends PureComponent {
             { t('create') }
           </Button>
         </form>
-        <a
-          href=""
-          className="first-time-flow__link create-password__import-link"
-          onClick={this.handleImportWithSeedPhrase}
-        >
-          { t('importWithSeedPhrase') }
-        </a>
         <Breadcrumbs
           className="first-time-flow__breadcrumbs"
           total={3}

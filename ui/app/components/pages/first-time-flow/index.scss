@@ -10,17 +10,25 @@
 
   &__wrapper {
     @media screen and (min-width: $break-large) {
-      padding: 60px 275px 0 275px;
+      padding: 35px 275px 0 275px;
     }
 
     @media screen and (max-width: 1100px) {
       padding: 36px;
+    }
+
+    .app-header__metafox-logo {
+      margin-bottom: 40px;
     }
   }
 
   &__form {
     display: flex;
     flex-direction: column;
+  }
+
+  &__create-back {
+    margin-bottom: 16px;
   }
 
   &__header {

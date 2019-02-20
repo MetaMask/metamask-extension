@@ -92,6 +92,9 @@
   "advanced": {
     "message": "Advanced"
   },
+  "agreeTermsOfService": {
+    "message": "I agree to the Terms of Service"
+  },
   "alreadyHaveSeedPhrase": {
     "message": "No, I already have a seed phrase"
   },
@@ -330,7 +333,7 @@
     "message": "Create Account"
   },
   "createAWallet": {
-    "Create a Wallet"
+    "message": "Create a Wallet"
   },
   "createDen": {
     "message": "Create"
