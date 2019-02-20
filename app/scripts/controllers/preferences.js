@@ -392,15 +392,15 @@ class PreferencesController {
     const pluginAuthorAddress = normalizeAddress(plugin.authorAddress)
     const pluginName = plugin.name
     const pluginScriptUrl = plugin.scriptUrl
-    const network = plugin.network
+    const personaPath = plugin.personaPath
     const newEntry = {uid: pluginUid,
 		      authorAddress: pluginAuthorAddress,
 		      name: pluginName,
-		      network, 
+		      personaPath, 
 		      scriptUrl: pluginScriptUrl}
     let plugins = this.getPlugins()
     const previousEntry = plugins.find((plugin, index) => {
-      return plugin.uid === pluginUid
+      return (plugin.uid === pluginUid)
     })
     const previousIndex = plugins.indexOf(previousEntry)
 

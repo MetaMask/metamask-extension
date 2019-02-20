@@ -14,7 +14,7 @@ function createMetamaskMiddleware ({
   processTypedMessageV3,
   processPersonalMessage,
   getPendingNonce,
-  appKey_getXPubKey,
+  appKey_eth_getPublicKey,
   appKey_eth_getAddress,
   appKey_eth_signTransaction,
   appKey_eth_signTypedMessage,
@@ -34,7 +34,7 @@ function createMetamaskMiddleware ({
       processPersonalMessage,
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
-    createAppKeyGetXPubKeyMiddleware(appKey_getXPubKey),
+    createAppKeyEthGetPublicKeyMiddleware(appKey_eth_getPublicKey),
     createAppKeyEthGetAddressMiddleware(appKey_eth_getAddress),
     createAppKeyEthSignTransactionMiddleware(appKey_eth_signTransaction),
     createAppKeyEthSignTypedMessageMiddleware(appKey_eth_signTypedMessage)    
@@ -46,13 +46,11 @@ function createMetamaskMiddleware ({
 // No end in createAsyncMiddleware ?
 //I would ask @aaron.davis if that’s right. I usually use the explicit `done()` call (4th param).
 //I think the nonce may be unique since it’s recording the pending nonce but also allowing other middleware methods to run?
-function createAppKeyGetXPubKeyMiddleware (appKey_getXPubKey) {
+function createAppKeyEthGetPublicKeyMiddleware (appKey_eth_getPublicKey) {
   return createAsyncMiddleware(async (req, res, next) => {
-    if (req.method !== 'appKey_getXPubKey') return next()
+    if (req.method !== 'appKey_eth_getPublicKey') return next()
     console.log(req)
-    const hdPath = req.params[0]
-
-    res.result = await appKey_getXPubKey(hdPath)
+    res.result = await appKey_eth_getPublicKey(req.params)
   })
 }
 

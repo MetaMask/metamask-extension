@@ -23,7 +23,7 @@ class AddPlugin extends Component {
     const { history } = this.props
     const {
       pluginName,
-      pluginNetwork
+      personaPath
     } = this.state
 
     // compute plugin's uid based on ens hash of name
@@ -37,7 +37,7 @@ class AddPlugin extends Component {
     const customPlugin = {
       name: pluginName,
       uid,
-      network: pluginNetwork,
+      personaPath: personaPath,
       authorAddress: pluginAuthorAddress,
       scriptUrl,
     }
@@ -53,11 +53,11 @@ class AddPlugin extends Component {
     })
 
   }
-  handlePluginNetworkChange (value) {
-    const pluginNetwork = value.trim()
+  handlePluginPersonaPathChange (value) {
+    const personaPath = value.trim()
     this.setState({
-      pluginNetwork,
-      pluginNetworkError: null,
+      personaPath,
+      personaPathError: null,
     })
 
   }
@@ -66,8 +66,8 @@ class AddPlugin extends Component {
     const {
       pluginName,
       pluginNameError,
-      pluginNetwork,
-      pluginNetworkError,
+      personaPath,
+      personaPathError,
     } = this.state
 
 
@@ -85,12 +85,12 @@ class AddPlugin extends Component {
           margin="normal"
         />
         <TextField
-          id="plugin-network"
-          label={'pluginNetwork for ENS registrar (not used for now)'}
+          id="plugin-persona-path"
+          label={'personaPath'}
           type="text"
-          value={pluginNetwork}
-          onChange={e => this.handlePluginNetworkChange(e.target.value)}
-          error={pluginNetworkError}
+          value={personaPath}
+          onChange={e => this.handlePluginPersonaPathChange(e.target.value)}
+          error={personaPathError}
           fullWidth
           margin="normal"
         />

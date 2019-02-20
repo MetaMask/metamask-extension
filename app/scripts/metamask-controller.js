@@ -308,7 +308,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
 
-      appKey_getXPubKey: this.appKey_getXPubKey.bind(this),
+      appKey_eth_getPublicKey: this.appKey_eth_getPublicKey.bind(this),
       appKey_eth_getAddress: this.appKey_eth_getAddress.bind(this),
       appKey_eth_signTransaction: this.appKey_eth_signTransaction.bind(this),
       appKey_eth_signTypedMessage: this.appKey_eth_signTypedMessage.bind(this),
@@ -1658,12 +1658,13 @@ module.exports = class MetamaskController extends EventEmitter {
    * App Keys
    */
 
-  async appKey_getXPubKey (params, next, end) {
+  async appKey_eth_getPublicKey (params, next, end) {
     console.log("getPubXKey params", params)
     const selectedKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     console.log(this.keyringController)
     console.log(selectedKeyring)
-    const xPubKey = await this.keyringController.appKey_getXPubKey(selectedKeyring)
+    const hdPath = params[0]
+    const xPubKey = await this.keyringController.appKey_eth_getPublicKey(selectedKeyring, hdPath)
     console.log("metamask controller", xPubKey)
     return xPubKey
   }
@@ -1674,8 +1675,7 @@ module.exports = class MetamaskController extends EventEmitter {
     console.log(this.keyringController)
     console.log(selectedKeyring)
     const hdPath = params[0]
-    const index = params[1]
-    const appKeys = await this.keyringController.appKey_eth_getAddress(selectedKeyring, hdPath, index)
+    const appKeys = await this.keyringController.appKey_eth_getAddress(selectedKeyring, hdPath)
     console.log(appKeys)
     return appKeys
   }

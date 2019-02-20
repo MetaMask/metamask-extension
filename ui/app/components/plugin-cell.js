@@ -52,7 +52,7 @@ PluginCell.prototype.render = function () {
     gatewayAddress,
     symbol,
     string,
-    network,
+    personaPath,
     setSelectedPluginUid,
     selectedPluginUid,
     contractExchangeRates,
@@ -82,7 +82,7 @@ PluginCell.prototype.render = function () {
     }, [
       h('div', name),
       h('div', uid),
-      h('div', "network: " + network),      
+      h('div', "personaPath: " + personaPath),      
       h('div', "script: " + scriptUrl),
 
       h('div', balance),
