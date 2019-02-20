@@ -118,7 +118,7 @@
     "eth-keychain-controller": "github:vbaranov/KeyringController#simple-address",
     "eth-ledger-bridge-keyring": "github:vbaranov/eth-ledger-bridge-keyring#0.1.0-clear-accounts-flag",
     "eth-method-registry": "^1.0.0",
-    "eth-net-props": "^1.0.13",
+    "eth-net-props": "^1.0.14",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
     "eth-sig-util": "^2.0.2",

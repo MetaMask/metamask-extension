@@ -46,6 +46,7 @@ module.exports = {
   ifLooseAcc,
   ifContractAcc,
   ifHardwareAcc,
+  getAllKeyRingsAccounts,
 }
 
 function valuesFor (obj) {
@@ -360,4 +361,17 @@ function ifHardwareAcc (keyring) {
     return true
   }
   return false
+}
+
+
+function getAllKeyRingsAccounts (keyrings, network) {
+  const accountOrder = keyrings.reduce((list, keyring) => {
+    if (ifContractAcc(keyring) && keyring.network === network) {
+      list = list.concat(keyring.accounts)
+    } else if (!ifContractAcc(keyring)) {
+      list = list.concat(keyring.accounts)
+    }
+    return list
+  }, [])
+  return accountOrder
 }
