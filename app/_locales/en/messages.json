@@ -1621,6 +1621,9 @@
   "yourUniqueAccountImageDescription2": {
     "message": "You’ll see this image everytime you need to confirm a transaction."
   },
+  "yourUniqueAccountImageDescription3": {
+    "message": "MetaMask will never ask for your seed phrase!"
+  },
   "zeroGasPriceOnSpeedUpError": {
     "message":"Zero gas price on speed up"
   }

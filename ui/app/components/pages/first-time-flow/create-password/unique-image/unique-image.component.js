@@ -35,6 +35,9 @@ export default class UniqueImageScreen extends PureComponent {
         <div className="first-time-flow__text-block">
           { t('yourUniqueAccountImageDescription2') }
         </div>
+        <div className="first-time-flow__text-block">
+          { t('yourUniqueAccountImageDescription3') }
+        </div>
         <Button
           type="first-time"
           className="first-time-flow__button"
