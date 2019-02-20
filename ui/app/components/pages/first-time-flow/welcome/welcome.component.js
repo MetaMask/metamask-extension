@@ -41,22 +41,22 @@ export default class Welcome extends PureComponent {
         <div className="welcome-page">
           <Mascot
             animationEventEmitter={this.animationEventEmitter}
-            width="225"
-            height="225"
+            width="125"
+            height="125"
           />
           <div className="welcome-page__header">
             { t('welcome') }
           </div>
           <div className="welcome-page__description">
             <div>{ t('metamaskDescription') }</div>
-            <div>{ t('holdEther') }</div>
+            <div>{ t('happyToSeeYou') }</div>
           </div>
           <Button
-            type="first-time"
+            type="confirm"
             className="first-time-flow__button"
             onClick={this.handleContinue}
           >
-            { t('continue') }
+            { t('getStarted') }
           </Button>
         </div>
       </div>

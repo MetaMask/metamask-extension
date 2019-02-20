@@ -590,9 +590,15 @@
   "getHelp": {
     "message": "Get Help."
   },
+  "getStarted": {
+    "message": "Get Started"
+  },
   "greaterThanMin": {
     "message": "must be greater than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "We’re happy to see you."
   },
   "hardware": {
     "message": "hardware"
@@ -792,7 +798,7 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "MetaMask is a secure identity vault for Ethereum."
+    "message": "Connecting you to Ethereum and the Decentralized Web."
   },
   "metamaskSeedWords": {
     "message": "MetaMask Seed Words"
