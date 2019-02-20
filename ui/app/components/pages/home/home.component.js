@@ -52,11 +52,6 @@ export default class Home extends PureComponent {
       providerRequests,
     } = this.props
 
-    // notices
-    if (!noActiveNotices || (lostAccounts && lostAccounts.length > 0)) {
-      return <Redirect to={{ pathname: NOTICE_ROUTE }} />
-    }
-
     // seed words
     if (seedWords) {
       return <Redirect to={{ pathname: INITIALIZE_SEED_PHRASE_ROUTE }}/>

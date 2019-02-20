@@ -116,6 +116,7 @@ export default class FirstTimeFlow extends PureComponent {
             render={props => (
               <CreatePassword
                 { ...props }
+                isImportedKeyring={isImportedKeyring}
                 onCreateNewAccount={this.handleCreateNewAccount}
                 onCreateNewAccountFromSeed={this.handleImportWithSeedPhrase}
               />

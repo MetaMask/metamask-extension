@@ -15,6 +15,7 @@ export default class CreatePassword extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     isInitialized: PropTypes.bool,
+    isImportedKeyring: PropTypes.bool,
     onCreateNewAccount: PropTypes.func,
     onCreateNewAccountFromSeed: PropTypes.func,
   }
@@ -28,7 +29,7 @@ export default class CreatePassword extends PureComponent {
   }
 
   render () {
-    const { onCreateNewAccount, onCreateNewAccountFromSeed } = this.props
+    const { onCreateNewAccount, onCreateNewAccountFromSeed, isImportedKeyring } = this.props
 
     return (
       <div className="first-time-flow__wrapper">
@@ -46,7 +47,15 @@ export default class CreatePassword extends PureComponent {
           />
         </div>
         <Switch>
-          <Route exact path={INITIALIZE_UNIQUE_IMAGE_ROUTE} component={UniqueImage} />
+          <Route exact
+            path={INITIALIZE_UNIQUE_IMAGE_ROUTE}
+            render={props => (
+              <UniqueImage
+                { ...props }
+                isImportedKeyring={isImportedKeyring}
+              />
+            )}
+          />
           <Route
             exact
             path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}

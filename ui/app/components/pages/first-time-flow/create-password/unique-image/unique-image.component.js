@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Identicon from '../../../../identicon'
 import Button from '../../../../button'
-import { INITIALIZE_SEED_PHRASE_ROUTE } from '../../../../../routes'
+import { INITIALIZE_SEED_PHRASE_ROUTE, DEFAULT_ROUTE } from '../../../../../routes'
 
 export default class UniqueImageScreen extends PureComponent {
   static contextTypes = {
@@ -12,11 +12,13 @@ export default class UniqueImageScreen extends PureComponent {
   static propTypes = {
     address: PropTypes.string,
     history: PropTypes.object,
+    isImportedKeyring: PropTypes.bool,
+    completeOnboarding: PropTypes.func,
   }
 
   render () {
     const { t } = this.context
-    const { address, history } = this.props
+    const { address, history, isImportedKeyring, completeOnboarding } = this.props
 
     return (
       <div>
@@ -40,7 +42,14 @@ export default class UniqueImageScreen extends PureComponent {
         <Button
           type="confirm"
           className="first-time-flow__button"
-          onClick={() => history.push(INITIALIZE_SEED_PHRASE_ROUTE)}
+          onClick={async () => {
+            if (isImportedKeyring) {
+              await completeOnboarding()
+              history.push(DEFAULT_ROUTE)
+            } else {
+              history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+            }
+          }}
         >
           { t('next') }
         </Button>
