@@ -133,6 +133,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.accountTracker = new AccountTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
+      network: this.networkController,
     })
 
     // start and stop polling for balances based on activeControllerConnections
