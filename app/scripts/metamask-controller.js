@@ -614,7 +614,6 @@ module.exports = class MetamaskController extends EventEmitter {
       tokens,
     }
 
-
     // Accounts
     const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     const hdAccounts = await hdKeyring.getAccounts()
@@ -624,12 +623,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ledger: [],
       trezor: [],
     }
-    /*
-    const simpleKeyPairKeyring = await this.keyringController.getKeyringsByType('Simple Key Pair')[0]
-    if (simpleKeyPairKeyring) {
-      accounts.simpleKeyPair = await simpleKeyPairKeyring.getAccounts()
-    }
-    */
+
     // transactions
 
     let transactions = this.txController.store.getState().transactions
