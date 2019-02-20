@@ -5,14 +5,14 @@ const createBlockCacheMiddleware = require('eth-json-rpc-middleware/block-cache'
 const createInflightMiddleware = require('eth-json-rpc-middleware/inflight-cache')
 const createBlockTrackerInspectorMiddleware = require('eth-json-rpc-middleware/block-tracker-inspector')
 const providerFromMiddleware = require('eth-json-rpc-middleware/providerFromMiddleware')
-const BlockTracker = require('eth-block-tracker')
+const createBlockTracker = require('./createBlockTracker')
 
 module.exports = createJsonRpcClient
 
-function createJsonRpcClient ({ rpcUrl }) {
+function createJsonRpcClient ({ rpcUrl, platform }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl })
   const blockProvider = providerFromMiddleware(fetchMiddleware)
-  const blockTracker = new BlockTracker({ provider: blockProvider })
+  const blockTracker = createBlockTracker({ provider: blockProvider }, platform)
 
   const networkMiddleware = mergeMiddleware([
     createBlockRefRewriteMiddleware({ blockTracker }),
