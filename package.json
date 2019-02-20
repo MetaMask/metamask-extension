@@ -1,7 +1,6 @@
 {
   "name": "metamask-crx",
   "version": "0.0.0",
-  "public": false,
   "private": true,
   "scripts": {
     "start": "gulp dev:extension",
