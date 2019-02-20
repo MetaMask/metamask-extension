@@ -17,9 +17,9 @@ workflows:
       - test-lint:
           requires:
             - prep-deps-npm
-      - test-deps:
-          requires:
-            - prep-deps-npm
+      # - test-deps:
+      #     requires:
+      #       - prep-deps-npm
       - test-e2e-beta-chrome:
           requires:
             - prep-deps-npm
@@ -165,16 +165,16 @@ jobs:
           name: Test
           command: npm run lint
 
-  test-deps:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Test
-          command: sudo npm install -g npm@6 && npm audit
+  # test-deps:
+  #   docker:
+  #     - image: circleci/node:8.11.3-browsers
+  #   steps:
+  #     - checkout
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         name: Test
+  #         command: sudo npm install -g npm@6 && npm audit
 
   # test-e2e-beta-drizzle:
   #   docker:
