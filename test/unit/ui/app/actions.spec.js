@@ -1097,6 +1097,7 @@ describe('Actions', () => {
 
     it('', () => {
       const expectedActions = [
+        { type: 'NETWORK_LOADING_STARTED' },
         { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
       ]
 

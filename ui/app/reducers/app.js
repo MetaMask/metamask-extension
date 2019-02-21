@@ -77,6 +77,7 @@ function reduceApp (state, action) {
       ledger: `m/44'/60'/0'/0/0`,
     },
     lastSelectedProvider: null,
+    networkIsLoading: false,
   }, state.appState)
 
   switch (action.type) {
@@ -755,6 +756,16 @@ function reduceApp (state, action) {
       }
       return extend(appState, {
         lastSelectedProvider: action.value,
+      })
+
+    case actions.NETWORK_LOADING_STARTED:
+      return extend(appState, {
+        networkIsLoading: true,
+      })
+
+    case actions.NETWORK_LOADING_FINISHED:
+      return extend(appState, {
+        networkIsLoading: false,
       })
 
     default:

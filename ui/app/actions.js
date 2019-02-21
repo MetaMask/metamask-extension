@@ -346,6 +346,11 @@ var actions = {
   approveProviderRequest,
   rejectProviderRequest,
   clearApprovedOrigins,
+
+  networkLoadingStarted,
+  NETWORK_LOADING_STARTED: 'NETWORK_LOADING_STARTED',
+  networkLoadingFinished,
+  NETWORK_LOADING_FINISHED: 'NETWORK_LOADING_FINISHED',
 }
 
 module.exports = actions
@@ -1949,17 +1954,31 @@ function createSpeedUpTransaction (txId, customGasPrice) {
 function setProviderType (type) {
   return (dispatch, getState) => {
     const { type: currentProviderType } = getState().metamask.provider
+    dispatch(actions.networkLoadingStarted())
     log.debug(`background.setProviderType`, type)
     background.setProviderType(type, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))
       }
+      dispatch(actions.networkLoadingFinished())
       dispatch(setPreviousProvider(currentProviderType))
       dispatch(actions.updateProviderType(type))
       dispatch(actions.setSelectedToken())
     })
 
+  }
+}
+
+function networkLoadingStarted () {
+  return {
+    type: actions.NETWORK_LOADING_STARTED,
+  }
+}
+
+function networkLoadingFinished () {
+  return {
+    type: actions.NETWORK_LOADING_FINISHED,
   }
 }
 

@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import Button from '../button'
 import Identicon from '../identicon'
 import TokenBalance from '../token-balance'
+import Spinner from '../spinner'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { SEND_ROUTE } from '../../routes'
 import { PRIMARY, SECONDARY } from '../../constants/common'
@@ -22,14 +23,34 @@ export default class TransactionViewBalance extends PureComponent {
     balance: PropTypes.string,
     assetImage: PropTypes.string,
     balanceIsCached: PropTypes.bool,
+    networkIsLoading: PropTypes.bool,
+  }
+
+  state = {
+    hideBalance: false,
+    showSpinner: false,
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.networkIsLoading) {
+      this.setState({ hideBalance: true, showSpinner: true })
+      setTimeout(() => this.setState({
+        hideBalance: false,
+        showSpinner: false,
+      }), 1500)
+    }
   }
 
   renderBalance () {
-    const { selectedToken, balance, balanceIsCached } = this.props
+    const { hideBalance } = this.state
+    const { selectedToken, balance, balanceIsCached, networkIsLoading } = this.props
 
     return selectedToken
       ? (
-        <div className="transaction-view-balance__balance">
+        <div className={classnames({
+          'transaction-view-balance__balance': !hideBalance && !networkIsLoading,
+          'transaction-view-balance__balance-hidden': hideBalance || networkIsLoading,
+        })}>
           <TokenBalance
             token={selectedToken}
             withSymbol
@@ -38,7 +59,10 @@ export default class TransactionViewBalance extends PureComponent {
         </div>
       ) : (
           <Tooltip position="top" title={this.context.t('balanceOutdated')} disabled={!balanceIsCached}>
-            <div className="transaction-view-balance__balance">
+            <div className={classnames({
+              'transaction-view-balance__balance': !hideBalance && !networkIsLoading,
+              'transaction-view-balance__balance-hidden': hideBalance || networkIsLoading,
+            })}>
                 <div className="transaction-view-balance__primary-container">
                   <UserPreferencedCurrencyDisplay
                     className={classnames('transaction-view-balance__primary-balance', {
@@ -97,7 +121,8 @@ export default class TransactionViewBalance extends PureComponent {
   }
 
   render () {
-    const { network, selectedToken, assetImage } = this.props
+    const { network, selectedToken, assetImage, networkIsLoading } = this.props
+    const { showSpinner } = this.state
 
     return (
       <div className="transaction-view-balance">
@@ -109,6 +134,7 @@ export default class TransactionViewBalance extends PureComponent {
             image={assetImage}
           />
           { this.renderBalance() }
+          { showSpinner || networkIsLoading ? <Spinner color="#CDCDCD" /> : null }
         </div>
         { this.renderButtons() }
       </div>

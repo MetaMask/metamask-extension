@@ -7,10 +7,10 @@ const mapStateToProps = state => {
   const {
     loadingMessage,
     currentView,
+    lastSelectedProvider,
   } = state.appState
   const {
     provider,
-    lastSelectedProvider,
     network,
   } = state.metamask
   const { rpcTarget, chainId, ticker, nickname, type } = provider

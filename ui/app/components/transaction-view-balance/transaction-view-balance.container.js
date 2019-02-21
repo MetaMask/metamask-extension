@@ -14,7 +14,7 @@ import { showModal } from '../../actions'
 
 const mapStateToProps = state => {
   const selectedAddress = getSelectedAddress(state)
-  const { metamask: { network } } = state
+  const { metamask: { network }, appState: { networkIsLoading } } = state
   const accounts = getMetaMaskAccounts(state)
   const account = accounts[selectedAddress]
   const { balance } = account
@@ -26,6 +26,7 @@ const mapStateToProps = state => {
     nativeCurrency: getNativeCurrency(state),
     assetImage: getSelectedTokenAssetImage(state),
     balanceIsCached: isBalanceCached(state),
+    networkIsLoading,
   }
 }
 
