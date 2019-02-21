@@ -21,6 +21,7 @@ class PreferencesController {
    * user wishes to see that feature.
    *
    * Feature flags can be set by the global function `setPreference(feature, enabled)`, and so should not expose any sensitive behavior.
+   * @property {object} store.knownMethodData Contains all data methods known by the user
    * @property {string} store.currentLocale The preferred language locale key
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    *
@@ -43,6 +44,7 @@ class PreferencesController {
         betaUI: true,
         skipAnnounceBetaUI: true,
       },
+      knownMethodData: {},
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -51,6 +53,8 @@ class PreferencesController {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      completedOnboarding: false,
+      completedUiMigration: true,
     }, opts.initState)
 
     this.diagnostics = opts.diagnostics
@@ -107,6 +111,18 @@ class PreferencesController {
     const newEntry = { address, symbol, decimals, image }
     suggested[address] = newEntry
     this.store.updateState({ suggestedTokens: suggested })
+  }
+
+  /**
+   * Add new methodData to state, to avoid requesting this information again through Infura
+   *
+   * @param {string} fourBytePrefix Four-byte method signature
+   * @param {string} methodData Corresponding data method
+   */
+  addKnownMethodData (fourBytePrefix, methodData) {
+    const knownMethodData = this.store.getState().knownMethodData
+    knownMethodData[fourBytePrefix] = methodData
+    this.store.updateState({ knownMethodData })
   }
 
   /**
@@ -403,6 +419,32 @@ class PreferencesController {
   }
 
   /**
+   * updates custom RPC details
+   *
+   * @param {string} url The RPC url to add to frequentRpcList.
+   * @param {number} chainId Optional chainId of the selected network.
+   * @param {string} ticker   Optional ticker symbol of the selected network.
+   * @param {string} nickname Optional nickname of the selected network.
+   * @returns {Promise<array>} Promise resolving to updated frequentRpcList.
+   *
+   */
+
+
+  updateRpc (newRpcDetails) {
+    const rpcList = this.getFrequentRpcListDetail()
+    const index = rpcList.findIndex((element) => { return element.rpcUrl === newRpcDetails.rpcUrl })
+    if (index > -1) {
+      const rpcDetail = rpcList[index]
+      const updatedRpc = extend(rpcDetail, newRpcDetails)
+      rpcList[index] = updatedRpc
+      this.store.updateState({ frequentRpcListDetail: rpcList })
+    } else {
+      const { rpcUrl, chainId, ticker, nickname } = newRpcDetails
+      return this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname)
+    }
+    return Promise.resolve(rpcList)
+  }
+  /**
    * Adds custom RPC url to state.
    *
    * @param {string} url The RPC url to add to frequentRpcList.
@@ -419,7 +461,11 @@ class PreferencesController {
       rpcList.splice(index, 1)
     }
     if (url !== 'http://localhost:8545') {
-      rpcList.push({ rpcUrl: url, chainId, ticker, nickname })
+      let checkedChainId
+      if (!!chainId && !Number.isNaN(parseInt(chainId))) {
+        checkedChainId = chainId
+      }
+      rpcList.push({ rpcUrl: url, chainId: checkedChainId, ticker, nickname })
     }
     this.store.updateState({ frequentRpcListDetail: rpcList })
     return Promise.resolve(rpcList)
@@ -507,6 +553,23 @@ class PreferencesController {
    */
   getPreferences () {
     return this.store.getState().preferences
+  }
+
+  /**
+   * Sets the completedOnboarding state to true, indicating that the user has completed the
+   * onboarding process.
+   */
+  completeOnboarding () {
+    this.store.updateState({ completedOnboarding: true })
+    return Promise.resolve(true)
+  }
+
+  /**
+   * Sets the {@code completedUiMigration} state to {@code true}, indicating that the user has completed the UI switch.
+   */
+  completeUiMigration () {
+    this.store.updateState({ completedUiMigration: true })
+    return Promise.resolve(true)
   }
 
   //

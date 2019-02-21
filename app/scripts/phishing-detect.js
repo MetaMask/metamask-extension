@@ -1,16 +1,9 @@
-window.onload = function () {
-  if (window.location.pathname === '/phishing.html') {
-    const {hostname} = parseHash()
-    document.getElementById('esdbLink').innerHTML = '<b>To read more about this site and why it was blocked, <a href="https://etherscamdb.info/domain/' + hostname + '"> please navigate here</a>.</b>'
-  }
-}
-
 const querystring = require('querystring')
 const dnode = require('dnode')
 const { EventEmitter } = require('events')
 const PortStream = require('extension-port-stream')
 const extension = require('extensionizer')
-const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const {setupMultiplex} = require('./lib/stream-utils.js')
 const { getEnvironmentType } = require('./lib/util')
 const ExtensionPlatform = require('./platforms/extension')
 
@@ -18,6 +11,10 @@ document.addEventListener('DOMContentLoaded', start)
 
 function start () {
   const windowType = getEnvironmentType(window.location.href)
+  const hash = window.location.hash.substring(1)
+  const suspect = querystring.parse(hash)
+
+  document.getElementById('esdbLink').href = `https://etherscamdb.info/domain/${suspect.hostname}`
 
   global.platform = new ExtensionPlatform()
   global.METAMASK_UI_TYPE = windowType
@@ -30,14 +27,10 @@ function start () {
       return
     }
 
-    const suspect = parseHash()
-    const unsafeContinue = () => {
-      window.location.href = suspect.href
-    }
     const continueLink = document.getElementById('unsafe-continue')
     continueLink.addEventListener('click', () => {
       metaMaskController.whitelistPhishingDomain(suspect.hostname)
-      unsafeContinue()
+      window.location.href = suspect.href
     })
   })
 }
@@ -51,9 +44,4 @@ function setupControllerConnection (connectionStream, cb) {
   })
   connectionStream.pipe(accountManagerDnode).pipe(connectionStream)
   accountManagerDnode.once('remote', (accountManager) => cb(null, accountManager))
-}
-
-function parseHash () {
-  const hash = window.location.hash.substring(1)
-  return querystring.parse(hash)
 }

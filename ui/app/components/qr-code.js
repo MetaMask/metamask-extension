@@ -25,8 +25,8 @@ function QrCodeView () {
 
 QrCodeView.prototype.render = function () {
   const props = this.props
-  const { message, data } = props.Qr
-  const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data)}`
+  const { message, data, network } = props.Qr
+  const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(data, network)}`
   const qrImage = qrCode(4, 'M')
   qrImage.addData(address)
   qrImage.make()
@@ -51,7 +51,7 @@ QrCodeView.prototype.render = function () {
     h(ReadOnlyInput, {
       wrapperClass: 'ellip-address-wrapper',
       inputClass: 'qr-ellip-address',
-      value: checksumAddress(data),
+      value: checksumAddress(data, network),
     }),
   ])
 }

@@ -37,7 +37,7 @@ describe('TransactionListItemDetails Component', () => {
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
-    assert.equal(wrapper.find(Button).length, 1)
+    assert.equal(wrapper.find(Button).length, 2)
     assert.equal(wrapper.find(SenderToRecipient).length, 1)
     assert.equal(wrapper.find(TransactionBreakdown).length, 1)
     assert.equal(wrapper.find(TransactionActivityLog).length, 1)
@@ -76,6 +76,6 @@ describe('TransactionListItemDetails Component', () => {
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
-    assert.equal(wrapper.find(Button).length, 2)
+    assert.equal(wrapper.find(Button).length, 3)
   })
 })

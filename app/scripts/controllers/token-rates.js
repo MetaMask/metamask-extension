@@ -33,7 +33,7 @@ class TokenRatesController {
     const query = pairs.join('&')
     if (this._tokens.length > 0) {
       try {
-        const response = await fetch(`https://exchanges.balanc3.net/pie?${query}&autoConversion=true`)
+        const response = await fetch(`https://exchanges.balanc3.net/pie?${query}&autoConversion=false`)
         const { prices = [] } = await response.json()
         prices.forEach(({ pair, price }) => {
           const address = pair.split('/')[0]

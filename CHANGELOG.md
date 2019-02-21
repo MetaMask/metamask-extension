@@ -2,6 +2,73 @@
 
 ## Current Develop Branch
 
+-[#5973] (https://github.com/MetaMask/metamask-extension/pull/5973): Fix incorrectly showing checksums on non-ETH blockchains (issue 5838)
+
+## 6.0.1 Tue Feb 12 2019
+
+- [#6139](https://github.com/MetaMask/metamask-extension/pull/6139) Fix advanced gas controls on the confirm screen
+- [#6134](https://github.com/MetaMask/metamask-extension/pull/6134) Trim whitespace from seed phrase during import
+- [#6119](https://github.com/MetaMask/metamask-extension/pull/6119) Update Italian translation
+- [#6125](https://github.com/MetaMask/metamask-extension/pull/6125) Improved Traditional Chinese translation
+
+
+## 6.0.0 Thu Feb 07 2019
+
+- [#6082](https://github.com/MetaMask/metamask-extension/pull/6082): Migrate all users to the new UI
+- [#6114](https://github.com/MetaMask/metamask-extension/pull/6114): Add setting for inputting gas price with a text field for advanced users.
+- [#6091](https://github.com/MetaMask/metamask-extension/pull/6091): Add Swap feature to CurrencyInput
+- [#6090](https://github.com/MetaMask/metamask-extension/pull/6090): Change gas labels to Slow/Average/Fast
+- [#6112](https://github.com/MetaMask/metamask-extension/pull/6112): Extract advanced gas input controls to their own component
+- [#5929](https://github.com/MetaMask/metamask-extension/pull/5929): Update design of phishing warning screen
+- [#6120](https://github.com/MetaMask/metamask-extension/pull/6120): Add class to sign footer button
+- [#6116](https://github.com/MetaMask/metamask-extension/pull/6116): Fix locale codes contains underscore never being preferred
+
+## 5.3.5 Mon Feb 4 2019
+
+- [#6084](https://github.com/MetaMask/metamask-extension/pull/6087): Privacy mode fixes
+
+## 5.3.4 Thu Jan 31 2019
+
+- [#6079](https://github.com/MetaMask/metamask-extension/pull/6079): fix - migration 30
+
+## 5.3.3 Wed Jan 30 2019
+
+- [#6006](https://github.com/MetaMask/metamask-extension/pull/6006): Update privacy notice
+- [#6072](https://github.com/MetaMask/metamask-extension/pull/6072): Improved Spanish translations
+- [#5854](https://github.com/MetaMask/metamask-extension/pull/5854): Add visual indicator when displaying a cached balance.
+- [#6044](https://github.com/MetaMask/metamask-extension/pull/6044): Fix bug that interferred with using multiple custom networks.
+
+## 5.3.2 Mon Jan 28 2019
+
+- [#6021](https://github.com/MetaMask/metamask-extension/pull/6021): Order shapeshift transactions by time within the transactions list
+- [#6052](https://github.com/MetaMask/metamask-extension/pull/6052): Add and use cached method signatures to reduce provider requests
+- [#6048](https://github.com/MetaMask/metamask-extension/pull/6048): Refactor BalanceComponent to jsx
+- [#6026](https://github.com/MetaMask/metamask-extension/pull/6026): Prevent invalid chainIds when adding custom rpcs
+- [#6029](https://github.com/MetaMask/metamask-extension/pull/6029): Fix grammar error in Current Conversion
+- [#6024](https://github.com/MetaMask/metamask-extension/pull/6024): Disable account dropdown on signing screens
+
+## 5.3.1 Wed Jan 16 2019
+
+- [#5966](https://github.com/MetaMask/metamask-extension/pull/5966): Update Slovenian translation
+- [#6005](https://github.com/MetaMask/metamask-extension/pull/6005): Set auto conversion off for token/eth conversion
+- [#6008](https://github.com/MetaMask/metamask-extension/pull/6008): Fix confirm screen for sending ether tx with hex data
+- [#5999](https://github.com/MetaMask/metamask-extension/pull/5999): Refine app description
+- [#5997](https://github.com/MetaMask/metamask-extension/pull/5997): Harden Drizzle test runner script
+- [#5995](https://github.com/MetaMask/metamask-extension/pull/5995): Fix bug where MetaMask user calls non-standard ERC20 methods such as `mint`, `tokenData` will be `undefined` and an uncaught error will break the UI
+- [#5970](https://github.com/MetaMask/metamask-extension/pull/5970): Fixed a word in french translation (several occurrences of connection instead of connexion)
+- [#5977](https://github.com/MetaMask/metamask-extension/pull/5977): Fix Component#componentDidUpdate usage
+- [#5992](https://github.com/MetaMask/metamask-extension/pull/5992): Add scrolling button to account list
+- [#5989](https://github.com/MetaMask/metamask-extension/pull/5989): fix typo in phishing.html title
+
+## 5.3.0 Wed Jan 02 2019
+
+- [#5978](https://github.com/MetaMask/metamask-extension/pull/5978): Fix etherscan links on notifications
+- [#5980](https://github.com/MetaMask/metamask-extension/pull/5980): Fix drizzle tests
+- [#5922](https://github.com/MetaMask/metamask-extension/pull/5922): Prevent users from changing the From field in the send screen
+- [#5932](https://github.com/MetaMask/metamask-extension/pull/5932): Fix displayed time and date in the activity log. Remove vreme library, add luxon library.
+- [#5924](https://github.com/MetaMask/metamask-extension/pull/5924): transactions - throw an error if a transaction is generated while the network is loading
+- [#5893](https://github.com/MetaMask/metamask-extension/pull/5893): Add loading network screen
+
 ## 5.2.2 Wed Dec 12 2018
 
 - [#5925](https://github.com/MetaMask/metamask-extension/pull/5925): Fix speed up button not showing for transactions with the lowest nonce

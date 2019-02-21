@@ -67,8 +67,8 @@ class MobileSyncPage extends Component {
 
   initWebsockets () {
     this.pubnub = new PubNub({
-      subscribeKey: 'sub-c-30b2ba04-c37e-11e8-bd78-d63445bede87',
-      publishKey: 'pub-c-d40e77d5-5cd3-4ca2-82eb-792a1f4573db',
+      subscribeKey: process.env.PUBNUB_SUB_KEY,
+      publishKey: process.env.PUBNUB_PUB_KEY,
       cipherKey: this.cipherKey,
       ssl: true,
     })

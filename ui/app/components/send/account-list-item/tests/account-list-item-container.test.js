@@ -15,6 +15,9 @@ proxyquire('../account-list-item.container.js', {
     getCurrentCurrency: (s) => `mockCurrentCurrency:${s}`,
     getNativeCurrency: (s) => `mockNativeCurrency:${s}`,
   },
+  '../../../selectors.js': {
+    isBalanceCached: (s) => `mockBalanceIsCached:${s}`,
+  },
 })
 
 describe('account-list-item container', () => {
@@ -26,6 +29,7 @@ describe('account-list-item container', () => {
         conversionRate: 'mockConversionRate:mockState',
         currentCurrency: 'mockCurrentCurrency:mockState',
         nativeCurrency: 'mockNativeCurrency:mockState',
+        balanceIsCached: 'mockBalanceIsCached:mockState',
       })
     })
 

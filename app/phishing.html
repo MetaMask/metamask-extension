@@ -1,69 +1,64 @@
-<!DOCTYPE HTML>
-
-<html>
-
+<!doctype html>
+<html lang="en">
   <head>
-    <title>Ethereum Phishing Detection - MetMask</title>
-
+    <title>Ethereum Phishing Detection - MetaMask</title>
+    <script src="./phishing-detect.js"></script>
+    <link href="fonts/index.css" type="text/css" rel="stylesheet">
     <style>
-      body {
-        background: #c50000;
-        padding: 50px;
-        display: flex;
-        justify-content: center;
-        font-family: sans-serif;
-      }
-
-      .centered {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        color: white;
-        max-width: 600px;
-      }
-
-      a {
-        color: white;
-        cursor: pointer;
-        text-decoration: underline;
-      }
+      *                          { margin: 0; padding: 0; box-sizing: border-box; }
+      body, html                 { background-color: rgb(217, 88, 70);
+                                   display: flex; flex-direction: column;
+                                   justify-content: center; align-items: center;
+                                   font-family: Roboto, Arial, sans-serif;
+                                   width: 100vw; min-height: 100vh; }
+      .content                   { display: flex; flex-direction: column; align-items: center;
+                                   width: 80%;
+                                   background-color: white; box-shadow: 0 0 15px #737373; }
+      .content__header           { display: flex; flex-direction: column; align-items: center; justify-content: center;
+                                   width: 100%;
+                                   color: rgb(217, 88, 70); border-bottom: 1px solid rgb(212, 212, 212);
+                                   padding: 2em; }
+      .content__header h1        { font-size: 24px; font-weight: normal; }
+      .content__header h1 i      { margin-right: 0.25em; }
+      .content__header img       { margin-bottom: 3em; width: 160px; }
+      .content__body             { background-color: rgb(245, 245, 245); font-size: 12pt; }
+      .content__body p           { margin: 2em; }
+      .content__body p a         { text-decoration: underline; color: inherit; cursor: pointer; }
     </style>
-
-
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-37075177-6', 'auto');
-      ga('send', 'pageview');
-      //Send referral data to EAL
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-68598031-1', 'auto' {'allowLinker':true});
-      ga('send', 'pageview');
-      ga('require', 'linker');
-      ga('linker:autoLink', ['metamask.io'], false, true);
-    </script>
-    <script src="phishing-detect.js"></script>
   </head>
-
   <body>
-    <div class="centered">
-
-      <img src="/images/ethereum-metamask-chrome.png" style="width:100%">
-      <h3>ATTENTION</h3>
-      <p>This domain is currently on the MetaMask domain warning list. This means that based on information available to us, MetaMask believes this domain could currently compromise your security and, as an added safety feature, MetaMask has restricted access to the site. To override this, please read the rest of this warning for instructions on how to continue at your own risk.  </p>
-      <p>There are many reasons sites can appear on our warning list, and our warning list compiles from other widely used industry lists. Such reasons can include known fraud or security risks, such as domains that test positive on the <a href="https://github.com/metamask/eth-phishing-detect">Ethereum Phishing Detector</a>. Domains on these warning lists may include outright malicious websites and legitimate websites that have been compromised by a malicious actor.
-      <p id="esdbLink"></p>
-      <p>Note that this warning list is compiled on a voluntary basis. This list may be inaccurate or incomplete. Just because a domain does not appear on this list is not an implicit guarantee of that domain's safety. As always, your transactions are your own responsibility. If you wish to interact with any domain on our warning list, you can do so by <a id="unsafe-continue">continuing at your own risk</a>.</p>
-      <p>
-        If you think this domain is incorrectly flagged or if a blocked legitimate website has resolved its security issues,
-        <a href="https://github.com/metamask/eth-phishing-detect/issues/new">please file an issue</a>.
-      </p>
-
+    <div class="content">
+      <div class="content__header">
+        <img src="./images/info-logo.png" alt="">
+        <h1>
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+          Ethereum Phishing Detection
+        </h1>
+      </div>
+      <div class="content__body">
+        <p>
+          This domain is currently on the MetaMask domain warning list. This means that based on information available to us,
+          MetaMask believes this domain could currently compromise your security and, as an added safety feature, MetaMask
+          has restricted access to the site. To override this, please read the rest of this warning for instructions on how to continue at your own risk.
+        </p>
+        <p>
+          There are many reasons sites can appear on our warning list, and our warning list compiles from other widely used industry lists.
+          Such reasons can include known fraud or security risks, such as domains that test positive on the
+          <a href="https://github.com/metamask/eth-phishing-detect">Ethereum Phishing Detector</a>.
+          Domains on these warning lists may include outright malicious websites and legitimate websites that have been compromised by a malicious actor.
+        </p>
+        <p>To read more about this site <a id="esdbLink">please review the domain on Etherscam</a>.</p>
+        <p>
+          Note that this warning list is compiled on a voluntary basis. This list may be inaccurate or incomplete.
+          Just because a domain does not appear on this list is not an implicit guarantee of that domain's safety.
+          As always, your transactions are your own responsibility. If you wish to interact with any domain on our warning list,
+          you can do so by <a id="unsafe-continue">continuing at your own risk</a>.
+        </p>
+        <p>
+          If you think this domain is incorrectly flagged or if a blocked legitimate website has resolved its security issues,
+          <a href="https://github.com/metamask/eth-phishing-detect/issues/new">please file an issue</a>.
+        </p>
+      </div>
     </div>
   </body>
 </html>

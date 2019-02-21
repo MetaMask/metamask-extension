@@ -16,7 +16,6 @@ import {
 
 const selectors = {
   accountsWithSendEtherInfoSelector,
-  // autoAddToBetaUI,
   getAddressBook,
   getAmountConversionRate,
   getBlockGasLimit,
@@ -51,6 +50,7 @@ const selectors = {
   getSendMaxModeState,
   getSendTo,
   getSendToAccounts,
+  getSendWarnings,
   getTokenBalance,
   getTokenExchangeRate,
   getUnapprovedTxs,
@@ -70,23 +70,6 @@ function accountsWithSendEtherInfoSelector (state) {
 
   return accountsWithSendEtherInfo
 }
-
-// function autoAddToBetaUI (state) {
-//   const autoAddTransactionThreshold = 12
-//   const autoAddAccountsThreshold = 2
-//   const autoAddTokensThreshold = 1
-
-//   const numberOfTransactions = state.metamask.selectedAddressTxList.length
-//   const numberOfAccounts = Object.keys(getMetaMaskAccounts(state)).length
-//   const numberOfTokensAdded = state.metamask.tokens.length
-
-//   const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
-//     (numberOfAccounts > autoAddAccountsThreshold) &&
-//     (numberOfTokensAdded > autoAddTokensThreshold)
-//   const userIsNotInBeta = !state.metamask.featureFlags.betaUI
-
-//   return userIsNotInBeta && userPassesThreshold
-// }
 
 function getAddressBook (state) {
   return state.metamask.addressBook
@@ -266,6 +249,10 @@ function getSendToAccounts (state) {
   const allAccounts = [...fromAccounts, ...addressBookAccounts]
   // TODO: figure out exactly what the below returns and put a descriptive variable name on it
   return Object.entries(allAccounts).map(([key, account]) => account)
+}
+
+function getSendWarnings (state) {
+  return state.send.warnings
 }
 
 function getTokenBalance (state) {

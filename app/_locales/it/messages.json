@@ -1,12 +1,12 @@
 {
   "privacyMode": {
-    "message": "Modalità di privacy"
+    "message": "Modalità privacy"
   },
   "privacyModeDescription": {
     "message": "I siti Web devono richiedere l'accesso per visualizzare le informazioni del tuo account."
   },
   "exposeAccounts": {
-    "message": "Expose Accounts"
+    "message": "Esponi Accounts"
   },
   "exposeDescription": {
     "message": "Esporre gli account al sito Web corrente. Utile per dapps legacy."
@@ -16,6 +16,9 @@
   },
   "confirmClear": {
     "message": "Sei sicuro di voler cancellare i siti Web approvati?"
+  },
+  "contractInteraction": {
+    "message": "Interazione Contratto"
   },
   "clearApprovalDataSuccess": {
     "message": "Dati del sito Web approvati cancellati correttamente."
@@ -30,19 +33,19 @@
     "message": "Cancella i dati di approvazione"
   },
   "reject": {
-    "message": "Rifiutare"
+    "message": "Annulla"
   },
-  "providerAPIRequest": {
-    "message": "Richiesta API Web3"
-  },
-  "reviewProviderRequest": {
-    "message": "Si prega di rivedere questa richiesta API Ethereum."
+  "providerRequest": {
+    "message": "$1 vorrebbe connettersi al tuo account"
   },
   "providerRequestInfo": {
     "message": "Il dominio elencato di seguito sta tentando di richiedere l'accesso all'API Ethereum in modo che possa interagire con la blockchain di Ethereum. Controlla sempre di essere sul sito corretto prima di approvare l'accesso a Ethereum."
   },
   "accept": {
     "message": "Accetta"
+  },
+  "acceleratingATransaction": {
+    "message": "* Accelerare una transazione usando un prezzo del gas maggiore aumenta la probabilità che la rete la elabori più velocemente, ma non è garantito."
   },
   "accessingYourCamera": {
     "message": "Accesso alla fotocamera..."
@@ -57,7 +60,7 @@
     "message": "Nome Account"
   },
   "accountOptions": {
-    "message": "Account Options"
+    "message": "Opzioni Account"
   },
   "accountSelectionRequired": {
     "message": "Devi selezionare un account!"
@@ -68,6 +71,9 @@
   "address": {
     "message": "Indirizzo"
   },
+  "advancedOptions": {
+    "message": "Opzioni Avanzate"
+  },
   "addCustomToken": {
     "message": "Aggiungi un token personalizzato"
   },
@@ -75,7 +81,7 @@
     "message": "Aggiungi Token"
   },
   "addTokens": {
-    "message": "Aggiungi più token"
+    "message": "Aggiungi token"
   },
   "addSuggestedTokens": {
     "message": "Aggiungi Token Suggeriti"
@@ -83,11 +89,17 @@
   "addAcquiredTokens": {
     "message": "Aggiungi i token che hai acquistato usando MetaMask"
   },
+  "advanced": {
+    "message": "Avanzato"
+  },
   "amount": {
     "message": "Importo"
   },
   "amountPlusGas": {
     "message": "Importo + Gas"
+  },
+  "amountPlusTxFee": {
+    "message": "Importo + Costo TX"
   },
   "appDescription": {
     "message": "Ethereum Browser Extension",
@@ -118,17 +130,26 @@
   "available": {
     "message": "Disponibile"
   },
+  "average": {
+    "message": "Media"
+  },
   "back": {
     "message": "Indietro"
   },
   "balance": {
     "message": "Bilancio:"
   },
+  "balanceOutdated": {
+    "message": "Il bilancio può essere non aggiornato"
+  },
   "balances": {
     "message": "I tuoi bilanci"
   },
   "balanceIsInsufficientGas": {
     "message": "Bilancio insufficiente per il gas totale corrente"
+  },
+  "basic": {
+    "message": "Base"
   },
   "beta": {
     "message": "BETA"
@@ -171,16 +192,25 @@
     "message": "Tentativo di Annullamento"
   },
   "cancellationGasFee": {
-    "message": "Commissione di Annullamento in Gas"
+    "message": "Costo di Annullamento in Gas"
+  },
+  "cancelled": {
+    "message": "Cancellata"
   },
   "cancelN": {
-    "message": "Cancel all $1 transactions"
+    "message": "Annulla tutte le transazioni relative a $1"
   },
   "classicInterface": {
     "message": "Usa l'interfaccia classica"
   },
   "clickCopy": {
     "message": "Clicca per Copiare"
+  },
+  "clickToAdd": {
+    "message": "Clicca su $1 per aggiungerli al tuo account"
+  },
+  "clickToRevealSeed": {
+    "message": "Clicca qui per rivelare la tua frase segreta"
   },
   "close": {
     "message": "Chiudi"
@@ -191,6 +221,9 @@
   "confirm": {
     "message": "Conferma"
   },
+  "confirmationTime": {
+    "message": "Tempo di conferma (sec)"
+  },
   "confirmed": {
     "message": "Confermata"
   },
@@ -199,6 +232,9 @@
   },
   "confirmPassword": {
     "message": "Conferma Password"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Conferma la tua Frase di Backup Segreta"
   },
   "confirmTransaction": {
     "message": "Conferma Transazione"
@@ -209,8 +245,14 @@
   "connect": {
     "message": "Connetti"
   },
+  "connectRequest": {
+    "message": "Richiesta Connessione"
+  },
   "connecting": {
     "message": "Connessione..."
+  },
+  "connectingTo": {
+    "message": "Connessione in corso a $1"
   },
   "connectingToKovan": {
     "message": "Connessione alla Rete di test Kovan"
@@ -281,12 +323,15 @@
   "createDen": {
     "message": "Crea"
   },
+  "createPassword": {
+    "message": "Crea Password"
+  },
   "crypto": {
     "message": "Crypto",
     "description": "Tipo di exchange (cryptomonete)"
   },
-  "currentConversion": {
-    "message": "Cambio Corrente"
+  "currencyConversion": {
+    "message": "Conversione Moneta"
   },
   "currentLanguage": {
     "message": "Lingua Corrente"
@@ -299,6 +344,9 @@
   },
   "customGas": {
     "message": "Personalizza Gas"
+  },
+  "customGasSubTitle": {
+    "message": "Incrementare il costo potrebbe diminuire il tempo di elaborazione, ma non è garantito."
   },
   "customToken": {
     "message": "Token Personalizzato"
@@ -367,6 +415,9 @@
   "downloadGoogleChrome": {
     "message": "Scarica Google Chrome"
   },
+  "downloadSecretBackup": {
+    "message": "Scarica questa Frase di Backup Segreta e tienila al sicuro in un hard disk o supporto di memorizzazione esterno criptato."
+  },
   "downloadStateLogs": {
     "message": "Scarica i log di Stato"
   },
@@ -403,14 +454,20 @@
   "enterPasswordContinue": {
     "message": "Inserisci la tua password per continuare"
   },
+  "eth": {
+    "message": "ETH"
+  },
   "etherscanView": {
     "message": "Vedi account su Etherscan"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Tempi di Elaborazione Stimati"
   },
   "exchangeRate": {
     "message": "Tasso di cambio"
   },
   "expandView": {
-    "message": "Expand View"
+    "message": "Espandi Vista"
   },
   "exportPrivateKey": {
     "message": "Esporta Chiave Privata"
@@ -420,6 +477,18 @@
   },
   "failed": {
     "message": "Fallita"
+  },
+  "fast": {
+    "message": "Veloce"
+  },
+  "faster": {
+    "message": "Più veloce"
+  },
+  "fastest": {
+    "message": "Velocissima"
+  },
+  "feeChartTitle": {
+    "message": "Previsioni sulle Commissioni per le Transazioni dal Vivo"
   },
   "fiat": {
     "message": "FIAT",
@@ -460,11 +529,17 @@
   "gasLimitCalculation": {
     "message": "Calcoliamo il gas limite suggerito in base al successo delle transazioni in rete."
   },
+  "gasLimitInfoModalContent": {
+    "message": "Il gas limite è il massimo importo di unità di gas che sei disposto a spendere."
+  },
   "gasLimitRequired": {
     "message": "Gas Limite Richiesto"
   },
   "gasLimitTooLow": {
     "message": "Il Gas Limite deve essere almeno 21000"
+  },
+  "gasUsed": {
+    "message": "Gas Utilizzato"
   },
   "generatingSeed": {
     "message": "Generando la frase seed..."
@@ -472,8 +547,17 @@
   "gasPrice": {
     "message": "Prezzo del Gas (GWEI)"
   },
+  "gasPriceExtremelyLow": {
+    "message": "Prezzo del gas estremamente basso"
+  },
+  "gasPriceInfoModalContent": {
+    "message": "Il prezzo del gas specifica il totale di Ether che sei disposto a pagare per ogni unità di gas."
+  },
+  "gasPriceNoDenom": {
+    "message": "Prezzo del Gas"
+  },
   "gasPriceCalculation": {
-    "message": "Calcoliamo il gas limite suggerito in base al successo delle transazioni in rete."
+    "message": "Calcoliamo il prezzo del gas suggerito in base al successo delle transazioni in rete."
   },
   "gasPriceRequired": {
     "message": "Prezzo Gas Richiesto"
@@ -536,7 +620,7 @@
     "message": "Come vuoi depositare Ether?"
   },
   "holdEther": {
-    "message": "Ti permette di tenere ether & token, e serve da ponte per le applicazioni decentralizzate."
+    "message": "Ti permette di custodire ether & token, e serve da ponte per le applicazioni decentralizzate."
   },
   "import": {
     "message": "Importa",
@@ -546,7 +630,10 @@
     "message": "Importa Account"
   },
   "importAccountMsg": {
-    "message": " Gli account importati non saranno associati alla frase seed originariamente creata con MetaMask. Impara di più sugli account importati "
+    "message": " Gli account importati non saranno associati alla frase seed originariamente creata con MetaMask. Scopri di più sugli account importati "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Importa un Account con una Frase Seed"
   },
   "importAnAccount": {
     "message": "Importa un account"
@@ -561,6 +648,9 @@
   "importUsingSeed": {
     "message": "Importa account con frase seed"
   },
+  "importWithSeedPhrase": {
+    "message": "Importa con una frase seed"
+  },
   "info": {
     "message": "Informazioni"
   },
@@ -570,17 +660,23 @@
   "initialTransactionConfirmed": {
     "message": "La transazione iniziale è stata confermata dalla rete. Clicca OK per tornare indietro."
   },
+  "insufficientBalance": {
+    "message": "Bilancio insufficiente."
+  },
   "insufficientFunds": {
-    "message": "Fondi non sufficienti."
+    "message": "Fondi insufficienti."
   },
   "insufficientTokens": {
-    "message": "Token non sufficienti."
+    "message": "Token insufficienti."
   },
   "invalidAddress": {
     "message": "Indirizzo non valido"
   },
   "invalidAddressRecipient": {
     "message": "Indirizzo destinatario invalido"
+  },
+  "knownAddressRecipient": {
+    "message": "Indirizzo del contratto conosciuto."
   },
   "invalidGasParams": {
     "message": "Parametri del Gas non validi"
@@ -635,6 +731,9 @@
   "limit": {
     "message": "Limite"
   },
+  "liveGasPricePredictions": {
+    "message": "Previsioni sui Prezzi del Gas dal Vivo"
+  },
   "loading": {
     "message": "Caricamento..."
   },
@@ -645,7 +744,7 @@
     "message": "Localhost 8545"
   },
   "login": {
-    "message": "Connetti"
+    "message": "Accedi"
   },
   "logout": {
     "message": "Disconnetti"
@@ -658,6 +757,9 @@
   },
   "mainnet": {
     "message": "Rete Ethereum Principale"
+  },
+  "memorizePhrase": {
+    "message": "Memorizza questa frase."
   },
   "menu": {
     "message": "Menu"
@@ -676,6 +778,12 @@
   },
   "min": {
     "message": "Minimo"
+  },
+  "missingYourTokens": {
+    "message": "Non vedi i tuoi token?"
+  },
+  "minutesShorthand": {
+    "message": "Min"
   },
   "myAccounts": {
     "message": "Miei Account"
@@ -722,8 +830,32 @@
   "newRecipient": {
     "message": "Nuovo Destinatario"
   },
-  "newRPC": {
+  "newNetwork": {
+    "message": "Nuova Rete"
+  },
+  "rpcURL": {
     "message": "Nuovo URL RPC"
+  },
+  "showAdvancedOptions": {
+    "message": "Mostra Opzioni Avanzate"
+  },
+  "hideAdvancedOptions": {
+    "message": "Nascondi Opzioni Avanzate"
+  },
+  "optionalChainId": {
+    "message": "ChainID (opzionale)"
+  },
+  "optionalSymbol": {
+    "message": "Simbolo (opzionale)"
+  },
+  "optionalNickname": {
+    "message": "Nickname (opzionale)"
+  },
+  "newTotal": {
+    "message": "Nuovo Totale"
+  },
+  "newTransactionFee": {
+    "message": "Costo in gas per la Transazione"
   },
   "next": {
     "message": "Avanti"
@@ -754,6 +886,9 @@
   },
   "noWebcamFound": {
     "message": "La webcam del tuo computer non è stata trovata. Per favore riprovaci."
+  },
+  "ofTextNofM": {
+    "message": "di"
   },
   "oldUI": {
     "message": "Vecchia interfaccia"
@@ -787,6 +922,9 @@
   "parameters": {
     "message": "Parametri"
   },
+  "originalTotal": {
+    "message": "Totale Precedente"
+  },
   "password": {
     "message": "Password"
   },
@@ -794,7 +932,7 @@
     "message": "Assicurati che la password sia corretta."
   },
   "passwordsDontMatch": {
-    "message": "Le Password Non Corrispondonos"
+    "message": "Le Password Non Corrispondono"
   },
   "passwordMismatch": {
     "message": "le password non corrispondono",
@@ -828,6 +966,12 @@
   },
   "prev": {
     "message": "Precedente"
+  },
+  "primaryCurrencySetting": {
+    "message": "Moneta Primaria"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Seleziona ETH per privilegiare la visualizzazione dei valori nella moneta nativa della blockhain. Seleziona Fiat per privilegiare la visualizzazione dei valori nella moneta selezionata."
   },
   "privacyMsg": {
     "message": "Politica sulla Privacy"
@@ -867,25 +1011,25 @@
     "message": "Indirizzo di Rimborso"
   },
   "rejectAll": {
-    "message": "Reject All"
+    "message": "Respingi Tutto"
   },
   "rejectTxsN": {
-    "message": "Reject $1 transactions"
+    "message": "Respingi $1 transazioni"
   },
   "rejectTxsDescription": {
-    "message": "You are about to batch reject $1 transactions."
+    "message": "Stai per respingere in serie $1 transazioni."
   },
   "rejected": {
     "message": "Respinta"
   },
   "reset": {
-    "message": "Reset"
+    "message": "Ripristina"
   },
   "resetAccount": {
-    "message": "Resetta Account"
+    "message": "Ripristina Account"
   },
   "resetAccountDescription": {
-    "message": "Resettare il tuo account cancellerà lo storico delle transazioni."
+    "message": "Ripristinare il tuo account cancellerà lo storico delle transazioni."
   },
   "restoreFromSeed": {
     "message": "Ripristina da una frase seed"
@@ -895,6 +1039,9 @@
   },
   "restoreAccountWithSeed": {
     "message": "Ripristina Account con la Frase Seed"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "richiedi che l'attesa sia recepita"
   },
   "required": {
     "message": "Richiesto"
@@ -921,7 +1068,7 @@
     "message": "Non ripristinare la tua frase seed in pubblico!. Queste parole possono essere usate per rubare il tuo account."
   },
   "revert": {
-    "message": "Annulla"
+    "message": "Ripristina"
   },
   "remove": {
     "message": "rimuovi"
@@ -951,6 +1098,12 @@
   "save": {
     "message": "Salva"
   },
+  "slow": {
+    "message": "Lenta"
+  },
+  "slower": {
+    "message": "Più lenta"
+  },
   "saveAsCsvFile": {
     "message": "Salva Come File CSV"
   },
@@ -973,8 +1126,23 @@
   "searchResults": {
     "message": "Risultati Ricerca"
   },
+  "secretBackupPhrase": {
+    "message": "Frase di Backup Segreta"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "La tua frase di backup segreta rende facile fare il backup e ripristinare il tuo account."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "ATTENZIONE: Non dire mai a nessuno questa frase di backup. Chiunque con questa frase può rubare i tuoi Ether per sempre."
+  },
   "secretPhrase": {
     "message": "Inserisci la tua frase segreta di dodici parole per ripristinare la cassaforte."
+  },
+  "secondsShorthand": {
+    "message": "Sec"
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Separa ogni parola con un singolo spazio"
   },
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
@@ -984,6 +1152,9 @@
   },
   "selectCurrency": {
     "message": "Seleziona Moneta"
+  },
+  "selectEachPhrase": {
+    "message": "Per favore seleziona ogni frase in ordine per assicurarti che sia corretta."
   },
   "selectLocale": {
     "message": "Selezione Lingua"
@@ -996,6 +1167,9 @@
   },
   "send": {
     "message": "Invia"
+  },
+  "sendAmount": {
+    "message": "Invia Importo"
   },
   "sendETH": {
     "message": "Invia ETH"
@@ -1024,6 +1198,9 @@
   "selectAnAccountHelp": {
     "message": "Selezione l'account da visualizzare in MetaMask"
   },
+  "selectAHigherGasFee": {
+    "message": "Seleziona un costo in gas maggiore per accelerare l'elaborazione della transazione.*"
+  },
   "selectHdPath": {
     "message": "Seleziona Percorso HD"
   },
@@ -1038,6 +1215,12 @@
   },
   "shapeshiftBuy": {
     "message": "Compra con Shapeshift"
+  },
+  "showAdvancedGasInline": {
+    "message": "Controlli gas avanzati"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Seleziona qui per visualizzare i controlli su prezzo e limite del gas nelle schermate di invio e conferma."
   },
   "showPrivateKeys": {
     "message": "Mostra Chiave Privata"
@@ -1072,6 +1255,9 @@
   "sigRequested": {
     "message": "Richiesta Firma"
   },
+  "somethingWentWrong": {
+    "message": "Oops! Qualcosa è andato storto."
+  },
   "spaceBetween": {
     "message": "ci può essere solo uno spazio tra le parole"
   },
@@ -1083,6 +1269,15 @@
   },
   "speedUpSubtitle": {
     "message": "Aumenta il prezzo del gas per tentare di sovrascrivere e velocizzare la transazione"
+  },
+  "speedUpCancellation": {
+    "message": "Accelera questo annullamento"
+  },
+  "speedUpTransaction": {
+    "message": "Accelera questa transazione"
+  },
+  "switchNetworks": {
+    "message": "Cambia Reti"
   },
   "status": {
     "message": "Stato"
@@ -1114,6 +1309,9 @@
   "step3HardwareWalletMsg": {
     "message": "Usa il tuo account hardware come utilizzeresti qualsiasi account Ethereum. Accedi alle dApps, invia Eth, compra e conserva token ERC20 e token non fungibili come CryptoKitties"
   },
+  "storePhrase": {
+    "message": "Conserva questa frase in un gestore di password come 1Password."
+  },
   "submit": {
     "message": "Invia"
   },
@@ -1134,6 +1332,9 @@
   },
   "testFaucet": {
     "message": "Prova Faucet"
+  },
+  "tips": {
+    "message": "Suggerimenti"
   },
   "to": {
     "message": "A"
@@ -1170,25 +1371,37 @@
     "message": "transazione"
   },
   "transactionConfirmed": {
-    "message": "Transazione confermata il $2."
+    "message": "Transazione confermata alle $2."
   },
   "transactionCreated": {
-    "message": "Transazione di valore $1 creata il $2."
+    "message": "Transazione di valore $1 creata alle $2."
   },
   "transactionWithNonce": {
     "message": "Transazione $1"
   },
   "transactionDropped": {
-    "message": "Transazione abbandonata il $2."
+    "message": "Transazione abbandonata alle $2."
   },
   "transactionSubmitted": {
-    "message": "Transazione inviata il $2."
+    "message": "Transazione inviata alle $2."
+  },
+  "transactionResubmitted": {
+    "message": "Transazione reinviata con costo in gas aumentato a $1 alle $2"
   },
   "transactionUpdated": {
-    "message": "Transazione aggiornata il $2."
+    "message": "Transazione aggiornata alle $2."
   },
   "transactionUpdatedGas": {
-    "message": "Transazione aggiornata con un prezzo del gas di $1 il $2."
+    "message": "Transazione aggiornata con un prezzo del gas di $1 alle $2."
+  },
+  "transactionErrored": {
+    "message": "La transazione ha riscontrato un errore."
+  },
+  "transactionCancelAttempted": {
+    "message": "Provato l'annullamento della transazione con costo in gas di $1 alle $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transazione cancellata alle $2"
   },
   "transactions": {
     "message": "transazioni"
@@ -1196,17 +1409,26 @@
   "transactionError": {
     "message": "Errore Transazione. Eccceziona generata nel codice del contratto."
   },
+  "transactionErrorNoContract": {
+    "message": "Stai provando a chiamare una funzione ad un indirizzo che non è un contratto."
+  },
+  "transactionFee": {
+    "message": "Costo Transazione"
+  },
   "transactionMemo": {
     "message": "Promemoria Transazione (opzionale)"
   },
   "transactionNumber": {
     "message": "Numero Transazione"
   },
+  "transactionTime": {
+    "message": "Tempo Conferma Transazione"
+  },
   "transfer": {
     "message": "Trasferisci"
   },
   "transferFrom": {
-    "message": "Transfer From"
+    "message": "Trasferisci Da"
   },
   "transfers": {
     "message": "Trasferimenti"
@@ -1227,6 +1449,9 @@
   "typePassword": {
     "message": "Inserisci Password"
   },
+  "uiMigrationAnnouncement": {
+    "message": "Benvenuto alla nuova interfaccia di MetaMask. Se hai un feedback a proposito dell'interfaccia o richieste di funzionalità, per favore contatta il nostro team di supporto su GitHub."
+  },
   "uiWelcome": {
     "message": "Benvenuto alla nuova interfaccia (Beta)"
   },
@@ -1244,9 +1469,6 @@
   },
   "unknown": {
     "message": "Sconosciuto"
-  },
-  "unknownFunction": {
-    "message": "Funzione Sconosciuta"
   },
   "unknownNetwork": {
     "message": "Rete Privata Sconosciuta"
@@ -1315,6 +1537,9 @@
   "whatsThis": {
     "message": "Cos'è questo?"
   },
+  "writePhrase": {
+    "message": "Scrivi questa frase su un foglio di carta e conservala in un posto sicuro. Se vuoi ancora più sicurezza, scrivila su più fogli e conserva ognuno in 2 o 3 posti diversi. "
+  },
   "yesLetsTry": {
     "message": "Si, proviamo"
   },
@@ -1329,5 +1554,17 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "La tua frase seed privata"
+  },
+  "yourUniqueAccountImage": {
+    "message": "L'immagine esclusiva del tuo account"
+  },
+  "yourUniqueAccountImageDescription1": {
+    "message": "Questa immagine è stata generata automaticamente per te dal tuo nuovo indirizzo."
+  },
+  "yourUniqueAccountImageDescription2": {
+    "message": "Vedrai questa immagine ogni volta che dovrai confermare una transazione."
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Prezzo del gas maggiore di zero"
   }
 }

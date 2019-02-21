@@ -60,6 +60,18 @@ export function isConfirmDeployContract (txData = {}) {
 }
 
 /**
+ * Returns four-byte method signature from data
+ *
+ * @param {string} data - The hex data (@code txParams.data) of a transaction
+ * @returns {string} - The four-byte method signature
+ */
+export function getFourBytePrefix (data = '') {
+  const prefixedData = ethUtil.addHexPrefix(data)
+  const fourBytePrefix = prefixedData.slice(0, 10)
+  return fourBytePrefix
+}
+
+/**
  * Returns the action of a transaction as a key to be passed into the translator.
  * @param {Object} transaction - txData object
  * @param {Object} methodData - Data returned from eth-method-registry

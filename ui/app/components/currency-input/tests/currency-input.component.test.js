@@ -32,7 +32,8 @@ describe('CurrencyInput Component', () => {
       const wrapper = mount(
         <Provider store={store}>
           <CurrencyInput
-            suffix="ETH"
+            nativeSuffix="ETH"
+            fiatSuffix="USD"
             nativeCurrency="ETH"
           />
         </Provider>
@@ -58,7 +59,8 @@ describe('CurrencyInput Component', () => {
         <Provider store={store}>
           <CurrencyInput
             value="de0b6b3a7640000"
-            suffix="ETH"
+            fiatSuffix="USD"
+            nativeSuffix="ETH"
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
@@ -90,7 +92,8 @@ describe('CurrencyInput Component', () => {
         <Provider store={store}>
           <CurrencyInput
             value="f602f2234d0ea"
-            suffix="USD"
+            fiatSuffix="USD"
+            nativeSuffix="ETH"
             useFiat
             nativeCurrency="ETH"
             currentCurrency="usd"
@@ -246,6 +249,57 @@ describe('CurrencyInput Component', () => {
       assert.equal(currencyInputInstance.state('decimalValue'), 2)
       assert.equal(currencyInputInstance.state('hexValue'), '1ec05e43e72400')
       assert.equal(currencyInputInstance.find(UnitInput).props().value, 2)
+    })
+
+    it('should swap selected currency when swap icon is clicked', () => {
+      const mockStore = {
+        metamask: {
+          nativeCurrency: 'ETH',
+          currentCurrency: 'usd',
+          conversionRate: 231.06,
+        },
+      }
+      const store = configureMockStore()(mockStore)
+      const wrapper = mount(
+        <Provider store={store}>
+          <CurrencyInput
+            onChange={handleChangeSpy}
+            onBlur={handleBlurSpy}
+            nativeSuffix="ETH"
+            fiatSuffix="USD"
+            nativeCurrency="ETH"
+            currentCurrency="usd"
+            conversionRate={231.06}
+          />
+        </Provider>
+      )
+
+      assert.ok(wrapper)
+      assert.equal(handleChangeSpy.callCount, 0)
+      assert.equal(handleBlurSpy.callCount, 0)
+
+      const currencyInputInstance = wrapper.find(CurrencyInput).at(0).instance()
+      assert.equal(currencyInputInstance.state.decimalValue, 0)
+      assert.equal(currencyInputInstance.state.hexValue, undefined)
+      assert.equal(wrapper.find('.currency-display-component').text(), '$0.00USD')
+      const input = wrapper.find('input')
+      assert.equal(input.props().value, 0)
+
+      input.simulate('change', { target: { value: 1 } })
+      assert.equal(handleChangeSpy.callCount, 1)
+      assert.ok(handleChangeSpy.calledWith('de0b6b3a7640000'))
+      assert.equal(wrapper.find('.currency-display-component').text(), '$231.06USD')
+      assert.equal(currencyInputInstance.state.decimalValue, 1)
+      assert.equal(currencyInputInstance.state.hexValue, 'de0b6b3a7640000')
+
+      assert.equal(handleBlurSpy.callCount, 0)
+      input.simulate('blur')
+      assert.equal(handleBlurSpy.callCount, 1)
+      assert.ok(handleBlurSpy.calledWith('de0b6b3a7640000'))
+
+      const swap = wrapper.find('.currency-input__swap-component')
+      swap.simulate('click')
+      assert.equal(wrapper.find('.currency-display-component').text(), '0.004328ETH')
     })
   })
 })
