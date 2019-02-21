@@ -447,7 +447,7 @@ export default class ConfirmTransactionBase extends Component {
         toName={toName}
         toAddress={toAddress}
         showEdit={onEdit && !isTxReprice}
-        action={action || name || this.context.t('contractInteraction')}
+        action={action || getMethodName(name) || this.context.t('contractInteraction')}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}
@@ -482,4 +482,15 @@ export default class ConfirmTransactionBase extends Component {
       />
     )
   }
+}
+
+export function getMethodName (camelCase) {
+  if (!camelCase || typeof camelCase !== 'string') {
+    return ''
+  }
+
+  return camelCase
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z])([a-z])/g, ' $1$2')
+    .replace(/ +/g, ' ')
 }

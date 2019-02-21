@@ -104,11 +104,6 @@ class JsonImportSubview extends Component {
     const passwordInput = document.getElementById('json-password-box')
     const password = passwordInput.value
 
-    if (!password) {
-      const message = this.context.t('needImportPassword')
-      return displayWarning(message)
-    }
-
     importNewJsonAccount([ fileContents, password ])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {

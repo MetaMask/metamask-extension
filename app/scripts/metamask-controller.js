@@ -87,7 +87,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.createVaultMutex = new Mutex()
 
     // network store
-    this.networkController = new NetworkController(initState.NetworkController)
+    this.networkController = new NetworkController(initState.NetworkController, this.platform)
 
     // preferences controller
     this.preferencesController = new PreferencesController({
@@ -134,6 +134,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.accountTracker = new AccountTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
+      network: this.networkController,
     })
 
     // start and stop polling for balances based on activeControllerConnections
