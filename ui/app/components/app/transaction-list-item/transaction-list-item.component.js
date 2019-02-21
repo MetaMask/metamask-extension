@@ -214,7 +214,8 @@ export default class TransactionListItem extends PureComponent {
                   onRetry={this.handleRetry}
                   showRetry={showRetry && methodData.done}
                   onCancel={this.handleCancel}
-                  showCancel={showCancel && hasEnoughCancelGas}
+                  showCancel={showCancel}
+                  cancelDisabled={!hasEnoughCancelGas}
                 />
               </div>
             )
