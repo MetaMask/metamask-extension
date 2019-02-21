@@ -36,7 +36,7 @@ function reduceMetamask (state, action) {
       tokenBalance: '0x0',
       from: '',
       to: '',
-      amount: '0x0',
+      amount: '0',
       memo: '',
       errors: {},
       maxModeOn: false,

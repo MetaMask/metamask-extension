@@ -66,7 +66,7 @@ function mapDispatchToProps (dispatch) {
       })
 
       selectedToken
-        ? dispatch(signTokenTx(selectedToken.address, to, amount, txParams))
+        ? dispatch(signTokenTx(selectedToken.address, to, txParams.amount, txParams))
         : dispatch(signTx(txParams))
     },
     update: ({
