@@ -18,7 +18,9 @@ class PreferencesController {
    * @property {object} store.assetImages Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
-   * user wishes to see that feature
+   * user wishes to see that feature.
+   *
+   * Feature flags can be set by the global function `setPreference(feature, enabled)`, and so should not expose any sensitive behavior.
    * @property {string} store.currentLocale The preferred language locale key
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    *
@@ -32,6 +34,11 @@ class PreferencesController {
       tokens: [],
       suggestedTokens: {},
       useBlockie: false,
+
+      // WARNING: Do not use feature flags for security-sensitive things.
+      // Feature flag toggling is available in the global namespace
+      // for convenient testing of pre-release features, and should never
+      // perform sensitive operations.
       featureFlags: {
         betaUI: true,
         skipAnnounceBetaUI: true,
