@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { setCompletedOnboarding } from '../../../../../actions'
 import UniqueImage from './unique-image.component'
 
 const mapStateToProps = ({ metamask }) => {
@@ -10,10 +9,4 @@ const mapStateToProps = ({ metamask }) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    completeOnboarding: () => dispatch(setCompletedOnboarding()),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(UniqueImage)
+export default connect(mapStateToProps)(UniqueImage)

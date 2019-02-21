@@ -27,6 +27,7 @@ const INITIALIZE_UNIQUE_IMAGE_ROUTE = '/initialize/create-password/unique-image'
 const INITIALIZE_NOTICE_ROUTE = '/initialize/notice'
 const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action'
 const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase'
+const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow'
 const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm'
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction'
@@ -68,6 +69,7 @@ module.exports = {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_SEND_TOKEN_PATH,

@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom'
 import FirstTimeFlowSwitch from './first-time-flow-switch'
 import Welcome from './welcome'
 import SelectAction from './select-action'
+import EndOfFlow from './end-of-flow'
 import Unlock from '../unlock-page'
 import CreatePassword from './create-password'
 import Notices from './notices'
@@ -16,6 +17,7 @@ import {
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
+  INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../routes'
 
 export default class FirstTimeFlow extends PureComponent {
@@ -134,6 +136,11 @@ export default class FirstTimeFlow extends PureComponent {
                 onSubmit={this.handleUnlock}
               />
             )}
+          />
+          <Route
+            exact
+            path={INITIALIZE_END_OF_FLOW_ROUTE}
+            component={EndOfFlow}
           />
           <Route
             exact

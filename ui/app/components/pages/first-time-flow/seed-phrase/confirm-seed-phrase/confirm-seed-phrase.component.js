@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import shuffle from 'lodash.shuffle'
 import Button from '../../../../button'
-import { DEFAULT_ROUTE, INITIALIZE_SEED_PHRASE_ROUTE } from '../../../../../routes'
+import { INITIALIZE_END_OF_FLOW_ROUTE, INITIALIZE_SEED_PHRASE_ROUTE } from '../../../../../routes'
 import { exportAsFile } from '../../../../../../app/util'
 import { selectSeedWord, deselectSeedWord } from './confirm-seed-phrase.state'
 
@@ -17,10 +17,8 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   static propTypes = {
-    completeOnboarding: PropTypes.func,
     history: PropTypes.object,
     onSubmit: PropTypes.func,
-    openBuyEtherModal: PropTypes.func,
     seedPhrase: PropTypes.string,
   }
 
@@ -42,16 +40,14 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   handleSubmit = async () => {
-    const { completeOnboarding, history, openBuyEtherModal } = this.props
+    const { history } = this.props
 
     if (!this.isValid()) {
       return
     }
 
     try {
-      await completeOnboarding()
-      history.push(DEFAULT_ROUTE)
-      openBuyEtherModal()
+      history.push(INITIALIZE_END_OF_FLOW_ROUTE)
     } catch (error) {
       console.error(error.message)
     }
