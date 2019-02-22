@@ -41,6 +41,12 @@
   "providerRequestInfo": {
     "message": "This site is requesting access to view your current account address. Always make sure you trust the sites you interact with."
   },
+  "permissionsRequest": {
+    "message": "This site is requesting the following permissions:"
+  },
+  "eth_accounts_permission": {
+    "message": "View your Ethereum accounts"
+  },
   "accept": {
     "message": "Accept"
   },

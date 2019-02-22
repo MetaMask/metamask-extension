@@ -48,6 +48,7 @@ export default class ProviderPageContainerContent extends PureComponent {
   renderRequestedPermissions = () => {
     const { request, permissionsDescriptions } = this.props
     const { options } = request
+    const { t } = this.context
     const optsArr = Object.keys(options)
 
     const items = optsArr.map((funcName) => {
@@ -68,7 +69,7 @@ export default class ProviderPageContainerContent extends PureComponent {
 
     return (
       <ul className="permissions-requested">
-        <h5>Requesting permission to:</h5>
+        <h4>{t('permissionsRequest')}</h4>
         {items}
       </ul>
     )
@@ -86,7 +87,6 @@ export default class ProviderPageContainerContent extends PureComponent {
           {this.renderConnectVisual()}
           <h1>{t('providerRequest', [siteTitle])}</h1>
           <p>
-            {t('providerRequestInfo')}
             <br/>
             {this.renderRequestedPermissions()}
             <br/>
