@@ -64,7 +64,7 @@ function setupStreams () {
     objectMode: true,
     transform: (data, _, done) => {
       if (typeof data === 'object' && data.name && data.name === 'publicConfig' && !isEnabled) {
-        data.data.selectedAddress = undefined
+        // TODO: Fix this, broken selected address!:
       }
 
       done(null, { ...data })
