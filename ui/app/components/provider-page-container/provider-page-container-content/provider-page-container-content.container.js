@@ -5,6 +5,7 @@ import { getSelectedIdentity } from '../../../selectors'
 const mapStateToProps = (state) => {
   return {
     selectedIdentity: getSelectedIdentity(state),
+    permissionsDescriptions: getPermissionsDescriptions(state),
   }
 }
 

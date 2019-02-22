@@ -46,11 +46,13 @@ export default class ProviderPageContainerContent extends PureComponent {
   }
 
   render () {
-    const { request } = this.props
+    const { request, permissionsDescriptions } = this.props
     const { options } = request
     const optsArr = Object.keys(options)
     const { siteTitle } = request.metadata
     const { t } = this.context
+
+    console.log('permissions desc', permissionsDescriptions)
 
     return (
       <div className="provider-approval-container__content">
