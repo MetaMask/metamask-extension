@@ -26,7 +26,7 @@ import {
 } from '../../../../ducks/gas.duck'
 import { getGasLoadingError, gasFeeIsInError, getGasButtonGroupShown } from './send-gas-row.selectors.js'
 import { showModal, setGasPrice, setGasLimit, setGasTotal } from '../../../../actions'
-import { getAdvancedInlineGasShown, getCurrentEthBalance } from '../../../../selectors'
+import { getAdvancedInlineGasShown, getCurrentEthBalance, getSelectedToken } from '../../../../selectors'
 import SendGasRow from './send-gas-row.component'
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SendGasRow)
@@ -42,7 +42,7 @@ function mapStateToProps (state) {
   const balance = getCurrentEthBalance(state)
 
   const insufficientBalance = !isBalanceSufficient({
-    amount: getSendAmount(state),
+    amount: getSelectedToken(state) ? '0x0' : getSendAmount(state),
     gasTotal,
     balance,
     conversionRate,

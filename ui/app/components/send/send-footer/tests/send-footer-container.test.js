@@ -15,7 +15,7 @@ const actionSpies = {
 const utilsStubs = {
   addressIsNew: sinon.stub().returns(true),
   constructTxParams: sinon.stub().returns({
-    amount: 'mockConstructedAmount',
+    value: 'mockAmount',
   }),
   constructUpdatedTx: sinon.stub().returns('mockConstructedUpdatedTxParams'),
 }
@@ -117,7 +117,7 @@ describe('send-footer container', () => {
         )
         assert.deepEqual(
           actionSpies.signTokenTx.getCall(0).args,
-          [ '0xabc', 'mockTo', 'mockConstructedAmount', { amount: 'mockConstructedAmount' } ]
+          [ '0xabc', 'mockTo', 'mockAmount', { value: 'mockAmount' } ]
         )
       })
 
@@ -145,7 +145,7 @@ describe('send-footer container', () => {
         )
         assert.deepEqual(
           actionSpies.signTx.getCall(0).args,
-          [ { amount: 'mockConstructedAmount' } ]
+          [ { value: 'mockAmount' } ]
         )
       })
     })
