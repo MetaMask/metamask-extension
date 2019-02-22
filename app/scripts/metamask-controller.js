@@ -1394,6 +1394,8 @@ module.exports = class MetamaskController extends EventEmitter {
         const message = `The site ${siteTitle} at ${origin} would like permission to:\n - ${descriptions.join('\n- ')}`
         if (!isUnlocked) {
           await this.requestUnlock()
+        } else {
+          this.opts.openPopup && this.opts.openPopup()
         }
 
         return new Promise ((res, rej) => {
