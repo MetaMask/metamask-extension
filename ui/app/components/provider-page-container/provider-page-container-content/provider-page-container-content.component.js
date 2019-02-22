@@ -45,14 +45,39 @@ export default class ProviderPageContainerContent extends PureComponent {
     )
   }
 
-  render () {
+  renderRequestedPermissions = () => {
     const { request, permissionsDescriptions } = this.props
     const { options } = request
     const optsArr = Object.keys(options)
+
+    const items = optsArr.map((funcName) => {
+      const matchingFuncs = permissionsDescriptions.filter(perm => perm.method === funcName)
+      const match = matchingFuncs[0]
+      if (!match) {
+        throw new Error('Requested unknown permission.')
+      }
+      return (
+        <li
+          className="permission-requested"
+          key={funcName}
+          >
+          {match.description}
+        </li>
+      )
+    })
+
+    return (
+      <ul className="permissions-requested">
+        <h5>Requesting permission to:</h5>
+        {items}
+      </ul>
+    )
+  }
+
+  render () {
+    const { request } = this.props
     const { siteTitle } = request.metadata
     const { t } = this.context
-
-    console.log('permissions desc', permissionsDescriptions)
 
     return (
       <div className="provider-approval-container__content">
@@ -63,11 +88,8 @@ export default class ProviderPageContainerContent extends PureComponent {
           <p>
             {t('providerRequestInfo')}
             <br/>
-
-            <p>
-              Also requesting: {optsArr.join('\n')}
-            </p>
-
+            {this.renderRequestedPermissions()}
+            <br/>
             <a
               href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa"
               target="_blank"
