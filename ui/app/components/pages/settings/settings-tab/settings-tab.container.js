@@ -26,6 +26,7 @@ const mapStateToProps = state => {
       sendHexData,
       privacyMode,
       advancedInlineGas,
+      mobileSync,
     } = {},
     provider = {},
     currentLocale,
@@ -44,6 +45,7 @@ const mapStateToProps = state => {
     privacyMode,
     provider,
     useNativeCurrencyAsPrimaryCurrency,
+    mobileSync,
   }
 }
 

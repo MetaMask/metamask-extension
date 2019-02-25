@@ -56,6 +56,7 @@ const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 
+
 module.exports = class MetamaskController extends EventEmitter {
 
   /**
@@ -410,6 +411,9 @@ module.exports = class MetamaskController extends EventEmitter {
       checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
       unlockHardwareWalletAccount: nodeify(this.unlockHardwareWalletAccount, this),
 
+      // mobile
+      fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
+
       // vault management
       submitPassword: nodeify(this.submitPassword, this),
 
@@ -584,6 +588,60 @@ module.exports = class MetamaskController extends EventEmitter {
         })
       }
     })
+  }
+
+  /**
+   * Collects all the information that we want to share
+   * with the mobile client for syncing purposes
+   * @returns Promise<Object> Parts of the state that we want to syncx
+   */
+   async fetchInfoToSync () {
+    // Preferences
+    const {
+      accountTokens,
+      currentLocale,
+      frequentRpcList,
+      identities,
+      selectedAddress,
+      tokens,
+    } = this.preferencesController.store.getState()
+
+    const preferences = {
+      accountTokens,
+      currentLocale,
+      frequentRpcList,
+      identities,
+      selectedAddress,
+      tokens,
+    }
+
+    // Accounts
+    const hdKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    const hdAccounts = await hdKeyring.getAccounts()
+    const accounts = {
+      hd: hdAccounts.filter((item, pos) => (hdAccounts.indexOf(item) === pos)).map(address => ethUtil.toChecksumAddress(address)),
+      simpleKeyPair: [],
+      ledger: [],
+      trezor: [],
+    }
+
+    // transactions
+
+    let transactions = this.txController.store.getState().transactions
+    // delete tx for other accounts that we're not importing
+    transactions = transactions.filter(tx => {
+      const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from)
+      return (
+        accounts.hd.includes(checksummedTxFrom)
+      )
+    })
+
+    return {
+      accounts,
+      preferences,
+      transactions,
+      network: this.networkController.store.getState(),
+    }
   }
 
   /*

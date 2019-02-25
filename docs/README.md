@@ -18,3 +18,4 @@ To learn how to develop MetaMask-compatible applications, visit our [Developer D
 - [How to manage notices that appear when the app starts up](./notices.md)
 - [How to port MetaMask to a new platform](./porting_to_new_environment.md)
 - [How to generate a visualization of this repository's development](./development-visualization.md)
+- [How to add a feature behind a secret feature flag](./secret-preferences.md)

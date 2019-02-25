@@ -4,6 +4,7 @@ const LOCK_ROUTE = '/lock'
 const SETTINGS_ROUTE = '/settings'
 const INFO_ROUTE = '/settings/info'
 const REVEAL_SEED_ROUTE = '/seed'
+const MOBILE_SYNC_ROUTE = '/mobile-sync'
 const CONFIRM_SEED_ROUTE = '/confirm-seed'
 const RESTORE_VAULT_ROUTE = '/restore-vault'
 const ADD_TOKEN_ROUTE = '/add-token'
@@ -43,6 +44,7 @@ module.exports = {
   SETTINGS_ROUTE,
   INFO_ROUTE,
   REVEAL_SEED_ROUTE,
+  MOBILE_SYNC_ROUTE,
   CONFIRM_SEED_ROUTE,
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,

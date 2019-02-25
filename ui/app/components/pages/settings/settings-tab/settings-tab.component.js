@@ -5,7 +5,7 @@ import validUrl from 'valid-url'
 import { exportAsFile } from '../../../../util'
 import SimpleDropdown from '../../../dropdowns/simple-dropdown'
 import ToggleButton from 'react-toggle-button'
-import { REVEAL_SEED_ROUTE } from '../../../../routes'
+import { REVEAL_SEED_ROUTE, MOBILE_SYNC_ROUTE } from '../../../../routes'
 import locales from '../../../../../../app/_locales/index.json'
 import TextField from '../../../text-field'
 import Button from '../../../button'
@@ -46,6 +46,7 @@ export default class SettingsTab extends PureComponent {
     delRpcTarget: PropTypes.func,
     displayWarning: PropTypes.func,
     revealSeedConfirmation: PropTypes.func,
+    setFeatureFlagToBeta: PropTypes.func,
     showClearApprovalModal: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
     warning: PropTypes.string,
@@ -61,6 +62,7 @@ export default class SettingsTab extends PureComponent {
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
     setAdvancedInlineGasFeatureFlag: PropTypes.func,
     advancedInlineGas: PropTypes.bool,
+    mobileSync: PropTypes.bool,
   }
 
   state = {
@@ -338,6 +340,39 @@ export default class SettingsTab extends PureComponent {
     )
   }
 
+
+  renderMobileSync () {
+    const { t } = this.context
+    const { history, mobileSync } = this.props
+
+    if (!mobileSync) {
+      return
+    }
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{ t('syncWithMobile') }</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Button
+              type="primary"
+              large
+              onClick={event => {
+                event.preventDefault()
+                history.push(MOBILE_SYNC_ROUTE)
+              }}
+            >
+              { t('syncWithMobile') }
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+
   renderResetAccount () {
     const { t } = this.context
     const { showResetAccountConfirmationModal } = this.props
@@ -538,6 +573,7 @@ export default class SettingsTab extends PureComponent {
         { this.renderHexDataOptIn() }
         { this.renderAdvancedGasInputInline() }
         { this.renderBlockieOptIn() }
+        { this.renderMobileSync() }
       </div>
     )
   }
