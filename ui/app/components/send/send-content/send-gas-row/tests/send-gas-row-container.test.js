@@ -35,6 +35,7 @@ proxyquire('../send-gas-row.container.js', {
   '../../../../selectors': {
     getCurrentEthBalance: (s) => `mockCurrentEthBalance:${s}`,
     getAdvancedInlineGasShown: (s) => `mockAdvancedInlineGasShown:${s}`,
+    getSelectedToken: () => false,
   },
   '../../send.selectors.js': {
     getConversionRate: (s) => `mockConversionRate:${s}`,
