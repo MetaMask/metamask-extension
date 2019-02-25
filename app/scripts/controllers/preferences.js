@@ -40,10 +40,7 @@ class PreferencesController {
       // Feature flag toggling is available in the global namespace
       // for convenient testing of pre-release features, and should never
       // perform sensitive operations.
-      featureFlags: {
-        betaUI: true,
-        skipAnnounceBetaUI: true,
-      },
+      featureFlags: {},
       knownMethodData: {},
       currentLocale: opts.initLangCode,
       identities: {},
