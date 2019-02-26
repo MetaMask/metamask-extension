@@ -6,6 +6,10 @@
   .app-header__logo-container {
     width: 742px;
     margin-top: 3%;
+
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+    }
   }
 
   &__text-1, &__text-3 {
