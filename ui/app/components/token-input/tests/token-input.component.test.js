@@ -159,6 +159,48 @@ describe('TokenInput Component', () => {
       assert.equal(wrapper.find('.unit-input__input').props().value, '1')
       assert.equal(wrapper.find('.currency-display-component').text(), '$462.12USD')
     })
+
+    it('should render properly with a token value for fiat, but hideConversion is true', () => {
+      const mockStore = {
+        metamask: {
+          currentCurrency: 'usd',
+          conversionRate: 231.06,
+        },
+      }
+      const store = configureMockStore()(mockStore)
+
+      const wrapper = mount(
+        <Provider store={store}>
+          <TokenInput
+            value="2710"
+            selectedToken={{
+              address: '0x1',
+              decimals: '4',
+              symbol: 'ABC',
+            }}
+            suffix="ABC"
+            selectedTokenExchangeRate={2}
+            showFiat
+            hideConversion
+          />
+        </Provider>,
+        {
+          context: { t },
+          childContextTypes: {
+            t: PropTypes.func,
+          },
+        },
+      )
+
+      assert.ok(wrapper)
+      const tokenInputInstance = wrapper.find(TokenInput).at(0).instance()
+      assert.equal(tokenInputInstance.state.decimalValue, 1)
+      assert.equal(tokenInputInstance.state.hexValue, '2710')
+      assert.equal(wrapper.find('.unit-input__suffix').length, 1)
+      assert.equal(wrapper.find('.unit-input__suffix').text(), 'ABC')
+      assert.equal(wrapper.find('.unit-input__input').props().value, '1')
+      assert.equal(wrapper.find('.currency-input__conversion-component').text(), 'translate noConversionRateAvailable')
+    })
   })
 
   describe('handling actions', () => {

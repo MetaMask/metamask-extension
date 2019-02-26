@@ -1,19 +1,26 @@
 import { connect } from 'react-redux'
 import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display.component'
-import { preferencesSelector } from '../../selectors'
+import { preferencesSelector, getIsMainnet } from '../../selectors'
 import { ETH, PRIMARY, SECONDARY } from '../../constants/common'
 
 const mapStateToProps = (state, ownProps) => {
-  const { useNativeCurrencyAsPrimaryCurrency } = preferencesSelector(state)
+  const {
+    useNativeCurrencyAsPrimaryCurrency,
+    showFiatInTestnets,
+  } = preferencesSelector(state)
+
+  const isMainnet = getIsMainnet(state)
 
   return {
     useNativeCurrencyAsPrimaryCurrency,
+    showFiatInTestnets,
+    isMainnet,
     nativeCurrency: state.metamask.nativeCurrency,
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { useNativeCurrencyAsPrimaryCurrency, nativeCurrency, ...restStateProps } = stateProps
+  const { useNativeCurrencyAsPrimaryCurrency, showFiatInTestnets, isMainnet, nativeCurrency, ...restStateProps } = stateProps
   const {
     type,
     numberOfDecimals: propsNumberOfDecimals,
@@ -38,6 +45,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     // Display Fiat
     numberOfDecimals = propsNumberOfDecimals || fiatNumberOfDecimals || 2
     prefix = propsPrefix || fiatPrefix
+  }
+
+  if (!isMainnet && !showFiatInTestnets) {
+    currency = nativeCurrency || ETH
+    numberOfDecimals = propsNumberOfDecimals || ethNumberOfDecimals || 6
+    prefix = propsPrefix || ethPrefix
   }
 
   return {

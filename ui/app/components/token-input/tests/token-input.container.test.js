@@ -29,6 +29,12 @@ describe('TokenInput container', () => {
           selectedTokenAddress: '0x1',
           contractExchangeRates: {},
           send: {},
+          preferences: {
+            showFiatInTestnets: false,
+          },
+          provider: {
+            type: 'mainnet',
+          },
         },
       }
 
@@ -40,6 +46,7 @@ describe('TokenInput container', () => {
           symbol: 'ABC',
         },
         selectedTokenExchangeRate: 0,
+        hideConversion: false,
       })
     })
 
@@ -59,6 +66,12 @@ describe('TokenInput container', () => {
           send: {
             token: { address: 'test' },
           },
+          preferences: {
+            showFiatInTestnets: false,
+          },
+          provider: {
+            type: 'mainnet',
+          },
         },
       }
 
@@ -68,6 +81,7 @@ describe('TokenInput container', () => {
           address: 'test',
         },
         selectedTokenExchangeRate: 0,
+        hideConversion: false,
       })
     })
 
@@ -87,6 +101,12 @@ describe('TokenInput container', () => {
             '0x1': 5,
           },
           send: {},
+          preferences: {
+            showFiatInTestnets: false,
+          },
+          provider: {
+            type: 'mainnet',
+          },
         },
       }
 
@@ -98,6 +118,112 @@ describe('TokenInput container', () => {
           symbol: 'ABC',
         },
         selectedTokenExchangeRate: 5,
+        hideConversion: false,
+      })
+    })
+
+    it('should return the correct props when not in mainnet and showFiatInTestnets is false', () => {
+      const mockState = {
+        metamask: {
+          currentCurrency: 'usd',
+          tokens: [
+            {
+              address: '0x1',
+              decimals: '4',
+              symbol: 'ABC',
+            },
+          ],
+          selectedTokenAddress: '0x1',
+          contractExchangeRates: {},
+          send: {},
+          preferences: {
+            showFiatInTestnets: false,
+          },
+          provider: {
+            type: 'rinkeby',
+          },
+        },
+      }
+
+      assert.deepEqual(mapStateToProps(mockState), {
+        currentCurrency: 'usd',
+        selectedToken: {
+          address: '0x1',
+          decimals: '4',
+          symbol: 'ABC',
+        },
+        selectedTokenExchangeRate: 0,
+        hideConversion: true,
+      })
+    })
+
+    it('should return the correct props when not in mainnet and showFiatInTestnets is true', () => {
+      const mockState = {
+        metamask: {
+          currentCurrency: 'usd',
+          tokens: [
+            {
+              address: '0x1',
+              decimals: '4',
+              symbol: 'ABC',
+            },
+          ],
+          selectedTokenAddress: '0x1',
+          contractExchangeRates: {},
+          send: {},
+          preferences: {
+            showFiatInTestnets: true,
+          },
+          provider: {
+            type: 'rinkeby',
+          },
+        },
+      }
+
+      assert.deepEqual(mapStateToProps(mockState), {
+        currentCurrency: 'usd',
+        selectedToken: {
+          address: '0x1',
+          decimals: '4',
+          symbol: 'ABC',
+        },
+        selectedTokenExchangeRate: 0,
+        hideConversion: false,
+      })
+    })
+
+    it('should return the correct props when in mainnet and showFiatInTestnets is true', () => {
+      const mockState = {
+        metamask: {
+          currentCurrency: 'usd',
+          tokens: [
+            {
+              address: '0x1',
+              decimals: '4',
+              symbol: 'ABC',
+            },
+          ],
+          selectedTokenAddress: '0x1',
+          contractExchangeRates: {},
+          send: {},
+          preferences: {
+            showFiatInTestnets: true,
+          },
+          provider: {
+            type: 'mainnet',
+          },
+        },
+      }
+
+      assert.deepEqual(mapStateToProps(mockState), {
+        currentCurrency: 'usd',
+        selectedToken: {
+          address: '0x1',
+          decimals: '4',
+          symbol: 'ABC',
+        },
+        selectedTokenExchangeRate: 0,
+        hideConversion: false,
       })
     })
   })

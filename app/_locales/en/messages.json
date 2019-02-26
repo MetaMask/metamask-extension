@@ -1237,6 +1237,12 @@
   "showAdvancedGasInlineDescription": {
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
+  "showFiatConversionInTestnets": {
+    "message": "Show Conversion in Testnets"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Select this to show fiat conversion in when you are on Testnets"
+  },
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },

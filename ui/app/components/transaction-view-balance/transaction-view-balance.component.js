@@ -22,10 +22,15 @@ export default class TransactionViewBalance extends PureComponent {
     balance: PropTypes.string,
     assetImage: PropTypes.string,
     balanceIsCached: PropTypes.bool,
+    showFiat: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    showFiat: true,
   }
 
   renderBalance () {
-    const { selectedToken, balance, balanceIsCached } = this.props
+    const { selectedToken, balance, balanceIsCached, showFiat } = this.props
 
     return selectedToken
       ? (
@@ -53,16 +58,20 @@ export default class TransactionViewBalance extends PureComponent {
                     balanceIsCached ? <span className="transaction-view-balance__cached-star">*</span> : null
                   }
                 </div>
-                <UserPreferencedCurrencyDisplay
-                  className={classnames({
-                    'transaction-view-balance__cached-secondary-balance': balanceIsCached,
-                    'transaction-view-balance__secondary-balance': !balanceIsCached,
-                  })}
-                  value={balance}
-                  type={SECONDARY}
-                  ethNumberOfDecimals={4}
-                  hideTitle={true}
-                />
+                {
+                  showFiat && (
+                    <UserPreferencedCurrencyDisplay
+                      className={classnames({
+                        'transaction-view-balance__cached-secondary-balance': balanceIsCached,
+                        'transaction-view-balance__secondary-balance': !balanceIsCached,
+                      })}
+                      value={balance}
+                      type={SECONDARY}
+                      ethNumberOfDecimals={4}
+                      hideTitle={true}
+                    />
+                  )
+                }
             </div>
           </Tooltip>
       )

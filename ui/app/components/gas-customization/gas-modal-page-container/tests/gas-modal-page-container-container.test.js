@@ -71,6 +71,12 @@ describe('gas-modal-page-container container', () => {
           },
           currentCurrency: 'abc',
           conversionRate: 50,
+          preferences: {
+            showFiatInTestnets: false,
+          },
+          provider: {
+            type: 'mainnet',
+          },
         },
         gas: {
           basicEstimates: {
@@ -151,6 +157,63 @@ describe('gas-modal-page-container container', () => {
             transaction: { id: 34, status: 'submitted' },
           }),
           expectedResult: Object.assign({}, baseExpectedResult, { isSpeedUp: true }),
+        },
+        {
+          mockState: Object.assign({}, baseMockState, {
+            metamask: {
+              ...baseMockState.metamask,
+              preferences: {
+                ...baseMockState.metamask.preferences,
+                showFiatInTestnets: false,
+              },
+              provider: {
+                ...baseMockState.metamask.provider,
+                type: 'rinkeby',
+              },
+            },
+          }),
+          mockOwnProps: baseMockOwnProps,
+          expectedResult: {
+            ...baseExpectedResult,
+            infoRowProps: {
+              ...baseExpectedResult.infoRowProps,
+              newTotalFiat: '',
+            },
+          },
+        },
+        {
+          mockState: Object.assign({}, baseMockState, {
+            metamask: {
+              ...baseMockState.metamask,
+              preferences: {
+                ...baseMockState.metamask.preferences,
+                showFiatInTestnets: true,
+              },
+              provider: {
+                ...baseMockState.metamask.provider,
+                type: 'rinkeby',
+              },
+            },
+          }),
+          mockOwnProps: baseMockOwnProps,
+          expectedResult: baseExpectedResult,
+        },
+        {
+          mockState: Object.assign({}, baseMockState, {
+            metamask: {
+              ...baseMockState.metamask,
+              preferences: {
+                ...baseMockState.metamask.preferences,
+                showFiatInTestnets: true,
+              },
+              provider: {
+                ...baseMockState.metamask.provider,
+                type: 'mainnet',
+              },
+            },
+          }),
+          mockOwnProps: baseMockOwnProps,
+          expectedResult: baseExpectedResult,
         },
       ]
 

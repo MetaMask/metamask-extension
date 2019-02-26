@@ -131,7 +131,8 @@
     },
     "currentLocale": "en",
     "preferences": {
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "showFiatInTestnets": true
     }
   },
   "appState": {

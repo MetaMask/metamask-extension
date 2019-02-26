@@ -18,7 +18,7 @@ import { isBalanceSufficient, calcGasTotal } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
 import { checksumAddress, addressSlicer, valuesFor } from '../../../util'
-import { getMetaMaskAccounts, getAdvancedInlineGasShown } from '../../../selectors'
+import {getMetaMaskAccounts, getAdvancedInlineGasShown, preferencesSelector, getIsMainnet} from '../../../selectors'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -29,6 +29,8 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 
 const mapStateToProps = (state, props) => {
   const { toAddress: propsToAddress } = props
+  const { showFiatInTestnets } = preferencesSelector(state)
+  const isMainnet = getIsMainnet(state)
   const { confirmTransaction, metamask, gas } = state
   const {
     ethTransactionAmount,
@@ -135,6 +137,8 @@ const mapStateToProps = (state, props) => {
     },
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
     insufficientBalance,
+    hideSubtitle: (!isMainnet && !showFiatInTestnets),
+    hideFiatConversion: (!isMainnet && !showFiatInTestnets),
   }
 }
 

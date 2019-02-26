@@ -24,6 +24,7 @@ export default class TransactionListItem extends PureComponent {
     showCancelModal: PropTypes.func,
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
+    showFiat: PropTypes.bool,
     token: PropTypes.object,
     tokenData: PropTypes.object,
     transaction: PropTypes.object,
@@ -31,6 +32,10 @@ export default class TransactionListItem extends PureComponent {
     value: PropTypes.string,
     fetchBasicGasAndTimeEstimates: PropTypes.func,
     fetchGasEstimates: PropTypes.func,
+  }
+
+  static defaultProps = {
+    showFiat: true,
   }
 
   state = {
@@ -115,9 +120,9 @@ export default class TransactionListItem extends PureComponent {
   }
 
   renderSecondaryCurrency () {
-    const { token, value } = this.props
+    const { token, value, showFiat } = this.props
 
-    return token
+    return token || !showFiat
       ? null
       : (
         <UserPreferencedCurrencyDisplay

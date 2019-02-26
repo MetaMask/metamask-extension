@@ -495,10 +495,13 @@ describe('MetaMask', function () {
 
       await findElement(driver, By.css('.tab-bar'))
 
+      const showConversionToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(3) .settings-page__content-item-col > div'))
+      await showConversionToggle.click()
+
       const advancedGasTitle = await findElement(driver, By.xpath(`//span[contains(text(), 'Advanced gas controls')]`))
       await driver.executeScript('arguments[0].scrollIntoView(true)', advancedGasTitle)
 
-      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(11) .settings-page__content-item-col > div'))
+      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(12) .settings-page__content-item-col > div'))
       await advancedGasToggle.click()
       windowHandles = await driver.getAllWindowHandles()
       extension = windowHandles[0]
@@ -560,23 +563,37 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
+    let txValues
+
     it('finds the transaction in the transactions list', async function () {
       const transactions = await findElements(driver, By.css('.transaction-list-item'))
       assert.equal(transactions.length, 4)
 
-      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
-      await driver.wait(until.elementTextMatches(txValues, /-3\s*ETH/), 10000)
+      txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
+      await driver.wait(until.elementTextMatches(txValues[0], /-3\s*ETH/), 10000)
     })
 
     it('the transaction has the expected gas price', async function () {
-      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
-      await txValues.click()
-      await delay(tinyDelayMs)
-      await findElement(driver, By.xpath(`//div[contains(text(), 'Gas Price (GWEI)')]`))
+      await delay(largeDelayMs)
+      let txGasPriceLabels
+      let txGasPrices
+      try {
+        await txValues[0].click()
+        txGasPrices = await findElements(driver, By.css('.transaction-breakdown__value'))
+        txGasPriceLabels = await findElements(driver, By.css('.transaction-breakdown-row__title'))
+        txGasPrices = await findElements(driver, By.css('.transaction-breakdown__value'))
+        await driver.wait(until.elementTextMatches(txGasPrices[3], /^10$/), 10000)
+      } catch (e) {
+        console.log(e.message)
+        txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
+        await txValues[0].click()
+        txGasPriceLabels = await findElements(driver, By.css('.transaction-breakdown-row__title'))
+        txGasPrices = await findElements(driver, By.css('.transaction-breakdown__value'))
+        await driver.wait(until.elementTextMatches(txGasPrices[3], /^10$/), 10000)
+      }
+      assert(txGasPriceLabels[2])
 
-      await findElement(driver, By.xpath(`//span[contains(text(), '7')]`))
-
-      txValues.click()
+      await txValues[0].click()
     })
   })
 
@@ -1125,6 +1142,7 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 2
       }, 10000)
 
+      await delay(regularDelayMs)
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues[0], /-7\s*TST/))
       const txStatuses = await findElements(driver, By.css('.transaction-list-item__action'))
