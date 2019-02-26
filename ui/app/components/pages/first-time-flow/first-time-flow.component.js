@@ -18,6 +18,7 @@ import {
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
+  INITIALIZE_UNIQUE_IMAGE_ROUTE,
 } from '../../../routes'
 
 export default class FirstTimeFlow extends PureComponent {
@@ -81,7 +82,7 @@ export default class FirstTimeFlow extends PureComponent {
       this.setState({ seedPhrase }, () => {
         noActiveNotices
           ? history.push(INITIALIZE_SEED_PHRASE_ROUTE)
-          : history.push(INITIALIZE_NOTICE_ROUTE)
+          : history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
       })
     } catch (error) {
       throw new Error(error.message)

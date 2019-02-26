@@ -872,6 +872,15 @@
   "newToMetaMask": {
     "message": "New to MetaMask?"
   },
+  "protectYourKeys": {
+    "message": "Protect Your Keys!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never spontaneously ask for your seed phrase!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Keep your phrase safe. If you see something phishy, or you’re uncertain about a website, email support@metamask.io."
+  },
   "rpcURL": {
     "message": "New RPC URL"
   },

@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Mascot from '../../../mascot'
 import Button from '../../../button'
-import { INITIALIZE_SELECT_ACTION_ROUTE, INITIALIZE_NOTICE_ROUTE } from '../../../../routes'
+import { INITIALIZE_SELECT_ACTION_ROUTE, INITIALIZE_UNIQUE_IMAGE_ROUTE } from '../../../../routes'
 
 export default class Welcome extends PureComponent {
   static propTypes = {
@@ -25,7 +25,7 @@ export default class Welcome extends PureComponent {
     const { history, isInitialized } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_NOTICE_ROUTE)
+      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
     }
   }
 

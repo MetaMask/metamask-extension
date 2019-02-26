@@ -5,9 +5,9 @@ import {
   DEFAULT_ROUTE,
   LOCK_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
+  INITIALIZE_UNIQUE_IMAGE_ROUTE,
 } from '../../../../routes'
 
 export default class FirstTimeFlowSwitch extends PureComponent {
@@ -45,7 +45,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
     }
 
     if (!noActiveNotices) {
-      return <Redirect to={{ pathname: INITIALIZE_NOTICE_ROUTE }} />
+      return <Redirect to={{ pathname: INITIALIZE_UNIQUE_IMAGE_ROUTE }} />
     }
 
     if (seedPhrase) {
