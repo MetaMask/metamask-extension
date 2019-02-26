@@ -495,6 +495,9 @@ describe('MetaMask', function () {
 
       await findElement(driver, By.css('.tab-bar'))
 
+      const showConversionToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(3) .settings-page__content-item-col > div'))
+      await showConversionToggle.click()
+
       const advancedGasTitle = await findElement(driver, By.xpath(`//span[contains(text(), 'Advanced gas controls')]`))
       await driver.executeScript('arguments[0].scrollIntoView(true)', advancedGasTitle)
 
@@ -568,23 +571,27 @@ describe('MetaMask', function () {
 
       txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues[0], /-3\s*ETH/), 10000)
-      await txValues[0].click()
     })
 
     it('the transaction has the expected gas price', async function () {
       await delay(largeDelayMs)
       let txGasPriceLabels
+      let txGasPrices
       try {
+        await txValues[0].click()
+        txGasPrices = await findElements(driver, By.css('.transaction-breakdown__value'))
         txGasPriceLabels = await findElements(driver, By.css('.transaction-breakdown-row__title'))
+        txGasPrices = await findElements(driver, By.css('.transaction-breakdown__value'))
+        await driver.wait(until.elementTextMatches(txGasPrices[3], /^10$/), 10000)
       } catch (e) {
         console.log(e.message)
         txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
         await txValues[0].click()
         txGasPriceLabels = await findElements(driver, By.css('.transaction-breakdown-row__title'))
+        txGasPrices = await findElements(driver, By.css('.transaction-breakdown__value'))
+        await driver.wait(until.elementTextMatches(txGasPrices[3], /^10$/), 10000)
       }
       assert(txGasPriceLabels[2])
-      const txGasPrice = await findElements(driver, By.css('.transaction-breakdown__value'))
-      await driver.wait(until.elementTextMatches(txGasPrice[3], /^10$/), 10000)
 
       await txValues[0].click()
     })
