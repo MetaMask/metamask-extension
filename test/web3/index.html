@@ -6,30 +6,34 @@
     <div style="display: flex; flex-flow: column;">
       <div style="display: flex; font-size: 1.25rem;">hexaNumberMethods</div>
       <div style="display: flex;">
-        <button id="ethblockNumber">eth_blockNumber</button>
-        <button id="eth_gasPrice">eth_gasPrice</button>
-        <button id="eth_newBlockFilter">eth_newBlockFilter</button>
-        <button id="eth_newPendingTransactionFilter">
+        <button id="ethblockNumber" class="hexaNumberMethods">eth_blockNumber</button>
+       
+        <button id="eth_gasPrice" class="hexaNumberMethods">eth_gasPrice</button>
+        <button id="eth_newBlockFilter" class="hexaNumberMethods">eth_newBlockFilter</button>
+        <button id="eth_newPendingTransactionFilter" class="hexaNumberMethods">
           eth_newPendingTransactionFilter
         </button>
+        <button id="eth_protocolVersion" class="hexaNumberMethods">eth_protocolVersion</button>
+        <button id="eth_sendRawTransaction" class="hexaNumberMethods">eth_sendRawTransaction</button>
+        <button id="eth_getCode" class="hexaNumberMethods">eth_getCode</button>
       </div>
       <div style="display: flex ;">
       
-        <button id="eth_getUncleCountByBlockHash">
+        <button id="eth_getUncleCountByBlockHash" class="hexaNumberMethods">
           eth_getUncleCountByBlockHash
         </button>
-        <button id="eth_getBlockTransactionCountByHash">
+        <button id="eth_getBlockTransactionCountByHash" class="hexaNumberMethods">
           getBlockTransactionCountByHash
         </button>
       </div>
       <div style="display: flex ;">
-        <button id="eth_getTransactionCount">eth_getTransactionCount</button>
-        <button id="eth_getBalance">eth_getBalance</button>
-        <button id="eth_estimateGas">eth_estimateGas</button>
-        <button id="eth_getUncleCountByBlockNumber">
+        <button id="eth_getTransactionCount" class="hexaNumberMethods">eth_getTransactionCount</button>
+        <button id="eth_getBalance" class="hexaNumberMethods">eth_getBalance</button>
+        <button id="eth_estimateGas" class="hexaNumberMethods">eth_estimateGas</button>
+        <button id="eth_getUncleCountByBlockNumber" class="hexaNumberMethods">
           eth_getUncleCountByBlockNumber
         </button>
-        <button id='eth_getBlockTransactionCountByNumber'>
+        <button id='eth_getBlockTransactionCountByNumber' class="hexaNumberMethods">
           eth_getBlockTransactionCountByNumber
         </button>
       </div>
@@ -37,21 +41,24 @@
     <div style="display: flex; flex-flow: column;">
       <div style="display: flex; font-size: 1.25rem;">booleanMethods</div>
       <div style="display: flex ;">
-        <button id="eth_uninstallFilter">eth_uninstallFilter</button>
-        <button id="eth_mining">eth_mining</button>
-        <button id="eth_submitWork">eth_submitWork</button>
-        <button id="eth_syncing">eth_syncing</button>
+        <button id="eth_uninstallFilter" class = 'booleanMethods'>eth_uninstallFilter</button>
+        <button id="eth_mining" class = 'booleanMethods'>eth_mining</button>
+        <button id="eth_submitWork" class = 'booleanMethods'>eth_submitWork</button>
+        <button id="eth_syncing" class = 'booleanMethods'>eth_syncing</button>
       </div>
     </div>
     <div style="display: flex; flex-flow: column;">
-      <div style="display: flex; font-size: 1.25rem;">transactionMethods</div>
+      <div style="display: flex; font-size: 1.25rem;" >transactionMethods</div>
       <div style="display: flex ;">
-        <button id="eth_getTransactionByHash">eth_getTransactionByHash</button>
-        <button id="eth_getTransactionByBlockHashAndIndex">
+        <button id="eth_getTransactionByHash" class='transactionMethods'>eth_getTransactionByHash</button>
+        <button id="eth_getTransactionByBlockHashAndIndex" class = 'transactionMethods'>
           eth_getTransactionByBlockHashAndIndex
         </button>
-        <button id="eth_getTransactionByBlockNumberAndIndex">
+        <button id="eth_getTransactionByBlockNumberAndIndex"  class="transactionMethods">
           eth_getTransactionByBlockNumberAndIndex
+        </button>
+        <button id="eth_getTransactionReceipt" class="transactionMethods">
+          eth_getTransactionReceipt
         </button>
      
       </div>
@@ -61,47 +68,41 @@
       <div style="display: flex; font-size: 1.25rem;">blockMethods</div>
      
       <div style="display: flex ;">
-        <button id="eth_getUncleByBlockHashAndIndex">
+      
+
+        <button id="eth_getUncleByBlockHashAndIndex"  class="blockMethods">
           eth_getUncleByBlockHashAndIndex
         </button>
-        <button id="eth_getUncleByBlockNumberAndIndex">
+        <button id="eth_getUncleByBlockNumberAndIndex"  class="blockMethods">
           eth_getUncleByBlockNumberAndIndex
         </button>
-        <button id="eth_getBlockByHash">eth_getBlockByHash</button>
+        <button id="eth_getBlockByHash"  class="blockMethods">eth_getBlockByHash</button>
       </div>
       <div style="display: flex ;">
-        <button id="eth_getBlockByNumber">eth_getBlockByNumber</button>
+        <button id="eth_getBlockByNumber"  class="blockMethods">eth_getBlockByNumber</button>
         
        
       </div>
     </div>
 
     <div style="display: flex; flex-flow: column;">
-      <div style="display: flex; font-size: 1.25rem;">bytesDataMethods</div>
+      <div style="display: flex; font-size: 1.25rem;">Methods</div>
       <div style="display: flex ;">
-        <button id="eth_call">eth_call</button>
-        <button id="eth_getStorageAt">eth_getStorageAt</button>
-        <button id="eth_getCode">eth_getCode</button>
+        <button id="eth_call" class = 'methods'>eth_call</button>
+        <button id="eth_getStorageAt"  class="methods">eth_getStorageAt</button>
+     
       </div>
     </div>
     <div style="display: flex; flex-flow: column;">
-      <div style="display: flex; font-size: 1.25rem;">filterChangeMethods</div>
-      <div style="display: flex ;">
-        <button id="eth_getFilterChanges">eth_getFilterChanges</button>
-        <button id="eth_getLogs">eth_getLogs</button>
-       
-      </div>
-      <div style="display: flex; flex-flow: column;">
-        <div style="display: flex; font-size: 1.25rem;">methodsArray</div>
-      <div style="display: flex ;">
-        <button id="eth_accounts">eth_accounts</button>
-        <button id="eth_protocolVersion">eth_protocolVersion</button>
-        <button id="eth_sendRawTransaction">eth_sendRawTransaction</button>
-        <button id="eth_getTransactionReceipt">
-          eth_getTransactionReceipt
-        </button>
+      <div id='results'></div>
     </div>
-  
-    <script src="bundle.js"></script>
+    
+       
+       
+       
+    </div>
+    <script src="schema.js"></script>
+    <script src="web3.js"></script>
+   
   </body>
 </html>

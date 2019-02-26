@@ -33,12 +33,7 @@ var params = {
     value: "0x9184e72a",
     data: "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675"
   },
-  filterGetLogs: { blockHash:
-      "0x7c5a35e9cb3e8ae0e221ab470abae9d446c3a5626ce6689fc777dcffcab52c70",
-    topics: [
-      "0x241ea03ca20251805084d27d4440371c34a0b85ff108f6bb5611248f73818b80"
-    ]
-  },
+  filterGetLogs: [{"blockHash": "0x7c5a35e9cb3e8ae0e221ab470abae9d446c3a5626ce6689fc777dcffcab52c70", "topics":["0x241ea03ca20251805084d27d4440371c34a0b85ff108f6bb5611248f73818b80"]}],
   block: {
     __required: [],
     number: "Q",
@@ -146,7 +141,15 @@ var methods = {
       ["latest"],
       "Q",
       1
-    ]
+    ],
+    eth_protocolVersion: ["eth_protocolVersion", params.param, "S"],
+    eth_sendRawTransaction: [
+      "eth_sendRawTransaction",
+      [params.data],
+      "D32",
+      1
+    ],
+    eth_getCode: ["eth_getCode", params.getCodeParams, "D", 1, 2]
   },
   booleanMethods: {
     //these are the methods which have output in the form of boolean
@@ -174,6 +177,12 @@ var methods = {
       [params.blockParameterParams, "0x0"],
       params.transaction,
       2
+    ],
+    eth_getTransactionReceipt: [
+      "eth_getTransactionReceipt",
+      params.transactionHashParams,
+      params.receipt,
+      1
     ]
   },
   blockMethods: {
@@ -204,90 +213,14 @@ var methods = {
     ]
   },
 
-  bytesDataMethods: {
+  methods: {
     //these are the methods which have output in the form of bytes data
 
     eth_call: ["eth_call", [params.estimateTransaction, "latest"], "D", 1, 2],
     eth_getStorageAt: ["eth_getStorageAt", params.getStorageAtParams, "D", 2, 2],
-    eth_getCode: ["eth_getCode", params.getCodeParams, "D", 1, 2]
-  },
-  filterChangeMethods: {
-    //these are the methods which have output in the form of filterchange
-    eth_getFilterChanges: [
-      "eth_getFilterChanges",
-      params.filterParams,
-      [params.filterChange],
-      1
-    ],
-    eth_getLogs: ["eth_getLogs", [params.filtergetLogs], [params.filterChange], 1]
-  },
-  methods: {
-    //these are for general methods which dont fall in any category
-    eth_accounts: ["eth_accounts", params.param, ["D20"]],
-    eth_protocolVersion: ["eth_protocolVersion", params.param, "S"],
-    eth_sendRawTransaction: [
-      "eth_sendRawTransaction",
-      [params.data],
-      "D32",
-      1
-    ],
-    eth_getTransactionReceipt: [
-      "eth_getTransactionReceipt",
-      params.transactionHashParams,
-      params.receipt,
-      1
-    ]
-  },
+   
+  }
   
 };
 
-module.exports = { //arrays for all the same methods to be exported
-  hexaNumberMethodsArray: [
-    methods.hexaNumberMethods.eth_blockNumber,
-    methods.hexaNumberMethods.eth_gasPrice,
-    methods.hexaNumberMethods.eth_newBlockFilter,
-    methods.hexaNumberMethods.eth_newPendingTransactionFilter,
-    methods.hexaNumberMethods.eth_getUncleCountByBlockHash,
-    methods.hexaNumberMethods.eth_getBlockTransactionCountByHash,
-    methods.hexaNumberMethods.eth_getTransactionCount,
-    methods.hexaNumberMethods.eth_getBalance,
-    methods.hexaNumberMethods.eth_estimateGas,
-    methods.hexaNumberMethods.eth_getUncleCountByBlockNumber,
-    methods.hexaNumberMethods.eth_getBlockTransactionCountByNumber
-  ],
-  booleanMethodsArray: [
-    methods.booleanMethods.eth_uninstallFilter,
-    methods.booleanMethods.eth_mining,
-    methods.booleanMethods.eth_submitWork,
-    methods.booleanMethods.eth_syncing
-  ],
-  transactionMethodsArray: [
-    methods.transactionMethods.eth_getTransactionByHash,
-    methods.transactionMethods.eth_getTransactionByBlockHashAndIndex,
-    methods.transactionMethods.eth_getTransactionByBlockNumberAndIndex
-  ],
-  blockMethodsArray: [
-    methods.blockMethods.eth_getUncleByBlockHashAndIndex,
-    methods.blockMethods.eth_getUncleByBlockNumberAndIndex,
-    methods.blockMethods.eth_getBlockByHash,
-    methods.blockMethods.eth_getBlockByNumber
-  ],
-  bytesDataMethodsArray: [
-    methods.bytesDataMethods.eth_call,
-    methods.bytesDataMethods.eth_getStorageAt,
-    methods.bytesDataMethods.eth_getCode
-  ],
-  filterChangeMethodsArray: [
-    methods.filterChangeMethods.eth_getFilterChanges,
-    methods.filterChangeMethods.eth_getLogs
-  ],
-  methodsArray: [
-    methods.methods.eth_accounts,
-    methods.methods.eth_protocolVersion,
-    methods.methods.eth_sendRawTransaction,
-    methods.methods.eth_getTransactionReceipt
-  ]
-};
-
-
-//eth_getFilterLogs
+ 
