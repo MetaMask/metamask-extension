@@ -560,24 +560,33 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
+    let txValues
+
     it('finds the transaction in the transactions list', async function () {
       const transactions = await findElements(driver, By.css('.transaction-list-item'))
       assert.equal(transactions.length, 4)
 
-      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
-      await driver.wait(until.elementTextMatches(txValues, /-3\s*ETH/), 10000)
+      txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
+      await driver.wait(until.elementTextMatches(txValues[0], /-3\s*ETH/), 10000)
+      await txValues[0].click()
     })
 
     it('the transaction has the expected gas price', async function () {
       await delay(largeDelayMs)
-      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
-      await txValues.click()
-      await delay(tinyDelayMs)
-      await findElement(driver, By.xpath(`//div[contains(text(), 'Gas Price (GWEI)')]`))
+      let txGasPriceLabels
+      try {
+        txGasPriceLabels = await findElements(driver, By.css('.transaction-breakdown-row__title'))
+      } catch (e) {
+        console.log(e.message)
+        txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
+        await txValues[0].click()
+        txGasPriceLabels = await findElements(driver, By.css('.transaction-breakdown-row__title'))
+      }
+      assert(txGasPriceLabels[2])
+      const txGasPrice = await findElements(driver, By.css('.transaction-breakdown__value'))
+      await driver.wait(until.elementTextMatches(txGasPrice[3], /^10$/), 10000)
 
-      await findElement(driver, By.xpath(`//span[contains(text(), '7')]`))
-
-      txValues.click()
+      await txValues[0].click()
     })
   })
 
