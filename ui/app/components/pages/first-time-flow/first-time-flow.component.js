@@ -7,18 +7,15 @@ import SelectAction from './select-action'
 import EndOfFlow from './end-of-flow'
 import Unlock from '../unlock-page'
 import CreatePassword from './create-password'
-import Notices from './notices'
 import SeedPhrase from './seed-phrase'
 import {
   DEFAULT_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_CREATE_PASSWORD_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
-  INITIALIZE_UNIQUE_IMAGE_ROUTE,
 } from '../../../routes'
 
 export default class FirstTimeFlow extends PureComponent {
@@ -29,7 +26,6 @@ export default class FirstTimeFlow extends PureComponent {
     history: PropTypes.object,
     isInitialized: PropTypes.bool,
     isUnlocked: PropTypes.bool,
-    noActiveNotices: PropTypes.bool,
     unlockAccount: PropTypes.func,
   }
 
@@ -75,14 +71,12 @@ export default class FirstTimeFlow extends PureComponent {
   }
 
   handleUnlock = async password => {
-    const { unlockAccount, history, noActiveNotices } = this.props
+    const { unlockAccount, history } = this.props
 
     try {
       const seedPhrase = await unlockAccount(password)
       this.setState({ seedPhrase }, () => {
-        noActiveNotices
-          ? history.push(INITIALIZE_SEED_PHRASE_ROUTE)
-          : history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
+        history.push(INITIALIZE_SEED_PHRASE_ROUTE)
       })
     } catch (error) {
       throw new Error(error.message)
@@ -101,16 +95,6 @@ export default class FirstTimeFlow extends PureComponent {
               <SeedPhrase
                 { ...props }
                 seedPhrase={seedPhrase}
-              />
-            )}
-          />
-          <Route
-            exact
-            path={INITIALIZE_NOTICE_ROUTE}
-            render={props => (
-              <Notices
-                { ...props }
-                isImportedKeyring={isImportedKeyring}
               />
             )}
           />

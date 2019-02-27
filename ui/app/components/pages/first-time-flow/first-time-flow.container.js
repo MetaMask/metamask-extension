@@ -7,13 +7,12 @@ import {
 } from '../../../actions'
 
 const mapStateToProps = state => {
-  const { metamask: { completedOnboarding, isInitialized, isUnlocked, noActiveNotices } } = state
+  const { metamask: { completedOnboarding, isInitialized, isUnlocked } } = state
 
   return {
     completedOnboarding,
     isInitialized,
     isUnlocked,
-    noActiveNotices,
   }
 }
 

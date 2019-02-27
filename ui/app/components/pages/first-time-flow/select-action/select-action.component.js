@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import Button from '../../../button'
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
+  INITIALIZE_UNIQUE_IMAGE_ROUTE,
 } from '../../../../routes'
 
 export default class SelectAction extends PureComponent {
@@ -21,7 +21,7 @@ export default class SelectAction extends PureComponent {
     const { history, isInitialized } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_NOTICE_ROUTE)
+      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
     }
   }
 
