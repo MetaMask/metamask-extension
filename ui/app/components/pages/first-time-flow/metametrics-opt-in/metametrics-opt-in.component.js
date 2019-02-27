@@ -1,19 +1,28 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerFooter from '../../../page-container/page-container-footer'
-import { INITIALIZE_CREATE_PASSWORD_ROUTE } from '../../../../routes'
 
 export default class MetaMetricsOptIn extends Component {
   static propTypes = {
     history: PropTypes.object,
     setParticipateInMetaMetrics: PropTypes.func,
+    nextRoute: PropTypes.string,
+    firstTimeSelectionMetaMetricsName: PropTypes.string,
   }
 
   static contextTypes = {
-    metricsEvent: PropTypes.func,//
+    metricsEvent: PropTypes.func,
   }
 
   render () {
+    const { metricsEvent } = this.context
+    const {
+      nextRoute,
+      history,
+      setParticipateInMetaMetrics,
+      firstTimeSelectionMetaMetricsName,
+    } = this.props
+
     return (
       <div className="metametrics-opt-in">
         <div className="metametrics-opt-in__main">
@@ -86,27 +95,48 @@ export default class MetaMetricsOptIn extends Component {
           <div className="metametrics-opt-in__footer">
             <PageContainerFooter
               onCancel={() => {
-                this.props.setParticipateInMetaMetrics(false)
+                setParticipateInMetaMetrics(false)
                   .then(() => {
-                    this.context.metricsEvent({
+                    metricsEvent({
                       eventOpts: {
                         category: 'MetaMetricsOptIn',
-                        action: 'userSelectsOptIn',
+                        action: 'userSelectsOption',
                         name: 'userOptedOut',
                       },
                       isOptIn: true,
                     }, {
                       excludeMetaMetricsId: true,
                     })
-                    this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+                    history.push(nextRoute)
                   })
               }}
               cancelText={'No Thanks'}
               hideCancel={false}
               onSubmit={() => {
-                this.props.setParticipateInMetaMetrics(true)
-                  .then(() => {
-                    this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+                setParticipateInMetaMetrics(true)
+                  .then(([participateStatus, metaMetricsId]) => {
+                    return metricsEvent({
+                      eventOpts: {
+                        category: 'MetaMetricsOptIn',
+                        action: 'userSelectsOption',
+                        name: 'userOptedIn',
+                      },
+                      isOptIn: true,
+                    })
+                    .then(() => {
+                      return metricsEvent({
+                        eventOpts: {
+                          category: 'Onboarding',
+                          action: 'importOrCreate',
+                          name: firstTimeSelectionMetaMetricsName,
+                        },
+                        isOptIn: true,
+                        metaMetricsId,
+                      })
+                    })
+                    .then(() => {
+                      history.push(nextRoute)
+                    })
                   })
               }}
               submitText={'I agree'}

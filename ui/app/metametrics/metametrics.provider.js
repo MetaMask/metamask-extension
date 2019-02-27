@@ -45,7 +45,7 @@ class MetaMetricsProvider extends Component {
 
         // if (userPermission) {
         if (props.participateInMetaMetrics || config.isOptIn) {
-          sendMetaMetricsEvent({
+          return sendMetaMetricsEvent({
             ...props,
             ...config,
             previousPath,

@@ -387,6 +387,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setUseBlockie: this.setUseBlockie.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
+      setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
@@ -1633,8 +1634,8 @@ module.exports = class MetamaskController extends EventEmitter {
    */
   setParticipateInMetaMetrics (bool, cb) {
     try {
-      this.preferencesController.setParticipateInMetaMetrics(bool)
-      cb(null)
+      const metaMetricsId = this.preferencesController.setParticipateInMetaMetrics(bool)
+      cb(null, metaMetricsId)
     } catch (err) {
       cb(err)
     }
@@ -1643,6 +1644,20 @@ module.exports = class MetamaskController extends EventEmitter {
   setMetaMetricsSendCount (val, cb) {
     try {
       this.preferencesController.setMetaMetricsSendCount(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  /**
+   * Sets the type of first time flow the user wishes to follow: create or import
+   * @param {String} type - Indicates the type of first time flow the user wishes to follow
+   * @param {Function} cb - A callback function called when complete.
+   */
+  setFirstTimeFlowType (type, cb) {
+    try {
+      this.preferencesController.setFirstTimeFlowType(type)
       cb(null)
     } catch (err) {
       cb(err)

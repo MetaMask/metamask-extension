@@ -55,6 +55,7 @@ function reduceMetamask (state, action) {
       useNativeCurrencyAsPrimaryCurrency: true,
       showFiatInTestnets: false,
     },
+    firstTimeFlowType: null,
     completedOnboarding: false,
     knownMethodData: {},
     participateInMetaMetrics: null,
@@ -404,6 +405,12 @@ function reduceMetamask (state, action) {
     case actions.COMPLETE_UI_MIGRATION: {
       return extend(metamaskState, {
         completedUiMigration: true,
+      })
+    }
+
+    case actions.SET_FIRST_TIME_FLOW_TYPE: {
+      return extend(metamaskState, {
+        firstTimeFlowType: action.value,
       })
     }
 

@@ -353,6 +353,9 @@ var actions = {
   approveProviderRequest,
   rejectProviderRequest,
   clearApprovedOrigins,
+
+  setFirstTimeFlowType,
+  SET_FIRST_TIME_FLOW_TYPE: 'SET_FIRST_TIME_FLOW_TYPE',
 }
 
 module.exports = actions
@@ -2593,7 +2596,6 @@ function callBackgroundThenUpdate (method, ...args) {
 
 function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
-  console.log('111111 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
   return new Promise((resolve, reject) => {
     background.getState((err, newState) => {
       if (err) {
@@ -2602,7 +2604,6 @@ function forceUpdateMetamaskState (dispatch) {
       }
 
       dispatch(actions.updateMetamaskState(newState))
-      console.log('222222 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', newState)
       resolve(newState)
     })
   })
@@ -2618,13 +2619,14 @@ function setParticipateInMetaMetrics (val) {
   return (dispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`)
     return new Promise((resolve, reject) => {
-      background.setParticipateInMetaMetrics(val, (err) => {
+      background.setParticipateInMetaMetrics(val, (err, metaMetricsId) => {
+        console.log('!@# err, metaMetricsId', err, metaMetricsId)
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
 
-        resolve(val)
+        resolve([val, metaMetricsId])
       })
       dispatch({
         type: actions.SET_PARTICIPATE_IN_METAMETRICS,
@@ -2738,5 +2740,20 @@ function rejectProviderRequest (tabID) {
 function clearApprovedOrigins () {
   return (dispatch) => {
     background.clearApprovedOrigins()
+  }
+}
+
+function setFirstTimeFlowType (type) {
+  return (dispatch) => {
+    log.debug(`background.setFirstTimeFlowType`)
+    background.setFirstTimeFlowType(type, (err) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_FIRST_TIME_FLOW_TYPE,
+      value: type,
+    })
   }
 }

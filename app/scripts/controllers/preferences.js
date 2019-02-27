@@ -43,6 +43,7 @@ class PreferencesController {
       featureFlags: {},
       knownMethodData: {},
       participateInMetaMetrics: null,
+      firstTimeFlowType: null,
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -99,15 +100,19 @@ class PreferencesController {
    * Setter for the `participateInMetaMetrics` property
    *
    * @param {boolean} val Whether or not the user wants to participate in MetaMetrics
+   * @returns {string|null} the string of the new metametrics id, or null if not set
    *
    */
   setParticipateInMetaMetrics (bool) {
     this.store.updateState({ participateInMetaMetrics: bool })
+    let metaMetricsId = null
     if (bool === true && !this.store.getState().metaMetricsId) {
-      this.store.updateState({ metaMetricsId: bufferToHex(sha3(String(Date.now()) + String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)))) })
+      metaMetricsId = bufferToHex(sha3(String(Date.now()) + String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER))))
+      this.store.updateState({ metaMetricsId })
     } else if (bool === false) {
-      this.store.updateState({ metaMetricsId: null })
+      this.store.updateState({ metaMetricsId })
     }
+    return metaMetricsId
   }
 
   setMetaMetricsSendCount (val) {
@@ -117,6 +122,17 @@ class PreferencesController {
   getMetaMetricsSendCount () {
     return this.store.getState().metaMetricsSendCount
   }
+
+  /**
+   * Setter for the `firstTimeFlowType` property
+   *
+   * @param {String} type Indicates the type of first time flow - create or import - the user wishes to follow
+   *
+   */
+   setFirstTimeFlowType (type) {
+     this.store.updateState({ firstTimeFlowType: type })
+   }
+
 
   getSuggestedTokens () {
     return this.store.getState().suggestedTokens

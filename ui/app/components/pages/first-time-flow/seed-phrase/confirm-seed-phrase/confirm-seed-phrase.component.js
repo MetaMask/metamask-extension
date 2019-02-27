@@ -49,7 +49,6 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
     try {
       history.push(INITIALIZE_END_OF_FLOW_ROUTE)
-      await completeOnboarding()
       this.context.metricsEvent({
         eventOpts: {
           category: 'Acquisition',
