@@ -95,6 +95,9 @@
   "agreeTermsOfService": {
     "message": "I agree to the Terms of Service"
   },
+  "allDone": {
+    "message": "All Done"
+  },
   "alreadyHaveSeedPhrase": {
     "message": "No, I already have a seed phrase"
   },
@@ -244,6 +247,9 @@
   },
   "confirmTransaction": {
     "message": "Confirm Transaction"
+  },
+  "congratulations": {
+    "message": "Congratulations"
   },
   "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
@@ -456,6 +462,24 @@
   },
   "encryptNewDen": {
     "message": "Encrypt your new DEN"
+  },
+  "endOfFlowMessage1": {
+    "message": "You passed the test - keep your seedphrase safe, it's your responsibility!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tips on storing it safely"
+  },
+  "endOfFlowMessage3": {
+    "message": "Save a backup in multiple places"
+  },
+  "endOfFlowMessage4": {
+    "message": "Never tell anyone"
+  },
+  "endOfFlowMessage5": {
+    "message": "If you need to back your seed phrase again, you can find it in Settings -> Security."
+  },
+  "endOfFlowMessage6": {
+    "message": "MetaMask cannot recover your seedphrase. Learn more."
   },
   "ensNameNotFound": {
     "message": "ENS name not found"
@@ -872,14 +896,17 @@
   "newToMetaMask": {
     "message": "New to MetaMask?"
   },
+  "noAlreadyHaveSeed": {
+    "message": "No, I already have a seed phrase"
+  },
   "protectYourKeys": {
     "message": "Protect Your Keys!"
   },
   "protectYourKeysMessage1": {
-    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never spontaneously ask for your seed phrase!"
+    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never ask for your seed phrase!"
   },
   "protectYourKeysMessage2": {
-    "message": "Keep your phrase safe. If you see something phishy, or you’re uncertain about a website, email support@metamask.io."
+    "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
   },
   "rpcURL": {
     "message": "New RPC URL"

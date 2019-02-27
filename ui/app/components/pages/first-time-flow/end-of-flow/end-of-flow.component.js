@@ -14,6 +14,7 @@ export default class EndOfFlowScreen extends PureComponent {
   }
 
   render () {
+    const { t } = this.context
     const { history, completeOnboarding } = this.props
 
     return (
@@ -33,25 +34,25 @@ export default class EndOfFlowScreen extends PureComponent {
         </div>
         <div className="end-of-flow__emoji">🎉</div>
         <div className="first-time-flow__header">
-          { 'Congratulations' }
+          { t('congratulations') }
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-1">
-          { 'You passed the test - keep your seedphrase safe, it\'s your responsibility!' }
+          { t('endOfFlowMessage1') }
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-2">
-          { 'Tips on storing it safely ' }
+          { t('endOfFlowMessage2') }
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-3">
-          { '• Save a backup in multiple places' }
+          { '• ' + t('endOfFlowMessage3') }
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-4">
-          { '• Never tell anyone' }
+          { '• ' + t('endOfFlowMessage4') }
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-3">
-          { 'If you need to back it up again, you can find them in Settings -> Security.' }
+          { t('endOfFlowMessage5') }
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-3">
-          { '*Metamask cannot recover your seedphrase. Learn more.' }
+          { '*' + t('endOfFlowMessage6') }
         </div>
         <Button
           type="confirm"

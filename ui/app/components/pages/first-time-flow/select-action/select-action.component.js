@@ -64,8 +64,8 @@ export default class SelectAction extends PureComponent {
                   <div className="select-action__button-text-big">
                     { 'Create new wallet' }
                   </div>
-                  <div className="select-action__button-text-small">
-                    { 'This will create a new wallet & seed phrase' }
+                  <div className="select-action__button-text-big">
+                    { t('noAlreadyHaveSeed') }
                   </div>
                 </div>
                 <Button

@@ -208,7 +208,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
           </div>
           <span className="first-time-flow__checkbox-label">
-            I agree to the Terms Of Service
+            { t('agreeTermsOfService') }
           </span>
         </div>
         <Button
