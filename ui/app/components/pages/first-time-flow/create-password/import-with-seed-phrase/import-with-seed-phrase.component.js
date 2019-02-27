@@ -104,7 +104,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     const { history, onSubmit } = this.props
 
     try {
-      await onSubmit(password, seedPhrase)
+      await onSubmit(password, this.parseSeedPhrase(seedPhrase))
       this.context.metricsEvent({
         eventOpts: {
           category: 'Onboarding',
