@@ -3,6 +3,7 @@ const {
   timeout,
   queryAsync,
 } = require('../../lib/util')
+const fetchMockResponses = require('../../e2e/beta/fetch-mocks.js')
 
 QUnit.module('confirm sig requests')
 
@@ -18,6 +19,13 @@ async function runConfirmSigRequestsTest (assert, done) {
   const selectState = await queryAsync($, 'select')
   selectState.val('confirm sig requests')
   reactTriggerChange(selectState[0])
+
+  global.fetch = (...args) => {
+    if (args[0].match(/chromeextensionmm/)) {
+      return Promise.resolve({ json: () => Promise.resolve(JSON.parse(fetchMockResponses.metametrics)) })
+    }
+    return window.fetch(...args)
+  }
 
   const pendingRequestItem = $.find('.transaction-list-item .transaction-list-item__grid')
 
