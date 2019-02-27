@@ -72,6 +72,8 @@ describe('Using MetaMask with an existing account', function () {
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
       '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
+      '(args[0].match(/chromeextensionmm/)) { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
       '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
       'return window.origFetch(...args); }'
@@ -107,6 +109,12 @@ describe('Using MetaMask with an existing account', function () {
     it('clicks the "Import Wallet" option', async () => {
       const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Import Wallet')]`))
       customRpcButton.click()
+      await delay(largeDelayMs)
+    })
+
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+      const optOutButton = await findElement(driver, By.css('.btn-default'))
+      optOutButton.click()
       await delay(largeDelayMs)
     })
 

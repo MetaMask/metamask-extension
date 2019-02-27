@@ -186,10 +186,6 @@ class RestoreVaultPage extends Component {
   }
 }
 
-RestoreVaultPage.contextTypes = {
-  t: PropTypes.func,
-}
-
 export default connect(
   ({ appState: { warning, isLoading } }) => ({ warning, isLoading }),
   dispatch => ({

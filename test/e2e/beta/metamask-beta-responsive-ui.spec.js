@@ -18,6 +18,7 @@ const {
   loadExtension,
   verboseReportOnFailure,
 } = require('./helpers')
+const fetchMockResponses = require('./fetch-mocks.js')
 
 describe('MetaMask', function () {
   let extensionId
@@ -61,6 +62,23 @@ describe('MetaMask', function () {
     await driver.get(extensionUrl)
   })
 
+  beforeEach(async function () {
+    await driver.executeScript(
+      'window.origFetch = window.fetch.bind(window);' +
+      'window.fetch = ' +
+      '(...args) => { ' +
+      'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
+      '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
+      '(args[0].match(/chromeextensionmm/)) { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.metametrics + '\')) }); } else if ' +
+      '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
+      'return window.origFetch(...args); }'
+    )
+  })
+
   afterEach(async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await checkBrowserForConsoleErrors(driver)
@@ -90,6 +108,12 @@ describe('MetaMask', function () {
       it('clicks the "Create New Wallet" option', async () => {
         const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
         customRpcButton.click()
+        await delay(largeDelayMs)
+      })
+
+      it('clicks the "No thanks" option on the metametrics opt-in screen', async () => {
+        const optOutButton = await findElement(driver, By.css('.btn-default'))
+        optOutButton.click()
         await delay(largeDelayMs)
       })
 
