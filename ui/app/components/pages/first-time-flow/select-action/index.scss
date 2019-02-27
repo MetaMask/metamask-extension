@@ -30,11 +30,10 @@
   &__select-button {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: space-evenly;
     width: 269px;
     height: 278px;
-    padding-left: 24px;
 
     border: 1px solid #D8D8D8;
     box-sizing: border-box;
@@ -52,9 +51,12 @@
     margin-top: 41px;
   }
 
-  &__button-texts {
+  &__button-content {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+        align-items: center;
+    height: 144px;
   }
 
   &__button-text-big {
@@ -64,7 +66,8 @@
     line-height: 28px;
     font-size: 20px;
     color: #000000;
-    margin-top: 24px;
+    margin-top: 12px;
+    text-align: center;
   }
 
   &__button-text-small {

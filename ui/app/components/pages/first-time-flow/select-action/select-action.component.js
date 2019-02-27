@@ -57,15 +57,29 @@ export default class SelectAction extends PureComponent {
             </div>
             <div className="select-action__select-buttons">
               <div className="select-action__select-button">
-                <div className="select-action__button-symbol">
-                  <img src="/images/thin-plus.svg" />
-                </div>
-                <div className="select-action__button-texts">
-                  <div className="select-action__button-text-big">
-                    { 'Create new wallet' }
+                <div className="select-action__button-content">
+                  <div className="select-action__button-symbol">
+                    <img src="/images/download-alt.svg" />
                   </div>
                   <div className="select-action__button-text-big">
                     { t('noAlreadyHaveSeed') }
+                  </div>
+                </div>
+                <Button
+                  type="primary"
+                  className="first-time-flow__button"
+                  onClick={this.handleImport}
+                >
+                  { t('importWallet') }
+                </Button>
+              </div>
+              <div className="select-action__select-button">
+                <div className="select-action__button-content">
+                  <div className="select-action__button-symbol">
+                    <img src="/images/thin-plus.svg" />
+                  </div>
+                  <div className="select-action__button-text-big">
+                    { t('letsGoSetUp') }
                   </div>
                 </div>
                 <Button
@@ -74,24 +88,6 @@ export default class SelectAction extends PureComponent {
                   onClick={this.handleCreate}
                 >
                   { t('createAWallet') }
-                </Button>
-              </div>
-              <div className="select-action__select-button">
-                <div className="select-action__button-symbol">
-                  <img src="/images/download-alt.svg" />
-                </div>
-                <div className="select-action__button-text-big">
-                  { 'Import Wallet' }
-                </div>
-                <div className="select-action__button-text-small">
-                  { 'Import your existing wallet using a 12 word seed phrase' }
-                </div>
-                <Button
-                  type="confirm"
-                  className="first-time-flow__button"
-                  onClick={this.handleImport}
-                >
-                  { t('importWallet') }
                 </Button>
               </div>
             </div>
