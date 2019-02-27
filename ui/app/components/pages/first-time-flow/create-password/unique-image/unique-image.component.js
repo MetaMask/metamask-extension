@@ -36,7 +36,7 @@ export default class UniqueImageScreen extends PureComponent {
         <Button
           type="confirm"
           className="first-time-flow__button"
-          onClick={async () => {
+          onClick={() => {
             if (isImportedKeyring) {
               history.push(INITIALIZE_END_OF_FLOW_ROUTE)
             } else {

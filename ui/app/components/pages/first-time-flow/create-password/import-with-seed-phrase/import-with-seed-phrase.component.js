@@ -132,9 +132,9 @@ export default class ImportWithSeedPhrase extends PureComponent {
   }
 
   toggleTermsCheck = () => {
-    this.setState({
-      termsChecked: !this.state.termsChecked,
-    })
+    this.setState((prevState) => ({
+        termsChecked: !prevState.termsChecked,
+    }))
   }
 
   render () {
