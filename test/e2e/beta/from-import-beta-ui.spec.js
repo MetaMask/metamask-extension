@@ -65,13 +65,16 @@ describe('Using MetaMask with an existing account', function () {
 
   beforeEach(async function () {
     await driver.executeScript(
+      'window.origFetch = window.fetch.bind(window);' +
       'window.fetch = ' +
       '(...args) => { ' +
       'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
       'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
       '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
-      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } ' +
-      'return window.fetch(...args); }'
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
+      '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
+      'return window.origFetch(...args); }'
     )
   })
 
@@ -95,16 +98,19 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('First time flow starting from an existing seed phrase', () => {
     it('clicks the continue button on the welcome screen', async () => {
-      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-page .first-time-flow__button'))
+      await findElement(driver, By.css('.welcome-page__header'))
+      const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
       welcomeScreenBtn.click()
       await delay(largeDelayMs)
     })
 
-    it('imports a seed phrase', async () => {
-      const [seedPhrase] = await findElements(driver, By.xpath(`//a[contains(text(), 'Import with seed phrase')]`))
-      await seedPhrase.click()
-      await delay(regularDelayMs)
+    it('clicks the "Import Wallet" option', async () => {
+      const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Import Wallet')]`))
+      customRpcButton.click()
+      await delay(largeDelayMs)
+    })
 
+    it('imports a seed phrase', async () => {
       const [seedTextArea] = await findElements(driver, By.css('textarea.first-time-flow__textarea'))
       await seedTextArea.sendKeys(testSeedPhrase)
       await delay(regularDelayMs)
@@ -114,39 +120,25 @@ describe('Using MetaMask with an existing account', function () {
       const [confirmPassword] = await findElements(driver, By.id('confirm-password'))
       confirmPassword.sendKeys('correct horse battery staple')
 
+      const tosCheckBox = await findElement(driver, By.css('.first-time-flow__checkbox'))
+      await tosCheckBox.click()
+
       const [importButton] = await findElements(driver, By.xpath(`//button[contains(text(), 'Import')]`))
       await importButton.click()
       await delay(regularDelayMs)
     })
 
-    it('clicks through the ToS', async () => {
-      // terms of use
-      await findElement(driver, By.css('.first-time-flow__markdown'))
-      const canClickThrough = await driver.findElement(By.css('button.first-time-flow__button')).isEnabled()
-      assert.equal(canClickThrough, false, 'disabled continue button')
-      const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
-      await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
-      await delay(regularDelayMs)
-      const acceptTos = await findElement(driver, By.css('button.first-time-flow__button'))
-      driver.wait(until.elementIsEnabled(acceptTos))
-      await acceptTos.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the privacy notice', async () => {
-      // privacy notice
+    it('clicks through the security warning screen', async () => {
+      await findElement(driver, By.xpath(`//div[contains(text(), 'Protect Your Keys!')]`))
       const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
-    it('clicks through the phishing notice', async () => {
-      // phishing notice
-      const noticeElement = await driver.findElement(By.css('.first-time-flow__markdown'))
-      await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
-      await delay(regularDelayMs)
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-      await nextScreen.click()
+    it('clicks through the success screen', async () => {
+      await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
+      const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))
+      await doneButton.click()
       await delay(regularDelayMs)
     })
   })

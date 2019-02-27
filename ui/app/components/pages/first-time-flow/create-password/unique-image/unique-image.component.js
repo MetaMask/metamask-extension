@@ -1,9 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Identicon from '../../../../identicon'
-import Breadcrumbs from '../../../../breadcrumbs'
 import Button from '../../../../button'
-import { INITIALIZE_NOTICE_ROUTE } from '../../../../../routes'
+import { INITIALIZE_SEED_PHRASE_ROUTE, INITIALIZE_END_OF_FLOW_ROUTE } from '../../../../../routes'
 
 export default class UniqueImageScreen extends PureComponent {
   static contextTypes = {
@@ -11,42 +9,43 @@ export default class UniqueImageScreen extends PureComponent {
   }
 
   static propTypes = {
-    address: PropTypes.string,
     history: PropTypes.object,
+    isImportedKeyring: PropTypes.bool,
   }
 
   render () {
     const { t } = this.context
-    const { address, history } = this.props
+    const { history, isImportedKeyring } = this.props
 
     return (
       <div>
-        <Identicon
-          className="first-time-flow__unique-image"
-          address={address}
-          diameter={70}
+        <img
+          src="/images/sleuth.svg"
+          height={42}
+          width={42}
         />
         <div className="first-time-flow__header">
-          { t('yourUniqueAccountImage') }
+          { t('protectYourKeys') }
         </div>
         <div className="first-time-flow__text-block">
-          { t('yourUniqueAccountImageDescription1') }
+          { t('protectYourKeysMessage1') }
         </div>
         <div className="first-time-flow__text-block">
-          { t('yourUniqueAccountImageDescription2') }
+          { t('protectYourKeysMessage2') }
         </div>
         <Button
-          type="first-time"
+          type="confirm"
           className="first-time-flow__button"
-          onClick={() => history.push(INITIALIZE_NOTICE_ROUTE)}
+          onClick={() => {
+            if (isImportedKeyring) {
+              history.push(INITIALIZE_END_OF_FLOW_ROUTE)
+            } else {
+              history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+            }
+          }}
         >
           { t('next') }
         </Button>
-        <Breadcrumbs
-          className="first-time-flow__breadcrumbs"
-          total={3}
-          currentIndex={0}
-        />
       </div>
     )
   }

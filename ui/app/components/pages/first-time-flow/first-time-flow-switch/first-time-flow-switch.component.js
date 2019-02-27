@@ -5,7 +5,6 @@ import {
   DEFAULT_ROUTE,
   LOCK_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../../../routes'
@@ -15,7 +14,6 @@ export default class FirstTimeFlowSwitch extends PureComponent {
     completedOnboarding: PropTypes.bool,
     isInitialized: PropTypes.bool,
     isUnlocked: PropTypes.bool,
-    noActiveNotices: PropTypes.bool,
     seedPhrase: PropTypes.string,
   }
 
@@ -24,7 +22,6 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       completedOnboarding,
       isInitialized,
       isUnlocked,
-      noActiveNotices,
       seedPhrase,
     } = this.props
 
@@ -42,10 +39,6 @@ export default class FirstTimeFlowSwitch extends PureComponent {
 
     if (!isUnlocked) {
       return <Redirect to={{ pathname: INITIALIZE_UNLOCK_ROUTE }} />
-    }
-
-    if (!noActiveNotices) {
-      return <Redirect to={{ pathname: INITIALIZE_NOTICE_ROUTE }} />
     }
 
     if (seedPhrase) {

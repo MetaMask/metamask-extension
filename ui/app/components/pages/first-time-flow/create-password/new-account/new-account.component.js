@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Breadcrumbs from '../../../../breadcrumbs'
 import Button from '../../../../button'
 import {
   INITIALIZE_UNIQUE_IMAGE_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
+  INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../../routes'
 import TextField from '../../../../text-field'
 
@@ -23,6 +23,7 @@ export default class NewAccount extends PureComponent {
     confirmPassword: '',
     passwordError: '',
     confirmPasswordError: '',
+    termsChecked: false,
   }
 
   isValid () {
@@ -111,12 +112,29 @@ export default class NewAccount extends PureComponent {
     history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE)
   }
 
+  toggleTermsCheck = () => {
+    this.setState((prevState) => ({
+      termsChecked: !prevState.termsChecked,
+    }))
+  }
+
   render () {
     const { t } = this.context
-    const { password, confirmPassword, passwordError, confirmPasswordError } = this.state
+    const { password, confirmPassword, passwordError, confirmPasswordError, termsChecked } = this.state
 
     return (
       <div>
+        <div className="first-time-flow__create-back">
+          <a
+            onClick={e => {
+              e.preventDefault()
+              this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
+            }}
+            href="#"
+          >
+            {`< Back`}
+          </a>
+        </div>
         <div className="first-time-flow__header">
           { t('createPassword') }
         </div>
@@ -151,27 +169,23 @@ export default class NewAccount extends PureComponent {
             fullWidth
             largeLabel
           />
+          <div className="first-time-flow__checkbox-container" onClick={this.toggleTermsCheck}>
+            <div className="first-time-flow__checkbox">
+              {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
+            </div>
+            <span className="first-time-flow__checkbox-label">
+              I agree to the Terms Of Service
+            </span>
+          </div>
           <Button
-            type="first-time"
+            type="confirm"
             className="first-time-flow__button"
-            disabled={!this.isValid()}
+            disabled={!this.isValid() || !termsChecked}
             onClick={this.handleCreate}
           >
             { t('create') }
           </Button>
         </form>
-        <a
-          href=""
-          className="first-time-flow__link create-password__import-link"
-          onClick={this.handleImportWithSeedPhrase}
-        >
-          { t('importWithSeedPhrase') }
-        </a>
-        <Breadcrumbs
-          className="first-time-flow__breadcrumbs"
-          total={3}
-          currentIndex={0}
-        />
       </div>
     )
   }

@@ -1,10 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import Identicon from '../../../../identicon'
 import LockIcon from '../../../../lock-icon'
 import Button from '../../../../button'
-import Breadcrumbs from '../../../../breadcrumbs'
 import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE } from '../../../../../routes'
 import { exportAsFile } from '../../../../../../app/util'
 
@@ -14,7 +12,6 @@ export default class RevealSeedPhrase extends PureComponent {
   }
 
   static propTypes = {
-    address: PropTypes.string,
     history: PropTypes.object,
     seedPhrase: PropTypes.string,
   }
@@ -75,16 +72,10 @@ export default class RevealSeedPhrase extends PureComponent {
 
   render () {
     const { t } = this.context
-    const { address } = this.props
     const { isShowingSeedPhrase } = this.state
 
     return (
-      <div>
-        <Identicon
-          className="first-time-flow__unique-image"
-          address={address}
-          diameter={70}
-        />
+      <div className="reveal-seed-phrase">
         <div className="seed-phrase__sections">
           <div className="seed-phrase__main">
             <div className="first-time-flow__header">
@@ -121,18 +112,13 @@ export default class RevealSeedPhrase extends PureComponent {
           </div>
         </div>
         <Button
-          type="first-time"
+          type="confirm"
           className="first-time-flow__button"
           onClick={this.handleNext}
           disabled={!isShowingSeedPhrase}
         >
           { t('next') }
         </Button>
-        <Breadcrumbs
-          className="first-time-flow__breadcrumbs"
-          total={3}
-          currentIndex={2}
-        />
       </div>
     )
   }

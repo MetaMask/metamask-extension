@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Mascot from '../../../mascot'
 import Button from '../../../button'
-import { INITIALIZE_CREATE_PASSWORD_ROUTE, INITIALIZE_NOTICE_ROUTE } from '../../../../routes'
+import { INITIALIZE_SELECT_ACTION_ROUTE, INITIALIZE_UNIQUE_IMAGE_ROUTE } from '../../../../routes'
 
 export default class Welcome extends PureComponent {
   static propTypes = {
@@ -25,12 +25,12 @@ export default class Welcome extends PureComponent {
     const { history, isInitialized } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_NOTICE_ROUTE)
+      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
     }
   }
 
   handleContinue = () => {
-    this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
+    this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE)
   }
 
   render () {
@@ -41,22 +41,22 @@ export default class Welcome extends PureComponent {
         <div className="welcome-page">
           <Mascot
             animationEventEmitter={this.animationEventEmitter}
-            width="225"
-            height="225"
+            width="125"
+            height="125"
           />
           <div className="welcome-page__header">
             { t('welcome') }
           </div>
           <div className="welcome-page__description">
             <div>{ t('metamaskDescription') }</div>
-            <div>{ t('holdEther') }</div>
+            <div>{ t('happyToSeeYou') }</div>
           </div>
           <Button
-            type="first-time"
+            type="confirm"
             className="first-time-flow__button"
             onClick={this.handleContinue}
           >
-            { t('continue') }
+            { t('getStarted') }
           </Button>
         </div>
       </div>

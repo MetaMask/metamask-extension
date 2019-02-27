@@ -102,8 +102,15 @@ describe('MetaMask', function () {
 
   describe('Going through the first time flow', () => {
     it('clicks the continue button on the welcome screen', async () => {
-      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-page .first-time-flow__button'))
+      await findElement(driver, By.css('.welcome-page__header'))
+      const welcomeScreenBtn = await findElement(driver, By.css('.first-time-flow__button'))
       welcomeScreenBtn.click()
+      await delay(largeDelayMs)
+    })
+
+    it('clicks the "Create New Wallet" option', async () => {
+      const customRpcButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Create a Wallet')]`))
+      customRpcButton.click()
       await delay(largeDelayMs)
     })
 
@@ -114,43 +121,16 @@ describe('MetaMask', function () {
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
+
+      const tosCheckBox = await findElement(driver, By.css('.first-time-flow__checkbox'))
+      await tosCheckBox.click()
+
       await button.click()
       await delay(regularDelayMs)
     })
 
-    it('clicks through the unique image screen', async () => {
-      await findElement(driver, By.css('.first-time-flow__unique-image'))
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the ToS', async () => {
-      // terms of use
-      await findElement(driver, By.css('.first-time-flow__markdown'))
-      const canClickThrough = await driver.findElement(By.css('button.first-time-flow__button')).isEnabled()
-      assert.equal(canClickThrough, false, 'disabled continue button')
-      const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
-      await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
-      await delay(regularDelayMs)
-      const acceptTos = await findElement(driver, By.css('button.first-time-flow__button'))
-      driver.wait(until.elementIsEnabled(acceptTos))
-      await acceptTos.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the privacy notice', async () => {
-      // privacy notice
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
-      await nextScreen.click()
-      await delay(regularDelayMs)
-    })
-
-    it('clicks through the phishing notice', async () => {
-      // phishing notice
-      const noticeElement = await driver.findElement(By.css('.first-time-flow__markdown'))
-      await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
-      await delay(regularDelayMs)
+    it('clicks through the security warning screen', async () => {
+      await findElement(driver, By.xpath(`//div[contains(text(), 'Protect Your Keys!')]`))
       const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
@@ -219,12 +199,10 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
     })
 
-    it('clicks through the deposit modal', async () => {
-      const byBuyModal = By.css('span .modal')
-      const buyModal = await driver.wait(until.elementLocated(byBuyModal))
-      const closeModal = await findElement(driver, By.css('.page-container__header-close'))
-      await closeModal.click()
-      await driver.wait(until.stalenessOf(buyModal))
+    it('clicks through the success screen', async () => {
+      await findElement(driver, By.xpath(`//div[contains(text(), 'Congratulations')]`))
+      const doneButton = await findElement(driver, By.css('button.first-time-flow__button'))
+      await doneButton.click()
       await delay(regularDelayMs)
     })
   })

@@ -92,6 +92,15 @@
   "advanced": {
     "message": "Advanced"
   },
+  "agreeTermsOfService": {
+    "message": "I agree to the Terms of Service"
+  },
+  "allDone": {
+    "message": "All Done"
+  },
+  "alreadyHaveSeedPhrase": {
+    "message": "No, I already have a seed phrase"
+  },
   "amount": {
     "message": "Amount"
   },
@@ -239,6 +248,9 @@
   "confirmTransaction": {
     "message": "Confirm Transaction"
   },
+  "congratulations": {
+    "message": "Congratulations"
+  },
   "connectHardwareWallet": {
     "message": "Connect Hardware Wallet"
   },
@@ -325,6 +337,9 @@
   },
   "createAccount": {
     "message": "Create Account"
+  },
+  "createAWallet": {
+    "message": "Create a Wallet"
   },
   "createDen": {
     "message": "Create"
@@ -447,6 +462,24 @@
   },
   "encryptNewDen": {
     "message": "Encrypt your new DEN"
+  },
+  "endOfFlowMessage1": {
+    "message": "You passed the test - keep your seedphrase safe, it's your responsibility!"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tips on storing it safely"
+  },
+  "endOfFlowMessage3": {
+    "message": "Save a backup in multiple places"
+  },
+  "endOfFlowMessage4": {
+    "message": "Never tell anyone"
+  },
+  "endOfFlowMessage5": {
+    "message": "If you need to back your seed phrase again, you can find it in Settings -> Security."
+  },
+  "endOfFlowMessage6": {
+    "message": "MetaMask cannot recover your seedphrase. Learn more."
   },
   "ensNameNotFound": {
     "message": "ENS name not found"
@@ -581,9 +614,15 @@
   "getHelp": {
     "message": "Get Help."
   },
+  "getStarted": {
+    "message": "Get Started"
+  },
   "greaterThanMin": {
     "message": "must be greater than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
+  },
+  "happyToSeeYou": {
+    "message": "We’re happy to see you."
   },
   "hardware": {
     "message": "hardware"
@@ -646,6 +685,9 @@
   },
   "importDen": {
     "message": "Import Existing DEN"
+  },
+  "importWallet": {
+    "message": "Import Wallet"
   },
   "imported": {
     "message": "Imported",
@@ -731,6 +773,9 @@
     "message": "must be less than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
   },
+  "letsGoSetUp": {
+    "message": "Yes, let’s get set up!"
+  },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
   },
@@ -777,7 +822,7 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "MetaMask is a secure identity vault for Ethereum."
+    "message": "Connecting you to Ethereum and the Decentralized Web."
   },
   "metamaskSeedWords": {
     "message": "MetaMask Seed Words"
@@ -847,6 +892,21 @@
   },
   "newNetwork": {
     "message": "New Network"
+  },
+  "newToMetaMask": {
+    "message": "New to MetaMask?"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "No, I already have a seed phrase"
+  },
+  "protectYourKeys": {
+    "message": "Protect Your Keys!"
+  },
+  "protectYourKeysMessage1": {
+    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never ask for your seed phrase!"
+  },
+  "protectYourKeysMessage2": {
+    "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
   },
   "rpcURL": {
     "message": "New RPC URL"
@@ -1608,6 +1668,9 @@
   },
   "yourUniqueAccountImageDescription2": {
     "message": "You’ll see this image everytime you need to confirm a transaction."
+  },
+  "yourUniqueAccountImageDescription3": {
+    "message": "MetaMask will never ask for your seed phrase!"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message":"Zero gas price on speed up"

@@ -8,13 +8,13 @@ import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_UNIQUE_IMAGE_ROUTE,
-  INITIALIZE_NOTICE_ROUTE,
 } from '../../../../routes'
 
 export default class CreatePassword extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     isInitialized: PropTypes.bool,
+    isImportedKeyring: PropTypes.bool,
     onCreateNewAccount: PropTypes.func,
     onCreateNewAccountFromSeed: PropTypes.func,
   }
@@ -23,17 +23,38 @@ export default class CreatePassword extends PureComponent {
     const { isInitialized, history } = this.props
 
     if (isInitialized) {
-      history.push(INITIALIZE_NOTICE_ROUTE)
+      history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
     }
   }
 
   render () {
-    const { onCreateNewAccount, onCreateNewAccountFromSeed } = this.props
+    const { onCreateNewAccount, onCreateNewAccountFromSeed, isImportedKeyring } = this.props
 
     return (
       <div className="first-time-flow__wrapper">
+        <div className="app-header__logo-container">
+          <img
+            className="app-header__metafox-logo app-header__metafox-logo--horizontal"
+            src="/images/logo/metamask-logo-horizontal.svg"
+            height={30}
+          />
+          <img
+            className="app-header__metafox-logo app-header__metafox-logo--icon"
+            src="/images/logo/metamask-fox.svg"
+            height={42}
+            width={42}
+          />
+        </div>
         <Switch>
-          <Route exact path={INITIALIZE_UNIQUE_IMAGE_ROUTE} component={UniqueImage} />
+          <Route exact
+            path={INITIALIZE_UNIQUE_IMAGE_ROUTE}
+            render={props => (
+              <UniqueImage
+                { ...props }
+                isImportedKeyring={isImportedKeyring}
+              />
+            )}
+          />
           <Route
             exact
             path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}
