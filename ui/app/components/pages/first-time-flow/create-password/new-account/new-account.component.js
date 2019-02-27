@@ -113,9 +113,9 @@ export default class NewAccount extends PureComponent {
   }
 
   toggleTermsCheck = () => {
-    this.setState({
-      termsChecked: !this.state.termsChecked,
-    })
+    this.setState((prevState) => ({
+      termsChecked: !prevState.termsChecked,
+    }))
   }
 
   render () {
