@@ -79,7 +79,7 @@ export default class SendGasRow extends Component {
                 name: 'Changed Gas Button',
               },
             })
-            gasPriceButtonGroupProps(...args)
+            gasPriceButtonGroupProps.handleGasPriceSelection(...args)
           }}
         />
         { this.renderAdvancedOptionsButton() }
